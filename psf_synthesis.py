@@ -1,5 +1,6 @@
 from __future__ import annotations
 import numpy as np
+import dataclasses
 from dataclasses import dataclass
 from typing import Tuple, Optional
 
@@ -291,10 +292,13 @@ class PSFUnitarySynthesisPlugin(UnitarySynthesisPlugin):
         """
         Synthesize a unitary matrix into a QuantumCircuit.
         """
-        hyper = PSFHyper()
+        # Safely extract valid options for PSFHyper
+        valid_keys = {f.name for f in dataclasses.fields(PSFHyper)}
+        filtered_options = {k: v for k, v in options.items() if k in valid_keys}
+        
+        hyper = PSFHyper(**filtered_options)
         synth = PSFHybridSynthesizer(hyper)
         
-       
         synth.run(unitary)
         
         return synth.as_qiskit()
