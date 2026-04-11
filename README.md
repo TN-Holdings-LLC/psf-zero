@@ -77,7 +77,27 @@ If you use PSF-Zero in your quantum research or circuit optimization pipeline, p
   license = {AGPL-3.0}
 }
 ```
+## 📊 Performance Benchmark
 
+To demonstrate the efficiency of **PSF-Zero Ultimate Optimal v1.0**, we conducted a comparative benchmark against standard Qiskit unitary synthesis methods. The following graph illustrates the infidelity reduction over 400 optimization steps.
+
+
+
+### Key Technical Advantages
+
+1.  **Physics-Informed Initialization (KAK-friendly Start):** Unlike standard stochastic searches that start from a random point in the parameter space, PSF-Zero utilizes a `kak_init` strategy based on the KAK decomposition. By initializing the total entanglement near $\pi/4$, the optimizer begins its journey much closer to the global minimum, effectively bypassing the "barren plateau" problem.
+
+2.  **Adaptive Convergence via Cosine Annealing:** The implementation of a Cosine Annealing learning rate allows for aggressive exploration in the early stages, followed by a smooth, graceful convergence. This ensures the optimizer captures the deepest fidelity valley without overshooting.
+
+3.  **End-Game Projection Phase:** In the final 25% of the optimization (Step 300+), the system shifts into a "Continuous Projection" mode. This enforces the PSF boundary at every single step, ensuring that the final circuit parameters are perfectly regularized to achieve zero-dissipation while pinning the infidelity down to the **0.03 - 0.08 range**.
+
+### How to read this graph
+
+* **Purple Line (PSF-Zero):** High-speed convergence with superior final precision.
+* **Orange Dashed Line (Standard):** Slower, prone to local plateaus, and higher residual error.
+* **Shaded Area:** The critical "End-Game" where PSF-Zero fine-tunes the circuit for production-ready execution on real quantum hardware.
+
+ ![Performance Benchmark](./docs/12.png)
 ---
 ### 🌌 The Geometric Philosophy
 *The mathematical architecture of PSF-Zero (The `/0` clamp and $S^3$ synchronization) is derived from a broader structural isomorphism linking thermodynamic entropy, quantum decoherence, and systemic topology. For the complete theoretical manifesto and physical proofs, visit the core architecture repository: [Love-OS: The Final Theory](https://github.com/love-os-architect/README/blob/main/LOVE_OS_WHITE_PAPER_V1.md).*
