@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "psf-zero"
 version = "1.0.0"
-description = "A manifold-aware geometric optimizer for quantum control, designed to minimize T1/T2 decoherence via curvature-based trust regions and S3 minimal arcs."
+description = "Geometric quantum-control extension for Qiskit. Achieves zero-friction phase sync via projective regularization to eliminate noise."
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "AGPL-3.0-or-later"}
