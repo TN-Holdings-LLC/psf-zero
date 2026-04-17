@@ -108,6 +108,8 @@ PSF-Zero for Qiskit is the first major milestone of the "Frictionless (R=0) Arch
 * **Classical-Quantum Hybrid Engine:** Connecting the quantum transpiler directly with our classical `R0_GPCLayer` (PyTorch) to achieve end-to-end "autonomous driving" across hybrid AI-Quantum systems.
 
 **Join the ongoing architectural development and follow the PennyLane integration progress here:**
+
+
 👉 [whitepaper.md](https://github.com/love-os-architect/psf-zero/blob/main/whitepaper.md)
 
 
