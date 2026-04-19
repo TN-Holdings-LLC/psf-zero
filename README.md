@@ -116,6 +116,17 @@ By explicitly defining the analytical solutions for $R_x, R_y, R_z$ and the $R_{
 
 👉 [lib.rs](https://github.com/love-os-architect/psf-zero/blob/main/lib.rs)
 
+### 2. Python Integration
+The transition from the Python execution to the Rust native core requires zero architectural changes for the user. It is a seamless, one-line drop-in replacement:
+
+```python
+# Instead of standard Python execution:
+# from .core import compose_unitary 
+
+# Import the frictionless Rust core:
+from psf_zero_core import compose_unitary_rs as compose_unitary
+```
+
 
 ## 🌍 Next Steps & Ecosystem Expansion
 
