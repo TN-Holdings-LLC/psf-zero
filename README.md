@@ -4,7 +4,7 @@
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Qiskit Ecosystem](https://img.shields.io/badge/Qiskit-Ecosystem-purple.svg)](https://github.com/qiskit/ecosystem)
 
-> **"What if the instability in quantum computation stems not from the algorithms, but from the mathematical coordinate system we blindly trust?"**
+> **🚨"What if the instability in quantum computation stems not from the algorithms, but from the mathematical coordinate system we blindly trust?"**
 
 
 **PSF-Zero** is a manifold-aware geometric optimizer and Qiskit `TransformationPass` designed to synthesize highly robust, low-dissipation 2-qubit unitary circuits. 
