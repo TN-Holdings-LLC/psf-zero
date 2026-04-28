@@ -6,6 +6,7 @@
 
 > **🚨"What if the instability in quantum computation stems not from the algorithms, but from the mathematical coordinate system we blindly trust?"**
 
+Gauss’s *Theorema Egregium* proved that wrapping a sphere with flat paper inevitably creates wrinkles. Yet, modern quantum control still forces spherical quantum reality onto flat computational grids—generating the geometric wrinkles we call decoherence.
 
 **PSF-Zero** is a manifold-aware geometric optimizer and Qiskit `TransformationPass` designed to synthesize highly robust, low-dissipation 2-qubit unitary circuits. 
 
