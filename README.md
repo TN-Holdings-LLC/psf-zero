@@ -12,6 +12,29 @@ Gauss’s *Theorema Egregium* proved that wrapping a sphere with flat paper inev
 
 By applying Projective Spherical Filtering (the `/0` clamp) and restricting parameter updates to minimal arcs on the $S^3 \cong SU(2)$ manifold, PSF-Zero inherently minimizes pulse dissipation (L1/TV norms) while avoiding the catastrophic "unwinding" and barren plateaus common in classical Euclidean optimizers.
 
+## 🌟 Overview: The Frictionless R=0 Quantum Compiler
+
+PSF-Zero is a next-generation geometric transpilation plugin designed for the Qiskit Ecosystem. It completely incinerates the reliance on stochastic optimization, random walks, and heuristic loops (the "X-axis" of computation).
+
+By leveraging an exact analytical **Cartan (KAK) decomposition** and strictly enforcing **Weyl Chamber Canonicalization** written in a frictionless Rust core, PSF-Zero maps any SU(4) geodesic directly to physical RZZ/RX/RY/RZ pulses in a single, $O(1)$ deterministic step.
+
+### 🔥 The "Z-Axis" Technical Advantages
+
+*   **100% Deterministic Synthesis:** No `np.random`, no learning rates, no iterative loops. Just absolute mathematical geometry.
+*   **Weyl Chamber Canonicalization:** Every synthesized circuit is projected into a strict canonical region ($0 \le c_3 \le c_2 \le c_1 \le \pi/2$). This guarantees 100% auditability and bit-level reproducibility.
+*   **No Silent Fallbacks:** Topological branch cuts and degeneracies are explicitly captured via Rust `Result` types (`CartanError`). We prohibit "smoothing over" errors with random noise, ensuring compromised instructions are never sent to hardware.
+
+### 🧪 The Proof: Real Device Benchmark (`ibm_brisbane`)
+
+To prove the superiority of the R=0 architecture, we conduct an end-to-end benchmark on real quantum hardware (127-qubit Eagle r3) inside `02_real_device_benchmark_v2.ipynb`. 
+
+[02_real_device_benchmark_v2.ipynb](https://github.com/love-os-architect/psf-zero/blob/main/notebooks/02_real_device_benchmark_v2.ipynb)
+
+Targeting a chemically relevant `XXPlusYYGate` (a critical component in Trotterized Hubbard models):
+*   **The Result:** While default transpilers rely on unoptimized heuristic routing—leading to higher circuit depth and entangling gate bloat—**PSF-Zero deterministically synthesizes the absolute minimum depth circuit with zero optimization overhead.**
+
+PSF-Zero represents a fundamental paradigm shift in quantum control architectures, laying the "R=0" foundation for the broader quantum computing community.
+
 ## 🚀 Key Features
 
 - **Geometric Step Saturation (`/0` Clamp):** Dynamically clips optimization steps based on curvature-aware trust regions, completely preventing rotational overshoot.
