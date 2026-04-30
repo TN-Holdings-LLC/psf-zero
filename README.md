@@ -90,14 +90,14 @@ If you use PSF-Zero in your quantum research or circuit optimization pipeline, p
 To demonstrate the efficiency of **PSF-Zero Ultimate Optimal v1.0**, we conducted a comparative benchmark against standard Qiskit unitary synthesis methods. The following graph illustrates the infidelity reduction over 400 optimization steps.
 
 
-
 ### Key Technical Advantages
 
-1.  **Physics-Informed Initialization (KAK-friendly Start):** Unlike standard stochastic searches that start from a random point in the parameter space, PSF-Zero utilizes a `kak_init` strategy based on the KAK decomposition. By initializing the total entanglement near $\pi/4$, the optimizer begins its journey much closer to the global minimum, effectively bypassing the "barren plateau" problem.
-
-2.  **Adaptive Convergence via Cosine Annealing:** The implementation of a Cosine Annealing learning rate allows for aggressive exploration in the early stages, followed by a smooth, graceful convergence. This ensures the optimizer captures the deepest fidelity valley without overshooting.
-
-3.  **End-Game Projection Phase:** In the final 25% of the optimization (Step 300+), the system shifts into a "Continuous Projection" mode. This enforces the PSF boundary at every single step, ensuring that the final circuit parameters are perfectly regularized to achieve zero-dissipation while pinning the infidelity down to the **0.03 - 0.08 range**.
+*   **100% Deterministic Cartan Projection (Zero Randomness):** 
+    Unlike standard Euclidean optimizers that rely on stochastic random walks, Adam momentum, or learning rate annealing, PSF-Zero Ultimate eliminates optimization loops in the final pulse projection entirely. By leveraging exact analytical **Cartan (KAK) decomposition** via the Magic (Bell) Basis, the system maps any SU(4) geodesic directly to physical RZZ/RX/RY/RZ angles in a single, perfectly deterministic computational step.
+*   **Absolute Uniqueness via Weyl Chamber Geometry:** 
+    Quantum compilation is often plagued by phase degeneracies and infinite equivalent solutions. PSF-Zero completely nullifies this by strictly enforcing **Weyl Chamber Canonicalization**. Every synthesized circuit is projected into a mathematically strict canonical region ($0 \le c_3 \le c_2 \le c_1 \le \pi/2$). This guarantees that the same target unitary will *always* produce the exact same quantum circuit, down to the bit-level, ensuring 100% auditability and reproducibility.
+*   **Auditable Exception Handling (No Silent Fallbacks):** 
+    In the Euclidean approach, boundary degeneracies are often "smoothed over" by injecting random noise. PSF-Zero prohibits this. Degeneracies and physical limits are strictly captured as structured mathematical exceptions (`CartanError`) within the Rust core, ensuring that physical hardware is never fed compromised instructions.
 
 ### How to read this graph
 
