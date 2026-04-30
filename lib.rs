@@ -1,95 +1,128 @@
-use ndarray::{array, Array2, s};
+use nalgebra::{Matrix4, ComplexField};
 use num_complex::Complex64;
-use pyo3::prelude::*;
-use numpy::{PyReadonlyArray3, PyReadonlyArray1, PyArray2};
+use std::f64::consts::PI;
 
-type C64 = Complex64;
+pub type Mat4 = Matrix4<Complex64>;
 
-// Analytical Pauli Rotations bypassing expm
-fn analytical_local_block(theta: f64, axis: usize) -> Array2<C64> {
-    let c = (theta / 2.0).cos();
-    let s = (theta / 2.0).sin();
-    let i_s = C64::new(0.0, -s);
-    let zero = C64::new(0.0, 0.0);
-    let c_cplx = C64::new(c, 0.0);
-
-    match axis {
-        0 => array![[c_cplx, i_s], [i_s, c_cplx]], // Rx
-        1 => array![[c_cplx, C64::new(-s, 0.0)], [C64::new(s, 0.0), c_cplx]], // Ry
-        2 => array![[C64::new(c, -s), zero], [zero, C64::new(c, s)]], // Rz
-        _ => Array2::<C64>::eye(2),
-    }
+#[derive(Debug, Clone, PartialEq)]
+pub enum CartanError {
+    NotUnitary,
+    DetNotOne,
+    EigenDecompositionFailed,
+    NumericInstability,
 }
 
-// Analytical RZZ Entangler
-fn analytical_rzz_block(tau: f64) -> Array2<C64> {
-    let phase_minus = C64::new(0.0, -tau / 2.0).exp();
-    let phase_plus = C64::new(0.0, tau / 2.0).exp();
+// =========================================================
+// 1. Magic Basis (Immutable Template)
+// =========================================================
+lazy_static::lazy_static! {
+    static ref MAGIC_Q: Mat4 = {
+        let s = (2.0_f64).sqrt();
+        let i = Complex64::new(0.0, 1.0);
+        let z = Complex64::new(0.0, 0.0);
+        let o = Complex64::new(1.0, 0.0);
+
+        Matrix4::new(
+            o/s,  z,   z,   i/s,
+            z,    i/s, o/s, z,
+            z,    i/s, -o/s,z,
+            o/s,  z,   z,   -i/s,
+        )
+    };
+}
+
+// =========================================================
+// 2. SU(4) Normalization (Global Phase Stripping)
+// =========================================================
+fn normalize_su4(u: &Mat4) -> Result<Mat4, CartanError> {
+    let norm = (u.adjoint() * u - Mat4::identity()).norm();
+    if norm > 1e-10 {
+        return Err(CartanError::NotUnitary);
+    }
+
+    let det = u.determinant();
+    if !det.is_finite() || det.norm() < 1e-12 {
+        return Err(CartanError::NumericInstability);
+    }
+
+    let phase = det.argument() / 4.0;
+    let correction = Complex64::from_polar(1.0, -phase);
     
-    let mut rzz = Array2::<C64>::zeros((4, 4));
-    rzz[[0, 0]] = phase_minus;
-    rzz[[1, 1]] = phase_plus;
-    rzz[[2, 2]] = phase_plus;
-    rzz[[3, 3]] = phase_minus;
-    rzz
-}
-
-// Optimized 2x2 Kronecker product
-fn kron_2x2(a: &Array2<C64>, b: &Array2<C64>) -> Array2<C64> {
-    let mut out = Array2::<C64>::zeros((4, 4));
-    for i in 0..2 {
-        for j in 0..2 {
-            let block = a[[i,j]] * b;
-            out.slice_mut(s![i*2..(i+1)*2, j*2..(j+1)*2]).assign(&block);
-        }
+    let u_su4 = u * correction;
+    if (u_su4.determinant() - Complex64::new(1.0, 0.0)).norm() > 1e-10 {
+        return Err(CartanError::DetNotOne);
     }
-    out
+    Ok(u_su4)
 }
 
-#[pyfunction]
-fn compose_unitary_rs(
-    angles: PyReadonlyArray3<f64>,
-    taus: PyReadonlyArray1<f64>,
-    py: Python<'_>,
-) -> Py<PyArray2<C64>> {
-    let angles = angles.as_array();
-    let taus = taus.as_array();
-    let m = taus.len();
-    let mut u = Array2::<C64>::eye(4);
+// =========================================================
+// 3. Cartan Coordinate Extraction (Absolute, O(1))
+// =========================================================
+pub fn cartan_coordinates(u: &Mat4) -> Result<(f64, f64, f64), CartanError> {
+    let u = normalize_su4(u)?;
 
-    // Core loop utilizing analytical blocks and optimized 4x4 matrix multiplication
-    for l in 0..=m {
-        let mut local = Array2::<C64>::eye(4);
-        for q in 0..2 {
-            for a in 0..3 {
-                let theta = angles[[l, q, a]];
-                if theta.abs() < 1e-12 { continue; }
-                
-                let uq = analytical_local_block(theta, a);
-                let big = if q == 0 {
-                    kron_2x2(&uq, &Array2::<C64>::eye(2))
-                } else {
-                    kron_2x2(&Array2::<C64>::eye(2), &uq)
-                };
-                local = big.dot(&local);
-            }
-        }
-        u = local.dot(&u);
+    let q = &*MAGIC_Q;
+    let u_m = q.adjoint() * u * q;
+    let m = u_m.transpose() * u_m;   // M = U_M^T * U_M
 
-        if l < m {
-            let tau = taus[l];
-            if tau.abs() > 1e-12 {
-                let rzz = analytical_rzz_block(tau);
-                u = rzz.dot(&u);
-            }
-        }
+    let eigen = m.complex_eigenvalues();
+    if eigen.len() != 4 {
+        return Err(CartanError::EigenDecompositionFailed);
     }
-    
-    PyArray2::from_array(py, &u).to_owned()
+
+    // Magic Basis固有値の引数からCartan座標を直接抽出
+    let c1 = (eigen[0] * eigen[1]).argument().abs() / 2.0;
+    let c2 = (eigen[0] * eigen[2]).argument().abs() / 2.0;
+    let c3 = (eigen[0] * eigen[3]).argument().abs() / 2.0;
+
+    let mut v = [c1, c2, c3];
+    v.sort_by(|a, b| b.partial_cmp(a).unwrap()); // c1 ≥ c2 ≥ c3
+
+    // Weyl Chamber Reflection
+    if v[0] + v[1] > PI / 2.0 {
+        let new_c1 = PI / 2.0 - v[1];
+        let new_c2 = PI / 2.0 - v[0];
+        v[0] = new_c1;
+        v[1] = new_c2;
+        v.sort_by(|a, b| b.partial_cmp(a).unwrap());
+    }
+
+    Ok((v[0], v[1], v[2]))
 }
 
-#[pymodule]
-fn psf_zero_core(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(compose_unitary_rs, m)?)?;
-    Ok(())
+// =========================================================
+// Unit Tests
+// =========================================================
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use approx::assert_relative_eq;
+
+    #[test]
+    fn identity_returns_zero() {
+        let u = Mat4::identity();
+        let (c1, c2, c3) = cartan_coordinates(&u).unwrap();
+        assert_relative_eq!(c1, 0.0, epsilon = 1e-12);
+        assert_relative_eq!(c2, 0.0, epsilon = 1e-12);
+        assert_relative_eq!(c3, 0.0, epsilon = 1e-12);
+    }
+
+    #[test]
+    fn pure_rzz() {
+        let theta = 0.7;
+        let phase = Complex64::new(0.0, -theta / 2.0).exp();
+        let u = Mat4::from_diagonal(&[phase, phase.conj(), phase.conj(), phase]);
+
+        let (c1, c2, c3) = cartan_coordinates(&u).unwrap();
+        assert_relative_eq!(c1, theta.abs() / 2.0, epsilon = 1e-10);
+        assert_relative_eq!(c2, 0.0, epsilon = 1e-10);
+        assert_relative_eq!(c3, 0.0, epsilon = 1e-10);
+    }
+
+    #[test]
+    fn non_unitary_rejected() {
+        let mut u = Mat4::identity();
+        u[(0, 0)] += Complex64::new(0.01, 0.0);
+        assert!(matches!(cartan_coordinates(&u), Err(CartanError::NotUnitary)));
+    }
 }
