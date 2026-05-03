@@ -3,7 +3,6 @@
 
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![PennyLane](https://img.shields.io/badge/PennyLane-Native-orange.svg)](https://pennylane.ai/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-Autograd%20Ready-ee4c2c.svg)](https://pytorch.org/)
 [![Rust Core](https://img.shields.io/badge/Core-Rust_Native-E34F26.svg?logo=rust&logoColor=white)](https://www.rust-lang.org/)
