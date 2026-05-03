@@ -7,6 +7,8 @@
 [![PennyLane](https://img.shields.io/badge/PennyLane-Native-orange.svg)](https://pennylane.ai/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-Autograd%20Ready-ee4c2c.svg)](https://pytorch.org/)
 [![Rust](https://img.shields.io/badge/Rust-Core-000000.svg)](https://www.rust-lang.org/)
+[![Rust Core](https://img.shields.io/badge/Core-Rust_Native-E34F26.svg?logo=rust&logoColor=white)](https://www.rust-lang.org/)
+[![PyO3 Binding](https://img.shields.io/badge/FFI-PyO3-blue.svg)](https://pyo3.rs/)
 
 > *"When redundancy is removed not numerically but geometrically, optimization becomes a property of the representation itself."*
 
