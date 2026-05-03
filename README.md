@@ -11,7 +11,7 @@
 [![Spec: Canonical](https://img.shields.io/badge/Spec-Canonical_Edition-1e90ff.svg)](https://github.com/TN-Holdings-LLC/psf-zero)
 
 
-![Performance Benchmark](./docs/12.png)
+![Performance Benchmark](./docs/11.png)
 
 > **🚨"What if the instability in quantum computation stems not from the algorithms, but from the mathematical coordinate system we blindly trust?"**
 
