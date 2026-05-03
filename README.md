@@ -6,8 +6,9 @@
 [![PennyLane Ready](https://img.shields.io/badge/PennyLane-Ready-00D1B2.svg)](https://pennylane.ai/)
 [![Rust Core](https://img.shields.io/badge/Core-Rust_Native-E34F26.svg?logo=rust&logoColor=white)](https://www.rust-lang.org/)
 [![PyO3 Binding](https://img.shields.io/badge/FFI-PyO3-blue.svg)](https://pyo3.rs/)
+[![Language: QGL](https://img.shields.io/badge/Language-QGL-000000.svg)](https://github.com/TN-Holdings-LLC/psf-zero)
 [![Paradigm: R=0](https://img.shields.io/badge/Paradigm-R%3D0-8A2BE2.svg)](https://github.com/TN-Holdings-LLC/psf-zero)
-
+[![Spec: Canonical](https://img.shields.io/badge/Spec-Canonical_Edition-1e90ff.svg)](https://github.com/TN-Holdings-LLC/psf-zero)
 
 
 > **🚨"What if the instability in quantum computation stems not from the algorithms, but from the mathematical coordinate system we blindly trust?"**
