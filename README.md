@@ -139,18 +139,18 @@ To demonstrate the efficiency of **PSF-Zero Ultimate Optimal v1.0**, we conducte
 
  ![Performance Benchmark](./docs/12.png)
 
+
   ### $O(1)$ Geometric Projection vs Heuristic Search
 
-
  ![Performance Benchmark](./docs/10.png)
-
-
 
 *Simulated under Benchpress constraints (e.g., `device_transpile`, `hamiltonians`).*
 
 Standard transpilers rely on iterative heuristic search over the unitary space, resulting in exponential compilation overhead as entanglement density increases. 
 
 **PSF-Zero** bypasses this entirely. By replacing the search process with a deterministic $O(1)$ Cartan projection, it eliminates algorithmic friction ($R=0$). The unitary synthesis time collapses to a constant flatline, independent of the target circuit's scale or complexity.
+
+---
 
 
 ## ⚡ Update: Native Rust Core (Physical R=0)
