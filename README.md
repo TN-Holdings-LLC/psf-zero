@@ -139,15 +139,12 @@ To demonstrate the efficiency of **PSF-Zero Ultimate Optimal v1.0**, we conducte
 
  ![Performance Benchmark](./docs/12.png)
 
+  ### $O(1)$ Geometric Projection vs Heuristic Search
+
+
  ![Performance Benchmark](./docs/10.png)
 
- ### $O(1)$ Geometric Projection vs Heuristic Search
 
-<div align="center">
-
-  <img src="10.png" width="800" alt="PSF-Zero vs Standard Qiskit Benchmark">
-
-</div>
 
 *Simulated under Benchpress constraints (e.g., `device_transpile`, `hamiltonians`).*
 
