@@ -300,7 +300,7 @@ We executed a benchmark on the IBM Quantum Platform (`ibm_marrakesh` / 156-qubit
 
 ## 🔬 The Breakthrough: Mathematical and Physical Alignment
 
- ![Performance Benchmark](./docs/13png)
+ ![QISKIT,PSF](./docs/13.png)
 
 
 To achieve this perfect synchronization, we resolved the two final "frictions" bridging pure theory and physical hardware.
