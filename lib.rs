@@ -84,8 +84,7 @@ fn su2_to_euler_zyz(m: &Mat2) -> (f64, f64, f64) {
 }
 
 // =========================================================
-// 4. SO(4) → SU(2)×SU(2) Pair 
-// 🚨 FIX: Strict Typing - Now accepts only Real Matrices (Matrix4<f64>)
+// 4. SO(4) → SU(2)xSU(2) Pair (Type-Safe Real Separation)
 // =========================================================
 fn so4_to_su2_pair(o: &nalgebra::Matrix4<f64>) -> (Mat2, Mat2) {
     let sign = if o.determinant() < 0.0 { -1.0 } else { 1.0 };
@@ -118,21 +117,24 @@ fn so4_to_su2_pair(o: &nalgebra::Matrix4<f64>) -> (Mat2, Mat2) {
 }
 
 // =========================================================
-// 5. Main Geometric Decomposition (The Core Algorithm)
+// 5. Main Geometric Decomposition (Core Algorithm)
 // =========================================================
 #[pyfunction]
 fn geometric_decompose(
     u_r: Vec<Vec<f64>>,
     u_i: Vec<Vec<f64>>,
-) -> PyResult<((f64, f64, f64), Vec<Vec<f64>>, Vec<Vec<f64>>)> {
+) -> PyResult<((f64, f64, f64), Vec<Vec<f64>>, Vec<Vec<f64>>, f64)> {
     
-    // Reconstruct the matrix from Python data
+    // Reconstruct the complex matrix from Python data
     let mut u = Mat4::zeros();
     for i in 0..4 {
         for j in 0..4 {
             u[(i, j)] = Complex64::new(u_r[i][j], u_i[i][j]);
         }
     }
+
+    // Extract and store the global phase from the original matrix
+    let phase = u.determinant().argument() / 4.0;
 
     let u = normalize_su4(&u).map_err(|_| {
         PyErr::new::<pyo3::exceptions::PyValueError, _>("Normalization failed: input is not a valid unitary matrix.")
@@ -142,7 +144,7 @@ fn geometric_decompose(
     let u_m = q.adjoint() * u * q;
     let m = u_m.transpose() * u_m;
 
-    // 🚨 FIX: Extract Cartan coordinates directly from the Argument (Phase) of complex eigenvalues
+    // Extract Cartan coordinates from the phase (argument) of complex eigenvalues
     let eigen = m.complex_eigenvalues();
     if eigen.len() != 4 {
         return Err(PyErr::new::<pyo3::exceptions::PyRuntimeError, _>("Eigen decomposition failed"));
@@ -162,8 +164,7 @@ fn geometric_decompose(
         angles.sort_by(|a, b| b.partial_cmp(a).unwrap());
     }
 
-    // 🚨 FIX: Safely separate local operations (K1, K2) by extracting the "Real Part" of U_m
-    // and performing a Real SVD to ensure no complex data entanglement is destroyed.
+    // Safely separate local operations (K1, K2) by extracting the real part of U_m and applying Real SVD
     let mut u_m_real = nalgebra::Matrix4::<f64>::zeros();
     for i in 0..4 {
         for j in 0..4 {
@@ -176,7 +177,7 @@ fn geometric_decompose(
     let o2_t = svd.v_t.ok_or_else(|| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>("SVD V_T extraction failed"))?;
     let o2 = o2_t.transpose();
 
-    // Pass ONLY the Real Orthogonal Matrices (SO(4)) to the parser function
+    // Pass ONLY the real orthogonal matrices (SO(4)) to the parser function
     let (k1l, k1r) = so4_to_su2_pair(&o1);
     let (k2l, k2r) = so4_to_su2_pair(&o2);
 
@@ -188,7 +189,8 @@ fn geometric_decompose(
     let k1 = vec![vec![a1.0, a1.1, a1.2], vec![a2.0, a2.1, a2.2]];
     let k2 = vec![vec![a3.0, a3.1, a3.2], vec![a4.0, a4.1, a4.2]];
 
-    Ok(((angles[0], angles[1], angles[2]), k1, k2))
+    // Return the absolute coordinates, local operations, and global phase to Python
+    Ok(((angles[0], angles[1], angles[2]), k1, k2, phase))
 }
 
 // =========================================================
