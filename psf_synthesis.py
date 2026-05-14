@@ -1,83 +1,98 @@
+"""
+SU4 Geodesic PSF Synthesizer — Final Edition
+Qiskit UnitarySynthesisPlugin + Rust Core Integration
+
+Deterministic, low-dissipation 2-qubit unitary synthesis using 
+geometric Cartan decomposition and Weyl chamber canonicalization.
+"""
 
 from __future__ import annotations
 import numpy as np
 from dataclasses import dataclass, fields
 
 from qiskit import QuantumCircuit
+from qiskit.circuit.library import UnitaryGate
 from qiskit.transpiler.passes.synthesis.plugin import UnitarySynthesisPlugin
 
-# =========================================================
-# The Frictionless Core (Rust Native Integration)
-# =========================================================
-# NOTE: Heavy operations and absolute coordinate extraction 
-# are entirely delegated to the deterministic Rust core.
-from psf_zero_core import cartan_coordinates_full
+# Rust Core (psf_zero_core)
+from psf_zero_core import geometric_decompose
 
 
 # =========================================================
-# Hyperparameters (Purified)
+# Hyperparameters (Minimal & Deterministic)
 # =========================================================
 @dataclass
 class GeodesicPSFHyper:
     """
-    Hyperparameters for the Z-axis geometric synthesizer.
-    All variables related to stochastic search (iters, lr, m) 
-    have been removed. Only convergence tolerances remain.
+    Hyperparameters for deterministic geometric synthesis.
+    No learning rate, no randomness — pure geometry.
     """
     tol: float = 1e-9
+    phase_fix: bool = True
 
 
 # =========================================================
-# FINAL SYNTHESIZER (Strictly Deterministic)
+# Fidelity Validation (Optional)
+# =========================================================
+def unitary_fidelity(U_target: np.ndarray, qc: QuantumCircuit) -> float:
+    """Simple fidelity proxy for validation."""
+    U_out = np.array(qc.to_gate().to_matrix(), dtype=complex)
+    tr = np.trace(U_target.conj().T @ U_out)
+    d = 4.0
+    return float((np.abs(tr)**2 + d) / (d * (d + 1)))
+
+
+# =========================================================
+# Final Synthesizer
 # =========================================================
 class SU4GeodesicPSFSynthesizer:
+    """
+    Core synthesizer.
+    Delegates heavy computation to Rust core.
+    """
     def __init__(self, hyper: GeodesicPSFHyper):
         self.hyper = hyper
 
     def synthesize(self, U_target: np.ndarray) -> QuantumCircuit:
-        """
-        Main synthesis flow.
-        1. Rust core extracts absolute KAK decomposition (K1, A, K2)
-        2. Convert to native single-shot RX/RY/RZ/RZZ circuit
-        """
-        # 1. Absolute KAK Extraction (Rust)
-        # Returns the non-local core (c1, c2, c3) and the local 
-        # SU(2)xSU(2) rotations K1 and K2 in Euler angles.
-        k1_angles, cartan_core, k2_angles = cartan_coordinates_full(U_target)
-        c1, c2, c3 = cartan_core
+        """Main synthesis pipeline."""
+        if U_target.shape != (4, 4):
+            raise ValueError("Input must be 4x4 unitary matrix")
 
-        # 2. Build native Qiskit circuit
+        # 1. Rust Core: Geometric Decomposition (Cartan + KAK)
+        u_r = U_target.real.tolist()
+        u_i = U_target.imag.tolist()
+        
+        (c1, c2, c3), k1, k2, global_phase = geometric_decompose(u_r, u_i)
+
+        # 2. Build native circuit
         qc = QuantumCircuit(2)
 
-        # ---------------------------------------------------
-        # [Local Rotations K1] (Pre-Cartan)
-        # ---------------------------------------------------
-        qc.rz(k1_angles[0][0], 0)
-        qc.ry(k1_angles[0][1], 0)
-        qc.rz(k1_angles[0][2], 0)
+        # K1 local rotations
+        qc.rz(k1[0][0], 0)
+        qc.ry(k1[0][1], 0)
+        qc.rz(k1[0][2], 0)
 
-        qc.rz(k1_angles[1][0], 1)
-        qc.ry(k1_angles[1][1], 1)
-        qc.rz(k1_angles[1][2], 1)
+        qc.rz(k1[1][0], 1)
+        qc.ry(k1[1][1], 1)
+        qc.rz(k1[1][2], 1)
 
-        # ---------------------------------------------------
-        # [Non-Local Cartan Core A(c1, c2, c3)]
-        # Applied in a single shot. No loops. No amplified entanglement.
-        # ---------------------------------------------------
+        # Cartan core (non-local)
         qc.rxx(2 * c1, 0, 1)
         qc.ryy(2 * c2, 0, 1)
         qc.rzz(2 * c3, 0, 1)
 
-        # ---------------------------------------------------
-        # [Local Rotations K2] (Post-Cartan)
-        # ---------------------------------------------------
-        qc.rz(k2_angles[0][0], 0)
-        qc.ry(k2_angles[0][1], 0)
-        qc.rz(k2_angles[0][2], 0)
+        # K2 local rotations
+        qc.rz(k2[0][0], 0)
+        qc.ry(k2[0][1], 0)
+        qc.rz(k2[0][2], 0)
 
-        qc.rz(k2_angles[1][0], 1)
-        qc.ry(k2_angles[1][1], 1)
-        qc.rz(k2_angles[1][2], 1)
+        qc.rz(k2[1][0], 1)
+        qc.ry(k2[1][1], 1)
+        qc.rz(k2[1][2], 1)
+
+        # Global phase correction
+        if self.hyper.phase_fix:
+            qc.global_phase += global_phase
 
         return qc
 
@@ -87,8 +102,8 @@ class SU4GeodesicPSFSynthesizer:
 # =========================================================
 class SU4GeodesicPSFUnitarySynthesis(UnitarySynthesisPlugin):
     """
-    Official Qiskit plugin.
-    Can be registered and used transparently in PassManager.
+    Official Qiskit UnitarySynthesisPlugin.
+    Can be registered and used transparently.
     """
     @property
     def max_qubits(self) -> int:
@@ -100,13 +115,19 @@ class SU4GeodesicPSFUnitarySynthesis(UnitarySynthesisPlugin):
 
     @property
     def supported_bases(self) -> list[str]:
-        # Native bases required to express the full KAK decomposition
         return ['rx', 'ry', 'rz', 'rxx', 'ryy', 'rzz']
 
     def run(self, unitary: np.ndarray, **options) -> QuantumCircuit:
+        """Entry point for Qiskit transpiler."""
         valid = {f.name for f in fields(GeodesicPSFHyper)}
         hyper_kwargs = {k: v for k, v in options.items() if k in valid}
         hyper = GeodesicPSFHyper(**hyper_kwargs)
 
         synth = SU4GeodesicPSFSynthesizer(hyper)
         return synth.synthesize(unitary)
+
+
+# Helper for easy registration
+def get_plugin():
+    """Returns the plugin instance for Qiskit ecosystem."""
+    return SU4GeodesicPSFUnitarySynthesis()
