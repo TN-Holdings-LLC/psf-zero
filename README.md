@@ -226,7 +226,7 @@ Below is the empirical distribution of circuit depths generated automatically fr
 ![Circuit Depth and Gate Count Comparison](./psf_vs_tket_300_boxplot.png)
 
 
-[test_psf_synthesis.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_psf_synthesis.py)
+[test_psf_vs_tket.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_psf_vs_tket.py)
 
 
 ---
