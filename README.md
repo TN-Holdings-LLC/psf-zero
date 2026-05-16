@@ -152,7 +152,7 @@ Standard transpilers rely on iterative heuristic search over the unitary space, 
 
 ## 📊 Empirical Benchmarks (N=300)
 
-To評定 the real-world optimization performance of **PSF-Zero**, we conducted a large-scale statistical benchmark against Qiskit's highest optimization level (`optimization_level=3`). 
+To the real-world optimization performance of **PSF-Zero**, we conducted a large-scale statistical benchmark against Qiskit's highest optimization level (`optimization_level=3`). 
 
 ### Benchmark Configuration
 - **Sample Size ($N$):** 300 randomly generated deep $SU(4)$ circuits
@@ -181,6 +181,11 @@ To評定 the real-world optimization performance of **PSF-Zero**, we conducted a
 Below is the statistical distribution generated automatically from the 300-sample run:
 
 ![Circuit Depth and Gate Count Comparison](./psf_vs_qiskit_300_boxplot.png)
+
+[test_lib.rs](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_lib.rs)
+[test_psf_compile.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_psf_compile.py)
+[test_psf_synthesis.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_psf_synthesis.py)
+
 
 ---
 
