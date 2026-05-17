@@ -275,6 +275,9 @@ To prove the structural superiority of our Layer-Separated Architecture, we push
 
 *(Note: Tested on a standard single-thread classical environment. See "The Parallelization Horizon" below for cloud-native implications.)*
 
+[test_scale_explosion_war.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_scale_explosion_war.py)
+
+
 ### 👑 Core Architectural Victories
 
 1. **Survival Against Combinatorial Explosion:**
