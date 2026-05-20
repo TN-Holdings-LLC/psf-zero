@@ -13,7 +13,7 @@
 
 Keywords: quantum compiler, constraint optimization, manifold projection, SU(4)
 
-![121(./docs/121.png)
+![121](./docs/121.png)
 
 # PSF-Zero
 
