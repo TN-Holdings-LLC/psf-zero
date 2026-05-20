@@ -1,5 +1,7 @@
 # PSF-Zero: Projective Spherical Filtering for Quantum Control
 
+Keywords: quantum compiler, constraint optimization, manifold projection, SU(4)
+
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Qiskit Ecosystem](https://img.shields.io/badge/Qiskit-Ecosystem-purple.svg)](https://github.com/qiskit/ecosystem)
@@ -9,11 +11,6 @@
 [![Language: QGL](https://img.shields.io/badge/Language-QGL-000000.svg)](https://github.com/TN-Holdings-LLC/psf-zero)
 [![Paradigm: R=0](https://img.shields.io/badge/Paradigm-R%3D0-8A2BE2.svg)](https://github.com/TN-Holdings-LLC/psf-zero)
 [![Spec: Canonical](https://img.shields.io/badge/Spec-Canonical_Edition-1e90ff.svg)](https://github.com/TN-Holdings-LLC/psf-zero)
-
-
-Keywords: quantum compiler, constraint optimization, manifold projection, SU(4)
-
-![121](./docs/121.png)
 
 # PSF-Zero
 
@@ -29,8 +26,9 @@ while reducing classical optimization overhead.
 
 
 
+![121](./docs/121.png)
 
-
+## Prologue
 
 
 ![Performance Benchmark](./docs/11.png)
