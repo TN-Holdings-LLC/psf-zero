@@ -497,4 +497,4 @@ Built for the modern stack, R0-PSF-Zero integrates seamlessly as a **PennyLane T
  
 ---
 ### 🌌 The Geometric Philosophy
-*The mathematical architecture of PSF-Zero (The `/0` clamp and $S^3$ synchronization) is derived from a broader structural isomorphism linking thermodynamic entropy, quantum decoherence, and systemic topology. For the complete theoretical manifesto and physical proofs, visit the core architecture repository: [Love-OS: The Final Theory](https://github.com/love-os-architect/README/blob/main/LOVE_OS_WHITE_PAPER_V1.md).*
+*The mathematical architecture of PSF-Zero (The `/0` clamp and $S^3$ synchronization) is derived from a broader structural isomorphism linking thermodynamic entropy, quantum decoherence, and systemic topology. For the complete theoretical manifesto and physical proofs, visit the core architecture repository: [Love-OS: The Final Theory](https://github.com/TN-Holdings-LLC/README).*
