@@ -13,20 +13,17 @@ Keywords: quantum compiler, constraint optimization, manifold projection, SU(4)
 [![Spec: Canonical](https://img.shields.io/badge/Spec-Canonical_Edition-1e90ff.svg)](https://github.com/TN-Holdings-LLC/psf-zero)
 
 # PSF-Zero
+**Geometric Pulse-Aware Quantum Control Engine**
 
-PSF-Zero is a deterministic constraint projection layer 
-for quantum circuit compilation.
+PSF-Zero is a deterministic constraint projection layer that redefines quantum compilation. By bypassing traditional logical gate translations, it maps physically valid SU(4) geometries directly into hardware-native microwave pulses, minimizing thermal noise and classical overhead.
 
-It guarantees physically valid SU(4) circuit synthesis 
-while reducing classical optimization overhead.
-
-✅ Eliminates invalid quantum circuits  
-✅ Reduces compilation depth and gate count  
-✅ Scales linearly without combinatorial explosion  
+✅ **From Geometry to Physics:** Bypasses discrete gates to map SU(4) geodesics directly to control Hamiltonians.
+✅ **Direct Pulse Synthesis:** Generates hardware-aware execution schedules (e.g., DRAG, Gaussian via Qiskit Pulse) adhering to physical constraints.
+✅ **Zero-Overhead Optimization:** Eliminates invalid quantum circuits and minimizes execution depth without combinatorial explosion.
+✅ **Linear Scalability:** Scales deterministically, accelerating the timeline toward practical quantum utility.
 
 
-
-![121](./docs/121.png)
+![141](./docs/141.png)
 
 ## Prologue
 
