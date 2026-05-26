@@ -299,47 +299,6 @@ To prove the structural superiority of our Layer-Separated Architecture, we push
 
 [test_scale_explosion_war.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_scale_explosion_war.py)
 
-# The Production Core: Packet Router & Geometric Compiler (Ultimate Edition)
-
-The final architecture of PSF-Zero moves beyond theoretical algorithmic improvements and establishes a true, enterprise-grade infrastructure component. We have implemented a **"Packet Router"** model coupled with **Vectorized Tensor Math**, natively preventing classical memory exhaustion while enabling true $O(1)$ wall-clock compilation via simultaneous batch processing.
-
-## Core Architectural Innovations
-
-* **Zero-Memory DAG Slicing (Eliminating the $2^N$ Matrix):** Instead of constructing a massive global unitary matrix that crashes classical RAM, the `compile()` function utilizes Qiskit's PassManager to safely slice the $N$-qubit DAG into independent 2-qubit "packets." The memory footprint remains absolutely constant ($4 \times 4$ matrices) regardless of the circuit scale, whether it is 100 or 10,000 qubits.
-
-* **Vectorized Tensor Math (GPU-Ready Batch Processing):**
-    We have completely eradicated CPU bottleneck loops. All extracted packets are stacked into a single 3D tensor `(N, 4, 4)`. Critical mathematical operations—such as SVD purification, determinant calculation, and phase correction—are executed as a single vectorized batch command. This architecture is instantly ready for zero-friction transition to GPU (CUDA/Tensor Cores) for extreme scalability.
-
-* **Concurrent Rust Execution (Zero-Friction Parallelism):** Python acts solely as the high-level packet router and tensor manager. The heavy geometric lifting—SU(4) decomposition—is entirely delegated to a memory-safe, hyper-fast Rust Core (`psf_synthesis`). Packets are dispatched simultaneously via multi-threading (`ThreadPoolExecutor`), ensuring all CPU cores are saturated with zero idle time.
-
-* **Qiskit Deep Memory Registration (Monkey Patching):**
-    Through a seamless global patch, PSF-Zero forces its way into Qiskit’s deepest memory layers, intercepting the default synthesis engine. This allows the geometric compiler to act as a native Qiskit plugin without requiring users to rewrite their legacy codebases.
-
-* **Failsafe Numerical Purification:** Enterprise circuits often suffer from severe numerical drift or canceling gates. The core includes a defensive vectorized mask for near-zero determinants (`det < 1e-12`) alongside rigorous batch SVD purification. This guarantees that the geometric engine never crashes from zero-division errors or floating-point anomalies.
-
-## Drop-In Integration (The Hybrid API)
-
-PSF-Zero is designed to be a transparent, high-purity pre-processor. You do not need to rewrite your application logic. Using the `compile_hybrid` API, you can seamlessly insert PSF-Zero as a geometric normalizer before your preferred heuristic optimizer (e.g., TKET, Qiskit Level 3), securing the best of both worlds: **Geometric Scalability + Heuristic Last-Mile Routing**.
-
-```python
-from psf_compile import compile_hybrid
-from pytket.passes import FullPeepholeOptimise
-from qiskit.circuit.random import random_circuit
-
-# 1. Build your massive circuit normally
-qc = random_circuit(1000, 5000)
-
-# 2. Compile using the Hybrid Pipeline
-# PSF-Zero instantly packetizes, vectorizes, and geometrically crushes
-# the global structure across all CPU cores, handing a clean,
-# minimized search space to TKET.
-optimized_qc = compile_hybrid(qc, backend_pass=FullPeepholeOptimise())
-```
-
-**The Result:** A perfectly optimized circuit, achieved in linear time (or constant time under GPU batching), entirely avoiding combinatorial explosion, heuristic timeouts, and memory crashes.
-
-
-
 ### 👑 Core Architectural Victories
 
 1. **Survival Against Combinatorial Explosion:**
@@ -372,43 +331,48 @@ Traditional search-based compilers (like TKET and Qiskit) face a fatal flaw when
 
 **Conclusion:** PSF-Zero is not competing in the combinatorial puzzle game. It is a highly parallelizable geometric pre-processor designed to shield downstream optimizers from exponential explosion, ensuring that classical compilation can survive the scaling of quantum hardware.
 
-## ⚙️ The Production Core: Packet Router & Geometric Compiler (v1.0)
 
-The final architecture of **PSF-Zero** moves beyond theoretical algorithmic improvements and establishes a true, enterprise-grade infrastructure component. We have implemented a **"Packet Router"** model that natively prevents classical memory exhaustion while enabling transparent integration with existing quantum ecosystems.
+## The Production Core: Packet Router & Geometric Compiler (Ultimate Edition)
 
-### Core Architectural Innovations
+The final architecture of PSF-Zero moves beyond theoretical algorithmic improvements and establishes a true, enterprise-grade infrastructure component. We have implemented a **"Packet Router"** model coupled with **Vectorized Tensor Math**, natively preventing classical memory exhaustion while enabling true $O(1)$ wall-clock compilation via simultaneous batch processing.
 
-1. **Zero-Memory DAG Slicing (Eliminating the $2^N$ Matrix):**
-   Instead of constructing a massive global unitary matrix that crashes classical RAM, the `compile()` function utilizes Qiskit's `PassManager` (`Collect2qBlocks`) to safely slice the N-qubit DAG into independent 2-qubit "packets". The memory footprint remains absolutely constant ($4 \times 4$ matrices) regardless of the circuit scale (whether 100 or 10,000 qubits).
-2. **Deterministic Rust Backend Delegation:**
-   Python acts solely as the high-level packet router. The heavy mathematical lifting (SVD purification and $SU(4)$ geometric decomposition) is entirely delegated to a memory-safe, hyper-fast **Rust Core** (`psf_synthesis`). This guarantees strict $O(1)$ processing time per packet.
-3. **Embarrassingly Parallel-Ready Structure:**
-   The extraction, synthesis, and DAG rewrite steps are strictly decoupled. The core synthesis loop processes target nodes purely as mathematical functions with zero side-effects. This means the engine is instantly ready for `joblib` or GPU Tensor Core parallelization to achieve true $O(1)$ wall-clock compilation for massive circuits.
-4. **Failsafe Numerical Purification:**
-   Enterprise circuits can suffer from severe numerical drift or canceling gates. The core includes a defensive `det < 1e-12` failsafe alongside rigorous SVD purification, ensuring that the geometric engine never crashes from zero-division errors or floating-point anomalies.
+###  Core Architectural Innovations
 
-### Drop-In Integration (The Hybrid API)
+* **Zero-Memory DAG Slicing (Eliminating the $2^N$ Matrix):** Instead of constructing a massive global unitary matrix that crashes classical RAM, the `compile()` function utilizes Qiskit's PassManager to safely slice the $N$-qubit DAG into independent 2-qubit "packets." The memory footprint remains absolutely constant ($4 \times 4$ matrices) regardless of the circuit scale, whether it is 100 or 10,000 qubits.
 
-PSF-Zero is designed to be a transparent pre-processor. You do not need to rewrite your application logic. Using the `compile_hybrid` API, you can seamlessly insert PSF-Zero as a geometric normalizer *before* your preferred heuristic optimizer (e.g., TKET, Qiskit Level 3), securing the best of both worlds: **Geometric Scalability + Heuristic Last-Mile Routing**.
+* **Vectorized Tensor Math (GPU-Ready Batch Processing):**
+    We have completely eradicated CPU bottleneck loops. All extracted packets are stacked into a single 3D tensor `(N, 4, 4)`. Critical mathematical operations—such as SVD purification, determinant calculation, and phase correction—are executed as a single vectorized batch command. This architecture is instantly ready for zero-friction transition to GPU (CUDA/Tensor Cores) for extreme scalability.
+
+* **Concurrent Rust Execution (Zero-Friction Parallelism):** Python acts solely as the high-level packet router and tensor manager. The heavy geometric lifting—SU(4) decomposition—is entirely delegated to a memory-safe, hyper-fast Rust Core (`psf_synthesis`). Packets are dispatched simultaneously via multi-threading (`ThreadPoolExecutor`), ensuring all CPU cores are saturated with zero idle time.
+
+* **Qiskit Deep Memory Registration (Monkey Patching):**
+    Through a seamless global patch, PSF-Zero forces its way into Qiskit’s deepest memory layers, intercepting the default synthesis engine. This allows the geometric compiler to act as a native Qiskit plugin without requiring users to rewrite their legacy codebases.
+
+* **Failsafe Numerical Purification:** Enterprise circuits often suffer from severe numerical drift or canceling gates. The core includes a defensive vectorized mask for near-zero determinants (`det < 1e-12`) alongside rigorous batch SVD purification. This guarantees that the geometric engine never crashes from zero-division errors or floating-point anomalies.
+
+###  Drop-In Integration (The Hybrid API)
+
+PSF-Zero is designed to be a transparent, high-purity pre-processor. You do not need to rewrite your application logic. Using the `compile_hybrid` API, you can seamlessly insert PSF-Zero as a geometric normalizer before your preferred heuristic optimizer (e.g., TKET, Qiskit Level 3), securing the best of both worlds: **Geometric Scalability + Heuristic Last-Mile Routing**.
 
 ```python
 from psf_compile import compile_hybrid
 from pytket.passes import FullPeepholeOptimise
+from qiskit.circuit.random import random_circuit
 
 # 1. Build your massive circuit normally
-qc = QuantumCircuit(1000)
-# ... add complex gates ...
+qc = random_circuit(1000, 5000)
 
 # 2. Compile using the Hybrid Pipeline
-# PSF-Zero instantly packetizes and crushes the global structure, 
-# handing a clean, minimized search space to TKET.
+# PSF-Zero instantly packetizes, vectorizes, and geometrically crushes
+# the global structure across all CPU cores, handing a clean,
+# minimized search space to TKET.
 optimized_qc = compile_hybrid(qc, backend_pass=FullPeepholeOptimise())
 ```
 
-**The Result:** A perfectly optimized circuit, achieved linearly, without combinatorial explosion or memory crashes.
+**The Result:** A perfectly optimized circuit, achieved in linear time (or constant time under GPU batching), entirely avoiding combinatorial explosion, heuristic timeouts, and memory crashes.
 
 
-[psf_compile.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_compile.py)
+[psf_compile_(ULTIMATE EDITION).py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_compile_(ULTIMATE%20EDITION).py)
 
 ---
 
