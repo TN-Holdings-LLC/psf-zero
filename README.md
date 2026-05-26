@@ -12,18 +12,27 @@ Keywords: quantum compiler, constraint optimization, manifold projection, SU(4)
 [![Paradigm: R=0](https://img.shields.io/badge/Paradigm-R%3D0-8A2BE2.svg)](https://github.com/TN-Holdings-LLC/psf-zero)
 [![Spec: Canonical](https://img.shields.io/badge/Spec-Canonical_Edition-1e90ff.svg)](https://github.com/TN-Holdings-LLC/psf-zero)
 
-# PSF-Zero
-**Geometric Pulse-Aware Quantum Control Engine**
+# PSF-Zero: Geometric Pulse-Aware Quantum Control Engine
 
-PSF-Zero is a deterministic constraint projection layer that redefines quantum compilation. By bypassing traditional logical gate translations, it maps physically valid SU(4) geometries directly into hardware-native microwave pulses, minimizing thermal noise and classical overhead.
+### Preface: Beyond the Cage of Discrete Gates
 
-✅ **From Geometry to Physics:** Bypasses discrete gates to map SU(4) geodesics directly to control Hamiltonians.
+Modern quantum computing remains confined within the cage of the "discrete gate model," an imitation of classical architecture. To control quantum bits, we are forced to slice inherently continuous physical pulses—microwaves—into abstract, discontinuous logical gates, only to translate them back into physical operations. This translation process is highly inefficient and acts as a primary amplifier for decoherence and noise.
 
-✅ **Direct Pulse Synthesis:** Generates hardware-aware execution schedules (e.g., DRAG, Gaussian via Qiskit Pulse) adhering to physical constraints.
+This translation overhead is the fundamental barrier preventing current quantum hardware from achieving practical quantum utility.
 
-✅ **Zero-Overhead Optimization:** Eliminates invalid quantum circuits and minimizes execution depth without combinatorial explosion.
+**PSF-Zero (Geometric Pulse-Aware Quantum Control Engine)** shatters this cage.
 
-✅ **Linear Scalability:** Scales deterministically, accelerating the timeline toward practical quantum utility.
+PSF-Zero redefines quantum circuits not as strings of logical gates, but as **SU(4) geometric geodesics** within the physical control space. By bypassing discrete gate translations entirely, it projects mathematically rigorous and physically valid pulses directly onto the hardware's native control Hamiltonians.
+
+This is more than a compiler optimization. It is the proposal of a fundamentally new control architecture that shifts quantum computing from human-centric "logical models" to the "geometric essence" of quantum mechanics itself.
+
+By abandoning the approximation of discrete gates and projecting geometric rigor directly onto physics, we unlock the path toward practical quantum advantage.
+
+### Core Principles
+* **From Geometry to Physics:** Bypasses discrete gate approximations to map SU(4) geodesics directly to control Hamiltonians.
+* **Direct Pulse Synthesis:** Generates hardware-aware execution schedules adhering to physical constraints.
+* **Zero-Overhead Optimization:** Eliminates invalid circuit states and minimizes execution depth without combinatorial explosion.
+* **Linear Scalability:** Scales deterministically, accelerating the timeline toward practical quantum utility.
 
 
 ![121](./docs/121.png)
