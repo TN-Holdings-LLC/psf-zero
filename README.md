@@ -26,7 +26,7 @@ PSF-Zero is a deterministic constraint projection layer that redefines quantum c
 ✅ **Linear Scalability:** Scales deterministically, accelerating the timeline toward practical quantum utility.
 
 
-![141](./docs/141.png)
+![121](./docs/121.png)
 
 ## Prologue
 
