@@ -453,6 +453,9 @@ Unlike heuristic-based compilers, the hybrid pipeline guarantees **fully determi
 > The same input circuit always produces the exact same optimized result —  
 > ensuring perfect reproducibility and auditability.
 
+
+[PSF-GRAPE.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/PSF-GRAPE.py)
+
 ---
 
 #### ✅ Hardware Efficiency (Direct Physical Impact)
