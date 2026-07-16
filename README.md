@@ -22,6 +22,7 @@ This translation overhead is the fundamental barrier preventing current quantum 
 
 **PSF-Zero (Geometric Pulse-Aware Quantum Control Engine)** shatters this cage.
 
+
 PSF-Zero redefines quantum circuits not as strings of logical gates, but as **SU(4) geometric geodesics** within the physical control space. By bypassing discrete gate translations entirely, it projects mathematically rigorous and physically valid pulses directly onto the hardware's native control Hamiltonians.
 
 This is more than a compiler optimization. It is the proposal of a fundamentally new control architecture that shifts quantum computing from human-centric "logical models" to the "geometric essence" of quantum mechanics itself.
