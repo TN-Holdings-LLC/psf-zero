@@ -613,7 +613,29 @@ Built for the modern stack, R0-PSF-Zero integrates seamlessly as a **PennyLane T
 [ [R0‑PSF‑Zero Transform　Rust.py　](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/R0%E2%80%91PSF%E2%80%91Zero%20Transform%E3%80%80Rust.py%E3%80%80) ]
 
 ---
- 
+ ## 🌌 Appendix A: Mathematical Semantics of the "/0" Operator
+
+Throughout this documentation, we refer to the **"/0 Clamp"** and Projective Spherical Filtering. To prevent epistemological friction, we provide the formal mathematical definition of this operator within our architecture.
+
+> **Definition (/0 Operator)**
+
+> The symbol **"/0"** does not denote arithmetic division by zero. 
+
+> Instead, it denotes a **coordinate lift (projection operator)** from a flat Euclidean representation into a constrained geometric manifold.
+
+Mathematically, it is defined as a projection mapping $P$:
+
+$$ x / 0 := P(x) \mapsto (0, x) $$
+
+*(Example: $1 /0 := (0,1)$, $2 /0 := (0,2)$)*
+
+In the context of quantum control and PSF-Zero, this operation represents the projection of an arbitrary, noisy physical state onto the canonical geometric axis (e.g., the Weyl Chamber). **It must not be interpreted as an arithmetic division.** It is a geometric command: intercepting a state before it diverges and projecting it safely onto the correct topological manifold.
+
+---
+
+### 🌌 Appendix B: The Geometric Philosophy
+
+*The mathematical architecture of PSF-Zero (The `/0` clamp and $S^3$ synchronization) is derived from a broader structural isomorphism linking thermodynamic entropy, quantum decoherence, and systemic topology. For the complete theoretical manifesto and physical proofs, visit the core architecture repository: [Love-OS: The Final Theory](https://github.com/TN-Holdings-LLC/README).*
 ---
 ### 🌌 The Geometric Philosophy
 *The mathematical architecture of PSF-Zero (The `/0` clamp and $S^3$ synchronization) is derived from a broader structural isomorphism linking thermodynamic entropy, quantum decoherence, and systemic topology. For the complete theoretical manifesto and physical proofs, visit the core architecture repository: [Love-OS: The Final Theory](https://github.com/TN-Holdings-LLC/README).*
