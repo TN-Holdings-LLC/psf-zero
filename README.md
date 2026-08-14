@@ -631,9 +631,7 @@ $$
 
 In the context of quantum control and PSF-Zero, this operation represents the projection of an arbitrary, noisy physical state onto the canonical geometric axis (e.g., the Weyl Chamber). **It must not be interpreted as an arithmetic division.** It is a geometric command: intercepting a state before it diverges and projecting it safely onto the correct topological manifold.
 
----
-### 🌌 Appendix B: The Geometric Philosophy
-*The mathematical architecture of PSF-Zero (The `/0` clamp and $S^3$ synchronization) is derived from a broader structural isomorphism linking thermodynamic entropy, quantum decoherence, and systemic topology. For the complete theoretical manifesto and physical proofs, visit the core architecture repository: [Love-OS: The Final Theory](https://github.com/TN-Holdings-LLC/README).*
+
 ---
 ### 🌌 The Geometric Philosophy
 *The mathematical architecture of PSF-Zero (The `/0` clamp and $S^3$ synchronization) is derived from a broader structural isomorphism linking thermodynamic entropy, quantum decoherence, and systemic topology. For the complete theoretical manifesto and physical proofs, visit the core architecture repository: [Love-OS: The Final Theory](https://github.com/TN-Holdings-LLC/README).*
