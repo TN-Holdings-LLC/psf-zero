@@ -1,9 +1,6 @@
 """
-SU4 Geodesic PSF Synthesizer — Final Edition
+SU4 Geodesic PSF Synthesizer — CORRECTED
 Qiskit UnitarySynthesisPlugin + Rust Core Integration
-
-Deterministic, low-dissipation 2-qubit unitary synthesis using 
-geometric Cartan decomposition and Weyl chamber canonicalization.
 """
 
 from __future__ import annotations
@@ -27,19 +24,24 @@ class GeodesicPSFHyper:
     Hyperparameters for deterministic geometric synthesis.
     No learning rate, no randomness — pure geometry.
     """
-    tol: float = 1e-9
+    tol: float = 1e-6
     phase_fix: bool = True
+    verify: bool = True  # Enable self-verification
 
 
 # =========================================================
-# Fidelity Validation (Optional)
+# Fidelity Validation
 # =========================================================
 def unitary_fidelity(U_target: np.ndarray, qc: QuantumCircuit) -> float:
-    """Simple fidelity proxy for validation."""
+    """Simple fidelity proxy for validation. 1.0 = perfect match."""
     U_out = np.array(qc.to_gate().to_matrix(), dtype=complex)
     tr = np.trace(U_target.conj().T @ U_out)
     d = 4.0
-    return float((np.abs(tr)**2 + d) / (d * (d + 1)))
+    return float((np.abs(tr) ** 2 + d) / (d * (d + 1)))
+
+
+class SynthesisVerificationError(RuntimeError):
+    """Raised when the synthesized circuit does not match the target unitary."""
 
 
 # =========================================================
@@ -61,7 +63,7 @@ class SU4GeodesicPSFSynthesizer:
         # 1. Rust Core: Geometric Decomposition (Cartan + KAK)
         u_r = U_target.real.tolist()
         u_i = U_target.imag.tolist()
-        
+
         (c1, c2, c3), k1, k2, global_phase = geometric_decompose(u_r, u_i)
 
         # 2. Build native circuit
@@ -94,6 +96,18 @@ class SU4GeodesicPSFSynthesizer:
         if self.hyper.phase_fix:
             qc.global_phase += global_phase
 
+        # 3. Self-verification
+        if self.hyper.verify:
+            fid = unitary_fidelity(U_target, qc)
+            if (1.0 - fid) > self.hyper.tol:
+                raise SynthesisVerificationError(
+                    f"Synthesized circuit fidelity {fid:.10f} is below "
+                    f"required threshold (1 - tol = {1.0 - self.hyper.tol:.10f}). "
+                    "This likely indicates a sign/convention mismatch between "
+                    "the Rust Cartan decomposition and the RXX/RYY/RZZ gate "
+                    "convention used here."
+                )
+
         return qc
 
 
@@ -115,7 +129,7 @@ class SU4GeodesicPSFUnitarySynthesis(UnitarySynthesisPlugin):
 
     @property
     def supported_bases(self) -> list[str]:
-        return ['rx', 'ry', 'rz', 'rxx', 'ryy', 'rzz']
+        return ['ry', 'rz', 'rxx', 'ryy', 'rzz']
 
     def run(self, unitary: np.ndarray, **options) -> QuantumCircuit:
         """Entry point for Qiskit transpiler."""
