@@ -1,140 +1,164 @@
-"""
-psf_os_core.py — PSF-ZERO FINAL OS ARCHITECTURE
-=========================================================
-- DAG Layer-by-Layer Parallel Extraction
-- Native Rust Batch Processing (O(1) Matrix Tensor Drop)
-- Hardware-Aware Geometric Clamping (Weyl Space Projection)
-- Pulse/Minimal Gate Reconstruction
-"""
-
+from __future__ import annotations
+import warnings
 import numpy as np
+from dataclasses import dataclass, fields
+
 from qiskit import QuantumCircuit
-from qiskit.converters import circuit_to_dag, dag_to_circuit
 from qiskit.circuit.library import UnitaryGate
-import psf_zero_core  # The compiled Rust module
+from qiskit.transpiler.passes.synthesis.plugin import UnitarySynthesisPlugin
+from qiskit.quantum_info import Operator, random_unitary
 
-class QuantumHardwareBackend:
-    """Defines physical hardware constraints for geometric projection."""
-    def __init__(self, native_type: str, mode: str = "gate"):
-        # native_type: "CR" (IBM Cross-Resonance), "iSWAP" (Google Sycamore)
-        # mode: "gate" (Discrete logic) or "pulse" (Microwave envelope)
-        self.native_type = native_type
-        self.mode = mode
+# Rust Core (psf_zero_core)
+from psf_zero_core import geometric_decompose
 
-def clamp_to_hardware(cartan_coords, backend: QuantumHardwareBackend):
-    """
-    Forces the arbitrary SU(4) coordinates into the hardware's native Sub-manifold
-    to guarantee zero rotational overshoot (The /0 Clamp).
-    """
-    c1, c2, c3 = cartan_coords
 
-    if backend.native_type == "CR":
-        # IBM CR devices operate purely on the X-axis of the Weyl Chamber
-        # Clamping forces minimal RZZ projection
-        return (c1, 0.0, 0.0)
-    
-    elif backend.native_type == "iSWAP":
-        # Sycamore devices project onto the XY-plane of the Weyl Chamber
-        avg = (c1 + c2) / 2.0
-        return (avg, avg, 0.0)
+# =========================================================
+# Hyperparameters
+# =========================================================
+@dataclass
+class GeodesicPSFHyper:
+    tol: float = 1e-6
+    phase_fix: bool = True
+    on_unsupported: str = "raise"  # "raise" or "keep"
 
-    # Perfect isotropic hardware (Theoretical)
-    return (c1, c2, c3)
 
-def reconstruct_physical(projected_coords, k1, k2, phase, backend: QuantumHardwareBackend):
-    """
-    Translates clamped geometric coordinates back into physical instructions.
-    """
-    c1, c2, c3 = projected_coords
-    
-    if backend.mode == "pulse":
-        # FINAL STAGE: Return pulse parameters directly bypassing logical gates.
-        # This represents the ultimate 'Cage Breaker' functionality.
-        return {
-            "type": "microwave_schedule",
-            "amplitudes": [c1, c2, c3],
-            "local_rotations_k1": k1,
-            "local_rotations_k2": k2,
-            "global_phase": phase
-        }
-    else:
-        # Standard Minimal Gate Reconstruction (for current Qiskit compatibility)
+# =========================================================
+# Fidelity Validation
+# =========================================================
+def unitary_fidelity(U_target: np.ndarray, qc: QuantumCircuit) -> float:
+    U_out = Operator(qc).data
+    tr = np.trace(U_target.conj().T @ U_out)
+    d = 4.0
+    return float((np.abs(tr)**2 + d) / (d * (d + 1)))
+
+
+# =========================================================
+# Synthesizer Core
+# =========================================================
+class SU4GeodesicPSFSynthesizer:
+    def __init__(self, hyper: GeodesicPSFHyper):
+        self.hyper = hyper
+
+    def _fallback(self, U_target: np.ndarray, msg: str) -> QuantumCircuit:
+        if self.hyper.on_unsupported == "raise":
+            raise RuntimeError(msg)
+        else:
+            warnings.warn(f"{msg} -> Keeping original gate.", UserWarning)
+            qc = QuantumCircuit(2)
+            qc.append(UnitaryGate(U_target), [0, 1])
+            return qc
+
+    def synthesize(self, U_target: np.ndarray) -> QuantumCircuit:
+        if U_target.shape != (4, 4):
+            raise ValueError("Input must be a 4x4 unitary matrix.")
+
+        u_r = U_target.real.tolist()
+        u_i = U_target.imag.tolist()
+
+        try:
+            (c1, c2, c3), k1, k2, global_phase = geometric_decompose(u_r, u_i)
+        except Exception as e:
+            return self._fallback(U_target, f"Rust Core Decomposition Failed: {e}")
+
+        # ---------------------------------------------------------
+        # Build physical circuit
+        # ---------------------------------------------------------
         qc = QuantumCircuit(2)
-        # Note: In a full implementation, you map (c1,c2,c3) to RXX, RYY, RZZ gates here
-        # qc.rxx(c1*2, 0, 1)
-        # ... applying K1, K2 local Euler angles via U3 gates ...
+
+        # K2 local rotations (applied first)
+        qc.rz(k2[0][0], 0)
+        qc.ry(k2[0][1], 0)
+        qc.rz(k2[0][2], 0)
+
+        qc.rz(k2[1][0], 1)
+        qc.ry(k2[1][1], 1)
+        qc.rz(k2[1][2], 1)
+
+        # Cartan core (non-local)
+        qc.rxx(2 * c1, 0, 1)
+        qc.ryy(2 * c2, 0, 1)
+        qc.rzz(2 * c3, 0, 1)
+
+        # K1 local rotations (applied last)
+        qc.rz(k1[0][0], 0)
+        qc.ry(k1[0][1], 0)
+        qc.rz(k1[0][2], 0)
+
+        qc.rz(k1[1][0], 1)
+        qc.ry(k1[1][1], 1)
+        qc.rz(k1[1][2], 1)
+
+        if self.hyper.phase_fix:
+            qc.global_phase += global_phase
+
+        # ---------------------------------------------------------
+        # Verification / Fidelity Check
+        # ---------------------------------------------------------
+        fid = unitary_fidelity(U_target, qc)
+        projection_fidelity_loss = 1.0 - fid
+
+        if projection_fidelity_loss > self.hyper.tol:
+            return self._fallback(
+                U_target, 
+                f"Fidelity loss ({projection_fidelity_loss:.2e}) exceeded tolerance ({self.hyper.tol:.2e})"
+            )
+
         return qc
 
-def compile_psf_ultimate(circuit: QuantumCircuit, backend: QuantumHardwareBackend) -> QuantumCircuit:
-    """
-    The Ultimate Quantum OS Scheduler:
-    Transforms circuits by structural dependency layers, not linear iteration.
-    """
-    # 1. Dependency Graph Generation
-    dag = circuit_to_dag(circuit)
-    
-    # Extract structural layers (Parallel groups without mutual dependencies)
-    dag_layers = list(dag.layers())
-    
-    optimized_blocks = []
 
-    for layer_dict in dag_layers:
-        graph_layer = layer_dict['graph']
-        
-        # 2. Extract all 2Q unitaries in the current parallel layer
-        layer_nodes = [
-            node for node in graph_layer.op_nodes()
-            if isinstance(node.op, UnitaryGate) and node.op.num_qubits == 2
-        ]
-        
-        if not layer_nodes:
-            continue
+# =========================================================
+# Qiskit Plugin Interface
+# =========================================================
+class SU4GeodesicPSFUnitarySynthesis(UnitarySynthesisPlugin):
+    @property
+    def max_qubits(self) -> int:
+        return 2
 
-        # 3. Stack into Tensors for Native Rust
-        matrices = np.array([node.op.to_matrix() for node in layer_nodes], dtype=np.complex128)
-        
-        real_parts = matrices.real.tolist()
-        imag_parts = matrices.imag.tolist()
+    @property
+    def min_qubits(self) -> int:
+        return 2
 
-        # 4. ONE-SHOT Rust Execution (True Batch Mode)
-        # Hands off the entire layer tensor to Rust. Zero Python GIL friction.
-        rust_results = psf_zero_core.batch_decompose(real_parts, imag_parts)
+    @property
+    def supported_bases(self) -> list[str]:
+        return ['rx', 'ry', 'rz', 'rxx', 'ryy', 'rzz']
 
-        # 5. Hardware Projection & Reconstruction
-        layer_circuits = []
-        for idx, (cartan, k1, k2, phase) in enumerate(rust_results):
-            
-            # The Critical R=0 Projection step
-            projected_cartan = clamp_to_hardware(cartan, backend)
-            
-            # Generate the physics-aware output
-            phys_instruction = reconstruct_physical(projected_cartan, k1, k2, phase, backend)
-            layer_circuits.append((layer_nodes[idx], phys_instruction))
-            
-        optimized_blocks.extend(layer_circuits)
+    def run(self, unitary: np.ndarray, **options) -> QuantumCircuit:
+        valid_fields = {f.name for f in fields(GeodesicPSFHyper)}
+        hyper_kwargs = {k: v for k, v in options.items() if k in valid_fields}
+        hyper = GeodesicPSFHyper(**hyper_kwargs)
 
-    # 6. Reassemble the DAG
-    for node, opt_instruction in optimized_blocks:
-        if isinstance(opt_instruction, QuantumCircuit):
-            dag.substitute_node_with_dag(node, circuit_to_dag(opt_instruction))
-        else:
-            # If pulse mode is active, handle schedule attachment here
-            pass
+        synth = SU4GeodesicPSFSynthesizer(hyper)
+        return synth.synthesize(unitary)
 
-    return dag_to_circuit(dag)
 
+def get_plugin():
+    return SU4GeodesicPSFUnitarySynthesis()
+
+
+# =========================================================
+# Demo & Sanity Check
+# =========================================================
 if __name__ == "__main__":
-    from qiskit.circuit.random import random_circuit
-    import time
+    print("Running random SU(4) synthesis tests...")
+    hyper = GeodesicPSFHyper(tol=1e-6, on_unsupported="raise")
+    synth = SU4GeodesicPSFSynthesizer(hyper)
     
-    # Define Target Hardware
-    ibm_backend = QuantumHardwareBackend(native_type="CR", mode="gate")
-    
-    print("[SYSTEM] Booting PSF-Zero Quantum OS Scheduler...")
-    qc = random_circuit(10, 100, seed=42)
-    
-    start = time.time()
-    opt_qc = compile_psf_ultimate(qc, ibm_backend)
-    end = time.time()
-    
-    print(f"[SUCCESS] Layered Geometric Projection Completed in {end - start:.5f} seconds.")
+    np.random.seed(42)
+    success_count = 0
+    total_tests = 10
+
+    for i in range(total_tests):
+        U = random_unitary(4).data
+        # Project exactly to SU(4) to avoid trivial global phase det mismatches
+        det = np.linalg.det(U)
+        U_su4 = U * (det ** (-0.25))
+
+        try:
+            qc = synth.synthesize(U_su4)
+            fid = unitary_fidelity(U_su4, qc)
+            print(f"Test {i+1:02d} | SUCCESS | Fidelity: {fid:.12f}")
+            success_count += 1
+        except Exception as e:
+            print(f"Test {i+1:02d} | FAILED  | Reason: {e}")
+
+    print(f"\nCompleted: {success_count}/{total_tests} passed.")
