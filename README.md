@@ -240,7 +240,7 @@ To evaluate the production-level optimization performance of **PSF-Zero**, we co
 
 ### 2. Core Findings & Mathematical Insights
 
-The empirical data demonstrates that PSF-Zero is not merely an alternative to existing compilers, but a disruptive **上流/Upstream Structure Generator** that slashes compilation time while preserving absolute maximum circuit quality.
+The empirical data demonstrates that PSF-Zero is not merely an alternative to existing compilers, but a disruptive **Upstream Structure Generator** that slashes compilation time while preserving absolute maximum circuit quality.
 
 1. **~3x Speedup with Identical Depth (65% Reduction in Classical Runtime)**
    TKET Native pays a heavy classical CPU overhead of **0.181s** per circuit to search through the massive topological space of a 200-depth mess. In the Hybrid pipeline, **PSF-Zero eliminates the maze in 0.01 seconds by flattening the entire block into an ideal 9-depth Cartan normal form**. This presents TKET with a clean, pre-optimized template, allowing its peephole engine to instantly lock onto the absolute minimum depth of **7** in just 0.05 seconds.
