@@ -248,7 +248,7 @@ Unlike heuristic compilers (TKET, Qiskit) whose efficiency fluctuates wildly dep
 
 > **The same input unitary always produces the exact same optimal geometric circuit—ensuring perfect reproducibility, 100% auditability, and zero risk of silent compilation failures on physical NISQ hardware.**
 
-![Circuit Depth and Gate Count Comparison](./docs/psf_vs_qiskit_300_boxplot.png)
+![Circuit Depth and Gate Count Comparison](docs/psf_vs_tket_300_boxplot.png)
 
 ---
 
