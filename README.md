@@ -201,6 +201,14 @@ To prove the structural superiority of our pure geometric architecture, we pushe
 
 ![123](./docs/123.png)
 
+[test2_lib.rs](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test2_lib.rs)
+
+
+[test2_psf_compile.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test2_psf_compile.py)
+
+
+[test_scale_explosion_war.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_scale_explosion_war.py)
+
 ### 👑 The End of Heuristic Search
 At 1,000 qubits, TKET Native suffers from massive heuristic search overhead, dragging execution time out to over 4 minutes. **PSF-Zero Native completes the exact same 1,000-qubit unitary normalization in 0.3 seconds.** 
 
@@ -221,6 +229,10 @@ To verify the plug-and-play viability of **PSF-Zero Native** in domain-specific 
 | **zz** | 16 | 15 | **12** | 0.052s | **0.008s** |
 | **exchange**| 20 | 15 | **12** | 0.066s | **0.010s** |
 | **full** | 24 | 15 | **12** | 0.063s | **0.008s** |
+
+
+[test_official_hamiltonians_war.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_official_hamiltonians_war.py)
+
 
 ### Critical Architectural Insights
 
@@ -249,6 +261,9 @@ Unlike heuristic compilers (TKET, Qiskit) whose efficiency fluctuates wildly dep
 > **The same input unitary always produces the exact same optimal geometric circuit—ensuring perfect reproducibility, 100% auditability, and zero risk of silent compilation failures on physical NISQ hardware.**
 
 ![Circuit Depth and Gate Count Comparison](docs/psf_vs_tket_300_boxplot.png)
+
+
+[test_psf_vs_tket.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_psf_vs_tket.py)
 
 ---
 
