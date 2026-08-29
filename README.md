@@ -267,13 +267,16 @@ Unlike heuristic compilers (TKET, Qiskit) whose efficiency fluctuates wildly dep
 
 ---
 
+
 ## 🚀 The Parallelization Horizon (GPU / Cloud-Native Ready)
 
 The microsecond execution times recorded above are based on *sequential* single-thread execution. However, the true disruptive power of PSF-Zero lies in the fact that it is **Embarrassingly Parallel**. 
 
 Because PSF-Zero isolates and geometrically decomposes each 2-qubit block independently, it removes the sequential dependency graphs (DAGs) that cripple traditional compilers. 
 * If deployed on Cloud Multi-Core CPUs or **NVIDIA GPU Tensor Cores**, millions of $SU(4)$ blocks can be evaluated simultaneously.
-* Under total parallelization, the effective wall-clock compilation time for a 1,000,000-qubit circuit drops to near-constant time ($O(1)$).
+* Because each independent block mathematically resolves in approximately **0.6 milliseconds** on a single CPU core, total parallelization drives the global compilation time down to this absolute floor (~0.6ms + memory overhead). The effective wall-clock time drops to near-constant time ($O(1)$), or practically **zero seconds**.
+
+**Conclusion:** PSF-Zero is not competing in the combinatorial puzzle game. It is a highly parallelizable geometric operating system designed to ensure that classical software compilation will never hold back the scaling of physical quantum hardware.
 
 **Conclusion:** PSF-Zero is not competing in the combinatorial puzzle game. It is a highly parallelizable geometric operating system designed to ensure that classical software compilation will never hold back the scaling of physical quantum hardware.
 
