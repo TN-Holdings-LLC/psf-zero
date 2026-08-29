@@ -199,7 +199,7 @@ To prove the structural superiority of our pure geometric architecture, we pushe
 | **700** | 181.60 | **0.21** | **864x** |
 | **1000** | **261.40** | **0.30** | **867x** |
 
-![Scalability: TKET Native vs PSF-Zero Native](./docs/scalability_checkmate_native.png)
+![123](./docs/123.png)
 
 ### 👑 The End of Heuristic Search
 At 1,000 qubits, TKET Native suffers from massive heuristic search overhead, dragging execution time out to over 4 minutes. **PSF-Zero Native completes the exact same 1,000-qubit unitary normalization in 0.3 seconds.** 
