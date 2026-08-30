@@ -182,6 +182,37 @@ Standard transpilers rely on iterative heuristic search over the unitary space, 
 **PSF-Zero** bypasses this entirely. By replacing the search process with a deterministic $O(1)$ Cartan projection, it eliminates algorithmic friction ($R=0$). The unitary synthesis time collapses to a constant flatline, independent of the target circuit's scale or complexity.
 
 
+# IBM Quantum Real Device Benchmark (15 Qubits)
+
+- **Date:** 2026-08-30
+- **Backend (QPU):** ibm_marrakesh (156q Heron r2)
+- **Job ID:** daa1ju1qtnsc73d24g60
+- **Status:** Completed
+
+## Performance & Fidelity Comparison (15 Qubits, Depth 15)
+- **Qiskit (Level 3):**
+  - Compile Time: 0.77s
+  - Depth: 630
+  - 2Q Gates: 636
+  - Real Device Fidelity: 0.0892
+- **PSF-Zero:**
+  - Compile Time: 0.03s
+  - Depth: 714
+  - 2Q Gates: 645
+  - Real Device Fidelity: 0.0930
+ 
+[test3_psf_compile.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test3_psf_compile.py)
+
+
+[run_scale_15.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/run_scale_15.py)
+
+ 
+ ![job1](./docs/job1.png)
+
+ 
+ ![job2](./docs/job2.png)
+
+
 
 ## 🌌 The 1000-Qubit Frontier: Scalability Checkmate
 
