@@ -262,6 +262,7 @@ This document summarizes the empirical validation, physical hardware execution, 
 
 This document summarizes the simulation-based and mock benchmark results for **PSF-Zero**, excluding physical hardware execution.
 
+
 ---
 
 ## 1. Scale-Up Dead Zone Benchmark (Up to 1,000 Qubits)
@@ -275,6 +276,9 @@ To test compiler resilience under extreme topological stress without hardware no
 | **500** | 125.71 | **0.17** | **739x** | Linear stability maintained |
 | **700** | 181.60 | **0.21** | **864x** | Massive memory divergence |
 | **1000** | **261.40** (Timeout/OOM) | **0.30** | **867x** | **Combinatorial Checkmate** |
+
+
+ ![8315](./docs/8315.png)
 
 ---
 
@@ -292,7 +296,7 @@ Evaluated on industry-standard Hamiltonian time-evolution circuits (Trotterized 
 
 *Note: PSF-Zero analytically locks output depth to the absolute geometric floor ($12$) without stochastic searching.*
 
-
+![8313](./docs/8313.png)
 ---
 
 ## 3. Large-Scale Statistical Benchmarks (N=300)
@@ -306,6 +310,8 @@ Statistical summary across 300 randomly generated deep $SU(4)$ circuits (Average
 | **Total Gate Count (Mean)** | 24.0 | **15.0** | **0.00** (Deterministic) |
 
 * **Zero Variance Guarantee:** Unlike heuristic compilers whose efficiency fluctuates due to stochastic routing, PSF-Zero exhibits absolute zero variance, ensuring 100% reproducibility and auditability.
+
+![8311](./docs/8311.png)
 
 ---
 
