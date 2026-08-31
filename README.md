@@ -201,6 +201,9 @@ Standard transpilers rely on iterative heuristic search over the unitary space, 
   - 2Q Gates: 645
   - Real Device Fidelity: 0.0930
  
+[test2_lib.rs](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test2_lib.rs)
+
+
 [test3_psf_compile.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test3_psf_compile.py)
 
 
