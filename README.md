@@ -256,19 +256,17 @@ This document summarizes the empirical validation, physical hardware execution, 
 
 ---
 
-## 1. Architectural Performance Overview
 
-PSF-Zero replaces combinatorial search, heuristic random walks, and iterative optimization loops (the "X-axis" of traditional compilation) with an exact analytical **Cartan (KAK) decomposition** and **Weyl Chamber Canonicalization**. 
 
-* **$O(1)$ Deterministic Projection:** Scales linearly without combinatorial explosion.
-* **Zero-Variance Stability:** Yields identical optimal circuits down to the bit-level, ensuring 100% reproducibility.
-* **Microsecond Execution:** Reduces compilation overhead to fractions of a second, even across massive qubit topologies.
+# PSF-Zero: Simulation & Mock Benchmark Summary (August 31, 2026)
+
+This document summarizes the simulation-based and mock benchmark results for **PSF-Zero**, excluding physical hardware execution.
 
 ---
 
-## 2. Scale-Up Dead Zone Benchmark (Up to 1,000 Qubits)
+## 1. Scale-Up Dead Zone Benchmark (Up to 1,000 Qubits)
 
-To test compiler resilience under extreme topological stress, both compilers were subjected to dense, highly entangled random circuits mapped onto physical 2D grid coupling maps.
+To test compiler resilience under extreme topological stress without hardware noise interference, both compilers were evaluated against dense, highly entangled random circuits mapped onto physical 2D grid coupling maps.
 
 | Qubits | Qiskit / TKET Native (sec) | PSF-Zero Native (sec) | Speedup Factor | Status |
 | :---: | :---: | :---: | :---: | :--- |
@@ -280,9 +278,9 @@ To test compiler resilience under extreme topological stress, both compilers wer
 
 ---
 
-## 3. Production Workload Evaluation: Hamiltonian Simulation
+## 2. Production Workload Evaluation: Hamiltonian Simulation
 
-Evaluated on industry-standard Hamiltonian time-evolution circuits (Trotterized Hubbard/VQE models):
+Evaluated on industry-standard Hamiltonian time-evolution circuits (Trotterized Hubbard/VQE models) via mock/simulation runs:
 
 | Interaction | Qiskit L3 Depth | PSF-Zero Depth | Qiskit Time | PSF-Zero Time |
 | :--- | :---: | :---: | :---: | :---: |
@@ -293,6 +291,21 @@ Evaluated on industry-standard Hamiltonian time-evolution circuits (Trotterized 
 | **full** | 15 | **12** | 0.063s | **0.008s** |
 
 *Note: PSF-Zero analytically locks output depth to the absolute geometric floor ($12$) without stochastic searching.*
+
+
+---
+
+## 3. Large-Scale Statistical Benchmarks (N=300)
+
+Statistical summary across 300 randomly generated deep $SU(4)$ circuits (Average Original Depth: 200, Total Gate Count: 250) under simulated conditions:
+
+| Metric | Qiskit Level 3 | PSF-Zero Native | Variance |
+| :--- | :---: | :---: | :---: |
+| **Circuit Depth (Mean)** | 15.0 | **9.0** | **0.00** (Deterministic) |
+| **Circuit Depth (Max)** | 15.0 | **9.0** | **0.00** (Deterministic) |
+| **Total Gate Count (Mean)** | 24.0 | **15.0** | **0.00** (Deterministic) |
+
+* **Zero Variance Guarantee:** Unlike heuristic compilers whose efficiency fluctuates due to stochastic routing, PSF-Zero exhibits absolute zero variance, ensuring 100% reproducibility and auditability.
 
 ---
 
