@@ -11,30 +11,26 @@ from psf_compile import SU4GeodesicPSFSynthesizer, GeodesicPSFHyper
 print("Connecting to IBM Quantum Cloud...")
 service = QiskitRuntimeService(channel="ibm_cloud")
 backend = service.least_busy(operational=True, simulator=False, min_num_qubits=15)
-print(f"Connection established. Target QPU: {backend.name}")
+print(f"Connected. Target QPU: {backend.name}")
 
-# --- Maximize Scale (15 Qubits, Depth 15, limited by PC memory for statevector) ---
 NUM_QUBITS = 15
-print(f"\nGenerating a massive {NUM_QUBITS}-qubit entanglement circuit...")
+print(f"\nGenerating entanglement circuit for {NUM_QUBITS} qubits...")
 base_circuit = QuantumVolume(num_qubits=NUM_QUBITS, depth=NUM_QUBITS, seed=42)
-base_circuit.measure_all()
 
-print("Calculating ideal probability distribution (ground truth) on classical PC (this may take a few minutes)...")
-qc_ideal = base_circuit.remove_final_measurements(inplace=False)
+print("Calculating ideal probability distribution on classical PC...")
+qc_ideal = base_circuit.copy()
 ideal_dist = Statevector(qc_ideal).probabilities_dict()
 
-# ====================================================================
-# [1] Qiskit (Level 3) Compilation
-# ====================================================================
 print("\n[1/2] Compiling with Qiskit (Level 3)...")
 start_q = time.time()
-qc_qiskit = transpile(base_circuit, backend=backend, optimization_level=3)
-time_q = time.time() - start_q
-print(f"-> Done. Qiskit compilation time: {time_q:.2f} seconds")
 
-# ====================================================================
-# [2] PSF-Zero Compilation
-# ====================================================================
+qc_qiskit_base = base_circuit.copy()
+qc_qiskit_base.measure_all()
+qc_qiskit = transpile(qc_qiskit_base, backend=backend, optimization_level=3)
+
+time_q = time.time() - start_q
+print(f"-> Completed. Qiskit compilation time: {time_q:.2f} seconds")
+
 print("\n[2/2] Compiling with PSF-Zero...")
 start_p = time.time()
 
@@ -49,27 +45,26 @@ for node in dag.op_nodes():
         dag.substitute_node_with_dag(node, circuit_to_dag(sub_qc))
 
 psf_decomposed_qc = dag_to_circuit(dag)
-# Delegate only hardware mapping/routing to Qiskit
+psf_decomposed_qc.measure_all()
+
 qc_psf = transpile(psf_decomposed_qc, backend=backend, optimization_level=3)
 
 time_p = time.time() - start_p
-print(f"-> Done. PSF-Zero compilation time: {time_p:.2f} seconds")
+print(f"-> Completed. PSF-Zero compilation time: {time_p:.2f} seconds")
 
-# ====================================================================
-# Comparison Results Output
-# ====================================================================
 def count_2q_gates(qc):
     ops = qc.count_ops()
     return ops.get('ecr', 0) + ops.get('cz', 0) + ops.get('cx', 0)
 
-print("\n=== Compilation Result Comparison ===")
+print("\n=== Compilation Comparison ===")
 print(f"[Qiskit]   Time: {time_q:>6.2f}s | Depth: {qc_qiskit.depth():<4} | 2Q Gates: {count_2q_gates(qc_qiskit)}")
 print(f"[PSF-Zero] Time: {time_p:>6.2f}s | Depth: {qc_psf.depth():<4} | 2Q Gates: {count_2q_gates(qc_psf)}")
 
-print("\nSubmitting jobs to physical QPU...")
+print("\nSubmitting job to QPU...")
 sampler = SamplerV2(mode=backend)
 job = sampler.run([qc_qiskit, qc_psf], shots=4096)
 print(f"Job submission complete! Job ID: {job.job_id()}")
+print("Waiting for execution on quantum hardware...")
 
 result = job.result()
 qiskit_counts = result[0].data.meas.get_counts()
@@ -78,9 +73,9 @@ psf_counts = result[1].data.meas.get_counts()
 fid_qiskit = hellinger_fidelity(ideal_dist, qiskit_counts)
 fid_psf = hellinger_fidelity(ideal_dist, psf_counts)
 
-print("\n" + "="*45)
-print(" Physical Hardware Fidelity Comparison ")
-print("="*45)
+print("\n" + "="*35)
+print(" Real Device Fidelity Comparison ")
+print("="*35)
 print(f"Qiskit Level 3 : {fid_qiskit:.4f}")
 print(f"PSF-Zero       : {fid_psf:.4f}")
-print("=============================================")
+print("===================================")
