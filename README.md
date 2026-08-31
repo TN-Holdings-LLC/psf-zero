@@ -242,7 +242,11 @@ To demonstrate the absolute superiority of $O(1)$ geometric projection over heur
 > At this massive circuit scale (>600 2Q gates), the physical decoherence limits of current superconducting hardware compress the output fidelity to ~9%. PSF-Zero achieves structurally superior circuit compression and a 73x compilation speedup, reaching the hardware's absolute physical noise floor instantaneously without wasting computational resources on heuristic search.
 
 [test2_lib.rs](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test2_lib.rs)
+
+
 [test3_psf_compile.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test3_psf_compile.py)
+
+
 [run_scale_15.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/run_scale_15.py)
 
 
