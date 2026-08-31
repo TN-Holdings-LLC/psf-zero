@@ -148,6 +148,8 @@ If you use PSF-Zero in your quantum research or circuit optimization pipeline, p
   license = {AGPL-3.0}
 }
 ```
+
+
 ## 📊 Performance Benchmark
 
 To demonstrate the efficiency of **PSF-Zero Ultimate Optimal v1.0**, we conducted a comparative benchmark against standard Qiskit unitary synthesis methods. The following graph illustrates the infidelity reduction over 400 optimization steps.
