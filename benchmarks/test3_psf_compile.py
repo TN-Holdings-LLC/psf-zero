@@ -2,10 +2,12 @@ from __future__ import annotations
 import warnings
 import numpy as np
 from dataclasses import dataclass, fields
-from qiskit import QuantumCircuit, transpile
+from qiskit import QuantumCircuit
 from qiskit.circuit.library import UnitaryGate
 from qiskit.transpiler.passes.synthesis.plugin import UnitarySynthesisPlugin
-from qiskit.quantum_info import Operator, random_unitary
+from qiskit.quantum_info import Operator
+from qiskit.transpiler.passes import Collect2qBlocks, ConsolidateBlocks
+from qiskit.transpiler import PassManager
 
 @dataclass
 class GeodesicPSFHyper:
@@ -40,34 +42,24 @@ class SU4GeodesicPSFSynthesizer:
         u_i = U_target.imag.tolist()
         
         try:
+
             from psf_zero_core import geometric_decompose
             cartan_angles, k1, k2, global_phase = geometric_decompose(u_r, u_i)
             
             qc = QuantumCircuit(2)
             qc.global_phase = global_phase
             
-          
             qc.u(k1[0][1], k1[0][0], k1[0][2], 0)
             qc.u(k1[1][1], k1[1][0], k1[1][2], 1)
             
-
             a, b, c = cartan_angles
-            cartan_qc = QuantumCircuit(2)
-            if abs(a) > 1e-10: cartan_qc.rxx(2 * a, 0, 1)
-            if abs(b) > 1e-10: cartan_qc.ryy(2 * b, 0, 1)
-            if abs(c) > 1e-10: cartan_qc.rzz(2 * c, 0, 1)
+            if abs(a) > 1e-10: qc.rxx(2 * a, 0, 1)
+            if abs(b) > 1e-10: qc.ryy(2 * b, 0, 1)
+            if abs(c) > 1e-10: qc.rzz(2 * c, 0, 1)
             
-            cartan_cx = transpile(cartan_qc, basis_gates=['u', 'cx'], optimization_level=3)
-            qc.compose(cartan_cx, [0, 1], inplace=True)
-            
-        
             qc.u(k2[0][1], k2[0][0], k2[0][2], 0)
             qc.u(k2[1][1], k2[1][0], k2[1][2], 1)
             
-
-            qc = transpile(qc, basis_gates=['u', 'cx'], optimization_level=3)
-            # =================================================================
-
         except Exception as e:
             return self._fallback(U_target, f"Decomposition Failed: {e}")
 
@@ -75,55 +67,39 @@ class SU4GeodesicPSFSynthesizer:
         if (1.0 - fid) > self.hyper.tol:
             return self._fallback(U_target, f"Fidelity loss exceeded tolerance: {1.0 - fid:.2e}")
         return qc
-    
-class SU4GeodesicPSFUnitarySynthesis(UnitarySynthesisPlugin):
-    @property
-    def max_qubits(self) -> int: return 2
-    @property
-    def min_qubits(self) -> int: return 2
-    @property
-    def supported_bases(self) -> list[str]: return ['rx', 'ry', 'rz', 'rxx', 'ryy', 'rzz', 'cx']
-    @property
-    def supports_coupling_map(self) -> bool: return False
-    @property
-    def supports_basis_gates(self) -> bool: return False
-    @property
-    def supports_natural_direction(self) -> bool: return False
-    @property
-    def supports_gate_errors(self) -> bool: return False
-    @property
-    def supports_gate_lengths(self) -> bool: return False
-    @property
-    def supports_pulse_optimize(self) -> bool: return False
-
-    def run(self, unitary: np.ndarray, **options) -> QuantumCircuit:
-        valid_fields = {f.name for f in fields(GeodesicPSFHyper)}
-        hyper_kwargs = {k: v for k, v in options.items() if k in valid_fields}
-        hyper = GeodesicPSFHyper(**hyper_kwargs)
-        synth = SU4GeodesicPSFSynthesizer(hyper)
-        return synth.synthesize(unitary)
-
-def get_plugin():
-    return SU4GeodesicPSFUnitarySynthesis()
-
-if __name__ == "__main__":
-    print("🔬 Running standalone SU(4) synthesis test...")
-    hyper = GeodesicPSFHyper(tol=1e-5, on_unsupported="raise")
-    synth = SU4GeodesicPSFSynthesizer(hyper)
-    np.random.seed(42)
-    success_count = 0
-    total_tests = 10
-    for i in range(total_tests):
-        U = random_unitary(4).data
-        try:
-            qc = synth.synthesize(U)
-            fid = unitary_fidelity(U, qc)
-            print(f"Test {i+1:02d} | SUCCESS | Fidelity: {fid:.12f}")
-            success_count += 1
-        except Exception as e:
-            print(f"Test {i+1:02d} | FAILED  | Reason: {e}")
-    print(f"\nCompleted: {success_count}/{total_tests} passed.")
 
 def compile(qc: QuantumCircuit) -> QuantumCircuit:
-    from qiskit import transpile
-    return transpile(qc, basis_gates=['rx', 'ry', 'rz', 'rxx', 'ryy', 'rzz', 'cx'], optimization_level=3)
+
+    
+    pm_consolidate = PassManager([Collect2qBlocks(), ConsolidateBlocks(kak_basis_gate=None)])
+    qc_blocked = pm_consolidate.run(qc)
+    
+    hyper = GeodesicPSFHyper(tol=1e-5, on_unsupported="raise")
+    synth = SU4GeodesicPSFSynthesizer(hyper)
+    
+    qc_psf = QuantumCircuit(qc.num_qubits, qc.num_clbits)
+    qc_psf.global_phase = qc_blocked.global_phase 
+    
+    blocks_processed = 0
+    
+    for inst in qc_blocked.data:
+        op = inst.operation
+        qargs = inst.qubits
+        cargs = inst.clbits
+        
+        if len(qargs) == 2 and hasattr(op, 'to_matrix'):
+            try:
+                mat = op.to_matrix()
+                if mat.shape == (4, 4):
+                    synthesized_block = synth.synthesize(mat)
+                    qc_psf.compose(synthesized_block, qargs, inplace=True)
+                    blocks_processed += 1
+                    continue
+            except Exception:
+                pass
+                
+
+        qc_psf.append(op, qargs, cargs)
+            
+    print(f"      [Debug] PSF-Zero Rust Core executed for {blocks_processed} blocks.")
+    return qc_psf
