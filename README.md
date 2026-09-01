@@ -184,6 +184,13 @@ Standard transpilers rely on iterative heuristic search over the unitary space, 
 **PSF-Zero** bypasses this entirely. By replacing the search process with a deterministic $O(1)$ Cartan projection, it eliminates algorithmic friction ($R=0$). The unitary synthesis time collapses to a constant flatline, independent of the target circuit's scale or complexity.
 
 
+> ⚠️ **NOTICE: CURRENTLY UNDER TESTING / EXPERIMENTAL DEPLOYMENT**
+>
+> This repository contains active research and experimental quantum compilation technology. Performance metrics, benchmark results, and implementation details are continuously validated against live physical QPUs and may change as testing progresses.
+>
+> Please treat all optimization figures and hardware results as **work-in-progress research outcomes** until formally released.
+
+
 # IBM Quantum Real Device Benchmark (15 Qubits)
 
 - **Date:** 2026-08-30
