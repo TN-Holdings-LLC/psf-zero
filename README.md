@@ -240,7 +240,7 @@ benchmark mislabeled which run was which level, based on a single sweep; the
 numbers above come from two independent, oppositely-ordered sweeps and we're
 confident in this mapping.)
 
-Code: [`benchmarks/test1_v3.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test1_v3.py)
+Code: [`benchmarks/test1.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test1.py)
 
 ### 6. Sanity check against Benchpress
 
