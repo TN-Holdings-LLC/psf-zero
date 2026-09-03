@@ -148,7 +148,7 @@ standard gates), run at 10, 20, 40, 80, and 160 qubits:
 | 160 | 16.840s | 0.062s | 272x | 7 | 9 |
 
 
-![N=300 statistical benchmark: depth is identical for all 300 samples, and compile-time distributions by compiler](./docs/090304.png)
+![Native synthesis vs. TKET by scale: compile time and output depth](./docs/090304.png)
 
 
 The depth gap (TKET 7 vs. PSF-Zero 9) is flat across every scale we tested —
@@ -169,7 +169,7 @@ Using the standard XX/YY/ZZ/exchange/full two-qubit interaction blocks used in
 Trotterized time evolution (VQE, condensed-matter simulation):
 
 
-![N=300 statistical benchmark: depth is identical for all 300 samples, and compile-time distributions by compiler](./docs/090302.png)
+![Trotter interaction blocks: output circuit depth by compiler, original vs. Qiskit L3 vs. TKET vs. PSF-Zero](./docs/090302.png)
 
 Across all five interaction types, Qiskit Level 3 produced circuits of depth
 15, PSF-Zero produced circuits of depth 9, and TKET's peephole optimizer
@@ -227,7 +227,7 @@ unconstrained case above.
 | 500 | 5003 / 41 | 992 / ~30 | 753 / 10 | 753 / 10 |
 
 
-![N=300 statistical benchmark: depth is identical for all 300 samples, and compile-time distributions by compiler](./docs/090307.png)
+![Real-device topology: Qiskit vs. PSF-Zero at routing_optimization_level 0, 1, and 2](./docs/090307.png)
 
 (Each cell above is a mean over 6 seeds — 2 sweeps × 3 seeds — except Qiskit,
 pooled across all 18 runs per scale.) `routing_optimization_level=0` gives
