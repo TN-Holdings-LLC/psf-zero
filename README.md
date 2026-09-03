@@ -113,7 +113,8 @@ four pipelines and checked for unitary equivalence against the original block
 | Circuit depth — every one of 300 samples | 15 | 7 | 9 | 7 |
 | Compile time, median | 6.0ms | 153.5ms | 1.5ms | 45.1ms |
 
-![N=300 statistical benchmark: depth is identical for all 300 samples, and compile-time distributions by compiler](./charts/n300_boxplot.png)
+
+![N=300 statistical benchmark: depth is identical for all 300 samples, and compile-time distributions by compiler](./docs/090303.png)
 
 The depth numbers aren't averages with some spread rounded off — they are
 *exactly* 15 / 7 / 9 / 7 for every single one of the 300 randomly sampled
@@ -146,7 +147,9 @@ standard gates), run at 10, 20, 40, 80, and 160 qubits:
 | 80 | 8.244s | 0.032s | 258x | 7 | 9 |
 | 160 | 16.840s | 0.062s | 272x | 7 | 9 |
 
-![Native synthesis vs. TKET by scale: compile time and output depth](./charts/native_scale_comparison.png)
+
+![N=300 statistical benchmark: depth is identical for all 300 samples, and compile-time distributions by compiler](./docs/090304.png)
+
 
 The depth gap (TKET 7 vs. PSF-Zero 9) is flat across every scale we tested —
 the same trade-off as the N=300 result above, on a different circuit family.
@@ -165,7 +168,8 @@ Code: [`benchmarks/test_scale_explosion_war2_v2.py`](https://github.com/TN-Holdi
 Using the standard XX/YY/ZZ/exchange/full two-qubit interaction blocks used in
 Trotterized time evolution (VQE, condensed-matter simulation):
 
-![Trotter interaction blocks: output circuit depth by compiler, original vs. Qiskit L3 vs. TKET vs. PSF-Zero](./charts/hamiltonian_depth.png)
+
+![N=300 statistical benchmark: depth is identical for all 300 samples, and compile-time distributions by compiler](./docs/090302.png)
 
 Across all five interaction types, Qiskit Level 3 produced circuits of depth
 15, PSF-Zero produced circuits of depth 9, and TKET's peephole optimizer
@@ -222,7 +226,8 @@ unconstrained case above.
 | 300 | 3000 / 20 | 450 / 9 | 450 / 5 | 450 / 5 |
 | 500 | 5003 / 41 | 992 / ~30 | 753 / 10 | 753 / 10 |
 
-![Real-device topology: Qiskit vs. PSF-Zero at routing_optimization_level 0, 1, and 2](./charts/topology_two_configs.png)
+
+![N=300 statistical benchmark: depth is identical for all 300 samples, and compile-time distributions by compiler](./docs/090307.png)
 
 (Each cell above is a mean over 6 seeds — 2 sweeps × 3 seeds — except Qiskit,
 pooled across all 18 runs per scale.) `routing_optimization_level=0` gives
