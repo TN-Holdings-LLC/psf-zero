@@ -159,7 +159,7 @@ from __future__ import annotations
 import warnings
 import numpy as np
 from dataclasses import dataclass
-from qiskit import QuantumCircuit
+from qiskit import QuantumCircuit, transpile
 from qiskit.circuit.library import CXGate
 from qiskit.quantum_info import Operator
 from qiskit.synthesis import TwoQubitBasisDecomposer
@@ -294,7 +294,7 @@ def compile(qc: QuantumCircuit, block_gate_floor: int = DEFAULT_BLOCK_GATE_FLOOR
 
     pm_consolidate = PassManager([
         Collect2qBlocks(filter_fn=worth_consolidating),
-        ConsolidateBlocks(kak_basis_gate=None),
+        ConsolidateBlocks(kak_basis_gate=None, force_consolidate=True),
     ])
     qc_blocked = pm_consolidate.run(qc)
 
@@ -336,6 +336,4 @@ def compile(qc: QuantumCircuit, block_gate_floor: int = DEFAULT_BLOCK_GATE_FLOOR
     print(
         f"      [Debug] PSF-Zero Rust Core executed for {blocks_processed}/{blocks_seen} "
         f"blocks ({synth.fallback_count} fell back to the original gate); "
-        f"block_gate_floor={block_gate_floor}."
-    )
-    return qc_psf
+        f"block_gate_floor={block_gat
