@@ -55,7 +55,7 @@ PSF-Zero is a Qiskit transpiler pass that replaces heuristic 2-qubit unitary
 synthesis with an **exact, closed-form Cartan (KAK) decomposition**, implemented
 in a small Rust core (via PyO3) for speed.
 
-The pass itself lives in [`psf_compile.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/psf_compile.py); the Rust core it calls into (`psf_zero_core`) is in [`src/lib.rs`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/lib.rs).
+The pass itself lives in [`psf_compile.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/psf_compile.py); the Rust core it calls into (`psf_zero_core`) is in [`/lib.rs`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/lib.rs).
 
 Concretely: the pass runs `Collect2qBlocks` to find runs of gates acting on the
 same qubit pair, consolidates each run into a single `UnitaryGate` via Qiskit's
