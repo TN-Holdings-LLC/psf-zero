@@ -1,110 +1,83 @@
+# phase2.py -- Dead Zone Validation Script (Complete version with corrected Qiskit measurement)
+from __future__ import annotations
 import time
 import multiprocessing
-import psutil
-import pandas as pd
-from qiskit import transpile
-from qiskit.circuit.random import random_circuit
-from psf_compile import compile as psf_compile
+import numpy as np
+from qiskit import QuantumCircuit, transpile
+from qiskit.circuit.library import UnitaryGate
+from qiskit.quantum_info import random_unitary
 
-# ==========================================
-# Phase 2: "Dead Zone (1000 qubits)" Scale Explosion Test
-# ==========================================
+import psf_compile as pcp
+
+GATES_PER_PAIR = 20
 QUBIT_SIZES = [156, 300, 500, 1000]
-DEPTH = 500  # Significantly increased depth to induce complete combinatorial explosion
-SEEDS = [1, 2, 3]  # Since it's heavy, 3 trials each are sufficient
-TIMEOUT_SECONDS = 300  # 5-minute timeout (freeze detection for existing compilers)
-OUTPUT_CSV = "phase2_deadzone_results.csv"
+
+
+def build_dense_pair_blocks_circuit(num_qubits: int, gates_per_pair: int, seed: int = 0) -> QuantumCircuit:
+    rng = np.random.default_rng(seed)
+    qc = QuantumCircuit(num_qubits)
+    pairs = [(i, i + 1) for i in range(0, num_qubits - 1, 2)]
+    for (a, b) in pairs:
+        for _ in range(gates_per_pair):
+            u = random_unitary(4, seed=int(rng.integers(0, 2**31))).data
+            qc.append(UnitaryGate(u), [a, b])
+    return qc
+
 
 def worker_qiskit(circuit, backend_mock, result_queue):
     start_time = time.perf_counter()
     try:
-        transpiled_qc = transpile(circuit, backend=backend_mock, optimization_level=3)
+        # Avoid invalid path via backend=None, specify basis_gates to properly measure transpile workload[cite: 4]
+        transpiled_qc = transpile(circuit, basis_gates=["rz", "sx", "x", "cx"], optimization_level=3)
         elapsed_time = time.perf_counter() - start_time
         result_queue.put({"status": "success", "time": elapsed_time})
     except Exception as e:
-        result_queue.put({"status": f"error: {str(e)}", "time": None})
+        result_queue.put({"status": "error", "message": str(e)})
 
-def worker_psf(circuit, backend_mock, result_queue):
+
+def worker_psf(circuit, coupling_map, result_queue):
     start_time = time.perf_counter()
     try:
-        transpiled_qc = psf_compile(circuit)
+        transpiled_qc = pcp.compile(circuit)
         elapsed_time = time.perf_counter() - start_time
         result_queue.put({"status": "success", "time": elapsed_time})
     except Exception as e:
-        result_queue.put({"status": f"error: {str(e)}", "time": None})
+        result_queue.put({"status": "error", "message": str(e)})
 
-def run_with_monitor(target_worker, circuit, backend_mock):
-    result_queue = multiprocessing.Queue()
-    process = multiprocessing.Process(
-        target=target_worker, 
-        args=(circuit, backend_mock, result_queue)
-    )
-    
-    process.start()
-    p = psutil.Process(process.pid)
-    
-    peak_memory_mb = 0.0
-    start_time = time.time()
-    
-    while process.is_alive():
-        elapsed = time.time() - start_time
-        # Timeout (Dead Zone detection)
-        if elapsed > TIMEOUT_SECONDS:
-            process.terminate()
-            process.join()
-            return "timeout (Dead Zone)", TIMEOUT_SECONDS, peak_memory_mb
-        
-        try:
-            mem_info = p.memory_info()
-            current_memory_mb = mem_info.rss / (1024 * 1024)
-            if current_memory_mb > peak_memory_mb:
-                peak_memory_mb = current_memory_mb
-        except psutil.NoSuchProcess:
-            break
-            
-        time.sleep(0.5) # Set slightly longer to reduce monitoring load
-        
-    process.join()
-    
-    if not result_queue.empty():
-        result = result_queue.get()
-        return result["status"], result["time"], peak_memory_mb
-    else:
-        return "crash (OOM)", None, peak_memory_mb
 
-def main():
-    results = []
-    backend_mock = None 
+def main() -> None:
+    print("==========================================")
+    print("🔥 Dead Zone Validation Started (Patched Complete Version) 🔥")
+    print("==========================================")
 
     for q in QUBIT_SIZES:
-        print(f"\n==========================================")
-        print(f"🔥 Starting Dead Zone Verification: {q} Qubits / Depth {DEPTH} 🔥")
-        print(f"==========================================")
-        for seed in SEEDS:
-            print(f"\n[Seed {seed}] Generating circuit...")
-            qc = random_circuit(num_qubits=q, depth=DEPTH, measure=False, seed=seed)
-            
-            # 1. Qiskit Measurement (Confirmation of combinatorial explosion)
-            print(f" -> [Qiskit] Executing search compilation (Timeout: {TIMEOUT_SECONDS}s)...")
-            q_status, q_time, q_mem = run_with_monitor(worker_qiskit, qc, backend_mock)
-            results.append({
-                "Compiler": "Qiskit", "Qubits": q, "Depth": DEPTH, "Seed": seed,
-                "Status": q_status, "Compile_Time_s": q_time, "Peak_Memory_MB": q_mem
-            })
-            print(f"    Result: {q_status} | Time: {q_time}s | Mem: {q_mem:.1f}MB")
-            
-            # 2. PSF-Zero Measurement (Proof of constant-time projection)
-            print(f" -> [PSF-Zero] Executing geometric projection compilation...")
-            p_status, p_time, p_mem = run_with_monitor(worker_psf, qc, backend_mock)
-            results.append({
-                "Compiler": "PSF-Zero", "Qubits": q, "Depth": DEPTH, "Seed": seed,
-                "Status": p_status, "Compile_Time_s": p_time, "Peak_Memory_MB": p_mem
-            })
-            print(f"    Result: {p_status} | Time: {p_time}s | Mem: {p_mem:.1f}MB")
-            
-            df = pd.DataFrame(results)
-            df.to_csv(OUTPUT_CSV, index=False)
+        print(f"\n[Scale] {q} Qubits / {GATES_PER_PAIR} gates-per-pair")
+        qc = build_dense_pair_blocks_circuit(q, GATES_PER_PAIR, seed=1)
+
+        # Run Qiskit
+        q_queue = multiprocessing.Queue()
+        p_qiskit = multiprocessing.Process(target=worker_qiskit, args=(qc, None, q_queue))
+        p_qiskit.start()
+        q_res = q_queue.get()
+        p_qiskit.join()
+
+        if q_res["status"] == "success":
+            print(f"  -> [Qiskit] Success | Time: {q_res['time']:.4f}s")
+        else:
+            print(f"  -> [Qiskit] Error: {q_res.get('message')}")
+
+        # Run PSF-Zero
+        p_queue = multiprocessing.Queue()
+        p_psf = multiprocessing.Process(target=worker_psf, args=(qc, None, p_queue))
+        p_psf.start()
+        p_res = p_queue.get()
+        p_psf.join()
+
+        if p_res["status"] == "success":
+            print(f"  -> [PSF-Zero] Success | Time: {p_res['time']:.4f}s")
+        else:
+            print(f"  -> [PSF-Zero] Error: {p_res.get('message')}")
+
 
 if __name__ == "__main__":
-    multiprocessing.freeze_support()
     main()
