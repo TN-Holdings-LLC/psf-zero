@@ -55,7 +55,7 @@ PSF-Zero is a Qiskit transpiler pass that replaces heuristic 2-qubit unitary
 synthesis with an **exact, closed-form Cartan (KAK) decomposition**, implemented
 in a small Rust core (via PyO3) for speed.
 
-The pass itself lives in [`psf_compile.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/psf_compile.py); the Rust core it calls into (`psf_zero_core`) is in [`src/lib.rs`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/src/lib.rs).
+The pass itself lives in [`psf_compile.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/psf_compile.py); the Rust core it calls into (`psf_zero_core`) is in [`src/lib.rs`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/lib.rs).
 
 Concretely: the pass runs `Collect2qBlocks` to find runs of gates acting on the
 same qubit pair, consolidates each run into a single `UnitaryGate` via Qiskit's
@@ -140,7 +140,7 @@ four pipelines and checked for unitary equivalence against the original block
 | Circuit depth — every one of 300 samples | 15 | 7 | 9 | 7 |
 | Compile time, median | 6.0ms | 153.5ms | 1.5ms | 45.1ms |
 
-![N=300 statistical benchmark: depth is identical for all 300 samples, and compile-time distributions by compiler](./charts/n300_boxplot.png)
+![N=300 statistical benchmark: depth is identical for all 300 samples, and compile-time distributions by compiler](./docs/090303.png)
 
 The depth numbers aren't averages with some spread rounded off — they are
 *exactly* 15 / 7 / 9 / 7 for every single one of the 300 randomly sampled
@@ -173,7 +173,7 @@ standard gates), run at 10, 20, 40, 80, and 160 qubits:
 | 80 | 8.244s | 0.032s | 258x | 7 | 9 |
 | 160 | 16.840s | 0.062s | 272x | 7 | 9 |
 
-![Native synthesis vs. TKET by scale: compile time and output depth](./charts/native_scale_comparison.png)
+![Native synthesis vs. TKET by scale: compile time and output depth](./docs/090304.png)
 
 The depth gap (TKET 7 vs. PSF-Zero 9) is flat across every scale we tested —
 the same trade-off as the N=300 result above, on a different circuit family.
@@ -192,7 +192,7 @@ Code: [`benchmarks/test_scale_explosion_war2_v2.py`](https://github.com/TN-Holdi
 Using the standard XX/YY/ZZ/exchange/full two-qubit interaction blocks used in
 Trotterized time evolution (VQE, condensed-matter simulation):
 
-![Trotter interaction blocks: output circuit depth by compiler, original vs. Qiskit L3 vs. TKET vs. PSF-Zero](./charts/hamiltonian_depth.png)
+![Trotter interaction blocks: output circuit depth by compiler, original vs. Qiskit L3 vs. TKET vs. PSF-Zero](./docs/090302.png)
 
 Across all five interaction types, Qiskit Level 3 produced circuits of depth
 15, PSF-Zero produced circuits of depth 9, and TKET's peephole optimizer
