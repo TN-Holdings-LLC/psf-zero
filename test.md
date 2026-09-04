@@ -647,7 +647,7 @@ Job IDs, in run order (for reproducibility): `daclrrjdd5gc73d68pcg`,
 `dacluq5nj4cs73acqo70`, `daclv3m42tqs73ascfeg`, `daclvgrdd5gc73d68thg`,
 `daclvre42tqs73ascgbg`, `dacm0gtnj4cs73acqq6g`, `dacm0r642tqs73aschqg`.
 
-Code: [`benchmarks/real_device_15q_fidelity_v2.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/real_device_15q_fidelity_v2.py)
+Code: [`benchmarks/real_device_15q_fidelity_v2.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/real_device_15q_fidelity_v2)
 
 > **Provenance note:** the listing below was reconstructed from the captured
 > run log (the same log the job IDs above come from). The original file was
