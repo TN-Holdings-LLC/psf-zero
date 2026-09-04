@@ -6,6 +6,11 @@
 [![Rust Core](https://img.shields.io/badge/Core-Rust_Native-E34F26.svg?logo=rust&logoColor=white)](https://www.rust-lang.org/)
 [![PyO3 Binding](https://img.shields.io/badge/FFI-PyO3-blue.svg)](https://pyo3.rs/)
 
+
+![Performance Benchmark](./docs/11.png)
+
+
+
 **The honest one-line summary, before the details below:** across every
 benchmark in this README, PSF-Zero has a real, verified speed advantage over
 both TKET and Qiskit, plus determinism neither of them offers — but the
