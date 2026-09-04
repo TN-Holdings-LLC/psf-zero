@@ -829,7 +829,9 @@ counts native `ecr` gates (0 correctness failures at any level):
 | 2 | 3.00 ECR | 3.00 ECR | 1.00x |
 | 3 | 3.00 ECR | 3.00 ECR | 1.00x |
 
-![Native ECR gate count after transpiling RXX/RYY/RZZ-basis vs. CX-basis circuits to fake_sherbrooke, by optimization level](./doc/090402.png)
+
+![Native ECR gate count after transpiling RXX/RYY/RZZ-basis vs. CX-basis circuits to fake_sherbrooke, by optimization level](./docs/090404.png)
+
 
 At `optimization_level` 0-1, the RXX/RYY/RZZ-based circuit costs exactly 2x
 as many native `ecr` gates as the CX-based one for the identical unitary —
