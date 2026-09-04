@@ -668,6 +668,12 @@ Compares Qiskit's optimization_level=3 transpile against PSF-Zero's KAK-based
 compile on a 15-qubit QuantumVolume circuit, submitted as one batched job to
 a real IBM backend.
 """
+real_device_15q_fidelity_v2.py
+
+Compares Qiskit's optimization_level=3 transpile against PSF-Zero's KAK-based
+compile on a 15-qubit QuantumVolume circuit, submitted as one batched job to
+a real IBM backend.
+"""
 
 import time
 
@@ -698,35 +704,35 @@ def classical_fidelity(counts, shots, ideal_probs):
 
 
 def main():
-    print("IBM Quantum Cloudに接続中...")
+    print("Connecting to IBM Quantum Cloud...")
     service = QiskitRuntimeService()
     backend = service.least_busy(operational=True, simulator=False)
-    print(f"接続完了。使用する実機 QPU: {backend.name}")
+    print(f"Connection established. Using real QPU: {backend.name}")
 
-    print(f"{NUM_QUBITS} 量子ビットの巨大なもつれ回路を生成中...")
+    print(f"Generating a large entangled {NUM_QUBITS}-qubit circuit...")
     base_circuit = QuantumVolume(num_qubits=NUM_QUBITS, depth=NUM_QUBITS, seed=SEED).decompose()
     n_2q = count_2q_gates(base_circuit)
     print(
-        f"-> decompose() 後の2量子ビットUnitaryGate数: {n_2q} "
-        f"(0ならPSF-Zeroが処理対象を全く見つけられていないので実行を中止してください)"
+        f"-> Number of 2-qubit UnitaryGates after decompose(): {n_2q} "
+        f"(If 0, PSF-Zero found no target blocks; please abort execution)"
     )
 
-    print("理想的な確率分布(正解)を古典PCで計算中...")
+    print("Calculating the ideal probability distribution (ground truth) classically...")
     ideal_probs = Statevector(base_circuit).probabilities_dict()
 
-    print("[1/2] Qiskit (Level 3) でコンパイルを実行中...")
+    print("[1/2] Executing compilation with Qiskit (Level 3)...")
     t0 = time.perf_counter()
     qc_qiskit = transpile(base_circuit, backend=backend, optimization_level=3)
     t_qiskit = time.perf_counter() - t0
-    print(f"-> 完了。Qiskit 処理時間: {t_qiskit:.2f} 秒")
+    print(f"-> Done. Qiskit processing time: {t_qiskit:.2f} seconds")
 
-    print("[2/2] PSF-Zero でコンパイルを実行中...")
+    print("[2/2] Executing compilation with PSF-Zero...")
     t0 = time.perf_counter()
     qc_psf = psf_compile(base_circuit, backend=backend)
     t_psf = time.perf_counter() - t0
-    print(f"-> 完了。PSF-Zero 処理時間: {t_psf:.2f} 秒")
+    print(f"-> Done. PSF-Zero processing time: {t_psf:.2f} seconds")
 
-    print("=== コンパイル結果の比較 ===")
+    print("=== Compilation Results Comparison ===")
     print(
         f"[Qiskit] Time: {t_qiskit:.2f}s | Depth: {qc_qiskit.depth()} | "
         f"2Q Gates: {count_2q_gates(qc_qiskit)}"
@@ -736,12 +742,12 @@ def main():
         f"2Q Gates: {count_2q_gates(qc_psf)}"
     )
 
-    print("実機 (QPU) へジョブを送信します...")
+    print("Submitting job to the real device (QPU)...")
     sampler = Sampler(backend)
     job = sampler.run([qc_qiskit, qc_psf], shots=SHOTS)
-    print(f"ジョブ送信完了！ Job ID: {job.job_id()}")
+    print(f"Job submitted successfully! Job ID: {job.job_id()}")
 
-    print("実機の実行を待っています（数分かかります）...")
+    print("Waiting for real device execution (this may take several minutes)...")
     result = job.result()
     counts_qiskit = result[0].data.meas.get_counts()
     counts_psf = result[1].data.meas.get_counts()
@@ -750,14 +756,14 @@ def main():
     fid_psf = classical_fidelity(counts_psf, SHOTS, ideal_probs)
 
     print("===================================")
-    print("物理実機 Fidelity (忠実度) 比較")
+    print("Physical Real-Device Fidelity Comparison")
     print("===================================")
     print(f"Qiskit Level 3 : {fid_qiskit:.4f}")
     print(f"PSF-Zero       : {fid_psf:.4f}")
     print("===================================")
-    print("[注意] 1回の実行のfidelity差はショットノイズの範囲内である可能性があります。")
-    print("このスクリプトを複数回（n_repeats>=10目安）実行し、平均値±標準偏差で")
-    print("比較することを強く推奨します（1回だけの数値差で優劣を断定しないこと）。")
+    print("[NOTE] Fidelity differences from a single run may fall within shot noise bounds.")
+    print("It is strongly recommended to run this script multiple times (e.g., n_repeats >= 10)")
+    print("and compare the mean +/- standard deviation (do not draw conclusions from a single run).")
 
 
 if __name__ == "__main__":
