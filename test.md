@@ -185,7 +185,7 @@ circuit family over the range we tested. We're reporting both comparisons
 because they don't tell the same story, and we'd rather show that than pick
 whichever one looks better.
 
-Code: [`benchmarks/test_scale_explosion_war2_v2.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_scale_explosion_war2_v2.py)
+Code: [`benchmarks/test_scale_explosion_war2_v2.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_scale_explosion_war2.py)
 
 ### 3. Hamiltonian simulation (Trotter blocks)
 
