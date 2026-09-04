@@ -268,7 +268,7 @@ script doesn't loop over seeds the way the 15–156 qubit script does — same
 machine and core, so treat these three rows as indicative of the trend
 rather than statistically confirmed the way the top four rows are.)
 
-![Compile time scaling, corrected: both engines warmed up, real Rust core](./charts/compile_time_scaling.png)
+![Compile time scaling, corrected: both engines warmed up, real Rust core](./docs/090402.png)
 
 The honest picture: PSF-Zero's advantage at the smallest circuit we tested (7
 blocks) is real but modest, about 1.5x. Past that, once the timer is
