@@ -607,7 +607,8 @@ logged `105/105` blocks synthesized with 0 fallbacks, confirming the fix is
 exercising the intended code path rather than silently no-oping the way the
 earlier, retracted single-run numbers did.
 
-![Real-device 15-qubit fidelity validation: 10 runs, fidelity and compile time by run](./doc/090401.png)
+
+![![Native synthesis vs. TKET by scale: compile time and output depth](./docs/090304.png)](./docs/090401.png)
 
 | Metric | Qiskit (L3) | PSF-Zero |
 | :--- | :---: | :---: |
