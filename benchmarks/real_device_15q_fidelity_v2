@@ -1,0 +1,146 @@
+import time
+import numpy as np
+from qiskit import transpile
+from qiskit.circuit.library import QuantumVolume
+from qiskit.quantum_info import Statevector, hellinger_fidelity
+from qiskit_ibm_runtime import QiskitRuntimeService, SamplerV2
+from qiskit.converters import circuit_to_dag, dag_to_circuit
+from qiskit.circuit.library import UnitaryGate
+from psf_compile import SU4GeodesicPSFSynthesizer, GeodesicPSFHyper
+
+# ==========================================================================
+# Changes in v2 (Fixed a fatal bug in the original script)
+# ==========================================================================
+# The original script passed QuantumVolume(num_qubits=15, depth=15) directly
+# to circuit_to_dag(), and was designed to look for nodes satisfying
+# "len(node.qargs)==2 and isinstance(node.op, UnitaryGate)" to replace them
+# with PSF-Zero's geometric projection.
+#
+# Upon actual inspection, the circuit returned by QuantumVolume() does not appear
+# as a sequence of scattered 2-qubit gates, but rather as [a single massive custom instruction]
+# named "quantum_volume_[15,15,42]" in the DAG:
+#
+#   >>> QuantumVolume(15, 15).data
+#   [(quantum_volume_[15,15,42], [q0..q14], [])]  <- Just 1 item
+#
+# Because of this, the loop condition in the original script never evaluated to true,
+# PSF-Zero's geometric projection was not executed even once, and `psf_decomposed_qc`
+# was essentially just a direct copy of `base_circuit`. This was verified by comparing their structures:
+#
+#   qc_qiskit_base == psf_decomposed_qc  ->  True (completely identical circuits)
+#
+# In other words, qc_qiskit and qc_psf sent to the real device were [the exact same circuit
+# processed through the exact same transpile path]. Any differences in fidelity or speed were
+# absolutely not due to anything PSF-Zero did, but were merely shot noise/hardware noise.
+#
+# Fix: Just call .decompose() once on base_circuit. We confirmed that this expands
+# the contents of QuantumVolume into 105 genuine 2-qubit UnitaryGates
+# (105 gates for 15 qubits, depth 15).
+# Furthermore, using a scaled-down 6-qubit, depth-6 version, we confirmed that all 18/18 blocks
+# were correctly substituted, and Operator equivalence with the original circuit evaluated to True.
+#
+# One more thing: there was another independent bug on the psf_compile.py side (discovered
+# and fixed on 2026-09-03). The issue was that Qiskit's ConsolidateBlocks pass used inside
+# compile() sometimes does not perform block consolidation for multiple gates unless
+# `force_consolidate=True` is explicitly specified. Since this script is designed to apply
+# SU4GeodesicPSFSynthesizer directly to individual UnitaryGates rather than going through
+# psf_compile.compile(), it is not affected by this second bug (but please use the latest
+# psf_compile.py just in case).
+# ==========================================================================
+
+print("Connecting to IBM Quantum Cloud...")
+service = QiskitRuntimeService(channel="ibm_cloud")
+backend = service.least_busy(operational=True, simulator=False, min_num_qubits=15)
+print(f"Connection established. Using real QPU: {backend.name}")
+
+# --- Scale settings (15 qubits, depth 15) ---
+NUM_QUBITS = 15
+print(f"\nGenerating a massive {NUM_QUBITS}-qubit entangled circuit...")
+
+# 1. Generate as a pure quantum circuit without measurements, and immediately use decompose()
+#    to expand the contents of QuantumVolume into individual 2-qubit UnitaryGates
+base_circuit = QuantumVolume(num_qubits=NUM_QUBITS, depth=NUM_QUBITS, seed=42).decompose()
+
+n_unitary_gates = sum(
+    1 for instr in base_circuit.data
+    if len(instr.qubits) == 2 and isinstance(instr.operation, UnitaryGate)
+)
+print(f"  -> Number of 2-qubit UnitaryGates after decompose(): {n_unitary_gates} "
+      f"(If 0, PSF-Zero found no targets to process, so please abort execution)")
+assert n_unitary_gates > 0, "No UnitaryGates found even after decompose(). There might be a Qiskit version discrepancy."
+
+print("Calculating the ideal probability distribution (ground truth) classically...")
+qc_ideal = base_circuit.copy()
+ideal_dist = Statevector(qc_ideal).probabilities_dict()
+
+# ====================================================================
+# [1] Qiskit (Level 3) Compilation
+# ====================================================================
+print("\n[1/2] Executing compilation with Qiskit (Level 3)...")
+start_q = time.time()
+qc_qiskit_base = base_circuit.copy()
+qc_qiskit_base.measure_all()
+qc_qiskit = transpile(qc_qiskit_base, backend=backend, optimization_level=3)
+time_q = time.time() - start_q
+print(f"-> Done. Qiskit processing time: {time_q:.2f} seconds")
+
+# ====================================================================
+# [2] PSF-Zero Compilation
+# ====================================================================
+print("\n[2/2] Executing compilation with PSF-Zero...")
+start_p = time.time()
+hyper = GeodesicPSFHyper(tol=1e-5, on_unsupported="raise")
+synth = SU4GeodesicPSFSynthesizer(hyper)
+
+dag = circuit_to_dag(base_circuit.copy())
+n_substituted = 0
+n_fallback_before = synth.fallback_count
+for node in dag.op_nodes():
+    if len(node.qargs) == 2 and isinstance(node.op, UnitaryGate):
+        U_matrix = node.op.to_matrix()
+        sub_qc = synth.synthesize(U_matrix)
+        dag.substitute_node_with_dag(node, circuit_to_dag(sub_qc))
+        n_substituted += 1
+psf_decomposed_qc = dag_to_circuit(dag)
+psf_decomposed_qc.measure_all()
+
+print(f"  -> Blocks actually substituted by PSF-Zero Rust Core: {n_substituted}/{n_unitary_gates} "
+      f"({synth.fallback_count - n_fallback_before} fallbacks)")
+assert n_substituted > 0, "PSF-Zero did not substitute a single block. Do not send these results to the real device."
+
+qc_psf = transpile(psf_decomposed_qc, backend=backend, optimization_level=3)
+time_p = time.time() - start_p
+print(f"-> Done. PSF-Zero processing time: {time_p:.2f} seconds")
+
+# ====================================================================
+# Output Comparison Results
+# ====================================================================
+def count_2q_gates(qc):
+    ops = qc.count_ops()
+    return ops.get('ecr', 0) + ops.get('cz', 0) + ops.get('cx', 0)
+
+print("\n=== Compilation Results Comparison ===")
+print(f"[Qiskit]   Time: {time_q:>6.2f}s | Depth: {qc_qiskit.depth():<4} | 2Q Gates: {count_2q_gates(qc_qiskit)}")
+print(f"[PSF-Zero] Time: {time_p:>6.2f}s | Depth: {qc_psf.depth():<4} | 2Q Gates: {count_2q_gates(qc_psf)}")
+
+print("\nSubmitting job to the real device (QPU)...")
+sampler = SamplerV2(mode=backend)
+job = sampler.run([qc_qiskit, qc_psf], shots=4096)
+print(f"Job submitted successfully! Job ID: {job.job_id()}")
+print("Waiting for real device execution (this may take several minutes)...")
+result = job.result()
+qiskit_counts = result[0].data.meas.get_counts()
+psf_counts = result[1].data.meas.get_counts()
+
+fid_qiskit = hellinger_fidelity(ideal_dist, qiskit_counts)
+fid_psf = hellinger_fidelity(ideal_dist, psf_counts)
+
+print("\n" + "=" * 35)
+print(" Physical Real-Device Fidelity Comparison ")
+print("=" * 35)
+print(f"Qiskit Level 3 : {fid_qiskit:.4f}")
+print(f"PSF-Zero       : {fid_psf:.4f}")
+print("=" * 35)
+print("\n[NOTE] Fidelity differences from a single run may fall within shot noise bounds.")
+print("       It is strongly recommended to run this script multiple times (e.g., n_repeats >= 10)")
+print("       and compare the mean +/- standard deviation (do not draw conclusions from a single run).")
