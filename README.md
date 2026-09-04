@@ -197,7 +197,7 @@ Qiskit's `optimization_level=3` transpile:
   grows**: from 203x at 15 qubits / 7 blocks down to 4.4x at 1000 qubits /
   500 blocks.
 
-![Compile time scaling: Qiskit flat vs. PSF-Zero linear, and the resulting speedup curve](./charts/compile_time_scaling.png)
+![Compile time scaling: Qiskit flat vs. PSF-Zero linear, and the resulting speedup curve](./docs/090402.png)
 
 We think this declining curve is more credible — and more useful to anyone
 deciding whether to adopt this — than a single headline multiplier, and it's
