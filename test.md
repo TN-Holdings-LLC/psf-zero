@@ -353,7 +353,7 @@ all) and stays exactly as-is. It's specifically the unconditional
 `Operator()` re-verification of every non-degenerate result that's on the
 table.
 
-[`benchmarks/profile_synthesize_fast_vs_verified.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/profile_synthesize_fast_vs_verified.py)
+[`benchmarks/profile_synthesize_fast_vs_verified.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/profile_synthesize_fast_vs_verifi%20ed.py)
 first measured dropping that check on the stub core (in-process, N=2000
 blocks): an 8.11x speedup on `synthesize()` itself, with correctness checked
 out-of-band rather than per-call (worst-case 1-fidelity = 8.88e-16,
