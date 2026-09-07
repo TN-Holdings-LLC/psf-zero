@@ -1,0 +1,64 @@
+--- a/phase1.py (post basis_gates fix + warmup_v2 patch)
++++ b/phase1.py
+@@ -1,15 +1,15 @@
+ def worker_qiskit(circuit, backend_mock, result_queue):
+     """Executes Qiskit compilation and returns the result to the queue."""
+     transpile(QuantumCircuit(2), basis_gates=["rz", "sx", "x", "cx"], optimization_level=3)
+     start_time = time.perf_counter()
+     try:
+         transpiled_qc = transpile(circuit, basis_gates=["rz", "sx", "x", "cx"], optimization_level=3)
+         elapsed_time = time.perf_counter() - start_time
+         result_queue.put({"status": "success", "time": elapsed_time})
+     except Exception as e:
+         result_queue.put({"status": f"error: {str(e)}", "time": None})
+
+ def worker_psf(circuit, backend_mock, result_queue):
+     """Executes PSF-Zero compilation and returns the result to the queue."""
+-    psf_compile(QuantumCircuit(2))
++    psf_compile(QuantumCircuit(2), verify=False)
+     start_time = time.perf_counter()
+     try:
+         # Executes geometric projection compilation invoking the Rust core
+-        transpiled_qc = psf_compile(circuit)
++        transpiled_qc = psf_compile(circuit, verify=False)
+         elapsed_time = time.perf_counter() - start_time
+         result_queue.put({"status": "success", "time": elapsed_time})
+     except Exception as e:
+         result_queue.put({"status": f"error: {str(e)}", "time": None})
+
+# ---------------------------------------------------------------------------
+# NOTES (not part of the diff -- read before applying)
+# ---------------------------------------------------------------------------
+#
+# This is the last remaining step for section 4: everything else in this
+# script (basis_gates fix, symmetric warm-up) is already applied and has
+# already produced the numbers currently published. This patch changes
+# exactly one thing -- both the warm-up call and the timed call now pass
+# verify=False, so the timer measures the same "fast path" that
+# test_prototype_v4_correctness_and_speed.py already confirmed on real
+# hardware: correct (Operator-equivalent output) and ~4.98x faster than
+# verify=True at 156 qubits / 78 blocks.
+#
+# Why the warm-up call also needs verify=False: the warm-up's whole purpose
+# is to pay, once, whatever a fresh call to psf_compile() costs the first
+# time in a new process (module loading, any one-time setup) -- it should
+# match the timed call's own arguments so it's warming up the actual code
+# path being measured, not a different one.
+#
+# ADD A CORRECTNESS CHECK BEFORE TRUSTING THE TIMINGS
+# ------------------------------------------------------
+# This patch alone does not verify correctness -- it just removes the
+# per-call self-check from the timed path, which is the point. Before
+# reporting these numbers as section 4's new headline, confirm separately
+# (once, not per-timed-call) that `psf_compile(circuit, verify=False)`'s
+# output is still Operator-equivalent to `transpile(circuit, ...)`'s or to
+# `psf_compile(circuit, verify=True)`'s output, the same way
+# test_prototype_v4_correctness_and_speed.py already did at one scale.
+# phase1.py's own existing correctness checks (if any) should cover this;
+# if it doesn't already check equivalence per run, add one.
+#
+# EXPECTED RESULT, based on the one real data point we have (156 qubits /
+# 78 blocks: verify=True 0.0530s -> verify=False 0.0106s, 4.98x): Qiskit's
+# current numbers at this scale (~0.029s per this run) should end up
+# *slower* than PSF-Zero's verify=False numbers, reversing this revision's
+# "PSF-Zero is slower" finding back to a real, mechanism-backed advant
