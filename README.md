@@ -457,7 +457,7 @@ unconstrained case above.
 | 300 | 3000 / 20 | 450 / 9 | 450 / 5 | 450 / 5 |
 | 500 | 5003 / 41 | 992 / ~30 | 753 / 10 | 753 / 10 |
 
-![Real-device topology: Qiskit vs. PSF-Zero at routing_optimization_level 0, 1, and 2](./charts/topology_two_configs.png)
+![Real-device topology: Qiskit vs. PSF-Zero at routing_optimization_level 0, 1, and 2](./docs/090307.png)
 
 (Each cell above is a mean over 6 seeds — 2 sweeps × 3 seeds — except Qiskit,
 pooled across all 18 runs per scale.) `routing_optimization_level=0` gives
@@ -982,9 +982,9 @@ the still-missing real-hardware harness's last step — at a naive low level
 (mean ± stdev of P(all-zero); N=5 seeds for deep2q/multi_deep2q, N=3 for
 `wide`, 2048 shots each)
 
-![Reconstructed mirror-circuit fidelity by engine and family, naive final step at optimization_level 1 vs. 3](./charts/experiment_fixed_compiler_fidelity.png)
 
-![Reconstructed mirror-circuit fidelity by engine and family, naive final step at optimization_level 1 vs. 3](./docs/experiment_fixed_compiler_fidelity.png)
+![Reconstructed mirror-circuit fidelity by engine and family, naive final step at optimization_level 1 vs. 3](./docs/090401.png)
+
 
 At the naive low level, `psf` trails `qiskit`/`tket` by a real,
 stdev-exceeding margin on `deep2q` (~4.5 points) and `multi_deep2q` (~3-4
@@ -1060,9 +1060,8 @@ fidelity plus native `ecr` count under the `fake_sherbrooke` noise model:
 (mean ± stdev of P(all-zero); N=5 seeds for deep2q/multi_deep2q, N=3 for
 `wide`, 2048 shots each)
 
-![Real compile_for_hardware(), old vs. patched: fidelity and native ecr gate count by family](./charts/test_improved_compiler_end_to_end.png)
+![Real compile_for_hardware(), old vs. patched: fidelity and native ecr gate count by family](/docs/section8_real_hw_vs_sim.png)
 
-![Real compile_for_hardware(), old vs. patched: fidelity and native ecr gate count by family](./docs/test_improved_compiler_end_to_end.png)
 
 The `ecr` counts land exactly where the earlier diagnostics predicted — the
 patched path needs half the native 2-qubit gates of the buggy one on
