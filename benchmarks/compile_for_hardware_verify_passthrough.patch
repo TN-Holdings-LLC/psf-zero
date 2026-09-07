@@ -1,0 +1,52 @@
+--- a/psf_compile.py
++++ b/psf_compile.py
+@@ -1,13 +1,15 @@
+ def compile_for_hardware(
+     qc,
+     coupling_map,
+     basis_gates: list[str] | None = None,
+     block_gate_floor=DEFAULT_BLOCK_GATE_FLOOR,
+     routing_optimization_level: int = 2,
++    verify: bool = True,          # new -- propagated to compile()
+ ):
+-    qc_compressed = compile(qc, block_gate_floor=block_gate_floor)
++    qc_compressed = compile(qc, block_gate_floor=block_gate_floor, verify=verify)
+     return transpile(
+         qc_compressed,
+         coupling_map=coupling_map,
+         basis_gates=basis_gates,
+         optimization_level=routing_optimization_level,
+     )
+
+# ---------------------------------------------------------------------------
+# NOTES (not part of the diff -- read before applying)
+# ---------------------------------------------------------------------------
+#
+# 1. This assumes `compile()` itself already accepts a `verify` parameter
+#    (compile_optional_verify.patch). If it doesn't yet, apply that patch
+#    first -- this one alone is not enough for phase3_v4's
+#    `inspect.signature(compile_for_hardware).parameters` check to find
+#    `verify` and start passing verify=False.
+#
+# 2. Default stays True (no behavior change for existing callers of
+#    compile_for_hardware() that don't pass verify explicitly) -- same
+#    backward-compatibility stance as compile_optional_verify.patch itself.
+#
+# 3. Once this is applied, re-run phase3_v4_dense_pair_blocks.py. Its
+#    startup line will flip from
+#        "WARNING: this installed compile_for_hardware() does NOT expose
+#        a `verify` parameter yet"
+#    to
+#        "compile_for_hardware() supports `verify` -- measuring PSF-Zero
+#        with verify=False"
+#    -- that's the confirmation the fix landed. Compare the resulting
+#    PSF-Zero compile times against this run's (verify=True, unpatched)
+#    times to see how much of the current slowdown vs. Qiskit was the
+#    self-check, same as section 4's own verify=True -> verify=False
+#    story.
+#
+# 4. This does NOT touch the gate-count/depth compression PSF-Zero already
+#    shows in this run (~6.7x fewer 2-qubit gates, ~4-5.6x shallower depth
+#    at every size tested) -- verify only affects the self-check step
+#    inside synthesize(), not the synthesis result itself. That part of
+#    the finding stands regardless of this patch.
