@@ -270,7 +270,8 @@ script doesn't loop over seeds the way the 15–156 qubit script does — same
 machine and core, so treat these three rows as indicative of the trend
 rather than statistically confirmed the way the top four rows are.)
 
-![Compile time scaling, corrected: both engines warmed up, real Rust core](./docs/cumulative_compile_time_3000iter_1.png)
+
+![Compile time scaling, corrected: both engines warmed up, real Rust core](./docs/090402.png)
 
 
 The honest picture: PSF-Zero's advantage at the smallest circuit we tested (7
@@ -393,6 +394,7 @@ vs. 2.9x.)
 
 ![Compile time scaling, final: verify=False confirmed faster at every scale tested](./charts/compile_time_scaling.png)
 
+
 **This is the real, final answer for this section.** PSF-Zero is
 genuinely, robustly faster than a fully warmed-up Qiskit `optimization_level=3`
 transpile across the entire 15–1000 qubit / 7–500 block range we tested —
@@ -453,6 +455,8 @@ different Qiskit measurements at the same nominal scale, itself a small
 reminder of run-to-run variance even at 10 seeds.)
 
 ![PSF-Zero speedup ratio across three independent environments, verify=True vs verify=False](./charts/section4_cross_machine_confirmation.png)
+
+![Compile time scaling, corrected: both engines warmed up, real Rust core](./docs/cumulative_compile_time_3000iter_1.png)
 
 Absolute times differ across environments, as expected (different CPUs,
 different background load) — but the *ratio* holds in the same range on
@@ -967,7 +971,7 @@ confirmed copy of the script that produced it.
 | 2Q gate count, mean ± SD | 648.0 ± 9.8 | 641.7 ± 17.3 |
 | Compile time, mean ± SD | 2.107s | 0.159s (13.3x faster) |
 
-![Real-device 15-qubit fidelity validation, 11 runs, corrected ConsolidateBlocks](./charts/real_device_15q_fidelity_v3.png)
+![Real-device 15-qubit fidelity validation, 11 runs, corrected ConsolidateBlocks](./docs/real_device_15q_fidelity_v3_1.png)
 
 ### 8. Fidelity across engines under a realistic noise model (mirror circuits)
 
@@ -1017,7 +1021,8 @@ family (3 / 12 / 42, matching the table above exactly), 5 repeats × 4
 engines, batched as one job per sweep. Four independent sweeps were
 captured: three against `ibm_marrakesh`, one against `ibm_fez`.
 
-![fake_sherbrooke (local sim) vs. real IBM hardware, mean of 4 sweeps, by family and engine](./charts/section8_real_hw_vs_sim.png)
+
+![fake_sherbrooke (local sim) vs. real IBM hardware, mean of 4 sweeps, by family and engine](./docs/section8_real_hw_vs_sim.png)
 
 | Family | Engine | Real hardware, mean ± sd (4 sweeps) | `fake_sherbrooke` (for reference) |
 | :--- | :--- | :---: | :---: |
