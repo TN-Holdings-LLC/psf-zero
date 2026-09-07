@@ -984,6 +984,8 @@ the still-missing real-hardware harness's last step — at a naive low level
 
 ![Reconstructed mirror-circuit fidelity by engine and family, naive final step at optimization_level 1 vs. 3](./charts/experiment_fixed_compiler_fidelity.png)
 
+![Reconstructed mirror-circuit fidelity by engine and family, naive final step at optimization_level 1 vs. 3](./docs/experiment_fixed_compiler_fidelity.png)
+
 At the naive low level, `psf` trails `qiskit`/`tket` by a real,
 stdev-exceeding margin on `deep2q` (~4.5 points) and `multi_deep2q` (~3-4
 points) — and `deep2q`'s gap closely matches section 8's own reported
@@ -1059,6 +1061,8 @@ fidelity plus native `ecr` count under the `fake_sherbrooke` noise model:
 `wide`, 2048 shots each)
 
 ![Real compile_for_hardware(), old vs. patched: fidelity and native ecr gate count by family](./charts/test_improved_compiler_end_to_end.png)
+
+![Real compile_for_hardware(), old vs. patched: fidelity and native ecr gate count by family](./docs/test_improved_compiler_end_to_end.png)
 
 The `ecr` counts land exactly where the earlier diagnostics predicted — the
 patched path needs half the native 2-qubit gates of the buggy one on
