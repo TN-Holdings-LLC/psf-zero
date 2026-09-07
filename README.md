@@ -567,7 +567,7 @@ slowdown),
 [`benchmarks/profile_qiskit_multiprocess_vs_mainprocess.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/profile_qiskit_multiprocess_vs_mainprocess.py)
 (ruled out the multiprocessing-suppresses-Qiskit's-own-parallelism
 hypothesis), and
-[`benchmarks/phase3_v5_seeded.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase3_v5_seeded.py)
+[`benchmarks/phase3_v5_seeded.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase3_v5_seed%20ed.py)
 (the `seed_transpiler` fix and 10-seed expansion that produced the table
 above).
 
