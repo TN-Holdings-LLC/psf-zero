@@ -273,7 +273,8 @@ script doesn't loop over seeds the way the 15–156 qubit script does — same
 machine and core, so treat these three rows as indicative of the trend
 rather than statistically confirmed the way the top four rows are.)
 
-![Compile time scaling, corrected: both engines warmed up, real Rust core](./docs/compile_time_scaling_2.png)
+
+![Compile time scaling, final: verify=False confirmed faster at every scale tested](./docs/090402.png)
 
 The honest picture: PSF-Zero's advantage at the smallest circuit we tested (7
 blocks) is real but modest, about 1.5x. Past that, once the timer is
@@ -393,7 +394,7 @@ independent scripts/circuit generators measuring the same scale, kept
 separate rather than pooled — they agree to within run-to-run noise, 2.4x
 vs. 2.9x.)
 
-![Compile time scaling, final: verify=False confirmed faster at every scale tested](./charts/compile_time_scaling.png)
+![Compile time scaling, corrected: both engines warmed up, real Rust core](./docs/compile_time_scaling_2.png)
 
 **This is the real, final answer for this section.** PSF-Zero is
 genuinely, robustly faster than a fully warmed-up Qiskit `optimization_level=3`
