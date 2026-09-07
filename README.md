@@ -298,7 +298,7 @@ internally, not a combinatorial search — the search that
 isolated 2-qubit block. So the premise that PSF-Zero should trivially win
 at this specific step because it "skips search" doesn't hold up.
 
-[`benchmarks/profile_synthesize_breakdown.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/profile_synthesize_breakdo%20wn.py.py)
+[`benchmarks/profile_synthesize_breakdown.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/profile_synthesize_breakdo%20wn.py)
 breaks `SU4GeodesicPSFSynthesizer.synthesize()` into its four sub-phases and
 times each over 2000 random SU(4) blocks (using `psf_zero_core_stub.py`
 in-process, not the real Rust extension over PyO3 — see the script's own
