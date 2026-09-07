@@ -274,7 +274,7 @@ machine and core, so treat these three rows as indicative of the trend
 rather than statistically confirmed the way the top four rows are.)
 
 
-![Compile time scaling, final: verify=False confirmed faster at every scale tested](./docs/090402.png)
+![Compile time scaling, final: verify=False confirmed faster at every scale tested](./docs/compile_time_scaling_3.png)
 
 The honest picture: PSF-Zero's advantage at the smallest circuit we tested (7
 blocks) is real but modest, about 1.5x. Past that, once the timer is
@@ -614,7 +614,7 @@ exercising the intended code path rather than silently no-oping the way the
 earlier, retracted single-run numbers did.
 
 
-![![Native synthesis vs. TKET by scale: compile time and output depth](./docs/090304.png)](./docs/090401.png)
+![![Native synthesis vs. TKET by scale: compile time and output depth](./docs/090304.png)](./docs/real_device_15q_fidelity_v3_1.png)
 
 | Metric | Qiskit (L3) | PSF-Zero |
 | :--- | :---: | :---: |
@@ -984,8 +984,7 @@ the still-missing real-hardware harness's last step — at a naive low level
 `wide`, 2048 shots each)
 
 
-![Reconstructed mirror-circuit fidelity by engine and family, naive final step at optimization_level 1 vs. 3](./docs/090401.png)
-
+![Real compile_for_hardware(), old vs. patched: fidelity and native ecr gate count by family](/docs/section8_real_hw_vs_sim.png)
 
 At the naive low level, `psf` trails `qiskit`/`tket` by a real,
 stdev-exceeding margin on `deep2q` (~4.5 points) and `multi_deep2q` (~3-4
@@ -1061,7 +1060,7 @@ fidelity plus native `ecr` count under the `fake_sherbrooke` noise model:
 (mean ± stdev of P(all-zero); N=5 seeds for deep2q/multi_deep2q, N=3 for
 `wide`, 2048 shots each)
 
-![Real compile_for_hardware(), old vs. patched: fidelity and native ecr gate count by family](/docs/section8_real_hw_vs_sim.png)
+![Real compile_for_hardware(), old vs. patched: fidelity and native ecr gate count by family](/docs/090201.png)
 
 
 The `ecr` counts land exactly where the earlier diagnostics predicted — the
