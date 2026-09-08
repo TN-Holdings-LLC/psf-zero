@@ -480,7 +480,7 @@ correction immediately below before relying on it.**
 
 The same Windows machine was later used to re-run this exact benchmark
 (extended with an `--iters` flag,
-[`make_chart_compile_time_scali ng.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/make_chart_compile_time_scali%20ng.py)
+[`make_chart_compile_time_scali ng.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/make_chart_compile_time_scaling.py)
 at 10,000 and 50,000 iterations. The raw numbers looked like a real,
 concerning regression:
 
