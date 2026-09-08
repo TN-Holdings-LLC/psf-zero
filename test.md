@@ -1047,7 +1047,7 @@ confirmed copy of the script that produced it.
 | 2Q gate count, mean ± SD | 648.0 ± 9.8 | 641.7 ± 17.3 |
 | Compile time, mean ± SD | 2.107s | 0.159s (13.3x faster) |
 
-![Real-device 15-qubit fidelity validation, 11 runs, corrected ConsolidateBlocks](./charts/real_device_15q_fidelity_v3.png)
+![Real-device 15-qubit fidelity validation, 11 runs, corrected ConsolidateBlocks](./docs/real_device_15q_fidelity_v3_1.png)
 
 ### 8. Fidelity across engines under a realistic noise model (mirror circuits)
 
