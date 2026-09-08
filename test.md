@@ -399,7 +399,7 @@ independent scripts/circuit generators measuring the same scale, kept
 separate rather than pooled — they agree to within run-to-run noise, 2.4x
 vs. 2.9x.)
 
-![Compile time scaling, final: verify=False confirmed faster at every scale tested](./charts/compile_time_scaling.png)
+![Compile time scaling, corrected: both engines warmed up, real Rust core](./docs/compile_time_scaling_2.png)
 
 **This is the real, final answer for this section.** PSF-Zero is
 genuinely, robustly faster than a fully warmed-up Qiskit `optimization_level=3`
@@ -649,7 +649,7 @@ unconstrained case above.
 | 300 | 3000 / 20 | 450 / 9 | 450 / 5 | 450 / 5 |
 | 500 | 5003 / 41 | 992 / ~30 | 753 / 10 | 753 / 10 |
 
-![Real-device topology: Qiskit vs. PSF-Zero at routing_optimization_level 0, 1, and 2](./charts/topology_two_configs.png)
+![Real-device topology: Qiskit vs. PSF-Zero at routing_optimization_level 0, 1, and 2](./docs/090307.png)
 
 (Each cell above is a mean over 6 seeds — 2 sweeps × 3 seeds — except Qiskit,
 pooled across all 18 runs per scale.) `routing_optimization_level=0` gives
@@ -1097,7 +1097,8 @@ family (3 / 12 / 42, matching the table above exactly), 5 repeats × 4
 engines, batched as one job per sweep. Four independent sweeps were
 captured: three against `ibm_marrakesh`, one against `ibm_fez`.
 
-![fake_sherbrooke (local sim) vs. real IBM hardware, mean of 4 sweeps, by family and engine](./charts/section8_real_hw_vs_sim.png)
+
+![Real compile_for_hardware(), old vs. patched: fidelity and native ecr gate count by family](/docs/section8_real_hw_vs_sim.png)
 
 | Family | Engine | Real hardware, mean ± sd (4 sweeps) | `fake_sherbrooke` (for reference) |
 | :--- | :--- | :---: | :---: |
@@ -1408,7 +1409,7 @@ fidelity plus native `ecr` count under the `fake_sherbrooke` noise model:
 (mean ± stdev of P(all-zero); N=5 seeds for deep2q/multi_deep2q, N=3 for
 `wide`, 2048 shots each)
 
-![Real compile_for_hardware(), old vs. patched: fidelity and native ecr gate count by family](./charts/test_improved_compiler_end_to_end.png)
+![Real compile_for_hardware(), old vs. patched: fidelity and native ecr gate count by family](/docs/090201.png)
 
 The `ecr` counts land exactly where the earlier diagnostics predicted — the
 patched path needs half the native 2-qubit gates of the buggy one on
