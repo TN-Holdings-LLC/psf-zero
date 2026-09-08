@@ -462,7 +462,7 @@ Qiskit column at 15 qubits; 10.3ms is from the earlier intermediate
 different Qiskit measurements at the same nominal scale, itself a small
 reminder of run-to-run variance even at 10 seeds.)
 
-![PSF-Zero speedup ratio across three independent environments, verify=True vs verify=False](./charts/section4_cross_machine_confirmation.png)
+![PSF-Zero speedup ratio across three independent environments, verify=True vs verify=False](./docs/cumulative_compile_time_3000iter_1.png)
 
 Absolute times differ across environments, as expected (different CPUs,
 different background load) — but the *ratio* holds in the same range on
