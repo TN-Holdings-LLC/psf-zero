@@ -187,7 +187,16 @@ circuit family over the range we tested. We're reporting both comparisons
 because they don't tell the same story, and we'd rather show that than pick
 whichever one looks better.
 
-Code: [`benchmarks/test_scale_explosion_war2_v2.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_scale_explosion_war2.py)
+Independently re-run on 2026-09-07 (`pytest test_scale_explosion_war2.py -s`,
+same machine): TKET 1.155s/2.136s/4.120s/8.339s/16.998s and PSF-Zero
+0.007s/0.009s/0.017s/0.034s/0.064s at 10/20/40/80/160 qubits respectively —
+every value within ~1–8% of the table above (ordinary run-to-run noise, not
+a trend), and the 7-vs-9 depth split reproduced exactly at every scale, with
+every block reported as processed by the Rust core (`0 fell back`) rather
+than a no-op. One more data point for the reproducibility this project is
+now leaning on.
+
+Code: [`benchmarks/test_scale_explosion_war2.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_scale_explosion_war2.py)
 
 ### 3. Hamiltonian simulation (Trotter blocks)
 
@@ -270,9 +279,7 @@ script doesn't loop over seeds the way the 15–156 qubit script does — same
 machine and core, so treat these three rows as indicative of the trend
 rather than statistically confirmed the way the top four rows are.)
 
-
 ![Compile time scaling, corrected: both engines warmed up, real Rust core](./docs/090402.png)
-
 
 The honest picture: PSF-Zero's advantage at the smallest circuit we tested (7
 blocks) is real but modest, about 1.5x. Past that, once the timer is
@@ -297,7 +304,7 @@ internally, not a combinatorial search — the search that
 isolated 2-qubit block. So the premise that PSF-Zero should trivially win
 at this specific step because it "skips search" doesn't hold up.
 
-[`benchmarks/profile_synthesize_breakdown.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/profile_synthesize_breakdo%20wn.py)
+[`benchmarks/profile_synthesize_breakdown.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/profile_synthesize_breakdown.py)
 breaks `SU4GeodesicPSFSynthesizer.synthesize()` into its four sub-phases and
 times each over 2000 random SU(4) blocks (using `psf_zero_core_stub.py`
 in-process, not the real Rust extension over PyO3 — see the script's own
@@ -355,7 +362,7 @@ all) and stays exactly as-is. It's specifically the unconditional
 `Operator()` re-verification of every non-degenerate result that's on the
 table.
 
-[`benchmarks/profile_synthesize_fast_vs_verified.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/profile_synthesize_fast_vs_verifi%20ed.py)
+[`benchmarks/profile_synthesize_fast_vs_verified.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/profile_synthesize_fast_vs_verified.py)
 first measured dropping that check on the stub core (in-process, N=2000
 blocks): an 8.11x speedup on `synthesize()` itself, with correctness checked
 out-of-band rather than per-call (worst-case 1-fidelity = 8.88e-16,
@@ -393,7 +400,6 @@ separate rather than pooled — they agree to within run-to-run noise, 2.4x
 vs. 2.9x.)
 
 ![Compile time scaling, final: verify=False confirmed faster at every scale tested](./charts/compile_time_scaling.png)
-
 
 **This is the real, final answer for this section.** PSF-Zero is
 genuinely, robustly faster than a fully warmed-up Qiskit `optimization_level=3`
@@ -455,8 +461,6 @@ different Qiskit measurements at the same nominal scale, itself a small
 reminder of run-to-run variance even at 10 seeds.)
 
 ![PSF-Zero speedup ratio across three independent environments, verify=True vs verify=False](./charts/section4_cross_machine_confirmation.png)
-
-![Compile time scaling, corrected: both engines warmed up, real Rust core](./docs/cumulative_compile_time_3000iter_1.png)
 
 Absolute times differ across environments, as expected (different CPUs,
 different background load) — but the *ratio* holds in the same range on
@@ -620,7 +624,7 @@ discovered, each with the measurement that motivated it, are documented in
 [`benchmarks/phase2_warmup.patch`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase2_warmup.patch)
 (symmetric warm-up fix, the one that produced this section's intermediate,
 `verify=True` table), and
-[`benchmarks/phase1_verify_false.patch`](https://github.com/TN-Holdings-LLC/psf-zero/tree/main/benchmarks) /
+[`benchmarks/phase1_verify_false.patch`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase1_verify_false.patch) /
 [`benchmarks/phase2_verify_false.patch`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase2_verify_false.patch)
 (the `verify=False` change, on top of `psf_compile.py`'s own
 [`compile_optional_verify.patch`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/compile_optional_verify.patch),
@@ -743,21 +747,93 @@ which doesn't depend on `verify` or `seed_transpiler` and still stands
 unchanged.
 
 Code:
-[`benchmarks/phase3_v4_dense_pair_blocks.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase3_v4_dense_pair_bloc%20ks.py)
+[`benchmarks/phase3_v4_dense_pair_blocks.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase3_v4_dense_pair_blocks.py)
 (fixed the `0/N blocks` circuit-generation problem),
 [`benchmarks/compile_for_hardware_verify_passthrough.patch`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/compile_for_hardware_verify_passthrough.patch)
 (threaded `verify` through `compile_for_hardware()`),
-[`benchmarks/profile_compile_for_hardware_breakdown.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/profile_compile_for_hardware_breakdo%20wn.py)
+[`benchmarks/profile_compile_for_hardware_breakdown.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/profile_compile_for_hardware_breakdown.py)
 and
-[`benchmarks/profile_warmup_depth.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/profile_warmup_dep%20th.py)
+[`benchmarks/profile_warmup_depth.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/profile_warmup_depth.py)
 (ruled out insufficient warm-up as the cause of the initial 1.7x–2.9x
 slowdown),
-[`benchmarks/profile_qiskit_multiprocess_vs_mainprocess.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/profile_qiskit_multiprocess_vs_mainproce%20ss.py)
+[`benchmarks/profile_qiskit_multiprocess_vs_mainprocess.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/profile_qiskit_multiprocess_vs_mainprocess.py)
 (ruled out the multiprocessing-suppresses-Qiskit's-own-parallelism
 hypothesis), and
-[`benchmarks/phase3_v5_seeded.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase3_v5_seed%20ed.py)
+[`benchmarks/phase3_v5_seeded.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase3_v5_seeded.py)
 (the `seed_transpiler` fix and 10-seed expansion that produced the table
 above).
+
+#### Update (2026-09-08): a second, independent finding narrows `routing_optimization_level` further — 2 → 1
+
+A separate investigation, run against a different, deliberately wide dense-block
+sweep (`phase3_v4.py` — a second, independently-built script converging on the
+same "use dense pair blocks, not `random_circuit`" fix as
+`phase3_v4_dense_pair_blocks.py` above, kept distinct here rather than
+silently merged into it), found a mechanism this section's own tables above
+don't isolate: neither table above states which `routing_optimization_level`
+`compile_for_hardware()` was using internally, and it turns out to matter more
+than it looks.
+
+Directly diffing `compile_for_hardware()`'s output against a bare
+`transpile(qc, ..., optimization_level=2)` call on the *uncompressed* input
+circuit showed they are **bit-identical** — same gates, same qubits, same
+parameters, verified at 4, 6, and 7 qubits — whenever
+`routing_optimization_level=2` is used. The reason: Qiskit's
+`optimization_level=2` preset re-runs `ConsolidateBlocks` and
+`UnitarySynthesis` in its own `init` stage on whatever it's handed, so it
+re-derives its own decomposition from scratch rather than trusting
+PSF-Zero's. At that level, `compile()`'s own synthesis work is real, but it
+is computed and then thrown away — every millisecond `compile_for_hardware()`
+spends synthesizing before handing off to `transpile(..., optimization_level=2)`
+is pure overhead on top of what calling `transpile()` directly would have
+done anyway. (This does not make section 8's earlier fix below wrong — before
+`basis_gates` was threaded through, level 2 was the only way to get a
+target-basis translation to run at all. It means that now that `basis_gates`
+is always passed, level 2's only remaining effect on top of that is this
+wasted re-synthesis.)
+
+This reframes, without contradicting, this section's own 1.0x–1.4x number
+above: if `compile_for_hardware()` was already defaulting to level 2 when
+that table was produced, its advantage over plain Qiskit `optimization_level=3`
+most plausibly came from internally using a cheaper Qiskit preset (2 is
+faster than 3) rather than from PSF-Zero's own synthesis contributing
+anything at that level. We have not gone back and re-run that exact table
+with the level pinned and logged to confirm this reading with certainty —
+flagging the relationship here rather than leaving the two findings looking
+like they disagree.
+
+A custom `PassManager` that strips the redundant re-synthesis stages out of
+Qiskit's preset pipeline — so a target basis is still reached, but nothing
+gets re-derived from scratch — was prototyped and benchmarked at 50/100/156
+qubits on this workload, and rejected: it landed within 2–4% of simply using
+`routing_optimization_level=1`, and was worse on depth at the larger sizes.
+`routing_optimization_level=1` already gets the same effect for free, with
+no extra pass manager to maintain.
+
+On this workload (grid coupling map, `basis_gates=["rz","sx","x","cx"]`, all
+output verified ISA-submittable and unitarily equivalent to the input),
+`routing_optimization_level=1` gives the same 2-qubit gate count as Qiskit's
+`optimization_level` 2 and 3 (150 gates at 100 qubits, 240 at 156 qubits) for
+1/20th to 1/59th of their compile time, at roughly 30–40% more depth (23 vs.
+16 at 100 qubits, 44 vs. 35 at 156 qubits). Against Qiskit
+`optimization_level=1` it wins outright: 1.8x faster, 20x fewer 2-qubit
+gates, 10x shallower.
+
+Full per-scale timing numbers, the bit-identical-output verification, the
+rejected custom-`PassManager` benchmark, and a `random_circuit` passthrough
+control (confirming PSF-Zero correctly reports `0/0 blocks` and contributes
+nothing on workloads it isn't designed for) are in this project's
+`phase3-hardware-routing-regression.md` note rather than duplicated here.
+
+**The change made:** `compile_for_hardware()`'s default
+`routing_optimization_level` is now **1**, not 2 (down from the value set by
+section 8's own fix below). Its docstring now states directly that level 2
+reproduces plain `transpile(optimization_level=2)` exactly and charges
+PSF-Zero's synthesis on top of it for nothing in return — call
+`transpile(..., optimization_level=2)` directly (skipping `compile_for_hardware()`
+entirely) if minimum depth matters more than compile time; level 1 is the
+setting where PSF-Zero's own synthesis is actually the thing producing the
+output.
 
 ### 6. Sanity check against Benchpress
 
@@ -971,7 +1047,7 @@ confirmed copy of the script that produced it.
 | 2Q gate count, mean ± SD | 648.0 ± 9.8 | 641.7 ± 17.3 |
 | Compile time, mean ± SD | 2.107s | 0.159s (13.3x faster) |
 
-![Real-device 15-qubit fidelity validation, 11 runs, corrected ConsolidateBlocks](./docs/real_device_15q_fidelity_v3_1.png)
+![Real-device 15-qubit fidelity validation, 11 runs, corrected ConsolidateBlocks](./charts/real_device_15q_fidelity_v3.png)
 
 ### 8. Fidelity across engines under a realistic noise model (mirror circuits)
 
@@ -1021,8 +1097,7 @@ family (3 / 12 / 42, matching the table above exactly), 5 repeats × 4
 engines, batched as one job per sweep. Four independent sweeps were
 captured: three against `ibm_marrakesh`, one against `ibm_fez`.
 
-
-![fake_sherbrooke (local sim) vs. real IBM hardware, mean of 4 sweeps, by family and engine](./docs/section8_real_hw_vs_sim.png)
+![fake_sherbrooke (local sim) vs. real IBM hardware, mean of 4 sweeps, by family and engine](./charts/section8_real_hw_vs_sim.png)
 
 | Family | Engine | Real hardware, mean ± sd (4 sweeps) | `fake_sherbrooke` (for reference) |
 | :--- | :--- | :---: | :---: |
@@ -1173,6 +1248,15 @@ def compile_for_hardware(
         optimization_level=routing_optimization_level,
     )
 ```
+
+> **Note (2026-09-08):** `routing_optimization_level`'s default has since
+> moved again, from the 2 set here down to 1 — see section 5's 2026-09-08
+> update above. Threading `basis_gates` through was the fix that mattered
+> here (translation has to actually run somewhere); once it's always
+> supplied, level 2's extra re-synthesis over level 1 turned out to buy
+> nothing but discarded work, on the dense-pair-block workload that
+> follow-up investigation used. This section's own diagnosis and the
+> `entangling_basis="cx"` fix below are unaffected by that later change.
 
 One correction to make here, checked directly against the installed Qiskit
 (2.5.2): `transpile()`'s default `optimization_level` when left unspecified
@@ -1509,6 +1593,21 @@ In the interest of not overstating anything:
   sense given `compile_for_hardware()` pays for a full separate Qiskit
   routing pass on top of PSF-Zero's own synthesis. See section 5's new
   "Compile time under the same constraint" subsection.
+- **RESOLVED (2026-09-08). Which `routing_optimization_level` was actually
+  in effect for section 5's own 1.0x–1.4x number, and whether `level=2`
+  (this section's own earlier default) was silently discarding PSF-Zero's
+  contribution.** Yes: at `routing_optimization_level=2`,
+  `compile_for_hardware()`'s output is bit-identical to a plain
+  `transpile(optimization_level=2)` call on the *uncompressed* circuit —
+  Qiskit's own `init`-stage `ConsolidateBlocks`/`UnitarySynthesis` re-derive
+  the decomposition from scratch regardless of what PSF-Zero already did.
+  `routing_optimization_level=1` avoids this: same 2-qubit gate count as
+  Qiskit's `optimization_level` 2/3 for 1/20th–1/59th of the time, at a real
+  but modest depth cost (~30–40%). A custom `PassManager` that strips the
+  redundant re-synthesis stages instead of stepping down a level was
+  prototyped and rejected (no measurable benefit over plain `rl=1`).
+  `compile_for_hardware()`'s default is now 1, not 2. See section 5's
+  2026-09-08 update and `phase3-hardware-routing-regression.md`.
 - **Whether section 7's "14.4x–16.2x faster" (now also confirmed at
   13.3x faster over 11 runs) real-hardware compile-time result holds up
   under the same warm-up correction applied to section 4.** That script
@@ -1581,6 +1680,16 @@ In the interest of not overstating anything:
 - **DONE.** Section 5's compile-time comparison now has its own confirmed,
   seed-pinned, 20-measurement-per-scale result (1.0x–1.4x faster than
   Qiskit) — see section 5 and the RESOLVED item above.
+- **DONE (2026-09-08).** `compile_for_hardware()`'s `routing_optimization_level`
+  default corrected again, 2 → 1: at level 2, its output is bit-identical to
+  a plain `transpile(optimization_level=2)` call on the uncompressed
+  circuit — PSF-Zero's own synthesis work is computed and then entirely
+  discarded. Level 1 keeps PSF-Zero's synthesis intact: the same 2-qubit
+  gate count as Qiskit's `optimization_level` 2/3 for a fraction of the
+  compile time, at a real but modest depth cost. A custom `PassManager`
+  alternative was prototyped and rejected (no measurable benefit over plain
+  `rl=1`). See section 5's 2026-09-08 update and
+  `phase3-hardware-routing-regression.md`.
 - **DONE.** Whether the `RXX`/`RYY`/`RZZ` native-gate-cost hypothesis for
   section 8's fidelity gap actually holds against the real production code:
   confirmed directly, and fixed with an opt-in `entangling_basis="cx"`
@@ -1612,9 +1721,10 @@ In the interest of not overstating anything:
   rather than leaving as an open caveat; if they don't, section 7 needs the
   same kind of correction section 4 just got.
 - Applying the validated `compile_for_hardware()` fix (`basis_gates`
-  parameter, `routing_optimization_level` defaulting to 2 — see section 8)
-  and the `entangling_basis="cx"` fix to the real repository: minimal,
-  backward-compatible patches for both are ready to apply —
+  parameter, `routing_optimization_level` now defaulting to 1 — see section
+  8 and section 5's 2026-09-08 update) and the `entangling_basis="cx"` fix
+  to the real repository: minimal, backward-compatible patches for both are
+  ready to apply —
   [`benchmarks/compile_for_hardware.patch`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/compile_for_hardware.patch)
   — and existing call sites need to start passing `basis_gates` explicitly
   (e.g. `backend.operation_names`) for it to take effect. Real,
