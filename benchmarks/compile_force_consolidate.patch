@@ -1,114 +1,86 @@
 --- a/psf_compile.py
 +++ b/psf_compile.py
-@@ -20,9 +20,15 @@
- class GeodesicPSFHyper:
-     tol: float = 1e-5
-     phase_fix: bool = True
-     on_unsupported: str = "keep"
-+    # New: whether synthesize() re-verifies its own output against the
-+    # target unitary via Operator() on every call. See notes below --
-+    # this check is ~87% of synthesize()'s per-block cost (measured via
-+    # benchmarks/profile_synthesize_breakdown.py) and, per that same
-+    # profiling, is NOT what catches degenerate inputs (that's the
-+    # `except Exception` branch below, which stays unconditional either way).
-+    verify: bool = True
+@@ -1,7 +1,7 @@
+ def compile(qc: QuantumCircuit, block_gate_floor: int = DEFAULT_BLOCK_GATE_FLOOR) -> QuantumCircuit:
+     def worth_consolidating(dag, block):
+         return len(block) > block_gate_floor
 
-
- def unitary_fidelity(U_target: np.ndarray, qc: QuantumCircuit) -> float:
-     U_out = Operator(qc).data
-     tr = np.trace(U_target.conj().T @ U_out)
-@@ -70,14 +76,15 @@
-             local(k1[0], 1)
-             local(k1[1], 0)
-
-         except Exception as e:
-             return self._fallback(U_target, f"Decomposition failed or degenerate: {e}")
-
--        fid = unitary_fidelity(U_target, qc)
--        if (1.0 - fid) > self.hyper.tol:
--            return self._fallback(U_target, f"Fidelity loss exceeded tolerance: {1.0 - fid:.2e}")
-+        if self.hyper.verify:
-+            fid = unitary_fidelity(U_target, qc)
-+            if (1.0 - fid) > self.hyper.tol:
-+                return self._fallback(U_target, f"Fidelity loss exceeded tolerance: {1.0 - fid:.2e}")
-         return qc
+     pm_consolidate = PassManager([
+         Collect2qBlocks(filter_fn=worth_consolidating),
+-        ConsolidateBlocks(kak_basis_gate=None),
++        ConsolidateBlocks(kak_basis_gate=None, force_consolidate=True),
+     ])
+     qc_blocked = pm_consolidate.run(qc)
 
 # ---------------------------------------------------------------------------
 # NOTES (not part of the diff -- read before applying)
 # ---------------------------------------------------------------------------
 #
-# WHAT THIS DOES AND DOES NOT CHANGE
-# -----------------------------------
-# This does NOT touch the `except Exception` branch a few lines up -- that's
-# the ONLY thing that actually detects a degenerate Weyl-chamber point (CNOT,
-# SWAP, iSWAP, identity, ...) and routes it to the CX-basis fallback. That
-# branch is load-bearing, cheap (~13% of current per-block time, per the
-# profiling breakdown), and is untouched by this patch either way.
+# WHAT THE BUG IS
+# ----------------
+# Qiskit's `ConsolidateBlocks` pass defaults to `force_consolidate=False`.
+# With that default, a candidate block made ENTIRELY of pre-existing
+# 'unitary'-named nodes (i.e. a chain of `UnitaryGate` instructions already
+# in the circuit -- as opposed to a chain of elementary gates like rz/ry/cx)
+# is silently left UN-merged, even though `Collect2qBlocks` correctly
+# identified it as one block and `worth_consolidating` correctly said it was
+# worth consolidating. `force_consolidate=True` makes it merge these blocks
+# too, exactly as intended.
 #
-# What this makes optional is the SEPARATE, unconditional Operator()-based
-# re-verification of every NON-degenerate result -- i.e. re-proving, on every
-# single production call, that the analytic decomposition math did what it
-# always does. That's a reasonable thing to do while the math is still being
-# trusted (development, CI, a canary period after any change to the Rust
-# core) -- it's a much less reasonable thing to pay for on every call once
-# the math has been extensively validated offline (this project's own
-# test_geometric_decompose.py: worst-case 1-fidelity = 1.11e-15 over 1000
-# trials against the real core's math; psf_zero_core_stub.py: 8.88e-16 over
-# 200 trials; both independently re-run and matching).
+# WHY IT MATTERS FOR `compile()`
+# -------------------------------
+# Any circuit built by repeatedly appending `UnitaryGate` objects to the
+# same qubit pair (e.g. `for _ in range(N): qc.append(UnitaryGate(u), pair)`
+# -- a completely ordinary way to build a Trotter step, a QAOA layer, or
+# indeed this project's own `phase2.py` "dead zone" scale test) hits this
+# exact case: with the default `force_consolidate=False`, `compile()`
+# consolidates NOTHING and instead calls `SU4GeodesicPSFSynthesizer.synthesize()`
+# once per ORIGINAL gate instead of once per PAIR. Since each synthesis call
+# costs a near-fixed ~12-15 gates (and a near-fixed wall-clock time)
+# regardless of input size, this multiplies both the output gate count and
+# the compile time by (gates per pair) -- e.g. with 20 original gates per
+# pair, both come out ~20x larger than they need to be.
 #
-# MEASURED IMPACT (stub core, in-process -- see
-# benchmarks/profile_synthesize_fast_vs_verified.py for the full script and
-# caveats; NOT yet confirmed against the real Rust extension over the real
-# PyO3 boundary)
-# ------------------------------------------------------------------------
-# Dropping the per-call check measured an 8.11x speedup on synthesize()
-# itself (1.2117ms/block -> 0.1494ms/block over N=2000 random SU(4)
-# blocks), with the fast path's own output checked for correctness
-# out-of-band (not per-call) at worst-case (1-fidelity) = 8.88e-16 -- i.e.
-# identical accuracy to the current code, just not re-measured on every
-# single call.
+# MEASURED (this project's sandbox, Rust core replaced by the verified
+# psf_zero_core_stub -- see psf_compile_patched.py -- so ABSOLUTE times
+# here do not transfer to a machine running the real Rust core; the
+# STRUCTURE of the bug and the 20x multiplier are pure Qiskit-object-model
+# facts, independent of which decomposition backend is behind
+# `geometric_decompose`):
 #
-# Applying that 8.11x per-block factor to section 4's real, already-measured
-# numbers (real machine, real Rust core) projects PSF-Zero flipping from
-# being 1.6x-2.2x SLOWER than a warmed-up Qiskit (the current, published
-# section 4 result) to being roughly 3.6x-12x FASTER, with the advantage
-# holding up (not shrinking to a small constant, unlike the original
-# retracted 203x->4.4x curve) across the whole 15-1000 qubit range tested:
+#   circuit: `phase2.py`'s own `build_dense_pair_blocks_circuit()`,
+#   GATES_PER_PAIR=20, at 156/300/500/1000 qubits
 #
-#     qubits | qiskit  | psf (measured) | psf (projected) | ratio (projected)
-#     15     | 0.0103s | 0.0068s        | 0.0008s          | 12.3x
-#     50     | 0.0158s | 0.0257s        | 0.0032s          | 5.0x
-#     100    | 0.0220s | 0.0360s        | 0.0044s          | 5.0x
-#     156    | 0.0345s | 0.0636s        | 0.0078s          | 4.4x
-#     300    | 0.0450s | 0.0893s        | 0.0110s          | 4.1x
-#     500    | 0.0713s | 0.1593s        | 0.0196s          | 3.6x
-#     1000   | 0.1319s | 0.2957s        | 0.0365s          | 3.6x
+#     qubits | output gates, as-is (bug) | output gates, force_consolidate=True | ratio
+#     156    | 23400                     | 1170                                  | 20.0x
+#     300    | 45000                     | 2250                                  | 20.0x
+#     500    | 75000                     | 3750                                  | 20.0x
+#     1000   | 150000                    | 7500                                  | 20.0x
 #
-# THIS IS A PROJECTION, NOT A CONFIRMED RESULT. It scales the real,
-# already-measured PSF-Zero times by a ratio measured on the STUB core, not
-# the real one -- the real Rust extension's own call cost is a genuine
-# unknown here, it was just already shown to be a small share (~3.3%) of
-# today's per-block total, which is why removing the ~87% check should still
-# move the needle a lot even if the real FFI cost is somewhat higher than
-# the stub's in-process call.
+#     qubits | compile time, as-is (bug) | compile time, force_consolidate=True | speedup
+#     156    | 1.512s                    | 0.071s                                | 21.3x
+#     300    | 2.719s                    | 0.127s                                | 21.4x
+#     500    | 5.196s                    | 0.267s                                | 19.5x
+#     1000   | 9.414s                    | 0.580s                                | 16.2x
 #
-# WHAT WOULD CONFIRM THIS
-# -------------------------
-# 1. Apply this patch (or set `GeodesicPSFHyper(verify=False)`) to the real
-#    psf_compile.py, running the real psf_zero_core.
-# 2. Re-run phase1.py / phase2.py (with all previously-validated fixes
-#    already applied: basis_gates, force_consolidate=True, symmetric
-#    warm-up) against this fast-path build.
-# 3. Confirm the resulting circuits are still correct (Operator-equivalence
-#    against the original, same as every other benchmark in this project) --
-#    this matters more here than usual, since the per-call safety net is
-#    exactly what's being made optional.
+# This is the same underlying Qiskit behavior already noted in this
+# project's `experiment_fixed_compiler_fidelity.py` (which worked around it
+# by building test circuits from elementary gates instead of raw
+# `UnitaryGate` chains) -- but it had not previously been identified as a
+# live defect in `compile()` itself, only as a benchmark-construction
+# detail to avoid. It is: any real circuit assembled the same way `phase2.py`
+# does hits it directly.
 #
-# RECOMMENDATION ON THE DEFAULT
-# --------------------------------
-# This patch keeps `verify: bool = True` as the default -- i.e. today's
-# behavior is unchanged unless a caller opts in to `verify=False`. That's
-# deliberately conservative: whether to flip the *default* to False (trust
-# the math, verify only in tests/CI) is a real design decision the project
-# should make once the projection above is confirmed on the real core, not
-# something this patch should force silently.
+# WHAT THIS DOES NOT YET SETTLE
+# -------------------------------
+# The absolute compile-time numbers above come from this project's Python
+# stand-in for the Rust core, not the real `psf_zero_core`. The relative
+# claim (a ~20x reduction in redundant synthesis calls once merging works
+# correctly) is a property of the pass pipeline and does not depend on that
+# substitution, but confirming what this does to real wall-clock time
+# against the real Rust core -- and against a FAIRLY configured Qiskit
+# comparison (see `phase2_qiskit_worker.patch`: the original `phase2.py`
+# calls `transpile(circuit, backend=None, optimization_level=3)`, which has
+# no target basis to translate to and provably leaves every `UnitaryGate`
+# untouched -- so its reported "Qiskit" time in the original run measured
+# no actual synthesis work at all) -- is the natural next step.
