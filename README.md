@@ -1337,7 +1337,7 @@ the still-missing real-hardware harness's last step — at a naive low level
 (mean ± stdev of P(all-zero); N=5 seeds for deep2q/multi_deep2q, N=3 for
 `wide`, 2048 shots each)
 
-![Reconstructed mirror-circuit fidelity by engine and family, naive final step at optimization_level 1 vs. 3](./docs/090201.png)
+![Reconstructed mirror-circuit fidelity by engine and family, naive final step at optimization_level 1 vs. 3](./docs/allzero_by_family_sem.png)
 
 At the naive low level, `psf` trails `qiskit`/`tket` by a real,
 stdev-exceeding margin on `deep2q` (~4.5 points) and `multi_deep2q` (~3-4
