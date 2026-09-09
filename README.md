@@ -1436,7 +1436,7 @@ measured, using a verified stand-in only for the one binary that can't run
 here.
 
 The patch itself is a single, minimal, backward-compatible change —
-[`compile_for_hardware.patch`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/compile_for_hardware.patch)
+[`compile_for_hardware.patch`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/compile_for_hardware.patc)
 — meant to be applied directly to the real repository file (add a
 `basis_gates` parameter, thread it through to `transpile(...)`, default
 `routing_optimization_level` to 2; existing call sites keep their old
