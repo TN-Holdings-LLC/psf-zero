@@ -1,0 +1,76 @@
+--- a/phase1_patched.py
++++ b/phase1_patched.py
+@@ -1,10 +1,15 @@
+ def worker_qiskit(circuit, backend_mock, result_queue):
+     """Executes Qiskit compilation and returns the result to the queue."""
++    # Warm-up call, paid OUTSIDE the measured interval -- see
++    # phase1_warmup.patch for the full writeup. Confirmed: this same
++    # 156-qubit circuit measured 2.41s with no warmup vs. 0.07s with one --
++    # a 32x difference from measurement methodology alone.
++    transpile(QuantumCircuit(2), basis_gates=["rz", "sx", "x", "cx"], optimization_level=3)
+     start_time = time.perf_counter()
+     try:
+         transpiled_qc = transpile(circuit, basis_gates=["rz", "sx", "x", "cx"], optimization_level=3)
+         elapsed_time = time.perf_counter() - start_time
+         result_queue.put({"status": "success", "time": elapsed_time})
+     except Exception as e:
+         result_queue.put({"status": f"error: {str(e)}", "time": None})
+
+ def worker_psf(circuit, backend_mock, result_queue):
+     """Executes PSF-Zero compilation and returns the result to the queue."""
++    # Symmetric warm-up call, for the same reason as worker_qiskit's --
++    # this project's own sandbox testing (Python stand-in for the Rust
++    # core, not the real one) found PSF-Zero's cold-start cost to be much
++    # smaller than Qiskit's, but small is not zero, and a genuinely fair
++    # A/B comparison warms up both sides identically rather than assuming
++    # one side's cost doesn't matter.
++    psf_compile(QuantumCircuit(2))
+     start_time = time.perf_counter()
+     try:
+         # Executes geometric projection compilation invoking the Rust core
+         transpiled_qc = psf_compile(circuit)
+         elapsed_time = time.perf_counter() - start_time
+         result_queue.put({"status": "success", "time": elapsed_time})
+     except Exception as e:
+         result_queue.put({"status": f"error: {str(e)}", "time": None})
+
+# ---------------------------------------------------------------------------
+# NOTES (not part of the diff -- read before applying)
+# ---------------------------------------------------------------------------
+#
+# THIS SUPERSEDES phase1_warmup.patch (adds the same treatment to
+# worker_psf for symmetry) -- apply this one instead, not both.
+#
+# WHAT WE FOUND WHEN WE TESTED A FULLY WARMED-UP, SYMMETRIC COMPARISON
+# ------------------------------------------------------------------------
+# In this project's own sandbox (Python stand-in for the Rust core -- see
+# psf_compile_patched.py -- so these numbers do NOT transfer directly to a
+# machine running the real psf_zero_core; only the STRUCTURE does), warming
+# up both sides before starting the timer collapsed the reported speedup
+# from the 200x+ range down to roughly 1-2x at every size tested, INCLUDING
+# one qubit count (100) where the warmed-up "Qiskit" number came out faster
+# than "PSF-Zero":
+#
+#     qubits | qiskit (warm) | psf (warm, stand-in core) | ratio
+#     15     | 0.0182s       | 0.0166s                    | 1.1x
+#     50     | 0.0942s       | 0.0449s                    | 2.1x
+#     100    | 0.0457s       | 0.0763s                    | 0.6x (Qiskit faster)
+#     156    | 0.2273s       | 0.1081s                    | 2.1x
+#
+# This is a stand-in core, so the real Rust core should do better than
+# these PSF numbers -- but it strongly suggests the "203x at 15 qubits down
+# to 4.4x at 1000 qubits" curve currently published in the README's section
+# 4 is, in large part, a measurement artifact (per-process cold-start cost),
+# not a real reflection of the two engines' relative compute speed. The
+# real, clean number -- once this patch is applied and re-run on the real
+# Rust core -- is what should replace it.
+#
+# WHAT TO DO WITH THE RESULT
+# -----------------------------
+# Re-run phase1.py (this patch) and, for consistency, apply the same
+# symmetric-warmup treatment to phase2.py before trusting ITS numbers as a
+# final answer either -- its already-reported 5.5x-42x speedups (156-1000
+# qubits) were measured the same single-warmup-sided way and may shrink
+# once psf's own side is warmed up too, the same way phase1's did. Once
+# both halves are re-measured this way, that's the number section 4 should
+# actually report.
