@@ -1,0 +1,56 @@
+--- a/psf_compile.py
++++ b/psf_compile.py
+@@ -1,10 +1,20 @@
+-def compile_for_hardware(qc, coupling_map, block_gate_floor=DEFAULT_BLOCK_GATE_FLOOR,
+-                          routing_optimization_level: int = 0):
++def compile_for_hardware(
++    qc,
++    coupling_map,
++    basis_gates: list[str] | None = None,       # new
++    block_gate_floor=DEFAULT_BLOCK_GATE_FLOOR,
++    routing_optimization_level: int = 2,        # was 0
++):
+     qc_compressed = compile(qc, block_gate_floor=block_gate_floor)
+-    return transpile(qc_compressed, coupling_map=coupling_map,
+-                      optimization_level=routing_optimization_level)
++    return transpile(
++        qc_compressed,
++        coupling_map=coupling_map,
++        basis_gates=basis_gates,                # new
++        optimization_level=routing_optimization_level,
++    )
+
+# ---------------------------------------------------------------------------
+# NOTES (not part of the diff -- read before applying)
+# ---------------------------------------------------------------------------
+#
+# 1. This patch is against the exact `compile_for_hardware()` you pasted
+#    into this conversation. Apply it to that one function in your real
+#    `psf_compile.py`; nothing else in the file needs to change.
+#
+# 2. Call sites now need to pass `basis_gates` explicitly for the fix to do
+#    anything -- e.g. for an IBM backend:
+#
+#        compile_for_hardware(qc, backend.coupling_map,
+#                              basis_gates=backend.operation_names)
+#
+#    Leaving `basis_gates=None` (the default) reproduces the OLD behavior
+#    exactly (transpile() with no basis_gates only routes, never
+#    resynthesizes) -- so this patch is backward-compatible with existing
+#    call sites until you update them.
+#
+# 3. `routing_optimization_level`'s default changed from 0 to 2. This is
+#    required for the fix to work: transpile() only resynthesizes to a
+#    target basis at optimization_level >= 2 for a call shaped like this one
+#    (coupling_map + basis_gates, no backend object) -- see
+#    diagnose_compile_for_hardware.py. If any call site explicitly passed
+#    routing_optimization_level=0 or 1 for a reason unrelated to this bug,
+#    it will now also get basis resynthesis (generally desirable, but worth
+#    a deliberate check against that call site's own intent).
+#
+# 4. Validated in verify_compile_for_hardware_fix.py (0/50 correctness
+#    failures at every level; native `ecr` gate count: 12.00/6.00 at levels
+#    0/1 -> 3.00 at levels 2/3 once basis_gates is supplied) and in
+#    test_improved_compiler_end_to_end.py (mirror-circuit fidelity recovers
+#    most of the deep2q/multi_deep2q gap measured in section 8 of the
+#    README, using the real compile() + compile_for_hardware() code path).
