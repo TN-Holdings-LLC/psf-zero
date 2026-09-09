@@ -1006,6 +1006,11 @@ PSF-Zero's synthesis on top of it for nothing in return — call
 entirely) if minimum depth matters more than compile time; level 1 is the
 setting where PSF-Zero's own synthesis is actually the thing producing the
 output.
+#### Benchmark Artifacts & Reproducibility Package (`benchmarks/phase3_v4/`)
+
+The complete verification code and raw execution measurements for the `phase3_v4` sweep are available directly in the repository:
+- **Validation Script**: [`benchmarks/phase3_v4/phase3_v4.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase3_v4/phase3_v4.py)
+- **Raw Measurements Data**: [`benchmarks/phase3_v4/phase3_v4_physical_topology_results.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase3_v4/phase3_v4_physical_topology_results.csv)
 
 ##### Confirmed on the project's slower (workplace) machine (2026-09-09)
 
