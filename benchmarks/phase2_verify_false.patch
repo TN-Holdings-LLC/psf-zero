@@ -1,0 +1,41 @@
+--- a/phase2.py (post basis_gates fix + force_consolidate fix + warmup patch)
++++ b/phase2.py
+@@ -1,15 +1,15 @@
+ def worker_qiskit(circuit, backend_mock, result_queue):
+     start_time = time.perf_counter()
+     try:
+         transpile(QuantumCircuit(2), basis_gates=["rz", "sx", "x", "cx"], optimization_level=3)  # warm-up, outside the timer
+         start_time = time.perf_counter()
+         transpiled_qc = transpile(circuit, basis_gates=["rz", "sx", "x", "cx"], optimization_level=3)
+         elapsed_time = time.perf_counter() - start_time
+         result_queue.put({"status": "success", "time": elapsed_time})
+     except Exception as e:
+         result_queue.put({"status": "error", "message": str(e)})
+
+
+ def worker_psf(circuit, coupling_map, result_queue):
+     try:
+-        pcp.compile(QuantumCircuit(2))  # warm-up, outside the timer
++        pcp.compile(QuantumCircuit(2), verify=False)  # warm-up, outside the timer
+         start_time = time.perf_counter()
+-        transpiled_qc = pcp.compile(circuit)
++        transpiled_qc = pcp.compile(circuit, verify=False)
+         elapsed_time = time.perf_counter() - start_time
+         result_queue.put({"status": "success", "time": elapsed_time})
+     except Exception as e:
+         result_queue.put({"status": "error", "message": str(e)})
+
+# ---------------------------------------------------------------------------
+# NOTES (not part of the diff -- read before applying)
+# ---------------------------------------------------------------------------
+#
+# Same change and same reasoning as phase1_verify_false.patch, applied to
+# phase2.py's already-fixed workers (basis_gates + force_consolidate=True +
+# symmetric warm-up already in place). This is the 300/500/1000-qubit half
+# of section 4's still-single-run rows -- ideally add a seed loop here too
+# (see README Roadmap: "re-measuring section 4's 300/500/1000-qubit points
+# ... with a proper seed loop") while making this change, so the whole
+# 15-1000 qubit curve ends up on equal statistical footing.
+#
+# Add a correctness check (Operator-equivalence) before trusting the
+# resulting timings, same caveat as phase1_verify_false.patch.
