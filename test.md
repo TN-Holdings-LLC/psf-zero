@@ -36,12 +36,24 @@ tested, by roughly 2.4x–5.2x, largest at the smallest circuits and settling
 to a stable ~2.4x–3x band at 150+ blocks — correctness confirmed unaffected
 throughout.
 
+**Fourth, and this is the current state as of 2026-09-09: the "opt-in"
+caveat that the rest of this README is written around is now largely
+obsolete.** `verify` was split into a cheap Rust-core check (`True`, still
+the default) and the old, expensive `Operator`-based reconstruction
+(`"strict"`). Re-measured on the project's own Windows machine over a
+50,000-iteration loop, the *default* path now runs at 2.303ms/call against
+Qiskit L3's 11.038ms — **4.79x faster with the safety net still on**, and
+9.12x with `verify=False`. The check now costs about 1.9x rather than the
+4–5x it used to, so a caller who changes nothing already gets most of the
+advantage. The old framing is left standing below with its correction
+directly underneath, in the same way every other retraction in this
+document is handled — see section 4's 2026-09-09 update.
+
 So the real, current state is: a genuine, mechanism-backed, real-hardware-
-confirmed speed advantage over Qiskit exists, but it is currently opt-in,
-not the out-of-the-box default — a caller who doesn't pass `verify=False`
-gets the slower behavior. We're stating that plainly here rather than
-picking whichever number looks better, because which one is true depends on
-a setting most callers won't know to change. The trade-off being offered is
+confirmed speed advantage over Qiskit exists, and as of 2026-09-09 it is
+no longer gated behind a non-default setting — though the *size* of it
+turns out to be more machine-dependent than earlier revisions of this
+README implied (section 4's second 2026-09-09 update). The trade-off being offered is
 determinism plus a real (if currently opt-in) speed edge, for a fixed depth
 cost relative to TKET's slower search — not "faster and better on every
 axis" without qualification, but a real advantage once you know which knob
@@ -281,8 +293,6 @@ rather than statistically confirmed the way the top four rows are.)
 
 ![Compile time scaling, final: verify=False confirmed faster at every scale tested](./docs/compile_time_scaling_3.png)
 
-
-
 The honest picture: PSF-Zero's advantage at the smallest circuit we tested (7
 blocks) is real but modest, about 1.5x. Past that, once the timer is
 measuring real work on both sides, Qiskit's `optimization_level=3` transpile
@@ -425,6 +435,15 @@ now-extensively-validated decomposition math by default, verifying only in
 tests/CI) is a real design decision worth making deliberately, not a change
 this README is making on the project's behalf — see Roadmap.
 
+> **Superseded 2026-09-09.** The paragraph above is kept for the record but
+> no longer describes the shipped code. `verify` is now
+> `Union[bool, str]`: `True` (the default) runs a cheap Rust-core check,
+> and `"strict"` runs the old `Operator()` reconstruction that this
+> section's profiling found was costing 87% of per-block time. The
+> expensive thing the paragraph is warning about is now opt-*in* under a
+> different name, not the default. Measured default-path performance is in
+> the 2026-09-09 update below.
+
 #### Independent cross-machine confirmation: sustained, repeated compile-time savings
 
 Everything above measures compile time as a single call, averaged over 10
@@ -480,7 +499,7 @@ correction immediately below before relying on it.**
 
 The same Windows machine was later used to re-run this exact benchmark
 (extended with an `--iters` flag,
-[`make_chart_compile_time_scaling.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/make_chart_compile_time_scaling.py)
+[`benchmarks/test_cumulative_compile_time.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cumulative_compile_time.py))
 at 10,000 and 50,000 iterations. The raw numbers looked like a real,
 concerning regression:
 
@@ -556,6 +575,130 @@ mean less exposure to calibration drift across the run) and are not
 planning to spend real QPU time confirming it without a specific reason to
 — see Roadmap.
 
+#### Update (2026-09-09): the ratio holds flat at 50,000 iterations, and the default path got 2.2x faster
+
+The correction above concluded that the ratio compression at 10,000/50,000
+iterations was episodic background contention on that Windows machine, not
+anything inside `psf_compile.py`. That conclusion was reached from binned
+timings and a clean-sandbox reproduction; it had not been tested by simply
+re-running the same 50,000-iteration loop on the same machine on a quieter
+day. It has now been, and it holds:
+
+| Iterations | Qiskit L3 mean | PSF `verify=True` mean | Ratio | PSF `verify=False` mean | Ratio |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 3,000 (2026-09-09) | 10.503ms | 2.203ms | **4.77x** | 1.172ms | **8.96x** |
+| 50,000 (2026-09-09) | 11.038ms | 2.303ms | **4.79x** | 1.211ms | **9.12x** |
+| *3,000 (earlier run, for contrast)* | *7.729ms* | *4.914ms* | *1.57x* | *1.045ms* | *7.39x* |
+| *50,000 (earlier run, for contrast)* | *10.403ms* | *9.825ms* | *1.06x* | *1.903ms* | *5.47x* |
+
+Two separate things changed between the italicised earlier rows and the new
+ones, and they should not be confused with each other.
+
+**1. The decay is gone, and the raw progress log shows exactly why.** The
+new 50,000-iteration run printed elapsed time every 500 iterations.
+Differencing those: the loop holds 18.0–18.7s per 500 iterations for
+essentially its entire length, rises to 22.9s / 26.1s / 20.9s / 21.9s /
+21.0s / 20.9s across iterations 23,500–27,000, then returns to 18.5–18.7s
+and stays there for the remaining 23,000 iterations. One contention window,
+full recovery, no drift — the same signature the correction above inferred
+indirectly, now visible directly in a single run's own progress output. The
+`verify=False` mean moved 1.172ms → 1.211ms between the 3,000- and
+50,000-iteration runs, a 3% difference, against 82% in the earlier
+contended run. **The earlier "ratio compresses with iteration count"
+observation is now confidently attributable to the environment, not to this
+code.**
+
+**2. `verify=True` is 2.2x faster than it was** (4.914ms → 2.203ms at
+3,000 iterations), because it is no longer the same operation. It now runs
+the cheap Rust-core check; the old `Operator()` reconstruction moved to
+`verify="strict"`. This is the change that obsoletes this section's
+"The catch, and it matters" paragraph above: the default is now 4.8x faster
+than Qiskit rather than 1.1–1.6x, and the cost of keeping the safety net on
+is about 1.9x rather than 4–5x.
+
+Correctness was re-checked at the start of both runs on the 6-qubit version
+of the same circuit family: Qiskit, `verify=True` and `verify=False` all
+reconstructed to fidelity 1.000000000000.
+
+#### Update (2026-09-09): under the corrected methodology the ratios are lower — and the cause is narrower than "Windows," not "which PC"
+
+`benchmarks/test1_v3.py` is this project's methodology-corrected replacement
+for the script that produced section 4's tables (warm-up outside the timer,
+repeated timed calls per point, in-child memory sampling, `spawn` forced,
+per-arm equivalence checking, and output quality recorded alongside every
+timing — the five defects it fixes are catalogued in this project's
+`benchmark-methodology-v3.md` note). Running it at 10 seeds per point on
+**this project's faster machine** (a personally-administered PC, not the
+slower workplace machine used for section 5's 2026-09-09 confirmation
+below) gives materially lower ratios than either section 4's tables above
+or the same script's own run in a Linux cloud sandbox:
+
+| Qubits | qiskit opt=0 | qiskit opt=3 | psf canonical | psf cx | opt=3 ÷ canonical (fast PC) | *same ratio, Linux sandbox* |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 15 | 3.62ms | 8.76ms | 2.02ms | 2.08ms | **4.35x** | *5.53x* |
+| 50 | 7.88ms | 14.20ms | 6.44ms | 6.80ms | **2.21x** | *4.22x* |
+| 100 | 12.69ms | 21.33ms | 12.84ms | 13.52ms | **1.66x** | *3.95x* |
+| 156 | 17.97ms | 28.30ms | 19.69ms | 20.41ms | **1.44x** | *4.15x* |
+
+(median of per-point medians over 10 seeds. Output quality, identical at
+every scale in both environments: 2-qubit gate count 21/75/150/234 for
+`opt=3`, `canonical` and `cx` alike — `opt=0` emits 20x more and is not a
+quality-matched comparison — and depth **9** for canonical, **13** for cx,
+**16** for Qiskit `opt=3`. Equivalence checked at 6 qubits, all arms
+< 4.5e-15.)
+
+Four things worth stating plainly about this table, one of which changed
+after this section was first written.
+
+**The obvious hypothesis — "the Windows number is just measuring a slower
+machine" — is ruled out, and by evidence already in this README.** The
+2026-09-09 cumulative-loop update directly above this one, run on this
+*same* fast machine, showed the default-verify ratio holding flat at 4.79x
+across 3,000 and 50,000 iterations — not the declining, sub-Linux-sandbox
+pattern in the table here. Two runs, same hardware, same day: one gives a
+stable ratio in the range this project considers healthy, the other gives a
+declining one well below it. Raw machine speed cannot be the variable that
+changed between them — something about the *scripts* differs.
+
+**The one thing that does differ between those two scripts is the memory
+sampler, which makes it the leading suspect rather than a speculative one.**
+`test1_v3.py` runs a background thread inside the timed child process
+sampling RSS at a requested 0.2ms interval; `test_cumulative_compile_time.py`
+does no per-call sampling at all. Windows' default timer granularity is
+15.6ms, so a 0.2ms sleep request is not honoured the way it is on Linux, and
+the sample counts in `test1_v3.py`'s own run log are consistent with the
+thread spinning rather than sleeping (28 samples inside a ~2ms measurement —
+finer than the interval requested). A spinning Python thread contends for
+the GIL, and PSF holds the GIL for a larger share of its work than Qiskit
+does, so this would inflate the PSF arms specifically — which is exactly
+the direction of the effect seen (Qiskit is *faster* on this machine than
+on the Linux sandbox at 156 qubits, 17.97ms vs. 32.61ms; PSF canonical is
+*slower*, 19.69ms vs. 11.47ms). Also consistent: `canonical` and `cx` are
+1.75x apart on Linux (11.47 vs. 20.04ms, as expected — `cx` does strictly
+more work) but essentially tied on this machine (19.69 vs. 20.41ms), which
+is what sampler-driven GIL contention swamping the real difference would
+look like.
+
+**This is now a strong lead, not a confirmed cause — the confirming
+experiment is cheap and has not been run.** Re-run `test1_v3.py` on the
+same fast machine with the RSS sampler disabled (`--mem-calls 0` or
+equivalent) and check whether the ratio recovers toward the Linux sandbox's
+4.0–5.5x. If it does, the fix is a sampler that respects Windows' timer
+granularity instead of a claim about "Windows being slower." If it doesn't,
+the ratio really is machine- or OS-dependent for a reason not yet found, and
+this README's speedup claims need an explicit range rather than a headline
+number. **Until that one run happens, treat this table's ratio column as a
+lower bound, not a representative number.**
+
+**The depth result is not affected by any of this and is the most robust
+thing in the table.** Depth 9 / 13 / 16 reproduced exactly, at every scale,
+in both environments, on 10 independent seeds — as it should, given the
+decomposition is deterministic. At hardware-comparable basis
+(`entangling_basis="cx"`), PSF-Zero produces the same 2-qubit gate count as
+Qiskit `optimization_level=3` at **depth 13 vs. 16**, and did so faster in
+both environments. That claim does not depend on which timing column you
+believe.
+
 #### Where this matters in practice: VQE and other variational hybrid workflows
 
 The Variational Quantum Eigensolver (VQE) is the leading current-generation
@@ -569,6 +712,33 @@ In both cases, the same circuit *structure* is recompiled on almost every
 iteration with new parameter values, which puts the compile step directly
 in the hot path of the algorithm rather than being a one-time setup cost —
 exactly the workload this section's cumulative-loop benchmark models.
+
+> **Correction, 2026-09-09 — the sentence immediately above overstates the
+> case, and the overstatement is the kind a reviewer would find first.** In
+> the standard Qiskit pattern, a VQE loop does **not** recompile per
+> iteration. `Parameter` objects survive transpilation, so the accepted
+> practice is to transpile the parameterised ansatz **once** and then call
+> `assign_parameters()` each iteration — binding is orders of magnitude
+> cheaper than compiling, and is what `qiskit-algorithms`' VQE and the
+> Runtime primitives are built around. The cumulative-loop benchmark in
+> this section therefore models a loop that recompiles from scratch every
+> iteration, which is not the default shape of a textbook VQE run.
+>
+> Two narrower cases where the loop genuinely does recompile, and where this
+> section's numbers apply directly: **adaptive ansätze** (ADAPT-VQE and
+> relatives), where the circuit *structure* grows each iteration and must be
+> re-synthesised; and **simulator-side development loops** — parameter
+> sweeps, ansatz search, CI over circuit families — where there is no QPU
+> queue and compile time really is a visible fraction of wall clock.
+>
+> The claim that does *not* survive is the hardware one. A 50,000-iteration
+> loop against a real backend is dominated by queue time and QPU execution:
+> even in a dedicated Runtime session at a few seconds per job, that is on
+> the order of days, against which the 491s (8.2 min) of compile time saved
+> here is roughly 0.1–0.2%. Faster compilation is a real classical-side win;
+> it is not a route to more hardware iterations per session, and this README
+> should not be read as claiming otherwise. The calibration-drift question
+> below remains untested for exactly this reason.
 
 Two of this project's now-confirmed properties apply directly:
 
@@ -837,6 +1007,61 @@ entirely) if minimum depth matters more than compile time; level 1 is the
 setting where PSF-Zero's own synthesis is actually the thing producing the
 output.
 
+##### Confirmed on the project's slower (workplace) machine (2026-09-09)
+
+The default change above was decided from cloud-sandbox measurements. It has
+since been re-run end to end on real hardware with the real `psf_zero_core`
+— specifically the project's *slower*, workplace-administered machine, not
+the faster personal one used for section 4's cumulative-loop and
+methodology-corrected updates above — at 3 seeds per point, both workloads,
+out to 300 qubits, one scale further than the sandbox run reached. Median
+compile time (ms):
+
+| Qubits | qiskit opt=1 | qiskit opt=2 | qiskit opt=3 | **psf rl=1 (new default)** | psf rl=2 (old default) |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 50 | 13.7 | 15.0 | 33.4 | **9.6** | 12.3 |
+| 100 | 23.7 | 879.3 | **10,134** | **16.1** | 866.2 |
+| 156 | 67.3 | 1,121.6 | **12,858–31,269** | **49.4** | 1,108.1 |
+| 300 | 70.1 | 56.8 | 96.8 | **39.9** | 42.7 |
+
+2-qubit gate count: `opt=1` emits 1500/3000/4686/9000; every other arm emits
+the same 75/150/240/450. Depth: `rl=1` is 23/23/44/23, everything else
+16/16/35/16 — the ~30–40% depth cost stated above, reproduced exactly.
+Equivalence checked at 6 qubits, all arms < 4e-15. `psf rl=2` tracks
+`qiskit opt=2` to within a couple of percent at every scale (866.2 vs.
+879.3ms at 100 qubits), which is the bit-identical-output finding above
+showing up in the timings.
+
+**An unexplained instability in Qiskit's own higher optimization levels,
+worth flagging because it is not ours and it is large.** At 100 and 156
+qubits `opt=3` takes 10–31 *seconds* on this workload, against tens of
+milliseconds at 50 and 300 qubits. The same non-monotonic blow-up appeared
+independently in the sandbox run (14.3s at 100q, 19.5s at 156q), so it
+reproduces across environments. It correlates exactly with whether the grid
+coupling map has spare qubits: 50→56 and 300→306 have 6 unused physical
+qubits and are fast; 100→100 and 156→156 are exactly saturated and are
+catastrophically slow. **The 300-qubit `passthrough` control rules out the
+simplest version of that story**, though — there `opt=3` took 75.2s against
+`opt=2`'s 57.1s, a monotonic increase rather than a blow-up, on a grid that
+also has 6 spare qubits but a completely different circuit structure; and
+at 50/100/156 qubits the `passthrough` arms never showed the inversion
+either. So the trigger appears to need *both* a saturated coupling map *and*
+the dense adjacent-pair structure, not either alone. This is an observation
+with a correlation and no confirmed mechanism — but it is a second,
+independent reason to prefer `routing_optimization_level=1`, which never
+enters that regime at all (9.6–49.4ms across every scale tested). Worth
+noting given this ran on the noisier of the project's two machines: `rl=1`
+stayed tight and predictable here despite that, while both Qiskit and
+`rl=2` show their worst variance on exactly this machine — the opposite of
+what "just a slower PC" would predict if it affected every arm equally.
+
+The `passthrough` control behaved exactly as designed at every scale
+including 300 qubits: `0/0 blocks` reported every time, and `rl=1` and
+`rl=2` matching `opt=1` and `opt=2` respectively on 2-qubit gate count and
+depth to the digit (300q: `rl=1` 624,556 gates / depth 76,863, identical to
+`opt=1`). On circuits PSF-Zero is not designed for it is neither help nor
+harm, which is the behaviour `block_gate_floor` exists to produce.
+
 ### 6. Sanity check against Benchpress
 
 We don't have our own results in [Benchpress](https://github.com/Qiskit/benchpress) — IBM's open-source SDK benchmarking
@@ -1098,7 +1323,6 @@ the table above, not a different one), same `mean_two_qubit_gates` per
 family (3 / 12 / 42, matching the table above exactly), 5 repeats × 4
 engines, batched as one job per sweep. Four independent sweeps were
 captured: three against `ibm_marrakesh`, one against `ibm_fez`.
-
 
 ![Real compile_for_hardware(), old vs. patched: fidelity and native ecr gate count by family](/docs/section8_real_hw_vs_sim.png)
 
@@ -1572,11 +1796,16 @@ In the interest of not overstating anything:
   correctness unaffected. See section 4's final table, plus its
   cross-machine cumulative-loop addendum confirming the same ratio holds
   under sustained repeated use on two further, independent machines.
-  **What's still open, not about the mechanism but about the product
-  decision it exposed: `verify=True` remains `compile()`/
-  `compile_for_hardware()`'s current default, so this confirmed advantage
-  is opt-in, not what a caller gets without knowing to ask for it** — see
-  Roadmap.
+  **Update 2026-09-09 — the product decision this exposed has been
+  addressed, in a better way than the binary it was originally framed as.**
+  Rather than flipping the default to `verify=False`, `verify` became
+  `Union[bool, str]`: `True` (still the default) now runs a cheap
+  Rust-core check and `"strict"` runs the old `Operator()` reconstruction.
+  Measured over a 50,000-iteration loop, the default path is 4.79x faster
+  than Qiskit L3 with the check still on, and `verify=False` is 9.12x. The
+  safety net now costs ~1.9x instead of ~4–5x, so the advantage is no
+  longer opt-in and no correctness guarantee was given up to get it. See
+  section 4's first 2026-09-09 update.
 - **RESOLVED. Section 5's compile-time comparison (previously gate-count/depth
   only) needed its own confound-hunting before it could be trusted.** The
   first attempt showed `0/N` blocks processed (wrong circuit generator, same
@@ -1670,16 +1899,37 @@ In the interest of not overstating anything:
   than Qiskit at every scale tested (2.4x–5.2x) — see section 4's final
   table, now further confirmed under sustained repeated use across two more
   independent machines (section 4's cross-machine addendum).
-- **The one real open item this leaves: should `verify=False` become the
-  new default**, rather than staying opt-in? The math has now cleared every
-  bar this project has set for it (offline validation to ~1e-15, and now a
-  full real-hardware production sweep with correctness checked at every
-  step) — a case can be made that re-verifying it on every call is no longer
-  buying enough to justify its cost. Against that: flipping a safety-net
-  default is exactly the kind of change that shouldn't happen because a
-  benchmark investigation found it convenient — it's a real design decision
-  for whoever maintains `psf_compile.py`, informed by this data, not decided
-  by it.
+- **DONE (2026-09-09), and the original framing of the question was wrong.**
+  The open item used to be "should `verify=False` become the new default,
+  rather than staying opt-in?" — a choice between speed and the safety net.
+  It was resolved by not taking that trade: `verify` became
+  `Union[bool, str]`, where `True` (unchanged as the default) now runs a
+  cheap Rust-core check and `"strict"` preserves the old `Operator()`
+  reconstruction for anyone who wants it. The default path measures 4.79x
+  faster than Qiskit L3 over a 50,000-iteration loop with verification
+  still on; `verify=False` measures 9.12x. Nothing was traded away. See
+  section 4's first 2026-09-09 update.
+- **NEW, and it should be closed before any speed number in this README is
+  quoted externally: the corrected-methodology ratios differ by a factor of
+  ~3 between the Linux sandbox and this project's faster machine**
+  (`opt=3 ÷ psf canonical` at 156 qubits: 4.15x vs. 1.44x). This is
+  confirmed to be about the *script*, not the *machine*: the same fast PC
+  gave a flat, healthy 4.79x ratio on `test_cumulative_compile_time.py`
+  (no per-call sampling) on the same day, which rules out raw hardware
+  speed as the cause of the low, declining ratio in `test1_v3.py`. The
+  concrete, cheap, falsifiable candidate is `test1_v3.py`'s in-child RSS
+  sampler, which requests a 0.2ms interval that Windows' 15.6ms default
+  timer granularity cannot honour — the recorded sample counts suggest the
+  thread spins rather than sleeps, which would contend for the GIL and
+  penalise the PSF arms specifically. **The test is a single re-run of
+  `test1_v3.py` on the same fast machine with memory sampling disabled.**
+  If the PSF arms speed up toward the Linux sandbox's range, the sampler is
+  confirmed as the cause and needs fixing (respect the platform's timer
+  granularity, or sample from the parent process instead of a child
+  thread) rather than this README claiming "Windows is slower." If they
+  don't, something else — genuinely OS- or machine-dependent — is going on
+  and needs its own investigation. See section 4's second 2026-09-09
+  update.
 - **DONE.** Section 5's compile-time comparison now has its own confirmed,
   seed-pinned, 20-measurement-per-scale result (1.0x–1.4x faster than
   Qiskit) — see section 5 and the RESOLVED item above.
