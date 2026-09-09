@@ -1,0 +1,55 @@
+--- a/phase2.py
++++ b/phase2.py
+@@ -1,7 +1,7 @@
+ def worker_qiskit(circuit, backend_mock, result_queue):
+     start_time = time.perf_counter()
+     try:
+-        # backend=None [cite: 4]
++        transpile(QuantumCircuit(2), basis_gates=["rz", "sx", "x", "cx"], optimization_level=3)  # warm-up, outside the timer
++        start_time = time.perf_counter()
+         transpiled_qc = transpile(circuit, basis_gates=["rz", "sx", "x", "cx"], optimization_level=3)
+         elapsed_time = time.perf_counter() - start_time
+         result_queue.put({"status": "success", "time": elapsed_time})
+     except Exception as e:
+         result_queue.put({"status": "error", "message": str(e)})
+
+
+ def worker_psf(circuit, coupling_map, result_queue):
+-    start_time = time.perf_counter()
+     try:
++        pcp.compile(QuantumCircuit(2))  # warm-up, outside the timer
++        start_time = time.perf_counter()
+         transpiled_qc = pcp.compile(circuit)
+         elapsed_time = time.perf_counter() - start_time
+         result_queue.put({"status": "success", "time": elapsed_time})
+     except Exception as e:
+         result_queue.put({"status": "error", "message": str(e)})
+
+# ---------------------------------------------------------------------------
+# NOTES (not part of the diff -- read before applying)
+# ---------------------------------------------------------------------------
+#
+# Same issue and fix as phase1_warmup_v2.patch, applied to phase2.py's
+# already basis_gates-fixed workers: every measurement here still runs in a
+# brand-new multiprocessing.Process (Windows: 'spawn', so a full
+# re-execution each time), and transpile()'s first call in a fresh process
+# pays a real, one-time warmup cost -- confirmed directly at 2.41s (no
+# warmup) vs. 0.07s (with warmup) for an identical 156-qubit circuit, a 32x
+# difference from measurement methodology alone.
+#
+# This project's own sandbox (Python stand-in for the Rust core, so
+# absolute numbers don't transfer -- only the structure does) found that
+# applying this fix symmetrically to BOTH workers collapses phase2.py's
+# already-reported 5.5x-42x speedups (156-1000 qubits) down to roughly
+# 0.7x-1.7x -- i.e. close to parity, and briefly reversed at one size
+# tested:
+#
+#     qubits | qiskit (warm) | psf (warm, stand-in core) | ratio
+#     156    | 0.2181s       | 0.1302s                    | 1.7x
+#     300    | 0.2953s       | 0.2202s                    | 1.3x
+#     500    | 0.2225s       | 0.3242s                    | 0.7x (Qiskit faster)
+#     1000   | 0.7272s       | 0.7425s                    | 1.0x
+#
+# Re-run this patched version (and phase1_warmup_v2.patch's patched
+# phase1.py) on the real Rust core for the numbers that should actually
+# replace section 4's "203x -> 4.4x" curve.
