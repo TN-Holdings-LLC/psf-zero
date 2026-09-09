@@ -267,6 +267,9 @@ fn to_complex(m: &RMat4) -> Mat4 {
 ///      of those two reconstructs `o`. That is resolved here with an explicit
 ///      reconstruct-and-compare check rather than assumed away.
 fn so4_to_su2_pair(o: &RMat4) -> Result<(Mat2, Mat2), CartanError> {
+    // Both quaternions' scalar parts are the same combination -- the trace --
+    // so it is computed once. (It was written out twice, identically, which
+    // reads as though the two were expected to differ.)
     let w = o[(0, 0)] + o[(1, 1)] + o[(2, 2)] + o[(3, 3)];
     let x = o[(1, 0)] - o[(0, 1)] - o[(3, 2)] + o[(2, 3)];
     let y = o[(2, 0)] + o[(3, 1)] - o[(0, 2)] - o[(1, 3)];
@@ -282,7 +285,7 @@ fn so4_to_su2_pair(o: &RMat4) -> Result<(Mat2, Mat2), CartanError> {
     );
     k_l /= Complex64::new(norm_l, 0.0);
 
-    let w_r = o[(0, 0)] + o[(1, 1)] + o[(2, 2)] + o[(3, 3)];
+    let w_r = w;
     let x_r = o[(1, 0)] - o[(0, 1)] + o[(3, 2)] - o[(2, 3)];
     let y_r = -o[(2, 0)] + o[(3, 1)] + o[(0, 2)] - o[(1, 3)];
     let z_r = o[(3, 0)] + o[(2, 1)] - o[(1, 2)] - o[(0, 3)];
@@ -425,15 +428,12 @@ fn gate_infidelity(target: &Mat4, candidate: &Mat4) -> f64 {
 /// disturbed as little as possible.
 const GROUP_TOL_CANDIDATES: [f64; 4] = [1e-4, 1e-2, 1e-1, 1.0];
 
-/// Givens rotation angles used by the `so4_to_su2_pair` retry path. A fixed,
-/// evenly spread sweep -- see changelog item 3 for why this replaced a list
-/// of arbitrary magic numbers.
 /// Candidate mixing angles for `simultaneous_diagonalizer`. Any of them
 /// recovers the same eigenbasis when a valid decomposition exists; the one
 /// with the widest eigenvalue separation is the one that recovers it
-/// accurately. Deliberately includes neither 0 nor pi/2 exactly as the first
-/// choices, since those are the two axes (pure Re, pure Im) most likely to be
-/// the degenerate ones for structured gates.
+/// accurately. Deliberately puts neither 0 nor pi/2 first, since those are the
+/// two axes (pure Re, pure Im) most likely to be the degenerate ones for
+/// structured gates.
 const COMBINATION_ANGLES: [f64; 8] = [
     0.6,
     1.1,
@@ -445,6 +445,9 @@ const COMBINATION_ANGLES: [f64; 8] = [
     2.3,
 ];
 
+/// Givens rotation angles used by the `so4_to_su2_pair` retry path. A fixed,
+/// evenly spread sweep -- see changelog item 3 for why this replaced a list
+/// of arbitrary magic numbers.
 const GIVENS_ANGLES: [f64; 6] = [
     PI / 4.0,
     PI / 8.0,
@@ -591,7 +594,7 @@ fn simultaneous_diagonalizer(block: &DMatrix<Complex64>) -> DMatrix<f64> {
     let mut best = hierarchical_diagonalizer(&sym_im, &sym_re);
     let mut best_score = offdiag_after(block, &best);
 
-    let mut consider = |cand: DMatrix<f64>, best: &mut DMatrix<f64>, best_score: &mut f64| {
+    let consider = |cand: DMatrix<f64>, best: &mut DMatrix<f64>, best_score: &mut f64| {
         let score = offdiag_after(block, &cand);
         if score < *best_score {
             *best_score = score;
@@ -1221,4 +1224,6 @@ mod tests {
         }
     }
 }
+
+
 
