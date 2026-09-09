@@ -1,0 +1,71 @@
+--- a/phase2.py
++++ b/phase2.py
+@@ -49,7 +49,7 @@
+ def worker_qiskit(circuit, backend_mock, result_queue):
+     start_time = time.perf_counter()
+     try:
+-        transpiled_qc = transpile(circuit, backend=backend_mock, optimization_level=3)
++        transpiled_qc = transpile(circuit, basis_gates=["rz", "sx", "x", "cx"], optimization_level=3)
+         elapsed_time = time.perf_counter() - start_time
+         result_queue.put({"status": "success", "time": elapsed_time})
+     except Exception as e:
+
+# ---------------------------------------------------------------------------
+# NOTES (not part of the diff -- read before applying)
+# ---------------------------------------------------------------------------
+#
+# WHAT THE BUG IS
+# ----------------
+# `main()` sets `backend_mock = None` and never changes it, so
+# `worker_qiskit`'s call was effectively `transpile(circuit, backend=None,
+# optimization_level=3)`. With no backend AND no basis_gates, transpile()
+# has no target basis to translate to -- confirmed directly (see below):
+# every `UnitaryGate` in the circuit passes straight through completely
+# untouched, at every qubit count tested. This is the same class of "looks
+# fast because it does no work" issue this project has already caught and
+# retracted once before (the 1000-qubit "615x-867x" figures, per the
+# README's "What we haven't verified yet" section) -- except this time it
+# affects the QISKIT side of a comparison instead of PSF-Zero's.
+#
+# CONFIRMED DIRECTLY (this project's sandbox, same circuit construction as
+# phase2.py's own build_dense_pair_blocks_circuit(), 20 gates/pair):
+#
+#     qubits | input ops         | output ops after transpile(backend=None, optimization_level=3)
+#     156    | {'unitary': 1560} | {'unitary': 1560}   <- byte-identical, nothing happened
+#     300    | {'unitary': 3000} | {'unitary': 3000}   <- byte-identical
+#     1000   | {'unitary': 10000}| {'unitary': 10000}  <- byte-identical
+#
+# WHY THE ORIGINAL RUN STILL SHOWED A FLAT ~1.5s "QISKIT" TIME
+# --------------------------------------------------------------
+# transpile() pays a real, one-time warmup cost the first time it's called
+# in a fresh Python process (building its internal preset PassManager,
+# loading stage plugins, etc.) -- confirmed directly: a trivial 4-qubit
+# circuit took 0.475s on the first call in a fresh process and 0.005s on
+# every call after that, in the same process. Because phase2.py's
+# `run_with_monitor()` spawns a brand-new `multiprocessing.Process` for
+# EVERY worker invocation (and Windows always uses the 'spawn' start
+# method, so every one of those processes re-imports everything from
+# scratch), every single "Qiskit" measurement in the original run pays this
+# warmup tax freshly -- while the actual transpile work being timed does
+# nothing at all, per the table above. The reported ~1.5s "Qiskit" number
+# is measuring interpreter/library cold-start cost, not compilation work,
+# and does not scale with qubit count because neither the warmup cost nor
+# the (nonexistent) transpile work does.
+#
+# WHAT THIS PATCH DOES
+# ----------------------
+# Gives Qiskit an actual target basis (`rz`, `sx`, `x`, `cx` -- an ordinary
+# universal gate set, matching what `compile_for_hardware()`'s own
+# `basis_gates` fix targets elsewhere in this project) so `transpile()` is
+# forced to actually decompose every `UnitaryGate` block, making it do
+# equivalent real work to what PSF-Zero's `compile()` is doing. Confirmed
+# in this project's sandbox that this produces qubit-count-dependent
+# output and qubit-count-dependent time (0.140s at 156 qubits, 0.511s at
+# 1000 qubits -- unlike the flat, workless original).
+#
+# This patch does NOT fix the warmup-cost-per-subprocess issue -- for a
+# clean timing comparison, consider calling `transpile()` (and
+# `psf_compile.compile()`) once on a small throwaway circuit inside each
+# worker, before starting the timer, to pay any one-time cost outside the
+# measured interval; or restructure to reuse one long-lived worker process
+# per compiler across all seeds/sizes instead of spawning fresh each time.
