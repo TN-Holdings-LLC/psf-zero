@@ -1238,7 +1238,7 @@ mapping in `provenance-map.md`. Neither question can be answered from them.
   string, no platform, no Python or Qiskit version. Those columns were only
   added to the harnesses later, which is exactly why runs 3 and 4 above
   *can* be positively tied to one machine while the original cannot.
-- **`test1_v3.py` writes to a fixed filename** ([`phase1_v3_benchmark_results.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/phase1_v3_benchmark_results.csv)),
+- **`test1_v3.py` writes to a fixed filename** ([`phase1_v3_benchmark_results.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/archive/phase1_v3_benchmark_results.csv)),
   so each run overwrites the last. The surviving copy is run 4's. The
   original declining run's own output no longer exists.
 
@@ -1251,15 +1251,15 @@ library versions in its output.
 
 The archive is worth having for a separate reason: several of these files
 could be matched to the exact published table they produced, by their
-numbers alone. [`phase1_v2_benchmark_results.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/phase1_v2_benchmark_results.csv) reproduces this section's
+numbers alone. [`phase1_v2_benchmark_results.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/archive/phase1_v2_benchmark_results.csv) reproduces this section's
 `phase1.py` re-run table to the last digit (PSF 1.08/2.60/5.10/8.84ms
-against Qiskit 10.23/16.05/22.34/29.59ms), and [`phase2_benchmark_results.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/phase2_benchmark_results.csv)
+against Qiskit 10.23/16.05/22.34/29.59ms), and [`phase2_benchmark_results.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/archive/phase2_benchmark_results.csv)
 does the same for the `phase2.py` table (10.09/15.94/25.15/49.06ms against
 29.85/46.46/72.67/136.58ms). The two retracted-artifact runs survive too,
 and are visibly wrong in precisely the way this section describes:
-[`phase1_benchmark_results.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/phase1_benchmark_results.csv) has Qiskit pinned at 1.30–1.34s at *every*
+[`phase1_benchmark_results.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/archive/phase1_benchmark_results.csv) has Qiskit pinned at 1.30–1.34s at *every*
 scale (the no-op `transpile()` bug that produced the retracted "200x"), and
-[`phase2_v2_deadzone_results.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/phase2_v2_deadzone_results.csv) has PSF-Zero 4.1x *slower* than Qiskit at
+[`phase2_v2_deadzone_results.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/archive/phase2_v2_deadzone_results.csv) has PSF-Zero 4.1x *slower* than Qiskit at
 1000 qubits (the `force_consolidate` bug — the measurement that triggered
 this section's entire re-investigation). Those two files are the primary
 evidence for retractions this README currently supports with prose only.
