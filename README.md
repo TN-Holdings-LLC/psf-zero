@@ -210,6 +210,34 @@ now leaning on.
 
 Code: [`benchmarks/test_scale_explosion_war2.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_scale_explosion_war2.py)
 
+#### Update (2026-09-10): third independent run, on the project's slower machine, with one flagged outlier
+
+The identical, unmodified script was run a third time — this time on the
+project's slower machine (the one used for section 5's 2026-09-09
+confirmation), against a freshly-built, real `psf_zero_core` wheel:
+
+| Qubits | TKET time | PSF-Zero time | PSF-Zero depth |
+| :---: | :---: | :---: | :---: |
+| 10 | 0.989s | 0.002s | 9 |
+| 20 | 1.958s | 0.003s | 9 |
+| 40 | 3.897s | 0.004s | 9 |
+| 80 | 7.719s | **0.081s** | 9 |
+| 160 | 15.579s | 0.022s | 9 |
+
+TKET's times track the two earlier runs closely (same order of magnitude at
+every scale). Depth reproduced at exactly 9 for every scale, again — the
+one number in this table that doesn't depend on timing noise.
+
+The 80-qubit PSF-Zero time does not fit the trend (0.002s / 0.003s / 0.004s
+/ **0.081s** / 0.022s is not monotonic, and 0.081s is roughly 20x its
+neighbors). This script measures one call per scale, not an average over
+seeds, so there is nothing here to average the spike away with. This project
+has already seen single-measurement noise of this shape before (section 5's
+500-qubit outlier, 0.825s against a 0.173s re-run of the identical seed) and
+we are treating this one the same way: **flagged as probable transient
+system noise, not re-run yet, and not folded into the speedup claims above**
+until either a repeat measurement confirms or contradicts it.
+
 ### 3. Hamiltonian simulation (Trotter blocks)
 
 Using the standard XX/YY/ZZ/exchange/full two-qubit interaction blocks used in
@@ -540,6 +568,20 @@ at *where* the time went, rather than just the aggregate:
   233–240MB and object counts at 181k–194k throughout — no growth in
   either.
 
+> **Correction (2026-09-10): the raw arrays behind this bullet list have
+> since been recovered, and two of its numbers need qualifying.** The
+> "r≈0.64" figure is exact — the per-iteration Pearson correlation in that
+> run is **+0.644** (Qiskit vs `verify=True`). The "roughly 2.5–2.7x"
+> figure is not wrong but is not a matched comparison: it divides
+> PSF-Zero's *mean* at Qiskit's slowest 1% (17.45ms / 3.28ms) by
+> PSF-Zero's *median* over the whole run. Mean-against-mean gives
+> 1.78x / 1.72x and median-against-median gives 3.20x / 3.27x. The
+> qualitative claim survives under every pairing — PSF-Zero is markedly
+> slower at exactly those iterations, by somewhere between 1.7x and 3.3x
+> depending on the statistic — but the specific figure should be quoted
+> with the statistic it came from. Full analysis in the 2026-09-10 update
+> below.
+
 **Conclusion:** the ratio compression seen at 10,000/50,000 iterations is
 not a memory leak or an algorithmic scaling problem in `psf_compile.py` or
 `psf_zero_core` — both stayed flat under controlled conditions. It tracks
@@ -628,8 +670,8 @@ repeated timed calls per point, in-child memory sampling, `spawn` forced,
 per-arm equivalence checking, and output quality recorded alongside every
 timing — the five defects it fixes are catalogued in this project's
 `benchmark-methodology-v3.md` note). Running it at 10 seeds per point on
-**this project's faster machine** (a personally-administered PC, not the
-slower workplace machine used for section 5's 2026-09-09 confirmation
+**this project's faster machine** (the faster of the project's two
+machines, not the slower one used for section 5's 2026-09-09 confirmation
 below) gives materially lower ratios than either section 4's tables above
 or the same script's own run in a Linux cloud sandbox:
 
@@ -690,6 +732,27 @@ this README's speedup claims need an explicit range rather than a headline
 number. **Until that one run happens, treat this table's ratio column as a
 lower bound, not a representative number.**
 
+> **Correction (2026-09-10): the paragraph above is retracted. We finally
+> read `test1_v3.py`'s actual source, and the mechanism it describes does
+> not exist in that script.** The claim was that a 0.2ms RSS-sampler thread
+> spins during the timed calls and contends for the GIL, penalising the PSF
+> arms specifically. The source shows otherwise: the timed repetitions
+> (`for _ in range(reps): ... times.append(...)`) run with **no sampler
+> thread active at all** — the script's own change-log comment says so
+> directly ("v3 samples RSS from a thread inside the child ... during a
+> **dedicated (untimed) pass**"). The `RssSampler` is only started *after*
+> timing is finished, in a separate block whose entire purpose is measuring
+> memory, not compile time. Whatever caused the declining ratio in the
+> table above, it cannot be sampler-driven GIL contention during
+> measurement, because no sampler runs during measurement. We should have
+> read the script before proposing a mechanism for what it does — this
+> project's own stated discipline ("check the fixture, not just the code")
+> applies to reading our own diagnostic scripts too, and we didn't follow
+> it here. **The real cause of the decline in the table above is open
+> again, with no candidate mechanism.** The Update immediately below was
+> written under the retracted hypothesis; read it as a data point only, not
+> as evidence for a mechanism that isn't real.
+
 **The depth result is not affected by any of this and is the most robust
 thing in the table.** Depth 9 / 13 / 16 reproduced exactly, at every scale,
 in both environments, on 10 independent seeds — as it should, given the
@@ -698,6 +761,593 @@ decomposition is deterministic. At hardware-comparable basis
 Qiskit `optimization_level=3` at **depth 13 vs. 16**, and did so faster in
 both environments. That claim does not depend on which timing column you
 believe.
+
+#### Update (2026-09-10): the exact scripts that produced this section's own tables, re-run on a second machine, reproduce cleanly — a data point only, since the correction above retracts the mechanism this was originally framed around
+
+> **Note:** this update was drafted earlier the same day as the Correction
+> above, under the sampler hypothesis that correction retracts. The data
+> below is unchanged and still real; only the interpretation ("supporting
+> evidence for the sampler hypothesis") no longer holds, since that
+> mechanism doesn't exist in the script. Read this as: two scripts with
+> different memory-measurement designs gave different ratios, on two
+> different machines — a correlation with two things changing at once
+> (script and machine), not an isolated variable.
+
+The update directly above flagged that `test1_v3.py` gives declining,
+below-sandbox ratios on the project's *faster* machine. A separate, useful
+data point: `phase1.py` and
+`phase2.py` — the exact fully-patched scripts (symmetric warm-up,
+`verify=False`, 10-seed loop) that produced this section's own final
+15–1000 qubit table above — were re-run end to end on the project's
+*slower* machine, against a freshly-built, real `psf_zero_core` wheel.
+Unlike `test1_v3.py`, neither script polls memory on a sub-millisecond
+timer: `phase1.py`'s peak-RSS monitor polls the child process every 100ms
+(`time.sleep(0.1)`, comfortably above Windows' 15.6ms timer granularity),
+and `phase2.py` does no per-call memory sampling at all.
+
+15–156 qubits (`phase1.py`, median of 10 seeds):
+
+| Qubits | Qiskit median | PSF-Zero median | Ratio |
+| :---: | :---: | :---: | :---: |
+| 15 | 10.23ms | 1.08ms | **9.51x** |
+| 50 | 16.05ms | 2.60ms | **6.16x** |
+| 100 | 22.34ms | 5.10ms | **4.38x** |
+| 156 | 29.59ms | 8.84ms | **3.35x** |
+
+156–1000 qubits (`phase2.py`, mean ± sd of 10 seeds):
+
+| Qubits | Qiskit mean ± sd | PSF-Zero mean ± sd | Ratio |
+| :---: | :---: | :---: | :---: |
+| 156 | 29.85 ± 2.54ms | 10.08 ± 1.72ms | **2.96x** |
+| 300 | 46.46 ± 2.71ms | 15.94 ± 1.54ms | **2.91x** |
+| 500 | 72.68 ± 3.21ms | 25.15 ± 1.52ms | **2.89x** |
+| 1000 | 136.58 ± 2.53ms | 49.06 ± 2.83ms | **2.78x** |
+
+The `phase2.py` ratios land within a few percent of this section's own
+published table above (2.42x/3.02x/2.78x/2.54x at the same four scales) —
+close reproduction of the existing claim, on different hardware. The
+`phase1.py` ratios are, if anything, healthier than either the existing
+table or the Linux-sandbox reference cited in the update above (9.51x down
+to 3.35x, versus the sandbox's 5.53x down to 4.15x).
+
+This was measured on the *slower*, noisier of the project's two machines —
+the one that, on a different workload (section 5's `phase3_v4.py`, with its
+saturated-grid Qiskit instability), has shown the *worst* variance of
+anywhere in this project. If "the slower machine" by itself explained
+`test1_v3.py`'s decay, this run should have shown the same pattern or
+worse. It didn't. That observation stands on its own (it doesn't depend on
+the sampler mechanism above, which is retracted) — but it doesn't identify
+what *does* explain the original decline, either. It's ruling something
+out, not confirming a replacement.
+
+#### Update (2026-09-10): `test1_v3.py` re-run on a third machine (distinct from both machines named elsewhere in this section) — healthy ratios again, and the sampler's presence in the script is now known to be irrelevant either way
+
+With the sampler mechanism retracted (see the Correction above), the
+question of *why* the original `test1_v3.py` table declined has no
+candidate cause left standing. A fresh run of the identical, unmodified
+`test1_v3.py`, on a machine distinct from both the one that produced the
+original declining table and the slower machine in the update directly
+above, gave:
+
+| Qubits | qiskit opt3 median | psf canonical median | Ratio (median) | Ratio (min-of-samples) |
+| :---: | :---: | :---: | :---: | :---: |
+| 15 | 6.15ms | 0.80ms | **7.65x** | 6.81x |
+| 50 | 10.06ms | 2.37ms | **4.24x** | 4.09x |
+| 100 | 15.90ms | 4.78ms | **3.33x** | 3.35x |
+| 156 | 22.87ms | 8.16ms | **2.8x** | 2.9x |
+
+(median of per-point medians over 10 seeds, 5 reps per point; equivalence
+checked at 6 qubits, all four arms < 4.5e-15; depth reproduced exactly at
+9/9/9/9 for `psf_canonical` across all four scales, matching every other
+run of this circuit family in this README.)
+
+These ratios are healthy — close to or above the Linux-sandbox reference
+(5.53x/4.22x/3.95x/4.15x) — on a run of the exact same script whose RSS
+sampler thread was, per the run log, still reporting high sample counts in
+small time windows (e.g. 94 samples inside a 0.8ms `psf_canonical` call at
+15 qubits). That the sampler was evidently still active and still shows the
+same "more samples than the requested interval should allow" signature,
+*and* the ratio came out healthy anyway, is a second, independent
+confirmation (beyond reading the source) that the sampler's behavior does
+not track with the ratio outcome — consistent with the Correction above,
+which already explains why: the sampler doesn't run during the timed
+calls, so nothing about it can affect them either way.
+
+**What remains unresolved:** whether this machine is the same one that
+produced the original declining table, a different machine, or possibly
+the same machine as the "slower, noisier" one referenced elsewhere in this
+section under a different account, is not yet established with certainty —
+this project has already had to correct its own machine attributions more
+than once (see `publication-policy.md`), and a shared account name across
+physical machines was discovered to be part of the problem. Until the
+provenance of the *original* declining-ratio run is pinned down, the honest
+summary is: `test1_v3.py` has now been run three times across this
+project's history, giving 4.35x→1.44x once and two independent
+healthy runs (this one, and the Linux sandbox) — and no mechanism
+explains the one outlier. Treat the 4.35x→1.44x table as an unexplained
+single run, not as this script's typical behavior, until it either
+reproduces again or a real cause is found.
+
+#### Update (2026-09-10): a fourth run of `test1_v3.py`, and the original declining table now has a quantitative account
+
+`test1_v3.py` was run again, unmodified, on the same machine as the update
+directly above (CPU signature `Intel64 Family 6 Model 181`), 10 seeds × 5
+reps per point:
+
+| Qubits | qiskit opt=0 | qiskit opt=3 | psf canonical | psf cx | opt=3 ÷ canonical |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 15 | 2.62ms | 6.54ms | 0.81ms | 1.25ms | **8.07x** |
+| 50 | 6.06ms | 9.52ms | 2.37ms | 4.00ms | **4.02x** |
+| 100 | 9.23ms | 15.55ms | 4.65ms | 7.63ms | **3.34x** |
+| 156 | 14.06ms | 23.06ms | 7.42ms | 12.33ms | **3.11x** |
+
+(median of per-point medians over 10 seeds; min-of-samples gives
+7.29x/4.03x/3.24x/2.91x. 2-qubit gate count 21/75/150/234 and depth
+9/13/16 for canonical/cx/opt=3 reproduced exactly, as in every run of this
+script. Equivalence at 6 qubits, all arms < 4.5e-15.)
+
+All four runs of this script side by side:
+
+| Run | 15q | 50q | 100q | 156q |
+| :--- | :---: | :---: | :---: | :---: |
+| original (the unexplained outlier) | 4.35x | 2.21x | 1.66x | 1.44x |
+| Linux sandbox | 5.53x | 4.22x | 3.95x | 4.15x |
+| Intel machine, run 1 | 7.65x | 4.24x | 3.33x | 2.80x |
+| Intel machine, run 2 | 8.07x | 4.02x | 3.34x | 3.11x |
+| Intel machine, run 3 (added 2026-09-10) | 8.03x | 4.10x | 3.42x | 3.05x |
+
+**The script is stable on a given machine.** Runs 1 and 2 on the Intel
+machine agree to within 4–11% at every scale. Whatever produced the
+original table, it is not this script being erratic.
+
+**And the "decline with scale" was never the anomaly.** Every run declines
+with scale — 8.07→3.11 here, 7.65→2.80 in run 1, 5.53→4.15 in the sandbox.
+Comparing the original run's *absolute* times against this one, arm by arm:
+
+| | 15q | 50q | 100q | 156q |
+| :--- | :---: | :---: | :---: | :---: |
+| original ÷ this run, `qiskit opt=3` | 1.34x | 1.49x | 1.37x | 1.23x |
+| original ÷ this run, `psf canonical` | 2.49x | 2.72x | 2.76x | 2.65x |
+
+Both rows are flat. The original run was not degrading as circuits grew: it
+was paying **two different constant penalties** — roughly 1.35x on the
+Qiskit arm and roughly 2.65x on the PSF arm — at every scale alike. Its
+ratio column is those two divided, so it has the same shape as every other
+run, uniformly scaled by about 0.51. (That division is an identity, not a
+prediction; what is *not* an identity, and is the actual finding, is that
+each penalty is scale-independent.)
+
+So the open question changes from "why did the ratio decline?" — it didn't,
+any more than usual — to "why was the PSF arm penalised about twice as hard
+as the Qiskit arm, uniformly?" There is a candidate that fits the size,
+built entirely from measurements already in this README:
+
+- The ~1.35x on the Qiskit arm is what a slower machine looks like, and it
+  matches the measured gap between this project's two machines on the dense
+  workload in section 5 (`qiskit opt=1`, the arm least entangled with
+  anything PSF-specific: 1.25x–1.37x).
+- The *extra* ~1.95x on the PSF arm is the size of the `verify` change made
+  on 2026-09-09. Before it, `verify=True` ran the `Operator()`
+  reconstruction this section profiled at 87% of per-block cost; after it,
+  a cheap Rust-core check. The cumulative-loop update above measured that
+  swap at 4.914ms → 2.203ms (2.23x) and describes the remaining check as
+  costing "about 1.9x rather than 4–5x". 1.95x sits inside that.
+
+**So the original declining table is quantitatively consistent with the
+slower machine running a pre-2026-09-09 `psf_compile.py`** — an older
+build, not a property of the script, of Windows, or of a mystery machine.
+This is an account that fits, **not a confirmed diagnosis**: nobody
+recorded which `psf_compile.py` that run used, and the arithmetic cannot
+distinguish "the old verify path" from any other cause that costs the PSF
+arm ~2x uniformly and the Qiskit arm nothing.
+
+**The confirming experiment is to re-run `test1_v3.py` with the PSF arms at
+`verify="strict"`.** If this account is right, the ratios should fall from
+~8.0/4.1/3.4/3.1 to roughly the original's 4.35/2.21/1.66/1.44. If they
+don't, the account is wrong and the original run goes back to being
+unexplained.
+
+> **Correction (2026-09-10): an earlier revision of this paragraph called
+> that "one flag away". It is not — `test1_v3.py` has no `--verify`
+> option** (its arguments are `--qubits`, `--seeds`, `--reps`, `--arms`,
+> `--gates-per-pair`, `--check-qubits`, `--out`, `--quick`), and passing
+> one is an argparse error. The experiment needs an arm added, not a flag
+> set. `benchmarks/test1_v3_verify_strict.py` does that without modifying
+> `test1_v3.py`: it imports the module and registers
+> `psf_canonical_strict` / `psf_cx_strict` into its `ARMS` table, so the
+> current `verify=True` arm and the `verify="strict"` arm are measured
+> **in the same run, on the same seeds, in the same process conditions** —
+> a paired comparison rather than a cross-run one, which is stronger than
+> what the original wording proposed. The wrapper's plumbing was verified
+> end-to-end against a stub core (arms register, propagate to the `spawn`
+> child processes, pass the equivalence check, and reach the CSV); the
+> ratios it will produce against the real Rust core are of course still
+> unmeasured, which is the point of running it.
+
+#### Update (2026-09-10): the confirming experiment has now been run, and it REFUTES the account above
+
+`benchmarks/test1_v3_verify_strict.py` was run on the Intel machine, 10
+seeds × 5 reps, with `qiskit_opt3`, `psf_canonical` (the current
+`verify=True` cheap core check) and `psf_canonical_strict`
+(`verify="strict"`, the old `Operator()` reconstruction) measured **in the
+same run, on the same seeds** — the paired comparison the account needed.
+
+Compile time, median of per-point medians (ms):
+
+| Qubits | qiskit opt=3 | psf canonical | psf canonical **strict** | opt3 ÷ strict | *the account predicted* |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 15 | 6.12 | 0.84 | 4.32 | **1.42x** | *4.35x* |
+| 50 | 9.81 | 2.42 | 14.70 | **0.67x** | *2.21x* |
+| 100 | 15.69 | 4.94 | 32.36 | **0.48x** | *1.66x* |
+| 156 | 23.49 | 7.96 | 50.10 | **0.47x** | *1.44x* |
+
+(min-of-samples gives 1.21x/0.65x/0.51x/0.46x — same picture. Output
+unchanged by the flag, as it must be: 2-qubit gates 21/75/150/234 and depth
+9 for both PSF arms, equivalence at 6 qubits < 4.5e-15.)
+
+**The prediction was stated in advance and it missed, in the same direction
+at every scale.** The account required `verify="strict"` to slow the PSF
+arm by about 2.5–2.8x relative to a current run, landing it at
+2.02/6.45/12.83/19.66ms. It actually slows it by 5.3–7.0x, landing at
+4.32/14.70/32.36/50.10ms — roughly 2.1x–2.5x too slow, which puts the
+ratios about 3.1x below the original table rather than on top of it.
+**So the original declining run was not a pre-2026-09-09 `psf_compile.py`
+running the old verify path.** That was the only candidate mechanism on the
+table, and combined with the provenance finding above — the original run's
+own output file and environment record no longer exist — the honest
+disposition is that the 4.35x→1.44x table is **unexplained and now
+permanently unexplainable**, not merely unexplained-so-far. It should be
+read as a single anomalous run and nothing more. Five later runs of this
+script (one Linux sandbox, three Intel, and this one) all sit in the
+2.8x–8.1x band.
+
+**Two things worth keeping from the experiment even though its hypothesis
+failed.**
+
+*First, a number this README did not previously have: what the strict
+safety net actually costs, across scale.* `verify="strict"` costs
+**5.1x/6.1x/6.6x/6.3x** the current default at 15/50/100/156 qubits. That
+is large enough to invert the headline comparison — with strict on,
+PSF-Zero is **slower than Qiskit `optimization_level=3`** at every scale
+above 15 qubits (0.67x/0.48x/0.47x). Anyone who wants the old
+reconstruct-and-check behaviour should know they are trading away the
+entire speed advantage and then some, not a fraction of it.
+
+*Second, a discrepancy this raises about `verify="strict"` itself.* This
+section's 2026-09-09 update measured the pre-change default at 4.914ms
+against `verify=False`'s 1.045ms, i.e. the old path cost about 4.7x
+`verify=False`, and the current default about 1.9x. If `verify="strict"`
+were simply the old default restored, it should cost about 4.7/1.9 ≈ 2.5x
+the current default. It costs 5.1x–6.6x. So either `verify="strict"` today
+is doing more work than the pre-2026-09-09 default did, or one of those two
+measurements is not comparable to the other (different scripts, different
+circuit sizes, different machines). We have not chased this down, and it is
+not load-bearing for anything published here — but it does mean
+`verify="strict"` should not be described as "the old default, still
+available" without checking that claim first.
+
+> **Correction (2026-09-10): the arithmetic in the paragraph above used a
+> machine-mismatched figure, and the gap it reports is roughly half what it
+> says.** It took "the current default costs about 1.9x `verify=False`"
+> from a run on a *different* machine and applied it to a `strict`
+> measurement taken on the Intel machine. A 50,000-iteration cumulative-loop
+> run on the Intel machine itself (see the update below) puts that ratio at
+> **1.22x, not 1.9x** — the cost of the cheap check is itself
+> machine-dependent. Redone with machine-matched numbers: on the Intel
+> machine `strict ÷ verify=True` is 5.14x at 15 qubits and
+> `verify=True ÷ verify=False` is 1.22x, so `strict ÷ verify=False` is
+> about **6.3x** against the pre-change default's **4.7x**. The overshoot is
+> therefore about **1.3x, not 2.5x**. That is small enough to be explained
+> by the remaining mismatches (the 4.7x is still from the other machine, a
+> different script, and a different measurement style), so the honest
+> statement is weaker than the one above: **there is no established
+> discrepancy here, only an unverified equivalence.** `verify="strict"` may
+> well be the old default; nobody has measured the two side by side. The
+> practical advice is unchanged — check before describing it as such.
+
+Raw data: [`psf-zero/data/phase1_v3_verify_strict_intel_2026-09-10.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/phase1_v3_verify_strict_intel_2026-09-10.csv) — the
+run's own 120-row output, with per-seed min/median/max/stdev, RSS and the
+environment columns. (An earlier revision of this section cited a summary
+table typed up from the console log instead, because the CSV had not been
+transferred yet. The CSV has since been checked against that summary and
+matches it exactly at every one of the twelve cells; the hand-typed
+intermediate has been removed so there is one source of truth for this run.)
+
+##### Two things the per-seed data shows that the summary did not
+
+**1. `qiskit opt=3` at 156 qubits has one slow repetition in every single
+seed — and this is the documented reason the harness looks the way it
+does.** Across all 10 seeds, `opt=3`'s five timed repetitions at 156 qubits
+span a factor of **3.6x** (min 20.4–29.1ms against max 71.8–96.7ms), with
+the per-point standard deviation (20–33ms) *exceeding* the median. Every
+other arm at every other scale sits at 1.05x–1.3x. The same pattern is in
+the earlier run's CSV at 3.3x, so it is reproducible, not a one-off.
+
+This is not a new discovery — it is `test1_v3.py`'s own stated reason for
+existing. Defect [2] in the script's header reads: *"ONE SAMPLE PER POINT
+against a 1–25 ms workload. Warm repeats at 156q measured a 198.7% spread
+on the Qiskit side (min 22.3, max 96.3 ms). A single sample there is noise,
+not a measurement."* Those numbers are within a couple of milliseconds of
+what these two runs measured, 20 seeds later. What the new data adds is
+that the effect is **universal at that point** (10/10 seeds in each run,
+not an occasional spike) and **specific to the Qiskit arm at the largest
+scale** — so any single-sample measurement of `opt=3` at 156 qubits has
+roughly a one-in-five chance of landing on a number 3–4x too high, which
+would silently inflate every speed-up quoted against it. The median-based
+reporting this README uses is unaffected; a mean would not be.
+
+**2. The `strict` arm's memory columns are not comparable to the others,
+and the CSV will mislead anyone who reads them as-is.** `psf_canonical_strict`
+shows a *lower* `RSS_Delta_MB` than `psf_canonical` at every scale (0.55MB
+against 1.66MB at 156 qubits) — which reads as "strict uses less memory"
+and is not what happened. `test1_v3.py` measures memory in a separate,
+untimed pass that runs for a **fixed wall-clock window**
+(`t_end = time.perf_counter() + MEM_WINDOW_S`), so a slower arm simply fits
+fewer compilation calls into it. That shows directly in the sample counts:
+strict is 5.2x–6.6x slower per call and records 2.9x–5.7x fewer samples.
+Fewer calls sampled, lower observed peak. **Nothing about the strict path
+allocates less** — it is the same synthesis plus an extra reconstruction.
+Read `RSS_Delta_MB` as comparable only between arms of similar speed.
+
+#### Update (2026-09-10): the 50,000-iteration cumulative loop, on the Intel machine — the ratio holds, and the quoted headline should be the median one
+
+`test_cumulative_compile_time.py` was run at its full 50,000 iterations on
+the Intel machine (15 qubits, 20 gates/pair — the same circuit family as
+the rest of this section). Correctness was checked first on the 6-qubit
+version: all three engines reconstructed to fidelity 1.000000000000.
+
+| | Qiskit L3 | PSF `verify=True` | PSF `verify=False` |
+| :--- | :---: | :---: | :---: |
+| mean | 9.209ms | 1.494ms | 1.222ms |
+| **median** | **8.261ms** | **1.491ms** | **1.208ms** |
+| stdev | 5.241ms | 0.567ms | 0.556ms |
+| total over 50,000 | 460.5s | 74.7s | 61.1s |
+
+**The script's own headline is mean-based and therefore slightly too
+generous; the median is the number to quote.** It printed 6.16x
+(`verify=True`) and 7.54x (`verify=False`). By median those are **5.54x**
+and **6.84x**. The reason is visible in the table: Qiskit's mean sits 11.5%
+above its median while both PSF arms sit within 1.2% of theirs, so the
+run's noise inflates the numerator far more than the denominator. This
+project's own rule — established when the 10,000/50,000-iteration decay
+turned out to be background contention — is to report medians on shared
+hardware, and applying it to this run means quoting the smaller pair.
+
+**The decay question is settled further, and this run shows the mechanism
+directly.** The progress log prints elapsed time every 500 iterations.
+Differencing it: the loop holds a median of **13.4s per 500 iterations**,
+and six of the hundred intervals exceed 1.3x that — at iterations
+3,500–4,000 (39.3s), 10,500–11,500 (27.3s then 41.5s), and 40,500–42,000
+(27.7s, 31.0s, 28.5s). Everything else sits at 13.2s. Those six windows
+account for 115s, 8% of the 1,449s run. Crucially they are **scattered
+across the run rather than accumulating** — one early, one in the middle,
+one at 82% through — and the final interval (13.3s) is as fast as the
+opening ones. A leak or a growing cache cannot produce that shape;
+intermittent external load can, which is what this section concluded from
+indirect evidence in September and has now been watched happening three
+times.
+
+**And the cost of the safety net is machine-dependent, which this README
+had not established.** `verify=True ÷ verify=False` is **1.22x** here,
+against 1.88x measured on the other machine at the same iteration counts.
+Both are real; the honest range for "what the default check costs you" is
+**1.2x–1.9x depending on the machine**, not a single figure. The absolute
+PSF numbers barely moved between machines (1.208ms here against 1.172ms /
+1.211ms there) while Qiskit's did (8.261ms against 10.503ms / 11.038ms), so
+most of the ratio difference is Qiskit's side, not PSF's.
+
+##### The per-iteration data: the contention account is confirmed directly, and one of this README's numbers is corrected by it
+
+The script's raw per-call array (`cumulative_compile_times.npz`, 3 × 50,000
+timings) has since been transferred, so the analysis above no longer has to
+work at the progress log's 500-iteration granularity. Its aggregates
+reproduce the table above exactly. Four things follow that the coarse data
+could not show.
+
+**1. In the contention windows all three arms slow by comparable
+multiples — which is why the ratio survives.** Taking the three windows the
+progress log identified and comparing each arm against its own baseline
+over the rest of the run:
+
+| Iterations | qiskit | psf `verify=True` | psf `verify=False` |
+| :--- | :---: | :---: | :---: |
+| 3,500–4,000 | 19.17ms (2.19x) | 3.15ms (2.23x) | 2.98ms (2.63x) |
+| 10,500–11,500 | 16.93ms (1.93x) | 2.91ms (2.06x) | 2.73ms (2.41x) |
+| 40,500–42,000 | 14.69ms (1.68x) | 2.55ms (1.80x) | 2.38ms (2.09x) |
+| everything else | 8.76ms | 1.41ms | 1.13ms |
+
+Everything is slowed by roughly the same factor at the same moments. That
+is what an external load does, and it is why a run can lose 8% of its
+wall-clock to contention without the measured ratio moving.
+
+**2. The correlation is real but weaker than this README states, and the
+figure it quotes is machine-specific.** The 2026-09-09 correction above
+reports "r≈0.64 between the two engines' per-call times". On this machine
+the per-iteration Pearson correlation is **+0.354** (qiskit vs
+`verify=True`) and **+0.380** (vs `verify=False`); Spearman agrees at
++0.349 / +0.372. The qualitative claim — the two engines are slowed at the
+same moments by something outside both — holds and is now shown directly.
+The specific coefficient does not transfer between machines and should be
+quoted with its run attached. *(Added 2026-09-10: the original run's raw
+arrays have since been recovered and give exactly +0.644, so "r≈0.64" was
+not an error — the two figures are two machines under different amounts of
+external load. See the update below.)*
+
+**3. Most of Qiskit's slow calls are *not* shared, which the correlation
+alone would hide.** Of the 500 iterations where Qiskit exceeds its own 99th
+percentile, **416 (83%) are Qiskit-only** — neither PSF arm is above its
+own p99 at that iteration. Simultaneous outliers do occur far above chance
+(37 iterations with all three arms over p99, against 0.05 expected if
+independent; 241 with both PSF arms, against 5.0 expected), and the
+co-occurrence is strongest between the two arms that run adjacently in the
+loop. So there appear to be two distinct effects: sustained external
+windows that move everything together and preserve the ratio, and a
+separate, much more frequent Qiskit-only tail (p99 24ms, p99.9 65ms, max
+146ms against a median of 8.26ms) that PSF-Zero does not share. This
+README has never distinguished the two; the second is the larger
+contributor to Qiskit's mean sitting 11.5% above its median.
+
+**4. No drift, and the ratio is tighter than the aggregate suggests.**
+Per 1,000 iterations (50 windows, [`psf-zero/data/cumulative_50k_intel_2026-09-10_per1000.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_50k_intel_2026-09-10_per1000.csv)),
+the median-based `qiskit ÷ verify=True` ratio has a median of 5.57x with
+first-half 5.34x against second-half 5.59x — flat. Absolute times do drift
+up about 11–15% from the first tenth of the run to the last (qiskit 7.77 →
+8.95ms, `verify=True` 1.435 → 1.599ms), but they drift *together*, so the
+ratio does not.
+
+**One anomaly, unexplained.** Around iterations 12,000–14,000 both PSF arms
+run about 30% *faster* than their own baseline (`verify=True` 1.04/0.99ms
+against ~1.49ms; `verify=False` 0.79ms against ~1.21ms) while Qiskit does
+not move (7.78/7.94ms against ~8.26ms). That is the opposite of contention
+and it is why one of the ten bins reports `qiskit ÷ verify=False` at 8.66x
+when the other nine sit in a 6.68–6.94x band. We have no account for it and
+have not investigated; it is flagged here rather than smoothed away.
+
+#### Update (2026-09-10): a fifth run, and what it shows about ratios vs. absolute times
+
+A third run on the Intel machine (the fifth overall), same 10 seeds × 5
+reps, is in the table above: 8.03x/4.10x/3.42x/3.05x by median, and
+7.37x/3.98x/3.25x/2.91x by min-of-samples against run 2's
+7.29x/4.03x/3.24x/2.91x — identical to two decimal places at 156 qubits.
+
+The absolute times, though, are 14–16% slower than run 2 at the larger
+scales (`qiskit opt=3` at 156 qubits: 26.35ms against 23.06ms;
+`psf canonical`: 8.64ms against 7.42ms), with the first two seeds of the
+156-qubit block clearly the worst of the run. **Both arms moved together**,
+which is the same shared-contention signature this section documents at
+length for the 10,000/50,000-iteration cumulative loop — and the ratio
+barely moved (3.05x against 3.11x). It is a clean, small-scale
+demonstration of the rule this project arrived at the hard way: on shared
+hardware, report ratios and medians, not absolute times from a single run.
+
+Output quality was again exact: 2-qubit gate count 21/75/150/234 and depth
+9/13/16 across all three quality-matched arms, `opt0` at 420/1500/3000/4680
+and depth 320, equivalence at 6 qubits < 4.5e-15.
+
+Raw data: [`psf-zero/data/phase1_v3_test1_v3_intel_run2_2026-09-10.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/phase1_v3_test1_v3_intel_run2_2026-09-10.csv).
+
+##### The archived raw data, and why the provenance can't be settled from it
+
+The account above turns on which `psf_compile.py` the original run used, and
+the earlier open item turned on which machine it ran on. Both were checked
+against everything this project still holds: all thirteen accumulated raw
+CSVs, now archived under `psf-zero/data/archive/` with a file-by-file
+mapping in `provenance-map.md`. Neither question can be answered from them.
+
+- **Ten of the thirteen record no environment metadata at all** — no CPU
+  string, no platform, no Python or Qiskit version. Those columns were only
+  added to the harnesses later, which is exactly why runs 3 and 4 above
+  *can* be positively tied to one machine while the original cannot.
+- **`test1_v3.py` writes to a fixed filename** ([`phase1_v3_benchmark_results.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/archive/phase1_v3_benchmark_results.csv)),
+  so each run overwrites the last. The surviving copy is run 4's. The
+  original declining run's own output no longer exists.
+
+So the `verify="strict"` account above stays testable going forward but can
+never be checked against the original artifact, and the machine question is
+closed as unanswerable rather than answered. This is a record-keeping
+failure, not a measurement one, and it is already fixed for everything
+written since: every current harness records `platform.processor()` and its
+library versions in its output.
+
+The archive is worth having for a separate reason: several of these files
+could be matched to the exact published table they produced, by their
+numbers alone. [`phase1_v2_benchmark_results.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/archive/phase1_v2_benchmark_results.csv) reproduces this section's
+`phase1.py` re-run table to the last digit (PSF 1.08/2.60/5.10/8.84ms
+against Qiskit 10.23/16.05/22.34/29.59ms), and [`phase2_benchmark_results.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/archive/phase2_benchmark_results.csv)
+does the same for the `phase2.py` table (10.09/15.94/25.15/49.06ms against
+29.85/46.46/72.67/136.58ms). The two retracted-artifact runs survive too,
+and are visibly wrong in precisely the way this section describes:
+[`phase1_benchmark_results.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/archive/phase1_benchmark_results.csv) has Qiskit pinned at 1.30–1.34s at *every*
+scale (the no-op `transpile()` bug that produced the retracted "200x"), and
+[`phase2_v2_deadzone_results.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/archive/phase2_v2_deadzone_results.csv) has PSF-Zero 4.1x *slower* than Qiskit at
+1000 qubits (the `force_consolidate` bug — the measurement that triggered
+this section's entire re-investigation). Those two files are the primary
+evidence for retractions this README currently supports with prose only.
+
+#### Update (2026-09-10): the raw per-iteration data behind the original decay claim has been recovered — the decay question closes, and one published figure is qualified
+
+The 2026-09-09 correction near the top of this section was written from
+binned summaries of a 50,000-iteration run whose raw per-iteration arrays
+were, at the time, described but not held. Those arrays have now been
+recovered. They are identifiable beyond doubt: their means are
+**10.403ms / 9.825ms / 1.903ms**, matching the 50,000 row of that
+correction's table to the last digit.
+
+**This run predates the `verify` change, which makes it the first
+within-run measurement of the old default path.** Its
+`verify=True ÷ verify=False` is 5.16x by mean and 5.05x by median. The
+2026-09-10 Intel run of the same script gives 1.22x / 1.23x. A 4x gap in
+the same quantity is not run-to-run noise; it is the `Operator()`-based
+check that the 2026-09-09 update reports removing. So every number below
+labelled "old verify" is that path, measured against `verify=False` in the
+same process, on the same circuits, in the same run — which nothing else
+in this section has been able to do.
+
+**1. The correlation figure is exact; the "2.5–2.7x" figure mixes
+statistics.** Pearson on the per-iteration times: **+0.644** (Qiskit vs
+old-verify) and **+0.616** (vs `verify=False`); Spearman +0.761 / +0.730;
+the two PSF arms against each other +0.906. The published "r≈0.64" is
+confirmed to three digits. The published "2.5–2.7x slower than PSF-Zero's
+own overall average" reproduces only as mean-at-Qiskit's-p99 ÷ overall
+median (2.77x / 2.63x); mean ÷ mean is 1.78x / 1.72x and median ÷ median
+is 3.20x / 3.27x. A correction to that effect is recorded inline above.
+Note also that the two correlation figures in this section are not in
+conflict: +0.644 here and +0.354 on the Intel machine are different runs
+on different hardware, and the coefficient is a property of how much
+external load a given machine happened to be under.
+
+**2. The decay was never monotonic — it is seven separate bursts with full
+recovery between each.** Per 1,000 iterations (50 windows,
+[`psf-zero/data/cumulative_50k_preverifychange_per1000.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_50k_preverifychange_per1000.csv)), 14 windows sit
+above 1.3x the run's median window and they fall into seven contiguous
+bursts: iterations 15,000–18,000, 21,000–25,000, 26,000–28,000,
+34,000–35,000, 38,000–39,000, 40,000–42,000 and 43,000–44,000. Between and
+after them the machine returns to baseline every time — the last 6,000
+iterations are clean, and the 45,000–50,000 window is the *fastest* of the
+entire run (Qiskit 7.434ms, old-verify 5.574ms, `verify=False` 1.151ms,
+against first-window 8.388 / 6.160 / 1.237ms). Inside the bursts all three
+arms move together, exactly as the Intel run shows: at 21,000–22,000, for
+instance, Qiskit 16.85ms / old-verify 20.10ms / `verify=False` 4.13ms
+against a clean baseline of 7.77 / 5.66 / 1.17ms. The bursts cost about
+21% of the run's wall-clock (1,106s actual against 873s at the clean rate).
+This is the shape the 2026-09-09 correction inferred from ten coarse bins,
+now visible at 1,000-iteration resolution and with the recovery explicit.
+
+**3. Excluding the bursts, the ratios agree with the Intel machine to
+within 3%.** Over the 72% of iterations outside them: `qiskit ÷
+verify=False` = **6.67x** (Intel: 6.84x), old-verify ÷ `verify=False` =
+4.86x, `qiskit ÷ old-verify` = 1.37x. Two different machines, two different
+`verify` implementations, and the quantity that does not involve `verify`
+at all lands within 2.5% of itself. The whole-run figures are 6.62x / 5.05x
+/ 1.31x, so even including the bursts the ratio moves by under 1%.
+
+**4. The Qiskit-only tail reproduces.** Of the 500 iterations above
+Qiskit's own 99th percentile, **451 (90%)** have neither PSF arm above its
+own p99. The Intel run gave 83%. So the two-distinct-effects reading —
+shared external windows that preserve the ratio, plus a much more frequent
+Qiskit-only tail that does not — now holds on both runs rather than one.
+
+**5. The `verify="strict"` question is narrowed but still open.** With the
+old default now measured within a single run at 4.86–5.05x `verify=False`,
+and `strict` measured at about 6.3x `verify=False` on the Intel machine,
+the gap is **~1.28x**. That is smaller than the 2.5x this section once
+claimed and larger than zero. It remains a comparison across two machines
+and two scripts, so it still does not establish that `strict` differs from
+the old default — only that equivalence is unconfirmed. Settling it needs
+one three-arm run (`False` / current `True` / `strict`) in a single
+process; that has not been done.
+
+One thing worth recording because it constrains future comparisons: the
+Qiskit arm's *median* is essentially identical across the two runs (8.262ms
+here, 8.261ms on Intel) and its p10/p25 agree within 5%, but the upper
+tails diverge sharply (p75 12.161 against 9.439; p90 17.554 against
+10.850). Qiskit's typical call is the same on both machines; what differs
+is how often it is disturbed. That is a further reason this project reports
+medians.
+
+Raw data: [`psf-zero/data/cumulative_50k_preverifychange_per1000.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_50k_preverifychange_per1000.csv)
+(50 windows). The underlying `.npz` is 3 × 50,000 float64 and is not
+checked in; the CSV is the reusable summary.
 
 #### Where this matters in practice: VQE and other variational hybrid workflows
 
@@ -1006,19 +1656,14 @@ PSF-Zero's synthesis on top of it for nothing in return — call
 entirely) if minimum depth matters more than compile time; level 1 is the
 setting where PSF-Zero's own synthesis is actually the thing producing the
 output.
-#### Benchmark Artifacts & Reproducibility Package (`benchmarks/phase3_v4/`)
 
-The complete verification code and raw execution measurements for the `phase3_v4` sweep are available directly in the repository:
-- **Validation Script**: [`benchmarks/phase3_v4/phase3_v4.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase3_v4/phase3_v4.py)
-- **Raw Measurements Data**: [`benchmarks/phase3_v4/phase3_v4_physical_topology_results.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase3_v4/phase3_v4_physical_topology_results.csv)
-
-##### Confirmed on the project's slower (workplace) machine (2026-09-09)
+##### Confirmed on the project's slower machine (2026-09-09)
 
 The default change above was decided from cloud-sandbox measurements. It has
 since been re-run end to end on real hardware with the real `psf_zero_core`
-— specifically the project's *slower*, workplace-administered machine, not
-the faster personal one used for section 4's cumulative-loop and
-methodology-corrected updates above — at 3 seeds per point, both workloads,
+— specifically the project's *slower*, noisier machine, not the faster one
+used for section 4's cumulative-loop and methodology-corrected updates
+above — at 3 seeds per point, both workloads,
 out to 300 qubits, one scale further than the sandbox run reached. Median
 compile time (ms):
 
@@ -1066,6 +1711,197 @@ including 300 qubits: `0/0 blocks` reported every time, and `rl=1` and
 depth to the digit (300q: `rl=1` 624,556 gates / depth 76,863, identical to
 `opt=1`). On circuits PSF-Zero is not designed for it is neither help nor
 harm, which is the behaviour `block_gate_floor` exists to produce.
+
+##### Update (2026-09-10): a third machine reproduces the blow-up, and a controlled experiment turns the spare-qubit correlation into a cause
+
+Two separate things happened here and they should not be read as one. The
+first is another reproduction, which raises confidence and contributes
+nothing about cause. The second is an actual experiment, which settles the
+cause — and corrects the shape of the claim above while doing so.
+
+**1. `phase3_v4.py` re-run unchanged on a third machine.** Same script,
+same 3 seeds × 3 reps, both workloads, out to 300 qubits, on a machine
+distinct from the one that produced the 2026-09-09 table above (CPU
+signature `Intel64 Family 6 Model 181` vs. that run's
+`AMD64 Family 25 Model 80`; note also Python 3.11.9 here against 3.10.11
+there — two variables moved, not one). Median-of-min compile time, dense
+workload (ms):
+
+| Qubits | qiskit opt=1 | qiskit opt=2 | qiskit opt=3 | **psf rl=1** | psf rl=2 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 50 | 13.4 | 15.6 | 33.2 | **9.6** | 12.4 |
+| 100 | 23.8 | 893.6 | **12,985** | **15.7** | 888.5 |
+| 156 | 71.7 | 1,135.0 | **13,189–28,018** | **50.3** | 1,144.7 |
+| 300 | 70.3 | 59.1 | 96.7 | **43.4** | 42.3 |
+
+Three things are worth recording from it.
+
+*The circuit outputs are bit-identical between the two machines.* Every
+2-qubit gate count and every depth value, across all 120 rows of both
+runs — dense and passthrough, all four scales, all three seeds, all five
+arms — matches exactly. So the two runs are unambiguously the same
+workload, and timing is the only variable that moved. That is a stronger
+statement than the usual "reproduced" and it is worth having.
+
+*The non-monotonic blow-up reproduces exactly where it did before*, in a
+third independent environment (Linux sandbox → AMD machine → this one).
+
+*`opt=3`'s seed-to-seed spread is much worse on this machine than on the
+other one.* At 156 qubits its three per-seed minima were 13.2s / 28.0s /
+27.3s — a 2.1x spread, against 1.03x for the same arm on the AMD machine.
+Any single number quoted for `opt=3` at these sizes is therefore a draw
+from a wide distribution, and the range is the honest way to report it.
+
+*A note on this README's "faster machine"/"slower machine" labels:* they
+do not survive this comparison. On the dense workload this machine is
+uniformly faster (0.65x–0.89x the other's time on every arm and scale);
+on the large `passthrough` workload it is uniformly *slower* (1.4x–1.9x at
+300 qubits). Which machine is "the fast one" depends on the workload, and
+the Python-version difference above is confounded with the hardware
+difference anyway. Read those labels, wherever they appear in this README,
+as identifying *which run* a number came from — not as a claim about
+hardware speed.
+
+**2. The controlled experiment: it really is the spare qubits, and the
+threshold is not zero.** The paragraph above ("It correlates exactly with
+whether the grid coupling map has spare qubits") was a correlation across
+four points, and reproducing those same four points on more machines could
+never improve it: `get_grid_cmap()` produces a saturated grid at exactly
+n=100 and n=156 and a 6-spare grid at exactly n=50 and n=300, so "has no
+spare qubits" and "is one of those two sizes" were perfectly confounded in
+every run this project had done. Replication is not a test.
+
+`benchmarks/phase3_v5_spare_qubits.py` breaks the confound by holding the
+coupling map fixed and varying only how much of it the circuit occupies
+(and, separately, holding the circuit fixed and varying the map). It reuses
+this project's own `get_grid_cmap()` and `build_dense_pair_blocks_circuit()`
+verbatim, and re-derives the n=100 saturated point as an anchor to prove
+the fixture matches: `opt=2` 1,139ms and `opt=3` 13,060ms here, against
+1,244ms / 14,343ms for the same point in the sandbox run quoted above.
+Run on the Linux sandbox, Qiskit 2.5.2, min-of-reps, median over seeds:
+
+| Grid | Spare | Circuit qubits | qiskit opt=2 | qiskit opt=3 |
+| :---: | :---: | :---: | :---: | :---: |
+| 6×7 = 42 | 4 | 38 | 34.1 ms | — |
+| 6×7 = 42 | **0** | 42 | **621.1 ms** | — |
+| 7×8 = 56 | 6 | 50 | 16.1 ms | — |
+| 7×8 = 56 | **0** | 56 | **767.7 ms** | — |
+| 8×8 = 64 | 4 | 60 | 20.0 ms | — |
+| 8×8 = 64 | **0** | 64 | **840.8 ms** | — |
+| 8×9 = 72 | 6 | 66 | 20.5 ms | 69.9 ms |
+| 8×9 = 72 | 4 | 68 | 20.6 ms | 84.7 ms |
+| 8×9 = 72 | 2 | 70 | 19.9 ms | 35.6 ms |
+| 8×9 = 72 | **0** | 72 | **871.8 ms** | **10,115 ms** |
+| 10×10 = 100 | 8 | 92 | 21.4 ms | 61.3 ms |
+| 10×10 = 100 | 6 | 94 | 21.6 ms | 93.5 ms |
+| 10×10 = 100 | 4 | 96 | 24.4 ms | 53.4 ms |
+| 10×10 = 100 | **2** | 98 | **1,127.9 ms** | **13,033 ms** |
+| 10×10 = 100 | **0** | 100 | **1,139.3 ms** | **13,060 ms** |
+| 10×11 = 110 | 10 | 100 | 25.0 ms | — |
+| 11×11 = 121 | 21 | 100 | 34.7 ms | — |
+
+**The size explanation is dead.** A 42-qubit circuit on a saturated 42-qubit
+grid takes 621ms, while a *larger* 50-qubit circuit with 6 spare qubits
+takes 16ms — the smaller circuit is 39x slower. At `opt=3` the reversal is
+190x (72 qubits / 108 two-qubit gates on a saturated grid: 10.1 seconds;
+96 qubits / 144 two-qubit gates with 4 spare: 53ms). No amount of
+"bigger circuits are harder" produces that.
+
+**It is a cliff, not a slope.** On the 10×10 grid, `opt=3` goes from
+13,033ms at 2 spare qubits to 53ms at 4 — a 244x change from removing two
+qubits from the circuit, with the coupling map untouched. On the 8×9 grid
+the same cliff sits between 0 and 2 spare (10,115ms → 36ms, 284x).
+
+**And the threshold is not zero, which the four-point data could not have
+shown.** On the 100-qubit grid, 2 spare qubits is still fully in the slow
+regime; on the 72-qubit grid, 2 spare is already fully out of it. So it is
+not a fixed number of spare qubits — the boundary sits higher on the
+larger map. Two grids is not enough to say whether it tracks area,
+perimeter, or something else, and we have not tried to find out.
+
+**What the slow runs are *not* doing is extra work.** Every configuration
+above emitted exactly 3 two-qubit gates per logical pair (63/84/96/108/150
+for 21/28/32/36/50 pairs) with zero coupling violations — the router found
+a SWAP-free solution in every single case, including the slow ones. The
+1000x is spent searching for a solution it eventually finds, not producing
+a bigger circuit.
+
+> **Correction (2026-09-10): "in every single case" is wrong — see the
+> correction in the reproduction subsection below.** At n=72 on the 8×9
+> grid the router sometimes does insert SWAPs. The reading the sentence
+> supports is unaffected; the absolute is not true.
+
+**What is still not known: the mechanism.** This is an intervention result
+— vary one variable, hold the rest identical — so the causal direction is
+established, but nothing here identifies *which* pass burns the time or
+why a nearly-full coupling map is pathological for it. We did not
+instrument Qiskit's pass timings, and this is one Qiskit version (2.5.2)
+on one topology family. Nor does this touch the other half of the
+2026-09-09 observation above: the `passthrough` control was not re-run
+here, so "the trigger needs the dense adjacent-pair structure as well"
+remains as stated — untested by this experiment, not confirmed by it.
+
+**The practical consequence is new, though, and cheap.** If you are running
+`optimization_level` 2 or 3 against a coupling map your circuit almost
+fills, padding the map by a few spare qubits removes the blow-up entirely
+(25.0ms on a 110-qubit grid against 1,139ms on the 100-qubit one, for the
+identical 100-qubit circuit). And for this project specifically, it
+promotes the earlier "second, independent reason to prefer
+`routing_optimization_level=1`" from a correlation to a measured one:
+`rl=1` never enters the regime at all.
+
+Data: [`psf-zero/data/phase3_v4_intel_machine_2026-09-10.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/phase3_v4_intel_machine_2026-09-10.csv) (the third-machine
+run) and [`psf-zero/data/phase3_v5_spare_qubits_linux_2026-09-10.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/phase3_v5_spare_qubits_linux_2026-09-10.csv) (the
+controlled experiment). Full reasoning, including the pre-registered
+predictions written before the experiment was run, is in
+`phase3-hardware-routing-regression.md`.
+
+##### Update (2026-09-10): the controlled experiment reproduces on real hardware, and one claim in it is corrected
+
+The experiment above was run in a Linux sandbox. The identical script was
+then run unmodified on the Intel machine (Windows, Python 3.11.9, Qiskit
+2.5.2 — the same Qiskit version, so this is a genuine second environment
+rather than a second Qiskit), axis C, 2 seeds × 2 reps:
+
+| Grid | Spare | Circuit qubits | `opt=2` Intel | `opt=2` sandbox | `opt=3` Intel |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| 6×7 = 42 | 4 | 38 | 11.6 ms | 34.1 ms | 23.4 ms |
+| 6×7 = 42 | **0** | 42 | **549.6 ms** | **621.1 ms** | **7,725 ms** |
+| 7×8 = 56 | 6 | 50 | 12.6 ms | 16.1 ms | 29.2 ms |
+| 7×8 = 56 | **0** | 56 | **633.0 ms** | **767.7 ms** | **9,770 ms** |
+| 8×8 = 64 | 4 | 60 | 12.2 ms | 20.0 ms | 29.8 ms |
+| 8×8 = 64 | **0** | 64 | **706.6 ms** | **840.8 ms** | **8,184 ms** |
+| 8×9 = 72 | 6 | 66 | 15.8 ms | 20.5 ms | 36.3 ms |
+| 8×9 = 72 | **0** | 72 | **720.0 ms** | **877.8 ms** | **8,295 ms** |
+
+Same cliff, same place, on hardware: 45x–58x at `opt=2` and 228x–335x at
+`opt=3`, between two circuits on the *same* coupling map differing only in
+how many qubits they leave spare. The size reversal reproduces too — on
+this machine a 42-qubit circuit on a saturated 42-qubit grid takes 549.6ms
+against 12.6ms for a *larger* 50-qubit circuit with 6 spare (44x at
+`opt=2`, 265x at `opt=3`). The controlled result is now two environments
+deep, and `opt=3`, which the sandbox run only covered on two grids, shows
+the effect on all four.
+
+> **Correction (2026-09-10): the sentence "the router found a SWAP-free
+> solution in every single case, including the slow ones" in the update
+> above is wrong, and this run is what caught it.** Checking both datasets
+> against the expected 3-gates-per-pair: at n=72 on the 8×9 grid the output
+> is sometimes 108 gates / depth 16 (SWAP-free) and sometimes 114 gates /
+> depth 35 (six SWAPs inserted) — in 4 of the sandbox measurements and 1 of
+> the Intel ones. That grid is 9 columns wide, so consecutive logical pairs
+> straddle row boundaries unless the layout pass happens to find a mapping
+> that avoids it; `transpile()` is not seed-pinned here, so it finds one
+> some runs and not others. Every *other* configuration in both runs was
+> SWAP-free as stated, and coupling violations were zero everywhere.
+> **The conclusion the sentence was supporting is unaffected**: the slow
+> cases are not slow because they emit more gates. At n=72/spare 0 the
+> SWAP-free and six-SWAP outcomes took 0.807s and 0.913s respectively —
+> both about 45x the spare-6 point on the same map, which produced its
+> 99-gate output in 15.8–20.5ms. The correction is to the "every single
+> case" absolute, not to the reading.
+
+Raw data: [`psf-zero/data/phase3_v5_spare_qubits_intel_2026-09-10.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/phase3_v5_spare_qubits_intel_2026-09-10.csv).
 
 ### 6. Sanity check against Benchpress
 
@@ -1845,6 +2681,29 @@ In the interest of not overstating anything:
   prototyped and rejected (no measurable benefit over plain `rl=1`).
   `compile_for_hardware()`'s default is now 1, not 2. See section 5's
   2026-09-08 update and `phase3-hardware-routing-regression.md`.
+- **RESOLVED (2026-09-10), with the claim corrected in the process. Whether
+  Qiskit `optimization_level` 2/3's catastrophic slowdown on this workload
+  is actually caused by the coupling map having no spare qubits, or merely
+  correlated with it.** It is caused by it. The evidence up to 2026-09-09
+  was a correlation across four points that three independent environments
+  reproduced — but since `get_grid_cmap()` saturates the grid at exactly
+  n=100 and n=156, "no spare qubits" and "one of those two sizes" were
+  perfectly confounded, and no number of re-runs of those same four points
+  could separate them. A controlled experiment
+  (`benchmarks/phase3_v5_spare_qubits.py`) that holds the coupling map
+  fixed and varies only how much of it the circuit occupies breaks the
+  confound: on one unchanged 42-qubit grid, a 42-qubit circuit takes 621ms
+  and a 38-qubit circuit takes 34ms; a *smaller* circuit on a saturated
+  grid runs 39x slower (`opt=2`) to 190x slower (`opt=3`) than a *larger*
+  one with spare qubits. **The correction:** the threshold is not zero
+  spare qubits, as previously stated — on a 100-qubit grid, 2 spare is
+  still fully slow and 4 spare is fully fast (a 244x cliff at `opt=3`),
+  while on a 72-qubit grid 2 spare is already fast. So it is not a fixed
+  count and the boundary moves with the map. Still unknown: the mechanism
+  (no pass-level instrumentation was done), whether it generalizes beyond
+  Qiskit 2.5.2 and grid topologies, and whether the dense adjacent-pair
+  circuit structure is also required (the `passthrough` control was not
+  re-run). See section 5's 2026-09-10 update.
 - **Whether section 7's "14.4x–16.2x faster" (now also confirmed at
   13.3x faster over 11 runs) real-hardware compile-time result holds up
   under the same warm-up correction applied to section 4.** That script
@@ -1915,29 +2774,91 @@ In the interest of not overstating anything:
   still on; `verify=False` measures 9.12x. Nothing was traded away. See
   section 4's first 2026-09-09 update.
 - **NEW, and it should be closed before any speed number in this README is
-  quoted externally: the corrected-methodology ratios differ by a factor of
-  ~3 between the Linux sandbox and this project's faster machine**
-  (`opt=3 ÷ psf canonical` at 156 qubits: 4.15x vs. 1.44x). This is
-  confirmed to be about the *script*, not the *machine*: the same fast PC
-  gave a flat, healthy 4.79x ratio on `test_cumulative_compile_time.py`
-  (no per-call sampling) on the same day, which rules out raw hardware
-  speed as the cause of the low, declining ratio in `test1_v3.py`. The
-  concrete, cheap, falsifiable candidate is `test1_v3.py`'s in-child RSS
-  sampler, which requests a 0.2ms interval that Windows' 15.6ms default
-  timer granularity cannot honour — the recorded sample counts suggest the
-  thread spins rather than sleeps, which would contend for the GIL and
-  penalise the PSF arms specifically. **The test is a single re-run of
-  `test1_v3.py` on the same fast machine with memory sampling disabled.**
-  If the PSF arms speed up toward the Linux sandbox's range, the sampler is
-  confirmed as the cause and needs fixing (respect the platform's timer
-  granularity, or sample from the parent process instead of a child
-  thread) rather than this README claiming "Windows is slower." If they
-  don't, something else — genuinely OS- or machine-dependent — is going on
-  and needs its own investigation. See section 4's second 2026-09-09
-  update.
+  quoted externally: a single `test1_v3.py` run showed ratios ~3x lower
+  than the Linux sandbox** (`opt=3 ÷ psf canonical` at 156 qubits: 4.15x
+  vs. 1.44x), **and the mechanism this README proposed for it — a spinning
+  0.2ms RSS sampler contending for the GIL during measurement — is
+  retracted (2026-09-10) after actually reading `test1_v3.py`'s source.**
+  The sampler thread only runs in a separate, untimed pass *after* the
+  timed repetitions finish; it cannot affect a measurement it doesn't
+  overlap with. Two independent re-runs since (a different script,
+  `phase1.py`/`phase2.py`, with coarse-or-no memory sampling, on one
+  machine; and `test1_v3.py` itself, unmodified, sampler still present and
+  still showing the same odd sample-count signature, on a different
+  machine) both gave healthy ratios (2.78x–9.51x and 2.8x–7.65x
+  respectively) — consistent with the sampler being irrelevant, as the
+  source now shows, but neither one identifies what actually caused the
+  original single low run. **The open item now is simply: the original
+  4.35x→1.44x table has not reproduced on either of two later runs, on two
+  different machines, and no candidate mechanism explains it.** It may be
+  a one-off environmental fluke (this project has documented exactly this
+  shape of thing before — see the retracted 10,000/50,000-iteration decay
+  above, also traced to transient contention) or it may recur; without a
+  repeat occurrence there is nothing further to investigate right now.
+  Treat the original table as an unexplained outlier, not as this script's
+  typical behavior.
+  **Update (2026-09-10): substantially explained, one flag away from
+  confirmed.** A fourth run (second on the Intel machine, agreeing with the
+  first to within 4–11%) made it possible to compare the original run's
+  absolute times arm by arm instead of only its ratios. The original was
+  paying two *scale-independent* penalties — ~1.35x on the Qiskit arm,
+  ~2.65x on the PSF arm — so its "decline with scale" is the same shape
+  every run of this script has, uniformly scaled down; the thing to explain
+  is the arm asymmetry, not the slope. The ~1.35x matches this project's
+  measured machine-to-machine gap and the extra ~1.95x on the PSF arm
+  matches the size of the 2026-09-09 `verify` change, making "the slower
+  machine running a pre-2026-09-09 `psf_compile.py`" a quantitatively
+  consistent account. It is not confirmed — nobody recorded which
+  `psf_compile.py` that run used. **Remaining action: re-run `test1_v3.py`
+  with the PSF arms at `verify="strict"`; the ratios should collapse to
+  roughly the original's 4.35x/2.21x/1.66x/1.44x if the account holds.**
+  See section 4's 2026-09-10 fourth-run update, and the Correction and
+  Updates that precede it.
+  **DONE and REFUTED (2026-09-10). This whole item is now closed.** The
+  experiment above was run as specified (paired, same run, 10 seeds × 5
+  reps, `benchmarks/test1_v3_verify_strict.py`). The ratios did not
+  collapse to the original's 4.35/2.21/1.66/1.44 — they went to
+  **1.42/0.67/0.48/0.47**, overshooting by about 3.1x at every scale,
+  because `verify="strict"` slows the PSF arm by 5.3x–7.0x where the
+  account needed 2.5x–2.8x. The pre-2026-09-09-`psf_compile.py` account is
+  therefore rejected by its own pre-registered criterion, no candidate
+  mechanism remains, and — since the original run's output file and
+  environment record are both gone (see the CLOSED note below) — none can
+  now be tested against it. **The 4.35x→1.44x table is a single anomalous
+  run, permanently unexplained, and should not be treated as evidence about
+  anything.** Two useful by-products: `verify="strict"` costs 5.1x–6.6x the
+  current default and makes PSF-Zero *slower* than Qiskit `opt=3` at every
+  scale above 15 qubits, and that cost is larger than the pre-2026-09-09
+  default appears to have been, so `verify="strict"` should not be
+  described as simply "the old default, still available" without checking.
+  See section 4's refutation update.
+  **Separately, the machine-attribution half of this item is now CLOSED as
+  unanswerable (2026-09-10).** A Windows account name was found to be shared
+  across more than one physical machine, which is why recent updates
+  identify machines by the CPU signature the run itself printed. For the
+  *original* declining run there is no such record to consult: all thirteen
+  of this project's accumulated raw CSVs were reviewed and ten of them
+  carry no environment metadata at all, while `test1_v3.py` writes to a
+  fixed filename and has overwritten its own earlier output. The files are
+  archived at `psf-zero/data/archive/` with a provenance map. Nothing
+  further can be recovered; the fix is forward-looking and already in place
+  (every current harness records `platform.processor()`).
 - **DONE.** Section 5's compile-time comparison now has its own confirmed,
   seed-pinned, 20-measurement-per-scale result (1.0x–1.4x faster than
   Qiskit) — see section 5 and the RESOLVED item above.
+- **DONE (2026-09-10).** The saturated-coupling-map instability in Qiskit's
+  `optimization_level` 2/3 — flagged on 2026-09-08 as "a correlation with
+  no confirmed mechanism" and sent here for a controlled experiment
+  varying the spare-qubit count — has had that experiment run
+  (`benchmarks/phase3_v5_spare_qubits.py`). Holding the coupling map fixed
+  and varying only the circuit's occupancy confirms spare qubits are the
+  causal variable, and corrects the threshold: not zero spare, but a
+  cliff whose position moves with the map (2 spare is slow on a 100-qubit
+  grid, fast on a 72-qubit one). The mechanism itself is still unidentified
+  and stays open, along with whether it survives outside Qiskit 2.5.2 and
+  grid topologies. A useful by-product for anyone hitting this: padding the
+  coupling map with a few spare qubits removes the blow-up entirely. See
+  section 5's 2026-09-10 update.
 - **DONE (2026-09-08).** `compile_for_hardware()`'s `routing_optimization_level`
   default corrected again, 2 → 1: at level 2, its output is bit-identical to
   a plain `transpile(optimization_level=2)` call on the uncompressed
@@ -2030,6 +2951,4 @@ In the interest of not overstating anything:
 
 AGPL v3. See `LICENSE`.
 
-
-
-[Previous repository.](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/Previous_repository.md)
+[Previous repository.](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/Previous%20repository.md)
