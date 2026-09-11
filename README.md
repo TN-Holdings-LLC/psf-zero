@@ -2691,7 +2691,7 @@ In the interest of not overstating anything:
   n=100 and n=156, "no spare qubits" and "one of those two sizes" were
   perfectly confounded, and no number of re-runs of those same four points
   could separate them. A controlled experiment
-  [phase3_v5_spare_qubits.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase3_v5_spare_qubits)
+  [phase3_v5_spare_qubits.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase3_v5_spare_qubits.py)
   that holds the coupling map
   fixed and varies only how much of it the circuit occupies breaks the
   confound: on one unchanged 42-qubit grid, a 42-qubit circuit takes 621ms
