@@ -9,7 +9,7 @@
 A Qiskit transpiler pass that replaces heuristic 2-qubit unitary synthesis with an
 **exact, closed-form Cartan (KAK) decomposition**, implemented in a small Rust core
 via PyO3. Because the decomposition is analytic rather than search-based, it runs in
-constant time per block and returns **the same circuit every time** for the same
+constant time per block and returns **the same circuit everya time** for the same
 input unitary.
 
 ```python
