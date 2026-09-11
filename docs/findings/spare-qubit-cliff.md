@@ -5,11 +5,12 @@ independent environments. Two follow-up controls (2026-09-11) establish that the
 adjacent-pair circuit structure is **required**, and that the effect spans Qiskit 1.4.6
 through 2.5.2 unchanged. `VF2Layout` and `VF2PostLayout` account for 99.9% of the time,
 each consuming the level-3 call budget in full and reporting `NO_SOLUTION_FOUND` for a
-layout that provably exists. **Qiskit's own VF2 implementation uses the VF2++ node
-ordering** (`with_vf2pp_ordering()`, read from source 2026-09-11) — the same heuristic
-whose failure on exactly this pattern is measured below against `rustworkx`. Whether
-the two implementations fail for the same reason is not established. One topology
-family (`CouplingMap.from_grid`).
+layout that provably exists. **The failure is ordering-dependent inside Qiskit's own
+implementation**: permuting the coupling graph's node indices via `shuffle_seed` turns
+`NO_SOLUTION_FOUND` into `SOLUTION_FOUND` in 4 of 30 seeds on an unchanged saturated
+grid, and `VF2PostLayout` succeeds on the *same four seeds* (2026-09-11). Finding the
+layout does not make either pass faster, though — see that section for a prediction
+this refuted. One topology family (`CouplingMap.from_grid`).
 
 **This is not a finding about PSF-Zero.** It surfaced while benchmarking PSF-Zero
 against coupling maps, but it is a property of Qiskit's transpiler and it affects
@@ -335,10 +336,120 @@ degree and index, so if the failure is ordering-dependent, some seeds should tur
 experiment has not been run; it would be evidence about Qiskit's own implementation,
 with no rustworkx involved.
 
+## The ordering is confirmed as the failure mode, inside Qiskit itself
+
+Measured 2026-09-11 on the AMD machine (Windows 10, Python 3.10.11, Qiskit 2.5.2),
+[`benchmarks/verify_vf2_seed.py`](../../benchmarks/verify_vf2_seed.py).
+
+`VF2Layout` exposes no `id_order` equivalent, but `shuffle_seed` permutes the coupling
+graph's node indices before the search (`vf2::reorder_nodes`), and VF2++ ordering
+depends on node degree and index. So varying the seed varies the ordering and nothing
+else. The saturated case — 42-qubit dense-pair circuit on the 6×7 grid,
+`call_limit=3,000,000`, `VF2Layout` called directly rather than through a preset:
+
+| Seeds | Stop reason | Count |
+| :--- | :--- | ---: |
+| 1, 8, 25, 29 | `SOLUTION_FOUND` | **4 / 30** |
+| all others | `NO_SOLUTION_FOUND` | 26 / 30 |
+
+**Same map, same circuit, same budget. Only the node order changed, and in 13% of
+orderings Qiskit finds the layout it reports as nonexistent in the other 87%.**
+
+Two things follow.
+
+**`NO_SOLUTION_FOUND` here means "not found within this budget, under this ordering",
+not "no solution exists".** That was already known indirectly — the grid has a perfect
+matching and an explicit layout was constructed by hand — but this is Qiskit's own
+implementation finding it, with no external library and no hand-construction involved.
+
+**The failure is ordering-dependent in Qiskit's implementation, not only in
+rustworkx's.** The parallel observation below is no longer the only evidence that the
+VF2++ ordering is implicated. Whether the two implementations fail on the same
+instances for the same structural reason is still untested, but the ordering is now a
+measured factor in Qiskit rather than an inference from a different codebase.
+
+### A prediction that failed: success is not fast
+
+Written before the run: *if the ordering is the mechanism, the successful seeds should
+return in under a millisecond, giving a two-regime picture — hit the right order and
+it is immediate, miss and the budget burns.* That is what
+`rustworkx.vf2_mapping` does with `id_order=True`.
+
+It is not what happened. Elapsed time is flat:
+
+| | count | min | median | max | stdev |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| `NO_SOLUTION_FOUND` | 26 | 325.1 ms | **335.6 ms** | 380.5 ms | 11.4 |
+| `SOLUTION_FOUND` | 4 | 337.6 ms | **339.2 ms** | 368.4 ms | 14.9 |
+
+The successful seeds are 1.01x the failing ones — indistinguishable. Finding the
+layout saves nothing.
+
+The source suggests why, though this has not been verified by instrumentation.
+`minimize_vf2` does not stop at the first match: it takes the first mapping, then
+continues with the second element of `call_limit` under a trial budget
+(`max_trials`, defaulting to `15 + max(needle.edge_count(), haystack.edge_count())`)
+looking for a better-scoring one, and keeps the last improvement found. So a
+successful trial is followed by further trials that have nothing left to improve and
+burn their budget the same way the failing ones do. If that is right, the cost is not
+"failing to find a layout" but "exhausting the search for a better one", and finding
+a layout early does not shorten it.
+
+That reframes the practical consequence. Handing `VF2Layout` a luckier node ordering
+would fix the *correctness* of `NO_SOLUTION_FOUND` — the pass would stop telling the
+preset there is no perfect layout when there is — but on this evidence it would not,
+by itself, remove the 6.8-second cliff. Padding the coupling map still does.
+
+**Scope.** One grid (6×7), one circuit, 30 seeds, one machine, one Qiskit version. The
+budget used here (3,000,000) is a tenth of what `optimization_level=3` sets, chosen so
+a full burn takes ~335 ms instead of seconds. `VF2PostLayout` is covered below.
+
+### `VF2PostLayout` fails on exactly the same seeds
+
+Same scan, same grid, same budget, run against `VF2PostLayout`
+([`benchmarks/verify_vf2post_seed.py`](../../benchmarks/verify_vf2post_seed.py)). Its
+input is the routed circuit (`transpile(..., optimization_level=1,
+seed_transpiler=0)`), and it needs a `Target`, built from the same grid and basis with
+no error rates — so its scoring falls to the degree-based legacy path in
+`build_average_error_map`.
+
+| Stop reason | Count | Seeds |
+| :--- | ---: | :--- |
+| `SOLUTION_FOUND` | 4 / 30 | **1, 8, 25, 29** |
+| `NO_BETTER_SOLUTION_FOUND` | 26 / 30 | all others |
+
+**The successful seeds are identical to `VF2Layout`'s: 1, 8, 25, 29.** If the two
+passes failed independently, the chance of picking the same four out of thirty is
+1 in 27,405. They are not independent failures; they are the same search, on the same
+coupling graph, gated by the same node ordering, counted twice.
+
+That matters for reading the 12.8 s. The per-pass table above splits it evenly between
+`VF2Layout` (6,387 ms) and `VF2PostLayout` (6,384 ms), which looks like two separate
+problems. On this evidence it is one problem paid for twice: whatever ordering makes
+the first pass miss also makes the second one miss, and the preset runs the second
+pass anyway after the first has already exhausted its budget on the same graph pair.
+
+One detail worth recording, because it constrains the mechanism: the two passes were
+given **different input circuits** — the raw dense-pair circuit and the routed one —
+and still succeeded on the same seeds. The seed permutes the *coupling* graph, not the
+interaction graph, so this is consistent with the ordering of the coupling graph being
+what decides the outcome. It is not proof; the routed circuit's interaction graph is
+probably close to the original's on this workload, and that was not checked.
+
+**`NO_SOLUTION_FOUND` never appears here.** `VF2PostLayout` scores the incoming layout
+first (`score_initial_layout`), so a failed search reports
+`NO_BETTER_SOLUTION_FOUND` — "we looked and found nothing better", not "there is no
+solution". In the 26 failing seeds it spends the full budget arriving at that.
+
+Timing is flat again, as with `VF2Layout`: failures median **335.7 ms**, successes
+median **342.1 ms**, against an overall median of 336.1 ms. Finding a better layout
+does not shorten the pass any more than finding any layout shortened the first one.
+
 ## A parallel observation: `rustworkx.vf2_mapping`
 
-A separate VF2++ implementation, on the same patterns. Qiskit does not call it; this is
-not evidence about Qiskit's passes, it is a second data point about the heuristic.
+A separate VF2++ implementation, on the same patterns. Qiskit does not call it, so this
+is not evidence about Qiskit's passes — it is a second data point about the heuristic,
+and the one place where changing the ordering is directly available as a switch.
 
 | Grid | Spare | `id_order=False` (VF2++) | `id_order=True` (plain VF2) |
 | :--- | :---: | :--- | :--- |
@@ -399,9 +510,19 @@ Drafts as submitted, and the outcome, in [`docs/log/`](../log/):
 
 ## What is still unknown
 
-- **Whether Qiskit's VF2++ ordering fails the way rustworkx's does.** Both use the
-  heuristic; the implementations are separate and only one has been tested. The
-  `shuffle_seed` experiment described above would answer this without leaving Python.
+- **Why finding the layout does not save time.** The `minimize_vf2` trial loop is the
+  candidate — it continues past the first match under `max_trials` — but nothing
+  inside the pass has been instrumented to confirm it.
+- **Whether the two implementations fail on the same instances.** Both use the VF2++
+  ordering and both are ordering-dependent on this pattern; that is a family
+  resemblance plus a shared symptom, not a shared cause.
+- **Whether the coupling graph's ordering alone decides the outcome.** The two passes
+  succeed on the same seeds with different input circuits, which points that way, but
+  the two interaction graphs were not compared.
+- **Whether the preset shuffles at all.** `from_legacy_api` treats a `None` seed as
+  "seed with OS entropy" and `-1` as "no shuffling"; which of those the preset pass
+  managers pass has not been checked. If it were entropy-seeded, `transpile()` should
+  occasionally hit a lucky ordering, and in dozens of measurements it never has.
 - **Which part of the ordering causes it, in either implementation.** Neither
   `qiskit-circuit`'s `vf2` module nor rustworkx's ordering code has been read at that
   level.
@@ -440,6 +561,11 @@ saturated points).
   [`data/phase3_v5_spare_qubits_intel_2026-09-10.csv`](../../data/phase3_v5_spare_qubits_intel_2026-09-10.csv),
   [`data/phase3_v5_spare_qubits_amd_2026-09-10_run1.csv`](../../data/phase3_v5_spare_qubits_amd_2026-09-10_run1.csv),
   [`data/phase3_v5_spare_qubits_amd_2026-09-10_run2.csv`](../../data/phase3_v5_spare_qubits_amd_2026-09-10_run2.csv)
+- Ordering experiments inside Qiskit:
+  [`benchmarks/verify_vf2_seed.py`](../../benchmarks/verify_vf2_seed.py) /
+  [`data/vf2_seed_scan_2026-09-11.csv`](../../data/vf2_seed_scan_2026-09-11.csv) and
+  [`benchmarks/verify_vf2post_seed.py`](../../benchmarks/verify_vf2post_seed.py) /
+  [`data/vf2post_seed_scan_2026-09-11.csv`](../../data/vf2post_seed_scan_2026-09-11.csv)
 - Pass timing and ordering probes: `benchmarks/qiskit_pass_timing.py`,
   `benchmarks/vf2_id_order_probe.py`;
   [`data/qiskit_pass_timing_2026-09-11.csv`](../../data/qiskit_pass_timing_2026-09-11.csv),
