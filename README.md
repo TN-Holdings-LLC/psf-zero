@@ -9,7 +9,7 @@
 A Qiskit transpiler pass that replaces heuristic 2-qubit unitary synthesis with an
 **exact, closed-form Cartan (KAK) decomposition**, implemented in a small Rust core
 via PyO3. Because the decomposition is analytic rather than search-based, it runs in
-constant time per block and returns **the same circuit everya time** for the same
+constant time per block and returns **the same circuit every time** for the same
 input unitary.
 
 ```python
@@ -115,15 +115,20 @@ as well as the saturated map (a gate-count-matched `random_circuit()` workload s
 no cliff at all), and Qiskit 2.1 made the *unsaturated* case ~93x faster while the
 saturated case has not improved since 1.4.6.
 
-**The mechanism is identified.** `VF2Layout` and `VF2PostLayout` are 99.9% of the time,
-and the VF2++ node ordering inside `rustworkx.vf2_mapping` fails to find a layout that
-provably exists — plain VF2 ordering (`id_order=True`) finds the same layout in under a
-millisecond, on every saturated instance tested, with the boundary at 24 nodes.
-Reported upstream. Padding the coupling map with a few spare qubits removes the effect
+**Where the time goes is measured; the mechanism is not settled.** `VF2Layout` and
+`VF2PostLayout` are 99.9% of the time, each burning the level-3 call budget and
+reporting `NO_SOLUTION_FOUND` for a layout that provably exists. Qiskit implements
+VF2 itself (`crates/transpiler/src/passes/vf2_layout.rs`) and both passes use the
+VF2++ node ordering unconditionally — the same heuristic that, in `rustworkx`'s
+separate implementation, fails on this exact pattern and succeeds in under a
+millisecond with plain VF2 ordering. That makes the ordering a live candidate, not a
+confirmed cause: the two implementations have not been compared. Reported upstream
+and rejected, because the report said Qiskit calls `rustworkx.vf2_mapping`, which it
+does not. Padding the coupling map with a few spare qubits removes the effect
 entirely. Experiments:
 [`phase3_v5_spare_qubits.py`](benchmarks/phase3_v5_spare_qubits.py) and
 [`phase3_v6_workload_control.py`](benchmarks/phase3_v6_workload_control.py).
-Full account and raw data:
+Full account, source reading, and raw data:
 [`docs/findings/spare-qubit-cliff.md`](docs/findings/spare-qubit-cliff.md).
 
 ## How these numbers were produced
@@ -139,7 +144,9 @@ Ranges, not peaks.
 — a "200x" that turned out to be a no-op `transpile()` call, a "615x–867x" produced
 by circuits that never triggered the pass, and a decay-with-iteration-count effect
 that turned out to be background load on one machine. Two hypotheses this project
-proposed were later **refuted by their own pre-registered criteria**. The complete
+proposed were later **refuted by their own pre-registered criteria**. A third — a
+mechanism proposed for the finding above — was rejected upstream for naming a code
+path Qiskit does not use; the drafts and the outcome are in the log. The complete
 record, including every retraction and the raw data behind it, is kept verbatim in
 [`docs/log/`](docs/log/) rather than quietly edited away.
 
@@ -190,8 +197,9 @@ their absence.
 
 ## Open questions
 
-- The mechanism behind the spare-qubit cliff — no pass-level instrumentation done,
-  and it is one Qiskit version (2.5.2) on one topology family.
+- The mechanism behind the spare-qubit cliff — the time is localised to the two VF2
+  passes, but nothing inside them has been instrumented, and it is one Qiskit version
+  (2.5.2) on one topology family.
 - Whether the compile-time advantage reduces real-hardware calibration-drift
   exposure in a variational loop. Plausible, untested, and not planned without a
   reason to spend QPU time.
