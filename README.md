@@ -2818,7 +2818,7 @@ In the interest of not overstating anything:
   Updates that precede it.
   **DONE and REFUTED (2026-09-10). This whole item is now closed.** The
   experiment above was run as specified (paired, same run, 10 seeds × 5
-  reps, [phase3_v5_spare_qubits.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase3_v5_spare_qubits).
+  reps, [phase3_v5_spare_qubits.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase3_v5_spare_qubits.py).
   The ratios did not
   collapse to the original's 4.35/2.21/1.66/1.44 — they went to
   **1.42/0.67/0.48/0.47**, overshooting by about 3.1x at every scale,
