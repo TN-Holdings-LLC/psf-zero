@@ -1,0 +1,386 @@
+# Qiskit's `optimization_level` 2/3 falls off a cliff when the circuit nearly fills the coupling map
+
+**Status:** causally established by controlled intervention, reproduced in three
+independent environments. Two follow-up controls (2026-09-11) establish that the dense
+adjacent-pair circuit structure is **required**, and that the effect spans Qiskit 1.4.6
+through 2.5.2 unchanged. **The mechanism is now identified**: `VF2Layout` and
+`VF2PostLayout` account for 99.9% of the time, and the VF2++ node ordering in
+`rustworkx.vf2_mapping` fails to find a layout that provably exists — plain VF2
+ordering finds it in under a millisecond. One topology family
+(`CouplingMap.from_grid`).
+
+**This is not a finding about PSF-Zero.** It surfaced while benchmarking PSF-Zero
+against coupling maps, but it is a property of Qiskit's transpiler and it affects
+anyone using `optimization_level` 2 or 3 against a map their circuit nearly fills.
+
+---
+
+## The short version
+
+Hold the coupling map fixed. Change only how many of its qubits the circuit uses.
+
+| Coupling map | Circuit | Spare qubits | `opt=2` | `opt=3` |
+| :--- | :---: | :---: | ---: | ---: |
+| 6×7 grid (42 physical) | 38 qubits | 4 | **14 ms** | **28 ms** |
+| 6×7 grid (42 physical) | 42 qubits | 0 | **579 ms** | **6,803 ms** |
+
+Same map. Same circuit family. Four fewer logical qubits, and `optimization_level=3`
+goes from 28 milliseconds to 6.8 seconds — a **246x** change.
+
+The effect is not about size. A 42-qubit circuit on a saturated 42-qubit grid takes
+6,803 ms at `opt=3`; a **larger** 50-qubit circuit on a 56-qubit grid with 6 spare
+takes 34 ms. The smaller circuit is ~200x slower.
+
+**Workaround:** pad the coupling map with a few spare qubits. The effect disappears
+completely.
+
+---
+
+## How this was found, and why replication could not settle it
+
+The pattern first appeared in an ordinary scaling sweep (`phase3_v4.py`, 50/100/156/300
+qubits): `opt=3` took tens of milliseconds at 50 and 300 qubits but **10–31 seconds**
+at 100 and 156. Non-monotonic in circuit size, which nothing about "bigger circuits
+are harder" explains.
+
+It correlated exactly with spare qubits, because `get_grid_cmap()` picks
+`cols = ceil(sqrt(n))`, `rows = ceil(n/cols)`:
+
+| n | grid | physical | spare |
+| :---: | :---: | :---: | :---: |
+| 50 | 7×8 | 56 | 6 |
+| 100 | 10×10 | 100 | **0** |
+| 156 | 13×13 | 169 | 13 → but the run used a saturated map |
+| 300 | 18×18 | 324 | 24 |
+
+The trouble is that **"has no spare qubits" and "is one of those two sizes" were
+perfectly confounded.** Running the same four points again on more machines could
+raise confidence that the observation was real, but could never separate the two
+explanations. This project reproduced those four points in three environments before
+recognising that replication is not a test of a confound.
+
+## The controlled experiment
+
+[`phase3_v5_spare_qubits.py`](../../benchmarks/phase3_v5_spare_qubits.py) breaks the confound by **holding the coupling map fixed
+and varying only how much of it the circuit occupies** (axis C), and separately by
+holding the circuit fixed and varying the map (axis B).
+
+Design choices that matter:
+
+- It reuses this project's own `get_grid_cmap()` and
+  `build_dense_pair_blocks_circuit()` **verbatim**, so the fixture is provably the
+  same one the original observation came from.
+- It re-derives the n=100 saturated point as an **anchor**: `opt=2` 1,139 ms and
+  `opt=3` 13,060 ms here, against 1,244 ms / 14,343 ms for the same point in the
+  earlier sweep. The fixture matches.
+- The predictions were **written down before the run**: *if only the zero-spare points
+  are orders of magnitude slower, the hypothesis is supported; if pairs on the same map
+  do not differ, it is refuted.*
+
+## Results
+
+### Axis C — same map, varying occupancy
+
+Min-of-reps, median over seeds. Three independent environments; the AMD machine was
+run twice back-to-back.
+
+**`optimization_level=2` (ms)**
+
+| Grid | Spare | Linux sandbox | Intel (Win) | AMD run 1 | AMD run 2 |
+| :--- | :---: | ---: | ---: | ---: | ---: |
+| 6×7 = 42 | 4 | 34.1 | 11.6 | 14.6 | 14.1 |
+| 6×7 = 42 | **0** | **621.1** | **549.6** | **578.7** | **576.3** |
+| 7×8 = 56 | 6 | 16.1 | 12.6 | 16.6 | 15.9 |
+| 7×8 = 56 | **0** | **767.7** | **633.0** | **686.6** | **676.2** |
+| 8×8 = 64 | 4 | 20.0 | 12.2 | 18.0 | 17.3 |
+| 8×8 = 64 | **0** | **840.8** | **706.6** | **777.3** | **773.6** |
+| 8×9 = 72 | 6 | 20.5 | 15.8 | 19.1 | 18.3 |
+| 8×9 = 72 | **0** | **877.8** | **720.0** | **790.6** | **789.0** |
+
+**`optimization_level=3` (ms)**
+
+| Grid | Spare | Intel (Win) | AMD run 1 | AMD run 2 |
+| :--- | :---: | ---: | ---: | ---: |
+| 6×7 = 42 | 4 | 23.4 | 27.6 | 27.6 |
+| 6×7 = 42 | **0** | **7,725** | **6,803** | **6,710** |
+| 7×8 = 56 | 6 | 29.2 | 34.3 | 32.9 |
+| 7×8 = 56 | **0** | **9,770** | **8,088** | **8,044** |
+| 8×8 = 64 | 4 | 29.8 | 33.6 | 33.0 |
+| 8×8 = 64 | **0** | **8,184** | **9,243** | **8,928** |
+| 8×9 = 72 | 6 | 36.3 | 37.2 | 35.8 |
+| 8×9 = 72 | **0** | **8,295** | **9,197** | **9,157** |
+
+### The cliff, as ratios
+
+| Grid | `opt=2` | `opt=3` |
+| :--- | :---: | :---: |
+| 6×7 = 42 | 39.5x / 40.8x | 246x / 243x |
+| 7×8 = 56 | 41.3x / 42.5x | 236x / 245x |
+| 8×8 = 64 | 43.2x / 44.6x | 275x / 270x |
+| 8×9 = 72 | 41.4x / 43.1x | 247x / 256x |
+
+<sub>(AMD run 1 / run 2. The zero-spare point divided by the spare point on the
+*same* map.)</sub>
+
+Run-to-run agreement on the same machine: **0.2–3.5%** at the zero-spare points and
+0.1–4.7% at the spare points. The experiment itself is stable.
+
+### The threshold is not zero — it moves with the map
+
+The four-point data could never have shown this. On the 10×10 grid, **2 spare qubits
+is still fully in the slow regime**; 4 spare is fully out of it:
+
+| Grid | Spare | `opt=2` | `opt=3` |
+| :--- | :---: | ---: | ---: |
+| 10×10 = 100 | 4 | 24.4 ms | 53.4 ms |
+| 10×10 = 100 | **2** | **1,128 ms** | **13,033 ms** |
+| 10×10 = 100 | **0** | **1,139 ms** | **13,060 ms** |
+
+On the 8×9 = 72 grid, by contrast, 2 spare is already **out** of the slow regime
+(35.6 ms at `opt=3`, against 10,115 ms at zero spare). So it is not a fixed count of
+spare qubits; the boundary sits higher on the larger map. Two grids is not enough to
+say whether it tracks area, perimeter, or something else, and we have not tried to
+find out.
+
+### Padding the map removes it entirely
+
+Same 100-qubit circuit, three different maps:
+
+| Map | Spare | `opt=2` |
+| :--- | :---: | ---: |
+| 10×10 = 100 | 0 | 1,139 ms |
+| 10×11 = 110 | 10 | **25.0 ms** |
+| 11×11 = 121 | 21 | **34.7 ms** |
+
+## The slow runs are not doing more work
+
+Across all four datasets (120 measurements) the output is essentially always the
+baseline 3 two-qubit gates per logical pair, at depth 16, with **zero coupling
+violations** — including in the slow cases. The time is spent searching for a
+solution the router eventually finds, not producing a bigger circuit.
+
+Seven measurements departed from that baseline by inserting SWAPs. Two observations
+about them:
+
+**1. Every SWAP case is on an odd-column grid.** All seven are on 6×7 or 8×9. The
+even-column grids (7×8, 8×8) were SWAP-free in every single measurement. That fits the
+mechanical explanation: consecutive logical pairs (0,1), (2,3), … straddle a row
+boundary when the grid width is odd, and `transpile()` is not seed-pinned here, so the
+layout pass avoids it in some runs and not others.
+
+**2. Whether SWAPs were inserted makes no difference to the time.** Within one run, on
+one grid, one arm, two seeds:
+
+| Case | Output | Time |
+| :--- | :---: | ---: |
+| n=42, 6×7, `opt=2`, seed 1 | 63 gates, depth 16 (SWAP-free) | 571.8 ms |
+| n=42, 6×7, `opt=2`, seed 2 | 66 gates, depth 19 (one SWAP) | 580.9 ms |
+| n=72, 8×9, `opt=3`, seed 1 | 111 gates, depth 19 (one SWAP) | 9,137 ms |
+| n=72, 8×9, `opt=3`, seed 2 | 108 gates, depth 16 (SWAP-free) | 9,177 ms |
+
+1.6% and 0.4% apart. Paired, same run, same seeds' worth of noise. This is the
+cleanest available evidence that the cliff is search cost, not output cost.
+
+## The two gaps are now closed — and both answers sharpen the finding
+
+The two things this document previously listed as unknown were run on 2026-09-11 in a
+cloud sandbox (Linux, Python 3.11.15, 2 cores). Both came back with answers that
+change how the result should be stated.
+
+### 1. The dense adjacent-pair structure is required
+
+`benchmarks/phase3_v6_workload_control.py` runs the **identical axis-C design** —
+same grids, same spare-qubit pairs, same measurement discipline — and changes only
+the circuit. The passthrough workload is `random_circuit(n, depth=90, max_operands=2)`,
+chosen so its two-qubit gate count matches the dense circuit's to within ~10%
+(1,190 against 1,260 at n=42; 2,094 against 2,160 at n=72).
+
+| Grid | Spare | dense `opt=2` | passthrough `opt=2` | dense `opt=3` | passthrough `opt=3` |
+| :--- | :---: | ---: | ---: | ---: | ---: |
+| 6×7 = 42 | 4 | 33.1 ms | 645.8 ms | 62.0 ms | 520.1 ms |
+| 6×7 = 42 | **0** | **817.0 ms** | 754.3 ms | **8,782 ms** | 485.2 ms |
+| 7×8 = 56 | 6 | 22.4 ms | 1,107.5 ms | 41.0 ms | 944.6 ms |
+| 7×8 = 56 | **0** | **881.3 ms** | 1,307.6 ms | **10,202 ms** | 901.2 ms |
+| 8×8 = 64 | 4 | 61.6 ms | 1,590.7 ms | 44.0 ms | 1,185.4 ms |
+| 8×8 = 64 | **0** | **1,048 ms** | 1,639.7 ms | **11,834 ms** | 1,164.1 ms |
+| 8×9 = 72 | 6 | 42.8 ms | 1,875.0 ms | 47.9 ms | 1,235.3 ms |
+| 8×9 = 72 | **0** | **1,045 ms** | 2,119.0 ms | **12,046 ms** | 1,554.6 ms |
+
+**There is no cliff in the passthrough column.** Saturating the map costs
+**1.03x–1.18x** at `opt=2` and **0.93x–1.26x** at `opt=3` — at three of four grids
+`opt=3` is *faster* on the saturated map. Against 17x–39x and 142x–269x for the dense
+workload measured on the same box in the same session.
+
+What is left of the passthrough increase tracks the input gate count, not the
+saturation: the passthrough circuits get larger as n grows (1,712 → 3,268 input 2-qubit
+gates), and the time grows with them.
+
+**So the earlier framing was too broad.** A saturated coupling map is not sufficient.
+The trigger needs the saturated map **and** the dense adjacent-pair structure
+together. The 2026-09-08 note that guessed this from a different experiment was right,
+and it is now a controlled result rather than an inference.
+
+Read the other way round, the surprising number is not that the saturated dense case
+is slow — at ~1 second for 1,260 two-qubit gates it is in the same range as
+passthrough. It is that the **unsaturated** dense case is extraordinarily *fast*
+(22–62 ms), and saturating the map destroys that. Adjacent logical pairs map onto
+adjacent physical qubits under a row-major grid, so with even one spare qubit the
+layout pass finds a trivial, routing-free solution immediately. Take the slack away
+and it stops finding it.
+
+### 2. It is not a regression — the fast path was *added*, and never reached the saturated case
+
+Six Qiskit versions, same box, same script, on the 6×7 = 42 grid:
+
+| Qiskit | n=38 (spare 4) `opt=3` | n=42 (spare 0) `opt=3` | ratio |
+| :--- | ---: | ---: | ---: |
+| 1.4.6 | 2,654 ms | 9,983 ms | 3.8x |
+| 2.0.3 | 2,612 ms | 9,781 ms | 3.7x |
+| **2.1.2** | **54.8 ms** | 9,898 ms | **181x** |
+| 2.2.3 | 274 ms | 8,952 ms | 33x |
+| 2.4.2 | 34.3 ms | 8,998 ms | 262x |
+| 2.5.2 | 56.1 ms | 8,760 ms | 156x |
+
+Two things jump out.
+
+**The saturated column has not moved since 1.4.6.** 9,983 → 8,760 ms across six
+releases spanning two major versions — no improvement at all, within measurement
+noise of each other.
+
+**The unsaturated column dropped ~47x between 2.0.3 and 2.1.2.** Re-measured with
+3 seeds × 3 repetitions to rule out noise: 2.0.3 gives 2,551–2,574 ms (min, spread
+under 1%) and 2.1.2 gives 26.6–27.9 ms — a **93x** step, with **identical output**
+(57 two-qubit gates, depth 16) on both sides.
+
+So the "cliff" is not something that broke. Something in Qiskit 2.1 made
+`optimization_level=3` dramatically faster on this circuit family, and **that
+improvement does not engage when the coupling map is saturated.** The saturated case
+has been paying ~10 seconds since at least 1.4.6 and still is.
+
+That is a more useful statement for a Qiskit maintainer than "level 3 is slow on full
+maps": it points at a specific release boundary and a specific pair of inputs that
+differ by four qubits.
+
+<sub>Caveat on these two experiments: they ran on a 2-core cloud sandbox, so absolute
+times are not comparable with the Windows runs above. Every comparison drawn here is
+between points measured in the same session on the same box, which is what the
+argument needs. The version sweep is one seed and one repetition per point except the
+2.0.3 / 2.1.2 / 2.5.2 confirmation, which is 3 seeds × 3 reps; the 274 ms at 2.2.3 is
+most likely single-measurement noise on a shared 2-core box rather than a real
+intermediate step.</sub>
+
+## Root cause: the VF2++ node ordering in `rustworkx.vf2_mapping`
+
+Measured 2026-09-11, same sandbox. Per-pass timing via
+`generate_preset_pass_manager(...).run(qc, callback=...)`:
+
+| | total | `VF2Layout` | `VF2PostLayout` | `VF2Layout_stop_reason` |
+| :--- | ---: | ---: | ---: | :--- |
+| n=38 on 6×7 (4 spare) | 37.5 ms | 26.2 ms | 0.3 ms | `SOLUTION_FOUND` |
+| n=42 on 6×7 (0 spare) | **12,789 ms** | **6,387 ms** | **6,384 ms** | `NO_SOLUTION_FOUND` |
+
+**99.9% of the time is those two passes.** Nothing else moves. The level dependence is
+the VF2 call budget, which `get_vf2_limits` sets to 50,000 at levels 1–2 and
+**30,000,000 at level 3** (in-source comment: "~60 sec with rustworkx 0.10.2"):
+22.6 ms / 1,117 ms / 12,771 ms of VF2 time at levels 1 / 2 / 3. That is also why
+`routing_optimization_level=1` never enters the regime.
+
+**The layout it fails to find exists.** The interaction graph is 21 disjoint edges on
+42 qubits; the 6×7 grid has a perfect matching of size 21
+(`networkx.max_weight_matching(G, maxcardinality=True)`). We constructed an explicit
+layout and verified all 42 physical qubits are used and all 21 pairs land on coupling
+edges.
+
+**More budget does not help.** On 6×7 with `id_order=False`: `call_limit=30,000,000`
+→ 6.68 s, nothing found; `100,000,000` → 21.96 s, nothing found. Linear in the limit,
+so the budget is binding and buying more of it buys proportionally more failure.
+
+**Changing the node ordering fixes it completely.** Reproduced with no Qiskit
+transpiler involved, straight against `rustworkx.vf2_mapping`:
+
+| Grid | Spare | `id_order=False` (VF2++, what Qiskit uses) | `id_order=True` (plain VF2) |
+| :--- | :---: | :--- | :--- |
+| 6×7 = 42 | 4 | found, <1 ms | found, <1 ms |
+| 6×7 = 42 | **0** | **not found, 6.64 s** | **found, <1 ms** |
+| 7×8 = 56 | 6 | found, <1 ms | found, <1 ms |
+| 7×8 = 56 | **0** | **not found, 7.33 s** | **found, <1 ms** |
+| 8×8 = 64 | 4 | found, <1 ms | found, <1 ms |
+| 8×8 = 64 | **0** | **not found, 9.05 s** | **found, <1 ms** |
+| 8×9 = 72 | 6 | found, <1 ms | found, <1 ms |
+| 8×9 = 72 | **0** | **not found, 8.43 s** | **found, <1 ms** |
+
+**The boundary is 24 nodes.** Scanning every grid with an even node count and a perfect
+matching: below 24 nodes the VF2++ ordering finds a mapping (2×2 through 4×5, all
+under 75 ms); from 24 nodes up (3×8 and 4×6 are the smallest) it never does, on any of
+the 14 grids tested.
+
+This also explains the two controls above. A `random_circuit` interaction graph is
+connected and dense, so VF2 either embeds it at once or rejects it at once — there is
+nothing for the ordering heuristic to get lost in. A perfect-matching pattern is
+maximally disconnected, which appears to be exactly where it does.
+
+And it explains the version step: Qiskit 2.1 made the `SOLUTION_FOUND` path ~120x
+faster (`VF2Layout` 3,186 ms → 26 ms at n=38) while the `NO_SOLUTION_FOUND` path is
+bounded by the call limit, not by search speed, so it did not move.
+
+**Reported upstream** as a rustworkx issue (the ordering heuristic) plus a comment on
+Qiskit [#7705](https://github.com/Qiskit/qiskit/issues/7705), which has been open since
+2022 asking for exactly this `vf2_mapping()` scaling benchmark in order to set adaptive
+limits — the answer being that limits are the wrong lever for this input class. Draft
+text is in `qiskit-issue-7705-comment-draft.md` and `rustworkx-issue-draft.md`.
+
+## What is still unknown
+
+- **Which part of the VF2++ ordering causes it.** We measured that switching to
+  `id_order=True` removes it on every instance tested; we did not read the ordering
+  code to find out why.
+- **Whether it is specific to disconnected patterns.** Only the perfect-matching
+  pattern was tested against `vf2_mapping` directly.
+- **Which topologies.** Still only rectangular grids from `CouplingMap.from_grid`.
+  Untested on heavy-hex, linear, or real backend maps.
+- **Where in Qiskit 2.1 the `SOLUTION_FOUND` speed-up came from.** The release
+  boundary is known; the specific change is not. A `git bisect` between 2.0.3 and
+  2.1.0 would name it.
+- **rustworkx `main`.** 0.18.1 is the latest release and is what was measured; a source
+  build was not possible in the sandbox used.
+
+The two gaps this section used to list — other Qiskit versions, and whether the dense
+structure is required — are now closed; see the section above.
+
+## Practical consequence
+
+If you run `optimization_level` 2 or 3 against a coupling map your circuit almost
+fills, pad the map by a few qubits. It costs nothing and removes a 40x–275x penalty.
+
+For this project specifically, it turns an earlier correlational argument for
+`routing_optimization_level=1` into a measured one: `rl=1` never enters the regime at
+all (9.6–50.3 ms across every scale tested, against `rl=2`'s 866–1,145 ms at the
+saturated points).
+
+## Files
+
+- Experiments: [`benchmarks/phase3_v5_spare_qubits.py`](../../benchmarks/phase3_v5_spare_qubits.py)
+  (the spare-qubit intervention) and
+  [`benchmarks/phase3_v6_workload_control.py`](../../benchmarks/phase3_v6_workload_control.py)
+  (the dense-vs-passthrough control)
+- Raw data: [`data/phase3_v5_spare_qubits_linux_2026-09-10.csv`](../../data/phase3_v5_spare_qubits_linux_2026-09-10.csv),
+  [`data/phase3_v5_spare_qubits_intel_2026-09-10.csv`](../../data/phase3_v5_spare_qubits_intel_2026-09-10.csv),
+  [`data/phase3_v5_spare_qubits_amd_2026-09-10_run1.csv`](../../data/phase3_v5_spare_qubits_amd_2026-09-10_run1.csv),
+  [`data/phase3_v5_spare_qubits_amd_2026-09-10_run2.csv`](../../data/phase3_v5_spare_qubits_amd_2026-09-10_run2.csv)
+- Root-cause probes: `benchmarks/qiskit_pass_timing.py`,
+  `benchmarks/vf2_id_order_probe.py`;
+  [`data/qiskit_pass_timing_2026-09-11.csv`](../../data/qiskit_pass_timing_2026-09-11.csv),
+  [`data/rustworkx_vf2_id_order_2026-09-11.csv`](../../data/rustworkx_vf2_id_order_2026-09-11.csv),
+  [`data/rustworkx_vf2_min_case_scan_2026-09-11.csv`](../../data/rustworkx_vf2_min_case_scan_2026-09-11.csv)
+- 2026-09-11 controls:
+  [`data/phase3_v6_passthrough_control_2026-09-11.csv`](../../data/phase3_v6_passthrough_control_2026-09-11.csv),
+  [`data/qiskit_version_sweep_2026-09-11.csv`](../../data/qiskit_version_sweep_2026-09-11.csv),
+  [`data/qiskit_version_step_confirm_2026-09-11.csv`](../../data/qiskit_version_step_confirm_2026-09-11.csv)
+- The sweep it came from: [`benchmarks/phase3_v4_dense_pair_blocks.py`](../../benchmarks/phase3_v4_dense_pair_blocks.py),
+  [`data/phase3_v4_intel_machine_2026-09-10.csv`](../../data/phase3_v4_intel_machine_2026-09-10.csv)
+- Full chronological record, including the retracted correlational framing:
+  [`docs/log/04-real-device-topology.md`](../log/04-real-device-topology.md) and [`phase3-hardware-routing-regression.md`](../../phase3-hardware-routing-regression.md)
+
+Environments: Linux sandbox (Qiskit 2.5.2); Windows / Python 3.11.9 /
+`Intel64 Family 6 Model 181` / Qiskit 2.5.2; Windows / Python 3.10.11 /
+`AMD64 Family 25 Model 80` / Qiskit 2.5.2.
