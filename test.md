@@ -26,6 +26,9 @@ optimized = psf_compile(qc)          # add verify=False for the fastest path
 Install: `git clone … && cd psf-zero && pip install -e .`
 (needs `numpy`, `scipy`, `qiskit`; the Rust core builds via `maturin`/`pyo3`.)
 
+Source: [`psf_compile.py`](psf_compile.py) — the pass itself ·
+[`lib.rs`](lib.rs) — the Rust core (`psf_zero_core`) it calls into.
+
 ---
 
 ## The trade-off, stated up front
@@ -115,12 +118,18 @@ as well as the saturated map (a gate-count-matched `random_circuit()` workload s
 no cliff at all), and Qiskit 2.1 made the *unsaturated* case ~93x faster while the
 saturated case has not improved since 1.4.6.
 
-**The mechanism is identified.** `VF2Layout` and `VF2PostLayout` are 99.9% of the time,
-and the VF2++ node ordering inside `rustworkx.vf2_mapping` fails to find a layout that
-provably exists — plain VF2 ordering (`id_order=True`) finds the same layout in under a
-millisecond, on every saturated instance tested, with the boundary at 24 nodes.
-Reported upstream. Padding the coupling map with a few spare qubits removes the effect
-entirely. Experiments:
+**Where the time goes is measured. The mechanism is not.** Per-pass timing puts
+99.9% of it in `VF2Layout` and `VF2PostLayout`, each consuming the
+`optimization_level=3` call limit in full and then reporting `NO_SOLUTION_FOUND` —
+for a layout that provably exists, since the grid has a perfect matching. What burns
+that budget inside the passes is unidentified: Qiskit 2.x implements VF2 in its own
+Rust core (`qiskit._accelerate.vf2_layout`), no pass-internal instrumentation has been
+done, and this is one Qiskit version on one topology family. An earlier revision of
+this file attributed the cliff to the VF2++ node ordering in
+`rustworkx.vf2_mapping`; Qiskit does not call that function, the attribution was
+wrong, and it was rejected when reported upstream — kept, with the drafts and the
+outcome, in [`docs/log/`](docs/log/). Padding the coupling map with a few spare
+qubits removes the effect entirely. Experiments:
 [`phase3_v5_spare_qubits.py`](benchmarks/phase3_v5_spare_qubits.py) and
 [`phase3_v6_workload_control.py`](benchmarks/phase3_v6_workload_control.py).
 Full account and raw data:
@@ -139,8 +148,10 @@ Ranges, not peaks.
 — a "200x" that turned out to be a no-op `transpile()` call, a "615x–867x" produced
 by circuits that never triggered the pass, and a decay-with-iteration-count effect
 that turned out to be background load on one machine. Two hypotheses this project
-proposed were later **refuted by their own pre-registered criteria**. The complete
-record, including every retraction and the raw data behind it, is kept verbatim in
+proposed were later **refuted by their own pre-registered criteria**, and a third —
+a mechanism for the coupling-map finding above — was **rejected upstream** because
+it named a code path Qiskit does not use. The complete record, including every
+retraction and the raw data behind it, is kept verbatim in
 [`docs/log/`](docs/log/) rather than quietly edited away.
 
 ## Where everything is
@@ -215,3 +226,5 @@ their absence.
 ```
 
 AGPL v3. See `LICENSE`.
+
+[Previous repository.](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/Previous_repository.md)
