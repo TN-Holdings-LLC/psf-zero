@@ -3,13 +3,13 @@
 **Status:** causally established by controlled intervention, reproduced in three
 independent environments. Two follow-up controls (2026-09-11) establish that the dense
 adjacent-pair circuit structure is **required**, and that the effect spans Qiskit 1.4.6
-through 2.5.2 unchanged. **Where the time goes is measured; the mechanism inside those
-passes is not.** `VF2Layout` and `VF2PostLayout` account for 99.9% of the time, each
-consuming the level-3 call budget in full and reporting `NO_SOLUTION_FOUND` for a
-layout that provably exists. An earlier revision of this document attributed that to
-the VF2++ node ordering in `rustworkx.vf2_mapping`; Qiskit 2.x does not call that
-function, and the attribution is retracted — see "Reported upstream, and rejected"
-below. One topology family (`CouplingMap.from_grid`).
+through 2.5.2 unchanged. `VF2Layout` and `VF2PostLayout` account for 99.9% of the time,
+each consuming the level-3 call budget in full and reporting `NO_SOLUTION_FOUND` for a
+layout that provably exists. **Qiskit's own VF2 implementation uses the VF2++ node
+ordering** (`with_vf2pp_ordering()`, read from source 2026-09-11) — the same heuristic
+whose failure on exactly this pattern is measured below against `rustworkx`. Whether
+the two implementations fail for the same reason is not established. One topology
+family (`CouplingMap.from_grid`).
 
 **This is not a finding about PSF-Zero.** It surfaced while benchmarking PSF-Zero
 against coupling maps, but it is a property of Qiskit's transpiler and it affects
@@ -271,18 +271,7 @@ argument needs. The version sweep is one seed and one repetition per point excep
 most likely single-measurement noise on a shared 2-core box rather than a real
 intermediate step.</sub>
 
-## Where the time goes — and a parallel observation in rustworkx
-
-> **Retracted 2026-09-11.** This section was previously titled "Root cause: the VF2++
-> node ordering in `rustworkx.vf2_mapping`" and presented that ordering as the
-> mechanism. Qiskit 2.x does not call `rustworkx.vf2_mapping`: both `VF2Layout` and
-> `VF2PostLayout` import `vf2_layout_pass_average` / `vf2_layout_pass_exact` from
-> `qiskit._accelerate.vf2_layout`, Qiskit's own Rust implementation. The attribution
-> is withdrawn. Everything measured against Qiskit directly — the per-pass table, the
-> budget scaling, the existence proof of the layout — is unaffected and kept below.
-> The rustworkx scan is also unaffected as a measurement; it is now presented as a
-> parallel observation about a different implementation, not as the cause. See
-> "Reported upstream, and rejected" below.
+## Where the time goes
 
 Measured 2026-09-11, same sandbox. Per-pass timing via
 `generate_preset_pass_manager(...).run(qc, callback=...)`:
@@ -304,16 +293,52 @@ the VF2 call budget, which `get_vf2_limits` sets to 50,000 at levels 1–2 and
 layout and verified all 42 physical qubits are used and all 21 pairs land on coupling
 edges.
 
-**More budget does not help.** On 6×7 with `id_order=False`: `call_limit=30,000,000`
-→ 6.68 s, nothing found; `100,000,000` → 21.96 s, nothing found. Linear in the limit,
-so the budget is binding and buying more of it buys proportionally more failure.
+**More budget does not help.** `call_limit=30,000,000` → 6.68 s, nothing found;
+`100,000,000` → 21.96 s, nothing found. Linear in the limit, so the budget is binding
+and buying more of it buys proportionally more failure.
 
-### The parallel observation: `rustworkx.vf2_mapping`, which Qiskit 2.x does not call
+## What the Qiskit source says
 
-Both Qiskit passes describe themselves as *"a subgraph isomorphism problem, solved by
-VF2++"*, and `rustworkx.vf2_mapping` implements VF2++ as well, so the two are the same
-family of algorithm in different implementations. Against `rustworkx.vf2_mapping`
-directly, on the same patterns, the node ordering decides the outcome completely:
+Read 2026-09-11 from `crates/transpiler/src/passes/vf2_layout.rs` (Qiskit `main`).
+
+**Qiskit implements VF2 itself, in `qiskit-circuit`, not via `rustworkx.vf2_mapping`.**
+The pass file imports `qiskit_circuit::{..., vf2}`; `rustworkx-core` appears only as
+the source of the `petgraph` data structures. So a Python-space claim that these passes
+call `rustworkx.vf2_mapping` is false — see "Reported upstream, and rejected" below.
+
+**Both passes use the VF2++ node ordering.** `vf2_layout_pass_average` and
+`vf2_layout_pass_exact` each build their search the same way, ending with
+`.with_vf2pp_ordering()`:
+
+```rust
+let vf2 = vf2::Vf2::new(&interactions.graph, &coupling_graph, vf2::Problem::Subgraph)
+    .with_scoring(score, score)
+    .with_restriction(vf2::Restriction::Decreasing(best_score))
+    .with_vf2pp_ordering();
+```
+
+That is the same heuristic — a different implementation of it — whose failure on this
+exact pattern is measured in the next section. **It makes the ordering a live
+candidate for the mechanism rather than an excluded one**, which is the opposite of
+what this document concluded when it only knew that `rustworkx.vf2_mapping` was not
+called.
+
+**There is no ordering knob.** `Vf2PassConfiguration` exposes `call_limit`,
+`time_limit`, `max_trials`, `shuffle_seed` and `score_initial_layout`.
+`with_vf2pp_ordering()` is unconditional. So the `id_order=True` escape measured
+against rustworkx below is not available to a Qiskit user at any level.
+
+**`shuffle_seed` is a way to test this from Python.** It permutes the coupling graph's
+node indices before the search (`vf2::reorder_nodes`). VF2++ ordering depends on node
+degree and index, so if the failure is ordering-dependent, some seeds should turn
+`NO_SOLUTION_FOUND` into `SOLUTION_FOUND` on an unchanged saturated grid. That
+experiment has not been run; it would be evidence about Qiskit's own implementation,
+with no rustworkx involved.
+
+## A parallel observation: `rustworkx.vf2_mapping`
+
+A separate VF2++ implementation, on the same patterns. Qiskit does not call it; this is
+not evidence about Qiskit's passes, it is a second data point about the heuristic.
 
 | Grid | Spare | `id_order=False` (VF2++) | `id_order=True` (plain VF2) |
 | :--- | :---: | :--- | :--- |
@@ -331,12 +356,16 @@ matching: below 24 nodes the VF2++ ordering finds a mapping (2×2 through 4×5, 
 under 75 ms); from 24 nodes up (3×8 and 4×6 are the smallest) it never does, on any of
 the 14 grids tested.
 
-**What this does and does not establish.** It is a real measurement of a real failure
-in a VF2++ implementation, on the exact pattern that makes Qiskit slow, and
-`id_order=True` removes it there. It is *not* evidence about Qiskit's own passes:
-Qiskit does not call this function, does not expose an `id_order` equivalent, and its
-Rust implementation has not been read. Whether the two failures share a cause is
-open — see "What is still unknown".
+This also fits the workload control above. A `random_circuit` interaction graph is
+connected and dense, so VF2 either embeds it at once or rejects it at once — there is
+little for an ordering heuristic to get lost in. A perfect-matching pattern is
+maximally disconnected, which is where this one does.
+
+**What it does and does not establish.** It is a real failure of a VF2++ implementation
+on the exact pattern that makes Qiskit slow, and changing the ordering removes it
+there. It is not a measurement of Qiskit's implementation, which is a separate
+codebase that happens to use the same heuristic. Whether they fail for the same reason
+is open.
 
 ## Reported upstream, and rejected
 
@@ -344,33 +373,38 @@ Filed 2026-09-11 as a rustworkx issue (the ordering heuristic) and as comments o
 Qiskit [#7705](https://github.com/Qiskit/qiskit/issues/7705) and
 [#14855](https://github.com/Qiskit/qiskit/issues/14855).
 
-The rustworkx issue was closed the same day. The maintainer's objection was to one
-sentence in it — *"Qiskit's `VF2Layout` and `VF2PostLayout` use this call"* — which is
-false for Qiskit 2.x, and with it the attribution of the cliff to that function. The
-#7705 comment was hidden as spam, with a warning about posting unverified LLM output.
+The rustworkx issue was closed the same day. The objection was to one sentence —
+*"Qiskit's `VF2Layout` and `VF2PostLayout` use this call"* — which is false: Qiskit 2.x
+implements VF2 in `qiskit-circuit` and calls it from
+`crates/transpiler/src/passes/vf2_layout.rs`. The #7705 comment was hidden as spam,
+with a warning about posting unverified LLM output.
 
-**The objection was correct on that point**, and it invalidates the bridge from the
-rustworkx scan to Qiskit's behaviour, including the framing of #7705 (which asks for
-`vf2_mapping()` scaling benchmarks — a function Qiskit has since moved off) as the
-issue this answers. It does not touch anything measured against Qiskit directly.
+**The objection was correct about the sentence.** It invalidates the bridge from the
+rustworkx measurements to Qiskit's behaviour, and it invalidates the framing of #7705
+(which asks for `vf2_mapping()` scaling benchmarks — a function these passes do not
+use) as the issue this answers. Writing that sentence without reading the
+implementation is the same failure this project recorded when it retracted the
+RSS-sampler/GIL hypothesis, except that this time it went to a third party.
 
-The failure mode was proposing a mechanism without reading the implementation it was
-about — the same one this project recorded when it retracted the RSS-sampler/GIL
-hypothesis, except that this time it went out to a third party. The drafts as
-submitted, and the outcome, are kept in
-[`docs/log/`](../log/): `rustworkx-issue-draft.md`,
-`qiskit-issue-7705-comment-draft.md`, `qiskit-issue-14855-comment-draft.md`.
+**It does not establish that the ordering is the wrong suspect.** Reading the source
+afterwards shows Qiskit's passes use the VF2++ ordering too, unconditionally. The
+correct statement is narrower than either the original draft or the retraction that
+followed it: the ordering is a candidate, supported by a measurement in a different
+implementation and by Qiskit using the same heuristic, and it has not been tested
+against Qiskit's own code.
 
-No further upstream contact is planned.
+Drafts as submitted, and the outcome, in [`docs/log/`](../log/):
+`rustworkx-issue-draft.md`, `qiskit-issue-7705-comment-draft.md`,
+`qiskit-issue-14855-comment-draft.md`. No further upstream contact is planned.
 
 ## What is still unknown
 
-- **What burns the budget inside Qiskit's own passes.** The time is localised to
-  `VF2Layout` and `VF2PostLayout`, but `qiskit._accelerate.vf2_layout`'s Rust source
-  has not been read and no pass-internal instrumentation has been done.
-- **Whether Qiskit's VF2++ implementation shares the ordering behaviour observed in
-  rustworkx.** Both are described as VF2++; that is a family resemblance, not a
-  measurement. Qiskit exposes no `id_order` equivalent to test it with.
+- **Whether Qiskit's VF2++ ordering fails the way rustworkx's does.** Both use the
+  heuristic; the implementations are separate and only one has been tested. The
+  `shuffle_seed` experiment described above would answer this without leaving Python.
+- **Which part of the ordering causes it, in either implementation.** Neither
+  `qiskit-circuit`'s `vf2` module nor rustworkx's ordering code has been read at that
+  level.
 - **Whether the rustworkx result is specific to disconnected patterns.** Only the
   perfect-matching pattern was tested against `vf2_mapping` directly.
 - **Which topologies.** Still only rectangular grids from `CouplingMap.from_grid`.
@@ -388,6 +422,8 @@ structure is required — are now closed; see the section above.
 
 If you run `optimization_level` 2 or 3 against a coupling map your circuit almost
 fills, pad the map by a few qubits. It costs nothing and removes a 40x–275x penalty.
+The ordering cannot be changed from Python — `Vf2PassConfiguration` has no equivalent
+of `id_order` — so padding the map is the available lever.
 
 For this project specifically, it turns an earlier correlational argument for
 `routing_optimization_level=1` into a measured one: `rl=1` never enters the regime at
@@ -404,7 +440,7 @@ saturated points).
   [`data/phase3_v5_spare_qubits_intel_2026-09-10.csv`](../../data/phase3_v5_spare_qubits_intel_2026-09-10.csv),
   [`data/phase3_v5_spare_qubits_amd_2026-09-10_run1.csv`](../../data/phase3_v5_spare_qubits_amd_2026-09-10_run1.csv),
   [`data/phase3_v5_spare_qubits_amd_2026-09-10_run2.csv`](../../data/phase3_v5_spare_qubits_amd_2026-09-10_run2.csv)
-- Root-cause probes: `benchmarks/qiskit_pass_timing.py`,
+- Pass timing and ordering probes: `benchmarks/qiskit_pass_timing.py`,
   `benchmarks/vf2_id_order_probe.py`;
   [`data/qiskit_pass_timing_2026-09-11.csv`](../../data/qiskit_pass_timing_2026-09-11.csv),
   [`data/rustworkx_vf2_id_order_2026-09-11.csv`](../../data/rustworkx_vf2_id_order_2026-09-11.csv),
