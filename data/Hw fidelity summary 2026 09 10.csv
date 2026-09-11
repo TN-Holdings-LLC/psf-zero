@@ -1,0 +1,13 @@
+family,engine,mean_p_all_zero,stderr_p_all_zero,mean_two_qubit_gates,n
+deep2q,Hybrid,0.988671875,0.001288637,3,5
+deep2q,PSF_Zero_v6,0.989501953,0.000415757,3,5
+deep2q,Qiskit_L3,0.990673828,0.000411433,3,5
+deep2q,TKET_native,0.988867188,0.000671276,3,5
+multi_deep2q,Hybrid,0.966894531,0.000978392,12,5
+multi_deep2q,PSF_Zero_v6,0.966650391,0.001397372,12,5
+multi_deep2q,Qiskit_L3,0.967578125,0.000968595,12,5
+multi_deep2q,TKET_native,0.967285156,0.000720111,12,5
+wide,Hybrid,0.964550781,0.000589992,42,5
+wide,PSF_Zero_v6,0.962841797,0.001174415,42,5
+wide,Qiskit_L3,0.960009766,0.000843611,42,5
+wide,TKET_native,0.962255859,0.000701665,42,5
