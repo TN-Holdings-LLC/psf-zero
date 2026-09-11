@@ -1771,7 +1771,7 @@ n=100 and n=156 and a 6-spare grid at exactly n=50 and n=300, so "has no
 spare qubits" and "is one of those two sizes" were perfectly confounded in
 every run this project had done. Replication is not a test.
 
-[phase3_v5_spare_qubits.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase3_v5_spare_qubits)
+[phase3_v5_spare_qubits.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase3_v5_spare_qubits.py)
 breaks the confound by holding the
 coupling map fixed and varying only how much of it the circuit occupies
 (and, separately, holding the circuit fixed and varying the map). It reuses
