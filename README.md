@@ -90,8 +90,8 @@ one of the 10 runs.
 The decomposition is closed-form, so the thing that can go wrong is not search
 quality but numerical stability — around the CNOT/SWAP degeneracies, and in the
 agreement between the Rust core's 4×4 reconstruction and Qiskit's `Operator(qc)`.
-[`benchmarks/verify_core_infidelity.py`](benchmarks/verify_core_infidelity.py) locks
-both, measured 2026-09-12:
+[`benchmarks/verify_core_infidelity.py`](benchmarks/verify_core_infidelity.py). 
+locks　both, measured 2026-09-12:
 
 | Suite | Samples | Worst infidelity (core) | Worst infidelity (strict circuit) | Fallbacks |
 | :--- | :---: | :---: | :---: | :---: |
