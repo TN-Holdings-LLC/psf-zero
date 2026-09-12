@@ -569,6 +569,27 @@ not a lever on it.
 from the other side: it scores the incoming layout, searches for a better one, spends
 its budget, and concludes there was none — every time, identically.
 
+**Why the standalone scan and the preset disagree is not established.** One candidate
+was ruled out. The standalone scan passed `coupling_map=`, so `VF2Layout` built a
+target through `_build_dummy_target` — basis `["u", "cx"]`, no error rates, which
+sends `build_average_error_map` down its degree-based legacy branch. The preset passes
+a real target, and scoring drives pruning, so the two might not have been solving the
+same problem.
+[`benchmarks/verify_vf2_target_scoring.py`](../../benchmarks/verify_vf2_target_scoring.py)
+re-ran the scan both ways, changing only how the target is supplied:
+
+| Target | Found | Seeds | median |
+| :--- | ---: | :--- | ---: |
+| dummy (`coupling_map=`) | 4 / 30 | 1, 8, 25, 29 | 337.4 ms |
+| real (`target=`, basis `rz sx x cx`) | 4 / 30 | 1, 8, 25, 29 | 335.9 ms |
+
+Identical. Scoring is not the difference. What is left unchecked: the preset also sets
+`vf2_avg_error_map` in the property set, and passes its own `call_limit` from
+`get_vf2_limits` — which the 2-tuple form makes meaningful, since the second element
+governs the budget *after* the first match. The `seed` it passes is `None`, which the
+docstring says "seeds using OS entropy (and so is non-deterministic)", so the preset
+should be shuffling. It nevertheless missed thirty times.
+
 Put beside the two measurements above, the picture closes:
 
 | | measured |
@@ -651,9 +672,11 @@ Drafts as submitted, and the outcome, in [`docs/log/`](../log/):
 - **Whether the coupling graph's ordering alone decides the outcome.** The two passes
   succeed on the same seeds with different input circuits, which points that way, but
   the two interaction graphs were not compared.
-- **Why the preset never reaches a winning ordering** — whether it passes `-1`
-  ("no shuffling"), or shuffles something that does not reach the VF2 node order. The
-  outcome is measured; which of the two explains it is not.
+- **Why the preset never reaches a winning ordering.** `VF2Layout` passes its `seed`
+  straight through as `shuffle_seed`, and a `None` seed is documented as OS entropy,
+  so the preset should be drawing a fresh order each call. Scoring has been ruled out
+  as the difference. The untested candidates are the property-set
+  `vf2_avg_error_map` and the preset's own `call_limit` 2-tuple.
 - **Which part of the ordering causes it, in either implementation.** Neither
   `qiskit-circuit`'s `vf2` module nor rustworkx's ordering code has been read at that
   level.
@@ -707,6 +730,9 @@ saturated points).
 - Stop reasons through the preset:
   [`benchmarks/verify_preset_stop_reason.py`](../../benchmarks/verify_preset_stop_reason.py) /
   [`data/preset_stop_reason_2026-09-12.csv`](../../data/preset_stop_reason_2026-09-12.csv)
+- Scoring ruled out as the difference:
+  [`benchmarks/verify_vf2_target_scoring.py`](../../benchmarks/verify_vf2_target_scoring.py) /
+  [`data/vf2_target_scoring_2026-09-12.csv`](../../data/vf2_target_scoring_2026-09-12.csv)
 - Pass timing and ordering probes: `benchmarks/qiskit_pass_timing.py`,
   `benchmarks/vf2_id_order_probe.py`;
   [`data/qiskit_pass_timing_2026-09-11.csv`](../../data/qiskit_pass_timing_2026-09-11.csv),
