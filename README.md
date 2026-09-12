@@ -90,7 +90,8 @@ one of the 10 runs.
 
 ## Overview
 
-To transition PSF-Zero from an exploratory prototype into a verifiable, production-grade transpiler component, we established a strict three-tier verification harness (`benchmarks/verify_core_infidelity.py`). This harness locks the mathematical contract between the Rust-native Cartan (KAK) decomposition core (`psf_zero_core`) and the Python circuit builder.
+To transition PSF-Zero from an exploratory prototype into a verifiable, production-grade transpiler component, we established a strict three-tier verification harness 
+[`verify_core_infidelity.py`](`benchmarks/verify_core_infidelity.py). This harness locks the mathematical contract between the Rust-native Cartan (KAK) decomposition core (`psf_zero_core`) and the Python circuit builder.
 
 Unlike heuristic search methods, PSF-Zero relies on closed-form analytic solutions. However, numerical stability around singularities (such as CNOT/SWAP degeneracies) and alignment between the Rust-side 4x4 matrix reconstruction and the Python-side Qiskit `Operator(qc)` builder must be continuously verified.
 
