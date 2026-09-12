@@ -8,10 +8,11 @@ each consuming the level-3 call budget in full and reporting `NO_SOLUTION_FOUND`
 layout that provably exists. **The failure is ordering-dependent inside Qiskit's own
 implementation**: permuting the coupling graph's node indices via `shuffle_seed` turns
 `NO_SOLUTION_FOUND` into `SOLUTION_FOUND` in 4 of 30 seeds on an unchanged saturated
-grid, and `VF2PostLayout` succeeds on the *same four seeds* (2026-09-11). Finding the
-layout does not make the pass faster: with the default trial budget, a seed that finds
-it in 3.5 ms still takes 343 ms. Ordering and trial loop are two independent costs and
-neither fix alone removes the cliff. One topology family (`CouplingMap.from_grid`).
+grid, and `VF2PostLayout` succeeds on the *same four seeds* (2026-09-11). Through the
+preset, though, 30 calls find a layout zero times, so the cliff is deterministic for a
+given input. And finding it would not help: a seed that finds the layout in 3.5 ms
+still runs for 343 ms. Ordering and trial loop are two independent costs and neither
+fix alone removes the cliff. One topology family (`CouplingMap.from_grid`).
 
 **This is not a finding about PSF-Zero.** It surfaced while benchmarking PSF-Zero
 against coupling maps, but it is a property of Qiskit's transpiler and it affects
@@ -539,9 +540,42 @@ against 63 at depth 16 for the other nineteen and for all twenty pinned calls. T
 is the routing variation this document records elsewhere on odd-column grids. It cost
 4% of the median time.
 
-**The open question is unchanged and needs a different instrument.** Reading
-`VF2Layout_stop_reason` from the property set after each unpinned call answers it
-directly, without going through the clock.
+**The open question needed a different instrument**, which the next section uses.
+
+### The preset never draws a winning ordering: 0 of 30
+
+[`benchmarks/verify_preset_stop_reason.py`](../../benchmarks/verify_preset_stop_reason.py)
+reads `VF2Layout_stop_reason` and `VF2PostLayout_stop_reason` out of the property set
+after each run, instead of inferring the outcome from elapsed time. 30 calls with no
+`seed_transpiler`, 10 with it pinned to 0, same saturated case.
+
+| Arm | Calls | `VF2Layout` | `VF2PostLayout` | median |
+| :--- | ---: | :--- | :--- | ---: |
+| unpinned | 30 | `NO_SOLUTION_FOUND` × 30 | `NO_BETTER_SOLUTION_FOUND` × 30 | 6,719.3 ms |
+| pinned | 10 | `NO_SOLUTION_FOUND` × 10 | `NO_BETTER_SOLUTION_FOUND` × 10 | 6,699.3 ms |
+
+Every one of the 40 calls emitted 63 two-qubit gates at depth 16 — no variation in the
+output either.
+
+**Through the preset, the cliff is deterministic.** The standalone scan finds a layout
+on 4 of 30 shuffle seeds; thirty preset calls find one zero times. If the preset were
+drawing fresh orderings at that rate, the probability of missing every time is
+(26/30)^30 = **1.4%**. Either the preset does not shuffle, or whatever it shuffles
+does not reach the VF2 node ordering. Either way, there is no luck to be had: the same
+input takes the same path and the same seconds on every call, and `seed_transpiler` is
+not a lever on it.
+
+`VF2PostLayout` reporting `NO_BETTER_SOLUTION_FOUND` in all 40 is the same statement
+from the other side: it scores the incoming layout, searches for a better one, spends
+its budget, and concludes there was none — every time, identically.
+
+Put beside the two measurements above, the picture closes:
+
+| | measured |
+| :--- | :--- |
+| An ordering that reaches the layout exists | yes — 4 of 30 seeds, standalone |
+| The preset reaches one | no — 0 of 30 calls |
+| Reaching one would fix the time | no — found in 3.5 ms, pass still 343 ms |
 
 ## A parallel observation: `rustworkx.vf2_mapping`
 
@@ -617,11 +651,9 @@ Drafts as submitted, and the outcome, in [`docs/log/`](../log/):
 - **Whether the coupling graph's ordering alone decides the outcome.** The two passes
   succeed on the same seeds with different input circuits, which points that way, but
   the two interaction graphs were not compared.
-- **Whether the preset draws a fresh ordering on every call.** The timing experiment
-  above cannot tell, by construction. The test that can is reading
-  `VF2Layout_stop_reason` from the property set across repeated unpinned
-  `transpile()` calls; 30 calls with no `SOLUTION_FOUND` would put the all-miss
-  probability at 1.4%.
+- **Why the preset never reaches a winning ordering** — whether it passes `-1`
+  ("no shuffling"), or shuffles something that does not reach the VF2 node order. The
+  outcome is measured; which of the two explains it is not.
 - **Which part of the ordering causes it, in either implementation.** Neither
   `qiskit-circuit`'s `vf2` module nor rustworkx's ordering code has been read at that
   level.
@@ -642,8 +674,10 @@ structure is required — are now closed; see the section above.
 
 If you run `optimization_level` 2 or 3 against a coupling map your circuit almost
 fills, pad the map by a few qubits. It costs nothing and removes a 40x–275x penalty.
-The ordering cannot be changed from Python — `Vf2PassConfiguration` has no equivalent
-of `id_order` — so padding the map is the available lever.
+Nothing else in reach works: the ordering cannot be changed from Python
+(`Vf2PassConfiguration` has no equivalent of `id_order`), `seed_transpiler` does not
+move it, and retrying does not either — 30 preset calls on the same input took the
+same path every time.
 
 For this project specifically, it turns an earlier correlational argument for
 `routing_optimization_level=1` into a measured one: `rl=1` never enters the regime at
@@ -670,6 +704,9 @@ saturated points).
 - Negative result (timing cannot detect a lucky ordering):
   [`benchmarks/verify_preset_shuffle.py`](../../benchmarks/verify_preset_shuffle.py) /
   [`data/preset_shuffle_2026-09-11.csv`](../../data/preset_shuffle_2026-09-11.csv)
+- Stop reasons through the preset:
+  [`benchmarks/verify_preset_stop_reason.py`](../../benchmarks/verify_preset_stop_reason.py) /
+  [`data/preset_stop_reason_2026-09-12.csv`](../../data/preset_stop_reason_2026-09-12.csv)
 - Pass timing and ordering probes: `benchmarks/qiskit_pass_timing.py`,
   `benchmarks/vf2_id_order_probe.py`;
   [`data/qiskit_pass_timing_2026-09-11.csv`](../../data/qiskit_pass_timing_2026-09-11.csv),
