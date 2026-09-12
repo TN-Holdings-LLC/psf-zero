@@ -26,6 +26,7 @@ optimized = psf_compile(qc)          # add verify=False for the fastest path
 Install: `git clone … && cd psf-zero && pip install -e .`
 (needs `numpy`, `scipy`, `qiskit`; the Rust core builds via `maturin`/`pyo3`.)
 
+
 ---
 
 ## The trade-off, stated up front
