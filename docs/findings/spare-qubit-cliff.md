@@ -9,8 +9,9 @@ layout that provably exists. **The failure is ordering-dependent inside Qiskit's
 implementation**: permuting the coupling graph's node indices via `shuffle_seed` turns
 `NO_SOLUTION_FOUND` into `SOLUTION_FOUND` in 4 of 30 seeds on an unchanged saturated
 grid, and `VF2PostLayout` succeeds on the *same four seeds* (2026-09-11). Finding the
-layout does not make either pass faster, though — see that section for a prediction
-this refuted. One topology family (`CouplingMap.from_grid`).
+layout does not make the pass faster: with the default trial budget, a seed that finds
+it in 3.5 ms still takes 343 ms. Ordering and trial loop are two independent costs and
+neither fix alone removes the cliff. One topology family (`CouplingMap.from_grid`).
 
 **This is not a finding about PSF-Zero.** It surfaced while benchmarking PSF-Zero
 against coupling maps, but it is a property of Qiskit's transpiler and it affects
@@ -385,24 +386,74 @@ It is not what happened. Elapsed time is flat:
 The successful seeds are 1.01x the failing ones — indistinguishable. Finding the
 layout saves nothing.
 
-The source suggests why, though this has not been verified by instrumentation.
+The source suggested why, and a follow-up measurement confirms it.
 `minimize_vf2` does not stop at the first match: it takes the first mapping, then
 continues with the second element of `call_limit` under a trial budget
 (`max_trials`, defaulting to `15 + max(needle.edge_count(), haystack.edge_count())`)
-looking for a better-scoring one, and keeps the last improvement found. So a
-successful trial is followed by further trials that have nothing left to improve and
-burn their budget the same way the failing ones do. If that is right, the cost is not
-"failing to find a layout" but "exhausting the search for a better one", and finding
-a layout early does not shorten it.
+looking for a better-scoring one, and keeps the last improvement found.
 
-That reframes the practical consequence. Handing `VF2Layout` a luckier node ordering
-would fix the *correctness* of `NO_SOLUTION_FOUND` — the pass would stop telling the
-preset there is no perfect layout when there is — but on this evidence it would not,
-by itself, remove the 6.8-second cliff. Padding the coupling map still does.
+### Separating "finding a layout" from "finishing the search"
 
-**Scope.** One grid (6×7), one circuit, 30 seeds, one machine, one Qiskit version. The
-budget used here (3,000,000) is a tenth of what `optimization_level=3` sets, chosen so
-a full burn takes ~335 ms instead of seconds. `VF2PostLayout` is covered below.
+[`benchmarks/verify_vf2_max_trials.py`](../../benchmarks/verify_vf2_max_trials.py)
+re-runs four successful and four failing seeds with `max_trials=1`, which stops after
+the first match, against the default. Min of 3 reps. Predictions were written before
+the run: successes get much faster, failures do not change, stop reasons are
+unchanged.
+
+| Seed | Outcome | default | `max_trials=1` | ratio |
+| ---: | :--- | ---: | ---: | ---: |
+| 1 | `SOLUTION_FOUND` | 342.8 ms | **3.5 ms** | **98.2x** |
+| 25 | `SOLUTION_FOUND` | 341.0 ms | **34.5 ms** | **9.9x** |
+| 29 | `SOLUTION_FOUND` | 335.8 ms | **34.2 ms** | **9.8x** |
+| 8 | `SOLUTION_FOUND` | 338.3 ms | 336.1 ms | 1.01x |
+| 0 | `NO_SOLUTION_FOUND` | 329.4 ms | 329.4 ms | 1.00x |
+| 2 | `NO_SOLUTION_FOUND` | 333.4 ms | 329.5 ms | 1.01x |
+| 3 | `NO_SOLUTION_FOUND` | 331.3 ms | 326.4 ms | 1.02x |
+| 4 | `NO_SOLUTION_FOUND` | 336.9 ms | 340.4 ms | 0.99x |
+
+Stop reasons were identical under both settings for every seed.
+
+Because `max_trials=1` returns at the first match, its time *is* the time to find a
+layout. Splitting the default run on that gives three regimes, not two:
+
+| Seed | Time to first match | Time spent after it | Share after the match |
+| ---: | ---: | ---: | ---: |
+| 1 | 3.5 ms | 339.3 ms | **99.0%** |
+| 25 | 34.5 ms | 306.6 ms | 89.9% |
+| 29 | 34.2 ms | 301.6 ms | 89.8% |
+| 8 | 336.1 ms | 2.3 ms | 0.7% |
+| failures | never | — | 100% |
+
+**Seed 1 finds the layout in 3.5 milliseconds and the pass still takes 343.** The
+trial loop is the cost, measured, not inferred — 90–99% of the time in the fast-find
+cases.
+
+**Seed 8 is the exception that fits.** It succeeds, but `max_trials=1` saves nothing,
+because its *first* match arrives at 336 ms — it spent nearly the whole first call
+budget getting there. So "successful" seeds are not one population: some orderings
+find the layout almost immediately, one finds it just before the budget runs out.
+
+### What this means for a fix
+
+The two costs are independent, and neither fix alone removes the cliff.
+
+**Fixing the ordering alone does not.** Seeds 1, 25 and 29 already have a good
+ordering — they find the layout in 3.5 to 34 ms — and still take 336 to 343 ms,
+because the trial loop runs afterwards regardless.
+
+**Fixing the trial loop alone does not.** 26 of 30 orderings never reach a first
+match, and `max_trials=1` changes their time by 0–2%. There is nothing to stop early
+when nothing is found.
+
+For a user, this is why the practical advice does not change: pad the coupling map, or
+stay at `routing_optimization_level=1`. Neither of the two mechanisms above is
+reachable from Python — `VF2Layout` exposes `seed` and `call_limit`, and the preset
+sets the budget.
+
+**Scope.** One grid (6×7), one circuit, 30 seeds (8 of them in the `max_trials` run),
+one machine, one Qiskit version. The budget used here (3,000,000) is a tenth of what
+`optimization_level=3` sets, chosen so a full burn takes ~335 ms instead of seconds.
+`VF2PostLayout` is covered below.
 
 ### `VF2PostLayout` fails on exactly the same seeds
 
@@ -510,9 +561,9 @@ Drafts as submitted, and the outcome, in [`docs/log/`](../log/):
 
 ## What is still unknown
 
-- **Why finding the layout does not save time.** The `minimize_vf2` trial loop is the
-  candidate — it continues past the first match under `max_trials` — but nothing
-  inside the pass has been instrumented to confirm it.
+- **Why one successful ordering (seed 8) is slow to find its first match** while the
+  other three are 10–100x faster. The ordering decides more than hit-or-miss, and
+  nothing here explains the spread.
 - **Whether the two implementations fail on the same instances.** Both use the VF2++
   ordering and both are ordering-dependent on this pattern; that is a family
   resemblance plus a shared symptom, not a shared cause.
@@ -565,7 +616,9 @@ saturated points).
   [`benchmarks/verify_vf2_seed.py`](../../benchmarks/verify_vf2_seed.py) /
   [`data/vf2_seed_scan_2026-09-11.csv`](../../data/vf2_seed_scan_2026-09-11.csv) and
   [`benchmarks/verify_vf2post_seed.py`](../../benchmarks/verify_vf2post_seed.py) /
-  [`data/vf2post_seed_scan_2026-09-11.csv`](../../data/vf2post_seed_scan_2026-09-11.csv)
+  [`data/vf2post_seed_scan_2026-09-11.csv`](../../data/vf2post_seed_scan_2026-09-11.csv),
+  and [`benchmarks/verify_vf2_max_trials.py`](../../benchmarks/verify_vf2_max_trials.py) /
+  [`data/vf2_max_trials_2026-09-11.csv`](../../data/vf2_max_trials_2026-09-11.csv)
 - Pass timing and ordering probes: `benchmarks/qiskit_pass_timing.py`,
   `benchmarks/vf2_id_order_probe.py`;
   [`data/qiskit_pass_timing_2026-09-11.csv`](../../data/qiskit_pass_timing_2026-09-11.csv),
