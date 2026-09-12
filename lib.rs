@@ -1,4 +1,4 @@
-// ============================================================================
+
 // Changelog (this round): correctness-preserving improvements on top of the
 // "detect and resolve" degeneracy handling introduced last round. Nothing
 // about the decomposition's mathematical contract changed; every item below
