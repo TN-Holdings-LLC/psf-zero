@@ -108,6 +108,8 @@ Running the automated test suite across Haar-random and perturbed singularity sp
 - **Singularity Robustness:** By replacing naive single-route diagonalization with a scored candidate selection and Givens sweep, perturbations near the CNOT singularity (`near_cnot` test with $\varepsilon = 10^{-7}$) exhibit **zero rejections** and maintain infidelity well below the $10^{-12}$ tolerance threshold.
 - **Python-Rust Symmetry:** The `strict` verification tier guarantees that Python's `Operator(qc)` reconstruction matches the Rust core's mathematical output without endian mismatches or ZYZ phase/sign drift.
 
+  [`data/core_verification_2026-09-12.csv`](../../data/core_verification_2026-09-12.csv)
+
 ## How to Reproduce
 
 To run the verification suite locally and lock the binary contract:
