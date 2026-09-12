@@ -90,8 +90,8 @@ one of the 10 runs.
 The decomposition is closed-form, so the thing that can go wrong is not search
 quality but numerical stability — around the CNOT/SWAP degeneracies, and in the
 agreement between the Rust core's 4×4 reconstruction and Qiskit's `Operator(qc)`.
-[`benchmarks/verify_core_infidelity.py`](benchmarks/verify_core_infidelity.py). 
-locks　both, measured 2026-09-12:
+[`benchmarks/verify_core_infidelity.py`](benchmarks/verify_core_infidelity.py) locks
+both, measured 2026-09-12:
 
 | Suite | Samples | Worst infidelity (core) | Worst infidelity (strict circuit) | Fallbacks |
 | :--- | :---: | :---: | :---: | :---: |
@@ -153,13 +153,17 @@ failure paid for twice. But finding it does not help: with the default trial bud
 seed that finds the layout in **3.5 ms still runs for 343 ms**, because `minimize_vf2`
 keeps searching for a better score afterwards. Fixing the ordering alone leaves the
 trial loop; fixing the trial loop alone leaves the 26 seeds that never find anything.
-Padding the coupling map with a few spare qubits removes the effect entirely.
+Through the preset it is deterministic: 30 `transpile()` calls on the same input
+report `NO_SOLUTION_FOUND` thirty times, so retrying does not help and
+`seed_transpiler` is not a lever. Padding the coupling map with a few spare qubits
+removes the effect entirely.
 Reported upstream and rejected, because the report said Qiskit calls
 `rustworkx.vf2_mapping`, which it does not. Experiments:
 [`phase3_v5_spare_qubits.py`](benchmarks/phase3_v5_spare_qubits.py),
 [`phase3_v6_workload_control.py`](benchmarks/phase3_v6_workload_control.py),
 [`verify_vf2_seed.py`](benchmarks/verify_vf2_seed.py),
-[`verify_vf2_max_trials.py`](benchmarks/verify_vf2_max_trials.py).
+[`verify_vf2_max_trials.py`](benchmarks/verify_vf2_max_trials.py),
+[`verify_preset_stop_reason.py`](benchmarks/verify_preset_stop_reason.py).
 Full account, source reading, and raw data:
 [`docs/findings/spare-qubit-cliff.md`](docs/findings/spare-qubit-cliff.md).
 
@@ -234,9 +238,9 @@ their absence.
 - What burns the budget inside the two VF2 passes. The ordering and the trial loop
   are both measured costs, but nothing inside the passes is instrumented, and it is
   one Qiskit version (2.5.2) on one topology family.
-- Whether the preset draws a fresh node ordering on every `transpile()` call. A
-  timing-based test could not tell, by construction — see the negative result in the
-  findings note.
+- Why the preset never reaches a winning ordering — whether it disables shuffling
+  outright or shuffles something that does not reach the VF2 node order. The outcome
+  is measured; which of the two explains it is not.
 - Whether the compile-time advantage reduces real-hardware calibration-drift
   exposure in a variational loop. Plausible, untested, and not planned without a
   reason to spend QPU time.
