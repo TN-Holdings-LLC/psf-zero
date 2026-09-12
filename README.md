@@ -96,12 +96,16 @@ both, measured 2026-09-12:
 | Suite | Samples | Worst infidelity (core) | Worst infidelity (strict circuit) | Fallbacks |
 | :--- | :---: | :---: | :---: | :---: |
 | Haar-random SU(4) | 500 | 1.11e-15 | 6.66e-16 | **0 / 500** |
-| Near-CNOT (ε = 1e-7) | 200 | 1.68e-13 | (covered by the strict loop) | **0 / 200** |
+| Near-CNOT (ε = 1e-7) | 200 | 2.63e-14 | (covered by the strict loop) | **0 / 200** |
 
 Across the Haar space the worst case sits near machine epsilon with no fallback
 exceptions. Near the codimension-2 CNOT singularity — where a naive single-route
 diagonalisation is least stable — scored candidate selection plus a Givens sweep
-holds infidelity three orders below the 1e-12 tolerance, with zero rejections. The
+holds infidelity well below the 1e-12 tolerance, with zero rejections. (An earlier
+run reported 1.68e-13 here; the perturbation that generates the near-CNOT samples
+had a global-phase bug that put the test points at distance ~0.765 from CNOT
+regardless of ε, not ~ε as intended — fixed and re-run, see
+[`docs/findings/core-verification.md`](docs/findings/core-verification.md).) The
 `strict` tier is what rules out endian mismatches and ZYZ phase/sign drift between
 the two sides.
 
