@@ -29,7 +29,6 @@ Install: `git clone … && cd psf-zero && pip install -e .`
 Source: [`psf_compile.py`](psf_compile.py) — the pass itself ·
 [`lib.rs`](lib.rs) — the Rust core (`psf_zero_core`) it calls into.
 
-
 ---
 
 ## The trade-off, stated up front
@@ -86,52 +85,29 @@ on the machine** — not a single number.
 0.0925 ± 0.0016, paired t = −0.78, n.s.); compile time was 14–16x faster in every
 one of the 10 runs.
 
-## Numerical Rigor and Core Verification in PSF-Zero
+### Numerical accuracy of the core
 
-## Overview
+The decomposition is closed-form, so the thing that can go wrong is not search
+quality but numerical stability — around the CNOT/SWAP degeneracies, and in the
+agreement between the Rust core's 4×4 reconstruction and Qiskit's `Operator(qc)`.
+[`benchmarks/verify_core_infidelity.py`](benchmarks/verify_core_infidelity.py) locks
+both, measured 2026-09-12:
 
-To transition PSF-Zero from an exploratory prototype into a verifiable, production-grade transpiler component, we established a strict three-tier verification harness 
-[`verify_core_infidelity.py`](`benchmarks/verify_core_infidelity.py). This harness locks the mathematical contract between the Rust-native Cartan (KAK) decomposition core (`psf_zero_core`) and the Python circuit builder.
-
-Unlike heuristic search methods, PSF-Zero relies on closed-form analytic solutions. However, numerical stability around singularities (such as CNOT/SWAP degeneracies) and alignment between the Rust-side 4x4 matrix reconstruction and the Python-side Qiskit `Operator(qc)` builder must be continuously verified.
-
-## Empirical Verification Results (2026-09-11)
-
-Running the automated test suite across Haar-random and perturbed singularity spaces yields the following locked metrics:
-
-| Test Suite | Sample Size | Worst-case Infidelity (Core) | Worst-case Infidelity (Strict Circuit) | Failures / Fallbacks |
+| Suite | Samples | Worst infidelity (core) | Worst infidelity (strict circuit) | Fallbacks |
 | :--- | :---: | :---: | :---: | :---: |
-| **Haar Random SU(4)** | 500 | $1.11 \times 10^{-15}$ | $6.66 \times 10^{-16}$ | **0 / 500** |
-| **Near-CNOT Singularities** ($\varepsilon = 10^{-7}$) | 200 | $1.68 \times 10^{-13}$ | (Covered by strict loop) | **0 / 200** |
+| Haar-random SU(4) | 500 | 1.11e-15 | 6.66e-16 | **0 / 500** |
+| Near-CNOT (ε = 1e-7) | 200 | 1.68e-13 | (covered by the strict loop) | **0 / 200** |
 
-- **Machine-Precision Accuracy:** Across the full Haar space, the worst-case infidelity sits near machine epsilon ($\sim 10^{-16}$), with zero fallback exceptions triggered.
-- **Singularity Robustness:** By replacing naive single-route diagonalization with a scored candidate selection and Givens sweep, perturbations near the CNOT singularity (`near_cnot` test with $\varepsilon = 10^{-7}$) exhibit **zero rejections** and maintain infidelity well below the $10^{-12}$ tolerance threshold.
-- **Python-Rust Symmetry:** The `strict` verification tier guarantees that Python's `Operator(qc)` reconstruction matches the Rust core's mathematical output without endian mismatches or ZYZ phase/sign drift.
+Across the Haar space the worst case sits near machine epsilon with no fallback
+exceptions. Near the codimension-2 CNOT singularity — where a naive single-route
+diagonalisation is least stable — scored candidate selection plus a Givens sweep
+holds infidelity three orders below the 1e-12 tolerance, with zero rejections. The
+`strict` tier is what rules out endian mismatches and ZYZ phase/sign drift between
+the two sides.
 
-  [`data/core_verification_2026-09-12.csv`](../../data/core_verification_2026-09-12.csv)
-
-## How to Reproduce
-
-To run the verification suite locally and lock the binary contract:
-
-```bash
-# Ensure the latest Rust core is built and installed in editable mode
-maturin develop --release
-
-# Run the three-tier verification harness
-python benchmarks/verify_core_infidelity.py
-```
-
-### Numerical Guarantee and Core Rigor
-
-Following recent numerical refinements (including robust handling of CNOT/SWAP degeneracies via candidate scoring and Givens sweeps), PSF-Zero's Rust core and Python builder are locked by an automated three-tier verification harness (`benchmarks/verify_core_infidelity.py`):
-
-- **Haar-Random SU(4) Space (500 samples):** Worst-case infidelity reaches **$6.66 \times 10^{-16}$** (strict circuit) and **$1.11 \times 10^{-15}$** (Rust core), with **zero fallbacks** (`0/500`).
-- **Near-CNOT Singularities (200 samples at $\varepsilon = 10^{-7}$):** Rigorous stress-testing near the codimension-2 singularity yields a worst-case infidelity of **$1.68 \times 10^{-13}$** with **zero rejections** (`0/200`).
-
-This ensures that the default `verify=True` setting is exceptionally fast (near 0ms in FFI) while maintaining absolute mathematical correctness. Full details and reproducibility logs are in [`docs/findings/core-verification.md`](docs/findings/core-verification.md).
-
-
+Raw data: [`data/core_verification_2026-09-12.csv`](data/core_verification_2026-09-12.csv).
+Reproduce with `maturin develop --release && python benchmarks/verify_core_infidelity.py`.
+Full account: [`docs/findings/core-verification.md`](docs/findings/core-verification.md).
 
 ## What this is not
 
@@ -166,19 +142,24 @@ as well as the saturated map (a gate-count-matched `random_circuit()` workload s
 no cliff at all), and Qiskit 2.1 made the *unsaturated* case ~93x faster while the
 saturated case has not improved since 1.4.6.
 
-**Where the time goes is measured; the mechanism is not settled.** `VF2Layout` and
-`VF2PostLayout` are 99.9% of the time, each burning the level-3 call budget and
-reporting `NO_SOLUTION_FOUND` for a layout that provably exists. Qiskit implements
-VF2 itself (`crates/transpiler/src/passes/vf2_layout.rs`) and both passes use the
-VF2++ node ordering unconditionally — the same heuristic that, in `rustworkx`'s
-separate implementation, fails on this exact pattern and succeeds in under a
-millisecond with plain VF2 ordering. That makes the ordering a live candidate, not a
-confirmed cause: the two implementations have not been compared. Reported upstream
-and rejected, because the report said Qiskit calls `rustworkx.vf2_mapping`, which it
-does not. Padding the coupling map with a few spare qubits removes the effect
-entirely. Experiments:
-[`phase3_v5_spare_qubits.py`](benchmarks/phase3_v5_spare_qubits.py) and
-[`phase3_v6_workload_control.py`](benchmarks/phase3_v6_workload_control.py).
+**Two independent costs, both measured inside Qiskit.** `VF2Layout` and
+`VF2PostLayout` are 99.9% of the time. Qiskit implements VF2 itself
+(`crates/transpiler/src/passes/vf2_layout.rs`), and both passes use the VF2++ node
+ordering unconditionally. Permuting the coupling graph's node order via `shuffle_seed`
+turns `NO_SOLUTION_FOUND` into `SOLUTION_FOUND` in **4 of 30 seeds** on an unchanged
+saturated grid — the layout it reports as absent exists, and Qiskit finds it 13% of
+the time. `VF2PostLayout` succeeds on the *same four seeds*, so the two passes are one
+failure paid for twice. But finding it does not help: with the default trial budget a
+seed that finds the layout in **3.5 ms still runs for 343 ms**, because `minimize_vf2`
+keeps searching for a better score afterwards. Fixing the ordering alone leaves the
+trial loop; fixing the trial loop alone leaves the 26 seeds that never find anything.
+Padding the coupling map with a few spare qubits removes the effect entirely.
+Reported upstream and rejected, because the report said Qiskit calls
+`rustworkx.vf2_mapping`, which it does not. Experiments:
+[`phase3_v5_spare_qubits.py`](benchmarks/phase3_v5_spare_qubits.py),
+[`phase3_v6_workload_control.py`](benchmarks/phase3_v6_workload_control.py),
+[`verify_vf2_seed.py`](benchmarks/verify_vf2_seed.py),
+[`verify_vf2_max_trials.py`](benchmarks/verify_vf2_max_trials.py).
 Full account, source reading, and raw data:
 [`docs/findings/spare-qubit-cliff.md`](docs/findings/spare-qubit-cliff.md).
 
@@ -209,6 +190,7 @@ record, including every retraction and the raw data behind it, is kept verbatim 
 | :--- | :--- |
 | [`docs/findings/compile-time.md`](docs/findings/compile-time.md) | The full compile-time arc: three retractions, the `verify` split, and what survives |
 | [`docs/findings/spare-qubit-cliff.md`](docs/findings/spare-qubit-cliff.md) | The Qiskit coupling-map result above — controlled experiment, three environments |
+| [`docs/findings/core-verification.md`](docs/findings/core-verification.md) | The three-tier infidelity harness: Haar space, CNOT singularities, Rust↔Python agreement |
 | [`docs/findings/entangling-basis.md`](docs/findings/entangling-basis.md) | Why `RXX/RYY/RZZ` costs 2x the native gates of `CX`, and the `entangling_basis="cx"` fix |
 | [`docs/findings/real-hardware.md`](docs/findings/real-hardware.md) | IBM hardware runs, job IDs, and the noisy-simulator comparison |
 
@@ -234,6 +216,7 @@ retractions can be re-checked, with a file-by-file map in
 [`verify="strict"` wrapper](benchmarks/test1_v3_verify_strict.py) ·
 [`test_cumulative_compile_time.py`](benchmarks/test_cumulative_compile_time.py)
 (50,000-iteration loop) ·
+[`verify_core_infidelity.py`](benchmarks/verify_core_infidelity.py) (core accuracy) ·
 [`phase3_v4_dense_pair_blocks.py`](benchmarks/phase3_v4_dense_pair_blocks.py) and
 [`phase3_v5_spare_qubits.py`](benchmarks/phase3_v5_spare_qubits.py) /
 [`phase3_v6_workload_control.py`](benchmarks/phase3_v6_workload_control.py) (coupling maps) ·
@@ -248,9 +231,12 @@ their absence.
 
 ## Open questions
 
-- The mechanism behind the spare-qubit cliff — the time is localised to the two VF2
-  passes, but nothing inside them has been instrumented, and it is one Qiskit version
-  (2.5.2) on one topology family.
+- What burns the budget inside the two VF2 passes. The ordering and the trial loop
+  are both measured costs, but nothing inside the passes is instrumented, and it is
+  one Qiskit version (2.5.2) on one topology family.
+- Whether the preset draws a fresh node ordering on every `transpile()` call. A
+  timing-based test could not tell, by construction — see the negative result in the
+  findings note.
 - Whether the compile-time advantage reduces real-hardware calibration-drift
   exposure in a variational loop. Plausible, untested, and not planned without a
   reason to spend QPU time.
