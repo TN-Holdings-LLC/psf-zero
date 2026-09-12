@@ -1,0 +1,61 @@
+arm,seed,stop_reason,elapsed_ms,rows,cols,circuit_qubits,call_limit,basis_gates,platform,processor,python,qiskit
+dummy,0,NO_SOLUTION_FOUND,330.074,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,1,SOLUTION_FOUND,344.946,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,2,NO_SOLUTION_FOUND,359.304,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,3,NO_SOLUTION_FOUND,347.279,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,4,NO_SOLUTION_FOUND,340.324,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,5,NO_SOLUTION_FOUND,339.435,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,6,NO_SOLUTION_FOUND,334.02,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,7,NO_SOLUTION_FOUND,335.457,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,8,SOLUTION_FOUND,334.934,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,9,NO_SOLUTION_FOUND,339.782,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,10,NO_SOLUTION_FOUND,337.057,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,11,NO_SOLUTION_FOUND,336.951,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,12,NO_SOLUTION_FOUND,343.648,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,13,NO_SOLUTION_FOUND,329.192,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,14,NO_SOLUTION_FOUND,355.675,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,15,NO_SOLUTION_FOUND,334.713,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,16,NO_SOLUTION_FOUND,335.228,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,17,NO_SOLUTION_FOUND,339.196,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,18,NO_SOLUTION_FOUND,337.086,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,19,NO_SOLUTION_FOUND,344.017,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,20,NO_SOLUTION_FOUND,339.056,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,21,NO_SOLUTION_FOUND,338.883,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,22,NO_SOLUTION_FOUND,336.284,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,23,NO_SOLUTION_FOUND,332.667,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,24,NO_SOLUTION_FOUND,335.297,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,25,SOLUTION_FOUND,341.426,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,26,NO_SOLUTION_FOUND,336.458,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,27,NO_SOLUTION_FOUND,332.99,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,28,NO_SOLUTION_FOUND,339.545,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+dummy,29,SOLUTION_FOUND,337.717,6,7,42,3000000,u cx (dummy),Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,0,NO_SOLUTION_FOUND,329.279,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,1,SOLUTION_FOUND,342.833,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,2,NO_SOLUTION_FOUND,329.352,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,3,NO_SOLUTION_FOUND,329.953,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,4,NO_SOLUTION_FOUND,347.063,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,5,NO_SOLUTION_FOUND,343.241,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,6,NO_SOLUTION_FOUND,335.482,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,7,NO_SOLUTION_FOUND,334.405,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,8,SOLUTION_FOUND,335.251,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,9,NO_SOLUTION_FOUND,342.615,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,10,NO_SOLUTION_FOUND,332.412,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,11,NO_SOLUTION_FOUND,339.469,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,12,NO_SOLUTION_FOUND,334.221,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,13,NO_SOLUTION_FOUND,328.486,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,14,NO_SOLUTION_FOUND,341.634,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,15,NO_SOLUTION_FOUND,333.404,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,16,NO_SOLUTION_FOUND,335.459,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,17,NO_SOLUTION_FOUND,338.698,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,18,NO_SOLUTION_FOUND,328.684,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,19,NO_SOLUTION_FOUND,349.036,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,20,NO_SOLUTION_FOUND,341.264,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,21,NO_SOLUTION_FOUND,342.81,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,22,NO_SOLUTION_FOUND,336.274,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,23,NO_SOLUTION_FOUND,336.46,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,24,NO_SOLUTION_FOUND,335.455,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,25,SOLUTION_FOUND,340.153,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,26,NO_SOLUTION_FOUND,338.632,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,27,NO_SOLUTION_FOUND,326.708,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,28,NO_SOLUTION_FOUND,341.564,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
+real,29,SOLUTION_FOUND,335.595,6,7,42,3000000,rz sx x cx,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2
