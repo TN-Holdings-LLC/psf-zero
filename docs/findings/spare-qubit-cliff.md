@@ -496,6 +496,53 @@ Timing is flat again, as with `VF2Layout`: failures median **335.7 ms**, success
 median **342.1 ms**, against an overall median of 336.1 ms. Finding a better layout
 does not shorten the pass any more than finding any layout shortened the first one.
 
+### A negative result: timing cannot tell whether the preset draws a lucky ordering
+
+`Vf2PassConfiguration::from_legacy_api` treats a `None` seed as "seed with OS entropy"
+and `-1` as "no shuffling". If the preset pass managers leave it unset, every
+`transpile()` call would draw a fresh node ordering, and about 1 call in 7 should land
+on one of the orderings that finds a layout. Dozens of measurements of the saturated
+case have never produced a fast one, which did not obviously fit.
+
+[`benchmarks/verify_preset_shuffle.py`](../../benchmarks/verify_preset_shuffle.py)
+tested it the wrong way: 20 `transpile(optimization_level=3)` calls with no
+`seed_transpiler`, 20 with it pinned, counting calls that finished quickly.
+
+| Arm | median | min | max | calls under 1 s |
+| :--- | ---: | ---: | ---: | ---: |
+| unpinned | 6,784.0 ms | 6,660.1 | 6,959.8 | **0 / 20** |
+| pinned (`seed_transpiler=0`) | 6,758.1 ms | 6,692.5 | 6,946.3 | **0 / 20** |
+
+Median ratio 1.004x.
+
+**The experiment cannot answer the question it was built for, and the reason is in
+the measurement directly above it.** A lucky ordering does not make the pass fast:
+seed 1 finds its layout in 3.5 ms and the pass still runs for 343 ms, because the
+trial loop burns the budget afterwards. So a `transpile()` call that drew a winning
+ordering would take about as long as one that did not, and counting fast calls
+detects nothing either way. The 1-second threshold was chosen from an assumption this
+project had already refuted two experiments earlier. Recorded here rather than
+dropped, because the design error is the useful part.
+
+Detection power was marginal too: at a 4-in-30 hit rate, 20 calls miss every time with
+probability 5.7%.
+
+Three things it does establish.
+
+**Pinning `seed_transpiler` does not change the cliff.** 1.004x on the median, and
+the two arms' ranges overlap almost exactly. Whatever the seed reaches, it is not a
+lever on this.
+
+**There is randomness in the unpinned path, and it is not in the VF2 outcome.** One
+unpinned call out of twenty emitted 69 two-qubit gates at depth 35 (SWAPs inserted)
+against 63 at depth 16 for the other nineteen and for all twenty pinned calls. That
+is the routing variation this document records elsewhere on odd-column grids. It cost
+4% of the median time.
+
+**The open question is unchanged and needs a different instrument.** Reading
+`VF2Layout_stop_reason` from the property set after each unpinned call answers it
+directly, without going through the clock.
+
 ## A parallel observation: `rustworkx.vf2_mapping`
 
 A separate VF2++ implementation, on the same patterns. Qiskit does not call it, so this
@@ -570,10 +617,11 @@ Drafts as submitted, and the outcome, in [`docs/log/`](../log/):
 - **Whether the coupling graph's ordering alone decides the outcome.** The two passes
   succeed on the same seeds with different input circuits, which points that way, but
   the two interaction graphs were not compared.
-- **Whether the preset shuffles at all.** `from_legacy_api` treats a `None` seed as
-  "seed with OS entropy" and `-1` as "no shuffling"; which of those the preset pass
-  managers pass has not been checked. If it were entropy-seeded, `transpile()` should
-  occasionally hit a lucky ordering, and in dozens of measurements it never has.
+- **Whether the preset draws a fresh ordering on every call.** The timing experiment
+  above cannot tell, by construction. The test that can is reading
+  `VF2Layout_stop_reason` from the property set across repeated unpinned
+  `transpile()` calls; 30 calls with no `SOLUTION_FOUND` would put the all-miss
+  probability at 1.4%.
 - **Which part of the ordering causes it, in either implementation.** Neither
   `qiskit-circuit`'s `vf2` module nor rustworkx's ordering code has been read at that
   level.
@@ -619,6 +667,9 @@ saturated points).
   [`data/vf2post_seed_scan_2026-09-11.csv`](../../data/vf2post_seed_scan_2026-09-11.csv),
   and [`benchmarks/verify_vf2_max_trials.py`](../../benchmarks/verify_vf2_max_trials.py) /
   [`data/vf2_max_trials_2026-09-11.csv`](../../data/vf2_max_trials_2026-09-11.csv)
+- Negative result (timing cannot detect a lucky ordering):
+  [`benchmarks/verify_preset_shuffle.py`](../../benchmarks/verify_preset_shuffle.py) /
+  [`data/preset_shuffle_2026-09-11.csv`](../../data/preset_shuffle_2026-09-11.csv)
 - Pass timing and ordering probes: `benchmarks/qiskit_pass_timing.py`,
   `benchmarks/vf2_id_order_probe.py`;
   [`data/qiskit_pass_timing_2026-09-11.csv`](../../data/qiskit_pass_timing_2026-09-11.csv),
