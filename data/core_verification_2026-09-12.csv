@@ -1,0 +1,2 @@
+timestamp,platform,processor,python_version,qiskit_version,haar_samples,haar_core_worst,haar_strict_worst,haar_fallback_count,near_cnot_samples,near_cnot_worst,near_cnot_reject_count,elapsed_seconds,status
+2026-09-12T11:55:40.641764,Windows-10-10.0.26100-SP0,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",3.10.11,2.5.2,500,8.881784197001252e-16,8.881784197001252e-16,0,200,3.049782648645305e-13,0,2.243,PASSED
