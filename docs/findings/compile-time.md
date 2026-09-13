@@ -254,6 +254,71 @@ Raw data: [`data/determinism_variance_2026-09-13.csv`](../../data/determinism_va
 circuit signature hash).
 
 
+## Where Qiskit's and TKET's per-call time goes, on the fixed-unitary loop above (2026-09-13)
+
+The determinism/variance experiment above measured only each engine's total time per
+call. A follow-up asked where that time actually goes, rather than assuming it from
+how pass managers are documented to work.
+[`benchmarks/verify_framework_overhead.py`](../../benchmarks/verify_framework_overhead.py)
+times Qiskit per pass (via `generate_preset_pass_manager(...).run(qc, callback=...)`)
+and TKET per stage (conversion, `DecomposeBoxes`, `FullPeepholeOptimise`, conversion
+back), on the same fixed SU(4) unitary, 200 iterations.
+
+**TKET: conversion is a real but minority cost.** Median per call: `qiskit_to_tk`
+0.10 ms, `DecomposeBoxes` 0.41 ms, `FullPeepholeOptimise` 38.8 ms, `tk_to_qiskit`
+1.71 ms. Round-trip format conversion is 4.4% of the combined time; the optimization
+pass itself is 94.6%. So the 86.3x figure reported above is not inflated by
+conversion overhead to any meaningful degree — it is close to a fair measurement of
+`FullPeepholeOptimise` on this circuit.
+
+**Qiskit: the per-pass callback under-resolves on a circuit this fast, and the
+result should be read as a lower bound, not a breakdown.** Accumulated over 200
+calls (measured total 134.6 ms), only 71.4 ms could be attributed to a named pass —
+**46.9% of Qiskit's own measured time is not accounted for by any pass**, because
+individual passes on a single 2-qubit block often complete faster than the
+callback's clock resolution and are recorded as exactly 0. Several passes (`Size`,
+`Depth`, `GatesInBasis`, and others) show 0 ms in every one of the 200 calls, which
+is a resolution artifact rather than evidence those passes cost nothing. Of the
+71.4 ms that could be attributed: no layout- or routing-related pass appears at all,
+consistent with this circuit having no coupling map; `TwoQubitPeepholeOptimization`
+(13.4%), `CommutativeCancellation` (10.5%), `Optimize1qGatesDecomposition` (9.1%) and
+`UnitarySynthesis` (8.6%) are the largest named contributors. These are passes doing
+real work on this circuit, not idle eligibility checks — the data does not support a
+claim that Qiskit's time here is dominated by unproductive framework overhead
+(DAG construction, pass-applicability checks that all return "not applicable", etc.);
+it simply could not resolve where roughly half the time goes on a call this short.
+A higher-resolution timer, or the same measurement on a platform whose clock
+resolves sub-millisecond intervals more reliably, would be needed to settle it.
+
+**PSF-Zero: the `verify` cost is at or below this measurement's noise floor on this
+circuit, which the source explains.** `verify=True` measured very slightly *faster*
+than `verify=False` (median 0.274 ms vs 0.276 ms, a −0.8% difference — noise, not a
+real speed-up). Reading `psf_compile.py`: when `verify=True`, the pass calls the
+Rust core's combined `geometric_decompose_checked`, which returns the decomposition
+and its own reconstruction infidelity from the same FFI call; `verify=False` calls
+plain `geometric_decompose`. The file's own comment on this, from prior profiling on
+400 random SU(4) blocks: `"verify via the core's own check ~0.000 ms/block (in the
+FFI call)"`. So a near-zero measured difference here is consistent with the
+implementation, not merely noise coincidentally landing near zero — the default
+`verify=True` path was specifically redesigned (see the file's changelog) to make
+this true, which is also why the ~1.2x–1.9x `verify` cost reported elsewhere in this
+document was measured against a *different* baseline (accumulated over many blocks
+across a range of circuit sizes) than this single-block, single-circuit test.
+
+**What this does and doesn't establish.** It confirms TKET's reported ratio isn't a
+conversion-overhead artifact, and it confirms PSF-Zero's `verify=True` default is
+priced as designed on this circuit. It does **not** confirm or refute the general
+claim that Qiskit's generic pass manager carries meaningful overhead beyond the
+decomposition itself on small, fast circuits — the measurement technique used here
+lacked the resolution to answer that question, and the honest result is "not
+measured," not "confirmed small" or "confirmed large."
+
+Raw data: [`data/framework_overhead_2026-09-13.csv`](../../data/framework_overhead_2026-09-13.csv).
+
+
+
+
+
 ## Files
 
 - [`benchmarks/phase1_v2.py`](../../benchmarks/phase1_v2.py),
