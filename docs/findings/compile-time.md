@@ -178,6 +178,77 @@ later runs of the same script all sit in a 2.8x–8.1x band.
   loops.
 - Not run through [Benchpress](https://github.com/Qiskit/benchpress).
 
+
+## Repeated compilation of a single fixed unitary (2026-09-13)
+
+The sections above measure compile time across many independently-seeded circuits.
+A separate question: what happens when the *same* input is compiled 1,000 times in a
+row — the shape of a VQE/QAOA loop that re-submits one ansatz structure repeatedly.
+[`benchmarks/verify_determinism_variance.py`](../../benchmarks/verify_determinism_variance.py)
+fixes one Haar-random SU(4) unitary (`seed=42`) and compiles it 1,000 times with
+Qiskit L3, TKET (`FullPeepholeOptimise`, via `DecomposeBoxes`), and PSF-Zero
+(`verify=False`), hashing each output circuit's gate sequence to check whether the
+same input keeps producing the same output.
+
+**All three engines were fully deterministic on this single input — not just
+PSF-Zero.** Every one of the 1,000 runs, for all three engines, produced a circuit
+whose signature hash matched the other 999: 1 unique pattern per engine, 3 total. This
+is not evidence of a determinism advantage specific to PSF-Zero; it shows that
+Qiskit's and TKET's search procedures, when applied to one fixed input over and over,
+also converge to the same output every time on this circuit. The determinism claim
+this project makes elsewhere is about PSF-Zero's decomposition being closed-form
+by construction (no seed to control for even in principle) — this experiment
+doesn't distinguish that from "converges reliably in practice," since the other two
+engines did too, on this input.
+
+**Compile time, median (not mean — see below for why):**
+
+| Engine | Median | Mean | IQR / median | Qiskit or TKET ÷ PSF-Zero (median) |
+| :--- | ---: | ---: | ---: | ---: |
+| Qiskit L3 | 7.460 ms | 7.768 ms | 6.1% | **15.2x** |
+| TKET | 42.487 ms | 42.846 ms | 1.8% | **86.3x** |
+| PSF-Zero | 0.492 ms | 0.504 ms | 14.9% | — |
+
+**Qiskit's mean sits above its median because of two outliers, not a trend.** Of
+1,000 calls, 998 fall in a tight band (min 6.889 ms); two — iterations 210 and 979 —
+took 102.7 ms and 104.0 ms, roughly 14x the rest. Excluding them barely moves the
+median (7.460 ms either way) but pulls the mean down from 7.768 to about 7.67 ms.
+Binning the run into first-50-calls vs remaining-950 shows no warm-up effect (median
+7.464 ms vs 7.460 ms) — the two slow calls are scattered, isolated events, not a
+cold start. Consistent with this project's standing finding that shared-hardware runs
+show occasional external contention: report medians, not means, and don't read a
+single long run's mean as the number.
+
+**PSF-Zero's relative spread is the largest of the three, not the smallest.** An
+earlier read of this run's raw std/mean ratios suggested PSF-Zero was the most
+stable; that doesn't hold up under a scale-independent measure. IQR-to-median is
+6.1% for Qiskit, 1.8% for TKET, and **14.9% for PSF-Zero** — PSF-Zero's absolute
+timings are smallest (sub-millisecond), so a small absolute jitter is a
+proportionally larger fraction of its own median. The earlier claim that PSF-Zero
+showed "the tightest distribution" is corrected here: on a relative basis it does
+not, though its absolute time and absolute spread are both still the smallest of
+the three.
+
+**What this experiment does and doesn't establish.** It's a real, if narrow, model of
+the fixed-ansatz-repeated-compile shape a variational loop has, and on it PSF-Zero is
+15x–86x faster at the median with correctness unaffected (all engines producing their
+own single stable pattern throughout). It does not test the calibration-drift
+question raised elsewhere in this file — no hardware execution is involved, only
+repeated compilation of the same circuit — and it does not add anything to the
+determinism argument beyond what the closed-form construction of the decomposition
+already establishes analytically. Two methodological notes for future runs: this
+script does not warm up either engine outside the timed loop (unlike the
+`phase1.py`/`phase2.py`/`test_cumulative_compile_time.py` harnesses elsewhere in this
+project, which do), and TKET is measured through an extra `DecomposeBoxes()` pass not
+present in this project's other TKET comparisons (`test_psf_vs_tket.py`,
+`test_scale_explosion_war2.py`), so its number here is not directly comparable to
+those.
+
+Raw data: [`data/determinism_variance_2026-09-13.csv`](../../data/determinism_variance_2026-09-13.csv)
+(3,000 rows: 1,000 iterations × 3 engines, per-iteration time, depth, CX count, and
+circuit signature hash).
+
+
 ## Files
 
 - [`benchmarks/phase1_v2.py`](../../benchmarks/phase1_v2.py),
