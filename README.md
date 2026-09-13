@@ -188,7 +188,7 @@ proposed were later **refuted by their own pre-registered criteria**. A third �
 mechanism proposed for the finding above — was rejected upstream for naming a code
 path Qiskit does not use; the drafts and the outcome are in the log. The complete
 record, including every retraction and the raw data behind it, is kept verbatim in
-[`docs/log/`](docs/log) rather than quietly edited away.
+[`docs/log/`](docs/log/) rather than quietly edited away.
 
 ## Where everything is
 
@@ -202,7 +202,7 @@ record, including every retraction and the raw data behind it, is kept verbatim 
 | [`docs/findings/entangling-basis.md`](docs/findings/entangling-basis.md) | Why `RXX/RYY/RZZ` costs 2x the native gates of `CX`, and the `entangling_basis="cx"` fix |
 | [`docs/findings/real-hardware.md`](docs/findings/real-hardware.md) | IBM hardware runs, job IDs, and the noisy-simulator comparison |
 
-**The unedited record** — [`docs/log`](docs/log/README.md), 2,973 lines kept verbatim,
+**The unedited record** — [`docs/log/`](docs/log/README.md), 2,973 lines kept verbatim,
 including a [chronology of every claim this project got wrong](docs/log/README.md#chronology-of-things-this-project-got-wrong):
 
 [`01` intro & methodology](docs/log/01-intro-and-methodology.md) ·
