@@ -209,13 +209,14 @@ including a [chronology of every claim this project got wrong](docs/log/README.m
 [`02` synthesis vs. TKET](docs/log/02-synthesis-vs-tket.md) ·
 [`03` compile-time scaling](docs/log/03-compile-time-scaling.md) ·
 [`04` real-device topology](docs/log/04-real-device-topology.md) ·
-[`05` fidelity](docs/log/05-fidelity.md) ·
-[`06` open questions & roadmap](docs/log/06-open-questions-and-roadmap.md)
+[`05` fidelity](docs/log/05-fidelity.md)
+
+(`06` open questions & roadmap: not yet split out of the original file.)
 
 **Data** — [`data/`](data/) holds every CSV behind a published number;
 [`data/archive/`](data/archive/) holds the superseded and retracted runs, so the
-retractions can be re-checked, with a file-by-file map in
-[`provenance-map.md`](data/archive/provenance-map.md).
+retractions can be re-checked. (A file-by-file provenance map for the archive is
+planned but not yet written.)
 
 **Benchmarks** — the harnesses, in the order the story needs them:
 [`phase1_v2.py`](benchmarks/phase1_v2.py) /
