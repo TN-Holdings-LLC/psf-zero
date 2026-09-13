@@ -707,6 +707,57 @@ For this project specifically, it turns an earlier correlational argument for
 all (9.6–50.3 ms across every scale tested, against `rl=2`'s 866–1,145 ms at the
 saturated points).
 
+
+### Addendum (2026-09-13): the objection traces to a specific, year-old commit
+
+The claim rejected above — that `VF2Layout`/`VF2PostLayout` call
+`rustworkx.vf2_mapping` — was true of an *older* Qiskit. Commit
+[6421d77](https://github.com/Qiskit/qiskit/commit/6421d77) ("Handle VF2
+coupling-map shuffling in Rust", [#14860](https://github.com/Qiskit/qiskit/pull/14860)),
+authored by Jake Lishman and merged **2025-09-19** — a year before this project's
+report — removed that call entirely. Before it, `qiskit/transpiler/passes/layout/vf2_layout.py`
+branched on `self.seed`: `seed == -1` took a Rust fast path with no shuffling;
+anything else (including the default `seed=None`) fell through to a pure-Python
+path that built the interaction and coupling graphs, shuffled the coupling graph
+in Python, and called `rustworkx.vf2_mapping` directly — 158 lines of scoring and
+trial-loop logic that the PR deleted. After it, every path (shuffled or not) goes
+through the single Rust function `vf2_layout_pass`, which now takes a
+`shuffle_seed: Option<u64>` argument and does the reordering itself via
+`vf2::reorder_nodes` — the same mechanism this project's `verify_vf2_seed.py`
+exercises through the Python `seed=` parameter.
+
+**So the rejection was correct about the code as it stood, by a year.** The report,
+filed 2026-09-11, described a call path Lishman himself had deleted on 2025-09-19.
+Whatever source informed the original claim — documentation, an older reading of the
+code, or an unverified assumption — it predated this change and was not checked
+against current `main` before posting. This is the same failure this document
+already names elsewhere: proposing a mechanism without reading the implementation
+it concerns.
+
+**Two things in the same commit corroborate, rather than undercut, the ordering
+investigation this document is built on.**
+
+First, the commit message states plainly: *"The shuffling is, in general, not a
+good idea."* Lishman's own assessment, a year before this project measured it,
+matches what `verify_vf2_max_trials.py` found directly: a shuffled ordering that
+finds a layout does not make the pass faster, because `minimize_vf2`'s trial loop
+keeps searching afterward regardless of when the first match arrived. His caution
+about the mechanism and this project's measurement of *why* it doesn't help point
+the same direction.
+
+Second, the PR is the origin of `_build_dummy_target` and the current
+`vf2_layout_pass` signature — the exact functions read in "What the Qiskit source
+says" above. The source this document analyzed is the post-#14860 version; the
+analysis holds for the codebase as it exists now, independent of what the rejected
+report got wrong about the codebase as it existed before.
+
+**What remains unaffected.** Every measured result in this document — the cliff
+itself, the per-pass timing, the shuffle-seed experiments on current `main`, the
+trial-loop finding, the preset's 0/30 — was produced against the current Rust
+implementation and is unaffected by which version's Python wrapper a since-deleted
+code path belonged to. Only the historical accuracy of the original attribution is
+resolved by this addendum, not any measurement.
+
 ## Files
 
 - Experiments: [`benchmarks/phase3_v5_spare_qubits.py`](../../benchmarks/phase3_v5_spare_qubits.py)
