@@ -178,7 +178,6 @@ later runs of the same script all sit in a 2.8x–8.1x band.
   loops.
 - Not run through [Benchpress](https://github.com/Qiskit/benchpress).
 
-
 ## Repeated compilation of a single fixed unitary (2026-09-13)
 
 The sections above measure compile time across many independently-seeded circuits.
@@ -219,15 +218,21 @@ cold start. Consistent with this project's standing finding that shared-hardware
 show occasional external contention: report medians, not means, and don't read a
 single long run's mean as the number.
 
-**PSF-Zero's relative spread is the largest of the three, not the smallest.** An
-earlier read of this run's raw std/mean ratios suggested PSF-Zero was the most
-stable; that doesn't hold up under a scale-independent measure. IQR-to-median is
-6.1% for Qiskit, 1.8% for TKET, and **14.9% for PSF-Zero** — PSF-Zero's absolute
-timings are smallest (sub-millisecond), so a small absolute jitter is a
-proportionally larger fraction of its own median. The earlier claim that PSF-Zero
-showed "the tightest distribution" is corrected here: on a relative basis it does
-not, though its absolute time and absolute spread are both still the smallest of
-the three.
+**"Most stable" depends on which measure you mean, and both are worth having.**
+By absolute spread, PSF-Zero is tightest: its IQR is about 0.07 ms, against roughly
+0.46 ms for Qiskit and 0.76 ms for TKET — PSF-Zero varies by the least wall-clock
+time, full stop. By spread relative to each engine's own typical time (IQR ÷ median),
+the ranking flips: 1.8% for TKET, 6.1% for Qiskit, **14.9% for PSF-Zero** — PSF-Zero's
+run-to-run jitter is a larger fraction of its own (very small) typical time. Neither
+number is wrong; they answer different questions. If what matters is how many
+milliseconds of wall-clock uncertainty a call adds to a budget, PSF-Zero's absolute
+figure is the one to use, and it's the smallest of the three by a wide margin. If
+what matters is how predictable an engine's time is relative to itself — useful for,
+say, estimating from one measurement how far off the next one could land — the
+relative figure is the more informative one, and there PSF-Zero is the least
+predictable of the three, precisely because there's so little typical time for a
+fixed absolute jitter to hide inside. Both are stated here rather than picking one
+as "the" stability number.
 
 **What this experiment does and doesn't establish.** It's a real, if narrow, model of
 the fixed-ansatz-repeated-compile shape a variational loop has, and on it PSF-Zero is
