@@ -188,7 +188,7 @@ proposed were later **refuted by their own pre-registered criteria**. A third â€
 mechanism proposed for the finding above â€” was rejected upstream for naming a code
 path Qiskit does not use; the drafts and the outcome are in the log. The complete
 record, including every retraction and the raw data behind it, is kept verbatim in
-[`docs/log/`](docs/log/) rather than quietly edited away.
+[`docs/log/`](docs/log) rather than quietly edited away.
 
 ## Where everything is
 
