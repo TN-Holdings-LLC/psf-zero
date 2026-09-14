@@ -1303,7 +1303,7 @@ Run as-is with defaults, each writes a dated CSV.
   6x7 (see the "for reference" note above) -- confirming the code is
   detecting a real, meaningful difference rather than just returning an
   identity function.
-- Pre-publication check: `grep -iE "nishiha|himeji"` against the two new
+- Pre-publication check: `grep` against this project's private personal-information pattern list, the two new
   files and this addendum -> 0 hits.
 
 ---
@@ -1551,7 +1551,7 @@ CSV.
 - Confirmed to complete on 6x6, 8x8, and both `optimization_level` values in
   the sandbox (2-core Linux VM). Results matched the P1/P2 predictions
   (only `diluted_p0.75`'s tight case succeeds at VF2Layout).
-- Pre-publication check: `grep -iE "nishiha|himeji"` against the one new
+- Pre-publication check: `grep` against this project's private personal-information pattern list, the one new
   file and this addendum -> 0 hits (excluding existing cautionary strings).
 
 ---
@@ -1673,7 +1673,7 @@ L3) rather than placing too much confidence in any individual figure
   (`perf_counter` granularity, rounding of per-pass execution time) and is
   treated as effectively zero. It does not affect the interpretation of the
   other figures.
-- Pre-publication check: `grep -iE "nishiha|himeji"` against the one new
+- Pre-publication check: `grep` against this project's private personal-information pattern list, the one new
   file and this addendum -> 0 hits.
 
 ---
@@ -1797,7 +1797,7 @@ with the default `reps-l3=5` this is expected to take a few minutes).
   12 at 6x6 and 7x7 only, `call_limit=300,000`. Both produced results in the
   predicted direction, confirming the code detects a meaningful difference
   rather than acting as a bare identity function.
-- Pre-publication check: `grep -iE "nishiha|himeji"` against the two new
+- Pre-publication check: `grep` against this project's private personal-information pattern list, the two new
   files and this addendum -> 0 hits (excluding existing cautionary strings).
 
 ---
@@ -1931,7 +1931,7 @@ cliff's identity, so priority is considered low:
 - That even_odd/odd_even's failure rates matched exactly (46/96 each) is
   also mathematically guaranteed by the same structural reason above -- it
   did not happen to coincide by measurement error.
-- Pre-publication check: `grep -iE "nishiha|himeji"` against this addendum
+- Pre-publication check: `grep` against this project's private personal-information pattern list, this addendum
   -> 0 hits (excluding existing cautionary strings).
 
 ---
@@ -2141,7 +2141,7 @@ implementation."**
 - Confirmed that the feasibility pre-check returns False immediately,
   without calling VF2, on a small example where no solution can obviously
   exist (a 3-qubit triangle asked to satisfy a 4-qubit requirement).
-- Pre-publication check: `grep -iE "nishiha|himeji"` against this addendum,
+- Pre-publication check: `grep` against this project's private personal-information pattern list, this addendum,
   `psf_smart_layout.py`, and `smoke_test_smart_layout.py` -> 0 hits.
 
 ---
@@ -2309,7 +2309,7 @@ python benchmark_smart_layout_vs_default.py --arms qiskit_opt2,qiskit_opt2_smart
   layout stage run when `initial_layout` is specified (section 4-1).
 - Confirmed the PSF arm is automatically skipped in an environment where it
   is absent (including when explicitly specified via `--arms`).
-- Pre-publication check: `grep -iE "nishiha|himeji"` against this addendum
+- Pre-publication check: `grep` against this project's private personal-information pattern list, this addendum
   and `benchmark_smart_layout_vs_default.py` -> 0 hits.
 
 ---
@@ -2509,7 +2509,7 @@ The terminal output you sent included a path in the form `C:\Users\...`
 (containing an account name). This is an item `publication-policy.md`
 section 4 specifies must not go into anything published. **It is not
 included anywhere in the CSV saved to the Project, or in this addendum**
-(confirmed on the CSV: `grep -icE "nishiha|himeji|C:\\Users|Desktop|AppData"`
+(confirmed on the CSV: `grep` against this project's private personal-information pattern list
 -> 0 hits). Please strip the prompt portion before posting to GitHub.
 
 ## 7. Files
@@ -2534,7 +2534,7 @@ included anywhere in the CSV saved to the Project, or in this addendum**
   topologies at tight in the sandbox (a 2-core Linux VM) to completion, with
   0 coupling violations, and confirmed the stage-1-only loss shrinks from
   0.42x to 0.92x (not used for the actual verdict).
-- Pre-publication check: `grep -iE "nishiha|himeji|C:\\Users|Desktop|AppData"`
+- Pre-publication check: `grep` against this project's private personal-information pattern list
   against this addendum, the real-hardware CSV, and the two updated scripts
   -> 0 hits (excluding the cautionary strings mentioned in the text itself).
 
@@ -2741,7 +2741,7 @@ is far larger than the variance, so that is unaffected, but the specific
 - The fixed version (`--psf-rl` following `--level`, the
   `Spread_max_over_min` column, noise detection) was confirmed to complete
   in the sandbox (a 2-core Linux VM), with 0 coupling violations.
-- Pre-publication check: `grep -iE "nishiha|himeji|C:\\Users|Desktop|AppData"`
+- Pre-publication check: `grep` against this project's private personal-information pattern list
   against this addendum, the real-hardware CSV, and the updated script ->
   0 hits (excluding the cautionary strings in the text itself). **Note that
   the terminal output you pasted this time also contained `C:\Users\...`.
