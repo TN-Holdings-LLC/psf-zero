@@ -186,8 +186,65 @@ matching within run-to-run stdev.
 - One noise model (`fake_sherbrooke`) for the simulator half. Real-hardware results
   are in [`real-hardware.md`](real-hardware.md).
 
+## Addendum (2026-09-13): what `entangling_basis="cx"` costs in compile time
+
+Everything above is about fidelity. It says nothing about what the `"cx"` path costs
+to *run*, and the numbers reported elsewhere in this project implied an answer that
+turns out to be wrong.
+
+`benchmarks/diag_canonical_penalty.py` times `compile()` on both paths, on the same
+circuits, in a fresh `spawn` subprocess per measurement, 3 seeds × 5 repetitions.
+On the Intel machine (Windows, `Intel64 Family 6 Model 181`, Python 3.11.9,
+Qiskit 2.5.2), min-of-reps, median over seeds:
+
+| | 15q | 50q | 156q |
+| :--- | ---: | ---: | ---: |
+| `canonical`, `verify=False` | 0.788 ms | 2.329 ms | 6.910 ms |
+| `cx`, `verify=False` | 0.766 ms | 2.423 ms | 7.674 ms |
+| **`cx ÷ canonical`, `verify=False`** | **0.97** | **1.04** | **1.11** |
+| `canonical`, `verify=True` | 0.785 ms | 2.301 ms | 7.222 ms |
+| `cx`, `verify=True` | 1.269 ms | 3.772 ms | 11.898 ms |
+| **`cx ÷ canonical`, `verify=True`** | **1.62** | **1.64** | **1.65** |
+
+**The resynthesis through `TwoQubitBasisDecomposer` is nearly free** — 3% to 11%,
+rising slowly with circuit size. That is the honest price of Fix B, and it is small.
+
+**The 1.6x that shows up with the default settings is not resynthesis. It is
+verification.** `psf_compile.py`'s `_verify_block` takes the core's own self-check
+only when `entangling_basis != "cx"`:
+
+```python
+if core_infid is not None and self.hyper.entangling_basis != "cx":
+    return core_infid              # free — the core computed it inside the FFI call
+return _infidelity(U_target, _reconstruct(cartan, k1, k2, phase))   # numpy, ~0.111 ms/block
+```
+
+The exclusion is correct: on the `"cx"` path the emitted circuit is not what the Rust
+side reconstructed, so the core's infidelity does not describe it. But it means the
+`"cx"` path pays the numpy reconstruction tier on every block — measured at
+54–72 µs/block on this machine — while `canonical` pays essentially nothing.
+
+**Consequence for anyone choosing between them.** On a CX/ECR-native backend, `"cx"`
+is the right choice for the fidelity reasons above, and the synthesis itself costs
+almost nothing extra. If its compile time matters, `verify=False` removes the whole
+difference; the correctness case for doing so is in
+[`core-verification.md`](core-verification.md).
+
+**One measurement in this project reads differently depending on the machine's core
+build.** On a machine whose `psf_zero_core` predates `geometric_decompose_checked`,
+*both* paths fall back to the numpy tier, `canonical` slows by the same ~0.111 ms per
+block, and `cx ÷ canonical` collapses to 1.04. That is a property of the installed
+core, not of the basis choice — see
+[`compile-time.md`](compile-time.md), addendum of 2026-09-13.
+
+Raw data:
+[`data/diag_canonical_penalty_intel_v2_2026-09-11.csv`](../../data/diag_canonical_penalty_intel_v2_2026-09-11.csv),
+[`data/diag_canonical_penalty_amd_v2_2026-09-13.csv`](../../data/diag_canonical_penalty_amd_v2_2026-09-13.csv).
+
 ## Files
 
+- [`benchmarks/diag_canonical_penalty.py`](../../benchmarks/diag_canonical_penalty.py)
+  — the layered timing behind the addendum above
 - [`benchmarks/diagnose_native_gate_inflation.py`](../../benchmarks/diagnose_native_gate_inflation.py)
 - [`benchmarks/diagnose_compile_for_hardware.py`](../../benchmarks/diagnose_compile_for_hardware.py)
 - [`benchmarks/verify_compile_for_hardware_fix.py`](../../benchmarks/verify_compile_for_hardware_fix.py)
