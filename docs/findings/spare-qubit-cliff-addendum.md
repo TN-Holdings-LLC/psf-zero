@@ -81,7 +81,7 @@ in Python, and called `rustworkx.vf2_mapping` directly — 158 lines of scoring 
 trial-loop logic that the PR deleted. After it, every path (shuffled or not) goes
 through the single Rust function `vf2_layout_pass`, which now takes a
 `shuffle_seed: Option<u64>` argument and does the reordering itself via
-`vf2::reorder_nodes` — the same mechanism this project's `verify_vf2_seed.py`
+`vf2::reorder_nodes` — the same mechanism this project's [`verify_vf2_seed.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_seed.py)
 exercises through the Python `seed=` parameter.
 
 **So the rejection was correct about the code as it stood, by a year.** The report,
@@ -97,7 +97,7 @@ investigation this document is built on.**
 
 First, the commit message states plainly: *"The shuffling is, in general, not a
 good idea."* Lishman's own assessment, a year before this project measured it,
-matches what `verify_vf2_max_trials.py` found directly: a shuffled ordering that
+matches what [`verify_vf2_max_trials.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_max_trials.py) found directly: a shuffled ordering that
 finds a layout does not make the pass faster, because `minimize_vf2`'s trial loop
 keeps searching afterward regardless of when the first match arrived. His caution
 about the mechanism and this project's measurement of *why* it doesn't help point
@@ -195,8 +195,8 @@ pm = generate_preset_pass_manager(optimization_level, target=target, backend=bac
 out_circuits = pm.run(circuits, callback=callback, num_processes=num_processes)
 ```
 
-So `verify_preset_shuffle.py` (which called `transpile()`) and
-`verify_preset_stop_reason.py` (which built the pass manager directly) exercised the
+So [`verify_preset_shuffle.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_preset_shuffle.py) (which called `transpile()`) and
+[`verify_preset_stop_reason.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_preset_stop_reason.py) (which built the pass manager directly) exercised the
 **same** code path — the Python preset — not two independent ones. The Rust-native
 `transpile` in `crates/transpiler/src/transpiler.rs` is a separate entry point that
 `qiskit.transpile()` does not reach; it is quoted below as corroboration that the
@@ -249,7 +249,7 @@ document's observation that pinning it changed nothing (1.004x) was correct; the
 reason is that it does not reach these passes at all.
 
 **One prior result now reads as a consistency check rather than a coincidence.**
-`verify_preset_stop_reason.py`'s pinned arm used `seed_transpiler=0`. That value never
+[`verify_preset_stop_reason.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_preset_stop_reason.py)'s pinned arm used `seed_transpiler=0`. That value never
 reached `VF2Layout` either — so both arms ran the identical unshuffled search, which
 is why all 40 calls agreed to the gate count and depth as well as the stop reason.
 
@@ -314,7 +314,7 @@ property-set `vf2_avg_error_map` and the preset's own `call_limit` 2-tuple."*
 - `vf2_avg_error_map` is **moot for this question**. It enters only as the scoring
   input, and the outcome is fixed before scoring matters: with shuffling disabled
   there is exactly one node order, so there is no "winning ordering to reach". This
-  also agrees with `verify_vf2_target_scoring.py`, which found the same 4/30 and the
+  also agrees with [`verify_vf2_target_scoring.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_target_scoring.py), which found the same 4/30 and the
   same seeds under dummy and real targets.
 
 ### 6. The `max_trials` docstring does not describe this workload
@@ -350,7 +350,7 @@ then to `transpiler_seed` in the user config file. This did not affect the VF2
 measurements — the seed never reaches those passes — but it does reach `SabreLayout`
 and `SabreSwap`, so it is a real consideration for the routing-variation observations
 elsewhere in this document, and worth adding to
-[`record-keeping.md`](../../record-keeping.md): a run described as unpinned should
+[`record-keeping.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/record-keeping.md): a run described as unpinned should
 confirm that neither the environment variable nor the config file is setting a seed.
 
 ### What is still unknown after this
@@ -393,13 +393,13 @@ it does not make the report correct, and the objection to it was right.
 
 ## Addendum (2026-09-14): six pre-registered predictions, tested on real hardware
 
-All six verification scripts (`vf2_probe_common.py` + `verify_vf2_call_limit_tuple.py`,
-`verify_vf2_steps_to_first_match.py`, `verify_vf2_ordering_structure.py`,
-`verify_vf2_cross_implementation.py`, `verify_vf2_topologies.py`,
-`verify_qiskit_source_2_5_2.py`) were run on the Intel machine
+All six verification scripts ([`vf2_probe_common.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/vf2_probe_common.py) + [`verify_vf2_call_limit_tuple.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_call_limit_tuple.py),
+[`verify_vf2_steps_to_first_match.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_steps_to_first_match.py), [`verify_vf2_ordering_structure.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_ordering_structure.py),
+[`verify_vf2_cross_implementation.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_cross_implementation.py), [`verify_vf2_topologies.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_topologies.py),
+[`verify_qiskit_source_2_5_2.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_qiskit_source_2_5_2.py)) were run on the Intel machine
 (`Intel64 Family 6 Model 181`, Windows 10, Python 3.11.9, Qiskit 2.5.2, rustworkx
 0.18.1, `psf_zero_core.cp311-win_amd64.pyd:418304`, rebuilt 2026-09-14T09:19:45 — the
-same rebuilt core discussed in the `compile-time.md` addendum). Each script's
+same rebuilt core discussed in the [`compile-time.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/compile-time.md) addendum). Each script's
 predictions were written before the run, in the script itself. Two came back clean
 confirmations; three were refuted outright; one produced a genuine unresolved anomaly.
 Per this project's own rule, a refuted prediction is not a failed experiment — it is
@@ -409,18 +409,18 @@ the result.
 
 | Script | Predictions | Outcome |
 | :--- | :--- | :--- |
-| `verify_qiskit_source_2_5_2.py` | P1–P4 (installed-2.5.2 source matches `main`-derived claims) | **All confirmed.** No change to prior addenda. |
-| `verify_vf2_cross_implementation.py` | P1 (Qiskit and rustworkx fail at the same boundary), P2 (24 nodes is a property of the heuristic, not the wrapper) | **Both confirmed, cleanly.** 40/40 grids agree; both fail starting exactly at 24 nodes (3×8, 4×6). |
-| `verify_vf2_steps_to_first_match.py` | P1 (step-count ratio ≈ time ratio for successful seeds), P2 (failing seeds never succeed under the 3,000,000 limit) | **P1 refuted, P2 confirmed.** Step ratio 4.3x against a time ratio of ~96x for the same seeds. |
-| `verify_vf2_call_limit_tuple.py` | P1 (`tuple_10k` ≈ `max_trials1`), P2 (identical stop reasons across arms), P3 (`tuple_full` ≈ `scalar`) | **P3 confirmed. P1 refuted in a specific, informative way** (see below). **A new anomaly** in the failing seeds, unresolved. |
-| `verify_vf2_ordering_structure.py` | P1 (locality-preserving orders succeed), P3 (bipartite is a dividing line) | **Both refuted.** Every hand-designed structured ordering failed, on every grid; only random draws ever succeeded, and rarely. |
-| `verify_vf2_topologies.py` | P1 (cliff only where a perfect matching exists), P3 (line/ring won't show a cliff since matching is trivial) | **P1 not falsified but insufficient; P3 refuted.** Line shows a cliff as large as the grids. Ring and full-graph — also with a trivial perfect matching — show none. |
+| [`verify_qiskit_source_2_5_2.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_qiskit_source_2_5_2.py) | P1–P4 (installed-2.5.2 source matches `main`-derived claims) | **All confirmed.** No change to prior addenda. |
+| [`verify_vf2_cross_implementation.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_cross_implementation.py) | P1 (Qiskit and rustworkx fail at the same boundary), P2 (24 nodes is a property of the heuristic, not the wrapper) | **Both confirmed, cleanly.** 40/40 grids agree; both fail starting exactly at 24 nodes (3×8, 4×6). |
+| [`verify_vf2_steps_to_first_match.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_steps_to_first_match.py) | P1 (step-count ratio ≈ time ratio for successful seeds), P2 (failing seeds never succeed under the 3,000,000 limit) | **P1 refuted, P2 confirmed.** Step ratio 4.3x against a time ratio of ~96x for the same seeds. |
+| [`verify_vf2_call_limit_tuple.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_call_limit_tuple.py) | P1 (`tuple_10k` ≈ `max_trials1`), P2 (identical stop reasons across arms), P3 (`tuple_full` ≈ `scalar`) | **P3 confirmed. P1 refuted in a specific, informative way** (see below). **A new anomaly** in the failing seeds, unresolved. |
+| [`verify_vf2_ordering_structure.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_ordering_structure.py) | P1 (locality-preserving orders succeed), P3 (bipartite is a dividing line) | **Both refuted.** Every hand-designed structured ordering failed, on every grid; only random draws ever succeeded, and rarely. |
+| [`verify_vf2_topologies.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_topologies.py) | P1 (cliff only where a perfect matching exists), P3 (line/ring won't show a cliff since matching is trivial) | **P1 not falsified but insufficient; P3 refuted.** Line shows a cliff as large as the grids. Ring and full-graph — also with a trivial perfect matching — show none. |
 
 ---
 
 ### 1. Cross-implementation agreement: confirmed cleanly
 
-`verify_vf2_cross_implementation.py` scanned every grid from 2×2 (4 nodes) to 8×9
+[`verify_vf2_cross_implementation.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_cross_implementation.py) scanned every grid from 2×2 (4 nodes) to 8×9
 (72 nodes) with a perfect matching, calling Qiskit's `VF2Layout` (`seed=-1`,
 `call_limit=3,000,000`) and rustworkx's `vf2_mapping` (`id_order=False,
 induced=False, call_limit=3,000,000`) side by side. Both succeed on every grid below
@@ -439,7 +439,7 @@ and this document's own "what is still unknown" section had left open.
 
 ### 2. Steps-to-first-match does not track wall-clock time — and the call_limit-tuple data explains why
 
-`verify_vf2_steps_to_first_match.py` used a binary search (23 probes per seed) to find
+[`verify_vf2_steps_to_first_match.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_steps_to_first_match.py) used a binary search (23 probes per seed) to find
 the minimal `call_limit` — with `max_trials=1` — that still finds a mapping, as a
 machine-independent proxy for search depth. Result, successful seeds only:
 
@@ -457,7 +457,7 @@ configuration, is ~96x (332 ms / 3.76 ms). Seed 8 needs the *fewest* calls of an
 seed (43, tied with seed 25) to reach a solution, yet takes by far the *longest*
 wall time to reach it when given a large budget.
 
-This result only makes sense next to `verify_vf2_call_limit_tuple.py`'s data for the
+This result only makes sense next to [`verify_vf2_call_limit_tuple.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_call_limit_tuple.py)'s data for the
 same seeds. For seed 8: `max_trials1` (call_limit=3,000,000, stop after 1 solution) =
 332 ms, but `tuple_10k` (call_limit=`(3,000,000, 10,000)`) = **1.7 ms** — nearly 200x
 faster, for what should be the same search terminating at the same first solution.
@@ -518,8 +518,8 @@ This does not fit the hypothesis in §2 cleanly: if a smaller effective budget (
 the tuple's second element) generally shortens the path taken, it should do so for
 failing seeds too, not lengthen it. Two candidate explanations, neither confirmed:
 
-- **External load.** The Intel machine's 2026-09-14 `test_cumulative_compile_time.py`
-  re-run (see `compile-time.md` addendum) showed heavy, uneven external contention
+- **External load.** The Intel machine's 2026-09-14 [`test_cumulative_compile_time.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cumulative_compile_time.py)
+  re-run (see [`compile-time.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/compile-time.md) addendum) showed heavy, uneven external contention
   during that session. If seeds 3/4 happened to run during a load spike, that alone
   could produce seed 3's bimodal `scalar` result — though it does not obviously
   explain why seed 4's tuple arms specifically, and consistently, were the slow ones.
@@ -536,7 +536,7 @@ whether the pattern is reproducible or was one-off contention.
 
 ### 4. Ordering structure: none of the hand-designed orderings behave differently from each other
 
-`verify_vf2_ordering_structure.py` tested seven structural node orderings
+[`verify_vf2_ordering_structure.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_ordering_structure.py) tested seven structural node orderings
 (`row_major`, `col_major`, `snake`, `bfs_corner`, `dfs_corner`, `bipartite`,
 `reverse`) plus five random draws, against `rustworkx.vf2_mapping(id_order=False, ...)`
 directly, on 6×7, 7×8, 8×8, and 8×9 grids (28 structured attempts, 20 random
@@ -578,7 +578,7 @@ ordering argument to the harness isn't reaching the call at all.
 
 ### 5. Topology cliff: perfect-matching existence is not sufficient — vertex-transitivity looks like the real dividing line
 
-`verify_vf2_topologies.py` tested five topologies at 20–56 physical qubits, checking
+[`verify_vf2_topologies.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_topologies.py) tested five topologies at 20–56 physical qubits, checking
 `has_perfect_matching()` before interpreting any result (specifically to avoid
 repeating the mistake that got the earlier upstream report rejected — reporting a
 correct "no solution" as if it were a bug).
@@ -689,7 +689,7 @@ number" to "here is the mechanism."
 
 ### 1. The seed 3 / seed 4 anomaly does not reproduce — it was noise
 
-`verify_vf2_seed_anomaly_repro.py` reran the four `call_limit` arms for seeds 3 and 4
+[`verify_vf2_seed_anomaly_repro.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_seed_anomaly_repro.py) reran the four `call_limit` arms for seeds 3 and 4
 at 20 repetitions instead of 3. Every arm for both seeds now lands in the same
 320–360 ms band, with tight spreads (1.04–1.12x, all classified "single-peaked") and
 no consistent CPU-load correlation.
@@ -714,7 +714,7 @@ that in mind.
 
 ### 2. Ordering structure under `id_order=True`: confirmed, and sharper than predicted
 
-`verify_vf2_ordering_id_order_true.py` reran the seven structured orderings plus five
+[`verify_vf2_ordering_id_order_true.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_ordering_id_order_true.py) reran the seven structured orderings plus five
 random draws under both `id_order=False` (reproducibility check) and `id_order=True`
 (the new test), on all four grids.
 
@@ -771,7 +771,7 @@ one specific traversal shape.
 
 ### 3. `call_limit` sweep: the search does not stop at the first match — and the tuple's second element does exactly what its docstring says
 
-`verify_vf2_call_limit_sweep.py` swept scalar `call_limit` from 43 to 3,000,000 for
+[`verify_vf2_call_limit_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_call_limit_sweep.py) swept scalar `call_limit` from 43 to 3,000,000 for
 seed 8, seed 1, and failing seed 0, all with `max_trials=1`.
 
 | `call_limit` | seed 8 (ms) | seed 1 (ms) | seed 0, failing (ms) |
@@ -837,7 +837,7 @@ generator semantics, which should stop computing the moment one item is yielded.
 behavior that the raw iterator does, that alone would explain why seed 8 "burns the
 full budget" through the Qiskit pass. The direct test: run the same seed-8 instance
 through `rx.vf2_mapping(..., call_limit=L)` with `next(iter(it))` at a range of `L`
-values matching this sweep, exactly as `verify_vf2_ordering_structure.py` already
+values matching this sweep, exactly as [`verify_vf2_ordering_structure.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_ordering_structure.py) already
 does elsewhere. If the raw iterator stops immediately once a match is found
 regardless of `L`, the "full budget consumed" behavior is specific to `VF2Layout`'s
 wrapper, not to rustworkx's search itself — a meaningful distinction for anything
@@ -846,7 +846,7 @@ reported.
 
 ### 4. Toroidal grid: the vertex-transitivity hypothesis holds
 
-`verify_vf2_toroidal_grid.py` built periodic (wraparound) 6×7 and 7×8 grids —
+[`verify_vf2_toroidal_grid.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_toroidal_grid.py) built periodic (wraparound) 6×7 and 7×8 grids —
 identical local connectivity to the open grids, but every node at degree 4 with no
 boundary, i.e. vertex-transitive — and compared saturated vs. 4-spare timings
 against the open (non-periodic) grids of the same shape, in the same run.
@@ -942,7 +942,7 @@ this project's own prior work rather than confirming or refuting a hypothesis; o
 
 ### 1. Heavy-hex and the real backend map show no cliff — but the comparison with grid was not apples-to-apples, and that itself is the finding
 
-`verify_vf2_heavy_hex_topology.py` fixed a real bug in `verify_vf2_topologies.py`
+[`verify_vf2_heavy_hex_topology.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_heavy_hex_topology.py) fixed a real bug in [`verify_vf2_topologies.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_topologies.py)
 (2026-09-14, first batch): heavy-hex (`from_heavy_hex(3)` = 19 nodes,
 `from_heavy_hex(5)` = 57 nodes) and `FakeSherbrooke` (127 nodes) are all **odd**
 node counts, and the original script only tried even `spare` values (0, 4) — so
@@ -1010,7 +1010,7 @@ dense enough to reach spare=0 with a matching intact — not yet found or tested
 
 ### 2. `dfs_corner`'s failure has two independent causes, and one of them saturates with difficulty
 
-`verify_vf2_dfs_mechanism.py` crossed 2 traversal modes (BFS, DFS) × 4 start points
+[`verify_vf2_dfs_mechanism.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_dfs_mechanism.py) crossed 2 traversal modes (BFS, DFS) × 4 start points
 (both corners, an edge midpoint, the center) × 4 neighbor-visit orders, on 6×7,
 8×8, and 8×9 (96 probes total, all `id_order=True`).
 
@@ -1060,7 +1060,7 @@ specific first-direction choice matters too, a third factor not disentangled her
 
 ### 3. Resolved: the "search burns its entire assigned budget" behavior belongs to Qiskit's `VF2Layout` pass, not to rustworkx's search algorithm
 
-`verify_vf2_rustworkx_raw_sweep.py` scanned 200 random node relabelings of an 8×8
+[`verify_vf2_rustworkx_raw_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_rustworkx_raw_sweep.py) scanned 200 random node relabelings of an 8×8
 grid under `id_order=True`, using the raw lazy `rustworkx.vf2_mapping()` iterator
 (`next(iter(it))`, exactly as the ordering-structure scripts already do) at
 `call_limit=1,000,000` — 199 of 200 failed, one (seed 168) succeeded. That one
@@ -1222,7 +1222,7 @@ corresponds to it) directly.
 These correspond to the remaining two items from addendum-7's "still unknown"
 list.
 
-### Followup 8: `verify_vf2_sparse_topology.py` -- is sparsity a third factor in the cliff?
+### Followup 8: [`verify_vf2_sparse_topology.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_sparse_topology.py) -- is sparsity a third factor in the cliff?
 
 Addendum-7's two-factor hypothesis was that the cliff appears when both
 (a) not vertex-transitive **and** (b) a perfect matching can exist all the way
@@ -1248,7 +1248,7 @@ and grid.
 exists but no cliff appears, the two-factor hypothesis is insufficient, and
 average degree was an independent third factor.
 
-### Followup 9: `verify_vf2_neighbor_order_full.py` -- pinning down the neighbor-visit-order mechanism with a number
+### Followup 9: [`verify_vf2_neighbor_order_full.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_neighbor_order_full.py) -- pinning down the neighbor-visit-order mechanism with a number
 
 Followup 6 tried only 4 neighbor-visit-order patterns (RDLU/DRUL/LURD/ULDR --
 cyclic shifts of the 4 directions only). Here all 24 patterns are tried, and
@@ -1277,10 +1277,10 @@ the code runs correctly; it is not used for the actual verdict).
 
 | Path in the project | Contents |
 |---|---|
-| `psf-zero/benchmarks/verify_vf2_sparse_topology.py` | followup 8's script |
-| `psf-zero/benchmarks/verify_vf2_neighbor_order_full.py` | followup 9's script |
+| [`psf-zero/benchmarks/verify_vf2_sparse_topology.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_sparse_topology.py) | followup 8's script |
+| [`psf-zero/benchmarks/verify_vf2_neighbor_order_full.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_neighbor_order_full.py) | followup 9's script |
 
-`vf2_probe_common.py` (existing, unchanged) is imported by both.
+[`vf2_probe_common.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/vf2_probe_common.py) (existing, unchanged) is imported by both.
 
 ## 4. Commands to run
 
@@ -1295,11 +1295,11 @@ Run as-is with defaults, each writes a dated CSV.
 
 - Both scripts were smoke-tested on small grids (5x5, 6x6) in the sandbox
   (2-core Linux VM) and completed without exceptions.
-- `verify_vf2_sparse_topology.py`: confirmed working through perfect-matching
+- [`verify_vf2_sparse_topology.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_sparse_topology.py): confirmed working through perfect-matching
   detection and the tight/loose ratio calculation at 6x6 (every candidate
   showed the cliff at this scale, but 6x6 is too small to use for the actual
   verdict).
-- `verify_vf2_neighbor_order_full.py`: confirmed 11 of 24 patterns fail at
+- [`verify_vf2_neighbor_order_full.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_neighbor_order_full.py): confirmed 11 of 24 patterns fail at
   6x7 (see the "for reference" note above) -- confirming the code is
   detecting a real, meaningful difference rather than just returning an
   identity function.
@@ -1331,7 +1331,7 @@ robust new fact -- "a center start fails 100% of the time regardless of visit
 order" -- and a new hypothesis -- "a grid fails more when both dimensions are
 even, and succeeds more when both are odd."
 
-## 1. Followup 8 (`verify_vf2_sparse_topology.py`) results
+## 1. Followup 8 ([`verify_vf2_sparse_topology.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_sparse_topology.py)) results
 
 | topology | avg_deg | L2 ratio | L3 ratio | verdict |
 |---|---|---|---|---|
@@ -1438,7 +1438,7 @@ reachable down to zero spare) survives -- but the mechanism one level below
 continuously," but rather the binary of "does VF2 succeed, or does it fail
 and switch to Sabre."
 
-## 2. Followup 9 (`verify_vf2_neighbor_order_full.py`) results
+## 2. Followup 9 ([`verify_vf2_neighbor_order_full.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_neighbor_order_full.py)) results
 
 ### New fact 1: a center start fails 100% of the time regardless of visit order (robust)
 
@@ -1527,9 +1527,9 @@ the grid's diameter or node count) rather than comparing raw values directly.
 
 | Path in the project | Contents |
 |---|---|
-| `psf-zero/data/vf2_sparse_topology_2026-09-14.csv` | followup 8's results (provided by the user) |
-| `psf-zero/data/vf2_neighbor_order_full_2026-09-14.csv` | followup 9's results (provided by the user) |
-| `psf-zero/benchmarks/verify_vf2_pipeline_trace.py` | followup 10 (new, urgent) |
+| [`psf-zero/data/vf2_sparse_topology_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_sparse_topology_2026-09-14.csv) | followup 8's results (provided by the user) |
+| [`psf-zero/data/vf2_neighbor_order_full_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_neighbor_order_full_2026-09-14.csv) | followup 9's results (provided by the user) |
+| [`psf-zero/benchmarks/verify_vf2_pipeline_trace.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_pipeline_trace.py) | followup 10 (new, urgent) |
 
 ## 5. Command to run
 
@@ -1635,7 +1635,7 @@ optimization level like L3 it can carry as much weight as, or more than, the
 search cost of VF2 itself.
 
 **Caveat**: this table is computed from a single run per condition; no
-repeated measurement was taken (`verify_vf2_pipeline_trace.py` does not use
+repeated measurement was taken ([`verify_vf2_pipeline_trace.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_pipeline_trace.py) does not use
 `timed()`). The downstream-side numbers may be more susceptible to
 measurement noise, so read this as a trend (small at L2, sometimes large at
 L3) rather than placing too much confidence in any individual figure
@@ -1661,7 +1661,7 @@ L3) rather than placing too much confidence in any individual figure
 
 | Path in the project | Contents |
 |---|---|
-| `psf-zero/data/vf2_pipeline_trace_2026-09-14.csv` | followup 10's real-hardware results (provided by the user) |
+| [`psf-zero/data/vf2_pipeline_trace_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_pipeline_trace_2026-09-14.csv) | followup 10's real-hardware results (provided by the user) |
 
 ## 5. Verification
 
@@ -1693,7 +1693,7 @@ hypothesis"** ("reproducibility of the downstream cost" is set aside for now).
 Below are only the predictions written before measurement -- there are no
 results yet.
 
-## 1. Followup 11: `verify_vf2_seed_nondeterminism.py` -- how much does VF2Layout's seed=-1 actually jitter?
+## 1. Followup 11: [`verify_vf2_seed_nondeterminism.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_seed_nondeterminism.py) -- how much does VF2Layout's seed=-1 actually jitter?
 
 Following the fact discovered in addendum-9 -- that
 `transpile(..., seed_transpiler=0)` does not control `VF2Layout`'s own seed
@@ -1725,7 +1725,7 @@ the actual verdict): grid/brick/diluted_p0.25/diluted_p0.5/line all failed
 3/3, `diluted_p0.75` all succeeded 3/3 -- in the predicted direction,
 confirming the code runs correctly.
 
-## 2. Followup 12: `verify_vf2_grid_parity.py` -- filling out the grid-parity hypothesis with a 2x2
+## 2. Followup 12: [`verify_vf2_grid_parity.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_grid_parity.py) -- filling out the grid-parity hypothesis with a 2x2
 
 This confirms the pattern found in followup 9 -- "8x8 (even x even) fails
 100% from a corner, 9x9 (odd x odd) succeeds 100%, 6x7/8x9 (one of each) are
@@ -1772,11 +1772,11 @@ runs correctly and detects a meaningful difference.
 
 | Path in the project | Contents |
 |---|---|
-| `psf-zero/benchmarks/verify_vf2_seed_nondeterminism.py` | followup 11 |
-| `psf-zero/benchmarks/verify_vf2_grid_parity.py` | followup 12 |
+| [`psf-zero/benchmarks/verify_vf2_seed_nondeterminism.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_seed_nondeterminism.py) | followup 11 |
+| [`psf-zero/benchmarks/verify_vf2_grid_parity.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_grid_parity.py) | followup 12 |
 
-Both import `vf2_probe_common.py`, `verify_vf2_sparse_topology.py`, and
-`verify_vf2_neighbor_order_full.py` (existing, unchanged). Keep them in the
+Both import [`vf2_probe_common.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/vf2_probe_common.py), [`verify_vf2_sparse_topology.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_sparse_topology.py), and
+[`verify_vf2_neighbor_order_full.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_neighbor_order_full.py) (existing, unchanged). Keep them in the
 same folder.
 
 ## 5. Commands to run
@@ -1918,8 +1918,8 @@ cliff's identity, so priority is considered low:
 
 | Path in the project | Contents |
 |---|---|
-| `psf-zero/data/vf2_seed_nondeterminism_2026-09-14.csv` | followup 11's real-hardware results (provided by the user) |
-| `psf-zero/data/vf2_grid_parity_2026-09-14.csv` | followup 12's real-hardware results (provided by the user) |
+| [`psf-zero/data/vf2_seed_nondeterminism_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_seed_nondeterminism_2026-09-14.csv) | followup 11's real-hardware results (provided by the user) |
+| [`psf-zero/data/vf2_grid_parity_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_grid_parity_2026-09-14.csv) | followup 12's real-hardware results (provided by the user) |
 
 ## 5. Verification
 
@@ -1939,15 +1939,15 @@ cliff's identity, so priority is considered low:
 
 <!-- ===== Addendum 13 (source: spare-qubit-cliff-addendum-13-2026-09-14.md) ===== -->
 
-> **Note added when merging:** Introduces the `psf_smart_layout.py` prototype. **Caveat carried forward through Addendum 16**: every finding is against the public `rustworkx.vf2_mapping()`, not Qiskit's internal implementation.
+> **Note added when merging:** Introduces the [`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/psf_smart_layout.py) prototype. **Caveat carried forward through Addendum 16**: every finding is against the public `rustworkx.vf2_mapping()`, not Qiskit's internal implementation.
 
-## spare-qubit-cliff addendum 13 (2026-09-14) -- the layout-search prototype `psf_smart_layout.py`: what building it revealed (sandbox only, not yet confirmed on real hardware)
+## spare-qubit-cliff addendum 13 (2026-09-14) -- the layout-search prototype [`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/psf_smart_layout.py): what building it revealed (sandbox only, not yet confirmed on real hardware)
 
 ## 0. In one line
 
 Following a suggestion that "today's results might let us design the best
 possible search-based compiler," a layout-search prototype,
-`psf_smart_layout.py`, was built with an eye toward integrating it into
+[`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/psf_smart_layout.py), was built with an eye toward integrating it into
 PSF-Zero. **It works** (it can find a valid layout under conditions where
 Qiskit's default pipeline fails, such as grid and line), **but its
 effectiveness is more limited than hoped** -- the "BFS is robust" finding
@@ -1959,7 +1959,7 @@ hardware testing and integration into Qiskit proper are still ahead.**
 
 ## 1. What was built
 
-`psf_smart_layout.py` (implemented directly on top of the public
+[`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/psf_smart_layout.py) (implemented directly on top of the public
 `rustworkx.vf2_mapping()`; Qiskit's internal implementation,
 `qiskit._accelerate.vf2_layout`, was not touched -- see section 4 for why).
 Design:
@@ -2085,7 +2085,7 @@ this is taken as confirmation of "inherently hard," not a "bug").
    part corresponding to the "downstream cost" seen in addendum-10) has not
    been done yet.
 4. **Integration into PSF-Zero proper has not started**: this is a
-   standalone prototype only; integration into `psf_compile.py` or the Rust
+   standalone prototype only; integration into [`psf_compile.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/psf_compile.py) or the Rust
    core (`psf_zero_core`) has not been done.
 
 ## 5. How to read this result -- an honest assessment
@@ -2110,8 +2110,8 @@ implementation."**
 
 | Path in the project | Contents |
 |---|---|
-| `psf-zero/prototypes/psf_smart_layout.py` | the prototype itself |
-| `psf-zero/prototypes/smoke_test_smart_layout.py` | smoke test (grid/brick/diluted_p x3/line, plus the feasibility pre-check) |
+| [`psf-zero/prototypes/psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/psf_smart_layout.py) | the prototype itself |
+| [`psf-zero/prototypes/smoke_test_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/smoke_test_smart_layout.py) | smoke test (grid/brick/diluted_p x3/line, plus the feasibility pre-check) |
 
 ## 7. Next steps (not yet started; priority to be discussed with the user)
 
@@ -2142,7 +2142,7 @@ implementation."**
   without calling VF2, on a small example where no solution can obviously
   exist (a 3-qubit triangle asked to satisfy a 4-qubit requirement).
 - Pre-publication check: `grep` against this project's private personal-information pattern list, this addendum,
-  `psf_smart_layout.py`, and `smoke_test_smart_layout.py` -> 0 hits.
+  [`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/psf_smart_layout.py), and [`smoke_test_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/smoke_test_smart_layout.py) -> 0 hits.
 
 ---
 
@@ -2269,8 +2269,8 @@ overturn this):
 python benchmark_smart_layout_vs_default.py
 ```
 
-Place it in the **same folder** as `vf2_probe_common.py`,
-`verify_vf2_sparse_topology.py`, and `psf_smart_layout.py` (it imports all
+Place it in the **same folder** as [`vf2_probe_common.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/vf2_probe_common.py),
+[`verify_vf2_sparse_topology.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_sparse_topology.py), and [`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/psf_smart_layout.py) (it imports all
 of them).
 
 **Two places this might not go smoothly** (both are designed to leave an
@@ -2296,9 +2296,9 @@ python benchmark_smart_layout_vs_default.py --arms qiskit_opt2,qiskit_opt2_smart
 
 | Path in the project | Contents |
 |---|---|
-| `psf-zero/benchmarks/benchmark_smart_layout_vs_default.py` | followup 14 |
+| [`psf-zero/benchmarks/benchmark_smart_layout_vs_default.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/benchmark_smart_layout_vs_default.py) | followup 14 |
 
-`psf_smart_layout.py` is unchanged from addendum-13.
+[`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/psf_smart_layout.py) is unchanged from addendum-13.
 
 ## 7. Verification
 
@@ -2310,7 +2310,7 @@ python benchmark_smart_layout_vs_default.py --arms qiskit_opt2,qiskit_opt2_smart
 - Confirmed the PSF arm is automatically skipped in an environment where it
   is absent (including when explicitly specified via `--arms`).
 - Pre-publication check: `grep` against this project's private personal-information pattern list, this addendum
-  and `benchmark_smart_layout_vs_default.py` -> 0 hits.
+  and [`benchmark_smart_layout_vs_default.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/benchmark_smart_layout_vs_default.py) -> 0 hits.
 
 ---
 
@@ -2426,7 +2426,7 @@ stopped at 9) is the trace of this.
 
 Fix: `call_limit` is now shrunk by estimating, from the "calls consumed per
 second" observed so far, how many calls can be consumed in the remaining
-time (`psf_smart_layout.py`'s `_budgeted_call_limit()`). Since stage 1 and
+time ([`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/psf_smart_layout.py)'s `_budgeted_call_limit()`). Since stage 1 and
 stage 2 have different consumption rates, the rate is re-measured when the
 stage changes.
 
@@ -2469,7 +2469,7 @@ smart arm is excluded from the start once `initial_layout` is determined to
 be unsupported.
 
 **What is needed (your decision required)**: adding an `initial_layout`
-parameter to `psf_compile.py`'s `compile_for_hardware` and passing it
+parameter to [`psf_compile.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/psf_compile.py)'s `compile_for_hardware` and passing it
 straight through to the internal `transpile()` call -- probably about a
 2-line change. Could you show me its contents so a patch can be written?
 
@@ -2484,7 +2484,7 @@ unilaterally from this side**).
 ## 5. Pre-registered predictions for the next run (**written before measuring**)
 
 If `--reps 2` is run with the fixed versions
-(`psf_smart_layout.py` + `benchmark_smart_layout_vs_default.py`):
+([`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/psf_smart_layout.py) + [`benchmark_smart_layout_vs_default.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/benchmark_smart_layout_vs_default.py)):
 
 - **(P5)** `_smart1` keeps roughly the same wins as `_smart` on `grid` and
   `line` (20-35x), since both are found at stage 1.
@@ -2506,7 +2506,7 @@ working (the `SmartOrder` column) needs to be reviewed.
 ## 6. On the pre-publication check (for the user)
 
 The terminal output you sent included a path in the form `C:\Users\...`
-(containing an account name). This is an item `publication-policy.md`
+(containing an account name). This is an item [`publication-policy.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/publication-policy.md)
 section 4 specifies must not go into anything published. **It is not
 included anywhere in the CSV saved to the Project, or in this addendum**
 (confirmed on the CSV: `grep` against this project's private personal-information pattern list
@@ -2516,9 +2516,9 @@ included anywhere in the CSV saved to the Project, or in this addendum**
 
 | Path in the project | Contents |
 |---|---|
-| `psf-zero/data/smart_layout_vs_default_intel_2026-09-14.csv` | followup 14's real-hardware results (48 rows) |
-| `psf-zero/prototypes/psf_smart_layout.py` | the time-budget fix (section 3.1) |
-| `psf-zero/benchmarks/benchmark_smart_layout_vs_default.py` | added the `_smart1` arm, automatic exclusion of the PSF smart arm (sections 3.2, 4) |
+| [`psf-zero/data/smart_layout_vs_default_intel_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/smart_layout_vs_default_intel_2026-09-14.csv) | followup 14's real-hardware results (48 rows) |
+| [`psf-zero/prototypes/psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/psf_smart_layout.py) | the time-budget fix (section 3.1) |
+| [`psf-zero/benchmarks/benchmark_smart_layout_vs_default.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/benchmark_smart_layout_vs_default.py) | added the `_smart1` arm, automatic exclusion of the PSF smart arm (sections 3.2, 4) |
 
 ## 8. Verification
 
@@ -2722,8 +2722,8 @@ is far larger than the variance, so that is unaffected, but the specific
 
 | Path in the project | Contents |
 |---|---|
-| `psf-zero/data/smart_layout_vs_default_L3_intel_2026-09-14.csv` | this round's L3 real-hardware results (48 rows) |
-| `psf-zero/benchmarks/benchmark_smart_layout_vs_default.py` | section 5's fixed version |
+| [`psf-zero/data/smart_layout_vs_default_L3_intel_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/smart_layout_vs_default_L3_intel_2026-09-14.csv) | this round's L3 real-hardware results (48 rows) |
+| [`psf-zero/benchmarks/benchmark_smart_layout_vs_default.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/benchmark_smart_layout_vs_default.py) | section 5's fixed version |
 
 ## 8. Verification
 
