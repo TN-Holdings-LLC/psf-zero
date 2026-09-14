@@ -1010,7 +1010,7 @@ but the measurement to distinguish them has not been run.
 
 Full text, exact tables, and every pre-registered prediction as originally
 written:
-[`spare-qubit-cliff-addenda-COMBINED.md`](spare-qubit-cliff-addenda-COMBINED.md).
+[`spare-qubit-cliff-addenda-COMBINED.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum.md).
 
 ---
 
