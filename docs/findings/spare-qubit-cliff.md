@@ -758,7 +758,6 @@ implementation and is unaffected by which version's Python wrapper a since-delet
 code path belonged to. Only the historical accuracy of the original attribution is
 resolved by this addendum, not any measurement.
 
-
 # spare-qubit-cliff: The Story So Far (summary, 2026-09-13 through 2026-09-14)
 
 **This is a condensed rewrite, not a replacement.** The 14 original addenda,
@@ -1021,6 +1020,7 @@ written:
   all 14 addenda, unedited, in chronological order (same folder).
 - [`spare-qubit-cliff.md`](spare-qubit-cliff.md) -- the finding this whole
   series investigates the mechanism of (same folder).
+
 
 
 
