@@ -253,7 +253,6 @@ Raw data: [`data/determinism_variance_2026-09-13.csv`](../../data/determinism_va
 (3,000 rows: 1,000 iterations × 3 engines, per-iteration time, depth, CX count, and
 circuit signature hash).
 
-
 ## Where Qiskit's and TKET's per-call time goes, on the fixed-unitary loop above (2026-09-13)
 
 The determinism/variance experiment above measured only each engine's total time per
@@ -314,7 +313,6 @@ lacked the resolution to answer that question, and the honest result is "not
 measured," not "confirmed small" or "confirmed large."
 
 Raw data: [`data/framework_overhead_2026-09-13.csv`](../../data/framework_overhead_2026-09-13.csv).
-
 
 
 
