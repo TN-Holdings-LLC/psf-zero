@@ -1661,7 +1661,7 @@ L3) rather than placing too much confidence in any individual figure
 
 | Path in the project | Contents |
 |---|---|
-| [`psf-zero/data/vf2_pipeline_trace_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_pipeline_trace_2026-09-14.csv) | followup 10's real-hardware results (provided by the user) |
+| `psf-zero/data/vf2_pipeline_trace_2026-09-14.csv` (**not found in the repository as of 2026-09-14 -- link removed; the data behind addendum 9/10's "all 24 rows matched" claim was not preserved as a standalone file**) | followup 10's real-hardware results (provided by the user) |
 
 ## 5. Verification
 
@@ -1939,15 +1939,15 @@ cliff's identity, so priority is considered low:
 
 <!-- ===== Addendum 13 (source: spare-qubit-cliff-addendum-13-2026-09-14.md) ===== -->
 
-> **Note added when merging:** Introduces the [`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/psf_smart_layout.py) prototype. **Caveat carried forward through Addendum 16**: every finding is against the public `rustworkx.vf2_mapping()`, not Qiskit's internal implementation.
+> **Note added when merging:** Introduces the [`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_smart_layout.py) prototype. **Caveat carried forward through Addendum 16**: every finding is against the public `rustworkx.vf2_mapping()`, not Qiskit's internal implementation.
 
-## spare-qubit-cliff addendum 13 (2026-09-14) -- the layout-search prototype [`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/psf_smart_layout.py): what building it revealed (sandbox only, not yet confirmed on real hardware)
+## spare-qubit-cliff addendum 13 (2026-09-14) -- the layout-search prototype [`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_smart_layout.py): what building it revealed (sandbox only, not yet confirmed on real hardware)
 
 ## 0. In one line
 
 Following a suggestion that "today's results might let us design the best
 possible search-based compiler," a layout-search prototype,
-[`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/psf_smart_layout.py), was built with an eye toward integrating it into
+[`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_smart_layout.py), was built with an eye toward integrating it into
 PSF-Zero. **It works** (it can find a valid layout under conditions where
 Qiskit's default pipeline fails, such as grid and line), **but its
 effectiveness is more limited than hoped** -- the "BFS is robust" finding
@@ -1959,7 +1959,7 @@ hardware testing and integration into Qiskit proper are still ahead.**
 
 ## 1. What was built
 
-[`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/psf_smart_layout.py) (implemented directly on top of the public
+[`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_smart_layout.py) (implemented directly on top of the public
 `rustworkx.vf2_mapping()`; Qiskit's internal implementation,
 `qiskit._accelerate.vf2_layout`, was not touched -- see section 4 for why).
 Design:
@@ -2110,8 +2110,8 @@ implementation."**
 
 | Path in the project | Contents |
 |---|---|
-| [`psf-zero/prototypes/psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/psf_smart_layout.py) | the prototype itself |
-| [`psf-zero/prototypes/smoke_test_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/smoke_test_smart_layout.py) | smoke test (grid/brick/diluted_p x3/line, plus the feasibility pre-check) |
+| [`psf-zero/benchmarks/psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_smart_layout.py) | the prototype itself |
+| [`psf-zero/benchmarks/smoke_test_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/smoke_test_smart_layout.py) | smoke test (grid/brick/diluted_p x3/line, plus the feasibility pre-check) |
 
 ## 7. Next steps (not yet started; priority to be discussed with the user)
 
@@ -2142,7 +2142,7 @@ implementation."**
   without calling VF2, on a small example where no solution can obviously
   exist (a 3-qubit triangle asked to satisfy a 4-qubit requirement).
 - Pre-publication check: `grep` against this project's private personal-information pattern list, this addendum,
-  [`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/psf_smart_layout.py), and [`smoke_test_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/smoke_test_smart_layout.py) -> 0 hits.
+  [`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_smart_layout.py), and [`smoke_test_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/smoke_test_smart_layout.py) -> 0 hits.
 
 ---
 
@@ -2270,7 +2270,7 @@ python benchmark_smart_layout_vs_default.py
 ```
 
 Place it in the **same folder** as [`vf2_probe_common.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/vf2_probe_common.py),
-[`verify_vf2_sparse_topology.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_sparse_topology.py), and [`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/psf_smart_layout.py) (it imports all
+[`verify_vf2_sparse_topology.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_sparse_topology.py), and [`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_smart_layout.py) (it imports all
 of them).
 
 **Two places this might not go smoothly** (both are designed to leave an
@@ -2298,7 +2298,7 @@ python benchmark_smart_layout_vs_default.py --arms qiskit_opt2,qiskit_opt2_smart
 |---|---|
 | [`psf-zero/benchmarks/benchmark_smart_layout_vs_default.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/benchmark_smart_layout_vs_default.py) | followup 14 |
 
-[`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/psf_smart_layout.py) is unchanged from addendum-13.
+[`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_smart_layout.py) is unchanged from addendum-13.
 
 ## 7. Verification
 
@@ -2426,7 +2426,7 @@ stopped at 9) is the trace of this.
 
 Fix: `call_limit` is now shrunk by estimating, from the "calls consumed per
 second" observed so far, how many calls can be consumed in the remaining
-time ([`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/psf_smart_layout.py)'s `_budgeted_call_limit()`). Since stage 1 and
+time ([`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_smart_layout.py)'s `_budgeted_call_limit()`). Since stage 1 and
 stage 2 have different consumption rates, the rate is re-measured when the
 stage changes.
 
@@ -2484,7 +2484,7 @@ unilaterally from this side**).
 ## 5. Pre-registered predictions for the next run (**written before measuring**)
 
 If `--reps 2` is run with the fixed versions
-([`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/psf_smart_layout.py) + [`benchmark_smart_layout_vs_default.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/benchmark_smart_layout_vs_default.py)):
+([`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_smart_layout.py) + [`benchmark_smart_layout_vs_default.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/benchmark_smart_layout_vs_default.py)):
 
 - **(P5)** `_smart1` keeps roughly the same wins as `_smart` on `grid` and
   `line` (20-35x), since both are found at stage 1.
@@ -2516,8 +2516,8 @@ included anywhere in the CSV saved to the Project, or in this addendum**
 
 | Path in the project | Contents |
 |---|---|
-| [`psf-zero/data/smart_layout_vs_default_intel_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/smart_layout_vs_default_intel_2026-09-14.csv) | followup 14's real-hardware results (48 rows) |
-| [`psf-zero/prototypes/psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/prototypes/psf_smart_layout.py) | the time-budget fix (section 3.1) |
+| [`psf-zero/data/smart_layout_vs_default_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/smart_layout_vs_default_2026-09-14.csv) (L2 run; originally referenced here as "..._intel_2026-09-14.csv" -- corrected to the file's actual name) | followup 14's real-hardware results (48 rows) |
+| [`psf-zero/benchmarks/psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_smart_layout.py) | the time-budget fix (section 3.1) |
 | [`psf-zero/benchmarks/benchmark_smart_layout_vs_default.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/benchmark_smart_layout_vs_default.py) | added the `_smart1` arm, automatic exclusion of the PSF smart arm (sections 3.2, 4) |
 
 ## 8. Verification
@@ -2722,7 +2722,7 @@ is far larger than the variance, so that is unaffected, but the specific
 
 | Path in the project | Contents |
 |---|---|
-| [`psf-zero/data/smart_layout_vs_default_L3_intel_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/smart_layout_vs_default_L3_intel_2026-09-14.csv) | this round's L3 real-hardware results (48 rows) |
+| [`psf-zero/data/smart_layout_vs_default_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/smart_layout_vs_default_2026-09-14.csv) (L3 run; originally referenced here as "..._L3_intel_2026-09-14.csv" -- **note this is the same filename cited for addendum 15's L2 run above; the repository holds only one file under this name, so which run's data it currently contains cannot be confirmed from the filename alone**) | this round's L3 real-hardware results (48 rows) |
 | [`psf-zero/benchmarks/benchmark_smart_layout_vs_default.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/benchmark_smart_layout_vs_default.py) | section 5's fixed version |
 
 ## 8. Verification
