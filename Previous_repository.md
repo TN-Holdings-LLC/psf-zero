@@ -137,7 +137,7 @@ circuit was checked for unitary equivalence against the original circuit
 a valid result — no timing or depth number below is reported without a passing
 correctness check alongside it. The two single-run "Real Device Benchmark (15
 Qubits)" results that appeared in an earlier draft of this README used a
-version of `psf_compile.py` with a since-fixed `ConsolidateBlocks` bug and have
+version of [`psf_compile.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/psf_compile.py) with a since-fixed `ConsolidateBlocks` bug and have
 been removed; section 7 below replaces them with a 10-run result on real IBM
 hardware using the corrected code. Section 8 adds a separate noisy-simulator
 comparison across all four engines (Qiskit, TKET, PSF-Zero, Hybrid) that isn't
@@ -346,7 +346,7 @@ at this specific step because it "skips search" doesn't hold up.
 
 [`benchmarks/profile_synthesize_breakdown.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/profile_synthesize_breakdown.py)
 breaks `SU4GeodesicPSFSynthesizer.synthesize()` into its four sub-phases and
-times each over 2000 random SU(4) blocks (using `psf_zero_core_stub.py`
+times each over 2000 random SU(4) blocks (using [`psf_zero_core_stub.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_zero_core_stub.py)
 in-process, not the real Rust extension over PyO3 — see the script's own
 caveat about what that under- and over-states):
 
@@ -390,7 +390,7 @@ should that check even run on every production call? The math it's
 re-checking has already been extensively validated offline — worst-case
 (1-fidelity) = 1.11e-15 over 1000 trials against the real core's math
 (`test_geometric_decompose.py`) and 8.88e-16 over 200 trials against the
-stub (`test_psf_zero_core_stub.py`), independently reproduced on a second
+stub ([`test_psf_zero_core_stub.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_psf_zero_core_stub.py)), independently reproduced on a second
 machine. Re-proving already-proven math on every single call, rather than
 during development/CI, is a reasonable default while the math is still
 earning trust, but not obviously the right trade-off once it has.
@@ -664,7 +664,7 @@ reconstructed to fidelity 1.000000000000.
 
 #### Update (2026-09-09): under the corrected methodology the ratios are lower — and the cause is narrower than "Windows," not "which PC"
 
-`benchmarks/test1_v3.py` is this project's methodology-corrected replacement
+[`benchmarks/test1_v3.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test1_v3.py) is this project's methodology-corrected replacement
 for the script that produced section 4's tables (warm-up outside the timer,
 repeated timed calls per point, in-child memory sampling, `spawn` forced,
 per-arm equivalence checking, and output quality recorded alongside every
@@ -704,8 +704,8 @@ changed between them — something about the *scripts* differs.
 
 **The one thing that does differ between those two scripts is the memory
 sampler, which makes it the leading suspect rather than a speculative one.**
-`test1_v3.py` runs a background thread inside the timed child process
-sampling RSS at a requested 0.2ms interval; `test_cumulative_compile_time.py`
+[`test1_v3.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test1_v3.py) runs a background thread inside the timed child process
+sampling RSS at a requested 0.2ms interval; [`test_cumulative_compile_time.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cumulative_compile_time.py)
 does no per-call sampling at all. Windows' default timer granularity is
 15.6ms, so a 0.2ms sleep request is not honoured the way it is on Linux, and
 the sample counts in `test1_v3.py`'s own run log are consistent with the
@@ -952,7 +952,7 @@ unexplained.
 > option** (its arguments are `--qubits`, `--seeds`, `--reps`, `--arms`,
 > `--gates-per-pair`, `--check-qubits`, `--out`, `--quick`), and passing
 > one is an argparse error. The experiment needs an arm added, not a flag
-> set. `benchmarks/test1_v3_verify_strict.py` does that without modifying
+> set. [`benchmarks/test1_v3_verify_strict.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test1_v3_verify_strict.py) does that without modifying
 > `test1_v3.py`: it imports the module and registers
 > `psf_canonical_strict` / `psf_cx_strict` into its `ARMS` table, so the
 > current `verify=True` arm and the `verify="strict"` arm are measured
@@ -966,7 +966,7 @@ unexplained.
 
 #### Update (2026-09-10): the confirming experiment has now been run, and it REFUTES the account above
 
-`benchmarks/test1_v3_verify_strict.py` was run on the Intel machine, 10
+[`benchmarks/test1_v3_verify_strict.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test1_v3_verify_strict.py) was run on the Intel machine, 10
 seeds × 5 reps, with `qiskit_opt3`, `psf_canonical` (the current
 `verify=True` cheap core check) and `psf_canonical_strict`
 (`verify="strict"`, the old `Operator()` reconstruction) measured **in the
@@ -1590,7 +1590,7 @@ above).
 A separate investigation, run against a different, deliberately wide dense-block
 sweep (`phase3_v4.py` — a second, independently-built script converging on the
 same "use dense pair blocks, not `random_circuit`" fix as
-`phase3_v4_dense_pair_blocks.py` above, kept distinct here rather than
+[`phase3_v4_dense_pair_blocks.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase3_v4_dense_pair_blocks.py) above, kept distinct here rather than
 silently merged into it), found a mechanism this section's own tables above
 don't isolate: neither table above states which `routing_optimization_level`
 `compile_for_hardware()` was using internally, and it turns out to matter more
@@ -1771,7 +1771,7 @@ n=100 and n=156 and a 6-spare grid at exactly n=50 and n=300, so "has no
 spare qubits" and "is one of those two sizes" were perfectly confounded in
 every run this project had done. Replication is not a test.
 
-[phase3_v5_spare_qubits.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase3_v5_spare_qubits.py)
+[`benchmarks/phase3_v5_spare_qubits.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase3_v5_spare_qubits.py)
 breaks the confound by holding the
 coupling map fixed and varying only how much of it the circuit occupies
 (and, separately, holding the circuit fixed and varying the map). It reuses
@@ -1985,14 +1985,14 @@ Job IDs, in run order (for reproducibility): `daclrrjdd5gc73d68pcg`,
 `dacluq5nj4cs73acqo70`, `daclv3m42tqs73ascfeg`, `daclvgrdd5gc73d68thg`,
 `daclvre42tqs73ascgbg`, `dacm0gtnj4cs73acqq6g`, `dacm0r642tqs73aschqg`.
 
-Code: [`benchmarks/real_device_15q_fidelity_v2.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/real_device_15q_fidelity_v2)
+Code: [`benchmarks/real_device_15q_fidelity_v2.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/real_device_15q_fidelity_v2.py)
 
 > **Provenance note:** the listing below was reconstructed from the captured
 > run log (the same log the job IDs above come from). The original file was
 > searched for across the working repository (`findstr` for `transpile`,
 > `Sampler`, `real_device`, `fidelity` across every `.py` file present) and
 > not found — it appears to be lost, not just unexamined, and the same goes
-> for `test_real_hardware_fidelity.py` (section 8). This is not guaranteed
+> for [`test_real_hardware_fidelity.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_real_hardware_fidelity.py) (section 8). This is not guaranteed
 > to be a byte-for-byte match of whatever the original was; the parameters
 > (15 qubits, seed=42), control flow, and all Japanese print statements
 > match the log exactly. If the real file resurfaces, replace this listing
@@ -2256,7 +2256,7 @@ transpiler resynthesizes 2-qubit blocks from scratch regardless of input
 basis, and the gap vanishes.
 
 **Follow-up, after actually finding `compile_for_hardware()` in the real
-`psf_compile.py`** (the function section 5's `test1.py` calls for
+`psf_compile.py`** (the function section 5's [`test1.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test1.py) calls for
 hardware-targeted output):
 
 ```python
@@ -2290,7 +2290,7 @@ work, it does work that was never done. **This is a plausible, now-measured
 mechanism, made more likely by the codebase's own established habit of
 defaulting to low optimization levels downstream of `compile()` — but it is
 still not a confirmed diagnosis of section 7/8's actual pipeline**, since we
-don't have `real_device_15q_fidelity_v2.py` / `test_real_hardware_fidelity.py`
+don't have [`real_device_15q_fidelity_v2.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/real_device_15q_fidelity_v2.py) / `test_real_hardware_fidelity.py`
 to see what their final backend-submission transpile call actually does.
 Finding that call is the one remaining check (see Roadmap).
 
@@ -2622,7 +2622,7 @@ In the interest of not overstating anything:
 - **RESOLVED. Why PSF-Zero's own Rust-core synthesis cost more per block
   than a warmed-up Qiskit transpile, beyond the smallest scale tested
   (section 4).** Breaking `synthesize()` into its four sub-phases
-  (`benchmarks/profile_synthesize_breakdown.py`) found the actual
+  ([`benchmarks/profile_synthesize_breakdown.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/profile_synthesize_breakdown.py)) found the actual
   decomposition call was only ~3.3% of the per-block time; ~87% went to
   `synthesize()`'s own unconditional `Operator()` fidelity self-check (the
   "no silent fallback" policy re-verifying every synthesized block against
@@ -2631,7 +2631,7 @@ In the interest of not overstating anything:
   per-block 2-qubit synthesis is itself an analytic Cartan/KAK decomposition,
   not a search, so "PSF-Zero should win because it skips search" was never
   quite the right mechanism at this level.) Making that check optional
-  (`verify=False`, `benchmarks/compile_optional_verify.patch`) and
+  (`verify=False`, [`benchmarks/compile_optional_verify.patch`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/compile_optional_verify.patch)) and
   re-measuring the full 15–1000 qubit sweep with 10 seeds per point on real
   hardware confirmed it: PSF-Zero is faster than Qiskit at every scale
   tested (2.4x–5.2x) once the redundant self-check is skipped, with
@@ -2691,7 +2691,7 @@ In the interest of not overstating anything:
   n=100 and n=156, "no spare qubits" and "one of those two sizes" were
   perfectly confounded, and no number of re-runs of those same four points
   could separate them. A controlled experiment
-  [phase3_v5_spare_qubits.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase3_v5_spare_qubits.py)
+  [`benchmarks/phase3_v5_spare_qubits.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase3_v5_spare_qubits.py)
   that holds the coupling map
   fixed and varies only how much of it the circuit occupies breaks the
   confound: on one unchanged 42-qubit grid, a 42-qubit circuit takes 621ms
@@ -2757,9 +2757,9 @@ In the interest of not overstating anything:
   the 15/50/100/156-qubit points' statistical footing. The whole 15–1000
   qubit curve is now on equal footing.
 - **DONE — this was the highest-priority item, and it's now confirmed, not
-  projected.** `verify=False` (`benchmarks/compile_optional_verify.patch`,
+  projected.** `verify=False` ([`benchmarks/compile_optional_verify.patch`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/compile_optional_verify.patch),
   applied to the real `psf_compile.py` and integrated into
-  `phase1_verify_false.patch` / `phase2_verify_false.patch`) is confirmed
+  [`phase1_verify_false.patch`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase1_verify_false.patch) / [`phase2_verify_false.patch`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase2_verify_false.patch)) is confirmed
   on the real `psf_zero_core`, real hardware, across the full 15–1000 qubit
   range, 10 seeds per point: correctness unaffected, and PSF-Zero faster
   than Qiskit at every scale tested (2.4x–5.2x) — see section 4's final
@@ -2818,8 +2818,7 @@ In the interest of not overstating anything:
   Updates that precede it.
   **DONE and REFUTED (2026-09-10). This whole item is now closed.** The
   experiment above was run as specified (paired, same run, 10 seeds × 5
-  reps, [phase3_v5_spare_qubits.py](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase3_v5_spare_qubits.py).
-  The ratios did not
+  reps, [`benchmarks/test1_v3_verify_strict.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test1_v3_verify_strict.py)). The ratios did not
   collapse to the original's 4.35/2.21/1.66/1.44 — they went to
   **1.42/0.67/0.48/0.47**, overshooting by about 3.1x at every scale,
   because `verify="strict"` slows the PSF arm by 5.3x–7.0x where the
@@ -2853,7 +2852,7 @@ In the interest of not overstating anything:
   `optimization_level` 2/3 — flagged on 2026-09-08 as "a correlation with
   no confirmed mechanism" and sent here for a controlled experiment
   varying the spare-qubit count — has had that experiment run
-  (`benchmarks/phase3_v5_spare_qubits.py`). Holding the coupling map fixed
+  ([`benchmarks/phase3_v5_spare_qubits.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/phase3_v5_spare_qubits.py)). Holding the coupling map fixed
   and varying only the circuit's occupancy confirms spare qubits are the
   causal variable, and corrects the threshold: not zero spare, but a
   cliff whose position moves with the map (2 spare is slow on a 100-qubit
@@ -2954,6 +2953,4 @@ In the interest of not overstating anything:
 
 AGPL v3. See `LICENSE`.
 
-
-
-[Previous repository.](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/archive/README_v7_legacy.md)
+[Previous repository.](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/Previous%20repository.md)
