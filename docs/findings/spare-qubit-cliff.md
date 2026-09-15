@@ -243,6 +243,17 @@ default was lowered from 2,000,000 to 300,000 accordingly, nearly doubling
 the three failing topologies' loss margin (0.38-0.44x to 0.74-0.79x) with
 no measured cost to the winning topologies.
 
+**[Addendum 19] recorded a separate line of measurement from the same day**:
+a coupling-map-free compile-time comparison (`test_cumulative_compile_scale.py`,
+no `coupling_map` passed anywhere, so unrelated to the VF2/SabreLayout
+mechanism above) at 10,000 and 50,000 iterations. PSF-Zero won 5.90x-7.00x
+(cumulative-total basis; 5.73x-7.97x median-based) with correctness
+confirmed by a 6-qubit fidelity check before each run. Separately, Qiskit's
+cumulative-time curve showed a visible, reproducible slope anomaly at both
+sample sizes, absent from either PSF-Zero curve -- cause unconfirmed, and
+distinct from Addendum 16's L3 variance since no coupling map is involved
+here.
+
 ## 7. Where this stands
 
 **Solid:**
@@ -286,7 +297,8 @@ no measured cost to the winning topologies.
 | 13 | [`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_smart_layout.py), [`smoke_test_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/smoke_test_smart_layout.py) | -- (sandbox only) |
 | 14-16 | [`benchmark_smart_layout_vs_default.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/benchmark_smart_layout_vs_default.py) (evolving: `_smart1` arm added in 15, `--psf-rl`/`Spread_max_over_min`/noise detection added in 16) | [`smart_layout_vs_default_intel_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/smart_layout_vs_default_intel_2026-09-14.csv) (L2), [`smart_layout_vs_default_L3_intel_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/smart_layout_vs_default_L3_intel_2026-09-14.csv) (L3) |
 | 17 | [`compile_for_hardware_initial_layout.patch`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/compile_for_hardware_initial_layout.patch) (adds `initial_layout` to `psf_compile.compile_for_hardware`) | [`smart_layout_vs_default_2026-09-15.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/smart_layout_vs_default_2026-09-15.csv) (the end-to-end PSF-Zero run) |
-| 18 | `benchmark_smart_layout_vs_default.py` (gained `--fallback-call-limit`), `psf_smart_layout.py` (`fallback_call_limit` default 2,000,000 -> 300,000) | `sweep_200k.csv` through `sweep_2m.csv` (6 files), plus two further L2 reproducibility runs |
+| 18 | [`benchmark_smart_layout_vs_default.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/benchmark_smart_layout_vs_default.py) (gained `--fallback-call-limit`), [`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_smart_layout.py) (`fallback_call_limit` default 2,000,000 -> 300,000) | [`sweep_200k.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/sweep_200k.csv) through [`sweep_2m.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/sweep_2m.csv) (6 files), plus two further L2 reproducibility runs ([`run2`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/smart_layout_vs_default_2026-09-15_run2_qiskit_only.csv), [`run3`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/smart_layout_vs_default_2026-09-15_run3_qiskit_2m.csv)) |
+| 19 | [`test_cumulative_compile_scale.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cumulative_compile_scale.py) (coupling-map-free comparison, unrelated to the VF2/SabreLayout mechanism) | [`cumulative_compile_times_10000.npz`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_10000.npz), [`cumulative_compile_times_50000.npz`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_50000.npz), [`Figure_1.png`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/Figure_1.png), [`cumulative_compile_results_50000.png`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/cumulative_compile_results_50000.png) |
 
 Full text, exact tables, and every pre-registered prediction as originally
 written:
@@ -297,6 +309,6 @@ written:
 ## See also
 
 - [`spare-qubit-cliff-addenda-combined.md`](spare-qubit-cliff-addenda-combined.md) --
-  all 18 addenda, unedited, in chronological order (same folder). This is
+  all 17 addenda, unedited, in chronological order (same folder). This is
   where the exact wording, exact tables, and every pre-registered prediction
   as originally written can be found.
