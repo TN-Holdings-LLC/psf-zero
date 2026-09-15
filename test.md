@@ -60,6 +60,33 @@ reports `0/0 blocks` and passes the circuit through unchanged.
 `AMD64 Family 25 Model 80`, Python 3.10.11, Qiskit 2.5.2. Raw data in
 [`data/archive/`](data/archive/).</sub>
 
+**Over 10,000 back-to-back iterations at 15 qubits**, warm-up outside the loop,
+correctness checked (fidelity 1.000000000000 for all three arms on a 6-qubit
+version before the full sweep):
+
+| | Qiskit L3 | PSF-Zero (`verify=True`) | PSF-Zero (`verify=False`) |
+| :--- | :---: | :---: | :---: |
+| Median | 7.570 ms | 1.211 ms | 0.950 ms |
+| Mean | 9.207 ms | 1.543 ms | 1.314 ms |
+| Stdev | 6.143 ms | 0.900 ms | 0.901 ms |
+| **Cumulative speed-up** | — | **5.97x** | **7.00x** |
+
+![Cumulative compile time and per-iteration distribution: Qiskit L3 vs PSF-Zero](docs/Figure_1.png)
+
+<sub>`test_cumulative_compile_scale.py`, same machine as above. Right panel:
+box shows the interquartile range, whiskers the min/max over all 10,000
+iterations. Speed-up figures are cumulative-total-based (5.97x/7.00x); the
+median-based figures are 6.25x/7.97x — reported here since the standard
+deviation is close in magnitude to the median on both arms, indicating a
+long tail (max 130.6 ms on Qiskit, 20.2 ms on PSF-Zero) rather than a tight
+distribution. **Qiskit's cumulative-time curve (left panel) shows two visible
+slope changes, around iteration 4700 and 6000, not present on either
+PSF-Zero curve; the cause is unconfirmed** (background load, an internal
+Qiskit effect, and measurement variance of the kind found in
+[`docs/findings/spare-qubit-cliff-addenda-combined.md`](docs/findings/spare-qubit-cliff-addenda-combined.md)
+are all candidates, none checked). Raw per-iteration timings:
+`cumulative_compile_times_10000.npz`.</sub>
+
 **With the default safety check on** (`verify=True`, a cheap Rust-core check since
 2026-09-09), measured over a 50,000-iteration compile loop at 15 qubits:
 **4.79x** on one machine and **5.54x** (median) on another; `verify=False` gives
@@ -85,6 +112,34 @@ on the machine** — not a single number.
 0.0925 ± 0.0016, paired t = −0.78, n.s.); compile time was 14–16x faster in every
 one of the 10 runs.
 
+### Numerical accuracy of the core
+
+The decomposition is closed-form, so the thing that can go wrong is not search
+quality but numerical stability — around the CNOT/SWAP degeneracies, and in the
+agreement between the Rust core's 4×4 reconstruction and Qiskit's `Operator(qc)`.
+[`benchmarks/verify_core_infidelity.py`](benchmarks/verify_core_infidelity.py) locks
+both, measured 2026-09-12:
+
+| Suite | Samples | Worst infidelity (core) | Worst infidelity (strict circuit) | Fallbacks |
+| :--- | :---: | :---: | :---: | :---: |
+| Haar-random SU(4) | 500 | 1.11e-15 | 6.66e-16 | **0 / 500** |
+| Near-CNOT (ε = 1e-7) | 200 | 2.63e-14 | (covered by the strict loop) | **0 / 200** |
+
+Across the Haar space the worst case sits near machine epsilon with no fallback
+exceptions. Near the codimension-2 CNOT singularity — where a naive single-route
+diagonalisation is least stable — scored candidate selection plus a Givens sweep
+holds infidelity well below the 1e-12 tolerance, with zero rejections. (An earlier
+run reported 1.68e-13 here; the perturbation that generates the near-CNOT samples
+had a global-phase bug that put the test points at distance ~0.765 from CNOT
+regardless of ε, not ~ε as intended — fixed and re-run, see
+[`docs/findings/core-verification.md`](docs/findings/core-verification.md).) The
+`strict` tier is what rules out endian mismatches and ZYZ phase/sign drift between
+the two sides.
+
+Raw data: [`data/core_verification_2026-09-12.csv`](data/core_verification_2026-09-12.csv).
+Reproduce with `maturin develop --release && python benchmarks/verify_core_infidelity.py`.
+Full account: [`docs/findings/core-verification.md`](docs/findings/core-verification.md).
+
 ## What this is not
 
 - **Not a full transpiler.** PSF-Zero targets the 2-qubit synthesis step. Routing,
@@ -104,36 +159,71 @@ one of the 10 runs.
 
 While benchmarking against coupling maps we found, and then confirmed with a
 controlled experiment, that **Qiskit's `optimization_level` 2 and 3 slow down by
-40x–275x when the circuit nearly fills the coupling map.** Holding the map fixed and
+40x–420x when the circuit nearly fills the coupling map.** Holding the map fixed and
 varying only how many qubits the circuit occupies: on one unchanged 42-qubit grid, a
 42-qubit circuit takes 6.8 s at `opt=3` while a 38-qubit circuit takes 28 ms. A
 *smaller* circuit on a saturated grid runs ~200x slower than a *larger* one with
 spare qubits.
 
 Reproduced in three independent environments (Linux sandbox, and two Windows
-machines with different CPUs), twice back-to-back on one of them, agreeing to within
-5%, and present in every Qiskit release from **1.4.6 through 2.5.2** unchanged. Two
-further controls narrow it: the effect needs the dense adjacent-pair circuit structure
-as well as the saturated map (a gate-count-matched `random_circuit()` workload shows
-no cliff at all), and Qiskit 2.1 made the *unsaturated* case ~93x faster while the
-saturated case has not improved since 1.4.6.
+machines with different CPUs), across many independent runs, and present in every
+Qiskit release from **1.4.6 through 2.5.2** unchanged. Two further controls narrow
+it: the effect needs the dense adjacent-pair circuit structure as well as the
+saturated map (a gate-count-matched `random_circuit()` workload shows no cliff at
+all), and Qiskit 2.1 made the *unsaturated* case ~93x faster while the saturated case
+has not improved since 1.4.6.
 
-**Where the time goes is measured. The mechanism is not.** Per-pass timing puts
-99.9% of it in `VF2Layout` and `VF2PostLayout`, each consuming the
-`optimization_level=3` call limit in full and then reporting `NO_SOLUTION_FOUND` —
-for a layout that provably exists, since the grid has a perfect matching. What burns
-that budget inside the passes is unidentified: Qiskit 2.x implements VF2 in its own
-Rust core (`qiskit._accelerate.vf2_layout`), no pass-internal instrumentation has been
-done, and this is one Qiskit version on one topology family. An earlier revision of
-this file attributed the cliff to the VF2++ node ordering in
-`rustworkx.vf2_mapping`; Qiskit does not call that function, the attribution was
-wrong, and it was rejected when reported upstream — kept, with the drafts and the
-outcome, in [`docs/log/`](docs/log/). Padding the coupling map with a few spare
-qubits removes the effect entirely. Experiments:
-[`phase3_v5_spare_qubits.py`](benchmarks/phase3_v5_spare_qubits.py) and
-[`phase3_v6_workload_control.py`](benchmarks/phase3_v6_workload_control.py).
-Full account and raw data:
-[`docs/findings/spare-qubit-cliff.md`](docs/findings/spare-qubit-cliff.md).
+**The mechanism: `VF2Layout` fails once, and the preset pipeline falls back to
+`SabreLayout`.** Qiskit's preset pipeline tries `VF2Layout` exactly once, with
+shuffling explicitly disabled (`seed=-1`, hardcoded, not controlled by
+`seed_transpiler`); on a saturated map that one attempt reports
+`NO_SOLUTION_FOUND`, and the pipeline falls back entirely to a different algorithm,
+`SabreLayout`. **The layout it reports as absent does exist** — supplying a
+different `shuffle_seed` directly to `VF2Layout` finds it in 4 of 30 seeds — but the
+preset never gets to try, because shuffling is off by design in that code path,
+confirmed by reading Qiskit's own source. At `optimization_level=3`, a second cost
+layer sits on top: once Sabre's imperfect layout is chosen, the routing and
+optimization passes that follow can end up doing substantially more work, in one
+measured case (`brick` topology) roughly 3x the layout-search cost itself. Padding
+the coupling map with a few spare qubits removes the effect entirely.
+
+**A layout-search prototype recovers most of this, and the recovery holds through
+PSF-Zero's own pipeline, not just bare `transpile()`.** Trying several cheap
+node orderings and, if needed, a fallback heuristic search — a few
+milliseconds to a few hundred milliseconds of extra work — finds a valid layout on
+several topologies the preset misses, winning by **27x–420x** depending on
+optimization level and topology when it succeeds. Where the search itself fails
+(some topologies are genuinely hard, no ordering rescues them), the loss is close to
+exactly the time spent searching, not more; tuning the search's own retry budget
+based on measured data cut that loss margin roughly in half with no cost to the
+winning cases. This has been confirmed as a standalone prototype and, separately, by
+routing its output into `compile_for_hardware()` via a new `initial_layout`
+parameter — the size of the win is consistent across both.
+
+**Still open**: whether a same-condition run-to-run variance found at
+`optimization_level=3` (up to ~3x on one measurement) reflects `VF2Layout`'s own
+non-determinism or the measurement environment; whether the ordering effects found
+via the public `rustworkx` package hold inside Qiskit's own compiled VF2
+implementation, which has not been directly tested; and whether the original report
+that Qiskit calls `rustworkx.vf2_mapping()` (rejected upstream) was ever true of the
+code as it stood — it turned out to describe a code path Qiskit had already removed
+a year earlier, in a commit whose own message called shuffling "in general, not a
+good idea," which lines up with what was independently measured here.
+
+Experiments:
+[`phase3_v5_spare_qubits.py`](benchmarks/phase3_v5_spare_qubits.py),
+[`phase3_v6_workload_control.py`](benchmarks/phase3_v6_workload_control.py),
+[`verify_vf2_seed.py`](benchmarks/verify_vf2_seed.py),
+[`verify_vf2_max_trials.py`](benchmarks/verify_vf2_max_trials.py),
+[`verify_preset_stop_reason.py`](benchmarks/verify_preset_stop_reason.py),
+[`verify_vf2_pipeline_trace.py`](benchmarks/verify_vf2_pipeline_trace.py),
+[`psf_smart_layout.py`](benchmarks/psf_smart_layout.py),
+[`benchmark_smart_layout_vs_default.py`](benchmarks/benchmark_smart_layout_vs_default.py).
+Full account, source reading, every pre-registered prediction, and raw data (18
+rounds, 2026-09-13 through 2026-09-15):
+[`docs/findings/spare-qubit-cliff.md`](docs/findings/spare-qubit-cliff.md) (summary)
+and [`docs/findings/spare-qubit-cliff-addenda-combined.md`](docs/findings/spare-qubit-cliff-addenda-combined.md)
+(full record, unedited).
 
 ## How these numbers were produced
 
@@ -148,10 +238,10 @@ Ranges, not peaks.
 — a "200x" that turned out to be a no-op `transpile()` call, a "615x–867x" produced
 by circuits that never triggered the pass, and a decay-with-iteration-count effect
 that turned out to be background load on one machine. Two hypotheses this project
-proposed were later **refuted by their own pre-registered criteria**, and a third —
-a mechanism for the coupling-map finding above — was **rejected upstream** because
-it named a code path Qiskit does not use. The complete record, including every
-retraction and the raw data behind it, is kept verbatim in
+proposed were later **refuted by their own pre-registered criteria**. A third — a
+mechanism proposed for the finding above — was rejected upstream for naming a code
+path Qiskit does not use; the drafts and the outcome are in the log. The complete
+record, including every retraction and the raw data behind it, is kept verbatim in
 [`docs/log/`](docs/log/) rather than quietly edited away.
 
 ## Where everything is
@@ -162,6 +252,7 @@ retraction and the raw data behind it, is kept verbatim in
 | :--- | :--- |
 | [`docs/findings/compile-time.md`](docs/findings/compile-time.md) | The full compile-time arc: three retractions, the `verify` split, and what survives |
 | [`docs/findings/spare-qubit-cliff.md`](docs/findings/spare-qubit-cliff.md) | The Qiskit coupling-map result above — controlled experiment, three environments |
+| [`docs/findings/core-verification.md`](docs/findings/core-verification.md) | The three-tier infidelity harness: Haar space, CNOT singularities, Rust↔Python agreement |
 | [`docs/findings/entangling-basis.md`](docs/findings/entangling-basis.md) | Why `RXX/RYY/RZZ` costs 2x the native gates of `CX`, and the `entangling_basis="cx"` fix |
 | [`docs/findings/real-hardware.md`](docs/findings/real-hardware.md) | IBM hardware runs, job IDs, and the noisy-simulator comparison |
 
@@ -172,13 +263,14 @@ including a [chronology of every claim this project got wrong](docs/log/README.m
 [`02` synthesis vs. TKET](docs/log/02-synthesis-vs-tket.md) ·
 [`03` compile-time scaling](docs/log/03-compile-time-scaling.md) ·
 [`04` real-device topology](docs/log/04-real-device-topology.md) ·
-[`05` fidelity](docs/log/05-fidelity.md) ·
-[`06` open questions & roadmap](docs/log/06-open-questions-and-roadmap.md)
+[`05` fidelity](docs/log/05-fidelity.md)
+
+(`06` open questions & roadmap: not yet split out of the original file.)
 
 **Data** — [`data/`](data/) holds every CSV behind a published number;
 [`data/archive/`](data/archive/) holds the superseded and retracted runs, so the
-retractions can be re-checked, with a file-by-file map in
-[`provenance-map.md`](data/archive/provenance-map.md).
+retractions can be re-checked. (A file-by-file provenance map for the archive is
+planned but not yet written.)
 
 **Benchmarks** — the harnesses, in the order the story needs them:
 [`phase1_v2.py`](benchmarks/phase1_v2.py) /
@@ -187,6 +279,7 @@ retractions can be re-checked, with a file-by-file map in
 [`verify="strict"` wrapper](benchmarks/test1_v3_verify_strict.py) ·
 [`test_cumulative_compile_time.py`](benchmarks/test_cumulative_compile_time.py)
 (50,000-iteration loop) ·
+[`verify_core_infidelity.py`](benchmarks/verify_core_infidelity.py) (core accuracy) ·
 [`phase3_v4_dense_pair_blocks.py`](benchmarks/phase3_v4_dense_pair_blocks.py) and
 [`phase3_v5_spare_qubits.py`](benchmarks/phase3_v5_spare_qubits.py) /
 [`phase3_v6_workload_control.py`](benchmarks/phase3_v6_workload_control.py) (coupling maps) ·
@@ -201,15 +294,23 @@ their absence.
 
 ## Open questions
 
-- The mechanism behind the spare-qubit cliff — no pass-level instrumentation done,
-  and it is one Qiskit version (2.5.2) on one topology family.
+- What causes the ~3x same-condition run-to-run variance found at
+  `optimization_level=3` — `VF2Layout`'s own `seed=-1` shuffle behaving
+  inconsistently, or drift in the measurement environment. An experiment to
+  distinguish the two is designed but not yet run.
+- Whether the ordering effects behind the layout-search prototype — found via the
+  public `rustworkx` package — hold inside Qiskit's own compiled VF2
+  implementation (`qiskit._accelerate.vf2_layout`). Never directly tested; the
+  prototype's integration into PSF-Zero's pipeline has been confirmed, but not
+  this specific question.
+- Whether the prototype's search-retry budget (recently tuned down based on a
+  six-point sweep) can go lower still — the sweep's smallest tested value already
+  misses one topology outright, and no finer step was tried near that boundary.
 - Whether the compile-time advantage reduces real-hardware calibration-drift
   exposure in a variational loop. Plausible, untested, and not planned without a
   reason to spend QPU time.
 - A routing benchmark on non-adjacent logical pairs, so SWAP insertion is actually
   exercised.
-- `compile_for_hardware()` does not yet expose `seed_transpiler`, so its internal
-  routing call stays unpinned.
 - Benchpress integration ([issue #114](https://github.com/Qiskit/benchpress/issues/114)),
   PennyLane transforms, and parallel per-block synthesis — all unbuilt.
 
