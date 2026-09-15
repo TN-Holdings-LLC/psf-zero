@@ -1,0 +1,51 @@
+--- psf_compile.py	2026-09-15 01:14:36.618381665 +0000
++++ psf_compile_patched.py	2026-09-15 01:14:49.814223521 +0000
+@@ -423,6 +423,7 @@
+     verify: Union[bool, str] = True,
+     entangling_basis: str = "canonical",
+     seed_transpiler: int | None = None,
++    initial_layout: list[int] | None = None,
+     on_unsupported: str = "keep",
+     tol: float = 1e-5,
+ ) -> QuantumCircuit:
+@@ -473,6 +474,34 @@
+     takes a different amount of time, on every call for identical input --
+     which is exactly the effect that made this project's own coupling-map
+     timings unreproducible until it was pinned on the comparison side.
++
++    `initial_layout` pins the logical-to-physical qubit assignment, bypassing
++    Qiskit's own layout search entirely. It is forwarded verbatim to
++    `transpile()`, so it takes the same forms `transpile()` accepts -- most
++    usefully a list of physical qubit indices ordered by virtual qubit index.
++
++    **Passing this skips the whole layout stage, not just the layout search.**
++    Measured with `transpile(callback=...)` on 2026-09-14:
++
++        default:              SetLayout, VF2Layout, SabreLayout, VF2PostLayout
++        with initial_layout:  SetLayout, ApplyLayout
++
++    Note `VF2PostLayout` is skipped too. With only a `coupling_map` (no error
++    rates) that pass has nothing to score against and its absence changes
++    nothing, which is the configuration this project's benchmarks use. **With
++    a real hardware `Target` carrying error rates it does have something to
++    score, and skipping it can therefore cost fidelity** -- a layout that is
++    valid (every interacting pair lands on a coupled edge) is not
++    automatically a layout that is good on a noisy device. Supplying this
++    argument moves that judgement to the caller.
++
++    The motivating use is feeding in a layout found by a separate search: this
++    project's `psf_smart_layout.smart_vf2_layout()` returns `{logical:
++    physical}`, which `layout_map_to_list()` in
++    `benchmarks/benchmark_smart_layout_vs_default.py` converts to the list
++    form expected here. Until this parameter existed there was no way to do
++    that, so the end-to-end comparison that motivated the search could not be
++    run at all (recorded in spare-qubit-cliff addendum 15, section 4).
+     """
+     qc_compressed = compile(
+         qc,
+@@ -488,4 +517,5 @@
+         basis_gates=basis_gates,
+         optimization_level=routing_optimization_level,
+         seed_transpiler=seed_transpiler,
++        initial_layout=initial_layout,
+     )
