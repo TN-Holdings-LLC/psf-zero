@@ -1,6 +1,6 @@
-# spare-qubit-cliff: Combined Addenda (Addendum 2026-09-13 through Addendum 18)
+# spare-qubit-cliff: Combined Addenda (Addendum 2026-09-13 through Addendum 19)
 
-**This is a merge of 16 separately-written addenda into one chronological
+**This is a merge of 17 separately-written addenda into one chronological
 document, for convenience.** No wording in any individual addendum has been
 changed -- each section's content is unedited. Two mechanical things were
 done to make this readable as one document: (1) each addendum's own
@@ -71,6 +71,12 @@ pointer added above it.
   was added and the comparison run on real hardware: the layout-search
   win/loss pattern reproduces through PSF-Zero's own pipeline at close to
   the same magnitude as the Qiskit-only comparison.
+- **[New in Addendum 19]** A reproducible slope anomaly on Qiskit's side of
+  a *separate*, coupling-map-free compile-time comparison (10k and 50k
+  iterations) -- visible on both runs, absent from PSF-Zero's curves,
+  cause unconfirmed. Distinct from Addendum 16's L3 variance (no coupling
+  map is involved here), but possibly related at some level neither
+  addendum has investigated.
 
 ---
 
@@ -3065,3 +3071,138 @@ also not explored.
 - Pre-publication check: `grep` against this project's private
   personal-information pattern list, this addendum, and all data files
   named in section 4 -> 0 hits.
+
+<!-- ===== Addendum 19 (source: spare-qubit-cliff-addendum-19-2026-09-15.md) ===== -->
+
+> **Note added when merging:** Records a separate line of measurement from
+> the same day (2026-09-15) -- coupling-map-free compile-time comparisons
+> at 10,000 and 50,000 iterations -- and a visible, reproducible slope
+> anomaly on the Qiskit side that is distinct from, but possibly related
+> to, the run-to-run variance found in addendum 16. **No `coupling_map` is
+> passed anywhere in this addendum's measurements**, so the mechanism
+> described in addenda 9-10 (VF2Layout failing and falling back to
+> SabreLayout) cannot be the cause here -- that mechanism requires a
+> coupling map to fail against.
+
+## Addendum 19 (2026-09-15) -- coupling-map-free compile-time comparison at 10k/50k iterations; a reproducible slope anomaly on Qiskit's side, cause unconfirmed
+
+### 0. In one line
+
+A separate benchmark (`test_cumulative_compile_scale.py`), run without any
+`coupling_map` (so unrelated to this series' central VF2/SabreLayout
+finding), compared Qiskit `optimization_level=3` against PSF-Zero
+(`verify=True` and `verify=False`) over 10,000 and then 50,000 back-to-back
+compiles of a fixed 15-qubit circuit. **PSF-Zero wins by 5.90x-7.00x
+(cumulative-total basis) across both runs**, with correctness confirmed by
+a 6-qubit fidelity check (1.000000000000 on all three arms) before each
+sweep. Separately, **Qiskit's cumulative-time curve shows a visible,
+non-smooth slope change at both sample sizes** -- present in the 10,000-run
+plot and more pronounced in the 50,000-run plot -- that does not appear on
+either PSF-Zero curve. The cause is not established.
+
+### 1. Results
+
+| | 10,000 iter | 50,000 iter |
+|---|---|---|
+| Qiskit median / mean / stdev | 7.570 / 9.207 / 6.143 ms | 8.355 / 12.007 / 8.236 ms |
+| PSF-Zero (verify=True) median / mean / stdev | 1.211 / 1.543 / 0.900 ms | 1.458 / 2.036 / 1.324 ms |
+| PSF-Zero (verify=False) median / mean / stdev | 0.950 / 1.314 / 0.901 ms | 1.155 / 1.857 / 1.313 ms |
+| Speed-up, verify=True (cumulative-total) | 5.97x | 5.90x |
+| Speed-up, verify=False (cumulative-total) | 7.00x | 6.47x |
+| Time saved, verify=True | 76.65s | 498.56s |
+| Time saved, verify=False | 78.93s | 507.53s |
+
+Same environment as addenda 15-18 (Windows 10, `Intel64 Family 6 Model 181
+Stepping 0, GenuineIntel`, Python 3.11.9). No `coupling_map` is passed to
+`transpile()` at any point in this script -- only `basis_gates` and
+`optimization_level=3`.
+
+### 2. Cumulative-total vs. median-based speed-up
+
+The headline figures above (5.90x-7.00x) are cumulative-total-based (total
+Qiskit time divided by total PSF-Zero time). Computing the same ratio from
+medians instead:
+
+| | 10,000 iter | 50,000 iter |
+|---|---|---|
+| Median-based, verify=True | 6.25x | 5.73x |
+| Median-based, verify=False | 7.97x | 7.23x |
+
+The two methods disagree by roughly 5-10%, because the standard deviation
+on every arm is close in magnitude to its own median (ratios of 0.74-0.99
+at 10k, 0.91-1.14 at 50k) -- a long right tail (max values 20-30x the
+median on every arm) rather than a tight, symmetric distribution. Neither
+figure is more "correct" than the other; both are reported per this
+project's standing practice of not picking one metric to represent
+variance without stating the other.
+
+**Relative spread (stdev/median) does not favor PSF-Zero as cleanly as the
+absolute numbers suggest.** At 50,000 iterations, `verify=False` has the
+*highest* relative spread of the three arms (1.14, against Qiskit's 0.99
+and `verify=True`'s 0.91) -- the same pattern already seen once at 10,000
+iterations (0.95 against Qiskit's 0.81). In absolute terms PSF-Zero's
+timings are far less noisy (stdev under 1.4ms against Qiskit's 6-8ms), but
+*relative to its own much smaller median*, `verify=False` swings
+proportionally more than Qiskit does. This mirrors the same
+absolute-vs-relative disagreement already documented for a different
+measurement in addendum 15's determinism-variance work, and is recorded
+here rather than picking a side.
+
+### 3. A visible, reproducible slope anomaly -- Qiskit only, cause unconfirmed
+
+Plotting cumulative time against iteration count (both sample sizes,
+user-provided figures) shows Qiskit's curve is not a straight line: it has
+one or more visible regions where the slope steepens before returning to
+its baseline rate. At 10,000 iterations this appears as two modest
+inflections, around iteration 4700 and 6000 (consistent with the
+progress-log timestamps: the 4000-5000 and 5000-6000 iteration blocks took
+34.9s and 37.5s against a typical ~23s for other 1000-iteration blocks in
+the same run). At 50,000 iterations the same kind of feature appears more
+visibly, with a pronounced slope change around iteration 25,000-30,000.
+**Neither PSF-Zero curve (verify=True or verify=False) shows a comparable
+feature at either sample size.**
+
+This is **not** an instance of this series' central finding (VF2Layout
+failing and falling back to SabreLayout, addenda 9-10) -- that mechanism
+requires a `coupling_map`, and none is passed anywhere in this script. It
+is recorded here as a separate, open observation because it is (a) visibly
+reproducible across two independent runs at different sample sizes, on the
+same fixed circuit, and (b) specific to Qiskit's arm, matching the general
+shape (of the several unresolved variance questions in this series --
+addendum 16's ~3x L3 run-to-run spread being the other) that Qiskit's side
+of these comparisons has shown more of this kind of behavior than
+PSF-Zero's.
+
+**Candidate causes, none checked**: background system load coinciding with
+that iteration range; an internal Qiskit effect (caching, JIT-like
+warm-up, or similar) with a delayed onset; or measurement variance of a
+kind related to, but distinct from, addendum 16's finding (that was at
+`optimization_level=3` with a `coupling_map` present; this has no coupling
+map at all, so if there is a common cause it is not the specific
+VF2Layout/SabreLayout mechanism, at most something further upstream that
+both configurations might share).
+
+### 4. Files
+
+| Path in the project | Contents |
+|---|---|
+| `psf-zero/benchmarks/test_cumulative_compile_scale.py` | the script used for both runs (provided by the user; one Japanese-language comment translated to English before this round) |
+| `psf-zero/data/cumulative_compile_times_10000.npz` | raw per-iteration timings, 10,000-iteration run (provided by the user) |
+| `psf-zero/data/cumulative_compile_times_50000.npz` | raw per-iteration timings, 50,000-iteration run (provided by the user) |
+| `Figure_1.png` | cumulative-time and box-plot figure, 10,000-iteration run (repository root, referenced from `README.md`; provided by the user) |
+| `cumulative_compile_results_50000.png` | the same pair of plots, 50,000-iteration run (provided by the user) |
+
+### 5. Verification
+
+- Re-loaded both `.npz` files directly and recomputed median, mean,
+  standard deviation, and the stdev/median ratio for all three arms at
+  both sample sizes; all values match the script's own printed summary.
+- Confirmed no `coupling_map` argument appears anywhere in
+  `test_cumulative_compile_scale.py`'s three `transpile()` call sites.
+- The slope-anomaly timing at 10,000 iterations was cross-checked against
+  the script's own progress-log timestamps (34.9s and 37.5s for the two
+  affected 1000-iteration blocks, against a ~23s baseline for unaffected
+  blocks in the same run) rather than read off the figure alone.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this addendum, and the files named in
+  section 4 -> 0 hits.
