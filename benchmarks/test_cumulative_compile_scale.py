@@ -63,7 +63,7 @@ def main():
     psf_true_times = np.empty(n_iter)
     psf_false_times = np.empty(n_iter)
 
-    # 動的な進捗表示の間隔（50000回などの高回数にも対応）
+    # Dynamic progress-report interval (scales to high iteration counts like 50000)
     report_step = 2500 if n_iter >= 20000 else (1000 if n_iter >= 10000 else 500)
 
     t_loop_start = time.perf_counter()
