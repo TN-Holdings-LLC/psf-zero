@@ -8,7 +8,7 @@ actually burns the seconds. This is a summary; the full investigation --
 exact wording, exact tables, every pre-registered prediction as originally
 written, and the complete history of what was tried and revised along the
 way -- lives in
-[`spare-qubit-cliff-addenda-combined.md`](spare-qubit-cliff-addenda-combined.md)
+[`spare-qubit-cliff-combined.md`](spare-qubit-cliff-combined.md)
 (same folder as this file). Reading all of that means reading the same
 explanation of "VF2Layout fails -> falls back to SabreLayout" five or six
 times, the same benchmark-arm definitions three times, and the same "a win
@@ -339,13 +339,13 @@ next step that has not yet been tried.
 
 Full text, exact tables, and every pre-registered prediction as originally
 written:
-[`spare-qubit-cliff-addenda-combined.md`](spare-qubit-cliff-addenda-combined.md).
+[`spare-qubit-cliff-combined.md`](spare-qubit-cliff-combined.md).
 
 ---
 
 ## See also
 
-- [`spare-qubit-cliff-addenda-combined.md`](spare-qubit-cliff-addenda-combined.md) --
+- [`spare-qubit-cliff-combined.md`](spare-qubit-cliff-combined.md) --
   all 19 addenda, unedited, in chronological order (same folder). This is
   where the exact wording, exact tables, and every pre-registered prediction
   as originally written can be found.
