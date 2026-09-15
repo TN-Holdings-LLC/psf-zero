@@ -71,7 +71,9 @@ version before the full sweep):
 | Stdev | 6.143 ms | 0.900 ms | 0.901 ms |
 | **Cumulative speed-up** | — | **5.97x** | **7.00x** |
 
-![Cumulative compile time and per-iteration distribution: Qiskit L3 vs PSF-Zero](Figure_1.png)
+![Performance Benchmark](./docs/Figure_1.png)
+
+![Performance Benchmark](./docs/cumulative_compile_results_50000.png)
 
 <sub>`test_cumulative_compile_scale.py`, same machine as above. Right panel:
 box shows the interquartile range, whiskers the min/max over all 10,000
