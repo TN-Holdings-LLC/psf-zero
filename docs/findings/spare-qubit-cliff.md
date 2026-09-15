@@ -254,6 +254,29 @@ sample sizes, absent from either PSF-Zero curve -- cause unconfirmed, and
 distinct from Addendum 16's L3 variance since no coupling map is involved
 here.
 
+**[Addenda 20-21] chased that anomaly and only partly explained it.**
+The 20 slowest Qiskit compiles from the 50k run were rebuilt exactly from
+their seeds and checked for proximity to degenerate points (CNOT, SWAP,
+iSWAP, identity) -- rejected, indistinguishable from a random baseline.
+Sorting the same 20 indices by hand suggested a ~145-iteration gap; a
+full-series autocorrelation check confirmed it was strong and real on the
+Intel machine that produced the original data (autocorrelation 0.86, rank
+1 of 500 lags), but it did not reproduce on an AMD machine across two
+independent runs. Revisiting that AMD data's own top lags (rather than
+only checking 145) turned up a **different, equally strong period at
+~187 iterations** (autocorrelation 0.96-0.99) that had been there all
+along. This 187-period survived three separate attempts to explain it
+away: it was unchanged across three different `PYTHONHASHSEED` values
+(ruling out hash randomization), unchanged when the iteration count was
+halved (ruling out an elapsed-time-based cause), and **completely absent**
+from a dedicated Qiskit-free control loop (pure Python arithmetic,
+`time.sleep`, and a numpy matmul, each timed the same way -- none showed
+anything above 0.08 autocorrelation, against Qiskit's 0.96-0.99). By
+elimination, this points toward something in Qiskit's own execution
+specifically, on a machine-dependent cycle length -- not yet identified,
+and reading Qiskit's own source for a matching constant is the natural
+next step that has not yet been tried.
+
 ## 7. Where this stands
 
 **Solid:**
@@ -272,6 +295,10 @@ here.
 - At L2 specifically, tight-condition measurements reproduce across three
   independent runs to within 1.00-1.30x (Addendum 18) -- unlike the ~3x
   spread found at L3.
+- The Addendum 19 timing anomaly is not caused by circuit-level
+  near-degeneracy, hash randomization, elapsed time, the OS scheduler, or
+  generic computation/BLAS overhead (Addenda 20-21) -- each was tested
+  directly and ruled out in turn.
 
 **Open:**
 - What causes the ~3x same-condition variance seen at L3 (seed=-1 shuffle
@@ -280,10 +307,18 @@ here.
   18) extends to L3, other spare values, or other machines -- untested.
 - Whether the ordering effects driving the prototype (found via public
   `rustworkx`) hold inside Qiskit's actual compiled VF2 implementation --
-  never tested, through all 18 rounds.
+  never tested, through all 21 rounds.
 - Whether the tuned stage-2 budget (300,000, Addendum 18) can go lower --
   200,000 already misses one topology outright and no finer step was tried
   between the two values.
+- What inside Qiskit produces the ~145/~187-iteration periodic timing
+  effect (Addenda 19-21), and why the period's exact value differs by
+  machine. Reading Qiskit's own source for a matching constant (a cache
+  size, batch limit, or buffer threshold) has not been attempted. Also
+  untested: whether the Intel-machine's 145-period would reproduce if that
+  machine were measured a second time (it was only measured once), and
+  whether this effect is specific to `optimization_level=3` or appears at
+  other levels or with a `coupling_map` present.
 
 ## 8. Files, by round
 
@@ -299,6 +334,8 @@ here.
 | 17 | [`compile_for_hardware_initial_layout.patch`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/compile_for_hardware_initial_layout.patch) (adds `initial_layout` to `psf_compile.compile_for_hardware`) | [`smart_layout_vs_default_2026-09-15.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/smart_layout_vs_default_2026-09-15.csv) (the end-to-end PSF-Zero run) |
 | 18 | [`benchmark_smart_layout_vs_default.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/benchmark_smart_layout_vs_default.py) (gained `--fallback-call-limit`), [`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_smart_layout.py) (`fallback_call_limit` default 2,000,000 -> 300,000) | [`sweep_200k.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/sweep_200k.csv) through [`sweep_2m.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/sweep_2m.csv) (6 files), plus two further L2 reproducibility runs ([`run2`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/smart_layout_vs_default_2026-09-15_run2_qiskit_only.csv), [`run3`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/smart_layout_vs_default_2026-09-15_run3_qiskit_2m.csv)) |
 | 19 | [`test_cumulative_compile_scale.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cumulative_compile_scale.py) (coupling-map-free comparison, unrelated to the VF2/SabreLayout mechanism) | [`cumulative_compile_times_10000.npz`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_10000.npz), [`cumulative_compile_times_50000.npz`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_50000.npz), [`Figure_1.png`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/Figure_1.png), [`cumulative_compile_results_50000.png`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/cumulative_compile_results_50000.png) |
+| 20 | [`diagnose_outlier_circuits.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/diagnose_outlier_circuits.py), [`check_period_145.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/check_period_145.py) | two AMD-machine reproducibility runs (`.npz`, filenames as saved by the user) |
+| 21 | [`check_dummy_loop_period.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/check_dummy_loop_period.py) | three hash-seed runs and one half-length run (`.npz`, filenames as saved by the user) |
 
 Full text, exact tables, and every pre-registered prediction as originally
 written:
