@@ -71,9 +71,7 @@ version before the full sweep):
 | Stdev | 6.143 ms | 0.900 ms | 0.901 ms |
 | **Cumulative speed-up** | — | **5.97x** | **7.00x** |
 
-![Performance Benchmark](./docs/Figure_1.png)
-
-![Performance Benchmark](./docs/cumulative_compile_results_50000.png)
+![Cumulative compile time and per-iteration distribution: Qiskit L3 vs PSF-Zero](docs/Figure_1.png)
 
 <sub>`test_cumulative_compile_scale.py`, same machine as above. Right panel:
 box shows the interquartile range, whiskers the min/max over all 10,000
@@ -85,7 +83,7 @@ distribution. **Qiskit's cumulative-time curve (left panel) shows two visible
 slope changes, around iteration 4700 and 6000, not present on either
 PSF-Zero curve; the cause is unconfirmed** (background load, an internal
 Qiskit effect, and measurement variance of the kind found in
-[`docs/findings/spare-qubit-cliff-addenda-combined.md`](docs/findings/spare-qubit-cliff-addenda-combined.md)
+[`docs/findings/spare-qubit-cliff-combined.md`](docs/findings/spare-qubit-cliff-combined.md)
 are all candidates, none checked). Raw per-iteration timings:
 `cumulative_compile_times_10000.npz`.</sub>
 
@@ -224,7 +222,7 @@ Experiments:
 Full account, source reading, every pre-registered prediction, and raw data (18
 rounds, 2026-09-13 through 2026-09-15):
 [`docs/findings/spare-qubit-cliff.md`](docs/findings/spare-qubit-cliff.md) (summary)
-and [`docs/findings/spare-qubit-cliff-addenda-combined.md`](docs/findings/spare-qubit-cliff-addenda-combined.md)
+and [`docs/findings/spare-qubit-cliff-combined.md`](docs/findings/spare-qubit-cliff-combined.md)
 (full record, unedited).
 
 ## How these numbers were produced
