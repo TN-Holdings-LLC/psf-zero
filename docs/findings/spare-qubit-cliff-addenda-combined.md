@@ -2886,7 +2886,7 @@ identified as blocking: **it is no longer blocked.**
 | Path in the project | Contents |
 |---|---|
 | [`psf-zero/data/smart_layout_vs_default_2026-09-15.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/smart_layout_vs_default_2026-09-15.csv) | this round's real-hardware results (72 rows, provided by the user) |
-| `compile_for_hardware_initial_layout.patch` | the patch described in section 1 (not yet a project path -- pending the user's decision on where to place it) |
+| [`compile_for_hardware_initial_layout.patch`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/compile_for_hardware_initial_layout.patch) | the patch described in section 1 |
 
 ### 5. Verification
 
@@ -3189,8 +3189,8 @@ both configurations might share).
 | [`psf-zero/benchmarks/test_cumulative_compile_scale.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cumulative_compile_scale.py) | the script used for both runs (provided by the user; one Japanese-language comment translated to English before this round) |
 | [`psf-zero/data/cumulative_compile_times_10000.npz`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_10000.npz) | raw per-iteration timings, 10,000-iteration run (provided by the user) |
 | [`psf-zero/data/cumulative_compile_times_50000.npz`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_50000.npz) | raw per-iteration timings, 50,000-iteration run (provided by the user) |
-| [`Figure_1.png`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/Figure_1.png) | cumulative-time and box-plot figure, 10,000-iteration run (repository root, referenced from `README.md`; provided by the user) |
-| [`cumulative_compile_results_50000.png`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/cumulative_compile_results_50000.png) | the same pair of plots, 50,000-iteration run (provided by the user) |
+| [`Figure_1.png`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/Figure_1.png) | cumulative-time and box-plot figure, 10,000-iteration run (under `docs/`; provided by the user) |
+| [`cumulative_compile_results_50000.png`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/cumulative_compile_results_50000.png) | the same pair of plots, 50,000-iteration run (under `docs/`; provided by the user) |
 
 ### 5. Verification
 
