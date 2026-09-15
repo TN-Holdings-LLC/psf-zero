@@ -60,6 +60,33 @@ reports `0/0 blocks` and passes the circuit through unchanged.
 `AMD64 Family 25 Model 80`, Python 3.10.11, Qiskit 2.5.2. Raw data in
 [`data/archive/`](data/archive/).</sub>
 
+**Over 10,000 back-to-back iterations at 15 qubits**, warm-up outside the loop,
+correctness checked (fidelity 1.000000000000 for all three arms on a 6-qubit
+version before the full sweep):
+
+| | Qiskit L3 | PSF-Zero (`verify=True`) | PSF-Zero (`verify=False`) |
+| :--- | :---: | :---: | :---: |
+| Median | 7.570 ms | 1.211 ms | 0.950 ms |
+| Mean | 9.207 ms | 1.543 ms | 1.314 ms |
+| Stdev | 6.143 ms | 0.900 ms | 0.901 ms |
+| **Cumulative speed-up** | — | **5.97x** | **7.00x** |
+
+![Cumulative compile time and per-iteration distribution: Qiskit L3 vs PSF-Zero](Figure_1.png)
+
+<sub>`test_cumulative_compile_scale.py`, same machine as above. Right panel:
+box shows the interquartile range, whiskers the min/max over all 10,000
+iterations. Speed-up figures are cumulative-total-based (5.97x/7.00x); the
+median-based figures are 6.25x/7.97x — reported here since the standard
+deviation is close in magnitude to the median on both arms, indicating a
+long tail (max 130.6 ms on Qiskit, 20.2 ms on PSF-Zero) rather than a tight
+distribution. **Qiskit's cumulative-time curve (left panel) shows two visible
+slope changes, around iteration 4700 and 6000, not present on either
+PSF-Zero curve; the cause is unconfirmed** (background load, an internal
+Qiskit effect, and measurement variance of the kind found in
+[`docs/findings/spare-qubit-cliff-addenda-combined.md`](docs/findings/spare-qubit-cliff-addenda-combined.md)
+are all candidates, none checked). Raw per-iteration timings:
+`cumulative_compile_times_10000.npz`.</sub>
+
 **With the default safety check on** (`verify=True`, a cheap Rust-core check since
 2026-09-09), measured over a 50,000-iteration compile loop at 15 qubits:
 **4.79x** on one machine and **5.54x** (median) on another; `verify=False` gives
@@ -132,44 +159,71 @@ Full account: [`docs/findings/core-verification.md`](docs/findings/core-verifica
 
 While benchmarking against coupling maps we found, and then confirmed with a
 controlled experiment, that **Qiskit's `optimization_level` 2 and 3 slow down by
-40x–275x when the circuit nearly fills the coupling map.** Holding the map fixed and
+40x–420x when the circuit nearly fills the coupling map.** Holding the map fixed and
 varying only how many qubits the circuit occupies: on one unchanged 42-qubit grid, a
 42-qubit circuit takes 6.8 s at `opt=3` while a 38-qubit circuit takes 28 ms. A
 *smaller* circuit on a saturated grid runs ~200x slower than a *larger* one with
 spare qubits.
 
 Reproduced in three independent environments (Linux sandbox, and two Windows
-machines with different CPUs), twice back-to-back on one of them, agreeing to within
-5%, and present in every Qiskit release from **1.4.6 through 2.5.2** unchanged. Two
-further controls narrow it: the effect needs the dense adjacent-pair circuit structure
-as well as the saturated map (a gate-count-matched `random_circuit()` workload shows
-no cliff at all), and Qiskit 2.1 made the *unsaturated* case ~93x faster while the
-saturated case has not improved since 1.4.6.
+machines with different CPUs), across many independent runs, and present in every
+Qiskit release from **1.4.6 through 2.5.2** unchanged. Two further controls narrow
+it: the effect needs the dense adjacent-pair circuit structure as well as the
+saturated map (a gate-count-matched `random_circuit()` workload shows no cliff at
+all), and Qiskit 2.1 made the *unsaturated* case ~93x faster while the saturated case
+has not improved since 1.4.6.
 
-**Two independent costs, both measured inside Qiskit.** `VF2Layout` and
-`VF2PostLayout` are 99.9% of the time. Qiskit implements VF2 itself
-(`crates/transpiler/src/passes/vf2_layout.rs`), and both passes use the VF2++ node
-ordering unconditionally. Permuting the coupling graph's node order via `shuffle_seed`
-turns `NO_SOLUTION_FOUND` into `SOLUTION_FOUND` in **4 of 30 seeds** on an unchanged
-saturated grid — the layout it reports as absent exists, and Qiskit finds it 13% of
-the time. `VF2PostLayout` succeeds on the *same four seeds*, so the two passes are one
-failure paid for twice. But finding it does not help: with the default trial budget a
-seed that finds the layout in **3.5 ms still runs for 343 ms**, because `minimize_vf2`
-keeps searching for a better score afterwards. Fixing the ordering alone leaves the
-trial loop; fixing the trial loop alone leaves the 26 seeds that never find anything.
-Through the preset it is deterministic: 30 `transpile()` calls on the same input
-report `NO_SOLUTION_FOUND` thirty times, so retrying does not help and
-`seed_transpiler` is not a lever. Padding the coupling map with a few spare qubits
-removes the effect entirely.
-Reported upstream and rejected, because the report said Qiskit calls
-`rustworkx.vf2_mapping`, which it does not. Experiments:
+**The mechanism: `VF2Layout` fails once, and the preset pipeline falls back to
+`SabreLayout`.** Qiskit's preset pipeline tries `VF2Layout` exactly once, with
+shuffling explicitly disabled (`seed=-1`, hardcoded, not controlled by
+`seed_transpiler`); on a saturated map that one attempt reports
+`NO_SOLUTION_FOUND`, and the pipeline falls back entirely to a different algorithm,
+`SabreLayout`. **The layout it reports as absent does exist** — supplying a
+different `shuffle_seed` directly to `VF2Layout` finds it in 4 of 30 seeds — but the
+preset never gets to try, because shuffling is off by design in that code path,
+confirmed by reading Qiskit's own source. At `optimization_level=3`, a second cost
+layer sits on top: once Sabre's imperfect layout is chosen, the routing and
+optimization passes that follow can end up doing substantially more work, in one
+measured case (`brick` topology) roughly 3x the layout-search cost itself. Padding
+the coupling map with a few spare qubits removes the effect entirely.
+
+**A layout-search prototype recovers most of this, and the recovery holds through
+PSF-Zero's own pipeline, not just bare `transpile()`.** Trying several cheap
+node orderings and, if needed, a fallback heuristic search — a few
+milliseconds to a few hundred milliseconds of extra work — finds a valid layout on
+several topologies the preset misses, winning by **27x–420x** depending on
+optimization level and topology when it succeeds. Where the search itself fails
+(some topologies are genuinely hard, no ordering rescues them), the loss is close to
+exactly the time spent searching, not more; tuning the search's own retry budget
+based on measured data cut that loss margin roughly in half with no cost to the
+winning cases. This has been confirmed as a standalone prototype and, separately, by
+routing its output into `compile_for_hardware()` via a new `initial_layout`
+parameter — the size of the win is consistent across both.
+
+**Still open**: whether a same-condition run-to-run variance found at
+`optimization_level=3` (up to ~3x on one measurement) reflects `VF2Layout`'s own
+non-determinism or the measurement environment; whether the ordering effects found
+via the public `rustworkx` package hold inside Qiskit's own compiled VF2
+implementation, which has not been directly tested; and whether the original report
+that Qiskit calls `rustworkx.vf2_mapping()` (rejected upstream) was ever true of the
+code as it stood — it turned out to describe a code path Qiskit had already removed
+a year earlier, in a commit whose own message called shuffling "in general, not a
+good idea," which lines up with what was independently measured here.
+
+Experiments:
 [`phase3_v5_spare_qubits.py`](benchmarks/phase3_v5_spare_qubits.py),
 [`phase3_v6_workload_control.py`](benchmarks/phase3_v6_workload_control.py),
 [`verify_vf2_seed.py`](benchmarks/verify_vf2_seed.py),
 [`verify_vf2_max_trials.py`](benchmarks/verify_vf2_max_trials.py),
-[`verify_preset_stop_reason.py`](benchmarks/verify_preset_stop_reason.py).
-Full account, source reading, and raw data:
-[`docs/findings/spare-qubit-cliff.md`](docs/findings/spare-qubit-cliff.md).
+[`verify_preset_stop_reason.py`](benchmarks/verify_preset_stop_reason.py),
+[`verify_vf2_pipeline_trace.py`](benchmarks/verify_vf2_pipeline_trace.py),
+[`psf_smart_layout.py`](benchmarks/psf_smart_layout.py),
+[`benchmark_smart_layout_vs_default.py`](benchmarks/benchmark_smart_layout_vs_default.py).
+Full account, source reading, every pre-registered prediction, and raw data (18
+rounds, 2026-09-13 through 2026-09-15):
+[`docs/findings/spare-qubit-cliff.md`](docs/findings/spare-qubit-cliff.md) (summary)
+and [`docs/findings/spare-qubit-cliff-addenda-combined.md`](docs/findings/spare-qubit-cliff-addenda-combined.md)
+(full record, unedited).
 
 ## How these numbers were produced
 
@@ -240,19 +294,23 @@ their absence.
 
 ## Open questions
 
-- What burns the budget inside the two VF2 passes. The ordering and the trial loop
-  are both measured costs, but nothing inside the passes is instrumented, and it is
-  one Qiskit version (2.5.2) on one topology family.
-- Why the preset never reaches a winning ordering — whether it disables shuffling
-  outright or shuffles something that does not reach the VF2 node order. The outcome
-  is measured; which of the two explains it is not.
+- What causes the ~3x same-condition run-to-run variance found at
+  `optimization_level=3` — `VF2Layout`'s own `seed=-1` shuffle behaving
+  inconsistently, or drift in the measurement environment. An experiment to
+  distinguish the two is designed but not yet run.
+- Whether the ordering effects behind the layout-search prototype — found via the
+  public `rustworkx` package — hold inside Qiskit's own compiled VF2
+  implementation (`qiskit._accelerate.vf2_layout`). Never directly tested; the
+  prototype's integration into PSF-Zero's pipeline has been confirmed, but not
+  this specific question.
+- Whether the prototype's search-retry budget (recently tuned down based on a
+  six-point sweep) can go lower still — the sweep's smallest tested value already
+  misses one topology outright, and no finer step was tried near that boundary.
 - Whether the compile-time advantage reduces real-hardware calibration-drift
   exposure in a variational loop. Plausible, untested, and not planned without a
   reason to spend QPU time.
 - A routing benchmark on non-adjacent logical pairs, so SWAP insertion is actually
   exercised.
-- `compile_for_hardware()` does not yet expose `seed_transpiler`, so its internal
-  routing call stays unpinned.
 - Benchpress integration ([issue #114](https://github.com/Qiskit/benchpress/issues/114)),
   PennyLane transforms, and parallel per-block synthesis — all unbuilt.
 
