@@ -1,6 +1,6 @@
-# spare-qubit-cliff: Combined Addenda (Addendum 2026-09-13 through Addendum 20)
+# spare-qubit-cliff: Combined Addenda (Addendum 2026-09-13 through Addendum 21)
 
-**This is a merge of 18 separately-written addenda into one chronological
+**This is a merge of 19 separately-written addenda into one chronological
 document, for convenience.** No wording in any individual addendum has been
 changed -- each section's content is unedited. Two mechanical things were
 done to make this readable as one document: (1) each addendum's own
@@ -71,15 +71,19 @@ pointer added above it.
   was added and the comparison run on real hardware: the layout-search
   win/loss pattern reproduces through PSF-Zero's own pipeline at close to
   the same magnitude as the Qiskit-only comparison.
-- **[Investigated in Addendum 20, still unresolved]** A reproducible slope
-  anomaly on Qiskit's side of a *separate*, coupling-map-free compile-time
-  comparison (Addendum 19, 10k and 50k iterations) -- visible on both
-  runs, absent from PSF-Zero's curves. Near-degeneracy of the underlying
-  circuit blocks was ruled out. A ~145-iteration period was found in the
-  same 50k-iteration data with strong statistical support (autocorrelation
-  rank 1 of 500 lags), but failed to reproduce on a second machine across
-  two independent runs -- the anomaly itself remains unexplained, and
-  whether it recurs on the original machine was not checked.
+- **[Investigated in Addenda 20-21, still unresolved]** A reproducible
+  slope anomaly on Qiskit's side of a *separate*, coupling-map-free
+  compile-time comparison (Addendum 19, 10k and 50k iterations) -- visible
+  on both runs, absent from PSF-Zero's curves. Near-degeneracy of the
+  underlying circuit blocks was ruled out (Addendum 20). A ~145-iteration
+  period found on the Intel machine that generated the original data did
+  not reproduce on a different (AMD) machine (Addendum 20) -- but the AMD
+  machine turned out to have its *own* comparably strong period instead
+  (~187 iterations, autocorrelation 0.96-0.99), which survived changing
+  the hash seed, the iteration count, and a Qiskit-free control loop
+  (Addendum 21). The anomaly itself, and why the period's value differs by
+  machine, remain unexplained; reading Qiskit's own source for a matching
+  constant was identified as the natural next step but not yet attempted.
 
 ---
 
@@ -3375,3 +3379,188 @@ Intel machine was not available to repeat the check in this session.
 - Pre-publication check: `grep` against this project's private
   personal-information pattern list, this addendum, and the two new
   scripts named in section 4 -> 0 hits.
+
+<!-- ===== Addendum 21 (source: spare-qubit-cliff-addendum-21-2026-09-15.md) ===== -->
+
+> **Note added when merging:** Addendum 20 found that the ~145-iteration
+> period discovered on an Intel machine did not reproduce on an AMD
+> machine, and left it there. This addendum went back to the AMD machine's
+> own data and found a **different but equally strong period (~187
+> iterations)** that had been sitting in the same "not 145" data all
+> along. Hash randomization, iteration count, and a dummy-loop control
+> (no Qiskit involved at all) were all ruled out as the cause -- the
+> period survives all three, narrowing the explanation toward something
+> about Qiskit's own execution, though what specifically remains open.
+
+## Addendum 21 (2026-09-15) -- a second, stronger period found on the AMD machine (~187 iterations); hash seed, iteration count, and a Qiskit-free control all ruled out as the cause
+
+### 0. In one line
+
+Addendum 20 concluded the ~145-iteration period found on an Intel machine
+"is not a general property of this measurement" after it failed to
+reproduce on an AMD machine across two runs. Revisiting those same
+AMD-machine runs' own top autocorrelation lags (rather than only checking
+lag 145) found `374` and `187` (374 = 187 x 2) ranked consistently at the
+top across **every** AMD-machine run collected so far. Measuring the
+autocorrelation at lag 187 directly gives **0.96-0.99** -- stronger than
+the original Intel-machine 145-period's 0.86 -- and this held across three
+different `PYTHONHASHSEED` values and two different iteration counts (5000
+and 2500). A dedicated control loop with no Qiskit or PSF-Zero involved at
+all (pure Python arithmetic, `time.sleep`, and a numpy matrix multiply,
+each timed the same way) showed **no trace of a 187-iteration period** in
+any of its three variants, across two runs. **The period is not explained
+by hash randomization, elapsed time, or the measurement loop's own
+mechanics -- what remains, by elimination, points toward something in
+Qiskit's own execution, not yet identified.**
+
+### 1. How this was found
+
+Addendum 20's hash-seed and reproducibility checks used
+`check_period_145.py --npz <file>`, which reports each run's top-5
+autocorrelation lags regardless of which period was requested. Three AMD-
+machine runs collected to test the hash-seed hypothesis (`PYTHONHASHSEED`
+42 run 1, 42 run 2, and 7 run 1, all 5,000 iterations) each printed `374`
+and `187` as their top two Qiskit lags:
+
+| run | top-5 lags | autocorr @ 145 (requested) |
+|---|---|---|
+| seed42 run1 | 374, 187, 476, 289, 102 | 0.0037 (rank 25/500) |
+| seed42 run2 | 374, 187, 102, 272, 85 | 0.0009 (rank 57/500) |
+| seed7 run1 | 374, 187, 289, 476, 102 | 0.0011 (rank 41/500) |
+
+145 itself was, as Addendum 20 found, unremarkable in all three (rank
+25-57 of 500, values near zero). But `187` and `374` (an exact multiple)
+appearing at the top of every single run, across three different hash
+seeds, was not something the original 145-focused check would have
+surfaced on its own -- it only reports a pass/fail against the one
+requested period.
+
+Measuring the autocorrelation at lag 187 directly (rather than reading it
+off the top-5 list) gives:
+
+| run | autocorr @ 187 | autocorr @ 374 | modular-bin spread @ 187 |
+|---|---|---|---|
+| seed42 run1 | 0.9631 | 0.9633 | 7.490x |
+| seed42 run2 | 0.9702 | 0.9702 | 7.419x |
+| seed7 run1 | 0.9916 | 0.9926 | 7.469x |
+
+These are **stronger** than the original Intel-machine 145-period result
+(autocorrelation 0.8621, spread 7.493x) -- this is not a weaker echo of
+the same thing, it is a comparably strong effect at a different value.
+
+### 2. Ruling out hash randomization
+
+The three runs in section 1 used `PYTHONHASHSEED` values 42, 42 (repeated),
+and 7 -- deliberately including a repeat of the same seed to distinguish
+"changes with the seed" from "changes between runs regardless of the
+seed." **187 appeared identically in all three, including both runs on
+seed 42.** If hash randomization were the cause, either the repeated seed
+(42, 42) should have produced the same period while the different seed (7)
+produced a different one, or every run should have differed. Neither
+happened: all three agree on 187 regardless of seed.
+
+### 3. Ruling out elapsed time
+
+The ~145-period search in Addendum 20 could not distinguish a period
+counted in iterations from one counted in elapsed seconds, since the
+iteration count was not varied. Here it was: the same check was run at
+2,500 iterations (half of 5,000). If the true period were time-based (a
+process running every N seconds regardless of how fast the loop was
+iterating), halving the iteration count would not preserve the same
+iteration-based period. It did:
+
+| run | iters | autocorr @ 187 | modular-bin spread @ 187 |
+|---|---|---|---|
+| seed(unspecified) | 5,000 | ~0.96-0.99 (section 1) | ~7.4-7.5x |
+| seed(unspecified) | 2,500 | 0.9931 | 7.524x |
+
+The period is counted in iterations, not elapsed time.
+
+### 4. Ruling out the measurement loop and machine in general
+
+A dedicated control script (`check_dummy_loop_period.py`) replaces the
+loop body with three alternatives that call neither Qiskit nor PSF-Zero,
+each timed with the same `time.perf_counter()` pattern and warm-up-outside-
+the-timer discipline as the original benchmark:
+
+- `busy`: pure-Python arithmetic, no imports or I/O inside the loop.
+- `sleep`: `time.sleep()`, which hands control back to the OS scheduler
+  every iteration (`busy` does not).
+- `numpy`: a fixed-size matrix multiply, exercising the same BLAS/thread-
+  pool machinery Qiskit's own linear algebra depends on, without going
+  through Qiskit.
+
+Each arm was calibrated to take roughly the same order of magnitude of
+time per iteration as one Qiskit compile in the original benchmark
+(6-16ms). Run twice, 5,000 iterations each time, checked at lag 187:
+
+| run | busy | sleep | numpy |
+|---|---|---|---|
+| 1: autocorr @ 187 | -0.0093 | 0.0006 | 0.0784 |
+| 1: modular-bin spread | 1.011x | 1.023x | 1.075x |
+| 2: autocorr @ 187 | 0.0209 | -0.0008 | 0.0154 |
+| 2: modular-bin spread | 1.006x | 1.018x | 1.059x |
+
+**None of the six results (three arms x two runs) come close to the
+0.96-0.99 autocorrelation or ~7.4-7.5x spread Qiskit's own timings show.**
+The largest value across all six is 0.0784 (numpy, run 1) -- roughly 1/12
+of Qiskit's weakest observed value. This rules out the OS scheduler
+(`sleep` shows nothing), raw CPU/interpreter overhead (`busy` shows
+nothing), and the BLAS/threading layer generically (`numpy` shows
+nothing, despite exercising the same underlying linear-algebra
+infrastructure Qiskit itself uses).
+
+### 5. Where this leaves the investigation
+
+What has been ruled out, in order across Addenda 20-21: near-degeneracy of
+the circuit blocks, hash randomization, elapsed time, the OS scheduler,
+raw computation overhead, and generic BLAS/threading activity. What
+remains, by elimination, is **something specific to Qiskit's own code path
+during `optimization_level=3` compilation** -- an internal cache, counter,
+or state that changes behavior on a ~187-iteration cycle on this machine
+(and a ~145-iteration cycle, differently, on the Intel machine from
+Addendum 19-20). Neither the mechanism nor why the period's value differs
+between the two machines has been identified.
+
+**No numerical relationship between 187 and this machine's readily
+available parameters was found**: `os.cpu_count()` returns 12 on this
+machine, and 187 (= 11 x 17) is neither a multiple nor a divisor of 12.
+This does not rule out a machine-specific cause -- it only means the
+obvious candidate (core count) is not it.
+
+**What was not tried**: reading Qiskit's own source for a constant near
+145 or 187 (a cache size, a batch limit, a buffer threshold) that might
+explain either machine's period directly, the way this project's earlier
+addenda settled the spare-qubit-cliff mechanism by reading source rather
+than only measuring around it. This is the natural next step but was not
+undertaken in this round.
+
+### 6. Files
+
+| Path in the project | Contents |
+|---|---|
+| `psf-zero/benchmarks/check_dummy_loop_period.py` | section 4's Qiskit-free control script |
+| `psf-zero/data/cumulative_compile_times_5000_seed42_run1.npz`, `..._seed42_run2.npz`, `..._seed7_run1.npz` | section 1-2's hash-seed runs (provided by the user) |
+| `psf-zero/data/cumulative_compile_times_2500.npz` | section 3's half-length run (provided by the user) |
+
+### 7. Verification
+
+- Section 1's autocorrelation-at-187 and modular-bin-spread-at-187 figures
+  were computed directly from the three user-provided `.npz` files in the
+  sandbox, using the same `autocorrelation()` and `modular_bin_medians()`
+  functions `check_period_145.py` already uses -- not read off the
+  terminal output's top-5 list, which only reports rank, not the
+  underlying value.
+- Section 4's control script was smoke-tested in the sandbox (500
+  iterations, period 47, to fit the sandbox's smaller resource budget)
+  before being sent to the user, confirming it runs to completion and
+  produces the same three metrics (median/mean/std, top-5 lags,
+  autocorrelation-at-period, modular-bin spread) as the main period
+  checker, before the user ran the real 5,000-iteration version on the
+  AMD machine.
+- Section 3's iteration-count-independence claim (2,500 vs 5,000) was
+  checked by directly comparing the autocorrelation and spread values
+  side by side, not just their qualitative rank.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this addendum, and the new script
+  named in section 6 -> 0 hits.
