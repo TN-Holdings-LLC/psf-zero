@@ -309,6 +309,6 @@ written:
 ## See also
 
 - [`spare-qubit-cliff-addenda-combined.md`](spare-qubit-cliff-addenda-combined.md) --
-  all 17 addenda, unedited, in chronological order (same folder). This is
+  all 19 addenda, unedited, in chronological order (same folder). This is
   where the exact wording, exact tables, and every pre-registered prediction
   as originally written can be found.
