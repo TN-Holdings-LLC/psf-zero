@@ -1,6 +1,6 @@
-# spare-qubit-cliff: Combined Addenda (Addendum 2026-09-13 through Addendum 19)
+# spare-qubit-cliff: Combined Addenda (Addendum 2026-09-13 through Addendum 20)
 
-**This is a merge of 17 separately-written addenda into one chronological
+**This is a merge of 18 separately-written addenda into one chronological
 document, for convenience.** No wording in any individual addendum has been
 changed -- each section's content is unedited. Two mechanical things were
 done to make this readable as one document: (1) each addendum's own
@@ -71,12 +71,15 @@ pointer added above it.
   was added and the comparison run on real hardware: the layout-search
   win/loss pattern reproduces through PSF-Zero's own pipeline at close to
   the same magnitude as the Qiskit-only comparison.
-- **[New in Addendum 19]** A reproducible slope anomaly on Qiskit's side of
-  a *separate*, coupling-map-free compile-time comparison (10k and 50k
-  iterations) -- visible on both runs, absent from PSF-Zero's curves,
-  cause unconfirmed. Distinct from Addendum 16's L3 variance (no coupling
-  map is involved here), but possibly related at some level neither
-  addendum has investigated.
+- **[Investigated in Addendum 20, still unresolved]** A reproducible slope
+  anomaly on Qiskit's side of a *separate*, coupling-map-free compile-time
+  comparison (Addendum 19, 10k and 50k iterations) -- visible on both
+  runs, absent from PSF-Zero's curves. Near-degeneracy of the underlying
+  circuit blocks was ruled out. A ~145-iteration period was found in the
+  same 50k-iteration data with strong statistical support (autocorrelation
+  rank 1 of 500 lags), but failed to reproduce on a second machine across
+  two independent runs -- the anomaly itself remains unexplained, and
+  whether it recurs on the original machine was not checked.
 
 ---
 
@@ -3206,3 +3209,169 @@ both configurations might share).
 - Pre-publication check: `grep` against this project's private
   personal-information pattern list, this addendum, and the files named in
   section 4 -> 0 hits.
+
+<!-- ===== Addendum 20 (source: spare-qubit-cliff-addendum-20-2026-09-15.md) ===== -->
+
+> **Note added when merging:** Follows up on Addendum 19's unconfirmed
+> Qiskit-side slope anomaly. Traces the worst Qiskit outliers from the
+> 50,000-iteration run back to their exact circuits, rejects a
+> near-degeneracy explanation, finds a strong ~145-iteration periodicity in
+> the same dataset by full-series autocorrelation, and then **rejects
+> that too** when it fails to reproduce on a second machine across two
+> independent runs. The Addendum 19 anomaly remains unexplained at the
+> end of this addendum.
+
+## Addendum 20 (2026-09-15) -- chasing the Addendum 19 anomaly: near-degeneracy rejected, a ~145-iteration period found and then rejected on a second machine
+
+### 0. In one line
+
+Addendum 19 found a visible, reproducible slope anomaly on Qiskit's side of
+a coupling-map-free compile-time comparison, with no established cause.
+This addendum traces it further. **The 20 slowest Qiskit compiles in the
+50,000-iteration run (Intel machine) were rebuilt exactly from their seeds
+and inspected block by block; none were close to a degenerate point,
+rejecting that explanation.** Sorting the same 20 indices by hand instead
+suggested a repeating gap of ~145 iterations. A full-series autocorrelation
+check found this was real and strong on the Intel machine's data (rank 1
+of 500 lags, modular-bin spread 7.49x against ~1.03-1.11x for four other
+candidate periods) -- but **the same check on two independent 5,000-iteration
+runs on a different (AMD) machine found no trace of it** (rank 42 and 70 of
+500, spread ~1.04x, indistinguishable from the other candidate periods).
+**The ~145-iteration period is not a general property of this
+measurement; whatever caused it appears specific to the single Intel-machine
+run it was found in, and remains unexplained.**
+
+### 1. Rejecting near-degeneracy as the cause of the outliers
+
+The 20 slowest Qiskit compiles from the Addendum 19 50,000-iteration run
+(indices 953, 3853, 5158, 5448, 5883, 9363, 10523, 10668, 12118, 12408,
+16613, 24443, 24588, 24733, 30533, 30678, 30823, 30968, 31113, 47933 --
+14.7x-16.3x the median) were rebuilt exactly: `build_dense_pair_blocks_circuit`
+seeds its generator with `1000 + index`, so each circuit's construction is
+fully determined by its index.
+
+19 of these 20 indices are *also* elevated on PSF-Zero's side at the same
+index (2.9x-3.9x its own median) -- only index 47933 is slow on Qiskit
+alone. That pattern by itself pointed at the circuit rather than either
+engine in isolation, motivating a look at what these circuits actually
+contain.
+
+Each of the 140 two-qubit blocks (7 pairs x 20 circuits) was checked for
+Frobenius distance, after SU(4) projection, to four landmark points
+(identity, CNOT, SWAP, iSWAP) that this project's own findings on `lib.rs`
+name as historically hard for KAK-style decomposition. Mean distance across
+the 140 outlier blocks was 2.305 (min 1.681, max 2.658). Three baseline
+indices (100, 5000, 40000 -- chosen without reference to the outlier
+ranking) gave a mean of 2.367 across their 21 blocks (min 1.629, max
+2.610) -- **statistically indistinguishable from the outlier blocks.**
+**Near-degeneracy is rejected as the explanation**: the outlier circuits'
+blocks are not meaningfully closer to a hard point than an arbitrary
+circuit's blocks are.
+
+(One implementation bug was caught and fixed while building this check: an
+early version measured distance to each landmark without first SU(4)-
+normalizing the landmark itself, so CNOT's own distance to CNOT came out
+as 1.53 instead of 0 in a self-test. Fixed by projecting both sides before
+comparing, and re-verified against all four landmarks before use.)
+
+### 2. A ~145-iteration period, found and then rejected
+
+With near-degeneracy rejected, the 20 outlier indices were sorted and their
+gaps inspected by hand: 14 of the 20 fell into small clusters with gaps
+close to 145 or a small multiple of it (10523-10668, 24443-24588-24733,
+30533-30678-30823-30968-31113). A dedicated check
+(autocorrelation across lags 1-500, plus a modular-bin comparison against
+four other candidate periods with no particular reason to matter -- 100,
+120, 160, 200) was run against the **full** 50,000-point series to
+establish whether this was a real effect or an artifact of eyeballing 20
+points.
+
+**On the Intel machine (the same run the outliers came from), the effect
+was strong and specific to Qiskit:**
+
+| series | autocorrelation at lag 145 | rank (of 500) | modular-bin spread @ 145 | spread @ other periods |
+|---|---|---|---|---|
+| qiskit | 0.8621 | 1 | 7.493x | 1.074x-1.107x |
+| psf_true | 0.6378 | 146 | 1.389x | 1.091x-1.148x |
+| psf_false | 0.7280 | 145 | 1.354x | 1.134x-1.217x |
+
+Lags 290 and 435 (both multiples of 145) also ranked in Qiskit's top 5,
+which a coincidental single-lag spike would not produce.
+
+**This did not reproduce on a second machine.** Two independent
+5,000-iteration runs on an AMD machine gave:
+
+| run | qiskit autocorr @ 145 | rank | spread @ 145 | spread @ other periods |
+|---|---|---|---|---|
+| AMD run 1 | 0.0026 | 42 | 1.040x | 1.027x-1.047x |
+| AMD run 2 | -0.0005 | 70 | 1.039x | 1.020x-1.039x |
+
+Neither run shows anything resembling the Intel result. The modular-bin
+spread at 145 is indistinguishable from the spread at every other
+candidate period tried, in both runs -- exactly the "coincidence of a
+20-point sample" outcome the check's own verdict section describes as the
+negative case. One mild curiosity: both AMD runs' top-5 autocorrelation
+lags include 374, 187, and 102 in common, despite being independent runs --
+but the autocorrelation values themselves are small (0.003-0.02, against
+Intel's 0.86), so this is more likely coincidental structure in short
+series than a real effect, and was not investigated further.
+
+**One easy candidate cause was checked and ruled out**: Python's garbage
+collector generation-0 threshold on the machine used was `(700, 10, 10)` --
+no relation to 145.
+
+### 3. Where this leaves Addendum 19's anomaly
+
+The original slope anomaly Addendum 19 found (visible on Qiskit's
+cumulative-time curve at both 10,000 and 50,000 iterations, absent from
+PSF-Zero's curves) **remains unexplained.** What has been established since:
+
+- It is not explained by circuit-level near-degeneracy (section 1).
+- A specific, testable periodic-effect hypothesis (~145 iterations) was
+  found, measured precisely, and then **rejected** on a second machine
+  across two runs (section 2) -- it does not generalize, and whatever
+  produced it on the Intel run was most likely specific to that run's
+  environment, not a property of the measurement itself or of Qiskit's
+  code.
+- Python's GC threshold is not the cause.
+
+**What remains untried**: repeating the run on the *same* Intel machine a
+second time, to check whether the ~145 period is specific to that one run
+(environmental noise, coincident with something running at the time) or
+whether it recurs on that particular machine specifically (which would
+narrow the search to something about that machine's configuration rather
+than the measurement in general). This was the natural next step but the
+Intel machine was not available to repeat the check in this session.
+
+### 4. Files
+
+| Path in the project | Contents |
+|---|---|
+| `psf-zero/benchmarks/diagnose_outlier_circuits.py` | section 1's reconstruction and landmark-distance check |
+| `psf-zero/benchmarks/check_period_145.py` | section 2's autocorrelation and modular-bin check |
+| `psf-zero/data/cumulative_compile_times_5000_amd_run1.csv`, `..._amd_run2.csv` | the two AMD-machine runs in section 2 (provided by the user; both are raw `.npz`, not `.csv`, exact filenames as saved by the user) |
+
+### 5. Verification
+
+- Section 1's landmark-distance function was self-tested against each of
+  the four landmarks compared to itself (expected distance 0 in every
+  case) both before and after the SU(4)-normalization bug fix; the fix
+  was confirmed necessary and sufficient (pre-fix: CNOT-to-CNOT gave 1.53;
+  post-fix: 0.0, along with identity-to-identity and SWAP-to-SWAP both
+  giving 0.0 and clear separation, 1.5-2.8, between every distinct pair of
+  landmarks).
+- Section 1's outlier-vs-baseline comparison used indices (100, 5000,
+  40000) chosen before seeing the outlier analysis's own numeric spread,
+  to avoid picking a baseline that happened to confirm the hypothesis
+  under test.
+- Section 2's autocorrelation and modular-bin results were computed once
+  in the sandbox against the same `.npz` file the user's own run produced,
+  and matched the user-reported terminal output exactly (all reported
+  figures agree to the digits shown); this confirms the analysis script
+  itself, not a second independent data source.
+- The AMD-machine non-reproduction (section 2) is the user's own two
+  independent terminal runs of `check_period_145.py`, both included
+  verbatim in the figures above.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this addendum, and the two new
+  scripts named in section 4 -> 0 hits.
