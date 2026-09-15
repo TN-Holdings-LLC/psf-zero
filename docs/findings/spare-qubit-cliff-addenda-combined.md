@@ -2885,7 +2885,7 @@ identified as blocking: **it is no longer blocked.**
 
 | Path in the project | Contents |
 |---|---|
-| `psf-zero/data/smart_layout_vs_default_2026-09-15.csv` | this round's real-hardware results (72 rows, provided by the user) |
+| [`psf-zero/data/smart_layout_vs_default_2026-09-15.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/smart_layout_vs_default_2026-09-15.csv) | this round's real-hardware results (72 rows, provided by the user) |
 | `compile_for_hardware_initial_layout.patch` | the patch described in section 1 (not yet a project path -- pending the user's decision on where to place it) |
 
 ### 5. Verification
@@ -3048,10 +3048,10 @@ also not explored.
 
 | Path in the project | Contents |
 |---|---|
-| `psf-zero/benchmarks/benchmark_smart_layout_vs_default.py` | gained `--fallback-call-limit` and a `FallbackCallLimit` CSV column |
-| `psf-zero/benchmarks/psf_smart_layout.py` | `fallback_call_limit` default changed from 2,000,000 to 300,000; docstring section added recording this sweep |
-| `psf-zero/data/sweep_200k.csv` through `sweep_2m.csv` (6 files) | the budget sweep, tight topologies, `qiskit_opt2`/`qiskit_opt2_smart`/`qiskit_opt2_smart1` (provided by the user) |
-| `psf-zero/data/smart_layout_vs_default_2026-09-15_run2_qiskit_only.csv`, `..._run3_qiskit_2m.csv` | the two additional reproducibility runs in section 1 (provided by the user; suffixed here to distinguish from the run behind Addendum 17, which shares the same base filename) |
+| [`psf-zero/benchmarks/benchmark_smart_layout_vs_default.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/benchmark_smart_layout_vs_default.py) | gained `--fallback-call-limit` and a `FallbackCallLimit` CSV column |
+| [`psf-zero/benchmarks/psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_smart_layout.py) | `fallback_call_limit` default changed from 2,000,000 to 300,000; docstring section added recording this sweep |
+| [`sweep_200k.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/sweep_200k.csv), [`sweep_300k.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/sweep_300k.csv), [`sweep_400k.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/sweep_400k.csv), [`sweep_500k.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/sweep_500k.csv), [`sweep_1m.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/sweep_1m.csv), [`sweep_2m.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/sweep_2m.csv) (6 files, under `psf-zero/data/`) | the budget sweep, tight topologies, `qiskit_opt2`/`qiskit_opt2_smart`/`qiskit_opt2_smart1` (provided by the user) |
+| [`smart_layout_vs_default_2026-09-15_run2_qiskit_only.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/smart_layout_vs_default_2026-09-15_run2_qiskit_only.csv), [`..._run3_qiskit_2m.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/smart_layout_vs_default_2026-09-15_run3_qiskit_2m.csv) (under `psf-zero/data/`) | the two additional reproducibility runs in section 1 (provided by the user; suffixed here to distinguish from the run behind Addendum 17, which shares the same base filename) |
 
 ### 5. Verification
 
@@ -3186,11 +3186,11 @@ both configurations might share).
 
 | Path in the project | Contents |
 |---|---|
-| `psf-zero/benchmarks/test_cumulative_compile_scale.py` | the script used for both runs (provided by the user; one Japanese-language comment translated to English before this round) |
-| `psf-zero/data/cumulative_compile_times_10000.npz` | raw per-iteration timings, 10,000-iteration run (provided by the user) |
-| `psf-zero/data/cumulative_compile_times_50000.npz` | raw per-iteration timings, 50,000-iteration run (provided by the user) |
-| `Figure_1.png` | cumulative-time and box-plot figure, 10,000-iteration run (repository root, referenced from `README.md`; provided by the user) |
-| `cumulative_compile_results_50000.png` | the same pair of plots, 50,000-iteration run (provided by the user) |
+| [`psf-zero/benchmarks/test_cumulative_compile_scale.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cumulative_compile_scale.py) | the script used for both runs (provided by the user; one Japanese-language comment translated to English before this round) |
+| [`psf-zero/data/cumulative_compile_times_10000.npz`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_10000.npz) | raw per-iteration timings, 10,000-iteration run (provided by the user) |
+| [`psf-zero/data/cumulative_compile_times_50000.npz`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_50000.npz) | raw per-iteration timings, 50,000-iteration run (provided by the user) |
+| [`Figure_1.png`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/Figure_1.png) | cumulative-time and box-plot figure, 10,000-iteration run (repository root, referenced from `README.md`; provided by the user) |
+| [`cumulative_compile_results_50000.png`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/cumulative_compile_results_50000.png) | the same pair of plots, 50,000-iteration run (provided by the user) |
 
 ### 5. Verification
 
