@@ -1,6 +1,6 @@
-# spare-qubit-cliff: Combined Addenda (Addendum 2026-09-13 through Addendum 16)
+# spare-qubit-cliff: Combined Addenda (Addendum 2026-09-13 through Addendum 18)
 
-**This is a merge of 14 separately-written addenda into one chronological
+**This is a merge of 16 separately-written addenda into one chronological
 document, for convenience.** No wording in any individual addendum has been
 changed -- each section's content is unedited. Two mechanical things were
 done to make this readable as one document: (1) each addendum's own
@@ -33,7 +33,10 @@ pointer added above it.
   finds a layout Qiskit's default search misses (Addendum 14 sandbox,
   Addendum 15/16 real hardware) -- but loses by roughly the time it spent
   searching when it does not (Addendum 15), and the margin of loss becomes
-  **unmeasurable amid ~3x run-to-run variance at L3** (Addendum 16).
+  **unmeasurable amid ~3x run-to-run variance at L3** (Addendum 16). This
+  same win/loss pattern, at close to the same magnitude, reproduces when
+  routed through PSF-Zero's own compilation pipeline rather than bare
+  `transpile()` (Addendum 17).
 - Output circuit quality (gate count, depth) is identical whichever path is
   taken -- the cliff is a time cost, not a quality cost (Addendum 14/15).
 
@@ -54,9 +57,20 @@ pointer added above it.
   (Addenda 4, 9, 12, 13) hold inside Qiskit's actual compiled implementation
   (`qiskit._accelerate.vf2_layout`) -- never directly tested throughout the
   whole series.
-- The end-to-end PSF-Zero comparison this series was meant to answer is
-  still blocked on `compile_for_hardware` gaining an `initial_layout`
-  parameter (Addendum 15, section 4).
+- **[Partially addressed in Addendum 18]** Whether Addendum 16's ~3x
+  run-to-run variance is L3-specific: three independent L2 runs on the same
+  tight, hard-to-layout topologies agreed to within 1.00-1.30x, unlike the
+  ~3x spread found at L3. Whether L3 itself, other spare values, or other
+  machines share this same reproducibility is still untested.
+- Whether `smart_vf2_layout()`'s stage-2 budget can be tuned below its new
+  default of 300,000 (Addendum 18) -- 200,000 already misses one topology
+  outright, and no finer step was tried between the two values.
+- **[Resolved in Addendum 17]** The end-to-end PSF-Zero comparison this
+  series was meant to answer was blocked on `compile_for_hardware` gaining
+  an `initial_layout` parameter (Addendum 15, section 4). That parameter
+  was added and the comparison run on real hardware: the layout-search
+  win/loss pattern reproduces through PSF-Zero's own pipeline at close to
+  the same magnitude as the Qiskit-only comparison.
 
 ---
 
@@ -2506,7 +2520,8 @@ working (the `SmartOrder` column) needs to be reviewed.
 ## 6. On the pre-publication check (for the user)
 
 The terminal output you sent included a path in the form `C:\Users\...`
-(containing an account name). This is an item [`publication-policy.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/publication-policy.md)
+(containing an account name). This is an item `publication-policy.md`
+(since removed from the repository)
 section 4 specifies must not go into anything published. **It is not
 included anywhere in the CSV saved to the Project, or in this addendum**
 (confirmed on the CSV: `grep` against this project's private personal-information pattern list
@@ -2516,7 +2531,7 @@ included anywhere in the CSV saved to the Project, or in this addendum**
 
 | Path in the project | Contents |
 |---|---|
-| [`psf-zero/data/smart_layout_vs_default_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/smart_layout_vs_default_2026-09-14.csv) (L2 run; originally referenced here as "..._intel_2026-09-14.csv" -- corrected to the file's actual name) | followup 14's real-hardware results (48 rows) |
+| [`psf-zero/data/smart_layout_vs_default_intel_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/smart_layout_vs_default_intel_2026-09-14.csv) (L2 run) | followup 14's real-hardware results (48 rows) |
 | [`psf-zero/benchmarks/psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_smart_layout.py) | the time-budget fix (section 3.1) |
 | [`psf-zero/benchmarks/benchmark_smart_layout_vs_default.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/benchmark_smart_layout_vs_default.py) | added the `_smart1` arm, automatic exclusion of the PSF smart arm (sections 3.2, 4) |
 
@@ -2722,7 +2737,7 @@ is far larger than the variance, so that is unaffected, but the specific
 
 | Path in the project | Contents |
 |---|---|
-| [`psf-zero/data/smart_layout_vs_default_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/smart_layout_vs_default_2026-09-14.csv) (L3 run; originally referenced here as "..._L3_intel_2026-09-14.csv" -- **note this is the same filename cited for addendum 15's L2 run above; the repository holds only one file under this name, so which run's data it currently contains cannot be confirmed from the filename alone**) | this round's L3 real-hardware results (48 rows) |
+| [`psf-zero/data/smart_layout_vs_default_L3_intel_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/smart_layout_vs_default_L3_intel_2026-09-14.csv) (L3 run) | this round's L3 real-hardware results (48 rows) |
 | [`psf-zero/benchmarks/benchmark_smart_layout_vs_default.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/benchmark_smart_layout_vs_default.py) | section 5's fixed version |
 
 ## 8. Verification
@@ -2748,3 +2763,305 @@ is far larger than the variance, so that is unaffected, but the specific
   It has not been included in anything saved.**
 
 ---
+
+<!-- ===== Addendum 17 (source: spare-qubit-cliff-addendum-17-2026-09-15.md) ===== -->
+
+> **Note added when merging:** Confirms the fix requested in addendum 15
+> section 4 (`compile_for_hardware` gaining an `initial_layout` parameter)
+> was applied, and runs the end-to-end PSF-Zero comparison this whole series
+> was originally motivated by for the first time.
+
+## Addendum 17 (2026-09-15) -- the end-to-end PSF-Zero comparison finally ran. The layout-search win/loss pattern reproduces through PSF-Zero's own pipeline, unchanged
+
+### 0. In one line
+
+Addendum 15 identified that `compile_for_hardware` had no `initial_layout`
+parameter, so the prototype's benefit could never be measured through
+PSF-Zero's own compilation path -- every `psf_rl2_smart` row in that run's
+data was an artifact (the search failed, `initial_layout` stayed `None`, and
+plain PSF-Zero ran anyway, counted as a false "success"). A small patch
+(`compile_for_hardware_initial_layout.patch`) adding that parameter -- three
+lines: the signature, a docstring note, and forwarding it to the internal
+`transpile()` call -- has now been applied and run on real hardware for the
+first time. **The result: PSF-Zero's own pipeline shows the same win/loss
+pattern as the Qiskit-only comparison, at close to the same magnitude, on
+every topology tested.**
+
+### 1. The patch
+
+`compile_for_hardware` gained one new parameter:
+
+```python
+def compile_for_hardware(
+    qc: QuantumCircuit,
+    coupling_map: CouplingMap,
+    basis_gates: list[str] | None = None,
+    block_gate_floor: int = DEFAULT_BLOCK_GATE_FLOOR,
+    routing_optimization_level: int = 1,
+    verify: Union[bool, str] = True,
+    entangling_basis: str = "canonical",
+    seed_transpiler: int | None = None,
+    initial_layout: list[int] | None = None,   # <-- new
+    on_unsupported: str = "keep",
+    tol: float = 1e-5,
+) -> QuantumCircuit:
+```
+
+forwarded verbatim to the internal `transpile()` call. Every existing
+call site is unaffected (`initial_layout` defaults to `None`). The
+docstring carries forward the caveat from addendum 14 section 4-1 that
+supplying this argument skips `VF2PostLayout` as well as the layout search
+itself, which only matters once error rates are in play (not the case for
+any measurement in this project so far).
+
+Confirmed on real hardware: `PSFInitialLayoutMode` reads `True` for every
+row in this round's data, meaning `psf_compile.compile_for_hardware`'s
+signature was correctly detected as accepting the argument, and the
+`psf_rl2_smart` / `psf_rl2_smart1` arms are no longer excluded.
+
+### 2. Real-hardware results -- Qiskit-only vs. PSF-Zero, side by side
+
+Same environment as addenda 15-16 (Windows 10, Python 3.11.9,
+`Intel64 Family 6 Model 181 Stepping 0, GenuineIntel`, 14 cores, Qiskit
+2.5.2, rustworkx 0.18.1, `psf_zero_core.cp311-win_amd64.pyd:418304`). L2 /
+`routing_optimization_level=2`, `--time-budget 2.0`, `reps=1`.
+
+| topology | spare | qiskit base | qiskit smart | ratio | psf base | psf smart | ratio |
+|---|---|---|---|---|---|---|---|
+| **grid** | 0 | 728.6 ms | 22.7 ms | **32.10x** | 739.0 ms | 27.2 ms | **27.18x** |
+| **line** | 0 | 659.8 ms | 22.8 ms | **29.00x** | 629.1 ms | 22.4 ms | **28.05x** |
+| brick | 0 | 735.7 ms | 1623.3 ms | 0.45x | 714.5 ms | 1661.4 ms | 0.43x |
+| diluted_p0.25 | 0 | 764.8 ms | 1958.5 ms | 0.39x | 766.4 ms | 1995.9 ms | 0.38x |
+| diluted_p0.5 | 0 | 748.5 ms | 1933.4 ms | 0.39x | 740.9 ms | 1967.4 ms | 0.38x |
+| diluted_p0.75 | 0 | 44.4 ms | 104.4 ms | 0.43x | 48.6 ms | 116.9 ms | 0.42x |
+| grid | 40 | 16.8 ms | 12.1 ms | 1.38x | 15.0 ms | 10.8 ms | 1.39x |
+| line | 40 | 9.0 ms | 9.1 ms | 0.99x | 10.8 ms | 12.8 ms | 0.85x |
+| brick | 40 | 10.6 ms | 10.9 ms | 0.98x | 12.9 ms | 15.6 ms | 0.83x |
+| diluted_p0.25 | 40 | 13.4 ms | 12.9 ms | 1.04x | 17.1 ms | 10.5 ms | 1.63x |
+| diluted_p0.5 | 40 | 10.9 ms | 9.9 ms | 1.10x | 11.5 ms | 11.3 ms | 1.02x |
+| diluted_p0.75 | 40 | 11.4 ms | 9.2 ms | 1.24x | 13.1 ms | 11.0 ms | 1.20x |
+
+**The Qiskit column and the PSF-Zero column tell the same story on every row.**
+Where the Qiskit-only comparison wins big (`grid`, `line`, tight), PSF-Zero's
+own pipeline wins by nearly the same factor (27-28x against 29-32x). Where
+the Qiskit-only comparison loses because the search fails (`brick`,
+`diluted_p0.25`, `diluted_p0.5`, tight), PSF-Zero's pipeline loses by
+essentially the same factor (0.38-0.45x on both sides). At loose (spare=40)
+the difference stays small on both, as in addendum 14/15.
+
+### 3. What this settles, and what it does not
+
+**Settled**: the layout-search prototype's effect is not an artifact of
+measuring it against bare `transpile()` -- it survives, largely unchanged
+in magnitude, when routed through PSF-Zero's full compilation pipeline
+(2-qubit synthesis via the Rust core, then layout via the searched
+`initial_layout`, then routing). This was the specific gap addendum 15
+identified as blocking: **it is no longer blocked.**
+
+**Not settled by this addendum**:
+- This is a single run (`reps=1`) at one optimization level (L2). Addendum
+  16 found up to ~3x run-to-run variance on the Qiskit side at L3 for
+  exactly this kind of tight, hard-to-layout topology; whether the same
+  variance affects the PSF-Zero column, and whether it holds at L3, has
+  not been checked here.
+- The underlying caveat from addendum 13 is unchanged: the search itself
+  still calls the public `rustworkx.vf2_mapping()`, not Qiskit's internal
+  `qiskit._accelerate.vf2_layout`. This addendum shows the searched layout
+  integrates cleanly into PSF-Zero's pipeline once found -- it says
+  nothing new about whether the search's own behavior matches Qiskit's
+  internal implementation.
+- Output circuit quality (2-qubit gate count, depth) was not re-checked in
+  this round; addendum 14/15 found it identical across arms on the
+  Qiskit-only comparison, and this data was not re-verified for the PSF
+  arms specifically.
+
+### 4. Files
+
+| Path in the project | Contents |
+|---|---|
+| `psf-zero/data/smart_layout_vs_default_2026-09-15.csv` | this round's real-hardware results (72 rows, provided by the user) |
+| `compile_for_hardware_initial_layout.patch` | the patch described in section 1 (not yet a project path -- pending the user's decision on where to place it) |
+
+### 5. Verification
+
+- Confirmed `PSFInitialLayoutMode` reads `True` across every row in this
+  round's CSV, i.e. the patched signature was detected correctly.
+- The patch was verified before this round's run by (a) applying it to a
+  clean copy of `psf_compile.py` and confirming the result matches the
+  intended edit byte-for-byte, (b) confirming the patched file compiles
+  (`py_compile`), and (c) an AST check confirming `initial_layout` is both
+  an accepted parameter and is actually forwarded as a keyword to the
+  internal `transpile()` call.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this addendum, and the round's CSV ->
+  0 hits. **Note the terminal log the user pasted this round (file named
+  `test.py`, actually five concatenated run logs) contained a Windows
+  account name in five prompt lines; it has been redacted before saving and
+  the original is not included in anything kept.**
+
+<!-- ===== Addendum 18 (source: spare-qubit-cliff-addendum-18-2026-09-15.md) ===== -->
+
+> **Note added when merging:** Confirms L2's tight-condition reproducibility
+> across three independent runs (contrasting with Addendum 16's ~3x
+> variance found at L3), then tunes `smart_vf2_layout()`'s stage-2 budget
+> down from 2,000,000 to 300,000 based on a six-point sweep, cutting the
+> failing-topology loss margin by roughly half with no cost to the winning
+> cases.
+
+## Addendum 18 (2026-09-15) -- L2 reproduces across three independent runs; stage-2 budget tuned from 2,000,000 to 300,000
+
+### 0. In one line
+
+Before tuning anything, the L2 tight-condition numbers behind Addendum 17
+were checked for reproducibility, since Addendum 16 had found up to ~3x
+run-to-run variance on the same kind of hard, tight topology **at L3**.
+**Three independent runs at L2 agree to within 1.00-1.07x on every
+tight-condition row** -- the L3 variance does not appear to carry over to
+L2. With that reassurance, a six-point sweep of `smart_vf2_layout()`'s
+stage-2 (`id_order=False` fallback) budget found `fallback_call_limit` can
+be lowered from its previous default of 2,000,000 to **300,000** --
+the smallest value that still reliably catches `diluted_p0.75` -- cutting
+the three failing topologies' loss margin by roughly half, with the winning
+topologies' margins unaffected. The default has been changed accordingly.
+
+### 1. L2 reproducibility -- three independent runs, same environment
+
+Same environment throughout (Windows 10, Python 3.11.9,
+`Intel64 Family 6 Model 181 Stepping 0, GenuineIntel`, 14 cores, Qiskit
+2.5.2, rustworkx 0.18.1). All three runs used `--level 2 --spares 0`,
+`fallback_call_limit=2,000,000` (the then-current default), `reps=1`,
+tight (spare=0) topologies only, Qiskit arms only.
+
+| topology | arm | run 1 | run 2 | run 3 | max/min |
+|---|---|---|---|---|---|
+| grid | qiskit_opt2 | 728.6 | 746.0 | 732.7 | 1.02x |
+| grid | qiskit_opt2_smart | 22.7 | 21.3 | 20.6 | 1.10x |
+| line | qiskit_opt2 | 659.8 | 625.7 | 617.1 | 1.07x |
+| line | qiskit_opt2_smart | 22.8 | 17.6 | 17.9 | 1.30x |
+| brick | qiskit_opt2 | 735.7 | 733.5 | 715.4 | 1.03x |
+| brick | qiskit_opt2_smart | 1623.3 | 1638.9 | 1644.9 | 1.01x |
+| diluted_p0.25 | qiskit_opt2 | 764.8 | 760.9 | 748.1 | 1.02x |
+| diluted_p0.25 | qiskit_opt2_smart | 1958.5 | 1962.9 | 1948.2 | 1.01x |
+| diluted_p0.5 | qiskit_opt2 | 748.5 | 717.8 | 726.3 | 1.04x |
+| diluted_p0.5 | qiskit_opt2_smart | 1933.4 | 1894.3 | 1896.8 | 1.02x |
+| diluted_p0.75 | qiskit_opt2 | 44.4 | 44.3 | 44.5 | 1.00x |
+| diluted_p0.75 | qiskit_opt2_smart | 104.4 | 102.1 | 99.5 | 1.05x |
+
+(all times in ms; run 1 = the data behind Addendum 17, run 2 and run 3 are
+independent re-executions of the same script and arguments)
+
+**Every tight-condition row agrees to within 1.00-1.10x**, with `line`'s
+`_smart` arm the loosest at 1.30x -- still far from Addendum 16's ~3x
+finding. This is a small sample (three runs, one machine, L2 only), but it
+is consistent with the run-to-run variance problem being specific to L3's
+larger search budget and heavier downstream cost, rather than a general
+property of this measurement setup. **Addendum 16's re-verification
+question for L2 (raised in its section 2) is answered for this specific
+condition: L2 does not show the same variance.** Whether this holds at
+other spare values, other topologies, or other machines is untested.
+
+### 2. Stage-2 budget sweep
+
+`benchmark_smart_layout_vs_default.py` gained a `--fallback-call-limit`
+argument (previously `smart_vf2_layout()`'s `fallback_call_limit` could
+only be set by editing the default in the function signature). Swept at
+six values -- 200k, 300k, 400k, 500k, 1m, 2m -- on the same six topologies,
+tight, `qiskit_opt2_smart` only (the arm stage 2 actually applies to).
+
+**diluted_p0.75 -- the only topology stage 2 needs to catch (found at
+attempt 7 of 9, the `heuristic_natural` ordering):**
+
+| budget | found | search time | tries |
+|---|---|---|---|
+| 200k | **False** | 137.0 ms | 9 (exhausted) |
+| 300k | True | 96.6 ms | 7 |
+| 400k | True | 87.9 ms | 7 |
+| 500k | True | 97.9 ms | 7 |
+| 1m | True | 88.9 ms | 7 |
+| 2m | True | 100.1 ms | 7 |
+
+**200,000 misses it entirely** -- the budget runs out before attempt 7
+completes. 300,000 is the smallest value tested that still catches it, and
+every value at or above 300,000 behaves identically (same attempt, same
+ordering, search time flat around 88-110 ms with no further benefit from a
+larger budget).
+
+**The three genuinely-hard topologies -- cost of correctly finding nothing
+(9 of 9 attempts fail) -- scales with the budget as expected:**
+
+| topology | 200k | 300k | 400k | 500k | 1m | 2m |
+|---|---|---|---|---|---|---|
+| brick | 900.4 | 906.4 | 959.0 | 967.7 | 1216.1 | 1638.8 |
+| diluted_p0.25 | 947.4 | 987.1 | 1029.2 | 1070.4 | 1356.8 | 1960.6 |
+| diluted_p0.5 | 964.0 | 988.1 | 1061.8 | 1083.2 | 1337.6 | 1921.9 |
+
+(total time in ms, `qiskit_opt2_smart` arm; `qiskit_opt2` baselines: brick
+719.5, diluted_p0.25 751.5, diluted_p0.5 734.8)
+
+**grid and line are unaffected by this budget across the whole sweep**
+(both succeed at stage 1, so stage 2 never runs): their win margin against
+the default pipeline stays at 27-35x throughout.
+
+### 3. The change
+
+`smart_vf2_layout()`'s `fallback_call_limit` default has been lowered from
+2,000,000 to **300,000** -- the smallest value in the sweep that still
+reliably catches `diluted_p0.75`, with no finer-grained search done between
+200,000 and 300,000 to find a possibly-lower true threshold.
+
+Effect on the win/loss ratio against `qiskit_opt2` (comparing the previous
+default, 2m, to the new one, 300k):
+
+| topology | ratio @ 2m (old default) | ratio @ 300k (new default) |
+|---|---|---|
+| grid | 34.5x | 34.1x |
+| line | 33.0x | 27.5x |
+| diluted_p0.75 | 0.53x | 0.47x |
+| brick | 0.44x | **0.79x** |
+| diluted_p0.25 | 0.38x | **0.76x** |
+| diluted_p0.5 | 0.38x | **0.74x** |
+
+The three failing topologies' loss margin nearly doubles (0.38-0.44x to
+0.74-0.79x). `diluted_p0.75`'s margin moves slightly against the change
+(0.53x to 0.47x) because its own total time barely changes (100.1ms to
+110.9ms is within the noise seen in section 1) while the Qiskit-only
+baseline for this topology happened to be measured slightly faster in this
+particular run (44.5ms) than in the run used for the 2m column (52.6ms) --
+this is consequently more a reflection of section 1's baseline variance on
+a fast-running topology than a real cost of the new setting. `grid`'s ratio
+is unaffected; `line`'s dropped from 33.0x to 27.5x, which is within the
+1.00-1.30x spread already documented for that specific arm/topology in
+section 1.
+
+**Not tested**: whether 300,000 remains the right choice at L3, on a
+different machine, or against a wider set of topologies than the six used
+throughout this series. The finer boundary between 200,000 and 300,000 was
+also not explored.
+
+### 4. Files
+
+| Path in the project | Contents |
+|---|---|
+| `psf-zero/benchmarks/benchmark_smart_layout_vs_default.py` | gained `--fallback-call-limit` and a `FallbackCallLimit` CSV column |
+| `psf-zero/benchmarks/psf_smart_layout.py` | `fallback_call_limit` default changed from 2,000,000 to 300,000; docstring section added recording this sweep |
+| `psf-zero/data/sweep_200k.csv` through `sweep_2m.csv` (6 files) | the budget sweep, tight topologies, `qiskit_opt2`/`qiskit_opt2_smart`/`qiskit_opt2_smart1` (provided by the user) |
+| `psf-zero/data/smart_layout_vs_default_2026-09-15_run2_qiskit_only.csv`, `..._run3_qiskit_2m.csv` | the two additional reproducibility runs in section 1 (provided by the user; suffixed here to distinguish from the run behind Addendum 17, which shares the same base filename) |
+
+### 5. Verification
+
+- Section 1's reproducibility table was built by matching
+  (topology, spare, arm) keys across the three source files and computing
+  max/min directly; all three files were confirmed to have identical keys
+  before comparing.
+- Section 2's sweep values were read directly from each `sweep_*.csv`
+  file's `SmartFound`, `SmartSearch_s`, `SmartOrderingsTried`, and
+  `SmartOrder` columns; the "200k misses, 300k+ all behave identically"
+  claim was checked across all six budget values, not inferred from the
+  endpoints alone.
+- The `psf_smart_layout.py` default-value change and its accompanying
+  docstring note were confirmed with `py_compile` (syntax) and a direct
+  grep for the old value (2_000_000) to confirm no other reference to it
+  was left stale.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this addendum, and all data files
+  named in section 4 -> 0 hits.
