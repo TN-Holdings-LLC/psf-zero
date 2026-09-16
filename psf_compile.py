@@ -1,359 +1,833 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""A prototype layout search for PSF-Zero (2026-09-14, building on spare-qubit-cliff addenda 8-12)
+"""PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-## Motivation
+VERSION: 2026-09-16   (previous revision: 2026-09-15)
 
-Established in addenda 8-10:
-  - Success is cheap (tens of microseconds to a few milliseconds). Failure is
-    expensive -- when Qiskit's `VF2Layout` pass fails, it burns through its
-    entire assigned `call_limit`, then switches to `SabreLayout`, and the
-    subsequent swap-insertion/optimization passes also end up heavier than
-    usual (addendum-10; at L3 there was a case reaching nearly 3x the failure
-    cost).
-  - `VF2Layout` is fixed at `seed=-1` and is not controlled by
-    `seed_transpiler` (addendum-9) -- it relies on "a single roll-of-the-dice
-    shuffle."
+Where to look for what
+----------------------
+This module is the compiler. It defines exactly two entry points --
+`compile()` and `compile_for_hardware()` -- and a file that does not define
+those two is not this module, whatever it happens to be named. The
+layout-search prototype (`smart_vf2_layout()`) is a separate thing that lives
+in `psf_smart_layout.py`. The contents of those two files have been swapped by
+accident more than once, so the `VERSION` line above and this paragraph are
+here to answer "is this the current compiler?" the moment the file is opened.
 
-Established in addenda 9 and 12 (though **these results come from the public
-`rustworkx.vf2_mapping()`**, and whether Qiskit's internal implementation
-`qiskit._accelerate.vf2_layout` behaves the same way is unconfirmed -- see
-"Important caveat" below):
-  - On a grid physical graph, depth-first search (DFS) is fragile and
-    strongly dependent on the starting point and the grid's row/column
-    parity, while breadth-first search (BFS) is far more robust.
-  - On the same graph, whether a solution is found or not depends on the
-    node ordering supplied.
+Versioning is by content, not by filename: when this file changes, bump
+`VERSION` (and `__version__`, which mirrors it). Nothing has to be renamed to
+mark a newer copy, and no second file has to exist alongside this one.
 
-## Additional findings discovered while building this prototype (2026-09-14,
-   found through this prototype's own smoke tests and diagnostics; not yet
-   confirmed on real hardware -- sandbox only)
+Changes in the 2026-09-15 revision
+----------------------------------
+1. FIXED: the Rust core import. The previous revision of this file imported
+   `psf_zero_core_stub` -- the Qiskit-based Python stand-in written for a
+   sandbox that could not load the real `.so` -- instead of `psf_zero_core`.
+   With that import in place nothing in the Rust core ran at all: the
+   degeneracy handling was never exercised, and every "PSF-Zero vs Qiskit"
+   measurement was really Qiskit's own TwoQubitWeylDecomposition being
+   compared against Qiskit, while the debug line still announced "PSF-Zero
+   Rust Core executed for N blocks". The import is now the real core, and a
+   missing core raises immediately with an explanation rather than silently
+   substituting something else.
 
-The "BFS is robust" finding above was confirmed on **pure grid physical
-graphs such as 8x8/9x9**. Applying this prototype not just to an 8x8 grid but
-also to addendum-8's brick and diluted_p topologies (spare=0, tight) found
-that **this finding does not generalize as-is**:
+2. Verification is no longer the dominant cost, so it no longer has to be
+   switched off to be competitive. The old `verify=True` path rebuilt the
+   synthesized circuit with `Operator(qc)` and compared -- measured at
+   ~1.35 ms per block against ~0.22 ms for everything else put together,
+   i.e. ~87% of the total, which is the entire reason this project's
+   measured speed advantage was only available with `verify=False`. The
+   core now returns the reconstruction infidelity itself
+   (`geometric_decompose_checked`), computed from a handful of 4x4 products
+   on values it already has. Measured on 400 random SU(4) blocks:
 
-  - grid, line: with a BFS-family ordering (especially
-    bfs_from_min_degree) + id_order=True, a solution is found instantly,
-    using only a tiny fraction of `call_limit=50,000` (under a microsecond,
-    effectively one step).
-  - brick: none of 6 BFS-family orderings tried, with id_order=True, found a
-    solution even at `call_limit` raised to 10,000,000. Switching to
-    id_order=False (VF2's built-in heuristic ordering) and raising
-    `call_limit` to 30,000,000 (roughly Qiskit's L3 budget) still found
-    nothing. This **is consistent** with addendum-8's already-confirmed
-    result that "brick shows the cliff when tight" (i.e. Qiskit's own
-    `VF2Layout` pass genuinely fails on it when tight too) -- brick really is
-    hard.
-  - diluted_p0.75: even though Qiskit's default pipeline (the internal
-    implementation, `seed=-1`, `call_limit=5,000,000` @ L2) succeeds 100%
-    (confirmed in addendum-10/11), trying the same condition against the
-    public rustworkx finds that **a fixed BFS ordering with id_order=True
-    finds nothing even at call_limit=10,000,000**. However, **switching to
-    id_order=False (VF2's heuristic ordering) found a solution at
-    `call_limit=1,000,000`, in 0.05 seconds** (though this only held for
-    some of the starting orderings tried -- degree_desc succeeded, while
-    other BFS-family starting orderings still failed even with the same
-    id_order=False. So even under id_order=False, the initial node numbering
-    is not irrelevant).
+       verify via Operator(qc)                 1.352 ms/block
+       verify via numpy reconstruction         0.111 ms/block
+       verify via the core's own check        ~0.000 ms/block (in the FFI call)
 
-**Interpretation**: when the logical interaction pattern is "a set of
-disjoint edges (a matching-shaped pattern)," backtracking under a fixed
-node-visit order (id_order=True) is likely prone to exponential backtracking,
-because a greedy, component-by-component assignment can conflict with the
-assignment of a later component. VF2's built-in heuristic (id_order=False,
-which dynamically picks the "most constrained node" based on degree and
-similar criteria) can work structurally in favour of this kind of pattern --
-though for a candidate that is inherently hard, like brick, it still cannot
-solve it.
+   `verify=True` therefore stays the default and is now essentially free.
+   `verify="strict"` keeps the old `Operator(qc)` behavior for anyone who
+   wants the circuit object itself checked rather than the decomposition
+   (see `_verify_block` for exactly what each one does and does not cover).
 
-**How this shaped this prototype's design**: rather than committing to a
-single strategy (BFS + id_order=True), it uses two stages.
+3. `logging` instead of `print`. A library writing to stdout on every call
+   forced this project's own benchmark scripts to wrap it in
+   `contextlib.redirect_stdout`, and would do the same to anything else that
+   embeds it. The per-block debug line is now a single `logger.debug`.
 
-  1. A cheap stage: several BFS-family orderings x id_order=True x a small
-     call_limit. Catches, at near-zero cost, cases like grid and line where
-     "it's instant once the order is right."
-  2. An expensive stage: if stage 1 finds nothing and time budget remains,
-     tries id_order=False (the VF2 heuristic) across several starting
-     orderings (degree_desc, natural order, etc.) x a larger call_limit.
-     Aims to catch cases like diluted_p0.75, where "the ordering heuristic
-     works, but a fixed ordering cannot see it."
+4. Fallbacks are counted and reported once at the end instead of raising a
+   `warnings.warn` per block, and they are now classified: a legitimately
+   degenerate input and an unexpected core failure are different events, and
+   the core's new exception types let them be told apart.
 
-**Important caveat (unverified)**: including stage 2, every finding here was
-confirmed against the **public `rustworkx.vf2_mapping()`**, and it has not
-been verified whether the actual `VF2Layout` pass -- which calls a
-**separate compiled Rust module**, `qiskit._accelerate.vf2_layout.
-vf2_layout_pass_average` (a discovery from addendum-9) -- behaves the same
-way. This prototype module is therefore deliberately **implemented directly
-on top of the public rustworkx** (it does not rewrite or imitate Qiskit's
-internal implementation). Also, the additional brick/diluted_p0.75
-diagnostics above were run only in the sandbox (a 2-core Linux VM);
-reproduction on real hardware has not yet been confirmed. Before replacing
-Qiskit's `VF2Layout` pass itself, it would be worth checking whether the same
-ordering effects and stage-2 benefit reproduce in the internal implementation
-too -- that is this prototype's next task, and is out of scope here.
+5. `on_unsupported` is exposed on `compile()` (it was hardcoded to "keep"),
+   and `compile_for_hardware()` accepts `seed_transpiler` so its internal
+   routing call can be pinned -- the asymmetry this project's own benchmarks
+   ran into, where an unpinned `optimization_level>=2` transpile returns a
+   different answer and a different runtime on every call.
 
-## Tuning stage 2's budget (2026-09-15)
+6. The entangling core is appended directly rather than built as a separate
+   QuantumCircuit and composed, and the CX-basis form of a given canonical
+   triple is cached -- Trotter and QAOA layers repeat the same (a, b, c)
+   across many blocks, and each miss otherwise costs an `Operator()` build
+   plus a full Qiskit KAK.
 
-`fallback_call_limit` defaults to 300,000, not the 2,000,000 used in the
-addendum-13/14 measurements above. A sweep on real hardware
-(200k/300k/400k/500k/1m/2m, on the same six topologies) found 300,000 is
-the smallest value that still catches `diluted_p0.75` at try 7 of 9
-(200,000 misses it entirely, exhausting all 9 tries and finding nothing).
-At 300,000, the failing topologies' stage-2 cost dropped substantially
-against the 2,000,000 default -- `brick` from 1638.8ms to 906.4ms,
-`diluted_p0.25` from 1960.6ms to 987.1ms, `diluted_p0.5` from 1921.9ms to
-988.1ms -- while `grid`/`line`'s wins were unaffected (still 34x/27x
-against the default pipeline). Lowering further than 300,000 has not been
-tested with a finer step and is not recommended without doing so, given
-200,000 already misses `diluted_p0.75` outright.
+Changes in this (2026-09-16) revision
+-------------------------------------
+None of the following changes any published number. Items 7 and 10 change
+behaviour only in cases that previously either crashed or were misreported;
+item 9 swaps one computation of a quantity for a numerically equivalent,
+cheaper one. **None of them has been benchmarked** -- the claims below about
+cost are structural (fewer calls, fewer allocations), not measured, and should
+be treated as such until someone times them.
 
-## Usage
+7. The output circuit is built with `qc_blocked.copy_empty_like()` instead of
+   `QuantumCircuit(qc.num_qubits, qc.num_clbits)`. The old construction made a
+   circuit with fresh registers, which meant the source circuit's registers,
+   loose bits, name and metadata were all dropped, and the per-instruction
+   `find_bit` lookups in the main loop existed only to work around that. Two
+   consequences, both silent:
+     - a circuit carrying a classical condition on one of its own registers
+       could not be rebuilt, because the target register no longer existed;
+     - any named or split register came back as a single anonymous "q".
+   `copy_empty_like()` keeps the registers, the bits, the name, the metadata
+   and the global phase, so instructions can be re-appended with the original
+   bit objects and the two `find_bit` calls per instruction disappear from the
+   hot loop.
 
-    from psf_smart_layout import smart_vf2_layout
-    layout_map, info = smart_vf2_layout(coupling_map, interaction_pairs, num_qubits)
-    # layout_map: {logical_qubit: physical_qubit}, or None if nothing was found
-    # info: a dict of diagnostics (number of orderings tried, time spent,
-    #       feasibility-check result, etc.)
+8. `verify`, `entangling_basis` and `on_unsupported` are validated at entry
+   instead of being interpreted loosely. Previously `verify="Strict"` (capital
+   S) or `verify=1` silently selected the cheap check rather than the strict
+   one, and `entangling_basis="CX"` silently emitted the canonical basis --
+   three ways to think you had asked for something you had not. They now raise
+   `ValueError` naming the accepted values. This is the same reasoning as this
+   project's "no silent fallback" rule, applied to its own arguments.
+
+9. The core's own infidelity is now used for `entangling_basis="cx"` as well.
+   Both `verify=True` paths check the same quantity -- the decomposition
+   (`cartan`, `k1`, `k2`, phase) against the target unitary -- and the core
+   already computed it during the FFI call, so recomputing the identical
+   number in numpy on the cx path (~0.111 ms/block) bought nothing. What the
+   cx path does *not* check is the CX substitution itself, and that was
+   already true before this change: the substitution is Qiskit's own exact
+   decomposer applied to an exact matrix, and `verify="strict"` remains the
+   only mode that validates the emitted circuit object.
+
+10. The `try` around the core call no longer also covers circuit
+    construction. A failure inside `_build_circuit` -- i.e. a bug in this
+    file, not in the input -- was being reported as "Decomposition failed or
+    degenerate" and, when the core's typed exceptions are unavailable,
+    counted as an *expected* degeneracy. The two are now separate blocks with
+    separate messages, and a construction failure is always counted as
+    unexpected.
+
+11. Housekeeping: an unused eigenvalue array is no longer bound, `__all__`
+    names the public surface, and `compile()` has the docstring it was
+    missing.
+
+Additional change, same day (2026-09-16), item 12
+--------------------------------------------------
+12. **NEW, opt-in: `layout_search` on `compile_for_hardware()`.** Addenda
+    24-25 (spare-qubit-cliff series) measured that at the spare-qubit cliff,
+    `compile_for_hardware()`'s advantage over plain Qiskit L3 comes almost
+    entirely from running its internal routing call at a lower
+    `routing_optimization_level`, not from avoiding the cliff mechanism
+    itself (`VF2Layout` failing, falling back to `SabreLayout`) -- raising
+    the level toward 3 made the cliff, and PSF-Zero's own advantage, both
+    disappear together. This item addresses the cliff at its actual cause
+    instead: when `layout_search=True`, `compile_for_hardware()` now runs
+    this project's own `smart_vf2_layout()` (previously a `prototypes/`-only
+    tool a caller had to invoke and wire in by hand, per Addendum 17) against
+    the *compressed* circuit's own interaction graph before calling
+    `transpile()`, and threads a found layout through `initial_layout`
+    itself. On a topology/interaction-graph combination the search can
+    solve near-instantly (grids and lines with a matching-type interaction
+    pattern, per Addendum 13), this is intended to let `routing_optimization_level`
+    stay low without inheriting a slow `VF2Layout` failure to get there.
+
+    Deliberately conservative about failure modes, per this project's
+    "no silent fallback" rule:
+      - `layout_search=True` together with an explicit `initial_layout` is a
+        contradiction (which one should win?) and raises `ValueError` rather
+        than silently picking one.
+      - `psf_smart_layout` not being importable raises `ImportError` with an
+        explicit message, only when `layout_search=True` is actually
+        requested -- normal `compile_for_hardware()` calls that never ask for
+        this are completely unaffected, and nothing about this failure is
+        swallowed into "fell back to default behaviour" the way a bare
+        `except Exception` would.
+      - If the search does not find a layout within its budget (this can and
+        does happen -- see `psf_smart_layout.py`'s own docstring on `brick`
+        and other hard topologies), `compile_for_hardware()` falls through to
+        Qiskit's own default layout stage, exactly as if `layout_search` had
+        been left `False` -- but the time already spent searching is real and
+        is not hidden from the caller's own wall-clock measurement of this
+        call, matching this project's Addendum 14 principle that a failed
+        search's cost must be counted, not absorbed silently.
+
+    **Not yet benchmarked in this file's own revision history** -- this
+    changelog entry describes what the code now does, not a measured result.
+    The pre-registered prediction and the benchmark built to test it live
+    separately, in this project's spare-qubit-cliff addenda (see Addendum 26
+    once it exists), not in this docstring, per this project's own
+    convention of keeping code changelog entries and measured findings in
+    separate documents.
 """
 from __future__ import annotations
 
-import time
+import logging
+import warnings
+from collections import OrderedDict
+from dataclasses import dataclass
+from typing import Union
 
-# Do not start a new attempt if less than this much time remains (seconds).
-MIN_ATTEMPT_S = 0.005
+import numpy as np
+from qiskit import QuantumCircuit, transpile
+from qiskit.circuit.library import CXGate
+from qiskit.quantum_info import Operator
+from qiskit.synthesis import TwoQubitBasisDecomposer
+from qiskit.transpiler import CouplingMap, PassManager
+from qiskit.transpiler.passes import Collect2qBlocks, ConsolidateBlocks
 
+try:
+    import psf_zero_core
+    from psf_zero_core import geometric_decompose
+except ImportError as exc:  # pragma: no cover - environment problem, not logic
+    raise ImportError(
+        "psf_zero_core (the compiled Rust core) could not be imported. Build it "
+        "with `maturin develop --release`. Do NOT substitute psf_zero_core_stub "
+        "here: it is a Qiskit-based stand-in for environments that cannot load "
+        "the real extension, and silently swapping it in makes every benchmark "
+        "in this project measure Qiskit against Qiskit."
+    ) from exc
 
-def _has_feasible_matching(cmap, num_logical_pairs):
-    """A cheap feasibility check before calling VF2. Returns False rather than
-    None when no matching exists (same logic as
-    `vf2_probe_common.has_perfect_matching`; reimplemented independently here
-    to reduce dependencies)."""
-    import networkx as nx
-    g = nx.Graph()
-    g.add_nodes_from(range(cmap.size()))
-    g.add_edges_from([tuple(e) for e in cmap.get_edges()])
-    m = nx.max_weight_matching(g, maxcardinality=True)
-    return len(m) >= num_logical_pairs
+VERSION = "2026-09-16"
+__version__ = VERSION
 
+__all__ = [
+    "VERSION",
+    "compile",
+    "compile_for_hardware",
+    "GeodesicPSFHyper",
+    "SU4GeodesicPSFSynthesizer",
+    "unitary_fidelity",
+]
 
-def _bfs_order_from(graph, start):
-    import rustworkx as rx
-    layers = rx.bfs_layers(graph, [start])
-    order = [n for layer in layers for n in layer]
-    # Append any unreachable nodes at the end (a safeguard for disconnected graphs).
-    seen = set(order)
-    for n in graph.node_indices():
-        if n not in seen:
-            order.append(n)
-    return order
+# Optional, newer core entry points. Older builds of the core have neither;
+# the code below degrades to an equivalent (slower) path rather than failing.
+_CORE_CHECKED = getattr(psf_zero_core, "geometric_decompose_checked", None)
+_PSF_DEGENERATE_ERRORS = tuple(
+    err
+    for err in (
+        getattr(psf_zero_core, "PsfDegenerateError", None),
+        getattr(psf_zero_core, "PsfSU2SingularError", None),
+        getattr(psf_zero_core, "PsfNumericError", None),
+    )
+    if err is not None
+)
 
+logger = logging.getLogger(__name__)
 
-def _candidate_orderings(graph, extra_seeds=(0, 1)):
-    """Returns a diverse set of cheap candidate node orderings. BFS-first
-    (known from addenda 9/12 to be more robust than DFS -- though that
-    finding is limited to grid physical graphs; see the docstring above)."""
-    import random
-    nodes = list(graph.node_indices())
-    degrees = {n: len(graph.neighbors(n)) for n in nodes}
-    max_deg_node = max(nodes, key=lambda n: degrees[n])
-    min_deg_node = min(nodes, key=lambda n: degrees[n])
+DEFAULT_BLOCK_GATE_FLOOR = 12
 
-    orderings = []
-    orderings.append(("bfs_from_max_degree", _bfs_order_from(graph, max_deg_node)))
-    orderings.append(("bfs_from_min_degree", _bfs_order_from(graph, min_deg_node)))
-    orderings.append(("bfs_from_node0", _bfs_order_from(graph, nodes[0])))
-    orderings.append(("degree_desc", sorted(nodes, key=lambda n: -degrees[n])))
-    for seed in extra_seeds:
-        rng = random.Random(seed)
-        start = rng.choice(nodes)
-        orderings.append((f"bfs_from_random_seed{seed}", _bfs_order_from(graph, start)))
-    return orderings
+_VALID_ENTANGLING_BASES = ("canonical", "cx")
+_VALID_ON_UNSUPPORTED = ("keep", "raise")
 
+# Reuses Qiskit's own exact CX-optimal decomposer
+_CX_DECOMPOSER = TwoQubitBasisDecomposer(CXGate())
 
-def _fallback_orderings(graph):
-    """Candidate starting orderings for stage 2 (id_order=False). Diagnostics
-    found degree_desc solved diluted_p0.75 while other starting orderings did
-    not, even under the same id_order=False, so several starting orderings
-    are kept on hand."""
-    nodes = list(graph.node_indices())
-    degrees = {n: len(graph.neighbors(n)) for n in nodes}
-    orderings = []
-    orderings.append(("natural", list(nodes)))
-    orderings.append(("degree_desc", sorted(nodes, key=lambda n: -degrees[n])))
-    orderings.append(("degree_asc", sorted(nodes, key=lambda n: degrees[n])))
-    return orderings
-
-
-def _relabel(phys, order):
-    import rustworkx as rx
-    relabeled = rx.PyGraph()
-    old_to_new = {}
-    for new_idx, old_idx in enumerate(order):
-        old_to_new[old_idx] = relabeled.add_node(old_idx)
-    for a, b in phys.edge_list():
-        relabeled.add_edge(old_to_new[a], old_to_new[b], None)
-    return relabeled
-
-
-def _try_mapping(relabeled, im, order, idx_of_logical, id_order, call_limit):
-    """One vf2_mapping attempt. Returns (layout_map, elapsed) if found, or
-    (None, elapsed) if not."""
-    import rustworkx as rx
-    t0 = time.perf_counter()
-    it = rx.vf2_mapping(relabeled, im, subgraph=True, id_order=id_order,
-                        induced=False, call_limit=call_limit)
-    m = next(iter(it), None)
-    el = time.perf_counter() - t0
-    if m is None:
-        return None, el
-
-    # rx.vf2_mapping(first, second, ...) returns a mapping "from first's node
-    # indices to second's node indices" (per the official docstring, verified
-    # against a path_graph example). Here first=relabeled (physical),
-    # second=im (the logical interaction graph), so m is
-    # {relabeled_phys_idx: im_idx}.
-    #
-    # An earlier version of this code misread this as the reverse
-    # ({im_idx: relabeled_phys_idx}), which produced a hard-to-notice bug:
-    # when num_physical == num_logical (spare=0), this did not raise a
-    # KeyError but instead **returned the wrong physical qubits**.
-    # (Discovered and fixed by directly validating the layout's correctness
-    # in the smoke test.)
-    im_idx_to_relabeled = {im_idx: relabeled_idx for relabeled_idx, im_idx in m.items()}
-    layout_map = {}
-    for logical_q, im_idx in idx_of_logical.items():
-        relabeled_phys_idx = im_idx_to_relabeled[im_idx]
-        original_phys = order[relabeled_phys_idx]
-        layout_map[logical_q] = original_phys
-    return layout_map, el
+# XX, YY and ZZ commute and share one eigenbasis, so the canonical core's
+# matrix exponential is a diagonal scaling in a basis that can be computed
+# once at import instead of per block. The 1/2/4 coefficients are there to
+# make the combined spectrum non-degenerate, so `eigh` returns a basis that
+# simultaneously diagonalises all three rather than an arbitrary rotation
+# inside a degenerate eigenspace. Only used by the numpy verification
+# fallback, for cores too old to have `geometric_decompose_checked`.
+_XX = np.array([[0, 0, 0, 1], [0, 0, 1, 0], [0, 1, 0, 0], [1, 0, 0, 0]], dtype=complex)
+_YY = np.array([[0, 0, 0, -1], [0, 0, 1, 0], [0, 1, 0, 0], [-1, 0, 0, 0]], dtype=complex)
+_ZZ = np.diag([1, -1, -1, 1]).astype(complex)
+_, _CORE_BASIS = np.linalg.eigh(_XX + 2.0 * _YY + 4.0 * _ZZ)
+_CORE_BASIS_H = _CORE_BASIS.conj().T
+_WX = np.real(np.diag(_CORE_BASIS_H @ _XX @ _CORE_BASIS))
+_WY = np.real(np.diag(_CORE_BASIS_H @ _YY @ _CORE_BASIS))
+_WZ = np.real(np.diag(_CORE_BASIS_H @ _ZZ @ _CORE_BASIS))
 
 
-def smart_vf2_layout(coupling_map, interaction_pairs, num_qubits,
-                     per_attempt_call_limit=50_000, time_budget_s=2.0,
-                     extra_seeds=(0, 1),
-                     fallback_call_limit=300_000, use_fallback=True):
-    """Tries several node orderings and strategies in order of increasing
-    budget, stopping as soon as one succeeds.
+def _validate_verify(verify: Union[bool, str]) -> Union[bool, str]:
+    """Accept exactly True, False or "strict".
 
-    Stage 1: several BFS-family orderings x id_order=True x
-             per_attempt_call_limit (for cases like grid and line, where
-             it's instant once the ordering is right).
-    Stage 2: if use_fallback=True and time budget remains, tries
-             id_order=False (the VF2 heuristic) across several starting
-             orderings x fallback_call_limit (aimed at cases like
-             diluted_p0.75, where "the heuristic works but a fixed ordering
-             cannot see it." For a candidate that is inherently hard, like
-             brick, this can still find nothing -- which is itself
-             consistent with addendum-8's confirmation of the "cliff").
+    Deliberately strict about types: `verify=1` is not `verify=True` here, and
+    `"Strict"` is not `"strict"`. Both used to fall through to the cheap check
+    without saying so, which is the failure mode this project's own rules are
+    written against.
+    """
+    if verify is True or verify is False or verify == "strict":
+        return verify
+    raise ValueError(
+        f"verify must be True, False or 'strict' (got {verify!r}). "
+        "True = check the decomposition using the core's own reconstruction; "
+        "'strict' = rebuild the emitted circuit with Operator(qc) and check "
+        "that; False = no check."
+    )
+
+
+@dataclass
+class GeodesicPSFHyper:
+    tol: float = 1e-5
+    phase_fix: bool = True
+    on_unsupported: str = "keep"
+    entangling_basis: str = "canonical"  # "canonical" (default) | "cx" (native CX output directly)
+
+    def __post_init__(self) -> None:
+        if self.entangling_basis not in _VALID_ENTANGLING_BASES:
+            raise ValueError(
+                f"entangling_basis must be one of {_VALID_ENTANGLING_BASES} "
+                f"(got {self.entangling_basis!r})."
+            )
+        if self.on_unsupported not in _VALID_ON_UNSUPPORTED:
+            raise ValueError(
+                f"on_unsupported must be one of {_VALID_ON_UNSUPPORTED} "
+                f"(got {self.on_unsupported!r})."
+            )
+        if not self.tol > 0.0:
+            raise ValueError(f"tol must be positive (got {self.tol!r}).")
+
+
+def unitary_fidelity(U_target: np.ndarray, qc: QuantumCircuit) -> float:
+    """Average gate fidelity between a target unitary and a circuit.
+
+    Unchanged, and still the most independent check available -- it builds the
+    circuit's operator with Qiskit rather than trusting anything this package
+    computed. It is also the most expensive one by more than an order of
+    magnitude, which is why it is no longer on the default path; see
+    `_verify_block`.
+    """
+    U_out = Operator(qc).data
+    tr = np.trace(U_target.conj().T @ U_out)
+    d = 4.0
+    return float((np.abs(tr) ** 2 + d) / (d * (d + 1)))
+
+
+def _zyz_matrix(triple) -> np.ndarray:
+    phi, theta, lam = triple
+    c, s = np.cos(theta / 2.0), np.sin(theta / 2.0)
+    ep, em = np.exp(-0.5j * phi), np.exp(0.5j * phi)
+    lp, lm = np.exp(-0.5j * lam), np.exp(0.5j * lam)
+    return np.array([[ep * c * lp, -ep * s * lm], [em * s * lp, em * c * lm]], dtype=complex)
+
+
+def _reconstruct(cartan, k1, k2, phase: float) -> np.ndarray:
+    """Rebuild the 4x4 from the values the core returned, following
+    `synthesize()`'s own recipe (k2 locals, canonical core, k1 locals, global
+    phase) so that what gets checked is the gate about to be emitted."""
+    a, b, c = cartan
+    core = (_CORE_BASIS * np.exp(1j * (a * _WX + b * _WY + c * _WZ))) @ _CORE_BASIS_H
+    left = np.kron(_zyz_matrix(k1[0]), _zyz_matrix(k1[1]))
+    right = np.kron(_zyz_matrix(k2[0]), _zyz_matrix(k2[1]))
+    return np.exp(1j * phase) * (left @ core @ right)
+
+
+def _infidelity(U_target: np.ndarray, U_out: np.ndarray) -> float:
+    tr = np.trace(U_target.conj().T @ U_out)
+    d = 4.0
+    return float(1.0 - (np.abs(tr) ** 2 + d) / (d * (d + 1)))
+
+
+class SU4GeodesicPSFSynthesizer:
+    """Synthesize a 2-qubit unitary via the Rust core's Cartan decomposition.
+
+    `verify` selects what, if anything, is checked before a synthesized block
+    is accepted:
+
+      True     -- check the decomposition, using the core's own reconstruction
+                  when the core provides one and a numpy reconstruction
+                  otherwise. Catches a bad decomposition. Does not independently
+                  re-derive the circuit object, so it would not catch a bug in
+                  this file's circuit construction (the core's reconstruction
+                  mirrors that construction deliberately, which is what makes
+                  the check meaningful, and also what makes it not independent
+                  of it). On `entangling_basis="cx"` it checks the same
+                  decomposition; the CX substitution applied afterwards is
+                  Qiskit's own exact decomposer and is not re-checked here.
+      "strict" -- build `Operator(qc)` from the emitted circuit and compare.
+                  Independent of both the core and this file's own recipe, and
+                  the only mode that validates the actual circuit object. ~12x
+                  the cost of the default; worth it in CI, rarely in production.
+      False    -- no check. The core still reports genuine failures as
+                  exceptions, which are still caught and fall back.
+    """
+
+    def __init__(self, hyper: GeodesicPSFHyper, verify: Union[bool, str] = True):
+        self.hyper = hyper
+        self.verify = _validate_verify(verify)
+        self.fallback_count = 0
+        self.degenerate_count = 0
+        self.unexpected_count = 0
+        self._last_reasons: list[str] = []
+
+    def _fallback(self, U_target: np.ndarray, msg: str, expected: bool) -> QuantumCircuit:
+        self.fallback_count += 1
+        if expected:
+            self.degenerate_count += 1
+        else:
+            self.unexpected_count += 1
+        if self.hyper.on_unsupported == "raise":
+            raise RuntimeError(msg)
+        # Collected rather than warned per block: a large circuit can produce
+        # thousands of these, and one summary at the end is both cheaper and
+        # more useful than a flood of identical lines.
+        if len(self._last_reasons) < 5:
+            self._last_reasons.append(msg)
+        logger.debug("PSF-Zero fallback: %s", msg)
+        return _CX_DECOMPOSER(U_target)
+
+    def fallback_summary(self) -> str:
+        if not self.fallback_count:
+            return ""
+        parts = [
+            f"{self.fallback_count} block(s) fell back to CX-basis synthesis "
+            f"({self.degenerate_count} degenerate/numeric, "
+            f"{self.unexpected_count} unexpected)"
+        ]
+        parts.extend(f"  e.g. {r}" for r in self._last_reasons)
+        return "\n".join(parts)
+
+    def _entangling_core(self, qc: QuantumCircuit, a: float, b: float, c: float) -> None:
+        """Append the canonical entangling core directly to `qc`.
+
+        The previous version built a second QuantumCircuit and composed it in;
+        appending straight to the target skips an object allocation and a
+        compose per block for an identical result.
+        """
+        if self.hyper.entangling_basis == "cx":
+            sub = _cx_core_cached(a, b, c)
+            if sub is not None:
+                qc.compose(sub, [0, 1], inplace=True)
+            return
+        if abs(a) > 1e-10:
+            qc.rxx(-2 * a, 0, 1)
+        if abs(b) > 1e-10:
+            qc.ryy(-2 * b, 0, 1)
+        if abs(c) > 1e-10:
+            qc.rzz(-2 * c, 0, 1)
+
+    def _build_circuit(self, cartan, k1, k2, global_phase: float) -> QuantumCircuit:
+        qc = QuantumCircuit(2)
+        qc.global_phase = global_phase
+
+        def local(triple, qubit):
+            phi, theta, lam = triple
+            qc.rz(lam, qubit)
+            qc.ry(theta, qubit)
+            qc.rz(phi, qubit)
+
+        local(k2[0], 1)
+        local(k2[1], 0)
+        self._entangling_core(qc, *cartan)
+        local(k1[0], 1)
+        local(k1[1], 0)
+        return qc
+
+    def _verify_block(self, U_target, qc, cartan, k1, k2, phase, core_infid):
+        """Return the infidelity to test against `tol`, or None to skip."""
+        if self.verify is False:
+            return None
+        if self.verify == "strict":
+            return 1.0 - unitary_fidelity(U_target, qc)
+        if core_infid is not None:
+            # The core already reconstructed this decomposition and told us how
+            # far off it was; nothing further to compute. This is the same
+            # quantity the numpy path below produces, for either entangling
+            # basis -- what is being validated is the decomposition, not the
+            # emitted circuit (only "strict" does that).
+            return core_infid
+        # Older core with no self-check: recompute the same reconstruction here.
+        return _infidelity(U_target, _reconstruct(cartan, k1, k2, phase))
+
+    def synthesize(self, U_target: np.ndarray) -> QuantumCircuit:
+        if U_target.shape != (4, 4):
+            raise ValueError("Input must be a 4x4 unitary matrix.")
+
+        u_r = U_target.real.tolist()
+        u_i = U_target.imag.tolist()
+
+        core_infid = None
+        try:
+            # "strict" rebuilds the circuit with Operator(qc) and ignores
+            # core_infid entirely, so asking the core for it is pure waste.
+            want_core_check = self.verify is True
+            if _CORE_CHECKED is not None and want_core_check:
+                cartan, k1, k2, global_phase, core_infid = _CORE_CHECKED(u_r, u_i)
+            else:
+                cartan, k1, k2, global_phase = geometric_decompose(u_r, u_i)
+        except Exception as exc:
+            # A degenerate or numerically singular input is an expected event
+            # that the CX path handles correctly; anything else means the core
+            # itself misbehaved, and the two are worth counting separately.
+            expected = isinstance(exc, _PSF_DEGENERATE_ERRORS) if _PSF_DEGENERATE_ERRORS else True
+            return self._fallback(U_target, f"Decomposition failed or degenerate: {exc}", expected)
+
+        try:
+            qc = self._build_circuit(cartan, k1, k2, global_phase)
+        except Exception as exc:
+            # The core returned a decomposition and this file failed to turn it
+            # into a circuit. That is a bug here, not a property of the input,
+            # and is never an expected degeneracy.
+            return self._fallback(
+                U_target,
+                f"Circuit construction failed after a successful decomposition: {exc}",
+                expected=False,
+            )
+
+        infid = self._verify_block(U_target, qc, cartan, k1, k2, global_phase, core_infid)
+        if infid is not None and infid > self.hyper.tol:
+            return self._fallback(
+                U_target, f"Fidelity loss exceeded tolerance: {infid:.2e}", expected=False
+            )
+        return qc
+
+
+def _cx_core_cached(a: float, b: float, c: float):
+    """CX-basis form of the canonical core for one (a, b, c).
+
+    Cached on the exact triple: Trotter steps and QAOA layers apply the same
+    canonical angles to many pairs, and every miss costs an `Operator()` build
+    plus a full Qiskit KAK on a matrix whose decomposition we already know.
+    Keyed on the exact floats, so a cache hit is bit-identical -- no rounding,
+    no accuracy traded for the speedup.
+
+    LRU rather than "stop caching once full": the previous version kept the
+    first 4096 triples forever and silently degraded to no caching at all
+    after that, which is the wrong way round for a long-lived process whose
+    working set moves.
+
+    Not synchronised. Two threads racing here can each build the same entry,
+    which wastes a decomposition but cannot produce a wrong one; the cache is
+    keyed on the inputs and the value is a function of them alone.
+    """
+    key = (a, b, c)
+    if key in _CX_CORE_CACHE:
+        _CX_CORE_CACHE.move_to_end(key)
+        return _CX_CORE_CACHE[key]
+    core = QuantumCircuit(2)
+    if abs(a) > 1e-10:
+        core.rxx(-2 * a, 0, 1)
+    if abs(b) > 1e-10:
+        core.ryy(-2 * b, 0, 1)
+    if abs(c) > 1e-10:
+        core.rzz(-2 * c, 0, 1)
+    result = None if len(core.data) == 0 else _CX_DECOMPOSER(Operator(core).data)
+    _CX_CORE_CACHE[key] = result
+    if len(_CX_CORE_CACHE) > _CX_CORE_CACHE_MAX:
+        _CX_CORE_CACHE.popitem(last=False)
+    return result
+
+
+_CX_CORE_CACHE: "OrderedDict[tuple, object]" = OrderedDict()
+_CX_CORE_CACHE_MAX = 4096
+
+
+def compile(
+    qc: QuantumCircuit,
+    block_gate_floor: int = DEFAULT_BLOCK_GATE_FLOOR,
+    verify: Union[bool, str] = True,
+    entangling_basis: str = "canonical",
+    on_unsupported: str = "keep",
+    tol: float = 1e-5,
+) -> QuantumCircuit:
+    """Collect 2-qubit blocks, consolidate them, and re-synthesize each one
+    through the Rust core's Cartan (KAK) decomposition.
+
+    Only runs of more than `block_gate_floor` gates on the same qubit pair are
+    collected, so a wide-and-shallow circuit (`random_circuit()`, say) reports
+    "0/0 blocks" and comes back untouched by design rather than by accident.
+    Everything that is not a 2-qubit `unitary` block is copied through as-is,
+    keeping the input's registers, bits, name and metadata.
+
+    Args:
+        qc: the circuit to compile.
+        block_gate_floor: minimum run length before a same-pair block is worth
+            consolidating and re-synthesizing.
+        verify: True (default, checks the decomposition via the core's own
+            reconstruction -- effectively free), "strict" (rebuilds the emitted
+            circuit with `Operator(qc)` and checks that, ~12x the cost), or
+            False (no check). See `SU4GeodesicPSFSynthesizer`.
+        entangling_basis: "canonical" emits RXX/RYY/RZZ directly; "cx"
+            re-expresses the entangling core through Qiskit's exact CX-basis
+            decomposer, which costs 2x fewer native gates on hardware whose
+            native 2-qubit gate is CX-like (see docs/findings/entangling-basis.md).
+        on_unsupported: "keep" (default) falls back to CX-basis synthesis for a
+            block the core cannot decompose; "raise" turns it into an error.
+        tol: infidelity above which a synthesized block is rejected and falls
+            back instead of being emitted.
 
     Returns:
-        (layout_map, info) -- layout_map is a dict of {logical: physical},
-        or None if nothing was found. info holds diagnostics.
+        A new circuit with the same structure and qubit/clbit layout as `qc`.
     """
-    import rustworkx as rx
+    verify = _validate_verify(verify)
 
-    t0 = time.perf_counter()
-    info = dict(feasible=None, attempts=[], found=False, orderings_tried=0,
-               elapsed_s=None, order_name=None, phase=None)
+    def worth_consolidating(dag, block):
+        return len(block) > block_gate_floor
 
-    if not _has_feasible_matching(coupling_map, len(interaction_pairs)):
-        info["feasible"] = False
-        info["elapsed_s"] = time.perf_counter() - t0
-        return None, info
-    info["feasible"] = True
+    pm_consolidate = PassManager([
+        Collect2qBlocks(filter_fn=worth_consolidating),
+        ConsolidateBlocks(kak_basis_gate=None, force_consolidate=True),
+    ])
+    qc_blocked = pm_consolidate.run(qc)
 
-    # Build the physical graph as a rustworkx.PyGraph.
-    phys = rx.PyGraph()
-    for i in range(coupling_map.size()):
-        phys.add_node(i)
-    for a, b in coupling_map.get_edges():
-        if not phys.has_edge(a, b):
-            phys.add_edge(a, b, None)
+    hyper = GeodesicPSFHyper(
+        tol=tol, on_unsupported=on_unsupported, entangling_basis=entangling_basis
+    )
+    synth = SU4GeodesicPSFSynthesizer(hyper, verify=verify)
 
-    im = rx.PyGraph()
-    idx_of_logical = {}
-    for a, b in interaction_pairs:
-        for q in (a, b):
-            if q not in idx_of_logical:
-                idx_of_logical[q] = im.add_node(q)
-        im.add_edge(idx_of_logical[a], idx_of_logical[b], None)
+    # `copy_empty_like()` keeps the registers, loose bits, name, metadata and
+    # global phase of the input. The previous version built
+    # `QuantumCircuit(qc.num_qubits, qc.num_clbits)` and then mapped every bit
+    # back through `find_bit`, which dropped register structure (so a
+    # classically-conditioned instruction had nowhere to point) and paid two
+    # lookups per instruction to do it.
+    qc_psf = qc_blocked.copy_empty_like()
+    qc_psf.global_phase = qc_blocked.global_phase
 
-    # The observed "calls consumed per second." Used to keep within the time
-    # budget (see below).
-    rate = None
+    blocks_processed = 0
+    blocks_seen = 0
 
-    def _remaining():
-        return time_budget_s - (time.perf_counter() - t0)
+    for inst in qc_blocked.data:
+        op = inst.operation
 
-    def _budgeted_call_limit(nominal):
-        """Shrinks call_limit to fit within the remaining time.
+        if len(inst.qubits) == 2 and op.name == "unitary":
+            mat = op.to_matrix()
+            if mat is not None and mat.shape == (4, 4):
+                blocks_seen += 1
+                before = synth.fallback_count
+                synthesized_block = synth.synthesize(mat)
+                if synth.fallback_count == before:
+                    blocks_processed += 1
+                qc_psf.compose(synthesized_block, inst.qubits, inplace=True)
+                continue
 
-        In a 2026-09-14 real-hardware run, the search took 2.66 seconds
-        despite `time_budget_s=2.0` (diluted_p0.5). The cause was that the
-        budget was **only checked between attempts** -- once an attempt
-        started, it did not stop until `call_limit` was exhausted, so the
-        last attempt overran the budget in full. Here, call_limit is shrunk
-        by estimating, from the call-consumption rate observed so far, how
-        many calls can be consumed in the remaining time."""
-        if rate is None:
-            return nominal
-        rem = _remaining()
-        if rem <= 0:
-            return 0
-        return max(1, min(nominal, int(rate * rem)))
+        qc_psf.append(op, inst.qubits, inst.clbits)
 
-    # --- Stage 1: BFS-family orderings + id_order=True (cheap) ---
-    for order_name, order in _candidate_orderings(phys, extra_seeds=extra_seeds):
-        if _remaining() <= MIN_ATTEMPT_S:
-            break
-        cl = _budgeted_call_limit(per_attempt_call_limit)
-        if cl <= 0:
-            break
-        relabeled = _relabel(phys, order)
-        layout_map, el = _try_mapping(relabeled, im, order, idx_of_logical,
-                                      id_order=True, call_limit=cl)
-        info["attempts"].append(dict(phase=1, order=order_name, id_order=True,
-                                     found=layout_map is not None, time_s=el,
-                                     call_limit=cl))
-        info["orderings_tried"] += 1
-        if layout_map is None and el > 0:
-            # A failure means call_limit was exhausted, so the consumption
-            # rate can be measured from it.
-            rate = cl / el
+    logger.debug(
+        "PSF-Zero Rust Core executed for %d/%d blocks (%d fell back); "
+        "block_gate_floor=%d; verify=%s; entangling_basis=%s.",
+        blocks_processed,
+        blocks_seen,
+        synth.fallback_count,
+        block_gate_floor,
+        verify,
+        entangling_basis,
+    )
+    if synth.fallback_count:
+        # One summary, once, instead of a warning per block.
+        warnings.warn(synth.fallback_summary(), UserWarning, stacklevel=2)
+    return qc_psf
+
+
+def _layout_map_to_list(layout_map: dict, num_logical: int, num_physical: int) -> list[int]:
+    """Convert `smart_vf2_layout()`'s `{logical: physical}` dict to the
+    virtual-qubit-index-ordered list `transpile(initial_layout=...)` expects.
+
+    Inlined from `benchmarks/benchmark_smart_layout_vs_default.py`'s
+    `layout_map_to_list()` (same logic, copied rather than imported so this
+    module does not depend on a benchmark script's internals) -- see that
+    file's own docstring for why unused logical qubits get the remaining
+    physical qubits assigned in index order rather than left unassigned.
+    """
+    used = set(layout_map.values())
+    spare_iter = (p for p in range(num_physical) if p not in used)
+    out = []
+    for q in range(num_logical):
+        if q in layout_map:
+            out.append(layout_map[q])
+        else:
+            out.append(next(spare_iter))
+    return out
+
+
+def compile_for_hardware(
+    qc: QuantumCircuit,
+    coupling_map: CouplingMap,
+    basis_gates: list[str] | None = None,
+    block_gate_floor: int = DEFAULT_BLOCK_GATE_FLOOR,
+    routing_optimization_level: int = 1,
+    verify: Union[bool, str] = True,
+    entangling_basis: str = "canonical",
+    seed_transpiler: int | None = None,
+    initial_layout: list[int] | None = None,
+    on_unsupported: str = "keep",
+    tol: float = 1e-5,
+    layout_search: bool = False,
+    layout_search_time_budget_s: float = 2.0,
+    layout_search_call_limit: int = 50_000,
+    layout_search_fallback_call_limit: int = 2_000_000,
+    layout_search_use_fallback: bool = True,
+) -> QuantumCircuit:
+    """Compress with PSF-Zero, then route (and, if `basis_gates` is given,
+    translate) with Qiskit.
+
+    `basis_gates` matters more than it looks: with only a `coupling_map`,
+    `transpile()` lays out and routes but never targets a gate set, so the
+    RXX/RYY/RZZ this pass emits pass straight through and the result is not
+    ISA-submittable.
+
+    `routing_optimization_level` defaults to 1. It used to default to 2, on the
+    stated grounds that translation "only happens" at level 2 -- that is not
+    true, and was measured: with `basis_gates=["rz","sx","x","cx"]` the output
+    contains nothing outside that set at level 0, 1 and 2 alike. What level 2
+    actually does here is undo this pass. Qiskit's preset pipeline re-runs
+    ConsolidateBlocks (init stage) and UnitarySynthesis (init + translation
+    stages) over input it has no reason to trust, so at level 2 the result is
+    bit-identical to plain `transpile(optimization_level=2)` -- verified gate
+    for gate, qubit for qubit, parameter for parameter at 4, 6 and 7 qubits --
+    for essentially the same wall time (100q dense-pair blocks: 1224 ms here
+    vs 1232 ms for plain Qiskit). Every millisecond PSF-Zero spends is thrown
+    away at that level. Addenda 24-25 (spare-qubit-cliff series) measured the
+    same effect on a saturated coupling map specifically: raising this
+    parameter from 1 toward 3 makes PSF-Zero's own spare-qubit cliff grow from
+    ~7-8x to ~250-275x -- landing inside plain Qiskit L3's own 263-300x cliff
+    -- and by level 3, `compile_for_hardware` is no longer faster than plain
+    Qiskit L3 anywhere in that sweep, cliff or not (0.83x-0.96x). That result
+    is what motivated `layout_search` below: rather than relying on level 1's
+    internal routing call inheriting a cheaper `VF2Layout` failure, address
+    the failure itself.
+
+    The trade at level 1, measured on 50-156 qubit dense-pair-block circuits
+    over a grid coupling map, is: the same 2-qubit gate count as Qiskit's
+    optimization_level 2 and 3 (150 at 100q, 240 at 156q) for 1/20th to 1/59th
+    of their time, at roughly 30-40% more depth (23 vs 16 at 100q, 44 vs 35 at
+    156q). Against optimization_level 1 it wins outright: 1.8x faster, 20x
+    fewer 2-qubit gates, 10x shallower. If minimum depth is what matters and
+    compile time is not a constraint, call Qiskit's optimization_level=2
+    directly -- routing_optimization_level=2 here gives you exactly that
+    circuit and charges PSF-Zero's synthesis on top.
+
+    This pass only helps circuits with deep interaction on the same qubit pair,
+    the ones `Collect2qBlocks` can gather into blocks longer than
+    `block_gate_floor`. On wide-and-shallow input (`random_circuit`, say) it
+    reports "0/0 blocks", returns the circuit untouched by design, and is then
+    pure overhead ahead of the Qiskit call.
+
+    `tol` is forwarded to `compile()`. It previously was not, so the
+    acceptance threshold was pinned at its default on this path with no way to
+    reach it -- `seed_transpiler` and `on_unsupported` were both plumbed
+    through and this one was simply missed.
+
+    `seed_transpiler` pins the internal routing search. Leaving it unset means
+    an `optimization_level >= 2` transpile returns a different circuit, and
+    takes a different amount of time, on every call for identical input --
+    which is exactly the effect that made this project's own coupling-map
+    timings unreproducible until it was pinned on the comparison side.
+
+    `initial_layout` pins the logical-to-physical qubit assignment, bypassing
+    Qiskit's own layout search entirely. It is forwarded verbatim to
+    `transpile()`, so it takes the same forms `transpile()` accepts -- most
+    usefully a list of physical qubit indices ordered by virtual qubit index.
+
+    **Passing this skips the whole layout stage, not just the layout search.**
+    Measured with `transpile(callback=...)` on 2026-09-14:
+
+        default:              SetLayout, VF2Layout, SabreLayout, VF2PostLayout
+        with initial_layout:  SetLayout, ApplyLayout
+
+    Note `VF2PostLayout` is skipped too. With only a `coupling_map` (no error
+    rates) that pass has nothing to score against and its absence changes
+    nothing, which is the configuration this project's benchmarks use. **With
+    a real hardware `Target` carrying error rates it does have something to
+    score, and skipping it can therefore cost fidelity** -- a layout that is
+    valid (every interacting pair lands on a coupled edge) is not
+    automatically a layout that is good on a noisy device. Supplying this
+    argument moves that judgement to the caller. `layout_search=True` below
+    also skips `VF2PostLayout` whenever it finds a layout, for the same
+    reason: it, too, threads its result through `initial_layout`.
+
+    The motivating use is feeding in a layout found by a separate search: this
+    project's `psf_smart_layout.smart_vf2_layout()` returns `{logical:
+    physical}`, which `layout_map_to_list()` in
+    `benchmarks/benchmark_smart_layout_vs_default.py` converts to the list
+    form expected here. Until this parameter existed there was no way to do
+    that, so the end-to-end comparison that motivated the search could not be
+    run at all (recorded in spare-qubit-cliff addendum 15, section 4).
+
+    `layout_search` (new, item 12 in this file's changelog): when True, runs
+    that same search *inside* this call instead of requiring the caller to
+    invoke `smart_vf2_layout()` and build `initial_layout` by hand. The
+    interaction graph handed to the search is read directly off the
+    PSF-Zero-compressed circuit's own 2-qubit instructions (deduplicated,
+    undirected pairs of qubit indices) -- the same circuit that is about to be
+    routed, not the pre-compression input, since consolidation does not
+    change which qubit pairs interact. Mutually exclusive with passing
+    `initial_layout` directly (raises `ValueError` if both are given -- there
+    is no principled way to silently prefer one over the other). Requires
+    `psf_smart_layout` to be importable (raises `ImportError` naming the
+    problem if it is not, rather than silently skipping the search); this is
+    a new hard dependency only for callers who opt into `layout_search=True`.
+    `layout_search_time_budget_s`, `layout_search_call_limit` and
+    `layout_search_fallback_call_limit` are forwarded to
+    `smart_vf2_layout()`'s `time_budget_s`, `per_attempt_call_limit` and
+    `fallback_call_limit` respectively; `layout_search_use_fallback` disables
+    its more expensive stage-2 search (see `psf_smart_layout.py`) if set to
+    False. If the search does not find a layout within budget, this function
+    falls through to Qiskit's own default layout stage exactly as if
+    `layout_search` had been False -- the time already spent searching is
+    real and is included in this call's own wall-clock cost, not hidden.
+    """
+    if layout_search and initial_layout is not None:
+        raise ValueError(
+            "layout_search=True and an explicit initial_layout were both "
+            "given -- ambiguous which should be used. Pass one or the other, "
+            "not both."
+        )
+
+    qc_compressed = compile(
+        qc,
+        block_gate_floor=block_gate_floor,
+        verify=verify,
+        entangling_basis=entangling_basis,
+        on_unsupported=on_unsupported,
+        tol=tol,
+    )
+
+    if layout_search:
+        try:
+            from psf_smart_layout import smart_vf2_layout
+        except ImportError as exc:
+            raise ImportError(
+                "layout_search=True requires psf_smart_layout.py to be "
+                "importable (it is normally under prototypes/ in this "
+                "project's repository layout) -- it was not found. Either "
+                "make it importable (e.g. on PYTHONPATH or copied next to "
+                "this file) or call with layout_search=False."
+            ) from exc
+
+        pairs = set()
+        for inst in qc_compressed.data:
+            if len(inst.qubits) == 2:
+                i = qc_compressed.find_bit(inst.qubits[0]).index
+                j = qc_compressed.find_bit(inst.qubits[1]).index
+                if i != j:
+                    pairs.add((i, j) if i < j else (j, i))
+
+        layout_map, _search_info = smart_vf2_layout(
+            coupling_map,
+            sorted(pairs),
+            qc_compressed.num_qubits,
+            per_attempt_call_limit=layout_search_call_limit,
+            time_budget_s=layout_search_time_budget_s,
+            fallback_call_limit=layout_search_fallback_call_limit,
+            use_fallback=layout_search_use_fallback,
+        )
         if layout_map is not None:
-            info["found"] = True
-            info["order_name"] = order_name
-            info["phase"] = 1
-            info["elapsed_s"] = time.perf_counter() - t0
-            return layout_map, info
+            initial_layout = _layout_map_to_list(
+                layout_map, qc_compressed.num_qubits, coupling_map.size()
+            )
+        # else: fall through to Qiskit's own default layout stage below,
+        # exactly as if layout_search had been False. The search time already
+        # spent is real and is not subtracted from this call's wall time.
 
-    # --- Stage 2: id_order=False (the VF2 heuristic, expensive) ---
-    if use_fallback:
-        rate = None  # re-measure, since stage 1 (id_order=True) and stage 2
-                     # have different consumption rates
-        for order_name, order in _fallback_orderings(phys):
-            if _remaining() <= MIN_ATTEMPT_S:
-                break
-            cl = _budgeted_call_limit(fallback_call_limit)
-            if cl <= 0:
-                break
-            relabeled = _relabel(phys, order)
-            layout_map, el = _try_mapping(relabeled, im, order, idx_of_logical,
-                                          id_order=False, call_limit=cl)
-            info["attempts"].append(dict(phase=2, order=f"heuristic_{order_name}",
-                                         id_order=False, found=layout_map is not None,
-                                         time_s=el, call_limit=cl))
-            info["orderings_tried"] += 1
-            if layout_map is None and el > 0:
-                rate = cl / el
-            if layout_map is not None:
-                info["found"] = True
-                info["order_name"] = f"heuristic_{order_name}"
-                info["phase"] = 2
-                info["elapsed_s"] = time.perf_counter() - t0
-                return layout_map, info
-
-    info["elapsed_s"] = time.perf_counter() - t0
-    return None, info
+    return transpile(
+        qc_compressed,
+        coupling_map=coupling_map,
+        basis_gates=basis_gates,
+        optimization_level=routing_optimization_level,
+        seed_transpiler=seed_transpiler,
+        initial_layout=initial_layout,
+    )
