@@ -1,6 +1,6 @@
-# spare-qubit-cliff: Combined Addenda (Addendum 2026-09-13 through Addendum 26)
+# spare-qubit-cliff: Combined Addenda (Addendum 2026-09-13 through Addendum 27)
 
-**This is a merge of 25 separately-written addenda into one chronological
+**This is a merge of 26 separately-written addenda into one chronological
 document, for convenience.** No wording in any individual addendum has been
 changed -- each section's content is unedited. Two mechanical things were
 done to make this readable as one document: (1) each addendum's own
@@ -84,6 +84,17 @@ pointer added above it.
   (Addendum 21). The anomaly itself, and why the period's value differs by
   machine, remain unexplained; reading Qiskit's own source for a matching
   constant was identified as the natural next step but not yet attempted.
+- **[New in Addendum 27]** A real bug was found and fixed in this
+  session's own exact-fidelity checker (an `n_new == n_orig` special case
+  skipped qubit remapping, producing false `exact_FAIL` results on
+  layout-searched circuits). Once fixed, both Qiskit and PSF-Zero pass
+  exact verification at the cliff and away from it. A wider, 5-round sweep
+  (spare 0-24) mapped the cliff as sharp and confined to spare=0 (~250-280x
+  at the peak, dropping to 1.0-1.7x by spare=2). It also found PSF-Zero
+  itself is not perfectly stable exactly at the cliff's peak: 3 of 30
+  spare=0 runs showed large, unexplained slowdowns (up to 8x the median),
+  spread across different seeds in different rounds rather than tied to
+  one specific circuit -- the mechanism behind this is untested.
 
 ---
 
@@ -4882,3 +4893,182 @@ pinned down first.
   percentages were computed programmatically, not estimated by eye.
 
 ---
+
+<!-- ===== Addendum 27 (source: spare-qubit-cliff-addendum-27-2026-09-16.md) ===== -->
+
+> **Note added when merging:** Fixes a real bug in this session's own
+> exact-fidelity checker (found via a suspiciously clean pattern: only
+> the arms that do layout search failed, and only where qubit counts
+> happened to match), confirming both engines' correctness at cliff and
+> non-cliff conditions once fixed. Then runs a wider, repeated
+> tight-to-flat sweep and finds the cliff is sharp (spare=0 only) and that
+> PSF-Zero, while far more stable than Qiskit overall, is not perfectly so
+> at the cliff's exact peak -- an early seed-specific outlier turned out
+> not to be seed-specific once more rounds were run.
+
+## Addendum 27 (2026-09-16) -- a fidelity-checker bug found and fixed; the cliff's shape mapped from spare=0 to spare=24; PSF-Zero's own rare outliers at the cliff's peak
+
+### 0. In one line
+
+Building exact unitary-equivalence verification for the Qiskit-vs-PSF-Zero
+comparison (following up on Addendum 25's call to verify correctness
+before further speed work) surfaced a real bug in the checker itself: an
+`n_new == n_orig` special case skipped qubit-remapping entirely, on the
+false assumption that equal qubit *counts* meant no permutation had
+happened. Once fixed, **both Qiskit L3 and PSF-Zero (with `layout_search`
+either on or off) pass exact verification at machine precision, at both
+the cliff's peak and away from it.** A wider sweep (spare 0 through 24, 5
+rounds, fixed seeds) then mapped the cliff's shape precisely: it is sharp
+and confined to `spare=0` (Qiskit ~250-280x slower there, dropping to
+1.0-1.7x by `spare=2` and staying flat out to `spare=24`). **PSF-Zero is
+far more stable than Qiskit overall, but not perfectly so exactly at the
+cliff's peak**: 3 of 30 `spare=0` runs across 5 rounds showed a large,
+unexplained slowdown (up to 207ms against a ~24-29ms median) -- and
+critically, this did **not** track a single suspicious seed once more data
+came in, ruling out "one hard circuit" as the explanation.
+
+### 1. The fidelity-checker bug
+
+Two scripts built earlier the same day
+(`bench_qiskit_tket_psf.py`, `bench_cliff_1v1.py`) both contained the same
+`exact_fidelity_check()` function, with a special case: if the compiled
+circuit's qubit count equaled the original's, the two were compared
+directly with no remapping. This is wrong -- equal qubit *counts* does
+not mean qubit *i* still holds logical qubit *i*'s state; both Qiskit's
+own layout stage and PSF-Zero's `layout_search` can permute qubits while
+leaving the total count unchanged.
+
+The bug surfaced as a strikingly clean pattern on a 3x4 grid at
+`spare=0` (where the circuit's qubit count exactly equals the physical
+qubit count, triggering the buggy branch): `qiskit_opt3` and
+`psf_zero(layout_search=True)` -- both of which invoke a layout search
+that can reorder qubits -- came back `exact_FAIL` with infidelity
+0.995-0.9999 (i.e. almost completely different operators), while
+`psf_zero(layout_search=False)` -- whose design does not reorder qubits
+-- passed exactly, every time. That contrast (which arms fail lines up
+exactly with which arms *could* have reordered qubits, not with which
+circuit was being compiled) was itself the evidence the checker, not the
+circuits, was wrong.
+
+Fixed by removing the special case: every comparison now goes through the
+same touched-qubit-count check and layout-based remapping regardless of
+whether the qubit counts happen to match. Re-run after the fix:
+
+- `bench_qiskit_tket_psf.py` (4/6/8 qubits, 5 seeds, 45 rows): Qiskit and
+  PSF-Zero both `exact_pass`, all via `order_source=qc_new.layout.final_index_layout`
+  (the trustworthy path, not a fallback guess).
+- `bench_cliff_1v1.py` (3x4 grid, spare=0, the condition that first
+  exposed the bug): `qiskit_opt3`, `psf_zero_ls0`, and `psf_zero_ls1` all
+  `exact_pass` on the first four rows checked before the run was stopped
+  as no longer informative (see section 2).
+
+TKET was excluded from this fix's benefit: its `DefaultMappingPass`
+output carries no Qiskit `.layout` to recover the true qubit
+correspondence from, so it remains stuck on the fallback
+(`ascending-index`) path and continues to show spurious `exact_FAIL`
+results. This is a separate, still-open limitation, noted but not
+pursued further in this addendum (TKET was already out of scope for the
+cliff-focused comparison in section 2).
+
+### 2. The cliff's shape, spare=0 through spare=24
+
+Once the checker was trusted again, a wider sweep was run: 6x7 grid (42
+physical qubits), `spare` in {0, 2, 4, 8, 16, 24}, 5 rounds, 3 fixed seeds
+per round, Qiskit `optimization_level=3` against PSF-Zero
+(`layout_search` both off and on). All 270 rows succeeded.
+
+| spare | qiskit_opt3 (median) | psf_zero_ls0 (median) | psf_zero_ls1 (median) | qiskit max/min | psf_ls0 max/min | psf_ls1 max/min |
+|---|---|---|---|---|---|---|
+| 0 | 6716.0 ms | 28.7 ms | 24.0 ms | 1.13x | **3.74x** | **8.93x** |
+| 2 | 26.5 ms | 16.6 ms | 17.0 ms | 1.71x | 1.16x | 1.59x |
+| 4 | 27.6 ms | 16.8 ms | 16.9 ms | 1.06x | 1.11x | 1.17x |
+| 8 | 31.2 ms | 16.1 ms | 15.9 ms | 1.04x | 1.13x | 1.09x |
+| 16 | 36.6 ms | 14.3 ms | 14.5 ms | 1.04x | 1.13x | 1.15x |
+| 24 | 39.4 ms | 13.3 ms | 13.2 ms | 1.17x | 1.15x | 1.12x |
+
+**The cliff is confined entirely to `spare=0`.** By `spare=2` Qiskit has
+already dropped from ~6.7 seconds to ~26 ms -- a drop of roughly 250x in
+a single step -- and stays in the same range (26-39 ms) all the way out
+to `spare=24`, drifting gently upward as spare increases (more physical
+qubits to search over). PSF-Zero's own median drifts gently *downward*
+over the same range (28.7 ms to 13.3 ms), the opposite direction, for
+both `layout_search` settings.
+
+**PSF-Zero's win margin at the cliff's peak, on medians: roughly
+230-280x.** Away from the cliff (spare 2-24): roughly 1.0-2.9x, in line
+with Addendum 25-26's earlier findings for this comparison.
+
+### 3. PSF-Zero's own instability, exactly at the cliff's peak
+
+The `max/min` column above shows something new: at `spare=0` specifically,
+PSF-Zero's own spread (3.74x for `layout_search=False`, 8.93x for
+`layout_search=True`) is far larger than at any other spare value tested
+(1.04x-1.71x everywhere else, Qiskit included). Three individual rows
+account for this:
+
+| round | spare | arm | seed | time |
+|---|---|---|---|---|
+| 1 | 0 | psf_zero_ls1 | 0 | 207.3 ms |
+| 1 | 0 | psf_zero_ls0 | 1 | 91.2 ms |
+| 4 | 0 | psf_zero_ls0 | 2 | 103.7 ms |
+
+against a `spare=0` median of 24-29 ms -- these are 3-8x the typical
+value, all three confined to `spare=0`, none appearing at any other spare
+value in any of the 5 rounds.
+
+**The round-1 outlier (seed=1) was initially suspected, by hand, of being
+a property of that specific seed's circuit** -- it reproduced identically
+(144.202ms) across two independent manual runs at `spare=2` before this
+wider sweep was designed. **That suspicion did not hold up**: across the
+5-round sweep, `spare=2` showed no elevated values at all for seed=1 (or
+any seed), and the three outliers that did appear were spread across
+three different seeds (0, 1, 2) in two different rounds. **The pattern is
+"an outlier at spare=0 happens occasionally, on no seed in particular,"**
+not "seed 1's circuit is slow." This matches the shape of unexplained
+timing variance found earlier in this session (Addendum 19's Qiskit-side
+anomaly, Addendum 26's same-day drift) more than a circuit-specific
+effect.
+
+**Not yet determined**: whether this is specific to `spare=0` because
+that is exactly where PSF-Zero's own Sabre-derived routing pass (used
+internally when `layout_search` does not fully resolve the layout, or in
+the routing stage after it) is under the same kind of stress that
+produces Qiskit's cliff in the first place, or something else entirely
+tied to running at the coupling map's exact saturation point. No
+mechanism has been proposed or tested.
+
+### 4. Files
+
+| Path in the project | Contents |
+|---|---|
+| `psf-zero/benchmarks/bench_qiskit_tket_psf.py` | fidelity-checker bug fixed (section 1) |
+| `psf-zero/benchmarks/bench_cliff_1v1.py` | same fix; single-condition 1-on-1 cliff comparison tool |
+| `psf-zero/benchmarks/bench_cliff_overnight.py` | the multi-round sweep script used for section 2-3 (fixed seed set across rounds, by design, to let seed-specific effects be checked directly) |
+| `psf-zero/data/bench_qiskit_tket_psf_2026-09-16.csv` | post-fix 4/6/8-qubit verification run (45 rows) |
+| `psf-zero/data/bench_cliff_1v1_2026-09-16.csv` | earlier single-run cliff data, including the pre-fix false `exact_FAIL` rows and the post-fix confirmation rows (provided by the user across several partial runs) |
+| `psf-zero/data/bench_cliff_overnight_2026-09-16.csv` | the 5-round, spare 0-24 sweep behind sections 2-3 (270 rows) |
+
+### 5. Verification
+
+- The checker bug was confirmed by the pattern itself before being
+  investigated further: failures lined up exactly with which arms invoke
+  a layout search (`qiskit_opt3`, `psf_zero_ls1`), and passes lined up
+  exactly with the one arm that does not (`psf_zero_ls0`) -- checked
+  against the actual `Infidelity` values (0.995-0.9999 for failures, i.e.
+  clearly not a numerical-precision issue) before concluding the checker,
+  not the circuits, was at fault.
+- Post-fix, `order_source` was read directly from each row's
+  `FidelityDetail` column to confirm the trustworthy path
+  (`qc_new.layout.final_index_layout`) was actually used, not a fallback,
+  for both re-verification runs (section 1).
+- Section 2's cliff-shape table and section 3's outlier table were both
+  computed directly from the 270-row overnight CSV (median, min, max,
+  and max/min per spare/arm combination), not summarized from the
+  terminal's own running output.
+- Section 3's "not seed-specific" conclusion was checked by tabulating
+  every `psf_zero` row at `spare=0` by round and seed together (a 5x3
+  grid) and confirming the elevated values do not share a common seed
+  across rounds.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this addendum, and the three CSV
+  files named in section 4 -> 0 hits.
