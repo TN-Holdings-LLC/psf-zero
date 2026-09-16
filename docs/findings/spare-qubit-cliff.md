@@ -316,6 +316,25 @@ unexplained ~4x same-day timing drift in its own control arm, eventually
 traced to a session/machine-level effect rather than to the new code, and
 reported as an open finding rather than smoothed over.
 
+**[Addendum 27] found and fixed a real bug in the exact-fidelity checker
+built alongside these speed comparisons**, then used the corrected checker
+to confirm both engines' correctness and map the cliff's exact shape. The
+bug: an `n_new == n_orig` special case skipped qubit remapping entirely,
+wrongly assuming equal qubit counts meant no permutation had occurred --
+caught by a suspiciously clean failure pattern (only layout-search-capable
+arms failed) rather than by inspection. Fixed, both Qiskit L3 and
+PSF-Zero (layout_search on or off) pass exact unitary verification at
+machine precision, at the cliff and away from it. A wider sweep (6x7 grid,
+spare 0 through 24, 5 rounds) then mapped the cliff precisely: it is sharp
+and confined entirely to spare=0 (Qiskit ~250-280x slower there, dropping
+to 1.0-1.7x by spare=2, staying flat out to spare=24). PSF-Zero is far
+more stable than Qiskit overall, but not perfectly so exactly at the
+cliff's peak: 3 of 30 spare=0 runs across the 5 rounds showed large,
+unexplained slowdowns (up to 8x the median) -- and an early suspicion that
+one specific seed's circuit was the cause did not hold up once more
+rounds were run, since the outliers landed on different seeds in
+different rounds.
+
 ## 7. Where this stands
 
 **Solid:**
@@ -349,6 +368,13 @@ reported as an open finding rather than smoothed over.
   that gap until PSF-Zero is no longer faster at all by level 3 (Addendum
   25); and the new `layout_search=True` option collapses PSF-Zero's own
   cliff to ~1.5x-1.6x (Addendum 26).
+- A real bug in this session's own exact-fidelity checker (skipped qubit
+  remapping when counts happened to match) was found and fixed; once
+  fixed, both Qiskit and PSF-Zero pass exact verification at machine
+  precision, at the cliff and away from it (Addendum 27).
+- The cliff's shape is now mapped precisely: sharp and confined to
+  spare=0 (~250-280x), dropping to 1.0-1.7x by spare=2 and staying flat
+  out to spare=24 (Addendum 27).
 
 **Open:**
 - What causes the ~3x same-condition variance seen at L3 (seed=-1 shuffle
@@ -371,6 +397,10 @@ reported as an open finding rather than smoothed over.
   25 -- a `callback=`-based pass-timing trace would settle this directly
   and has not been run. A plain Qiskit `optimization_level=2` baseline is
   also still missing from that comparison.
+- What causes PSF-Zero's own rare, large slowdowns exactly at the cliff's
+  peak (spare=0) -- 3 of 30 runs across 5 rounds, up to 8x the median,
+  spread across different seeds in different rounds rather than tied to
+  one circuit. No mechanism proposed or tested (Addendum 27).
 - The ~4x same-day timing drift Addendum 26 found in its own no-search
   control -- narrowed to a session/machine-level effect rather than to
   `layout_search` itself, but the root physical cause (CPU boost/thermal
@@ -399,6 +429,7 @@ reported as an open finding rather than smoothed over.
 | 24 | [`test_cliff_sniper_corrected.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cliff_sniper_corrected.py) (fixes a predecessor script that silently fabricated failed PSF-Zero measurements) | `cliff_sniper_corrected_6x7_...` sweep, 38-42 qubits (real hardware) |
 | 25 | (same script, `--routing-optimization-level` varied) | rl=2 and rl=3 sweeps, plus [pre-registration](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-25-preregistration-2026-09-16.md) |
 | 26 | [`psf_compile.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/psf_compile.py) (new `layout_search` option), [`test_cliff_sniper_layout_search.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cliff_sniper_layout_search.py) | three-arm sweep (Qiskit L3 / no-search / `layout_search=True`), 3 runs |
+| 27 | [`bench_qiskit_tket_psf.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/bench_qiskit_tket_psf.py), [`bench_cliff_1v1.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/bench_cliff_1v1.py), [`bench_cliff_overnight.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/bench_cliff_overnight.py) (fidelity-checker bug fixed in all three) | [`bench_qiskit_tket_psf_2026-09-16.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/bench_qiskit_tket_psf_2026-09-16.csv), [`bench_cliff_1v1_2026-09-16.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/bench_cliff_1v1_2026-09-16.csv), [`bench_cliff_overnight_2026-09-16.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/bench_cliff_overnight_2026-09-16.csv) (270 rows, spare 0-24, 5 rounds) |
 
 Full text, exact tables, and every pre-registered prediction as originally
 written:
@@ -409,6 +440,6 @@ written:
 ## See also
 
 - [`spare-qubit-cliff-combined.md`](spare-qubit-cliff-combined.md) --
-  all 25 addenda, unedited, in chronological order (same folder). This is
+  all 26 addenda, unedited, in chronological order (same folder). This is
   where the exact wording, exact tables, and every pre-registered prediction
   as originally written can be found.
