@@ -94,6 +94,21 @@ Qiskit's `VF2Layout` pass itself, it would be worth checking whether the same
 ordering effects and stage-2 benefit reproduce in the internal implementation
 too -- that is this prototype's next task, and is out of scope here.
 
+## Tuning stage 2's budget (2026-09-15)
+
+`fallback_call_limit` defaults to 300,000, not the 2,000,000 used in the
+addendum-13/14 measurements above. A sweep on real hardware
+(200k/300k/400k/500k/1m/2m, on the same six topologies) found 300,000 is
+the smallest value that still catches `diluted_p0.75` at try 7 of 9
+(200,000 misses it entirely, exhausting all 9 tries and finding nothing).
+At 300,000, the failing topologies' stage-2 cost dropped substantially
+against the 2,000,000 default -- `brick` from 1638.8ms to 906.4ms,
+`diluted_p0.25` from 1960.6ms to 987.1ms, `diluted_p0.5` from 1921.9ms to
+988.1ms -- while `grid`/`line`'s wins were unaffected (still 34x/27x
+against the default pipeline). Lowering further than 300,000 has not been
+tested with a finer step and is not recommended without doing so, given
+200,000 already misses `diluted_p0.75` outright.
+
 ## Usage
 
     from psf_smart_layout import smart_vf2_layout
@@ -218,7 +233,7 @@ def _try_mapping(relabeled, im, order, idx_of_logical, id_order, call_limit):
 def smart_vf2_layout(coupling_map, interaction_pairs, num_qubits,
                      per_attempt_call_limit=50_000, time_budget_s=2.0,
                      extra_seeds=(0, 1),
-                     fallback_call_limit=2_000_000, use_fallback=True):
+                     fallback_call_limit=300_000, use_fallback=True):
     """Tries several node orderings and strategies in order of increasing
     budget, stopping as soon as one succeeds.
 

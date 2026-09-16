@@ -204,7 +204,7 @@ def make_runner(arm, cmap, level, psf_rl, psf_init_layout_mode):
 
 
 def measure_arm(arm, run, qc, cmap, pairs, n, reps, time_budget_s,
-                per_attempt_call_limit):
+                per_attempt_call_limit, fallback_call_limit):
     """Measures one condition x one arm. For a smart arm, the search time is
     always included in the total.
 
@@ -214,6 +214,15 @@ def measure_arm(arm, run, qc, cmap, pairs, n, reps, time_budget_s,
     on that one case (diluted_p0.75) it still lost to the default -- this arm
     directly measures the hypothesis that "with only the cheap stage, the
     loss margin is smaller."
+
+    `fallback_call_limit` is exposed here (rather than left at
+    `smart_vf2_layout()`'s own default of 2,000,000) because the
+    2026-09-15 real-hardware run showed stage 2 costing 0.93-1.21s per
+    failing topology (brick, diluted_p0.25, diluted_p0.5) to confirm nothing
+    is there, against only 0.10s for the one topology (diluted_p0.75) where
+    it actually finds something at try 7 of 9. Sweeping this value is how
+    that gap gets investigated -- whether a smaller budget still catches
+    diluted_p0.75 while cutting the failing cases' cost.
     """
     is_smart = arm.endswith("_smart") or arm.endswith("_smart1")
     use_fallback = not arm.endswith("_smart1")
@@ -228,7 +237,8 @@ def measure_arm(arm, run, qc, cmap, pairs, n, reps, time_budget_s,
         if is_smart:
             layout_map, info = smart_vf2_layout(
                 cmap, pairs, n, per_attempt_call_limit=per_attempt_call_limit,
-                time_budget_s=time_budget_s, use_fallback=use_fallback)
+                time_budget_s=time_budget_s, use_fallback=use_fallback,
+                fallback_call_limit=fallback_call_limit)
             rec.update(SmartSearch_s=info["elapsed_s"], SmartFound=info["found"],
                        SmartPhase=info["phase"], SmartOrder=info["order_name"],
                        SmartOrderingsTried=info["orderings_tried"])
@@ -293,6 +303,12 @@ def main():
     ap.add_argument("--time-budget", type=float, default=2.0,
                     help="smart_vf2_layout's search time budget (seconds)")
     ap.add_argument("--per-attempt-call-limit", type=int, default=50_000)
+    ap.add_argument("--fallback-call-limit", type=int, default=2_000_000,
+                    help="stage 2's call_limit per attempt. The 2026-09-15 run "
+                         "showed this costing 0.9-1.2s per failing topology to "
+                         "confirm nothing is there; sweep this to see how low it "
+                         "can go before diluted_p0.75 (found at try 7 of 9) stops "
+                         "being caught")
     ap.add_argument("--arms", default=None,
                     help="comma-separated explicit list (default is automatic: "
                          "4 arms if PSF is available, 2 if not)")
@@ -379,7 +395,8 @@ def main():
                     continue
                 out, rec = measure_arm(arm, runners[(arm, name)], qc, cmap, pairs,
                                        n, args.reps, args.time_budget,
-                                       args.per_attempt_call_limit)
+                                       args.per_attempt_call_limit,
+                                       args.fallback_call_limit)
                 if out is None:
                     print(f"{name:<14} {spare:>5} {n:>4} {arm:<20} {rec['Status']}")
                     rows_out.append(dict(Topology=name, AvgDegree=deg, Physical=phys,
@@ -387,6 +404,7 @@ def main():
                                          Level=lv, PSF_RL=rl, Reps=args.reps,
                                          TimeBudget_s=args.time_budget,
                                          PerAttemptCallLimit=args.per_attempt_call_limit,
+                                         FallbackCallLimit=args.fallback_call_limit,
                                          PSFInitialLayoutMode=str(psf_mode), **rec))
                     continue
                 srch = rec["SmartSearch_s"]
@@ -401,6 +419,7 @@ def main():
                                      Level=lv, PSF_RL=rl, Reps=args.reps,
                                      TimeBudget_s=args.time_budget,
                                      PerAttemptCallLimit=args.per_attempt_call_limit,
+                                     FallbackCallLimit=args.fallback_call_limit,
                                      PSFInitialLayoutMode=str(psf_mode), **rec))
 
     df = write_csv(rows_out, args.out or default_out("smart_layout_vs_default"),
