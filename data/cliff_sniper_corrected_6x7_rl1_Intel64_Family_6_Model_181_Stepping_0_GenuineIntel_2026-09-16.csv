@@ -1,0 +1,6 @@
+n,spare,grid_rows,grid_cols,qiskit_l3_ms,qiskit_l3_error,psf_zero_ms,psf_zero_error,psf_zero_fallback_count,speedup,repeats,routing_optimization_level,seed,seed_transpiler,cpu,python_version,qiskit_version
+38,4,6,7,23.129699999117292,,11.604700001043966,,0,1.9931320927759038,5,1,7,42,"Intel64 Family 6 Model 181 Stepping 0, GenuineIntel",3.11.9,2.5.2
+39,3,6,7,23.0864000004658,,11.621399997238768,,0,1.9865420694538614,5,1,7,42,"Intel64 Family 6 Model 181 Stepping 0, GenuineIntel",3.11.9,2.5.2
+40,2,6,7,22.08500000051572,,11.575700002140366,,0,1.90787598127389,5,1,7,42,"Intel64 Family 6 Model 181 Stepping 0, GenuineIntel",3.11.9,2.5.2
+41,1,6,7,22.288600001047598,,11.782100002164952,,0,1.8917340709170762,5,1,7,42,"Intel64 Family 6 Model 181 Stepping 0, GenuineIntel",3.11.9,2.5.2
+42,0,6,7,6383.352900000318,,84.47199999864097,,0,75.5676780483831,5,1,7,42,"Intel64 Family 6 Model 181 Stepping 0, GenuineIntel",3.11.9,2.5.2
