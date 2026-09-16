@@ -161,7 +161,7 @@ resolved by this addendum, not any measurement.
 
 > **Note added when merging:** Confirms the ordering-dependence hypothesis directly inside Qiskit (not just rustworkx) via `shuffle_seed`.
 
-## Proposed addendum for `docs/findings/spare-qubit-cliff.md`
+## Proposed addendum for [`docs/findings/spare-qubit-cliff.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff.md)
 
 **Where it goes:** after the existing "Addendum (2026-09-13): the objection traces to
 a specific, year-old commit".
@@ -197,7 +197,7 @@ mappings = vf2_mapping(
 ```
 
 `subgraph=True, id_order=False, induced=False` is **the exact parameter set**
-`benchmarks/vf2_id_order_probe.py` used when it measured `id_order=True` finding the
+[`benchmarks/vf2_id_order_probe.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/vf2_id_order_probe.py) used when it measured `id_order=True` finding the
 layout in under a millisecond on grids where `id_order=False` burned seconds. Before
 #14860 that probe was not an analogy to Qiskit — it was a reproduction of Qiskit's
 literal call.
@@ -697,19 +697,19 @@ the report itself.
 
 ### Files
 
-- Scripts: `benchmarks/verify_vf2_call_limit_tuple.py`,
-  `benchmarks/verify_vf2_steps_to_first_match.py`,
-  `benchmarks/verify_vf2_ordering_structure.py`,
-  `benchmarks/verify_vf2_cross_implementation.py`,
-  `benchmarks/verify_vf2_topologies.py`,
-  `benchmarks/verify_qiskit_source_2_5_2.py`,
-  `benchmarks/vf2_probe_common.py`
-- Raw data (Intel, 2026-09-14): `data/vf2_call_limit_tuple_2026-09-14.csv`,
-  `data/vf2_steps_to_first_match_2026-09-14.csv`,
-  `data/vf2_ordering_structure_2026-09-14.csv`,
-  `data/vf2_cross_implementation_2026-09-14.csv`,
-  `data/vf2_topologies_2026-09-14.csv`,
-  `data/qiskit_source_check_2026-09-14.csv`
+- Scripts: [`benchmarks/verify_vf2_call_limit_tuple.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_call_limit_tuple.py),
+  [`benchmarks/verify_vf2_steps_to_first_match.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_steps_to_first_match.py),
+  [`benchmarks/verify_vf2_ordering_structure.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_ordering_structure.py),
+  [`benchmarks/verify_vf2_cross_implementation.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_cross_implementation.py),
+  [`benchmarks/verify_vf2_topologies.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_topologies.py),
+  [`benchmarks/verify_qiskit_source_2_5_2.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_qiskit_source_2_5_2.py),
+  [`benchmarks/vf2_probe_common.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/vf2_probe_common.py)
+- Raw data (Intel, 2026-09-14): [`data/vf2_call_limit_tuple_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_call_limit_tuple_2026-09-14.csv),
+  [`data/vf2_steps_to_first_match_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_steps_to_first_match_2026-09-14.csv),
+  [`data/vf2_ordering_structure_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_ordering_structure_2026-09-14.csv),
+  [`data/vf2_cross_implementation_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_cross_implementation_2026-09-14.csv),
+  [`data/vf2_topologies_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_topologies_2026-09-14.csv),
+  [`data/qiskit_source_check_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/qiskit_source_check_2026-09-14.csv)
 
 ---
 
@@ -955,14 +955,14 @@ into mechanism and generality, run well after the report was filed.
 
 ### Files
 
-- Scripts: `benchmarks/verify_vf2_seed_anomaly_repro.py`,
-  `benchmarks/verify_vf2_ordering_id_order_true.py`,
-  `benchmarks/verify_vf2_call_limit_sweep.py`,
-  `benchmarks/verify_vf2_toroidal_grid.py`
-- Raw data (Intel, 2026-09-14): `data/vf2_seed_anomaly_repro_2026-09-14.csv`,
-  `data/vf2_ordering_id_order_true_2026-09-14.csv`,
-  `data/vf2_call_limit_sweep_2026-09-14.csv`,
-  `data/vf2_toroidal_grid_2026-09-14.csv`
+- Scripts: [`benchmarks/verify_vf2_seed_anomaly_repro.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_seed_anomaly_repro.py),
+  [`benchmarks/verify_vf2_ordering_id_order_true.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_ordering_id_order_true.py),
+  [`benchmarks/verify_vf2_call_limit_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_call_limit_sweep.py),
+  [`benchmarks/verify_vf2_toroidal_grid.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_toroidal_grid.py)
+- Raw data (Intel, 2026-09-14): [`data/vf2_seed_anomaly_repro_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_seed_anomaly_repro_2026-09-14.csv),
+  [`data/vf2_ordering_id_order_true_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_ordering_id_order_true_2026-09-14.csv),
+  [`data/vf2_call_limit_sweep_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_call_limit_sweep_2026-09-14.csv),
+  [`data/vf2_toroidal_grid_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_toroidal_grid_2026-09-14.csv)
 
 ---
 
@@ -1175,12 +1175,12 @@ what was reported upstream.
 
 ### Files
 
-- Scripts: `benchmarks/verify_vf2_heavy_hex_topology.py`,
-  `benchmarks/verify_vf2_dfs_mechanism.py`,
-  `benchmarks/verify_vf2_rustworkx_raw_sweep.py`
-- Raw data (Intel, 2026-09-14): `data/vf2_heavy_hex_topology_2026-09-14.csv`,
-  `data/vf2_dfs_mechanism_2026-09-14.csv`,
-  `data/vf2_rustworkx_raw_sweep_2026-09-14.csv`
+- Scripts: [`benchmarks/verify_vf2_heavy_hex_topology.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_heavy_hex_topology.py),
+  [`benchmarks/verify_vf2_dfs_mechanism.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_dfs_mechanism.py),
+  [`benchmarks/verify_vf2_rustworkx_raw_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/verify_vf2_rustworkx_raw_sweep.py)
+- Raw data (Intel, 2026-09-14): [`data/vf2_heavy_hex_topology_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_heavy_hex_topology_2026-09-14.csv),
+  [`data/vf2_dfs_mechanism_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_dfs_mechanism_2026-09-14.csv),
+  [`data/vf2_rustworkx_raw_sweep_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_rustworkx_raw_sweep_2026-09-14.csv)
 
 ---
 
@@ -1699,7 +1699,7 @@ L3) rather than placing too much confidence in any individual figure
 
 | Path in the project | Contents |
 |---|---|
-| `psf-zero/data/vf2_pipeline_trace_2026-09-14.csv` (**not found in the repository as of 2026-09-14 -- link removed; the data behind addendum 9/10's "all 24 rows matched" claim was not preserved as a standalone file**) | followup 10's real-hardware results (provided by the user) |
+| [`psf-zero/data/vf2_pipeline_trace_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_pipeline_trace_2026-09-14.csv) (**not found in the repository as of 2026-09-14 -- link removed; the data behind addendum 9/10's "all 24 rows matched" claim was not preserved as a standalone file**) | followup 10's real-hardware results (provided by the user) |
 
 ## 5. Verification
 
@@ -2911,7 +2911,7 @@ identified as blocking: **it is no longer blocked.**
 - Confirmed `PSFInitialLayoutMode` reads `True` across every row in this
   round's CSV, i.e. the patched signature was detected correctly.
 - The patch was verified before this round's run by (a) applying it to a
-  clean copy of `psf_compile.py` and confirming the result matches the
+  clean copy of [`psf_compile.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/psf_compile.py) and confirming the result matches the
   intended edit byte-for-byte, (b) confirming the patched file compiles
   (`py_compile`), and (c) an AST check confirming `initial_layout` is both
   an accepted parameter and is actually forwarded as a keyword to the
@@ -2986,7 +2986,7 @@ other spare values, other topologies, or other machines is untested.
 
 ### 2. Stage-2 budget sweep
 
-`benchmark_smart_layout_vs_default.py` gained a `--fallback-call-limit`
+[`benchmark_smart_layout_vs_default.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/benchmark_smart_layout_vs_default.py) gained a `--fallback-call-limit`
 argument (previously `smart_vf2_layout()`'s `fallback_call_limit` could
 only be set by editing the default in the function signature). Swept at
 six values -- 200k, 300k, 400k, 500k, 1m, 2m -- on the same six topologies,
@@ -3082,7 +3082,7 @@ also not explored.
   `SmartOrder` columns; the "200k misses, 300k+ all behave identically"
   claim was checked across all six budget values, not inferred from the
   endpoints alone.
-- The `psf_smart_layout.py` default-value change and its accompanying
+- The [`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_smart_layout.py) default-value change and its accompanying
   docstring note were confirmed with `py_compile` (syntax) and a direct
   grep for the old value (2_000_000) to confirm no other reference to it
   was left stale.
@@ -3106,7 +3106,7 @@ also not explored.
 
 ### 0. In one line
 
-A separate benchmark (`test_cumulative_compile_scale.py`), run without any
+A separate benchmark ([`test_cumulative_compile_scale.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cumulative_compile_scale.py)), run without any
 `coupling_map` (so unrelated to this series' central VF2/SabreLayout
 finding), compared Qiskit `optimization_level=3` against PSF-Zero
 (`verify=True` and `verify=False`) over 10,000 and then 50,000 back-to-back
@@ -3216,7 +3216,7 @@ both configurations might share).
   standard deviation, and the stdev/median ratio for all three arms at
   both sample sizes; all values match the script's own printed summary.
 - Confirmed no `coupling_map` argument appears anywhere in
-  `test_cumulative_compile_scale.py`'s three `transpile()` call sites.
+  [`test_cumulative_compile_scale.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cumulative_compile_scale.py)'s three `transpile()` call sites.
 - The slope-anomaly timing at 10,000 iterations was cross-checked against
   the script's own progress-log timestamps (34.9s and 37.5s for the two
   affected 1000-iteration blocks, against a ~23s baseline for unaffected
@@ -3273,7 +3273,7 @@ contain.
 
 Each of the 140 two-qubit blocks (7 pairs x 20 circuits) was checked for
 Frobenius distance, after SU(4) projection, to four landmark points
-(identity, CNOT, SWAP, iSWAP) that this project's own findings on `lib.rs`
+(identity, CNOT, SWAP, iSWAP) that this project's own findings on [`lib.rs`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/lib.rs)
 name as historically hard for KAK-style decomposition. Mean distance across
 the 140 outlier blocks was 2.305 (min 1.681, max 2.658). Three baseline
 indices (100, 5000, 40000 -- chosen without reference to the outlier
@@ -3362,9 +3362,9 @@ Intel machine was not available to repeat the check in this session.
 
 | Path in the project | Contents |
 |---|---|
-| `psf-zero/benchmarks/diagnose_outlier_circuits.py` | section 1's reconstruction and landmark-distance check |
-| `psf-zero/benchmarks/check_period_145.py` | section 2's autocorrelation and modular-bin check |
-| `psf-zero/data/cumulative_compile_times_5000_amd_run1.csv`, `..._amd_run2.csv` | the two AMD-machine runs in section 2 (provided by the user; both are raw `.npz`, not `.csv`, exact filenames as saved by the user) |
+| [`psf-zero/benchmarks/diagnose_outlier_circuits.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/diagnose_outlier_circuits.py) | section 1's reconstruction and landmark-distance check |
+| [`psf-zero/benchmarks/check_period_145.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/check_period_145.py) | section 2's autocorrelation and modular-bin check |
+| [`psf-zero/data/cumulative_compile_times_5000_amd_run1.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_5000_amd_run1.csv), [`..._amd_run2.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_5000_amd_run2.csv) | the two AMD-machine runs in section 2 (provided by the user; both are raw `.npz`, not `.csv`, exact filenames as saved by the user) |
 
 ### 5. Verification
 
@@ -3385,7 +3385,7 @@ Intel machine was not available to repeat the check in this session.
   figures agree to the digits shown); this confirms the analysis script
   itself, not a second independent data source.
 - The AMD-machine non-reproduction (section 2) is the user's own two
-  independent terminal runs of `check_period_145.py`, both included
+  independent terminal runs of [`check_period_145.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/check_period_145.py), both included
   verbatim in the figures above.
 - Pre-publication check: `grep` against this project's private
   personal-information pattern list, this addendum, and the two new
@@ -3489,7 +3489,7 @@ The period is counted in iterations, not elapsed time.
 
 ### 4. Ruling out the measurement loop and machine in general
 
-A dedicated control script (`check_dummy_loop_period.py`) replaces the
+A dedicated control script ([`check_dummy_loop_period.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/check_dummy_loop_period.py)) replaces the
 loop body with three alternatives that call neither Qiskit nor PSF-Zero,
 each timed with the same `time.perf_counter()` pattern and warm-up-outside-
 the-timer discipline as the original benchmark:
@@ -3550,16 +3550,16 @@ undertaken in this round.
 
 | Path in the project | Contents |
 |---|---|
-| `psf-zero/benchmarks/check_dummy_loop_period.py` | section 4's Qiskit-free control script |
-| `psf-zero/data/cumulative_compile_times_5000_seed42_run1.npz`, `..._seed42_run2.npz`, `..._seed7_run1.npz` | section 1-2's hash-seed runs (provided by the user) |
-| `psf-zero/data/cumulative_compile_times_2500.npz` | section 3's half-length run (provided by the user) |
+| [`psf-zero/benchmarks/check_dummy_loop_period.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/check_dummy_loop_period.py) | section 4's Qiskit-free control script |
+| [`psf-zero/data/cumulative_compile_times_5000_seed42_run1.npz`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_5000_seed42_run1.npz), [`..._seed42_run2.npz`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_5000_seed42_run2.npz), [`..._seed7_run1.npz`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_5000_seed7_run1.npz) | section 1-2's hash-seed runs (provided by the user) |
+| [`psf-zero/data/cumulative_compile_times_2500.npz`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_2500.npz) | section 3's half-length run (provided by the user) |
 
 ### 7. Verification
 
 - Section 1's autocorrelation-at-187 and modular-bin-spread-at-187 figures
   were computed directly from the three user-provided `.npz` files in the
   sandbox, using the same `autocorrelation()` and `modular_bin_medians()`
-  functions `check_period_145.py` already uses -- not read off the
+  functions [`check_period_145.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/check_period_145.py) already uses -- not read off the
   terminal output's top-5 list, which only reports rank, not the
   underlying value.
 - Section 4's control script was smoke-tested in the sandbox (500
@@ -3649,10 +3649,10 @@ python test_cumulative_compile_scale.py --iters 5000
 ren cumulative_compile_times_5000.npz ..._seed7_run1.npz
 ```
 
-**Correction: the file named `..._seed42_run1.npz` was actually run *before*
+**Correction: the file named [`..._seed42_run1.npz`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_5000_seed42_run1.npz) was actually run *before*
 `set PYTHONHASHSEED=42` was issued**, so it in fact ran under Python's
 default (per-process random) hash seed, not seed 42. Only
-`..._seed42_run2.npz` (seed 42) and `..._seed7_run1.npz` (seed 7) are
+[`..._seed42_run2.npz`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_5000_seed42_run2.npz) (seed 42) and [`..._seed7_run1.npz`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_5000_seed7_run1.npz) (seed 7) are
 correctly labeled. This is recorded here rather than silently relabeled,
 per this project's standing rule against silent correction. It does not
 weaken the result below -- if anything it adds a third, genuinely
@@ -3695,9 +3695,9 @@ out for the AMD machine's 187-period.
 (Note: this run's raw per-iteration data was not saved as a file and could
 not be independently re-verified in the sandbox the way the six
 `.npz` files in sections 1-2 were; the table above is taken from the
-script's own terminal output. If this matters later, `check_dummy_loop_period.py`
+script's own terminal output. If this matters later, [`check_dummy_loop_period.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/check_dummy_loop_period.py)
 could be extended to save its per-arm timings the way
-`test_cumulative_compile_scale.py` already does.)
+[`test_cumulative_compile_scale.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cumulative_compile_scale.py) already does.)
 
 ## 4. Where this leaves the investigation
 
@@ -3730,14 +3730,14 @@ tested so far, at a machine-specific period.**
 
 | Path in the project | Contents |
 | :--- | :--- |
-| `psf-zero/data/cumulative_compile_times_5000_intel_2026-09-16_run2.csv` | Run 2, Section 1 (unset hash seed). Converted from the original `.npz` (per-iteration `qiskit`/`psf_true`/`psf_false` columns) -- the Project's storage rejected `.npz` uploads directly. |
-| `psf-zero/data/cumulative_compile_times_5000_intel_2026-09-16_run3.csv` | Run 3, Section 1 (unset hash seed). Same conversion as above. |
-| `psf-zero/data/cumulative_compile_times_5000_intel_2026-09-16_run4_unset_hashseed.csv` | Run 4 / Section 2's "unset" condition (mislabeled on disk as `seed42_run1`). Same conversion as above. |
-| `psf-zero/data/cumulative_compile_times_5000_intel_2026-09-16_run5_seed42.csv` | Run 5 / Section 2's `PYTHONHASHSEED=42` condition. Same conversion as above. |
-| `psf-zero/data/cumulative_compile_times_5000_intel_2026-09-16_run6_seed7.csv` | Run 6 / Section 2's `PYTHONHASHSEED=7` condition. Same conversion as above. |
+| [`psf-zero/data/cumulative_compile_times_5000_intel_2026-09-16_run2.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_5000_intel_2026-09-16_run2.csv) | Run 2, Section 1 (unset hash seed). Converted from the original `.npz` (per-iteration `qiskit`/`psf_true`/`psf_false` columns) -- the Project's storage rejected `.npz` uploads directly. |
+| [`psf-zero/data/cumulative_compile_times_5000_intel_2026-09-16_run3.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_5000_intel_2026-09-16_run3.csv) | Run 3, Section 1 (unset hash seed). Same conversion as above. |
+| [`psf-zero/data/cumulative_compile_times_5000_intel_2026-09-16_run4_unset_hashseed.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_5000_intel_2026-09-16_run4_unset_hashseed.csv) | Run 4 / Section 2's "unset" condition (mislabeled on disk as `seed42_run1`). Same conversion as above. |
+| [`psf-zero/data/cumulative_compile_times_5000_intel_2026-09-16_run5_seed42.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_5000_intel_2026-09-16_run5_seed42.csv) | Run 5 / Section 2's `PYTHONHASHSEED=42` condition. Same conversion as above. |
+| [`psf-zero/data/cumulative_compile_times_5000_intel_2026-09-16_run6_seed7.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_5000_intel_2026-09-16_run6_seed7.csv) | Run 6 / Section 2's `PYTHONHASHSEED=7` condition. Same conversion as above. |
 
-`benchmarks/test_cumulative_compile_scale.py`, `benchmarks/check_period_145.py`,
-and `benchmarks/check_dummy_loop_period.py` are unchanged from Addenda 19-21.
+[`benchmarks/test_cumulative_compile_scale.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cumulative_compile_scale.py), [`benchmarks/check_period_145.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/check_period_145.py),
+and [`benchmarks/check_dummy_loop_period.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/check_dummy_loop_period.py) are unchanged from Addenda 19-21.
 
 ## 6. Verification
 
@@ -3838,7 +3838,7 @@ pursued further here.
 
 The four runs above were pooled per-arm (qiskit, psf_true, psf_false each
 concatenated across all four runs, n=20000) and re-checked with
-`check_period_145_pooled.py --period 145`, which -- like `check_period_145.py`
+`check_period_145_pooled.py --period 145`, which -- like [`check_period_145.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/check_period_145.py)
 -- reports modular-bin spread at several candidate periods, not just the
 requested one, specifically to guard against reading a coincidental match at
 one period as if it were a real periodic effect.
@@ -3872,15 +3872,15 @@ actual mix of results within one honest measurement. None of the four
 gc.disable() `.npz` files is anywhere near n=50000 (each is n=5000, and all
 four combined is n=20000, not 50000); a local file browser screenshot from
 the same session showed a pre-existing file named
-`cumulative_compile_times_50000.npz`, dated 2026-09-15 (the day before
+[`cumulative_compile_times_50000.npz`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_50000.npz), dated 2026-09-15 (the day before
 `gc.disable()` was tried at all) sitting in the same working directory. The
-strong inference is that `check_period_145.py`'s hardcoded default file
+strong inference is that [`check_period_145.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/check_period_145.py)'s hardcoded default file
 path pointed at that old, pre-gc.disable() 50,000-iteration file, and the
 command as typed (without `--file`) silently analyzed *that* file instead
 of any of today's data. The exact match of its reported spread (7.493x) to
 Addendum 20's originally-recorded value for a different, specific historical
 run is the strongest piece of evidence for this; it was not, however,
-independently confirmed by inspecting `check_period_145.py`'s own default
+independently confirmed by inspecting [`check_period_145.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/check_period_145.py)'s own default
 argument or by re-running it with an explicit `--file` pointed at the old
 file to reproduce the number byte-for-byte, so this remains a
 high-confidence inference rather than a proven fact, and is recorded as
@@ -3888,7 +3888,7 @@ such.
 
 This is a live example of exactly the failure mode this project's own
 standing rule against ambiguous, fixed output filenames exists to prevent:
-`test_cumulative_compile_scale.py` always writes to the same
+[`test_cumulative_compile_scale.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cumulative_compile_scale.py) always writes to the same
 `cumulative_compile_times_5000.npz`, silently overwriting the previous run's
 data, and at least one other local script apparently defaults to a fixed
 filename as well. Nothing about the four runs analyzed in Sections 1-2 is
@@ -3929,13 +3929,13 @@ leading candidate mechanism for this machine's period.
 
 | Path in the project | Contents |
 | :--- | :--- |
-| `psf-zero/data/cumulative_compile_times_5000_intel_2026-09-16_gcdisable_run1.csv` | Run 1, Section 1. Converted from the original `.npz` (per-iteration `qiskit`/`psf_true`/`psf_false` columns) -- the Project's storage rejects `.npz` uploads directly, as in Addendum 22. |
-| `psf-zero/data/cumulative_compile_times_5000_intel_2026-09-16_gcdisable_run2.csv` | Run 2, Section 1. Same conversion. |
-| `psf-zero/data/cumulative_compile_times_5000_intel_2026-09-16_gcdisable_run3.csv` | Run 3, Section 1. Same conversion. |
-| `psf-zero/data/cumulative_compile_times_5000_intel_2026-09-16_gcdisable_run4.csv` | Run 4, Section 1. Same conversion. |
-| `psf-zero/benchmarks/check_period_145_pooled.py` | New. Pools multiple same-condition CSVs and reruns the `check_period_145.py` multi-candidate-period check at higher n; used for Section 2. Takes explicit file paths as arguments (no hardcoded default), specifically to avoid the trap described in Section 3. |
+| [`psf-zero/data/cumulative_compile_times_5000_intel_2026-09-16_gcdisable_run1.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_5000_intel_2026-09-16_gcdisable_run1.csv) | Run 1, Section 1. Converted from the original `.npz` (per-iteration `qiskit`/`psf_true`/`psf_false` columns) -- the Project's storage rejects `.npz` uploads directly, as in Addendum 22. |
+| [`psf-zero/data/cumulative_compile_times_5000_intel_2026-09-16_gcdisable_run2.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_5000_intel_2026-09-16_gcdisable_run2.csv) | Run 2, Section 1. Same conversion. |
+| [`psf-zero/data/cumulative_compile_times_5000_intel_2026-09-16_gcdisable_run3.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_5000_intel_2026-09-16_gcdisable_run3.csv) | Run 3, Section 1. Same conversion. |
+| [`psf-zero/data/cumulative_compile_times_5000_intel_2026-09-16_gcdisable_run4.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_5000_intel_2026-09-16_gcdisable_run4.csv) | Run 4, Section 1. Same conversion. |
+| [`psf-zero/benchmarks/check_period_145_pooled.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/check_period_145_pooled.py) | New. Pools multiple same-condition CSVs and reruns the [`check_period_145.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/check_period_145.py) multi-candidate-period check at higher n; used for Section 2. Takes explicit file paths as arguments (no hardcoded default), specifically to avoid the trap described in Section 3. |
 
-`benchmarks/test_cumulative_compile_scale.py` and `benchmarks/check_period_145.py`
+[`benchmarks/test_cumulative_compile_scale.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cumulative_compile_scale.py) and [`benchmarks/check_period_145.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/check_period_145.py)
 are unchanged from Addenda 19-22 (the latter's own default-file behavior is
 implicated, not modified, in Section 3 -- changing it was not attempted here
 since it lives on the user's local machine, not in this project).
@@ -3947,7 +3947,7 @@ since it lives on the user's local machine, not in this project).
   modular-bin spread at lag 145 recomputed directly, both individually
   (Section 1) and pooled (Section 2).
 - The four converted CSV files were re-loaded independently by
-  `check_period_145_pooled.py` and reproduced the same pooled figures
+  [`check_period_145_pooled.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/check_period_145_pooled.py) and reproduced the same pooled figures
   (autocorr 0.6899/0.6009/0.6671, rank 145/145/145, spread 1.117x/1.197x/
   1.293x for qiskit/psf_true/psf_false respectively) as the direct-from-`.npz`
   pooled computation, confirming the CSV conversion did not alter the
@@ -3956,7 +3956,7 @@ since it lives on the user's local machine, not in this project).
   four `.npz` files (each n=5000, none close to 50000) before concluding it
   could not have come from today's gc.disable() data; this rules out
   "all four runs got silently duplicated or mixed" but does not
-  independently confirm which file `check_period_145.py` actually read
+  independently confirm which file [`check_period_145.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/check_period_145.py) actually read
   (noted as an open item in Section 3 itself).
 - Pre-publication check: `grep` against this project's private
   personal-information pattern list, this addendum, both new scripts, and
@@ -3979,7 +3979,7 @@ since it lives on the user's local machine, not in this project).
 
 ## 0. In one line
 
-Using the corrected `test_cliff_sniper_corrected.py` (see that file's own
+Using the corrected [`test_cliff_sniper_corrected.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cliff_sniper_corrected.py) (see that file's own
 docstring for the two bugs in its predecessor: a call that put a
 `CouplingMap` into `psf_compile.compile()`'s `block_gate_floor` slot and was
 silently caught and replaced with a placeholder value, and a circuit shape
@@ -4004,7 +4004,7 @@ figure.
 
 ## 1. What was pre-registered before this run
 
-`test_cliff_sniper_corrected.py`'s own docstring, written before it was ever
+[`test_cliff_sniper_corrected.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cliff_sniper_corrected.py)'s own docstring, written before it was ever
 run against the real core, committed to this before seeing any numbers:
 
 > On a saturated coupling map, Qiskit L3's compile time is expected to jump
@@ -4021,7 +4021,7 @@ same size.**
 Same known Intel machine as the majority of this project's Windows-side
 measurements (`Intel64 Family 6 Model 181 Stepping 0, GenuineIntel`, per the
 CSV's own `cpu` column -- machine identified by CPU signature, not by
-account or path). Python 3.11.9, Qiskit 2.5.2, `psf_compile.py` VERSION
+account or path). Python 3.11.9, Qiskit 2.5.2, [`psf_compile.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/psf_compile.py) VERSION
 2026-09-16 (the real `psf_zero_core`, not the stub -- confirmed by the
 script's own small-scale correctness pre-check passing:
 `Operator(out).equiv(Operator(in)) == True` on a 6-qubit circuit, no
@@ -4223,7 +4223,7 @@ establish" below.
 
 ## Exact change from Addendum 24's run
 
-Same script (`test_cliff_sniper_corrected.py`, now emitting
+Same script ([`test_cliff_sniper_corrected.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cliff_sniper_corrected.py), now emitting
 `routing_optimization_level` in its output filename so same-day runs at
 different levels don't rely on the run2/run3 collision-avoidance suffix to
 stay distinguishable), same grid (6x7), same circuit seed (7), same
@@ -4236,8 +4236,8 @@ python test_cliff_sniper_corrected.py --rows 6 --cols 7 --routing-optimization-l
 ```
 
 Expected output filenames:
-`cliff_sniper_corrected_6x7_rl2_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-16.csv`
-`cliff_sniper_corrected_6x7_rl3_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-16.csv`
+[`cliff_sniper_corrected_6x7_rl2_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-16.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cliff_sniper_corrected_6x7_rl2_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-16.csv)
+[`cliff_sniper_corrected_6x7_rl3_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-16.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cliff_sniper_corrected_6x7_rl3_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-16.csv)
 
 ## Prediction
 
@@ -4304,7 +4304,7 @@ Following up on Addendum 24 (PSF-Zero's own spare-qubit cliff at
 and `=3`. **PSF-Zero's own cliff ratio grows to ~37-40x at level 2 and
 ~251-275x at level 3 -- landing inside Qiskit L3's own 263-300x range.**
 Two of the four predictions pre-registered before this run
-(`spare-qubit-cliff-addendum-25-preregistration-2026-09-16.md`) are
+([`spare-qubit-cliff-addendum-25-preregistration-2026-09-16.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-25-preregistration-2026-09-16.md)) are
 confirmed outright (direction, and level 3 landing close to Qiskit L3); one
 is confirmed (fallback count stays 0); and **one is not confirmed**: level 2
 was predicted to land "closer to rl=3 than to rl=1," and in log-scale terms
@@ -4320,7 +4320,7 @@ that raising the routing level "undoes" PSF-Zero's advantage.
 ## 1. What was pre-registered
 
 Quoted verbatim from
-`psf-zero/docs/findings/spare-qubit-cliff-addendum-25-preregistration-2026-09-16.md`,
+[`psf-zero/docs/findings/spare-qubit-cliff-addendum-25-preregistration-2026-09-16.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-25-preregistration-2026-09-16.md),
 written before either of this addendum's two runs:
 
 > 1. **Direction**: the spare=0 cliff ratio for PSF-Zero will increase
@@ -4489,7 +4489,7 @@ not about PSF-Zero's synthesis.
 
 ## 0. In one line
 
-`test_cliff_sniper_layout_search.py` was run once, on the real `psf_zero_core`,
+[`test_cliff_sniper_layout_search.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cliff_sniper_layout_search.py) was run once, on the real `psf_zero_core`,
 on the same 6x7-grid/seed=7/seed_transpiler=42 scenario as Addenda 24-25.
 **PSF-Zero with the new `layout_search=True` shows almost no cliff at all
 (~1.5x-1.6x, vs its own pre-cliff points), confirming the pre-registered
@@ -4517,7 +4517,7 @@ over or averaged away.
 ## 1. What was pre-registered
 
 Quoted verbatim from
-`psf-zero/docs/findings/spare-qubit-cliff-addendum-26-preregistration-2026-09-16.md`,
+[`psf-zero/docs/findings/spare-qubit-cliff-addendum-26-preregistration-2026-09-16.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-26-preregistration-2026-09-16.md),
 written before this run:
 
 > 1. **The cliff is not merely shrunk but effectively eliminated for the
@@ -4547,7 +4547,7 @@ series, same 6x7 grid, same `build_dense_pair_blocks_circuit(seed=7)`,
 same `seed_transpiler=42`, same 1-warm-up + 5-timed-repeats/median
 protocol, `routing_optimization_level=1` for both PSF-Zero arms. Unlike
 Addenda 24-25 (two separate scripts/runs for the two arms being compared),
-`test_cliff_sniper_layout_search.py` measures Qiskit L3, PSF-Zero
+[`test_cliff_sniper_layout_search.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cliff_sniper_layout_search.py) measures Qiskit L3, PSF-Zero
 no-search, and PSF-Zero with search in the same process, same run, so the
 no-search-vs-search comparison in Sections 3-4 below is a paired one
 (same instant, same warm/cold process state) -- only the comparison
@@ -4642,7 +4642,7 @@ mechanism as established.** One plausible, unconfirmed lead: this project
 has separately documented `VF2Layout`/`SabreLayout` seed- and
 ordering-dependent nondeterminism at exactly this kind of saturated-map
 boundary (`docs/findings/spare-qubit-cliff-addendum-9` through `-14`,
-`data/vf2_seed_nondeterminism_2026-09-14.csv`). It is consistent with this
+[`data/vf2_seed_nondeterminism_2026-09-14.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_seed_nondeterminism_2026-09-14.csv)). It is consistent with this
 result that the fallback path's own cost is more run-to-run variable than
 Addenda 24/25's two-sample reproducibility check happened to reveal, and
 that this run simply landed on a cheaper fallback trial by chance -- but
@@ -4669,7 +4669,7 @@ lead, not a conclusion.
 
 #### Update (2026-09-16): two more runs show the ~22ms value is reproducible under this script -- the Section 5 discrepancy looks systematic, not per-run randomness
 
-Two further runs of `test_cliff_sniper_layout_search.py` (same flags, same
+Two further runs of [`test_cliff_sniper_layout_search.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cliff_sniper_layout_search.py) (same flags, same
 day, same machine) were uploaded after this addendum's first version. Both
 land close to the original run, not close to Addenda 24/25's historical
 figure:
@@ -4708,10 +4708,10 @@ more support.
 
 **A more parsimonious candidate, not yet tested:** `test_cliff_sniper_
 layout_search.py` calls the `layout_search=True` path (which imports and
-runs `psf_smart_layout.py`, and through it `rustworkx`/`networkx` graph
+runs [`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_smart_layout.py), and through it `rustworkx`/`networkx` graph
 routines) dozens of times *before* the no-search arm's own spare=0 point
 ever runs (once for the deliberate cold-start call, plus warm-up+timed
-calls at n=38-41). `test_cliff_sniper_corrected.py` never calls that code
+calls at n=38-41). [`test_cliff_sniper_corrected.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cliff_sniper_corrected.py) never calls that code
 path at all. Qiskit's own `SabreLayout` fallback -- the thing that actually
 runs at the no-search arm's spare=0 point -- is also built on `rustworkx`.
 If the two share enough of the same native (PyO3/Rust) machinery, then
@@ -4745,7 +4745,7 @@ have a preferred outcome going in.
 The direct test proposed above was run: `test_cliff_sniper_corrected.py
 --routing-optimization-level 1` -- the same, completely unmodified script
 used for Addendum 24 and its reproducibility check, which never imports or
-calls anything from `psf_smart_layout.py` and has no `layout_search` code
+calls anything from [`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_smart_layout.py) and has no `layout_search` code
 path at all -- was run again, later the same day, same machine:
 
 | | spare=1-4 range (ms) | spare=0 (ms) | Cliff ratio |
@@ -4860,13 +4860,13 @@ pinned down first.
 | :--- | :--- |
 | [`psf_compile.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/psf_compile.py) | The `layout_search` integration under test (item 12, 2026-09-16). |
 | [`benchmarks/test_cliff_sniper_layout_search.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cliff_sniper_layout_search.py) | The three-arm script that produced Section 3's data. |
-| `data/cliff_sniper_layout_search_6x7_rl1_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-16.csv` | Original run's raw output (Section 3). |
-| `data/cliff_sniper_layout_search_6x7_rl1_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-16_run2.csv` | Run 2's raw output (Section 5 update). |
-| `data/cliff_sniper_layout_search_6x7_rl1_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-16_run3.csv` | Run 3's raw output (Section 5 update). |
+| [`data/cliff_sniper_layout_search_6x7_rl1_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-16.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cliff_sniper_layout_search_6x7_rl1_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-16.csv) | Original run's raw output (Section 3). |
+| [`data/cliff_sniper_layout_search_6x7_rl1_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-16_run2.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cliff_sniper_layout_search_6x7_rl1_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-16_run2.csv) | Run 2's raw output (Section 5 update). |
+| [`data/cliff_sniper_layout_search_6x7_rl1_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-16_run3.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cliff_sniper_layout_search_6x7_rl1_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-16_run3.csv) | Run 3's raw output (Section 5 update). |
 | [`docs/findings/spare-qubit-cliff-addendum-26-preregistration-2026-09-16.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-26-preregistration-2026-09-16.md) | The prediction quoted in Section 1, written before this run. |
 | [`data/cliff_sniper_corrected_6x7_rl1_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-16.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cliff_sniper_corrected_6x7_rl1_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-16.csv) | Addendum 24's reproducibility-check run, used for Section 5's comparison. |
 | [`data/cliff_sniper_corrected_6x7_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-16.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cliff_sniper_corrected_6x7_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-16.csv) | Addendum 24's original run, used for Section 5's comparison. |
-| `data/cliff_sniper_corrected_6x7_rl1_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-16_run2.csv` | The decisive later-in-the-day re-run of the unmodified Addendum-24 script (Section 5's second update). |
+| [`data/cliff_sniper_corrected_6x7_rl1_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-16_run2.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cliff_sniper_corrected_6x7_rl1_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-16_run2.csv) | The decisive later-in-the-day re-run of the unmodified Addendum-24 script (Section 5's second update). |
 
 ## 9. Verification
 
@@ -4930,7 +4930,7 @@ came in, ruling out "one hard circuit" as the explanation.
 ### 1. The fidelity-checker bug
 
 Two scripts built earlier the same day
-(`bench_qiskit_tket_psf.py`, `bench_cliff_1v1.py`) both contained the same
+([`bench_qiskit_tket_psf.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/bench_qiskit_tket_psf.py), [`bench_cliff_1v1.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/bench_cliff_1v1.py)) both contained the same
 `exact_fidelity_check()` function, with a special case: if the compiled
 circuit's qubit count equaled the original's, the two were compared
 directly with no remapping. This is wrong -- equal qubit *counts* does
@@ -4954,10 +4954,10 @@ Fixed by removing the special case: every comparison now goes through the
 same touched-qubit-count check and layout-based remapping regardless of
 whether the qubit counts happen to match. Re-run after the fix:
 
-- `bench_qiskit_tket_psf.py` (4/6/8 qubits, 5 seeds, 45 rows): Qiskit and
+- [`bench_qiskit_tket_psf.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/bench_qiskit_tket_psf.py) (4/6/8 qubits, 5 seeds, 45 rows): Qiskit and
   PSF-Zero both `exact_pass`, all via `order_source=qc_new.layout.final_index_layout`
   (the trustworthy path, not a fallback guess).
-- `bench_cliff_1v1.py` (3x4 grid, spare=0, the condition that first
+- [`bench_cliff_1v1.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/bench_cliff_1v1.py) (3x4 grid, spare=0, the condition that first
   exposed the bug): `qiskit_opt3`, `psf_zero_ls0`, and `psf_zero_ls1` all
   `exact_pass` on the first four rows checked before the run was stopped
   as no longer informative (see section 2).
@@ -5041,12 +5041,12 @@ mechanism has been proposed or tested.
 
 | Path in the project | Contents |
 |---|---|
-| `psf-zero/benchmarks/bench_qiskit_tket_psf.py` | fidelity-checker bug fixed (section 1) |
-| `psf-zero/benchmarks/bench_cliff_1v1.py` | same fix; single-condition 1-on-1 cliff comparison tool |
-| `psf-zero/benchmarks/bench_cliff_overnight.py` | the multi-round sweep script used for section 2-3 (fixed seed set across rounds, by design, to let seed-specific effects be checked directly) |
-| `psf-zero/data/bench_qiskit_tket_psf_2026-09-16.csv` | post-fix 4/6/8-qubit verification run (45 rows) |
-| `psf-zero/data/bench_cliff_1v1_2026-09-16.csv` | earlier single-run cliff data, including the pre-fix false `exact_FAIL` rows and the post-fix confirmation rows (provided by the user across several partial runs) |
-| `psf-zero/data/bench_cliff_overnight_2026-09-16.csv` | the 5-round, spare 0-24 sweep behind sections 2-3 (270 rows) |
+| [`psf-zero/benchmarks/bench_qiskit_tket_psf.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/bench_qiskit_tket_psf.py) | fidelity-checker bug fixed (section 1) |
+| [`psf-zero/benchmarks/bench_cliff_1v1.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/bench_cliff_1v1.py) | same fix; single-condition 1-on-1 cliff comparison tool |
+| [`psf-zero/benchmarks/bench_cliff_overnight.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/bench_cliff_overnight.py) | the multi-round sweep script used for section 2-3 (fixed seed set across rounds, by design, to let seed-specific effects be checked directly) |
+| [`psf-zero/data/bench_qiskit_tket_psf_2026-09-16.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/bench_qiskit_tket_psf_2026-09-16.csv) | post-fix 4/6/8-qubit verification run (45 rows) |
+| [`psf-zero/data/bench_cliff_1v1_2026-09-16.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/bench_cliff_1v1_2026-09-16.csv) | earlier single-run cliff data, including the pre-fix false `exact_FAIL` rows and the post-fix confirmation rows (provided by the user across several partial runs) |
+| [`psf-zero/data/bench_cliff_overnight_2026-09-16.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/bench_cliff_overnight_2026-09-16.csv) | the 5-round, spare 0-24 sweep behind sections 2-3 (270 rows) |
 
 ### 5. Verification
 
