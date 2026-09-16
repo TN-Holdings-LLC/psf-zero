@@ -277,6 +277,45 @@ specifically, on a machine-dependent cycle length -- not yet identified,
 and reading Qiskit's own source for a matching constant is the natural
 next step that has not yet been tried.
 
+**[Addenda 22-23] closed the "what causes it" question for the Intel
+machine's 145-period, via two paths tried in parallel.** Reading Qiskit's
+own Sabre routing/layout Rust source (`layout.rs`, `route.rs`) directly
+ruled it out as the location: no `145`/`187` constant appears in either
+file, and more fundamentally, the coupling-map-free experiment that found
+the period never executes that code path at all (it returns immediately
+on `TargetCouplingError::AllToAll`). Separately, the 145-period was first
+confirmed to reproduce a second time on the same Intel machine (closing
+addendum 20's open item), then a pre-registered hypothesis --
+`gc.disable()` should remove the period if CPython's garbage collector is
+the cause -- was tested directly and **confirmed**: four independent runs,
+individually and pooled (n=20,000), all show the period collapse from
+rank 1/500 to rank ~145/500 and modular-bin spread from 7.5x-10.7x to
+~1.1x-1.3x once the GC is disabled. The exact GC trigger (which
+generation, which threshold) remains unidentified, and whether this
+explains the AMD machine's separate 187-period is untested.
+
+**[Addenda 24-26] turned from explaining the cliff to acting on it,
+using a corrected benchmark script** (the previous version had a bug that
+silently replaced every failed PSF-Zero call with a fabricated placeholder
+number, discovered by reading its own source before trusting its output).
+Three findings, in order: plain `compile_for_hardware()` (no search aid)
+still crosses the spare-qubit cliff, but far more gently than Qiskit L3
+(7.3x-8.2x vs 263x-300x) -- the first real-core measurement of this
+specific comparison. Raising `compile_for_hardware`'s own internal
+`routing_optimization_level` toward Qiskit L3's level closes most of that
+gap by level 2 and nearly all of it by level 3, where PSF-Zero stops being
+faster than plain Qiskit L3 at all (0.83x-0.96x) -- suggesting the
+original advantage near the cliff was largely a side effect of a cheaper
+default routing level, not the synthesis pass itself. Finally, a new
+opt-in `layout_search=True` option (built on this project's own
+`smart_vf2_layout()` prototype, now callable directly from
+`compile_for_hardware()`) collapses PSF-Zero's own cliff to roughly
+1.5x-1.6x -- not fully eliminated, but no longer a cliff in any meaningful
+sense. That same measurement also surfaced and chased down an unrelated,
+unexplained ~4x same-day timing drift in its own control arm, eventually
+traced to a session/machine-level effect rather than to the new code, and
+reported as an open finding rather than smoothed over.
+
 ## 7. Where this stands
 
 **Solid:**
@@ -299,6 +338,17 @@ next step that has not yet been tried.
   near-degeneracy, hash randomization, elapsed time, the OS scheduler, or
   generic computation/BLAS overhead (Addenda 20-21) -- each was tested
   directly and ruled out in turn.
+- On the Intel machine, the ~145-period is caused by CPython's garbage
+  collector: `gc.disable()` removes it cleanly across four independent
+  runs (Addendum 23). Qiskit's own Sabre Rust source was read directly and
+  ruled out as the location (Addendum 22).
+- A corrected benchmark (the prior version silently fabricated failed
+  PSF-Zero measurements) confirms `compile_for_hardware()` still crosses
+  the cliff without help, but ~35x more gently than Qiskit L3 (Addendum
+  24); raising its internal routing level toward Qiskit L3's own erodes
+  that gap until PSF-Zero is no longer faster at all by level 3 (Addendum
+  25); and the new `layout_search=True` option collapses PSF-Zero's own
+  cliff to ~1.5x-1.6x (Addendum 26).
 
 **Open:**
 - What causes the ~3x same-condition variance seen at L3 (seed=-1 shuffle
@@ -307,18 +357,26 @@ next step that has not yet been tried.
   18) extends to L3, other spare values, or other machines -- untested.
 - Whether the ordering effects driving the prototype (found via public
   `rustworkx`) hold inside Qiskit's actual compiled VF2 implementation --
-  never tested, through all 21 rounds.
+  never tested, through all 26 rounds.
 - Whether the tuned stage-2 budget (300,000, Addendum 18) can go lower --
   200,000 already misses one topology outright and no finer step was tried
   between the two values.
-- What inside Qiskit produces the ~145/~187-iteration periodic timing
-  effect (Addenda 19-21), and why the period's exact value differs by
-  machine. Reading Qiskit's own source for a matching constant (a cache
-  size, batch limit, or buffer threshold) has not been attempted. Also
-  untested: whether the Intel-machine's 145-period would reproduce if that
-  machine were measured a second time (it was only measured once), and
-  whether this effect is specific to `optimization_level=3` or appears at
-  other levels or with a `coupling_map` present.
+- Which specific GC behavior produces a ~145-cycle on the Intel machine
+  (a generation threshold, an allocation-count trigger) -- disabling the
+  GC outright shows it is the cause, but not the exact mechanism
+  (Addendum 23). Whether the same explanation applies to the AMD
+  machine's separate ~187-period is untested.
+- Which of "VF2Layout's search budget" vs. "Addendum 10's level-3-specific
+  downstream cost" drives the routing-level progression found in Addendum
+  25 -- a `callback=`-based pass-timing trace would settle this directly
+  and has not been run. A plain Qiskit `optimization_level=2` baseline is
+  also still missing from that comparison.
+- The ~4x same-day timing drift Addendum 26 found in its own no-search
+  control -- narrowed to a session/machine-level effect rather than to
+  `layout_search` itself, but the root physical cause (CPU boost/thermal
+  state, a background process, a power-plan effect) remains unconfirmed.
+- Generalization of Addenda 24-26's findings beyond the one grid
+  (6x7), one seed, and one machine tested.
 
 ## 8. Files, by round
 
@@ -336,6 +394,11 @@ next step that has not yet been tried.
 | 19 | [`test_cumulative_compile_scale.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cumulative_compile_scale.py) (coupling-map-free comparison, unrelated to the VF2/SabreLayout mechanism) | [`cumulative_compile_times_10000.npz`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_10000.npz), [`cumulative_compile_times_50000.npz`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cumulative_compile_times_50000.npz), [`Figure_1.png`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/Figure_1.png), [`cumulative_compile_results_50000.png`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/cumulative_compile_results_50000.png) |
 | 20 | [`diagnose_outlier_circuits.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/diagnose_outlier_circuits.py), [`check_period_145.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/check_period_145.py) | two AMD-machine reproducibility runs (`.npz`, filenames as saved by the user) |
 | 21 | [`check_dummy_loop_period.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/check_dummy_loop_period.py) | three hash-seed runs and one half-length run (`.npz`, filenames as saved by the user) |
+| 22 | [`layout.rs`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/layout.rs), [`route.rs`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/route.rs) (Qiskit's own Sabre source, read and ruled out) | second Intel-machine 145-period confirmation (real hardware) |
+| 23 | [`check_period_145_pooled.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/check_period_145_pooled.py) | four `gc.disable()` runs, individually and pooled (n=20,000) |
+| 24 | [`test_cliff_sniper_corrected.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cliff_sniper_corrected.py) (fixes a predecessor script that silently fabricated failed PSF-Zero measurements) | `cliff_sniper_corrected_6x7_...` sweep, 38-42 qubits (real hardware) |
+| 25 | (same script, `--routing-optimization-level` varied) | rl=2 and rl=3 sweeps, plus [pre-registration](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-25-preregistration-2026-09-16.md) |
+| 26 | [`psf_compile.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/psf_compile.py) (new `layout_search` option), [`test_cliff_sniper_layout_search.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cliff_sniper_layout_search.py) | three-arm sweep (Qiskit L3 / no-search / `layout_search=True`), 3 runs |
 
 Full text, exact tables, and every pre-registered prediction as originally
 written:
@@ -346,6 +409,6 @@ written:
 ## See also
 
 - [`spare-qubit-cliff-combined.md`](spare-qubit-cliff-combined.md) --
-  all 19 addenda, unedited, in chronological order (same folder). This is
+  all 25 addenda, unedited, in chronological order (same folder). This is
   where the exact wording, exact tables, and every pre-registered prediction
   as originally written can be found.
