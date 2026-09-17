@@ -1,6 +1,6 @@
 # spare-qubit-cliff: Combined Addenda, Part 1 of 3 (Addendum 2026-09-13 through Addendum 16)
 
-**This document is split into three parts as it grew past a comfortable single-file size. This is Part 1 of 3, covering the top addendum (2026-09-13) through Addendum 16.** Continue to [Part 2](docs/findings/spare-qubit-cliff-combined-17.md) (Addendum 17-26) and [Part 3](docs/findings/spare-qubit-cliff-combined-27.md) (Addendum 27-36). **This is a merge of 38 separately-written addenda into one chronological document, for convenience.** No wording in any individual addendum has been
+**This document is split into three parts as it grew past a comfortable single-file size. This is Part 1 of 3, covering the top addendum (2026-09-13) through Addendum 16.** Continue to [Part 2](spare-qubit-cliff-combined-17.md) (Addendum 17-26) and [Part 3](spare-qubit-cliff-combined-27.md) (Addendum 27-36). **This is a merge of 38 separately-written addenda into one chronological document, for convenience.** No wording in any individual addendum has been
 changed -- each section's content is unedited. Two mechanical things were
 done to make this readable as one document: (1) each addendum's own
 top-level heading was normalized to the same heading level (H2), since the
@@ -2831,4 +2831,4 @@ is far larger than the variance, so that is unaffected, but the specific
 
 ---
 
-**End of Part 1 of 3.** Continue to [Part 2](docs/findings/spare-qubit-cliff-combined-17.md) (Addendum 17-26).
+**End of Part 1 of 3.** Continue to [Part 2](spare-qubit-cliff-combined-17.md) (Addendum 17-26).
