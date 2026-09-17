@@ -2265,6 +2265,207 @@ does on their behalf.
 - Pre-publication check:
   `grep` against this project's private personal-information pattern list, this document and the updated `rustworkx-issue-draft.md` -> 0
   hits in both.
+---
+
+# Addendum 37 -- Cirq collapses at exact saturation too, harder than either Qiskit or TKET: the cliff now spans three independently-implemented subgraph-isomorphism placers (2026-09-17)
+
+**Status note on process**: this is a post-hoc analysis, not a
+pre-registered one. No predictions document was written before these two
+runs. Two predictions *were* stated inside the script's own docstring
+before it ran (quoted verbatim in Section 2), and one of them was
+falsified -- that is reported below as a miss, not quietly dropped, but
+it does not carry the weight a separate pre-registration would.
+
+## 0. In one line
+
+Addendum 35 found the saturation cliff in TKET as well as Qiskit, and
+framed it as "bounded subgraph-isomorphism placement is not
+saturation-proof in general, but implementations differ enormously in
+severity." Cirq -- whose own documentation states its placement tooling
+uses `networkx` subgraph-monomorphism routines -- was the obvious third
+data point, and it now has one. **At `max_placements=1` (the closest
+this API gets to Qiskit's "find one layout" semantics), Cirq's
+`cirq.get_placements()` runs in 0.65-2.2 ms at every spare value from 2
+to 24, and then fails to return at all at spare=0, hitting a 10-second
+hard timeout in 3 of 3 attempts** -- a ratio of **at least 4,493x**, and
+in truth unbounded, since the timeout is a floor on the real time, not a
+measurement of it. A perfect matching provably exists at that exact point
+(independent `networkx` max-matching check, `max_matching_size=21 ==
+required=21`, recorded in every row of both CSVs). The cliff is now
+observed in three independently-written placers from three different
+organizations.
+
+## 1. Two runs, and why both were needed
+
+**Run A -- Cirq's default-ish behaviour (`max_placements=2000`)**:
+
+| spare | qubits | median elapsed | outcome |
+|---|---|---|---|
+| 0 | 42 | 10,029.6 ms | **timed out** (cap not reached) |
+| 2 | 40 | 10,030.4 ms | **timed out** (cap not reached) |
+| 4 | 38 | 10,026.5 ms | **timed out** (cap not reached) |
+| 6 | 36 | 10,030.7 ms | **timed out** (cap not reached) |
+| 8 | 34 | 10,022.4 ms | **timed out** (cap not reached) |
+| 16 | 26 | 2,313.6 ms | hit 2000-placement cap |
+| 24 | 18 | 1,400.9 ms | hit 2000-placement cap |
+
+This run says almost nothing about the cliff, because
+`cirq.get_placements()` does not stop at one solution: reading its source
+(`cirq-core/cirq/devices/named_topologies.py`, fetched directly from
+`quantumlib/Cirq`) shows it iterates `subgraph_monomorphisms_iter()` and
+**enumerates every distinct placement**, de-duplicating only exact
+rotations/reflections that reuse the same device qubits. Comparing that
+against Qiskit's `VF2Layout` -- which needs exactly one layout -- is not a
+like-for-like comparison of the same task. Run A's five timeouts are
+therefore reported as what they are: this API, at its own default-ish
+setting, does not complete on this circuit family at these sizes, for
+reasons that are mostly about enumeration cost, not about saturation.
+
+**Run B -- one-solution semantics (`max_placements=1`)**, the comparison
+that actually matters:
+
+| spare | qubits | median elapsed | outcome |
+|---|---|---|---|
+| 0 | 42 | 10,026.4 ms | **timed out** (cap not reached) |
+| 2 | 40 | 2.232 ms | hit cap |
+| 4 | 38 | 2.080 ms | hit cap |
+| 6 | 36 | 1.846 ms | hit cap |
+| 8 | 34 | 1.626 ms | hit cap |
+| 16 | 26 | 1.088 ms | hit cap |
+| 24 | 18 | 0.648 ms | hit cap |
+
+**spare=0 / spare=2 ratio: >= 4,493x** (a floor, not a measurement --
+spare=0 never finished).
+
+Note what `hit_cap` means here and what it does not. Because Cirq's check
+is `if len(dedupe) > max_placements`, a cap of 1 raises only once a
+*second* placement is found. So every spare>=2 row above means: **Cirq
+found two valid placements in under 2.3 ms**. And the spare=0 row means:
+**Cirq did not find even the first one within 10 seconds** (`hit_cap` is
+False there -- the cap was never reached). That asymmetry is the finding.
+
+## 2. The script's own stated predictions, and the miss
+
+`occupancy_sweep_cirq_real.py`'s docstring, written before either run,
+predicted:
+
+> at spare=0, the interaction graph nearly fills the device, so there
+> should be very few ways to place it (little room to shift or rotate the
+> embedding) -- enumeration should be fast. At large spare, the same
+> interaction graph can be placed in many more positions within the
+> larger empty region -- enumeration could plausibly be *slower*, not
+> faster. If this holds, Cirq would show the *opposite* direction of
+> cliff from Qiskit's.
+
+**The second half held: enumeration cost does rise with spare** -- Run A
+shows spare=16 and 24 reaching the 2000-placement cap in 1.4-2.3 s, i.e.
+placements are plentiful when the device is empty, exactly as predicted.
+
+**The first half was wrong, and wrong in the most interesting possible
+way.** "Few placements exist at spare=0, so it should be fast" conflated
+*how many solutions exist* with *how hard they are to find*. At spare=0
+the search does not finish at all -- not because it enumerates many
+solutions, but because it cannot locate the first one inside 10 seconds,
+on an instance where one provably exists. The prediction's own framing
+("Cirq's cliff, if any, runs the opposite direction") is therefore
+**falsified**: Cirq's cliff runs in the *same* direction as Qiskit's and
+TKET's, at the same point, and is the steepest of the three.
+
+## 3. Where this leaves the cross-compiler picture
+
+| tool | placer | cliff at spare=0 | severity |
+|---|---|---|---|
+| Qiskit `optimization_level=3` | `VF2Layout` + `VF2PostLayout` | yes | ~193x (Addendum 34), ~353x vs spare=16 (Addendum 35) |
+| TKET | `GraphPlacement` | yes | ~4x (Addendum 35) |
+| Cirq | `get_placements` (`max_placements=1`) | yes | **>= 4,493x** (this addendum, a floor) |
+
+Three placers, three organizations, three independent implementations of
+bounded subgraph-isomorphism-style placement -- all three degrade at
+**exactly** full occupancy, on an instance where a valid zero-SWAP
+embedding provably exists. Addendum 35's framing survives and
+strengthens: the degradation is a property of the technique, and the
+severity is a property of the implementation, now with a 1,000x spread
+between the mildest (TKET) and the harshest (Cirq) measured so far.
+
+## 4. Limits of this result, stated plainly
+
+- **The cliff's location is bracketed, not pinpointed, for Cirq.** The
+  dense-pair circuit family needs an even qubit count, so spare=1 (n=41)
+  cannot be tested with it. All that is established is that the collapse
+  happens somewhere between spare=2 and spare=0. Qiskit's threshold was
+  pinned to the single step spare=1 -> 0 (Addendum 34); Cirq's has not
+  been.
+- **`max_placements=1` is a proxy for one-solution semantics, not an
+  exact match for it.** Cirq raises on the *second* placement, not the
+  first. Qiskit's `VF2Layout` genuinely stops at one. The comparison is
+  closer than Run A but still not identical, and no attempt was made to
+  patch Cirq to stop at one.
+- **The 10-second timeout is arbitrary** and was chosen for sweep
+  tractability, not from any property of the problem. Every spare=0
+  number in this addendum is a floor. Whether the real figure is 30
+  seconds, 30 minutes, or non-terminating is unknown.
+- **An earlier, weaker measurement of this same question gave the
+  opposite impression, and is superseded rather than deleted.** A first
+  script (`occupancy_sweep_cirq.py`) called
+  `GraphMatcher.subgraph_is_monomorphic()` -- existence-only, stopping at
+  the first match -- and found **no cliff at all**: 1.65 ms at spare=0
+  versus 1.40 ms at spare=2, a ratio of 1.18x. That script did not use
+  `cirq` at all (it was written before `cirq` was available in the
+  environment) and called `networkx` directly. **Why the same underlying
+  library is instant via `subgraph_is_monomorphic()` and does not finish
+  in 10 s via `subgraph_monomorphisms_iter()` at the same spare=0 has not
+  been investigated**, and is the single most important loose end here:
+  until it is, "Cirq collapses at saturation" is a statement about
+  `cirq.get_placements()` specifically, not about every way of asking
+  `networkx` the same question.
+- **Whether this circuit family is a realistic input for
+  `cirq.get_placements()` is not established.** That function exists to
+  build a candidate list for `RandomDevicePlacer` to sample from; feeding
+  it a 42-qubit dense-pair interaction graph may be outside its intended
+  use. This addendum shows what happens when you do, not that Cirq users
+  routinely do it.
+- **The interaction graph is a disjoint union of N/2 unconnected 2-node
+  edges** -- maximally symmetric and disconnected, which is a plausible
+  worst case for VF2-family search independent of occupancy. Run A's
+  timeouts at spare=2 through 8 are consistent with that structure being
+  expensive in its own right. Run B separates the two effects (at cap=1,
+  spare>=2 is fast, so the structure alone is not the problem), but a
+  differently-shaped interaction graph has not been tried.
+
+## 5. Files
+
+| File | What it is |
+|---|---|
+| `occupancy_sweep_cirq_real.py` | the script for both runs (real `cirq.get_placements()`, hard subprocess timeout) |
+| `occupancy_sweep_cirq_real_6x7_2026-09-17.csv` | Run A, `max_placements=2000` (21 rows) |
+| `occupancy_sweep_cirq_maxplace1_6x7_2026-09-17.csv` | Run B, `max_placements=1` (21 rows) |
+| `occupancy_sweep_cirq.py` | the superseded existence-only script (Section 4) |
+| `occupancy_sweep_cirq_6x7_2026-09-17.csv` | its data, showing no cliff (63 rows) |
+
+## 6. Verification
+
+- Every figure in Sections 1-2 was recomputed directly from the two CSVs
+  (median by spare), not read off the script's printed summary.
+- `EmbeddingFeasible=True` and `MaxMatchingSize == RequiredPairs == 21`
+  were confirmed present in **every** row of both runs, including every
+  timed-out spare=0 row -- so "a solution exists there" is not inferred
+  from Addendum 34 but re-established independently in this run's own
+  data, by a different algorithm (`nx.max_weight_matching`) from the one
+  being timed.
+- `cirq.get_placements()`'s enumerate-don't-stop behaviour and its
+  `> max_placements` off-by-one were read from Cirq's own source on
+  GitHub (`cirq-core/cirq/devices/named_topologies.py`), fetched
+  directly, not inferred from documentation prose or from behaviour.
+- The subprocess timeout mechanism was tested independently before these
+  runs (a deliberately 100-second worker killed at a 2-second timeout,
+  and a 0.1-second worker returning normally) to confirm timeouts are
+  real kills rather than post-hoc elapsed-time checks -- the flaw that
+  made an earlier version of this script hang indefinitely on a 4x4 grid
+  and require Ctrl+C.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this addendum and both CSVs -> 0 hits.
+
+
 
 ---
 
