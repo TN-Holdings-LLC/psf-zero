@@ -1962,7 +1962,7 @@ python cross_compiler_cliff.py --rows 6 --cols 7 \
 
 | File | What it is |
 |---|---|
-| `cross_compiler_cliff.py` | the script (no PSF-Zero dependency) |
+| [`cross_compiler_cliff.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/cross_compiler_cliff.py) | the script (no PSF-Zero dependency) |
 | `cross_compiler_cliff_<rows>x<cols>_<cpu>_<date>.csv` | its raw output |
 | this document | the pre-registered predictions |
 
@@ -2145,9 +2145,9 @@ one implementation," not evidence of a field-wide law.
 
 | File | What it is |
 |---|---|
-| `cross_compiler_cliff.py` | the script (no PSF-Zero dependency) |
-| `cross_compiler_cliff_6x7_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-17.csv` | this run's raw data (216 rows, 0 errors) |
-| `spare-qubit-cliff-addendum-35-preregistration-2026-09-17.md` | predictions (including the pre-run P4->P4' amendment), written before this run |
+| [`cross_compiler_cliff.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/cross_compiler_cliff.py) | the script (no PSF-Zero dependency) |
+| [`cross_compiler_cliff_6x7_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-17.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/cross_compiler_cliff_6x7_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-17.csv) | this run's raw data (216 rows, 0 errors) |
+| [`spare-qubit-cliff-addendum-35-preregistration-2026-09-17.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-35-preregistration-2026-09-17.md) | predictions (including the pre-run P4->P4' amendment), written before this run |
 | this document | the results write-up |
 
 ## 6. Verification
