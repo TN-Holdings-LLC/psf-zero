@@ -2464,6 +2464,157 @@ between the mildest (TKET) and the harshest (Cirq) measured so far.
   and require Ctrl+C.
 - Pre-publication check: `grep` against this project's private
   personal-information pattern list, this addendum and both CSVs -> 0 hits.
+---
+
+# Addendum 38 -- prior art check: the field's most comprehensive cross-SDK benchmark (Nature Comput. Sci., 2025) never varies device occupancy (2026-09-17)
+
+**Status note on process**: this is a literature/prior-art addendum, not
+a measurement. No code was run. It records what an existing, peer-reviewed
+benchmark does and does not cover, so that the claims in Addenda 34-37
+can be positioned honestly against published work rather than asserted as
+novel on the basis of not having looked.
+
+## 0. In one line
+
+Addenda 34, 35 and 37 established that Qiskit, TKET and Cirq all degrade
+sharply at exactly full coupling-map occupancy. Before treating that as a
+new observation, the obvious prior-art question is whether the field's
+existing benchmarking work already covers it. **Benchpress** (Nation et
+al., *Nature Computational Science* 5, 427-435, 2025,
+doi:10.1038/s43588-025-00792-y) is the most comprehensive published
+cross-SDK benchmark available: 1,066 tests, seven SDKs, circuits up to
+930 qubits and O(10^6) two-qubit gates, from the IBM Quantum team.
+**Reading its full text: the words "saturation," "occupancy," "VF2" and
+"layout" do not appear anywhere in the paper**, and its device
+transpilation tests are structured in a way that systematically excludes
+the saturated regime -- circuits larger than the 133-qubit target are
+skipped rather than tested, and no test varies how full the target device
+is while holding the circuit fixed. The occupancy axis this project has
+been sweeping is not covered there.
+
+## 1. What Benchpress actually measures
+
+From the paper's own Methods and Results sections:
+
+- **Target device for device-transpilation tests**: `FakeTorino`, a
+  snapshot of a 133-qubit IBM Heron system including calibration data.
+- **Abstract topologies also tested**: all-to-all, square, heavy-hex,
+  linear (predefined `rustworkx` graphs).
+- **Metrics**: 2Q gate count, 2Q gate depth, transpilation runtime, plus
+  input qubit count, QASM load time, and output operation counts.
+- **Timeout**: 3,600 s (1 hour), after which a test is marked FAILED.
+- **SDKs**: Braket, BQSKit, Cirq, Qiskit, Qiskit Transpiler Service,
+  Staq, Tket.
+- **Hardware used for the runs**: AMD 7900, 128 GB, Linux Mint 21.3,
+  Python 3.12.
+
+The paper is explicitly framed around scaling in *circuit size* -- "as
+quantum computers continue to grow in size, it is imperative that the
+associated classical computing costs be evaluated for scalability."
+
+## 2. The specific gap
+
+Two sentences in the paper define the boundary precisely:
+
+> "Twenty-two tests are universally skipped due to insufficient qubit
+> count for the target used in device transpilation."
+
+> "Out of 1,054 total tests, 22 are device transpilation tests larger
+> than the target Heron device and are SKIPPED regardless of the SDK."
+
+So the closest the suite comes to a full device is: a circuit either fits
+comfortably inside 133 qubits, or it does not fit at all and is skipped.
+**There is no test in which the same circuit is run against targets of
+decreasing spare capacity**, which is the entire axis Addenda 34-37
+sweep. A 133-qubit device and a 42-qubit circuit is a 32%-occupancy
+instance -- comfortably in the flat region this project's own data shows
+(Addendum 34: everything from spare=1 outward is within ~1.3x
+step-to-step).
+
+Three further absences, checked by full-text search rather than by
+impression:
+
+- **"saturation" / "occupancy" / "fully occupied" / "spare qubit":** zero
+  occurrences.
+- **"VF2":** zero occurrences. The paper reports transpilation runtime
+  as a whole and never attributes it to a specific pass.
+- **"layout":** zero occurrences. Routing is discussed (Sabre is named,
+  and the paper notes its stochastic component makes gate count and depth
+  vary run to run) but the layout stage -- where this project found
+  ~99.8% of the time going at saturation (Addendum 34) -- is not broken
+  out.
+
+## 3. What this does and does not license
+
+**It does support**: the occupancy axis is not covered by the field's
+most comprehensive published cross-SDK benchmark. Addenda 34-37's
+measurements are not a re-derivation of something Benchpress already
+reported.
+
+**It does not support** "nobody has studied this." A single paper, however
+comprehensive, is not the literature. This project has already cited one
+independent study (arXiv 2504.15141) that found VF2Layout consuming >99%
+of compile time on a 100-qubit circuit -- the same pass, the same order of
+dominance, found without varying occupancy. Others may exist. **No
+systematic literature search has been performed**, and this addendum
+should not be cited as if one had been. The honest statement is: the
+obvious place for this to have been covered does not cover it.
+
+**It also does not establish** that the saturated regime matters
+practically. Benchpress's choice to test circuits that fit inside the
+device is a reasonable reflection of how devices are used today, when
+133-qubit hardware and 42-qubit workloads are a normal pairing. The
+argument that full occupancy will matter more as workloads grow to fill
+devices is plausible and is this project's motivation, but it is an
+argument about the future, not a measurement.
+
+## 4. What Benchpress offers this project going forward
+
+Reading it suggests three concrete improvements to this project's own
+experimental setup, none of them yet done:
+
+1. **A realistic device target.** Every cliff measurement here has used
+   `CouplingMap.from_grid(6, 7)` -- a plain rectangular grid. Benchpress
+   uses `FakeTorino` (real 133-qubit Heron topology with calibration
+   data) and heavy-hex among its abstract topologies. **Whether the
+   cliff reproduces on a heavy-hex or real-device topology, rather than a
+   square grid, has not been tested.** Addendum 34's own "proposed next
+   steps" called for a second grid size; a second *topology class* is a
+   stronger test.
+2. **A far more generous timeout.** Benchpress allows 3,600 s before
+   declaring failure. This project's Cirq runs (Addendum 37) used 10 s
+   and hit it in every spare=0 attempt, making every spare=0 figure a
+   floor rather than a measurement. A long-timeout re-run would turn
+   ">= 4,493x" into an actual number.
+3. **Its methodology note on subprocess timing.** The paper flags that
+   "using subprocesses to enforce timing can have adverse effects when
+   timing software uses parallel processing" -- relevant directly to the
+   `multiprocessing`-based hard timeout added in Addendum 37, which has
+   not been checked for this interaction.
+
+## 5. Files
+
+| File | What it is |
+|---|---|
+| Benchpress paper | Nation, P. D. et al. *Nat. Comput. Sci.* **5**, 427-435 (2025). doi:10.1038/s43588-025-00792-y. Read in full for this addendum; not redistributed here |
+| this document | the prior-art record |
+
+## 6. Verification
+
+- All four absence claims ("saturation", "occupancy", "VF2", "layout")
+  were checked by full-text extraction and case-insensitive search of the
+  complete 10-page PDF, not by reading the abstract or skimming.
+- Both quoted sentences in Section 2 were read in their surrounding
+  context (Fig. 1 caption and the Results section's transpilation
+  paragraph respectively), not lifted from a search-result snippet.
+- The device target (`FakeTorino`, 133-qubit Heron), timeout (3,600 s),
+  metrics list, and SDK list were all read from the paper's Methods
+  section directly.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this addendum -> 0 hits.
+
+
+
 
 ---
 
