@@ -26,7 +26,9 @@ optimized = psf_compile(qc)          # add verify=False for the fastest path
 Install: `git clone … && cd psf-zero && pip install -e .`
 (needs `numpy`, `scipy`, `qiskit`; the Rust core builds via `maturin`/`pyo3`.)
 
-Source: [`psf_compile.py`](psf_compile.py) — the pass itself ·
+Source: [`psf_compile.py`](psf_compile.py) — the pass itself, and the one place the
+current compiler lives. Its `VERSION:` line names the revision; that line is bumped
+in place, so there is never a second, differently-named copy to pick between ·
 [`lib.rs`](lib.rs) — the Rust core (`psf_zero_core`) it calls into.
 
 ---
@@ -97,6 +99,59 @@ on the machine** — not a single number.
 `optimization_level=3` emit the *same* 234 two-qubit gates; depth is **9**
 (`entangling_basis="canonical"`), **13** (`"cx"`, hardware-comparable) and **16**
 (Qiskit). Equivalence checked at every point (< 4.5e-15).
+
+#### At the coupling-map cliff (spare=0)
+
+The gate-count parity above holds away from any coupling-map saturation. At the
+cliff point described in
+[the finding below](#a-finding-that-is-not-about-psf-zero) — where the coupling
+map is fully saturated and Qiskit's own `optimization_level` 2/3 slows down by
+orders of magnitude — the same comparison was repeated on two grid sizes, under a
+specific, deliberate PSF-Zero configuration:
+
+| | Qiskit `optimization_level=3` | PSF-Zero, `layout_search=False` | PSF-Zero, `layout_search=True` |
+| :--- | :---: | :---: | :---: |
+| 6x7 grid (42q) | 63 gates, depth 16, 6.38s (279x) | 69 gates, depth 44, 22.9ms | 63 gates, depth 23, 16.9ms (379x) |
+| 8x8 grid (64q) | 96 gates, depth 16, 8.20s (544x) | 96 gates, depth 23, 15.1ms | 96 gates, depth 23, 24.2ms (339x) |
+
+<sub>`gate_count_vs_routing_level.py`, `routing_optimization_level=1`,
+`entangling_basis="cx"`, `seed_transpiler=42`, spare=0 (the fully-saturated,
+worst case for Qiskit's own layout search). Medians over 3 seeds x 3 repeats
+(6x7: 3 seeds x 5 independent process launches); gate count and depth were
+*identical* across every seed and repeat at both grid sizes (zero spread) —
+only compile time varied. Time ranges: 6x7 Qiskit 6.34–6.44s (one 17.8s
+cold-start launch excluded as a warm-up artifact), PSF-Zero 21.8–32.3ms
+(`layout_search=False`) / 16.1–20.1ms (`=True`); 8x8 Qiskit 8.17–8.29s,
+PSF-Zero 13.4–21.8ms / 22.1–27.7ms. Speed-up figures in parentheses are
+median-based. Windows, `Intel64 Family 6 Model 181 Stepping 0, GenuineIntel`,
+Python 3.11.9, Qiskit 2.5.2. Correctness: a small-scale (n=6) exact `Operator`
+equivalence check passed before every sweep; every routed output at full
+scale was checked for coupling-map validity (0 violations across all rows).
+Full-scale unitary equivalence is not computed — infeasible at this qubit
+count, per this project's established practice elsewhere in this
+document.</sub>
+
+![PSF-Zero vs Qiskit at the coupling-map cliff: compile time (log scale) and two-qubit gate count, 6x7 and 8x8 grids](docs/Figure_2.png)
+
+**`entangling_basis="cx"` is not the default** — `"canonical"` is (see
+[`entangling-basis.md`](docs/findings/entangling-basis.md)) — and under the
+default, PSF-Zero's own gate count at this same 6x7 cliff point is roughly
+**2x** Qiskit's, not roughly equal. The near-parity shown above is what `"cx"`
+buys specifically for CX/ECR-native hardware, not PSF-Zero's out-of-the-box
+behavior on a general target. The depth cost is real regardless of which
+`entangling_basis` is used: `layout_search=False` pays depth 44 against
+Qiskit's 16 at 6x7; `layout_search=True` matches Qiskit's gate count exactly
+at both grid sizes but is still deeper (23 vs. 16).
+
+**The `layout_search=False` gate-count gap over the zero-swap baseline (69 vs.
+63 at 6x7) disappeared entirely at 8x8 (96 vs. 96), for a reason that is
+proposed but not yet confirmed**: a candidate mechanism is grid *column
+parity* — whether the circuit's fixed adjacent-logical-qubit-pair structure
+ever straddles a row boundary under the grid's row-major physical numbering
+(6x7 has three such straddling pairs; 8x8, with an even column count, has
+none) — rather than grid size as such. This has not been tested independently
+of grid size. Full data, the pre-registered predictions, and the reasoning
+behind the parity hypothesis: `spare-qubit-cliff-combined.md`, addenda 29–32.
 
 **vs. TKET** (`FullPeepholeOptimise`), same circuit family:
 
@@ -187,6 +242,30 @@ optimization passes that follow can end up doing substantially more work, in one
 measured case (`brick` topology) roughly 3x the layout-search cost itself. Padding
 the coupling map with a few spare qubits removes the effect entirely.
 
+> **Update (2026-09-17): the "falls back to SabreLayout" description above is
+> superseded by a direct per-pass timing measurement.** A finer sweep (spare 0
+> through 24, in steps of 1 near the cliff) instrumented every pass in
+> `transpile()` directly via its own `callback` hook, on the identical dense-pair
+> circuit family. Result: `SabreLayout`'s own measured time is **0.0 ms in all
+> 234 timed calls**, at every spare value and both `optimization_level` 1 and 3 —
+> on this circuit family, the fallback described above either does not run
+> measurably or is not where the cost lands. The actual cost breakdown at
+> spare=0, `optimization_level=3` (median of 9 runs): `VF2Layout` **8,450.8 ms**,
+> then **`VF2PostLayout`** (which runs afterward to check whether a better final
+> layout exists) **6,712.3 ms** — two separate, expensive VF2-family searches,
+> not one search plus a cheap deterministic fallback. This does not change the
+> qualitative finding below (a single class of bounded search failing near full
+> saturation, on an instance a perfect matching proves is solvable) or the fact
+> that padding with spare qubits removes the effect — it changes which pass
+> absorbs the cost. The same sweep pinpointed the cliff to a single step (spare
+> 0→1, a 193x drop at `optimization_level=3`) that coincides exactly with
+> `VF2Layout`'s own `stop_reason` flipping from "no solution found" to "solution
+> found," and an independently-computed (`networkx`, no Qiskit layout code
+> involved) perfect matching confirms a valid, zero-SWAP embedding **provably
+> exists** at spare=0 — so the "no solution" verdict there is the search giving
+> up inside its own budget, not the instance being unsolvable. Full data and
+> every pre-registered prediction: `spare-qubit-cliff-combined.md`, Addendum 34.
+
 **A layout-search prototype recovers most of this, and the recovery holds through
 PSF-Zero's own pipeline, not just bare `transpile()`.** Trying several cheap
 node orderings and, if needed, a fallback heuristic search — a few
@@ -200,15 +279,48 @@ winning cases. This has been confirmed as a standalone prototype and, separately
 routing its output into `compile_for_hardware()` via a new `initial_layout`
 parameter — the size of the win is consistent across both.
 
+**Is this a Qiskit bug, or a property of the technique? Both — direction generalizes, severity does not.**
+A cross-compiler comparison at the same saturation point (2026-09-17) ran the
+identical circuits and coupling map through TKET's `GraphPlacement`, which is
+structurally the same idea as `VF2Layout` (a budgeted subgraph-isomorphism-style
+search for an embedding), but bounded by a wall-clock timeout in addition to a
+call count. **TKET's placement stage does slow down at full saturation** —
+direction confirmed, ~4x from spare=4 to spare=0, narrowly under a 5x
+pre-registered threshold — so the underlying degradation is not unique to
+Qiskit's implementation. **But the magnitude is nowhere close**: at spare=0,
+TKET's total placement-plus-routing time was 210 ms; Qiskit
+`optimization_level=3` at the identical point was 11,416 ms — a **~54x** gap
+between the two tools at the exact spot where Qiskit is at its worst, and
+Qiskit's own spare0/spare16 ratio (**353x**) against TKET's (**~4-6x**) makes the
+severity gap explicit. The most defensible framing given both results: bounded
+subgraph-isomorphism placement is not saturation-proof in general, but
+implementations differ enormously in how badly they cope, and Qiskit's preset
+pipeline currently sits at the catastrophic end of that range while TKET does
+not. Not yet established: whether TKET's relative immunity comes specifically
+from its wall-clock timeout (it was not observed straining against that timeout
+at this problem size — 151 ms median against a 1000 ms cap — so this remains
+plausible, not demonstrated), from a smaller default search budget, or simply
+from this grid not yet being hard enough to expose a TKET-side cliff. Full data
+and every pre-registered prediction: `spare-qubit-cliff-combined.md`, Addendum 35.
+
 **Still open**: whether a same-condition run-to-run variance found at
 `optimization_level=3` (up to ~3x on one measurement) reflects `VF2Layout`'s own
-non-determinism or the measurement environment; whether the ordering effects found
-via the public `rustworkx` package hold inside Qiskit's own compiled VF2
-implementation, which has not been directly tested; and whether the original report
-that Qiskit calls `rustworkx.vf2_mapping()` (rejected upstream) was ever true of the
-code as it stood — it turned out to describe a code path Qiskit had already removed
-a year earlier, in a commit whose own message called shuffling "in general, not a
-good idea," which lines up with what was independently measured here.
+non-determinism or drift in the measurement environment; the actual `call_limit`
+(or other budget parameter) values Qiskit's preset pass managers use at each
+optimization level — the ~1,500x gap between `VF2Layout`'s own L1 and L3 failing-search
+times (5.4 ms vs. 8,450.8 ms on an identical, budget-exhausted instance) is strong
+indirect evidence the presets configure very different budgets, but this has not
+been read directly from source; whether the ordering effects behind the
+layout-search prototype hold inside Qiskit's own compiled VF2 implementation
+(`qiskit._accelerate.vf2_layout`) — direct introspection of its parameters
+(`VF2PassConfiguration`) confirms it exposes no `id_order`-equivalent knob at all,
+so this specific question cannot currently be tested through any public interface;
+whether TKET's placement time approaches its own timeout at a larger, more
+saturated grid than 6x7; and whether the original report that Qiskit calls
+`rustworkx.vf2_mapping()` (rejected upstream) was ever true of the code as it
+stood — it turned out to describe a code path Qiskit had already removed a year
+earlier, in a commit whose own message called shuffling "in general, not a good
+idea," which lines up with what was independently measured here.
 
 Experiments:
 [`phase3_v5_spare_qubits.py`](benchmarks/phase3_v5_spare_qubits.py),
@@ -218,7 +330,12 @@ Experiments:
 [`verify_preset_stop_reason.py`](benchmarks/verify_preset_stop_reason.py),
 [`verify_vf2_pipeline_trace.py`](benchmarks/verify_vf2_pipeline_trace.py),
 [`psf_smart_layout.py`](benchmarks/psf_smart_layout.py),
-[`benchmark_smart_layout_vs_default.py`](benchmarks/benchmark_smart_layout_vs_default.py).
+[`benchmark_smart_layout_vs_default.py`](benchmarks/benchmark_smart_layout_vs_default.py),
+[`occupancy_sweep.py`](benchmarks/occupancy_sweep.py) (fine-grained spare-qubit
+sweep with `VF2Layout_stop_reason` and independent feasibility instrumentation,
+no PSF-Zero dependency),
+[`cross_compiler_cliff.py`](benchmarks/cross_compiler_cliff.py) (Qiskit vs. TKET
+at the same saturation point, no PSF-Zero dependency).
 Full account, source reading, every pre-registered prediction, and raw data (18
 rounds, 2026-09-13 through 2026-09-15):
 [`docs/findings/spare-qubit-cliff.md`](docs/findings/spare-qubit-cliff.md) (summary)
@@ -283,6 +400,13 @@ planned but not yet written.)
 [`phase3_v4_dense_pair_blocks.py`](benchmarks/phase3_v4_dense_pair_blocks.py) and
 [`phase3_v5_spare_qubits.py`](benchmarks/phase3_v5_spare_qubits.py) /
 [`phase3_v6_workload_control.py`](benchmarks/phase3_v6_workload_control.py) (coupling maps) ·
+[`gate_count_vs_routing_level.py`](benchmarks/gate_count_vs_routing_level.py) (gate
+count at the coupling-map cliff, `entangling_basis="cx"`) ·
+[`occupancy_sweep.py`](benchmarks/occupancy_sweep.py) (fine-grained spare-qubit
+sweep, `VF2Layout_stop_reason` and independent feasibility check, no PSF-Zero
+dependency) ·
+[`cross_compiler_cliff.py`](benchmarks/cross_compiler_cliff.py) (Qiskit vs. TKET
+at the same saturation point, no PSF-Zero dependency) ·
 [`test_psf_vs_tket.py`](benchmarks/test_psf_vs_tket.py) /
 [`test_scale_explosion_war2.py`](benchmarks/test_scale_explosion_war2.py) (TKET) ·
 [`test_real_hardware_fidelity.py`](benchmarks/test_real_hardware_fidelity.py) and
@@ -300,9 +424,12 @@ their absence.
   distinguish the two is designed but not yet run.
 - Whether the ordering effects behind the layout-search prototype — found via the
   public `rustworkx` package — hold inside Qiskit's own compiled VF2
-  implementation (`qiskit._accelerate.vf2_layout`). Never directly tested; the
-  prototype's integration into PSF-Zero's pipeline has been confirmed, but not
-  this specific question.
+  implementation (`qiskit._accelerate.vf2_layout`). **Confirmed untestable through
+  any exposed interface** (2026-09-17): direct introspection of
+  `VF2PassConfiguration` shows it has no `id_order`-equivalent parameter at any
+  level of Qiskit's current implementation. The prototype's integration into
+  PSF-Zero's pipeline has been confirmed, but this specific question would need
+  access Qiskit does not currently expose.
 - Whether the prototype's search-retry budget (recently tuned down based on a
   six-point sweep) can go lower still — the sweep's smallest tested value already
   misses one topology outright, and no finer step was tried near that boundary.
@@ -311,6 +438,31 @@ their absence.
   reason to spend QPU time.
 - A routing benchmark on non-adjacent logical pairs, so SWAP insertion is actually
   exercised.
+- Whether the `layout_search=False` two-qubit-gate-count gap over the
+  zero-swap baseline at the coupling-map cliff (present at a 6x7 grid, absent at
+  8x8) is caused by grid column parity or by something else — proposed but not
+  tested independently of grid size, and not yet pursued further (deprioritized
+  in favor of the occupancy-sweep and cross-compiler work below). See
+  `spare-qubit-cliff-combined.md`, addenda 29–32.
+- **NEW.** The actual `call_limit` (or other budget) values Qiskit's preset pass
+  managers use for `VF2Layout` at each `optimization_level` — inferred only
+  indirectly so far, from the size of the gap between a failing search's L1 and
+  L3 timings, not read from source. See `spare-qubit-cliff-combined.md`,
+  Addendum 34, Section 3.
+- **NEW.** Whether `VF2PostLayout` exposes a stop-reason-equivalent property in
+  its own `property_set` — not yet instrumented, so its cost is currently
+  inferred only from `slowest_pass`, not confirmed as its own budget-exhaustion
+  event the way `VF2Layout`'s is.
+- **NEW.** Whether TKET's `GraphPlacement` placement time approaches its own
+  wall-clock timeout at a larger, more saturated grid than the 6x7 tested so
+  far — at 6x7 it was not observed straining against its budget (151 ms median
+  vs. a 1000 ms default timeout), so the "the timeout is what protects TKET"
+  explanation is plausible but not yet demonstrated. See
+  `spare-qubit-cliff-combined.md`, Addendum 35.
+- **NEW.** Whether BQSKit's or Cirq's placement/layout stages show the same
+  saturation-degradation pattern as Qiskit's `VF2Layout` and TKET's
+  `GraphPlacement` — untested; two tools is evidence the pattern is "not unique
+  to one implementation," not evidence it is a field-wide property.
 - Benchpress integration ([issue #114](https://github.com/Qiskit/benchpress/issues/114)),
   PennyLane transforms, and parallel per-block synthesis — all unbuilt.
 
