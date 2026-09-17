@@ -2311,7 +2311,7 @@ organizations.
 
 This run says almost nothing about the cliff, because
 `cirq.get_placements()` does not stop at one solution: reading its source
-(`cirq-core/cirq/devices/named_topologies.py`, fetched directly from
+([`cirq-core/cirq/devices/named_topologies.py`](https://github.com/quantumlib/Cirq/blob/main/cirq-core/cirq/devices/named_topologies.py), fetched directly from
 `quantumlib/Cirq`) shows it iterates `subgraph_monomorphisms_iter()` and
 **enumerates every distinct placement**, de-duplicating only exact
 rotations/reflections that reuse the same device qubits. Comparing that
@@ -2346,7 +2346,7 @@ False there -- the cap was never reached). That asymmetry is the finding.
 
 ## 2. The script's own stated predictions, and the miss
 
-`occupancy_sweep_cirq_real.py`'s docstring, written before either run,
+[`occupancy_sweep_cirq_real.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/occupancy_sweep_cirq_real.py)'s docstring, written before either run,
 predicted:
 
 > at spare=0, the interaction graph nearly fills the device, so there
@@ -2406,7 +2406,7 @@ between the mildest (TKET) and the harshest (Cirq) measured so far.
   seconds, 30 minutes, or non-terminating is unknown.
 - **An earlier, weaker measurement of this same question gave the
   opposite impression, and is superseded rather than deleted.** A first
-  script (`occupancy_sweep_cirq.py`) called
+  script ([`occupancy_sweep_cirq.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/occupancy_sweep_cirq.py)) called
   `GraphMatcher.subgraph_is_monomorphic()` -- existence-only, stopping at
   the first match -- and found **no cliff at all**: 1.65 ms at spare=0
   versus 1.40 ms at spare=2, a ratio of 1.18x. That script did not use
@@ -2436,11 +2436,11 @@ between the mildest (TKET) and the harshest (Cirq) measured so far.
 
 | File | What it is |
 |---|---|
-| `occupancy_sweep_cirq_real.py` | the script for both runs (real `cirq.get_placements()`, hard subprocess timeout) |
-| `occupancy_sweep_cirq_real_6x7_2026-09-17.csv` | Run A, `max_placements=2000` (21 rows) |
-| `occupancy_sweep_cirq_maxplace1_6x7_2026-09-17.csv` | Run B, `max_placements=1` (21 rows) |
-| `occupancy_sweep_cirq.py` | the superseded existence-only script (Section 4) |
-| `occupancy_sweep_cirq_6x7_2026-09-17.csv` | its data, showing no cliff (63 rows) |
+| [`occupancy_sweep_cirq_real.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/occupancy_sweep_cirq_real.py) | the script for both runs (real `cirq.get_placements()`, hard subprocess timeout) |
+| [`occupancy_sweep_cirq_real_6x7_2026-09-17.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/occupancy_sweep_cirq_real_6x7_2026-09-17.csv) | Run A, `max_placements=2000` (21 rows) |
+| [`occupancy_sweep_cirq_maxplace1_6x7_2026-09-17.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/occupancy_sweep_cirq_maxplace1_6x7_2026-09-17.csv) | Run B, `max_placements=1` (21 rows) |
+| [`occupancy_sweep_cirq.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/occupancy_sweep_cirq.py) | the superseded existence-only script (Section 4) |
+| [`occupancy_sweep_cirq_6x7_2026-09-17.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/occupancy_sweep_cirq_6x7_2026-09-17.csv) | its data, showing no cliff (63 rows) |
 
 ## 6. Verification
 
@@ -2454,7 +2454,7 @@ between the mildest (TKET) and the harshest (Cirq) measured so far.
   being timed.
 - `cirq.get_placements()`'s enumerate-don't-stop behaviour and its
   `> max_placements` off-by-one were read from Cirq's own source on
-  GitHub (`cirq-core/cirq/devices/named_topologies.py`), fetched
+  GitHub ([`cirq-core/cirq/devices/named_topologies.py`](https://github.com/quantumlib/Cirq/blob/main/cirq-core/cirq/devices/named_topologies.py)), fetched
   directly, not inferred from documentation prose or from behaviour.
 - The subprocess timeout mechanism was tested independently before these
   runs (a deliberately 100-second worker killed at a 2-second timeout,
@@ -2464,8 +2464,6 @@ between the mildest (TKET) and the harshest (Cirq) measured so far.
   and require Ctrl+C.
 - Pre-publication check: `grep` against this project's private
   personal-information pattern list, this addendum and both CSVs -> 0 hits.
-
-
 
 ---
 
