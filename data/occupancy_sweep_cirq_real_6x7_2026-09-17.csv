@@ -1,0 +1,22 @@
+Spare,Qubits,Seed,Rep,Elapsed_s,NPlacementsFound,HitCap,TimedOut,Error,EmbeddingFeasible,MaxMatchingSize,RequiredPairs,MaxPlacementsCap,Rows,Cols,Platform,Python,CPU,CirqVersion
+0,42,0,0,10.039096500000596,,False,True,,True,21,21,2000,6,7,Windows-10-10.0.26100-SP0,3.10.11,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",1.5.0
+0,42,0,1,10.029580100000203,,False,True,,True,21,21,2000,6,7,Windows-10-10.0.26100-SP0,3.10.11,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",1.5.0
+0,42,0,2,10.024680200000148,,False,True,,True,21,21,2000,6,7,Windows-10-10.0.26100-SP0,3.10.11,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",1.5.0
+2,40,0,0,10.023073400000612,,False,True,,True,21,20,2000,6,7,Windows-10-10.0.26100-SP0,3.10.11,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",1.5.0
+2,40,0,1,10.034776599999532,,False,True,,True,21,20,2000,6,7,Windows-10-10.0.26100-SP0,3.10.11,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",1.5.0
+2,40,0,2,10.030437599999459,,False,True,,True,21,20,2000,6,7,Windows-10-10.0.26100-SP0,3.10.11,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",1.5.0
+4,38,0,0,10.026480200000151,,False,True,,True,21,19,2000,6,7,Windows-10-10.0.26100-SP0,3.10.11,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",1.5.0
+4,38,0,1,10.020459399999709,,False,True,,True,21,19,2000,6,7,Windows-10-10.0.26100-SP0,3.10.11,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",1.5.0
+4,38,0,2,10.028729300000123,,False,True,,True,21,19,2000,6,7,Windows-10-10.0.26100-SP0,3.10.11,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",1.5.0
+6,36,0,0,10.020397700000103,,False,True,,True,21,18,2000,6,7,Windows-10-10.0.26100-SP0,3.10.11,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",1.5.0
+6,36,0,1,10.034379300001092,,False,True,,True,21,18,2000,6,7,Windows-10-10.0.26100-SP0,3.10.11,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",1.5.0
+6,36,0,2,10.030658900001072,,False,True,,True,21,18,2000,6,7,Windows-10-10.0.26100-SP0,3.10.11,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",1.5.0
+8,34,0,0,10.026805299999978,,False,True,,True,21,17,2000,6,7,Windows-10-10.0.26100-SP0,3.10.11,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",1.5.0
+8,34,0,1,10.021623700000418,,False,True,,True,21,17,2000,6,7,Windows-10-10.0.26100-SP0,3.10.11,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",1.5.0
+8,34,0,2,10.022449000000051,,False,True,,True,21,17,2000,6,7,Windows-10-10.0.26100-SP0,3.10.11,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",1.5.0
+16,26,0,0,2.2841544000002614,,True,False,We found more than 2000 placements. Please use a more constraining `big_graph` or a more constrained `small_graph`.,True,21,13,2000,6,7,Windows-10-10.0.26100-SP0,3.10.11,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",1.5.0
+16,26,0,1,2.3135901000005106,,True,False,We found more than 2000 placements. Please use a more constraining `big_graph` or a more constrained `small_graph`.,True,21,13,2000,6,7,Windows-10-10.0.26100-SP0,3.10.11,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",1.5.0
+16,26,0,2,2.415710900000704,,True,False,We found more than 2000 placements. Please use a more constraining `big_graph` or a more constrained `small_graph`.,True,21,13,2000,6,7,Windows-10-10.0.26100-SP0,3.10.11,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",1.5.0
+24,18,0,0,1.400890700000673,,True,False,We found more than 2000 placements. Please use a more constraining `big_graph` or a more constrained `small_graph`.,True,21,9,2000,6,7,Windows-10-10.0.26100-SP0,3.10.11,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",1.5.0
+24,18,0,1,1.4044111000002886,,True,False,We found more than 2000 placements. Please use a more constraining `big_graph` or a more constrained `small_graph`.,True,21,9,2000,6,7,Windows-10-10.0.26100-SP0,3.10.11,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",1.5.0
+24,18,0,2,1.3753679000001284,,True,False,We found more than 2000 placements. Please use a more constraining `big_graph` or a more constrained `small_graph`.,True,21,9,2000,6,7,Windows-10-10.0.26100-SP0,3.10.11,"AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",1.5.0
