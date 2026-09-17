@@ -1,6 +1,6 @@
 # spare-qubit-cliff: Combined Addenda, Part 3 of 3 (Addendum 27 through Addendum 36)
 
-**Continued from [Part 2](docs/findings/spare-qubit-cliff-combined-17.md) (and [Part 1](docs/findings/spare-qubit-cliff-combined.md)).** Same conventions as Part 1: nothing has been deleted or rewritten; navigation notes added when merging are clearly marked and separate from the original text.
+**Continued from [Part 2](spare-qubit-cliff-combined-17.md) (and [Part 1](spare-qubit-cliff-combined.md)).** Same conventions as Part 1: nothing has been deleted or rewritten; navigation notes added when merging are clearly marked and separate from the original text.
 
 ---
 <!-- ===== Addendum 27 (source: spare-qubit-cliff-addendum-27-2026-09-16.md) ===== -->
@@ -2270,4 +2270,4 @@ does on their behalf.
 
 ---
 
-**End of Part 3 of 3 (end of document).** Back to [Part 2](docs/findings/spare-qubit-cliff-combined-17.md) or [Part 1](docs/findings/spare-qubit-cliff-combined.md).
+**End of Part 3 of 3 (end of document).** Back to [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
