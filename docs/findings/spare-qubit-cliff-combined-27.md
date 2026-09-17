@@ -347,10 +347,10 @@ null result, not reframed as "still consistent with a low base rate."
 
 | File | What it is |
 |---|---|
-| `spare0_outlier_hunt_6x7_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-17.csv` | Raw per-call data, all 400 rows, normal run |
-| `spare0_outlier_hunt_6x7_gcdisable_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-17.csv` | Raw per-call data, all 400 rows, `--disable-gc` run |
-| `spare-qubit-cliff-addendum-28-preregistration-2026-09-16.md` | Predictions, written before either run |
-| `spare-qubit-cliff-addendum-28-2026-09-17.md` | This document |
+| [`spare0_outlier_hunt_6x7_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-17.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/spare0_outlier_hunt_6x7_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-17.csv) | Raw per-call data, all 400 rows, normal run |
+| [`spare0_outlier_hunt_6x7_gcdisable_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-17.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/spare0_outlier_hunt_6x7_gcdisable_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-17.csv) | Raw per-call data, all 400 rows, `--disable-gc` run |
+| [`spare-qubit-cliff-addendum-28-preregistration-2026-09-16.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-28-preregistration-2026-09-16.md) | Predictions, written before either run |
+| [`spare-qubit-cliff-addendum-28-2026-09-17.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-28-2026-09-17.md) | This document |
 
 ## In one line
 
@@ -584,9 +584,9 @@ This addendum does not run that test; it only proposes it.
 
 | File | What it is |
 |---|---|
-| `bench_cliff_overnight_2026-09-17.csv` | This run's raw data (270 rows), uploaded by the user |
-| `bench_cliff_overnight_2026-09-16.csv` | Addendum 27's original run (already in the project, referenced for comparison, not re-uploaded) |
-| `spare-qubit-cliff-addendum-29-2026-09-17.md` | This document |
+| [`bench_cliff_overnight_2026-09-17.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/bench_cliff_overnight_2026-09-17.csv) | This run's raw data (270 rows), uploaded by the user |
+| [`bench_cliff_overnight_2026-09-16.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/bench_cliff_overnight_2026-09-16.csv) | Addendum 27's original run (already in the project, referenced for comparison, not re-uploaded) |
+| [`spare-qubit-cliff-addendum-29-2026-09-17.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-29-2026-09-17.md) | This document |
 
 ## 9. Update (2026-09-17): gate-count/depth analysis, in response to a proposed "PSF-Zero has no cliff" / "peephole optimization" framing
 
@@ -904,11 +904,11 @@ text, per this project's append-only convention.
 
 | Source | Arm | Seed(s) | Two-qubit gates | Depth | Within-run spread |
 |---|---|---|---|---|---|
-| Addendum 29 (2026-09-17, `bench_cliff_overnight.py`) | `psf_zero_ls0` | 0 | 132 (all 5 rounds) | 45 | none |
+| Addendum 29 (2026-09-17, [`bench_cliff_overnight.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/bench_cliff_overnight.py)) | `psf_zero_ls0` | 0 | 132 (all 5 rounds) | 45 | none |
 | Addendum 29 | `psf_zero_ls0` | 1 | 129, 132, 132, 132, 132 | 28/45 | **yes** |
 | Addendum 29 | `psf_zero_ls0` | 2 | 126, 132, 126, 129, 132 | 22/45/28 | **yes** |
 | Addendum 29 | `psf_zero_ls1` | 0, 1, 2 | 126 (all 15 calls) | 22 | none |
-| This run (`gate_count_vs_routing_level.py`) | `psf_zero_ls0` | 0, 1, 2 | **69** (all 9 calls) | 44 | none |
+| This run ([`gate_count_vs_routing_level.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/gate_count_vs_routing_level.py)) | `psf_zero_ls0` | 0, 1, 2 | **69** (all 9 calls) | 44 | none |
 | This run | `psf_zero_ls1` | 0, 1, 2 | **63** (all 9 calls) | 23 | none |
 | Both runs | `qiskit_opt3` | 0, 1, 2 | 63 (all calls, both runs) | 16 | none |
 
@@ -985,8 +985,8 @@ specific candidate mechanism directly.
 
 | File | What it is |
 |---|---|
-| `gate_count_vs_routing_level_6x7_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-17.csv` | This run's raw data (378 rows) |
-| `spare-qubit-cliff-addendum-30-2026-09-17.md` | This document |
+| [`gate_count_vs_routing_level_6x7_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-17.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/gate_count_vs_routing_level_6x7_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-17.csv) | This run's raw data (378 rows) |
+| [`spare-qubit-cliff-addendum-30-2026-09-17.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-30-2026-09-17.md) | This document |
 
 ## 7. Verification
 
@@ -1294,8 +1294,8 @@ presented as answering the original `"canonical"`-basis question.
 
 | File | What it is |
 |---|---|
-| `gate_count_vs_routing_level_6x7_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-17_run2.csv` through `_run6.csv` | The five separate process launches (9 rows each, 45 total) |
-| `spare-qubit-cliff-addendum-31-2026-09-17.md` | This document |
+| [`gate_count_vs_routing_level_6x7_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-17_run2.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/gate_count_vs_routing_level_6x7_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-17_run2.csv) through [`gate_count_vs_routing_level_6x7_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-17_run6.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/gate_count_vs_routing_level_6x7_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-17_run6.csv) | The five separate process launches (9 rows each, 45 total) |
+| [`spare-qubit-cliff-addendum-31-2026-09-17.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-31-2026-09-17.md) | This document |
 
 ## 7. Verification
 
@@ -1442,8 +1442,8 @@ either is run.
 
 | File | What it is |
 |---|---|
-| `gate_count_vs_routing_level_8x8_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-17.csv` | This run's raw data (27 rows) |
-| `spare-qubit-cliff-addendum-32-2026-09-17.md` | This document |
+| [`gate_count_vs_routing_level_8x8_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-17.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/gate_count_vs_routing_level_8x8_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-17.csv) | This run's raw data (27 rows) |
+| [`spare-qubit-cliff-addendum-32-2026-09-17.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-32-2026-09-17.md) | This document |
 
 ## 7. Verification
 
@@ -1583,7 +1583,7 @@ for the paper but is not required to score the predictions above.
 
 | File | What it is |
 |---|---|
-| `occupancy_sweep.py` | the script (no PSF-Zero dependency) |
+| [`occupancy_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/occupancy_sweep.py) | the script (no PSF-Zero dependency) |
 | `occupancy_sweep_<rows>x<cols>_<cpu>_<date>.csv` | its raw output |
 | this document | the pre-registered predictions |
 
@@ -1783,9 +1783,9 @@ instrumented in this run).
 
 | File | What it is |
 |---|---|
-| `occupancy_sweep.py` | the script (no PSF-Zero dependency) |
-| `occupancy_sweep_6x7_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-17.csv` | this run's raw data (234 rows, 0 errors) |
-| `spare-qubit-cliff-addendum-34-preregistration-2026-09-17.md` | predictions, written before this run |
+| [`occupancy_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/occupancy_sweep.py) | the script (no PSF-Zero dependency) |
+| [`occupancy_sweep_6x7_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-17.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/occupancy_sweep_6x7_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-17.csv) | this run's raw data (234 rows, 0 errors) |
+| [`spare-qubit-cliff-addendum-34-preregistration-2026-09-17.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-34-preregistration-2026-09-17.md) | predictions, written before this run |
 | this document | the results write-up |
 
 ## 7. Verification
@@ -2253,7 +2253,7 @@ does on their behalf.
 
 | File | What it is |
 |---|---|
-| `rustworkx-issue-draft.md` | the original draft, now carrying a 2026-09-17 correction block at its top and inline at its "why it matters downstream" section |
+| [`rustworkx-issue-draft.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/rustworkx-issue-draft.md) | the original draft, now carrying a 2026-09-17 correction block at its top and inline at its "why it matters downstream" section |
 | this document | the record of the external event and the cross-reference |
 
 ### 4. Verification
