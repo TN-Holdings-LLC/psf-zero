@@ -9,7 +9,7 @@ exact wording, exact tables, every pre-registered prediction as originally
 written, and the complete history of what was tried and revised along the
 way -- lives in
 [`spare-qubit-cliff-combined.md`](spare-qubit-cliff-combined.md)
-(same folder as this file). Reading all of that means reading the same
+(same folder as this file; split into three parts as it grew past a comfortable single-file size -- Part 1 links to Parts 2 and 3 at its own end). Reading all of that means reading the same
 explanation of "VF2Layout fails -> falls back to SabreLayout" five or six
 times, the same benchmark-arm definitions three times, and the same "a win
 is impossible when the search failed" caveat three times -- this file states
@@ -81,6 +81,22 @@ established, taken together:
   except where it can, which is exactly where it does (per addendum 6).
 
 ## 4. The mechanism reframed: it isn't search cost, it's a fallback
+
+> **[Corrected in Addendum 34, 2026-09-17] This section's title and its
+> "falls back to SabreLayout" description, while accurate for 24
+> addenda, is now known to be incomplete in a specific way that matters:
+> `SabreLayout` measured exactly 0ms in 234/234 rows of a fine-grained
+> re-measurement. The real cost at spare=0 is two separate, expensive
+> VF2-family searches -- `VF2Layout` itself, and afterward
+> `VF2PostLayout` attempting its own re-embedding (~8.45s and ~6.71s
+> respectively at spare=0, `optimization_level=3`). The rest of this
+> section is kept exactly as written, per this project's standing rule
+> against silently rewriting an earlier claim -- read it as "the
+> understanding at the time," with the correction above as the current
+> one. See Section 6 for what else Addendum 34 established (the cliff is
+> a single step at exact saturation, and a perfect matching provably
+> exists there) and Addendum 35 (the same phenomenon is not
+> Qiskit-specific, though its severity is).**
 
 **[Addendum 8]** got as far as Python could reach: reading
 `qiskit.transpiler.passes.layout.vf2_layout`'s installed source confirmed
@@ -335,12 +351,72 @@ one specific seed's circuit was the cause did not hold up once more
 rounds were run, since the outliers landed on different seeds in
 different rounds.
 
+**[Addenda 28-29] chased that peak-of-cliff anomaly further, without
+closing it.** A 400-round, 800-call null-result hunt found zero outliers
+under both normal and `gc.disable()` conditions -- but a follow-up run of
+the same overnight script found something else: whole ~40-second-long
+rounds running uniformly hot on **both** Qiskit and PSF-Zero, at several
+spare values, not the single-call, PSF-Zero-only spikes first reported.
+The two measurement scripts may simply not have been exercising the same
+code path (Addendum 28's script never runs Qiskit's expensive path at
+all), so this anomaly is not resolved -- it may have changed shape rather
+than gone away. The same round of investigation also found, and then
+fully explained (Addenda 30-31), an unrelated puzzle: PSF-Zero's 2-qubit
+gate count was exactly double Qiskit's, and a separate re-run of the same
+comparison returned one of three different values depending on the
+process launch. Both traced to the same simple cause -- two scripts
+calling `compile_for_hardware` with different `entangling_basis` and
+`seed_transpiler` arguments -- already-known behavior from
+`entangling-basis.md` and Addendum 9, not a new phenomenon. Confirmed to
+generalize to an 8x8 grid (Addendum 32).
+
+**[Addendum 34] corrected this series' own mechanism description.** A
+fine-grained sweep (13 spare values, 6x7 grid) found the cliff is a
+single-step event, exactly between spare=0 and spare=1 (193-238x),
+coinciding exactly with `VF2Layout`'s own stop-reason flip. A perfect
+matching was independently confirmed to exist at spare=0
+(`networkx`, computed without touching Qiskit's layout code), proving
+the instance is solvable -- this is a search-budget failure, not an
+infeasible one. But the addendum's own pre-registered mechanism
+("VF2Layout fails, falls back to SabreLayout," inherited from Addendum 9)
+turned out to be wrong in its specifics: `SabreLayout` measured exactly
+0ms in 234/234 rows. The real cost is two separate, expensive VF2-family
+searches -- `VF2Layout` itself, and afterward `VF2PostLayout` -- not a
+fallback to a different algorithm. See Section 4 above, corrected inline.
+
+**[Addendum 35] answered this series' highest-value open question: is
+the cliff Qiskit-specific, or a property of the technique?** TKET's
+`GraphPlacement` -- a structurally similar bounded subgraph-search
+placer -- degrades the same direction, at the same saturation point, on
+the same circuits and coupling map. But the severity gap between the two
+tools is enormous: TKET's worst case measured ~4x slower at spare=0
+(narrowly missing a pre-registered 5x threshold, reported as a miss, not
+rounded up), against Qiskit's ~353x at the same grid -- a 54x gap in how
+badly each tool copes, not just whether it copes. The most defensible
+framing: bounded subgraph-isomorphism placement is not saturation-proof
+in general, but implementations differ enormously in severity. Still
+open: whether TKET's relative immunity comes specifically from its
+wall-clock timeout (measured placement time, 151ms, was nowhere near its
+1000ms timeout, so this is consistent but not demonstrated); whether this
+generalizes past one grid size and two tools (BQSKit and Cirq untested).
+
 ## 7. Where this stands
 
 **Solid:**
-- The cliff's mechanism (VF2Layout fails -> Sabre fallback -> at L3,
-  possibly-expensive downstream routing) -- established by reading source,
-  confirmed by direct experiment, confirmed again on real hardware.
+- **[Corrected in Addendum 34]** The cliff's mechanism: not "VF2Layout
+  fails -> Sabre fallback" as Addenda 9-10 described -- `SabreLayout`
+  measured exactly 0ms in 234/234 rows of a fine-grained re-measurement.
+  The real cost is two separate, expensive VF2-family searches,
+  `VF2Layout` and `VF2PostLayout`. The cliff itself is a single-step
+  event exactly at full saturation (spare 0 -> 1), coinciding exactly
+  with `VF2Layout`'s own stop-reason flip; a perfect matching provably
+  exists there (independent `networkx` check), confirming search-budget
+  failure rather than infeasibility.
+- **[Addendum 35]** This is not Qiskit-specific: TKET's `GraphPlacement`
+  degrades the same direction at the same saturation point, but only
+  ~4x against Qiskit's ~353x at the same grid -- a 54x severity gap
+  between two independent implementations of the same underlying
+  technique.
 - Ordering-dependence is real inside Qiskit's own compiled code, not just in
   `rustworkx` -- confirmed directly via `shuffle_seed`.
 - Output quality never differs by path taken -- the cliff costs time only.
@@ -407,6 +483,24 @@ different rounds.
   state, a background process, a power-plan effect) remains unconfirmed.
 - Generalization of Addenda 24-26's findings beyond the one grid
   (6x7), one seed, and one machine tested.
+- **[Chased further in Addenda 28-29, still open]** Addendum 27's
+  peak-of-cliff PSF-Zero anomaly did not reproduce in an 800-call
+  null-result hunt, but a follow-up found whole ~40-second rounds
+  running hot on both Qiskit and PSF-Zero, not the single-call,
+  PSF-Zero-only pattern first reported -- the anomaly may have changed
+  shape rather than disappeared, and the two measurement scripts
+  involved may not have been exercising the same code path.
+- Whether TKET's relative immunity to the cliff comes specifically from
+  its wall-clock timeout, a smaller default search space, or simply from
+  this problem size not yet being hard enough to expose a TKET-side
+  cliff -- measured placement time (151ms) was nowhere near its 1000ms
+  timeout, so the timeout explanation is consistent with the data but
+  not demonstrated (Addendum 35).
+- Whether the cliff (in either tool) generalizes past one grid size
+  (6x7) and past the two tools tested (BQSKit and Cirq untested,
+  Addendum 35).
+- Gate-count comparability between Qiskit and TKET under matched
+  optimization effort (`--with-peephole` not yet run, Addendum 35).
 
 ## 8. Files, by round
 
@@ -430,16 +524,23 @@ different rounds.
 | 25 | (same script, `--routing-optimization-level` varied) | rl=2 and rl=3 sweeps, plus [pre-registration](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-25-preregistration-2026-09-16.md) |
 | 26 | [`psf_compile.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/psf_compile.py) (new `layout_search` option), [`test_cliff_sniper_layout_search.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/test_cliff_sniper_layout_search.py) | three-arm sweep (Qiskit L3 / no-search / `layout_search=True`), 3 runs |
 | 27 | [`bench_qiskit_tket_psf.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/bench_qiskit_tket_psf.py), [`bench_cliff_1v1.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/bench_cliff_1v1.py), [`bench_cliff_overnight.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/bench_cliff_overnight.py) (fidelity-checker bug fixed in all three) | [`bench_qiskit_tket_psf_2026-09-16.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/bench_qiskit_tket_psf_2026-09-16.csv), [`bench_cliff_1v1_2026-09-16.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/bench_cliff_1v1_2026-09-16.csv), [`bench_cliff_overnight_2026-09-16.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/bench_cliff_overnight_2026-09-16.csv) (270 rows, spare 0-24, 5 rounds) |
+| 28-29 | `bench_cliff_overnight.py` (re-run, unchanged) | [`bench_cliff_overnight_2026-09-17.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/bench_cliff_overnight_2026-09-17.csv), [`spare0_outlier_hunt_*.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data) (400-round null-result hunt, plus the follow-up that found the anomaly's shape had changed) |
+| 30-31 | [`gate_count_vs_routing_level.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/gate_count_vs_routing_level.py) | [`gate_count_vs_routing_level_6x7_*.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data) (multiple runs, the process-launch-lottery hypothesis and its resolution) |
+| 32 | (same script, 8x8 grid) | [`gate_count_vs_routing_level_8x8_*.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data) (27 rows) |
+| 34 | [`occupancy_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/occupancy_sweep.py) (no PSF-Zero dependency) | [`occupancy_sweep_6x7_*.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data) (234 rows, 0 errors) |
+| 35 | [`cross_compiler_cliff.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/cross_compiler_cliff.py) (no PSF-Zero dependency; Qiskit vs. TKET) | [`cross_compiler_cliff_6x7_*.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data) (216 rows, 0 errors) |
 
 Full text, exact tables, and every pre-registered prediction as originally
 written:
-[`spare-qubit-cliff-combined.md`](spare-qubit-cliff-combined.md).
+[`spare-qubit-cliff-combined.md`](spare-qubit-cliff-combined.md) (Part 1 of 3; links to Parts 2 and 3 at its own end).
 
 ---
 
 ## See also
 
 - [`spare-qubit-cliff-combined.md`](spare-qubit-cliff-combined.md) --
-  all 26 addenda, unedited, in chronological order (same folder). This is
-  where the exact wording, exact tables, and every pre-registered prediction
-  as originally written can be found.
+  all 38 addenda, unedited, in chronological order, split into three parts
+  as it grew past a comfortable single-file size (this is Part 1; it links
+  to Parts 2 and 3 at its own end). This is where the exact wording, exact
+  tables, and every pre-registered prediction as originally written can be
+  found.
