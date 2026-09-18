@@ -9,7 +9,7 @@ exact wording, exact tables, every pre-registered prediction as originally
 written, and the complete history of what was tried and revised along the
 way -- lives in
 [`spare-qubit-cliff-combined.md`](spare-qubit-cliff-combined.md)
-(same folder as this file; split into three parts as it grew past a comfortable single-file size -- Part 1 links to Parts 2 and 3 at its own end). Reading all of that means reading the same
+(same folder as this file; split into five parts as it grew past a comfortable single-file size -- Part 1 links to Parts 2, 3, 4 and 5 at its own end). Reading all of that means reading the same
 explanation of "VF2Layout fails -> falls back to SabreLayout" five or six
 times, the same benchmark-arm definitions three times, and the same "a win
 is impossible when the search failed" caveat three times -- this file states
@@ -400,6 +400,87 @@ wall-clock timeout (measured placement time, 151ms, was nowhere near its
 1000ms timeout, so this is consistent but not demonstrated); whether this
 generalizes past one grid size and two tools (BQSKit and Cirq untested).
 
+**[Addenda 39-41] explain why heavy-hex is immune, and it is not what it
+looked like.** `CouplingMap.from_heavy_hex(d)` is bipartite with
+*unbalanced* parts, so it admits no perfect matching at all -- meaning
+the dense-pair circuit family can never push it past ~84% device
+occupancy, and Addendum 40's clean no-cliff result on heavy-hex
+(d=5 and d=7, 165 runs, zero cliff) was measured entirely outside the
+regime where the cliff lives. Addendum 41 isolated this with a synthetic
+bipartite graph matched to heavy-hex's own degree statistics (~2.2-2.3
+average, mostly degree-2) but with *balanced* parts, so true 100%
+occupancy is reachable: **it cliffs at ~296-303x**, squarely inside the
+square grid's own range despite half the average degree. **Heavy-hex's
+immunity is its occupancy ceiling, not its sparsity** -- and IBM's
+hardware topology choice may be incidentally protective against this
+pathology for reasons worth investigating on their own terms.
+
+**[Addenda 42-49] traced the cliff's cost to two passes that clear at
+different thresholds, then corrected two of their own claims doing so.**
+At finer resolution the sparse-graph slow region is a multi-step
+staircase, not a one-step cliff, and `VF2PostLayout` stops costing time
+one occupancy step *before* `VF2Layout` becomes cheap. Reading Qiskit's
+source and C API docs explains why: the two passes call different Rust
+entry points with different search-ordering heuristics (VF2++ for
+`VF2Layout`, identity-start for `VF2PostLayout`). New instrumentation
+(`VF2PostLayout_stop_reason`, and whether each pass ran at all) then
+established across all three topologies that **`VF2PostLayout` is never
+skipped**, and that its cost is governed entirely by whether `VF2Layout`
+succeeded -- collapsing to ~0 ms where it did, costing seconds where it
+did not. Two claims were retracted along the way: a "third behaviour" on
+heavy-hex (Addendum 43) turned out to be a cross-machine timer-resolution
+artefact (Addendum 48), and a "serious reproducibility problem"
+(Addendum 46) was revised once a third run showed two of three agreeing
+to within 1% (Addendum 47).
+
+**[Addendum 50] overturned this series' own headline finding by testing
+it properly.** Addenda 46-49 had established, across 171 instrumented
+rows, that `VF2PostLayout` returned `"no better solution found"` *every
+single time* -- never improving a layout, while sometimes spending 21
+seconds to conclude that. But every one of those runs passed a bare
+`CouplingMap` with **no error rates**, and finding a lower-*error* layout
+is the pass's entire purpose. Re-run on `FakeTorino` (a real 133-qubit
+IBM Heron snapshot with calibration data), against a control arm on the
+identical topology and basis with error rates stripped: the control still
+says "no better solution found" everywhere, while **the calibrated arm
+returns `"solution found"`**. The streak was an artefact of never giving
+the pass anything to optimise. A second, unpredicted result from the same
+run: with error rates present `VF2PostLayout` costs ~130 ms at *every*
+occupancy -- including where it finds nothing -- taking total compile time
+from ~50 ms to ~175 ms, roughly 3.4x, essentially all of it this one
+pass. That run also confirms a real calibrated device shows **no
+occupancy cliff**, closing the "never tested on real hardware topology"
+gap Addendum 38 identified in Benchpress.
+
+**[Addenda 51-66] found the cliff's true structural dependency, through
+a long chain of self-correction.** Every measurement through Addendum 50
+used one circuit family -- `dense_pairs`, a disjoint union of N/2
+2-qubit edges. Testing other families (a connected path, a random
+regular graph, a star) found **no cliff at all on any of them**, for
+different reasons in each case (Addendum 51) -- the central claim
+narrows from "the occupancy cliff" to "the occupancy cliff, for this
+specific circuit shape." Interpolating between `dense_pairs` and a
+connected chain found the cliff vanishes in a **single step**, not
+gradually (Addendum 52). A promising-looking lead -- component count
+divisible by 3 -- was sighted independently three times at two grid
+sizes (Addenda 53, 59, 61-62), then **directly falsified**: holding
+component count fixed at 18 and only varying composition produced
+opposite outcomes (Addendum 63). The real variable, isolated by
+systematically varying dominant-component size (13 to 40 qubits, all
+cliffing without bare edges) and bare-edge count (0, 1, 17 bare
+2-qubit edges): **the presence of a sufficient number of bare 2-qubit
+edges** in the interaction graph -- not component count, not how large
+a single dominant component is -- separates every fast outcome from
+every cliffing one measured so far (Addenda 63-65). **The exact
+threshold is not yet located**: 1 bare edge still cliffs (Addendum 66),
+17 is fast, and nothing in between has been tested. Separately, grid
+size itself was found to matter independently: 4x4 shows no cliff at
+all despite satisfying every known structural condition, and 8x8's
+slow region is three times wider than 6x7's (Addenda 56-57) -- meaning
+the `spare=2` reference point used throughout Addenda 51-55's
+structural work was only valid at 6x7's own size, and none of the
+bare-edge findings has yet been re-checked at 8x8's own resolution.
+
 ## 7. Where this stands
 
 **Solid:**
@@ -417,6 +498,36 @@ generalizes past one grid size and two tools (BQSKit and Cirq untested).
   ~4x against Qiskit's ~353x at the same grid -- a 54x severity gap
   between two independent implementations of the same underlying
   technique.
+- **[Addenda 39-41]** Heavy-hex's immunity to the cliff is its occupancy
+  ceiling (its bipartite imbalance admits no perfect matching, capping
+  device occupancy at ~84%), **not** its low degree -- a degree-matched
+  but balanced synthetic graph cliffs at ~296-303x once pushed to true
+  100% occupancy.
+- **[Addenda 46-49]** `VF2PostLayout` is never skipped in any
+  configuration tested, and its cost is governed entirely by whether
+  `VF2Layout` succeeded: ~0 ms where it did, seconds where it did not.
+  Confirmed on all three topology families on a single machine.
+- **[Addendum 50]** On a real calibrated device snapshot (`FakeTorino`,
+  133-qubit Heron): **no occupancy cliff**, and `VF2PostLayout` *does*
+  find better layouts when error rates are present -- but costs ~130 ms
+  at every occupancy when they are, roughly tripling total compile time.
+- **[Addendum 51]** The cliff does not survive a change of circuit
+  family: only `dense_pairs` (disjoint 2-qubit edges) cliffs. Connected
+  paths, random regular graphs, and star graphs show no cliff, each for
+  a different reason.
+- **[Addenda 54-55, 63-65]** Confirmed, by independently manipulating
+  each variable: the cliff requires (a) an interaction graph with
+  multiple disjoint components, (b) zero idle qubits at spare=0, AND
+  (c) a sufficient number of bare 2-qubit edges among those components.
+  Neither dominant-component size (tested 13 to 40 qubits) nor
+  component count (mod-3 lead sighted three times, then directly
+  falsified in Addendum 63) determines the outcome once composition is
+  held constant.
+- **[Addenda 56-57]** Grid size independently matters: 4x4 shows no
+  cliff at all despite satisfying every known structural condition, and
+  8x8's slow region is 3x wider than 6x7's -- the `spare=2` reference
+  point used throughout the structural work above was only valid at
+  6x7's own size.
 - Ordering-dependence is real inside Qiskit's own compiled code, not just in
   `rustworkx` -- confirmed directly via `shuffle_seed`.
 - Output quality never differs by path taken -- the cliff costs time only.
@@ -501,6 +612,34 @@ generalizes past one grid size and two tools (BQSKit and Cirq untested).
   Addendum 35).
 - Gate-count comparability between Qiskit and TKET under matched
   optimization effort (`--with-peephole` not yet run, Addendum 35).
+- **Whether the cliff itself looks the same on a calibrated target.**
+  Every cliff measurement (grid, synthetic) used bare coupling maps with
+  no error rates, and Addendum 50 shows error rates change
+  `VF2PostLayout`'s behaviour substantially. Untested.
+- Why `"solution found"` appeared at some occupancies and not others in
+  Addendum 50's calibrated arm -- no prediction was made about which, and
+  none is claimed retroactively.
+- Whether `VF2PostLayout`'s ~130 ms on a calibrated target buys a
+  *meaningfully* better layout. The stop reason says a lower-scoring
+  layout was found, not by how much.
+- The Rust source of `vf2_layout_pass_exact` -- still not located after
+  several attempts. Qiskit 2.2's documented "skip" and the post-2.2
+  call/trial limits live there (Addenda 43-45).
+- **The exact bare-2-qubit-edge threshold.** 1 bare edge still cliffs;
+  17 is fast (Addenda 65-66). Nothing between has been tested, and
+  whether the threshold is an absolute count, a fraction of the graph,
+  or something else is unknown.
+- **Whether the bare-edge finding holds at 8x8's own resolution.**
+  Every structural experiment in Addenda 63-66 was run at 8x8, but the
+  `merged_pairs` oscillation that started this line of investigation
+  (Addendum 59) was also first found there -- whether the same
+  structural account holds at 6x7 (which showed a different,
+  timing-only signature in Addendum 62 rather than a stop-reason
+  oscillation) is unconfirmed.
+- **Mechanism**: why bare 2-qubit edges specifically matter to VF2's
+  search behaviour is completely unexplained.
+- Cross-SDK: TKET and Cirq have not been re-tested with any circuit
+  family from Addenda 51-66.
 
 ## 8. Files, by round
 
@@ -529,17 +668,21 @@ generalizes past one grid size and two tools (BQSKit and Cirq untested).
 | 32 | (same script, 8x8 grid) | [`gate_count_vs_routing_level_8x8_*.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data) (27 rows) |
 | 34 | [`occupancy_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/occupancy_sweep.py) (no PSF-Zero dependency) | [`occupancy_sweep_6x7_*.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data) (234 rows, 0 errors) |
 | 35 | [`cross_compiler_cliff.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/cross_compiler_cliff.py) (no PSF-Zero dependency; Qiskit vs. TKET) | [`cross_compiler_cliff_6x7_*.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data) (216 rows, 0 errors) |
+| 39-41 | [`occupancy_sweep_heavy_hex.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/occupancy_sweep_heavy_hex.py), [`synthetic_sparse_balanced_cliff.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/synthetic_sparse_balanced_cliff.py) | heavy-hex d5/d7 sweeps (165 runs); synthetic balanced n=58/n=116 (135 rows) |
+| 42-49 | same two scripts plus [`occupancy_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/occupancy_sweep.py), all three gaining `VF2PostLayout_stop_reason` instrumentation | re-measurements of all three topologies (171 instrumented rows) |
+| 50 | [`occupancy_sweep_calibrated.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/occupancy_sweep_calibrated.py) (`FakeTorino`, two arms: with/without error rates) | [`occupancy_sweep_calibrated_torino_*.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data) (60 rows) |
+| 51-66 | [`circuit_family_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/circuit_family_sweep.py) (14 circuit-family variants: dense_pairs, linear_chain, random_regular, ghz_star, k_chains, merged_pairs and its variant, dense_pairs_with_idle, uniform_2q, balanced_3q4q, mixed_uneven, shrinking_dominant, large_dominant_no_bare_edges, single_bare_edge), [`cliff_detector.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/cliff_detector.py) (pre-compile structural detector, Addendum 58) | [`circuit_family_sweep_6x7_*.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data), [`circuit_family_sweep_8x8_*.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data) (multiple runs across the session; see `SESSION_SUMMARY_2026-09-18.md` for the full index) |
 
 Full text, exact tables, and every pre-registered prediction as originally
 written:
-[`spare-qubit-cliff-combined.md`](spare-qubit-cliff-combined.md) (Part 1 of 3; links to Parts 2 and 3 at its own end).
+[`spare-qubit-cliff-combined.md`](spare-qubit-cliff-combined.md) (Part 1 of 5; links to Parts 2, 3, 4 and 5 at its own end).
 
 ---
 
 ## See also
 
 - [`spare-qubit-cliff-combined.md`](spare-qubit-cliff-combined.md) --
-  all 38 addenda, unedited, in chronological order, split into three parts
+  all 80 addenda, unedited, in chronological order, split into five parts
   as it grew past a comfortable single-file size (this is Part 1; it links
   to Parts 2 and 3 at its own end). This is where the exact wording, exact
   tables, and every pre-registered prediction as originally written can be
