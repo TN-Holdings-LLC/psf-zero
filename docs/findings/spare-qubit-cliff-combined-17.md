@@ -2111,4 +2111,4 @@ pinned down first.
 
 ---
 
-**End of Part 2 of 5.** Back to [Part 1](spare-qubit-cliff-combined.md), or continue to [Part 3](spare-qubit-cliff-combined-27.md) (Addendum 27-36), [Part 4](spare-qubit-cliff-combined-41.md) (Addendum 41-50) and [Part 5](spare-qubit-cliff-combined-51.md) (Addendum 51-66).
+**End of Part 2 of 5.** Back to [Part 1](spare-qubit-cliff-combined.md), or continue to [Part 3](spare-qubit-cliff-combined-27.md) (Addendum 27-36), [Part 4](spare-qubit-cliff-combined-41.md) (Addendum 41-50) and [Part 5](spare-qubit-cliff-combined-51.md) (Addendum 51-76).
