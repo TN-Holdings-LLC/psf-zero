@@ -354,7 +354,7 @@ pushed to 100% occupancy) -- still a separate, listed open item.
 | [`synthetic_sparse_balanced_cliff.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/synthetic_sparse_balanced_cliff.py) | the script |
 | [`synthetic_sparse_balanced_cliff_n116_merged_2026-09-18.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/synthetic_sparse_balanced_cliff_n116_merged_2026-09-18.csv) | full d7-scale results (75 rows, merged from 4 sub-runs split for wall-clock-time reasons) |
 | [`synthetic_sparse_balanced_cliff_n58_merged_2026-09-18.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/synthetic_sparse_balanced_cliff_n58_merged_2026-09-18.csv) | full d5-scale results (60 rows, merged from 2 sub-runs) |
-| [`spare-qubit-cliff-addendum-41-preregistration-2026-09-18.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-41-preregistration-2026-09-18.md) | predictions, written before this run |
+| [`spare-qubit-cliff-addendum-41-preregistration-2026-09-18.md`](#addendum-41----pre-registration-is-heavy-hexs-immunity-addendum-40-caused-by-low-degreesparsity-or-simply-because-the-topology-can-never-reach-true-100-device-occupancy-2026-09-18) | predictions, written before this run |
 | this document | the results write-up |
 
 ## 6. Verification
@@ -696,7 +696,7 @@ n=58 non-monotonicity is real; whether any of this holds on other SDKs
 | [`synthetic_sparse_balanced_cliff.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/synthetic_sparse_balanced_cliff.py) | the script (unchanged from Addendum 41) |
 | [`synthetic_sparse_balanced_cliff_n116_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-18.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/synthetic_sparse_balanced_cliff_n116_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-18.csv) | n=116 results, 75 rows |
 | [`synthetic_sparse_balanced_cliff_n58_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-18.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/synthetic_sparse_balanced_cliff_n58_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-18.csv) | n=58 results, 45 rows |
-| [`spare-qubit-cliff-addendum-42-preregistration-2026-09-18.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-42-preregistration-2026-09-18.md) | the predictions scored above |
+| [`spare-qubit-cliff-addendum-42-preregistration-2026-09-18.md`](#addendum-42----pre-registration-is-the-slow-region-genuinely-wider-on-a-low-degree-sparse-graph-than-on-a-square-grid-and-where-exactly-does-it-end-2026-09-18) | the predictions scored above |
 
 ## 8. Verification
 
@@ -2000,7 +2000,7 @@ next arm's first was never a meaningful step anyway).
 |---|---|
 | [`occupancy_sweep_calibrated.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/occupancy_sweep_calibrated.py) | the script (display bug fixed after this run) |
 | [`occupancy_sweep_calibrated_torino_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-18.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/occupancy_sweep_calibrated_torino_Intel64_Family_6_Model_181_Stepping_0_GenuineIntel_2026-09-18.csv) | this run's data |
-| [`spare-qubit-cliff-addendum-50-preregistration-2026-09-18.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-50-preregistration-2026-09-18.md) | the predictions scored above |
+| [`spare-qubit-cliff-addendum-50-preregistration-2026-09-18.md`](#addendum-50----pre-registration-does-vf2postlayout-ever-return-solution-found-when-the-target-actually-carries-error-rates-2026-09-18) | the predictions scored above |
 
 ## 6. Verification
 
