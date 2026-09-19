@@ -1,0 +1,4 @@
+check,device,first_only_ms,all_orderings_ms,saved_ms,orderings_yielded,bfs_avoided
+P2,6x7 grid,0.02119999999194988,0.07969999978740816,0.05849999979545828,7,5
+P2,8x8 grid,0.030899999728717376,0.10574999987511546,0.07485000014639809,7,5
+P3,"K(4,16) + 8x8 end-to-end",,,,7,
