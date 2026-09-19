@@ -3764,7 +3764,7 @@ discrete regime change rather than a smooth trade-off.
 
 <!-- ===== Addendum 68 (source: spare-qubit-cliff-addendum-68-2026-09-18.md) ===== -->
 
-> **Note added when merging:** The bare-edge threshold is a single sharp step between 16 and 17 -- a flat cliffing plateau across the entire 1-16 range, then an abrupt jump to fast. The same sharp-step character as the grid's own spare threshold and k_chains' component-count threshold.
+> **Note added when merging:** The bare-edge threshold is a single sharp step between 16 and 17 -- a flat cliffing plateau across the entire 1-16 range, then an abrupt jump to fast. The same sharp-step character as the grid's own spare threshold and k_chains' component-count threshold. **UPDATE: this addendum's "single clean step, stays fast beyond it" reading is superseded by Addenda 70-71 below** -- the fast region turns out to be a narrow, closing WINDOW at both grid sizes, not a permanent escape. Read this addendum for the threshold's exact location (still accurate); read Addenda 70-71 for what happens beyond it.
 
 ## Addendum 68 -- the bare-edge threshold is a single step between 16 and 17: a flat cliffing plateau across the entire 1-16 range, then an abrupt jump to fast (2026-09-18)
 
@@ -6672,7 +6672,7 @@ Addenda 78 and 80.
 
 <!-- ===== Addendum 83 (source: spare-qubit-cliff-addendum-83-2026-09-19.md) ===== -->
 
-> **Note added when merging:** The session's most consequential empirical result: PSF-Zero's real, unmodified smart_vf2_layout (source supplied by the user) finds a layout in all 26 of 26 tested configurations, including all 19 where Qiskit's own VF2Layout cliffed. A real bug in PSF-Zero's own feasibility pre-check was found and fixed along the way.
+> **Note added when merging: this addendum's central attribution is corrected by Addenda 84-85 below -- read all three together, not this one alone.** The 26/26 empirical result itself stands; the explanation ("PSF-Zero's own multi-stage strategy is why") does not. The session's most consequential empirical result: PSF-Zero's real, unmodified smart_vf2_layout (source supplied by the user) finds a layout in all 26 of 26 tested configurations, including all 19 where Qiskit's own VF2Layout cliffed. A real bug in PSF-Zero's own feasibility pre-check was found and fixed along the way.
 
 ## Addendum 83 -- PSF-Zero's actual layout search finds a layout in all 26 configurations, including all 19 where Qiskit's own VF2Layout cliffed -- a real, direct, decisive comparison (2026-09-19)
 
@@ -7650,8 +7650,6 @@ sandbox using this project's own already-verified
   the pass/fail divergence, which it is not.
 - Pre-publication check: `grep` against this project's private
   personal-information pattern list, this document -> 0 hits.
-
----
 
 ---
 
