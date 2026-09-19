@@ -183,16 +183,26 @@ def _bfs_order_from(graph, start):
 
 
 def _candidate_orderings(graph, extra_seeds=(0, 1)):
-    """Returns a diverse set of cheap candidate node orderings. BFS-first
-    (known from addenda 9/12 to be more robust than DFS -- though that
-    finding is limited to grid physical graphs; see the docstring above)."""
+    """Yields a diverse set of cheap candidate node orderings, LAZILY.
+    BFS-first (known from addenda 9/12 to be more robust than DFS -- though
+    that finding is limited to grid physical graphs; see the docstring above).
+
+    Addendum 92: this was a list, built eagerly, so all four BFS traversals
+    and the sort ran on every call even though the caller stops at the first
+    ordering that works -- which, since Addendum 88 put `natural` first, is
+    the first one on every configuration this project has tested. Yielding
+    instead computes only what is actually consumed. Every call site takes
+    this with a plain `for ... in ...` loop (checked across
+    `smart_vf2_layout` and both verification harnesses before the change), so
+    a generator substitutes cleanly; nothing calls `len()` on it, indexes it,
+    or iterates it twice.
+    """
     import random
     nodes = list(graph.node_indices())
     degrees = {n: len(graph.neighbors(n)) for n in nodes}
     max_deg_node = max(nodes, key=lambda n: degrees[n])
     min_deg_node = min(nodes, key=lambda n: degrees[n])
 
-    orderings = []
     # Addendum 88: the natural (unrelabeled) ordering, tried FIRST.
     # Addendum 84 found that a bare rx.vf2_mapping(..., id_order=True) call on
     # the physical graph in its natural numbering solves all 26 of this
@@ -206,16 +216,15 @@ def _candidate_orderings(graph, extra_seeds=(0, 1)):
     # cannot reduce coverage (every previously-tried ordering still follows if
     # it fails) and, on the configurations tested, should avoid the failed
     # attempts entirely.
-    orderings.append(("natural", list(nodes)))
-    orderings.append(("bfs_from_max_degree", _bfs_order_from(graph, max_deg_node)))
-    orderings.append(("bfs_from_min_degree", _bfs_order_from(graph, min_deg_node)))
-    orderings.append(("bfs_from_node0", _bfs_order_from(graph, nodes[0])))
-    orderings.append(("degree_desc", sorted(nodes, key=lambda n: -degrees[n])))
+    yield ("natural", list(nodes))
+    yield ("bfs_from_max_degree", _bfs_order_from(graph, max_deg_node))
+    yield ("bfs_from_min_degree", _bfs_order_from(graph, min_deg_node))
+    yield ("bfs_from_node0", _bfs_order_from(graph, nodes[0]))
+    yield ("degree_desc", sorted(nodes, key=lambda n: -degrees[n]))
     for seed in extra_seeds:
         rng = random.Random(seed)
         start = rng.choice(nodes)
-        orderings.append((f"bfs_from_random_seed{seed}", _bfs_order_from(graph, start)))
-    return orderings
+        yield (f"bfs_from_random_seed{seed}", _bfs_order_from(graph, start))
 
 
 def _fallback_orderings(graph):
