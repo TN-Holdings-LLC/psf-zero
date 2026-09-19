@@ -1065,7 +1065,7 @@ three-behaviour puzzle on its own.
 
 <!-- ===== Addendum 45 (source: spare-qubit-cliff-addendum-45-2026-09-18.md) ===== -->
 
-> **Note added when merging:** Qiskit's own C API docs state the two VF2 modes use different search-ordering heuristics: VF2++ for 'average' (`VF2Layout`), identity-start for 'exact' (`VF2PostLayout`) -- a documented mechanism for why the two clear at different thresholds.
+> **Note added when merging:** Qiskit's own C API docs state the two VF2 modes use different search-ordering heuristics: VF2++ for 'average' (`VF2Layout`), identity-start for 'exact' (`VF2PostLayout`) -- a documented mechanism for why the two clear at different thresholds. **UPDATE (Addendum 85, Part 5): reading Qiskit's actual current Rust source directly showed both `vf2_layout_pass_average` and `vf2_layout_pass_exact` call the identical `.with_vf2pp_ordering()` -- this addendum's documentation-based reading of "different orderings" was incorrect. The "identity-start" language most likely refers to `score_initial_layout`, a scoring detail, not the traversal order VF2++ itself governs.**
 
 ## Addendum 45 -- the two VF2 passes use different search-ordering heuristics: "average" mode uses VF2++ node ordering, "exact" mode starts from the identity mapping (2026-09-18)
 
