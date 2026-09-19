@@ -1,0 +1,5 @@
+case,device_qubits,device_max_matching,pairs_requested,logical_qubits,guard_verdict,guard_ms,vf2_reject_ms,vf2_orderings_tried,vf2_found_a_layout,saved_ms
+A1 near-miss small,20,4,6,12,False,0.697299999956158,1642.5193000000036,10,False,1641.8220000000474
+A2 near-miss larger,40,8,10,20,False,1.224499999807449,2000.5404000003182,10,False,1999.3159000005107
+A3 bare near-miss,40,8,9,18,False,1.1833000003207417,2000.0672999999551,10,False,1998.8839999996344
+A4 control (also fails on qubit count),16,8,32,64,False,0.9992000000238477,0.30319999996208935,10,False,-0.6960000000617583
