@@ -682,7 +682,7 @@ written:
 ## See also
 
 - [`spare-qubit-cliff-combined.md`](spare-qubit-cliff-combined.md) --
-  all 96 addenda, unedited, in chronological order, split into five parts
+  all 111 addenda, unedited, in chronological order, split into five parts
   as it grew past a comfortable single-file size (this is Part 1; it links
   to Parts 2 and 3 at its own end). This is where the exact wording, exact
   tables, and every pre-registered prediction as originally written can be
