@@ -2270,4 +2270,4 @@ does on their behalf.
 
 ---
 
-**End of Part 3 of 5.** Continue to [Part 4](spare-qubit-cliff-combined-41.md) (Addendum 41-50) and [Part 5](spare-qubit-cliff-combined-51.md) (Addendum 51-76), or back to [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
+**End of Part 3 of 5.** Continue to [Part 4](spare-qubit-cliff-combined-41.md) (Addendum 41-50) and [Part 5](spare-qubit-cliff-combined-51.md) (Addendum 51-87), or back to [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
