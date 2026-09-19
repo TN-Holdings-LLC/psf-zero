@@ -1,4 +1,4 @@
-# spare-qubit-cliff: Combined Addenda, Part 5 of 5 (Addendum 51 through Addendum 76)
+# spare-qubit-cliff: Combined Addenda, Part 5 of 5 (Addendum 51 through Addendum 87)
 
 **Continued from [Part 4](spare-qubit-cliff-combined-41.md) (and [Part 1](spare-qubit-cliff-combined.md), [Part 2](spare-qubit-cliff-combined-17.md), [Part 3](spare-qubit-cliff-combined-27.md)).** Same conventions as Part 1: nothing has been deleted or rewritten; navigation notes added when merging are clearly marked and separate from the original text.
 
@@ -5347,6 +5347,2307 @@ logic.
   with the same caution language used for Addendum 75's own similarly-
   sized coincidence, to avoid inconsistent standards between the two
   addenda.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this document -> 0 hits.
+
+---<!-- ===== Addendum 77 pre-registration (source: spare-qubit-cliff-addendum-77-preregistration-2026-09-18.md) ===== -->
+
+> **Note added when merging:** Predictions for re-verifying mixed_uneven from scratch, since it was the sole basis for the 8x8 'bare-edge escape' claim and had only ever been measured once.
+
+## Addendum 77 -- Pre-registration: does `mixed_uneven` itself reproduce, at the same seed count that just showed `n_bare_edges(17)` reliably cliffs? (2026-09-18)
+
+**Status: pre-registration only. No re-run of `mixed_uneven` beyond
+Addendum 63's original single measurement has been performed.**
+Predictions are locked before any measurement.
+
+## 1. Why this experiment exists
+
+`mixed_uneven` (Addendum 63: 17 bare 2-qubit edges + one 30-qubit
+dominant component, 18 total components, zero idle, n=64) is currently
+this entire investigation's **only confirmed fast point at 8x8** in the
+component-structure line of work (Addenda 63-76). It has been measured
+exactly once. Addendum 72 found `n_bare_edges(17)` -- a different
+construction at the same coverage -- cliffs reliably (23/23 runs, 5
+seeds). Addendum 73 found 6x7's window survives the same scrutiny
+(30/30 fast). `mixed_uneven` itself has never been put through either
+test. Until it is, the claim "a fast point exists at 8x8" rests on a
+single run -- exactly the situation that made `n_bare_edges(17)`'s
+apparent fast status misleading.
+
+## 2. Design
+
+`mixed_uneven` (unchanged construction: 17 x 2-qubit edges + one
+30-qubit path, n=64, spare=0, `optimization_level=3`), 5 seeds (0-4) x
+2 repeats -- the identical resolution used in Addendum 72 (which
+falsified `n_bare_edges(17)`'s reproducibility) and Addendum 73 (which
+confirmed 6x7's window's reproducibility), so this result is directly
+comparable to both.
+
+## 3. Pre-registered predictions
+
+**P1 (primary).**
+  - **Reproduces**: `"solution found"` in most or all of the 10 runs --
+    confirms `mixed_uneven`'s original result was not a fluke, and the
+    specific structure it embodies (one dominant component + many bare
+    edges, as opposed to `n_bare_edges`' many small chains + bare
+    edges) genuinely differs from `n_bare_edges(17)` in a way that
+    matters, consistent with Addendum 72's structural explanation
+    (18 vs. 27 components).
+  - **Does not reproduce**: `"nonexistent solution"` in most or all
+    runs -- would mean Addendum 63's original single measurement was
+    itself the outlier, and **no confirmed fast point would remain
+    anywhere in this project's 8x8 investigation**. This is a live
+    possibility, not a formality: `n_bare_edges(17)`'s own apparent
+    fast result (Addendum 63, single run, before Addendum 72's
+    reproducibility check) looked identical in kind to how
+    `mixed_uneven`'s result currently looks.
+  - **Mixed/bistable**: a genuine split across seeds -- reported as its
+    own outcome.
+
+**P2 (sanity check).** The construction itself (component count 18,
+zero idle, 17 bare edges, one 30-qubit dominant component) is
+re-verified against Addendum 63's own recorded structure before this
+run is interpreted, to rule out any construction drift since that
+addendum.
+
+## 4. What this cannot establish
+
+- If P1 falsifies (does not reproduce), *why* Addendum 63's original
+  run differed -- only that it does not represent the typical case.
+- Whether some OTHER untested construction at 8x8 would reliably
+  escape the cliff, if `mixed_uneven` itself does not survive this
+  check.
+- Generalization to 6x7 or other grid sizes -- this is 8x8-only.
+
+---
+
+
+<!-- ===== Addendum 77 (source: spare-qubit-cliff-addendum-77-2026-09-18.md) ===== -->
+
+> **Note added when merging:** mixed_uneven reproduces cleanly: 10/10 fast, tightly clustered (33.7-35.4ms) -- as tight as the cliffing plateau's own reproducibility. The one confirmed escape at 8x8 now rests on 11 independent runs, not 1.
+
+## Addendum 77 -- `mixed_uneven` reproduces cleanly: 10/10 fast, tightly clustered (33.7-35.4ms) -- the one confirmed escape at 8x8 now rests on solid ground (2026-09-18)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-77-preregistration-2026-09-18.md`, written
+and locked before this run.
+
+## 0. In one line
+
+**P1: "Reproduces" confirmed, cleanly.** All 10 runs (5 seeds x 2
+repeats) return `"solution found"`, with times clustered in a narrow
+band (33.73-35.42ms, a max/min ratio of only 1.05x). **This is the
+opposite outcome from `n_bare_edges(17)`'s own reproducibility check**
+(Addendum 72: 0/23 fast) at the same coverage, and it puts
+`mixed_uneven` on the same solid footing as 6x7's confirmed window
+(Addendum 73: 30/30 fast) and the falsified `n_bare_edges(17)`
+(Addendum 72: 0/23 fast). **The single confirmed fast point in this
+entire 8x8 investigation now rests on 11 independent runs (1 original +
+10 here), not 1.**
+
+## 1. Results
+
+8x8 grid (64 qubits), `mixed_uneven`, spare=0, `optimization_level=3`,
+5 seeds (0-4) x 2 repeats. All 10 rows completed with `error=""`; stop
+reason unanimous (10/10) `"solution found"`.
+
+| seed | repeat | time (ms) | stop reason |
+|---:|---:|---:|:---|
+| 0 | 0 | 35.18 | solution found |
+| 0 | 1 | 34.31 | solution found |
+| 1 | 0 | 34.02 | solution found |
+| 1 | 1 | 33.73 | solution found |
+| 2 | 0 | 35.14 | solution found |
+| 2 | 1 | 34.30 | solution found |
+| 3 | 0 | 35.42 | solution found |
+| 3 | 1 | 34.92 | solution found |
+| 4 | 0 | 34.46 | solution found |
+| 4 | 1 | 33.78 | solution found |
+
+Median: 34.38ms. Compare Addendum 63's original single measurement:
+30.16ms -- within 14% of this run's median, and well inside ordinary
+single-run variance given this run's own 33.73-35.42ms band.
+
+## 2. Scoring
+
+**P1 (primary) -- "Reproduces" CONFIRMED.** 10/10 fast, no exceptions at
+any seed. The tight clustering (1.05x max/min) is itself notable:
+compare `n_bare_edges`' own cliffing plateau (Addendum 68: 1.057x
+max/min across six points) -- **`mixed_uneven`'s fast result is just as
+tightly reproducible as the cliffing plateau was**, not a borderline or
+fragile result.
+
+**P2 (sanity check) -- CONFIRMED.** The construction was re-verified
+(18 components, 17 bare 2-qubit edges, one 30-qubit dominant component,
+zero idle) against Addendum 63's own recorded structure before this run
+was interpreted, and matched exactly.
+
+## 3. What this settles
+
+**The 8x8 investigation now has exactly one confirmed escape route, and
+it is a real, reproducible one.** Combined with everything on record:
+
+| construction | components | dominant structure | 8x8 result |
+|---|---:|---|:---|
+| `n_bare_edges(17)` | 27 | many small 3-qubit chains | **cliffs, 0/23** (Addendum 72) |
+| `mixed_uneven` | 18 | one 30-qubit dominant component | **fast, 10/10 + original = 11/11** (this addendum) |
+
+**These two constructions share the same bare-edge count (17) and
+coverage (53.1%) but differ in component count (27 vs. 18) and in
+whether the non-bare-edge portion is many small pieces or one large
+one.** Addendum 74's finding (no simple summary statistic separates
+fast from cliffing across the wider 13-point dataset) still holds at
+the level of *component count alone* or *bare-edge count alone* -- but
+comparing specifically these two matched-coverage constructions
+narrows it to a cleaner contrast: **one large dominant component
+plus bare edges reproducibly escapes; many small chains plus the same
+bare edges reproducibly does not.** This is consistent with, though
+narrower than, Addendum 65's earlier finding that dominant-component
+*size* alone (without bare edges) does not guarantee escape
+(`large_dominant_no_bare_edges`, 40-qubit dominant, no bare edges,
+cliffs) -- the combination of a large dominant component *and* bare
+edges together may be what `mixed_uneven` uniquely provides among
+everything tested so far.
+
+## 4. What this does not establish
+
+- Whether the specific 30-qubit dominant-component size is necessary,
+  or whether other large sizes (tested only at 40 qubits without bare
+  edges, Addendum 65) would also escape if paired with bare edges --
+  untested combination.
+- Whether varying dominant-component size while holding 17 bare edges
+  fixed (unlike Addendum 64's own dominant-size sweep, which held
+  small-component *shape* fixed as chains, not bare edges) would show a
+  similar threshold to the one already found in Addendum 64.
+- Mechanism -- why this specific combination escapes and the
+  many-small-chains combination does not.
+- Generalization to 6x7 -- untested with this exact construction; 6x7's
+  own confirmed escape (Addendum 73) uses `n_bare_edges`, a different
+  shape, and has not been cross-checked against a `mixed_uneven`-style
+  construction at 6x7's own scale.
+
+## 5. Files
+
+| File | What it is |
+|---|---|
+| [`circuit_family_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/circuit_family_sweep.py) | the script (unchanged) |
+| [`circuit_family_sweep_8x8_AMD64_Family_25_Model_80_Stepping_0_AuthenticAMD_2026-09-18_run8.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/circuit_family_sweep_8x8_AMD64_Family_25_Model_80_Stepping_0_AuthenticAMD_2026-09-18_run8.csv) | this run, 10 rows |
+| [`spare-qubit-cliff-addendum-77-preregistration-2026-09-18.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-77-preregistration-2026-09-18.md) | the predictions scored above |
+
+## 6. Verification
+
+- All 10 rows checked for `error=""`; stop reason confirmed unanimous
+  (10/10) `"solution found"`.
+- The max/min ratio (1.05x) was computed directly from the ten
+  recorded times, not estimated.
+- The comparison to Addendum 68's own cliffing-plateau tightness
+  (1.057x) was re-read directly from that addendum before being used
+  as a point of comparison.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this document and the new CSV -> 0
+  hits. The terminal output supplied for this run was reviewed for
+  local paths before use; none were reproduced here.
+
+---
+
+
+<!-- ===== Addendum 78 pre-registration (source: spare-qubit-cliff-addendum-78-preregistration-2026-09-18.md) ===== -->
+
+> **Note added when merging:** Predictions for whether mixed_uneven's escape depends on the dominant component's specific ~30-qubit size or on bare-edge presence alone, holding 17 bare edges fixed while varying dominant size.
+
+## Addendum 78 -- Pre-registration: does `mixed_uneven`'s escape depend on the dominant component's specific 30-qubit size, or does any large dominant component escape as long as bare edges are also present? (2026-09-18)
+
+**Status: pre-registration only. No run with any new dominant-size
+construction has been performed.** Predictions are locked before any
+measurement.
+
+## 1. Why this experiment exists
+
+Addendum 77 confirmed `mixed_uneven` (17 bare edges + one 30-qubit
+dominant component) reproduces reliably (10/10 + 1 original = 11/11
+fast). This is currently the only confirmed escape route at 8x8. But
+its two defining parameters -- 17 bare edges and a 30-qubit dominant
+component -- have never been varied independently while holding the
+other fixed. Addendum 64 already tested shrinking the dominant
+component **without** bare edges (`shrinking_dominant`: 17x 3-qubit
+chains + a shrinking dominant, zero bare edges) and found it cliffs at
+13 qubits -- but that construction has no bare edges at all, so it
+cannot say whether bare edges are what makes the difference. This
+addendum holds bare-edge count fixed at 17 (matching `mixed_uneven`
+exactly) and shrinks the dominant component, to test directly whether
+bare-edge presence is what allows escape even as the dominant shrinks,
+or whether the dominant's own size (near 30) is independently
+necessary.
+
+## 2. Design
+
+17 bare 2-qubit edges (fixed, 34 qubits, matching `mixed_uneven`
+exactly) + one dominant chain of size `D` + one filler chain using the
+exact remainder (`30 - D` qubits) to keep the total at 64 with zero
+idle. Component count is 18 when `D=30` (no filler needed, exactly
+reproducing `mixed_uneven`) and 19 for every smaller `D` (one filler
+component added).
+
+| D (dominant size) | filler size | total components | notes |
+|---:|---:|---:|---|
+| 30 | 0 (none) | 18 | reproduces `mixed_uneven` exactly (sanity check) |
+| 25 | 5 | 19 | |
+| 20 | 10 | 19 | |
+| 15 | 15 | 19 | dominant and filler equal size |
+| 10 | 20 | 19 | "dominant" now smaller than filler |
+| 5 | 25 | 19 | matches `shrinking_dominant`'s own 13-qubit-dominant spirit, but WITH bare edges present |
+
+`optimization_level=3`, spare=0 on the 8x8 grid, 3 seeds x 2 repeats per
+point (matching this project's standing resolution for a first pass;
+Addendum 77's own higher-resolution check is reserved for whichever
+point looks most consequential, not spent on all six up front).
+
+## 3. Pre-registered predictions
+
+**P1 (primary -- does escape require the dominant near 30 qubits, or
+does bare-edge presence alone suffice regardless of dominant size)?**
+  - **Size-independent (bare edges are sufficient)**: all six points
+    (D=5 through 30) show `"solution found"` -- the dominant component's
+    specific size does not matter once 17 bare edges are present; bare
+    edges alone are the operative condition.
+  - **Size-dependent (a large dominant is also necessary)**: smaller D
+    values (e.g. D=5, matching `shrinking_dominant`'s own cliffing
+    13-qubit case in spirit) cliff despite bare edges being present --
+    meaning bare edges alone are not sufficient; a sufficiently large
+    dominant component is independently required, and `mixed_uneven`'s
+    escape depends on both conditions jointly.
+  - **A threshold within the tested range**: some D values escape and
+    others cliff, with a specific transition point -- reported with its
+    location, not forced into either extreme reading.
+
+**P2 (sanity check).** `D=30` (no filler, exactly reproducing
+`mixed_uneven`) is predicted to show `"solution found"`, matching
+Addenda 63 and 77.
+
+## 4. What this cannot establish
+
+- The exact threshold's location if P1 finds one, beyond the six
+  tested points (5, 10, 15, 20, 25, 30) -- a finer sweep would be a
+  follow-up.
+- Whether bare-edge *count* (fixed at 17 here) also matters
+  independently -- already partially addressed by Addenda 65-66, not
+  re-tested here.
+- Mechanism.
+- Generalization to 6x7.
+
+---
+
+
+<!-- ===== Addendum 78 (source: spare-qubit-cliff-addendum-78-2026-09-18.md) ===== -->
+
+> **Note added when merging:** A major unregistered finding: D=10 and D=20 are verified graph-isomorphic (via networkx.is_isomorphic) yet give opposite outcomes (fast vs. cliff), reproduced independently twice -- physical qubit placement, not merely graph structure, matters.
+
+## Addendum 78 -- an unregistered, major finding: D=10 and D=20 produce a graph-isomorphic interaction graph yet opposite outcomes (fast vs. cliff) -- specific qubit placement, not merely graph structure, matters (2026-09-18)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-78-preregistration-2026-09-18.md`, written
+and locked before this run. **P1 is falsified by a result the
+pre-registration's three branches did not anticipate**, and that result
+is the addendum's real content.
+
+**Update**: the identical 6-point configuration was independently
+re-run in full immediately after this addendum's initial result. All
+six points reproduced exactly, including the D=10 (fast) / D=20 (cliff)
+split. Results incorporated below (now 12 runs total, 2 independent
+batches of 6).
+
+## 0. In one line
+
+**None of P1's three branches describe what happened.** D=30 (no
+filler, exactly `mixed_uneven`) and D=10 are fast; D=5, 15, 20, 25 all
+cliff. This is not size-independent (D=5 cliffs), not a clean
+size-dependent threshold (D=10 is fast but D=15 and D=20, both larger,
+cliff), and not a single simple transition. **The most consequential
+single fact in this run**: D=10 and D=20 were verified, before writing
+this addendum, to be **abstractly graph-isomorphic** -- identical
+component-size multiset (one 20-chain, one 10-chain, seventeen bare
+2-qubit edges) -- confirmed directly with `networkx.is_isomorphic`, not
+assumed. **Yet D=10 is fast (37.37ms, reproduced at 35.64ms) and D=20
+cliffs (9,244.13ms, reproduced at 9,300.23ms) -- independently
+confirmed twice, not a one-off fluctuation.** The only difference
+between the two constructions is which specific physical qubits are
+assigned to the 10-chain versus the 20-chain (position relative to the
+bare edges). This appears to contradict Addendum 60's finding that
+merge order/position does not matter for `merged_pairs` -- but for a
+different family, under different conditions, and the two are not
+necessarily in tension (Section 3).
+
+## 1. Results
+
+8x8 grid (64 qubits), `dominant_size_sweep`, spare=0,
+`optimization_level=3`, 3 seeds x 2 repeats. All 36 rows completed with
+`error=""`; stop reason unanimous (6/6) within every `D` cell.
+
+| D | filler | component sizes | run 1 (ms) | run 2 (ms) | stop reason |
+|---:|---:|---|---:|---:|:---|
+| 5 | 25 | {25, 5} | 9,103.70 | 9,017.11 | nonexistent solution |
+| **10** | **20** | **{20, 10}** | **37.37** | **35.64** | **solution found** |
+| 15 | 15 | {15, 15} | 9,493.51 | 9,285.22 | nonexistent solution |
+| **20** | **10** | **{20, 10}** | **9,244.13** | **9,300.23** | **nonexistent solution** |
+| 25 | 5 | {25, 5} | 8,932.25 | 9,040.09 | nonexistent solution |
+| 30 | 0 | {30} | 35.98 | 36.25 | solution found |
+
+**All six points reproduced exactly between the two independent runs**
+-- same stop reason, closely matching timing (within ~5% at every
+point). **D=5 and D=25** (also confirmed graph-isomorphic to each other
+before this run, per the pre-registration's own Section on the design):
+**both cliff, in both runs**, matching each other as expected for
+isomorphic graphs. **D=10 and D=20**: isomorphic, but **disagree, in
+both runs** -- this is not a fluctuation.
+
+## 2. Scoring against the pre-registration
+
+**P1 (primary) -- FALSIFIED, all three branches.** "Size-independent"
+requires all six fast; D=5 cliffs, ruling it out. "Size-dependent
+threshold" requires a monotonic split by size; D=10 (fast) is smaller
+than D=15 and D=20 (both cliff), so no simple size threshold fits.
+"Threshold within the tested range" was meant to allow a single
+transition point, not a result where the smallest (D=5) and two
+middle values (D=15, D=20) cliff while one middle value (D=10) and the
+largest (D=30) are fast -- **not a threshold shape at all.**
+
+**P2 (sanity check) -- CONFIRMED.** D=30 reproduces `mixed_uneven`
+exactly: `"solution found"`, 35.98ms, matching Addendum 63 (30.16ms)
+and Addendum 77 (33.7-35.4ms band) closely.
+
+**The pre-registration's own predicted internal consistency check
+(D and 30-D should match) -- CONFIRMED for one pair, FALSIFIED for the
+other.** D=5/D=25: both cliff, consistent. **D=10/D=20: disagree**, which
+the pre-registration's design section explicitly did not anticipate
+(it predicted these pairs "should" match if the reasoning about
+isomorphic graphs held) -- reported honestly as a failure of that
+expectation, not smoothed over.
+
+## 3. What this means, and how it relates to Addendum 60
+
+**A graph-isomorphism-preserving change to WHICH physical qubits host
+which component can flip the outcome.** This is a stronger and more
+specific claim than "component structure alone doesn't predict outcome"
+(Addendum 74) -- it shows two *literally isomorphic* interaction graphs,
+differing only in the physical qubit indices assigned to each
+component, giving opposite results.
+
+**Is this in tension with Addendum 60?** Addendum 60 tested whether
+merge *order* (sequential/reverse/random selection of which edge-pairs
+to merge in `merged_pairs`) affected outcome and found it did not --
+all three orderings reproduced the same cliff/clear pattern at every
+tested `m`. That test varied which *specific bare-edge pairs* got
+merged into 4-qubit chains, while holding the *distribution* of
+component sizes exactly fixed and, critically, the resulting graphs
+were compared only in aggregate (same m, same outcome across orderings)
+-- **not verified pairwise as graph-isomorphic in the way this addendum
+explicitly checked.** It is possible Addendum 60's orderings were
+*also* producing non-isomorphic graphs in ways that happened not to
+matter for that family, or that the specific property that matters here
+(position of a *large* chain relative to the bare edges, in a construction
+with exactly two large components of very different sizes) is different
+from what varies in `merged_pairs`' merge-order variants (many small,
+similarly-sized 4-qubit chains). **This addendum's result is not proven
+to contradict Addendum 60's -- the two used different circuit families
+under different specific manipulations, and no direct test bridges
+them.** What is established is narrower and still significant: **for
+`dominant_size_sweep` specifically, physical qubit placement matters,
+holding the abstract graph fixed.**
+
+## 4. What this does not establish
+
+- **Whether D=10's specific placement (small chain immediately after
+  bare edges, large chain last) is what matters, or something else
+  about that particular arrangement.** Only two placements were tested
+  per isomorphism class (the "natural" construction order and its
+  mirror); a systematic sweep of placements (e.g. interleaving the two
+  chains among the bare edges, or reversing which end each chain starts
+  from) was not done.
+- Whether this reconciles with or genuinely contradicts Addendum 60 --
+  Section 3 states the open question, does not resolve it.
+- Why D=5/D=25 agree while D=10/D=20 disagree, given both pairs are
+  isomorphic-graph pairs by the same construction logic -- no mechanism
+  proposed. One structural difference worth noting without drawing a
+  conclusion from it: D=5/D=25's two non-bare-edge components (5 and
+  25) differ far more in size from each other than D=10/D=20's (10 and
+  20) -- whether this ratio, or something else entirely, explains the
+  differing agreement is untested.
+- Any mechanism for the dominant_size_sweep family's cliff/fast pattern
+  generally -- this addendum deepens the puzzle rather than resolving
+  it.
+- Generalization to 6x7 or to other families.
+
+## 5. Files
+
+| File | What it is |
+|---|---|
+| [`circuit_family_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/circuit_family_sweep.py) | the script (Addendum 78's `dominant_size_sweep`) |
+| [`circuit_family_sweep_8x8_AMD64_Family_25_Model_80_Stepping_0_AuthenticAMD_2026-09-18_run9.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/circuit_family_sweep_8x8_AMD64_Family_25_Model_80_Stepping_0_AuthenticAMD_2026-09-18_run9.csv) | this run, 36 rows |
+| [`circuit_family_sweep_8x8_AMD64_Family_25_Model_80_Stepping_0_AuthenticAMD_2026-09-18_run10.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/circuit_family_sweep_8x8_AMD64_Family_25_Model_80_Stepping_0_AuthenticAMD_2026-09-18_run10.csv) | independent reproducibility re-run, 36 rows |
+| [`spare-qubit-cliff-addendum-78-preregistration-2026-09-18.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-78-preregistration-2026-09-18.md) | the predictions scored above |
+
+## 6. Verification
+
+- All 36 rows checked for `error=""`; stop reason confirmed unanimous
+  (6/6) within every `D` cell.
+- **D=10 and D=20's graph isomorphism was verified computationally**
+  (`networkx.is_isomorphic`, returning `True`) before this addendum's
+  central claim was written, not assumed from the construction logic
+  alone -- this was the single most important check performed for this
+  addendum, precisely because the claim rests entirely on it.
+- D=5/D=25's component-size match ({25,5} both) was confirmed directly
+  from the CSV's own recorded structure, consistent with the
+  pre-registration's stated design.
+- D=30's reproduction of `mixed_uneven` was checked against both
+  Addendum 63's original figure and Addendum 77's own reproduced band
+  before being reported as consistent.
+- The reproducibility re-run (run10) was checked point-by-point against
+  run9: every one of the six stop reasons matched, and every timing
+  value fell within ~5% of its run9 counterpart -- confirmed by direct
+  comparison, not assumed from a summary statistic.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this document and both new CSVs ->
+  0 hits. The terminal output supplied for these runs was reviewed for
+  local paths before use; none were reproduced here.
+
+---
+
+
+<!-- ===== Addendum 79 pre-registration (source: spare-qubit-cliff-addendum-79-preregistration-2026-09-18.md) ===== -->
+
+> **Note added when merging:** Predictions for whether the D=10/D=20-style split recurs at other size ratios (12/18 and 8/22), to locate where isomorphic pairs start agreeing vs. disagreeing.
+
+## Addendum 79 -- Pre-registration: does the D=10/D=20-style split (isomorphic graphs, opposite outcomes) recur at other size ratios, or was it specific to that one pair? (2026-09-18)
+
+**Status: pre-registration only. No run with any new dominant/filler
+pair has been performed.** Predictions are locked before any
+measurement.
+
+## 1. Why this experiment exists
+
+Addendum 78 found, reproduced independently twice, that D=10 and D=20
+-- graph-isomorphic (verified with `networkx.is_isomorphic`) -- give
+opposite outcomes (fast vs. cliff), while D=5 and D=25 -- also
+isomorphic -- agree (both cliff). With only two isomorphic pairs tested,
+it is not known whether the disagreement is specific to the 10:20 ratio
+(2.0), general to ratios "close enough" to that, or essentially random
+noise in which isomorphic pairs happen to agree. This addendum adds two
+more isomorphic pairs at different ratios to locate where, if anywhere,
+the disagreement pattern holds.
+
+## 2. Design
+
+Same `dominant_size_sweep` construction (17 bare edges fixed, one
+dominant chain of size D, one filler chain of size 30-D). Two new
+isomorphic pairs, chosen to bracket the known disagreeing pair (10/20,
+ratio 2.0) and agreeing pair (5/25, ratio 5.0):
+
+| pair | ratio (larger/smaller) | where it sits |
+|---|---:|---|
+| 12 / 18 | 1.5 | closer to balanced (D=15's 1:1) than 10/20 |
+| 8 / 22 | 2.75 | between 10/20 (disagrees) and 5/25 (agrees) |
+
+Both members of each pair are tested (12 AND 18; 8 AND 22) --
+4 new points total, `optimization_level=3`, spare=0 on the 8x8 grid,
+3 seeds x 2 repeats each, matching Addendum 78's own resolution.
+Isomorphism is verified computationally (`networkx.is_isomorphic`)
+before interpreting results, exactly as done for D=10/D=20 and D=5/D=25.
+
+## 3. Pre-registered predictions
+
+**P1 (primary -- does 12/18 agree or disagree)?**
+  - **Agrees** (both same outcome): ratio 1.5 is close enough to
+    balanced (like D=15's single 1:1 case, which cliffs) that placement
+    doesn't matter here -- would suggest the D=10/20 disagreement needs
+    a *specific*, not-too-close-to-1:1 ratio.
+  - **Disagrees**: extends the disagreement pattern to a ratio even
+    closer to balanced than 10/20 -- would suggest disagreement is not
+    narrowly tied to the 2.0 ratio specifically.
+
+**P2 (primary -- does 8/22 agree or disagree)?**
+  - **Agrees**: ratio 2.75, between the disagreeing (2.0) and agreeing
+    (5.0) pairs, sides with the agreeing regime -- would suggest a
+    ratio threshold somewhere between 2.0 and 2.75.
+  - **Disagrees**: sides with the disagreeing regime -- would suggest
+    the threshold, if any, lies between 2.75 and 5.0, or that ratio is
+    not the operative variable at all (since 2.75 is closer to 5.0 than
+    to 2.0, disagreement here would weaken a simple "ratio" story
+    considerably).
+
+**P3 (sanity check).** Both pairs' isomorphism is verified
+computationally before any outcome is interpreted, matching Addendum
+78's own standard.
+
+## 4. What this cannot establish
+
+- A confirmed threshold even if a pattern emerges from four points --
+  four is still few; any apparent ratio-based rule found here should be
+  treated with the same caution Addendum 75 applied to a two-point
+  lead that later failed at twelve points.
+- Mechanism, in any case.
+- Whether the same pattern holds at 6x7 or other grid sizes.
+
+---
+
+
+<!-- ===== Addendum 79 (source: spare-qubit-cliff-addendum-79-2026-09-18.md) ===== -->
+
+> **Note added when merging:** A ratio-based pattern emerges across four isomorphic pairs: ratios 1.5 and 2.0 disagree (smaller value always fast); ratios 2.75 and 5.0 agree (both cliff) -- reported with explicit caution given this project's history with small-sample patterns.
+
+## Addendum 79 -- a ratio-based pattern emerges across four isomorphic pairs: low ratios (1.5, 2.0) disagree with the smaller value always fast; higher ratios (2.75, 5.0) agree (both cliff) (2026-09-18)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-79-preregistration-2026-09-18.md`, written
+and locked before this run.
+
+## 0. In one line
+
+**P1: 12/18 disagrees, extending the pattern from D=10/D=20 to an even
+more balanced ratio (1.5).** **P2: 8/22 agrees (both cliff), siding with
+the D=5/D=25 regime.** Across all four isomorphic pairs now measured, a
+clean pattern emerges: **ratios 1.5 and 2.0 disagree; ratios 2.75 and
+5.0 agree (both cliff).** Within both disagreeing pairs, an additional,
+unregistered pattern holds exactly: **the smaller dominant-component
+value is the one that is fast** (12 fast, 18 cliff; 10 fast, 20 cliff).
+This is reported with the same caution this project has applied to
+every small-sample lead today (Addendum 75's own explicit warning
+about four points), but it is the cleanest pattern found in this entire
+line of investigation (Addenda 74-79) to date.
+
+## 1. Results
+
+8x8 grid (64 qubits), `dominant_size_sweep`, spare=0,
+`optimization_level=3`, 3 seeds x 2 repeats. All 24 rows completed with
+`error=""`; stop reason unanimous (6/6) within every `D` cell.
+Isomorphism of both new pairs was verified computationally
+(`networkx.is_isomorphic`) before this run, per the pre-registration.
+
+| D | filler | ratio | time (ms) | stop reason |
+|---:|---:|---:|---:|:---|
+| **8** | **22** | 2.75 | 9,140.94 | nonexistent solution |
+| **12** | **18** | 1.5 | 35.78 | **solution found** |
+| **18** | **12** | 1.5 | 9,405.82 | nonexistent solution |
+| **22** | **8** | 2.75 | 9,067.64 | nonexistent solution |
+
+## 2. Scoring
+
+**P1 (12/18) -- "Disagrees" CONFIRMED.** D=12 fast (35.78ms), D=18
+cliffs (9,405.82ms) -- matches D=10/D=20's own disagreement pattern,
+at an even more balanced ratio (1.5 vs. 2.0).
+
+**P2 (8/22) -- "Agrees" CONFIRMED.** Both D=8 and D=22 cliff
+(9,140.94ms and 9,067.64ms) -- matches D=5/D=25's own agreement
+pattern, at a ratio (2.75) closer to the disagreeing pair (2.0) than
+to the agreeing one (5.0), which the pre-registration flagged in
+advance as the reading that would "weaken a simple ratio story
+considerably" if it occurred. **It did not weaken the story --** 2.75
+sided cleanly with the agreeing regime, same as 5.0.
+
+**P3 (sanity check) -- CONFIRMED.** Both pairs verified isomorphic
+before interpretation.
+
+## 3. The pattern across all four pairs now on record
+
+| ratio | pair | outcome | smaller value's status |
+|---:|---|:---|:---|
+| 1.5 | 12/18 | **disagree** | fast |
+| 2.0 | 10/20 (Addendum 78) | **disagree** | fast |
+| 2.75 | 8/22 | **agree** (both cliff) | -- |
+| 5.0 | 5/25 (Addendum 78) | **agree** (both cliff) | -- |
+
+**Two findings, stated at the confidence level the data supports:**
+
+1. **A ratio threshold appears to sit between 2.0 and 2.75.** Below it
+   (more balanced pairs), the two isomorphic constructions disagree;
+   above it (more skewed pairs), they agree, and specifically agree by
+   both cliffing. This is consistent across all four points tested so
+   far -- but four points is still a small sample, and this addendum
+   does not claim the threshold is precisely located, only that it is
+   bracketed between 2.0 and 2.75.
+
+2. **Within the disagreeing regime, the smaller value is always the
+   fast one** (12 and 10, not 18 and 20). This held in both of the two
+   disagreeing pairs found so far -- a small but suggestive sample.
+
+**Neither finding was predicted in the pre-registration in this specific
+form** (P1/P2 asked only agree-or-disagree per pair, not the
+cross-pair ratio pattern or the smaller-value-is-fast regularity); both
+are reported as genuine post-hoc observations from this run's own
+results, not retrofitted predictions.
+
+## 4. What this does not establish
+
+- **The exact ratio threshold.** Only that it lies in (2.0, 2.75]; no
+  point between was tested.
+- **Whether the "smaller value is fast" rule is general** or specific
+  to these two pairs -- a third disagreeing pair (if one exists between
+  ratio 1.0 and 2.0) would test this directly.
+- **What happens at ratio exactly 1.0** (D=15, already on record from
+  Addendum 78: cliffs, as a single non-isomorphic-pair case since
+  15=filler=15 means there is only one graph, not two to compare) --
+  whether the "smaller is fast" pattern has any analog when there is no
+  smaller/larger distinction is not addressed by anything measured.
+- Mechanism -- why a ratio threshold would exist, or why the smaller
+  value specifically escapes, in any case.
+- Generalization to 6x7 or other grid sizes.
+- Whether this pattern would survive the same reproducibility scrutiny
+  Addendum 78's D=10/D=20 split received (independent re-run) -- only
+  single runs at each new point so far.
+
+## 5. Files
+
+| File | What it is |
+|---|---|
+| [`circuit_family_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/circuit_family_sweep.py) | the script (unchanged from Addendum 78) |
+| [`circuit_family_sweep_8x8_AMD64_Family_25_Model_80_Stepping_0_AuthenticAMD_2026-09-18_run11.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/circuit_family_sweep_8x8_AMD64_Family_25_Model_80_Stepping_0_AuthenticAMD_2026-09-18_run11.csv) | this run, 24 rows |
+| [`spare-qubit-cliff-addendum-79-preregistration-2026-09-18.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-79-preregistration-2026-09-18.md) | the predictions scored above |
+
+## 6. Verification
+
+- All 24 rows checked for `error=""`; stop reason confirmed unanimous
+  (6/6) within every `D` cell.
+- Both new pairs' isomorphism was verified computationally before this
+  run (recorded in the pre-registration), not assumed after seeing
+  results.
+- The cross-pair ratio table (Section 3) was assembled by re-reading
+  Addendum 78's own D=10/D=20 and D=5/D=25 figures directly, not from
+  memory, before combining with this run's new points.
+- The "smaller value is fast" observation was checked against both
+  disagreeing pairs explicitly (12<18, fast is 12; 10<20, fast is 10)
+  before being stated as a pattern, and is explicitly flagged as
+  unconfirmed beyond these two instances.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this document and the new CSV -> 0
+  hits. The terminal output supplied for this run was reviewed for
+  local paths before use; none were reproduced here.
+
+---
+
+
+<!-- ===== Addendum 80 pre-registration (source: spare-qubit-cliff-addendum-80-preregistration-2026-09-18.md) ===== -->
+
+> **Note added when merging:** Predictions for locating the exact ratio threshold across all thirteen valid isomorphic pairs at n=64, with built-in reproducibility -- includes a second construction bug (dominant_size<2 silently idle) found and fixed before running.
+
+## Addendum 80 -- Pre-registration: locating the exact ratio threshold across all thirteen valid isomorphic pairs at n=64, and testing the "smaller value is fast" rule to its full extent, with built-in reproducibility (2026-09-18)
+
+**Status: pre-registration only. No run beyond the four pairs already
+measured (Addendum 78: 10/20, 5/25; Addendum 79: 12/18, 8/22) has been
+performed.** Predictions are locked before any measurement.
+
+## 1. Why this experiment exists
+
+Addenda 78-79 found four isomorphic dominant/filler pairs (at n=64,
+17 bare edges fixed, remainder=30 split between one dominant and one
+filler chain): ratios 1.5 and 2.0 disagree (smaller value fast, larger
+cliffs); ratios 2.75 and 5.0 agree (both cliff). This addendum tests
+**every remaining valid pair** at this n=64/remainder=30 configuration
+-- thirteen pairs total (one, 1/29, excluded as structurally invalid -- see Section 2), nine not yet tested -- to (a) locate the exact
+ratio threshold rather than merely bracket it, (b) test the "smaller
+value is fast" rule against every disagreeing case that exists in this
+configuration, not just two, and (c) build in independent
+reproducibility from the start, given Addendum 78's own finding that
+one specific pair's result (D=10/D=20) needed a second run before being
+trusted.
+
+## 2. Design
+
+**A second construction bug was found and fixed while preparing this
+design, before any run**: `_edges_dominant_size_sweep` validated
+`filler_size` for the 0-to-2 edge case (Addendum 78's own fix) but not
+`dominant_size` itself -- `dominant_size=1` silently built zero edges
+for that qubit (leaving it idle) rather than raising, the same failure
+mode from the opposite side. This means the pair **1/29 cannot be
+validly constructed at either end** (dominant_size=1 is now caught and
+raises; dominant_size=29 already raised via filler_size=1) and is
+**excluded from this addendum's design**. Thirteen valid pairs remain
+(small ranging 2 to 14, large = 30-small, excluding small=15's
+already-tested non-pair case D=15):
+
+| small | large | ratio | status |
+|---:|---:|---:|---|
+| 2 | 28 | 14.00 | new |
+| 3 | 27 | 9.00 | new |
+| 4 | 26 | 6.50 | new |
+| 5 | 25 | 5.00 | already tested (Addendum 78): agree, both cliff |
+| 6 | 24 | 4.00 | new |
+| 7 | 23 | 3.29 | new |
+| 8 | 22 | 2.75 | already tested (Addendum 79): agree, both cliff |
+| 9 | 21 | 2.33 | new |
+| 10 | 20 | 2.00 | already tested (Addendum 78): disagree, smaller (10) fast |
+| 11 | 19 | 1.73 | new |
+| 12 | 18 | 1.50 | already tested (Addendum 79): disagree, smaller (12) fast |
+| 13 | 17 | 1.31 | new |
+| 14 | 16 | 1.14 | new |
+
+Nine new pairs (eighteen new points: both the small and large value of
+each pair, since both must be tested to check agreement/disagreement),
+`optimization_level=3`, spare=0, 8x8 grid. **Each of the eighteen new
+points is run in two independent batches (3 seeds x 2 repeats each,
+matching Addendum 78's own reproducibility check), for 12 runs per
+point, 216 new runs total** -- deliberately large-scale. Isomorphism of
+each new pair is to be verified computationally before interpretation,
+per this project's standing practice for this line of investigation.
+
+**Given the scale, this is designed to run as two separate invocations**
+(one per batch) so intermediate progress is visible; both are specified
+now so scoring is locked before either runs.
+
+## 3. Pre-registered predictions
+
+**P1 (primary -- where exactly does the ratio threshold sit?).**
+Based on Addenda 78-79's bracket (disagree at <=2.0, agree at >=2.75):
+  - **Threshold between 2.0 and 2.33** (i.e. pair 9/21 disagrees,
+    pair 7/23 agrees): the boundary sits at the low end of the
+    bracket.
+  - **Threshold between 2.33 and 2.75** (i.e. 9/21 agrees): the
+    boundary sits at the high end.
+  - **Non-monotonic**: the ratio-ordered sequence of agree/disagree
+    outcomes is not a single clean split (e.g. 9/21 disagrees but 7/23
+    also disagrees, or some pair out of ratio order breaks the
+    pattern) -- explicitly a live possibility given this project's
+    repeated experience with apparently-clean small-sample patterns
+    not holding at scale (Addendum 59's oscillation, Addendum 75's
+    falsified lead).
+
+**P2 (the "smaller value is fast" rule).** For every pair found to
+disagree (however many that turns out to be), predicted that the
+smaller value is fast and the larger cliffs, with zero exceptions --
+matching both of Addenda 78-79's own disagreeing pairs (10/20, 12/18).
+A single counter-example (a disagreeing pair where the LARGER value is
+fast) would falsify this as a universal rule within this configuration.
+
+**P3 (reproducibility).** Every point's two independent batches are
+predicted to agree with each other (same stop reason in both batches)
+for every one of the eighteen new points -- extending Addendum 78's own
+single confirmed reproducibility case (D=10 and D=20 both reproduced
+exactly) to the full set. Any point where the two batches disagree is
+reported explicitly as a bistable or noisy point, not averaged away.
+
+**P4 (extreme ratios).** The most extreme pairs (1/29, ratio 29.0; 2/28,
+ratio 14.0) are predicted to agree (both cliff), consistent with the
+existing trend of higher ratios agreeing -- included as a sanity check
+on the trend's own extrapolation, not because the trend is assumed
+correct in advance.
+
+## 4. What this cannot establish
+
+- Mechanism -- why any threshold exists, or why smaller values escape
+  within the disagreeing regime, in any case.
+- Whether this generalizes beyond n=64/remainder=30/17-bare-edges to
+  other configurations, grid sizes, or bare-edge counts.
+- Whether the threshold (if precisely located) has any relationship to
+  other thresholds found elsewhere in this project (the bare-edge count
+  threshold itself, grid-size effects, etc.) -- purely coincidental
+  proximity, if any is found, is not to be treated as a connection
+  without further work.
+
+## 5. Scoring discipline
+
+Score P1 as a three-way split exactly as defined; if the pattern is
+genuinely non-monotonic, say so explicitly and report the actual
+sequence rather than forcing it into "threshold between X and Y." Score
+P2 by checking literally every disagreeing pair found, not only the
+already-known two. Score P3 per-point, not in aggregate -- a single
+disagreement between batches at one point is a reportable finding on
+its own, not diluted by nineteen other points agreeing.
+
+---
+
+
+<!-- ===== Addendum 80 (source: spare-qubit-cliff-addendum-80-2026-09-18.md) ===== -->
+
+> **Note added when merging:** The ratio-threshold hypothesis from Addendum 79 collapses completely -- non-monotonic across all nine new pairs, independently reproduced (18/18 across two batches) -- but 'smaller value wins' survives 5/5, and D=2 reveals a construction degeneracy (collapses into an 18th bare edge).
+
+## Addendum 80 -- the ratio-threshold hypothesis from Addendum 79 collapses completely, and independently reproduces (18/18): non-monotonic across all nine new pairs, but "smaller value is fast" survives 5/5, and D=2 reveals a construction degeneracy (2026-09-18)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-80-preregistration-2026-09-18.md`, written
+and locked before this run, including a second construction bug
+(`dominant_size < 2` silently idle) found and fixed before running.
+**Both batches (216 rows total) are now complete and incorporated.
+P3 is scored below.**
+
+## 0. In one line
+
+**P1: "Non-monotonic" confirmed, decisively.** The ratio-ordered
+sequence of outcomes across all nine new pairs is not a clean split at
+any point: ratio 14.0 agrees (both fast -- a new category never seen in
+Addenda 78-79), 9.0 agrees (both cliff), 6.5 **disagrees**, 4.0 agrees,
+3.29 **disagrees**, 2.33 disagrees, 1.73 agrees, 1.31 agrees, 1.14
+agrees. **Addendum 79's own "threshold between 2.0 and 2.75" hypothesis
+is falsified outright** -- ratio 6.5 (well above the hypothesized
+threshold) disagrees, and ratio 1.73 (well below it) agrees. **P2: "the
+smaller value is fast" survives intact** -- every one of the five new
+disagreeing pairs (4/26, 7/23, 9/21) has the smaller value fast,
+extending the two known cases from Addenda 78-79 to five with zero
+exceptions. **An unregistered structural finding**: D=2 degenerates
+into just another bare 2-qubit edge (the chain-building loop for
+`dominant_size=2` produces one edge, identical in shape to the
+seventeen existing bare edges), so the "D=2/D=28" pair is not actually
+testing "small dominant vs. large dominant" at all -- it is testing "18
+bare edges + one 28-chain," structurally adjacent to `mixed_uneven`
+itself, which explains why both sides are fast rather than following
+either agree-pattern seen elsewhere.
+
+## 1. Results (both batches)
+
+8x8 grid (64 qubits), `dominant_size_sweep`, spare=0,
+`optimization_level=3`, 3 seeds x 2 repeats, two independent batches
+(216 rows total). All rows completed with `error=""`; stop reason
+unanimous (6/6) within every cell, and unanimous between the two
+batches at every one of the eighteen points (Section on P3 below).
+Batch 1 figures shown; Batch 2 matched exactly on every stop reason.
+
+| pair (small/large) | ratio | small time (ms) | large time (ms) | outcome |
+|---|---:|---:|---:|:---|
+| 2/28 | 14.00 | 34.53 | 34.68 | **both fast** (structural degeneracy -- see Section 3) |
+| 3/27 | 9.00 | 8,815.22 | 9,271.83 | both cliff |
+| **4/26** | 6.50 | **34.11** | 9,274.55 | **disagree, smaller fast** |
+| 6/24 | 4.00 | 9,104.09 | 9,208.46 | both cliff |
+| **7/23** | 3.29 | **33.58** | 9,941.71 | **disagree, smaller fast** |
+| **9/21** | 2.33 | **33.79** | 9,025.23 | **disagree, smaller fast** |
+| 11/19 | 1.73 | 8,902.75 | 9,010.21 | both cliff |
+| 13/17 | 1.31 | 11,441.58 | 9,235.64 | both cliff |
+| 14/16 | 1.14 | 9,713.62 | 9,274.13 | both cliff |
+
+Combined with Addenda 78-79's own four pairs (10/20, 5/25, 12/18,
+8/22): **thirteen pairs now on record, five disagreeing** (10/20,
+12/18, 4/26, 7/23, 9/21), **seven agreeing by both cliffing** (5/25,
+8/22, 3/27, 6/24, 11/19, 13/17, 14/16), and **one agreeing by both
+being fast** (2/28, the degenerate case).
+
+## 2. Scoring
+
+**P1 (primary -- ratio threshold location) -- FALSIFIED, all three
+branches, in the specific way the pre-registration flagged as a live
+possibility.** Neither "threshold between 2.0-2.33" nor "threshold
+between 2.33-2.75" describes the data -- there is no ratio value above
+which every pair agrees and below which every pair disagrees. The
+"non-monotonic" branch is confirmed, and confirmed strongly: disagree
+and agree outcomes interleave across the ratio range with no visible
+ordering.
+
+**P2 (smaller value is fast) -- CONFIRMED, 5/5, zero counter-examples
+so far.** Every disagreeing pair found across Addenda 78-80 --
+10/20, 12/18, 4/26, 7/23, 9/21 -- has the smaller value fast and the
+larger cliffing. This is the one part of Addendum 79's emerging picture
+that has not broken down.
+
+**P3 (reproducibility) -- CONFIRMED, 18/18, zero disagreements.** Every
+one of the eighteen new points was checked point-by-point between Batch
+1 and Batch 2: every stop reason matched exactly, and every timing
+value fell within the same tight bands already established (fast:
+~34-42ms; cliffing: ~8,800-9,500ms, with one Batch 1 outlier at
+D=13, 11,441.58ms, not reproduced in Batch 2's 9,063.60ms -- still
+comfortably within the cliffing regime, not a classification change).
+**The stark non-monotonicity reported in Section 1 is not a
+measurement artefact** -- it reproduces exactly across two independent
+batches, which rules out the most obvious alternative explanation
+(that some of the "disagreeing" pairs were actually borderline/noisy
+points that happened to land on opposite sides by chance).
+
+**P4 (extreme ratios) -- PARTIALLY FALSIFIED.** Predicted 2/28 and (had
+it been valid) 1/29 would agree by both cliffing, consistent with the
+existing "high ratio agrees" trend. **2/28 does agree, but by both
+being fast, not both cliffing** -- the prediction's binary framing
+(agree vs. disagree) was satisfied, but the specific *kind* of
+agreement was not the one implicitly assumed, and Section 3 shows why:
+this pair does not actually test the same "two large chains" structure
+as every other pair.
+
+## 3. The D=2/D=28 degeneracy, and what it means for interpreting "ratio"
+
+**`dominant_size=2` does not build a genuine small chain distinct from
+the bare edges.** The construction's chain-building loop
+(`range(dominant_size - 1)`) with `dominant_size=2` produces exactly
+one edge between two qubits -- indistinguishable in shape from any of
+the seventeen already-present bare 2-qubit edges. Verified directly:
+D=2's actual component decomposition is **eighteen 2-qubit components
+plus one 28-qubit chain** (confirmed via `networkx`), not "one 2-qubit
+dominant plus one 28-qubit filler" as the parameter name suggests.
+**This means D=2/D=28 is not a fair test of "small vs. large dominant
+component" at all** -- it is closer to a `mixed_uneven`-family point
+(many bare edges + one large chain) with 18 bare edges instead of 17.
+That it is fast is unsurprising in light of Addenda 63/77's own
+`mixed_uneven` result, and does not extend the "ratio" story in either
+direction. **Any pair where the smaller value is 2 should be treated as
+this special case going forward, not as a genuine small-dominant test.**
+
+This also means Section 1's ratio column is not uniformly meaningful:
+the true underlying variable at D=2 is "bare-edge count," not "dominant
+component size," so plotting D=2/D=28 against the same ratio axis as
+the other eight pairs conflates two different things. **This is
+disclosed rather than corrected retroactively** -- the table is left as
+measured, with this caveat attached.
+
+## 4. What this means for the broader investigation
+
+**The picture is now more complex, not simpler, than Addendum 79
+suggested.** A clean ratio threshold does not exist. What survives is
+narrower and more specific: **whenever two isomorphic dominant/filler
+constructions disagree, the smaller one is fast** -- but *which* pairs
+disagree versus agree does not follow simply from their size ratio.
+Something else -- not yet identified -- determines whether a given pair
+lands in the disagreeing category at all. Addendum 78's original
+finding (physical qubit placement matters, holding the abstract graph
+fixed) is reinforced and sharpened by this addendum: not only does
+placement matter, but *whether* placement matters (i.e., whether the
+pair disagrees or agrees) is itself unpredictable from the one variable
+(ratio) that seemed promising after four points.
+
+## 5. What this does not establish
+
+- **Why some pairs disagree and others agree** -- ratio is ruled out;
+  no replacement variable is proposed.
+- **Batch 2's reproducibility of these nine new points** -- pending.
+- Whether excluding the degenerate D=2/D=28 case from a re-analysis
+  changes the picture -- it does not appear to (the remaining eight
+  pairs are already non-monotonic on their own), but this was not
+  formally re-checked with D=2/D=28 removed.
+- Mechanism, in any case.
+
+## 6. Files
+
+| File | What it is |
+|---|---|
+| [`circuit_family_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/circuit_family_sweep.py) | the script (Addendum 80's dominant_size validation fix) |
+| [`circuit_family_sweep_8x8_AMD64_Family_25_Model_80_Stepping_0_AuthenticAMD_2026-09-18_run12.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/circuit_family_sweep_8x8_AMD64_Family_25_Model_80_Stepping_0_AuthenticAMD_2026-09-18_run12.csv) | Batch 1, 108 rows |
+| [`circuit_family_sweep_8x8_AMD64_Family_25_Model_80_Stepping_0_AuthenticAMD_2026-09-18_run13.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/circuit_family_sweep_8x8_AMD64_Family_25_Model_80_Stepping_0_AuthenticAMD_2026-09-18_run13.csv) | Batch 2 (independent reproducibility re-run), 108 rows |
+| [`spare-qubit-cliff-addendum-80-preregistration-2026-09-18.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-80-preregistration-2026-09-18.md) | the predictions scored above |
+
+## 7. Verification
+
+- All 108 rows checked for `error=""`; stop reason confirmed unanimous
+  (6/6) within every `D` cell.
+- D=2's degenerate structure was verified computationally
+  (`networkx`, direct component-size enumeration) before being reported
+  as the explanation for that pair's anomalous "both fast" result,
+  rather than left as an unexplained outlier.
+- The ratio-ordered sequence in Section 1 was checked against Addendum
+  79's own predicted branches (quoted in that addendum) before being
+  scored as falsifying all three.
+- The "smaller value is fast" tally (5/5) was checked against every
+  disagreeing pair on record across Addenda 78-80, not only this
+  addendum's own three, before being reported as zero-exception.
+- Batch 1 and Batch 2 were compared point-by-point (all 18 new points)
+  for stop-reason agreement before P3 was scored, not summarized from
+  aggregate statistics.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this document and both new CSVs
+  -> 0 hits.
+
+---
+
+
+<!-- ===== Addendum 81 (source: spare-qubit-cliff-addendum-81-2026-09-18.md) ===== -->
+
+> **Note added when merging:** Following a methodological correction (test irregularity directly instead of hunting for more patterns): a permutation test finds NO local D-proximity correlation in outcomes -- statistically indistinguishable from random (p~0.5), both with and without the D=2/28 degenerate case.
+
+## Addendum 81 -- testing irregularity directly, before hunting for more patterns: adjacent-D outcomes are statistically indistinguishable from random (2026-09-18, end of day)
+
+**Status**: an analytical addendum, prompted by a methodological
+correction from the user: rather than continuing to search for a
+pattern that explains Addendum 80's non-monotonic results, **test
+directly whether no pattern exists at all**, using a proper statistical
+test rather than exhausting candidate variables one at a time. No new
+Qiskit measurement -- uses only outcomes already on record from
+Addenda 78 and 80.
+
+## 0. In one line
+
+**A permutation test finds that fast/cliff outcomes across D=2 through
+28 (dominant_size_sweep, 8x8, 17 bare edges fixed) show NO more local
+correlation between adjacent D values than a random shuffle of the same
+outcomes would produce.** Observed adjacent-match rate: 14/24 pairs
+(58.3%). Mean under 10,000 random shuffles of the same outcome
+sequence: 14.17/24 (59.0%). The observed data sits almost exactly at
+the center of the null distribution (p=0.574 for "as few or fewer
+matches than observed"), meaning **there is no detectable tendency for
+nearby D values to share an outcome** -- exactly what "no simple local
+regularity" predicts, and the opposite of what would be seen if a
+smooth or slowly-varying rule governed the outcome as a function of D.
+This result is unchanged when the two degenerate points (D=2, D=28,
+Addendum 80's own finding that these collapse into an 18-bare-edge
+`mixed_uneven`-adjacent structure) are excluded (14/22, p=0.544).
+
+## 1. Why this test, and why now
+
+Every attempt since Addendum 78 to find a variable that predicts
+fast/cliff outcome (isomorphism-pair ratio, component count, bare-edge
+count) has been tried and falsified one at a time -- the same
+enumerate-and-falsify approach this project used successfully for
+mod-3 (Addenda 53/59/61-63) but which, as the user pointed out, only
+ever *rules out* candidates rather than testing the underlying premise
+that a findable pattern exists at all. **If no such pattern exists,
+continuing to search candidate-by-candidate never terminates -- it can
+only keep failing.** A direct test of irregularity itself, rather than
+another candidate variable, was proposed as the correct next step, and
+is what this addendum performs.
+
+## 2. Method
+
+All eighteen distinct D values with a recorded fast/cliff outcome from
+Addenda 78 and 80 (D=2 through 28, excluding D=15's own non-pair case
+and D=1/29 which Addendum 80 found invalid to construct), encoded as
+1 (fast) or 0 (cliff), ordered by D. For every pair of D values exactly
+1 apart (i.e. truly adjacent on the integer line: D and D+1), checked
+whether their outcomes match. This count is compared against the
+distribution obtained by randomly shuffling the same eighteen outcome
+values across the same eighteen D-positions 10,000 times and recomputing
+the same adjacent-match statistic each time -- a standard permutation
+test, testing the null hypothesis that outcome is independent of
+position (D).
+
+## 3. Results
+
+| | with D=2, D=28 | excluding D=2, D=28 |
+|---|---:|---:|
+| Observed adjacent matches | 14/24 (58.3%) | 14/22 (63.6%) |
+| Mean under 10,000 random shuffles | 14.17/24 (59.0%) | 14.43/22 (65.6%) |
+| p-value (P[shuffled <= observed]) | 0.574 | 0.544 |
+
+**Both versions show the same qualitative result**: the observed
+data's adjacent-match rate is not merely "not significantly higher"
+than random (which would be the minimum bar for detecting local
+regularity) -- it sits almost exactly at the shuffled distribution's own
+mean, with the p-value close to 0.5 in both cases (the value expected
+if the real data were itself just another random draw).
+
+## 4. What this establishes, and what it does not
+
+**Establishes**: there is no evidence of *local, D-proximity-based*
+regularity in this dataset. A model of the form "outcome is a smooth or
+slowly-varying function of D" is not supported -- if it were, adjacent D
+values would share outcomes far more often than chance, and they do
+not, at all, even nominally in this small sample.
+
+**Does not establish**: that *no* regularity exists of *any* kind. This
+test is specifically blind to:
+- **Non-local structure**: a rule depending on D through some other
+  relationship (e.g. `D mod k` for some k not equal to 1, or a
+  relationship between D and 30-D jointly, or D's relationship to 32,
+  the grid's own maximum matching size) would not show up as
+  *adjacent*-D correlation at all, and is not ruled out by this test.
+- **The "smaller value wins" rule** (Addendum 80's own 5/5 finding) is
+  a rule about *pairs* (D, 30-D), not about D's position on the
+  integer line alone -- this test does not bear on it one way or the
+  other, and that rule remains the one surviving, unfalsified pattern
+  in this entire investigation.
+- **Sample size**: eighteen points, twenty-two or twenty-four adjacent
+  comparisons, is small. A null result here is consistent with "no
+  local regularity exists" but also consistent with "local regularity
+  exists but is too weak or too fine-grained to detect at this
+  resolution." The test has real but limited power.
+
+## 5. What this means for the investigation's next step
+
+**This result argues against continuing to search for a smooth,
+D-indexed explanatory function**, since the data actively looks like it
+was NOT generated by one. It does **not** argue against investigating
+the "smaller value wins" pair-rule further, since that rule concerns a
+different structural question (a comparison between two specific
+values, not a trend across the D axis) that this test cannot speak to.
+**The recommended next step, carried into tomorrow's session, is
+therefore NOT another candidate-variable search along the D axis, but
+either (a) a similar irregularity test targeted at the pair-rule itself
+(e.g., does "smaller wins" hold at every ratio, or does it also show
+no structure beyond the raw 5/5 count), or (b) the D-vs-32
+relationship flagged in `SESSION_SUMMARY_FINAL_2026-09-18.md` Section 3
+item 1, which is a non-local hypothesis this test does not rule out.**
+
+## 6. Files
+
+No new data files -- recomputed from outcomes already on record in
+Addenda 78 and 80.
+
+## 7. Verification
+
+- The permutation test was implemented directly (10,000 shuffles,
+  seeded for reproducibility) rather than relying on a closed-form
+  approximation, and rerun with D=2/D=28 excluded to check robustness
+  -- both give the same qualitative result.
+- All eighteen outcome values were re-read directly from Addenda 78 and
+  80's own recorded tables before being encoded, not from memory.
+- The interpretation in Section 4 explicitly distinguishes what this
+  specific test does and does not rule out, rather than overclaiming a
+  general "no regularity" finding from a test of local regularity
+  alone.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this document -> 0 hits.
+
+---
+
+
+<!-- ===== Addendum 82 (source: spare-qubit-cliff-addendum-82-2026-09-19.md) ===== -->
+
+> **Note added when merging:** Reframing from 'does regularity exist' (unanswerable) to 'how much predictive power do current features have' (quantifiable): a Mantel-correlation test across all 325 pairs and three distance metrics finds at most 4.5% variance explained, none surviving Bonferroni correction for multiple comparisons.
+
+## Addendum 82 -- quantifying predictive power directly, across all pairs and all available distance metrics, instead of testing one candidate variable at a time (2026-09-18/19)
+
+**Status**: an analytical addendum, following a methodological
+correction from the user: reframe the question from "does regularity
+exist?" (unanswerable by exhaustive search) to **"how much predictive
+power do the currently available features have?"** (a quantifiable,
+bounded question). Uses only the 26 outcomes already on record from
+Addenda 78 and 80 -- no new Qiskit measurement. This supersedes
+Addendum 81's narrower test (adjacent-D-only, binary) with a more
+comprehensive one (all 325 pairs, continuous distance, multiple
+metrics, explicit effect-size and multiple-comparison reporting).
+
+## 0. In one line
+
+**Across three independent distance metrics computed for every one of
+the 325 possible pairs among 26 known outcomes, the best predictive
+power found explains at most 4.5% of the variance in whether two
+points share an outcome, and none of the three metrics survives
+correction for testing multiple hypotheses.** D-distance: r=-0.151,
+nominal p=0.032, 2.3% variance explained. Ratio-distance: r=-0.212,
+nominal p=0.049, 4.5% variance explained. Max-component-distance:
+r=-0.017, p=0.354, ~0% variance explained. **After Bonferroni
+correction for the three tests (requiring p<0.0167), none remains
+significant.** The honest answer to "how much predictive power does the
+current candidate-variable set have" is: **very little, and what little
+appears present does not clear a standard statistical bar once multiple
+testing is accounted for.**
+
+## 1. Why this addendum exists, and how it differs from Addendum 81
+
+Yesterday's Addendum 81 tested only *exact adjacency* (D and D+1) using
+a binary match/no-match count -- a narrow test with limited statistical
+power (only 22-24 comparisons). The user correctly identified that
+continuing to test one new candidate variable at a time (as done for
+ratio in Addenda 79-80, mod-3 in Addenda 53/59/61-63, etc.) reproduces
+the same combinatorial-search structure this project is investigating
+in Qiskit itself -- an unbounded process that can only fail to find
+things, never conclude their absence. **The correct reframing, proposed
+by the user**: stop asking "is there a pattern" (unanswerable) and
+instead ask **"how much does each already-available feature explain"**
+(directly computable, bounded, and does not require inventing new
+candidates).
+
+## 2. Method
+
+**Step 1 -- feature table.** All 26 points with a known outcome from
+Addenda 78/80 (D=2 through 28, all valid dominant_size_sweep
+configurations), each characterized by six features computed directly
+from the interaction graph (not re-derived from memory): `D`, `filler`
+(30-D), `ratio` (larger/smaller), `n_components`, `max_component`,
+`n_bare_2q_components`, `n_edges`. **A structural limitation found while
+building this table, reported rather than hidden**: `n_components`,
+`n_edges`, and `n_bare_2q_components` are **nearly constant across the
+entire dataset** -- the only exception is the D=2/D=28 degenerate case
+Addendum 80 already identified, where the "dominant" or "filler" chain
+collapses into an extra bare edge. This means these three features
+carry almost no discriminating information in this dataset, and any
+distance computed from them would be trivially uninformative. **The
+genuinely independent features in this dataset reduce to D alone**
+(filler, ratio, and max_component are all deterministic functions of
+D), which is itself an important limitation on this addendum's own
+power -- see Section 5.
+
+**Step 2 -- pairwise distances.** For every one of the C(26,2)=325
+pairs, computed three distances: `|D_i - D_j|`, `|ratio_i - ratio_j|`,
+`|max_component_i - max_component_j|`. (Distances based on
+n_components/n_edges/n_bare_2q were not computed as separate tests, per
+the near-constancy noted above -- testing them would not add
+information beyond what their near-constancy already implies.)
+
+**Step 3 -- Mantel-style correlation.** For each distance metric,
+computed the Pearson correlation between the distance values and a
+binary "outcomes match" indicator (1 if same outcome, 0 if different)
+across all 325 pairs. A negative correlation means "farther apart in
+this metric -> less likely to share an outcome," i.e. the metric has
+predictive power in the expected direction.
+
+**Step 4 -- permutation test.** For each metric, the outcome labels
+were shuffled across the 26 points 5,000 times, and the same
+correlation recomputed each time, to obtain a null distribution and a
+p-value (proportion of shuffles producing a correlation at least as
+negative as observed).
+
+**Step 5 -- multiple-comparison correction.** Since three metrics were
+tested, Bonferroni correction was applied (family-wise alpha 0.05
+requires per-test alpha 0.05/3 = 0.0167).
+
+## 3. Results
+
+| metric | observed correlation | nominal p-value | r-squared (variance explained) | survives Bonferroni (p<0.0167)? |
+|---|---:|---:|---:|:---:|
+| D-distance | -0.151 | 0.032 | 2.3% | **No** |
+| ratio-distance | -0.212 | 0.049 | 4.5% | **No** |
+| max-component-distance | -0.017 | 0.354 | 0.0% | No |
+
+## 4. Interpretation, at the confidence level the data supports
+
+**None of the three available distance metrics demonstrates robust
+predictive power over this dataset.** D-distance and ratio-distance show
+nominally negative correlations (the "expected" direction if closeness
+predicted shared outcome) that would individually clear an uncorrected
+p<0.05 threshold, but **neither survives the standard correction for
+testing three hypotheses**, and even taken at face value, each explains
+under 5% of the variance in whether two points share an outcome --
+a small effect size by any conventional standard. Max-component-distance
+shows no detectable relationship at all.
+
+**This is a different and more precise conclusion than either "no
+regularity exists" or "a regularity has been found."** The correct
+statement is: **the six graph-level features computed so far (three of
+which are nearly constant and thus uninformative, three of which
+collapse to functions of one underlying variable, D) collectively
+explain, at most, a few percent of this system's outcome variance.**
+Whether a *richer* feature set (not yet computed) would perform better
+is a separate, open question -- see Section 5.
+
+## 5. What this does not establish, and the sharpest limitation of this addendum itself
+
+**The dataset's own structure severely limits what this test can show.**
+With 26 points and effectively one independent numeric feature (D), no
+correlational test -- however comprehensive -- can detect structure that
+depends on information D does not carry (e.g., which specific physical
+qubits are used, beyond their count; any property of the actual grid
+embedding search path; anything about the specific random unitary gates
+placed on each edge). **This addendum quantifies the predictive power
+of the features currently computed, not the predictive power achievable
+in principle.** A genuinely comprehensive "predictability map," as the
+user's own framing requests, would need a richer feature set (e.g.
+graph spectral properties, automorphism group size properly computed
+rather than the informal check mentioned in Addendum 74, or features of
+the specific qubit-to-component assignment that Addendum 78 showed
+matters) before a low predictive-power finding could be treated as
+informative about the underlying system rather than about the
+particular six features tried.
+
+**Also not established**: whether the "smaller value wins" rule
+(Addendum 80's 5/5 finding) has any relationship to the weak D-distance
+and ratio-distance signals found here -- that rule concerns pair
+membership (D vs. 30-D) directly, not distance between arbitrary pairs,
+and was not re-tested in this addendum's framework.
+
+## 6. What this means going forward
+
+**Per the user's own stated priority ranking**: stop new sweeps (done --
+no new Qiskit runs in this addendum), the feature table now exists
+(Section 2, Step 1), the distance-metric evaluation has been done
+(Sections 2-4), and predictive power has been quantified (Section 3).
+**The honest state of the investigation**: with the current feature
+set, this system's outcome is not well predicted by anything measured
+so far. The next highest-value step, following the user's own framing
+of an interpretation-deficit phase rather than a data-deficit one, is
+**not another sweep**, but either (a) computing genuinely richer
+graph-theoretic features from the 26 already-known configurations (no
+new Qiskit runs needed), or (b) accepting that this specific line of
+investigation (isomorphic dominant/filler pairs at 8x8) has reached the
+limit of what structural analysis alone can explain, and redirecting
+effort toward mechanism (the still-unlocated Rust source, Addenda
+43-45) or toward the two-track paper structure discussed earlier
+(Research A: is PSF-Zero effective; Research B: why does VF2 fail)
+rather than continuing to deepen Research B indefinitely.
+
+## 7. Files
+
+No new data files -- recomputed from outcomes already on record in
+Addenda 78 and 80.
+
+## 8. Verification
+
+- All 26 outcome values were re-derived from Addenda 78 and 80's own
+  recorded tables before being encoded, not from memory.
+- The near-constancy of n_components/n_edges/n_bare_2q_components was
+  verified computationally (via `networkx`, direct component
+  enumeration for every one of the 26 configurations) before being used
+  to justify excluding them as separate distance metrics, not assumed.
+- The permutation test (5,000 shuffles per metric) was implemented
+  directly and seeded for reproducibility.
+- The Bonferroni correction was applied using the standard formula
+  (family-wise alpha divided by number of tests) and reported
+  transparently rather than only reporting the more favorable
+  uncorrected p-values.
+- r-squared values were computed directly from the reported correlation
+  coefficients, not estimated.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this document -> 0 hits.
+
+---
+
+
+<!-- ===== Addendum 83 (source: spare-qubit-cliff-addendum-83-2026-09-19.md) ===== -->
+
+> **Note added when merging:** The session's most consequential empirical result: PSF-Zero's real, unmodified smart_vf2_layout (source supplied by the user) finds a layout in all 26 of 26 tested configurations, including all 19 where Qiskit's own VF2Layout cliffed. A real bug in PSF-Zero's own feasibility pre-check was found and fixed along the way.
+
+## Addendum 83 -- PSF-Zero's actual layout search finds a layout in all 26 configurations, including all 19 where Qiskit's own VF2Layout cliffed -- a real, direct, decisive comparison (2026-09-19)
+
+**Status**: a direct empirical comparison, using PSF-Zero's real,
+unmodified `smart_vf2_layout()` (from `psf_smart_layout.py`, uploaded
+2026-09-19) against the same 26 `dominant_size_sweep` configurations
+Qiskit's own VF2Layout was measured on in Addenda 78 and 80. Run twice
+by the user: the first run exposed a design flaw in the comparison
+script (Section 1), the second (reported here) is the corrected,
+trustworthy result.
+
+## 0. In one line
+
+**PSF-Zero's `smart_vf2_layout` found a valid layout in all 26 of 26
+tested configurations -- including every one of the 19 configurations
+where Qiskit's own VF2Layout returned `"nonexistent solution"` (the
+cliff) after multi-second searches.** Every success took under 0.066
+seconds, and every single one was found in Stage 1 alone (the cheap
+BFS-family-ordering search with `id_order=True`) -- Stage 2's more
+expensive fallback was never needed. There is not a single case in
+either direction where the two tools disagree by PSF-Zero failing where
+Qiskit succeeded; every disagreement (19 of 26) is PSF-Zero succeeding
+where Qiskit cliffed.
+
+## 1. A design flaw in the first attempt, caught and fixed before trusting any result
+
+The first run of this comparison returned `feasible=False,
+orderings_tried=0` for all 26 configurations, including the 7 where
+Qiskit itself succeeded -- a result that, taken at face value, would
+have wrongly suggested PSF-Zero's search never even attempted these
+cases. Investigation traced this to `smart_vf2_layout`'s own
+`_has_feasible_matching` pre-check, which computes
+`len(max_matching) >= num_logical_pairs`, where `num_logical_pairs` is
+passed as `len(interaction_pairs)` -- the interaction graph's raw edge
+count. **This comparison is only valid when the interaction graph is
+itself a matching** (the project's original `dense_pairs` family,
+Addenda 4-50, where the interaction graph literally is a set of
+disjoint pairs and edge count equals the number of pairs needing
+positions). For the chain-shaped families used throughout Addenda
+51-82, edge count (45 for these `dominant_size_sweep` configurations)
+routinely exceeds the physical device's own maximum matching size (32
+for this 8x8 grid, Addendum 34), so the check rejected every
+configuration before the real search logic ever ran, regardless of
+whether the underlying graph was actually embeddable. **This is a
+known limitation of a prototype explicitly built around Addenda 8-12's
+matching-shaped circuit family** (documented in `psf_smart_layout.py`'s
+own docstring, which frames the whole module around that earlier
+investigation), not a defect discovered for the first time here, and
+not evidence about PSF-Zero's actual search strategy. The comparison
+script was revised to call PSF-Zero's own internal search helpers
+(`_candidate_orderings`, `_try_mapping`, etc., unmodified) directly,
+bypassing only this mismatched guard, and the corrected run is what
+this addendum reports.
+
+## 2. Results
+
+8x8 grid (64 qubits, matching `CouplingMap.from_grid(8,8)`), all 26
+`dominant_size_sweep` configurations from Addenda 78/80 (D=2 through
+28, 17 bare edges fixed, one dominant chain of size D + one filler
+chain of size 30-D).
+
+| | Qiskit VF2Layout | PSF-Zero smart_vf2_layout |
+|---|---|---|
+| Found a layout | 7/26 | **26/26** |
+| Failed (cliff / not found) | 19/26 | **0/26** |
+| Time when it succeeds | tens of ms | **under 0.066s in every case** |
+| Time when it fails | ~9,000-9,900ms (multi-second search to exhaustion) | (never fails on this dataset) |
+| Search strategy used on success | Qiskit's own `vf2_layout_pass_average` | **Stage 1 only** (BFS-family ordering, `id_order=True`) in all 26 cases -- Stage 2 never triggered |
+
+Every one of the 19 configurations where Qiskit cliffed (D=3, 5, 6, 8,
+11, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27) was found by
+PSF-Zero using either the `degree_desc` ordering (4 orderings tried
+before success) or `bfs_from_min_degree` (2 orderings tried), never
+needing more than 4 attempts total.
+
+## 3. What this establishes, stated precisely
+
+**On this specific, well-defined test -- the same physical topology
+(8x8 grid) and the same interaction-graph family (17 bare edges +
+dominant/filler chains) that caused Qiskit's own VF2Layout to fail 19
+times out of 26 -- PSF-Zero's `smart_vf2_layout` succeeds in every
+single case, quickly, using only its cheapest search stage.** This is a
+real, positive, and now directly demonstrated result for PSF-Zero, not
+a claim resting on architecture alone.
+
+**This also revises how Addendum 78-82's own findings should be read.**
+Those addenda characterized the isomorphic-pair disagreement and low
+overall predictability as properties of "the system" -- but this
+comparison shows the erratic fast/cliff behavior is specific to
+Qiskit's own particular VF2 implementation and node-ordering strategy
+(`vf2_layout_pass_average`, per Addendum 45's reading of Qiskit's own
+documentation), not an intrinsic, unavoidable property of VF2-family
+subgraph-isomorphism search in general. **A different node-ordering
+strategy for the same underlying algorithm class (still VF2, still a
+search) sidesteps the entire problem on this dataset.** This is a
+materially different conclusion from "the search paradigm itself has
+reached its limit" -- what has reached its limit, on this evidence, is
+specifically Qiskit's own implementation choices for this circuit
+family, not search-based layout as a category.
+
+## 4. What this does not establish
+
+- **Generalization beyond this exact topology/family combination.**
+  `psf_smart_layout.py`'s own docstring documents, from earlier
+  diagnostics (Addenda 8-12), that its BFS-ordering strategy is
+  strongly effective on grid physical graphs with matching-shaped
+  interaction patterns, but explicitly does NOT generalize to other
+  physical topologies (`brick` failed even at very high call limits)
+  or, by the same logic, may not generalize to every interaction-graph
+  family untested here. This comparison used the 8x8 grid (where the
+  strategy is documented to work well) and the specific chain-shaped
+  families from today's own investigation -- not a claim about every
+  possible circuit or every possible device topology.
+- **Whether PSF-Zero's own feasibility guard bug (Section 1) affects
+  its behavior in production use**, i.e. whether real callers of
+  `compile_for_hardware(layout_search=True)` on chain-shaped circuits
+  are currently silently falling through to Qiskit's own default layout
+  stage (since a `None` return from `smart_vf2_layout` causes exactly
+  that fallback, per `psf_compile.py`'s own documented behavior) --
+  this is a real, practical bug with user-facing consequences, reported
+  here as a finding in its own right, independent of the comparison's
+  own corrected result.
+- **End-to-end compile time**, including gate synthesis
+  (`compile_for_hardware()`'s full pipeline) -- this comparison isolated
+  the layout search alone, matching what Addenda 78/80 measured on the
+  Qiskit side.
+- Whether `smart_vf2_layout`'s own internal `rustworkx.vf2_mapping()`
+  calls, run repeatedly across many orderings, would themselves show
+  the same kind of isomorphic-pair non-monotonicity Addendum 80 found
+  in Qiskit's implementation, on some other dataset not yet tested --
+  this comparison shows it does not happen on THIS dataset, not that
+  the underlying algorithm is immune to it in general.
+
+## 5. The feasibility-guard bug is itself worth fixing
+
+Independent of this comparison's own result, Section 1's finding is a
+real, reportable defect: **`_has_feasible_matching`'s check is wrong
+for any interaction graph that is not itself a matching**, which
+includes every circuit family this project has used since Addendum 51
+(more than half of this entire project's addenda). Any caller currently
+using `compile_for_hardware(layout_search=True)` on a chain-shaped or
+otherwise non-matching circuit is silently falling through to Qiskit's
+own default layout stage -- getting none of the benefit this addendum
+just demonstrated, without any error or warning indicating why. This
+should be corrected before `layout_search=True` is used or benchmarked
+on anything broader than the original `dense_pairs` family.
+
+## 6. Files
+
+| File | What it is |
+|---|---|
+| [`compare_psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/compare_psf_smart_layout.py) | the corrected comparison script (bypasses the feasibility-guard bug, calls PSF-Zero's own internal search helpers unmodified) |
+| [`psf_smart_layout_comparison_2026-09-19.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/psf_smart_layout_comparison_2026-09-19.csv) | this run's results, 26 rows |
+| [`psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_smart_layout.py), [`psf_compile.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_compile.py), `lib.rs` | PSF-Zero's own source, uploaded 2026-09-19, read directly rather than assumed |
+
+## 7. Verification
+
+- All 26 rows checked directly from the CSV; the "19/19 disagreements
+  are all PSF-Zero-wins" claim was verified computationally (not
+  eyeballed) before being stated.
+- The feasibility-guard bug's root cause (edge count vs. matching size
+  mismatch) was verified by direct calculation: 45 edges for these
+  configurations vs. 32 max matching for the 8x8 grid, both numbers
+  re-derived rather than assumed.
+- The claim that all 26 successes used Stage 1 only (never Stage 2) was
+  checked against the `psf_phase` column directly for every row, not
+  inferred from a summary.
+- PSF-Zero's own source files (`psf_compile.py`, `psf_smart_layout.py`,
+  `lib.rs`) were read in full before characterizing what
+  `layout_search=True` actually does, correcting an earlier
+  mischaracterization (in conversation, not in a prior addendum) of
+  PSF-Zero's layout stage as a "search-free algebraic method" -- it is
+  not; it is a differently-implemented VF2-family search, and this
+  addendum's own findings are stated accordingly.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this document and the new CSV -> 0
+  hits.
+
+---
+
+
+<!-- ===== Addendum 84 pre-registration (source: spare-qubit-cliff-addendum-84-preregistration-2026-09-19.md) ===== -->
+
+> **Note added when merging:** Predictions for whether a bare rustworkx id_order=True control (no BFS relabeling, no multi-stage strategy) alone explains Addendum 83's 26/26 result, prompted by external review questioning whether PSF-Zero's own ordering-diversity strategy was doing any real work.
+
+## Addendum 84 -- Pre-registration: does `id_order=True` alone explain PSF-Zero's 26/26 success, or does the multi-stage BFS strategy add something? (2026-09-19)
+
+**Status: pre-registration only. No run of this control condition has
+been performed.** Predictions are locked before any measurement.
+
+## 1. Why this experiment exists
+
+Addendum 83 found PSF-Zero's `smart_vf2_layout` finds a layout in all
+26 of 26 tested configurations, including all 19 where Qiskit's own
+VF2Layout cliffed, and concluded this reflects PSF-Zero's own
+multi-stage node-ordering strategy (cheap BFS-family orderings with
+`id_order=True`, falling back to VF2's heuristic ordering with
+`id_order=False` only if needed). **An external review of this
+project's public materials raised a specific, testable concern**: every
+one of the 26 successes in Addendum 83's own data used Stage 1 alone
+(`id_order=True`), and Stage 2 was never triggered. This means the
+comparison so far cannot distinguish two different explanations:
+
+- **PSF-Zero's own contribution**: trying several different BFS-family
+  starting orderings, each with `id_order=True`, is what finds a
+  solution -- a single fixed ordering with `id_order=True` might not
+  suffice, and the diversity of orderings tried is what matters.
+- **`id_order=True` alone**: the mere act of setting `id_order=True`
+  (as opposed to Qiskit's own default, which per Addendum 45's reading
+  of Qiskit's documentation may use a different ordering scheme
+  entirely) is sufficient by itself, regardless of which specific
+  starting ordering is used or how many are tried -- in which case
+  PSF-Zero's own multi-stage machinery adds nothing on this dataset,
+  and the correct, narrower finding would be "setting id_order=True on
+  a plain `rx.vf2_mapping()` call already solves this problem," not
+  "PSF-Zero's search strategy solves this problem."
+
+This addendum tests these two explanations directly, using a minimal
+third condition.
+
+## 2. Design
+
+For the same 26 `dominant_size_sweep` configurations (D=2 through 28,
+n_bare=17 fixed, n=64, 8x8 grid) used in Addendum 83, a third condition
+is added: a single, direct call to `rx.vf2_mapping(relabeled_physical,
+interaction_graph, subgraph=True, id_order=True, induced=False,
+call_limit=<same budget as Addendum 83's per_attempt_call_limit>)`,
+using the **natural (unordered) node numbering** -- i.e. no BFS
+relabeling at all, just the plain physical graph as constructed, with
+`id_order=True` set and nothing else changed. This isolates whether
+`id_order=True` alone, with no ordering effort whatsoever, already
+succeeds -- the most minimal possible test of the "id_order alone
+explains it" hypothesis. `rustworkx`'s own `vf2_mapping` function is
+called directly, not through any PSF-Zero wrapper, to make the
+comparison as clean as possible.
+
+## 3. Pre-registered predictions
+
+**P1 (primary -- does bare id_order=True, no ordering effort, solve all 26)?**
+  - **id_order=True alone suffices (26/26 or very close)**: PSF-Zero's
+    own multi-stage ordering strategy adds nothing on this dataset --
+    the earlier "PSF-Zero's search strategy avoids the cliff" framing
+    would need to narrow to "id_order=True avoids the cliff," a
+    materially smaller and more specific claim.
+  - **id_order=True alone is insufficient (well below 26/26)**: PSF-Zero's
+    own contribution (trying diverse BFS-family starting orderings) is
+    doing real, necessary work beyond the bare id_order flag --
+    supporting (though not proving in full generality) the original
+    framing.
+  - **Partial/intermediate result**: reported as its own outcome, not
+    forced into either extreme.
+
+**P2 (consistency check).** Every one of Addendum 83's own 26 successes
+used `id_order=True` in some ordering (never Stage 2's `id_order=False`
+fallback) -- re-confirmed directly from that addendum's own recorded
+`psf_phase` column before this addendum's own results are interpreted,
+since this pre-registration's reasoning depends on that fact being
+accurate.
+
+## 4. A second, separate question this addendum does not resolve
+
+Whether Qiskit's own `VF2Layout` internally uses `rustworkx.vf2_mapping()`
+at all, or a separate, independently-implemented Rust module (as an
+external source claims Qiskit's own maintainers have stated), is a
+different question from this addendum's own P1/P2. **This addendum does
+not test or resolve that question.** If Qiskit does not use
+`rustworkx.vf2_mapping()` internally, then even a fully confirmed P1
+("id_order=True alone suffices") would mean: a plain rustworkx call
+with one flag set solves what Qiskit's own separate implementation
+does not -- still a real and useful finding, but framed as a
+comparison between two different implementations of VF2-family search,
+not "the same algorithm with a different setting." This distinction
+should be resolved (by reading Qiskit's own current source, not by
+inference) before either addendum's finding is written into any
+external-facing document.
+
+## 5. What this does not establish
+
+- Whether `id_order=True` (with or without PSF-Zero's own ordering
+  diversity) generalizes to other topologies or circuit families --
+  same limitation already noted in Addendum 83 Section 4.
+- The Qiskit-implementation question in Section 4.
+- Mechanism -- why `id_order=True` would or would not matter, in either
+  outcome.
+
+---
+
+
+<!-- ===== Addendum 84 (source: spare-qubit-cliff-addendum-84-2026-09-19.md) ===== -->
+
+> **Note added when merging:** CORRECTION to Addendum 83: a bare id_order=True call matches PSF-Zero's own 26/26 exactly, and does so 100-600x faster -- the credit belongs to a single API flag, not PSF-Zero's own multi-stage design, which is shown to be measurably wasteful on this dataset.
+
+## Addendum 84 -- CORRECTION to Addendum 83: `id_order=True` alone explains all 26/26 successes, and does so 100-600x faster than PSF-Zero's own multi-stage strategy, which adds nothing on this dataset (2026-09-19)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-84-preregistration-2026-09-19.md`, written
+and locked before this run, in direct response to an external review
+of Addendum 83's own conclusion. **This addendum corrects Addendum 83's
+central claim.**
+
+## 0. In one line
+
+**P1: "id_order=True alone suffices" -- CONFIRMED, decisively, and more
+strongly than either pre-registered branch anticipated.** A bare call
+to `rx.vf2_mapping(..., id_order=True)`, on the physical graph in its
+natural (unordered, unrelabeled) numbering, with none of PSF-Zero's
+own multi-stage machinery, finds a layout in **all 26 of 26**
+configurations -- exactly matching PSF-Zero's own `smart_vf2_layout`
+success rate. **It is also dramatically faster**: every bare-condition
+success took under 0.0001 seconds, while PSF-Zero's own multi-stage
+search took 0.0146-0.0615 seconds for the same configurations -- **a
+100-600x overhead for zero additional benefit on this dataset.**
+**Addendum 83's central claim must be corrected**: the finding is not
+"PSF-Zero's multi-stage ordering-diversity strategy avoids the cliff
+Qiskit's own VF2Layout suffers from" -- it is **"setting `id_order=True`
+on a single, unmodified `rustworkx.vf2_mapping()` call avoids it,"** a
+narrower and more specific claim that does not require any of
+PSF-Zero's own additional machinery (BFS relabeling, multiple starting
+orderings, a two-stage fallback).
+
+## 1. Results
+
+8x8 grid (64 qubits), all 26 `dominant_size_sweep` configurations
+(D=2-28) from Addenda 78/80, run with both PSF-Zero's own
+`smart_vf2_layout_no_feasibility_guard` and the new bare-condition
+control, back to back for each D.
+
+| | PSF-Zero's own multi-stage search | Bare `id_order=True` control |
+|---|---:|---:|
+| Found a layout | 26/26 | **26/26** |
+| Time range | 0.0146-0.0615s | **0.0000-0.0001s** |
+| Orderings/relabelings needed | 2-4 per configuration | **0** (natural numbering, single call) |
+| Speed relative to the other | -- | **~100-600x faster** |
+
+Every one of Addendum 83's own 26 successes used `id_order=True` in
+some ordering (Stage 1; Stage 2's `id_order=False` fallback was never
+triggered) -- confirmed directly from Addendum 83's own recorded
+`psf_phase` column before this addendum's results were interpreted,
+consistent with P2's pre-registered consistency check.
+
+## 2. Scoring
+
+**P1 (primary) -- "id_order=True alone suffices" CONFIRMED.** The
+pre-registration set the bar at "26/26 or very close"; the measured
+result is exactly 26/26, an unambiguous match. The pre-registration
+did not predict the SPEED difference (100-600x) -- that is an
+additional, unregistered finding, reported here as such rather than
+retrofitted into the prediction.
+
+**P2 (consistency check) -- CONFIRMED.** Re-verified directly from
+Addendum 83's own data before this addendum's design was finalized.
+
+## 3. What this means: Addendum 83's finding is real, but was attributed to the wrong cause
+
+**The underlying empirical fact from Addendum 83 stands: something
+does solve, in every one of 26 cases, what Qiskit's own VF2Layout
+could not.** What this addendum corrects is *why*. Addendum 83
+attributed the success to PSF-Zero's own design (trying several
+BFS-family starting orderings, informed by Addenda 8-12's own
+diagnostic work). **This addendum shows that attribution was
+premature**: the credit belongs to a single `rustworkx` API flag,
+`id_order=True`, which PSF-Zero's own first attempt (in whichever
+ordering it happens to try first) also sets -- meaning PSF-Zero's
+multi-stage strategy was, on this dataset, solving every case on its
+very first attempt regardless of which specific ordering that attempt
+used, and the additional orderings/stages built into
+`smart_vf2_layout` were never actually needed.
+
+**This also means PSF-Zero's own `smart_vf2_layout`, as currently
+implemented, is measurably inefficient on this class of problem**: it
+spends 100-600x longer than necessary because it does not check
+whether the simplest possible call (no relabeling, `id_order=True`,
+natural node order) already succeeds before investing in BFS-based
+relabeling. This is a concrete, actionable improvement opportunity,
+independent of Addendum 83's own already-identified
+`_has_feasible_matching` bug.
+
+## 4. What remains unresolved (per the pre-registration's own Section 4)
+
+**This addendum does not resolve whether Qiskit's own `VF2Layout`
+internally calls `rustworkx.vf2_mapping()` at all.** An external
+source raised, in the course of this project's ongoing review, that
+Qiskit's own maintainers have publicly stated their implementation is
+NOT built on `rustworkx.vf2_mapping()` but on a separately-implemented
+Rust module. **This has not been verified by reading Qiskit's own
+current source** (this project has repeatedly failed to locate the
+relevant Rust file directly, per Addenda 43-45), and this addendum's
+own result cannot settle it either way. Two readings remain open:
+
+- **If Qiskit's VF2Layout does use `rustworkx.vf2_mapping()`
+  internally** (with `id_order` defaulting to something other than
+  `True`, or a different ordering scheme entirely): this addendum's
+  finding would mean the entire cliff phenomenon, across every
+  addendum in this project's history, reduces to a single
+  misconfigured default flag -- an extraordinary, and therefore
+  suspicious-until-verified, claim.
+- **If Qiskit's VF2Layout uses a separate, independent implementation**
+  (as the external source claims): this addendum's finding describes a
+  property of `rustworkx.vf2_mapping()` specifically, and the
+  comparison in Addendum 83 (and this correction) is between two
+  different tools' implementations of VF2-family search, not "the
+  same algorithm with one setting changed." This would still be a
+  useful and real finding (a specific, minimal, fast alternative
+  exists), but framed correctly as an implementation comparison, not a
+  single-flag fix.
+
+**This distinction should be resolved by reading Qiskit's own current
+source directly** before either Addendum 83's or this addendum's
+finding is written into any external-facing document (paper, README,
+or presentation). This is now the single highest-priority open item in
+this entire investigation.
+
+## 5. What this does not establish
+
+- Section 4's unresolved question (Qiskit's own implementation).
+- Whether `id_order=True` alone generalizes beyond this exact
+  topology/family combination -- same limitation already noted in
+  Addendum 83 Section 4 (the `brick` topology counter-example from
+  `psf_smart_layout.py`'s own docstring applies here too).
+- Mechanism -- why `id_order=True` specifically avoids whatever made
+  Qiskit's own VF2Layout fail. `id_order`'s own documented meaning (per
+  Addendum 45's reading of Qiskit's C API docs: it controls whether
+  node visitation order is randomized/shuffled or follows a fixed
+  scheme) is known, but why fixing it to `True` specifically resolves
+  this dataset's cases is not explained here.
+- Whether PSF-Zero's own `_has_feasible_matching` bug (Addendum 83
+  Section 5) is affected by this finding -- it is not; that bug is
+  independent of which search strategy runs after the guard, and still
+  needs fixing regardless of this addendum's result.
+
+## 6. Files
+
+| File | What it is |
+|---|---|
+| [`compare_psf_smart_layout.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/compare_psf_smart_layout.py) | the script (Addendum 84's `bare_id_order_true` control added) |
+| [`psf_smart_layout_comparison_2026-09-19.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/psf_smart_layout_comparison_2026-09-19.csv) | this run's results, 26 rows, now including the control columns |
+| [`spare-qubit-cliff-addendum-84-preregistration-2026-09-19.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-84-preregistration-2026-09-19.md) | the predictions scored above |
+
+## 7. Verification
+
+- The 26/26-vs-26/26 match and the 100-600x speed gap were both
+  computed directly from the CSV's own `bare_id_order_true_found` and
+  `bare_id_order_true_elapsed_s` columns, not estimated from the
+  printed summary alone.
+- P2's consistency check (every PSF-Zero success used `id_order=True`
+  in Addendum 83's own data) was re-verified against that addendum's
+  own recorded `psf_phase` column before this addendum's design was
+  written, not assumed.
+- Section 4's open question is stated as unresolved by this addendum
+  specifically, with both possible readings given equal weight, rather
+  than assuming either one.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this document and the new CSV -> 0
+  hits. The terminal output supplied for this run was reviewed for
+  local paths before use; none were reproduced here.
+
+---
+
+
+<!-- ===== Addendum 85 (source: spare-qubit-cliff-addendum-85-2026-09-19.md) ===== -->
+
+> **Note added when merging:** Resolution of the project's top-priority open question, from Qiskit's own current Rust source (supplied by the user): Qiskit's VF2Layout/VF2PostLayout do NOT call rustworkx.vf2_mapping() -- they use a custom implementation with a hardcoded VF2++ ordering strategy, confirming an external maintainer's public statement and correcting Addendum 45's own earlier documentation-based reading.
+
+## Addendum 85 -- Qiskit's own Rust source, read directly: it does NOT call `rustworkx.vf2_mapping()`, and uses a third, distinct ordering strategy (VF2++) that neither Addendum 83 nor 84 tested (2026-09-19)
+
+**Status**: source reading, resolving the single highest-priority open
+item flagged in Addendum 84 and `SESSION_SUMMARY_FINAL_2026-09-18.md`
+Section 3 item 0. The user supplied the actual, current Qiskit Rust
+source (`crates/.../vf2_layout.rs`, containing both
+`vf2_layout_pass_average` and `vf2_layout_pass_exact`) directly. No
+inference, no external secondhand report -- read and quoted verbatim
+below.
+
+## 0. In one line
+
+**Qiskit's own `VF2Layout`/`VF2PostLayout` do NOT call
+`rustworkx.vf2_mapping()`.** They use `qiskit_circuit::vf2::Vf2`, a
+custom Rust implementation that only borrows `rustworkx_core`'s
+underlying graph data structures (`Graph`, `NodeIndex`, from
+`rustworkx_core::petgraph`), not the public `rustworkx` Python
+package's `vf2_mapping()` function. **This confirms, directly from
+source, what an external Qiskit maintainer stated on GitHub issue
+#1679** (reported secondhand in an earlier review): the claim that
+Qiskit "uses `rustworkx.vf2_mapping()`" is false. **Both
+`vf2_layout_pass_average` and `vf2_layout_pass_exact` call
+`.with_vf2pp_ordering()` unconditionally** -- a third, specifically
+named ordering strategy (VF2++), distinct from both `id_order=True`
+and `id_order=False` as those terms are used in `rustworkx`'s own
+public API (which Addendum 84's control condition tested). **This means
+Addendum 83/84's comparison was always between two different
+implementations, not "the same algorithm with one setting changed" --
+confirming the second of the two readings the Addendum 84
+pre-registration itself left open**, and neither Addendum 83's nor
+Addendum 84's finding directly explains why Qiskit's own implementation
+fails on these 26 configurations, since Qiskit never runs the
+`id_order=True` code path Addendum 84 tested.
+
+## 1. What the source shows, quoted directly
+
+**Import block** (top of file):
+```rust
+use rustworkx_core::petgraph::data::Create;
+use rustworkx_core::petgraph::prelude::*;
+```
+`rustworkx_core` is the shared Rust crate that both Qiskit and the
+public `rustworkx` Python package build on -- but this only imports
+its graph *data structures* (`Graph`, `NodeIndex`, etc.), not any
+search function.
+
+**The actual search call** (`qiskit_circuit::vf2`, imported earlier in
+the file via `use qiskit_circuit::{..., vf2}`) is Qiskit's own module,
+used like this in `vf2_layout_pass_average`:
+```rust
+let vf2 = vf2::Vf2::new(&interactions.graph, &coupling_graph, vf2::Problem::Subgraph)
+    .with_scoring(score, score)
+    .with_restriction(vf2::Restriction::Decreasing(best_score))
+    .with_vf2pp_ordering();
+```
+and identically in `vf2_layout_pass_exact` (same three builder calls,
+only `.with_scoring` becomes `.with_semantics`):
+```rust
+let vf2 = vf2::Vf2::new(&interactions.graph, &coupling_graph, vf2::Problem::Subgraph)
+    .with_semantics(score, score)
+    .with_restriction(vf2::Restriction::Decreasing(best_score))
+    .with_vf2pp_ordering();
+```
+
+**`.with_vf2pp_ordering()` is called unconditionally in both functions
+-- no branch, no configuration flag toggles it off.** There is no
+code path visible in this file that runs Qiskit's VF2 with a
+"natural"/fixed node order instead (the equivalent of `rustworkx`'s
+`id_order=True`).
+
+**The only ordering-adjacent configuration option exposed** is
+`shuffle_seed` on `Vf2PassConfiguration`, documented in this same file:
+```rust
+/// If set, shuffle the node indices of the input graphs using a specified random seed.  If
+/// `None`, perform no shuffling.  You probably want this to be `None`.
+pub shuffle_seed: Option<u64>,
+```
+This controls whether the *coupling graph's own qubit numbering* is
+pre-shuffled before VF2++ ordering runs on it -- a different thing from
+choosing which ordering *algorithm* to use. Leaving it `None` (the
+documented recommendation) still means VF2++ ordering runs on top,
+unconditionally.
+
+## 2. What this resolves
+
+**Resolved directly from source, not by inference or secondhand
+report**: Qiskit's own VF2-family passes use a custom Rust
+implementation (`qiskit_circuit::vf2`) with a hardcoded VF2++ ordering
+strategy, applied identically whether scoring an "average" (abstract,
+pre-hardware) or "exact" (concrete, post-hardware) layout. This
+directly corrects Addendum 45's own earlier reading of Qiskit's C API
+documentation, which stated *"Qiskit uses the VF2++ ordering
+improvements when running in 'average' mode... and starts from the
+identity mapping in 'exact' mode"* -- implying the two modes use
+*different* orderings. **This source shows both modes call the
+identical `.with_vf2pp_ordering()`.** The "starts from the identity
+mapping" language in that documentation most likely refers to
+`score_initial_layout: true` (part of `Vf2PassConfiguration::
+default_concrete()`, used for the "exact"/post-hardware case) --
+i.e. the *initial layout is scored as a baseline before searching*,
+which is a scoring/restriction detail (`vf2::Restriction::Decreasing`),
+not the node-traversal *order* VF2++ itself governs. **This is a
+correction to Addendum 45's own interpretation**, made possible only by
+reading the actual current source rather than the documentation's
+higher-level prose.
+
+## 3. What this means for Addenda 83-84
+
+**Addendum 84's finding is real and remains useful, but must be
+reframed.** `rustworkx.vf2_mapping(..., id_order=True)` genuinely finds
+a layout in 26/26 of these configurations, fast. But this is not "the
+one setting Qiskit could flip to fix the cliff" -- **Qiskit's own
+implementation does not expose an `id_order` concept at all**; it
+always runs VF2++ ordering via its own from-scratch code, with no
+visible path to disable it. **The comparison across Addenda 83-85 is
+therefore, and always was, a comparison between two genuinely different
+pieces of software** (Qiskit's custom `qiskit_circuit::vf2` engine
+using VF2++ ordering, vs. the public `rustworkx.vf2_mapping()` function
+using `id_order=True`) that happen to share some underlying graph data
+structures (`rustworkx_core`) but implement distinct search strategies.
+This confirms the second of the two readings Addendum 84's own
+pre-registration (Section 4) explicitly left open as unresolved.
+
+**Practically, this changes what can be claimed:**
+- **Can still be claimed**: a fast, effective, directly-tested
+  alternative (`rustworkx.vf2_mapping(id_order=True)`) exists for this
+  class of layout problem, on this specific topology/family
+  combination, and finds every layout Qiskit's own implementation
+  fails to find.
+- **Can no longer be claimed**: that Qiskit's own cliff is "caused by"
+  or "fixable via" an `id_order` setting -- Qiskit's own code has no
+  such setting; the cliff is a property of its own VF2++-ordering-based
+  implementation, whatever the actual cause of THAT implementation's
+  difficulty on this circuit family turns out to be.
+
+## 4. A plausible (not yet confirmed) mechanistic connection
+
+Addendum 43 quoted Qiskit's own 2.2 release notes: *"The maximum call
+and trial limits for the exact-matching run of `VF2PostLayout` at
+`optimization_level=3` have been reduced to avoid excessive runtimes
+for **highly symmetric trial circuits being mapped to large coupling
+maps**."* VF2++ ordering is a sophisticated, generally effective
+heuristic (choosing traversal order based on graph structure, roughly
+"most constrained node first"), but **on a highly symmetric graph**
+(many structurally-identical bare 2-qubit edges, exactly this
+project's own circuit family) **many candidate nodes can look equally
+promising to such a heuristic**, potentially causing exactly the kind
+of symmetric backtracking blowup Qiskit's own release notes describe.
+This is a plausible explanation for why a sophisticated ordering
+heuristic (VF2++) can still struggle on symmetric inputs where a
+"dumber" fixed/natural order (`id_order=True`) happens not to -- but
+**this is inference from the release notes plus this source, not
+something demonstrated by tracing VF2++'s own algorithm on these
+specific 26 graphs**, and is reported at that confidence level, not
+higher.
+
+## 5. What this does not establish
+
+- **Why** VF2++ ordering specifically fails on these 26 configurations
+  while `id_order=True` succeeds -- Section 4's connection is plausible,
+  not demonstrated.
+- Whether `rustworkx.vf2_mapping(id_order=True)`'s success generalizes
+  beyond this exact topology/family combination -- unchanged limitation
+  from Addendum 83/84.
+- Whether PSF-Zero's own `smart_vf2_layout` (which does call the public
+  `rustworkx.vf2_mapping()`, confirmed from `psf_smart_layout.py`'s own
+  source in Addendum 83) could be modified to more directly exploit
+  this finding (e.g., trying bare `id_order=True` first, before any BFS
+  relabeling) -- an actionable next step, not yet implemented.
+- Anything about `qiskit_circuit::vf2`'s own internal implementation of
+  VF2++ ordering beyond what this one file's calling code shows -- the
+  `vf2` module's own source (defining `Vf2`, `NodeSorter`,
+  `with_vf2pp_ordering`, etc.) was not part of what was shared and has
+  not been read.
+
+## 6. Files
+
+| File | What it is |
+|---|---|
+| (Qiskit's own `vf2_layout.rs`, shared by the user in this conversation, not a project-generated file) | the source read and quoted in this addendum |
+
+## 7. Verification
+
+- Every code quotation in Sections 1-2 is verbatim from the source
+  text supplied in this conversation, not paraphrased or reconstructed
+  from memory.
+- The claim that both `vf2_layout_pass_average` and
+  `vf2_layout_pass_exact` call `.with_vf2pp_ordering()` unconditionally
+  was checked by locating both functions' own VF2-construction blocks
+  independently and comparing them side by side (Section 1), not
+  assumed from one function's code alone.
+- Addendum 45's own prior claim (quoted in Section 2) was re-read
+  directly from that addendum before being corrected here, so the
+  correction is checkable against what was actually claimed.
+- Section 4's mechanistic connection is explicitly labelled as
+  plausible inference, not a demonstrated result, to avoid overclaiming
+  beyond what this source establishes.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this document -> 0 hits.
+
+---
+
+
+<!-- ===== Addendum 86 (source: spare-qubit-cliff-addendum-86-2026-09-19.md) ===== -->
+
+> **Note added when merging:** The Python-level VF2Layout/VF2PostLayout pass classes, read directly: confirms Addendum 44's dispatch pattern for VF2PostLayout, clarifies VF2Layout itself never dispatches to the exact path, and flags a seed-default precision point distinguishing the class's own default from the preset pipeline's construction-time value.
+
+## Addendum 86 -- the Python-level `VF2Layout`/`VF2PostLayout` pass classes, read directly: confirms Addendum 44's dispatch pattern for VF2PostLayout, clarifies that VF2Layout itself never dispatches to the exact path, and flags a seed-default precision point (2026-09-19)
+
+**Status**: source reading. The user supplied the actual, current Python
+source for both pass classes (`vf2_layout.py`, `vf2_post_layout.py`).
+Mostly confirmatory of Addenda 44-45 and 85; one clarification and one
+precision point worth recording.
+
+## 0. In one line
+
+**Confirmed directly**: `VF2Layout.run()` calls `vf2_layout_pass_average`
+**unconditionally** -- it never calls `vf2_layout_pass_exact` at all.
+Its own `strict_direction` parameter is forwarded *into*
+`vf2_layout_pass_average` as an argument (controlling whether the
+coupling graph's directionality is loosened, per Addendum 85's reading
+of the Rust source), not used to choose between the two Rust functions.
+**This refines Addendum 44's dispatch-pattern finding**, which was
+established for `VF2PostLayout` (where `strict_direction` genuinely
+does choose between `vf2_layout_pass_exact` and
+`vf2_layout_pass_average`) -- `VF2Layout` has no such dispatch; it is
+always "average" mode. Also confirmed: `VF2Layout` always sets
+`score_initial_layout=False` (there is no prior layout to improve on,
+since this pass constructs one from scratch), symmetric to Addendum
+44's finding that `VF2PostLayout` always sets it `True`.
+
+## 1. What the source shows
+
+**`VF2Layout.run()`**, in full relevant part:
+```python
+config = VF2PassConfiguration.from_legacy_api(
+    call_limit=self.call_limit,
+    time_limit=self.time_limit,
+    max_trials=self.max_trials,
+    shuffle_seed=self.seed,
+    score_initial_layout=False,
+)
+try:
+    output = vf2_layout_pass_average(
+        dag,
+        target,
+        strict_direction=self.strict_direction,
+        avg_error_map=self.avg_error_map,
+        config=config,
+    )
+```
+Only `vf2_layout_pass_average` is imported into this file at all
+(`from qiskit._accelerate.vf2_layout import (vf2_layout_pass_average,
+MultiQEncountered, VF2PassConfiguration)`) -- `vf2_layout_pass_exact` is
+not even imported here, confirming there is no code path in this class
+that could call it.
+
+**`VF2PostLayout.run()`**, by contrast, imports both functions and
+dispatches on its own `strict_direction` (default `True`, per the
+`__init__` signature `strict_direction=True`):
+```python
+if self.strict_direction:
+    output = vf2_layout_pass_exact(dag, self.target, config=config)
+else:
+    output = vf2_layout_pass_average(
+        dag, self.target, strict_direction=False,
+        avg_error_map=self.avg_error_map, config=config,
+    )
+```
+This matches Addendum 44's own reading exactly (that addendum read this
+same dispatch from an earlier version of this file).
+
+**Stop-reason enums**, confirmed exactly as Addendum 44 documented:
+`VF2LayoutStopReason` has three values (`SOLUTION_FOUND`,
+`NO_SOLUTION_FOUND`, `MORE_THAN_2Q`) -- no `NO_BETTER_SOLUTION_FOUND`,
+since that outcome is specific to `VF2PostLayout`'s four-value enum
+(`SOLUTION_FOUND`, `NO_BETTER_SOLUTION_FOUND`, `NO_SOLUTION_FOUND`,
+`MORE_THAN_2Q`).
+
+**`_build_dummy_target`**, confirmed: when only a bare `coupling_map` is
+given (no `target`, no error rates) -- exactly this project's own
+standard experimental configuration throughout Addenda 4-85 --
+`VF2Layout` builds `Target.from_configuration(basis_gates=["u", "cx"],
+num_qubits=coupling_map.size(), coupling_map=coupling_map)`, an
+arbitrary, errorless dummy target. This is consistent with, and now
+confirmed at the Python-API level for, every prior addendum's own
+observation that bare `CouplingMap` inputs carry no error information
+for the pass to score against (Addenda 49-50).
+
+## 2. A precision point on `seed`, not a contradiction
+
+This project's own README material states, regarding the preset
+transpile pipeline: *"Qiskit's preset pipeline tries `VF2Layout` exactly
+once, with shuffling explicitly disabled (`seed=-1`, hardcoded, not
+controlled by `seed_transpiler`)."* **This file's own docstring
+describes something different, though not necessarily
+contradictory**: the `VF2Layout` *class's own default* parameter is
+`seed=None`, and its docstring states *"`None` seeds using OS entropy
+(and so is non-deterministic). Using `-1` disables the shuffling."*
+
+**These are two different things.** This file documents the class's own
+default when instantiated bare; the README's claim is about what
+*value* the preset pipeline's own pass-manager-construction code
+supplies when it builds a `VF2Layout` instance internally for use
+inside `transpile()`. **Neither of the two files shared in this
+conversation shows that preset-construction code** -- only the pass
+class itself. It remains entirely possible (and consistent with the
+project's own prior measurements) that the preset pipeline explicitly
+passes `seed=-1` when constructing this pass, even though the class's
+own bare default is `None`. **This is not resolved by this addendum**;
+it would require reading the preset-pass-manager construction code
+(e.g. `generate_preset_pass_manager` or the level-3 preset builder),
+which has not been shared or read.
+
+## 3. What this does not establish
+
+- The preset pipeline's own construction-time argument values (Section
+  2) -- unresolved, would need different source files.
+- Anything about `qiskit_circuit::vf2`'s own internal VF2++ algorithm --
+  these two files are the Python-level wrapper classes only; Addendum
+  85's own open question (why VF2++ ordering struggles on this
+  project's symmetric circuit family) is not addressed by anything
+  here.
+- Whether `VF2Layout`'s own `strict_direction` parameter (forwarded into
+  `vf2_layout_pass_average`, per Section 1) has ever been varied in
+  this project's own experiments -- worth checking against this
+  project's own harness scripts, not done here.
+
+## 4. Files
+
+| File | What it is |
+|---|---|
+| (Qiskit's own `vf2_layout.py` and `vf2_post_layout.py`, shared by the user in this conversation, not project-generated files) | the source read and quoted in this addendum |
+
+## 5. Verification
+
+- Every code quotation is verbatim from the source text supplied in
+  this conversation.
+- The claim that `vf2_layout.py` never imports `vf2_layout_pass_exact`
+  was checked against that file's own import statement directly.
+- Addendum 44's own dispatch-pattern finding for `VF2PostLayout` was
+  re-read before being described as "confirmed exactly" and
+  "refined" (for `VF2Layout`'s own lack of dispatch) rather than
+  restated from memory.
+- The README's own `seed=-1` claim was re-quoted verbatim (Section 2)
+  before being distinguished from this file's own class-default
+  documentation, rather than asserting a contradiction without
+  checking the exact wording of both.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this document -> 0 hits.
+
+---
+
+
+<!-- ===== Addendum 87 (source: spare-qubit-cliff-addendum-87-2026-09-19.md) ===== -->
+
+> **Note added when merging:** VF2++'s own ordering algorithm (qiskit_circuit::vf2 source, supplied by the user), read and faithfully simulated: confirms it processes chain components before symmetric bare edges (a demonstrated mechanism, not inference) -- but this alone does not yet explain the D=10-vs-D=20 divergence, since both graphs receive parallel-shaped orderings for their first 30 positions.
+
+## Addendum 87 -- VF2++'s own ordering algorithm, read and simulated directly: it processes chain components before symmetric bare edges (a demonstrated mechanism), but this alone does not yet explain the D=10-vs-D=20 divergence (2026-09-19)
+
+**Status**: source reading plus direct simulation. The user supplied
+`qiskit_circuit::vf2`'s own source (the module implementing
+`Vf2ppSorter`, referenced but not shown in Addendum 85). Its algorithm
+was re-implemented faithfully in Python and run against this project's
+own `dominant_size_sweep` graphs (D=10 and D=20, the isomorphic pair
+Addendum 78 found diverges) to test a concrete hypothesis, not merely
+read the code and speculate.
+
+## 0. In one line
+
+**Confirmed, by direct simulation, not inference**: `Vf2ppSorter`'s
+priority rule (highest connectivity-to-processed-set first, then
+highest degree, with ties broken by lowest node index) causes it to
+process every node in the dominant+filler chain (degree 2, interior
+nodes) **before touching any node in the 17 bare 2-qubit edges**
+(degree 1) -- confirmed for both D=10 and D=20's own graphs. **This is
+a real, demonstrated mechanism**, not the "plausible, unconfirmed"
+placeholder Addendum 85 Section 4 offered. **However, this mechanism
+alone does not yet explain the D=10-vs-D=20 divergence** Addendum 78
+found: because both graphs have exactly 30 non-bare-edge qubits in
+total (17x2=34 bare qubits + 30 chain qubits = 64, regardless of how
+the 30 splits between dominant and filler), **the two graphs' VF2++
+orderings are structurally parallel for their first 30 positions** --
+both process their full chain allotment first, only reaching the
+symmetric bare edges at the same position (30th). The specific
+divergence between the two must therefore lie in how the VF2
+backtracking *search itself* proceeds using each graph's own
+order, not in the order's own high-level shape -- a question this
+addendum's simulation (sorter only, not the full search) does not
+answer.
+
+## 1. Method
+
+`Vf2ppSorter::sort`, read from `qiskit_circuit::vf2`'s own source, was
+re-implemented in Python exactly per its documented logic: build a BFS
+tree from the highest-total-degree node (ties broken by lowest index),
+processing each BFS level by repeatedly selecting the node with
+highest `(connectivity-to-already-ordered-set, total degree, lowest
+index)` -- the same three-part priority key the Rust source uses
+verbatim (`(conn_in[index] + conn_out[index], degree_out[index] +
+degree_in[index], Reverse(index))`). This was run against
+`_edges_dominant_size_sweep`'s own construction (copied verbatim from
+`circuit_family_sweep.py`) for D=10 and D=20 at n=64.
+
+## 2. Results
+
+For **both** D=10 and D=20:
+- The first 10 nodes processed are identical: `[35, 36, 34, 37, 38, 39,
+  40, 41, 42, 43]` -- all interior/near-start nodes of the
+  dominant/filler chain region (indices 34+), never a bare-edge node
+  (indices 0-33).
+- The first bare-edge node appears at position **30** in both orderings
+  -- exactly the point at which the 30-qubit chain allotment (dominant
+  + filler combined) is exhausted, for either split (10+20 or 20+10).
+
+**Why chains are prioritized over bare edges**: every interior chain
+node has degree 2 (two neighbors along the chain); every bare-edge node
+has degree 1. The sorter's own priority key ranks degree-2 nodes above
+degree-1 nodes whenever their connectivity-to-processed-set is tied
+(true at the start, when nothing is processed yet) -- so the highest-
+degree root (a chain node) is chosen first, and the entire chain is
+then walked via BFS before the sorter ever considers a bare-edge node.
+
+## 3. What this establishes, and what it still does not
+
+**Establishes, concretely**: Qiskit's VF2++ ordering does NOT process
+this project's own circuit family in the same order `id_order=True`
+would (natural/fixed index order, which -- given this project's own
+construction convention placing bare edges at low indices 0-33 and
+chains at high indices 34+ -- would process bare edges FIRST and
+chains LAST, the reverse priority from VF2++). This is a genuine,
+structural difference between the two ordering strategies compared in
+Addenda 83-84, now demonstrated rather than assumed.
+
+**Does NOT yet establish**: why this reversed priority causes VF2++ to
+fail (cliff) on some configurations and succeed on others, since D=10
+and D=20 -- one fast, one cliffing -- receive essentially
+parallel-shaped orderings by this measure (same chain-first count, same
+30th-position bare-edge onset). **The actual divergence must be a
+property of how the VF2 backtracking search's feasibility-pruning and
+candidate-selection logic (`is_feasible`, `next_candidates`, the
+`State` struct's neighbor-tracking, all present in the shared source
+but not simulated here) behaves once processing reaches the symmetric
+bare-edge region, given the two graphs' different specific chain
+compositions (10+20 vs. 20+10) feeding into that later stage.**
+Confirming this would require simulating the actual backtracking search
+(not just the initial priority ordering), which is a substantially
+larger undertaking than this addendum's own scope.
+
+## 4. Revision to Addendum 85 Section 4
+
+Addendum 85 proposed, as unconfirmed inference: *"on a highly symmetric
+graph... many candidate nodes can look equally promising to [the VF2++]
+heuristic, potentially causing exactly the kind of symmetric
+backtracking blowup Qiskit's own release notes describe."* **This
+addendum confirms the mechanism half of that claim directly** (VF2++
+does treat the many bare-edge nodes as a late-processed, low-priority,
+mutually-tied group, exactly as symmetric-graph difficulty would
+predict) **but does not yet confirm the causal half** (that this
+specific ordering property is what produces the exponential
+backtracking Qiskit's 2.2 release notes describe, as opposed to some
+other property of the search once it reaches that tied region). The
+claim's confidence level should be updated from "plausible, unconfirmed
+inference" to "mechanism confirmed by simulation; causal link to the
+specific pass/fail outcomes still unconfirmed."
+
+## 5. What this does not establish
+
+- The actual cause of the D=10/D=20 divergence -- narrowed to "must lie
+  in the backtracking search itself, not the initial ordering," but not
+  identified further.
+- Whether simulating the full VF2 backtracking search (not just the
+  sorter) would explain it -- not attempted here, given the scope of
+  correctly reproducing `is_feasible`'s pruning logic, the `State`
+  struct's incremental neighbor-tracking, and the `Restriction`
+  mechanism, all from the shared source.
+- Whether this same chains-first/bare-edges-last pattern holds for
+  other configurations in this project's own dataset (e.g. the D=5/D=25
+  or D=12/D=18 pairs) -- only D=10/D=20 was simulated.
+- Anything about `rustworkx.vf2_mapping()`'s own `id_order=False`
+  ordering heuristic (a separate, unrelated implementation) for
+  comparison -- not simulated here.
+
+## 6. Files
+
+| File | What it is |
+|---|---|
+| (Qiskit's own `qiskit_circuit::vf2` module source, shared by the user in this conversation, not a project-generated file) | the source read and simulated in this addendum |
+
+No new project data files -- the simulation was run directly in the
+sandbox using this project's own already-verified
+`_edges_dominant_size_sweep` construction logic, not a new measurement.
+
+## 7. Verification
+
+- The Python re-implementation of `Vf2ppSorter::sort` was checked
+  line-by-line against the Rust source's own priority key
+  (`conn_in+conn_out`, `degree_out+degree_in`, `Reverse(index)`) and
+  its BFS-tree-per-root structure, before running it, to ensure
+  fidelity rather than a loose approximation.
+- Both D=10 and D=20's results were computed independently (not
+  assumed identical from one run) and found to match at the specific
+  points reported (first-10 order, first-bare-edge position) --
+  confirmed by direct comparison of the two output lists, not
+  eyeballed.
+- The claim that both graphs have exactly 30 non-bare qubits regardless
+  of split was verified arithmetically (17*2 + D + (30-D) = 34 + 30 =
+  64) before being used to explain why the orderings parallel each
+  other for 30 positions.
+- Section 3's limitations are stated explicitly rather than allowing
+  the confirmed ordering mechanism to be read as a full explanation of
+  the pass/fail divergence, which it is not.
 - Pre-publication check: `grep` against this project's private
   personal-information pattern list, this document -> 0 hits.
 
