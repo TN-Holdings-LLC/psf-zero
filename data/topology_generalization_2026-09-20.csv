@@ -1,0 +1,5 @@
+topology,n_qubits,feasible,found_with_natural,time_with_natural_ms,found_without_natural,time_without_natural_ms,max_matching,feasible_at_capacity,feasible_one_over,search_found,orderings_tried,order_used,time_ms
+brick_6x7,42,True,True,1.2489999999161228,False,874.9740999992355,,,,,,,
+brick_8x8,64,True,True,1.0802000006151502,False,995.8423000007315,,,,,,,
+heavy_hex_d3,19,,,,,,8,True,False,True,1,natural,0.2539999995860853
+heavy_hex_d5,57,,,,,,24,True,False,True,1,natural,0.6943000007595401
