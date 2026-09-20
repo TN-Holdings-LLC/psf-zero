@@ -1,0 +1,15 @@
+checkpoint,block_size,type,growth_this_block,per_iteration_this_block,cumulative_growth
+200,200,function,9246,46.23,9246
+200,200,dict,4572,22.86,4572
+200,200,tuple,3578,17.89,3578
+200,200,cell,2111,10.555,2111
+200,200,builtin_function_or_method,1647,8.235,1647
+200,200,list,1569,7.845,1569
+200,200,ReferenceType,1502,7.51,1502
+200,200,method,959,4.795,959
+200,200,getset_descriptor,953,4.765,953
+200,200,set,880,4.4,880
+400,200,builtin_function_or_method,22,0.11,1669
+400,200,ReferenceType,22,0.11,1524
+400,200,Counter,1,0.005,2
+400,200,list,1,0.005,1570
