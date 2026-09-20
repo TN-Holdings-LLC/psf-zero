@@ -1,4 +1,4 @@
-# spare-qubit-cliff: Combined Addenda, Part 5 of 5 (Addendum 51 through Addendum 87)
+# spare-qubit-cliff: Combined Addenda, Part 5 of 6 (Addendum 51 through Addendum 87)
 
 **Continued from [Part 4](spare-qubit-cliff-combined-41.md) (and [Part 1](spare-qubit-cliff-combined.md), [Part 2](spare-qubit-cliff-combined-17.md), [Part 3](spare-qubit-cliff-combined-27.md)).** Same conventions as Part 1: nothing has been deleted or rewritten; navigation notes added when merging are clearly marked and separate from the original text.
 
@@ -7653,4 +7653,4 @@ sandbox using this project's own already-verified
 
 ---
 
-**End of Part 5 of 5 (end of document).** Back to [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
+**End of Part 5 of 6.** Continue to [Part 6](spare-qubit-cliff-combined-88.md), or back to [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
