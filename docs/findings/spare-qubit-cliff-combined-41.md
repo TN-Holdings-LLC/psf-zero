@@ -2023,4 +2023,4 @@ next arm's first was never a meaningful step anyway).
 
 ---
 
-**End of Part 4 of 5.** Continue to [Part 5](spare-qubit-cliff-combined-51.md) (Addendum 51-87), or back to [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
+**End of Part 4 of 5.** Continue to [Part 5](spare-qubit-cliff-combined-51.md) or [Part 6](spare-qubit-cliff-combined-88.md) (Addendum 51-87), or back to [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
