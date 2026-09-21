@@ -36,22 +36,27 @@ repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see belo
 > **Two papers and a short technical overview, for anyone evaluating this from
 > outside the project:**
 >
-> - [**Paper 1 — Ordering Sensitivity in Subgraph-Isomorphism Layout Search**](POC/vf2_cliff_paper.pdf)
->   ([LaTeX source](POC/vf2_cliff_paper.tex)): characterizes Qiskit's own
->   `VF2Layout` failure region (271x slower before reporting "no solution" on
->   instances that provably have one) and the ordering mechanism behind it.
+> - [**Paper 1 — Ordering Sensitivity in Subgraph-Isomorphism Layout Search**](docs/papers/vf2_cliff_paper.pdf)
+>   ([Word](docs/papers/vf2_cliff_paper.docx),
+>   [DOI: 10.5281/zenodo.22869976](https://doi.org/10.5281/zenodo.22869976)):
+>   characterizes Qiskit's own `VF2Layout` failure region (271x slower before
+>   reporting "no solution" on instances that provably have one) and the
+>   ordering mechanism behind it.
 > - [**Paper 2 — PSF-Zero: An Analytic Two-Qubit Gate Synthesizer Combined with
->   a Verified, Ordering-Aware Layout Search**](POC/psf_zero_paper.pdf)
->   ([LaTeX source](POC/psf_zero_paper.tex)): the system built on Paper 1's
->   finding, verified end-to-end (26/26 layouts found, 0 coupling-map
->   violations, unitary equivalence to machine precision).
-> - [**Technical overview slides**](POC/psf_zero_technical_overview.pdf)
+>   a Verified, Ordering-Aware Layout Search**](docs/papers/psf_zero_paper.pdf)
+>   ([Word](docs/papers/psf_zero_paper.docx),
+>   [DOI: 10.5281/zenodo.22870141](https://doi.org/10.5281/zenodo.22870141)):
+>   the system built on Paper 1's finding, verified end-to-end (26/26 layouts
+>   found, 0 coupling-map violations, unitary equivalence to machine
+>   precision).
+> - [**Technical overview slides**](docs/papers/psf_zero_technical_overview.pptx)
 >   (8 slides) — the fastest way to see what changed and why it can be trusted,
 >   without reading either paper in full.
 >
 > Both papers are pre-registered, self-audited (each corrects at least one of
 > this project's own earlier claims in place), and cite the same raw data
 > linked throughout this README.
+
 ---
 
 ## The trade-off, stated up front
@@ -556,30 +561,30 @@ a result, not a sales conversation.
 }
 ```
 
-The two papers linked at the top of this README are not yet submitted to
-arXiv; cite the repository-hosted PDF directly until they are:
+The two papers linked at the top of this README are preprints, archived on
+Zenodo with a citable DOI (not yet submitted to arXiv):
 
 ```bibtex
-@techreport{vf2_cliff_2026,
-  author      = {{TN Holdings}},
-  title       = {Ordering Sensitivity in Subgraph-Isomorphism Layout Search:
-                 A Characterization of Catastrophic Failure Regions in
-                 Quantum Circuit Transpilation},
-  year        = {2026},
-  institution = {TN Holdings},
-  url         = {https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/papers/vf2_cliff_paper.pdf},
-  note        = {Preprint, not yet submitted to arXiv}
+@misc{vf2_cliff_2026,
+  author = {{TN Holdings}},
+  title  = {Ordering Sensitivity in Subgraph-Isomorphism Layout Search:
+            A Characterization of Catastrophic Failure Regions in
+            Quantum Circuit Transpilation},
+  year   = {2026},
+  doi    = {10.5281/zenodo.22869976},
+  url    = {https://doi.org/10.5281/zenodo.22869976},
+  note   = {Preprint}
 }
 
-@techreport{psf_zero_paper_2026,
-  author      = {{TN Holdings}},
-  title       = {PSF-Zero: An Analytic Two-Qubit Gate Synthesizer Combined
-                 with a Verified, Ordering-Aware Layout Search for Quantum
-                 Circuit Transpilation},
-  year        = {2026},
-  institution = {TN Holdings},
-  url         = {https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/papers/psf_zero_paper.pdf},
-  note        = {Preprint, not yet submitted to arXiv}
+@misc{psf_zero_paper_2026,
+  author = {{TN Holdings}},
+  title  = {PSF-Zero: An Analytic Two-Qubit Gate Synthesizer Combined
+            with a Verified, Ordering-Aware Layout Search for Quantum
+            Circuit Transpilation},
+  year   = {2026},
+  doi    = {10.5281/zenodo.22870141},
+  url    = {https://doi.org/10.5281/zenodo.22870141},
+  note   = {Preprint}
 }
 ```
 
