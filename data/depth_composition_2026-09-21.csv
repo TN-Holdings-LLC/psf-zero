@@ -1,0 +1,13 @@
+grid,family,strategy,total_depth,cx_depth,sx_depth,n_cx,n_sx,n_x,n_rz
+4x4,same_pair,A_compile_once,36,6,12,48,192,0,288
+4x4,same_pair,B_qiskit_L3,16,3,6,24,80,0,120
+4x4,same_pair,D_psf_synthesis,23,3,8,24,128,0,184
+4x4,brickwork,A_compile_once,36,6,12,45,192,0,288
+4x4,brickwork,B_qiskit_L3,33,6,12,45,184,0,203
+4x4,brickwork,D_psf_synthesis,30,6,12,45,184,0,188
+6x7,same_pair,A_compile_once,36,6,12,126,504,0,756
+6x7,same_pair,B_qiskit_L3,16,3,6,63,210,0,315
+6x7,same_pair,D_psf_synthesis,23,3,8,63,336,0,483
+6x7,brickwork,A_compile_once,36,6,12,123,504,0,756
+6x7,brickwork,B_qiskit_L3,33,6,12,123,496,0,543
+6x7,brickwork,D_psf_synthesis,30,6,12,123,496,0,500
