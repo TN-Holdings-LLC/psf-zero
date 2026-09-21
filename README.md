@@ -36,23 +36,22 @@ repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see belo
 > **Two papers and a short technical overview, for anyone evaluating this from
 > outside the project:**
 >
-> - [**Paper 1 — Ordering Sensitivity in Subgraph-Isomorphism Layout Search**](docs/papers/vf2_cliff_paper.pdf)
->   ([Word](docs/papers/vf2_cliff_paper.docx)): characterizes Qiskit's own
+> - [**Paper 1 — Ordering Sensitivity in Subgraph-Isomorphism Layout Search**](POC/vf2_cliff_paper.pdf)
+>   ([LaTeX source](POC/vf2_cliff_paper.tex)): characterizes Qiskit's own
 >   `VF2Layout` failure region (271x slower before reporting "no solution" on
 >   instances that provably have one) and the ordering mechanism behind it.
 > - [**Paper 2 — PSF-Zero: An Analytic Two-Qubit Gate Synthesizer Combined with
->   a Verified, Ordering-Aware Layout Search**](docs/papers/psf_zero_paper.pdf)
->   ([Word](docs/papers/psf_zero_paper.docx)): the system built on Paper 1's
+>   a Verified, Ordering-Aware Layout Search**](POC/psf_zero_paper.pdf)
+>   ([LaTeX source](POC/psf_zero_paper.tex)): the system built on Paper 1's
 >   finding, verified end-to-end (26/26 layouts found, 0 coupling-map
 >   violations, unitary equivalence to machine precision).
-> - [**Technical overview slides**](docs/papers/psf_zero_technical_overview.pptx)
+> - [**Technical overview slides**](POC/psf_zero_technical_overview.pdf)
 >   (8 slides) — the fastest way to see what changed and why it can be trusted,
 >   without reading either paper in full.
 >
 > Both papers are pre-registered, self-audited (each corrects at least one of
 > this project's own earlier claims in place), and cite the same raw data
 > linked throughout this README.
-
 ---
 
 ## The trade-off, stated up front
