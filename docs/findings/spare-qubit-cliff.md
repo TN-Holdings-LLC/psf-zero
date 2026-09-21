@@ -9,7 +9,7 @@ exact wording, exact tables, every pre-registered prediction as originally
 written, and the complete history of what was tried and revised along the
 way -- lives in
 [`spare-qubit-cliff-combined.md`](spare-qubit-cliff-combined.md)
-(same folder as this file; split into six parts as it grew past a comfortable single-file size -- Part 1 links to Parts 2, 3, 4, 5 and 6 at its own end). Reading all of that means reading the same
+(same folder as this file; split into seven parts as it grew past a comfortable single-file size -- Part 1 links to Parts 2 through 7 at its own start). Reading all of that means reading the same
 explanation of "VF2Layout fails -> falls back to SabreLayout" five or six
 times, the same benchmark-arm definitions three times, and the same "a win
 is impossible when the search failed" caveat three times -- this file states
@@ -682,7 +682,7 @@ written:
 ## See also
 
 - [`spare-qubit-cliff-combined.md`](spare-qubit-cliff-combined.md) --
-  all 139 addenda, unedited, in chronological order, split into six parts
+  all 154 addenda, unedited, in chronological order, split into seven parts
   as it grew past a comfortable single-file size (this is Part 1; it links
   to Parts 2 and 3 at its own end). This is where the exact wording, exact
   tables, and every pre-registered prediction as originally written can be
