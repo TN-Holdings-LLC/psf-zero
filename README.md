@@ -36,15 +36,13 @@ repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see belo
 > **Two papers and a short technical overview, for anyone evaluating this from
 > outside the project:**
 >
-> - [**Paper 1 — Ordering Sensitivity in Subgraph-Isomorphism Layout Search**](docs/papers/vf2_cliff_paper.pdf)
->   ([Word](docs/papers/vf2_cliff_paper.docx),
+> - [**Paper 1 — Ordering Sensitivity in Subgraph-Isomorphism Layout Search**](docs/papers/vf2_cliff_paper.pdf),
 >   [DOI: 10.5281/zenodo.22869976](https://zenodo.org/records/22869976)):
 >   characterizes Qiskit's own `VF2Layout` failure region (271x slower before
 >   reporting "no solution" on instances that provably have one) and the
 >   ordering mechanism behind it.
 > - [**Paper 2 — PSF-Zero: An Analytic Two-Qubit Gate Synthesizer Combined with
->   a Verified, Ordering-Aware Layout Search**](docs/papers/psf_zero_paper.pdf)
->   ([Word](docs/papers/psf_zero_paper.docx),
+>   a Verified, Ordering-Aware Layout Search**](docs/papers/psf_zero_paper.pdf),
 >   [DOI: 10.5281/zenodo.22870141](https://zenodo.org/records/22870141)):
 >   the system built on Paper 1's finding, verified end-to-end (26/26 layouts
 >   found, 0 coupling-map violations, unitary equivalence to machine
