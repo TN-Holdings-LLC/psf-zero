@@ -5,6 +5,8 @@
 [![Qiskit Ecosystem](https://img.shields.io/badge/Qiskit-Ecosystem-purple.svg)](https://github.com/qiskit/ecosystem)
 [![Rust Core](https://img.shields.io/badge/Core-Rust_Native-E34F26.svg?logo=rust&logoColor=white)](https://www.rust-lang.org/)
 [![PyO3 Binding](https://img.shields.io/badge/FFI-PyO3-blue.svg)](https://pyo3.rs/)
+[![DOI (Paper 1)](https://zenodo.org/badge/DOI/10.5281/zenodo.22869976.svg)](https://doi.org/10.5281/zenodo.22869976)
+[![DOI (Paper 2)](https://zenodo.org/badge/DOI/10.5281/zenodo.22870141.svg)](https://doi.org/10.5281/zenodo.22870141)
 
 A Qiskit transpiler pass that replaces heuristic 2-qubit unitary synthesis with an
 **exact, closed-form Cartan (KAK) decomposition**, implemented in a small Rust core
@@ -36,14 +38,14 @@ repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see belo
 > **Two papers and a short technical overview, for anyone evaluating this from
 > outside the project:**
 >
-> - [**Paper 1 — Ordering Sensitivity in Subgraph-Isomorphism Layout Search**](docs/papers/vf2_cliff_paper.pdf),
->   [DOI: 10.5281/zenodo.22869976](https://zenodo.org/records/22869976)):
+> - [**Paper 1 — Ordering Sensitivity in Subgraph-Isomorphism Layout Search**](docs/papers/vf2_cliff_paper.pdf)
+>   ([DOI: 10.5281/zenodo.22869976](https://zenodo.org/records/22869976)):
 >   characterizes Qiskit's own `VF2Layout` failure region (271x slower before
 >   reporting "no solution" on instances that provably have one) and the
 >   ordering mechanism behind it.
 > - [**Paper 2 — PSF-Zero: An Analytic Two-Qubit Gate Synthesizer Combined with
->   a Verified, Ordering-Aware Layout Search**](docs/papers/psf_zero_paper.pdf),
->   [DOI: 10.5281/zenodo.22870141](https://zenodo.org/records/22870141)):
+>   a Verified, Ordering-Aware Layout Search**](docs/papers/psf_zero_paper.pdf)
+>   ([DOI: 10.5281/zenodo.22870141](https://zenodo.org/records/22870141)):
 >   the system built on Paper 1's finding, verified end-to-end (26/26 layouts
 >   found, 0 coupling-map violations, unitary equivalence to machine
 >   precision).
