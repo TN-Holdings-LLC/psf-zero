@@ -29,7 +29,29 @@ Install: `git clone … && cd psf-zero && pip install -e .`
 Source: [`psf_compile.py`](psf_compile.py) — the pass itself, and the one place the
 current compiler lives. Its `VERSION:` line names the revision; that line is bumped
 in place, so there is never a second, differently-named copy to pick between ·
-[`lib.rs`](lib.rs) — the Rust core (`psf_zero_core`) it calls into.
+[`lib.rs`](lib.rs) — the Rust core (`psf_zero_core`) it calls into ·
+[`psf_smart_layout.py`](benchmarks/psf_smart_layout.py) — the layout-search prototype,
+repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see below).
+
+> **Two papers and a short technical overview, for anyone evaluating this from
+> outside the project:**
+>
+> - [**Paper 1 — Ordering Sensitivity in Subgraph-Isomorphism Layout Search**](docs/papers/vf2_cliff_paper.pdf)
+>   ([Word](docs/papers/vf2_cliff_paper.docx)): characterizes Qiskit's own
+>   `VF2Layout` failure region (271x slower before reporting "no solution" on
+>   instances that provably have one) and the ordering mechanism behind it.
+> - [**Paper 2 — PSF-Zero: An Analytic Two-Qubit Gate Synthesizer Combined with
+>   a Verified, Ordering-Aware Layout Search**](docs/papers/psf_zero_paper.pdf)
+>   ([Word](docs/papers/psf_zero_paper.docx)): the system built on Paper 1's
+>   finding, verified end-to-end (26/26 layouts found, 0 coupling-map
+>   violations, unitary equivalence to machine precision).
+> - [**Technical overview slides**](docs/papers/psf_zero_technical_overview.pptx)
+>   (8 slides) — the fastest way to see what changed and why it can be trusted,
+>   without reading either paper in full.
+>
+> Both papers are pre-registered, self-audited (each corrects at least one of
+> this project's own earlier claims in place), and cite the same raw data
+> linked throughout this README.
 
 ---
 
@@ -434,14 +456,15 @@ their absence.
   `optimization_level=3` — `VF2Layout`'s own `seed=-1` shuffle behaving
   inconsistently, or drift in the measurement environment. An experiment to
   distinguish the two is designed but not yet run.
-- Whether the ordering effects behind the layout-search prototype — found via the
-  public `rustworkx` package — hold inside Qiskit's own compiled VF2
-  implementation (`qiskit._accelerate.vf2_layout`). **Confirmed untestable through
-  any exposed interface** (2026-09-17): direct introspection of
-  `VF2PassConfiguration` shows it has no `id_order`-equivalent parameter at any
-  level of Qiskit's current implementation. The prototype's integration into
-  PSF-Zero's pipeline has been confirmed, but this specific question would need
-  access Qiskit does not currently expose.
+- ~~Whether the ordering effects behind the layout-search prototype hold inside
+  Qiskit's own compiled VF2 implementation.~~ **RESOLVED (2026-09-19), see the
+  Update block above**: reading `qiskit_circuit::vf2` directly confirms
+  `VF2Layout`/`VF2PostLayout` use a custom implementation with a hardcoded
+  `Vf2ppSorter` ("VF2++") ordering, unconditionally — not the public
+  `rustworkx` package, and with no exposed toggle. The prior "confirmed
+  untestable" note (2026-09-17) was a dead end from probing the wrong layer
+  (`VF2PassConfiguration`); reading the actual Rust source directly is what
+  resolved it.
 - Whether the prototype's search-retry budget (recently tuned down based on a
   six-point sweep) can go lower still — the sweep's smallest tested value already
   misses one topology outright, and no finer step was tried near that boundary.
@@ -453,30 +476,74 @@ their absence.
 - Whether the `layout_search=False` two-qubit-gate-count gap over the
   zero-swap baseline at the coupling-map cliff (present at a 6x7 grid, absent at
   8x8) is caused by grid column parity or by something else — proposed but not
-  tested independently of grid size, and not yet pursued further (deprioritized
-  in favor of the occupancy-sweep and cross-compiler work below). See
-  `spare-qubit-cliff-combined.md`, addenda 29–32.
-- **NEW.** The actual `call_limit` (or other budget) values Qiskit's preset pass
+  tested independently of grid size. **Partially deepened (2026-09-20)**: a
+  separate end-to-end measurement found `layout_search=False` at 6x7
+  specifically shows real seed-dependent spread in this same gate count
+  (63–69) and in timing (nearly 4x), absent at 8x8 and absent from
+  `layout_search=True` on identical circuits — consistent with, but not
+  confirmed as, `VF2Layout`'s own reduced search budget at
+  `routing_optimization_level=1` (see the `call_limit` item below). See
+  [`spare-qubit-cliff-combined-27.md`](docs/findings/spare-qubit-cliff-combined-27.md),
+  addenda 29–32, and
+  [`spare-qubit-cliff-combined-88.md`](docs/findings/spare-qubit-cliff-combined-88.md),
+  Addendum 102 Section 3.
+- The actual `call_limit` (or other budget) values Qiskit's preset pass
   managers use for `VF2Layout` at each `optimization_level` — inferred only
   indirectly so far, from the size of the gap between a failing search's L1 and
-  L3 timings, not read from source. See `spare-qubit-cliff-combined.md`,
+  L3 timings, not read from source. See
+  [`spare-qubit-cliff-combined-27.md`](docs/findings/spare-qubit-cliff-combined-27.md),
   Addendum 34, Section 3.
-- **NEW.** Whether `VF2PostLayout` exposes a stop-reason-equivalent property in
+- Whether `VF2PostLayout` exposes a stop-reason-equivalent property in
   its own `property_set` — not yet instrumented, so its cost is currently
   inferred only from `slowest_pass`, not confirmed as its own budget-exhaustion
   event the way `VF2Layout`'s is.
-- **NEW.** Whether TKET's `GraphPlacement` placement time approaches its own
+- Whether TKET's `GraphPlacement` placement time approaches its own
   wall-clock timeout at a larger, more saturated grid than the 6x7 tested so
   far — at 6x7 it was not observed straining against its budget (151 ms median
   vs. a 1000 ms default timeout), so the "the timeout is what protects TKET"
   explanation is plausible but not yet demonstrated. See
-  `spare-qubit-cliff-combined.md`, Addendum 35.
-- **NEW.** Whether BQSKit's or Cirq's placement/layout stages show the same
-  saturation-degradation pattern as Qiskit's `VF2Layout` and TKET's
-  `GraphPlacement` — untested; two tools is evidence the pattern is "not unique
-  to one implementation," not evidence it is a field-wide property.
-- Benchpress integration ([issue #114](https://github.com/Qiskit/benchpress/issues/114)),
-  PennyLane transforms, and parallel per-block synthesis — all unbuilt.
+  [`spare-qubit-cliff-combined-27.md`](docs/findings/spare-qubit-cliff-combined-27.md),
+  Addendum 35.
+- ~~Whether BQSKit's or Cirq's placement/layout stages show the same
+  saturation-degradation pattern.~~ **PARTIALLY RESOLVED for Cirq (2026-09-20,
+  Paper 1 Section 4.3)**: Cirq's own placement search exceeds a 10-second
+  budget across `spare=0` through `8` on a 6x7 grid — a *wider* difficult
+  region than Qiskit's own `spare=0`-only failure. The comparison is qualitative
+  (Cirq's own runs are right-censored at the 10s budget, not fully measured),
+  but confirms the pattern is not unique to Qiskit. **BQSKit remains untested.**
+- Benchpress integration ([issue #114](https://github.com/Qiskit/benchpress/issues/114))
+  and parallel per-block synthesis — both unbuilt.
+- **NEW (2026-09-20).** Why `psf_compile()`'s own gate-synthesis timing
+  variance dropped 34–54x between a 4-day-old archive and the current code —
+  confirmed real and reproducible (Levene's test, three independent runs), and
+  investigated with the actual source diff between both versions, but the
+  cause was not found: every traceable candidate (a caching-policy change, a
+  redundant-verification-removal change, the compiled Rust core itself) was
+  ruled out directly. Two untested candidates remain outside what a source
+  diff can resolve: dependency-version drift (not tracked at the time) and
+  machine/environment factors. See
+  [`spare-qubit-cliff-combined-88.md`](docs/findings/spare-qubit-cliff-combined-88.md),
+  Addenda 93, 96–99.
+- **NEW (2026-09-20).** A PennyLane transform (`r0_psf_zero_transform.py`)
+  applying this project's same compiled core to variational/QML circuits —
+  early-stage, not verified. Its own math (the `su2_to_euler` reconstruction
+  formula, the Ising-gate sign convention) has been checked independently and
+  is correct; the actual connection to `psf_zero_core.batch_decompose` and
+  gradient correctness through a full torch forward/backward pass have not
+  been. Development history for this file shows more than one regression
+  cycle; treat any number quoted from its own docstring as unverified until
+  it has been re-run and checked the way every number elsewhere in this
+  README has been.
+
+## Working with us
+
+This is AGPL-licensed research code, not a supported product. If you're
+evaluating PSF-Zero against your own circuits and want a second opinion
+before investing further: send a representative circuit (or a sanitized
+equivalent) to `love.os.architect@proton.me` — under NDA first, if the
+circuit itself is sensitive — and we'll run it and report results directly.
+No commitment implied on either side; the goal at that stage is reproducing
+a result, not a sales conversation.
 
 ## Citation
 
@@ -490,6 +557,36 @@ their absence.
 }
 ```
 
-AGPL v3. See `LICENSE`.
+The two papers linked at the top of this README are not yet submitted to
+arXiv; cite the repository-hosted PDF directly until they are:
+
+```bibtex
+@techreport{vf2_cliff_2026,
+  author      = {{TN Holdings}},
+  title       = {Ordering Sensitivity in Subgraph-Isomorphism Layout Search:
+                 A Characterization of Catastrophic Failure Regions in
+                 Quantum Circuit Transpilation},
+  year        = {2026},
+  institution = {TN Holdings},
+  url         = {https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/papers/vf2_cliff_paper.pdf},
+  note        = {Preprint, not yet submitted to arXiv}
+}
+
+@techreport{psf_zero_paper_2026,
+  author      = {{TN Holdings}},
+  title       = {PSF-Zero: An Analytic Two-Qubit Gate Synthesizer Combined
+                 with a Verified, Ordering-Aware Layout Search for Quantum
+                 Circuit Transpilation},
+  year        = {2026},
+  institution = {TN Holdings},
+  url         = {https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/papers/psf_zero_paper.pdf},
+  note        = {Preprint, not yet submitted to arXiv}
+}
+```
+
+AGPL v3. See `LICENSE`. **Evaluating this for potential commercial use?** AGPL's
+copyleft terms may not fit a closed-source integration — see
+[Working with us](#working-with-us) below before assuming the license as
+published is the final word.
 
 [Previous repository.](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/Previous_repository.md)
