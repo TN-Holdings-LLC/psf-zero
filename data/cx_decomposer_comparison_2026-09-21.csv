@@ -1,0 +1,20 @@
+test,variant,grid,family,cx,cx_depth,sx,sx_depth,total_depth,blocks,raised,not_synthesized,worst_fidelity,median_sx,median_cx,ms_per_circuit,max_expval_err,sx_per_segment
+ansatz,qiskit_B,4x4,same_pair,24,3,80,6,16,,,,,,,,,
+ansatz,qiskit_B,4x4,brickwork,45,6,184,12,33,,,,,,,,,
+ansatz,qiskit_B,6x7,same_pair,63,3,210,6,16,,,,,,,,,
+ansatz,qiskit_B,6x7,brickwork,123,6,496,12,33,,,,,,,,,
+isolated,current,,,,,,,,300,0,0,0.9999999999999976,16.0,3.0,,,
+ansatz,current,4x4,same_pair,24,3,128,8,23,,,,,,,5.7952999995904975,4.7e-14,"[4, 4, 4, 4]"
+ansatz,current,4x4,brickwork,45,6,184,12,30,,,,,,,3.486100002191961,2.4e-16,
+ansatz,current,6x7,same_pair,63,3,336,8,23,,,,,,,12.080500004230998,n/a,
+ansatz,current,6x7,brickwork,123,6,496,12,30,,,,,,,6.843899995146785,n/a,
+isolated,zsx,,,,,,,,300,0,0,0.9999999999999973,10.0,3.0,,,
+ansatz,zsx,4x4,same_pair,24,3,80,6,16,,,,,,,5.670500002452172,4.7e-14,"[4, 1, 1, 4]"
+ansatz,zsx,4x4,brickwork,45,6,184,12,30,,,,,,,3.489800001261756,2.4e-16,
+ansatz,zsx,6x7,same_pair,63,3,210,6,16,,,,,,,14.430300005187746,n/a,
+ansatz,zsx,6x7,brickwork,123,6,496,12,30,,,,,,,7.468000003427733,n/a,
+isolated,zsx_pulse,,,,,,,,300,0,0,0.9999999999999973,10.0,3.0,,,
+ansatz,zsx_pulse,4x4,same_pair,24,3,80,6,16,,,,,,,6.1190999986138195,4.7e-14,"[4, 1, 1, 4]"
+ansatz,zsx_pulse,4x4,brickwork,45,6,184,12,30,,,,,,,3.5200000056647696,2.4e-16,
+ansatz,zsx_pulse,6x7,same_pair,63,3,210,6,16,,,,,,,13.63879999553319,n/a,
+ansatz,zsx_pulse,6x7,brickwork,123,6,496,12,30,,,,,,,7.386799996311311,n/a,
