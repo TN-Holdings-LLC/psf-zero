@@ -124,7 +124,10 @@ on the machine** — not a single number.
 **Output quality is matched, not traded away.** At 156 qubits, PSF-Zero and Qiskit
 `optimization_level=3` emit the *same* 234 two-qubit gates; depth is **9**
 (`entangling_basis="canonical"`), **13** (`"cx"`, hardware-comparable) and **16**
-(Qiskit). Equivalence checked at every point (< 4.5e-15).
+(Qiskit). Equivalence checked at every point (< 4.5e-15). <sub>The `"cx"` depth here
+was measured before `psf_compile.py` VERSION 2026-09-21 changed the CX-basis
+decomposer (Addendum 116) and has not been re-measured since; gate counts and the
+`"canonical"` figure are unaffected by that change.</sub>
 
 #### At the coupling-map cliff (spare=0)
 
@@ -137,23 +140,29 @@ specific, deliberate PSF-Zero configuration:
 
 | | Qiskit `optimization_level=3` | PSF-Zero, `layout_search=False` | PSF-Zero, `layout_search=True` |
 | :--- | :---: | :---: | :---: |
-| 6x7 grid (42q) | 63 gates, depth 16, 6.38s (279x) | 69 gates, depth 44, 22.9ms | 63 gates, depth 23, 16.9ms (379x) |
-| 8x8 grid (64q) | 96 gates, depth 16, 8.20s (544x) | 96 gates, depth 23, 15.1ms | 96 gates, depth 23, 24.2ms (339x) |
+| 6x7 grid (42q) | 63 gates, depth 16, 6.71s (236x) | 63-69 gates, depth 16-30, 28.4ms | 63 gates, depth 16, 13.1ms (514x) |
+| 8x8 grid (64q) | 96 gates, depth 16, 9.02s (547x) | 96 gates, depth 16, 16.5ms | 96 gates, depth 16, 17.2ms (525x) |
 
-<sub>`gate_count_vs_routing_level.py`, `routing_optimization_level=1`,
-`entangling_basis="cx"`, `seed_transpiler=42`, spare=0 (the fully-saturated,
-worst case for Qiskit's own layout search). Medians over 3 seeds x 3 repeats
-(6x7: 3 seeds x 5 independent process launches); gate count and depth were
-*identical* across every seed and repeat at both grid sizes (zero spread) —
-only compile time varied. Time ranges: 6x7 Qiskit 6.34–6.44s (one 17.8s
-cold-start launch excluded as a warm-up artifact), PSF-Zero 21.8–32.3ms
-(`layout_search=False`) / 16.1–20.1ms (`=True`); 8x8 Qiskit 8.17–8.29s,
-PSF-Zero 13.4–21.8ms / 22.1–27.7ms. Speed-up figures in parentheses are
-median-based. Windows, `Intel64 Family 6 Model 181 Stepping 0, GenuineIntel`,
-Python 3.11.9, Qiskit 2.5.2. Correctness: a small-scale (n=6) exact `Operator`
-equivalence check passed before every sweep; every routed output at full
+<sub>**Re-measured 2026-09-21** after `psf_compile.py` VERSION 2026-09-21
+(its CX-basis decomposer now targets the {rz, sx} basis; spare-qubit-cliff
+Addenda 114-117). Source: `verify_end_to_end_layout_search.py`
+(`routing_optimization_level=1`, `entangling_basis="cx"`, spare=0), medians over
+3 seeds x 2 repeats; Python 3.10, Qiskit 2.5.2. Gate counts are unchanged from
+the previous version of this table; every PSF-Zero depth fell (23 -> 16 with
+`layout_search=True` at both sizes; 23 -> 16 at 8x8 with `False`), while
+Qiskit's rows were reproduced exactly. A range means seeds or repeats
+disagreed: `layout_search=False` at 6x7 shows real seed-dependent spread in
+gate count and depth (spare-qubit-cliff Addendum 102, Section 3).
+Speed-up figures in parentheses are median-based: Qiskit / `layout_search=False`
+in the Qiskit column, Qiskit / `layout_search=True` in the last. The previous
+version of this table came from a different script,
+`gate_count_vs_routing_level.py` (seed 42, 3 seeds x 3-5 repeats, Python 3.11.9,
+psf_compile VERSION 2026-09-16); the script used here reproduced that table's
+gate counts and depths exactly before the decomposer change (Addendum 102).
+Correctness: exact `Operator` equivalence at n=6 through this same CX path
+passed 36/36 after the change (Addendum 117); every routed output at full
 scale was checked for coupling-map validity (0 violations across all rows).
-Full-scale unitary equivalence is not computed — infeasible at this qubit
+Full-scale unitary equivalence is not computed -- infeasible at this qubit
 count, per this project's established practice elsewhere in this
 document.</sub>
 
@@ -164,10 +173,12 @@ document.</sub>
 default, PSF-Zero's own gate count at this same 6x7 cliff point is roughly
 **2x** Qiskit's, not roughly equal. The near-parity shown above is what `"cx"`
 buys specifically for CX/ECR-native hardware, not PSF-Zero's out-of-the-box
-behavior on a general target. The depth cost is real regardless of which
-`entangling_basis` is used: `layout_search=False` pays depth 44 against
-Qiskit's 16 at 6x7; `layout_search=True` matches Qiskit's gate count exactly
-at both grid sizes but is still deeper (23 vs. 16).
+behavior on a general target. With `layout_search=True`, PSF-Zero now matches
+Qiskit's gate count **and** depth exactly at both grid sizes (depth 16; it was
+23 before VERSION 2026-09-21, traced to an unconfigured CX decomposer placing
+two `sx` pulses per qubit between each pair of CXs where Qiskit places at most
+one -- Addenda 114-117). `layout_search=False` at 6x7 still varies by seed
+(depth 16-30).
 
 
 ![PSF-Zero vs Qiskit at the coupling-map cliff: compile time (log scale) and two-qubit gate count, 6x7 and 8x8 grids](docs/260919.png)
