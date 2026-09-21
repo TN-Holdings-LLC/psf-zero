@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-09-16   (previous revision: 2026-09-15)
+VERSION: 2026-09-21   (previous revision: 2026-09-16)
 
 Where to look for what
 ----------------------
@@ -170,6 +170,66 @@ Additional change, same day (2026-09-16), item 12
     once it exists), not in this docstring, per this project's own
     convention of keeping code changelog entries and measured findings in
     separate documents.
+
+Additional change, same day (2026-09-16), item 13
+--------------------------------------------------
+13. **NEW, opt-in: `callback` on `compile_for_hardware()`.** Addendum 27
+    found that PSF-Zero's own default (`layout_search=False`) path still has
+    rare, large, unexplained slowdowns exactly at the spare-qubit cliff's
+    peak (spare=0) -- 3 of 30 runs across 5 rounds, up to 8x the median, not
+    tied to one seed. This project's own established technique for seeing
+    *where inside a transpile call* time actually goes is Qiskit's own
+    `transpile(callback=...)` (already used, from outside this file, in
+    Addendum 10 -- see the `initial_layout` docstring above for that
+    finding). Until now there was no way to use it from *inside* a
+    `compile_for_hardware()` call, since this function builds its own
+    internal `transpile()` call and gave the caller no hook into it.
+
+    `callback`, when given, is forwarded verbatim to that internal
+    `transpile()` call -- one parameter, one line of forwarding, the same
+    minimal-and-additive shape as `initial_layout` (Addendum 17) and
+    `layout_search` (item 12 above). Default `None`, so every existing call
+    is unaffected. It is Qiskit's own `callback(pass_, dag, time, property_set,
+    count, running_time=...)`-style callable (see Qiskit's `transpile()`
+    documentation for the exact signature Qiskit invokes it with); this file
+    does nothing with it beyond passing it through, so anyone already
+    familiar with the plain-`transpile()` version needs to learn nothing new
+    to use it here.
+
+    **Not yet used to explain anything** -- this changelog entry describes
+    the hook, not a finding. The investigation it exists to support (the
+    Addendum 27 spare=0 outlier hunt) lives separately, per this project's
+    changelog/findings separation convention.
+
+Changes in the 2026-09-21 revision
+----------------------------------
+14. The CX-basis decomposer is configured for the {rz, sx} basis:
+    `TwoQubitBasisDecomposer(CXGate(), euler_basis="ZSX")` instead of
+    `TwoQubitBasisDecomposer(CXGate())`. Constructed without an Euler basis,
+    it emitted a general rotation between each pair of its three CXs, which
+    became two `sx` pulses per qubit per gap after basis translation; Qiskit's
+    own transpilation places at most one. On a repeated-pair variational
+    ansatz this left PSF-Zero with 1.6x Qiskit's `sx` count at the same CX
+    count (spare-qubit-cliff Addendum 114). With this setting, `sx` count, sx
+    depth and total depth equal Qiskit's own re-compile exactly (128 -> 80
+    `sx`, depth 23 -> 16 at 16 qubits; 336 -> 210, 23 -> 16 at 42); CX count
+    unchanged; 300/300 random blocks still exact (Addendum 116).
+    `pulse_optimize=True` changed nothing measurable and is left out.
+
+    Scope and caveats: the benefit is for devices whose single-qubit basis is
+    {rz, sx}; other bases are still translated by `transpile()`, untested
+    here. This decomposer also serves the degenerate-block fallback, which
+    Addendum 116 did not exercise. What changes and what does not:
+    `compile()` and `compile_for_hardware()` default to
+    `entangling_basis="canonical"`, which uses this decomposer only on that
+    fallback, so default-basis output -- including the 10,000-iteration
+    gate-synthesis speed benchmark (`test_cumulative_compile_scale.py`) --
+    is essentially unaffected. Output with `entangling_basis="cx"` changes:
+    same two-qubit counts, fewer `sx`, lower total depth than the 2026-09-16
+    revision (e.g. the README's coupling-map cliff table, measured with
+    "cx", reports depth 23 for `layout_search=True`; expected 16 now). A
+    per-circuit speed change of order 10-20% on the "cx" path could not be
+    ruled in or out (Addendum 116, P4).
 """
 from __future__ import annotations
 
@@ -199,7 +259,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-09-16"
+VERSION = "2026-09-21"
 __version__ = VERSION
 
 __all__ = [
@@ -231,8 +291,10 @@ DEFAULT_BLOCK_GATE_FLOOR = 12
 _VALID_ENTANGLING_BASES = ("canonical", "cx")
 _VALID_ON_UNSUPPORTED = ("keep", "raise")
 
-# Reuses Qiskit's own exact CX-optimal decomposer
-_CX_DECOMPOSER = TwoQubitBasisDecomposer(CXGate())
+# Reuses Qiskit's own exact CX-optimal decomposer, configured for the
+# {rz, sx} basis so the single-qubit layers between its CXs are minimal
+# (changelog item 14).
+_CX_DECOMPOSER = TwoQubitBasisDecomposer(CXGate(), euler_basis="ZSX")
 
 # XX, YY and ZZ commute and share one eigenbasis, so the canonical core's
 # matrix exponential is a diagonal scaling in a basis that can be computed
@@ -660,6 +722,7 @@ def compile_for_hardware(
     layout_search_call_limit: int = 50_000,
     layout_search_fallback_call_limit: int = 2_000_000,
     layout_search_use_fallback: bool = True,
+    callback=None,
 ) -> QuantumCircuit:
     """Compress with PSF-Zero, then route (and, if `basis_gates` is given,
     translate) with Qiskit.
@@ -769,6 +832,12 @@ def compile_for_hardware(
     falls through to Qiskit's own default layout stage exactly as if
     `layout_search` had been False -- the time already spent searching is
     real and is included in this call's own wall-clock cost, not hidden.
+
+    `callback` (new, item 13): forwarded verbatim to the internal
+    `transpile()` call below, unchanged from what plain `transpile(callback=
+    ...)` accepts. `None` by default -- passing nothing here changes nothing
+    about this function's behavior or cost. See item 13 in this file's
+    changelog for why this exists.
     """
     if layout_search and initial_layout is not None:
         raise ValueError(
@@ -830,4 +899,5 @@ def compile_for_hardware(
         optimization_level=routing_optimization_level,
         seed_transpiler=seed_transpiler,
         initial_layout=initial_layout,
+        callback=callback,
     )
