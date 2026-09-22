@@ -204,6 +204,28 @@ strongest one explained 4.5% of the variance and did not survive correction
 for multiple comparisons (Paper 1, Section 6; "What we could not explain").
 That line of inquiry is closed, not open.
 
+**How often does this actually happen? Rarely, by design -- and that is the
+point, not a caveat.** A follow-up test ran standard QAOA (MaxCut, random
+Erdos-Renyi problem graphs, density 0.1-0.5) against both an 8x8 grid and a
+heavy-hex device: `VF2Layout` never entered the failure region, resolving in
+under 1.1ms on all 30 runs at every density tested. The reason is not that
+these circuits were "light" -- it is that a random graph this dense has
+average degree far exceeding the device's own maximum (6.7 vs. a grid's 4,
+already at the lowest density tested), so no perfect, zero-SWAP layout
+exists at all, and `VF2Layout` correctly recognizes that almost instantly.
+**The cliff requires a narrow, specific condition -- an interaction graph
+that is simultaneously fully embeddable and fully saturated** -- which this
+project's own circuit families were built to hit deliberately, and which a
+generic dense circuit does not land on by chance (spare-qubit-cliff Addenda
+135-136). This project's own search therefore targeted correctness at the
+hardest reachable point, not typical-case frequency: the question was never
+"how often does the transpiler return a wrong answer," but "can it, on an
+input where a right answer demonstrably exists." For a pass whose whole job
+is to return a correct layout or correctly report none exists, that
+narrower question is the one that matters -- a failure mode's rarity does
+not change whether it is a failure mode, and this project draws no
+conclusion here about how often real-world workloads land inside it.
+
 
 **The `layout_search=False` gate-count gap over the zero-swap baseline (69 vs.
 63 at 6x7) disappeared entirely at 8x8 (96 vs. 96), for a reason that is
