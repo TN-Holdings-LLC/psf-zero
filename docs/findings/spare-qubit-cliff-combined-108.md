@@ -1,4 +1,4 @@
-# spare-qubit-cliff: Combined Addenda, Part 7 of 7 (Addendum 108 through Addendum 121)
+# spare-qubit-cliff: Combined Addenda, Part 7 of 7 (Addendum 108 through Addendum 129)
 
 **Continued from [Part 6](spare-qubit-cliff-combined-88.md) (and [Part 1](spare-qubit-cliff-combined.md), [Part 2](spare-qubit-cliff-combined-17.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 5](spare-qubit-cliff-combined-51.md)).** Same conventions as every prior part: nothing has been deleted or rewritten; navigation notes added when merging are clearly marked and separate from the original text.
 
@@ -8,7 +8,8 @@
 |---|---|---|
 | Paper preparation | 108 | A correction to Paper 2's own figures, found by recomputing from raw data before writing. |
 | Compilation inside a training loop | 109-118 | Whether re-compiling bound circuits pays off in variational training; a layout-once strategy; PSF-Zero's extra circuit depth measured, traced to one line of [`psf_compile.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/psf_compile.py), fixed (VERSION 2026-09-21), and the README re-measured. |
-| Training under noise from PyTorch | 119-121 | A `torch.autograd.Function` bridge and noisy training experiments. **Addendum 121's result is pending** -- only its pre-registration is included; the result will be added to this part when recorded. |
+| Training under noise from PyTorch | 119-126 | A `torch.autograd.Function` bridge and noisy training experiments: PSF-Zero halves the execution error of redundant deep circuits (120, 122) and ties optimally written blocks (122); its per-circuit speed is a property of any bound-value re-compile (124); on a task that needs depth, the deep circuit beats a shallow one below about 0.5% CX error and loses above it (122, 126). |
+| PennyLane, non-IBM route | 127-129 | Whether the Qiskit version `pennylane-qiskit` can install still has Paper 1's VF2Layout failure region: not in the same form, but Qiskit 1.2.4 (what pip resolved) fails on 2 of 3 seeds per configuration and is 195x slower than Qiskit 2.5.2 even on the easy control, reproduced across two independent installs (127-129). A Qiskit-independent PennyLane layout+synthesis module (`psf_pennylane.py`) was built and verified end-to-end, finding perfect layouts on every instance where Qiskit's own VF2Layout fails. |
 
 Two things that happened in the same period are **not** addenda and are not merged here: the PennyLane transform `r0_psf_zero_transform.py` was re-built and verified end-to-end (its verification record lives in that file's own docstring), and `check_core_build.py` was revised to judge a build by its exports rather than file dates (see its docstring). Both papers were archived on Zenodo in this period (Paper 1: DOI 10.5281/zenodo.22869976; Paper 2: 10.5281/zenodo.22870141), recorded in the README rather than an addendum.
 
@@ -1466,7 +1467,7 @@ device, and this comparison does not transfer.
 
 <!-- ===== Addendum 121 pre-registration (source: spare-qubit-cliff-addendum-121-preregistration-2026-09-21.md) ===== -->
 
-> **Note added when merging:** A task that needs entangling depth (2x3 Heisenberg), plus a stronger control than a shallow circuit: blocks written optimally with 3 CXs from the start. PSF-Zero is predicted to TIE that control. RESULT NOT YET RECORDED at the time this part was assembled.
+> **Note added when merging:** A task that needs entangling depth (2x3 Heisenberg), plus a stronger control than a shallow circuit: blocks written optimally with 3 CXs from the start. PSF-Zero is predicted to TIE that control. Result: Addendum 122.
 
 ## Addendum 121 -- Pre-registration: on a task that genuinely needs entangling depth (2D Heisenberg), does PSF-Zero's re-synthesis beat (a) a shallower circuit and (b) a circuit whose blocks are written optimally in the first place? (2026-09-21)
 
@@ -1571,6 +1572,910 @@ that would be the finding.
 - Larger lattices, other models, other optimizers.
 - Whether researchers in practice write redundant or optimal blocks -- this
   experiment measures what each choice costs, not how common it is.
+
+---
+
+<!-- ===== Addendum 122 (source: spare-qubit-cliff-addendum-122-2026-09-21.md) ===== -->
+
+> **Note added when merging:** Addendum 121's result. The task needs depth and PSF-Zero cuts the deep circuit's execution error by about 40%, ties optimally written blocks as predicted -- but a shallow circuit beats it on all three seeds at 1% CX error (robust on two seeds; seed 0 may be an iteration-budget artefact, Section 10). Also records that noise distorted learning here, weakening Addendum 120's hybrid hypothesis, and that a stated timing expectation was wrong per circuit.
+
+## Addendum 122 -- On a task that needs depth, PSF-Zero's re-synthesis beats the same deep circuit compiled once (3/3) and ties optimally written blocks as predicted, but LOSES to a shallow circuit on all three seeds: at this noise level, depth does not pay for itself (2026-09-21)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-121-preregistration-2026-09-21.md`, written and
+locked before this run.
+
+## 0. In one line
+
+**P0, P1, P1b, P2, P4 confirmed; P3 FAILED on all three seeds.** The task
+genuinely needs depth (noiselessly, 1 cycle leaves 2.2-2.5x the gap of 2
+cycles), and PSF-Zero cuts the deep redundant circuit's execution error by
+about 40% (gap ratio 0.59-0.61). But under the fixed noise model (1% per CX),
+**the shallow compile-once circuit reached the true ground energy more closely
+than PSF-Zero's deep circuit on every seed** (2.63-3.09 vs 3.34-3.36): its 21
+CXs cost less noise than the extra expressivity of 42 CXs was worth. As
+pre-registered, PSF-Zero **tied** the optimally written deep blocks (better by
+3.7-11.5%, inside the 20% tie band). Two unregistered observations follow in
+Sections 4-5, including one that weakens Addendum 120's train-cheap,
+execute-with-PSF-Zero hypothesis.
+
+## 1. Results
+
+Exact ground energy -12.517541. Gaps to it; "own" = the run's own noisy
+execution of its final parameters; "noiseless" = the same parameters without
+noise.
+
+| run | device CX / sx | seed 0 own / noiseless | seed 1 | seed 2 |
+|---|---|---|---|---|
+| ideal_deep_red | -- | 0.587 / 0.587 | 0.659 / 0.659 | 0.677 / 0.677 |
+| ideal_shallow_red | -- | 1.426 / 1.426 | 1.471 / 1.471 | 1.679 / 1.679 |
+| ideal_deep_opt | -- | 0.660 / 0.660 | 0.693 / 0.693 | 0.973 / 0.973 |
+| A_deep_red | 84 / 336 | 5.507 / 0.743 | 5.698 / 1.096 | 5.542 / 0.970 |
+| **D_deep_red** | **42 / 96** | **3.357** / 0.771 | **3.337** / 0.603 | **3.350** / 0.797 |
+| A_deep_opt | 42 / 140 | 3.685 / 1.038 | 3.467 / 0.701 | 3.786 / 1.187 |
+| **A_shallow_opt** | **21 / 70** | **3.086** / 1.874 | **2.641** / 1.334 | **2.630** / 1.352 |
+
+P0: every compiled circuit reproduced the logical energy noiselessly (worst
+2.6e-11, D).
+
+## 2. Scoring
+
+**P0 -- CONFIRMED.**
+
+**P1 (depth is needed) -- CONFIRMED.** Shallow / deep noiseless gap: 2.43,
+2.23, 2.48 (threshold 2).
+
+**P1b (optimal-block control is fair) -- CONFIRMED**, though seed 2 was close:
+1.12, 1.05, 1.44 (threshold 1.5).
+
+**P2 (D beats A on the same deep circuit) -- CONFIRMED**, ratios 0.61, 0.59,
+0.60.
+
+**P3 (D beats the shallow circuit) -- FAILED, 0 of 3 seeds.** D 3.357 / 3.337 /
+3.350 vs shallow 3.086 / 2.641 / 2.630. **At this noise level, the objection
+"use a shallower circuit" stands**, even on a task that needs depth
+noiselessly.
+
+**P4 (D ties optimal blocks) -- CONFIRMED as predicted.** D better by 8.9%,
+3.7%, 11.5% of A_deep_opt's gap -- all inside the 20% band.
+
+## 3. Why the shallow circuit won
+
+Splitting each gap into learned-parameter quality (noiseless) and
+execution-noise penalty:
+
+| run | learned gap | execution penalty |
+|---|---|---|
+| A_deep_red | 0.743, 1.096, 0.970 | 4.765, 4.602, 4.572 |
+| D_deep_red | 0.771, 0.603, 0.797 | 2.586, 2.734, 2.554 |
+| A_deep_opt | 1.038, 0.701, 1.187 | 2.647, 2.765, 2.600 |
+| A_shallow_opt | 1.874, 1.334, 1.352 | 1.212, 1.308, 1.278 |
+
+The shallow circuit learns worse (by about 0.8 on average) but pays about
+half the noise penalty (about 1.3 vs 2.6). The penalty scales roughly with CX
+count (21 -> 1.3, 42 -> 2.6, 84 -> 4.6). A linear extrapolation -- a
+hypothesis, not a measurement -- puts the break-even, below which the deep
+circuit with PSF-Zero would win, at a CX error of roughly 0.6% instead of the
+1% used here. The value of halving CXs depends on how noisy the hardware is,
+and at 1% it was not enough to overturn the shallow circuit's advantage.
+
+## 4. Unregistered observation: noise distorted learning here -- weakening Addendum 120's hybrid hypothesis
+
+In Addendum 120 (lighter circuits, 24-48 CX), noise did not affect what was
+learned. Here it did: A_deep_red, training through 84 noisy CXs, learned
+noticeably worse parameters than its noiseless counterpart (0.743 / 1.096 /
+0.970 vs 0.587 / 0.659 / 0.677), while D, training through 42, stayed closer
+(0.771 / 0.603 / 0.797). Addendum 120's proposed workflow -- train with the
+cheap compile-once strategy, execute only the final parameters through
+PSF-Zero -- relies on training being unaffected by noise. **In this heavier
+setting that premise fails**, so the hybrid would inherit A's worse
+parameters. It remains untested directly.
+
+## 5. Unregistered observation: timing (exploratory; not pre-registered)
+
+| run | CX / sx | params | circuits per iteration | compile s | simulation s | simulation per circuit |
+|---|---|---:|---:|---:|---:|---:|
+| A_deep_red | 84 / 336 | 336 | 673 | 23.5 | 1050.4 | 39.0 ms |
+| D_deep_red | 42 / 96 | 336 | 673 | 114.5 | 356.6 | 13.3 ms |
+| A_deep_opt | 42 / 140 | 210 | 421 | 9.4 | 349.3 | 20.7 ms |
+| A_shallow_opt | 21 / 70 | 105 | 211 | 2.9 | 92.3 | 10.9 ms |
+
+(means over 3 seeds)
+
+In conversation before this run, the expectation stated was that D and
+A_deep_opt would simulate in about the same time, since both put 42 CXs on
+the device. **Per training iteration they did (356.6 s vs 349.3 s), but per
+circuit that expectation was wrong: D's circuits simulated 36% faster
+(13.3 vs 20.7 ms).** The difference is single-qubit gates: re-synthesizing a
+circuit whose parameters are numbers lets consecutive single-qubit gates
+merge (D: 96 `sx`), which compiling a parameterized circuit once cannot do
+(A_deep_opt: 140). Two qualifications keep this from being a PSF-Zero-specific
+claim: any per-circuit re-compile with bound values would merge the same way
+(Qiskit's own, strategy B in Addenda 110-112, did); and the per-iteration tie
+arises because D's redundant ansatz has 60% more parameters and so evaluates
+60% more circuits per gradient. Wall time per seed: D 471 s, A_deep_opt 359 s
+-- A_deep_opt faster overall, because D's compile adds 114 s. On the
+accuracy side, the fewer `sx` barely mattered: D's execution penalty is
+within 1-2.3% of A_deep_opt's (2.586 vs 2.647, 2.734 vs 2.765, 2.554 vs 2.600).
+
+## 6. Where this leaves the quantum-AI direction
+
+- **PSF-Zero's re-synthesis reliably removes redundant CXs and the noise they
+  cause** (P2, here and in Addendum 120).
+- **It does not beat writing the circuit well in the first place** (P4, tie),
+  apart from a small, consistent edge that comes mostly from the redundant
+  ansatz training slightly better, not from execution.
+- **At 1% CX error, a shallower circuit beat the deep one even with PSF-Zero**
+  (P3). The claim "depth plus PSF-Zero wins on hard tasks" is not supported at
+  this noise level; whether it holds at lower noise is the open question
+  (Section 3's rough break-even of about 0.6%).
+- The PyTorch bridge itself worked throughout: 36 training runs across
+  Addenda 120 (15) and 122 (21), exact parameter-shift gradients, no failures.
+
+## 7. What this does not establish
+
+- Any noise level other than the fixed model used; real hardware.
+- The break-even in Section 3 (a linear extrapolation from three CX counts).
+- The hybrid workflow (Section 4) -- inferred against, not tested.
+- Other lattices, models, optimizers, or iteration budgets.
+
+## 8. Files
+
+| File | What it is |
+|---|---|
+| [`train_heisenberg_torch.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/train_heisenberg_torch.py) | this run's script |
+| [`heisenberg_torch_summary_2026-09-21.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/heisenberg_torch_summary_2026-09-21.csv) | per-run results, 21 rows |
+| [`heisenberg_torch_trajectories_2026-09-21.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/heisenberg_torch_trajectories_2026-09-21.csv) | loss per iteration, 840 rows (21 runs x 40); received after this addendum was first written -- see Section 10 |
+| [`spare-qubit-cliff-addendum-121-preregistration-2026-09-21.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-121-preregistration-2026-09-21.md) | the predictions scored above |
+
+## 9. Verification
+
+- Every figure recomputed from the summary CSV; the decomposition, per-circuit
+  simulation times and ratios are computed there, not printed by the script.
+- P3 is reported as failed on all three seeds, as measured; its threshold was
+  not revisited after seeing the result.
+- The expectation contradicted in Section 5 was stated in conversation before
+  the result was seen, and is recorded here as wrong rather than omitted.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this document and the CSV -> 0 hits.
+
+## 10. Convergence check (added after the trajectories were received; the scoring above is unchanged)
+
+The trajectory file (840 rows, 21 runs x 40 iterations, all complete) shows
+that **no run had fully converged at the 40-iteration budget**: over the last
+10 iterations every run was still improving, by 0.8-3.8% of its own total
+improvement.
+
+Whether that matters depends on which way the late improvement points. For
+P3 -- the one failed prediction -- comparing how fast D and the shallow
+circuit were still improving over iterations 29-39:
+
+| seed | P3 margin (D minus shallow, own-execution gap) | D's improvement, last 10 | shallow's improvement, last 10 | direction |
+|---|---:|---:|---:|---|
+| 0 | 0.271 | 0.306 | 0.068 | **closing**: at an unchanged rate, D would catch up in about 11 more iterations |
+| 1 | 0.696 | 0.202 | 0.309 | widening |
+| 2 | 0.720 | 0.236 | 0.358 | widening |
+
+**P3's failure is robust on seeds 1 and 2 and fragile on seed 0**, where it
+may be an artefact of the iteration budget. The pre-registered score stays as
+measured (0 of 3); the honest reading is "shallow wins at 1% CX error on at
+least 2 of 3 seeds even allowing for more training, and seed 0 is
+undetermined". A longer run, or the noise sweep proposed in Section 3, would
+settle it. The trajectories' final losses sit within 0.01-0.03 of the
+summary's final own-execution energies (one further optimizer step apart),
+consistent with the two files describing the same runs.
+
+---
+
+<!-- ===== Addendum 123 pre-registration (source: spare-qubit-cliff-addendum-123-preregistration-2026-09-21.md) ===== -->
+
+> **Note added when merging:** Tests Addendum 122's untested claim that its per-circuit speed is not specific to PSF-Zero, by adding the missing Qiskit re-compile arm -- standalone, no training loop.
+
+## Addendum 123 -- Pre-registration: is PSF-Zero's per-circuit simulation speed (Addendum 122) specific to PSF-Zero, or does any re-compile of bound circuits give the same? (2026-09-21)
+
+**Status: pre-registration only. No measurement has been run.**
+Predictions are locked before any measurement.
+
+## 1. Why this experiment exists
+
+Addendum 122 found, as an unregistered observation, that PSF-Zero's circuits
+(`D_deep_red`) simulated 36% faster per circuit than optimally written blocks
+compiled once (`A_deep_opt`, 13.3 vs 20.7 ms), at the same 42 CXs. It
+attributed this to single-qubit gates -- 96 `sx` vs 140 -- and claimed, without
+testing it, that **any** per-circuit re-compile with bound values would merge
+single-qubit gates the same way, so the effect is not specific to PSF-Zero.
+That run had no Qiskit re-compile arm, so the claim is untested. This
+experiment tests it directly, without a training loop.
+
+A standalone test was checked first for whether it could differ from the
+training-loop timing at all: in Addendum 122, time outside compilation and
+simulation was 0.1-0.3 s per seed out of 95-1078 s, and simulation time
+varied 0.5-1.2% across seeds over 8,000-27,000 circuits each. So this
+experiment is not expected to change Addendum 122's timings; its purpose is
+the missing comparison arm.
+
+## 2. Design
+
+Same lattice, Hamiltonian, ansatze, basis, noise model and simulator as
+Addenda 121-122 (imported from `train_heisenberg_torch.py`, so they are
+identical by construction): 2x3 Heisenberg, deep (2 cycles) redundant and
+optimal block ansatze, depolarizing 1e-3 on `sx`/`x` and 1e-2 on `cx`,
+density-matrix simulation.
+
+Five ways of producing the circuit actually simulated, each applied to the
+same 50 random parameter vectors per ansatz (seeded):
+
+| name | ansatz | method |
+|---|---|---|
+| `A_red` | redundant | compile once (parameterized, Qiskit L3), then bind |
+| `B_red` | redundant | bind, then Qiskit L3 per circuit |
+| `D_red` | redundant | bind, then PSF-Zero layout-once re-synthesis (Addendum 111's D) |
+| `A_opt` | optimal | compile once, then bind |
+| `B_opt` | optimal | bind, then Qiskit L3 per circuit |
+
+Per circuit: CX, `sx` (+`x`), `rz` and total gate count; depth; compile time.
+Simulation time: each method's 50 circuits run as one batch (as in the
+training loop), 3 repeats after a warm-up batch; per-circuit time is the
+median batch time / 50. Correctness: every compiled circuit, simulated
+noiselessly, must reproduce the logical energy to better than 1e-9.
+
+## 3. Pre-registered predictions
+
+**P1 (the claim under test).** `B_red`'s median `sx` count equals `D_red`'s,
+and its per-circuit simulation time is within 10% of `D_red`'s. **If `B_red`
+has materially more `sx` or is more than 10% slower, the effect is at least
+partly specific to PSF-Zero's synthesis, and Addendum 122 Section 5's claim
+is wrong.**
+
+**P2 (re-compile helps the optimal ansatz too).** `B_opt` has fewer `sx` than
+`A_opt` and simulates faster per circuit -- the same single-qubit merging,
+applied to blocks that were already written with 3 CX.
+
+**P3 (what sets simulation time).** Across all five methods, per-circuit
+simulation time increases with total gate count (same rank order).
+
+**P4 (correctness).** Every circuit within 1e-9 of the logical energy.
+
+**Not predicted:** compile time per circuit (reported; Addenda 110-112 found
+PSF-Zero faster than Qiskit's re-compile per circuit on every grid tested).
+
+## 4. What this cannot establish
+
+- Real hardware timing -- simulator only, as throughout.
+- Other circuits, noise models, or simulator methods.
+- Accuracy -- no training is run; this is about the circuits only.
+
+---
+
+<!-- ===== Addendum 124 (source: spare-qubit-cliff-addendum-124-2026-09-21.md) ===== -->
+
+> **Note added when merging:** Confirmed: Qiskit's own re-compile of bound circuits gives exactly PSF-Zero's gate counts and near-identical simulation time. One Qiskit arm missed the correctness bound (9.3e-6); PSF-Zero did not. Summarizes which training-loop advantages are PSF-Zero-specific (layout-cliff compile speed) and which are not.
+
+## Addendum 124 -- PSF-Zero's per-circuit simulation speed is not specific to PSF-Zero: Qiskit's own per-circuit re-compile produces identical gate counts; one Qiskit arm missed the pre-registered correctness bound (2026-09-21)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-123-preregistration-2026-09-21.md`, written and
+locked before this run.
+
+## 0. In one line
+
+**P1, P2, P3 confirmed; P4 failed for one arm (Qiskit's re-compile of the
+optimal ansatz), not for PSF-Zero.** Re-compiling bound circuits with Qiskit
+(`B_red`) gives **exactly** PSF-Zero's (`D_red`) gate counts -- 42 CX, 96 `sx`,
+144 `rz`, 282 gates, depth 71 -- and simulates within 8.3% of it. The
+per-circuit speed Addendum 122 saw is therefore a property of re-compiling
+with bound values, as that addendum claimed without testing, not of
+PSF-Zero's synthesis. Re-compiling the optimally written ansatz (`B_opt`)
+reaches the same counts too. The standalone timings reproduce Addendum 122's
+training-loop timings to within 3-4%.
+
+## 1. Results
+
+2x3 Heisenberg, deep ansatze, the same 50 parameter vectors per ansatz for
+every method; medians. Simulation: one batch of 50, 3 timed repeats after a
+warm-up.
+
+| method | CX | sx | rz | total | depth | compile ms | sim ms / circuit (range) | max energy error |
+|---|---:|---:|---:|---:|---:|---:|---|---:|
+| A_red (compile once) | 84 | 336 | 504 | 924 | 216 | 0.95 | 37.39 (37.16-37.69) | 8.0e-15 |
+| B_red (Qiskit re-compile) | 42 | 96 | 144 | 282 | 71 | 10.86 | 13.74 (12.83-14.01) | 5.9e-14 |
+| **D_red (PSF-Zero)** | **42** | **96** | **144** | **282** | **71** | 9.29 | 12.69 (12.50-12.71) | 3.6e-10 |
+| A_opt (compile once) | 42 | 140 | 308 | 490 | 126 | 0.65 | 20.01 (19.92-20.86) | 4.7e-15 |
+| B_opt (Qiskit re-compile) | 42 | 96 | 144 | 282 | 71 | 10.54 | 13.63 (12.74-14.52) | **9.3e-06** |
+
+`sx` was identical across all 50 samples within every method (min = max).
+
+## 2. Scoring
+
+**P1 (the claim under test) -- CONFIRMED.** `B_red` and `D_red` have identical
+median counts in every column; `B_red` simulates 8.3% slower per circuit,
+inside the 10% bound. With identical counts, the remaining difference is not
+explained by gate number; its source (gate placement or ordering, or
+run-to-run variation) was not investigated. **Addendum 122 Section 5's claim
+stands, now tested: the effect is not specific to PSF-Zero.**
+
+**P2 (re-compile helps the optimal ansatz too) -- CONFIRMED.** `B_opt` vs
+`A_opt`: `sx` 96 vs 140, 13.63 vs 20.01 ms (0.68x). Merging single-qubit gates
+after binding helps even blocks already written with three CXs.
+
+**P3 (simulation time follows total gate count) -- CONFIRMED.** 282-gate
+methods: 12.7-13.7 ms; 490: 20.0 ms; 924: 37.4 ms. Methods tied on gate
+count differ by up to 8%, as in P1.
+
+**P4 (every circuit within 1e-9 of the logical energy) -- FAILED for B_opt;
+held for every other method including PSF-Zero.** At least one of `B_opt`'s 50
+circuits reproduced the logical energy only to 9.3e-6. The cause was not
+investigated; Qiskit's `optimization_level=3` pipeline includes steps that
+can remove operations judged close enough to identity, which would fit, but
+that is a hypothesis. It did not change any gate count (min = max for every
+column), so P2's counts are unaffected; the timing of a circuit that differs
+by one tiny operation is not meaningfully different. This is **not** evidence
+that PSF-Zero is more accurate than Qiskit in any practical sense: an energy
+error of 1e-5 in one circuit out of 50 is far below any physical relevance.
+
+## 3. Other observations
+
+- **Standalone matches the training loop.** Per-circuit simulation here vs
+  Addendum 122 (inside training): D 12.69 vs 13.25 ms, A_opt 20.01 vs 20.74,
+  A_red 37.39 vs 39.02 -- consistently 3-4% lower here, as expected from
+  Addendum 122's measured 0.1-0.3 s of training overhead and a smaller batch
+  size. This confirms the answer given in conversation before this run: a
+  standalone test does not materially change the timings.
+- **Compile time at this size**: PSF-Zero 9.29 ms vs Qiskit's re-compile
+  10.86 ms per circuit -- only 1.17x at 6 qubits, where Qiskit's layout search
+  has no failure region to fall into. PSF-Zero's larger advantages (Addenda
+  110-112) appear at larger, saturated grids.
+- **PSF-Zero's numerical floor** is visibly higher than Qiskit's (3.6e-10 vs
+  1e-14) though well inside the 1e-9 bound -- consistent with the 1e-11 to
+  1e-13 errors seen in Addendum 122's P0 checks.
+
+## 4. What this means
+
+Of the advantages measured for PSF-Zero in the training-loop experiments
+(Addenda 110-124), the ones that are **specific to PSF-Zero** are:
+
+- **Compile speed where Qiskit's layout search fails** -- up to 278x at 42
+  qubits on a saturated repeated-pair ansatz (Addendum 110), from the layout
+  work of Papers 1-2.
+- **A compile-speed edge elsewhere that varies with the circuit** -- from 1.17x
+  here (6 qubits, 14 blocks) to 4.7-6.0x for the layout-once strategy in
+  Addendum 112 (16-42 qubits), excluding the layout-cliff configuration.
+
+The ones that are **not** specific to PSF-Zero -- any per-circuit re-compile
+with bound values gets them -- are the halved CX count on redundant ansatze,
+the merged single-qubit gates, the resulting faster simulation, and the
+resulting lower execution error.
+
+## 5. Files
+
+| File | What it is |
+|---|---|
+| [`compare_recompile_gate_counts.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/compare_recompile_gate_counts.py) | this run's script (imports the problem from [`train_heisenberg_torch.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/train_heisenberg_torch.py)) |
+| [`recompile_gate_counts_2026-09-21.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/recompile_gate_counts_2026-09-21.csv) | per-method results, 5 rows |
+| [`spare-qubit-cliff-addendum-123-preregistration-2026-09-21.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-123-preregistration-2026-09-21.md) | the predictions scored above |
+
+## 6. Verification
+
+- All figures recomputed from the CSV; ratios computed there.
+- P4 applied to every method as pre-registered, including the Qiskit arms.
+- The comparison with Addendum 122's timings uses that addendum's own
+  recorded per-circuit figures.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this document and the CSV -> 0 hits.
+
+---
+
+<!-- ===== Addendum 125 pre-registration (source: spare-qubit-cliff-addendum-125-preregistration-2026-09-21.md) ===== -->
+
+> **Note added when merging:** Sweeps CX error (0.2%, 0.5%, 1%) with 60 iterations to find where the deep circuit starts beating the shallow one; states in advance that failing at 0.2% would deprioritize the quantum-AI direction.
+
+## Addendum 125 -- Pre-registration: at what CX error rate does the deep circuit (PSF-Zero, 42 CX) start beating the shallow one (21 CX)? (2026-09-21)
+
+**Status: pre-registration only. No measurement has been run.**
+Predictions are locked before any measurement.
+
+## 1. Why this experiment exists
+
+Addendum 122 found, on a task that needs depth, that at 1% CX error a shallow
+circuit (21 CX) reached the ground energy more closely than PSF-Zero's
+re-synthesized deep circuit (42 CX) -- robustly on 2 of 3 seeds; seed 0 may
+have been an artefact of the 40-iteration budget (Addendum 122, Section 10).
+A linear extrapolation put the break-even at a CX error of about 0.6%.
+Addendum 124 then established that PSF-Zero's circuits equal Qiskit's own
+per-circuit re-compile, so PSF-Zero's specific role in a training loop is the
+speed of re-compiling at scale -- which only matters if the deep circuit is
+worth running at all. **This experiment measures whether, and below what
+noise level, it is.** It is the decision point stated in conversation: if the
+deep circuit does not win even at low noise, the quantum-AI direction is
+deprioritized.
+
+## 2. Design
+
+Everything is imported unchanged from `train_heisenberg_torch.py` (Addenda
+121-122) -- lattice, Hamiltonian, ansatze, PyTorch bridge, optimizer --
+except two settings:
+
+- **Noise level**, swept: CX depolarizing error p2 in {0.2%, 0.5%, 1.0%},
+  with `sx`/`x` error p1 = p2 / 10 (the same ratio as Addenda 119-122);
+  `rz` noiseless.
+- **Iterations: 60** (up from 40), since no Addendum 122 run had converged at
+  40.
+
+Two runs per (noise level, seed), seeds 0, 1, 2 with the same initial
+parameters as Addendum 122:
+
+| name | circuit | device CX |
+|---|---|---:|
+| `D_deep_red` | deep redundant ansatz, PSF-Zero layout-once re-synthesis | 42 |
+| `A_shallow_opt` | shallow optimal-block ansatz, compiled once | 21 |
+
+The comparison is the final gap to the exact ground energy under each run's
+own noisy execution. Noiseless evaluation of the learned parameters is
+recorded too, as in Addendum 122. Results are written after every run, so a
+partial run still leaves usable data.
+
+Expected run time: about 2 hours (from Addendum 122's per-iteration costs,
+scaled to 60 iterations).
+
+## 3. Pre-registered predictions
+
+**P1 (replication at 1.0%).** The shallow circuit beats D on at least 2 of 3
+seeds.
+
+**P2 (main: low noise).** At 0.2%, D beats the shallow circuit on all 3 seeds.
+**If D does not beat it on at least 2 of 3 seeds at 0.2%, depth does not pay
+for itself at any noise level tested, and the quantum-AI direction is
+deprioritized.**
+
+**P3 (near the extrapolated break-even).** At 0.5%, D beats the shallow
+circuit on at least 2 of 3 seeds. This is a weak prediction -- 0.5% is close
+to the extrapolated 0.6% -- and is registered mainly so that the crossover can
+be placed on one side or the other of 0.5%.
+
+**P4 (the extrapolation's assumption).** Execution-noise penalty (own-execution
+gap minus noiseless gap) scales roughly linearly with p2: for each circuit,
+penalty at 0.2% divided by penalty at 1.0% lies between 0.1 and 0.3 on every
+seed (linear would be 0.2). If not, Addendum 122's 0.6% estimate rested on a
+wrong assumption.
+
+## 4. What this cannot establish
+
+- Where any real device sits relative to the crossover: this experiment uses a
+  simple depolarizing model, not a device calibration, and does not claim a
+  mapping from its noise levels to specific hardware.
+- Other tasks, sizes, optimizers -- a single 6-qubit task.
+- Anything about PSF-Zero versus Qiskit's own re-compile, which Addendum 124
+  showed produce identical circuits here.
+
+---
+
+<!-- ===== Addendum 126 (source: spare-qubit-cliff-addendum-126-2026-09-21.md) ===== -->
+
+> **Note added when merging:** Deep wins on every seed at 0.2%, shallow on every seed at 1%; the crossover is just under 0.5% on two of three seeds (P3 failed), lower than Addendum 122's 0.6% estimate. The deprioritization condition was not met.
+
+## Addendum 126 -- Noise sweep: below about 0.5% CX error the deep circuit wins on every seed; at 1% the shallow one does; the crossover sits just under 0.5% on two of three seeds, lower than Addendum 122's 0.6% estimate (2026-09-21)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-125-preregistration-2026-09-21.md`, written and
+locked before this run.
+
+## 0. In one line
+
+**P1, P2, P4 confirmed; P3 failed.** At 0.2% CX error, PSF-Zero's deep
+circuit (42 CX) reached the ground energy more closely than the shallow
+circuit (21 CX) on all three seeds (mean gap 1.009 vs 1.546), so **the
+pre-registered condition for deprioritizing the quantum-AI direction was not
+met: depth does pay, at low enough noise.** At 1% the shallow circuit won on
+all three seeds (replicating Addendum 122 with 60 iterations). At 0.5% the
+deep circuit won on only one seed, so P3 failed; interpolating per seed puts
+the crossover at 0.46% and 0.49% on two seeds and 0.98% on the third. Noise
+penalty scaled close to linearly with CX error (P4), but the resulting
+crossover is lower than Addendum 122's 0.6% extrapolation.
+
+## 1. Results
+
+Gap to the exact ground energy (-12.517541) under each run's own noisy
+execution; 60 iterations; same initial parameters as Addendum 122.
+
+| CX error | seed | D_deep_red (42 CX) | A_shallow_opt (21 CX) | D minus shallow | deeper wins? |
+|---:|---:|---:|---:|---:|---|
+| 0.2% | 0 | 0.964 | 1.927 | -0.963 | yes |
+| | 1 | 0.952 | 1.394 | -0.442 | yes |
+| | 2 | 1.111 | 1.318 | -0.207 | yes |
+| 0.5% | 0 | 1.906 | 2.410 | -0.504 | yes |
+| | 1 | 1.827 | 1.754 | +0.074 | no |
+| | 2 | 1.738 | 1.730 | +0.008 | no (by 0.008) |
+| 1.0% | 0 | 3.024 | 3.006 | +0.018 | no (by 0.018) |
+| | 1 | 3.178 | 2.377 | +0.801 | no |
+| | 2 | 3.116 | 2.375 | +0.741 | no |
+
+Means over seeds -- 0.2%: 1.009 vs 1.546; 0.5%: 1.824 vs 1.964; 1.0%: 3.106
+vs 2.586. P0: every compiled circuit reproduced the logical energy
+noiselessly (worst 2.6e-11).
+
+## 2. Scoring
+
+**P1 (shallow wins at 1.0% on at least 2 of 3) -- CONFIRMED, 3 of 3**, though
+seed 0 only by 0.018.
+
+**P2 (deep wins at 0.2% on all 3) -- CONFIRMED.** The pre-registered
+deprioritization condition is not met.
+
+**P3 (deep wins at 0.5% on at least 2 of 3) -- FAILED, 1 of 3.** Seeds 1 and 2
+went to the shallow circuit, seed 2 by only 0.008. The **mean** over seeds
+favours the deep circuit (1.824 vs 1.964), driven by seed 0; the
+pre-registered criterion was per seed, and is scored as such.
+
+**P4 (penalty roughly linear in CX error) -- CONFIRMED.** Penalty at 0.2%
+divided by penalty at 1.0%: D 0.232 / 0.246 / 0.251, shallow 0.218 / 0.213 /
+0.212 -- all inside 0.1-0.3 (linear: 0.2). Slightly above linear at low noise
+and correspondingly below it at high noise (0.5% / 1.0%: 0.52-0.60 against a
+linear 0.5), i.e. the penalty grows a little less than proportionally.
+
+## 3. Where the crossover is
+
+Linear interpolation between neighbouring noise levels, per seed:
+
+| seed | crossover CX error |
+|---:|---:|
+| 0 | 0.98% |
+| 1 | 0.46% |
+| 2 | 0.49% |
+
+Seed 0 is the outlier because the shallow circuit trained poorly on that
+seed at every noise level (noiseless gap 1.66-1.80, against 1.04-1.11 on the
+other two seeds), not because the deep circuit did anything different. On
+the two typical seeds the crossover is just below 0.5%. **Addendum 122's
+linear extrapolation (about 0.6%) overestimated it**, partly because that
+estimate was built from 40-iteration runs.
+
+## 4. Two further readings
+
+- **Addendum 122 Section 10's convergence reading was right in direction.**
+  At 1% with 60 instead of 40 iterations, seed 0's margin for the shallow
+  circuit shrank from 0.271 to 0.018 (projected to close; it did not quite
+  flip), and seeds 1 and 2 widened (0.696 -> 0.801, 0.720 -> 0.741), as
+  projected.
+- **The deep circuit benefited from the longer run.** Its learned-parameter
+  gap fell from 0.60-0.80 (Addendum 122, 40 iterations) to 0.18-0.53 here, and
+  showed no consistent trend with the noise level (0.2%: 0.26-0.46; 0.5%:
+  0.18-0.34; 1.0%: 0.33-0.53). With 42 CXs, noise did not systematically distort what was learned
+  -- unlike the 84-CX compile-once circuit in Addendum 122, Section 4.
+
+## 5. What this means for the quantum-AI direction
+
+- The direction is **not** deprioritized: on a task that needs depth, a deep
+  circuit with redundant CXs removed beats a shallow one at 0.2% CX error on
+  every seed.
+- The advantage disappears at about 0.5% CX error for this task under this
+  noise model. A compile-strategy decision -- whether a deep circuit is worth
+  running -- can therefore be made from the device's noise level, which is the
+  first measured input for the "choose how to compile" component discussed in
+  conversation.
+- Per Addendum 124, re-synthesizing is not specific to PSF-Zero; what PSF-Zero
+  adds is doing it fast at scale. That remains the claim to make.
+
+## 6. What this does not establish
+
+- Where any real device sits relative to 0.5%: this is a simple depolarizing
+  model, not a device calibration, and no mapping to hardware is claimed.
+- Other tasks: the crossover depends on how much depth buys for the task
+  (here, the shallow circuit's noiseless gap is 2.0-5.7x the deep one's).
+- Other optimizers or budgets; 3 seeds only.
+
+## 7. Files
+
+| File | What it is |
+|---|---|
+| [`noise_sweep_heisenberg.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/noise_sweep_heisenberg.py) | this run's script |
+| [`noise_sweep_summary_2026-09-21.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/noise_sweep_summary_2026-09-21.csv) | per-run results, 18 rows |
+| [`noise_sweep_trajectories_2026-09-21.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/noise_sweep_trajectories_2026-09-21.csv) | loss per iteration (produced by the run; not yet received for this record) |
+| [`spare-qubit-cliff-addendum-125-preregistration-2026-09-21.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-125-preregistration-2026-09-21.md) | the predictions scored above |
+
+## 8. Verification
+
+- Every figure recomputed from the summary CSV; crossovers and ratios computed
+  there.
+- P3 scored per seed as pre-registered; the favourable mean is reported
+  beside it, not in place of it.
+- The comparison with Addendum 122 uses that addendum's own recorded values.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this document and the CSV -> 0 hits.
+
+---
+
+<!-- ===== Addendum 127 pre-registration (source: spare-qubit-cliff-addendum-127-preregistration-2026-09-21.md) ===== -->
+
+> **Note added when merging:** Before a PennyLane-vs-IBM head-to-head: does the Qiskit version pennylane-qiskit resolves to still show Paper 1's failure region?
+
+## Addendum 127 -- Pre-registration: does the Qiskit version that pennylane-qiskit can use still have the VF2Layout failure region? (2026-09-21)
+
+**Status: pre-registration only. No measurement has been run.**
+
+## 1. Why this experiment exists
+
+The next goal is a head-to-head measurement inside PennyLane: the route
+through IBM's stack (`pennylane-qiskit`, which transpiles with Qiskit) against
+the route through PSF-Zero. `pennylane-qiskit` cannot be installed alongside
+Qiskit 2.5.2 -- every release pip tried caps Qiskit at 2.3.0 or lower
+(recorded in `r0_psf_zero_transform.py`'s environment note) -- so the IBM
+route has to run in a separate environment on an older Qiskit.
+
+Paper 1's failure region was characterized in Qiskit 2.5.2, whose
+`VF2Layout` uses a Rust implementation with hardcoded VF2++ ordering. Whether
+the older Qiskit shows the same behaviour decides what the head-to-head can
+compare: if it does, the IBM route inside PennyLane falls into the same
+region; if it does not, the comparison has to be built around something else.
+
+## 2. Design
+
+One script, `check_vf2_cliff_version.py`, run unchanged in both environments:
+
+- the project environment (Qiskit 2.5.2), as a positive control;
+- a new, separate environment with `pennylane-qiskit` installed, whatever
+  Qiskit version pip resolves there (recorded with `pip freeze`).
+
+Circuits: Paper 1's `dense_pairs` family -- disjoint pairs, each carrying one
+random two-qubit unitary -- on square grids:
+
+| config | grid | qubits used | spare |
+|---|---|---:|---:|
+| 6x7 spare 0 | 6x7 | 42 | 0 |
+| 6x7 spare 2 (control) | 6x7 | 40 | 2 |
+| 8x8 spare 0 | 8x8 | 64 | 0 |
+
+Each transpiled with `optimization_level=3`, `basis_gates=["rz","sx","x","cx"]`,
+3 seeds. Recorded through `transpile`'s callback: `VF2Layout`'s own run time
+and its stop reason from the property set, plus total transpile time.
+
+## 3. Pre-registered predictions and definitions
+
+**Definition.** A configuration is "in the failure region" for a Qiskit
+version if, on every seed, `VF2Layout` does not report a solution found and
+takes at least 10x as long as on the 6x7 spare-2 control.
+
+**P1 (positive control).** In Qiskit 2.5.2, both spare-0 configurations are in
+the failure region and the spare-2 control is not. If this fails, the script
+is not measuring what Paper 1 measured, and the second environment's result
+is uninterpretable.
+
+**P2 -- deliberately no directional prediction.** Whether the older Qiskit's
+spare-0 configurations are in the failure region is the open question. Both
+outcomes are useful and neither is favoured in advance.
+
+## 4. What this cannot establish
+
+- Anything about PennyLane itself -- this runs Qiskit directly, in the
+  version `pennylane-qiskit` pulls in.
+- Why the versions differ, if they do -- only whether.
+
+---
+
+<!-- ===== Addendum 128 (source: spare-qubit-cliff-addendum-128-2026-09-21.md) ===== -->
+
+> **Note added when merging:** pip resolved pennylane-qiskit to Qiskit 1.2.4, which shows a different failure pattern: seed-dependent success/failure, and even the easy control instance takes 2.5-2.8s (vs 14ms on Qiskit 2.5.2).
+
+## Addendum 128 -- In Qiskit 1.2.4 (what pennylane-qiskit resolved to), the failure region is not "absent" but different: seed-dependent, and even the easy control is slow -- the pre-registered definition did not anticipate that (2026-09-21)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-127-preregistration-2026-09-21.md`, written and
+locked before either run.
+
+## 0. In one line
+
+**P1 confirmed; P2 (no directional prediction) resolves as "NOT in the failure
+region" under the pre-registered definition -- but for reasons the definition
+did not anticipate.** In Qiskit 2.5.2 both spare-0 configurations fail on
+every seed (NO_SOLUTION_FOUND after 3.4-4.7 s) while the spare-2 control
+succeeds in 13-16 ms. In Qiskit 1.2.4, the version pip installed alongside
+`pennylane-qiskit` on Python 3.10, spare-0 fails on 2 of 3 seeds at both sizes
+(4.0-5.1 s) and succeeds instantly on the third, and the spare-2 control --
+which always succeeds -- itself takes 2.5-2.8 s. Both facts break the
+definition's assumptions (failure on every seed; a fast control), so the
+formal verdict is reported as measured and the behaviour is described
+separately rather than the definition being changed after the fact.
+
+## 1. Results
+
+`VF2Layout` time per seed, stop reason, and median total transpile time
+(`optimization_level=3`, 3 seeds).
+
+| Qiskit | config | solution found | VF2Layout (ms), seeds 0 / 1 / 2 | total transpile, median |
+|---|---|---:|---|---:|
+| 2.5.2 | 6x7 spare 0 | 0 / 3 | 3363.8 / 3368.2 / 3360.2 | 6876 ms |
+| 2.5.2 | 6x7 spare 2 (control) | 3 / 3 | 15.7 / 13.1 / 14.1 | 29 ms |
+| 2.5.2 | 8x8 spare 0 | 0 / 3 | 4657.6 / 4546.2 / 4457.3 | 9234 ms |
+| 1.2.4 | 6x7 spare 0 | 1 / 3 | **1.0** / 4063.0 / 3948.9 | 4046 ms |
+| 1.2.4 | 6x7 spare 2 (control) | 3 / 3 | **2544.0 / 2755.9 / 2758.4** | 2846 ms |
+| 1.2.4 | 8x8 spare 0 | 1 / 3 | 4900.8 / 5070.9 / **0.0** | 5061 ms |
+
+Environment: both runs Python 3.10.11. The project environment has Qiskit
+2.5.2; the separate environment (`psf_plq_env`) was created fresh and pip
+resolved `pennylane-qiskit` to a release using Qiskit 1.2.4 -- the same
+version it chose in the project environment earlier on 2026-09-21. The
+separate environment's full `pip freeze` is not yet received for this record.
+
+## 2. Scoring
+
+**P1 (positive control in 2.5.2) -- CONFIRMED.** The script measures what
+Paper 1 measured.
+
+**P2 -- formal verdict: NOT in the failure region, both configurations.**
+Two separate reasons, each sufficient:
+1. One seed of three found a solution immediately at each size, so "fails on
+   every seed" does not hold.
+2. The control's median `VF2Layout` time is 2.76 s, so the "at least 10x the
+   control" threshold would require about 27.6 s; the failing seeds took
+   4.0-5.1 s, only 1.4-1.8x the control.
+
+The definition was written assuming, from Qiskit 2.5.2's behaviour, that the
+control would be fast. It is reported unchanged.
+
+## 3. What the older version actually does
+
+- **Outcome depends on the seed.** On two seeds per size, `VF2Layout` exhausts
+  its search and reports no solution after 4-5 s -- the same failure as 2.5.2.
+  On the third it finds a valid layout in 1 ms or less. One reading, consistent
+  with Paper 1's central finding that the traversal order decides success: in
+  this older line, the search order depends on the seed, so some seeds are
+  lucky and others are not; in 2.5.2 the VF2++ order is fixed, so every seed
+  fails alike. That reading is a hypothesis -- 1.2.4's source was not examined
+  here.
+- **Even easy instances are slow.** The spare-2 control always succeeds but
+  spends 2.5-2.8 s in `VF2Layout`, about 195x Qiskit 2.5.2's time (medians 2755.9 vs 14.1 ms) on the same
+  instance. A plausible cause is that the search continues after the first
+  valid layout, looking for a better-scoring one; also not verified.
+
+## 4. What this means for the planned PennyLane head-to-head
+
+- If the IBM route inside PennyLane runs on Qiskit 1.2.4, layout alone costs
+  roughly 2.5-5 s per circuit at 40-64 qubits whether or not the device has
+  spare qubits, and fails outright on some seeds at full occupancy. That is a
+  real comparison axis -- but against a Qiskit generation two major versions
+  behind IBM's current release.
+- **A fair comparison needs the newest IBM route `pennylane-qiskit` supports.**
+  The latest release pip tried earlier today (0.45.0) accepts Qiskit up to
+  2.3.0; here pip settled on a 1.2.4-compatible release instead. Why is not yet
+  known; one untested possibility is that the newer PennyLane releases it would
+  need do not support Python 3.10. The `pip freeze` from `psf_plq_env` will
+  show which versions were chosen; if Python is the constraint, a separate
+  Python 3.11+ environment would give the newer route.
+
+## 5. Files
+
+| File | What it is |
+|---|---|
+| [`check_vf2_cliff_version.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/check_vf2_cliff_version.py) | the script, run unchanged in both environments |
+| [`vf2_cliff_check_qiskit_2_5_2.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_cliff_check_qiskit_2_5_2.csv) | project environment |
+| [`vf2_cliff_check_qiskit_1_2_4.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_cliff_check_qiskit_1_2_4.csv) | `psf_plq_env` |
+| [`spare-qubit-cliff-addendum-127-preregistration-2026-09-21.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-127-preregistration-2026-09-21.md) | the predictions scored above |
+
+## 6. Verification
+
+- Both CSVs read directly; the formal verdict recomputed from them with the
+  pre-registered definition.
+- The Qiskit versions come from each run's own printed header and file name.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this document and both CSVs -> 0 hits.
+
+---
+
+<!-- ===== Addendum 129 (source: spare-qubit-cliff-addendum-129-2026-09-22.md) ===== -->
+
+> **Note added when merging:** The Qiskit 1.2.4 pattern reproduced exactly (all 9 seed/config outcomes) on a second, independent install found while setting up a Python 3.11+ environment for a fair comparison -- also documents an installation mistake that briefly uninstalled Qiskit from the project's own .venv, caught and reverted the same session.
+
+## Addendum 129 -- Qiskit 1.2.4's seed-dependent behaviour (Addendum 128) reproduces exactly across two independent installs, and its "easy" control is 195x slower than Qiskit 2.5.2's on the identical instance (2026-09-22)
+
+**Status**: an independent re-run of Addendum 128's check, on a second,
+separately-created installation of Qiskit 1.2.4 (system Python, not the
+`psf_plq_env` virtual environment Addendum 128 used), found while setting up
+a PennyLane-vs-Qiskit head-to-head comparison. `check_vf2_cliff_version.py`
+and its pre-registered definition are unchanged from Addendum 127.
+
+## 0. In one line
+
+**Every one of 9 seed x config outcomes reproduced exactly**: the same three
+seeds found a solution instantly and the same six did not, across two
+installations of `pennylane-qiskit` that independently resolved to Qiskit
+1.2.4 (one in a fresh virtual environment on 2026-09-21, one on system Python
+on 2026-09-22). Timings agree to within a few percent. This was not the
+comparison being set up -- it was found as a side effect of an installation
+mistake, documented in full in Section 2 for the record.
+
+## 1. Results
+
+| config | seed | run 1 (2026-09-21, `psf_plq_env`) | run 2 (2026-09-22, system Python) |
+|---|---:|---|---|
+| 6x7 spare 0 | 0 | SOLUTION_FOUND, 1.0 ms | SOLUTION_FOUND, 1.0 ms |
+| | 1 | NO_SOLUTION_FOUND, 4063.0 ms | NO_SOLUTION_FOUND, 4151.7 ms |
+| | 2 | NO_SOLUTION_FOUND, 3948.9 ms | NO_SOLUTION_FOUND, 4080.6 ms |
+| 6x7 spare 2 (control) | 0 | SOLUTION_FOUND, 2544.0 ms | SOLUTION_FOUND, 2550.2 ms |
+| | 1 | SOLUTION_FOUND, 2755.9 ms | SOLUTION_FOUND, 2789.0 ms |
+| | 2 | SOLUTION_FOUND, 2758.4 ms | SOLUTION_FOUND, 2735.1 ms |
+| 8x8 spare 0 | 0 | NO_SOLUTION_FOUND, 4900.8 ms | NO_SOLUTION_FOUND, 5147.0 ms |
+| | 1 | NO_SOLUTION_FOUND, 5070.9 ms | NO_SOLUTION_FOUND, 5109.3 ms |
+| | 2 | SOLUTION_FOUND, 0.0 ms | SOLUTION_FOUND, 1.0 ms |
+
+Formal verdict (Addendum 127's definition), both runs: **NOT in the failure
+region**, for the same two reasons as Addendum 128 -- not every seed fails,
+and the control itself is not fast.
+
+**The control comparison, made explicit here.** Qiskit 2.5.2's own median on
+the identical 6x7 spare-2 instance (from `vf2_cliff_check_qiskit_2_5_2.csv`,
+Addendum 127) is 14.1 ms. Qiskit 1.2.4's median here is 2755.9 ms (run 2):
+**195x slower on the instance both versions solve easily.**
+
+## 2. How run 2 happened
+
+While setting up a second, Python-3.11+ environment for a fair PennyLane
+head-to-head (`pennylane-qiskit`'s newest release needs Python >= 3.11,
+confirmed from its own published release notes), a `py -3.12 -m venv ...`
+command was issued without first confirming Python 3.12 was installed
+(`py -0p` had not been run first). It failed, but the shell then continued
+executing the remaining setup commands, which installed `pennylane`,
+`pennylane-qiskit`, and their dependencies onto the machine's system Python
+3.10 rather than into a new virtual environment. `pennylane-qiskit` resolved
+to the same release as Addendum 128 (0.42.0, pulling in Qiskit 1.2.4).
+
+`check_vf2_cliff_version.py`, which needs only Qiskit, ran correctly against
+this system Python and produced the CSV scored above. A later step
+(`python psf_pennylane.py`) failed, because the shell's `python` resolved to
+this system installation, whose separately-installed `psf_zero_core` predated
+`batch_decompose_checked` -- unrelated to Qiskit and not evidence about
+anything in this addendum.
+
+**A second, separate mistake followed.** The instruction given to clean up
+the system Python's packages was executed against the project's own `.venv`
+instead (both shells showed `(.venv)` in the prompt by that point), which
+uninstalled `qiskit`, `qiskit-aer`, `qiskit-ibm-runtime`, `symengine` and
+downgraded `sympy` in the environment every PSF-Zero benchmark and both
+papers were measured on. This was caught immediately (`pip check` showed the
+five packages as missing rather than conflicting) and reverted:
+`qiskit==2.5.2`, `qiskit-aer==0.17.2`, `qiskit-ibm-runtime==0.49.0`,
+`sympy==1.14.0`, `symengine==0.14.1`, confirmed restored via
+`check_core_build.py` (RESULT: OK) and `qiskit.__version__` (2.5.2). One
+harmless residue remains: `pennylane-lightning` is installed in `.venv` with
+no matching `pennylane`, flagged by `pip check` and not yet resolved. No
+PSF-Zero benchmark or paper figure used this environment while it was in the
+altered state.
+
+This is recorded in full because the project's own standard is to report
+what happened, not only what was intended -- the same standard Addendum 108
+and others have applied to the project's own numbers.
+
+## 3. What this means
+
+- **Addendum 128's finding is not a fluke of one install.** Two independent
+  resolutions of `pennylane-qiskit`'s dependency range landed on the same
+  Qiskit release and reproduced identical pass/fail outcomes per seed.
+- **The 195x figure sharpens what a PennyLane-via-Qiskit route would cost.**
+  Addendum 128 already showed the "easy" control is slow in absolute terms
+  (2.5-2.8 s); this addendum states the size of that cost directly against
+  the version this project's own papers were measured on, on the identical
+  instance.
+- **The still-open item is unchanged**: a fair comparison needs the newest
+  Qiskit `pennylane-qiskit` supports (2.3.0), which needs Python >= 3.11.
+  That environment has not yet been built; see Section 2.
+
+## 4. Files
+
+| File | What it is |
+|---|---|
+| [`vf2_cliff_check_qiskit_1_2_4_rerun.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_cliff_check_qiskit_1_2_4_rerun.csv) | run 2 (system Python, 2026-09-22) |
+| [`vf2_cliff_check_qiskit_1_2_4.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_cliff_check_qiskit_1_2_4.csv) | run 1 (`psf_plq_env`, 2026-09-21; Addendum 128) |
+| [`vf2_cliff_check_qiskit_2_5_2.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_cliff_check_qiskit_2_5_2.csv) | the project environment control (Addendum 127) |
+| [`check_vf2_cliff_version.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/check_vf2_cliff_version.py) | unchanged from Addendum 127 |
+
+## 5. Verification
+
+- The two CSVs were confirmed to be distinct files (different hashes) before
+  being compared, so the agreement is between independent runs, not a
+  re-upload.
+- All nine seed x config outcomes compared directly; the 195x figure computed
+  from the two files' own medians.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this document and the new CSV -> 0
+  hits.
 
 ---
 
