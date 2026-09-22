@@ -22,22 +22,30 @@ Verified (2026-09-21, numpy only, no PennyLane or psf_zero_core needed):
   order instead of reversed gives an error of 3.96; dropping GlobalPhase
   gives 4.00.
 
-Verified end-to-end (2026-09-21, real PennyLane + built psf_zero_core,
-`python r0_psf_zero_transform.py`, autograd interface, default.qubit):
+Verified end-to-end (2026-09-21, PennyLane 0.42.3 + built psf_zero_core,
+Python 3.10, `python r0_psf_zero_transform.py`, autograd interface,
+default.qubit):
   - Random fixed QubitUnitary: loss matches the untransformed circuit to
     1.89e-15, gradient to 2.00e-15; the block was actually replaced by
     Rot, Rot, IsingXX, IsingYY, IsingZZ, Rot, Rot, GlobalPhase.
   - Native CNOT: left untouched (loss and gradient differences exactly 0).
   - Direct matrix reconstruction including global phase: 6.35e-15.
+  - Three QubitUnitary blocks mixed with CNOT/RX/RY: loss matches to
+    1.55e-15, gradient to 2.22e-15; exactly one core call carried all three
+    blocks; CNOT untouched; order preserved (28 operations).
   This confirms the four PennyLane conventions below against the installed
   PennyLane itself, not only its documentation.
 
 Still untested:
   - torch and JAX interfaces (only autograd was run).
-  - More than one eligible block per tape against the real core: the
-    single-batch, order-preserving, per-item-error behaviour was verified
-    only with stand-in modules (mock_e2e_test.py, 13/13 checks).
-  - The PennyLane version used for the run above was not recorded.
+
+Environment note: pennylane-qiskit must NOT be installed into this project's
+environment. No release pip tried (0.45.0 back to 0.42.0) accepts Qiskit
+2.5.x -- 0.45.0 caps it at <= 2.3.0 -- so pip resolves the conflict by
+downgrading Qiskit. On 2026-09-21 this replaced Qiskit 2.5.2, the version
+every PSF-Zero benchmark and both papers were measured on, with 1.2.4 (it
+was restored and confirmed with `pip check`). Use a separate virtual
+environment if PennyLane on Qiskit backends is needed.
 
 PennyLane conventions relied on:
   qml.Rot(a, b, c)     == RZ(c) RY(b) RZ(a)        (argument order reversed
@@ -251,5 +259,57 @@ if __name__ == "__main__":
     err = np.linalg.norm(W - U)
     print("Case 3 -- direct matrix reconstruction:")
     check("||circuit - U|| < 1e-9 (global phase included)", err < TOL, f"err={err:.2e}")
+
+    # 4. Several QubitUnitary blocks mixed with native gates, against the
+    #    REAL core: exactness, one batched core call, order preserved.
+    U1, U2, U3 = (unitary_group.rvs(4, random_state=np.random.default_rng(s)) for s in (1, 2, 3))
+
+    def multi_body(params):
+        qml.RX(params[0], wires=0)
+        qml.QubitUnitary(U1, wires=[0, 1])
+        qml.CNOT(wires=[0, 1])
+        qml.QubitUnitary(U2, wires=[0, 1])
+        qml.RY(params[1], wires=1)
+        qml.QubitUnitary(U3, wires=[0, 1])
+        qml.RX(params[2], wires=0)
+        return qml.expval(qml.PauliZ(0))
+
+    print("Case 4 -- three QubitUnitary blocks mixed with CNOT/RX/RY:")
+    ref = qml.QNode(multi_body, dev, interface="autograd", diff_method="backprop")
+    new = r0_psf_zero_transform(ref)
+    params = pnp.array([0.8, -0.5, 1.2], requires_grad=True)
+    dl = abs(float(ref(params)) - float(new(params)))
+    dg = float(np.max(np.abs(np.asarray(qml.grad(ref)(params)) - np.asarray(qml.grad(new)(params)))))
+    check("loss matches untransformed", dl < TOL, f"|diff|={dl:.2e}")
+    check("gradient matches untransformed", dg < TOL, f"max|diff|={dg:.2e}")
+
+    # Apply the transform directly to a tape (no QNode machinery involved),
+    # counting calls into the real core by wrapping the module-level name
+    # the transform looks up at call time.
+    calls = []
+    _real_core = batch_decompose_checked
+
+    def _counting_core(batch_r, batch_i):
+        calls.append(len(batch_r))
+        return _real_core(batch_r, batch_i)
+
+    globals()["batch_decompose_checked"] = _counting_core
+    try:
+        tape = QuantumTape(
+            [qml.RX(0.8, wires=0), qml.QubitUnitary(U1, wires=[0, 1]), qml.CNOT(wires=[0, 1]),
+             qml.QubitUnitary(U2, wires=[0, 1]), qml.RY(-0.5, wires=1),
+             qml.QubitUnitary(U3, wires=[0, 1]), qml.RX(1.2, wires=0)],
+            [qml.expval(qml.PauliZ(0))],
+        )
+        (out_tape,), _ = r0_psf_zero_transform(tape)
+    finally:
+        globals()["batch_decompose_checked"] = _real_core
+    names = [op.name for op in out_tape.operations]
+    check("exactly one core call carrying all three blocks", calls == [3], f"calls={calls}")
+    check("no QubitUnitary left, three decompositions present",
+          names.count("QubitUnitary") == 0 and names.count("IsingXX") == 3)
+    check("CNOT untouched and order preserved",
+          names.count("CNOT") == 1 and names[0] == "RX" and names[9] == "CNOT"
+          and names[18] == "RY" and names[-1] == "RX", f"len={len(names)}")
 
     print(f"\n{'ALL CHECKS PASSED' if failures == 0 else f'{failures} CHECK(S) FAILED'}")
