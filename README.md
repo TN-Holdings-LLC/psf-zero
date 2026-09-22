@@ -189,6 +189,8 @@ one -- Addenda 114-117). `layout_search=False` at 6x7 still varies by seed
 >
 > **A separate, independent tool avoids the cliff on every case tested -- this is not a setting inside Qiskit.** A bare call to `rustworkx.vf2_mapping(..., id_order=True)` -- the public library, called directly, with none of Qiskit's own code involved -- finds a valid layout for **26/26** of the previously-failing saturated configurations, every one in under 0.0001 seconds. Qiskit's own implementation has no `id_order` parameter or equivalent switch; this is a comparison between two different pieces of software that happen to share some underlying graph data structures, not a flag Qiskit itself could flip.
 >
+> **The cliff is not specific to calling Qiskit directly -- it is reachable through PennyLane's own device layer too, and PSF-Zero avoids it there as well.** `pennylane-qiskit` passes `optimization_level` and `seed_transpiler` straight through to Qiskit's own `transpile()`; on the identical saturated 6x7 instance, compiling through a PennyLane QNode took 6.68-7.21s (matching direct Qiskit calls) against a Qiskit-independent PennyLane module (`benchmarks/psf_pennylane.py`) at 4.6-5.8ms -- roughly 1,200-1,450x, with results checked for exact agreement (to machine precision, at a small scale where both routes can execute exactly) (spare-qubit-cliff Addenda 127-132). Confirmed on two Qiskit lines `pennylane-qiskit` can resolve to: an old one (1.2.4) with a different, seed-dependent failure pattern, and the current one (2.3.0), which shows the same cliff shape as the version used throughout this README (2.5.2).
+>
 > **PSF-Zero's own `smart_vf2_layout` also succeeds on all 26/26 -- but a controlled comparison found this is fully explained by that same bare `id_order=True` call, not by PSF-Zero's own multi-stage ordering-diversity strategy.** The bare call matches PSF-Zero's own success rate exactly while running 100-600x faster; PSF-Zero's own additional machinery (BFS-based relabeling, multiple starting orderings, a two-stage fallback) added no benefit on this dataset and is, on this evidence, worth simplifying. Generalization beyond this specific grid size and circuit family is untested -- PSF-Zero's own prior diagnostics found this same ordering strategy fails on other physical topologies (`brick`). The complete record -- pre-registrations, the isomorphic-pair puzzle that preceded this finding, the corrected attribution, and what remains open -- is in `docs/findings/spare-qubit-cliff-combined.md` Parts 5-6 (Addenda 51-107), particularly Addenda 83-95 for the fixes themselves and Addenda 101-103 for their end-to-end and correctness verification.
 
 
@@ -539,16 +541,33 @@ their absence.
   machine/environment factors. See
   [`spare-qubit-cliff-combined-88.md`](docs/findings/spare-qubit-cliff-combined-88.md),
   Addenda 93, 96–99.
-- **NEW (2026-09-20).** A PennyLane transform (`r0_psf_zero_transform.py`)
-  applying this project's same compiled core to variational/QML circuits —
-  early-stage, not verified. Its own math (the `su2_to_euler` reconstruction
-  formula, the Ising-gate sign convention) has been checked independently and
-  is correct; the actual connection to `psf_zero_core.batch_decompose` and
-  gradient correctness through a full torch forward/backward pass have not
-  been. Development history for this file shows more than one regression
-  cycle; treat any number quoted from its own docstring as unverified until
-  it has been re-run and checked the way every number elsewhere in this
-  README has been.
+- **UPDATED (2026-09-22, supersedes the 2026-09-20 entry below it).** The
+  PennyLane transform (`benchmarks/r0_psf_zero_transform.py`) is now verified
+  end-to-end against a real PennyLane installation (not only against
+  documentation): loss and gradient match an untransformed circuit to
+  1.89e-15/2.00e-15 on a single fixed block, and to the same precision on a
+  tape mixing several blocks with native gates, with one batched call into
+  the Rust core (autograd interface; torch/JAX interfaces untested). A
+  companion, Qiskit-independent layout module
+  (`benchmarks/psf_pennylane.py`) was built on top of the same verified
+  `psf_smart_layout` search and finds perfect layouts on every instance
+  where Qiskit's own `VF2Layout` fails (see the cliff section above). This
+  pair is what the PennyLane head-to-head (Addenda 127-132) is built on.
+- **NEW (2026-09-21/22).** Whether re-compiling circuits with PSF-Zero helps
+  inside a variational (quantum-AI) training loop, not only at compile time
+  in isolation, was tested directly (spare-qubit-cliff-combined-108.md,
+  Addenda 109-126, 133-134): on a repeated-entangler ansatz, re-compiling
+  bound values halves two-qubit gates (a property of any bound-value
+  re-compile, not PSF-Zero-specific — Addendum 124), and PSF-Zero is what
+  makes doing this affordable at scale where Qiskit's own layout search hits
+  the cliff above. On a task engineered to need circuit depth (a small
+  Heisenberg model), the deeper, re-compiled circuit beat a shallow
+  alternative under a simple depolarizing noise model only below roughly
+  0.5% two-qubit gate error, and lost above it (Addendum 126) — so this is a
+  conditional, task- and noise-level-dependent benefit, not a general claim
+  that PSF-Zero "helps quantum AI." No real hardware noise model was used,
+  and where any actual device sits relative to that ~0.5% threshold is not
+  established.
 
 ## Working with us
 
