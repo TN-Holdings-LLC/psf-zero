@@ -31,10 +31,23 @@ DEVICES = [
 def heavy_hex_edges(d):
     """Same construction as this project's own Addendum 104/106 heavy-hex
     instances: IBM's own heavy-hex lattice via rustworkx's generator,
-    re-expressed as a plain edge list for Qiskit's CouplingMap."""
+    re-expressed as a plain edge list for Qiskit's CouplingMap.
+
+    NOTE: an earlier version of this function passed bidirectional=False to
+    heavy_hex_graph(); the installed rustworkx does not accept that keyword
+    at all (confirmed by the actual TypeError raised, not assumed from
+    documentation, which described a different version's signature). Calling
+    heavy_hex_graph(d) with no extra arguments avoids relying on that
+    keyword's existence either way, and edges are made explicitly symmetric
+    here in plain Python so CouplingMap gets an undirected graph regardless
+    of which convention the installed rustworkx version's own PyGraph uses
+    internally.
+    """
     import rustworkx as rx
-    graph = rx.generators.heavy_hex_graph(d, bidirectional=False)
-    return list(graph.edge_list())
+    graph = rx.generators.heavy_hex_graph(d)
+    edges = list(graph.edge_list())
+    symmetric = set(edges) | {(b, a) for a, b in edges}
+    return sorted(symmetric)
 
 
 def qaoa_circuit(graph: nx.Graph, n: int):
