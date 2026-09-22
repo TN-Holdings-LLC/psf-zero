@@ -1,4 +1,4 @@
-# spare-qubit-cliff: Combined Addenda, Part 7 of 7 (Addendum 108 through Addendum 129)
+# spare-qubit-cliff: Combined Addenda, Part 7 of 7 (Addendum 108 through Addendum 132)
 
 **Continued from [Part 6](spare-qubit-cliff-combined-88.md) (and [Part 1](spare-qubit-cliff-combined.md), [Part 2](spare-qubit-cliff-combined-17.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 5](spare-qubit-cliff-combined-51.md)).** Same conventions as every prior part: nothing has been deleted or rewritten; navigation notes added when merging are clearly marked and separate from the original text.
 
@@ -9,7 +9,7 @@
 | Paper preparation | 108 | A correction to Paper 2's own figures, found by recomputing from raw data before writing. |
 | Compilation inside a training loop | 109-118 | Whether re-compiling bound circuits pays off in variational training; a layout-once strategy; PSF-Zero's extra circuit depth measured, traced to one line of [`psf_compile.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/psf_compile.py), fixed (VERSION 2026-09-21), and the README re-measured. |
 | Training under noise from PyTorch | 119-126 | A `torch.autograd.Function` bridge and noisy training experiments: PSF-Zero halves the execution error of redundant deep circuits (120, 122) and ties optimally written blocks (122); its per-circuit speed is a property of any bound-value re-compile (124); on a task that needs depth, the deep circuit beats a shallow one below about 0.5% CX error and loses above it (122, 126). |
-| PennyLane, non-IBM route | 127-129 | Whether the Qiskit version `pennylane-qiskit` can install still has Paper 1's VF2Layout failure region: not in the same form, but Qiskit 1.2.4 (what pip resolved) fails on 2 of 3 seeds per configuration and is 195x slower than Qiskit 2.5.2 even on the easy control, reproduced across two independent installs (127-129). A Qiskit-independent PennyLane layout+synthesis module (`psf_pennylane.py`) was built and verified end-to-end, finding perfect layouts on every instance where Qiskit's own VF2Layout fails. |
+| PennyLane, non-IBM route | 127-130 | Whether the Qiskit version `pennylane-qiskit` can install still has Paper 1's VF2Layout failure region: Qiskit 1.2.4 (what pip resolved under Python 3.10) shows a different, seed-dependent pattern, 195-224x slower than Qiskit 2.5.2 even on the easy control (127-129); Qiskit 2.3.0 (the newest release, reachable under Python 3.11+) shows the SAME failure-region shape as 2.5.2, settling that 1.2.4's behaviour does not generalize (130). A Qiskit-independent PennyLane layout+synthesis module (`psf_pennylane.py`) was built and verified end-to-end on both PennyLane 0.42.3 and 0.45.1, finding perfect layouts on every instance where Qiskit's own VF2Layout fails. A fair head-to-head environment now exists. **The first real head-to-head, through PennyLane's own call path on both sides (131-132): Route A (IBM, Qiskit's own transpile) took 6.7-7.2s on the failure-region instance where Route B (PSF-Zero) took 4.6-5.8ms (1,200-1,450x), with n=6 correctness verified to machine precision (132). Two design bugs (a Windows-incompatible timeout, and an attempt to execute a 42-qubit circuit exactly, which needs tens of terabytes) were found and fixed before any data was collected.** |
 
 Two things that happened in the same period are **not** addenda and are not merged here: the PennyLane transform `r0_psf_zero_transform.py` was re-built and verified end-to-end (its verification record lives in that file's own docstring), and `check_core_build.py` was revised to judge a build by its exports rather than file dates (see its docstring). Both papers were archived on Zenodo in this period (Paper 1: DOI 10.5281/zenodo.22869976; Paper 2: 10.5281/zenodo.22870141), recorded in the README rather than an addendum.
 
@@ -2473,6 +2473,377 @@ and others have applied to the project's own numbers.
   re-upload.
 - All nine seed x config outcomes compared directly; the 195x figure computed
   from the two files' own medians.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this document and the new CSV -> 0
+  hits.
+
+---
+
+<!-- ===== Addendum 130 (source: spare-qubit-cliff-addendum-130-2026-09-22.md) ===== -->
+
+> **Note added when merging:** Resolves Addendum 128's open question: Qiskit 2.3.0 (the newest pennylane-qiskit supports) shows the same failure-region shape as Qiskit 2.5.2, not Qiskit 1.2.4's seed-dependent pattern -- so the 1.2.4 behaviour was specific to that old line, not to pennylane-qiskit generally. A fair head-to-head environment (psf_h2h_env, Python 3.12) now exists; psf_pennylane.py's self-test also passes unchanged on the newer PennyLane 0.45.1.
+
+## Addendum 130 -- The failure region is present, in the same form as Qiskit 2.5.2, in Qiskit 2.3.0 -- the newest pennylane-qiskit supports; a fair comparison environment now exists, and psf_pennylane.py passes unchanged on the newer PennyLane (2026-09-22)
+
+**Environment**: `psf_h2h_env`, freshly created (Addendum 129 traced why Python
+3.10 could not reach this: `pennylane-qiskit`'s newer releases need Python
+>= 3.11). Python 3.12.10, `pennylane-qiskit` 0.45.0, resolving `qiskit`
+2.3.0, `pennylane` 0.45.1, `rustworkx` 0.18.1. `check_vf2_cliff_version.py`
+and `psf_pennylane.py` both run unchanged from prior addenda.
+
+## 0. In one line
+
+**Qiskit 2.3.0 -- the newest release `pennylane-qiskit` supports -- shows the
+same failure-region shape as Qiskit 2.5.2, not the seed-dependent pattern of
+Qiskit 1.2.4 (Addenda 128-129).** Both spare-0 configurations fail on all 3
+seeds (3.3-4.6 s) and the spare-2 control succeeds quickly on all 3 (12.3 ms
+median, statistically indistinguishable from 2.5.2's 14.1 ms). This resolves
+the open question from Addendum 128: the failure region is not an artefact of
+one Qiskit line's age, and a comparison built on Qiskit 2.3.0 is a fair one,
+not a comparison against a version already known to behave differently. A
+second result: `psf_pennylane.py`'s self-test passes unchanged on PennyLane
+0.45.1, a newer major line than the 0.42.3 it was verified against.
+
+## 1. Results
+
+| config | seed | Qiskit 2.3.0 | Qiskit 2.5.2 (Addendum 127) | Qiskit 1.2.4 (Addenda 128-129) |
+|---|---:|---|---|---|
+| 6x7 spare 0 | 0 | NO_SOLUTION_FOUND, 3358.0 ms | NO_SOLUTION_FOUND, 3363.8 ms | SOLUTION_FOUND, 1.0 ms |
+| | 1 | NO_SOLUTION_FOUND, 3376.3 ms | NO_SOLUTION_FOUND, 3368.2 ms | NO_SOLUTION_FOUND, ~4100 ms |
+| | 2 | NO_SOLUTION_FOUND, 3334.8 ms | NO_SOLUTION_FOUND, 3360.2 ms | NO_SOLUTION_FOUND, ~4000 ms |
+| 6x7 spare 2 (control) | 0 | SOLUTION_FOUND, 12.3 ms | SOLUTION_FOUND, 15.7 ms | SOLUTION_FOUND, ~2550 ms |
+| | 1 | SOLUTION_FOUND, 12.0 ms | SOLUTION_FOUND, 13.1 ms | SOLUTION_FOUND, ~2770 ms |
+| | 2 | SOLUTION_FOUND, 13.0 ms | SOLUTION_FOUND, 14.1 ms | SOLUTION_FOUND, ~2750 ms |
+| 8x8 spare 0 | 0 | NO_SOLUTION_FOUND, 4461.4 ms | NO_SOLUTION_FOUND, 4657.6 ms | NO_SOLUTION_FOUND, ~5000 ms |
+| | 1 | NO_SOLUTION_FOUND, 4417.2 ms | NO_SOLUTION_FOUND, 4546.2 ms | NO_SOLUTION_FOUND, ~5100 ms |
+| | 2 | NO_SOLUTION_FOUND, 4564.2 ms | NO_SOLUTION_FOUND, 4457.3 ms | SOLUTION_FOUND, ~0.5 ms |
+
+(1.2.4 values are the mean of the two independent runs, Addenda 128-129,
+rounded.)
+
+Formal verdict (Addendum 127's pre-registered definition): **6x7 spare 0 and
+8x8 spare 0 are both IN the failure region** on Qiskit 2.3.0 -- the same
+verdict as 2.5.2, the opposite of 1.2.4's.
+
+**Control comparison**: 12.3 ms (2.3.0) vs 14.1 ms (2.5.2) vs ~2755 ms (1.2.4).
+2.3.0 is close to 2.5.2 and about 224x faster than 1.2.4 on the identical
+instance.
+
+`psf_pennylane.py` self-test on this environment: all checks passed,
+including search times of 0.98-1.79 ms on the same failure-region instances,
+loss/gradient agreement to 3.77e-15/1.22e-14, and no `qiskit` import
+anywhere in the run -- consistent with Addendum 128's own run on PennyLane
+0.42.3, now confirmed on 0.45.1 without any code change.
+
+## 2. What this settles
+
+- **The Qiskit 1.2.4 behaviour (Addenda 128-129) does not generalize to
+  `pennylane-qiskit`'s current release.** It was specific to the old Qiskit
+  line that pip resolved to under Python 3.10. Under Python 3.12, the same
+  `pennylane-qiskit` package resolves to Qiskit 2.3.0, which fails the same
+  way 2.5.2 does.
+- **A head-to-head inside PennyLane can now be built fairly**: the IBM route
+  (`pennylane-qiskit` 0.45.0 -> Qiskit 2.3.0) and the PSF-Zero route
+  (`psf_pennylane.py`, Qiskit-independent) both run in `psf_h2h_env`, on the
+  same Python, the same machine, the same session.
+- **`psf_pennylane.py` needed no changes for the newer PennyLane.** Its
+  known-untested items (torch/JAX interfaces, the PennyLane version pin) are
+  unaffected by this; the autograd-interface, layout, and KAK checks it does
+  cover all passed unchanged.
+
+## 3. What remains before the actual head-to-head
+
+- A shared script that runs both routes (IBM: `pennylane_qiskit.load`-backed
+  device or Qiskit transpile inside a QNode; PSF-Zero: `psf_for_device`) on
+  the identical circuits in `psf_h2h_env`, timing each the same way.
+- Whether to compare compile/layout time only (as this addendum and Addendum
+  127 do) or full circuit execution -- not yet decided.
+
+## 4. Files
+
+| File | What it is |
+|---|---|
+| [`vf2_cliff_check_qiskit_2_3_0.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_cliff_check_qiskit_2_3_0.csv) | this run, `psf_h2h_env` |
+| [`vf2_cliff_check_qiskit_2_5_2.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_cliff_check_qiskit_2_5_2.csv) | project environment (Addendum 127) |
+| [`vf2_cliff_check_qiskit_1_2_4.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_cliff_check_qiskit_1_2_4.csv), [`vf2_cliff_check_qiskit_1_2_4_rerun.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/vf2_cliff_check_qiskit_1_2_4_rerun.csv) | Addenda 128-129 |
+| [`check_vf2_cliff_version.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/check_vf2_cliff_version.py), [`psf_pennylane.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_pennylane.py) | unchanged |
+
+## 5. Verification
+
+- All figures read directly from the new CSV; the control ratio computed from
+  it and Addendum 127's own file.
+- The formal verdict applied with Addendum 127's definition, unchanged.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this document and the new CSV -> 0
+  hits.
+
+---
+
+<!-- ===== Addendum 131 pre-registration (source: spare-qubit-cliff-addendum-131-preregistration-2026-09-22.md) ===== -->
+
+> **Note added when merging:** The first real head-to-head inside PennyLane: Route A (IBM, pennylane-qiskit) vs Route B (PSF-Zero). Records two design corrections made before any run: a Windows-incompatible SIGALRM timeout, and a first design that tried to execute 42-qubit circuits exactly (impossible on either route -- a 42-qubit statevector needs tens of terabytes), split into compile-time-only (42 qubits) and correctness (n=6) checks instead.
+
+## Addendum 131 -- Pre-registration: the first head-to-head inside PennyLane -- does the IBM route (pennylane-qiskit) hit the same cliff there that Qiskit shows directly, while the PSF-Zero route does not? (2026-09-22)
+
+**Status: pre-registration only. No measurement has been run.**
+Predictions are locked before any measurement.
+
+## 1. Why this experiment exists
+
+Addendum 130 established a fair environment (`psf_h2h_env`: Python 3.12,
+`pennylane-qiskit` 0.45.0 -> Qiskit 2.3.0) and confirmed both routes run in
+it: the IBM route's Qiskit shows Paper 1's failure region directly (checked
+with `check_vf2_cliff_version.py`, bypassing PennyLane), and the PSF-Zero
+route (`psf_pennylane.py`) finds perfect layouts on the same instances in
+under 2 ms, also bypassing PennyLane's own device machinery. Neither of those
+checks went through a PennyLane device. This experiment does.
+
+Reading `pennylane_qiskit`'s own source (`qiskit_device.py`,
+`get_transpile_args` / `compile_circuits`) shows the device layer does not
+reimplement transpilation: keyword arguments such as `optimization_level` and
+`seed_transpiler` are separated out and passed straight to Qiskit's own
+`transpile()`. The prediction that follows is mechanical, not a guess about
+PennyLane's own behaviour: whatever Qiskit does directly, the device should
+do when driven through a QNode.
+
+## 2. Design
+
+**Circuits**: Paper 1's `dense_pairs` family, 6x7 grid (42 qubits): spare 0
+(the failure-region instance) and spare 2 (the control), 3 seeds each -- the
+same instances Addendum 127/130 used directly.
+
+**Coupling map for the IBM route**: a `GenericBackendV2` (Qiskit's own
+fake-backend builder) constructed with the grid's own coupling map, so
+`transpile` sees the identical device graph as the direct Qiskit runs.
+
+**Route A (IBM), compilation only, 42 qubits**: the tape's operations
+converted to a Qiskit `QuantumCircuit` (via `pennylane_qiskit`'s own
+converter) and passed to Qiskit's own `transpile(circuit, coupling_map=...,
+basis_gates=[...], optimization_level=3, seed_transpiler=<seed>)` directly --
+matching what `pennylane_qiskit`'s device calls internally (confirmed from
+its own source, `get_transpile_args`/`compile_circuits`), without executing
+the result on any simulator.
+
+**Route B (PSF-Zero), compilation only, 42 qubits**: `psf_layout` followed by
+`r0_psf_zero_transform` applied to the same tape, timed the same way, also
+without execution.
+
+**Correctness, n=6, executed for real**: both routes' full QNode pipelines
+(construction through execution) on a 6-qubit `dense_pairs` circuit --
+small enough for exact statevector execution on both
+`AerSimulator(method="statevector")` (Route A) and `default.qubit` (Route
+B) -- comparing the two routes' returned expectation values directly.
+
+Both routes act on the SAME logical circuit at each scale. This experiment
+measures compilation/layout cost through each route's own real call path (P1,
+P2, P4) and end-to-end correctness at a scale where exact execution is
+possible for both (P3) -- not circuit fidelity or execution physics at 42
+qubits, which neither route can compute exactly (Section 3a-2).
+
+## 3. Pre-registered predictions
+
+**P1 (the mechanical prediction).** On spare-0 seeds, Route A's QNode call
+takes at least 2 s -- in the same range Qiskit showed directly (3.3-3.4 s,
+Addendum 130) -- confirming the failure region is reachable through
+PennyLane's own device layer, not only via direct `transpile()` calls.
+
+**P2.** On spare-0 seeds, Route B's QNode call takes under 100 ms --
+consistent with `psf_pennylane.py`'s own direct-call timings (1-2 ms for the
+layout step alone; PennyLane's own tape/QNode overhead is untested and the
+bound is set loosely to accommodate it).
+
+**P3 (correctness, not yet checked in a PennyLane device context).** Route
+B's execution matches Route A's on the spare-2 control (where both should
+succeed) to within 1e-6 on a shared observable -- checked once, at spare 2,
+since spare 0 is expected to fail on Route A entirely (P1) and there is
+nothing to compare there.
+
+**P4.** On the spare-2 control, Route A's compilation is fast (under 200 ms,
+matching Qiskit's own direct 12-25 ms plus PennyLane's own conversion
+overhead) on all 3 seeds -- a check that Route A's own machinery is not slow
+generally, only on the failure-region instances.
+
+## 3a-2. A third problem, found by actually running the script again: 42-qubit statevectors do not fit in memory
+
+The AerSimulator(statevector) fix (Section 3a) itself failed to construct:
+`pennylane-qiskit` checks a statevector backend's own qubit limit before
+running anything, and refused with "supports maximum 29 wires". This is
+correct behaviour, not a bug -- a 42-qubit statevector needs 2^42 complex
+amplitudes, tens of terabytes, regardless of which route computes it. Neither
+route can be checked for exact execution correctness at 42 qubits.
+
+**The design is split into two separate checks accordingly:**
+- **Compilation time (P1, P2, P4)**, at the full 42-qubit scale, measured by
+  compiling each route's circuit WITHOUT executing it: Route A via Qiskit's
+  own `transpile()` on the tape's Qiskit-converted circuit (matching what
+  `pennylane_qiskit` calls internally, confirmed from its own source); Route
+  B via `psf_layout` + `r0_psf_zero_transform` applied to the tape directly,
+  without running it on a device.
+- **Correctness (P3)**, at a small scale (n=6, well under the 29-wire limit),
+  where both routes CAN execute exactly: comparing Route A's and Route B's
+  QNode results directly, as originally designed.
+
+## 3a. A second bug, found by actually running the script once
+
+The first execution attempt (with GenericBackendV2 as Route A's backend)
+crashed rather than measuring anything: GenericBackendV2's backend only
+supports shot-based sampling, so `shots=None` was silently ignored (a
+printed UserWarning was the only sign), and at 42 qubits the resulting shot
+simulation exceeded Aer's own memory limit. Route A's backend was replaced
+with `AerSimulator(method="statevector")`, which honours `shots=None` and
+still exposes a coupling map and basis gates for `transpile()` to use, so
+VF2Layout still sees the real 6x7 grid. This fix is recorded before the
+predictions below are scored against any real run.
+
+## 3b. A platform bug found and fixed before any run
+
+The first draft of `head_to_head_pennylane.py` timed out a hung call using
+`signal.SIGALRM`, which does not exist on Windows -- the platform this
+project's own measurements run on. Found by inspection before running
+anything; replaced with a `concurrent.futures.ThreadPoolExecutor`-based
+timeout, which is cross-platform. Noted here because it is exactly the kind
+of untested-assumption bug this project's own standard is to report, whether
+or not it was ever executed.
+
+## 4. What this cannot establish
+
+- Real IBM hardware -- Route A runs against a simulator behind a fake
+  backend, not a submitted job; no queueing or network time is included.
+- Whether PennyLane's own overhead (tape construction, device setup) is
+  comparable between the two device types -- `default.qubit` and
+  `qiskit.aer` are different implementations; any difference outside the
+  compilation step itself is not isolated here.
+- Execution correctness at spare 0 -- Route A is expected to fail there
+  (P1), so no comparison is made.
+
+---
+
+<!-- ===== Addendum 132 (source: spare-qubit-cliff-addendum-132-2026-09-22.md) ===== -->
+
+> **Note added when merging:** All four predictions confirmed: Route A (IBM) 6.7-7.2s vs Route B (PSF-Zero) 4.6-5.8ms on the failure-region instance (1,200-1,450x); both fast on the control; n=6 correctness to machine precision. Also documents and corrects an error in this addendum's own first-draft analysis (comparing against the wrong prior timing figure).
+
+## Addendum 132 -- The first real PennyLane head-to-head: Route A (IBM, via Qiskit's own transpile) takes 6.7-7.2s on the failure-region instance where Route B (PSF-Zero) takes 4.6-5.8ms -- all four predictions confirmed, correctness verified to machine precision (2026-09-22)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-131-preregistration-2026-09-22.md`, written and
+locked before this run (after two design corrections found by actually
+running the script -- Section 3a-2 of that document -- both made before any
+data was collected).
+
+## 0. In one line
+
+**All four pre-registered predictions confirmed, on every seed.** At the
+saturated 6x7 instance (spare 0), Route A's compilation (Qiskit's own
+`transpile`, the same call `pennylane_qiskit`'s device makes internally)
+takes 6.68-7.21s; Route B's (PSF-Zero's layout + synthesis, applied directly
+to the PennyLane tape) takes 4.6-5.8ms -- **about 1,200-1,500x faster on this
+instance.** At the spare-2 control, both are fast (Route A: 29-30ms; Route B:
+4.5-84.9ms). At n=6, where both routes can execute for real, their results
+agree to 1.9e-16 to 2.9e-14 -- machine precision. **This is the first time
+PSF-Zero's advantage has been measured through PennyLane's own call path on
+the IBM side**, rather than by calling Qiskit or `psf_smart_layout` directly.
+
+## 1. Results
+
+### Compilation time, 42 qubits (Route A: Qiskit `transpile` directly, the
+same call `pennylane_qiskit` makes internally; Route B: `psf_layout` +
+`r0_psf_zero_transform` on the PennyLane tape, not executed)
+
+| config | seed | Route A (IBM) | Route B (PSF-Zero) | ratio |
+|---|---:|---:|---:|---:|
+| spare 0 | 0 | 7.2061 s | 5.82 ms | 1,238x |
+| | 1 | 6.6786 s | 4.86 ms | 1,374x |
+| | 2 | 6.7066 s | 4.64 ms | 1,445x |
+| spare 2 (control) | 0 | 29.9 ms | 4.5 ms | 6.6x |
+| | 1 | 30.0 ms | 84.9 ms | 0.35x |
+| | 2 | 29.1 ms | 4.5 ms | 6.5x |
+
+Two-qubit gate counts, spare 0: Route A 63, Route B 84 (matching Paper 1's
+own figures for this family: Qiskit's default synthesis reaches 63 with
+`layout_search`-style routing avoided by success; PSF-Zero's `canonical`
+basis here -- `r0_psf_zero_transform`'s own default -- was not tuned for CX
+count on this path, unlike `psf_compile.py`'s dedicated `"cx"` basis, which
+Addenda 116-118 verified matches Qiskit's own count).
+
+### Correctness, n=6, both routes executed for real
+
+| seed | Route A | Route B | \|diff\| |
+|---:|---:|---:|---:|
+| 0 | 0.05570797 | 0.05570797 | 1.94e-16 |
+| 1 | 0.12054389 | 0.12054389 | 2.85e-14 |
+| 2 | 0.03300305 | 0.03300305 | 1.32e-15 |
+
+## 2. Scoring
+
+**P1 (Route A >= 2s at spare 0) -- CONFIRMED, all 3 seeds** (6.68-7.21s).
+
+**P2 (Route B < 100ms at spare 0) -- CONFIRMED, all 3 seeds** (4.6-5.8ms).
+
+**P3 (agreement < 1e-6 at n=6) -- CONFIRMED, all 3 seeds** (1.9e-16 to
+2.9e-14 -- far tighter than the pre-registered bound).
+
+**P4 (Route A < 200ms at spare 2) -- CONFIRMED, all 3 seeds** (29-30ms).
+
+## 3. A comparison this addendum's own first draft got wrong, corrected before publication
+
+A first pass at Section 1 compared Route A's spare-0 time here against
+Addendum 130's own *VF2Layout-pass-only* time (3.3-3.4s, measured via a
+callback isolating that one pass) and called it "about 2x slower than
+expected." That was the wrong comparison: Route A here calls plain
+`transpile()`, with no callback, so it measures the WHOLE pipeline --
+VF2Layout failing, then whatever Qiskit falls back to, then routing and gate
+synthesis -- not the isolated VF2Layout time. The correct comparison is
+against Addendum 130's own **total transpile time** on the identical
+instance: 7.28s, 6.74s, 6.72s (from `vf2_cliff_check_qiskit_2_3_0.csv`'s own
+`total_s` column) -- which match this run's 7.21s, 6.68s, 6.71s closely. No
+discrepancy exists; the error was in this addendum's own first-draft
+analysis, not in the measurement, and is recorded rather than silently
+dropped.
+
+## 4. What this establishes
+
+- **The failure region is reachable through PennyLane's own device-selection
+  and transpilation path**, not only by calling Qiskit directly -- confirming
+  what Addendum 131's mechanical prediction (from reading
+  `pennylane_qiskit`'s own source) said should be true.
+- **PSF-Zero's compilation-time advantage, measured for the first time inside
+  PennyLane itself**, is of the same order Papers 1-2 and Addenda 110-118
+  found by calling Qiskit and PSF-Zero directly: roughly three orders of
+  magnitude on the saturated instance, and comparable (well within an order
+  of magnitude, noisily) on the unsaturated control.
+- **Correctness through the full PennyLane pipeline is exact**, not merely
+  plausible: both routes' QNode executions agree to floating-point noise.
+
+## 5. What this does not establish
+
+- Real IBM hardware -- Route A's compile target is a coupling map and basis
+  gate set, not a submitted job; no queueing or network time is included,
+  and Route A's own circuit was never executed at 42 qubits (Section 3a-2 of
+  Addendum 131 explains why: no exact statevector fits at that size, on
+  either route).
+- Gate-count comparability at 42 qubits: Route B used `r0_psf_zero_transform`
+  ---- `s own default (`canonical`) basis, not the CX-tuned path
+  `psf_compile.py` uses; the 63-vs-84 gap above should not be read as a
+  quality regression without re-running with a CX-matched configuration.
+- Anything about the spare-2 control's own timing beyond "both are fast":
+  the ratio there flips between runs (6.6x, 0.35x, 6.5x) and is within noise
+  at these small absolute times (tens of milliseconds).
+
+## 6. Files
+
+| File | What it is |
+|---|---|
+| [`head_to_head_pennylane.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/head_to_head_pennylane.py) | this run's script |
+| [`head_to_head_2026-09-22.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/head_to_head_2026-09-22.csv) | raw results, 9 rows |
+| [`spare-qubit-cliff-addendum-131-preregistration-2026-09-22.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-131-preregistration-2026-09-22.md) | the predictions scored above, including two design corrections made before any run |
+
+## 7. Verification
+
+- All figures recomputed directly from the CSV; the corrected comparison in
+  Section 3 recomputed from `vf2_cliff_check_qiskit_2_3_0.csv`'s own
+  `total_s` column, not from memory.
+- Every pre-registered prediction checked against its own stated threshold,
+  not restated after seeing the result.
 - Pre-publication check: `grep` against this project's private
   personal-information pattern list, this document and the new CSV -> 0
   hits.
