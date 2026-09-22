@@ -4023,4 +4023,4 @@ realistic, long-running use of `psf_compile()`.
 
 ---
 
-**End of Part 6 of 7.** Continue to [Part 7](spare-qubit-cliff-combined-108.md) (Addendum 108-121), or back to [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
+**End of Part 6 of 7.** Continue to [Part 7](spare-qubit-cliff-combined-108.md) (Addendum 108-132), or back to [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
