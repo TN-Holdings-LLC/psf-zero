@@ -193,6 +193,17 @@ one -- Addenda 114-117). `layout_search=False` at 6x7 still varies by seed
 >
 > **PSF-Zero's own `smart_vf2_layout` also succeeds on all 26/26 -- but a controlled comparison found this is fully explained by that same bare `id_order=True` call, not by PSF-Zero's own multi-stage ordering-diversity strategy.** The bare call matches PSF-Zero's own success rate exactly while running 100-600x faster; PSF-Zero's own additional machinery (BFS-based relabeling, multiple starting orderings, a two-stage fallback) added no benefit on this dataset and is, on this evidence, worth simplifying. Generalization beyond this specific grid size and circuit family is untested -- PSF-Zero's own prior diagnostics found this same ordering strategy fails on other physical topologies (`brick`). The complete record -- pre-registrations, the isomorphic-pair puzzle that preceded this finding, the corrected attribution, and what remains open -- is in `docs/findings/spare-qubit-cliff-combined.md` Parts 5-6 (Addenda 51-107), particularly Addenda 83-95 for the fixes themselves and Addenda 101-103 for their end-to-end and correctness verification.
 
+Beyond the cliff itself, this project has built and verified a working
+system on top of it -- a repaired layout search, a Qiskit-independent
+PennyLane integration, and early quantum-AI training-loop experiments (see
+"Open questions" below). The cliff's own instance-level divergence (which
+specific saturated instances fail, among graph-isomorphic pairs that differ
+only in physical placement) was characterized, not resolved further: it does
+not correlate with any graph-level feature this project computed -- the
+strongest one explained 4.5% of the variance and did not survive correction
+for multiple comparisons (Paper 1, Section 6; "What we could not explain").
+That line of inquiry is closed, not open.
+
 
 **The `layout_search=False` gate-count gap over the zero-swap baseline (69 vs.
 63 at 6x7) disappeared entirely at 8x8 (96 vs. 96), for a reason that is
