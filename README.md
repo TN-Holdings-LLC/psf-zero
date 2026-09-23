@@ -626,6 +626,22 @@ their absence.
   error raised (Addendum 143) -- so this GPU comparison does not reach, and
   says nothing about, the 42-64-qubit cliff regime characterized elsewhere in
   this document.
+- **NEW (2026-09-23).** Noisy (density-matrix) GPU simulation, blocked
+  earlier the same day by a Qiskit version conflict (`qiskit-aer-gpu`
+  0.15.1 imports a function removed in Qiskit 2.0), was resolved in a
+  separate, isolated environment pinned to Qiskit 1.4.4 -- not the Qiskit
+  2.5.2 this project's own papers and `psf_compile.py` are verified
+  against, and PSF-Zero's own compile step is not exercised in this
+  experiment. The noisy GPU/CPU crossover sits at n=8-10 -- about half the
+  qubit count of the noiseless statevector crossover above -- and at n=6
+  and n=8, the exact circuit sizes every noisy-training experiment in this
+  project used (Addenda 119-126), GPU measured 14-42% SLOWER than CPU, not
+  merely untested: those experiments would not have been sped up by GPU,
+  confirmed directly rather than only inferred from the noiseless case
+  (Addendum 146). n=14 (the largest size attempted) was killed by the
+  operating system for memory exhaustion, consistent with density-matrix
+  simulation's O(4^n) memory scaling -- a much tighter ceiling than the
+  O(2^n) statevector case above.
 
 ## Working with us
 
