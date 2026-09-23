@@ -1,4 +1,4 @@
-# spare-qubit-cliff: Combined Addenda, Part 7 of 7 (Addendum 108 through Addendum 132)
+# spare-qubit-cliff: Combined Addenda, Part 7 of 8 (Addendum 108 through Addendum 136)
 
 **Continued from [Part 6](spare-qubit-cliff-combined-88.md) (and [Part 1](spare-qubit-cliff-combined.md), [Part 2](spare-qubit-cliff-combined-17.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 5](spare-qubit-cliff-combined-51.md)).** Same conventions as every prior part: nothing has been deleted or rewritten; navigation notes added when merging are clearly marked and separate from the original text.
 
@@ -8,7 +8,7 @@
 |---|---|---|
 | Paper preparation | 108 | A correction to Paper 2's own figures, found by recomputing from raw data before writing. |
 | Compilation inside a training loop | 109-118 | Whether re-compiling bound circuits pays off in variational training; a layout-once strategy; PSF-Zero's extra circuit depth measured, traced to one line of [`psf_compile.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/psf_compile.py), fixed (VERSION 2026-09-21), and the README re-measured. |
-| Training under noise from PyTorch | 119-126 | A `torch.autograd.Function` bridge and noisy training experiments: PSF-Zero halves the execution error of redundant deep circuits (120, 122) and ties optimally written blocks (122); its per-circuit speed is a property of any bound-value re-compile (124); on a task that needs depth, the deep circuit beats a shallow one below about 0.5% CX error and loses above it (122, 126). |
+| Training under noise from PyTorch | 119-126 | A `torch.autograd.Function` bridge and noisy training experiments: PSF-Zero halves the execution error of redundant deep circuits (120, 122) and ties optimally written blocks (122); its per-circuit speed is a property of any bound-value re-compile (124); on a task that needs depth, the deep circuit beats a shallow one below about 0.5% CX error and loses above it (122, 126). A requested re-run after the CX-decomposer fix (116-117) was found unnecessary (133-134): the Heisenberg circuits were already built on the fixed decomposer from the start (117 predates 119 within the same day), confirmed by byte-identical results rather than assumed from dates. |
 | PennyLane, non-IBM route | 127-130 | Whether the Qiskit version `pennylane-qiskit` can install still has Paper 1's VF2Layout failure region: Qiskit 1.2.4 (what pip resolved under Python 3.10) shows a different, seed-dependent pattern, 195-224x slower than Qiskit 2.5.2 even on the easy control (127-129); Qiskit 2.3.0 (the newest release, reachable under Python 3.11+) shows the SAME failure-region shape as 2.5.2, settling that 1.2.4's behaviour does not generalize (130). A Qiskit-independent PennyLane layout+synthesis module (`psf_pennylane.py`) was built and verified end-to-end on both PennyLane 0.42.3 and 0.45.1, finding perfect layouts on every instance where Qiskit's own VF2Layout fails. A fair head-to-head environment now exists. **The first real head-to-head, through PennyLane's own call path on both sides (131-132): Route A (IBM, Qiskit's own transpile) took 6.7-7.2s on the failure-region instance where Route B (PSF-Zero) took 4.6-5.8ms (1,200-1,450x), with n=6 correctness verified to machine precision (132). Two design bugs (a Windows-incompatible timeout, and an attempt to execute a 42-qubit circuit exactly, which needs tens of terabytes) were found and fixed before any data was collected.** |
 
 Two things that happened in the same period are **not** addenda and are not merged here: the PennyLane transform `r0_psf_zero_transform.py` was re-built and verified end-to-end (its verification record lives in that file's own docstring), and `check_core_build.py` was revised to judge a build by its exports rather than file dates (see its docstring). Both papers were archived on Zenodo in this period (Paper 1: DOI 10.5281/zenodo.22869976; Paper 2: 10.5281/zenodo.22870141), recorded in the README rather than an addendum.
@@ -2850,4 +2850,195 @@ dropped.
 
 ---
 
-**End of Part 7 of 7 (end of document).** Back to [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
+<!-- ===== Addendum 133 pre-registration (source: spare-qubit-cliff-addendum-133-preregistration-2026-09-22.md) ===== -->
+
+> **Note added when merging:** Requests re-running the Addendum 126 noise sweep after the CX-decomposer fix (116-117), predicting the deep-vs-shallow crossover would move to a higher CX error.
+
+## Addendum 133 -- Pre-registration: re-running the noise-sweep experiment (Addendum 126) after the CX-decomposer fix (Addendum 116) -- does the crossover move? (2026-09-22)
+
+**Status: pre-registration only. No measurement has been run.**
+Predictions are locked before any measurement.
+
+## 1. Why this experiment exists
+
+Addenda 110-126 (the variational-training-loop line) all call
+`psf_compile.compile(entangling_basis="cx")`. Addendum 116 later found and
+fixed a defect in exactly that call path: the CX-basis decomposer, built
+without an Euler-basis setting, placed two `sx` pulses per qubit between
+each pair of CXs where Qiskit's own re-compile placed at most one --
+confirmed and applied to the repository's `psf_compile.py` in Addendum 117.
+None of the variational-loop experiments (Addenda 110-126) have been re-run
+since. This addendum re-runs the one whose own conclusion is most sensitive
+to circuit depth and pulse count: Addendum 126's noise sweep, which found the
+deep-vs-shallow crossover at approximately 0.46-0.49% CX error on two of
+three seeds.
+
+**What is expected to change, stated before running anything**: the deep
+circuit's `sx` count and depth should now match Qiskit's own re-compile
+exactly (Addendum 117), reducing the deep circuit's own execution-noise
+penalty. Since the crossover is where the deep circuit's penalty stops being
+worth its quality advantage, a smaller penalty should push the crossover to a
+HIGHER CX error (the deep circuit staying favourable over a wider noise
+range) -- the opposite direction from a naive "PSF-Zero got faster" read,
+which would not by itself move a noise-based threshold at all. This
+directional prediction is registered before running anything.
+
+## 1a. Which environment this runs in
+
+This experiment needs `torch` (the PyTorch bridge, Addendum 119), which is
+installed only in the project's own `.venv` -- not in `psf_h2h_env`
+(Addenda 129-132's PennyLane environment, which has no torch). This must
+run in `.venv`, activated fresh, with its own Qiskit (2.5.2) confirmed
+present via `check_core_build.py` before starting, given 2026-09-22's own
+history of environment mix-ups (Addendum 129).
+
+## 2. Design
+
+Unchanged from Addendum 125/126 in every respect except the installed
+`psf_compile.py` (now VERSION 2026-09-21, Addendum 116's fix applied): same
+task (2x3 Heisenberg), same ansatze (`D_deep_red`, 42 CX before consolidation
+-- wait, 3 CX per pair as established; `A_shallow_opt`, 21 CX), same three
+CX error levels (0.2%, 0.5%, 1.0%, with sx/x error at 1/10th), same 60
+iterations, same 3 seeds, same script (`noise_sweep_heisenberg.py`,
+unmodified).
+
+Before the sweep itself, a smaller check confirms the fix is actually active
+in this environment: `analyze_depth_composition.py` (Addendum 113/117) is
+re-run and its `D_psf_synthesis` row for the `same_pair` family is compared
+against Addendum 117's own recorded post-fix values (total depth 16, sx 80
+at 4x4). This project's own `.venv` was involved in an installation
+accident on 2026-09-22 (Addendum 129) that briefly removed Qiskit from it
+entirely, later restored; confirming the fix's presence directly, rather
+than assuming it survived, is the appropriate level of caution given that
+history.
+
+## 3. Pre-registered predictions
+
+**P0 (precondition).** `analyze_depth_composition.py`'s `D_psf_synthesis` row
+matches Addendum 117's recorded post-fix figures (4x4 same_pair: total depth
+16, sx 80) to confirm the fix is active before trusting anything else in
+this addendum.
+
+**P1 (direction, the main prediction).** The crossover CX error (linear
+interpolation between the 0.2%/0.5%/1.0% points, per seed, as in Addendum
+126) is HIGHER in this re-run than Addendum 126's own values on at least 2 of
+3 seeds (Addendum 126: 0.98%, 0.46%, 0.49%). **If the crossover does not move
+higher on at least 2 of 3 seeds, the fix's effect on this specific
+noise-threshold question is smaller than predicted, or absent, and that is
+reported as such rather than reinterpreted.**
+
+**P2 (magnitude, weak).** At 0.5% CX error specifically, the deep circuit's
+execution-noise penalty (own-execution gap minus noiseless gap) is smaller
+in this re-run than Addendum 126's own value on all 3 seeds. This is a weaker
+claim than P1 and is scored separately: P1 could hold without P2 holding
+exactly at 0.5% if the improvement is concentrated elsewhere in the sweep.
+
+**P3 (nothing else changes).** The shallow circuit's own figures (`sx`,
+depth, timing, learned-parameter quality) are unchanged from Addendum 126 to
+within run-to-run noise, since `A_shallow_opt`'s blocks are below
+`compile()`'s collection floor and never reach the fixed decomposer
+(Addendum 113/114's own finding, restated here as a check rather than
+assumed).
+
+## 4. What this cannot establish
+
+- Whether the new crossover, wherever it lands, is closer to or further from
+  any real device's own CX error -- unchanged limit from Addendum 125/126.
+- Other tasks or ansatze -- this re-runs one experiment on one task.
+
+---
+
+<!-- ===== Addendum 134 (source: spare-qubit-cliff-addendum-134-2026-09-22.md) ===== -->
+
+> **Note added when merging:** The request was based on a wrong premise: comparing dates rather than checking order of events. The Heisenberg circuits (119-126) were already built on the fixed psf_compile.py from the start, since Addendum 117 (the fix) preceded Addendum 119 within the same day. Confirmed by byte-identical results (16 significant digits) between the partial re-run and Addendum 126's own file, not assumed. The re-run was stopped partway through once this was noticed.
+
+## Addendum 134 -- Addendum 133's re-run request rested on a wrong premise: the Heisenberg noise-sweep circuits (Addenda 119-126) were already built on the post-fix psf_compile.py from the start, confirmed directly rather than assumed from dates (2026-09-22)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-133-preregistration-2026-09-22.md`. This
+addendum reports why the full re-run was stopped partway through, rather
+than scoring the pre-registered predictions -- none of them apply.
+
+## 0. In one line
+
+**Addendum 133 was requested on a mistaken premise.** Its own P0 check
+(`analyze_depth_composition.py`) correctly confirmed the CX-decomposer fix
+(Addendum 116-117) is active in `.venv`. But the noise-sweep re-run itself
+(`noise_sweep_heisenberg.py`), stopped after the 0.2% and 0.5% levels once
+the anomaly below was noticed, produced results **identical to Addendum
+126's own file to full floating-point precision** -- not merely similar.
+Checking why: Addenda 113-117 (the depth bug's discovery and fix) used the
+`same_pair`/`brickwork` ansatz family from Addenda 109-112. Addenda 119-126
+(the Heisenberg task, including `D_deep_red`) used a different circuit
+construction, written and first run in `train_heisenberg_torch.py`, **after**
+Addendum 117's fix was already applied to the repository's `psf_compile.py`
+-- both happened on 2026-09-21, but the fix came first within that day. The
+Heisenberg circuits were never built on the broken decomposer. There is no
+pre-fix Heisenberg data to compare against, and nothing to re-measure.
+
+## 1. Evidence
+
+| check | this re-run | Addendum 126 | identical? |
+|---|---|---|---|
+| `D_deep_red` device_cx | 42 | 42 | yes |
+| `D_deep_red` device_sx | 96 | 96 | yes |
+| `gap_own_execution`, p2=0.2%, seed 0 | 0.9642595699419019 | 0.9642595699419019 | yes, to 16 digits |
+| `gap_own_execution`, p2=0.2%, seed 1 | 0.9520196367933238 | 0.9520196367933238 | yes, to 16 digits |
+| `gap_own_execution`, p2=0.2%, seed 2 | 1.1104953620110152 | 1.1104953620110152 | yes, to 16 digits |
+
+Agreement to 16 significant digits across an exact density-matrix simulation
+and a deterministic optimizer is not consistent with two independent runs
+of a changed circuit; it is consistent with the identical circuit being
+compiled and simulated twice.
+
+`analyze_depth_composition.py`'s own output (P0) matched Addendum 117's
+post-fix figures exactly (4x4 same_pair: total depth 16, sx 80) -- correctly
+confirming the fix is active in `.venv` for the circuit family it tests.
+That check was not wrong; the inference drawn from it (that the Heisenberg
+circuits must therefore have changed too) was.
+
+## 2. What this means
+
+- **No correction is needed for Addenda 121-126's own reported figures.**
+  They already reflect the fixed decomposer; nothing in this project's own
+  public record needs updating because of this.
+- **Addendum 132's own comparison (CUDA-layer framing) is unaffected**: its
+  own claim rests on Addenda 127-132 (the layout-search cliff), which does
+  not call `psf_compile`'s CX decomposer at all, and on Addenda 119-126 for
+  the training-loop argument, which turn out to have been measured
+  correctly the first time.
+- **The two-hour re-run was stopped partway through** (after the 0.2% and
+  0.5% noise levels) once the identical-value pattern was noticed, rather
+  than run to completion for a result already known.
+
+## 3. A standing lesson, stated plainly
+
+The request to re-run was based on comparing dates ("both happened on
+2026-09-21") rather than checking order of events within that day, and was
+not verified against the actual circuit before asking for two hours of
+compute. The fix, once it existed, should have been checked directly (as
+Section 1's table now does) before requesting any re-run -- the same
+standard this project applies to every other claim, applied here one step
+too late.
+
+## 4. Files
+
+| File | What it is |
+|---|---|
+| [`depth_composition_2026-09-21.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/depth_composition_2026-09-21.csv) | this session's P0 check, byte-identical to Addendum 117's file |
+| [`noise_sweep_summary_2026-09-21.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/noise_sweep_summary_2026-09-21.csv), [`noise_sweep_trajectories_2026-09-21.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/noise_sweep_trajectories_2026-09-21.csv) | this session's partial re-run (0.2% and 0.5% levels only), matching Addendum 126's own file exactly on every field checked |
+| [`spare-qubit-cliff-addendum-133-preregistration-2026-09-22.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-133-preregistration-2026-09-22.md) | the request this addendum found to be unnecessary |
+
+## 5. Verification
+
+- The `depth_composition_2026-09-21.csv` byte-identity was checked by direct
+  file comparison before drawing any conclusion from it.
+- The noise-sweep agreement was checked at full CSV precision (16 significant
+  digits), not at the terminal's own truncated display precision, before
+  concluding the two runs used the identical circuit.
+- Pre-publication check: `grep` against this project's private
+  personal-information pattern list, this document -> 0 hits.
+
+---
+
+**End of Part 7 of 8.** Continue to [Part 8](spare-qubit-cliff-combined-135.md), or back to [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md). Back to [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
