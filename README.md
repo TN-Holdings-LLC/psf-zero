@@ -601,6 +601,31 @@ their absence.
   that PSF-Zero "helps quantum AI." No real hardware noise model was used,
   and where any actual device sits relative to that ~0.5% threshold is not
   established.
+- **NEW (2026-09-23).** Whether GPU execution changes any of this was tested
+  separately, on a local RTX 4070 via PennyLane's public `lightning.gpu`
+  device (`pennylane-lightning[gpu]`; no NVIDIA-specific integration was
+  built) -- exact, noiseless statevector simulation only, since noisy
+  (density-matrix) GPU simulation could not be made to work with this
+  project's Qiskit version (`qiskit-aer-gpu` predates a Qiskit-2.0-era API
+  change; not resolved). At 20-24 qubits GPU execution is 28-31x faster than
+  CPU (`lightning.qubit`), confirmed on circuits actually produced by all
+  three compilation strategies (Addendum 142). At 20-27 qubits, this project
+  found no compile-time cliff (compile time stayed under 26 ms throughout);
+  PSF-Zero's compile-time edge over Qiskit's own bind-then-recompile was
+  modest here (1.6-1.9x, far below the 100-1000x+ margins at the large-scale
+  cliff), but was still enough to make PSF-Zero win on combined
+  compile+execute time at 4 of 5 sizes tested (Addendum 144) -- **this
+  effect is not PSF-Zero-specific: Qiskit's own bind-then-recompile achieves
+  the identical two-qubit gate count and near-identical GPU execution speed
+  (Addendum 124, reconfirmed in this GPU context by Addendum 142); PSF-Zero's
+  own specific advantage remains compile speed at the large-scale cliff, not
+  shown again in this smaller-scale GPU experiment.** Exact GPU simulation
+  becomes unreliable above roughly 28 qubits: a WSL2-specific effect
+  apparently lets CUDA allocations silently exceed the RTX 4070's 12 GB VRAM
+  by spilling into system RAM, producing a 15x slowdown at 29 qubits with no
+  error raised (Addendum 143) -- so this GPU comparison does not reach, and
+  says nothing about, the 42-64-qubit cliff regime characterized elsewhere in
+  this document.
 
 ## Working with us
 
