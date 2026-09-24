@@ -1,0 +1,30 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- /home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/bin/python
+cachedir: .pytest_cache
+rootdir: /home/psf/psf_zero_fresh_test
+configfile: pyproject.toml
+collecting ... collected 13 items
+
+test_gpu_real_verification.py::TestRealGPUVerification::test_cnot_synthesized_block_matches_on_gpu PASSED
+test_gpu_real_verification.py::TestRealGPUVerification::test_random_unitaries_match_on_gpu 
+worst GPU expectation-value diff over 5 random unitaries: 8.771e-15
+PASSED
+test_gpu_real_verification.py::TestRealGPUVerification::test_wrong_circuit_is_caught_by_gpu_check_too PASSED
+test_full_chain_gpu.py::TestFullChainWithRealGPU::test_full_chain_completes_with_real_gpu_verification PASSED
+test_full_chain_gpu.py::TestFullChainWithRealGPU::test_physics_survives_the_full_chain PASSED
+test_full_chain_gpu.py::TestFullChainWithRealGPU::test_ibm_submission_failure_still_propagates_through_full_chain PASSED
+test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_called_once_and_shots_accounted PASSED
+test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_invalid_shots_rejected_before_submission PASSED
+test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_unmeasured_circuit_rejected PASSED
+test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_submission_failure_propagates PASSED
+test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_noiseless_target_matches_exact 
+P2 noiseless TVD = 0.0178
+PASSED
+test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_fake_device_noise_visible_not_destructive 
+P3 FakeManilaV2 TVD = 0.1297
+PASSED
+test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_bitstring_width_is_full_backend_known_issue 
+P4 bitstring widths = {5} (backend has 5 qubits, circuit uses 4)
+PASSED
+
+============================== 13 passed in 8.59s ==============================
