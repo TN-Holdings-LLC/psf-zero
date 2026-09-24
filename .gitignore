@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+*.ipynb_checkpoints/
+
+# Rust
+/target/
+Cargo.lock
+
+# Build artifacts (maturin)
+*.so
+*.pyd
+*.dll
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Credentials -- never commit these
+.env
+*.token
+*_credentials*
