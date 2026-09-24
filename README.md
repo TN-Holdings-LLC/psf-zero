@@ -25,8 +25,23 @@ qc.append(UnitaryGate(random_unitary(4)), [0, 1])
 optimized = psf_compile(qc)          # add verify=False for the fastest path
 ```
 
-Install: `git clone … && cd psf-zero && pip install -e .`
-(needs `numpy`, `scipy`, `qiskit`; the Rust core builds via `maturin`/`pyo3`.)
+Install (order matters -- the Rust core must be built before the Python
+package is installed, or `psf_zero_core` will be missing at import time):
+
+```bash
+git clone https://github.com/TN-Holdings-LLC/psf-zero.git
+cd psf-zero
+maturin develop --release   # builds src/lib.rs (psf_zero_core) via Cargo.toml
+pip install -e .            # installs the Python package (psf_compile.py)
+```
+
+Needs `numpy`, `scipy`, `qiskit==2.5.2` (installed automatically by the
+second step above) and, for the first step, a working Rust toolchain and
+`maturin` (`pip install maturin` if not already present; see
+[rustup.rs](https://rustup.rs) for Rust itself if not already installed).
+Verify both steps succeeded with `python check_core_build.py` -- it reports
+`RESULT: OK` if every function the Python code calls is actually present in
+the compiled Rust extension, and names what is missing otherwise.
 
 Source: [`psf_compile.py`](psf_compile.py) — the pass itself, and the one place the
 current compiler lives. Its `VERSION:` line names the revision; that line is bumped
