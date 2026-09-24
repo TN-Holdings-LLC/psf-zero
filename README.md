@@ -25,23 +25,33 @@ qc.append(UnitaryGate(random_unitary(4)), [0, 1])
 optimized = psf_compile(qc)          # add verify=False for the fastest path
 ```
 
-Install (order matters -- the Rust core must be built before the Python
-package is installed, or `psf_zero_core` will be missing at import time):
+Install (order matters, and the order is the OPPOSITE of what a first
+guess would suggest -- `pip install -e .` must run BEFORE
+`maturin develop --release`, not after. Found directly, not assumed: with
+both `Cargo.toml` and `pyproject.toml` present in the same folder (this
+project's own layout), running `maturin develop` FIRST silently builds and
+installs the wrong package -- it picks up `pyproject.toml`'s own project
+metadata (name `psf-zero`) instead of `Cargo.toml`'s (name `psf_zero_core`),
+so the Rust extension module never actually becomes importable. Then, since
+`pip install -e .` uninstalls and reinstalls the `psf-zero` package from
+scratch, running it AFTER `maturin develop` would undo that step's own
+result too -- so `maturin develop --release` must run LAST):
 
 ```bash
 git clone https://github.com/TN-Holdings-LLC/psf-zero.git
 cd psf-zero
-maturin develop --release   # builds src/lib.rs (psf_zero_core) via Cargo.toml
 pip install -e .            # installs the Python package (psf_compile.py)
+maturin develop --release   # builds src/lib.rs (psf_zero_core) via Cargo.toml -- must be LAST
 ```
 
 Needs `numpy`, `scipy`, `qiskit==2.5.2` (installed automatically by the
-second step above) and, for the first step, a working Rust toolchain and
+first step above) and, for the second step, a working Rust toolchain and
 `maturin` (`pip install maturin` if not already present; see
 [rustup.rs](https://rustup.rs) for Rust itself if not already installed).
-Verify both steps succeeded with `python check_core_build.py` -- it reports
-`RESULT: OK` if every function the Python code calls is actually present in
-the compiled Rust extension, and names what is missing otherwise.
+Verify both steps succeeded with `python benchmarks/check_core_build.py` --
+it reports `RESULT: OK` if every function the Python code calls is actually
+present in the compiled Rust extension, and names what is missing
+otherwise.
 
 Source: [`psf_compile.py`](psf_compile.py) — the pass itself, and the one place the
 current compiler lives. Its `VERSION:` line names the revision; that line is bumped
