@@ -1,0 +1,12 @@
+Retraining seed 0 ...
+  final loss 0.000005
+
+Backend: fake_brisbane, 127 qubits
+
+ input label   PL <Z0>   QK <Z0>   |diff| blocks routed2q bits ideal<Z0> noisy<Z0> ideal ok noisy ok
+    00    -1  -0.99776  -0.99776  1.1e-16      0        9  {4}   -0.9985   -0.9040     True     True
+    01     1   0.99776   0.99776  3.3e-16      0        9  {4}    0.9995    0.9185     True     True
+    10     1   0.99776   0.99776  0.0e+00      0        9  {4}    0.9980    0.9085     True     True
+    11    -1  -0.99776  -0.99776  1.1e-16      0        9  {4}   -0.9955   -0.9130     True     True
+
+P5 diagnostic: tape_to_qiskit preserves 2-wire QubitUnitary meaning? False

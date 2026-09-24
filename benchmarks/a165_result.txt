@@ -1,0 +1,144 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- /home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/bin/python
+cachedir: .pytest_cache
+rootdir: /home/psf/psf_zero_fresh_test
+configfile: pyproject.toml
+collecting ... collected 36 items
+
+test_tape_conversion_fidelity.py::test_t1_cnot_matches_pennylane_meaning PASSED
+test_tape_conversion_fidelity.py::test_t2_mixed_tape_matches_pennylane_meaning 
+T2 infidelity = 4.44e-16
+PASSED
+test_tape_conversion_fidelity.py::test_t3_round_trip_preserves_pennylane_meaning 
+T3 infidelity = 5.55e-16
+PASSED
+test_tape_conversion_fidelity.py::test_t4_transform_preserves_pennylane_meaning 
+T4 infidelity = 0.00e+00
+PASSED
+test_weakness_probes.py::TestGPUEquivalenceCheck::test_wrong_but_right_shaped_circuit_is_rejected PASSED
+test_weakness_probes.py::TestGPUEquivalenceCheck::test_wrong_qubit_width_circuit_is_rejected_with_clear_message PASSED
+test_weakness_probes.py::TestGPUEquivalenceCheck::test_correct_circuit_still_accepted PASSED
+test_weakness_probes.py::TestISACompliance3QubitGap::test_three_qubit_gate_is_treated_as_unverifiable_not_silently_passed PASSED
+test_weakness_probes.py::TestISACompliance3QubitGap::test_two_qubit_gates_still_correctly_checked PASSED
+test_weakness_probes.py::TestIBMSubmitDeterminism::test_repeated_submissions_are_not_hardcoded_to_identical_counts PASSED
+test_weakness_probes.py::TestIBMSubmitDeterminism::test_explicit_seed_still_reproducible PASSED
+test_weakness_probes.py::TestShotsValidation::test_non_integer_shots_rejected_not_silently_truncated PASSED
+test_weakness_probes.py::TestShotsValidation::test_non_numeric_shots_rejected_with_clear_error PASSED
+test_weakness_probes.py::TestShotsValidation::test_reference_local_counts_itself_validates_shots PASSED
+test_pennylane_gpu_ibm_pipeline_mock.py::TestIBMConnection::test_full_chain_submits_isa_compliant_circuit_once PASSED
+test_pennylane_gpu_ibm_pipeline_mock.py::TestIBMConnection::test_physics_survives_gpu_mock_and_routing FAILED
+test_pennylane_gpu_ibm_pipeline_mock.py::TestIBMConnection::test_sampled_counts_favor_the_dominant_outcome PASSED
+test_pennylane_gpu_ibm_pipeline_mock.py::TestIBMConnection::test_circuit_too_big_for_backend_is_rejected_before_submission PASSED
+test_pennylane_gpu_ibm_pipeline_mock.py::TestIBMConnection::test_invalid_shots_rejected PASSED
+test_pennylane_gpu_ibm_pipeline_mock.py::TestIBMConnection::test_ibm_submission_failure_propagates_not_swallowed PASSED
+test_pennylane_gpu_ibm_pipeline_mock.py::TestIBMConnection::test_backend_reporting_isa_noncompliant_circuit_is_caught PASSED
+test_gpu_real_verification.py::TestRealGPUVerification::test_cnot_synthesized_block_matches_on_gpu PASSED
+test_gpu_real_verification.py::TestRealGPUVerification::test_random_unitaries_match_on_gpu 
+worst GPU expectation-value diff over 5 random unitaries: 8.771e-15
+PASSED
+test_gpu_real_verification.py::TestRealGPUVerification::test_wrong_circuit_is_caught_by_gpu_check_too PASSED
+test_full_chain_gpu.py::TestFullChainWithRealGPU::test_full_chain_completes_with_real_gpu_verification PASSED
+test_full_chain_gpu.py::TestFullChainWithRealGPU::test_physics_survives_the_full_chain FAILED
+test_full_chain_gpu.py::TestFullChainWithRealGPU::test_ibm_submission_failure_still_propagates_through_full_chain PASSED
+test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_called_once_and_shots_accounted PASSED
+test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_invalid_shots_rejected_before_submission PASSED
+test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_unmeasured_circuit_rejected PASSED
+test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_submission_failure_propagates PASSED
+test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_noiseless_target_matches_exact 
+P2 noiseless TVD = 0.0178
+PASSED
+test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_fake_device_noise_visible_not_destructive 
+P3 FakeManilaV2 TVD = 0.1193
+PASSED
+test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_bitstring_width_equals_logical_qubits 
+A160 P1 bitstring widths = {4} (backend has 5 qubits, circuit uses 4)
+PASSED
+test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_wire_renumbering_keeps_logical_bit_order 
+A161 renumbering tape: routed 2q gates 6, noiseless TVD = 0.0230
+PASSED
+test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_swap_routed_circuit_maps_logical_qubits_correctly 
+A161 triangle tape: final positions [0, 2, 1], routed 2q gates 12, noiseless TVD = 0.0112
+PASSED
+
+=================================== FAILURES ===================================
+_________ TestIBMConnection.test_physics_survives_gpu_mock_and_routing _________
+
+self = <test_pennylane_gpu_ibm_pipeline_mock.TestIBMConnection object at 0x7a59bb2242c0>
+backend = <qiskit.providers.fake_provider.generic_backend_v2.GenericBackendV2 object at 0x7a599953e2a0>
+
+    def test_physics_survives_gpu_mock_and_routing(self, backend):
+        """The exact (noiseless) probability distribution after GPU-mock
+        synthesis AND hardware routing must match the original tape's own
+        distribution -- chains the earlier PennyLane<->GPU fidelity result
+        through the new routing/ISA-translation stage. Uses the exact
+        statevector, not sampled counts, so this assertion carries no
+        sampling noise and can use a tight tolerance."""
+        tape = make_two_block_tape()
+        qc_before, _ = tape_to_qiskit(tape)
+        probs_before = Statevector(qc_before).probabilities_dict()
+    
+        mock_gpu = MagicMock(side_effect=gpu_batch_synthesize)
+        _counts, qc_routed = psf_pennylane_gpu_ibm_transform(
+            tape, mock_gpu, mock_ibm_submit, backend, shots=100, block_gate_floor=BLOCK_GATE_FLOOR
+        )
+        # route_for_backend() pins the used circuit's qubits to physical
+        # qubits [0..n-1] of the (larger) backend register, so the routed
+        # circuit comes back sized to the FULL backend (6 qubits here) with
+        # the extra physical qubits idle at |0>. Qiskit prints bitstrings
+        # MSB-first (highest qubit index leftmost), so those idle qubits are
+        # a fixed "00" prefix -- marginalize them out by keeping only the
+        # trailing `qc_before.num_qubits` characters before comparing.
+        n_used = qc_before.num_qubits
+        qc_routed_unitary_only = qc_routed.remove_final_measurements(inplace=False)
+        probs_after_full = Statevector(qc_routed_unitary_only).probabilities_dict()
+        probs_after: dict[str, float] = {}
+        for bitstring, p in probs_after_full.items():
+            suffix = bitstring[-n_used:]
+            probs_after[suffix] = probs_after.get(suffix, 0.0) + p
+    
+        all_keys = set(probs_before) | set(probs_after)
+        diff = sum(abs(probs_before.get(k, 0.0) - probs_after.get(k, 0.0)) for k in all_keys)
+>       assert diff < 1e-6, f"total variation distance too high after routing: {diff:.3e}"
+E       AssertionError: total variation distance too high after routing: 2.624e-01
+E       assert np.float64(0.2624275909976153) < 1e-06
+
+test_pennylane_gpu_ibm_pipeline_mock.py:124: AssertionError
+________ TestFullChainWithRealGPU.test_physics_survives_the_full_chain _________
+
+self = <test_full_chain_gpu.TestFullChainWithRealGPU object at 0x7a59bb226870>
+backend = <qiskit.providers.fake_provider.generic_backend_v2.GenericBackendV2 object at 0x7a599953fc50>
+
+    def test_physics_survives_the_full_chain(self, backend):
+        """The exact (noiseless) probability distribution after the FULL
+        chain (CPU synthesis + real-GPU verification + routing) must match
+        the original tape's own distribution -- the same check
+        test_pennylane_gpu_ibm_pipeline_mock.py's own
+        test_physics_survives_gpu_mock_and_routing ran on the mocked chain,
+        now run on the chain with real GPU verification in it."""
+        tape = make_two_block_tape()
+        qc_before, _ = tape_to_qiskit(tape)
+        probs_before = Statevector(qc_before).probabilities_dict()
+    
+        _counts, qc_routed = full_chain_with_gpu_verification(
+            tape, mock_ibm_submit, backend, shots=100, block_gate_floor=BLOCK_GATE_FLOOR
+        )
+    
+        n_used = qc_before.num_qubits
+        qc_routed_unitary_only = qc_routed.remove_final_measurements(inplace=False)
+        probs_after_full = Statevector(qc_routed_unitary_only).probabilities_dict()
+        probs_after: dict[str, float] = {}
+        for bitstring, p in probs_after_full.items():
+            suffix = bitstring[-n_used:]
+            probs_after[suffix] = probs_after.get(suffix, 0.0) + p
+    
+        all_keys = set(probs_before) | set(probs_after)
+        diff = sum(abs(probs_before.get(k, 0.0) - probs_after.get(k, 0.0)) for k in all_keys)
+>       assert diff < 1e-6, f"total variation distance too high: {diff:.3e}"
+E       AssertionError: total variation distance too high: 9.401e-01
+E       assert np.float64(0.9400654249065604) < 1e-06
+
+test_full_chain_gpu.py:93: AssertionError
+=========================== short test summary info ============================
+FAILED test_pennylane_gpu_ibm_pipeline_mock.py::TestIBMConnection::test_physics_survives_gpu_mock_and_routing
+FAILED test_full_chain_gpu.py::TestFullChainWithRealGPU::test_physics_survives_the_full_chain
+========================= 2 failed, 34 passed in 8.17s =========================
