@@ -1,0 +1,23 @@
+platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | python 3.12.13 | qiskit 2.5.2
+fake_fez         L= 1  TVD Q3=0.0217 P=0.0215 Z=0.0214  d(Q3-P)=+0.0001 SE=0.0002  2q Q3/P/Z=6.0/6.0/6.0
+fake_fez         L= 2  TVD Q3=0.0262 P=0.0270 Z=0.0264  d(Q3-P)=-0.0008 SE=0.0003  2q Q3/P/Z=9.0/9.0/9.0
+fake_fez         L= 4  TVD Q3=0.0352 P=0.0358 Z=0.0352  d(Q3-P)=-0.0005 SE=0.0004  2q Q3/P/Z=18.0/18.0/18.0
+fake_fez         L= 8  TVD Q3=0.0613 P=0.0608 Z=0.0609  d(Q3-P)=+0.0005 SE=0.0005  2q Q3/P/Z=36.0/36.0/36.0
+fake_fez         L=16  TVD Q3=0.1066 P=0.1075 Z=0.1076  d(Q3-P)=-0.0009 SE=0.0006  2q Q3/P/Z=72.0/72.0/72.0
+fake_marrakesh   L= 1  TVD Q3=0.0200 P=0.0200 Z=0.0201  d(Q3-P)=-0.0000 SE=0.0003  2q Q3/P/Z=6.0/6.0/6.0
+fake_marrakesh   L= 2  TVD Q3=0.0240 P=0.0242 Z=0.0242  d(Q3-P)=-0.0002 SE=0.0004  2q Q3/P/Z=9.0/9.0/9.0
+fake_marrakesh   L= 4  TVD Q3=0.0274 P=0.0274 Z=0.0278  d(Q3-P)=-0.0000 SE=0.0003  2q Q3/P/Z=18.0/18.0/18.0
+fake_marrakesh   L= 8  TVD Q3=0.0366 P=0.0364 Z=0.0371  d(Q3-P)=+0.0002 SE=0.0005  2q Q3/P/Z=36.0/36.0/36.0
+fake_marrakesh   L=16  TVD Q3=0.0597 P=0.0597 Z=0.0599  d(Q3-P)=-0.0000 SE=0.0003  2q Q3/P/Z=72.0/72.0/72.0
+fake_kingston    L= 1  TVD Q3=0.0227 P=0.0225 Z=0.0226  d(Q3-P)=+0.0002 SE=0.0002  2q Q3/P/Z=6.0/6.0/6.0
+fake_kingston    L= 2  TVD Q3=0.0360 P=0.0361 Z=0.0362  d(Q3-P)=-0.0001 SE=0.0002  2q Q3/P/Z=9.0/9.0/9.0
+fake_kingston    L= 4  TVD Q3=0.0418 P=0.0417 Z=0.0418  d(Q3-P)=+0.0002 SE=0.0002  2q Q3/P/Z=18.0/18.0/18.0
+fake_kingston    L= 8  TVD Q3=0.0559 P=0.0558 Z=0.0561  d(Q3-P)=+0.0001 SE=0.0001  2q Q3/P/Z=36.0/36.0/36.0
+fake_kingston    L=16  TVD Q3=0.0833 P=0.0833 Z=0.0833  d(Q3-P)=-0.0000 SE=0.0004  2q Q3/P/Z=72.0/72.0/72.0
+fake_brisbane    L= 1  TVD Q3=0.0395 P=0.0394 Z=0.0395  d(Q3-P)=+0.0001 SE=0.0006  2q Q3/P/Z=6.0/6.0/6.0
+fake_brisbane    L= 2  TVD Q3=0.0491 P=0.0481 Z=0.0493  d(Q3-P)=+0.0011 SE=0.0006  2q Q3/P/Z=9.0/9.0/9.0
+fake_brisbane    L= 4  TVD Q3=0.0687 P=0.0660 Z=0.0667  d(Q3-P)=+0.0027 SE=0.0017  2q Q3/P/Z=18.0/18.0/18.0
+fake_brisbane    L= 8  TVD Q3=0.1046 P=0.1028 Z=0.1027  d(Q3-P)=+0.0018 SE=0.0011  2q Q3/P/Z=36.0/36.0/36.0
+fake_brisbane    L=16  TVD Q3=0.1711 P=0.1667 Z=0.1667  d(Q3-P)=+0.0043 SE=0.0011  2q Q3/P/Z=72.0/72.0/72.0
+
+Wrote psf_vs_qiskit_depth_sweep_2026-09-25.csv (600 rows)
