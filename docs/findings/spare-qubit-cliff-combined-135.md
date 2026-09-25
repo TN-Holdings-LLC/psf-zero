@@ -3937,7 +3937,7 @@ output observed as text. Both held:
 
 <!-- ===== Addendum 167 pre-registration (source: spare-qubit-cliff-addendum-167-preregistration-2026-09-25.md) ===== -->
 
-> **Note added when merging:** First of ten workplace records imported into the home series (Addenda 167-176), all run on a RunPod RTX 4090 on 2026-09-25. Stage 1: the noisy XOR rehearsal across 21 fake IBM backends, pinned versus free layout. Original workplace filenames and their home numbers (the bodies cite each other by these names): stage1 pre-registration = 167, stage1 results = 168, stage1b pre-registration = 169, stage1b results = 170, stage1c pre-registration = 171, stage1c results = 172, longrun-stability pre-registration = 173, results = 174, roundtrip-chain pre-registration = 175, results = 176.
+> **Note added when merging:** First of ten workplace records imported into the home series (Addenda 167-176), all run on a RunPod RTX 4090 on 2026-09-25. Stage 1: the noisy XOR rehearsal across 21 fake IBM backends, pinned versus free layout. Original workplace filenames and their home numbers (the bodies cite each other by these names): `xor-real-device-stage1-preregistration-2026-09-25.md` = [Addendum 167](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-167-preregistration-2026-09-25.md), `xor-real-device-stage1-results-2026-09-25.md` = [Addendum 168](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-168-2026-09-25.md), `xor-real-device-stage1b-preregistration-2026-09-25.md` = [Addendum 169](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-169-preregistration-2026-09-25.md), `xor-real-device-stage1b-results-2026-09-25.md` = [Addendum 170](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-170-2026-09-25.md), `xor-real-device-stage1c-preregistration-2026-09-25.md` = [Addendum 171](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-171-preregistration-2026-09-25.md), `xor-real-device-stage1c-results-2026-09-25.md` = [Addendum 172](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-172-2026-09-25.md), `longrun-stability-preregistration-2026-09-25.md` = [Addendum 173](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-173-preregistration-2026-09-25.md), `longrun-stability-results-2026-09-25.md` = [Addendum 174](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-174-2026-09-25.md), `roundtrip-chain-preregistration-2026-09-25.md` = [Addendum 175](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-175-preregistration-2026-09-25.md), `roundtrip-chain-results-2026-09-25.md` = [Addendum 176](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-176-2026-09-25.md).
 
 ## Addendum 167 -- Pre-registration, Stage 1: how robust is the noisy XOR rehearsal across fake IBM backends, and does free (noise-aware) layout beat the rehearsal's pinned layout? (2026-09-25)
 
@@ -3946,7 +3946,7 @@ output observed as text. Both held:
 **Status: pre-registration, locked at the Project save time of this
 document.** No Stage-1 run on the real XOR circuit exists at the time of
 locking. The only prior data are the existing single-backend rehearsal
-results (`benchmarks/rehearse_result_2.txt`, reproduced byte-for-byte on a
+results ([`benchmarks/rehearse_result_2.txt`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/rehearse_result_2.txt), reproduced byte-for-byte on a
 RunPod RTX 4090 pod on 2026-09-25), quoted as background, not as Stage-1
 data. A dry run of the harness on a **stub** circuit was made before locking
 (section 7); its outcome values are not Stage-1 data and are not reported.
@@ -4142,7 +4142,7 @@ and they are not reported here because the stub is not the XOR classifier.
 
 | File | What it is |
 |---|---|
-| [`xor_prereg_stage1_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/xor_prereg_stage1_sweep.py) | Stage-1 script (Project: `psf-zero/benchmarks/xor_prereg_stage1_sweep.py`; on the pod: `~/pennylane_gpu_mock_test/`, outside the repository) |
+| [`xor_prereg_stage1_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/xor_prereg_stage1_sweep.py) | Stage-1 script (Project: [`psf-zero/benchmarks/xor_prereg_stage1_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/xor_prereg_stage1_sweep.py); on the pod: `~/pennylane_gpu_mock_test/`, outside the repository) |
 | this document | the pre-registered predictions |
 
 Integrity check of the script on the pod (the file is transferred by pasting,
@@ -4175,7 +4175,7 @@ and CPU columns, per this project's record-keeping rules.
 
 > **Imported into the home series as Addendum 168.** Written at the workplace, run on a RunPod pod (RTX 4090), original file `xor-real-device-stage1-results-2026-09-25.md`; body below unchanged. Re-checked at home from the raw CSV (`xor_prereg_stage1_2026-09-25.csv`): the 30 sign flips (10 each in FakeCusco A, FakeKyoto A, FakeKyoto B), FakeBrussels B's per-input qubits (16 for input 00, 28 for the other three), FakeCusco A's constant +0.019, the 7 backends whose B layout varies by input, and the 3 backends where B is worse than A by more than 0.03 -- all as stated. The home assistant made the same first-row-only error as this record's own correction note describes: during a chat analysis it called FakeBrussels B "not explained by readout" after looking only at each group's first input. It is explained by readout.
 
-**Scored against:** `xor-real-device-stage1-preregistration-2026-09-25.md`
+**Scored against:** [`xor-real-device-stage1-preregistration-2026-09-25.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-167-preregistration-2026-09-25.md)
 (locked in the Project before this run). Thresholds are applied exactly as
 written there. Everything under "Post-hoc diagnostics" was looked at after
 seeing the results and is exploratory, not part of the scoring.
@@ -4327,7 +4327,7 @@ any of the failures above; the error values themselves have to be checked.
 | [`xor_prereg_stage1_2026-09-25.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/xor_prereg_stage1_2026-09-25.csv) | raw data, 840 rows (on the pod; to be added to `data/` after download) |
 | `xor_prereg_stage1_run.txt` | run log (on the pod) |
 | [`xor_prereg_stage1_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/xor_prereg_stage1_sweep.py) | the locked script |
-| `xor-real-device-stage1-preregistration-2026-09-25.md` | the pre-registration scored here |
+| [`xor-real-device-stage1-preregistration-2026-09-25.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-167-preregistration-2026-09-25.md) | the pre-registration scored here |
 
 Pre-publication check: the CSV's environment columns contain only the
 platform string and `x86_64`; no local paths or account names were written by
@@ -4375,7 +4375,7 @@ the script. To be re-checked by grep when the file is downloaded.
 > makes the outcome independent of the state), so the two label -1 inputs
 > flip and the two label +1 inputs are "correct" by chance.
 >
-> The CSV is now in the Project as `psf-zero/data/xor_prereg_stage1_2026-09-25.csv`
+> The CSV is now in the Project as [`psf-zero/data/xor_prereg_stage1_2026-09-25.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/xor_prereg_stage1_2026-09-25.csv)
 > (143,823 bytes as received). Pre-publication grep for account names, local
 > paths and host names: 0 hits.
 
@@ -4391,7 +4391,7 @@ the script. To be re-checked by grep when the file is downloaded.
 
 **Status: pre-registration, locked at the Project save time of this
 document.** Written after Stage 1 was scored
-(`xor-real-device-stage1-results-2026-09-25.md`, including its correction
+([`xor-real-device-stage1-results-2026-09-25.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-168-2026-09-25.md), including its correction
 note) and before any Stage-1b run on the XOR circuit. A dry run on a stub
 circuit was made before locking (section 6); its values are not data.
 
@@ -4537,7 +4537,7 @@ stub dry run, not measured on the pod).
 
 > **Imported into the home series as Addendum 170.** Written at the workplace, run on a RunPod pod (RTX 4090), original file `xor-real-device-stage1b-results-2026-09-25.md`; body below unchanged. Q1-Q6 and the selection counts re-computed at home from `xor_prereg_stage1b_2026-09-25.csv`: all match, except Q6's minimum, -0.0007 here versus -0.0008 recomputed at home -- a rounding difference around -0.00075; the verdict (bound -0.02) is unaffected.
 
-**Scored against:** `xor-real-device-stage1b-preregistration-2026-09-25.md`
+**Scored against:** [`xor-real-device-stage1b-preregistration-2026-09-25.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-169-preregistration-2026-09-25.md)
 (locked in the Project before this run). Thresholds applied exactly as
 written. Every verdict below was recomputed from the raw CSV in the
 workplace sandbox and matches the script's own scoring. Section 4 is
@@ -4654,9 +4654,9 @@ All six predictions confirmed.
 
 | File | What it is |
 |---|---|
-| `psf-zero/data/xor_prereg_stage1b_2026-09-25.csv` | raw data, 336 rows (19,826 bytes as received) |
-| `psf-zero/benchmarks/xor_prereg_stage1b_sweep.py` | the locked script |
-| `xor-real-device-stage1b-preregistration-2026-09-25.md` | the pre-registration scored here |
+| [`psf-zero/data/xor_prereg_stage1b_2026-09-25.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/xor_prereg_stage1b_2026-09-25.csv) | raw data, 336 rows (19,826 bytes as received) |
+| [`psf-zero/benchmarks/xor_prereg_stage1b_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/xor_prereg_stage1b_sweep.py) | the locked script |
+| [`xor-real-device-stage1b-preregistration-2026-09-25.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-169-preregistration-2026-09-25.md) | the pre-registration scored here |
 
 Pre-publication grep of the CSV for account names, local paths and host
 names: 0 hits.
@@ -4692,7 +4692,7 @@ Two hypotheses were proposed for the record before 2026-09-28:
 What the existing record already says:
 
 - "Size 56, depth 16, 0 fallbacks" is PSF-Zero's arm in Addendum 156
-  (`data/compare_with_without_psf_2026-09-24.csv`, FakeManilaV2, 5 tapes),
+  ([`data/compare_with_without_psf_2026-09-24.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/compare_with_without_psf_2026-09-24.csv), FakeManilaV2, 5 tapes),
   against **84 / 23** for Qiskit's `TwoQubitBasisDecomposer(CXGate())` with
   its default Euler basis. Routed 2-qubit gates were **6 in both arms**
   (no SWAPs either way); the difference is all single-qubit gates.
@@ -4860,7 +4860,7 @@ unchanged. What the dry run showed that bears on them:
 > **Imported into the home series as Addendum 172.** Written at the workplace, run on a RunPod pod (RTX 4090), original file `xor-real-device-stage1c-results-2026-09-25.md`; body below unchanged. Re-computed at home from `xor_prereg_stage1c_2026-09-25.csv`: P and Z structurally identical in 105/105 cells, |dTVD| > 0.002 in 8 cells (max 0.0043), P smaller than A in both size and depth in 40/105, mean TVD_A - TVD_P = +0.00003, and the per-arm mean sizes and depths -- all as stated.
 
 **Official outcome: the pre-registered predictions C1-C7 are NOT scored.**
-The pre-registration (`xor-real-device-stage1c-preregistration-2026-09-25.md`)
+The pre-registration ([`xor-real-device-stage1c-preregistration-2026-09-25.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-171-preregistration-2026-09-25.md))
 made exact replication of Addendum 156 (R0) a condition for scoring, and R0
 failed. The cause is identified (section 2) and is a design error in the
 pre-registration, not a property of the compilers. Everything in sections 3
@@ -4884,7 +4884,7 @@ circuits' content (the exact output distribution), not in noise sampling.
 
 ## 2. Cause of the R0 failure (identified; a design error)
 
-`data/compare_with_without_psf_2026-09-24.csv` (Addendum 156) was produced
+[`data/compare_with_without_psf_2026-09-24.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/compare_with_without_psf_2026-09-24.csv) (Addendum 156) was produced
 on the evening of 2026-09-24, **before** the fix to the 2-qubit
 `QubitUnitary` bit order in `tape_to_qiskit` (Addenda 164-166 in the home
 record). The repository on the pod contains the fixed conversion, so the
@@ -4967,9 +4967,9 @@ existing record rather than overturn it.
 
 | File | What it is |
 |---|---|
-| `psf-zero/data/xor_prereg_stage1c_2026-09-25.csv` | raw data, 440 rows (23,611 bytes as received) |
-| `psf-zero/benchmarks/xor_prereg_stage1c_sweep.py` | the locked script (the pod run's hash check was not shown; not confirmed -- see the update below) |
-| `xor-real-device-stage1c-preregistration-2026-09-25.md` | the pre-registration |
+| [`psf-zero/data/xor_prereg_stage1c_2026-09-25.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/xor_prereg_stage1c_2026-09-25.csv) | raw data, 440 rows (23,611 bytes as received) |
+| [`psf-zero/benchmarks/xor_prereg_stage1c_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/xor_prereg_stage1c_sweep.py) | the locked script (the pod run's hash check was not shown; not confirmed -- see the update below) |
+| [`xor-real-device-stage1c-preregistration-2026-09-25.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-171-preregistration-2026-09-25.md) | the pre-registration |
 
 Pre-publication grep of the CSV: 0 hits.
 
@@ -4988,7 +4988,7 @@ Pre-publication grep of the CSV: 0 hits.
 
 ## Addendum 173 -- Pre-registration: long-run stability of the 2026-09-28 pipeline and of PSF-Zero, 100 iterations x 2 processes (2026-09-25)
 
-> **Imported into the home series as Addendum 173.** Written at the workplace, run on a RunPod pod (RTX 4090), original file `longrun-stability-preregistration-2026-09-25.md`; body below unchanged. Script hash (`xor_prereg_longrun_stability.py`, `ec8f9b77...`) re-checked at home: matches. The "home Addenda 94-95" this record mentions are in Part 6 (`spare-qubit-cliff-combined-88.md`): Addendum 94 found garbage collection contributing to compile-time variance (2.73x) and that disabling it grew memory by 2.27 GB over 10,000 calls. Note found at home when reading the script: W2 re-synthesizes the same tape every iteration, so from iteration 2 on PSF-Zero's CX-core cache (`_cx_core_cached`, keyed on the exact Cartan floats) is hit; L3 still tests whether the Rust core returns bit-identical floats each time.
+> **Imported into the home series as Addendum 173.** Written at the workplace, run on a RunPod pod (RTX 4090), original file `longrun-stability-preregistration-2026-09-25.md`; body below unchanged. Script hash (`xor_prereg_longrun_stability.py`, `ec8f9b77...`) re-checked at home: matches. The "home Addenda 94-95" this record mentions are in Part 6 ([`spare-qubit-cliff-combined-88.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-combined-88.md)): Addendum 94 found garbage collection contributing to compile-time variance (2.73x) and that disabling it grew memory by 2.27 GB over 10,000 calls. Note found at home when reading the script: W2 re-synthesizes the same tape every iteration, so from iteration 2 on PSF-Zero's CX-core cache (`_cx_core_cached`, keyed on the exact Cartan floats) is hit; L3 still tests whether the Rust core returns bit-identical floats each time.
 
 **Status: pre-registration, locked at the Project save time of this
 document**, before any run on the pod. A short sandbox dry run with stubs was
@@ -5148,7 +5148,7 @@ both processes (estimated from the dry run, not measured on the pod).
 
 > **Imported into the home series as Addendum 174.** Written at the workplace, run on a RunPod pod (RTX 4090), original file `longrun-stability-results-2026-09-25.md`; body below unchanged. L1-L6 and the exploratory figures re-computed at home from `longrun_none_2026-09-25.csv` and `longrun_each_2026-09-25.csv`: all match. The exploratory gc observation points the same way as home Addendum 94 (Part 6).
 
-**Scored against:** `longrun-stability-preregistration-2026-09-25.md`
+**Scored against:** [`longrun-stability-preregistration-2026-09-25.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-173-preregistration-2026-09-25.md)
 (locked in the Project before the run). Thresholds applied exactly as
 written. Every verdict was recomputed from the two raw CSVs in the workplace
 sandbox and matches the script's own scoring. Section 4 is exploratory.
@@ -5244,10 +5244,10 @@ behaviour or about compression value (Stage 1c).
 
 | File | What it is |
 |---|---|
-| `psf-zero/data/longrun_none_2026-09-25.csv` | raw data, 100 rows (44,247 bytes as received) |
-| `psf-zero/data/longrun_each_2026-09-25.csv` | raw data, 100 rows (44,502 bytes as received) |
-| `psf-zero/benchmarks/xor_prereg_longrun_stability.py` | the locked script |
-| `psf-zero/benchmarks/make_longrun_figs.py` | figure script (sandbox) |
+| [`psf-zero/data/longrun_none_2026-09-25.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/longrun_none_2026-09-25.csv) | raw data, 100 rows (44,247 bytes as received) |
+| [`psf-zero/data/longrun_each_2026-09-25.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/longrun_each_2026-09-25.csv) | raw data, 100 rows (44,502 bytes as received) |
+| [`psf-zero/benchmarks/xor_prereg_longrun_stability.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/xor_prereg_longrun_stability.py) | the locked script |
+| [`psf-zero/benchmarks/make_longrun_figs.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/make_longrun_figs.py) | figure script (sandbox) |
 | `longrun_fig1_timing.png`, `longrun_fig2_z0.png`, `longrun_fig3_rss.png` | the three figures |
 
 Pre-publication grep of both CSVs for account names, local paths and host
@@ -5448,7 +5448,7 @@ different (infidelity above 0.9).
 
 > **Imported into the home series as Addendum 176.** Written at the workplace, run on a RunPod pod (RTX 4090), original file `roundtrip-chain-results-2026-09-25.md`; body below unchanged. Re-computed at home from `roundtrip_chain_2026-09-25.csv` (SHA-256 `b8aa9314...`, as this record states): NEW round trips exact at every step with meaning infidelity at most 3.6e-15; OLD round trips also exact at every step; OLD step-1 meaning infidelity above 1e-3 on 19/19 tapes (minimum 0.919).
 
-**Scored against:** `roundtrip-chain-preregistration-2026-09-25.md` (locked
+**Scored against:** [`roundtrip-chain-preregistration-2026-09-25.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-175-preregistration-2026-09-25.md) (locked
 in the Project before the pod run). As that document states, A1-A5 were not
 blind predictions: the sandbox dry run had already produced them with the
 same converter files. A6, the replication test, was the only open question.
@@ -5545,9 +5545,9 @@ bit-order fix, not this.)
 
 | File | What it is |
 |---|---|
-| `psf-zero/data/roundtrip_chain_2026-09-25.csv` | pod raw data, 3,800 rows (348,466 bytes as received) |
-| `psf-zero/benchmarks/roundtrip_compound_chain.py` | the locked script |
-| `roundtrip-chain-preregistration-2026-09-25.md` | the pre-registration (with the dry run and its `fp0` values) |
+| [`psf-zero/data/roundtrip_chain_2026-09-25.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/roundtrip_chain_2026-09-25.csv) | pod raw data, 3,800 rows (348,466 bytes as received) |
+| [`psf-zero/benchmarks/roundtrip_compound_chain.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/roundtrip_compound_chain.py) | the locked script |
+| [`roundtrip-chain-preregistration-2026-09-25.md`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/docs/findings/spare-qubit-cliff-addendum-175-preregistration-2026-09-25.md) | the pre-registration (with the dry run and its `fp0` values) |
 
 Pre-publication grep of the CSV for account names, local paths and host
 names: 0 hits.
