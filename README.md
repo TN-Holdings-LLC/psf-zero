@@ -412,6 +412,33 @@ plausible, not demonstrated), from a smaller default search budget, or simply
 from this grid not yet being hard enough to expose a TKET-side cliff. Full data
 and every pre-registered prediction: `spare-qubit-cliff-combined.md`, Addendum 35.
 
+**On IBM's square-lattice generation (2026-09-25): the cliff is there, with
+Qiskit given the full device target.** Until now the cliff was a finding on
+grids built for the purpose: IBM's current heavy-hex devices cannot reach the
+saturated condition at all, because a heavy-hex graph has no perfect
+matching. FakeNighthawk -- `qiskit_ibm_runtime`'s snapshot of IBM's
+square-lattice Nighthawk generation (120 qubits, degree at most 4) -- can: its
+coupling graph is bipartite 60/60 with a perfect matching. On the same dense
+adjacent-pair circuit family, with `transpile()` given the full backend rather
+than a bare coupling map, a pre-registered, deadline-scored comparison found
+Qiskit `optimization_level=3` taking a median **12.9 s** at spare 0 and 2 and
+meeting a 1-second deadline in **0 of 5** seeds, while PSF-Zero's
+`compile_for_hardware(layout_search=True)` produced circuits with identical
+two-qubit counts, every qubit pair verified exact (worst infidelity 2.6e-15),
+in a median **0.16 s**, meeting the deadline **5 of 5** -- about **80x** faster
+for the same output. At spare 4 and 8 both finish in under 0.2 s and the
+difference disappears. Qiskit's time on the cliff was nearly constant
+(12.7-13.1 s), consistent with a fixed search budget being exhausted; not
+traced. Scope: a fake backend whose error values are, by its own warning, not
+representative of the device, and a circuit family built to reach saturation;
+not yet checked against real Nighthawk hardware. Where the cliff does not
+occur, a separate pre-registered depth sweep on four IBM fake backends (CZ and
+ECR devices, up to 72 CX) found no difference in noisy output quality between
+PSF-Zero and Qiskit's default at any depth. Full data and every
+pre-registered prediction:
+[`docs/findings/spare-qubit-cliff-combined-135.md`](docs/findings/spare-qubit-cliff-combined-135.md),
+Addenda 177-180.
+
 **Still open**: whether a same-condition run-to-run variance found at
 `optimization_level=3` (up to ~3x on one measurement) reflects `VF2Layout`'s own
 non-determinism or drift in the measurement environment; the actual `call_limit`
@@ -444,7 +471,11 @@ Experiments:
 sweep with `VF2Layout_stop_reason` and independent feasibility instrumentation,
 no PSF-Zero dependency),
 [`cross_compiler_cliff.py`](benchmarks/cross_compiler_cliff.py) (Qiskit vs. TKET
-at the same saturation point, no PSF-Zero dependency).
+at the same saturation point, no PSF-Zero dependency),
+[`nighthawk_deadline_cliff.py`](benchmarks/nighthawk_deadline_cliff.py)
+(the square-lattice, deadline-scored comparison above),
+[`psf_vs_qiskit_depth_sweep.py`](benchmarks/psf_vs_qiskit_depth_sweep.py)
+(the depth sweep above).
 Full account, source reading, every pre-registered prediction, and raw data (18
 rounds, 2026-09-13 through 2026-09-15):
 [`docs/findings/spare-qubit-cliff.md`](docs/findings/spare-qubit-cliff.md) (summary)
