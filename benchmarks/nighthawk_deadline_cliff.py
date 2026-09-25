@@ -10,7 +10,7 @@ a fresh child process, timed inside the child, killed at 180 s (DNF).
 Quality: routed 2-qubit count and, when no SWAP connects different pairs,
 an exact per-pair 4x4 check.
 
-Linux only (fork). Usage (WSL or RunPod, repository root importable):
+Child processes use the "spawn" start method. Usage (WSL or RunPod, repository root importable):
     python -u nighthawk_deadline_cliff.py 2>&1 | tee nighthawk_result.txt
 """
 from __future__ import annotations
@@ -19,7 +19,9 @@ import contextlib
 import csv
 import io
 import multiprocessing as mp
+import os
 import platform
+import sys
 import statistics as st
 import time
 
@@ -30,13 +32,22 @@ from qiskit import QuantumCircuit, transpile
 from qiskit.quantum_info import Operator
 from qiskit_ibm_runtime.fake_provider import FakeNighthawk
 
+# psf_smart_layout.py (needed by compile_for_hardware(layout_search=True))
+# lives in benchmarks/ in this repository; make it importable whether this
+# script is run from the repository root or from benchmarks/ (Addendum 178,
+# Section 6: the first run failed partly because it was not).
+_HERE = os.path.dirname(os.path.abspath(__file__))
+for _p in (_HERE, os.path.join(_HERE, "benchmarks")):
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
+
 from psf_compile import compile_for_hardware
 
 SPARES = (0, 2, 4, 8)
 SEEDS = 5
 GATES_PER_PAIR = 20
 CAP_S = 180.0
-DEADLINES = (0.1, 1.0, 10.0)
+DEADLINES = (0.01, 0.1, 1.0, 10.0)  # 1.0 s scores N2/N3; the others are reported only
 NATIVE = ("cz", "ecr", "cx", "rz", "sx", "x", "id", "rzz")
 OUT_CSV = "nighthawk_deadline_cliff_2026-09-25.csv"
 
@@ -134,7 +145,10 @@ def _worker(arm, spare, seed, q):
 
 
 def run_one(arm, spare, seed):
-    ctx = mp.get_context("fork")
+    # "spawn", not "fork": forking after Qiskit has started its internal
+    # thread pools left every child hung until the cap in the first run
+    # (Addendum 178, Section 6). A spawned child starts clean.
+    ctx = mp.get_context("spawn")
     q = ctx.Queue()
     p = ctx.Process(target=_worker, args=(arm, spare, seed, q))
     p.start()
