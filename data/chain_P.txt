@@ -1,0 +1,20 @@
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+arm=P laps=20000 | platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | python 3.12.13 | qiskit 2.5.2 | pennylane 0.45.1 | layout [0, 1, 2, 3]
+lap      1  delta=8.947e-13  ops=98  step_med=8.95e-13 step_max=8.95e-13  fixed=0  0s
+lap      2  delta=8.315e-13  ops=98  step_med=5.11e-13 step_max=8.95e-13  fixed=0  0s
+lap      5  delta=7.451e-13  ops=98  step_med=1.37e-13 step_max=8.95e-13  fixed=0  0s
+lap     10  delta=1.029e-12  ops=98  step_med=1.40e-13 step_max=8.95e-13  fixed=0  0s
+lap     20  delta=2.245e-12  ops=98  step_med=1.41e-13 step_max=8.95e-13  fixed=0  1s
+lap     50  delta=6.301e-12  ops=98  step_med=1.41e-13 step_max=8.95e-13  fixed=0  2s
+lap    100  delta=1.317e-11  ops=98  step_med=1.41e-13 step_max=8.95e-13  fixed=0  3s
+lap    200  delta=2.685e-11  ops=98  step_med=1.39e-13 step_max=8.95e-13  fixed=0  7s
+lap    500  delta=6.813e-11  ops=98  step_med=1.39e-13 step_max=8.95e-13  fixed=0  16s
+lap   1000  delta=1.369e-10  ops=98  step_med=1.39e-13 step_max=8.95e-13  fixed=0  33s
+lap   2000  delta=2.746e-10  ops=98  step_med=1.40e-13 step_max=8.95e-13  fixed=0  65s
+lap   5000  delta=6.884e-10  ops=98  step_med=1.40e-13 step_max=8.95e-13  fixed=0  163s
+lap  10000  delta=1.376e-09  ops=98  step_med=1.40e-13 step_max=8.95e-13  fixed=0  325s
+lap  20000  delta=2.752e-09  ops=98  step_med=1.40e-13 step_max=8.95e-13  fixed=0  640s
+
+DONE arm=P  alpha=+1.031  delta_final=2.752e-09  ops lap1=98 final=98  step_median=1.40e-13  step_max=8.95e-13  fixed_laps=0  wall=640s  fallbacks=0
+Wrote compound_chain_P_checkpoints_2026-09-25.csv

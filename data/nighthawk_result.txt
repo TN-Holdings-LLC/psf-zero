@@ -1,0 +1,43 @@
+platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | python 3.12.13 | qiskit 2.5.2
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+Stage 0: qubits=120, edges=218, degree min/median/max=2/4.0/4, bipartite parts=(60, 60), max matching=60 pairs (perfect needs 60)
+spare=0 seed=0 Q3 DNF         DNF 2q=None pair_check=None worst=None
+spare=0 seed=0 P  DNF         DNF 2q=None pair_check=None worst=None
+spare=0 seed=1 Q3 DNF         DNF 2q=None pair_check=None worst=None
+spare=0 seed=1 P  DNF         DNF 2q=None pair_check=None worst=None
+spare=0 seed=2 Q3 DNF         DNF 2q=None pair_check=None worst=None
+spare=0 seed=2 P  DNF         DNF 2q=None pair_check=None worst=None
+spare=0 seed=3 Q3 DNF         DNF 2q=None pair_check=None worst=None
+spare=0 seed=3 P  DNF         DNF 2q=None pair_check=None worst=None
+spare=0 seed=4 Q3 DNF         DNF 2q=None pair_check=None worst=None
+spare=0 seed=4 P  DNF         DNF 2q=None pair_check=None worst=None
+spare=2 seed=0 Q3 DNF         DNF 2q=None pair_check=None worst=None
+spare=2 seed=0 P  DNF         DNF 2q=None pair_check=None worst=None
+spare=2 seed=1 Q3 DNF         DNF 2q=None pair_check=None worst=None
+spare=2 seed=1 P  DNF         DNF 2q=None pair_check=None worst=None
+spare=2 seed=2 Q3 DNF         DNF 2q=None pair_check=None worst=None
+spare=2 seed=2 P  DNF         DNF 2q=None pair_check=None worst=None
+spare=2 seed=3 Q3 DNF         DNF 2q=None pair_check=None worst=None
+spare=2 seed=3 P  DNF         DNF 2q=None pair_check=None worst=None
+spare=2 seed=4 Q3 DNF         DNF 2q=None pair_check=None worst=None
+spare=2 seed=4 P  DNF         DNF 2q=None pair_check=None worst=None
+spare=4 seed=0 Q3 DNF         DNF 2q=None pair_check=None worst=None
+spare=4 seed=0 P  DNF         DNF 2q=None pair_check=None worst=None
+spare=4 seed=1 Q3 DNF         DNF 2q=None pair_check=None worst=None
+spare=4 seed=1 P  DNF         DNF 2q=None pair_check=None worst=None
+spare=4 seed=2 Q3 DNF         DNF 2q=None pair_check=None worst=None
+spare=4 seed=2 P  DNF         DNF 2q=None pair_check=None worst=None
+spare=4 seed=3 Q3 DNF         DNF 2q=None pair_check=None worst=None
+spare=4 seed=3 P  DNF         DNF 2q=None pair_check=None worst=None
+spare=4 seed=4 Q3 DNF         DNF 2q=None pair_check=None worst=None
+spare=4 seed=4 P  DNF         DNF 2q=None pair_check=None worst=None
+spare=8 seed=0 Q3 DNF         DNF 2q=None pair_check=None worst=None
+spare=8 seed=0 P  DNF         DNF 2q=None pair_check=None worst=None
+spare=8 seed=1 Q3 DNF         DNF 2q=None pair_check=None worst=None
+spare=8 seed=1 P  DNF         DNF 2q=None pair_check=None worst=None
+spare=8 seed=2 Q3 DNF         DNF 2q=None pair_check=None worst=None
+spare=8 seed=2 P  DNF         DNF 2q=None pair_check=None worst=None
+spare=8 seed=3 Q3 DNF         DNF 2q=None pair_check=None worst=None
+spare=8 seed=3 P  DNF         DNF 2q=None pair_check=None worst=None
+spare=8 seed=4 Q3 DNF         DNF 2q=None pair_check=None worst=None
