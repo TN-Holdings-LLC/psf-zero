@@ -3935,4 +3935,1623 @@ output observed as text. Both held:
 
 ---
 
+<!-- ===== Addendum 167 pre-registration (source: spare-qubit-cliff-addendum-167-preregistration-2026-09-25.md) ===== -->
+
+> **Note added when merging:** First of ten workplace records imported into the home series (Addenda 167-176), all run on a RunPod RTX 4090 on 2026-09-25. Stage 1: the noisy XOR rehearsal across 21 fake IBM backends, pinned versus free layout. Original workplace filenames and their home numbers (the bodies cite each other by these names): stage1 pre-registration = 167, stage1 results = 168, stage1b pre-registration = 169, stage1b results = 170, stage1c pre-registration = 171, stage1c results = 172, longrun-stability pre-registration = 173, results = 174, roundtrip-chain pre-registration = 175, results = 176.
+
+## Addendum 167 -- Pre-registration, Stage 1: how robust is the noisy XOR rehearsal across fake IBM backends, and does free (noise-aware) layout beat the rehearsal's pinned layout? (2026-09-25)
+
+> **Imported into the home series as Addendum 167.** Written at the workplace, run on a RunPod pod (RTX 4090), original file `xor-real-device-stage1-preregistration-2026-09-25.md`; body below unchanged. Script hash on file (`xor_prereg_stage1_sweep.py`, normalized SHA-256 `28197bc4...`) re-checked at home: matches.
+
+**Status: pre-registration, locked at the Project save time of this
+document.** No Stage-1 run on the real XOR circuit exists at the time of
+locking. The only prior data are the existing single-backend rehearsal
+results (`benchmarks/rehearse_result_2.txt`, reproduced byte-for-byte on a
+RunPod RTX 4090 pod on 2026-09-25), quoted as background, not as Stage-1
+data. A dry run of the harness on a **stub** circuit was made before locking
+(section 7); its outcome values are not Stage-1 data and are not reported.
+
+**Numbering:** the home machine's series had reached Addendum 166 when this
+was written. To avoid a collision, this document carries no number; the
+official number is assigned when the two records are merged.
+
+## 1. Why this experiment exists
+
+The plan for 2026-09-28 (IBM Quantum free tier restored) is to submit the
+trained XOR classifier (Addendum 148, seed 0) to a real device through the
+already-tested SamplerV2 path and compare against the noisy rehearsal
+(`rehearse_xor_fake127.py`: all four inputs correct, noisy |<Z0>| 0.904 to
+0.9185 on FakeBrisbane).
+
+As planned, that comparison has three weaknesses:
+
+1. **It rests on one fake backend.** The real device is not chosen yet and
+   will not be FakeBrisbane's calibration snapshot.
+2. **The 0.90-0.92 band is mostly shot noise.** At S = 4,000 shots the
+   standard error of one <Z0> near |<Z0>| = 0.9 is sqrt((1 - 0.81) / S), about
+   0.007. The four rehearsal values span about 0.015, roughly two standard
+   errors.
+3. **The rehearsal pins the layout.** Reading the repository's
+   `route_for_backend` (in `psf_pennylane_gpu_ibm_prototype.py`) shows
+   `initial_layout=list(range(qc.num_qubits))` with `optimization_level=1`:
+   the circuit always runs on physical qubits 0-3, whatever that day's
+   calibration says about them. The function's own comment already says a
+   real integration would not pin this.
+
+Stage 1 measures, on many fake backends, how robust correctness is, how much
+the result depends on routing seeds, whether shot noise behaves as the
+binomial model says (needed to set Stage-2 tolerances honestly), and whether
+letting Qiskit choose qubits by calibration beats the pinned layout. Stage 2
+(section 6) then fixes the real-device procedure and predictions before
+2026-09-28.
+
+## 2. Fixed design
+
+**Circuits.** The four input circuits (00, 01, 10, 11) exactly as
+`rehearse_xor_fake127.py` builds them (`build_qiskit`) after `retrain_seed0()`
+(constants in that file: N = 4, LAYERS = 3, ITERATIONS = 200, SEED = 0,
+LR = 0.1). Built once and reused. **Harness check before any Stage-1 data:**
+the exact (statevector) <Z0> of each rebuilt circuit must equal the
+rehearsal's +-0.99776 with the correct sign (tolerance 6e-5); otherwise the
+script stops.
+
+**Backends (selection rule fixed now; the list is printed by the script, not
+chosen by hand).** Every `Fake*` class in the installed
+`qiskit_ibm_runtime.fake_provider` that instantiates as a `BackendV2` with at
+least 100 qubits and whose `Target` has error values for `measure` and for a
+native 2-qubit gate (`ecr`, `cx` or `cz`). Every exclusion is printed with its
+reason.
+
+**Two routing arms.**
+- **Arm A (as-is):** `route_for_backend(circuit, backend, seed_transpiler=s)`
+  from the repository -- pinned to physical qubits 0-3, `optimization_level=1`.
+  This is the path 2026-09-28 would use unchanged.
+- **Arm B (free layout):** `transpile(circuit, backend=backend,
+  optimization_level=3, seed_transpiler=s)` with no `initial_layout`, so
+  Qiskit's calibration-aware layout passes choose the physical qubits.
+
+Every routed circuit must pass the repository's `is_isa_compliant`; a failure
+stops the run.
+
+**Measurement.** In both arms, only the physical qubit that holds logical
+qubit 0 at the end of the routed circuit (`layout.final_index_layout()[0]`)
+is measured. This avoids depending on the bit ordering of the other
+measurement helpers. In Aer's noise model readout errors are independent per
+qubit, so the marginal of qubit 0 is the same whether or not the other qubits
+are measured; on real hardware this is not guaranteed (Stage 2 notes it).
+
+**Seeds and shots.** `seed_transpiler` s in {0, 1, 2, 3, 4}; noisy simulation
+`seed_simulator` = 0 for all main cells; S = 4,000 shots per circuit.
+
+**Noise model.** `AerSimulator.from_backend(backend)`.
+
+**Harness check C0 (not a prediction; must pass before scoring).** For
+FakeBrisbane, arm A, seed 0, each input's noisy <Z0> must lie within
+3 * sqrt(2) standard errors of the rehearsal's recorded value (-0.9040,
+0.9185, 0.9085, -0.9130). If C0 fails, predictions are not scored and the
+mismatch is investigated first.
+
+**Recorded per cell** (backend x arm x seed x input): exact <Z0>, noisy
+<Z0>, label, physical qubit measured, its readout error, number of routed
+2-qubit gates, `blocks` (PSF-Zero-eligible blocks in the logical circuit),
+shots, simulator seed, and environment versions. Margin m = label x noisy
+<Z0>; a cell group (backend x arm x seed) has mean margin M over its four
+inputs.
+
+## 3. Withdrawn before locking: the calibration-only error-budget predictor (draft P2)
+
+The draft of this document proposed, as its central prediction, a closed-form
+error budget (depolarizing shrink factors over the backward light cone of the
+measured qubit, plus a readout factor) expected to match the noisy result to
+within 0.03. It is **withdrawn before locking**, for two reasons found while
+building the harness:
+
+1. **The light-cone construction is structurally biased.** It includes every
+   gate that touches a qubit in the growing cone, even when the gate commutes
+   with the observable (for example a CX whose control is the measured qubit,
+   or a CZ), so it adds qubits to the cone that the observable never actually
+   spreads to, and over-counts error. The stub dry run (section 7) made this
+   visible; the reason is structural, not a matter of tuning.
+2. **On fake backends it cannot test what matters.** Aer's noise model is
+   itself built from the same calibration numbers, so any calibration-based
+   predictor is checked only against another model of the same data, not
+   against hardware.
+
+For 2026-09-28 the predictor will instead be the standard one: an Aer noise
+model built from the chosen real device's own calibration on that day
+(section 6). P2 is left empty so the other prediction numbers stay as in the
+draft.
+
+## 4. Pre-registered predictions
+
+**P1 (correctness is robust).** In every cell group, all four inputs are
+classified correctly (m > 0). *Refuted* by any single sign flip.
+
+**P2.** Withdrawn (section 3). Not scored.
+
+**P3 (seed sensitivity is small).** Within each backend x arm, the spread
+(max - min) of M across the five `seed_transpiler` values is at most 0.03 for
+all backend x arm pairs (*confirmed*). *Refuted* if any backend x arm exceeds
+0.06. Otherwise *ambiguous*.
+
+**P4 (shot noise follows the binomial model).** For FakeBrisbane, arm A,
+seed 0, repeat the noisy simulation with `seed_simulator` 0 to 49 (50
+repeats). For each input i, r_i = (sample SD of <Z0> over the repeats) /
+sqrt((1 - mean<Z0>^2) / S). Pooled ratio R = sqrt(mean of r_i^2 over the four
+inputs). *Confirmed* if 0.85 <= R <= 1.15; *refuted* if R < 0.7 or R > 1.3;
+otherwise *ambiguous*. (With 4 x 49 degrees of freedom the relative standard
+error of R is about 0.05, so the confirmed band is about +-3 standard errors.)
+
+**P5 (PSF-Zero is not exercised).** `blocks` = 0 in every cell. Stated so no
+Stage-1 or Stage-2 result is read as evidence about PSF-Zero: the XOR circuit
+has no block that PSF-Zero would re-synthesize.
+
+**P6 (free layout is at least as good).** For every backend and every seed,
+arm B's M is at least arm A's M minus 0.01, **and** arm B beats arm A by more
+than 0.01 on at least half of the backends at seed 0 (*confirmed*).
+*Refuted* if arm B is worse than arm A by more than 0.03 for any backend and
+seed. Otherwise *ambiguous*. If P6 is confirmed, Stage 2 proposes arm B for
+2026-09-28; if not, arm A stays unless Stage 2 gives another pre-registered
+reason.
+
+## 5. What this does and does not test
+
+It tests the XOR circuit's behaviour under Aer's calibration-based noise
+models of many IBM devices. It does **not** test real hardware, where
+crosstalk, drift, leakage, coherent errors and idle decoherence (absent here,
+since circuits are not scheduled) all add error. No timing is measured. The
+GPU is not used (all simulation is CPU Aer).
+
+## 6. Stage 2 (outline only; written and locked after Stage 1 is scored and before 2026-09-28)
+
+- Routing arm for the real run, chosen by the P6 result as stated in P6.
+- Device selection rule, fixed in advance: among devices available to the
+  account at submission time, the one with the highest predicted M from an
+  Aer noise model built from that device's calibration at submission time
+  (`AerSimulator.from_backend(real_backend)`, many shots); ties broken by
+  shortest queue. The calibration snapshot and the prediction are saved
+  together with the job ID before results are read.
+- Predictions: all four inputs correct; observed M expected **below** the
+  Aer prediction (one-sided), with a tolerance derived from P4's shot-noise
+  result and Stage 1's seed spread (P3), and a stated floor below which the
+  result counts as worse than the calibration can explain.
+- Per the Addendum 150 lesson, the magnitude of <Z0>, not only correctness,
+  is scored.
+- Measuring only qubit 0 versus all logical qubits on real hardware is a
+  choice Stage 2 must fix in advance (it is equivalent in Aer, not
+  necessarily on hardware).
+
+## 7. Dry run before locking (methodology, not data)
+
+The harness was run end to end in the workplace sandbox with a **stub**
+`rehearse_xor_fake127` module (a hand-written 4-qubit circuit with
+|<Z0>| = 0.99776, not the trained XOR classifier) on five and then two fake
+backends, to check that the code runs and scores. Changes made because of it:
+
+- Draft P2 withdrawn (section 3).
+- P4 redesigned from 10 repeats with per-input thresholds to 50 repeats with
+  a pooled ratio, because a power calculation showed the 10-repeat design
+  would come out *ambiguous* roughly a third of the time even if the binomial
+  model holds exactly.
+
+P3 and P6 thresholds are **unchanged from the draft written before the dry
+run**; the stub's outcome values were deliberately not used to adjust them,
+and they are not reported here because the stub is not the XOR classifier.
+
+## 8. Files, integrity check and run command
+
+| File | What it is |
+|---|---|
+| [`xor_prereg_stage1_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/xor_prereg_stage1_sweep.py) | Stage-1 script (Project: `psf-zero/benchmarks/xor_prereg_stage1_sweep.py`; on the pod: `~/pennylane_gpu_mock_test/`, outside the repository) |
+| this document | the pre-registered predictions |
+
+Integrity check of the script on the pod (the file is transferred by pasting,
+which has corrupted files before): normalized SHA-256 (lines right-stripped,
+leading/trailing blank space removed, joined with newlines) must equal
+`28197bc43fa70bb06a928da9a84552644d683353bc4eb6cb94e37ba72c45cf0f`.
+
+```
+cd ~/pennylane_gpu_mock_test
+python -c "import hashlib;print(hashlib.sha256('\n'.join(l.rstrip() for l in open('xor_prereg_stage1_sweep.py',encoding='utf-8').read().strip().splitlines()).encode()).hexdigest())"
+python -u xor_prereg_stage1_sweep.py 2>&1 | tee ~/xor_prereg_stage1_run.txt
+```
+
+Output: `~/xor_prereg_stage1_2026-09-25.csv` (one row per cell) and the
+scoring printed at the end of `~/xor_prereg_stage1_run.txt`. Expected run
+time on the order of half an hour (roughly 20 backends; estimated from the
+stub dry run, not measured on the pod).
+
+Pre-publication check before any of this leaves the pod: grep the CSV and the
+run log for local paths or machine-identifying strings beyond the platform
+and CPU columns, per this project's record-keeping rules.
+
+---
+
+<!-- ===== Addendum 168 (source: spare-qubit-cliff-addendum-168-2026-09-25.md) ===== -->
+
+> **Note added when merging:** Stage 1 results: most failures are the readout error of the physical qubit holding logical qubit 0; the free layout sometimes picks such qubits; FakeKyoto's snapshot has every ECR error at 1.0. Includes the record's own correction of a first-row-only analysis.
+
+## Addendum 168 -- Stage 1 results: the noisy XOR rehearsal across 21 fake IBM backends (2026-09-25)
+
+> **Imported into the home series as Addendum 168.** Written at the workplace, run on a RunPod pod (RTX 4090), original file `xor-real-device-stage1-results-2026-09-25.md`; body below unchanged. Re-checked at home from the raw CSV (`xor_prereg_stage1_2026-09-25.csv`): the 30 sign flips (10 each in FakeCusco A, FakeKyoto A, FakeKyoto B), FakeBrussels B's per-input qubits (16 for input 00, 28 for the other three), FakeCusco A's constant +0.019, the 7 backends whose B layout varies by input, and the 3 backends where B is worse than A by more than 0.03 -- all as stated. The home assistant made the same first-row-only error as this record's own correction note describes: during a chat analysis it called FakeBrussels B "not explained by readout" after looking only at each group's first input. It is explained by readout.
+
+**Scored against:** `xor-real-device-stage1-preregistration-2026-09-25.md`
+(locked in the Project before this run). Thresholds are applied exactly as
+written there. Everything under "Post-hoc diagnostics" was looked at after
+seeing the results and is exploratory, not part of the scoring.
+
+**Run:** RunPod pod (the GPU was not used; all simulation is CPU Aer),
+`python -u xor_prereg_stage1_sweep.py 2>&1 | tee ~/xor_prereg_stage1_run.txt`.
+Script integrity on the pod checked against the pre-registered normalized
+SHA-256. Environment printed by the script: Linux-6.8.0-64-generic-x86_64,
+Python 3.12.3, Qiskit 2.5.2, qiskit-aer 0.17.2, qiskit-ibm-runtime 0.50.0,
+PennyLane 0.45.1. 840 cells (21 backends x 2 arms x 5 seeds x 4 inputs). No
+timing measured.
+
+## 1. Harness checks
+
+- Circuit check: exact <Z0> = [-0.99776, 0.99776, 0.99776, -0.99776],
+  `blocks` = [0, 0, 0, 0]. Passed.
+- Backends: 21 included (FakeAachen, Berlin, Boston, Brisbane, Brussels,
+  Cusco, Fez, Kawasaki, Kingston, Kyiv, Kyoto, Marrakesh, Miami, Nighthawk,
+  Osaka, Pittsburgh, Quebec, Sherbrooke, Strasbourg, Torino, WashingtonV2);
+  48 excluded (47 below 100 qubits, `FakeProviderForBackendV2` not a
+  backend). The package warns that FakeNighthawk's properties "are not
+  intended to represent typical nighthawk error values".
+- C0 (FakeBrisbane, arm A, seed 0 versus the recorded rehearsal):
+
+| input | harness | rehearsal | tolerance | |
+|---|---:|---:|---:|---|
+| 00 | -0.9000 | -0.9040 | 0.0287 | OK |
+| 01 | 0.9105 | 0.9185 | 0.0265 | OK |
+| 10 | 0.9065 | 0.9085 | 0.0280 | OK |
+| 11 | -0.9095 | -0.9130 | 0.0274 | OK |
+
+C0 passed, so the predictions were scored.
+
+## 2. Scoring
+
+| Prediction | Verdict | Numbers |
+|---|---|---|
+| P1 all four inputs correct in every cell group | **REFUTED** | 30 sign flips |
+| P2 | withdrawn before locking | not scored |
+| P3 seed spread <= 0.03 | CONFIRMED (vacuously, see below) | max spread 0.0000 |
+| P4 shot noise binomial, pooled ratio in [0.85, 1.15] | CONFIRMED | pooled ratio 0.986 (per input 1.025, 1.020, 0.958, 0.940) |
+| P5 `blocks` = 0 everywhere | CONFIRMED | 0 nonzero cells |
+| P6 free layout never worse by > 0.01, better on >= half | **REFUTED** | min (B - A) = -0.3124; share better by > 0.01 = 0.524 |
+
+**P3 is confirmed only vacuously.** For every backend and both arms, the
+five `seed_transpiler` values gave the same M to three decimals: for this
+small circuit the seed did not change the routed circuit at all. The result
+shows that seeds do not matter *for this circuit*, not that seed sensitivity
+is small in general.
+
+## 3. Mean margin M per backend (identical for all five seeds)
+
+| backend | 2q gate | arm A (pinned 0-3) | arm B (free layout) | B - A |
+|---|---|---:|---:|---:|
+| FakeAachen | cz | 0.969 | 0.942 | -0.027 |
+| FakeBerlin | cz | 0.942 | 0.962 | +0.020 |
+| FakeBoston | cz | 0.971 | 0.985 | +0.014 |
+| FakeBrisbane | ecr | 0.907 | 0.934 | +0.027 |
+| FakeBrussels | ecr | 0.927 | 0.832 | -0.095 |
+| FakeCusco | ecr | 0.000 | 0.922 | +0.922 |
+| FakeFez | cz | 0.918 | 0.969 | +0.051 |
+| FakeKawasaki | ecr | 0.901 | 0.935 | +0.034 |
+| FakeKingston | cz | 0.968 | 0.656 | -0.312 |
+| FakeKyiv | ecr | 0.950 | 0.936 | -0.014 |
+| FakeKyoto | ecr | 0.000 | 0.004 | +0.004 |
+| FakeMarrakesh | cz | 0.961 | 0.962 | +0.001 |
+| FakeMiami | cz | 0.956 | 0.943 | -0.013 |
+| FakeNighthawk | cz | 0.968 | 0.978 | +0.010 |
+| FakeOsaka | ecr | 0.918 | 0.941 | +0.023 |
+| FakePittsburgh | cz | 0.942 | 0.982 | +0.040 |
+| FakeQuebec | ecr | 0.827 | 0.961 | +0.134 |
+| FakeSherbrooke | ecr | 0.930 | 0.936 | +0.006 |
+| FakeStrasbourg | ecr | 0.947 | 0.899 | -0.048 |
+| FakeTorino | cz | 0.642 | 0.962 | +0.320 |
+| FakeWashingtonV2 | cx | 0.840 | 0.944 | +0.104 |
+
+(Seed-0 values read from the CSV and rounded to three decimals; B - A
+computed from these rounded values. Every cell has 9 routed 2-qubit gates in both arms: the arms
+differ only in which physical qubits are used.)
+
+## 4. Post-hoc diagnostics (exploratory, not scored)
+
+Checked after the results, by reading the CSV's `q0_physical` and
+`readout_error` columns on the pod and the packaged fake-backend calibration
+data (qiskit-ibm-runtime 0.50.0) in the workplace sandbox.
+
+**Where the 30 sign flips are.** Every cell group except three has M >= 0.642
+and seed-identical values, so flips can only occur in FakeCusco arm A,
+FakeKyoto arm A and FakeKyoto arm B, all at chance level (M 0.000 to 0.004).
+With identical seeds, 30 flips = 5 seeds x 6 flips among those 12 input
+cells, about half, as expected at chance. (Deduced from the per-group
+values; to be confirmed by counting in the CSV.)
+
+**FakeCusco, arm A:** the pinned layout measures physical qubit 0, whose
+readout error is **0.5** in the snapshot, i.e. a coin flip. Arm B used
+qubit 2 (readout 0.0073) and reached 0.922.
+
+**FakeKyoto, both arms:** in the packaged snapshot **all 144 ECR entries
+have error exactly 1.0**, so every 2-qubit gate is fully depolarizing and
+every layout fails. The snapshot is unusable as a device model. The
+pre-registered selection rule (error values present) did not exclude it,
+because the values are present, they are just 1.0.
+
+**FakeTorino, arm A:** qubit 0 readout error 0.167; M 0.642 is close to what
+readout alone would do (a factor 1 - 2 x 0.167 = 0.67 on about 0.96).
+
+**FakeKingston, arm B:** the free layout put logical qubit 0 on physical
+qubit 1, readout error **0.168**, giving M 0.656; arm A measured qubit 0
+(readout 0.0095) and reached 0.968. Likely reason (hypothesis, not tested):
+the circuit given to `transpile` had no measurement, so the measured qubit's
+readout error did not enter layout scoring. Qiskit's `VF2PostLayout` in
+strict-direction mode scores the circuit's own instructions against the
+Target; a readout error only counts if a `measure` is in the circuit. The
+rehearsal pipeline also routes first and adds measurement afterwards.
+
+**Smaller arm-B losses:** FakeBrussels (-0.095), FakeStrasbourg (-0.048) and
+FakeAachen (-0.027) also measured a qubit with higher readout error than arm
+A's qubit 0 (0.0186 vs 0.0146, 0.028 vs 0.016, 0.0236 vs 0.0077). For
+Brussels that difference (about 0.008 in expected margin) does not explain a
+0.095 loss; the rest is unexplained here (gate errors on the chosen qubits
+were not inspected).
+
+**"Faulty" flags do not catch this.** `properties().faulty_qubits()` returned
+an empty list for FakeCusco, FakeKyoto, FakeTorino, FakeKingston and
+FakeBrussels. A check for flagged faulty qubits would not have warned about
+any of the failures above; the error values themselves have to be checked.
+
+## 5. What this means for 2026-09-28 (input to Stage 2, not a scored claim)
+
+1. Neither fixed routing is safe. The pinned layout failed badly on 3 of 21
+   backends (Cusco, Kyoto, Torino); the free layout on 2 (Kyoto, Kingston).
+2. Correctness is robust to gradual noise (all groups with M >= 0.64 were
+   fully correct) but collapses to chance when a single bad element sits in
+   the circuit (readout 0.5, or 2-qubit error 1.0). Addendum 150's "accuracy
+   is very robust to noise" holds for gradual noise, not for broken parts.
+3. Before submitting, the chosen qubits' calibration must be checked directly
+   (readout and 2-qubit errors), and candidate layouts compared by simulating
+   them with an Aer noise model built from that day's calibration.
+4. Measurement should be inside the circuit before layout selection, so the
+   layout pass sees the readout error (to be tested; see the proposed Stage 1b).
+5. Shot noise follows the binomial model (P4): at 4,000 shots the standard
+   error per input is about 0.007 near |<Z0>| = 0.9, and Stage-2 tolerances
+   can be set from that.
+
+## 6. Files
+
+| File | What it is |
+|---|---|
+| [`xor_prereg_stage1_2026-09-25.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/xor_prereg_stage1_2026-09-25.csv) | raw data, 840 rows (on the pod; to be added to `data/` after download) |
+| `xor_prereg_stage1_run.txt` | run log (on the pod) |
+| [`xor_prereg_stage1_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/xor_prereg_stage1_sweep.py) | the locked script |
+| `xor-real-device-stage1-preregistration-2026-09-25.md` | the pre-registration scored here |
+
+Pre-publication check: the CSV's environment columns contain only the
+platform string and `x86_64`; no local paths or account names were written by
+the script. To be re-checked by grep when the file is downloaded.
+
+---
+
+> **Correction, 2026-09-25 -- two statements above were based on too narrow a
+> look at the data.** Found when the full CSV (840 rows) was downloaded from
+> the pod and every number above was recomputed from the raw rows. The text
+> above is left as written; this note supersedes the two points below.
+>
+> 1. *"For Brussels that difference ... does not explain a 0.095 loss; the
+>    rest is unexplained here."* -- **Wrong.** The earlier check printed only
+>    the first input's row per backend and arm. In arm B each input circuit is
+>    transpiled separately, and on FakeBrussels input 00 was placed on
+>    physical qubit 16 (readout 0.0186, <Z0> -0.943) but inputs 01, 10 and 11
+>    on physical qubit **28 (readout 0.0916)**, giving |<Z0>| 0.78 to 0.80.
+>    That readout error accounts for the loss (a factor 1 - 2 x 0.0916 = 0.82
+>    on about 0.97). FakeBrussels is therefore a second case of the same
+>    pattern as FakeKingston: the free layout measured a qubit with poor
+>    readout. FakeStrasbourg (qubit 47, readout 0.028, all inputs) and
+>    FakeAachen (qubit 134, readout 0.0236, all inputs) fit the same pattern at
+>    a smaller size.
+> 2. *"the seed did not change the routed circuit at all"* (P3) -- stronger
+>    than what was checked. What the CSV shows is that, for every backend, arm
+>    and input, **the measured physical qubit and the sampled <Z0> were
+>    identical across all five seeds**. Identical sampled values under the same
+>    simulator seed strongly suggest identical routed circuits, but the
+>    circuits themselves were not compared.
+>
+> Also observed in the full CSV (not stated above): in arm B, different inputs
+> can land on different physical qubits on the same backend (FakeBrussels,
+> Cusco, Kawasaki, Kyiv, Kyoto, Quebec, Sherbrooke), because each input
+> circuit gets its own layout. On 2026-09-28 the four inputs may therefore run
+> on different qubits unless one layout is fixed for all four.
+>
+> Recomputed from the raw CSV (matches the script's own scoring): 840 rows,
+> 21 backends; sign flips = 30, exactly 10 each in FakeCusco arm A, FakeKyoto
+> arm A and FakeKyoto arm B (this confirms the deduction in section 4); P3
+> max spread 0.0; P6 min (B - A) = -0.3124, share better by > 0.01 at seed 0 =
+> 0.524, backends where B is worse by > 0.03: FakeBrussels, FakeKingston,
+> FakeStrasbourg; `blocks` nonzero in 0 cells; 9 routed 2-qubit gates in every
+> cell. In FakeCusco arm A all four inputs read <Z0> = +0.019 (readout 0.5
+> makes the outcome independent of the state), so the two label -1 inputs
+> flip and the two label +1 inputs are "correct" by chance.
+>
+> The CSV is now in the Project as `psf-zero/data/xor_prereg_stage1_2026-09-25.csv`
+> (143,823 bytes as received). Pre-publication grep for account names, local
+> paths and host names: 0 hits.
+
+---
+
+<!-- ===== Addendum 169 pre-registration (source: spare-qubit-cliff-addendum-169-preregistration-2026-09-25.md) ===== -->
+
+> **Note added when merging:** Stage 1b: put the measurement into the circuit before layout selection (M1 per input, M4 one layout for all inputs), so the layout can see readout error.
+
+## Addendum 169 -- Pre-registration, Stage 1b: does putting the measurement into the circuit before layout selection stop the free layout from choosing poor-readout qubits? (2026-09-25)
+
+> **Imported into the home series as Addendum 169.** Written at the workplace, run on a RunPod pod (RTX 4090), original file `xor-real-device-stage1b-preregistration-2026-09-25.md`; body below unchanged. Script hash on file (`xor_prereg_stage1b_sweep.py`, `ec7f173c...`) re-checked at home: matches.
+
+**Status: pre-registration, locked at the Project save time of this
+document.** Written after Stage 1 was scored
+(`xor-real-device-stage1-results-2026-09-25.md`, including its correction
+note) and before any Stage-1b run on the XOR circuit. A dry run on a stub
+circuit was made before locking (section 6); its values are not data.
+
+**Numbering:** no number; assigned when merged with the home record.
+
+## 1. Why this experiment exists
+
+Stage 1 found that the free layout (arm B: `transpile(..., optimization_level=3)`
+on a circuit **without** measurement, measurement added afterwards) measured
+a poor-readout qubit on FakeKingston (physical qubit 1, readout 0.168,
+M 0.656 versus 0.968 pinned) and on FakeBrussels (qubit 28, readout 0.0916,
+for three of four inputs), with smaller cases on FakeStrasbourg and
+FakeAachen. The pinned layout (arm A, physical qubits 0-3) failed where qubit
+0 itself was poor (FakeCusco readout 0.5, FakeTorino 0.167).
+
+Hypothesis (from Stage 1's post-hoc diagnostics): Qiskit's layout scoring
+counts the errors of the instructions present in the circuit, so a readout
+error only influences the choice if a `measure` is in the circuit when the
+layout is chosen. The rehearsal pipeline, and Stage 1's arm B, route first
+and measure afterwards.
+
+Stage 1 also showed that in arm B the four inputs can land on different
+physical qubits, because each input circuit gets its own layout. Stage 1b
+therefore also tests one shared layout for all four inputs, and the full
+"simulate candidates with the backend's own noise model, then pick" procedure
+planned for 2026-09-28.
+
+## 2. Fixed design
+
+Same circuits, backend selection rule, noise model (`AerSimulator.from_backend`),
+shots (4,000) and scoring simulator seed (0) as Stage 1, by importing the
+hash-verified Stage-1 script. **One transpiler seed (0) only:** Stage 1 found
+the measured qubit and every sampled value identical across five seeds in
+both arms for this circuit.
+
+**Arms** (per backend, four inputs each):
+- **A:** pinned layout (Stage 1 arm A, repository `route_for_backend`).
+- **B:** free layout without measurement (Stage 1 arm B).
+- **M1 (measure-aware, per input):** logical qubit 0 is measured into one
+  classical bit **before** `transpile(..., optimization_level=3,
+  seed_transpiler=0)`. The measured physical qubit is read from the routed
+  circuit's single `measure`.
+- **M4 (measure-aware, one shared layout):** input 00's measure-aware
+  transpile fixes the layout (`initial_index_layout`), and all four inputs are
+  transpiled with that `initial_layout` (`optimization_level=3`, seed 0).
+- **S (select by simulation):** for each backend, the arm among A, B, M1, M4
+  with the highest *predicted* M, where the prediction is the same backend's
+  noise model run with an independent simulator seed (1000) and 20,000 shots.
+  S is then scored on that arm's main (seed 0, 4,000 shots) result. On fake
+  backends the noise model is the ground truth, so S tests the selection
+  **procedure**, not how well a calibration predicts real hardware.
+
+**Excluded from scoring, fixed now:** FakeKyoto. Stage 1 found all 144 of its
+ECR entries have error 1.0, so every layout is at chance; it is still run and
+printed, marked "not scored". All predictions below refer to the remaining
+backends.
+
+**Reproducibility check R0 (must pass before scoring):** arms A and B must
+reproduce Stage 1's seed-0 `z_noisy` values **exactly** (same code, seeds and
+versions). If R0 fails, predictions are not scored.
+
+## 3. Pre-registered predictions
+
+**Q1 (measure-aware layouts avoid poor readout).** In arms M1 and M4, the
+measured qubit's readout error is at most 0.05 for every scored backend and
+input (*confirmed*). *Refuted* if any exceeds 0.10. Otherwise *ambiguous*.
+
+**Q2 (M1 is not worse than the better of A and B).** For every scored
+backend, M(M1) >= max(M(A), M(B)) - 0.02 (*confirmed*). *Refuted* if any
+backend has M(M1) < max(M(A), M(B)) - 0.05.
+
+**Q3 (the two Stage-1 failures are fixed).** M(M1) >= 0.90 on both
+FakeKingston and FakeBrussels (*confirmed*). *Refuted* if either is below
+0.80.
+
+**Q4 (one shared layout costs little).** For every scored backend,
+|M(M4) - M(M1)| <= 0.02 (*confirmed*). *Refuted* if any exceeds 0.05.
+
+**Q5 (correctness).** In arms M1 and M4 and in each backend's selected arm,
+all four inputs are correct on every scored backend. *Refuted* by any sign
+flip.
+
+**Q6 (the selection procedure picks a near-best arm).** For every scored
+backend, M(selected arm) >= max over the four arms - 0.02 (*confirmed*).
+*Refuted* if any is below max - 0.05.
+
+## 4. What this does and does not test
+
+It tests layout-selection procedures under Aer noise models built from 21
+IBM calibration snapshots (20 scored). It does not test real hardware,
+calibration drift between the snapshot and a real run, or whether measuring
+only logical qubit 0 on hardware behaves like it does in Aer. No timing is
+measured; the GPU is not used.
+
+## 5. Use for Stage 2
+
+If Q1-Q3 are confirmed, Stage 2 will use a measure-aware layout (M1 or, if
+Q4 is confirmed, M4 for simplicity and consistency across inputs) as the
+default candidate, and the Q6 procedure (simulate candidates with the chosen
+device's calibration of 2026-09-28, pick the best) as the final choice.
+Otherwise Stage 2 falls back to the selection procedure over A and B only.
+
+## 6. Dry run before locking (methodology, not data)
+
+The script was run in the workplace sandbox with the same stub
+`rehearse_xor_fake127` module used before Stage 1 (not the XOR classifier),
+on FakeBrisbane and FakeTorino, with a stub-generated Stage-1 CSV for R0. It
+ran end to end, and R0 reproduced the stub's Stage-1 values exactly (0
+mismatches), which supports using exact equality in R0. The thresholds above
+were written before the dry run and were not changed after it; the stub's
+outcome values are not reported.
+
+## 7. Files, integrity check and run command
+
+| File | What it is |
+|---|---|
+| [`xor_prereg_stage1b_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/xor_prereg_stage1b_sweep.py) | Stage-1b script (Project: `psf-zero/benchmarks/`; on the pod: `~/pennylane_gpu_mock_test/`, next to the Stage-1 script it imports) |
+| [`xor_prereg_stage1_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/xor_prereg_stage1_sweep.py) | Stage-1 script, imported unchanged |
+| this document | the pre-registered predictions |
+
+Normalized SHA-256 of the Stage-1b script (lines right-stripped, outer blank
+space removed, joined with newlines):
+`ec7f173cb36fa071b9dbd03de40ead48947edbbc955f6781369c2d8e71105d8e`.
+Requires `~/xor_prereg_stage1_2026-09-25.csv` (Stage-1 output) for R0.
+
+```
+cd ~/pennylane_gpu_mock_test
+python -c "import hashlib;print(hashlib.sha256('\n'.join(l.rstrip() for l in open('xor_prereg_stage1b_sweep.py',encoding='utf-8').read().strip().splitlines()).encode()).hexdigest())"
+python -u xor_prereg_stage1b_sweep.py 2>&1 | tee ~/xor_prereg_stage1b_run.txt
+```
+
+Output: `~/xor_prereg_stage1b_2026-09-25.csv` (336 rows) and the scoring at
+the end of the log. Expected run time about 15-20 minutes (estimated from the
+stub dry run, not measured on the pod).
+
+---
+
+<!-- ===== Addendum 170 (source: spare-qubit-cliff-addendum-170-2026-09-25.md) ===== -->
+
+> **Note added when merging:** Stage 1b results: all six predictions hold; both Stage 1 failure types disappear. M4 becomes the default for 2026-09-28, with a day-of simulated comparison of the four methods as the final choice.
+
+## Addendum 170 -- Stage 1b results: putting the measurement into the circuit before layout selection fixes the poor-readout failures (2026-09-25)
+
+> **Imported into the home series as Addendum 170.** Written at the workplace, run on a RunPod pod (RTX 4090), original file `xor-real-device-stage1b-results-2026-09-25.md`; body below unchanged. Q1-Q6 and the selection counts re-computed at home from `xor_prereg_stage1b_2026-09-25.csv`: all match, except Q6's minimum, -0.0007 here versus -0.0008 recomputed at home -- a rounding difference around -0.00075; the verdict (bound -0.02) is unaffected.
+
+**Scored against:** `xor-real-device-stage1b-preregistration-2026-09-25.md`
+(locked in the Project before this run). Thresholds applied exactly as
+written. Every verdict below was recomputed from the raw CSV in the
+workplace sandbox and matches the script's own scoring. Section 4 is
+exploratory.
+
+**Run:** RunPod pod, CPU Aer only, same environment as Stage 1 (Qiskit 2.5.2,
+qiskit-aer 0.17.2, qiskit-ibm-runtime 0.50.0, PennyLane 0.45.1),
+`python -u xor_prereg_stage1b_sweep.py 2>&1 | tee ~/xor_prereg_stage1b_run.txt`.
+336 cells (21 backends x 4 arms x 4 inputs, transpiler seed 0). No timing
+measured.
+
+**Script integrity:** the pre-run hash check does not appear in the pasted
+log, so it is **not confirmed** at the time of writing. R0 below (exact
+reproduction of all 168 arm-A/B values from Stage 1) shows the shared code
+path behaved identically, but does not cover the new arms' code. A post-hoc
+hash check of the file that ran has been requested.
+
+> **Update (2026-09-25): script integrity confirmed.** The post-hoc check of
+> `/root/pennylane_gpu_mock_test/xor_prereg_stage1b_sweep.py` on the pod
+> returned the pre-registered normalized SHA-256
+> `ec7f173cb36fa071b9dbd03de40ead48947edbbc955f6781369c2d8e71105d8e`. The
+> file that ran is the locked script, including the new arms and scoring.
+
+## 1. Checks
+
+- **R0 (arms A and B reproduce Stage 1, seed 0, exactly): 0 mismatches** out
+  of 168 values. Passed; predictions scored.
+- Backends: the same 21 as Stage 1; FakeKyoto excluded from scoring as
+  pre-registered (all 144 ECR errors are 1.0). All four FakeKyoto arms were at
+  chance (M 0.000 to 0.004), as expected.
+
+## 2. Scoring (20 scored backends)
+
+| Prediction | Verdict | Numbers |
+|---|---|---|
+| Q1 measured-qubit readout <= 0.05 in M1 and M4 | CONFIRMED | max 0.0206 (FakeStrasbourg) |
+| Q2 M(M1) >= max(M(A), M(B)) - 0.02 | CONFIRMED | min difference -0.0155 (FakeStrasbourg) |
+| Q3 M(M1) >= 0.90 on FakeKingston and FakeBrussels | CONFIRMED | 0.9815 and 0.9293 (Stage-1 arm B: 0.656 and 0.832) |
+| Q4 \|M(M4) - M(M1)\| <= 0.02 | CONFIRMED | max 0.0017 (FakeCusco) |
+| Q5 no sign flip in M1, M4 or the selected arm | CONFIRMED | 0 flips |
+| Q6 selected arm >= best arm - 0.02 | CONFIRMED | min difference -0.0007 (FakeAachen) |
+
+All six predictions confirmed.
+
+## 3. Mean margin M per backend (seed 0)
+
+| backend | A (pinned) | B (free, measure added after) | M1 (measure-aware) | M4 (measure-aware, shared layout) | selected |
+|---|---:|---:|---:|---:|---|
+| FakeAachen | 0.969 | 0.942 | 0.986 | 0.986 | M1 |
+| FakeBerlin | 0.942 | 0.962 | 0.977 | 0.977 | M4 |
+| FakeBoston | 0.971 | 0.984 | 0.987 | 0.987 | M1 |
+| FakeBrisbane | 0.907 | 0.934 | 0.919 | 0.919 | B |
+| FakeBrussels | 0.927 | 0.832 | 0.929 | 0.929 | M1 |
+| FakeCusco | 0.000 | 0.922 | 0.912 | 0.911 | B |
+| FakeFez | 0.918 | 0.969 | 0.970 | 0.970 | M1 |
+| FakeKawasaki | 0.902 | 0.935 | 0.958 | 0.958 | M1 |
+| FakeKingston | 0.968 | 0.656 | 0.981 | 0.981 | M1 |
+| FakeKyiv | 0.950 | 0.936 | 0.963 | 0.963 | M1 |
+| FakeKyoto (not scored) | 0.000 | 0.004 | 0.000 | 0.000 | B |
+| FakeMarrakesh | 0.961 | 0.962 | 0.981 | 0.981 | M4 |
+| FakeMiami | 0.956 | 0.943 | 0.969 | 0.969 | M1 |
+| FakeNighthawk | 0.968 | 0.978 | 0.985 | 0.985 | M1 |
+| FakeOsaka | 0.918 | 0.941 | 0.958 | 0.958 | M1 |
+| FakePittsburgh | 0.942 | 0.982 | 0.985 | 0.985 | M4 |
+| FakeQuebec | 0.827 | 0.961 | 0.960 | 0.961 | B |
+| FakeSherbrooke | 0.931 | 0.936 | 0.942 | 0.942 | M1 |
+| FakeStrasbourg | 0.947 | 0.899 | 0.931 | 0.932 | A |
+| FakeTorino | 0.642 | 0.962 | 0.962 | 0.962 | B |
+| FakeWashingtonV2 | 0.840 | 0.944 | 0.942 | 0.941 | B |
+
+(From the run log's table; every value checked against the raw CSV, all within rounding.)
+
+## 4. Post-hoc observations (exploratory, not scored)
+
+- **M1 beats both A and B by more than 0.01 on 8 of 20 backends** (Aachen,
+  Berlin, Kawasaki, Kingston, Kyiv, Marrakesh, Miami, Osaka). Where it is not
+  the best, it is behind by less than 0.016.
+- **The measure-aware layout chose a qubit with readout at least as good as
+  pinned qubit 0 on 17 of 20 backends.**
+- **Shared layout (M4):** every input ran on the same physical qubit on every
+  backend. In M1, only FakeCusco put one input (01) on a different qubit.
+  M4 costs at most 0.0017, so one layout for all four inputs is essentially
+  free here.
+- **Selection by simulation** chose M1 on 11 backends, B on 5, M4 on 3 and A
+  on 1, and was never more than 0.0007 below the best arm. As pre-registered,
+  on fake backends this tests the procedure, not predictive power on hardware.
+- **Prediction versus result spread was smaller than shot noise alone
+  predicts.** On 255 de-duplicated (backend, qubit, input) cells, the
+  standardized difference between the 4,000-shot result (simulator seed 0)
+  and the 20,000-shot prediction (seed 1000) had SD 0.76 rather than about 1,
+  with no value beyond 3. Not explained here (one candidate is correlation
+  between Aer's random streams for different seeds; not checked). It does not
+  affect any verdict, and Stage 1's P4 (50 independent repeats, pooled ratio
+  0.986) remains the pre-registered shot-noise result. If anything, Stage-2
+  tolerances set from the binomial model are conservative.
+
+## 5. Consequences for Stage 2 (2026-09-28), to be fixed in the Stage-2 pre-registration
+
+1. Default candidate: **M4** (measure-aware layout chosen with the
+   measurement in the circuit, one layout for all four inputs). It fixed both
+   Stage-1 failure types in this test and costs nothing measurable versus M1,
+   while keeping all four inputs on the same qubits.
+2. Final choice: simulate A, B, M1 and M4 with an Aer noise model built from
+   the chosen device's calibration at submission time, and submit the best,
+   as in Q6. The calibration snapshot and the predicted values are saved with
+   the job IDs before results are read.
+3. Measure only logical qubit 0 on hardware, as in all Stage-1/1b arms (the
+   design choice these results are about), unless Stage 2 gives a stated
+   reason to change it.
+4. What these results cannot say: how well a calibration snapshot predicts a
+   real device on the day. That is the question 2026-09-28 answers.
+
+## 6. Files
+
+| File | What it is |
+|---|---|
+| `psf-zero/data/xor_prereg_stage1b_2026-09-25.csv` | raw data, 336 rows (19,826 bytes as received) |
+| `psf-zero/benchmarks/xor_prereg_stage1b_sweep.py` | the locked script |
+| `xor-real-device-stage1b-preregistration-2026-09-25.md` | the pre-registration scored here |
+
+Pre-publication grep of the CSV for account names, local paths and host
+names: 0 hits.
+
+---
+
+<!-- ===== Addendum 171 pre-registration (source: spare-qubit-cliff-addendum-171-preregistration-2026-09-25.md) ===== -->
+
+> **Note added when merging:** Stage 1c: PSF-Zero versus Qiskit on circuits where PSF-Zero actually acts (random 2-qubit blocks), across fake backends, plus the XOR null control.
+
+## Addendum 171 -- Pre-registration, Stage 1c: circuit size and noisy score, PSF-Zero versus Qiskit, on circuits where PSF-Zero actually acts; and the XOR null control (2026-09-25)
+
+> **Imported into the home series as Addendum 171.** Written at the workplace, run on a RunPod pod (RTX 4090), original file `xor-real-device-stage1c-preregistration-2026-09-25.md`; body below unchanged. Script hash (`xor_prereg_stage1c_sweep.py`, `4d342727...`) re-checked at home: matches. After reading this pre-registration, the home assistant flagged that R0 would very likely fail: the reference CSV (Addendum 156) predates the tape<->Qiskit conversion fix of Addenda 165-166, which changes the logical circuits and therefore the TVDs. Whether that note reached the workplace before the run is not recorded; Addendum 172 reports R0 failing for exactly that reason.
+
+**Status: pre-registration, locked at the Project save time of this
+document**, before the locked run on the pod. A sandbox dry run was made
+before locking with PSF-Zero **stubbed** (section 7); it included real
+Qiskit arms, and what it showed is disclosed there.
+
+**Numbering:** no number; assigned when merged with the home record.
+
+## 1. Why this experiment exists
+
+Two hypotheses were proposed for the record before 2026-09-28:
+
+1. Left to itself, Qiskit (`transpile(optimization_level=3)`) inserts
+   unnecessary SWAPs and bloats the circuit, while PSF-Zero keeps it minimal
+   ("size 56, depth 16, 0 fallbacks").
+2. Running PSF-Zero and standard Qiskit side by side on noisy simulators
+   will show a clear score difference, so that a good real-device result on
+   2026-09-28 can be attributed to PSF-Zero's compression.
+
+What the existing record already says:
+
+- "Size 56, depth 16, 0 fallbacks" is PSF-Zero's arm in Addendum 156
+  (`data/compare_with_without_psf_2026-09-24.csv`, FakeManilaV2, 5 tapes),
+  against **84 / 23** for Qiskit's `TwoQubitBasisDecomposer(CXGate())` with
+  its default Euler basis. Routed 2-qubit gates were **6 in both arms**
+  (no SWAPs either way); the difference is all single-qubit gates.
+- Noisy TVD in the same file shows no consistent direction (PSF lower on 3
+  of 5 tapes, higher on 2). Addendum 157: no difference in noisy accuracy.
+- Addendum 159 (per the 2026-09-25 handover): Qiskit with
+  `euler_basis="ZSX"` produces **exactly the same circuit** as PSF-Zero;
+  PSF-Zero's synthesis is 5.6-7.6x slower.
+- The XOR classifier sent on 2026-09-28 contains **no block PSF-Zero would
+  re-synthesize** (`blocks` = 0 in every cell of Stages 1 and 1b and the
+  rehearsal). The circuit reaching the device is the same with or without
+  PSF-Zero.
+
+So hypothesis 2 cannot be tested on the XOR circuit at all: there is nothing
+to compare. Stage 1c instead (a) re-measures the compression claim on the
+circuits where PSF-Zero does act, against the fair baseline (Qiskit ZSX) and
+against Qiskit's full pipeline, on the 2026-09-28 device class; (b) measures
+the noisy-score difference there; and (c) records, as a pre-registered null
+control, that PSF-Zero leaves the XOR circuit untouched.
+
+## 2. Fixed design
+
+**Circuits.** The five tapes of Addendum 156 (`compare_with_without_psf.py`
+`make_tape`, seeds 0-4: two qubit pairs, each a run of 15 random 2-qubit
+unitaries consolidated into one block). Synthesized once per tape with the
+repository's `build_synthesized_circuit` (each block passes the real
+`lightning.gpu` check and the whole circuit passes an operator-equivalence
+check).
+
+**Arms.**
+- **A:** Qiskit `TwoQubitBasisDecomposer(CXGate())`, default Euler basis
+  (Addendum 156 arm A).
+- **Z:** Qiskit `TwoQubitBasisDecomposer(CXGate(), euler_basis="ZSX")`.
+- **P:** PSF-Zero `SU4GeodesicPSFSynthesizer` (Rust core,
+  `entangling_basis="cx"`, `on_unsupported="raise"`, `verify=True`).
+- **T:** no pre-synthesis; the unsynthesized, measured circuit goes to
+  `transpile(..., optimization_level=3, seed_transpiler=0)` ("leave
+  everything to Qiskit", with the measurement inside so the layout sees it,
+  per Stage 1b).
+
+**Backends.** FakeManilaV2 (Addendum 156's backend) plus the 21 backends of
+Stage 1's rule; FakeKyoto run but not scored (all 2-qubit errors 1.0). 21
+scored backends x 5 tapes = 105 scored cells per arm.
+
+**Routing.** For A, Z and P, one layout per (backend, tape), taken from a
+measure-aware `optimization_level=3` transpile of arm Z's circuit, then
+`transpile(initial_layout=that, optimization_level=1, seed_transpiler=0)`,
+so the three synthesized arms run on the same qubits and differ only in
+synthesis. T chooses its own layout.
+
+**Measurement and score.** The four logical qubits are measured (A, Z, P:
+at their final physical positions). Noisy score = total variation distance
+(TVD) between the sampled distribution and the exact distribution of the
+logical circuit; `AerSimulator.from_backend`, 100,000 shots, simulator
+seed 0. Recorded per cell: routed 2-qubit gates, single-qubit gates, size,
+depth (before measurement), TVD, PSF fallbacks.
+
+**R0 (must pass before scoring).** Addendum 156's own path (FakeManilaV2,
+`route_for_backend`, SamplerV2 local mode, seed 42, 4,000 shots) must
+reproduce the repository CSV exactly for arms A and P: routed 2-qubit
+gates, depth, size, fallbacks identical; `tvd_noisy` and `tvd_ideal` within
+1e-9. If R0 fails, predictions are not scored.
+
+## 3. Pre-registered predictions
+
+**C1 (no fallback).** PSF-Zero fallbacks = 0 on all five tapes.
+
+**C2 (no 2-qubit compression by any synthesizer).** Routed 2-qubit gates =
+6 (two blocks x 3) in arms A, Z and P in every scored cell. *Refuted* by any
+other value.
+
+**C3 (Qiskit's full pipeline does not bloat this circuit).** Routed 2-qubit
+gates = 6 in arm T in every scored cell (no SWAP overhead). *Refuted* if
+any cell has more than 6.
+
+**C4 (PSF-Zero equals Qiskit ZSX).** In every scored cell, P and Z have
+identical size and depth and |TVD_P - TVD_Z| <= 0.002. *Refuted* by any cell
+that differs in size or depth or exceeds 0.002.
+
+**C5 (PSF-Zero is smaller than Qiskit's default decomposer).** In every
+scored cell, P has smaller size **and** smaller depth than A. *Refuted* by
+any cell where it does not.
+
+**C6 (no meaningful noisy-score advantage).** Mean over scored cells of
+(TVD_A - TVD_P) <= 0.01 (*confirmed*). *Refuted* if > 0.02 (a real
+advantage for PSF-Zero). Otherwise *ambiguous*.
+
+**C7 (XOR null control).** For all four XOR circuits, PSF-Zero's block
+collection finds 0 blocks and the circuit after the PSF path is identical,
+instruction by instruction, to the input.
+
+No prediction is made for arm T's size, depth or TVD relative to the other
+arms; they are reported.
+
+## 4. What this can and cannot establish
+
+It can establish, on the 2026-09-28 device class under Aer noise models,
+whether PSF-Zero's circuits are smaller than Qiskit's default decomposer
+and Qiskit's full pipeline, whether that is identical to Qiskit's ZSX
+setting, whether any of it changes the noisy score, and that the XOR
+circuit is untouched by PSF-Zero.
+
+It **cannot** attribute any 2026-09-28 result to PSF-Zero: by C7's premise
+the submitted circuit is the same with or without PSF-Zero. What 2026-09-28
+can test is the layout procedure (Stages 1 and 1b); a real-hardware
+comparison of that needs a pinned-layout control run on the same device
+(to be decided in Stage 2). No timing is measured.
+
+## 5. Stage-2 relevance
+
+C7 goes into the 2026-09-28 record as the reason no PSF-Zero claim is made
+from that run. C1-C6 are the up-to-date answer, on current device models,
+to the question "does PSF-Zero compress circuits beyond what Qiskit can do".
+
+## 6. Files, integrity check and run command
+
+| File | What it is |
+|---|---|
+| [`xor_prereg_stage1c_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/xor_prereg_stage1c_sweep.py) | Stage-1c script (Project: `psf-zero/benchmarks/`; on the pod: `~/pennylane_gpu_mock_test/`, next to the Stage-1 script) |
+| [`compare_with_without_psf.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/compare_with_without_psf.py), [`psf_compile.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_compile.py) and the prototypes | repository modules imported unchanged from `/root/psf-zero/benchmarks` |
+| this document | the pre-registered predictions |
+
+Normalized SHA-256 of the script:
+`4d342727ffafddf635a30488bee618155431be077c75a42cac6b7eb36f7bf195`.
+
+```
+cd ~/pennylane_gpu_mock_test
+python -c "import hashlib;print(hashlib.sha256('\n'.join(l.rstrip() for l in open('xor_prereg_stage1c_sweep.py',encoding='utf-8').read().strip().splitlines()).encode()).hexdigest())"
+python -u xor_prereg_stage1c_sweep.py 2>&1 | tee ~/xor_prereg_stage1c_run.txt
+```
+
+Output: `~/xor_prereg_stage1c_2026-09-25.csv` (22 backends x 5 tapes x 4
+arms = 440 rows) and the scoring at the end of the log. Expected run time
+about 10-15 minutes (from the dry run, not measured on the pod).
+
+## 7. Dry run before locking -- disclosure
+
+The script was run in the workplace sandbox on FakeManilaV2, FakeBrisbane
+and FakeTorino with **stubs** for PSF-Zero (replaced by Qiskit's ZSX
+decomposer, so "P" was a copy of Z), for the real-GPU check (CPU check) and
+for the SamplerV2 submit function. **Arms A, Z and T were real Qiskit** on
+real fake-backend models, so the dry run produced genuine information about
+them. The predictions in section 3 were written before the dry run and are
+unchanged. What the dry run showed that bears on them:
+
+- On FakeManilaV2, arms A and Z reproduced Addendum 156's structural numbers
+  (A: 84 / 23; Z: 56 / 16), consistent with Addendum 159. R0's noisy TVD
+  could not be checked (stubbed sampler).
+- On the two heavy-hex backends, after translation to the device basis, Z was
+  **not** always smaller than A (in depth on FakeTorino it was larger), and
+  T was **no larger** than A or Z. If P equals Z (C4), **C5 is therefore
+  likely to be refuted**, and the locked run is, for C5 and for the T
+  comparison, a confirmation on 21 backends rather than a blind test.
+- The XOR null control behaved as C7 predicts.
+- The stub dry run's TVD values are not reported.
+
+---
+
+<!-- ===== Addendum 172 (source: spare-qubit-cliff-addendum-172-2026-09-25.md) ===== -->
+
+> **Note added when merging:** Stage 1c NOT SCORED: R0 failed because the reference CSV predates the Addenda 165-166 conversion fix. Exploratory values agree with Addenda 156-159: PSF-Zero structurally identical to Qiskit ZSX, no noisy-score difference.
+
+## Addendum 172 -- Stage 1c results: NOT SCORED (R0 failed); exploratory readout of PSF-Zero versus Qiskit on circuits where PSF-Zero acts (2026-09-25)
+
+> **Imported into the home series as Addendum 172.** Written at the workplace, run on a RunPod pod (RTX 4090), original file `xor-real-device-stage1c-results-2026-09-25.md`; body below unchanged. Re-computed at home from `xor_prereg_stage1c_2026-09-25.csv`: P and Z structurally identical in 105/105 cells, |dTVD| > 0.002 in 8 cells (max 0.0043), P smaller than A in both size and depth in 40/105, mean TVD_A - TVD_P = +0.00003, and the per-arm mean sizes and depths -- all as stated.
+
+**Official outcome: the pre-registered predictions C1-C7 are NOT scored.**
+The pre-registration (`xor-real-device-stage1c-preregistration-2026-09-25.md`)
+made exact replication of Addendum 156 (R0) a condition for scoring, and R0
+failed. The cause is identified (section 2) and is a design error in the
+pre-registration, not a property of the compilers. Everything in sections 3
+and 4 is **exploratory**: the locked thresholds are shown for reference as
+"would be" verdicts, not as pre-registered results.
+
+**Run:** RunPod pod, `python -u xor_prereg_stage1c_sweep.py 2>&1 | tee
+~/xor_prereg_stage1c_run.txt`. All PSF-Zero blocks passed the real
+`lightning.gpu` check (RTX 4090) and the operator-equivalence check. 440 rows
+(22 backends x 5 tapes x 4 arms). CSV recomputed in the workplace sandbox.
+No timing measured.
+
+## 1. R0 result
+
+Addendum 156's path on FakeManilaV2 reproduced the repository CSV exactly in
+**every structural field** for all 10 (tape, arm) pairs: routed 2-qubit
+gates 6, depth 23 (arm A) and 16 (PSF-Zero), size 84 and 56, PSF-Zero
+fallbacks 0. It did **not** reproduce `tvd_noisy` or `tvd_ideal` (20
+mismatches). Since `tvd_ideal` also differs, the difference lies in the
+circuits' content (the exact output distribution), not in noise sampling.
+
+## 2. Cause of the R0 failure (identified; a design error)
+
+`data/compare_with_without_psf_2026-09-24.csv` (Addendum 156) was produced
+on the evening of 2026-09-24, **before** the fix to the 2-qubit
+`QubitUnitary` bit order in `tape_to_qiskit` (Addenda 164-166 in the home
+record). The repository on the pod contains the fixed conversion, so the
+same tapes now become circuits whose 2-qubit unitaries have the correct,
+different qubit order: same gate counts, different distributions.
+
+Evidence: in the pre-lock sandbox dry run, which used the workplace copy of
+the prototypes (the pre-fix conversion), `tvd_ideal` reproduced the
+repository CSV on all five tapes (0.014531, 0.019912, 0.021032, 0.023834,
+0.021823). On the pod, with the fixed conversion, it does not (0.016263,
+0.022804, 0.018694, 0.020174, 0.021909).
+
+Choosing a reference produced by pre-fix code as an exact-replication gate
+was a mistake in the Stage-1c pre-registration. It does not bear on the
+compression question (both versions synthesize random 2-qubit unitaries,
+and the structural numbers match exactly), but the protocol said "not
+scored", so it is not scored. A formal re-test would need a new
+pre-registration with a reference regenerated from the fixed code.
+
+## 3. Exploratory readout (105 cells per arm; FakeKyoto excluded)
+
+| Check (locked threshold) | Observed | "Would be" |
+|---|---|---|
+| C1 PSF-Zero fallbacks = 0 | 0 on all tapes | confirmed |
+| C2 routed 2q = 6 in A, Z, P | 6 in every cell | confirmed |
+| C3 routed 2q = 6 in T (Qiskit opt 3) | 6 in every cell | confirmed |
+| C4 P = Z: size and depth equal, \|dTVD\| <= 0.002 | size, depth and 1q count equal in 105/105; \|dTVD\| > 0.002 in 8 cells (max 0.0043, mean 0.0005) | refuted by the TVD clause |
+| C5 P smaller than A in size and depth | in 40 of 105 | refuted |
+| C6 mean(TVD_A - TVD_P) <= 0.01 | +0.00003; P better in 47 of 105 | confirmed |
+| C7 XOR untouched by PSF-Zero | 0 blocks and identical circuit, 4 of 4 | confirmed |
+
+(C7 does not depend on R0; it is listed here only because the protocol
+suspends all scoring.)
+
+**Size and depth, mean over tapes, by native 2-qubit gate** (every backend
+gave the same numbers on all five tapes):
+
+| backends | A size / depth | Z | P (PSF-Zero) | T (Qiskit opt 3) |
+|---|---|---|---|---|
+| cx (FakeManilaV2, FakeWashingtonV2) | 84 / 23 | 56 / 16 | 56 / 16 | 56 / 16 |
+| cz (10 Heron-class) | 76 / 22 | 72 / 23 | 72 / 23 | **64 / 19** |
+| ecr, group 1 (Brisbane, Osaka, Quebec, Strasbourg) | 84 / 23 | 74 / 21 | 74 / 21 | 80 / 23 |
+| ecr, group 2 (Brussels, Kyiv) | 75 / 23 | 72 / 21 | 72 / 21 | 80 / 23 |
+| ecr, group 3 (Cusco, Kawasaki, Sherbrooke) | **66 / 19** | 70 / 19 | 70 / 19 | 80 / 23 |
+
+Mean over all 105 cells: size A 76.8, Z 70.6, P 70.6, T 70.1; depth A 22.0,
+Z 21.2, P 21.2, T 20.4. Arm T's size was no larger than any of A, Z, P in
+60 of 105 cells.
+
+**Noisy score (mean TVD, lower is better):** cx backends A 0.0342, Z 0.0322,
+P 0.0318, T 0.0308; cz backends 0.0126, 0.0126, 0.0127, 0.0123; ecr backends
+0.0260, 0.0262, 0.0264, 0.0251. T had a lower TVD than P in 61 of 105 cells
+(mean difference 0.0008).
+
+## 4. What this suggests (exploratory; consistent with Addenda 156, 157 and 159)
+
+1. **"Size 56, depth 16, 0 fallbacks" reproduces**, but only on backends
+   whose native 2-qubit gate is CX, and Qiskit reaches exactly the same
+   numbers there both with `euler_basis="ZSX"` and with its full
+   `optimization_level=3` pipeline.
+2. **PSF-Zero's circuits are structurally identical to Qiskit ZSX's** (same
+   size, depth and single-qubit count in all 105 cells), as Addendum 159
+   reported. Small TVD differences in 8 cells suggest the gate parameters are
+   not bit-identical; that was not investigated.
+3. **No synthesizer reduces the 2-qubit count** (6 everywhere), and
+   **Qiskit's own full pipeline inserts no SWAPs** on this workload. The
+   "Qiskit bloats the circuit with SWAPs" hypothesis finds no support here.
+4. **On the 2026-09-28 device class (CZ and ECR backends), PSF-Zero is not
+   consistently smaller than Qiskit's default decomposer** (larger depth on
+   all 10 CZ backends, larger size on three ECR backends), and Qiskit's full
+   pipeline is the smallest on CZ backends.
+5. **No noisy-score advantage** for PSF-Zero over any Qiskit arm.
+6. The XOR circuit is untouched by PSF-Zero (C7), so no 2026-09-28 result can
+   be attributed to PSF-Zero's compression.
+
+These points are exploratory under this protocol. They agree with the
+existing record rather than overturn it.
+
+## 5. Files
+
+| File | What it is |
+|---|---|
+| `psf-zero/data/xor_prereg_stage1c_2026-09-25.csv` | raw data, 440 rows (23,611 bytes as received) |
+| `psf-zero/benchmarks/xor_prereg_stage1c_sweep.py` | the locked script (the pod run's hash check was not shown; not confirmed -- see the update below) |
+| `xor-real-device-stage1c-preregistration-2026-09-25.md` | the pre-registration |
+
+Pre-publication grep of the CSV: 0 hits.
+
+> **Update (2026-09-25): script integrity confirmed.** A post-hoc check of
+> `/root/pennylane_gpu_mock_test/xor_prereg_stage1c_sweep.py` on the pod
+> returned the pre-registered normalized SHA-256
+> `4d342727ffafddf635a30488bee618155431be077c75a42cac6b7eb36f7bf195`. The file
+> that ran is the locked script. (This does not change the outcome: R0 still
+> failed and C1-C7 remain unscored.)
+
+---
+
+<!-- ===== Addendum 173 pre-registration (source: spare-qubit-cliff-addendum-173-preregistration-2026-09-25.md) ===== -->
+
+> **Note added when merging:** Long-run stability: 100 iterations x 2 processes of the 2026-09-28 pipeline and of PSF-Zero, with and without explicit garbage collection.
+
+## Addendum 173 -- Pre-registration: long-run stability of the 2026-09-28 pipeline and of PSF-Zero, 100 iterations x 2 processes (2026-09-25)
+
+> **Imported into the home series as Addendum 173.** Written at the workplace, run on a RunPod pod (RTX 4090), original file `longrun-stability-preregistration-2026-09-25.md`; body below unchanged. Script hash (`xor_prereg_longrun_stability.py`, `ec8f9b77...`) re-checked at home: matches. The "home Addenda 94-95" this record mentions are in Part 6 (`spare-qubit-cliff-combined-88.md`): Addendum 94 found garbage collection contributing to compile-time variance (2.73x) and that disabling it grew memory by 2.27 GB over 10,000 calls. Note found at home when reading the script: W2 re-synthesizes the same tape every iteration, so from iteration 2 on PSF-Zero's CX-core cache (`_cx_core_cached`, keyed on the exact Cartan floats) is hit; L3 still tests whether the Rust core returns bit-identical floats each time.
+
+**Status: pre-registration, locked at the Project save time of this
+document**, before any run on the pod. A short sandbox dry run with stubs was
+made before locking (section 6).
+
+**Numbering:** no number (the proposal called it "Addendum 167"; the home
+record may already use 167). Assigned when merged.
+
+## 1. Why this experiment exists
+
+The question has moved from "does it run?" to "can it be operated?": does
+the pipeline give the same result, at a stable speed, without memory growth,
+when run many times. A proposal for a 100-iteration audit was reviewed
+before writing this; it was changed in five ways, each for a stated reason:
+
+1. **A second workload where PSF-Zero actually acts.** On the XOR circuit
+   PSF-Zero does nothing (0 blocks; Stage 1c's C7), so an XOR-only audit
+   measures Qiskit, not PSF-Zero.
+2. **Predictions that could fail.** With fixed seeds, "the same qubit and
+   2-qubit count 100 times" and "100/100 correct" are guaranteed by
+   construction. They are kept, but labelled as operational checks (L1, L2).
+   The substantive new prediction is L3: **PSF-Zero returns a bit-identical
+   circuit every time** (full-precision parameters). Stage 1c found PSF-Zero
+   and Qiskit ZSX structurally identical yet with small TVD differences in 8
+   cells, so bit-level determinism is not assumed.
+3. **A different simulator seed every iteration**, so the 100 noisy values
+   form a real distribution that can be checked against the binomial model.
+4. **Warm-up excluded from timing by rule**: iterations 1-5 are reported
+   separately (cold start is itself an operational number) and the CV is
+   computed on iterations 6-100.
+5. **Memory measured as current RSS (`/proc/self/status` VmRSS), compared at
+   iteration 10 versus 100**, and explicit `gc.collect()` compared in
+   **separate processes** rather than once at iteration 50. (The proposal
+   linked this to Addenda 94-95 of the home record, which are not in this
+   Project; this design does not depend on them.)
+
+## 2. Fixed design
+
+**Per iteration** (100 iterations per process):
+
+- **W1, the 2026-09-28 path:** load the trained XOR parameters from
+  `~/xor_params_seed0.npy` (created once by `retrain_seed0()`; a harness check
+  confirms the loaded parameters reproduce the rehearsal's exact <Z0> =
+  +-0.99776), build the four circuits with logical qubit 0 measured, choose
+  one measure-aware layout (input 00, `optimization_level=3`, seed 0) and
+  transpile all four with it (Stage 1b's M4) on FakeBrisbane, simulate each
+  with `AerSimulator.from_backend`, 4,000 shots, simulator seed
+  `offset + 10 x iteration + input` (offset 0 or 100,000 by process).
+- **W2, PSF-Zero acting:** Addendum 156 tape 0 synthesized by PSF-Zero
+  (Rust core, `on_unsupported="raise"`, one synthesizer instance reused for
+  the whole process) through the repository's `build_synthesized_circuit`
+  (real `lightning.gpu` block check and equivalence check), measured on all
+  four qubits, transpiled to FakeBrisbane (`optimization_level=3`, seed 0),
+  simulated with 20,000 shots, seed `offset + 10 x iteration`; TVD against the
+  exact distribution.
+
+**Recorded per iteration:** W1 load/build, compile, simulate and total
+times; per input <Z0>, correctness, measured physical qubit, routed 2-qubit
+count and an exact circuit fingerprint (SHA-256 of gate names, qubit indices
+and parameters in full-precision hex); W2 synthesize-and-verify, compile,
+simulate and total times, fallbacks, worst GPU difference, fingerprints of
+the synthesized and routed circuits, 2-qubit count, TVD; RSS; timestamp.
+
+**Two processes:** `--gc none` (no explicit collection; Python's automatic
+gc stays on) and `--gc each` (`gc.collect()` after every iteration). Then
+`--score` reads both CSVs and refuses to score unless each has 100 rows.
+
+## 3. Pre-registered predictions
+
+**L1 (operational check; expected by construction).** W1: all four inputs
+correct in all 200 iterations (800 of 800).
+
+**L2 (operational check; expected by construction).** W1: per input, the
+routed-circuit fingerprint, measured qubit and 2-qubit count are identical
+in all 200 iterations across both processes.
+
+**L3 (the substantive prediction).** W2: exactly **one** distinct
+synthesized-circuit fingerprint and one routed-circuit fingerprint over all
+200 iterations across both processes, and 0 fallbacks. *Refuted* by a second
+fingerprint or any fallback.
+
+**L4 (statistics).** For each process, W1 pooled ratio R of the observed SD
+of <Z0> (100 samples per input) to the binomial SD: *confirmed* if
+0.85 <= R <= 1.15, *refuted* if R < 0.7 or R > 1.3.
+
+**L5 (timing; RunPod pod only).** Coefficient of variation over iterations
+6-100 of W1 compile time and of W2 synthesize-and-verify time, in both
+processes: *confirmed* if all four CVs < 0.10, *refuted* if any > 0.25.
+The first iteration's ratio to the median is reported without a prediction.
+
+**L6a (memory).** In each process, RSS at iteration 100 / RSS at iteration
+10 <= 1.05 (*confirmed*); *refuted* if > 1.20 in either.
+
+**L6b (explicit gc).** RSS at iteration 100, gc-each / gc-none, within 5%
+of 1 (*confirmed*); *refuted* if more than 15% away.
+
+Otherwise each is *ambiguous*.
+
+## 4. What this can and cannot establish
+
+It can show that the pipeline, as it will be used on 2026-09-28 and as it
+uses PSF-Zero elsewhere, gives the same answers repeatedly, keeps a stable
+speed on this machine and does not leak memory over 100 iterations. That is
+evidence of software reliability for a proof of concept. It says nothing
+about real-hardware behaviour or about PSF-Zero's compression value (see
+Stage 1c). Timing numbers come from a shared cloud pod and are not
+comparable with the home or workplace machines.
+
+## 5. Figures (made in the workplace sandbox from the downloaded CSVs)
+
+1. W1 compile time and W2 synthesize-and-verify time, iterations 6-100,
+   both processes (box plots).
+2. W1 <Z0> distribution per input over 100 iterations, with the binomial
+   expectation.
+3. RSS versus iteration for both processes.
+
+## 6. Dry run before locking (methodology, not data)
+
+The script ran in the workplace sandbox for 12 iterations per process with
+stubs (PSF-Zero replaced by Qiskit's ZSX decomposer, CPU instead of GPU
+check, a hand-written stand-in for the XOR module), and scoring ran on those
+files with the row count check relaxed. It showed that the two processes
+used identical simulator seeds, making L4's two values copies of each
+other; the per-process seed offset was added before locking. No threshold
+was changed. The stub run's numbers are not reported (sandbox machine, stub
+modules).
+
+## 7. Files, integrity check and run commands
+
+| File | What it is |
+|---|---|
+| [`xor_prereg_longrun_stability.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/xor_prereg_longrun_stability.py) | the script (Project: `psf-zero/benchmarks/`; on the pod: `~/pennylane_gpu_mock_test/`, next to the Stage-1 script) |
+| this document | the pre-registered predictions |
+
+Normalized SHA-256 of the script:
+`ec8f9b77319d43d732a251d4a804116c3a48a1e5a2f84742d7af96fcddfc37dd`.
+
+```
+cd ~/pennylane_gpu_mock_test
+python -c "import hashlib;print(hashlib.sha256('\n'.join(l.rstrip() for l in open('xor_prereg_longrun_stability.py',encoding='utf-8').read().strip().splitlines()).encode()).hexdigest())"
+python -u xor_prereg_longrun_stability.py --gc none 2>&1 | tee ~/longrun_none.txt
+python -u xor_prereg_longrun_stability.py --gc each 2>&1 | tee ~/longrun_each.txt
+python -u xor_prereg_longrun_stability.py --score   2>&1 | tee ~/longrun_score.txt
+```
+
+Outputs: `~/longrun_none_2026-09-25.csv`, `~/longrun_each_2026-09-25.csv`
+(100 rows each) and the scoring log. Expected run time 15-25 minutes for
+both processes (estimated from the dry run, not measured on the pod).
+
+---
+
+<!-- ===== Addendum 174 (source: spare-qubit-cliff-addendum-174-2026-09-25.md) ===== -->
+
+> **Note added when merging:** Long-run results: every prediction confirmed; PSF-Zero's output bit-for-bit identical on all 200 iterations; no memory growth. Exploratory: explicit gc.collect() made compile time faster and steadier.
+
+## Addendum 174 -- Long-run stability results: every prediction confirmed; PSF-Zero is bit-for-bit deterministic over 200 iterations (2026-09-25)
+
+> **Imported into the home series as Addendum 174.** Written at the workplace, run on a RunPod pod (RTX 4090), original file `longrun-stability-results-2026-09-25.md`; body below unchanged. L1-L6 and the exploratory figures re-computed at home from `longrun_none_2026-09-25.csv` and `longrun_each_2026-09-25.csv`: all match. The exploratory gc observation points the same way as home Addendum 94 (Part 6).
+
+**Scored against:** `longrun-stability-preregistration-2026-09-25.md`
+(locked in the Project before the run). Thresholds applied exactly as
+written. Every verdict was recomputed from the two raw CSVs in the workplace
+sandbox and matches the script's own scoring. Section 4 is exploratory.
+
+**Run:** RunPod pod, `Linux-6.8.0-64-generic-x86_64`, Qiskit 2.5.2,
+qiskit-aer 0.17.2, PennyLane 0.45.1, PSF-Zero Rust core, real
+`lightning.gpu` block checks on the pod's RTX 4090. Two processes of 100
+iterations each, run back to back (`--gc none` first, then `--gc each`,
+about 505 s each, 11 s apart). **Script integrity:** the post-run check
+returned the pre-registered normalized SHA-256
+`ec8f9b77319d43d732a251d4a804116c3a48a1e5a2f84742d7af96fcddfc37dd`. (A first
+attempt failed with a SyntaxError before producing any data: the
+pre-registration text had been pasted into the script file by mistake. It was
+replaced with the script and the hash then matched.)
+
+**All times are from this RunPod pod only** and are not comparable with the
+home or workplace machines.
+
+## 1. Scoring
+
+| Prediction | Verdict | Numbers |
+|---|---|---|
+| L1 W1 all inputs correct (operational check) | CONFIRMED | 0 wrong of 800 |
+| L2 W1 routed circuit identical every time (operational check) | CONFIRMED | 1 fingerprint per input over 200 iterations; measured qubit 112 for all inputs; 9 routed 2-qubit gates |
+| **L3 PSF-Zero bit-identical output, 0 fallbacks** | **CONFIRMED** | **1 synthesized-circuit fingerprint and 1 routed-circuit fingerprint over 200 iterations; 0 fallbacks; worst GPU difference 7.4e-13** |
+| L4 shot noise binomial, pooled ratio in [0.85, 1.15] | CONFIRMED | 0.989 (none), 1.035 (each) |
+| L5 timing CV < 0.10 (iterations 6-100) | CONFIRMED | W1 compile 0.090 / 0.016; W2 synthesize-and-verify 0.058 / 0.071 |
+| L6a RSS it100 / it10 <= 1.05 | CONFIRMED | 1.0037 (none), 1.0017 (each) |
+| L6b RSS it100, each / none within 5% | CONFIRMED | 0.9987 |
+
+L1 and L2 were pre-registered as checks expected by construction (fixed
+transpiler seed, a margin of about 13 standard errors). L3 is the
+substantive result: PSF-Zero's Rust synthesis, rerun 200 times across two
+processes, returned a circuit identical down to the last bit of every
+parameter.
+
+## 2. Numbers (iterations 6-100 unless stated)
+
+| Quantity | gc none | gc each |
+|---|---|---|
+| W1 compile, median (IQR) | 78.1 ms (76.2-79.5) | 45.7 ms (45.4-46.2) |
+| W1 simulate (4 circuits x 4,000 shots), median | 3,972 ms | 3,835 ms |
+| W1 total per iteration, median | 4,054 ms | 3,884 ms |
+| W2 synthesize + GPU check, median (IQR) | 205.9 ms (201.6-207.4) | 204.0 ms (200.3-206.6) |
+| W2 compile, median | 15.0 ms | 15.2 ms |
+| W2 total per iteration, median | 1,042 ms | 1,041 ms |
+| First iteration / median: W1 compile, W2 synthesize | 0.90, 2.60 | 1.37, 2.51 |
+| RSS at iterations 1 / 10 / 100 | 680.2 / 697.5 / 700.1 MB | 679.6 / 697.9 / 699.1 MB |
+| RSS slope, iterations 10-100 | +0.004 MB/iteration | +0.012 MB/iteration |
+| W1 mean <Z0> (00, 01, 10, 11) | -0.922, 0.916, 0.917, -0.921 | -0.921, 0.918, 0.917, -0.923 |
+| W2 TVD over both processes | mean 0.0509, SD 0.0025 | |
+
+Figures (made in the workplace sandbox from the raw CSVs; delivered with this
+document as PNG files): Figure 1, timing box plots; Figure 2, W1 <Z0>
+distributions with the binomial expectation; Figure 3, RSS versus iteration.
+
+## 3. What this establishes
+
+The 2026-09-28 pipeline (W1) and the PSF-Zero synthesis path (W2) ran 200
+iterations with identical answers, 0 fallbacks, noise statistics that match
+the binomial model, stable per-iteration times on this machine, and no
+memory growth (under 0.5% after warm-up). This is evidence of software
+reliability for a proof of concept. It says nothing about real-hardware
+behaviour or about compression value (Stage 1c).
+
+## 4. Post-hoc observations (exploratory, not scored)
+
+- **Where the time goes.** In W1, noisy simulation takes about 3.9 s of about
+  4.0 s per iteration; compilation is 1-2% of the pipeline. Compilation speed
+  is not the bottleneck for this workload.
+- **Explicit gc and compile time.** W1 compile was 78.1 ms (median) without
+  explicit collection and 45.7 ms with `gc.collect()` after every iteration,
+  and much steadier (CV 0.016 versus 0.090). In the gc-none process, 4 of
+  100 iterations (4, 22, 42, 48) ran below 55 ms, like the gc-each process;
+  in the gc-each process every iteration after the first did. One candidate:
+  without explicit collection, Python's automatic collector runs during
+  `transpile` and adds about 30 ms. This is **not established**: the two
+  processes ran once each, in a fixed order, on a shared cloud machine, and
+  W1 simulation was also 3.5% slower in the first process. An order-swapped,
+  repeated comparison would be needed; if it holds, calling `gc.collect()`
+  between jobs is a cheap operational setting.
+- **Cold start.** W2's first iteration took about 2.5x the median in both
+  processes (GPU device and synthesizer initialisation, not isolated here).
+- **Consistency with Stage 1c.** Since PSF-Zero's output does not vary
+  between runs, the small TVD differences between PSF-Zero and Qiskit ZSX in
+  Stage 1c (identical gate counts) are consistent with the two producing
+  different but equivalent parameter values, not with run-to-run variation.
+  Not checked directly.
+- **Layout.** The M4 layout placed logical qubit 0 on physical qubit 112 of
+  FakeBrisbane for all inputs, the same qubit Stage 1b's M1/M4 chose.
+
+## 5. Files
+
+| File | What it is |
+|---|---|
+| `psf-zero/data/longrun_none_2026-09-25.csv` | raw data, 100 rows (44,247 bytes as received) |
+| `psf-zero/data/longrun_each_2026-09-25.csv` | raw data, 100 rows (44,502 bytes as received) |
+| `psf-zero/benchmarks/xor_prereg_longrun_stability.py` | the locked script |
+| `psf-zero/benchmarks/make_longrun_figs.py` | figure script (sandbox) |
+| `longrun_fig1_timing.png`, `longrun_fig2_z0.png`, `longrun_fig3_rss.png` | the three figures |
+
+Pre-publication grep of both CSVs for account names, local paths and host
+names: 0 hits (the only machine string is the platform column).
+
+---
+
+<!-- ===== Addendum 175 pre-registration (source: spare-qubit-cliff-addendum-175-preregistration-2026-09-25.md) ===== -->
+
+> **Note added when merging:** Compound round-trip chain: 100 chained PennyLane <-> Qiskit conversions, checked against PennyLane's own meaning (qml.matrix), with the pre-fix converter as a positive control. A replication of a workplace dry run, as stated in the record.
+
+## Addendum 175 -- Pre-registration: compound round-trip chain of the PennyLane <-> Qiskit conversion, 100 steps (2026-09-25)
+
+> **Imported into the home series as Addendum 175.** Written at the workplace, run on a RunPod pod (RTX 4090), original file `roundtrip-chain-preregistration-2026-09-25.md`; body below unchanged. Script hash (`roundtrip_compound_chain.py`, `8aa601aa...`) re-checked at home: matches.
+
+**Status: pre-registration for the RunPod pod run, locked at the Project
+save time of this document.** **This is not a blind prediction.** A sandbox
+dry run made before locking used the same two converter files the pod will
+use (section 6), and the conversion is deterministic, so the outcome of
+A1-A5 is already known. The pod run tests whether that outcome replicates
+on the pod (A6). This is stated here so nobody reads A1-A5 as forecasts.
+
+**Numbering:** no number; assigned when merged (the home record has reached
+Addendum 166).
+
+## 1. Why this experiment exists
+
+Earlier checks of the conversion (`tape_to_qiskit` / `qiskit_to_tape`) were
+single-shot: convert once, compare once. The question here is whether errors
+**compound** when the output is fed back in repeatedly:
+
+    tape_k --tape_to_qiskit--> qc_k --qiskit_to_tape--> tape_{k+1},  k = 1..100
+
+A second question matters more. The bit-order bug fixed in Addenda 164-166
+(home record) is **symmetric**: the pre-fix `tape_to_qiskit` handed the
+2-qubit matrix to Qiskit without reversing the qubits, and the pre-fix
+`qiskit_to_tape` made the same omission on the way back. The two errors
+cancel in a round trip. A round-trip test, however many times it is chained,
+therefore **cannot** see that bug. This design adds a direct meaning check at
+every step and runs the pre-fix converter as a positive control, to show
+that the meaning check catches what the round trip misses.
+
+## 2. Fixed design
+
+**Converters, loaded side by side under different module names:**
+
+- NEW: `/root/psf-zero/benchmarks/psf_pennylane_gpu_prototype.py`
+  (repository HEAD 2501c7e, with the bit-order fix: `qc.unitary(mat,
+  qubits[::-1])` and `qml.QubitUnitary(mat, wires=qubits[::-1])`).
+- OLD: `~/pennylane_gpu_mock_test/psf_pennylane_gpu_prototype.py` (the
+  workplace copy made before the fix; positive control).
+
+**Tapes (19; both converters run on every tape):**
+
+- F1: 10 random tapes, seeds 0-9, wires `[0, 1, 2, 3]`, 20 operations
+  alternating a Haar-random 2-qubit `QubitUnitary` on a random ordered pair
+  (often in reversed order) and a random named 1-qubit gate (H, X, Y, Z, RX,
+  RY, RZ).
+- F2: 5 random tapes, seeds 100-104, same construction on mixed wire labels
+  `["q3", "a", 7, "b"]`.
+- F3: the four 2026-09-28 XOR tapes (Addendum 148 seed-0 parameters from
+  `retrain_seed0()`), with each CNOT written as a 2-qubit `QubitUnitary` of
+  the CNOT matrix, 35 operations each. (The converter has no CNOT mapping and
+  raises on it; the 2026-09-28 path builds its circuit gate by gate and does
+  not call the converter. CNOT is not symmetric in its two qubits, so a
+  bit-order error changes these tapes' meaning.)
+
+**Recorded at every step k, against the ORIGINAL tape:**
+
+- `fp_equal`: SHA-256 fingerprint of tape_{k+1} (operation names, wires,
+  parameters as full-precision hex / complex bytes) equals the original's.
+- `rt_infid`: average-gate infidelity between the original tape's matrix and
+  tape_{k+1}'s matrix.
+- `meaning_infid`: average-gate infidelity between the original tape's
+  PennyLane matrix and `Operator(qc_k).reverse_qargs()`, i.e. whether the
+  Qiskit circuit means what the original tape means, in PennyLane's qubit
+  order.
+- `n_ops`, and `fp0` (the original tape's fingerprint).
+
+Output: 3,800 rows (19 tapes x 2 converters x 100 steps). No timing, GPU or
+backend. Harness gate C0: the script stops without scoring if the XOR tapes
+cannot be built or NEW cannot convert any tape.
+
+The infidelity of a matrix with itself is about 1e-15 in floating point, not
+0, so the meaning tolerance is 1e-12.
+
+## 3. Pre-registered predictions
+
+**A1.** NEW: tape_{k+1} is fingerprint-identical to the original at every
+step of every tape (1,900 of 1,900).
+
+**A2.** NEW: `meaning_infid` <= 1e-12 at every step of every tape.
+
+**A3.** OLD: fingerprint-identical at every step of every tape too (the
+symmetric bug is invisible to the round trip).
+
+**A4.** OLD: `meaning_infid` > 1e-3 at step 1 for all 15 F1/F2 tapes (the
+meaning check catches the pre-fix bit order).
+
+**A5.** F3 (XOR): NEW `meaning_infid` <= 1e-12 at every step, and OLD
+`meaning_infid` > 1e-3 at step 1 for all 4 tapes.
+
+**A6 (replication).** The pod's CSV is byte-identical to the sandbox dry
+run's: SHA-256 of `~/roundtrip_chain_2026-09-25.csv` =
+`5bc5b94e2fe9a73da083ec33371834f893765daf14d4b3d8482d9c5078d5f9c8`.
+*Refuted* by any other hash. If refuted, the 19 printed `fp0` values are
+compared with section 6: a differing `fp0` means the input tapes themselves
+differ in their last bits (random-unitary generation or XOR training on a
+different numeric library), not a converter failure, and A1-A5 are then
+read on the pod's own numbers.
+
+Each of A1-A5 is *confirmed* if it holds exactly and *refuted* otherwise.
+
+## 4. What this can and cannot establish
+
+It can establish that 100 chained conversions neither drift nor change the
+circuit's meaning, and it demonstrates on real code that a chained round
+trip gives no protection against a symmetric convention error. It does not
+test operations outside the converter's small op set, PSF-Zero synthesis,
+the GPU, or hardware. It is not a new check of the 2026-09-28 path, which
+does not call the converter.
+
+## 5. Files, integrity check and run commands
+
+| File | What it is |
+|---|---|
+| [`roundtrip_compound_chain.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/roundtrip_compound_chain.py) | the script (Project: `psf-zero/benchmarks/`; on the pod: `~/pennylane_gpu_mock_test/`) |
+| this document | the pre-registered predictions |
+
+Normalized SHA-256 of the script:
+`8aa601aa11041b71d0b57067c5a3ca7812ef2c7d25264ac4c9c5103ecb640e44`.
+
+```
+cd ~/pennylane_gpu_mock_test
+python -c "import hashlib;print(hashlib.sha256('\n'.join(l.rstrip() for l in open('roundtrip_compound_chain.py',encoding='utf-8').read().strip().splitlines()).encode()).hexdigest())"
+python -u roundtrip_compound_chain.py 2>&1 | tee ~/roundtrip_chain_run.txt
+sha256sum ~/roundtrip_chain_2026-09-25.csv
+```
+
+Expected run time: about 1 minute (about 45 s in the sandbox, most of it
+the XOR training).
+
+## 6. Dry run before locking (methodology; its outcome is known)
+
+**Setup.** Workplace sandbox (not the pod): Python with PennyLane 0.45.1,
+Qiskit 2.5.2, qiskit-aer 0.17.2, qiskit-ibm-runtime 0.50.0, numpy 2.4.4,
+scipy 1.17.1. NEW = the public repository cloned at HEAD 2501c7e (the pod's
+commit), OLD = the workplace copy of the prototype. No stubs.
+
+**Design changes made because of the dry run (before locking; no threshold
+changed):**
+
+1. The first version fed the XOR tapes to the converter as they are; NEW
+   raised `NotImplementedError` on `CNOT`, and C0 stopped the run. F3 was
+   changed to write each CNOT as a `QubitUnitary`.
+2. OLD had been planned for F1/F2 only; it now runs on F3 as well, and A5
+   was extended with the OLD clause.
+3. The `fp0` column and printed fingerprints were added for A6.
+
+**Outcome of the final script (run twice; both CSVs byte-identical, SHA-256
+as in A6):**
+
+| | NEW steps exact | NEW max meaning_infid | OLD steps exact | OLD min step-1 meaning_infid |
+|---|---|---|---|---|
+| F1 (10 tapes) | 1000/1000 | 4.2e-15 | 1000/1000 | 0.919 |
+| F2 (5 tapes) | 500/500 | 3.3e-15 | 500/500 | 0.937 |
+| F3 XOR (4 tapes) | 400/400 | 8.9e-16 | 400/400 | 0.931 |
+
+A1-A5 all hold on this run. Within each chain `meaning_infid` took a single
+value over all 100 steps: step 1 returns the original tape exactly, so every
+later step repeats step 1 and nothing compounds, for either converter. OLD
+passes the round trip at every step while its circuit means something
+different (infidelity above 0.9).
+
+**Original-tape fingerprints (`fp0`), for A6:**
+
+| Tape | fp0 | Tape | fp0 |
+|---|---|---|---|
+| F1 seed0 | 2d619d91f0d06cf7 | F1 seed8 | ca33ccca6dd86bda |
+| F1 seed1 | 96c7390341ad98fc | F1 seed9 | f8ef39cb4cee38e9 |
+| F1 seed2 | f02a79e70626df0e | F2 seed0 | 4fedc0b2bfce8038 |
+| F1 seed3 | b713113e1d989c93 | F2 seed1 | 78d671254c8810cf |
+| F1 seed4 | 953c1192827c1d5c | F2 seed2 | f3373718a851d079 |
+| F1 seed5 | 772b0475c30612f0 | F2 seed3 | ea47cab6004eac10 |
+| F1 seed6 | 6750ab5ac35e889a | F2 seed4 | 2fac28a593274d42 |
+| F1 seed7 | 4fafe37f300269af | F3 input0 | b705940c295395c1 |
+| | | F3 input1 | f52287f7083d9101 |
+| | | F3 input2 | 1ef20ecce1c83ef9 |
+| | | F3 input3 | 10e4e7bdc4079f19 |
+
+---
+
+<!-- ===== Addendum 176 (source: spare-qubit-cliff-addendum-176-2026-09-25.md) ===== -->
+
+> **Note added when merging:** Nothing compounds; a chained round trip cannot see the symmetric bit-order bug (the pre-fix converter round-trips exactly while being wrong from step 1). A6 (byte-identical CSV across machines) refuted: structure reproduces, last-bit floats do not.
+
+## Addendum 176 -- Compound round-trip chain results: A1-A5 confirmed, A6 (byte-identical replication) refuted; nothing compounds, and a chained round trip cannot see the symmetric bit-order bug (2026-09-25)
+
+> **Imported into the home series as Addendum 176.** Written at the workplace, run on a RunPod pod (RTX 4090), original file `roundtrip-chain-results-2026-09-25.md`; body below unchanged. Re-computed at home from `roundtrip_chain_2026-09-25.csv` (SHA-256 `b8aa9314...`, as this record states): NEW round trips exact at every step with meaning infidelity at most 3.6e-15; OLD round trips also exact at every step; OLD step-1 meaning infidelity above 1e-3 on 19/19 tapes (minimum 0.919).
+
+**Scored against:** `roundtrip-chain-preregistration-2026-09-25.md` (locked
+in the Project before the pod run). As that document states, A1-A5 were not
+blind predictions: the sandbox dry run had already produced them with the
+same converter files. A6, the replication test, was the only open question.
+Every verdict below was recomputed in the workplace sandbox from the pod's
+raw CSV and matches the script's own scoring.
+
+**Run:** RunPod pod, `python -u roundtrip_compound_chain.py`, numpy 2.5.3,
+scipy 1.18.1, Qiskit 2.5.2 (the sandbox dry run: numpy 2.4.4, scipy 1.17.1,
+Qiskit 2.5.2). NEW = repository HEAD 2501c7e, OLD = the pre-fix workplace
+copy. 3,800 rows. No timing, GPU or backend. **Script integrity:** the
+post-run check returned the pre-registered normalized SHA-256
+`8aa601aa11041b71d0b57067c5a3ca7812ef2c7d25264ac4c9c5103ecb640e44` (the check
+was run after the experiment, not before it).
+
+## 1. Scoring
+
+| Prediction | Verdict | Pod numbers |
+|---|---|---|
+| A1 NEW round trip fingerprint-exact at every step | CONFIRMED | 1,900 of 1,900 steps; max rt_infid 3.3e-15 |
+| A2 NEW meaning_infid <= 1e-12 at every step | CONFIRMED | max 3.6e-15 |
+| A3 OLD round trip fingerprint-exact at every step | CONFIRMED | 1,900 of 1,900 steps |
+| A4 OLD meaning_infid > 1e-3 at step 1, all 15 F1/F2 tapes | CONFIRMED | 15 of 15; min 0.919 |
+| A5 XOR: NEW <= 1e-12 at every step; OLD > 1e-3 at step 1 | CONFIRMED | NEW max 8.9e-16; OLD 4 of 4, min 0.931 |
+| **A6 pod CSV byte-identical to the sandbox dry run** | **REFUTED** | SHA-256 `b8aa9314132a73f6b60665c3d5bf14511dc1e7311cbbd8d3116a081072d98a30` (predicted `5bc5b94e...f9c8`) |
+
+Per family on the pod (NEW steps exact / max meaning_infid | OLD steps
+exact / min step-1 meaning_infid): F1 1000/1000, 3.6e-15 | 1000/1000, 0.919;
+F2 500/500, 2.6e-15 | 500/500, 0.937; F3 XOR 400/400, 8.9e-16 | 400/400,
+0.931.
+
+## 2. What the results show
+
+1. **Nothing compounds.** On the pod, as in the sandbox, every chain took a
+   single `meaning_infid` value over all 100 steps, for both converters:
+   step 1 returns the original tape exactly, so every later step repeats
+   step 1. The chain is idempotent; 100 steps carry exactly the error of one.
+2. **A round trip, however long, cannot see a symmetric convention error.**
+   The pre-fix converter passed the round trip at all 1,900 steps while its
+   Qiskit circuits meant something else (average-gate infidelity 0.92-0.94
+   against the original). Only the direct meaning check caught it. For the
+   converter, "round trip passes" is not evidence of correctness.
+3. **The XOR structure is handled correctly by the fixed converter** (with
+   CNOT written as a matrix). The 2026-09-28 path does not call the
+   converter, so this is not a new check of that path.
+
+## 3. Why A6 failed (locked reading, then the comparison)
+
+Following the reading fixed in the pre-registration, the printed `fp0`
+values were compared with the sandbox's:
+
+- **F3 (XOR), 4 tapes: identical.**
+- **F1 and F2, 15 tapes: all different.**
+
+A row-by-row comparison of the two CSVs (same 3,800 keys in the same order)
+gives:
+
+| Column | Rows that differ |
+|---|---|
+| converter, family, tape, step, fp_equal, n_ops | 0 |
+| fp0 | 3,000 (every F1/F2 row) |
+| rt_infid | 2,800 |
+| meaning_infid | 1,400, all of them NEW rows; largest difference 2.3e-15 |
+| OLD meaning_infid | 0 (identical to all printed digits, every tape) |
+
+**Reading.** OLD's step-1 infidelities (0.919-0.941) match the sandbox to
+every printed digit on all 19 tapes. Tapes with different structure (other
+qubit pairs, other gates) could not do that, so the F1/F2 tapes have the
+same structure on both machines. What differs is the exact bytes of some
+random 2-qubit matrices: the fingerprint hashes them bit for bit, and XOR,
+whose only matrix is the exact 0/1 CNOT, is unaffected. The remaining
+differences (NEW infidelities near 1e-15) are floating-point rounding in the
+matrix products, on the order of machine precision.
+
+**Cause not isolated.** The two environments differ in numpy (2.5.3 versus
+2.4.4) and scipy (1.18.1 versus 1.17.1) and possibly in the linear-algebra
+library underneath. One element checked on the pod,
+`random_unitary(4, seed=1).data[0,0]`, is bit-identical to the sandbox's
+(`0x1.d7858cab452a0p-4`), so the difference, if in the random unitaries, is
+not in every element. Which library and which elements are responsible was
+not determined. (An earlier chat remark that the random-unitary generation
+was the cause, and a later one suggesting numpy's random stream, were
+hypotheses; the second is ruled out by the matching OLD values above.)
+
+**Consequence.** Bit-for-bit reproducibility of this project's outputs holds
+within a machine (the long-run audit: 200 identical PSF-Zero outputs) but
+should not be expected across machines with different numeric libraries,
+even with identical seeds. Structural fields (gate counts, pass/fail
+verdicts) reproduced exactly. Future replication gates should compare
+structure and tolerance-bounded values, not file hashes, unless the library
+versions are pinned. (Stage 1c's R0 failure had a different cause, the
+bit-order fix, not this.)
+
+## 4. Files
+
+| File | What it is |
+|---|---|
+| `psf-zero/data/roundtrip_chain_2026-09-25.csv` | pod raw data, 3,800 rows (348,466 bytes as received) |
+| `psf-zero/benchmarks/roundtrip_compound_chain.py` | the locked script |
+| `roundtrip-chain-preregistration-2026-09-25.md` | the pre-registration (with the dry run and its `fp0` values) |
+
+Pre-publication grep of the CSV for account names, local paths and host
+names: 0 hits.
+
+---
+
 **End of Part 8 of 8 (end of document, for now).** Back to [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
