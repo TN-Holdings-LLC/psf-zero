@@ -21,13 +21,13 @@ code, a repository, or a chat):
 then call get_saved_account_backend(name) below, which reads that saved
 account and takes no token argument by design.
 
-Known issue (Addendum 153, P4)
-------------------------------
-psf_pennylane_gpu_ibm_transform() calls measure_all() on the circuit routed
-to the FULL backend, so every physical qubit is measured. Fine for a
-5-qubit fake backend; on a 127-qubit device it yields 127-bit results on
-hardware and an infeasible local simulation. Must be fixed (measure only
-the logical qubits) before the 2026-09-28 submission.
+Measurement width (Addendum 153 P4, fixed in Addendum 160)
+---------------------------------------------------------
+psf_pennylane_gpu_ibm_transform() used to call measure_all() on the circuit
+routed to the FULL backend, measuring every physical qubit. It now measures
+only the logical qubits, at their final routed positions
+(logical_measurement()), so results are as wide as the circuit, not the
+device.
 """
 from __future__ import annotations
 

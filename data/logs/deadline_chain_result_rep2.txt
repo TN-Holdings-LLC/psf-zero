@@ -1,0 +1,51 @@
+-rwxr-xr-x 1 psf psf 7671 Sep 26 08:21 deadline_compound_chain.py
+sha256 8ffabd4e1b34e00a30c54dc181d48cd791a2362d49357612fbfca6833d359ccf
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+laps=10 | platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | python 3.12.13 | qiskit 2.5.2 | pennylane 0.45.1
+spare=0 Q3 lap   1  compile   13.422s  lap   13.70s  within1s=False  max_pair_dist=3.37e-13  2q=180  layout_changed=False  OK
+spare=0 Q3 lap   2  compile   13.071s  lap   13.43s  within1s=False  max_pair_dist=3.38e-13  2q=180  layout_changed=False  OK
+spare=0 Q3 lap   3  compile   12.944s  lap   13.22s  within1s=False  max_pair_dist=3.38e-13  2q=180  layout_changed=False  OK
+spare=0 Q3 lap   4  compile   12.896s  lap   13.17s  within1s=False  max_pair_dist=3.39e-13  2q=180  layout_changed=False  OK
+spare=0 Q3 lap   5  compile   13.179s  lap   13.51s  within1s=False  max_pair_dist=3.39e-13  2q=180  layout_changed=False  OK
+spare=0 Q3 lap   6  compile   13.147s  lap   13.44s  within1s=False  max_pair_dist=3.39e-13  2q=180  layout_changed=False  OK
+spare=0 Q3 lap   7  compile   12.977s  lap   13.25s  within1s=False  max_pair_dist=3.39e-13  2q=180  layout_changed=False  OK
+spare=0 Q3 lap   8  compile   12.789s  lap   13.06s  within1s=False  max_pair_dist=3.39e-13  2q=180  layout_changed=False  OK
+spare=0 Q3 lap   9  compile   13.018s  lap   13.39s  within1s=False  max_pair_dist=3.40e-13  2q=180  layout_changed=False  OK
+spare=0 Q3 lap  10  compile   12.931s  lap   13.20s  within1s=False  max_pair_dist=3.40e-13  2q=180  layout_changed=False  OK
+  -> spare=0 Q3: laps within 1 s 0/10, total compile 130.4s
+spare=0 P  lap   1  compile    0.249s  lap    0.54s  within1s=True  max_pair_dist=1.76e-11  2q=180  layout_changed=False  OK
+spare=0 P  lap   2  compile    0.065s  lap    0.37s  within1s=True  max_pair_dist=5.54e-11  2q=180  layout_changed=False  OK
+spare=0 P  lap   3  compile    0.062s  lap    0.48s  within1s=True  max_pair_dist=3.64e-11  2q=180  layout_changed=False  OK
+spare=0 P  lap   4  compile    0.061s  lap    0.37s  within1s=True  max_pair_dist=1.66e-10  2q=180  layout_changed=False  OK
+spare=0 P  lap   5  compile    0.058s  lap    0.36s  within1s=True  max_pair_dist=2.21e-10  2q=180  layout_changed=False  OK
+spare=0 P  lap   6  compile    0.058s  lap    0.36s  within1s=True  max_pair_dist=3.51e-10  2q=180  layout_changed=False  OK
+spare=0 P  lap   7  compile    0.058s  lap    0.36s  within1s=True  max_pair_dist=3.32e-10  2q=180  layout_changed=False  OK
+spare=0 P  lap   8  compile    0.058s  lap    0.36s  within1s=True  max_pair_dist=4.62e-10  2q=180  layout_changed=False  OK
+spare=0 P  lap   9  compile    0.062s  lap    0.36s  within1s=True  max_pair_dist=5.17e-10  2q=180  layout_changed=False  OK
+spare=0 P  lap  10  compile    0.172s  lap    0.47s  within1s=True  max_pair_dist=6.47e-10  2q=180  layout_changed=False  OK
+  -> spare=0 P: laps within 1 s 10/10, total compile 0.9s
+spare=8 Q3 lap   1  compile    0.178s  lap    0.43s  within1s=True  max_pair_dist=3.37e-13  2q=168  layout_changed=False  OK
+spare=8 Q3 lap   2  compile    0.149s  lap    0.41s  within1s=True  max_pair_dist=3.38e-13  2q=168  layout_changed=True  OK
+spare=8 Q3 lap   3  compile    0.154s  lap    0.43s  within1s=True  max_pair_dist=3.39e-13  2q=168  layout_changed=False  OK
+spare=8 Q3 lap   4  compile    0.152s  lap    0.41s  within1s=True  max_pair_dist=3.39e-13  2q=168  layout_changed=False  OK
+spare=8 Q3 lap   5  compile    0.148s  lap    0.41s  within1s=True  max_pair_dist=4.21e-13  2q=168  layout_changed=False  OK
+spare=8 Q3 lap   6  compile    0.158s  lap    0.41s  within1s=True  max_pair_dist=5.09e-13  2q=168  layout_changed=False  OK
+spare=8 Q3 lap   7  compile    0.152s  lap    0.53s  within1s=True  max_pair_dist=5.33e-13  2q=168  layout_changed=False  OK
+spare=8 Q3 lap   8  compile    0.154s  lap    0.41s  within1s=True  max_pair_dist=5.69e-13  2q=168  layout_changed=False  OK
+spare=8 Q3 lap   9  compile    0.157s  lap    0.41s  within1s=True  max_pair_dist=5.42e-13  2q=168  layout_changed=False  OK
+spare=8 Q3 lap  10  compile    0.152s  lap    0.41s  within1s=True  max_pair_dist=4.34e-13  2q=168  layout_changed=False  OK
+  -> spare=8 Q3: laps within 1 s 10/10, total compile 1.6s
+spare=8 P  lap   1  compile    0.027s  lap    0.30s  within1s=True  max_pair_dist=1.76e-11  2q=168  layout_changed=False  OK
+spare=8 P  lap   2  compile    0.027s  lap    0.31s  within1s=True  max_pair_dist=5.54e-11  2q=168  layout_changed=False  OK
+spare=8 P  lap   3  compile    0.028s  lap    0.32s  within1s=True  max_pair_dist=3.64e-11  2q=168  layout_changed=False  OK
+spare=8 P  lap   4  compile    0.032s  lap    0.36s  within1s=True  max_pair_dist=1.66e-10  2q=168  layout_changed=False  OK
+spare=8 P  lap   5  compile    0.029s  lap    0.46s  within1s=True  max_pair_dist=2.21e-10  2q=168  layout_changed=False  OK
+spare=8 P  lap   6  compile    0.030s  lap    0.31s  within1s=True  max_pair_dist=3.51e-10  2q=168  layout_changed=False  OK
+spare=8 P  lap   7  compile    0.039s  lap    0.34s  within1s=True  max_pair_dist=3.32e-10  2q=168  layout_changed=False  OK
+spare=8 P  lap   8  compile    0.029s  lap    0.32s  within1s=True  max_pair_dist=4.62e-10  2q=168  layout_changed=False  OK
+spare=8 P  lap   9  compile    0.028s  lap    0.31s  within1s=True  max_pair_dist=5.17e-10  2q=168  layout_changed=False  OK
+spare=8 P  lap  10  compile    0.031s  lap    0.31s  within1s=True  max_pair_dist=6.47e-10  2q=168  layout_changed=False  OK
+  -> spare=8 P: laps within 1 s 10/10, total compile 0.3s
+
+Wrote deadline_compound_chain_2026-09-26.csv (40 rows)

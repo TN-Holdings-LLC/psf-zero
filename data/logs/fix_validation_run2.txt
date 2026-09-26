@@ -1,0 +1,95 @@
+-rw-r--r-- 1 psf psf 47606 Sep 26 08:52 benchmarks/psf_compile.py
+-rw-r--r-- 1 psf psf 47606 Sep 26 08:52 psf_compile.py
+a1a207813d8bfd03b969c5b224ec08d99086b19811704129b64a1c6174122baf  psf_compile.py
+a1a207813d8bfd03b969c5b224ec08d99086b19811704129b64a1c6174122baf  benchmarks/psf_compile.py
+LOADED /home/psf/psf_zero_fresh_test/benchmarks/psf_compile.py 2026-09-26
+===== V1 =====
+PSF-Zero error: median 6.77e-15, max 6.18e-14 | Qiskit error: median 8.72e-15, max 1.81e-13
+
+Ten worst pairs for PSF-Zero:
+pair   err_psf    err_qk       a       b        c   gap_eig    gap_re    gap_im
+   0  6.18e-14  7.97e-15  0.5738  0.4190  -0.0575  6.09e-01  6.99e-02  5.43e-01
+  19  5.50e-14  8.06e-15  0.6257  0.2644  -0.0103  9.73e-01  2.72e-02  3.06e-01
+  24  5.32e-14  2.28e-14  0.6885  0.2749  -0.0729  7.86e-01  2.14e-01  1.51e-01
+  46  4.94e-14  4.77e-14  0.6817  0.5827  -0.0013  3.93e-01  1.06e-03  3.78e-01
+  51  4.67e-14  1.19e-14  0.7442  0.4407  -0.0350  1.14e+00  7.98e-02  1.20e-01
+  10  4.03e-14  8.22e-15  0.6978  0.5190   0.0318  7.00e-01  4.45e-02  2.88e-01
+  43  3.15e-14  1.01e-14  0.6390  0.1738  -0.0402  5.28e-01  1.29e-01  1.52e-01
+  56  2.87e-14  7.50e-15  0.7630  0.5501  -0.0244  8.26e-01  4.04e-02  7.77e-02
+  39  2.49e-14  4.16e-14  0.3669  0.3069  -0.0775  2.39e-01  3.69e-02  2.36e-01
+  23  2.20e-14  1.30e-14  0.5610  0.3128   0.1126  7.79e-01  2.13e-01  3.38e-01
+
+Spearman rank correlation of PSF-Zero's error with:
+  gap_eig    -0.03
+  gap_re     -0.40
+  gap_im     +0.25
+  weyl_a     -0.09
+  weyl_b     +0.17
+  weyl_c     -0.12
+  err_qiskit +0.08
+
+Wrote diag_core_worst_pairs_2026-09-26.csv
+===== construction =====
+psf_compile VERSION 2026-09-26
+
+maximum over 60 pairs:  d_model=1.76e-11  d_circ_cx=1.76e-11  d_core_cx=4.93e-14  d_circ_can=1.76e-11  d_local=3.60e-16
+median over 60 pairs:   d_model=2.67e-14  d_circ_cx=2.68e-14  d_core_cx=1.32e-15  d_circ_can=2.67e-14  d_local=2.00e-16
+
+Five worst pairs by d_circ_cx:
+pair        c     d_model   d_circ_cx   d_core_cx  d_circ_can     d_local
+  18  -1.1602    1.76e-11    1.76e-11    1.97e-14    1.76e-11    1.62e-16
+   6  -0.7273    5.56e-12    5.56e-12    3.01e-15    5.56e-12    2.23e-16
+  48  -0.9690    4.34e-12    4.34e-12    7.16e-15    4.34e-12    1.76e-16
+  57  -0.8288    4.21e-12    4.21e-12    3.69e-15    4.21e-12    1.76e-16
+  37  -0.5720    3.34e-12    3.34e-12    1.63e-15    3.34e-12    3.14e-16
+===== V2 =====
+....................................                                     [100%]
+36 passed in 8.48s
+===== V3-V5 =====
+laps=10 | platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | python 3.12.13 | qiskit 2.5.2 | pennylane 0.45.1
+spare=0 Q3 lap   1  compile   13.080s  lap   13.35s  within1s=False  max_pair_dist=3.37e-13  2q=180  layout_changed=False  OK
+spare=0 Q3 lap   2  compile   13.076s  lap   13.44s  within1s=False  max_pair_dist=3.38e-13  2q=180  layout_changed=False  OK
+spare=0 Q3 lap   3  compile   12.933s  lap   13.20s  within1s=False  max_pair_dist=3.38e-13  2q=180  layout_changed=False  OK
+spare=0 Q3 lap   4  compile   12.901s  lap   13.18s  within1s=False  max_pair_dist=3.39e-13  2q=180  layout_changed=False  OK
+spare=0 Q3 lap   5  compile   12.894s  lap   13.17s  within1s=False  max_pair_dist=3.39e-13  2q=180  layout_changed=False  OK
+spare=0 Q3 lap   6  compile   12.835s  lap   13.11s  within1s=False  max_pair_dist=3.39e-13  2q=180  layout_changed=False  OK
+spare=0 Q3 lap   7  compile   12.885s  lap   13.16s  within1s=False  max_pair_dist=3.39e-13  2q=180  layout_changed=False  OK
+spare=0 Q3 lap   8  compile   12.976s  lap   13.26s  within1s=False  max_pair_dist=3.39e-13  2q=180  layout_changed=False  OK
+spare=0 Q3 lap   9  compile   12.977s  lap   13.35s  within1s=False  max_pair_dist=3.40e-13  2q=180  layout_changed=False  OK
+spare=0 Q3 lap  10  compile   12.896s  lap   13.17s  within1s=False  max_pair_dist=3.40e-13  2q=180  layout_changed=False  OK
+  -> spare=0 Q3: laps within 1 s 0/10, total compile 129.5s
+spare=0 P  lap   1  compile    0.327s  lap    0.64s  within1s=True  max_pair_dist=6.21e-14  2q=180  layout_changed=False  OK
+spare=0 P  lap   2  compile    0.140s  lap    0.45s  within1s=True  max_pair_dist=1.22e-13  2q=180  layout_changed=False  OK
+spare=0 P  lap   3  compile    0.137s  lap    0.55s  within1s=True  max_pair_dist=1.82e-13  2q=180  layout_changed=False  OK
+spare=0 P  lap   4  compile    0.140s  lap    0.44s  within1s=True  max_pair_dist=2.51e-13  2q=180  layout_changed=False  OK
+spare=0 P  lap   5  compile    0.133s  lap    0.44s  within1s=True  max_pair_dist=3.19e-13  2q=180  layout_changed=False  OK
+spare=0 P  lap   6  compile    0.129s  lap    0.45s  within1s=True  max_pair_dist=3.99e-13  2q=180  layout_changed=False  OK
+spare=0 P  lap   7  compile    0.130s  lap    0.43s  within1s=True  max_pair_dist=4.79e-13  2q=180  layout_changed=False  OK
+spare=0 P  lap   8  compile    0.137s  lap    0.44s  within1s=True  max_pair_dist=5.59e-13  2q=180  layout_changed=False  OK
+spare=0 P  lap   9  compile    0.133s  lap    0.45s  within1s=True  max_pair_dist=6.39e-13  2q=180  layout_changed=False  OK
+spare=0 P  lap  10  compile    0.129s  lap    0.54s  within1s=True  max_pair_dist=7.18e-13  2q=180  layout_changed=False  OK
+  -> spare=0 P: laps within 1 s 10/10, total compile 1.5s
+spare=8 Q3 lap   1  compile    0.189s  lap    0.45s  within1s=True  max_pair_dist=3.37e-13  2q=168  layout_changed=False  OK
+spare=8 Q3 lap   2  compile    0.150s  lap    0.42s  within1s=True  max_pair_dist=3.38e-13  2q=168  layout_changed=True  OK
+spare=8 Q3 lap   3  compile    0.153s  lap    0.41s  within1s=True  max_pair_dist=3.39e-13  2q=168  layout_changed=False  OK
+spare=8 Q3 lap   4  compile    0.150s  lap    0.42s  within1s=True  max_pair_dist=3.39e-13  2q=168  layout_changed=False  OK
+spare=8 Q3 lap   5  compile    0.153s  lap    0.42s  within1s=True  max_pair_dist=4.21e-13  2q=168  layout_changed=False  OK
+spare=8 Q3 lap   6  compile    0.152s  lap    0.42s  within1s=True  max_pair_dist=5.09e-13  2q=168  layout_changed=False  OK
+spare=8 Q3 lap   7  compile    0.151s  lap    0.53s  within1s=True  max_pair_dist=5.33e-13  2q=168  layout_changed=False  OK
+spare=8 Q3 lap   8  compile    0.153s  lap    0.42s  within1s=True  max_pair_dist=5.69e-13  2q=168  layout_changed=False  OK
+spare=8 Q3 lap   9  compile    0.153s  lap    0.41s  within1s=True  max_pair_dist=5.42e-13  2q=168  layout_changed=False  OK
+spare=8 Q3 lap  10  compile    0.152s  lap    0.41s  within1s=True  max_pair_dist=4.34e-13  2q=168  layout_changed=False  OK
+  -> spare=8 Q3: laps within 1 s 10/10, total compile 1.6s
+spare=8 P  lap   1  compile    0.091s  lap    0.37s  within1s=True  max_pair_dist=6.21e-14  2q=168  layout_changed=False  OK
+spare=8 P  lap   2  compile    0.094s  lap    0.37s  within1s=True  max_pair_dist=1.22e-13  2q=168  layout_changed=False  OK
+spare=8 P  lap   3  compile    0.098s  lap    0.38s  within1s=True  max_pair_dist=1.82e-13  2q=168  layout_changed=False  OK
+spare=8 P  lap   4  compile    0.095s  lap    0.50s  within1s=True  max_pair_dist=2.51e-13  2q=168  layout_changed=False  OK
+spare=8 P  lap   5  compile    0.095s  lap    0.38s  within1s=True  max_pair_dist=3.19e-13  2q=168  layout_changed=False  OK
+spare=8 P  lap   6  compile    0.098s  lap    0.38s  within1s=True  max_pair_dist=3.99e-13  2q=168  layout_changed=False  OK
+spare=8 P  lap   7  compile    0.096s  lap    0.38s  within1s=True  max_pair_dist=4.79e-13  2q=168  layout_changed=False  OK
+spare=8 P  lap   8  compile    0.096s  lap    0.39s  within1s=True  max_pair_dist=5.59e-13  2q=168  layout_changed=False  OK
+spare=8 P  lap   9  compile    0.092s  lap    0.38s  within1s=True  max_pair_dist=6.39e-13  2q=168  layout_changed=False  OK
+spare=8 P  lap  10  compile    0.089s  lap    0.37s  within1s=True  max_pair_dist=7.18e-13  2q=168  layout_changed=False  OK
+  -> spare=8 P: laps within 1 s 10/10, total compile 0.9s
+
+Wrote deadline_compound_chain_2026-09-26.csv (40 rows)

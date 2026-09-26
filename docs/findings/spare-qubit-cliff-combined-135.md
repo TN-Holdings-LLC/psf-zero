@@ -5554,4 +5554,1366 @@ names: 0 hits.
 
 ---
 
+<!-- ===== Addendum 177 pre-registration (source: spare-qubit-cliff-addendum-177-preregistration-2026-09-25.md) ===== -->
+
+> **Note added when merging:** Tests the owner's hypothesis that PSF-Zero beats Qiskit's default compilation as circuits get deeper, even without the cliff: 4 backends (CZ and ECR), depth 1-16 layers, PSF-Zero and a ZSX control pinned to Qiskit's own layout. Script hash-locked.
+
+## Addendum 177 -- Pre-registration: as circuits get deeper, does PSF-Zero's synthesis beat Qiskit's default compilation (optimization level 3) under realistic device noise? A test of "PSF-Zero has a strength beyond the cliff" (2026-09-25)
+
+**Status: pre-registration only. No measurement has been run.**
+
+## 1. Why this experiment exists
+
+The project owner's hypothesis: even where the layout cliff does not
+occur, current compilers accumulate error and do not improve, so
+PSF-Zero's exact closed-form synthesis should give better results on
+realistic noise, and the advantage should appear as circuits get deeper.
+If true, this would be a strength of PSF-Zero other than the cliff, and a
+candidate centre for a third paper.
+
+The evidence so far points the other way, and is stated here so the
+prediction below is not mistaken for a neutral guess: on small circuits,
+PSF-Zero's output was structurally identical to Qiskit's decomposer with
+`euler_basis="ZSX"`, with no noisy-score difference, and slower to
+synthesize (Addenda 157, 159); against Qiskit's default compilation it was
+smaller in both size and depth in only 40 of 105 cells, with a mean noisy
+TVD difference of +0.00003 (Addendum 172, exploratory). None of those
+tests varied depth systematically, which is what this one does.
+
+## 2. Design
+
+- **Circuits**: 4 logical qubits; L layers of Haar-random 2-qubit blocks
+  (`UnitaryGate`) in a brickwork pattern -- even layers on (0,1) and
+  (2,3), odd layers on (1,2). L in {1, 2, 4, 8, 16} (2 to 24 blocks). 10
+  random circuits per L (fixed seeds).
+- **Backends**: FakeFez, FakeMarrakesh, FakeKingston (Heron, CZ) and
+  FakeBrisbane (Eagle, ECR) from `qiskit_ibm_runtime.fake_provider`.
+- **Arms** (all measure every logical qubit, `measure_all()` on the logical
+  circuit BEFORE compilation, so layout selection can see readout error --
+  the Addendum 170 lesson):
+  - **Q3 -- Qiskit default**: `transpile(..., optimization_level=3,
+    seed_transpiler=0)` on the whole circuit. Qiskit chooses the layout and
+    synthesizes every block itself.
+  - **P -- PSF-Zero**: each block synthesized by
+    `SU4GeodesicPSFSynthesizer(GeodesicPSFHyper(entangling_basis="cx",
+    on_unsupported="raise"))`, the gates composed into the circuit, then
+    `transpile(..., optimization_level=1, initial_layout=<Q3's own layout
+    for that circuit>)`.
+  - **Z -- control**: identical to P, but each block synthesized by
+    `TwoQubitBasisDecomposer(CXGate(), euler_basis="ZSX")`.
+- **Why P and Z use level 1 and Q3's layout**: at level 3 Qiskit
+  re-consolidates and re-synthesizes every 2-qubit block, which would erase
+  PSF-Zero's output (the Addendum 156 Section 1a problem). Pinning P and Z
+  to the layout Q3 chose isolates the synthesis method from layout choice.
+- **Known asymmetry, stated in advance**: PSF-Zero can emit only
+  `canonical` or `cx` gates, not CZ or ECR. P and Z therefore rely on
+  Qiskit's level-1 translation from CX to each device's native gate, while
+  Q3 synthesizes directly in the native gate. This is how PSF-Zero would
+  actually be used today; it may cost P and Z extra single-qubit gates.
+- **Execution**: `SamplerV2` in local testing mode (`psf_ibm_real_submit`),
+  4000 shots, simulator seed 42, to each fake backend (noisy) and to a plain
+  `AerSimulator` (noiseless).
+- **Recorded per (backend, L, circuit, arm)**: routed two-qubit gate count,
+  depth, size, the physical layout used, noisy and noiseless TVD against
+  the logical circuit's exact distribution, PSF-Zero fallback count.
+
+## 3. Pre-registered decision rule for the hypothesis
+
+For each (backend, L): d = mean over the 10 circuits of (TVD_Q3 - TVD_P),
+paired by circuit, and SE = sample standard deviation of the paired
+differences / sqrt(10).
+
+- **P wins at (backend, L)** if d >= 0.02 and d >= 3 SE.
+- **Q3 wins at (backend, L)** if -d >= 0.02 and -d >= 3 SE.
+
+**H (the owner's hypothesis) is CONFIRMED** if P wins on at least 3 of the
+4 backends at both L = 8 and L = 16.
+**H is REFUTED** if P wins on at most 1 backend at L = 16.
+Anything in between is **INCONCLUSIVE** and reported as such.
+
+**The assistant's expectation, stated before running: H refuted** -- no
+consistent difference at any depth, on the evidence in Section 1.
+
+## 4. Secondary predictions
+
+- **S1.** P and Z have identical routed two-qubit count, depth and size on
+  every circuit (as in Addendum 159), and P has zero fallbacks.
+- **S2.** Q3 routes to the same two-qubit gate count as P on every circuit
+  (3 per generic block, no SWAPs needed on a 4-qubit path).
+- **S3.** For every arm and backend, mean noisy TVD is non-decreasing from
+  L = 1 to L = 16 (noise accumulates with depth).
+- **S4.** Noiseless TVD < 0.06 for every circuit and arm (sampling noise
+  only; confirms the three compilations are correct).
+
+If S1, S2 or S4 fails, the comparison itself is compromised and that is
+reported before any reading of H.
+
+## 5. What this cannot establish
+
+- Real hardware; fake backends are past snapshots.
+- Larger circuits, other structures, or approximate synthesis
+  (`approximation_degree` left at Qiskit's default).
+- Timing (not recorded as a result).
+
+## 6. Script lock
+
+`psf_vs_qiskit_depth_sweep.py`, normalized SHA-256 (trailing whitespace
+stripped per line, surrounding blank lines removed):
+`cbcb93fa60b920d5651e5fcf689aeacf0b4e91dbd3b5b4f2b8a60808e4bb009c`.
+Re-check it on the machine that runs the experiment BEFORE running, and
+record the check in the results. Output:
+`psf_vs_qiskit_depth_sweep_2026-09-25.csv` (600 rows: 4 backends x 5 depths
+x 10 circuits x 3 arms).
+
+---
+
+<!-- ===== Addendum 178 pre-registration (source: spare-qubit-cliff-addendum-178-preregistration-2026-09-25.md) ===== -->
+
+> **Note added when merging:** Timed, deadline-scored comparison on FakeNighthawk (IBM's square-lattice generation), where the cliff has never been tested: does it appear, and which compiler meets a 1 s deadline (0.01 / 0.1 / 1 / 10 s all reported)? Quality equivalence pre-registered this time. A first run failed (wrong file version, forked children hung, layout module not importable); Section 6 records it and the fix before a valid run. Stage 0 from that run is valid: the device has a perfect matching, so the cliff's condition can arise.
+
+## Addendum 178 -- Pre-registration: does the layout cliff appear on IBM's square-lattice generation (FakeNighthawk), and if so, which compiler meets a 1-second deadline? Quality equivalence pre-registered this time (2026-09-25)
+
+**Status: pre-registration only. No measurement has been run.**
+
+## 1. Why this experiment exists
+
+Two lines of evidence meet here.
+
+- **Quality**: wherever the layout cliff does not occur, PSF-Zero and
+  Qiskit produce circuits of the same quality (Addenda 157, 159, 172, and
+  the depth sweep of Addendum 177 in progress). PSF-Zero's established
+  advantage is speed at the cliff, not output quality.
+- **Where the cliff can occur**: it was found on square grids; on IBM's
+  heavy-hex devices it does not occur, because heavy-hex graphs admit no
+  perfect matching (workplace Addenda 39-40) and random circuits rarely
+  land on the narrow feasible-and-saturated condition (Addenda 135-136).
+  FakeNighthawk, a snapshot of IBM's newer square-lattice generation,
+  appeared in the Stage 1 backend list (Addendum 167). Whether the cliff
+  appears there has never been tested.
+
+A comparison of output quality alone cannot show a speed advantage, just as
+an untimed exam cannot show who answers faster. This experiment therefore
+scores compilers the way a timed exam does: did a correct answer arrive
+within the deadline?
+
+## 2. Design
+
+**Stage 0 (prerequisite, run first; the experiment stops if it fails).**
+From `FakeNighthawk().coupling_map`, report the qubit count, the degree
+distribution, whether the graph is bipartite with equal parts, and the size
+of a maximum matching. The cliff's condition (spare = 0: every physical
+qubit used by disjoint interacting pairs) requires a perfect matching.
+
+**Circuits.** The generator every cliff script in this project uses
+(`build_dense_pair_blocks_circuit`, copied verbatim from
+`bench_cliff_1v1.py`): logical pairs (0,1), (2,3), ..., each carrying 20
+Haar-random 2-qubit unitaries. Logical qubit count = N - spare for spare
+in {0, 2, 4, 8} (N = FakeNighthawk's qubit count). 5 seeds per spare.
+
+**Compilers.** Each call runs in a fresh child process, timed inside the
+child around the compile call only, killed at a hard cap of 180 s
+(recorded as "did not finish", DNF). A process is used because the
+layout search runs in compiled code that a Python timer signal cannot
+interrupt.
+- **Q3 -- Qiskit default**: `transpile(qc, FakeNighthawk(),
+  optimization_level=3, seed_transpiler=0)`.
+- **P -- PSF-Zero**: `compile_for_hardware(qc, coupling_map=backend
+  coupling map, basis_gates=backend native gates, entangling_basis="cx",
+  layout_search=True, on_unsupported="raise", seed_transpiler=0)`, other
+  arguments at their defaults (including the layout search's own 2 s time
+  budget).
+
+**Deadline.** Primary: **1 second**, chosen before running from the
+intended use -- recompiling on every iteration of a training loop with
+hundreds of iterations, where more than about a second per compile
+dominates the loop. Only the 1 s deadline scores N2 and N3. Success rates at
+**0.01 s, 0.1 s, 1 s and 10 s** are all reported side by side, not scored,
+so the result can be read across deadlines without the verdict depending
+on which one was picked (scoring every deadline would raise the chance of
+a difference appearing somewhere by accident). The four levels follow the
+response-time limits long used in usability work -- about 0.1 s for a
+response to feel instantaneous, about 1 s for a user's flow of thought to
+stay uninterrupted, about 10 s for attention to stay on the task -- plus
+0.01 s, below human perception, where only machine-driven repetition (a
+training loop) feels the difference. The 1 s primary deadline is the "flow
+stays uninterrupted" limit. Because every compile's time is recorded, any
+other deadline can be computed later; if one is, it is labelled as chosen
+after seeing the data. Expected in advance: at
+0.01 s neither compiler meets the deadline, because P's time includes
+Qiskit's own routing at optimization level 1 on a ~120-qubit device, not
+only PSF-Zero's layout search and synthesis.
+
+**Quality.** For each finished compile: routed two-qubit gate count; and,
+when the routed circuit contains no two-qubit gate outside the physical
+positions of a single logical pair (i.e. no SWAP connects different
+pairs), an **exact per-pair check**: the routed operations on each pair's
+two physical qubits, as a 4x4 operator, against that pair's logical
+operator, up to global phase. The circuit is a product of independent
+pairs, so this is exact at 120 qubits, where a whole-circuit operator is
+not computable.
+
+## 3. Pre-registered predictions
+
+**N0 (prerequisite).** FakeNighthawk's coupling graph has a perfect
+matching (spare = 0 is feasible). If not, the experiment stops and reports
+that the cliff's condition cannot arise on this device.
+
+**N1 (the cliff exists on Nighthawk).** Q3's median compile time at
+spare = 0 is at least 10 times its median at spare = 8, or Q3 does not
+finish within 180 s in at least 3 of 5 seeds at spare = 0.
+**If N1 fails, the cliff does not appear on this snapshot, and N2 is not
+applicable: that is the finding.**
+
+**N2 (the deadline -- the main prediction, applicable only if N1 holds).**
+At spare = 0, P finishes within 1 s in at least 4 of 5 seeds, and Q3 in at
+most 1 of 5.
+
+**N3 (no advantage away from the cliff).** At spare = 8, both P and Q3
+finish within 1 s in at least 4 of 5 seeds.
+
+**N4 (quality equivalence, pre-registered).** For every seed and spare
+where both finish: equal routed two-qubit gate counts, and every pair
+passes the exact per-pair check (infidelity < 1e-9) for both compilers.
+If routing inserted SWAPs so that the per-pair check does not apply, that
+is reported, with two-qubit counts compared instead.
+
+**The assistant's expectation, stated before running**: N0 holds (a square
+lattice with an even qubit count has a perfect matching); N1 is genuinely
+uncertain, because the cliff was measured with a bare coupling map and
+Qiskit's preset passes with a full device target differ.
+
+## 4. What this cannot establish
+
+- Real hardware; FakeNighthawk is a snapshot.
+- Whether 1 s is the right deadline for any particular user (0.1 s and
+  10 s reported for that reason).
+- Noisy execution quality (no simulation; structural and exact per-pair
+  checks only).
+
+## 5. Script lock
+
+`nighthawk_deadline_cliff.py`, normalized SHA-256 (trailing whitespace
+stripped per line, surrounding blank lines removed):
+`ce11be15185a46621f1b99947763b8540d661c5eb9f8c30a9bd2cb1627f9a4ff` (the Section 6 version; it supersedes `abd5f02d...`).
+Re-check on the machine that runs the experiment BEFORE running, and record
+the check in the results. Output: `nighthawk_deadline_cliff_2026-09-25.csv`
+(40 rows: 4 spares x 5 seeds x 2 arms). The deadline list was widened to 0.01 / 0.1 / 1 / 10 s before any run; the hash above is of that version. Worst-case running time is bounded
+by the 180 s cap per compile (at most 2 hours if every compile hit the cap).
+
+## 6. Amendment before a valid run: a failed first run, its causes, and the fix
+
+**Run 1 (invalid, recorded as a failure).** Run on WSL2 (home). The
+machine's file was an OLD version (7242 bytes, hash `78666802...`, before
+the deadline list was widened) -- it did not match the locked hash, and the
+run should not have been started. Stage 0 completed; then all 39 compiles
+before the run was interrupted (spare 0, 2, 4 and 8, both arms) hit the
+180 s cap (DNF), including spare = 8, where no cliff is expected. No CSV
+was written (it is written only at the end). Log: `nighthawk_result.txt`.
+
+**Stage 0 from Run 1 is a valid observation** (it does not depend on the
+harness): FakeNighthawk has 120 qubits and 218 couplings, degree 2 to 4
+(median 4), is bipartite with parts 60 and 60, and has a perfect matching
+(60 pairs). **N0 holds**: unlike heavy-hex, the cliff's condition
+(spare = 0) can arise on this device.
+
+**Diagnosis (in a single process, no child processes), spare = 8, seed 0:**
+building the circuit took 0.52 s (12,320 instructions); Q3 compiled in
+0.18 s; P first failed with `ImportError` because `psf_smart_layout.py`
+(in `benchmarks/`) was not importable, then compiled in 0.29 s once
+`benchmarks/` was on the import path. So the compilers themselves were
+fast; the harness was broken in two ways:
+1. forking child processes after Qiskit's internal thread pools had
+   started left every child hung until the cap;
+2. P could not import its layout search at all.
+
+**Fix (script changes only; design, predictions and deadlines unchanged):**
+child processes use the "spawn" start method; the script puts its own
+directory and `benchmarks/` on the import path. New hash above.
+
+**Disclosed prior knowledge:** the diagnosis showed, before any valid run,
+that at spare = 8, seed 0 both arms finish well within 1 s. That is one of
+the five seeds N3 scores; N3 is kept as registered and this is recorded so
+it is not mistaken for a blind prediction for that seed.
+
+---
+
+<!-- ===== Addendum 179 (source: spare-qubit-cliff-addendum-179-2026-09-25.md) ===== -->
+
+> **Note added when merging:** Addendum 177 result: hypothesis refuted -- no win for either side at any depth on any backend (max |d| 0.0043); all sanity checks hold. Circuit size favours Qiskit on CZ devices and PSF-Zero/ZSX on the ECR device, but the noisy score does not move: two-qubit counts are identical.
+
+## Addendum 179 -- Depth sweep result: the "PSF-Zero wins with depth" hypothesis is refuted -- no win for either side at any depth on any of 4 backends; the comparison's own sanity checks all hold (2026-09-25)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-177-preregistration-2026-09-25.md`. Run on
+WSL2 (home), Python 3.12.13, Qiskit 2.5.2. Script hash re-checked on the
+machine before running: `cbcb93fa...` (matches). Raw output observed as
+text; every figure below recomputed from the CSV.
+
+## 0. In one line
+
+**H refuted.** P (PSF-Zero) won at 0 of 4 backends at L = 8 and at L = 16;
+no (backend, L) cell produced a win for either side under the
+pre-registered rule (|d| >= 0.02 and >= 3 SE). The largest paired
+difference anywhere was d = +0.0043 (FakeBrisbane, L = 16). All four
+sanity predictions (S1-S4) hold, so the null is a property of the
+compilers, not of a broken comparison. As expected in advance (Section 3
+of Addendum 177).
+
+## 1. Results (mean over 10 circuits; d = mean paired TVD_Q3 - TVD_P)
+
+| backend | L | d | SE | verdict | size Q3 / P / Z | depth Q3 / P / Z |
+|---|---:|---:|---:|---|---|---|
+| FakeBrisbane | 1 | +0.0001 | 0.0006 | none | 84 / 78 / 78 | 24 / 22 / 22 |
+| FakeBrisbane | 2 | +0.0011 | 0.0006 | none | 114 / 103 / 103 | 42 / 36 / 36 |
+| FakeBrisbane | 4 | +0.0027 | 0.0017 | none | 204 / 182 / 182 | 78 / 70 / 70 |
+| FakeBrisbane | 8 | +0.0018 | 0.0011 | none | 384 / 340 / 340 | 150 / 134 / 134 |
+| FakeBrisbane | 16 | +0.0043 | 0.0011 | none | 744 / 624 / 624 | 294 / 230 / 230 |
+| FakeFez | 1 | +0.0001 | 0.0002 | none | 68 / 76 / 76 | 20 / 24 / 24 |
+| FakeFez | 2 | -0.0008 | 0.0003 | none | 90 / 102 / 102 | 34 / 42 / 42 |
+| FakeFez | 4 | -0.0005 | 0.0004 | none | 156 / 180 / 180 | 62 / 78 / 78 |
+| FakeFez | 8 | +0.0005 | 0.0005 | none | 288 / 336 / 336 | 118 / 150 / 150 |
+| FakeFez | 16 | -0.0009 | 0.0006 | none | 551.9 / 648 / 648 | 230 / 294 / 294 |
+| FakeKingston | 1 | +0.0002 | 0.0002 | none | 68 / 76 / 76 | 20 / 24 / 24 |
+| FakeKingston | 2 | -0.0001 | 0.0002 | none | 90 / 102 / 102 | 34 / 42 / 42 |
+| FakeKingston | 4 | +0.0002 | 0.0002 | none | 156 / 180 / 180 | 62 / 78 / 78 |
+| FakeKingston | 8 | +0.0001 | 0.0001 | none | 288 / 336 / 336 | 118 / 150 / 150 |
+| FakeKingston | 16 | -0.0000 | 0.0004 | none | 551.9 / 648 / 648 | 230 / 294 / 294 |
+| FakeMarrakesh | 1 | -0.0000 | 0.0003 | none | 68 / 76 / 76 | 20 / 24 / 24 |
+| FakeMarrakesh | 2 | -0.0002 | 0.0004 | none | 90 / 102 / 102 | 34 / 42 / 42 |
+| FakeMarrakesh | 4 | -0.0000 | 0.0003 | none | 156 / 180 / 180 | 62 / 78 / 78 |
+| FakeMarrakesh | 8 | +0.0002 | 0.0005 | none | 288 / 336 / 336 | 118 / 150 / 150 |
+| FakeMarrakesh | 16 | -0.0000 | 0.0003 | none | 551.9 / 648 / 648 | 230 / 294 / 294 |
+
+Mean noisy TVD at L = 16 ranged from about 0.06 (Marrakesh) to 0.17
+(Brisbane): noise did accumulate enough for a difference to show, had one
+existed.
+
+## 2. Scoring
+
+- **H (P wins on >= 3 of 4 backends at both L = 8 and L = 16)**: P won on
+  0 at L = 8 and 0 at L = 16 -> **REFUTED** (rule: at most 1 at L = 16).
+- **S1 -- CONFIRMED.** P and Z identical in two-qubit count, depth and size
+  on 200 of 200 circuits; 0 PSF-Zero fallbacks.
+- **S2 -- CONFIRMED.** Q3's two-qubit count equals P's on 200 of 200.
+- **S3 -- CONFIRMED.** Mean noisy TVD non-decreasing from L = 1 to 16 for
+  all 12 (backend, arm) series.
+- **S4 -- CONFIRMED.** Noiseless TVD at most 0.028 (< 0.06).
+- Q3, P and Z used the same physical layout on 200 of 200 circuits, as the
+  design intended.
+
+## 3. Observations (not pre-registered)
+
+- **Circuit size depends on the device's native gate, in opposite
+  directions.** On the CZ devices (Fez, Marrakesh, Kingston), Q3 --
+  synthesizing directly in CZ -- is smaller and shallower (L = 16: size 552
+  vs 648, depth 230 vs 294), the cost of P and Z emitting CX that level 1
+  then translates, as Addendum 177 anticipated. On the ECR device
+  (Brisbane) the direction reverses: P and Z are smaller and shallower (624
+  vs 744, 230 vs 294).
+- **Neither size difference moves the noisy score.** The differences are
+  single-qubit gates; the two-qubit count, which dominates the error, is
+  identical in every circuit (S2).
+- **Brisbane's small, consistent lean toward P (up to +0.0043, 3.9 SE at
+  L = 16) is not PSF-Zero-specific**: Z, a plain Qiskit decomposer given
+  the same treatment, has the same mean TVD (0.1667 vs P's 0.1667 at
+  L = 16). It is a property of the CX-then-translate path versus Q3's
+  direct ECR synthesis, and in any case an order of magnitude below the
+  pre-registered 0.02 bar.
+- **Equivalence, reported after the fact (not pre-registered; see
+  Addendum 177's closing note)**: across all 20 cells, |d| <= 0.0043. A
+  formal equivalence criterion is part of the pre-registration of the next
+  experiment (Addendum 178), not of this one.
+
+## 4. What this means
+
+Where the layout cliff does not occur, PSF-Zero's exact synthesis and
+Qiskit's default compilation give circuits of the same noisy quality, at
+every depth tested, on both native-gate families. This is now shown with
+depth varied systematically, closing the gap Addendum 177 named. Together
+with Addenda 157, 159 and 172: PSF-Zero's value is not better output
+quality; it is producing the same quality faster where Qiskit is slow --
+which is what Addendum 178 (timed, deadline-scored) is designed to measure.
+
+## 5. Files
+
+| File | What it is |
+|---|---|
+| [`psf_vs_qiskit_depth_sweep.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_vs_qiskit_depth_sweep.py) | the script (hash-locked in Addendum 177) |
+| [`psf_vs_qiskit_depth_sweep_2026-09-25.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/psf_vs_qiskit_depth_sweep_2026-09-25.csv) | raw results, 600 rows |
+
+---
+
+<!-- ===== Addendum 180 (source: spare-qubit-cliff-addendum-180-2026-09-25.md) ===== -->
+
+> **Note added when merging:** The cliff appears on FakeNighthawk (IBM's square-lattice generation): Qiskit's default takes ~12.9 s at spare = 0 and 2 and misses a 1 s deadline 0/5, PSF-Zero produces identical, exactly correct circuits in ~0.15 s and meets it 5/5; at spare = 4 and 8 both are fast. First result showing the cliff on a current IBM topology.
+
+## Addendum 180 -- The layout cliff appears on IBM's square-lattice generation: on FakeNighthawk, Qiskit's default compilation takes ~12.9 s at spare = 0 and 2 and misses a 1 s deadline every time, while PSF-Zero produces the same circuit quality in ~0.15 s and meets it every time; away from the cliff the difference disappears (2026-09-25)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-178-preregistration-2026-09-25.md`, including
+its Section 6 amendment (a failed first run and the harness fix, recorded
+before this run). Run on WSL2 (home), Python 3.12.13, Qiskit 2.5.2. Script
+checked on the machine: 8009 bytes, normalized SHA-256 `ce11be15...` --
+matches the locked Section 6 version (the check was shown after the run;
+the file was unchanged in between). Raw log and CSV received; every figure
+below recomputed from the CSV, and the log's per-compile lines agree with
+it.
+
+## 0. In one line
+
+All pre-registered predictions hold. N1: Qiskit's median compile time at
+spare = 0 is 74 times its median at spare = 8. N2: at spare = 0, PSF-Zero
+met the 1 s deadline in 5/5 seeds and Qiskit in 0/5. N3: at spare = 8 both
+met it in 5/5. N4: two-qubit counts identical in 20/20 comparisons and
+every pair exactly correct for both compilers (worst infidelity
+2.6e-15). Same output, about 80 times faster, only on the cliff.
+
+## 1. Results (5 seeds per cell; all 40 compiles finished, 0 DNF)
+
+| spare | arm | median s | min s | max s | <=0.01 s | <=0.1 s | <=1 s | <=10 s | two-qubit | per-pair check (worst) |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| 0 | Q3 Qiskit | 12.927 | 12.686 | 13.084 | 0/5 | 0/5 | 0/5 | 0/5 | 180 | exact (2.3e-15) |
+| 0 | P PSF-Zero | 0.158 | 0.148 | 0.274 | 0/5 | 0/5 | 5/5 | 5/5 | 180 | exact (2.6e-15) |
+| 2 | Q3 Qiskit | 12.911 | 12.818 | 12.961 | 0/5 | 0/5 | 0/5 | 0/5 | 177 | exact (2.3e-15) |
+| 2 | P PSF-Zero | 0.155 | 0.150 | 0.161 | 0/5 | 0/5 | 5/5 | 5/5 | 177 | exact (2.6e-15) |
+| 4 | Q3 Qiskit | 0.152 | 0.147 | 0.155 | 0/5 | 0/5 | 5/5 | 5/5 | 174 | exact (2.3e-15) |
+| 4 | P PSF-Zero | 0.142 | 0.134 | 0.148 | 0/5 | 0/5 | 5/5 | 5/5 | 174 | exact (2.6e-15) |
+| 8 | Q3 Qiskit | 0.174 | 0.170 | 0.177 | 0/5 | 0/5 | 5/5 | 5/5 | 168 | exact (2.3e-15) |
+| 8 | P PSF-Zero | 0.142 | 0.141 | 0.144 | 0/5 | 0/5 | 5/5 | 5/5 | 168 | exact (2.6e-15) |
+
+Two-qubit counts are 3 per logical pair (e.g. 60 pairs x 3 = 180 at
+spare = 0): both compilers consolidate each pair's 20 unitaries into one
+block. The per-pair check applied to every compile (no SWAP connected
+different pairs).
+
+## 2. Scoring (Addendum 178)
+
+- **N0 -- CONFIRMED** (from the Stage 0 of both runs): 120 qubits, bipartite
+  60/60, perfect matching of 60 pairs.
+- **N1 -- CONFIRMED.** Q3 median 12.927 s at spare = 0 versus 0.174 s at
+  spare = 8: ratio 74 (bar: 10).
+- **N2 -- CONFIRMED.** At spare = 0, 1 s deadline: P 5/5, Q3 0/5.
+- **N3 -- CONFIRMED.** At spare = 8, 1 s deadline: P 5/5, Q3 5/5. (Seed 0
+  of this cell had been seen in the Section 6 diagnosis, as disclosed.)
+- **N4 -- CONFIRMED.** Two-qubit counts equal in 20/20; per-pair exact check
+  applicable and passed for every compile of both arms.
+
+## 3. Observations (not pre-registered)
+
+- **The cliff also covers spare = 2** (Q3 median 12.911 s), and is gone by
+  spare = 4 (0.152 s). The prediction only scored spare = 0 and 8.
+- **Speed ratio on the cliff**: about 82x at spare = 0 (12.927 / 0.158) and
+  83x at spare = 2. Away from it, PSF-Zero is still slightly faster
+  (0.142 s vs 0.152-0.174 s), but both are far inside every deadline above
+  0.1 s.
+- **Qiskit's cliff time is nearly constant** (12.69-13.08 s across 10
+  compiles). That points to a fixed search limit being exhausted before a
+  fallback, rather than a variable search -- a hypothesis only; the
+  internal cause was not traced here.
+- **Deadline ladder**: neither compiler meets 0.01 s or 0.1 s anywhere
+  (PSF-Zero's time includes Qiskit's own routing at level 1 on a 120-qubit
+  device, as expected in advance); the 1 s and 10 s deadlines separate
+  them completely on the cliff and not at all away from it.
+
+## 4. What this means
+
+This is the first result in this project showing PSF-Zero's established
+advantage on a topology of a current IBM device generation. Earlier, the
+cliff was shown on square grids built for the purpose, and shown NOT to
+arise on heavy-hex (workplace Addenda 39-40; Addenda 135-136). FakeNighthawk
+is square-lattice, admits the saturated layout, and with Qiskit given the
+full device target (not a bare coupling map), the cliff is there.
+
+Together with Addendum 179 (no quality difference at any depth where the
+cliff does not occur), the picture is consistent across both experiments:
+**PSF-Zero produces the same circuits as Qiskit; where Qiskit's layout
+search hits the cliff, PSF-Zero produces them about two orders of
+magnitude faster, fast enough to meet a 1 s deadline Qiskit misses.**
+
+## 5. What this does not establish
+
+- Real Nighthawk hardware. FakeNighthawk's coupling map is the device's
+  topology, but its error properties are, by its own warning, "not
+  intended to represent typical nighthawk error values"; Qiskit's
+  optimization level 3 uses those values in layout scoring, so its
+  timing on the real device could differ.
+- Circuits other than this project's dense disjoint-pair generator, which
+  is built to reach the saturated condition; typical application circuits
+  may or may not land on it (Addenda 135-136 found random dense circuits
+  generally do not on heavy-hex).
+- Noisy execution quality (compiles checked structurally and exactly, not
+  simulated).
+- Whether 1 s is the right deadline for a given user (all four levels
+  reported).
+
+## 6. Files
+
+| File | What it is |
+|---|---|
+| [`nighthawk_deadline_cliff.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/nighthawk_deadline_cliff.py) | the script (Section 6 version, hash `ce11be15...`) |
+| [`nighthawk_deadline_cliff_2026-09-25.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/nighthawk_deadline_cliff_2026-09-25.csv) | raw results, 40 rows |
+| `nighthawk_result_run2.txt` | raw log of this run |
+| `nighthawk_result.txt` | log of the failed first run (Addendum 178, Section 6) -- not yet received |
+
+---
+
+<!-- ===== Addendum 181 pre-registration (source: spare-qubit-cliff-addendum-181-preregistration-2026-09-25.md) ===== -->
+
+> **Note added when merging:** Compound test of the whole PennyLane -> synthesis -> IBM-topology pipeline: each lap's output is the next lap's input, 20,000 laps, four arms (Qiskit ZSX, PSF-Zero, Qiskit opt 3, and a deliberately broken control).
+
+## Addendum 181 -- Pre-registration: a compound ("interest-on-interest") test of the whole PennyLane -> synthesis -> IBM-topology pipeline, 20,000 laps, with and without PSF-Zero -- does any small error accumulate once the known bugs are fixed? (2026-09-25)
+
+**Status: pre-registration only. No measurement has been run.**
+
+## 1. Why this experiment exists
+
+The PennyLane <-> Qiskit <-> IBM connection had four bugs found and fixed
+on 2026-09-24 (Addenda 154, 160-161, 164-166); 36 tests pass. Passing tests
+do not prove that no bug remains. A small, biased error -- 1e-15 per pass,
+say -- is invisible in one pass but grows if the output of each pass is fed
+back as the next pass's input. The workplace round-trip chain (Addenda
+175-176) did this for the PennyLane <-> Qiskit conversion alone, 100 times,
+and found nothing compounding. This test runs the WHOLE pipeline around the
+loop, 20,000 times, for four compilation methods, including PSF-Zero and
+Qiskit's own default.
+
+## 2. Design
+
+**One lap** (lap k turns tape_{k-1} into tape_k):
+1. `tape_to_qiskit(tape, wire_order=[0,1,2,3])` (the fixed converter;
+   the control arm C uses the pre-fix conversion, Section 2 below).
+2. Compile, per arm:
+   - **A -- without PSF-Zero**: `collect_and_consolidate(block_gate_floor=0)`,
+     each 2-qubit block synthesized by `TwoQubitBasisDecomposer(CXGate(),
+     euler_basis="ZSX")`, gates composed in, then `transpile(...,
+     optimization_level=1, initial_layout=L, seed_transpiler=0)`.
+   - **P -- with PSF-Zero**: as A, synthesizer `SU4GeodesicPSFSynthesizer(
+     GeodesicPSFHyper(entangling_basis="cx", on_unsupported="raise"),
+     verify=True)`.
+   - **Q3 -- Qiskit default**: `transpile(qc, optimization_level=3,
+     initial_layout=L, seed_transpiler=0)` on the unsynthesized circuit.
+   - **C -- control, deliberately broken**: as A, but step 1 uses the
+     pre-fix conversion `qc.unitary(mat, qubits)` (no qubit-order
+     reversal), while step 4 uses the fixed one. This reintroduces the
+     Addendum 164 bug on one side of the loop.
+3. Map the routed circuit back to logical qubits using its own layout.
+   The fixed layout L is a 4-qubit path on the device, so no SWAP is
+   needed; a lap that needs one, or touches a qubit outside L, raises.
+4. Every two-qubit gate is wrapped as a `unitary` and the circuit is
+   converted back with `qiskit_to_tape(..., [0,1,2,3])` -> tape_k.
+5. **Meaning check** against PennyLane's own matrix:
+   U_k = `qml.matrix(tape_k, wire_order=[0,1,2,3])`.
+
+**Device**: FakeNighthawk (square lattice; Addendum 180). L = the first
+4-qubit simple path found by a deterministic depth-first search from qubit 0.
+
+**Circuit**: tape_0 = three Haar-random 2-qubit `QubitUnitary` blocks on
+wires (0,1), (2,3), (1,2) (fixed seed).
+
+**Recorded**: delta_k = phase-aligned Frobenius distance ||U_k - e^{i phi}
+U_0||_F at k = 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000,
+20000; the per-lap distance e_k = d(U_{k-1}, U_k) (median and max over all
+laps); the number of operations in tape_k at each checkpoint; the growth
+exponent alpha (least-squares slope of log delta_k on log k over
+checkpoints with k >= 10 and delta_k > 0); wall time per arm; fallbacks.
+Each arm runs as its own process.
+
+Reference scales for 20,000 laps at ~1e-15 per lap: a random walk grows as
+sqrt(k) to ~1e-13 (alpha ~ 0.5); a systematic bias grows as k to ~2e-11
+(alpha ~ 1); a plateau stays flat (alpha ~ 0).
+
+## 3. Pre-registered predictions
+
+**R1 (no compounding -- the main prediction).** For A, P and Q3: alpha <
+0.75 and delta_20000 < 1e-10. **An arm with alpha >= 0.75 has an error that
+accumulates systematically -- a hidden bug or bias -- and that is reported
+as the finding.**
+
+**R2 (the test can see a real bug).** For C: delta_1 > 0.1. If C does not
+fail at lap 1, the meaning check is not sensitive enough and R1 means
+nothing.
+
+**R3 (no growth in circuit size).** For A, P and Q3: the operation count of
+tape_20000 is at most 1.5 times that of tape_1.
+
+**R4 (the pipeline stays healthy).** For A, P and Q3: every lap completes
+with no exception, no SWAP, and (for P) no fallback.
+
+**Descriptive, no prediction**: A versus P versus Q3 -- delta trajectories,
+alpha, per-lap error, fixed-point behaviour.
+
+## 4. What this cannot establish
+
+- Anything about larger circuits, where the per-lap check cannot be exact.
+- Real hardware or noise (this is arithmetic only).
+- That no bug remains -- only that none accumulates in this loop.
+
+## 5. Script lock
+
+`compound_pipeline_chain.py`, normalized SHA-256:
+`3b73c64139cb034aaa6a78a6b756d61f19e79e5bbe13fe1996421fabc38ea152`.
+Re-check on the machine BEFORE running and record the check. Requires the
+fixed prototype (`psf_pennylane_gpu_prototype.py` with
+`tape_to_qiskit(..., wire_order=...)`, Addendum 166). Outputs, one per arm:
+`compound_chain_{A,P,Q3,C}_checkpoints_2026-09-25.csv`, written at every
+checkpoint.
+
+---
+
+<!-- ===== Addendum 182 (source: spare-qubit-cliff-addendum-182-2026-09-25.md) ===== -->
+
+> **Note added when merging:** No meaning change, no circuit growth, no failure in 20,000 laps; the broken control is caught at lap 1. R1 refuted: floating-point error grows linearly in every arm, Qiskit's included -- the pre-registration over-read that as a bug signal. PSF-Zero's per-lap error is ~15x Qiskit's (drift 2.75e-9 vs 5.1e-11), real but physically negligible.
+
+## Addendum 182 -- Compound test result: the fixed pipeline never changes a circuit's meaning over 20,000 laps (the broken control is caught at lap 1), but floating-point error accumulates linearly in every arm, including Qiskit's own default -- R1 refuted; PSF-Zero's per-lap error is about 15x Qiskit's (2026-09-25)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-181-preregistration-2026-09-25.md`. Run on
+WSL2 (home), Python 3.12.13, Qiskit 2.5.2, PennyLane 0.45.1, four arms in
+parallel processes (10-12 min each). All four logs and checkpoint CSVs
+received as files and read from disk; every figure below recomputed from
+the CSVs. The hash re-check before running is not visible in the received
+logs -- recorded as not shown.
+
+## 0. In one line
+
+R2, R3 and R4 hold; **R1 is refuted**. No lap in any fixed arm changed the
+circuit's meaning, the operation count never grew, nothing failed, and the
+deliberately broken control arm was caught at lap 1 (distance 5.63). But in
+all three fixed arms -- Qiskit's ZSX decomposer, PSF-Zero, and Qiskit's own
+optimization level 3 -- the distance from the original operator grew
+**linearly** with the number of laps (alpha 0.93, 1.03, 1.03), reaching
+5.1e-11, 2.75e-9 and 1.4e-10 after 20,000 laps. PSF-Zero's per-lap error is
+about 15 times Qiskit's, so its drift is about 50 times larger.
+
+## 1. Results
+
+| arm | alpha | delta_1 | delta_20000 | per-lap median | delta_20000 / 20000 | ops lap 1 -> 20000 | fallbacks |
+|---|---:|---:|---:|---:|---:|---|---:|
+| A Qiskit ZSX (without PSF-Zero) | +0.927 | 1.20e-14 | 5.13e-11 | 8.98e-15 | 2.56e-15 | 98 -> 98 | -- |
+| P PSF-Zero | +1.031 | 8.95e-13 | 2.75e-09 | 1.40e-13 | 1.38e-13 | 98 -> 98 | 0 |
+| Q3 Qiskit default (opt 3) | +1.028 | 1.38e-14 | 1.43e-10 | 1.19e-14 | 7.17e-15 | 86 -> 86 | -- |
+| C control (pre-fix bug) | +0.000 | 5.63e+00 | 5.63e+00 | 8.22e-15 | -- | 98 -> 98 | -- |
+
+Full trajectories: `compound_chain_{A,P,Q3,C}_checkpoints_2026-09-25.csv`;
+figure: `compound_chain_2026-09-25.png` (log-log, with slope-0.5 and slope-1
+guides).
+
+## 2. Scoring
+
+- **R1 (alpha < 0.75 and delta_20000 < 1e-10 for A, P, Q3) -- REFUTED.**
+  alpha >= 0.93 in all three; delta_20000 below 1e-10 only for A.
+- **R2 (control caught, delta_1 > 0.1) -- CONFIRMED.** 5.63 from lap 1,
+  constant thereafter: the meaning check detects a real bug immediately.
+- **R3 (no growth in circuit size) -- CONFIRMED.** Operation counts
+  unchanged from lap 1 to lap 20,000 in every arm.
+- **R4 (pipeline healthy) -- CONFIRMED.** Every lap completed in every arm;
+  no SWAP was needed (the check would have raised); 0 PSF-Zero fallbacks.
+
+## 3. What the refutation means
+
+**Not a bug in the pipeline.** A bug that changes meaning looks like arm C:
+a large distance from lap 1. The fixed arms stay at 1e-9 to 1e-11 after
+20,000 laps -- far below anything physical (as a fidelity loss, of order
+delta squared, below 1e-17).
+
+**The pre-registration's reading of alpha was too strong.** Section 3 of
+Addendum 181 said alpha >= 0.75 would indicate "a hidden bug or bias". The
+linear growth is what iterating a deterministic, slightly lossy map near a
+fixed input produces: each lap's input differs from the last by ~1e-14, so
+each lap makes nearly the same rounding error in nearly the same direction,
+and those errors add coherently rather than cancelling. That Qiskit's own
+default (Q3) shows the same slope is consistent with this being a property
+of repeated floating-point computation, not of any one component. This is
+recorded as an error in the pre-registration's interpretation, not moved
+after the fact: the prediction as written is refuted.
+
+**One PSF-Zero-specific finding.** PSF-Zero's per-lap error (median
+1.40e-13) is about 15 times Qiskit's decomposer's (8.98e-15), and because
+it too accumulates linearly, its drift after 20,000 laps is about 50 times
+larger (2.75e-9 vs 5.13e-11). This agrees with Addendum 157, where the
+real-GPU check's difference was 7.34e-13 for PSF-Zero against ~5e-15 for
+Qiskit. PSF-Zero's synthesis is exact to about 1e-13 per call in this
+metric, Qiskit's to about 1e-14 -- a real, measurable, and improvable
+difference, though far below any physical consequence.
+
+## 4. What this means
+
+The pipeline fixed on 2026-09-24 is sound in the sense that matters: over
+20,000 feedback laps it never changed what the circuit does, never grew
+the circuit, and never failed, while the test demonstrably catches the kind
+of bug that was found and fixed. What does accumulate is ordinary
+floating-point drift, in every arm, at levels nine orders of magnitude
+below physical relevance -- with PSF-Zero's synthesis about one order of
+magnitude less precise per call than Qiskit's.
+
+## 5. Files
+
+| File | What it is |
+|---|---|
+| [`compound_pipeline_chain.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/compound_pipeline_chain.py) | the script (hash-locked in Addendum 181) |
+| [`compound_chain_A_checkpoints_2026-09-25.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/compound_chain_A_checkpoints_2026-09-25.csv) | arm A checkpoints |
+| [`compound_chain_P_checkpoints_2026-09-25.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/compound_chain_P_checkpoints_2026-09-25.csv) | arm P checkpoints |
+| [`compound_chain_Q3_checkpoints_2026-09-25.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/compound_chain_Q3_checkpoints_2026-09-25.csv) | arm Q3 checkpoints |
+| [`compound_chain_C_checkpoints_2026-09-25.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/compound_chain_C_checkpoints_2026-09-25.csv) | arm C checkpoints |
+| `chain_A.txt`, `chain_P.txt`, `chain_Q3.txt`, `chain_C.txt` | raw logs |
+| `compound_chain_2026-09-25.png` | the figure |
+
+---
+
+<!-- ===== Addendum 183 pre-registration (source: spare-qubit-cliff-addendum-183-preregistration-2026-09-26.md) ===== -->
+
+> **Note added when merging:** The timed exam repeated with compounding: on FakeNighthawk's cliff, each lap's compiled output is fed back through PennyLane into the next lap, every lap scored against the deadlines and checked per pair. 10-lap pilot.
+
+## Addendum 183 -- Pre-registration: the timed exam, repeated with compounding -- on FakeNighthawk's cliff, does every lap of a PennyLane -> compile -> PennyLane loop hit the cliff again, and does each compiler keep meeting (or missing) a 1-second deadline while the circuit's meaning is preserved? Pilot: 10 laps (2026-09-26)
+
+**Status: pre-registration only. No measurement has been run.**
+
+## 1. Why this experiment exists
+
+Two results from 2026-09-25 are combined here.
+- **Timed (Addendum 180)**: on FakeNighthawk at spare = 0, Qiskit's default
+  compilation took ~12.9 s and missed a 1 s deadline 0/5; PSF-Zero took
+  ~0.15 s and met it 5/5, with identical output.
+- **Compound (Addendum 182)**: 20,000 laps of the fixed PennyLane ->
+  synthesis -> IBM-topology loop on 4 qubits never changed the circuit's
+  meaning; ordinary floating-point drift accumulated linearly.
+
+A training loop recompiles the same circuit shape again and again. This
+test asks what that looks like on the cliff: each lap's compiled output
+becomes the next lap's input, every lap is timed against the deadlines,
+and every lap's meaning is checked. Unlike Addendum 180, a lap here starts
+from a PennyLane tape and returns to one.
+
+**Prior knowledge, disclosed**: the first lap is essentially Addendum
+180's measurement (same device and circuit family), so predictions about
+lap 1 are not blind. The new questions are whether the cliff recurs on
+every later lap, where the input is the previous lap's compiled output
+rather than the original circuit, and whether meaning is preserved
+throughout.
+
+## 2. Design
+
+- **Device**: FakeNighthawk (120 qubits).
+- **tape_0**: a PennyLane tape on n = 120 - spare wires: for each pair
+  (0,1), (2,3), ..., 20 Haar-random `qml.QubitUnitary` 2-qubit gates (the
+  cliff circuit family of Addenda 178-180, written in PennyLane).
+- **One lap**:
+  1. `tape_to_qiskit(tape, wire_order=range(n))` (the fixed converter).
+  2. Compile, timed around this call only:
+     - **Q3**: `transpile(qc, FakeNighthawk(), optimization_level=3,
+       seed_transpiler=0)`;
+     - **P**: `compile_for_hardware(qc, coupling_map, native basis,
+       entangling_basis="cx", layout_search=True, on_unsupported="raise",
+       seed_transpiler=0)`.
+  3. Map back to logical qubits with the compiled circuit's own layout. A
+     lap whose routing permuted qubits (a SWAP) or placed a two-qubit gate
+     outside the layout stops that run and is reported.
+  4. Wrap every two-qubit gate as a `unitary`; `qiskit_to_tape` -> tape_k.
+  5. **Meaning check, per pair** (exact at this size because pairs are
+     independent): for each pair, PennyLane's own matrix of that pair's
+     operations in tape_k versus in tape_0, phase-aligned Frobenius
+     distance; the maximum over pairs is recorded.
+- **Conditions**: spare in {0, 8}; arms Q3 and P; **10 laps** each. The
+  four runs execute one after another, never in parallel (timing).
+- **Recorded per lap**: compile time; whole-lap time; whether compile time
+  is within 0.01 / 0.1 / 1 / 10 s; maximum per-pair distance from tape_0;
+  operation count; routed two-qubit count; whether the physical layout
+  changed from the previous lap.
+
+## 3. Pre-registered predictions
+
+**D1 (the cliff recurs every lap).** Q3 at spare = 0: compile time > 1 s
+on 10 of 10 laps, median >= 5 s. **If the cliff disappears after lap 1**
+(the recompiled circuit no longer triggers it), that is the finding: a
+training loop would pay it only once.
+
+**D2 (PSF-Zero keeps meeting the deadline).** P at spare = 0: compile time
+<= 1 s on at least 9 of 10 laps.
+
+**D3 (no difference away from the cliff).** At spare = 8, both arms <= 1 s
+on at least 9 of 10 laps.
+
+**D4 (meaning preserved).** For every arm and spare, every lap completes
+(no SWAP, no failure) and the maximum per-pair distance after lap 10 is
+below 1e-10.
+
+**Descriptive**: cumulative compile time over 10 laps per arm and spare;
+whether Q3's compile time on later laps differs from lap 1; layout
+stability across laps.
+
+## 4. What this cannot establish
+
+- Behaviour beyond 10 laps (a longer run is a separate decision after
+  this pilot).
+- Real hardware; FakeNighthawk's error values are not representative.
+- Typical training circuits (this is the saturated cliff family).
+
+## 5. Script lock
+
+`deadline_compound_chain.py`, normalized SHA-256:
+`8ffabd4e1b34e00a30c54dc181d48cd791a2362d49357612fbfca6833d359ccf`.
+Re-check on the machine BEFORE running and keep the check in the saved
+log. Output: `deadline_compound_chain_2026-09-26.csv` (up to 40 rows for
+10 laps), rewritten after every lap.
+
+---
+
+<!-- ===== Addendum 184 (source: spare-qubit-cliff-addendum-184-2026-09-26.md) ===== -->
+
+> **Note added when merging:** The cliff recurs on every lap: Qiskit 0/10 within 1 s (129 s total), PSF-Zero 10/10 (0.8 s total). D4 refuted for PSF-Zero: its per-pair drift grows ~7e-11 per lap to 6.5e-10, while Qiskit's stays ~3e-13 -- physically negligible, but a real precision gap in compile_for_hardware.
+
+## Addendum 184 -- Timed compounding pilot on FakeNighthawk: the cliff recurs on every lap (Qiskit 0/10 laps within 1 s, 129 s of compile time over 10 laps) while PSF-Zero meets the deadline 10/10 (0.8 s total); but PSF-Zero's per-pair drift grows ~7e-11 per lap and exceeds the pre-registered 1e-10 bound -- D4 refuted for PSF-Zero (2026-09-26)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-183-preregistration-2026-09-26.md`. Run on
+WSL2 (home), Python 3.12.13, Qiskit 2.5.2, PennyLane 0.45.1. The saved log
+begins with the pre-run check: 7671 bytes, SHA-256 `8ffabd4e...` --
+matches the locked script. Log and CSV received as files; every figure
+below recomputed from them.
+
+## 0. In one line
+
+D1, D2 and D3 hold; **D4 is refuted for PSF-Zero**. On the cliff (spare
+= 0) Qiskit's default took 12.8-13.1 s on every one of 10 laps -- feeding
+its own compiled output back in does not make the cliff go away -- and met
+the 1 s deadline 0 times (129.3 s total); PSF-Zero met it 10 times (0.8 s
+total, ~0.06 s per lap after the first). Every lap of every run completed
+with no SWAP. But PSF-Zero's maximum per-pair distance from the original
+grew from 1.8e-11 to 6.5e-10 over 10 laps, above the 1e-10 bound, while
+Qiskit's stayed at ~3-5e-13.
+
+## 1. Results (10 laps each; runs executed one after another)
+
+| spare | arm | within 1 s | compile median | compile total | max pair distance lap 1 -> 10 | routed 2q | layout changes |
+|---:|---|---:|---:|---:|---|---:|---:|
+| 0 | Q3 Qiskit default | 0/10 | 12.88 s | 129.3 s | 3.37e-13 -> 3.40e-13 | 180 | 0 |
+| 0 | P PSF-Zero | 10/10 | 0.061 s | 0.8 s | 1.76e-11 -> 6.47e-10 | 180 | 0 |
+| 8 | Q3 Qiskit default | 10/10 | 0.151 s | 1.5 s | 3.37e-13 -> 4.34e-13 | 168 | 1 (lap 2) |
+| 8 | P PSF-Zero | 10/10 | 0.028 s | 0.3 s | 1.76e-11 -> 6.47e-10 | 168 | 0 |
+
+PSF-Zero's first lap at spare = 0 took 0.247 s; laps 2-10 took 0.059-0.076
+s. Its per-pair distances are identical at spare 0 and 8, lap by lap: the
+worst pair is among those present in both (same seed, same pairs).
+
+## 2. Scoring (Addendum 183)
+
+- **D1 -- CONFIRMED.** Q3, spare 0: > 1 s on 10/10 laps; median 12.88 s
+  (bar: >= 5 s). The cliff recurs on every lap.
+- **D2 -- CONFIRMED.** P, spare 0: <= 1 s on 10/10 laps.
+- **D3 -- CONFIRMED.** Spare 8: both arms <= 1 s on 10/10 laps.
+- **D4 -- REFUTED for P; CONFIRMED for Q3.** All 40 laps completed with no
+  SWAP or failure; Q3's distance after lap 10 is 3.4e-13 (spare 0) and
+  4.3e-13 (spare 8), below 1e-10; P's is 6.47e-10 at both spares, above it.
+
+## 3. What this means
+
+- **For a training loop that recompiles**, the cliff is not a one-time
+  cost: Qiskit paid ~13 s on every lap. Over 10 laps the difference was
+  129.3 s versus 0.8 s (about 160x); at the same rates, 1,000 laps would be
+  about 3.6 hours versus about 1 minute.
+- **PSF-Zero's numerical drift is real and larger here than in Addendum
+  182.** There, on 4 qubits through the per-block synthesizer and a level-1
+  transpile, PSF-Zero drifted ~1.4e-13 per lap; here, through
+  `compile_for_hardware`, it drifts ~7e-11 per lap -- about 500 times
+  faster -- while Qiskit's default barely drifts at all. The magnitude is
+  physically negligible (as a fidelity loss, of order the square, ~1e-18),
+  but it is a genuine precision gap in PSF-Zero's hardware-compilation path,
+  and a concrete target. Its source inside `compile_for_hardware` was not
+  traced in this run.
+- Together with Addenda 180 and 182: PSF-Zero is dramatically faster on the
+  cliff and stays correct in the sense that matters, but it is the less
+  numerically precise of the two, and the gap is largest in the path a user
+  would actually call.
+
+## 4. What this does not establish
+
+- Behaviour beyond 10 laps.
+- The cause of PSF-Zero's larger drift in `compile_for_hardware`.
+- Real hardware; typical (non-saturated) training circuits.
+
+## 5. Files
+
+| File | What it is |
+|---|---|
+| [`deadline_compound_chain.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/deadline_compound_chain.py) | the script (hash-locked in Addendum 183) |
+| [`deadline_compound_chain_2026-09-26.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/deadline_compound_chain_2026-09-26.csv) | raw results, 40 rows |
+| `deadline_chain_result.txt` | raw log, including the pre-run hash check |
+
+## 6. Replication (second run, same day)
+
+A second run of the same hash-locked script (log begins: 7671 bytes,
+SHA-256 `8ffabd4e...`) reproduced every verdict. Compile medians changed by
+at most 1% (Q3 at spare 0: 12.879 s -> 12.998 s; total 129.3 s -> 130.4 s;
+P at spare 0: 0.061 s -> 0.061 s, total 0.8 s -> 0.9 s), and every
+per-lap maximum pair distance, for all four runs, was identical to the
+first run's to the last digit -- the drift is deterministic, not noise.
+Files: `deadline_compound_chain_2026-09-26_rep2.csv`,
+`deadline_chain_result_rep2.txt`.
+
+---
+
+<!-- ===== Addendum 185 (source: spare-qubit-cliff-addendum-185-2026-09-26.md) ===== -->
+
+> **Note added when merging:** Diagnosis of Addendum 184's PSF-Zero drift: it comes from the Rust core's own synthesis (1.76e-11 on the worst pair, identical every call), not from the pipeline -- the PennyLane round trip adds nothing. Qiskit is ~50x more precise per call on the same inputs; a residual-correction step is the proposed fix.
+
+## Addendum 185 -- Diagnosis: PSF-Zero's drift in Addendum 184 comes from the Rust core's synthesis itself (1.76e-11 on the worst pair, identical every call), not from the pipeline; the PennyLane round trip adds nothing (2026-09-26)
+
+**Status**: exploratory diagnosis, not a pre-registered test. Run on WSL2
+(home) with the same `psf_compile.py` Addendum 184 used (44,535 bytes,
+VERSION 2026-09-21, SHA-256 `66a705ea...`, identical to the copy read at
+home). Raw output observed as text in the conversation.
+
+## 0. In one line
+
+Rebuilding Addendum 184's 60 pairs exactly and switching the pipeline on
+stage by stage, the full-lap stage (S4) reproduces Addendum 184's PSF-Zero
+numbers to the printed digits at every lap, and the synthesizer alone (S1)
+already carries the whole lap-1 error, 1.76e-11, growing by exactly that
+amount every lap. The PennyLane round trip adds nothing (S3 = S4). Qiskit's
+default carries 3.4e-13 at lap 1 and 7.7e-15 per lap.
+
+## 1. Results (maximum over the 60 pairs; phase-aligned Frobenius distance)
+
+| stage | lap 1 | lap 2 | lap 3 | lap 5 | lap 10 | per-lap growth |
+|---|---:|---:|---:|---:|---:|---:|
+| S1 PSF-Zero synthesizer only (Rust core) | 1.76e-11 | 3.52e-11 | 5.27e-11 | 8.78e-11 | 1.76e-10 | 1.8e-11 |
+| S2 `psf_compile.compile()` | 1.76e-11 | 1.90e-11 | 3.80e-11 | 2.81e-11 | 2.01e-10 | 2.0e-11 |
+| S3 S2 + level-1 translation to (cz, rz, sx, x) | 1.76e-11 | 5.54e-11 | 3.64e-11 | 2.21e-10 | 6.47e-10 | 7.0e-11 |
+| S4 S3 + PennyLane round trip (one Addendum 184 lap) | 1.76e-11 | 5.54e-11 | 3.64e-11 | 2.21e-10 | 6.47e-10 | 7.0e-11 |
+| Q4 Qiskit opt 3 + PennyLane round trip (control) | 3.37e-13 | 3.38e-13 | 3.39e-13 | 3.40e-13 | 4.06e-13 | 7.7e-15 |
+
+## 2. Reading
+
+- **The diagnosis is faithful**: S4 equals Addendum 184's PSF-Zero column
+  (1.76e-11, 5.54e-11, 3.64e-11, 1.66e-10, 2.21e-10, 3.51e-10, 3.32e-10,
+  4.62e-10, 5.17e-10, 6.47e-10) lap for lap.
+- **The source is the Rust core.** Its output for the worst pair is
+  1.76e-11 away from its input on the first call, and each further call adds
+  the same amount in the same direction (S1 is exactly linear: 1.76, 3.52,
+  5.27, ... e-11). A deterministic per-call error, not noise.
+- **The pipeline does not create error.** S3 = S4 exactly: the PennyLane
+  <-> Qiskit conversion (fixed in Addenda 165-166) contributes nothing
+  measurable. The level-1 translation does not add error of its own either;
+  it changes the circuit's form, so the next lap's `compile()` re-synthesizes
+  from a different starting circuit and the core's error is added afresh
+  each lap (growth 7e-11 per lap in S3 versus 1.8e-11 in S1).
+- **The gap to Qiskit is in the core's per-call precision**: 1.76e-11 versus
+  3.37e-13 at lap 1, about 50x. Addendum 182's smaller PSF-Zero figure
+  (1.4e-13 per lap) came from 3 blocks on 4 qubits; here the maximum is over
+  60 pairs, so the core's error is input-dependent and reaches ~1e-11 on
+  some inputs.
+
+## 3. Next
+
+1. Characterize the worst pairs: whether large core errors coincide with
+   near-degenerate inputs, where the core's degeneracy handling uses
+   loose tolerances (`GROUP_TOL_CANDIDATES` starting at 1e-4,
+   `ANGLE_SUM_TOL` = 1e-6 in `lib.rs`).
+2. Candidate fix, least likely to break anything else: a final
+   residual-correction step in the core (or in the Python wrapper) that
+   measures the remaining error of the synthesized circuit and absorbs it,
+   then re-run Addendum 183's hash-locked test with a pre-registered
+   prediction that PSF-Zero's drift falls to Qiskit's level while its speed
+   is unchanged.
+
+Physically the error is negligible (as a fidelity loss, of order its
+square, ~1e-22 per call); the point is that Qiskit achieves ~50x better
+precision on the same inputs, so PSF-Zero can too.
+
+## 4. Files
+
+| File | What it is |
+|---|---|
+| [`diag_psf_drift.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/diag_psf_drift.py) | the diagnostic script |
+| `diag_psf_drift.txt` | its raw output (received; matches Section 1) |
+
+---
+
+<!-- ===== Addendum 186 pre-registration (source: spare-qubit-cliff-addendum-186-preregistration-2026-09-26.md) ===== -->
+
+> **Note added when merging:** A Gauss-Newton polishing step on the core's 16 decomposition parameters, meant to bring PSF-Zero's precision to Qiskit's level; checked in isolation, then pre-registered with five predictions.
+
+## Addendum 186 -- Pre-registration: a residual-polishing step in PSF-Zero's block synthesizer, and a check that it brings PSF-Zero's precision to Qiskit's level without costing its speed (2026-09-26)
+
+**Status: pre-registration of the fix's expected effect. The fix is written
+(below); no validation run has been made.**
+
+## 1. The problem (Addendum 185)
+
+PSF-Zero's Rust core returns decompositions that are off by up to 1.76e-11
+(phase-aligned Frobenius distance) on some inputs; the worst pairs cluster
+near the Weyl-chamber face c = 0 (the ten worst all have |c| <= 0.11, the
+worst c = -0.0022). Qiskit's decomposer stays below 2e-13 on the same
+inputs. Re-synthesizing the same circuit lap after lap accumulates the
+core's error linearly (Addendum 184: 6.47e-10 after 10 laps; Qiskit
+~4e-13).
+
+## 2. The fix (`psf_compile.py`, VERSION 2026-09-26)
+
+`_refine_decomposition()`: after the core returns (a, b, c), the two local
+ZYZ triples on each side and the global phase -- 16 real parameters -- the
+residual `_reconstruct(params) - U_target` (the file's own rebuild of the
+gate about to be emitted) is computed. If its norm exceeds 1e-13, up to three
+Gauss-Newton steps on the 16 parameters (forward-difference Jacobian, step
+1e-7, least-squares solve; a step is kept only if it reduces the residual)
+polish the parameters; the circuit is then built from the polished values,
+and the verification value is re-derived for them. Below 1e-13 nothing
+changes. The Rust core is untouched. A counter
+(`refine_count`, `refine_max_before`, `refine_max_after`) records use.
+
+Checked before any validation run, in isolation (numpy only, the file's own
+`_reconstruct`): a decomposition perturbed by 1e-11 in every parameter was
+polished from 3.3e-11 to 7.5e-16 (c = 0.2), from 5.4e-11 to 5.2e-16
+(c = 0.0022) and from 6.0e-11 to 5.7e-16 (c = 0); an exact decomposition was
+left unchanged.
+
+Diff against VERSION 2026-09-21: 76 lines added, 2 changed (version
+strings). New file: 47,606 bytes, SHA-256
+`a1a207813d8bfd03b969c5b224ec08d99086b19811704129b64a1c6174122baf`.
+The old file is kept as `psf_compile_2026-09-21.py`.
+
+## 3. Validation plan (scripts unchanged)
+
+1. `diag_core_worst_pairs.py` (Addendum 185's follow-up diagnostic) with
+   the new `psf_compile.py`.
+2. The six connection test suites (36 tests, Addendum 166).
+3. `deadline_compound_chain.py`, hash-locked in Addendum 183
+   (`8ffabd4e...`), `--laps 10`, unchanged.
+
+## 4. Pre-registered predictions
+
+**V1 (precision fixed at the source).** In `diag_core_worst_pairs.py`, the
+maximum PSF-Zero error over the 60 pairs is <= 1e-13 (was 1.76e-11).
+**If V1 fails, the error is not in the core's parameters (it would have to
+be in the circuit construction), and the fix is wrong-headed -- reported as
+such.**
+
+**V2 (nothing broken).** All 36 tests pass.
+
+**V3 (drift gone in the real loop).** In `deadline_compound_chain.py`,
+PSF-Zero's maximum per-pair distance is <= 1e-12 at every lap, at both
+spares (was 1.76e-11 at lap 1, 6.47e-10 at lap 10).
+
+**V4 (speed kept).** PSF-Zero at spare 0 meets the 1 s deadline on 10/10
+laps, and its median compile time is at most 0.12 s (twice the 0.061 s of
+Addendum 184).
+
+**V5 (Qiskit untouched).** Qiskit's per-lap distances are identical to
+Addendum 184's, to the last digit (the fix does not touch Qiskit's path).
+
+---
+
+<!-- ===== Addendum 187 (source: spare-qubit-cliff-addendum-187-2026-09-26.md) ===== -->
+
+> **Note added when merging:** The fix never engaged: errors unchanged to the last digit (V1, V3 refuted), because the core's parameters were already accurate -- the error enters when the circuit is built. Corrects Addendum 185's attribution; fix withdrawn. Leading suspect: Qiskit's decomposition of the canonical middle part in CX mode.
+
+## Addendum 187 -- The parameter-polishing fix of Addendum 186 did nothing: PSF-Zero's error was unchanged to the last digit, because the core's parameters were already accurate -- the error enters when the circuit is built from them. V1 and V3 refuted; the fix is withdrawn (2026-09-26)
+
+> **CORRECTION (Addendum 188)**: this run never loaded the fix -- the scripts imported an older `benchmarks/psf_compile.py`. The conclusions below (parameters accurate, error at circuit construction, fix withdrawn) are withdrawn. The valid validation is in Addendum 188: the fix works.
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-186-preregistration-2026-09-26.md`. Run on WSL2
+(home). The log begins: `psf_compile.py` 47,606 bytes, SHA-256
+`a1a20781...`, VERSION 2026-09-26 (the fixed file, as registered). The
+log's second hash, `2e32646d...`, is the raw `sha256sum` of
+`deadline_compound_chain.py`; the lock in Addendum 183 is a normalized hash
+(`8ffabd4e...`), so the two are not comparable -- the script's identity is
+supported instead by Qiskit's per-lap values reproducing Addendum 184
+exactly (V5). Log and both CSVs received as files.
+
+## 0. In one line
+
+V2, V4 and V5 hold; **V1 and V3 are refuted, and in the most informative
+way**: PSF-Zero's errors were identical to the last printed digit to their
+values before the fix -- the diagnostic's summary line and all ten listed
+worst pairs, and every lap of the timed loop. The polishing step only runs when the residual of the
+core's parameters, rebuilt by `_reconstruct`, exceeds 1e-13; that it never
+changed anything means those parameters were already accurate, and the
+1.76e-11 is introduced afterwards, when the circuit is built. Addendum 186
+named exactly this outcome as "the fix is wrong-headed".
+
+## 1. Scoring (Addendum 186)
+
+| Prediction | Result |
+|---|---|
+| V1: max PSF-Zero error over 60 pairs <= 1e-13 | **REFUTED** -- 1.76e-11, unchanged; summary line and all ten listed worst pairs identical to the pre-fix run (the pre-fix CSV was not received, so the other 50 pairs are not compared) |
+| V2: 36 tests pass | CONFIRMED -- 36 passed |
+| V3: PSF-Zero per-pair distance <= 1e-12 every lap | **REFUTED** -- 1.76e-11 at lap 1 to 6.47e-10 at lap 10, identical to Addendum 184 |
+| V4: speed kept (10/10 within 1 s, median <= 0.12 s) | CONFIRMED -- 10/10, median 0.061 s |
+| V5: Qiskit untouched | CONFIRMED -- every per-lap value identical to Addendum 184 |
+
+## 2. What this corrects
+
+Addendum 185 attributed the error to "the Rust core's synthesis itself".
+Its stage S1 called the whole block synthesizer -- the core's
+decomposition followed by this file's Python circuit construction -- and did
+not separate the two. The more careful statement is: the error arises in
+the block synthesizer, and this run shows it is not in the core's returned
+parameters. Addendum 185 is left as written; this is its correction.
+
+## 3. Other observation
+
+Across all 60 pairs, PSF-Zero's error correlates with small |c| (Spearman
+-0.47), confirming the pattern Addendum 185 read off its ten worst pairs.
+In `entangling_basis="cx"` mode the middle, entangling part of each block
+is not built by PSF-Zero: `_cx_core_cached(a, b, c)` asks Qiskit's
+`TwoQubitBasisDecomposer` to decompose the canonical gate. That is the
+leading candidate; `diag_construction.py` separates it from the local
+rotations and from the canonical-basis construction.
+
+## 4. Disposition of the fix
+
+Withdrawn: it never engaged, so it only adds code and a per-block check.
+`psf_compile.py` returns to VERSION 2026-09-21 (kept as
+`psf_compile_2026-09-21.py` before the run). The polishing function is
+preserved in this project's records (`psf_compile_fix_2026-09-26/`) in case
+a future path produces parameter-level error.
+
+## 5. Files
+
+| File | What it is |
+|---|---|
+| `fix_validation.txt` | raw log of the three validation runs |
+| [`diag_core_worst_pairs_2026-09-26.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/diag_core_worst_pairs_2026-09-26.csv) | the diagnostic with the fixed file (identical errors) |
+| [`deadline_compound_chain_2026-09-26_fixrun.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/deadline_compound_chain_2026-09-26_fixrun.csv) | the timed loop with the fixed file |
+| [`diag_construction.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/diag_construction.py) | the next diagnostic |
+
+---
+
+<!-- ===== Addendum 188 (source: spare-qubit-cliff-addendum-188-2026-09-26.md) ===== -->
+
+> **Note added when merging:** Addendum 187's run never loaded the fix (import-path order picked up an older benchmarks/psf_compile.py); its conclusions are withdrawn. The valid run: PSF-Zero's per-call error 1.76e-11 -> 6.2e-14 (Qiskit-level), 10-lap drift 6.47e-10 -> 7.2e-13; cost 2.2x compile time, still ~96x faster than Qiskit on the cliff. V4 refuted.
+
+## Addendum 188 -- Correction to Addendum 187 (its validation never loaded the fix: the scripts imported an older `benchmarks/psf_compile.py`), and the valid validation: PSF-Zero's per-call error falls from 1.76e-11 to 6.2e-14 and its drift over 10 laps from 6.47e-10 to 7.2e-13, at a 2.2x cost in compile time (2026-09-26)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-186-preregistration-2026-09-26.md` (predictions
+unchanged). Run on WSL2 (home). Log received as a file:
+`fix_validation_run2.txt`.
+
+## 0. In one line
+
+Addendum 187's run did not test the fix. Every script used there puts
+`benchmarks/` ahead of the working directory on its import path, and the
+repository has its own `benchmarks/psf_compile.py` (the old VERSION
+2026-09-21), so the scripts imported the old file while the one-line
+version check -- which does not reorder the path -- reported the new one.
+Its conclusions ("the core's parameters were already accurate; the error
+enters at circuit construction") are withdrawn. Run again with the fixed
+file in both places and the loaded file recorded, the fix works: V1, V2,
+V3 and V5 hold; V4 (median compile time <= 0.12 s) fails at 0.135 s.
+
+## 1. How the mistake was found
+
+`diag_construction.py`, run after Addendum 187, showed the core's own
+parameters, rebuilt by `_reconstruct`, off by up to 1.76e-11 (`d_model`),
+while the middle CX part (`d_core_cx`, max 4.9e-14) and the local
+rotations (`d_local`, max 3.6e-16) were accurate. A parameter error of
+1.76e-11 would have triggered the polishing step, which contradicted
+Addendum 187. Checking the import with the scripts' own path order printed
+`benchmarks/psf_compile.py 2026-09-21`.
+
+The same run confirmed that `psf_compile.py`, `benchmarks/psf_compile.py`
+and the backup `psf_compile_2026-09-21.py` all had SHA-256 `66a705ea...`
+before the fix was installed -- every earlier experiment ran the same code,
+whichever copy it loaded; no earlier result is affected.
+
+## 2. The valid run
+
+Setup, recorded at the top of the log: the fixed file (47,606 bytes,
+SHA-256 `a1a20781...`) in both `psf_compile.py` and
+`benchmarks/psf_compile.py`; with the scripts' import order, `LOADED
+.../benchmarks/psf_compile.py 2026-09-26`.
+
+| Prediction | Result |
+|---|---|
+| V1: max PSF-Zero error over 60 pairs <= 1e-13 | **CONFIRMED** -- 6.18e-14 (was 1.76e-11); median 6.77e-15 (Qiskit on the same pairs: median 8.72e-15, max 1.81e-13) |
+| V2: 36 tests pass | **CONFIRMED** -- 36 passed |
+| V3: PSF-Zero max per-pair distance <= 1e-12 at every lap | **CONFIRMED** -- 6.21e-14 at lap 1 rising to 7.18e-13 at lap 10, both spares (was 1.76e-11 to 6.47e-10) |
+| V4: 10/10 laps within 1 s at spare 0, median <= 0.12 s | **REFUTED** -- 10/10 within 1 s, but median 0.135 s (was 0.061 s); at spare 8, 0.095 s (was 0.028 s) |
+| V5: Qiskit's per-lap values identical to Addendum 184 | **CONFIRMED** |
+
+`diag_construction.py` in the same run still shows `d_model` = 1.76e-11:
+it calls the core directly, bypassing the polishing step, so this is the
+expected confirmation that the core itself is unchanged and the polishing
+is what removes the error.
+
+**Disclosed**: when this valid run was made, Addendum 187's follow-up had
+already shown the error to be at the parameter level, which made V1 and V3
+more likely than when they were registered. The predictions were not
+changed.
+
+## 3. What this means
+
+- **Precision**: PSF-Zero's per-call error is now at Qiskit's level on these
+  inputs -- better at the median, lower at the maximum (6.2e-14 vs 1.8e-13).
+- **Drift**: still linear, at 7.3e-14 per lap against Qiskit's default at
+  about 8e-15 (Addendum 185's control), so roughly ten times Qiskit's rate
+  rather than a thousand. At that rate the 1e-12 bound would be crossed
+  around lap 14.
+- **Cost**: compile time 2.2x (spare 0) to 3.4x (spare 8) higher. On the
+  cliff PSF-Zero remains about 96 times faster than Qiskit's default (0.135
+  s vs 12.9 s) and meets the 1 s deadline on every lap. The polishing uses
+  a 16-column forward-difference Jacobian; an analytic Jacobian, or a
+  cheaper trigger, are the obvious ways to recover the speed.
+- **Two copies of `psf_compile.py`** (root and `benchmarks/`) caused this
+  error; they should become one, or every script should record which file
+  it loaded.
+
+## 4. Files
+
+| File | What it is |
+|---|---|
+| `fix_validation_run2.txt` | raw log of the valid run, including the loaded-file check |
+| `psf_compile_fix_2026-09-26/psf_compile.py` | the fixed file (SHA-256 `a1a20781...`) |
+| [`diag_construction.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/diag_construction.py) | the diagnostic that exposed the mistake |
+
+---
+
+<!-- ===== Addendum 189 pre-registration (source: spare-qubit-cliff-addendum-189-preregistration-2026-09-26.md) ===== -->
+
+> **Note added when merging:** A faster polishing step (closed-form Jacobian, cheaper stopping rule) and a single copy of psf_compile.py, with predictions that precision is kept and the lost speed mostly returns.
+
+## Addendum 189 -- Pre-registration: a faster polishing step (closed-form Jacobian, cheaper stopping rule) and a single copy of `psf_compile.py`; checks that precision is kept and most of the lost speed returns (2026-09-26)
+
+**Status: pre-registration. The new file is written; no validation run has
+been made.**
+
+## 1. Why
+
+Addendum 188: the polishing step fixed PSF-Zero's precision (per-call error
+1.76e-11 -> 6.2e-14) but raised the median compile time at spare 0 from
+0.061 s to 0.135 s. Two causes were found in the code: the Jacobian was
+built from 16 forward differences, and the loop stopped only at 1e-15 --
+machine precision, rarely reached -- so almost every polished block ran all
+three iterations. And the mistake of Addendum 187 came from two copies of
+`psf_compile.py` (repository root and `benchmarks/`).
+
+## 2. Changes
+
+**`psf_compile.py`, VERSION 2026-09-26.2** (49,442 bytes, SHA-256
+`c6621f7136f3cad7af2ca708bab35b2b62365835c78ec96e1c0bb72b559ab5ca`; against
+VERSION 2026-09-21: 117 lines added, 2 changed):
+- `_reconstruct_with_jacobian()`: the 16 derivatives in closed form (core
+  angles, the four ZYZ triples, global phase).
+- The residual check uses the plain `_reconstruct`; the Jacobian is
+  computed only when a step is taken; iteration stops once the residual is
+  <= 1e-14 or a step fails to halve it.
+
+Checked in isolation before any run (numpy, the file's own functions): the
+closed-form Jacobian matches central differences to 3.2e-10 (the size of
+the finite-difference error itself); on 200 decompositions perturbed by
+1e-11, the polished residual is at most 1.7e-15 (previous version 1.5e-15);
+time per polished block 0.588 ms (previous 1.590 ms); time per check when
+no polishing is needed 0.067 ms (previous 0.071 ms).
+
+**One copy of `psf_compile.py`**: `benchmarks/psf_compile.py` is removed.
+The package is installed editable from the repository root, so
+`import psf_compile` resolves to the root file from any directory. Every
+validation log records which file was loaded, with the scripts' own import
+order.
+
+## 3. Predictions (same scripts as Addendum 188)
+
+**W0 (one copy).** With `benchmarks/psf_compile.py` removed, the scripts'
+import order loads the root `psf_compile.py`, VERSION 2026-09-26.2.
+
+**W1 (precision kept).** `diag_core_worst_pairs.py`: maximum PSF-Zero
+error over the 60 pairs <= 1e-13.
+
+**W2.** 36 tests pass.
+
+**W3 (drift kept low).** `deadline_compound_chain.py` (hash-locked,
+Addendum 183): PSF-Zero's maximum per-pair distance <= 1e-12 at every lap.
+
+**W4 (speed returns).** PSF-Zero at spare 0: 10/10 laps within 1 s, median
+compile time <= 0.10 s (Addendum 188: 0.135 s; before polishing: 0.061 s).
+
+**W5.** Qiskit's per-lap values identical to Addendum 184.
+
+---
+
+<!-- ===== Addendum 190 (source: spare-qubit-cliff-addendum-190-2026-09-26.md) ===== -->
+
+> **Note added when merging:** Precision kept (6.2e-14), 10-lap drift 7.3e-13, cliff compile time 0.08 s (~160x faster than Qiskit's default). A first attempt loaded the old copy and was caught by the loaded-file check. Removing the duplicate broke imports from benchmarks/, so it becomes a redirect to the root file.
+
+## Addendum 190 -- The faster polishing step keeps Qiskit-level precision and brings PSF-Zero's cliff compile time to 0.08 s (about 160x faster than Qiskit's default); removing the duplicate `psf_compile.py` exposed that scripts under `benchmarks/` depended on it, so it becomes a redirect to the root file (2026-09-26)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-189-preregistration-2026-09-26.md`. Run on WSL2
+(home). Logs received as files.
+
+## 0. In one line
+
+W1-W5 hold: maximum per-call error 6.18e-14, 36 tests pass, drift after
+10 laps 7.27e-13, median compile time at spare 0 0.0805 s (bound 0.10 s;
+0.135 s with the first polishing version, 0.061 s before any polishing),
+Qiskit's values unchanged. **W0 holds only in part**: the scripts load the
+root `psf_compile.py` (VERSION 2026-09-26.2), but `import psf_compile` from
+inside `benchmarks/` fails once the duplicate there is removed -- the
+assumption in Addendum 189 that the editable install makes the module
+importable from any directory was wrong in this environment.
+
+## 1. A first attempt that did not test the new version
+
+`git rm benchmarks/psf_compile.py` refused (the file had local
+modifications: Addendum 188 had overwritten it with the first fixed
+version), so that copy stayed and the loaded-file check printed
+`benchmarks/psf_compile.py 2026-09-26`. The numbers from that run match
+Addendum 188's (median 0.135 s) because they are Addendum 188's code. The
+check caught the mismatch before any result was read; the run is recorded
+(`fix_validation_v2.txt`) and not scored. Forced removal
+(`git rm -f`) followed.
+
+## 2. The valid run (`fix_validation_v2b.txt`)
+
+Header: root `psf_compile.py` 49,442 bytes, SHA-256 `c6621f71...`; with the
+scripts' own import order, `LOADED .../psf_compile.py 2026-09-26.2`; from
+inside `benchmarks/`, `ModuleNotFoundError`.
+
+| Prediction | Result |
+|---|---|
+| W0: one copy; scripts load the root file | **PARTLY** -- scripts load the root file; `benchmarks/` cannot import it at all |
+| W1: max PSF-Zero error over 60 pairs <= 1e-13 | **CONFIRMED** -- 6.18e-14 (median 6.71e-15; Qiskit median 8.72e-15, max 1.81e-13) |
+| W2: 36 tests pass | **CONFIRMED** |
+| W3: PSF-Zero max per-pair distance <= 1e-12 at every lap | **CONFIRMED** -- 6.21e-14 at lap 1, 7.27e-13 at lap 10 |
+| W4: spare 0, 10/10 within 1 s and median <= 0.10 s | **CONFIRMED** -- 10/10, median 0.0805 s |
+| W5: Qiskit's per-lap values identical | **CONFIRMED** |
+
+At spare 8 PSF-Zero's median is 0.046 s (0.095 s with the first polishing
+version; 0.028 s before polishing; Qiskit's default 0.15 s).
+
+## 3. The duplicate, resolved
+
+The scripts under `benchmarks/` had relied on the second full copy there.
+`benchmarks/psf_compile.py` is replaced by a redirect of about ten lines
+that holds no code of its own: it loads the root `psf_compile.py` in its
+place, so there is exactly one implementation and `psf_compile.__file__`
+always names it. Checked in isolation: imported from inside `benchmarks/`,
+with the scripts' import order, and with `from psf_compile import ...`, it
+yields the root file in all three cases.
+
+## 4. Where PSF-Zero stands after Addenda 185-190
+
+| | before (VERSION 2026-09-21) | now (VERSION 2026-09-26.2) | Qiskit default |
+|---|---|---|---|
+| worst per-call error (60 pairs) | 1.76e-11 | 6.18e-14 | 1.81e-13 (its own decomposer) |
+| drift after 10 laps | 6.47e-10 | 7.27e-13 | ~3-5e-13 |
+| cliff compile time (median) | 0.061 s | 0.0805 s | 12.9 s |
+
+The remaining drift grows about 7.4e-14 per lap, roughly ten times Qiskit's
+rate; at that rate 1e-12 is crossed near lap 14. The cost of the precision
+fix is about 1.3x in compile time.
+
+## 5. Files
+
+| File | What it is |
+|---|---|
+| `fix_validation_v2.txt` | the first attempt (loaded the old copy; not scored) |
+| `fix_validation_v2b.txt` | the valid run |
+| [`psf_compile.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_compile.py) | VERSION 2026-09-26.2 (SHA-256 `c6621f71...`) |
+| `benchmarks/psf_compile.py` | the redirect to the root file |
+
+---
+
 **End of Part 8 of 8 (end of document, for now).** Back to [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

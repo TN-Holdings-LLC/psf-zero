@@ -1,0 +1,131 @@
+-rwxr-xr-x 1 psf psf 8009 Sep 25 23:30 nighthawk_deadline_cliff.py
+ce11be15185a46621f1b99947763b8540d661c5eb9f8c30a9bd2cb1627f9a4ff
+((psf_zero_wsl_env_fresh) ) psf@TN-Holdings:~/psf_zero_fresh_test$ python -u nighthawk_deadline_cliff.py 2>&1 | tee nighthawk_result_run2.txt
+cp nighthawk_result_run2.txt nighthawk_deadline_cliff_2026-09-25.csv /mnt/c/Users/Administrator/Desktop/psf_zero_project/
+platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | python 3.12.13 | qiskit 2.5.2
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+Stage 0: qubits=120, edges=218, degree min/median/max=2/4.0/4, bipartite parts=(60, 60), max matching=60 pairs (perfect needs 60)
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=0 seed=0 Q3 OK      12.686s 2q=180 pair_check=True worst=1.887379141862766e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=0 seed=0 P  OK       0.274s 2q=180 pair_check=True worst=2.1094237467877974e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=0 seed=1 Q3 OK      12.927s 2q=180 pair_check=True worst=1.9984014443252818e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=0 seed=1 P  OK       0.165s 2q=180 pair_check=True worst=1.9984014443252818e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=0 seed=2 Q3 OK      13.084s 2q=180 pair_check=True worst=2.1094237467877974e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=0 seed=2 P  OK       0.158s 2q=180 pair_check=True worst=2.1094237467877974e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=0 seed=3 Q3 OK      13.072s 2q=180 pair_check=True worst=2.220446049250313e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=0 seed=3 P  OK       0.148s 2q=180 pair_check=True worst=2.1094237467877974e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=0 seed=4 Q3 OK      12.724s 2q=180 pair_check=True worst=2.3314683517128287e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=0 seed=4 P  OK       0.151s 2q=180 pair_check=True worst=2.55351295663786e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=2 seed=0 Q3 OK      12.961s 2q=177 pair_check=True worst=1.887379141862766e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=2 seed=0 P  OK       0.153s 2q=177 pair_check=True worst=2.1094237467877974e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=2 seed=1 Q3 OK      12.837s 2q=177 pair_check=True worst=1.9984014443252818e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=2 seed=1 P  OK       0.161s 2q=177 pair_check=True worst=1.9984014443252818e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=2 seed=2 Q3 OK      12.818s 2q=177 pair_check=True worst=2.1094237467877974e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=2 seed=2 P  OK       0.150s 2q=177 pair_check=True worst=2.1094237467877974e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=2 seed=3 Q3 OK      12.934s 2q=177 pair_check=True worst=2.220446049250313e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=2 seed=3 P  OK       0.159s 2q=177 pair_check=True worst=2.1094237467877974e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=2 seed=4 Q3 OK      12.911s 2q=177 pair_check=True worst=2.3314683517128287e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=2 seed=4 P  OK       0.155s 2q=177 pair_check=True worst=2.55351295663786e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=4 seed=0 Q3 OK       0.152s 2q=174 pair_check=True worst=1.887379141862766e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=4 seed=0 P  OK       0.142s 2q=174 pair_check=True worst=2.1094237467877974e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=4 seed=1 Q3 OK       0.147s 2q=174 pair_check=True worst=2.220446049250313e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=4 seed=1 P  OK       0.134s 2q=174 pair_check=True worst=1.9984014443252818e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=4 seed=2 Q3 OK       0.149s 2q=174 pair_check=True worst=1.9984014443252818e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=4 seed=2 P  OK       0.148s 2q=174 pair_check=True worst=2.1094237467877974e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=4 seed=3 Q3 OK       0.154s 2q=174 pair_check=True worst=2.220446049250313e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=4 seed=3 P  OK       0.148s 2q=174 pair_check=True worst=2.1094237467877974e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=4 seed=4 Q3 OK       0.155s 2q=174 pair_check=True worst=2.3314683517128287e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=4 seed=4 P  OK       0.141s 2q=174 pair_check=True worst=2.55351295663786e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=8 seed=0 Q3 OK       0.176s 2q=168 pair_check=True worst=1.887379141862766e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=8 seed=0 P  OK       0.142s 2q=168 pair_check=True worst=2.1094237467877974e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=8 seed=1 Q3 OK       0.177s 2q=168 pair_check=True worst=2.220446049250313e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=8 seed=1 P  OK       0.144s 2q=168 pair_check=True worst=1.9984014443252818e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=8 seed=2 Q3 OK       0.170s 2q=168 pair_check=True worst=1.887379141862766e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=8 seed=2 P  OK       0.141s 2q=168 pair_check=True worst=2.1094237467877974e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=8 seed=3 Q3 OK       0.174s 2q=168 pair_check=True worst=2.220446049250313e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=8 seed=3 P  OK       0.142s 2q=168 pair_check=True worst=2.1094237467877974e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=8 seed=4 Q3 OK       0.174s 2q=168 pair_check=True worst=2.3314683517128287e-15
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+spare=8 seed=4 P  OK       0.143s 2q=168 pair_check=True worst=2.55351295663786e-15
+
+Wrote nighthawk_deadline_cliff_2026-09-25.csv (40 rows)
+((psf_zero_wsl_env_fresh) ) psf@TN-Holdings:~/psf_zero_fresh_test$ 

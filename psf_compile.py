@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-09-21   (previous revision: 2026-09-16)
+VERSION: 2026-09-26.2 (previous revision: 2026-09-26)
 
 Where to look for what
 ----------------------
@@ -259,7 +259,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-09-21"
+VERSION = "2026-09-26.2"
 __version__ = VERSION
 
 __all__ = [
@@ -393,6 +393,100 @@ def _infidelity(U_target: np.ndarray, U_out: np.ndarray) -> float:
     return float(1.0 - (np.abs(tr) ** 2 + d) / (d * (d + 1)))
 
 
+REFINE_THRESHOLD = 1e-13
+_REFINE_TARGET = 1e-14
+_HALF_Z = np.diag([-0.5j, 0.5j])
+
+
+def _pack(cartan, k1, k2, phase):
+    return np.array([*cartan, *k1[0], *k1[1], *k2[0], *k2[1], phase], dtype=float)
+
+
+def _unpack(p):
+    return ((p[0], p[1], p[2]),
+            ((p[3], p[4], p[5]), (p[6], p[7], p[8])),
+            ((p[9], p[10], p[11]), (p[12], p[13], p[14])),
+            p[15])
+
+
+def _zyz_and_derivatives(triple):
+    """_zyz_matrix(triple) and its derivatives in phi, theta and lam."""
+    phi, theta, lam = triple
+    m = _zyz_matrix(triple)
+    c, s = np.cos(theta / 2.0), np.sin(theta / 2.0)
+    ep, em = np.exp(-0.5j * phi), np.exp(0.5j * phi)
+    lp, lm = np.exp(-0.5j * lam), np.exp(0.5j * lam)
+    d_theta = 0.5 * np.array([[-ep * s * lp, -ep * c * lm], [em * c * lp, -em * s * lm]], dtype=complex)
+    return m, (_HALF_Z @ m, d_theta, m @ _HALF_Z)
+
+
+def _reconstruct_with_jacobian(p):
+    """_reconstruct(*_unpack(p)) and its derivative with respect to each of
+    the 16 parameters, computed in closed form (Addendum 189)."""
+    (a, b, c), k1, k2, phase = _unpack(p)
+    diag = np.exp(1j * (a * _WX + b * _WY + c * _WZ))
+    core = (_CORE_BASIS * diag) @ _CORE_BASIS_H
+    l0, dl0 = _zyz_and_derivatives(k1[0])
+    l1, dl1 = _zyz_and_derivatives(k1[1])
+    r0, dr0 = _zyz_and_derivatives(k2[0])
+    r1, dr1 = _zyz_and_derivatives(k2[1])
+    left, right = np.kron(l0, l1), np.kron(r0, r1)
+    g = np.exp(1j * phase)
+    cr = core @ right
+    lc = left @ core
+    u = g * (left @ cr)
+    jac = []
+    for w in (_WX, _WY, _WZ):
+        jac.append(g * (left @ ((_CORE_BASIS * (1j * w * diag)) @ _CORE_BASIS_H) @ right))
+    for d in dl0:
+        jac.append(g * (np.kron(d, l1) @ cr))
+    for d in dl1:
+        jac.append(g * (np.kron(l0, d) @ cr))
+    for d in dr0:
+        jac.append(g * (lc @ np.kron(d, r1)))
+    for d in dr1:
+        jac.append(g * (lc @ np.kron(r0, d)))
+    jac.append(1j * u)
+    return u, jac
+
+
+def _refine_decomposition(U_target, cartan, k1, k2, phase, threshold=REFINE_THRESHOLD, max_iter=3):
+    """Polish the core's decomposition in parameter space (Gauss-Newton on
+    the 16 real parameters, residual = _reconstruct(...) - U_target).
+
+    Addendum 185 traced PSF-Zero's per-block error to the core's returned
+    parameters: up to ~1.8e-11 (Frobenius) on inputs near the Weyl-chamber
+    face c = 0, where Qiskit's decomposer stays near 1e-14. Each Newton step
+    roughly squares the error, so one step reaches machine precision.
+    Addendum 189: the residual check uses the plain reconstruction; the
+    closed-form Jacobian is computed only when a step is actually taken, and
+    iteration stops once the residual is <= 1e-14 or a step fails to halve
+    it. Returns the (possibly unchanged) decomposition and the residual norms
+    before and after.
+    """
+    p = _pack(cartan, k1, k2, phase)
+    d = (_reconstruct(cartan, k1, k2, phase) - U_target).ravel()
+    before = float(np.linalg.norm(d))
+    if before <= threshold:
+        return (cartan, k1, k2, phase), before, before
+    norm_r = before
+    for _ in range(max_iter):
+        _, jac = _reconstruct_with_jacobian(p)
+        jm = np.stack([j.ravel() for j in jac], axis=1)
+        jr = np.concatenate([jm.real, jm.imag], axis=0)
+        r = np.concatenate([d.real, d.imag])
+        q = p + np.linalg.lstsq(jr, -r, rcond=None)[0]
+        d_q = (_reconstruct(*_unpack(q)) - U_target).ravel()
+        norm_q = float(np.linalg.norm(d_q))
+        if norm_q >= norm_r:
+            break
+        progress = norm_q < 0.5 * norm_r
+        p, d, norm_r = q, d_q, norm_q
+        if norm_r <= _REFINE_TARGET or not progress:
+            break
+    return _unpack(p), before, norm_r
+
+
 class SU4GeodesicPSFSynthesizer:
     """Synthesize a 2-qubit unitary via the Rust core's Cartan decomposition.
 
@@ -421,6 +515,11 @@ class SU4GeodesicPSFSynthesizer:
         self.hyper = hyper
         self.verify = _validate_verify(verify)
         self.fallback_count = 0
+        # Blocks whose core decomposition was polished by _refine_decomposition
+        # (Addendum 186); the maximum residual seen before and after polishing.
+        self.refine_count = 0
+        self.refine_max_before = 0.0
+        self.refine_max_after = 0.0
         self.degenerate_count = 0
         self.unexpected_count = 0
         self._last_reasons: list[str] = []
@@ -526,6 +625,22 @@ class SU4GeodesicPSFSynthesizer:
             # itself misbehaved, and the two are worth counting separately.
             expected = isinstance(exc, _PSF_DEGENERATE_ERRORS) if _PSF_DEGENERATE_ERRORS else True
             return self._fallback(U_target, f"Decomposition failed or degenerate: {exc}", expected)
+
+        # Polish the core's parameters before building the circuit (Addendum
+        # 186). Near the Weyl-chamber face c = 0 the core's output can be off
+        # by ~1e-11; one Gauss-Newton step on the 16 parameters brings it to
+        # machine precision. A no-op when the residual is already <= 1e-13.
+        (cartan, k1, k2, global_phase), res_before, res_after = _refine_decomposition(
+            U_target, cartan, k1, k2, global_phase
+        )
+        if res_before > REFINE_THRESHOLD:
+            self.refine_count += 1
+            self.refine_max_before = max(self.refine_max_before, res_before)
+            self.refine_max_after = max(self.refine_max_after, res_after)
+            if core_infid is not None:
+                # The core's self-check described the unpolished parameters;
+                # re-derive it for the parameters actually emitted.
+                core_infid = _infidelity(U_target, _reconstruct(cartan, k1, k2, global_phase))
 
         try:
             qc = self._build_circuit(cartan, k1, k2, global_phase)

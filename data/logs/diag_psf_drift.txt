@@ -1,0 +1,7 @@
+-rwxr-xr-x 1 psf psf 6106 Sep 26 08:18 diag_psf_drift.py
+stage                                  lap 1    lap 2    lap 3    lap 4    lap 5    lap 6    lap 7    lap 8    lap 9    lap10     per-lap growth
+S1 synthesizer only                    1.76e-11 3.52e-11 5.27e-11 7.03e-11 8.78e-11 1.05e-10 1.23e-10 1.40e-10 1.58e-10 1.76e-10  1.8e-11
+S2 compile()                           1.76e-11 1.90e-11 3.80e-11 2.25e-11 2.81e-11 1.28e-10 1.09e-10 9.02e-11 2.20e-10 2.01e-10  2.0e-11
+S3 compile()+level-1 translate         1.76e-11 5.54e-11 3.64e-11 1.66e-10 2.21e-10 3.51e-10 3.32e-10 4.62e-10 5.17e-10 6.47e-10  7.0e-11
+S4 S3+PennyLane round trip             1.76e-11 5.54e-11 3.64e-11 1.66e-10 2.21e-10 3.51e-10 3.32e-10 4.62e-10 5.17e-10 6.47e-10  7.0e-11
+Q4 Qiskit opt3+PennyLane round trip    3.37e-13 3.38e-13 3.39e-13 3.39e-13 3.40e-13 3.41e-13 3.51e-13 3.94e-13 4.10e-13 4.06e-13  7.7e-15
