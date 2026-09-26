@@ -1,0 +1,54 @@
+qiskit 2.5.2 | python 3.12.13 | Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43
+
+--- input: UnitaryGate(core) ---
+       c |        [cx,rz,sx,x] L0 |        [cx,rz,sx,x] L1 |        [cx,rz,sx,x] L2 |        [cx,rz,sx,x] L3 |        [cz,rz,sx,x] L1 |        [cz,rz,sx,x] L3 |    GenericBackendV2 L1 |    GenericBackendV2 L3
+ 1.0e-08 |           3.33e-16 (2) |           3.33e-16 (2) |           3.33e-16 (2) |           3.33e-16 (2) |           2.22e-16 (2) |           2.22e-16 (2) |           0.00e+00 (2) |           2.22e-16 (2)
+ 3.0e-08 |           6.99e-02 (3) |           6.99e-02 (3) |           6.99e-02 (2) |           6.99e-02 (2) |           5.55e-16 (3) |           3.33e-16 (3) |           2.22e-16 (3) |           3.33e-16 (3)
+ 1.0e-07 |           6.99e-02 (3) |           6.99e-02 (3) |           6.99e-02 (2) |           6.99e-02 (2) |           3.33e-16 (3) |           3.33e-16 (3) |           0.00e+00 (3) |           3.33e-16 (3)
+ 3.0e-07 |           6.99e-02 (3) |           6.99e-02 (3) |           6.99e-02 (2) |           6.99e-02 (2) |           2.22e-16 (3) |           3.33e-16 (3) |           0.00e+00 (3) |           3.33e-16 (3)
+ 1.0e-06 |           5.55e-16 (3) |           5.55e-16 (3) |           8.00e-13 (3) |           8.00e-13 (2) |           3.33e-16 (3) |           3.33e-16 (3) |           3.33e-16 (3) |           3.33e-16 (3)
+ 1.0e-05 |           3.33e-16 (3) |           3.33e-16 (3) |           3.33e-16 (3) |           3.33e-16 (3) |           3.33e-16 (3) |           3.33e-16 (3) |           2.22e-16 (3) |           3.33e-16 (3)
+
+--- input: UnitaryGate(dressed) ---
+       c |        [cx,rz,sx,x] L0 |        [cx,rz,sx,x] L1 |        [cx,rz,sx,x] L2 |        [cx,rz,sx,x] L3 |        [cz,rz,sx,x] L1 |        [cz,rz,sx,x] L3 |    GenericBackendV2 L1 |    GenericBackendV2 L3
+ 1.0e-08 |           2.22e-16 (2) |           2.22e-16 (2) |           2.22e-16 (2) |           2.22e-16 (2) |           0.00e+00 (2) |          -6.66e-16 (2) |           2.22e-16 (2) |          -6.66e-16 (2)
+ 3.0e-08 |           6.99e-02 (3) |           6.99e-02 (3) |           6.99e-02 (2) |           6.99e-02 (2) |           2.22e-16 (3) |           0.00e+00 (3) |           0.00e+00 (3) |           0.00e+00 (3)
+ 1.0e-07 |           6.99e-02 (3) |           6.99e-02 (3) |           6.99e-02 (2) |           6.99e-02 (2) |           0.00e+00 (3) |          -6.66e-16 (3) |           0.00e+00 (3) |          -6.66e-16 (3)
+ 3.0e-07 |           6.99e-02 (3) |           6.99e-02 (3) |           6.99e-02 (2) |           6.99e-02 (2) |           0.00e+00 (3) |           0.00e+00 (3) |           0.00e+00 (3) |          -4.44e-16 (3)
+ 1.0e-06 |           2.22e-16 (3) |           2.22e-16 (3) |           8.00e-13 (3) |           8.00e-13 (2) |           0.00e+00 (3) |           3.33e-16 (3) |           0.00e+00 (3) |           0.00e+00 (3)
+ 1.0e-05 |           2.22e-16 (3) |           2.22e-16 (3) |           2.22e-16 (3) |           2.22e-16 (3) |           0.00e+00 (3) |           0.00e+00 (3) |           0.00e+00 (3) |           0.00e+00 (3)
+
+--- input: dressed as gates ---
+       c |        [cx,rz,sx,x] L0 |        [cx,rz,sx,x] L1 |        [cx,rz,sx,x] L2 |        [cx,rz,sx,x] L3 |        [cz,rz,sx,x] L1 |        [cz,rz,sx,x] L3 |    GenericBackendV2 L1 |    GenericBackendV2 L3
+ 1.0e-08 |           5.55e-16 (6) |           0.00e+00 (6) |           2.22e-16 (2) |           2.22e-16 (2) |           0.00e+00 (6) |          -4.44e-16 (2) |           0.00e+00 (6) |           2.22e-16 (2)
+ 3.0e-08 |           6.66e-16 (6) |           0.00e+00 (6) |           6.66e-16 (2) |           6.66e-16 (2) |           3.33e-16 (6) |           3.33e-16 (2) |           3.33e-16 (6) |           1.11e-15 (2)
+ 1.0e-07 |           6.66e-16 (6) |           0.00e+00 (6) |           7.99e-15 (2) |           7.99e-15 (2) |           2.22e-16 (6) |           7.44e-15 (2) |           2.22e-16 (6) |           8.33e-15 (2)
+ 3.0e-07 |           6.66e-16 (6) |           2.22e-16 (6) |           7.22e-14 (2) |           7.22e-14 (2) |           5.55e-16 (6) |           7.17e-14 (2) |           5.55e-16 (6) |           7.23e-14 (2)
+ 1.0e-06 |           6.66e-16 (6) |           3.33e-16 (6) |           8.00e-13 (2) |           8.00e-13 (2) |           6.66e-16 (6) |           8.00e-13 (2) |           6.66e-16 (6) |           8.00e-13 (2)
+ 1.0e-05 |           6.66e-16 (6) |           0.00e+00 (6) |           0.00e+00 (3) |           0.00e+00 (3) |           3.33e-16 (6) |           0.00e+00 (3) |           3.33e-16 (6) |          -4.44e-16 (3)
+
+above 1e-08: 24 cells
+  UnitaryGate(core)      [cx,rz,sx,x] L0        c=3.0e-08  1-F_avg=6.987e-02  2q=3
+  UnitaryGate(core)      [cx,rz,sx,x] L1        c=3.0e-08  1-F_avg=6.987e-02  2q=3
+  UnitaryGate(core)      [cx,rz,sx,x] L2        c=3.0e-08  1-F_avg=6.987e-02  2q=2
+  UnitaryGate(core)      [cx,rz,sx,x] L3        c=3.0e-08  1-F_avg=6.987e-02  2q=2
+  UnitaryGate(core)      [cx,rz,sx,x] L0        c=1.0e-07  1-F_avg=6.987e-02  2q=3
+  UnitaryGate(core)      [cx,rz,sx,x] L1        c=1.0e-07  1-F_avg=6.987e-02  2q=3
+  UnitaryGate(core)      [cx,rz,sx,x] L2        c=1.0e-07  1-F_avg=6.987e-02  2q=2
+  UnitaryGate(core)      [cx,rz,sx,x] L3        c=1.0e-07  1-F_avg=6.987e-02  2q=2
+  UnitaryGate(core)      [cx,rz,sx,x] L0        c=3.0e-07  1-F_avg=6.987e-02  2q=3
+  UnitaryGate(core)      [cx,rz,sx,x] L1        c=3.0e-07  1-F_avg=6.987e-02  2q=3
+  UnitaryGate(core)      [cx,rz,sx,x] L2        c=3.0e-07  1-F_avg=6.987e-02  2q=2
+  UnitaryGate(core)      [cx,rz,sx,x] L3        c=3.0e-07  1-F_avg=6.987e-02  2q=2
+  UnitaryGate(dressed)   [cx,rz,sx,x] L0        c=3.0e-08  1-F_avg=6.987e-02  2q=3
+  UnitaryGate(dressed)   [cx,rz,sx,x] L1        c=3.0e-08  1-F_avg=6.987e-02  2q=3
+  UnitaryGate(dressed)   [cx,rz,sx,x] L2        c=3.0e-08  1-F_avg=6.987e-02  2q=2
+  UnitaryGate(dressed)   [cx,rz,sx,x] L3        c=3.0e-08  1-F_avg=6.987e-02  2q=2
+  UnitaryGate(dressed)   [cx,rz,sx,x] L0        c=1.0e-07  1-F_avg=6.987e-02  2q=3
+  UnitaryGate(dressed)   [cx,rz,sx,x] L1        c=1.0e-07  1-F_avg=6.987e-02  2q=3
+  UnitaryGate(dressed)   [cx,rz,sx,x] L2        c=1.0e-07  1-F_avg=6.987e-02  2q=2
+  UnitaryGate(dressed)   [cx,rz,sx,x] L3        c=1.0e-07  1-F_avg=6.987e-02  2q=2
+  UnitaryGate(dressed)   [cx,rz,sx,x] L0        c=3.0e-07  1-F_avg=6.987e-02  2q=3
+  UnitaryGate(dressed)   [cx,rz,sx,x] L1        c=3.0e-07  1-F_avg=6.987e-02  2q=3
+  UnitaryGate(dressed)   [cx,rz,sx,x] L2        c=3.0e-07  1-F_avg=6.987e-02  2q=2
+  UnitaryGate(dressed)   [cx,rz,sx,x] L3        c=3.0e-07  1-F_avg=6.987e-02  2q=2

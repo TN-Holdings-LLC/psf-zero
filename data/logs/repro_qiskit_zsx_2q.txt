@@ -1,0 +1,24 @@
+qiskit 2.5.2 | python 3.12.13 | Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43
+
+input: exp(i(0.6 XX + 0.3 YY + c ZZ)); cells: 1 - average gate fidelity (number of CX)
+       c | TwoQubitBasisDecomposer(CX, 'ZSX') |        TwoQubitBasisDecomposer(CX) |          transpile L0 [cx,rz,sx,x] |          transpile L1 [cx,rz,sx,x] |          transpile L2 [cx,rz,sx,x] |          transpile L3 [cx,rz,sx,x]
+ 3.0e-09 |                   3.331e-16 (2 CX) |                   2.220e-16 (2 CX) |                   3.331e-16 (6 CX) |                   3.331e-16 (6 CX) |                   0.000e+00 (2 CX) |                   0.000e+00 (2 CX)
+ 1.0e-08 |                   3.331e-16 (2 CX) |                   2.220e-16 (2 CX) |                   2.220e-16 (6 CX) |                   0.000e+00 (6 CX) |                   0.000e+00 (2 CX) |                   0.000e+00 (2 CX)
+ 3.0e-08 |                   6.987e-02 (3 CX) |                   0.000e+00 (3 CX) |                   3.331e-16 (6 CX) |                   2.220e-16 (6 CX) |                   6.661e-16 (2 CX) |                   6.661e-16 (2 CX)
+ 1.0e-07 |                   6.987e-02 (3 CX) |                   0.000e+00 (3 CX) |                   3.331e-16 (6 CX) |                   2.220e-16 (6 CX) |                   7.772e-15 (2 CX) |                   7.772e-15 (2 CX)
+ 2.0e-07 |                   6.987e-02 (3 CX) |                   3.331e-16 (3 CX) |                   3.331e-16 (6 CX) |                   3.331e-16 (6 CX) |                   3.197e-14 (2 CX) |                   3.197e-14 (2 CX)
+ 3.0e-07 |                   6.987e-02 (3 CX) |                   0.000e+00 (3 CX) |                   3.331e-16 (6 CX) |                   3.331e-16 (6 CX) |                   7.216e-14 (2 CX) |                   7.216e-14 (2 CX)
+ 5.0e-07 |                   3.331e-16 (3 CX) |                   3.331e-16 (3 CX) |                   3.331e-16 (6 CX) |                   3.331e-16 (6 CX) |                   2.001e-13 (2 CX) |                   2.001e-13 (2 CX)
+ 1.0e-06 |                   5.551e-16 (3 CX) |                   3.331e-16 (3 CX) |                   5.551e-16 (6 CX) |                   3.331e-16 (6 CX) |                   8.000e-13 (2 CX) |                   8.000e-13 (2 CX)
+ 3.0e-06 |                   0.000e+00 (3 CX) |                   0.000e+00 (3 CX) |                   3.331e-16 (6 CX) |                   2.220e-16 (6 CX) |                   0.000e+00 (3 CX) |                   0.000e+00 (3 CX)
+ 1.0e-05 |                   3.331e-16 (3 CX) |                   0.000e+00 (3 CX) |                   3.331e-16 (6 CX) |                   3.331e-16 (6 CX) |                   3.331e-16 (3 CX) |                   3.331e-16 (3 CX)
+ 3.0e-05 |                   2.220e-16 (3 CX) |                   2.220e-16 (3 CX) |                   3.331e-16 (6 CX) |                   3.331e-16 (6 CX) |                   3.331e-16 (3 CX) |                   3.331e-16 (3 CX)
+ 1.0e-04 |                   0.000e+00 (3 CX) |                   0.000e+00 (3 CX) |                   3.331e-16 (6 CX) |                   2.220e-16 (6 CX) |                   3.331e-16 (3 CX) |                   3.331e-16 (3 CX)
+
+above 1e-08: 4 cells
+  TwoQubitBasisDecomposer(CX, 'ZSX')   c=3.0e-08  1-F_avg=6.987e-02  CX=3
+  TwoQubitBasisDecomposer(CX, 'ZSX')   c=1.0e-07  1-F_avg=6.987e-02  CX=3
+  TwoQubitBasisDecomposer(CX, 'ZSX')   c=2.0e-07  1-F_avg=6.987e-02  CX=3
+  TwoQubitBasisDecomposer(CX, 'ZSX')   c=3.0e-07  1-F_avg=6.987e-02  CX=3
+
+minimal case: canonical(0.6, 0.3, 1e-07) through TwoQubitBasisDecomposer(CX, 'ZSX')

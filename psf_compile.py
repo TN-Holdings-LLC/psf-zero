@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-09-26.2 (previous revision: 2026-09-26)
+VERSION: 2026-09-26.4 (previous revision: 2026-09-26.3)
 
 Where to look for what
 ----------------------
@@ -230,6 +230,84 @@ Changes in the 2026-09-21 revision
     "cx", reports depth 23 for `layout_search=True`; expected 16 now). A
     per-circuit speed change of order 10-20% on the "cx" path could not be
     ruled in or out (Addendum 116, P4).
+
+Changes in the 2026-09-26.3 revision (spare-qubit-cliff Addenda 191-194)
+------------------------------------------------------------------------
+15. **CX-basis core in closed form.** With `entangling_basis="cx"`, each
+    block's canonical core exp(i(a XX + b YY + c ZZ)) used to be built as a
+    circuit, turned into an `Operator`, and decomposed again by Qiskit's
+    `TwoQubitBasisDecomposer` -- a second KAK decomposition of a matrix whose
+    decomposition was already known. On random blocks the cache never hits,
+    and this was 23% of `compile_for_hardware`'s time on the Nighthawk cliff
+    (Addendum 191). The core is now emitted directly as three CXs
+    (Vatan-Williams form) with the rotations in the two middle gaps moved
+    through the CXs so that each gap is exactly one `sx` after translation
+    (an `rx(pi/2)` on the target side of the middle CX; see
+    `_append_cx_core_closed_form`). Checked in isolation against
+    `expm(i(aXX+bYY+cZZ))` on 20,000 random triples over [-pi, pi]^3:
+    worst Frobenius distance 2.7e-15 including global phase; both middle
+    gaps have |off-diagonal| = 1/sqrt(2) to 2.2e-16 (one `sx` each).
+    Degenerate triples -- any coordinate within 1e-6 of a multiple of pi/2,
+    where fewer than three CXs suffice -- keep the previous path, so the CX
+    count can only stay equal. `USE_CX_CLOSED_FORM = False` restores the
+    previous behavior everywhere (used for A/B validation).
+
+16. **NEW, opt-in: `layout_edge_errors` on `compile_for_hardware()`.** A
+    `{(p, q): error}` map of the native 2-qubit gate's error per physical
+    edge (`edge_errors_from_target(backend.target)` builds one). When given
+    with `layout_search=True`, and the interaction graph is a set of disjoint
+    pairs (the matching shortcut of `psf_smart_layout`, LAYOUT_VERSION
+    2026-09-26.m1, Addenda 192-193), the layout is the maximum-weight
+    matching with weight log(1 - error) per edge, i.e. it maximizes the
+    product of the edge fidelities the pairs land on. Ignored for any other
+    interaction graph (VF2 is unweighted). Single-qubit and readout errors
+    are not considered. Like any `initial_layout`, it skips VF2PostLayout.
+
+Changes in the 2026-09-26.4 revision (spare-qubit-cliff Addenda 195-196)
+------------------------------------------------------------------------
+17. **FIX (correctness): every block left to Qiskit's CX decomposer is now
+    checked.** Addendum 195 found that Qiskit's
+    `TwoQubitBasisDecomposer(CXGate(), euler_basis="ZSX")` (this file's
+    `_CX_DECOMPOSER`, Qiskit 2.5.2) returns a wrong circuit -- average gate
+    infidelity 6.99e-2 -- for unitaries whose smallest canonical coordinate
+    is about 3e-8 to 3e-7, and that plain `transpile()` to basis
+    [cx, rz, sx, x] fails the same way. Every earlier revision emitted such
+    blocks unchanged on the `entangling_basis="cx"` path (the degenerate
+    core via `_cx_core_cached`, and whole blocks via the fallback), and
+    `verify=True` did not catch it because it checks the decomposition, not
+    the emitted circuit. Now `_guarded_cx_synthesis` computes the emitted
+    circuit's unitary and accepts it only if its average gate infidelity is
+    <= 1e-8 (ten times Qiskit's own default requested fidelity, so its
+    documented approximations still pass), correcting its global phase to
+    match exactly. On rejection it retries
+    with the default Euler basis (exact on every input tested), and for a
+    canonical core finally with the closed form of item 15 regardless of
+    degeneracy (three CXs, exact). A whole block that fails both raises
+    `RuntimeError` rather than being emitted. The check costs one 4x4
+    `Operator` per decomposer call, which after item 15 happens only on
+    degenerate blocks. `USE_CX_GUARD = False` restores the unchecked
+    behavior (for A/B validation only). Counts in `GUARD_STATS`.
+
+18. **Closed-form core with native middle gaps.** The 2026-09-26.3 form
+    left `ry`/`rx` in the two middle gaps for Qiskit to translate; drift
+    under repeated recompilation rose about 2.6x (Addendum 195, C5). The
+    gaps are now emitted directly in {rz, sx}, using
+    rx(pi/2) ry(t) = rz(t) rx(pi/2), ry(t) rx(-pi/2) = rx(-pi/2) rz(t),
+    rx(pi/2) = e^{-i pi/4} sx and rx(-pi/2) = -e^{-i pi/4} rz(pi) sx rz(pi):
+    gap 1 is `sx, rz(2a - pi/2)`, gap 2 is `rz(3pi/2 - 2b), sx, rz(pi)`,
+    global phase 3pi/4 in total. Checked in isolation on 20,000 random
+    triples: worst 3.6e-15 including global phase. `USE_NATIVE_GAPS =
+    False` restores the 2026-09-26.3 gaps.
+
+19. **Single-qubit errors in the weighted layout.** `layout_qubit_errors`
+    (`{q: error}` of the single-qubit `sx`; `qubit_errors_from_target`
+    builds it) adds each endpoint's single-qubit log-fidelity to the edge
+    weight. This is exact for a matching, where every matched edge covers
+    exactly its two qubits. Gate counts per pair are estimated from the
+    circuit: n2 = mean 2-qubit gates per interacting pair, n1 = 2 n2 + 1
+    `sx` per qubit (one per middle gap plus the outer layers; matches the
+    measured 7 per qubit for 3-CX blocks). Addendum 195 (Q3): without it,
+    the weighted layout placed pairs on a qubit whose `sx` has error 1.0.
 """
 from __future__ import annotations
 
@@ -259,7 +337,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-09-26.2"
+VERSION = "2026-09-26.4"
 __version__ = VERSION
 
 __all__ = [
@@ -269,6 +347,9 @@ __all__ = [
     "GeodesicPSFHyper",
     "SU4GeodesicPSFSynthesizer",
     "unitary_fidelity",
+    "edge_errors_from_target",
+    "qubit_errors_from_target",
+    "GUARD_STATS",
 ]
 
 # Optional, newer core entry points. Older builds of the core have neither;
@@ -295,6 +376,52 @@ _VALID_ON_UNSUPPORTED = ("keep", "raise")
 # {rz, sx} basis so the single-qubit layers between its CXs are minimal
 # (changelog item 14).
 _CX_DECOMPOSER = TwoQubitBasisDecomposer(CXGate(), euler_basis="ZSX")
+# Changelog item 17: the retry decomposer, and the guard's switch and counts.
+_CX_DECOMPOSER_DEFAULT_EULER = TwoQubitBasisDecomposer(CXGate())
+USE_CX_GUARD = True
+# Average gate infidelity accepted from Qiskit's decomposer: ten times its own
+# default requested fidelity (1 - 1e-9), so its documented approximations
+# (dropping a tiny interaction to save a CX) pass and the 7e-2 failures do not.
+_GUARD_TOL = 1e-8
+GUARD_STATS = {"checked": 0, "zsx_rejected": 0, "default_rejected": 0, "closed_form_forced": 0}
+
+
+def _aligned_distance(u: np.ndarray, circ: QuantumCircuit):
+    """Average gate infidelity between `u` and the circuit's unitary
+    (1 - (4 f^2 + 1) / 5 with f = |tr(V^dag U)| / 4), and the phase angle p
+    with u ~= exp(i p) * unitary(circ)."""
+    v = Operator(circ).data
+    t = np.trace(v.conj().T @ u)
+    ph = t / abs(t) if abs(t) > 0 else 1.0
+    f = abs(t) / 4.0
+    return float(1.0 - (4.0 * f * f + 1.0) / 5.0), float(np.angle(ph))
+
+
+def _guarded_cx_synthesis(u: np.ndarray):
+    """Qiskit's CX-basis synthesis of `u`, checked (changelog item 17).
+
+    Returns (circuit, ok). An accepted circuit has its global phase corrected
+    so that its unitary matches `u`, not only up to phase. ok is False only
+    when both the ZSX and the default-Euler decomposers exceed `_GUARD_TOL`
+    in average gate infidelity; the caller decides what to do then.
+    """
+    circ = _CX_DECOMPOSER(u)
+    if not USE_CX_GUARD:
+        return circ, True
+    GUARD_STATS["checked"] += 1
+    dist, phase = _aligned_distance(u, circ)
+    if dist <= _GUARD_TOL:
+        circ.global_phase += phase
+        return circ, True
+    GUARD_STATS["zsx_rejected"] += 1
+    logger.debug("PSF-Zero guard: ZSX decomposer infidelity %.3e; retrying", dist)
+    circ = _CX_DECOMPOSER_DEFAULT_EULER(u)
+    dist, phase = _aligned_distance(u, circ)
+    if dist <= _GUARD_TOL:
+        circ.global_phase += phase
+        return circ, True
+    GUARD_STATS["default_rejected"] += 1
+    return circ, False
 
 # XX, YY and ZZ commute and share one eigenbasis, so the canonical core's
 # matrix exponential is a diagonal scaling in a basis that can be computed
@@ -538,7 +665,15 @@ class SU4GeodesicPSFSynthesizer:
         if len(self._last_reasons) < 5:
             self._last_reasons.append(msg)
         logger.debug("PSF-Zero fallback: %s", msg)
-        return _CX_DECOMPOSER(U_target)
+        circ, ok = _guarded_cx_synthesis(U_target)
+        if not ok:
+            # Never observed; emitting a block known to be wrong is worse
+            # than stopping (changelog item 17).
+            raise RuntimeError(
+                "CX-basis synthesis of a fallback block failed verification "
+                "with both Euler bases"
+            )
+        return circ
 
     def fallback_summary(self) -> str:
         if not self.fallback_count:
@@ -559,6 +694,8 @@ class SU4GeodesicPSFSynthesizer:
         compose per block for an identical result.
         """
         if self.hyper.entangling_basis == "cx":
+            if USE_CX_CLOSED_FORM and _append_cx_core_closed_form(qc, a, b, c):
+                return
             sub = _cx_core_cached(a, b, c)
             if sub is not None:
                 qc.compose(sub, [0, 1], inplace=True)
@@ -691,7 +828,16 @@ def _cx_core_cached(a: float, b: float, c: float):
         core.ryy(-2 * b, 0, 1)
     if abs(c) > 1e-10:
         core.rzz(-2 * c, 0, 1)
-    result = None if len(core.data) == 0 else _CX_DECOMPOSER(Operator(core).data)
+    if len(core.data) == 0:
+        result = None
+    else:
+        result, ok = _guarded_cx_synthesis(Operator(core).data)
+        if not ok:
+            # Both decomposers missed; the closed form is exact for any
+            # triple, at the price of three CXs (changelog item 17).
+            GUARD_STATS["closed_form_forced"] += 1
+            result = QuantumCircuit(2)
+            _append_cx_core_closed_form(result, a, b, c, force=True)
     _CX_CORE_CACHE[key] = result
     if len(_CX_CORE_CACHE) > _CX_CORE_CACHE_MAX:
         _CX_CORE_CACHE.popitem(last=False)
@@ -700,6 +846,64 @@ def _cx_core_cached(a: float, b: float, c: float):
 
 _CX_CORE_CACHE: "OrderedDict[tuple, object]" = OrderedDict()
 _CX_CORE_CACHE_MAX = 4096
+
+# Changelog item 15. Module-level so a validation run can switch it off.
+USE_CX_CLOSED_FORM = True
+# Changelog item 18: middle gaps emitted in {rz, sx}.
+USE_NATIVE_GAPS = True
+# A coordinate this close to a multiple of pi/2 makes the core reducible to
+# fewer than three CXs; those triples keep the decomposer path.
+_CLOSED_FORM_DEGENERATE = 1e-6
+_HALF_PI = float(np.pi / 2)
+
+
+def _append_cx_core_closed_form(qc: QuantumCircuit, a: float, b: float, c: float,
+                                force: bool = False) -> bool:
+    """Append exp(i(a XX + b YY + c ZZ)) to qubits (0, 1) of `qc` as three
+    CXs, exactly (including global phase). Returns False, appending nothing,
+    when the triple is degenerate (see `_CLOSED_FORM_DEGENERATE`).
+
+    Vatan-Williams form, adapted: q1 is the control of the outer CXs and the
+    target of the middle one, so an `rx` on q1 commutes with the middle CX.
+    Inserting rx(pi/2) rx(-pi/2) around it turns each middle-gap rotation
+    into rx(pi/2) ry(t) or ry(t) rx(-pi/2), whose off-diagonal magnitude is
+    1/sqrt(2) for every t -- one `sx` after translation, instead of two.
+    With USE_NATIVE_GAPS (changelog item 18) the two gaps are written in
+    {rz, sx} directly. `force=True` skips the degeneracy check (used when
+    Qiskit's decomposer failed on a degenerate triple; the result is still
+    exact, with three CXs).
+    """
+    if not force:
+        for x in (a, b, c):
+            if abs(x - _HALF_PI * round(x / _HALF_PI)) < _CLOSED_FORM_DEGENERATE:
+                return False
+    half_pi = _HALF_PI
+    if USE_NATIVE_GAPS:
+        qc.rz(-half_pi, 1)
+        qc.cx(1, 0)
+        qc.rz(half_pi - 2.0 * c, 0)
+        qc.sx(1)
+        qc.rz(2.0 * a - half_pi, 1)
+        qc.cx(0, 1)
+        qc.rz(3.0 * half_pi - 2.0 * b, 1)
+        qc.sx(1)
+        qc.rz(np.pi, 1)
+        qc.cx(1, 0)
+        qc.rz(half_pi, 0)
+        qc.global_phase += 3.0 * np.pi / 4
+        return True
+    qc.rz(-half_pi, 1)
+    qc.cx(1, 0)
+    qc.rz(half_pi - 2.0 * c, 0)
+    qc.ry(2.0 * a - half_pi, 1)
+    qc.rx(half_pi, 1)
+    qc.cx(0, 1)
+    qc.rx(-half_pi, 1)
+    qc.ry(half_pi - 2.0 * b, 1)
+    qc.cx(1, 0)
+    qc.rz(half_pi, 0)
+    qc.global_phase += np.pi / 4
+    return True
 
 
 def compile(
@@ -799,6 +1003,76 @@ def compile(
     return qc_psf
 
 
+def edge_errors_from_target(target, gate_names=("cz", "ecr", "cx")) -> dict:
+    """`{(p, q): error}` for the first of `gate_names` the target supports,
+    undirected (p < q), the smaller error when both directions are listed.
+    Edges without an error value are left out. For `layout_edge_errors`
+    (changelog item 16)."""
+    name = next((g for g in gate_names if g in target.operation_names), None)
+    if name is None:
+        raise ValueError(f"target supports none of {gate_names}")
+    out = {}
+    for qargs, props in target[name].items():
+        if qargs is None or props is None or props.error is None:
+            continue
+        key = (min(qargs), max(qargs))
+        out[key] = min(out.get(key, props.error), props.error)
+    return out
+
+
+def qubit_errors_from_target(target, gate_name: str = "sx") -> dict:
+    """`{q: error}` of the single-qubit `gate_name` (default `sx`, the only
+    non-virtual single-qubit gate on IBM devices). Qubits without an error
+    value are left out. For `layout_qubit_errors` (changelog item 19)."""
+    out = {}
+    if gate_name not in target.operation_names:
+        return out
+    for qargs, props in target[gate_name].items():
+        if qargs is None or props is None or props.error is None:
+            continue
+        out[qargs[0]] = props.error
+    return out
+
+
+def _edge_weights_from_errors(edge_errors: dict, qubit_errors: dict | None = None,
+                              n2: float = 1.0, n1: float = 0.0) -> dict:
+    """Integer matching weights, larger is better:
+    round(1e6 * (K + n2 log(1 - e_pq) + n1 (log(1 - e_p) + log(1 - e_q)))),
+    every error capped at 0.5 and K chosen so that every weight is positive.
+    The total weight of a matching then tracks the log of the product of the
+    fidelities of the gates it will carry. Edges absent from `edge_errors`
+    get weight 0 in the matching (treated as worst); qubits absent from
+    `qubit_errors` contribute nothing. With the defaults (n2=1, n1=0, no
+    qubit errors) edges rank exactly as in the 2026-09-26.3 weighting
+    (the constant offset differs)."""
+    import math
+
+    def lf(err):
+        return math.log(1.0 - min(float(err), 0.5))
+
+    k = 1.0 + (n2 + 2.0 * n1) * math.log(2.0)
+    out = {}
+    for (p, q), err in edge_errors.items():
+        total = n2 * lf(err)
+        if qubit_errors is not None and n1:
+            total += n1 * (lf(qubit_errors.get(p, 0.0)) + lf(qubit_errors.get(q, 0.0)))
+        out[(p, q)] = int(round(1e6 * (k + total)))
+    return out
+
+
+def _layout_weights(qc_compressed: QuantumCircuit, pairs, edge_errors: dict,
+                    qubit_errors: dict | None) -> dict:
+    """Matching weights for `compile_for_hardware` (changelog items 16, 19).
+    Without qubit errors: the 2026-09-26.3 weighting. With them: n2 = mean
+    number of 2-qubit gates per interacting pair in the compressed circuit,
+    n1 = 2 n2 + 1 estimated `sx` per qubit."""
+    if qubit_errors is None:
+        return _edge_weights_from_errors(edge_errors)  # item 16 behaviour
+    n_twoq = sum(1 for inst in qc_compressed.data if len(inst.qubits) == 2)
+    n2 = n_twoq / max(1, len(pairs))
+    return _edge_weights_from_errors(edge_errors, qubit_errors, n2=n2, n1=2.0 * n2 + 1.0)
+
+
 def _layout_map_to_list(layout_map: dict, num_logical: int, num_physical: int) -> list[int]:
     """Convert `smart_vf2_layout()`'s `{logical: physical}` dict to the
     virtual-qubit-index-ordered list `transpile(initial_layout=...)` expects.
@@ -837,6 +1111,8 @@ def compile_for_hardware(
     layout_search_call_limit: int = 50_000,
     layout_search_fallback_call_limit: int = 2_000_000,
     layout_search_use_fallback: bool = True,
+    layout_edge_errors: dict | None = None,
+    layout_qubit_errors: dict | None = None,
     callback=None,
 ) -> QuantumCircuit:
     """Compress with PSF-Zero, then route (and, if `basis_gates` is given,
@@ -948,6 +1224,12 @@ def compile_for_hardware(
     `layout_search` had been False -- the time already spent searching is
     real and is included in this call's own wall-clock cost, not hidden.
 
+    `layout_edge_errors` (new, item 16): `{(p, q): error}` for the native
+    2-qubit gate; see the changelog. Used only with `layout_search=True` and
+    only when the interaction graph is a set of disjoint pairs.
+    `layout_qubit_errors` (new, item 19): `{q: error}` of `sx`, added to the
+    same weights; ignored unless `layout_edge_errors` is also given.
+
     `callback` (new, item 13): forwarded verbatim to the internal
     `transpile()` call below, unchanged from what plain `transpile(callback=
     ...)` accepts. `None` by default -- passing nothing here changes nothing
@@ -998,6 +1280,9 @@ def compile_for_hardware(
             time_budget_s=layout_search_time_budget_s,
             fallback_call_limit=layout_search_fallback_call_limit,
             use_fallback=layout_search_use_fallback,
+            **({} if layout_edge_errors is None
+               else {"edge_weights": _layout_weights(qc_compressed, pairs, layout_edge_errors,
+                                                     layout_qubit_errors)}),
         )
         if layout_map is not None:
             initial_layout = _layout_map_to_list(

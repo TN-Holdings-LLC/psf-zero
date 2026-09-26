@@ -1,0 +1,50 @@
+platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | cores 12 | python 3.12.13 | qiskit 2.5.2
+LOADED /home/psf/psf_zero_fresh_test/psf_compile.py 2026-09-26.4 b4fa92ad85f04cfa05b7732b634da9f876bb034735be806825b87b62c72cb670
+LOADED /home/psf/psf_zero_fresh_test/benchmarks/psf_smart_layout.py 2026-09-26.m1 a639efdef484379d23b4c0a52dffe557c47c30f639c41e4f8521ca608712d875
+SCRIPT /home/psf/psf_zero_fresh_test/benchmarks/verify_v4.py 88e1d259e6c952361985dadbd416f8660d1448d5f02965be05efa7c83b265c7b
+
+=== G: guard on Qiskit's CX decomposer ===
+  272 blocks per arm
+  guard off: worst infidelity 6.987e-02; blocks > 1e-3: 48
+    e.g. (0.6,0.3,e) e=3.2e-07 bare: infidelity 6.987e-02, CX 3
+    e.g. (0.6,0.3,e) e=3.2e-07 dressed13: infidelity 6.987e-02, CX 3
+    e.g. (0.6,0.3,e) e=3.2e-07 dressed101: infidelity 6.987e-02, CX 3
+    e.g. (0.6,0.3,e) e=3.2e-07 dressed202: infidelity 6.987e-02, CX 3
+  guard on:  worst infidelity 1.601e-12, worst phase-included Frobenius 2.828e-06; max CX 3
+  CX differs where the guard-off result was already correct: 0
+  GUARD_STATS (guard on, one pass): {'checked': 208, 'zsx_rejected': 48, 'default_rejected': 0, 'closed_form_forced': 0}
+G1 (guard on: infidelity <= 1e-8 and phase-included Frobenius <= 1e-3 on every block): PASS
+G2 (guard off reproduces the defect, >= 1 block with infidelity > 1e-3): PASS
+G3 (ZSX rejections >= 1, default-Euler rejections 0): PASS
+G4 (max CX <= 3; CX unchanged where guard-off was within 1e-8): PASS
+
+=== N1: closed form, native gaps vs 2026-09-26.3 gaps, 300 random blocks ===
+  worst phase-included: v3 gaps 9.664e-14, native 9.668e-14; blocks with different sx: 0, different CX: 0
+N1 (native <= 1e-13, same CX and sx on every block): PASS
+
+=== N2: end to end, FakeNighthawk ===
+spare=0 seed=0: 2q 180/180 sx 840/840 depth 21/21 pair_worst native 2.1094237467877974e-15
+spare=0 seed=1: 2q 180/180 sx 840/840 depth 22/21 pair_worst native 2.1094237467877974e-15
+spare=0 seed=2: 2q 180/180 sx 840/840 depth 21/21 pair_worst native 2.4424906541753444e-15
+spare=0 seed=3: 2q 180/180 sx 840/840 depth 21/21 pair_worst native 2.6645352591003757e-15
+spare=0 seed=4: 2q 180/180 sx 840/840 depth 21/21 pair_worst native 2.6645352591003757e-15
+spare=0: median v3 gaps 48.86 ms, native 49.75 ms
+spare=8 seed=0: 2q 168/168 sx 784/784 depth 21/21 pair_worst native 2.1094237467877974e-15
+spare=8 seed=1: 2q 168/168 sx 784/784 depth 22/21 pair_worst native 2.1094237467877974e-15
+spare=8 seed=2: 2q 168/168 sx 784/784 depth 21/21 pair_worst native 2.4424906541753444e-15
+spare=8 seed=3: 2q 168/168 sx 784/784 depth 21/21 pair_worst native 2.6645352591003757e-15
+spare=8 seed=4: 2q 168/168 sx 784/784 depth 21/21 pair_worst native 2.6645352591003757e-15
+spare=8: median v3 gaps 46.74 ms, native 48.09 ms
+  GUARD_STATS over N2 (both arms): {'checked': 0, 'zsx_rejected': 0, 'default_rejected': 0, 'closed_form_forced': 0}
+N2 (same 2q and sx, per-pair <= 1e-12, spare-0 native median <= 55 ms): PASS
+
+=== W: single-qubit errors in the weighted layout ===
+FakeNighthawk n=120: log10 ESP edge-only -1800.2531 | edge+qubit -1800.2531 | L3 -1800.3406 ; mean edge err 1.98e-03/1.98e-03/2.97e-03 ; 2q 180/180/180 ; sx 840/840/840 ; time 0.055/0.053/12.857s
+FakeNighthawk n=112: log10 ESP edge-only -1800.2289 | edge+qubit -0.1999 | L3 -0.2993 ; mean edge err 1.85e-03/1.88e-03/2.84e-03 ; 2q 168/168/168 ; sx 784/784/784 ; time 0.054/0.052/0.159s
+FakeTorino n=80: log10 ESP edge-only -0.2267 | edge+qubit -0.2256 | L3 -0.5502 ; mean edge err 3.16e-03/3.21e-03/7.17e-03 ; 2q 120/120/120 ; sx 560/560/560 ; time 0.042/0.041/0.236s
+FakeFez n=80: log10 ESP edge-only -0.2157 | edge+qubit -0.2111 | L3 -0.3211 ; mean edge err 3.04e-03/3.07e-03/4.90e-03 ; 2q 120/120/120 ; sx 560/560/560 ; time 0.042/0.045/0.257s
+W1 (edge+qubit ESP >= Qiskit L3): 4/4 -> PASS
+W2 (edge+qubit ESP >= edge-only): 4/4 -> PASS
+W3 (edge+qubit per-pair <= 1e-12): PASS
+
+Wrote v4_2026-09-26.csv (1256 rows)

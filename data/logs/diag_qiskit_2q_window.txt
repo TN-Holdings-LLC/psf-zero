@@ -1,0 +1,51 @@
+qiskit 2.5.2 | psf_compile 2026-09-26.3
+
+492 unitaries per method; failure = phase-aligned Frobenius distance > 1e-06
+
+decomposer ZSX (as PSF-Zero)       worst 5.98e-01  failures 78/492
+                                   eps range 1.8e-08 .. 1.8e-05; families ['(0.5,e,e)', '(0.6,0.3,e)', '(0.7,0.1,e)', '(pi/4,e,e)']
+                                     e.g. (0.6,0.3,e) e=3.2e-07 seed=101: err=5.978e-01, 2q gates=3
+                                     e.g. (0.6,0.3,e) e=3.2e-07 seed=13: err=5.978e-01, 2q gates=3
+                                     e.g. (0.6,0.3,e) e=3.2e-07 seed=202: err=5.978e-01, 2q gates=3
+decomposer default Euler           worst 5.03e-05  failures 42/492
+                                   eps range 5.6e-07 .. 1.8e-05; families ['(0.5,e,e)', '(pi/4,e,e)']
+                                     e.g. (0.5,e,e) e=1.8e-05 seed=13: err=5.030e-05, 2q gates=2
+                                     e.g. (0.5,e,e) e=1.8e-05 seed=101: err=5.030e-05, 2q gates=2
+                                     e.g. (0.5,e,e) e=1.8e-05 seed=202: err=5.030e-05, 2q gates=2
+transpile L1 [cx,rz,sx,x]          worst 5.98e-01  failures 78/492
+                                   eps range 1.8e-08 .. 1.8e-05; families ['(0.5,e,e)', '(0.6,0.3,e)', '(0.7,0.1,e)', '(pi/4,e,e)']
+                                     e.g. (0.6,0.3,e) e=3.2e-07 seed=101: err=5.978e-01, 2q gates=3
+                                     e.g. (0.6,0.3,e) e=3.2e-07 seed=13: err=5.978e-01, 2q gates=3
+                                     e.g. (0.6,0.3,e) e=3.2e-07 seed=202: err=5.978e-01, 2q gates=3
+transpile L2 [cx,rz,sx,x]          worst 5.98e-01  failures 90/492
+                                   eps range 1.8e-08 .. 1.8e-05; families ['(0.5,e,e)', '(0.6,0.3,e)', '(0.7,0.1,e)', '(pi/4,e,e)']
+                                     e.g. (0.6,0.3,e) e=3.2e-07 seed=101: err=5.978e-01, 2q gates=2
+                                     e.g. (0.6,0.3,e) e=3.2e-07 seed=13: err=5.978e-01, 2q gates=2
+                                     e.g. (0.6,0.3,e) e=3.2e-07 seed=202: err=5.978e-01, 2q gates=2
+transpile L3 [cx,rz,sx,x]          worst 5.98e-01  failures 90/492
+                                   eps range 1.8e-08 .. 1.8e-05; families ['(0.5,e,e)', '(0.6,0.3,e)', '(0.7,0.1,e)', '(pi/4,e,e)']
+                                     e.g. (0.6,0.3,e) e=3.2e-07 seed=101: err=5.978e-01, 2q gates=2
+                                     e.g. (0.6,0.3,e) e=3.2e-07 seed=13: err=5.978e-01, 2q gates=2
+                                     e.g. (0.6,0.3,e) e=3.2e-07 seed=202: err=5.978e-01, 2q gates=2
+transpile L1 GenericBackendV2 cz   worst 5.03e-05  failures 42/492
+                                   eps range 5.6e-07 .. 1.8e-05; families ['(0.5,e,e)', '(pi/4,e,e)']
+                                     e.g. (0.5,e,e) e=1.8e-05 seed=202: err=5.030e-05, 2q gates=2
+                                     e.g. (0.5,e,e) e=1.8e-05 seed=13: err=5.030e-05, 2q gates=2
+                                     e.g. (0.5,e,e) e=1.8e-05 seed=101: err=5.030e-05, 2q gates=2
+transpile L3 GenericBackendV2 cz   worst 5.03e-05  failures 42/492
+                                   eps range 5.6e-07 .. 1.8e-05; families ['(0.5,e,e)', '(pi/4,e,e)']
+                                     e.g. (0.5,e,e) e=1.8e-05 seed=202: err=5.030e-05, 2q gates=2
+                                     e.g. (0.5,e,e) e=1.8e-05 seed=13: err=5.030e-05, 2q gates=2
+                                     e.g. (0.5,e,e) e=1.8e-05 seed=101: err=5.030e-05, 2q gates=2
+PSF-Zero old path                  worst 5.98e-01  failures 78/492
+                                   eps range 1.8e-08 .. 1.8e-05; families ['(0.5,e,e)', '(0.6,0.3,e)', '(0.7,0.1,e)', '(pi/4,e,e)']
+                                     e.g. (0.6,0.3,e) e=1.8e-07 seed=101: err=5.978e-01, 2q gates=3
+                                     e.g. (0.6,0.3,e) e=3.2e-07 seed=101: err=5.978e-01, 2q gates=3
+                                     e.g. (0.6,0.3,e) e=1.8e-07 seed=202: err=5.978e-01, 2q gates=3
+PSF-Zero closed form               worst 5.98e-01  failures 46/492
+                                   eps range 1.8e-08 .. 1.0e-06; families ['(0.5,e,e)', '(0.6,0.3,e)', '(0.7,0.1,e)', '(pi/4,e,e)']
+                                     e.g. (0.6,0.3,e) e=1.8e-07 seed=101: err=5.978e-01, 2q gates=3
+                                     e.g. (0.6,0.3,e) e=3.2e-07 seed=101: err=5.978e-01, 2q gates=3
+                                     e.g. (0.6,0.3,e) e=1.8e-07 seed=202: err=5.978e-01, 2q gates=3
+
+Wrote diag_qiskit_2q_window_2026-09-26.csv (4428 rows)

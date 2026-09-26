@@ -7274,6 +7274,550 @@ VF2PostLayout's own score and not only against this 2-qubit metric.
 
 ---
 
+<!-- ===== Addendum 194 pre-registration (source: spare-qubit-cliff-addendum-194-preregistration-2026-09-26.md) ===== -->
+
+> **Note added when merging:** Two changes registered together: the CX-basis core written in closed form (no second decomposition by Qiskit), and an error-weighted matching layout inside compile_for_hardware, scored against Qiskit L3 on estimated success probability.
+
+## Addendum 194 -- Pre-registration: the CX-basis core written in closed form (no second decomposition), and an error-weighted matching layout inside `compile_for_hardware`; checks exactness, pulse counts and speed for the first, and for the second whether it beats Qiskit L3's layout on estimated success probability (2026-09-26)
+
+**Status: pre-registration. The new file is written and its new functions
+were checked in isolation; no run on the real stack has been made.**
+
+## 1. Why
+
+Addendum 191: the largest remaining item in PSF-Zero's cliff compile is the
+CX-basis core -- each block's canonical core exp(i(aXX+bYY+cZZ)) is built as
+a circuit, turned into an `Operator` and decomposed again by Qiskit's
+`TwoQubitBasisDecomposer` (18.9 ms of 83 ms; the cache never hits on random
+blocks). Addendum 193 (X1, exploratory): an error-weighted matching placed
+the pairs on edges with about 30% lower 2-qubit error than Qiskit L3 on
+FakeNighthawk, at no time cost -- but by hand, on one seed, with
+non-representative error values and a metric that is not the one
+VF2PostLayout optimizes.
+
+## 2. Changes
+
+**`psf_compile.py`, VERSION 2026-09-26.3** (54,820 bytes, normalized SHA-256
+`8d85b15496eb4efda9303f38764ae7ad07b1ec8ce7b58c2c3177207c419eadbd`; against
+2026-09-26.2: 107 lines added, 2 changed). Changelog items 15 and 16.
+
+**Item 15, closed-form CX core.** `_append_cx_core_closed_form(qc, a, b, c)`
+emits the core as three CXs (Vatan-Williams form):
+`rz(-pi/2)` q1; CX(1->0); `rz(pi/2-2c)` q0, `ry(2a-pi/2)` q1, `rx(pi/2)` q1;
+CX(0->1); `rx(-pi/2)` q1, `ry(pi/2-2b)` q1; CX(1->0); `rz(pi/2)` q0; global
+phase +pi/4. The `rx(pi/2) rx(-pi/2)` pair around the middle CX (q1 is its
+target, so `rx` commutes with it) is what keeps the pulse count down: the
+plain Vatan-Williams form leaves a general `ry` in each middle gap (two `sx`
+after translation), while `rx(pi/2) ry(t)` and `ry(t) rx(-pi/2)` have
+off-diagonal magnitude exactly 1/sqrt(2) for every t (one `sx`). This matters
+because changelog item 14 (Addenda 114-116) brought PSF-Zero's `sx` count
+down to Qiskit's; the closed form must not undo that. Triples with any
+coordinate within 1e-6 of a multiple of pi/2 (reducible to fewer CXs) keep
+the previous path. `USE_CX_CLOSED_FORM` (module flag, default True) switches
+it for A/B runs.
+
+Checked in isolation (numpy, own gate matrices in Qiskit's conventions; the
+function's source extracted from the file and run against a recording
+stand-in circuit): 20,000 random triples over [-pi, pi]^3, worst Frobenius
+distance to expm(i(aXX+bYY+cZZ)) 2.7e-15 including global phase (2.3e-15
+for the in-file function on 5,000); middle-gap off-diagonal magnitudes equal
+1/sqrt(2) to 2.2e-16; five degenerate triples fall back. The sign
+convention was found by an exhaustive search over the 16 sign choices of
+the template (exactly one matched).
+
+**Item 16, weighted layout.** `compile_for_hardware(...,
+layout_edge_errors=None)`: a `{(p, q): error}` map
+(`edge_errors_from_target(target)` builds it from the native 2-qubit gate).
+With `layout_search=True` and a matching-shaped interaction graph, the
+matching is weighted by round(1e6 x (1 + log(1 - error))) (error capped at
+0.5), i.e. it maximizes the product of the edge fidelities used. Ignored
+otherwise. Single-qubit and readout errors are not considered.
+
+**`benchmarks/psf_smart_layout.py`** unchanged (LAYOUT_VERSION
+2026-09-26.m1 already accepts `edge_weights`).
+
+New tests: `test_closed_form_core.py` (2,352 bytes, `4f3fdb7f...`), 11 cases.
+
+## 3. Predictions
+
+Validation script `verify_closed_form_and_weighted.py` (17,975 bytes,
+normalized SHA-256
+`9e2562d8c4b39c80890cd88a3f8aad550454a92472d247e4df433762227ed1ec`), one
+process; plus two hash-locked scripts from earlier addenda, unchanged.
+
+**C0.** Log shows `psf_compile.py` 2026-09-26.3 and `psf_smart_layout.py`
+2026-09-26.m1 (the script stops otherwise).
+
+**C1 (block level).** 300 random unitaries plus 10 special ones (identity,
+CX, SWAP, iSWAP, dressed CX, dressed cores with c = 0, 1e-9, 1e-7, 1e-5,
+1e-3): new-arm exact distance (phase included) <= 1e-13 for all; CX count
+identical to the old arm for every unitary; total `sx` after
+level-1 translation new <= old; closed form used on 300/300 random.
+
+**C2 (end to end, FakeNighthawk, spare 0 and 8, seeds 0-4).** 2-qubit
+count identical, `sx` new <= old, exact per-pair worst <= 1e-12 in all 10
+cases; median time new <= old - 10 ms at both spares (expected about
+-15 ms: 83.8 -> 68.7 ms today, so about 52-55 ms).
+
+**C3 (tests).** 55 pass (44 + 11 new).
+
+**C4 (precision, `diag_core_worst_pairs.py`, Addendum 185).** Maximum
+PSF-Zero error over the 60 pairs <= 1e-13 (Addendum 190: 6.18e-14).
+
+**C5 (drift, `deadline_compound_chain.py`, Addendum 183).** PSF-Zero's
+maximum per-pair distance <= 1e-12 at every lap (Addendum 190: 7.27e-13 at
+lap 10); Qiskit's per-lap values identical to Addendum 190.
+
+**Q1 (weighted path correct).** In every case below, the weighted arm takes
+the matching shortcut (`matching_weighted`), passes the exact per-pair
+check (<= 1e-12), and has the unweighted arm's 2-qubit count.
+
+**Q2.** Estimated success probability (ESP, product of (1 - error) over
+every instruction, from the backend's Target) of the weighted arm >= the
+unweighted arm's in every case.
+
+**Q3 (the hypothesis).** Weighted ESP >= Qiskit L3's ESP in at least 2/3
+of the cases: **supported**; in at most 1/3: **not supported**; otherwise
+inconclusive. Cases: FakeNighthawk spare 0 and 8, and FakeTorino and
+FakeFez with 80 logical qubits where available, seeds 0-2 (up to 12).
+My expectation, stated before the run: supported on FakeNighthawk,
+uncertain on the heavy-hex devices -- L3 also runs VF2PostLayout (which
+weighs single-qubit errors too) and optimizes single-qubit gates harder,
+and ESP counts both; the weighted matching optimizes only the 2-qubit
+factor, but exactly.
+
+**Q4.** Median extra compile time of weighted over unweighted <= 2 ms.
+
+## 4. Limits stated in advance
+
+- ESP is a model: independent gate errors from a snapshot calibration. Fake
+  backends' values are either synthetic (FakeNighthawk says so) or dated
+  snapshots (FakeTorino, FakeFez). A Q3 result is about layouts on these
+  maps, not about hardware.
+- ESP mixes layout quality with single-qubit gate counts, which differ
+  between PSF-Zero and Qiskit L3; the mean 2-qubit edge error is reported
+  alongside to separate the two.
+- Q applies only to matching-shaped circuits.
+
+## 5. Commands
+
+```
+python -m pytest -q <the 6 existing test files> benchmarks/test_matching_layout.py benchmarks/test_closed_form_core.py
+python -u benchmarks/verify_closed_form_and_weighted.py 2>&1 | tee closed_form_weighted_result.txt
+python -u diag_core_worst_pairs.py 2>&1 | tee diag_core_worst_pairs_v3.txt
+python -u deadline_compound_chain.py 2>&1 | tee deadline_chain_result_v3.txt
+```
+
+---
+
+<!-- ===== Addendum 195 (source: spare-qubit-cliff-addendum-195-2026-09-26.md) ===== -->
+
+> **Note added when merging:** Closed form: exact where used, cliff compile 49.5 ms, but drift rose (C5 failed). Weighted layout: 3 of 4 configurations beat Qiskit L3. C1's failure exposed a Qiskit defect: two-qubit synthesis to basis [cx, rz, sx, x] returns circuits with 7% average gate infidelity for a narrow band of inputs, at every optimization level; PSF-Zero's released CX path inherited it.
+
+## Addendum 195 -- The closed-form CX core is exact wherever it is used and cuts the cliff compile to 49.5 ms with identical 2-qubit and `sx` counts, but it speeds up drift under repeated recompilation; the error-weighted layout beats Qiskit L3's estimated success probability on 3 of 4 configurations; and C1's failure exposed a Qiskit defect: two-qubit synthesis to basis [cx, rz, sx, x] returns circuits with 7% average gate infidelity for a narrow band of inputs, at every optimization level, and PSF-Zero's CX path inherits it (2026-09-26)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-194-preregistration-2026-09-26.md`. Run on WSL2
+(home), Qiskit 2.5.2. Logs and CSV received as files. Sections 4-5 are
+diagnostics run after the registered run, not pre-registered.
+
+## 0. In one line
+
+C2, C3, C4, Q1, Q2, Q4 hold; Q3 is "supported" (9/12, really 3 of 4
+distinct configurations); **C1 and C5 fail**. C1 fails on blocks the closed
+form does not handle, and the cause is outside PSF-Zero: Qiskit's
+`TwoQubitBasisDecomposer(CXGate(), euler_basis="ZSX")` -- which is also what
+plain `transpile(..., basis_gates=["cx", "rz", "sx", "x"])` uses -- returns a
+wrong circuit (1 - F_avg = 6.99e-2) when the smallest canonical coordinate
+is about 3e-8 to 3e-7. PSF-Zero's released CX path (VERSION 2026-09-26.2)
+calls that decomposer and does not check its output, so it emits those
+wrong blocks too.
+
+## 1. Header
+
+`LOADED .../psf_compile.py 2026-09-26.3 8d85b154...`;
+`.../benchmarks/psf_smart_layout.py 2026-09-26.m1 a639efde...`;
+`SCRIPT .../verify_closed_form_and_weighted.py 9e2562d8...` -- as
+registered. 55 tests passed.
+
+## 2. Part C, closed-form core
+
+| Prediction | Result |
+|---|---|
+| C0: right files | **CONFIRMED** |
+| C1: all 310 blocks <= 1e-13 (phase included), same CX, sx new <= old, closed form on 300/300 random | **FAILED** -- see below |
+| C2: same 2q, sx new <= old, per-pair <= 1e-12; median new <= old - 10 ms | **CONFIRMED** -- 2q 180/168 and sx 840/784 identical in 10/10; per-pair worst 2.7e-15; spare 0: 68.2 -> **49.5 ms**; spare 8: 64.7 -> 48.6 ms |
+| C3: 55 tests | **CONFIRMED** |
+| C4: `diag_core_worst_pairs.py` max <= 1e-13 | **CONFIRMED** -- 6.15e-14 (Addendum 190: 6.18e-14) |
+| C5: `deadline_compound_chain.py` PSF-Zero <= 1e-12 at every lap; Qiskit identical | **FAILED** -- PSF-Zero 2.32e-13 at lap 1, crosses 1e-12 at lap 6, 1.92e-12 at lap 10 (was 6.2e-14, 7.27e-13); Qiskit's distances identical to Addendum 190 |
+
+Depth also fell, 23 -> 21 (22 for seed 1), which was not predicted.
+
+**C1 in detail** (from the CSV). On the 303 blocks where the closed form
+was used (300 random, SWAP, c = 1e-5, c = 1e-3): worst 8.5e-14, median
+4.6e-15 -- within the registered bound. On the 300 random blocks the old
+path's worst is 2.5e-13 (two blocks above 1e-13), the new path's 8.5e-14.
+`sx` is identical block by block on all 310. The registered bound fails on
+two blocks the closed form deliberately leaves to the old path: dressed
+cores with c = 1e-9 (2.0e-9: a 2-CX approximation, within Qiskit's
+documented tolerance) and **c = 1e-7 (0.598 Frobenius, identical on both
+paths)**. The old path's SWAP (4.00) is a global phase of -1 only (phase-
+aligned 8.5e-16); the closed form removes it.
+
+**C5.** Drift per lap rose from about 7.4e-14 to about 1.9e-13, and the
+first lap starts higher (2.3e-13 vs 6.2e-14), while the synthesizer's own
+per-block error is unchanged (C4). The likely source is the translation of
+the closed form's middle-gap `ry`/`rx` into `rz`/`sx` inside Qiskit's
+level-1 pass (the old path emitted `rz`/`sx` directly). Checked in isolation
+since the run: both middle gaps have exact native forms --
+rx(pi/2) ry(t) = rz(t) rx(pi/2) and ry(t) rx(-pi/2) = rx(-pi/2) rz(t) (to
+2e-16), with rx(pi/2) = e^{-i pi/4} sx and rx(-pi/2) = -e^{-i pi/4} rz(pi)
+sx rz(pi). Whether emitting those removes the extra drift is a hypothesis
+for the next registration.
+
+## 3. Part Q, error-weighted layout
+
+| Prediction | Result |
+|---|---|
+| Q1: weighted path taken, correct, same 2q | **CONFIRMED** (12/12) |
+| Q2: weighted ESP >= unweighted | **CONFIRMED** (12/12) |
+| Q3: weighted ESP >= Qiskit L3 in >= 2/3 of cases | **SUPPORTED** -- 9/12 |
+| Q4: extra compile time <= 2 ms | **CONFIRMED** (median -2.2 ms, i.e. noise) |
+
+log10 ESP (identical across seeds -- see below):
+
+| Configuration | unweighted | weighted | Qiskit L3 | mean 2q edge error (u / w / L3) |
+|---|---|---|---|---|
+| FakeNighthawk, 120 logical | -1800.318 | **-1800.253** | -1800.341 | 2.82e-3 / 1.98e-3 / 2.97e-3 |
+| FakeNighthawk, 112 logical | -1800.293 | -1800.229 | **-0.299** | 2.74e-3 / 1.85e-3 / 2.84e-3 |
+| FakeTorino, 80 logical | -3600.596 | **-0.227** | -0.550 | 1.07e-1 / 3.16e-3 / 7.17e-3 |
+| FakeFez, 80 logical | -1800.402 | **-0.216** | -0.321 | 5.62e-2 / 3.04e-3 / 4.90e-3 |
+
+- 2-qubit and `sx` counts are identical across the three arms in every
+  case, so the ESP differences are layout alone. On the two snapshot
+  calibrations the weighted layout's ESP is 2.1x (Torino) and 1.27x (Fez)
+  Qiskit L3's, at about one sixth of L3's compile time.
+- **The 12 cases are 4 configurations.** Layouts are deterministic and the
+  gate counts per qubit do not depend on the circuit seed, so the three
+  seeds give identical ESP. Q3 is 3 wins of 4, not 9 independent wins of 12.
+- **The loss is the anticipated gap.** Each -300 in log10 ESP is one
+  instruction with error 1.0. FakeNighthawk has single-qubit gates with
+  error 1.0 on some qubit(s); at 120 logical qubits every qubit is used and
+  all arms pay it, at 112 Qiskit L3 (VF2PostLayout scores single-qubit
+  errors) avoids them and the weighted matching, which sees only 2-qubit
+  errors, does not. Adding each endpoint's single-qubit log-fidelity to the
+  edge weight is exact for a matching (each matched edge covers exactly its
+  two qubits) and would close it.
+- The unweighted matching lands on dead edges on the heavy-hex snapshots
+  (mean edge error 0.107 / 0.056): without weights the shortcut is blind to
+  device quality, as expected.
+
+## 4. Diagnostic: where the 0.598 comes from (`diag_cx_fallback.py`)
+
+For the dressed core with c = 1e-7 (and 3e-7): the cached CX core, the old
+block, the new block, and **Qiskit's decomposer applied directly to the
+block matrix** all give 0.598 phase-aligned -- the error is in Qiskit's
+decomposer, reached through PSF-Zero's fallback. Below the band
+(c <= 1e-8) the decomposer switches to 2 CXs with error 2c (documented
+approximation); above it (1e-6 .. 1e-5) the error is 7.5e-17 / c
+(ill-conditioned but small), and the closed form gives 1.2e-15 there. For
+the undressed cores the Rust core raises `PsfSU2SingularError` (a known
+degeneracy) and the block falls back to the same decomposer.
+
+## 5. Diagnostic: who is exposed (`diag_qiskit_2q_window.py`,
+`repro_qiskit_zsx_2q.py`, `repro_qiskit_zsx_2q_v2.py`)
+
+Minimal input, Qiskit only: exp(i(0.6 XX + 0.3 YY + c ZZ)), plain and with
+fixed single-qubit layers. 1 - F_avg:
+
+| c | decomposer ZSX | decomposer default Euler | transpile `[cx,rz,sx,x]` L0-L3, UnitaryGate input | transpile `[cz,rz,sx,x]` L1/L3 | GenericBackendV2 (cz, error data) L1/L3 | transpile of the same gate written as RXX/RYY/RZZ |
+|---|---|---|---|---|---|---|
+| 1e-8 | 3e-16 (2 CX) | 2e-16 | 3e-16 | 2e-16 | 2e-16 | <= 6e-16 |
+| 3e-8 .. 3e-7 | **6.99e-2** (3 CX) | <= 3e-16 | **6.99e-2** (3 CX at L0/L1, 2 at L2/L3) | <= 6e-16 | <= 7e-16 | <= 7.2e-14 |
+| >= 5e-7 | <= 6e-16 | <= 3e-16 | <= 8e-13 | <= 3e-16 | <= 3e-16 | <= 8e-13 |
+
+Reading:
+- The defect needs a CX basis **and** the `rz`/`sx` Euler basis. A CZ basis
+  or a target with error data (the IBM hardware path) is not affected in
+  these tests, and the default Euler basis is exact.
+- Ordinary `transpile()` of a `UnitaryGate` to `basis_gates=["cx", "rz",
+  "sx", "x"]` is affected at every optimization level. The same gate given
+  as RXX/RYY/RZZ is not (levels 0-1 translate gate by gate; levels 2-3
+  consolidate and resynthesize correctly), so the input form matters.
+- The error is the same, 6.99e-2, at every c in the band and for both
+  inputs, which points to a discrete mistake (a branch taken wrongly) rather
+  than accumulated rounding. This is an inference; Qiskit's source was not
+  inspected.
+- The broader window scan (4 families x 41 values x 3 seeds) puts failures
+  above 1e-6 Frobenius between c = 1.8e-8 and 1.8e-5 for the ZSX paths; part
+  of that count is documented approximation and the ill-conditioned
+  7.5e-17 / c tail, not the 7% failure. Only the 7% cases are a defect.
+- Qiskit issue #13547 (small-angle `ry`, levels 2-3) is a different,
+  closed defect. No report matching this one was found.
+
+**Consequence for PSF-Zero.** The released CX path (2026-09-26.2) emits
+the wrong block for such inputs, and `verify=True` does not catch it (it
+checks the decomposition, not the emitted circuit -- a documented limit).
+Unlike plain Qiskit, PSF-Zero produces the CX form first and translates to
+CZ afterwards, so it is exposed even when targeting IBM hardware. Random
+circuits essentially never reach the band; circuits with small two-qubit
+interaction angles can.
+
+## 6. What follows
+
+A correctness fix first, then the two refinements:
+1. Guard every block left to Qiskit's decomposer: check the emitted
+   circuit's unitary; if it is off, use the default-Euler decomposer, and if
+   that is off too, the closed form (three CXs, exact).
+2. Emit the closed form's middle gaps as native `rz`/`sx` (Section 2, C5).
+3. Add single-qubit log-fidelities of both endpoints to the matching weight
+   (Section 3).
+Separately: report the defect to Qiskit with the minimal script.
+
+## 7. Files
+
+| File | What it is |
+|---|---|
+| `psf_compile.py` VERSION 2026-09-26.3 | not yet adopted in the repository |
+| `benchmarks/verify_closed_form_and_weighted.py`, `benchmarks/test_closed_form_core.py` | as registered |
+| `data/logs/closed_form_weighted_result.txt`, `data/closed_form_weighted_2026-09-26.csv` | the registered run |
+| `data/logs/diag_core_worst_pairs_v3.txt`, `data/logs/deadline_chain_result_v3.txt` | C4, C5 |
+| `benchmarks/diag_cx_fallback.py`, `data/logs/diag_cx_fallback.txt` | Section 4 |
+| `benchmarks/diag_qiskit_2q_window.py`, `data/logs/diag_qiskit_2q_window.txt`, `data/diag_qiskit_2q_window_2026-09-26.csv` | Section 5, scan |
+| `benchmarks/repro_qiskit_zsx_2q.py`, `benchmarks/repro_qiskit_zsx_2q_v2.py` and their logs | Section 5, minimal reproduction |
+
+---
+
+<!-- ===== Addendum 196 pre-registration (source: spare-qubit-cliff-addendum-196-preregistration-2026-09-26.md) ===== -->
+
+> **Note added when merging:** Correctness fix (a guard on every block left to Qiskit's CX decomposer), native {rz, sx} middle gaps for the closed form, and single-qubit errors in the layout weights.
+
+## Addendum 196 -- Pre-registration: a guard on every block left to Qiskit's CX decomposer (correctness fix), the closed-form core with its middle gaps written natively in {rz, sx}, and single-qubit errors in the weighted layout (2026-09-26)
+
+**Status: pre-registration. The new file is written and its new functions
+were checked in isolation; no run on the real stack has been made.**
+
+## 1. Why
+
+Addendum 195: (a) Qiskit's `TwoQubitBasisDecomposer(CXGate(),
+euler_basis="ZSX")` returns circuits with average gate infidelity 6.99e-2
+for unitaries whose smallest canonical coordinate is about 3e-8 to 3e-7,
+and every released PSF-Zero revision emits them unchecked on the `cx` path;
+(b) the closed-form core of 2026-09-26.3 raised repeated-recompilation drift
+about 2.6x (C5 failed), plausibly through Qiskit's translation of its
+middle-gap `ry`/`rx`; (c) the weighted layout, blind to single-qubit
+errors, placed pairs on a qubit whose `sx` has error 1.0 (Q3's one loss).
+
+## 2. Changes
+
+**`psf_compile.py`, VERSION 2026-09-26.4** (63,624 bytes, normalized
+SHA-256 `b4fa92ad85f04cfa05b7732b634da9f876bb034735be806825b87b62c72cb670`;
+against 2026-09-26.3: 196 lines added, 16 changed). Changelog items 17-19.
+
+**Item 17, guard (correctness).** `_guarded_cx_synthesis(u)` computes the
+emitted circuit's unitary and accepts it if its average gate infidelity is
+<= 1e-8 -- ten times Qiskit's own default requested fidelity, so Qiskit's
+documented approximations (dropping a tiny interaction to save a CX, about
+3e-10 in the Addendum 195 scan) pass and the 7e-2 failures do not. An
+accepted circuit's global phase is corrected to match exactly. On rejection:
+retry with the default Euler basis (exact on every input in Addendum 195);
+if that fails too, a canonical core falls back to the closed form (exact,
+three CXs), and a whole block raises `RuntimeError` instead of being
+emitted. Used on both places that called the decomposer: the cached core
+and the whole-block fallback. `USE_CX_GUARD` switches it for A/B;
+`GUARD_STATS` counts checks and rejections.
+
+A first version of the guard used a 1e-6 phase-aligned Frobenius threshold.
+Before registration it was replaced by the infidelity threshold, because the
+Addendum 195 scan showed Qiskit's documented approximations reaching
+5e-5 in Frobenius distance: the first version would have rejected them and,
+on the whole-block path, raised.
+
+**Item 18, native middle gaps.** Gap 1: `sx`, `rz(2a - pi/2)`; gap 2:
+`rz(3pi/2 - 2b)`, `sx`, `rz(pi)`; total global phase 3pi/4. Checked in
+isolation (function extracted from the file, recording stand-in circuit):
+5,000 random triples, worst 2.7e-15 including phase; the previous gaps
+(`USE_NATIVE_GAPS = False`) 2.0e-15; forced closed form on a degenerate
+triple 6.5e-16.
+
+**Item 19, single-qubit errors in the weights.** `layout_qubit_errors`
+(`qubit_errors_from_target`: `sx` error per qubit). Edge weight
+n2 log(1 - e_pq) + n1 (log(1 - e_p) + log(1 - e_q)), errors capped at 0.5,
+n2 = mean 2-qubit gates per interacting pair in the compressed circuit,
+n1 = 2 n2 + 1. Checked in isolation: an edge touching a qubit with error 1.0
+weighs 62% of an otherwise equal neighbour.
+
+**Tests.** `test_closed_form_core.py` updated (2,627 bytes, `d813f5a7...`):
+one test identified the closed form by the presence of `rx`, which the
+native form no longer emits; it now compares gate sequences. New
+`test_guard_v4.py` (1,821 bytes, `1e3f38d0...`), 8 cases.
+
+## 3. Predictions
+
+Validation script `verify_v4.py` (18,022 bytes, normalized SHA-256
+`88e1d259e6c952361985dadbd416f8660d1448d5f02965be05efa7c83b265c7b`), plus
+the two hash-locked scripts rerun unchanged.
+
+**V0.** The log shows 2026-09-26.4 and LAYOUT_VERSION 2026-09-26.m1.
+
+**G1 (guard fixes it).** Four families of cores, e from 1e-9 to 1e-5 (17
+values), bare and dressed (3 seeds): 272 blocks. With the guard, every
+block's average gate infidelity <= 1e-8 and phase-included Frobenius
+distance <= 1e-3.
+**G2 (the test can see the defect).** Without the guard, at least one block
+has infidelity > 1e-3.
+**G3.** With the guard, ZSX rejections >= 1 and default-Euler rejections 0.
+**G4.** Max CX <= 3 with the guard, and CX unchanged on every block where
+the unguarded result was already within 1e-8.
+
+**N1.** 300 random blocks: native gaps phase-included <= 1e-13; CX and `sx`
+identical to the 2026-09-26.3 gaps on every block.
+**N2.** FakeNighthawk, spare 0 and 8, seeds 0-4: 2q and `sx` identical
+between the two gap forms, per-pair <= 1e-12; spare-0 median with native
+gaps <= 55 ms.
+**N3 (the C5 retest).** `deadline_compound_chain.py`: PSF-Zero <= 1e-12 at
+every lap; Qiskit's distances identical to Addendum 190. This is the
+hypothesis that the extra drift came from translating the gaps; if it fails,
+the drift has another source and the registration says so.
+**N4.** `diag_core_worst_pairs.py`: maximum <= 1e-13.
+**N5.** 63 tests pass (44 + 11 + 8).
+
+**W1.** Edge + qubit weighted ESP >= Qiskit L3 on all 4 configurations
+(FakeNighthawk 120 and 112 logical, FakeTorino and FakeFez 80 logical;
+seed 0 only -- Addendum 195 showed ESP does not depend on the seed here).
+**W2.** Edge + qubit >= edge only on all 4.
+**W3.** Edge + qubit per-pair <= 1e-12.
+
+## 4. Limits stated in advance
+
+- G covers four families of near-degenerate cores; the Qiskit defect's full
+  extent is not mapped, and the guard is what protects PSF-Zero wherever it
+  occurs.
+- ESP (W) is a model on snapshot or synthetic calibration data; n1 = 2 n2 + 1
+  is a heuristic tuned to 3-CX blocks.
+- The guard adds one 4x4 `Operator` per decomposer call. After item 15 those
+  calls happen only on degenerate blocks; N2 reports `GUARD_STATS` to show
+  how often that is on the cliff circuits.
+
+## 5. Commands
+
+```
+python -m pytest -q <the 6 existing test files> benchmarks/test_matching_layout.py benchmarks/test_closed_form_core.py benchmarks/test_guard_v4.py
+python -u benchmarks/verify_v4.py 2>&1 | tee v4_result.txt
+python -u diag_core_worst_pairs.py 2>&1 | tee diag_core_worst_pairs_v4.txt
+python -u deadline_compound_chain.py 2>&1 | tee deadline_chain_result_v4.txt
+```
+
+---
+
+<!-- ===== Addendum 197 (source: spare-qubit-cliff-addendum-197-2026-09-26.md) ===== -->
+
+> **Note added when merging:** All predictions hold: the guard removes every decomposer failure (48 of 272 blocks without it), drift falls below every earlier revision (6.2e-13 after 10 laps), and the error-aware layout beats Qiskit L3's estimated success probability on 4 of 4 configurations.
+
+## Addendum 197 -- All predictions hold: the guard removes every Qiskit decomposer failure (48 of 272 blocks without it, worst infidelity 1.6e-12 with it), native middle gaps bring repeated-recompilation drift below every earlier revision (6.2e-13 after 10 laps), and single-qubit errors let the weighted layout beat Qiskit L3's estimated success probability on all 4 configurations (2026-09-26)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-196-preregistration-2026-09-26.md`. Run on WSL2
+(home), Qiskit 2.5.2. Log received as a file.
+
+## 0. In one line
+
+V0, G1-G4, N1-N5 and W1-W3 all hold. PSF-Zero 2026-09-26.4 is correct on
+every near-degenerate block tested (where every earlier revision, and plain
+Qiskit to a CX basis, fails on 48 of 272), compiles the Nighthawk cliff in
+49.8 ms, drifts 6.2e-14 per recompilation lap (2026-09-26.2: 7.4e-14;
+.3: 1.9e-13), and its error-aware layout reaches 1.26x-2.11x Qiskit L3's
+estimated success probability on three of the four configurations and
+matches or beats it on the fourth.
+
+## 1. Header
+
+`LOADED .../psf_compile.py 2026-09-26.4 b4fa92ad...`;
+`.../benchmarks/psf_smart_layout.py 2026-09-26.m1 a639efde...`;
+`SCRIPT .../verify_v4.py 88e1d259...` -- as registered. File sizes 63,624 /
+18,022 / 2,627 / 1,821 bytes. 63 tests passed.
+
+## 2. Results
+
+| Prediction | Result |
+|---|---|
+| G1: guard on, every block infidelity <= 1e-8, phase-included <= 1e-3 | **CONFIRMED** -- worst infidelity 1.60e-12; worst phase-included Frobenius 2.83e-6 (a documented Qiskit approximation, kept) |
+| G2: guard off reproduces the defect | **CONFIRMED** -- 48 of 272 blocks at infidelity 6.99e-2, bare and dressed alike |
+| G3: ZSX rejections >= 1, default-Euler rejections 0 | **CONFIRMED** -- 208 checks, 48 ZSX rejections, 0 default-Euler rejections, 0 forced closed forms |
+| G4: max CX <= 3; CX unchanged where the unguarded result was within 1e-8 | **CONFIRMED** -- 0 changes |
+| N1: native gaps <= 1e-13; CX and sx identical to .3 gaps, block by block | **CONFIRMED** -- 9.67e-14 (.3 gaps 9.66e-14); 0 differences in 300 |
+| N2: same 2q and sx, per-pair <= 1e-12, spare-0 median <= 55 ms | **CONFIRMED** -- 180/168 and 840/784 in both arms; worst 2.7e-15; 49.75 ms (spare 8: 48.09 ms) |
+| N3: drift <= 1e-12 at every lap; Qiskit identical | **CONFIRMED** -- 6.21e-14 at lap 1, 6.21e-13 at lap 10; Qiskit's distances identical to Addendum 190 |
+| N4: `diag_core_worst_pairs.py` max <= 1e-13 | **CONFIRMED** -- 6.16e-14 |
+| N5: 63 tests | **CONFIRMED** |
+| W1: edge + qubit ESP >= Qiskit L3 on 4/4 | **CONFIRMED** |
+| W2: edge + qubit >= edge only on 4/4 | **CONFIRMED** |
+| W3: per-pair <= 1e-12 | **CONFIRMED** |
+
+## 3. Drift, across revisions (spare 0, same hash-locked script)
+
+| Revision | lap 1 | lap 10 | per lap |
+|---|---|---|---|
+| 2026-09-21 (before the precision fix) | 1.76e-11 | 6.47e-10 | irregular |
+| 2026-09-26.2 (polishing) | 6.2e-14 | 7.27e-13 | ~7.4e-14 |
+| 2026-09-26.3 (closed form, `ry`/`rx` gaps) | 2.32e-13 | 1.92e-12 | ~1.9e-13 |
+| **2026-09-26.4 (native gaps)** | **6.21e-14** | **6.21e-13** | **6.21e-14, exactly linear** |
+| Qiskit L3 (reference) | 3.37e-13 | 3.40e-13 | ~0 |
+
+The registered hypothesis -- that .3's extra drift came from Qiskit
+translating the middle-gap rotations -- is supported: with the gaps emitted
+natively, lap 1 returns to .2's value and the rate falls below .2's. The
+growth is now exactly linear (lap k: k x 6.21e-14), i.e. the same error is
+added coherently each lap; Qiskit's own re-synthesis does not accumulate.
+At this rate PSF-Zero crosses 1e-12 near lap 16 and Qiskit's level (3.4e-13)
+at lap 6.
+
+Speed: the native gaps do not change the cliff compile time within noise
+(v3 gaps 48.9 ms, native 49.8 ms at spare 0). The guard never fired on the
+cliff circuits (`GUARD_STATS` all zero over N2): on random blocks the closed
+form handles every core and Qiskit's decomposer is not called.
+
+## 4. Weighted layout (seed 0; log10 ESP)
+
+| Configuration | edge only | edge + qubit | Qiskit L3 | ratio to L3 |
+|---|---|---|---|---|
+| FakeNighthawk, 120 logical | -1800.253 | -1800.253 | -1800.341 | 1.22x (all arms pay the dead qubit) |
+| FakeNighthawk, 112 logical | -1800.229 | **-0.200** | -0.299 | **1.26x** (was the loss in Addendum 195) |
+| FakeTorino, 80 logical | -0.227 | **-0.226** | -0.550 | **2.11x** |
+| FakeFez, 80 logical | -0.216 | **-0.211** | -0.321 | **1.29x** |
+
+2-qubit and `sx` counts are identical across arms in every configuration;
+PSF-Zero's compile times are 41-53 ms, Qiskit L3's 0.16-0.26 s off the cliff
+and 12.9 s on it. Adding single-qubit errors costs a little 2-qubit edge
+quality (mean edge error 1.85e-3 -> 1.88e-3 on Nighthawk 112) to buy the
+avoidance of dead or poor qubits, which is the trade ESP rewards.
+
+Limits, as registered: ESP is a model; FakeNighthawk's values are synthetic
+and FakeTorino/FakeFez are dated snapshots; n1 = 2 n2 + 1 is a heuristic;
+the layout applies only to matching-shaped circuits.
+
+## 5. Where PSF-Zero stands after Addenda 191-197
+
+| | 2026-09-26.2 (in the repository this morning) | 2026-09-26.4 |
+|---|---|---|
+| Nighthawk cliff compile (spare 0) | 83 ms | 49.8 ms |
+| Qiskit L3 on the same | 12.9 s | 12.9 s |
+| blocks in the Qiskit ZSX defect band | wrong (7% infidelity) | correct (<= 1.6e-12) |
+| drift after 10 laps | 7.27e-13 | 6.21e-13 |
+| error-aware layout | none | ESP >= Qiskit L3 on 4/4 |
+| 2q / sx / depth on the cliff | 180 / 840 / 23 | 180 / 840 / 21 |
+
+## 6. Files
+
+| File | What it is |
+|---|---|
+| `psf_compile.py` | VERSION 2026-09-26.4 (`b4fa92ad...`) |
+| `benchmarks/verify_v4.py`, `benchmarks/test_guard_v4.py`, `benchmarks/test_closed_form_core.py` | as registered |
+| `data/logs/v4_result.txt`, `data/v4_2026-09-26.csv` | the registered run |
+| `data/logs/diag_core_worst_pairs_v4.txt`, `data/logs/deadline_chain_result_v4.txt` | N4, N3 |
+
+---
+
 ---
 
 **End of Part 8 of 8 (end of document, for now).** Back to [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

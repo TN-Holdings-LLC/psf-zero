@@ -1,0 +1,54 @@
+platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | cores 12 | python 3.12.13 | qiskit 2.5.2
+LOADED /home/psf/psf_zero_fresh_test/psf_compile.py 2026-09-26.3 8d85b15496eb4efda9303f38764ae7ad07b1ec8ce7b58c2c3177207c419eadbd
+LOADED /home/psf/psf_zero_fresh_test/benchmarks/psf_smart_layout.py 2026-09-26.m1 a639efdef484379d23b4c0a52dffe557c47c30f639c41e4f8521ca608712d875
+SCRIPT /home/psf/psf_zero_fresh_test/benchmarks/verify_closed_form_and_weighted.py 9e2562d8c4b39c80890cd88a3f8aad550454a92472d247e4df433762227ed1ec
+
+=== C1: block level ===
+  identity       old: err=0.00e+00 cx=0 sx=0 | new: err=0.00e+00 cx=0 sx=0 closed_form=False fallback=0
+  cx             old: err=9.68e-15 cx=1 sx=4 | new: err=9.68e-15 cx=1 sx=4 closed_form=False fallback=0
+  swap           old: err=4.00e+00 cx=3 sx=10 | new: err=6.23e-16 cx=3 sx=10 closed_form=True fallback=0
+  iswap          old: err=1.26e-15 cx=2 sx=6 | new: err=1.26e-15 cx=2 sx=6 closed_form=False fallback=0
+  cx_dressed     old: err=3.98e-15 cx=1 sx=8 | new: err=3.98e-15 cx=1 sx=8 closed_form=False fallback=0
+  core_c0        old: err=3.67e-15 cx=2 sx=10 | new: err=3.67e-15 cx=2 sx=10 closed_form=False fallback=0
+  core_c1e-09    old: err=2.00e-09 cx=2 sx=10 | new: err=2.00e-09 cx=2 sx=10 closed_form=False fallback=0
+  core_c1e-07    old: err=5.98e-01 cx=3 sx=12 | new: err=5.98e-01 cx=3 sx=12 closed_form=False fallback=0
+  core_c1e-05    old: err=7.50e-12 cx=3 sx=10 | new: err=1.05e-15 cx=3 sx=10 closed_form=True fallback=0
+  core_c0.001    old: err=5.13e-14 cx=3 sx=10 | new: err=1.25e-15 cx=3 sx=10 closed_form=True fallback=0
+  all 310: max err old 4.00e+00 new 5.98e-01; median old 7.26e-15 new 4.58e-15
+  total sx old 3080 new 3080; closed form used on 300/300 random blocks; CX-count mismatches: none
+C1 FAIL
+
+=== C2: end to end, FakeNighthawk ===
+spare=0 seed=0: 2q 180->180 sx 840->840 depth 23->21 pair_worst new 2.220446049250313e-15
+spare=0 seed=1: 2q 180->180 sx 840->840 depth 23->22 pair_worst new 2.1094237467877974e-15
+spare=0 seed=2: 2q 180->180 sx 840->840 depth 23->21 pair_worst new 2.4424906541753444e-15
+spare=0 seed=3: 2q 180->180 sx 840->840 depth 23->21 pair_worst new 2.6645352591003757e-15
+spare=0 seed=4: 2q 180->180 sx 840->840 depth 23->21 pair_worst new 2.6645352591003757e-15
+spare=0: median old 68.22 ms -> new 49.50 ms | C2 correctness PASS | C2 speed PASS
+spare=8 seed=0: 2q 168->168 sx 784->784 depth 23->21 pair_worst new 2.220446049250313e-15
+spare=8 seed=1: 2q 168->168 sx 784->784 depth 23->22 pair_worst new 2.1094237467877974e-15
+spare=8 seed=2: 2q 168->168 sx 784->784 depth 23->21 pair_worst new 2.4424906541753444e-15
+spare=8 seed=3: 2q 168->168 sx 784->784 depth 23->21 pair_worst new 2.6645352591003757e-15
+spare=8 seed=4: 2q 168->168 sx 784->784 depth 23->21 pair_worst new 2.6645352591003757e-15
+spare=8: median old 64.75 ms -> new 48.60 ms | C2 correctness PASS | C2 speed PASS
+
+=== Q: error-weighted matching vs unweighted vs Qiskit L3 ===
+FakeNighthawk n=120 seed=0: log10 ESP  unweighted -1800.3175 | weighted -1800.2531 | L3 -1800.3406 ; mean edge err 2.82e-03 / 1.98e-03 / 2.97e-03 ; 2q 180/180/180 ; sx 840/840/840 ; time 0.055/0.050/12.937s ; weighted layout matching_weighted
+FakeNighthawk n=120 seed=1: log10 ESP  unweighted -1800.3175 | weighted -1800.2531 | L3 -1800.3406 ; mean edge err 2.82e-03 / 1.98e-03 / 2.97e-03 ; 2q 180/180/180 ; sx 840/840/840 ; time 0.052/0.048/13.085s ; weighted layout matching_weighted
+FakeNighthawk n=120 seed=2: log10 ESP  unweighted -1800.3175 | weighted -1800.2531 | L3 -1800.3406 ; mean edge err 2.82e-03 / 1.98e-03 / 2.97e-03 ; 2q 180/180/180 ; sx 840/840/840 ; time 0.048/0.044/12.805s ; weighted layout matching_weighted
+FakeNighthawk n=112 seed=0: log10 ESP  unweighted -1800.2928 | weighted -1800.2289 | L3 -0.2993 ; mean edge err 2.74e-03 / 1.85e-03 / 2.84e-03 ; 2q 168/168/168 ; sx 784/784/784 ; time 0.052/0.049/0.153s ; weighted layout matching_weighted
+FakeNighthawk n=112 seed=1: log10 ESP  unweighted -1800.2928 | weighted -1800.2289 | L3 -0.2993 ; mean edge err 2.74e-03 / 1.85e-03 / 2.84e-03 ; 2q 168/168/168 ; sx 784/784/784 ; time 0.049/0.046/0.155s ; weighted layout matching_weighted
+FakeNighthawk n=112 seed=2: log10 ESP  unweighted -1800.2928 | weighted -1800.2289 | L3 -0.2993 ; mean edge err 2.74e-03 / 1.85e-03 / 2.84e-03 ; 2q 168/168/168 ; sx 784/784/784 ; time 0.047/0.043/0.155s ; weighted layout matching_weighted
+FakeTorino n=80 seed=0: log10 ESP  unweighted -3600.5957 | weighted -0.2267 | L3 -0.5502 ; mean edge err 1.07e-01 / 3.16e-03 / 7.17e-03 ; 2q 120/120/120 ; sx 560/560/560 ; time 0.039/0.042/0.291s ; weighted layout matching_weighted
+FakeTorino n=80 seed=1: log10 ESP  unweighted -3600.5957 | weighted -0.2267 | L3 -0.5502 ; mean edge err 1.07e-01 / 3.16e-03 / 7.17e-03 ; 2q 120/120/120 ; sx 560/560/560 ; time 0.036/0.038/0.221s ; weighted layout matching_weighted
+FakeTorino n=80 seed=2: log10 ESP  unweighted -3600.5957 | weighted -0.2267 | L3 -0.5502 ; mean edge err 1.07e-01 / 3.16e-03 / 7.17e-03 ; 2q 120/120/120 ; sx 560/560/560 ; time 0.034/0.037/0.224s ; weighted layout matching_weighted
+FakeFez n=80 seed=0: log10 ESP  unweighted -1800.4016 | weighted -0.2157 | L3 -0.3211 ; mean edge err 5.62e-02 / 3.04e-03 / 4.90e-03 ; 2q 120/120/120 ; sx 560/560/560 ; time 0.042/0.040/0.252s ; weighted layout matching_weighted
+FakeFez n=80 seed=1: log10 ESP  unweighted -1800.4016 | weighted -0.2157 | L3 -0.3211 ; mean edge err 5.62e-02 / 3.04e-03 / 4.90e-03 ; 2q 120/120/120 ; sx 560/560/560 ; time 0.037/0.036/0.249s ; weighted layout matching_weighted
+FakeFez n=80 seed=2: log10 ESP  unweighted -1800.4016 | weighted -0.2157 | L3 -0.3211 ; mean edge err 5.62e-02 / 3.04e-03 / 4.90e-03 ; 2q 120/120/120 ; sx 560/560/560 ; time 0.036/0.037/0.254s ; weighted layout matching_weighted
+
+Q1 (weighted path taken and correct, same 2q as unweighted): PASS
+Q2 (weighted ESP >= unweighted ESP): 12/12 -> PASS
+Q3 (weighted ESP >= Qiskit L3 ESP): 9/12 -> SUPPORTED
+Q4 (weighted - unweighted compile time, median): -2.18 ms -> PASS
+
+Wrote closed_form_weighted_2026-09-26.csv (756 rows)
