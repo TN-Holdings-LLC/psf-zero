@@ -7818,6 +7818,52 @@ the layout applies only to matching-shaped circuits.
 
 ---
 
+<!-- ===== Addendum 198 (source: spare-qubit-cliff-addendum-198-2026-09-26.md) ===== -->
+
+> **Note added when merging:** Record only: the Qiskit defect reproduced on the latest release and filed as Qiskit issue #17057; revised papers published on Zenodo with new DOIs.
+
+## Addendum 198 -- Records: the Qiskit defect is reproduced on the latest release and reported upstream (Qiskit issue #17057); both papers published in revised form on Zenodo (2026-09-26)
+
+**Record only; no measurement beyond the reproduction below.**
+
+## 1. Reproduction on the latest release
+
+`benchmarks/repro_qiskit_zsx_2q_v2.py` was run in a new virtual environment
+created only for this purpose (`pip install -U qiskit`): Qiskit 2.5.2 -- the
+latest release on PyPI at the time -- with numpy 2.5.3, scipy 1.18.1,
+rustworkx 0.18.1, Python 3.12.13. The output is identical to Addendum 195's
+run in the working environment, cell for cell: 24 cells above 1e-8, all at
+1 - F_avg = 6.987e-2, for `UnitaryGate` inputs (plain and dressed) at
+c = 3e-8, 1e-7 and 3e-7 through `transpile(basis_gates=["cx","rz","sx","x"])`
+at levels 0-3; none with a CZ basis, a `GenericBackendV2` target, or
+RXX/RYY/RZZ input. The development branch (`main`) was not tested (it needs a
+Rust build). Log: `data/logs/repro_latest_qiskit.txt`.
+
+## 2. Reported upstream
+
+Filed as [Qiskit issue #17057](https://github.com/Qiskit/qiskit/issues/17057)
+by the project author. The report contains the Qiskit-only reproduction, the
+scan table, the conditions that are not affected, and one clearly marked
+guess about the cause. Qiskit's contributing guidelines require disclosure of
+generative-AI use in public communications and forbid autonomous posting by
+agents; the report text was drafted with an AI assistant, posted by the
+author, and a disclosure comment was recommended to the author for the issue.
+
+## 3. Papers, revised versions on Zenodo
+
+| | version 1 | revised (document version 2) |
+|---|---|---|
+| Paper 1, Ordering Sensitivity ... | 10.5281/zenodo.22869976 | **10.5281/zenodo.22977930** (Zenodo record version 3; an earlier file replacement took Zenodo version 2) |
+| Paper 2, PSF-Zero ... | 10.5281/zenodo.22870141 | **10.5281/zenodo.22978090** |
+
+The revised PDFs are the ones in `docs/papers/` (Addendum 197's commit).
+Their text says the defect had not yet been reported upstream; that was true
+when they were written and is superseded by Section 2 here. The README's
+badges, paper links and citation entries now point to the revised DOIs, with
+the version-1 DOIs kept alongside.
+
+---
+
 ---
 
 **End of Part 8 of 8 (end of document, for now).** Back to [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

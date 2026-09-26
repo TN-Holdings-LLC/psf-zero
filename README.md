@@ -5,8 +5,8 @@
 [![Qiskit Ecosystem](https://img.shields.io/badge/Qiskit-Ecosystem-purple.svg)](https://github.com/qiskit/ecosystem)
 [![Rust Core](https://img.shields.io/badge/Core-Rust_Native-E34F26.svg?logo=rust&logoColor=white)](https://www.rust-lang.org/)
 [![PyO3 Binding](https://img.shields.io/badge/FFI-PyO3-blue.svg)](https://pyo3.rs/)
-[![DOI (Paper 1)](https://zenodo.org/badge/DOI/10.5281/zenodo.22869976.svg)](https://doi.org/10.5281/zenodo.22869976)
-[![DOI (Paper 2)](https://zenodo.org/badge/DOI/10.5281/zenodo.22870141.svg)](https://doi.org/10.5281/zenodo.22870141)
+[![DOI (Paper 1)](https://zenodo.org/badge/DOI/10.5281/zenodo.22977930.svg)](https://doi.org/10.5281/zenodo.22977930)
+[![DOI (Paper 2)](https://zenodo.org/badge/DOI/10.5281/zenodo.22978090.svg)](https://doi.org/10.5281/zenodo.22978090)
 
 A Qiskit transpiler pass that replaces heuristic 2-qubit unitary synthesis with an
 **exact, closed-form Cartan (KAK) decomposition**, implemented in a small Rust core
@@ -77,19 +77,21 @@ repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see belo
 > with it is 1.6e-12). Minimal Qiskit-only reproduction:
 > [`benchmarks/repro_qiskit_zsx_2q_v2.py`](benchmarks/repro_qiskit_zsx_2q_v2.py);
 > full account: [`docs/findings/spare-qubit-cliff-combined-135.md`](docs/findings/spare-qubit-cliff-combined-135.md),
-> Addenda 194-197. Not yet reported upstream at the time of writing.
+> Addenda 194-197. Reported upstream as
+> [Qiskit issue #17057](https://github.com/Qiskit/qiskit/issues/17057), after
+> reproducing it on the latest release (2.5.2) in a fresh environment.
 
 > **Two papers and a short technical overview, for anyone evaluating this from
 > outside the project:**
 >
 > - [**Paper 1 — Ordering Sensitivity in Subgraph-Isomorphism Layout Search**](docs/papers/vf2_cliff_paper.pdf)
->   ([DOI: 10.5281/zenodo.22869976](https://zenodo.org/records/22869976)):
+>   ([DOI: 10.5281/zenodo.22977930](https://doi.org/10.5281/zenodo.22977930)):
 >   characterizes Qiskit's own `VF2Layout` failure region (271x slower before
 >   reporting "no solution" on instances that provably have one) and the
 >   ordering mechanism behind it.
 > - [**Paper 2 — PSF-Zero: An Analytic Two-Qubit Gate Synthesizer Combined with
 >   a Verified, Ordering-Aware Layout Search**](docs/papers/psf_zero_paper.pdf)
->   ([DOI: 10.5281/zenodo.22870141](https://zenodo.org/records/22870141)):
+>   ([DOI: 10.5281/zenodo.22978090](https://doi.org/10.5281/zenodo.22978090)):
 >   the system built on Paper 1's finding, verified end-to-end (26/26 layouts
 >   found, 0 coupling-map violations, unitary equivalence to machine
 >   precision).
@@ -108,8 +110,13 @@ repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see belo
 > disjoint-pair circuits. Paper 2 adds the Qiskit CX-basis defect above (and why
 > version 1's measurements were not affected), precision under repeated
 > recompilation, compile time on that device model, and an error-aware layout
-> evaluated on device models. The DOIs above point to version 1; version 2 is in
-> [`docs/papers/`](docs/papers/).
+> evaluated on device models. The DOIs above are the revised versions (also in
+> [`docs/papers/`](docs/papers/)); version 1 remains citable at
+> [10.5281/zenodo.22869976](https://doi.org/10.5281/zenodo.22869976) (Paper 1) and
+> [10.5281/zenodo.22870141](https://doi.org/10.5281/zenodo.22870141) (Paper 2).
+> Zenodo numbers its record versions separately: the revised Paper 1 is Zenodo
+> version 3 (an earlier file replacement took version 2), while the document
+> itself calls it version 2.
 
 ---
 
@@ -679,10 +686,10 @@ their absence.
   L3 timings, not read from source. See
   [`spare-qubit-cliff-combined-27.md`](docs/findings/spare-qubit-cliff-combined-27.md),
   Addendum 34, Section 3.
-- **NEW (2026-09-26).** Report the Qiskit CX-basis synthesis defect (see the
-  notice at the top) upstream, after confirming it on the latest Qiskit release;
-  and whether the error-aware layout's advantage on device models survives on
-  real hardware.
+- **NEW (2026-09-26).** The Qiskit CX-basis synthesis defect (see the notice at
+  the top) is reported as [Qiskit issue #17057](https://github.com/Qiskit/qiskit/issues/17057);
+  its cause inside Qiskit is not known to us. Open on our side: whether the
+  error-aware layout's advantage on device models survives on real hardware.
 - Whether `VF2PostLayout` exposes a stop-reason-equivalent property in
   its own `property_set` — not yet instrumented, so its cost is currently
   inferred only from `slowest_pass`, not confirmed as its own budget-exhaustion
@@ -815,9 +822,9 @@ Zenodo with a citable DOI (not yet submitted to arXiv):
             A Characterization of Catastrophic Failure Regions in
             Quantum Circuit Transpilation},
   year   = {2026},
-  doi    = {10.5281/zenodo.22869976},
-  url    = {https://doi.org/10.5281/zenodo.22869976},
-  note   = {Preprint}
+  doi    = {10.5281/zenodo.22977930},
+  url    = {https://doi.org/10.5281/zenodo.22977930},
+  note   = {Preprint, revised 26 September 2026; version 1: 10.5281/zenodo.22869976}
 }
 
 @misc{psf_zero_paper_2026,
@@ -826,9 +833,9 @@ Zenodo with a citable DOI (not yet submitted to arXiv):
             with a Verified, Ordering-Aware Layout Search for Quantum
             Circuit Transpilation},
   year   = {2026},
-  doi    = {10.5281/zenodo.22870141},
-  url    = {https://doi.org/10.5281/zenodo.22870141},
-  note   = {Preprint}
+  doi    = {10.5281/zenodo.22978090},
+  url    = {https://doi.org/10.5281/zenodo.22978090},
+  note   = {Preprint, revised 26 September 2026; version 1: 10.5281/zenodo.22870141}
 }
 ```
 
