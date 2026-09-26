@@ -61,6 +61,24 @@ in place, so there is never a second, differently-named copy to pick between
 [`psf_smart_layout.py`](benchmarks/psf_smart_layout.py) — the layout-search prototype,
 repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see below).
 
+> **Correctness notice (2026-09-26) -- if you use `entangling_basis="cx"`, update to
+> `psf_compile.py` VERSION 2026-09-26.4.** Qiskit's own
+> `TwoQubitBasisDecomposer(CXGate(), euler_basis="ZSX")` (Qiskit 2.5.2) returns a
+> wrong circuit -- average gate infidelity about 7% -- for two-qubit unitaries whose
+> smallest canonical coordinate lies roughly between 3e-8 and 3e-7; plain
+> `transpile()` of a `UnitaryGate` to `basis_gates=["cx","rz","sx","x"]` fails the
+> same way at every optimization level (a CZ basis, or a backend target with error
+> data, did not). Every earlier PSF-Zero revision passed such blocks through
+> unchecked on the `"cx"` path, and `verify=True` could not catch it (it checks the
+> decomposition, not the emitted circuit). Random circuits essentially never reach
+> this band; circuits with very small two-qubit interaction angles can. VERSION
+> 2026-09-26.4 now checks every block it takes from Qiskit's decomposer and repairs
+> it (48 of 272 near-degenerate test blocks were wrong without the check; the worst
+> with it is 1.6e-12). Minimal Qiskit-only reproduction:
+> [`benchmarks/repro_qiskit_zsx_2q_v2.py`](benchmarks/repro_qiskit_zsx_2q_v2.py);
+> full account: [`docs/findings/spare-qubit-cliff-combined-135.md`](docs/findings/spare-qubit-cliff-combined-135.md),
+> Addenda 194-197. Not yet reported upstream at the time of writing.
+
 > **Two papers and a short technical overview, for anyone evaluating this from
 > outside the project:**
 >
@@ -82,6 +100,16 @@ repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see belo
 > Both papers are pre-registered, self-audited (each corrects at least one of
 > this project's own earlier claims in place), and cite the same raw data
 > linked throughout this README.
+>
+> **Both are now at version 2 (2026-09-26).** Version 1's results stand unchanged;
+> each adds a dated update section. Paper 1 adds the failure region on IBM's
+> 120-qubit square-lattice model, where a second search after routing
+> (`VF2PostLayout`) doubles its cost, and an exact polynomial-time answer for
+> disjoint-pair circuits. Paper 2 adds the Qiskit CX-basis defect above (and why
+> version 1's measurements were not affected), precision under repeated
+> recompilation, compile time on that device model, and an error-aware layout
+> evaluated on device models. The DOIs above point to version 1; version 2 is in
+> [`docs/papers/`](docs/papers/).
 
 ---
 
@@ -318,7 +346,14 @@ infidelity, below 1e-21), but the loop exposed it and it is now fixed. The
 remaining drift still grows about ten times faster per lap than Qiskit's.
 Full account, including a mistaken intermediate conclusion and its
 correction: [`docs/findings/spare-qubit-cliff-combined-135.md`](docs/findings/spare-qubit-cliff-combined-135.md),
-Addenda 181-190.
+Addenda 181-190. **Update (VERSION 2026-09-26.4, Addenda 194-197):** with the
+entangling core now emitted in closed form, its middle gaps written directly in
+{rz, sx}, the drift is 6.2e-14 at the first lap and 6.2e-13 after ten, growing
+exactly linearly -- lower than 2026-09-26.2 at every lap, but still growing where
+Qiskit's does not (Qiskit stays at 3.4e-13), so PSF-Zero passes Qiskit's level
+after six laps and 1e-12 after about sixteen. (An intermediate revision whose
+middle gaps were left for Qiskit to translate drifted 2.6x faster, 1.9e-12 after
+ten laps; recorded in Addendum 195.)
 
 Raw data: [`data/core_verification_2026-09-12.csv`](data/core_verification_2026-09-12.csv).
 Reproduce with `maturin develop --release && python benchmarks/verify_core_infidelity.py`.
@@ -462,6 +497,27 @@ all 10 -- so a training loop that recompiles pays Qiskit's cliff every
 iteration, not once. Full data and every pre-registered prediction:
 [`docs/findings/spare-qubit-cliff-combined-135.md`](docs/findings/spare-qubit-cliff-combined-135.md),
 Addenda 177-190.
+
+**Update (2026-09-26, Addenda 191-197).** A per-pass breakdown splits Qiskit's
+12.7-13.0 s on this cliff almost evenly: `VF2Layout` 6.2-6.3 s (reporting no
+solution), then `VF2PostLayout` 6.4-6.7 s. PSF-Zero passes its own layout and
+therefore skips `VF2PostLayout` -- so about half of the speed-up comes from not
+running that pass, which on hardware rescores layouts against error rates. Three
+changes in VERSION 2026-09-26.4 then took PSF-Zero's in-process median on this
+cliff from 83 ms to **49.8 ms**, with the same 180 two-qubit gates, the same 840
+`sx` and depth 21 instead of 23: the layout is read directly from a maximum
+matching of the coupling graph when the circuit's interaction graph is a set of
+disjoint pairs (placing k disjoint pairs *is* choosing k disjoint edges; 15.3 ms
+-> 0.45 ms); the entangling core is emitted in closed form instead of being
+decomposed a second time by Qiskit; and the correctness check in the notice at
+the top. **An error-aware layout, on device models**: weighting that matching by
+the device's two-qubit and `sx` error rates (`layout_edge_errors=`,
+`layout_qubit_errors=`) gave a higher estimated success probability than Qiskit
+`optimization_level=3` on all four models tried -- 1.22x and 1.26x on
+FakeNighthawk (120 and 112 logical qubits), 2.11x on FakeTorino and 1.29x on
+FakeFez (80 logical), with identical gate counts. This is a model result
+(independent gate errors; synthetic or dated calibration data) for
+disjoint-pair circuits only, and untested on hardware.
 
 **Still open**: whether a same-condition run-to-run variance found at
 `optimization_level=3` (up to ~3x on one measurement) reflects `VF2Layout`'s own
@@ -623,6 +679,10 @@ their absence.
   L3 timings, not read from source. See
   [`spare-qubit-cliff-combined-27.md`](docs/findings/spare-qubit-cliff-combined-27.md),
   Addendum 34, Section 3.
+- **NEW (2026-09-26).** Report the Qiskit CX-basis synthesis defect (see the
+  notice at the top) upstream, after confirming it on the latest Qiskit release;
+  and whether the error-aware layout's advantage on device models survives on
+  real hardware.
 - Whether `VF2PostLayout` exposes a stop-reason-equivalent property in
   its own `property_set` — not yet instrumented, so its cost is currently
   inferred only from `slowest_pass`, not confirmed as its own budget-exhaustion

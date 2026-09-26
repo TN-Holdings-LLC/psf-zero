@@ -1,0 +1,715 @@
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\graphicspath{{./}}
+\usepackage{hyperref}
+\usepackage[margin=1in]{geometry}
+\usepackage{url}
+
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}
+
+\title{Ordering Sensitivity in Subgraph-Isomorphism Layout Search:\\
+A Characterization of Catastrophic Failure Regions in\\
+Quantum Circuit Transpilation}
+
+\author{TN Holdings\\
+\texttt{love.os.architect@proton.me}\\
+\texttt{https://github.com/TN-Holdings-LLC/psf-zero}}
+
+\date{Version 2 --- 26 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Qubit layout selection in quantum circuit transpilation is commonly
+formulated as subgraph isomorphism and solved with VF2-family search.
+We report that Qiskit's \texttt{VF2Layout} pass exhibits a sharp,
+reproducible failure region: on interaction graphs that exactly
+saturate a device's maximum matching, median search time rises from
+$34.1$\,ms to $9{,}236$\,ms---a factor of $271$---and terminates by
+declaring no solution exists, on instances where a valid embedding
+demonstrably does exist. The failure is not a property of
+subgraph-isomorphism search as such. Reading Qiskit's current Rust
+source, we find \texttt{VF2Layout} does not call the public
+\texttt{rustworkx} mapper but a separate implementation with a
+hardcoded VF2++ node-ordering strategy, applied unconditionally. On
+the same 26 saturated instances, a single call to
+\texttt{rustworkx.vf2\_mapping} with a fixed, unshuffled node order
+(\texttt{id\_order=True}) finds a valid embedding in all 26 cases, at a
+median of $0.0292$\,ms---roughly five orders of magnitude faster than
+the failing search on the 19 instances where Qiskit reports no
+solution. We show by faithful simulation of Qiskit's own
+\texttt{Vf2ppSorter} that VF2++ ordering defers the highly symmetric,
+degree-one region of these interaction graphs to the end of its
+traversal, and we report that this mechanism alone does not account for
+the observed instance-level divergence: graph-isomorphic instance pairs
+differing only in which physical qubits host which component produce
+opposite outcomes, reproducibly. A permutation-based analysis across
+all 325 instance pairs finds that no graph-level feature we computed
+explains more than $4.5\%$ of outcome variance, with none surviving
+correction for multiple comparisons. We report a cross-SDK comparison
+in which Cirq's placement search exceeds a 10-second budget across a
+substantially wider occupancy range than Qiskit's failure region, and
+topology results on brick and heavy-hex lattices. All predictions were
+pre-registered before measurement; all raw data, pre-registrations, and
+analysis scripts are public.
+\end{abstract}
+
+\paragraph{Revision note (version 2).} Every result of version 1 stands
+and is reproduced unchanged. Version 2 adds Section~\ref{sec:update}: the
+failure region on a model of IBM's current 120-qubit square-lattice
+device, where a per-pass breakdown shows that a second VF2 search after
+routing (\texttt{VF2PostLayout}) roughly doubles its cost; and the
+observation that for the subclass of instances whose interaction graph
+is a set of disjoint pairs, an exact polynomial-time method exists.
+
+\section{Introduction}
+
+Mapping a logical quantum circuit onto physical hardware requires
+choosing an assignment of logical qubits to physical qubits such that
+every two-qubit interaction lands on a physically coupled pair. When a
+perfect assignment exists---that is, when the circuit's interaction
+graph embeds as a subgraph of the device's coupling graph---finding it
+is a subgraph isomorphism problem, and both Qiskit and other major
+transpilation frameworks attempt exactly this before falling back to
+heuristic routing with SWAP insertion.
+
+Subgraph isomorphism is NP-complete in general, and practical solvers
+accordingly impose call and time budgets. What is less appreciated is
+how sharply the practical difficulty of these instances depends on
+factors that are invisible to the problem statement: not merely the
+size of the graphs, but the specific node-traversal order the solver
+happens to use, and---as we show---which physical qubits happen to host
+which part of an otherwise identical interaction graph.
+
+This paper characterizes a specific, reproducible failure region in
+Qiskit's \texttt{VF2Layout} pass, identifies the ordering strategy
+responsible, and demonstrates that an extremely simple alternative
+resolves every instance in the region. We are deliberate about the
+boundary between what we measured and what we can explain: a
+substantial part of this paper reports mechanisms we ruled out and
+regularities we failed to find, because those negative results
+constrain the problem more sharply than the positive ones alone.
+
+\subsection{Contributions}
+
+\begin{enumerate}
+\item \textbf{Characterization.} A reproducible failure region in
+Qiskit's \texttt{VF2Layout}: on saturated instances, median search time
+of $9{,}236$\,ms (range $8{,}815$--$11{,}442$\,ms) terminating in a
+``no solution exists'' verdict, against $34.1$\,ms for non-failing
+instances in the same family---on instances where a valid embedding
+provably exists (Section~\ref{sec:cliff}).
+
+\item \textbf{Mechanism, partially.} Qiskit's \texttt{VF2Layout} uses a
+custom implementation with hardcoded VF2++ ordering, verified from
+source, not the public \texttt{rustworkx} mapper. A faithful
+reimplementation of its \texttt{Vf2ppSorter} shows the ordering defers
+the symmetric degree-one region of these instances to the end of the
+traversal (Section~\ref{sec:mechanism}).
+
+\item \textbf{A minimal alternative.} A single
+\texttt{rustworkx.vf2\_mapping} call with \texttt{id\_order=True}
+resolves all 26 instances at a median of $0.0292$\,ms
+(Section~\ref{sec:ordering}).
+
+\item \textbf{Negative results that constrain the problem.}
+Graph-isomorphic instance pairs diverge reproducibly; no computed
+graph-level feature explains more than $4.5\%$ of outcome variance;
+the ordering mechanism alone does not account for instance-level
+divergence (Section~\ref{sec:unexplained}).
+
+\item \textbf{Methodology.} Every prediction in this work was
+pre-registered in a timestamped document before the corresponding
+measurement, including predictions that were subsequently falsified.
+Several of our own earlier conclusions were corrected in the course of
+the investigation and the corrections are part of the public record
+(Section~\ref{sec:method}).
+
+\item \emph{(Version 2.)} \textbf{The region on a current device model,
+and its full cost.} On IBM's 120-qubit square-lattice model the region
+appears at saturation with a second, equally long search after routing;
+for disjoint-pair interaction graphs an exact polynomial-time
+alternative exists (Section~\ref{sec:update}).
+\end{enumerate}
+
+\section{Background}
+
+\subsection{Layout as subgraph isomorphism}
+
+Let $G_I = (V_I, E_I)$ be a circuit's interaction graph, with a vertex
+per logical qubit and an edge per interacting pair, and let
+$G_P = (V_P, E_P)$ be the device coupling graph. A \emph{perfect
+layout} is an injection $\phi : V_I \to V_P$ with
+$(\phi(u), \phi(v)) \in E_P$ for every $(u,v) \in E_I$. When such a
+$\phi$ exists, no SWAP insertion is required.
+
+We parameterize instances by \emph{spare qubits}: the number of
+physical qubits not used by the interaction graph. At
+$\mathrm{spare}=0$ the interaction graph uses every physical qubit,
+leaving the search no freedom to place a component anywhere unoccupied.
+
+\subsection{VF2 and VF2++}
+
+VF2~\cite{vf2} explores a search tree of partial mappings, extending
+one vertex at a time and pruning by local feasibility. Its practical
+performance depends heavily on the order in which pattern vertices are
+considered. VF2++~\cite{vf2pp} improves on this with a
+structure-informed ordering: roughly, process vertices in an order that
+maximizes connectivity to the already-mapped set, breaking ties by
+degree. On most instance families this ordering is a substantial
+improvement, which is why it is widely adopted.
+
+\section{Methodology}
+\label{sec:method}
+
+\subsection{Software environment}
+
+All measurements reported in this paper were taken on
+\texttt{AMD64 Family 25 Model 80}, with Qiskit \texttt{2.5.2} and
+\texttt{rustworkx} \texttt{0.18.1}. Section~\ref{sec:cliff}'s primary
+measurement (Table~\ref{tab:cliff}) used Python \texttt{3.10.11};
+Section~\ref{sec:ordering}'s ordering-sensitivity measurements
+(Table~\ref{tab:topology}, and the $0.0292$\,ms figure) used Python
+\texttt{3.11.9}. We report both explicitly rather than a single value,
+since the two measurements were taken in separate sessions and we did
+not verify the Python patch version was held constant between them; we
+have no evidence this affects any reported result, and note it for
+completeness rather than as a caveat we can currently resolve.
+
+\subsection{Pre-registration}
+
+Every experiment reported here was preceded by a pre-registration
+document stating the design and the predicted outcomes, including
+explicit statements of what result would falsify the hypothesis, written
+and committed before the corresponding measurement was performed. These
+documents are public and are cited individually below by their addendum
+number.
+
+This discipline was not cosmetic. Over the course of this
+investigation, several attractive hypotheses were pre-registered and
+then falsified by their own designated tests---a component-count
+divisibility rule, a size-ratio threshold, and a locality-based
+predictive model among them. Several of our own published intermediate
+conclusions were subsequently corrected; in each case the correction is
+recorded alongside the original rather than replacing it. We regard
+this record as part of the contribution, since the central negative
+result of Section~\ref{sec:unexplained} is only credible to the extent
+that the positive hypotheses preceding it were genuinely tested rather
+than abandoned quietly.
+
+\subsection{Instance families}
+
+Our primary family, \texttt{dominant\_size\_sweep}, is parameterized by
+a single integer $D$. On $n=64$ qubits it comprises 17 disjoint
+two-qubit edges (34 qubits) plus one path of $D$ qubits and one path of
+$30-D$ qubits, for $D \in \{2, \ldots, 28\}$. Every member has zero
+idle qubits and an interaction-graph maximum matching of exactly 32,
+equal to that of the $8\times8$ grid---genuine saturation, verified
+numerically per instance rather than assumed.
+
+The family has a property we exploit throughout: for any $D$, the
+instances at $D$ and $30-D$ are graph-isomorphic, differing only in
+which physical qubit indices host which path. This gives us matched
+pairs that any purely structural account must treat identically.
+
+\subsection{Feasibility}
+
+For every instance reported as a failure, we verify independently
+(via \texttt{networkx} maximum matching on the interaction graph
+against the coupling graph) that a valid embedding exists. Every
+failure discussed in this paper is a failure to find an embedding that
+does exist, not a correct report of infeasibility.
+
+\section{The failure region}
+\label{sec:cliff}
+
+\subsection{Primary measurement}
+
+Figure~\ref{fig:cliff} shows the qualitative shape of this failure
+region on an independent, earlier measurement using this project's
+original disjoint-pair circuit family (not
+\texttt{dominant\_size\_sweep}) on the same $6\times7$ grid: VF2Layout
+time drops by roughly two orders of magnitude the moment a single spare
+qubit is introduced, and stays flat from spare$=1$ onward. We include
+it for its visual clarity; the quantitative results in the rest of this
+section use \texttt{dominant\_size\_sweep} exclusively, and the two
+families are not compared to each other numerically anywhere in this
+paper.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.75\textwidth]{occupancy_cliff.pdf}
+\caption{VF2Layout time versus spare qubits, $6\times7$ grid,
+disjoint-pair circuits, optimization level 3, median of 18 runs per
+point (3 seeds $\times$ 6 repeats), shaded region spans min--max.
+Independent measurement from Table~\ref{tab:cliff}'s
+\texttt{dominant\_size\_sweep} results; shown for illustration of the
+failure region's shape, not as a quantitative source for this paper's
+claims.}
+\label{fig:cliff}
+\end{figure}
+
+Table~\ref{tab:cliff} summarizes \texttt{VF2Layout} at
+\texttt{optimization\_level=3} on the $8\times8$ grid across the
+\texttt{dominant\_size\_sweep} family, 3 seeds $\times$ 2 repeats per
+instance, replicated in two independent batches.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrrr}
+\toprule
+Outcome & Instances & Median time & Range \\
+\midrule
+\texttt{nonexistent solution} & 13 & $9{,}236$\,ms & $8{,}815$--$11{,}442$\,ms \\
+\texttt{solution found} & 5 & $34.1$\,ms & --- \\
+\midrule
+Ratio & & $271\times$ & \\
+\bottomrule
+\end{tabular}
+\caption{Qiskit \texttt{VF2Layout}, $8\times8$ grid,
+\texttt{dominant\_size\_sweep}, 18 instances with both batches
+complete. Every ``nonexistent solution'' instance admits a valid
+embedding.}
+\label{tab:cliff}
+\end{table}
+
+Two features are worth emphasizing. First, the failing instances do not
+merely take longer---they terminate with a verdict of no solution, on
+instances where one exists. Downstream, this means the transpiler
+proceeds to heuristic routing and inserts SWAP gates that were not
+necessary. Second, the outcome is bimodal: instances land in one regime
+or the other with no intermediate values, and the classification is
+stable across independently replicated batches (18/18 instances agreed
+between batches).
+
+\subsection{Necessary conditions}
+
+Two conditions are jointly necessary for the failure region in our
+measurements. Introducing a single idle qubit ($\mathrm{spare}=1$)
+eliminates it. Connecting the interaction graph's components into a
+single connected structure also eliminates it. Neither alone is
+sufficient: connected interaction graphs at $\mathrm{spare}=0$ do not
+fail, and disconnected graphs with spare capacity do not fail.
+
+\subsection{Cross-SDK comparison}
+
+We ran an analogous occupancy sweep against Cirq's own placement search
+on a $6\times7$ grid with a 10-second budget per instance. Results are
+in Table~\ref{tab:cirq}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrr}
+\toprule
+Spare qubits & Median elapsed & Timed out \\
+\midrule
+0 & $\geq 10.03$\,s & yes \\
+2 & $\geq 10.03$\,s & yes \\
+4 & $\geq 10.03$\,s & yes \\
+6 & $\geq 10.03$\,s & yes \\
+8 & $\geq 10.02$\,s & yes \\
+16 & $2.31$\,s & no \\
+24 & $1.40$\,s & no \\
+\bottomrule
+\end{tabular}
+\caption{Cirq placement search, $6\times7$ grid. Values at
+$\mathrm{spare} \leq 8$ are right-censored at the 10-second budget and
+are lower bounds, not measurements. A valid embedding exists at every
+row.}
+\label{tab:cirq}
+\end{table}
+
+We stress the censoring: we cannot report how long Cirq would take,
+only that it exceeds 10 seconds. The comparison we can make is
+qualitative but notable in its own right---Cirq's difficult region
+extends across $\mathrm{spare} = 0$ through $8$, substantially wider
+than the $\mathrm{spare}=0$-only region we observe in Qiskit. Whatever
+the underlying cause, it is not unique to one implementation, and its
+extent differs between implementations.
+
+\section{What Qiskit actually runs}
+\label{sec:mechanism}
+
+\subsection{Source-level verification}
+
+A natural hypothesis is that Qiskit's \texttt{VF2Layout} delegates to
+\texttt{rustworkx}'s public \texttt{vf2\_mapping}. Reading Qiskit's
+current Rust source establishes that it does not. The relevant pass
+imports only graph data structures from \texttt{rustworkx\_core}; the
+search itself is \texttt{qiskit\_circuit::vf2}, a separate
+implementation. Both the ``average'' and ``exact'' scoring variants
+construct their search identically with respect to ordering:
+
+\begin{verbatim}
+let vf2 = vf2::Vf2::new(&interactions.graph, &coupling_graph,
+                        vf2::Problem::Subgraph)
+    .with_scoring(score, score)
+    .with_restriction(vf2::Restriction::Decreasing(best_score))
+    .with_vf2pp_ordering();
+\end{verbatim}
+
+\noindent
+\texttt{with\_vf2pp\_ordering()} is called unconditionally in both. We
+found no code path in this file that runs the search with an
+alternative ordering, and no configuration option exposing one. This
+distinction matters for the rest of the paper: the alternative we
+report in Section~\ref{sec:ordering} is not a setting Qiskit could
+toggle, but a different implementation.
+
+\subsection{Simulating the ordering}
+
+We reimplemented \texttt{Vf2ppSorter}'s ordering rule---select by
+(connectivity to the already-ordered set, total degree, lowest index),
+building a BFS tree per root---and ran it on our instances.
+
+The result is unambiguous. In these interaction graphs, path-interior
+vertices have degree 2 and bare-edge vertices have degree 1. The
+ordering rule therefore places every path vertex before any bare-edge
+vertex: for $D=10$ on $n=64$, the first bare-edge vertex appears at
+position 30 of 64, exactly when the 30-qubit path allocation is
+exhausted. The symmetric, mutually interchangeable region of the graph
+is processed last, as a block, after all the structurally
+distinguishable vertices are placed.
+
+This is consistent with Qiskit's own release notes for version 2.2,
+which reduced call and trial limits for this pass citing ``excessive
+runtimes for highly symmetric trial circuits being mapped to large
+coupling maps.'' The instances in our failure region are exactly that:
+17 mutually interchangeable two-qubit components.
+
+\subsection{Why this is only half a mechanism}
+
+The ordering account explains why these instances are hard. It does not
+explain which of them fail. For the isomorphic pair $D=10$ and $D=20$,
+the total path allocation is 30 qubits either way, so the ordering
+produces structurally parallel traversals: both process 30 path
+vertices, then reach the bare-edge region at position 30. Yet $D=10$
+succeeds and $D=20$ fails, reproducibly across independent batches.
+
+Whatever distinguishes them must lie in the backtracking search's
+behavior once it reaches the tied region, not in the initial ordering.
+We did not simulate the full backtracking search, and we do not claim
+to know the answer.
+
+\section{Ordering sensitivity}
+\label{sec:ordering}
+
+\subsection{Result}
+
+We ran a single \texttt{rustworkx.vf2\_mapping} call per instance with
+\texttt{subgraph=True}, \texttt{induced=False}, and
+\texttt{id\_order=True}---a fixed traversal in natural vertex order, with
+no structure-informed heuristic at all---on the physical graph in its
+unmodified numbering.
+
+It finds a valid embedding in \textbf{26 of 26} instances, including
+all 19 where Qiskit reports no solution. Median time: $0.0292$\,ms;
+maximum across all instances: $0.108$\,ms.
+
+Against the failing instances' median of $9{,}236$\,ms, this is a
+factor of approximately $3.2 \times 10^{5}$. We report the comparison
+with two caveats. It is a comparison between two different
+implementations, not one implementation under two settings
+(Section~\ref{sec:mechanism}); and the Qiskit figure is the time to
+reach a wrong answer, so the speedup and the correctness improvement
+are not separable.
+
+\subsection{Topology generalization}
+
+To test whether fixed ordering is merely lucky on square grids, we
+evaluated it on two structurally different topologies. Because the
+relevant comparison here is between orderings within a single
+implementation, both arms use \texttt{rustworkx}: fixed order versus
+the family of BFS- and degree-based orderings that a prior prototype of
+ours had used, on the same instances.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrrrrr}
+\toprule
+Topology & $n$ & Fixed order & Time & Other orderings & Time \\
+\midrule
+brick $6\times7$ & 42 & found & $1.25$\,ms & none found & $875$\,ms \\
+brick $8\times8$ & 64 & found & $1.08$\,ms & none found & $996$\,ms \\
+heavy-hex $d{=}3$ & 19 & found & $0.25$\,ms & --- & --- \\
+heavy-hex $d{=}5$ & 57 & found & $0.69$\,ms & --- & --- \\
+\bottomrule
+\end{tabular}
+\caption{Fixed ordering versus structure-informed orderings, disjoint-pair
+instances at saturation. On brick, the alternatives exhaust nine
+orderings without success. Heavy-hex instances are saturated relative
+to the lattice's own maximum matching, since its bipartite imbalance
+makes qubit-count saturation unattainable.}
+\label{tab:topology}
+\end{table}
+
+On brick lattices the contrast is stark: the fixed order succeeds in
+about a millisecond on instances where nine structure-informed
+orderings, given a substantially larger budget, find nothing at all.
+
+\subsection{Interpretation}
+
+We do not claim fixed ordering is superior in general; a
+structure-informed heuristic that is better on typical instances and
+worse on symmetric ones is an entirely reasonable engineering
+trade-off, and VF2++ is widely adopted for good reason. What our
+results establish is narrower and, we think, more useful: on saturated,
+highly symmetric layout instances---a regime that quantum transpilation
+specifically cares about, since maximizing device utilization is the
+point---the sophisticated ordering is not merely slower but
+qualitatively worse, and the cheapest possible alternative is not
+merely competitive but dominant by orders of magnitude.
+
+A practical implication follows directly. A transpiler could attempt a
+budgeted fixed-order pass before its primary search at negligible cost
+($\leq 0.11$\,ms in all our measurements) and fall through on failure,
+gaining the entire failure region at no meaningful expense.
+
+\section{What we could not explain}
+\label{sec:unexplained}
+
+This section reports negative results. We consider them a contribution
+rather than a gap: they bound how much of this phenomenon is currently
+understood, and they close off several natural explanations that a
+reader would otherwise reasonably propose.
+
+\subsection{Isomorphic instances diverge}
+
+Of the 13 graph-isomorphic pairs $(D, 30-D)$ in our family, 5 diverge:
+one member succeeds, the other fails, reproducibly. The remaining pairs
+agree (7 fail on both sides; one is a degenerate construction).
+
+We confirmed isomorphism directly. The pairs differ only in which
+physical qubit indices host which path. This means \textbf{no account
+based purely on the abstract structure of the interaction graph can be
+complete}---physical placement, not graph structure alone, determines
+the outcome.
+
+One regularity survived every test we applied to it: in all 5 diverging
+pairs, the member with the \emph{smaller} dominant path succeeds. We
+report this without a proposed mechanism, and note that our record
+contains several patterns of comparable apparent strength that
+subsequent tests falsified.
+
+\subsection{A ratio threshold, falsified}
+
+Having observed divergence at size ratios $1.5$ and $2.0$ and agreement
+at $2.75$ and $5.0$, we pre-registered a threshold hypothesis and
+tested all 13 pairs. The result was non-monotonic: ratios $6.5$ and
+$3.29$ diverge while $4.0$ and $1.73$ agree. The hypothesis is
+falsified.
+
+\subsection{No predictive feature}
+
+Rather than continue testing candidate variables one at a time---a
+process that can fail indefinitely without concluding anything---we
+reframed the question as a measurable one: how much do the features we
+can compute actually explain?
+
+We computed pairwise distances across all $\binom{26}{2} = 325$
+instance pairs under three metrics and correlated each against outcome
+agreement, with significance assessed by permutation test
+(5,000 shuffles).
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrrrl}
+\toprule
+Distance metric & $r$ & $p$ & $r^2$ & Survives Bonferroni \\
+\midrule
+Dominant size & $-0.151$ & $0.032$ & $2.3\%$ & no \\
+Size ratio & $-0.212$ & $0.049$ & $4.5\%$ & no \\
+Max component size & $-0.017$ & $0.354$ & $0.0\%$ & no \\
+\bottomrule
+\end{tabular}
+\caption{Predictive power of computed graph features. Correction for
+three tests requires $p < 0.0167$.}
+\label{tab:mantel}
+\end{table}
+
+No metric survives correction, and the largest effect explains under
+$5\%$ of variance. We state the conclusion precisely: \emph{the
+graph-level features we computed have little predictive power over this
+outcome.} This is not a claim that no predictive feature exists. Our
+instance family has essentially one independent numeric parameter, so
+no correlational analysis of it can detect structure depending on
+information that parameter does not carry---including, notably, the
+physical placement that Section 6.1 shows does matter.
+
+\subsection{Summary of the boundary}
+
+We can state when the failure region occurs (saturation, disconnected
+interaction graph, sufficient symmetric structure), what ordering
+Qiskit uses and how it treats these instances, and that a trivial
+alternative resolves every instance we tested. We cannot predict which
+specific instances fail, explain why isomorphic instances diverge, or
+account for the ``smaller succeeds'' regularity.
+
+
+\section{Update: a current IBM device model (version 2)}
+\label{sec:update}
+
+The measurements of version 1 used square grids up to $8\times8$ and the
+\texttt{dominant\_size\_sweep} family. After version 1 we repeated the
+central observation on \texttt{FakeNighthawk}, Qiskit's model of IBM's
+120-qubit square-lattice generation, with Qiskit 2.5.2. Predictions were
+pre-registered as before (Addenda 178--193 of the project record).
+
+\subsection{The region at 120 qubits}
+
+The Nighthawk coupling graph (120 qubits, bipartite 60/60) has a perfect
+matching, so a circuit of 60 disjoint interacting pairs---dense pair
+blocks, 20 random two-qubit gates per pair---saturates it exactly. On
+such circuits \texttt{transpile(optimization\_level=3)} took
+12.7--13.0\,s (five seeds, each compile in a fresh process; later runs
+in one process agree), against 0.15--0.16\,s with eight spare qubits.
+Both the size of the jump ($\approx 83\times$) and its location at exact
+saturation match the failure region of Section~\ref{sec:cliff}.
+
+\subsection{The cost has two halves}
+
+A per-pass breakdown (via \texttt{transpile}'s callback) divides the
+12.7--13.0\,s almost evenly between two passes:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrrl}
+\toprule
+& \texttt{VF2Layout} & \texttt{VF2PostLayout} & \texttt{VF2Layout} stop reason \\
+\midrule
+saturated (0 spare), seeds 0--2 & 6.24--6.31\,s & 6.40--6.68\,s & \texttt{NO\_SOLUTION\_FOUND} \\
+8 spare, seeds 0--2 & 0.028\,s & 0.10\,s & \texttt{SOLUTION\_FOUND} \\
+\bottomrule
+\end{tabular}
+\caption{Per-pass time in Qiskit 2.5.2's \texttt{optimization\_level=3}
+on FakeNighthawk. Everything else in the compile takes the remaining 0.03--0.04\,s.}
+\label{tab:twohalves}
+\end{table}
+
+\texttt{VF2PostLayout} runs after routing and searches again for an
+isomorphic placement that scores better against the device's error data.
+On the saturated instances it spends as long as the failed initial
+search and, judging by the unchanged two-qubit counts, changes nothing.
+Version 1 examined only the initial search; the practical cost of the
+region is therefore about twice what that pass alone suggests. We did not
+verify from source which implementation or ordering
+\texttt{VF2PostLayout} uses in this version; the timing shows only that
+it meets the same difficulty. The stop reason
+\texttt{NO\_SOLUTION\_FOUND} also does not distinguish an exhausted search
+space from an exhausted call budget; that the time is nearly constant
+across seeds is consistent with the latter, but we have not established
+it.
+
+A fixed-order search again resolves these instances quickly, with one
+qualification that sharpens Section~\ref{sec:ordering}: in PSF-Zero's
+layout prototype, the first breadth-first ordering it tries exhausts its
+50{,}000-call budget on the saturated Nighthawk instances, and the
+second finds an embedding at once (15\,ms for both attempts together).
+Ordering sensitivity is thus not only a matter of VF2++ versus a fixed
+order; different fixed orders differ as well.
+
+\subsection{Disjoint pairs: an exact polynomial-time answer}
+
+When the interaction graph is a set of $k$ disjoint edges, embedding it
+is exactly the problem of choosing $k$ disjoint physical edges, i.e.\ a
+matching of size $k$ in the coupling graph. A maximum matching (Edmonds'
+algorithm, polynomial time) therefore either yields a valid layout
+directly or proves that none exists; the feasibility check of
+Section~\ref{sec:method} already computes it. On FakeNighthawk,
+\texttt{rustworkx.max\_weight\_matching} takes 0.21\,ms, and a layout read
+from it was correct on all 20 pre-registered cases (spare 0, 2, 4, 8;
+five seeds each), with routed two-qubit counts identical to the
+VF2-found layouts. For this subclass, then, the failure region is a
+failure to find by search what a polynomial algorithm finds exactly.
+
+The subclass is narrow. The \texttt{dominant\_size\_sweep} family of
+version 1 contains paths as well as disjoint edges, and for it no such
+shortcut applies; every result of Sections~\ref{sec:cliff}--\ref{sec:unexplained}
+is unaffected. A weighted matching can also take the device's error
+rates into account, which bears on what \texttt{VF2PostLayout} is for; we
+report that evaluation in the companion paper, as a model result.
+
+\section{Related work}
+
+VF2~\cite{vf2} and VF2++~\cite{vf2pp} are the algorithmic basis for the
+layout passes examined here. Qiskit's transpiler
+architecture~\cite{qiskit} places \texttt{VF2Layout} before heuristic
+routing precisely so that perfect layouts, when they exist, are found
+and SWAP insertion avoided; SABRE~\cite{sabre} is the heuristic
+fallback when they are not.
+
+Ordering sensitivity in backtracking search is well known in the
+constraint-satisfaction literature, and symmetric instances are a
+recognized worst case for subgraph isomorphism generally. Our
+contribution is not the observation that ordering matters, but the
+measurement of its magnitude in a specific, deployed, practically
+important setting---and the finding that the direction of the effect
+reverses relative to the general case, with the sophisticated heuristic
+losing to the naive one by five orders of magnitude on the instances
+that matter most for device utilization.
+
+\section{Conclusion}
+
+Layout search in quantum transpilation has a failure region that is
+sharp, reproducible, and consequential: on saturated instances, Qiskit's
+\texttt{VF2Layout} spends seconds to reach an incorrect verdict of
+infeasibility, on instances that a fixed-order search resolves in tens
+of microseconds. The mechanism is at least partly the node ordering:
+VF2++'s structure-informed traversal defers the symmetric region of
+these instances to the end, where the search then struggles.
+
+We have been explicit about the limits of this account. It does not
+predict which instances fail; isomorphic instances diverge on physical
+placement alone; no feature we computed explains meaningful outcome
+variance. We report these as results rather than omissions, because
+they are what currently bounds understanding of the phenomenon, and
+because the practical recommendation---attempt a fixed-order pass first,
+at negligible cost---does not depend on resolving them.
+
+\emph{(Version 2.)} On a model of IBM's current 120-qubit device the same
+region appears at exact saturation, and its cost is about twice that of
+the initial search alone, because \texttt{VF2PostLayout} meets the same
+difficulty after routing. For interaction graphs made of disjoint pairs
+the question has an exact polynomial-time answer; for the general case
+studied in this paper it does not, and the open questions above remain
+open.
+
+\section*{Data and code availability}
+
+All raw measurement data, pre-registration documents, analysis scripts,
+and the complete chronological record including superseded conclusions
+and their corrections are available at
+\url{https://github.com/TN-Holdings-LLC/psf-zero}.
+
+\begin{thebibliography}{9}
+
+\bibitem{vf2}
+L.~P. Cordella, P.~Foggia, C.~Sansone, and M.~Vento,
+\emph{A (sub)graph isomorphism algorithm for matching large graphs},
+IEEE Transactions on Pattern Analysis and Machine Intelligence,
+26(10):1367--1372, 2004.
+
+\bibitem{vf2pp}
+A.~Juttner and P.~Madarasi,
+\emph{VF2++---An improved subgraph isomorphism algorithm},
+Discrete Applied Mathematics, 242:69--81, 2018.
+
+\bibitem{qiskit}
+Qiskit contributors,
+\emph{Qiskit: An Open-source Framework for Quantum Computing},
+2023. \url{https://qiskit.org}
+
+\bibitem{sabre}
+G.~Li, Y.~Ding, and Y.~Xie,
+\emph{Tackling the qubit mapping problem for NISQ-era quantum devices},
+ASPLOS '19, pp.~1001--1014, 2019.
+
+\end{thebibliography}
+
+\end{document}
