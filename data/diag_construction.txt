@@ -1,0 +1,14 @@
+-rwxr-xr-x 1 psf psf  4159 Sep 26 08:48 diag_construction.py
+-rw-r--r-- 1 psf psf 44535 Sep 26 08:48 psf_compile.py
+psf_compile VERSION 2026-09-21
+
+maximum over 60 pairs:  d_model=1.76e-11  d_circ_cx=1.76e-11  d_core_cx=4.93e-14  d_circ_can=1.76e-11  d_local=3.60e-16
+median over 60 pairs:   d_model=2.67e-14  d_circ_cx=2.68e-14  d_core_cx=1.32e-15  d_circ_can=2.67e-14  d_local=2.00e-16
+
+Five worst pairs by d_circ_cx:
+pair        c     d_model   d_circ_cx   d_core_cx  d_circ_can     d_local
+  18  -1.1602    1.76e-11    1.76e-11    1.97e-14    1.76e-11    1.62e-16
+   6  -0.7273    5.56e-12    5.56e-12    3.01e-15    5.56e-12    2.23e-16
+  48  -0.9690    4.34e-12    4.34e-12    7.16e-15    4.34e-12    1.76e-16
+  57  -0.8288    4.21e-12    4.21e-12    3.69e-15    4.21e-12    1.76e-16
+  37  -0.5720    3.34e-12    3.34e-12    1.63e-15    3.34e-12    3.14e-16
