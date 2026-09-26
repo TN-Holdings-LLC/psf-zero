@@ -121,8 +121,100 @@ from __future__ import annotations
 
 import time
 
+LAYOUT_VERSION = "2026-09-26.m1"
+
 # Do not start a new attempt if less than this much time remains (seconds).
 MIN_ATTEMPT_S = 0.005
+
+# Stage 0 (Addendum 192): when the interaction graph is a set of disjoint
+# pairs, place it directly on a maximum matching of the coupling graph
+# instead of running VF2. Read at call time when `smart_vf2_layout()` is
+# called with use_matching_shortcut=None (the default), so a caller that
+# cannot pass the argument (compile_for_hardware) can still switch it off
+# for an A/B comparison.
+USE_MATCHING_SHORTCUT = True
+
+
+def _interaction_is_matching(interaction_pairs):
+    """True when every logical qubit appears in at most one pair and no pair
+    is a self-loop -- i.e. the interaction graph is a matching (a set of
+    disjoint edges). Duplicate pairs are not expected (the caller
+    deduplicates) and are treated as not-a-matching, which only sends the
+    call down the ordinary VF2 path."""
+    seen = set()
+    for a, b in interaction_pairs:
+        if a == b or a in seen or b in seen:
+            return False
+        seen.add(a)
+        seen.add(b)
+    return True
+
+
+def matching_layout(coupling_map, interaction_pairs, edge_weights=None):
+    """Place a matching-shaped interaction graph on a matching of the
+    coupling graph (Addendum 192).
+
+    Embedding k disjoint logical pairs into the physical graph is exactly
+    the problem of finding k disjoint physical edges, i.e. a matching of
+    size >= k. The maximum matching that the old feasibility check already
+    computed is therefore itself a valid layout, and no subgraph-isomorphism
+    search is needed.
+
+    Args:
+        coupling_map: a qiskit CouplingMap (only `size()` and `get_edges()`
+            are used).
+        interaction_pairs: iterable of (logical_a, logical_b); must satisfy
+            `_interaction_is_matching`.
+        edge_weights: optional {(p, q): int} over physical edges (either
+            orientation; the larger value wins if both are given). Larger is
+            better. When given, the maximum-cardinality matching of maximum
+            total weight is taken and, if it has more edges than pairs, the
+            heaviest edges are used. When None, every edge weighs 1.
+
+    Returns:
+        {logical: physical}, or None when the coupling graph has no matching
+        with enough edges (the same criterion as `_has_feasible_matching`).
+    """
+    import rustworkx as rx
+
+    pairs = sorted((min(a, b), max(a, b)) for a, b in interaction_pairs)
+    weight_of = {}
+    for a, b in coupling_map.get_edges():
+        key = (min(a, b), max(a, b))
+        w = 1
+        if edge_weights is not None:
+            w = max(int(edge_weights.get((a, b), 0)), int(edge_weights.get((b, a), 0)))
+        weight_of[key] = max(weight_of.get(key, w), w)
+    g = rx.PyGraph()
+    g.add_nodes_from(range(coupling_map.size()))
+    for (a, b), w in sorted(weight_of.items()):
+        g.add_edge(a, b, w)
+
+    if edge_weights is None:
+        m = rx.max_weight_matching(g, max_cardinality=True)
+    else:
+        # First the heaviest matching of any size: when there are spare
+        # qubits, forcing maximum cardinality over the whole chip can push
+        # out the best edges (a path a-b-c-d with a heavy b-c keeps a-b and
+        # c-d). Only if that matching is too small is cardinality forced.
+        # Taking its k heaviest edges is a heuristic, not a proven optimum
+        # for "best k-edge matching".
+        m = rx.max_weight_matching(g, max_cardinality=False, weight_fn=lambda w: w)
+        if len(m) < len(pairs):
+            m = rx.max_weight_matching(g, max_cardinality=True, weight_fn=lambda w: w)
+    edges = [(min(u, v), max(u, v)) for u, v in m]
+    if len(edges) < len(pairs):
+        return None
+    if edge_weights is None:
+        edges.sort()
+    else:
+        # Heaviest first; ties broken by index so the result is deterministic.
+        edges.sort(key=lambda e: (-weight_of[e], e))
+    layout_map = {}
+    for (la, lb), (pa, pb) in zip(pairs, edges):
+        layout_map[la] = pa
+        layout_map[lb] = pb
+    return layout_map
 
 
 def _has_feasible_matching(cmap, num_logical_pairs):
@@ -233,10 +325,21 @@ def _try_mapping(relabeled, im, order, idx_of_logical, id_order, call_limit):
 def smart_vf2_layout(coupling_map, interaction_pairs, num_qubits,
                      per_attempt_call_limit=50_000, time_budget_s=2.0,
                      extra_seeds=(0, 1),
-                     fallback_call_limit=300_000, use_fallback=True):
+                     fallback_call_limit=300_000, use_fallback=True,
+                     use_matching_shortcut=None, edge_weights=None):
     """Tries several node orderings and strategies in order of increasing
     budget, stopping as soon as one succeeds.
 
+    Stage 0 (Addendum 192): if the matching shortcut is on
+             (use_matching_shortcut, or the module's USE_MATCHING_SHORTCUT
+             when that is None) and the interaction graph is a non-empty set
+             of disjoint pairs, the layout is read off a maximum matching of
+             the coupling graph (`matching_layout`, optionally weighted by
+             `edge_weights`) and returned without any VF2 search. No
+             matching large enough means no layout exists at all, so None is
+             returned with feasible=False -- the same outcome the
+             feasibility check below gives. Any other interaction graph goes
+             through the unchanged stages below.
     Stage 1: several BFS-family orderings x id_order=True x
              per_attempt_call_limit (for cases like grid and line, where
              it's instant once the ordering is right).
@@ -257,6 +360,19 @@ def smart_vf2_layout(coupling_map, interaction_pairs, num_qubits,
     t0 = time.perf_counter()
     info = dict(feasible=None, attempts=[], found=False, orderings_tried=0,
                elapsed_s=None, order_name=None, phase=None)
+
+    # --- Stage 0: matching-shaped interaction graph (Addendum 192) ---
+    shortcut = USE_MATCHING_SHORTCUT if use_matching_shortcut is None else use_matching_shortcut
+    interaction_pairs = list(interaction_pairs)
+    if shortcut and interaction_pairs and _interaction_is_matching(interaction_pairs):
+        layout_map = matching_layout(coupling_map, interaction_pairs, edge_weights=edge_weights)
+        info["feasible"] = layout_map is not None
+        info["found"] = layout_map is not None
+        if layout_map is not None:
+            info["order_name"] = "matching_direct" if edge_weights is None else "matching_weighted"
+            info["phase"] = 0
+        info["elapsed_s"] = time.perf_counter() - t0
+        return layout_map, info
 
     if not _has_feasible_matching(coupling_map, len(interaction_pairs)):
         info["feasible"] = False

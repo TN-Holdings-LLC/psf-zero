@@ -1,0 +1,53 @@
+platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | cores 12 | python 3.12.13 | qiskit 2.5.2
+LOADED /home/psf/psf_zero_fresh_test/psf_compile.py 2026-09-26.2 4e85e9323ebbd7048c8c638434488789f84e07eca20edff2f6239674eb2e7414
+LOADED /home/psf/psf_zero_fresh_test/benchmarks/psf_smart_layout.py 2026-09-26.m1 a639efdef484379d23b4c0a52dffe557c47c30f639c41e4f8521ca608712d875
+SCRIPT /home/psf/psf_zero_fresh_test/verify_matching_layout.py 2e687b2971a8c8737eb74b0a3766bed19dd1db9fb1cfb20e45585301c0085b67
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+
+=== M1/M2: dense pair blocks, old (VF2) vs new (matching) ===
+spare=0 seed=0 new: phase=0 pair_check=True worst=2.1094237467877974e-15
+spare=0 seed=1 new: phase=0 pair_check=True worst=1.9984014443252818e-15
+spare=0 seed=2 new: phase=0 pair_check=True worst=2.1094237467877974e-15
+spare=0 seed=3 new: phase=0 pair_check=True worst=2.1094237467877974e-15
+spare=0 seed=4 new: phase=0 pair_check=True worst=2.220446049250313e-15
+spare=2 seed=0 new: phase=0 pair_check=True worst=2.1094237467877974e-15
+spare=2 seed=1 new: phase=0 pair_check=True worst=1.9984014443252818e-15
+spare=2 seed=2 new: phase=0 pair_check=True worst=2.1094237467877974e-15
+spare=2 seed=3 new: phase=0 pair_check=True worst=2.1094237467877974e-15
+spare=2 seed=4 new: phase=0 pair_check=True worst=2.220446049250313e-15
+spare=4 seed=0 new: phase=0 pair_check=True worst=2.1094237467877974e-15
+spare=4 seed=1 new: phase=0 pair_check=True worst=1.9984014443252818e-15
+spare=4 seed=2 new: phase=0 pair_check=True worst=2.1094237467877974e-15
+spare=4 seed=3 new: phase=0 pair_check=True worst=2.1094237467877974e-15
+spare=4 seed=4 new: phase=0 pair_check=True worst=2.220446049250313e-15
+spare=8 seed=0 new: phase=0 pair_check=True worst=2.1094237467877974e-15
+spare=8 seed=1 new: phase=0 pair_check=True worst=1.9984014443252818e-15
+spare=8 seed=2 new: phase=0 pair_check=True worst=2.1094237467877974e-15
+spare=8 seed=3 new: phase=0 pair_check=True worst=2.1094237467877974e-15
+spare=8 seed=4 new: phase=0 pair_check=True worst=2.220446049250313e-15
+
+--- summary (medians) ---
+spare=0: total old 83.83 ms -> new 68.66 ms | layout old 15.304 ms -> new 0.452 ms | 2q old=180 new=180 | M1 PASS | M2 PASS
+spare=2: total old 83.22 ms -> new 68.39 ms | layout old 15.360 ms -> new 0.446 ms | 2q old=177 new=177 | M1 PASS | M2 PASS
+spare=4: total old 69.10 ms -> new 68.48 ms | layout old 2.684 ms -> new 0.455 ms | 2q old=174 new=174 | M1 PASS | M2 PASS
+spare=8: total old 66.61 ms -> new 66.06 ms | layout old 2.609 ms -> new 0.441 ms | 2q old=168 new=168 | M1 PASS | M2 PASS
+
+=== M3: chain circuits (not a matching) ===
+seed=0: phase old=1 new=1 same layout=True 2q old=117 new=117 -> PASS
+seed=1: phase old=1 new=1 same layout=True 2q old=117 new=117 -> PASS
+seed=2: phase old=1 new=1 same layout=True 2q old=117 new=117 -> PASS
+M3 PASS
+
+=== X1 (exploratory): 2-qubit gate error on the edges used ===
+native 2q gate cz; 218 edges with an error value; chip mean 2.828e-03
+spare=0 PSF old (VF2)                  edges= 60 mean err=2.819e-03 sum=1.691e-01 2q=180
+spare=0 PSF new (matching)             edges= 60 mean err=2.819e-03 sum=1.691e-01 2q=180
+spare=0 PSF new (weighted matching)    edges= 60 mean err=1.980e-03 sum=1.188e-01 2q=180
+spare=0 Qiskit L3                      edges= 60 mean err=2.966e-03 sum=1.780e-01 2q=180 (compile 12.91s)
+spare=8 PSF old (VF2)                  edges= 56 mean err=2.634e-03 sum=1.475e-01 2q=168
+spare=8 PSF new (matching)             edges= 56 mean err=2.736e-03 sum=1.532e-01 2q=168
+spare=8 PSF new (weighted matching)    edges= 56 mean err=1.854e-03 sum=1.038e-01 2q=168
+spare=8 Qiskit L3                      edges= 56 mean err=2.844e-03 sum=1.592e-01 2q=168 (compile 0.15s)
+
+Wrote matching_layout_2026-09-26.csv (214 rows)

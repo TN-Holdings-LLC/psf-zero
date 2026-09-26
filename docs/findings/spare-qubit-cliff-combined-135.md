@@ -2,7 +2,7 @@
 
 
 
-> **Note (2026-09-26):** the separate per-addendum files for Addenda 152-190 were merged into this Part and then removed from the repository. Where the text below names one of those files (`spare-qubit-cliff-addendum-NNN-...md`), it refers to the section of this Part headed "Addendum NNN"; links that pointed to those files now point to this Part.
+> **Note (2026-09-26):** the separate per-addendum files for Addenda 152-190 were merged into this Part and then removed from the repository. Addenda 191 onward are written directly into this Part and have no separate files in the repository. Where the text below names one of those files (`spare-qubit-cliff-addendum-NNN-...md`), it refers to the section of this Part headed "Addendum NNN"; links that pointed to those files now point to this Part.
 
 **Continued from [Part 7](spare-qubit-cliff-combined-108.md) (and [Part 1](spare-qubit-cliff-combined.md), [Part 2](spare-qubit-cliff-combined-17.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 6](spare-qubit-cliff-combined-88.md)).** Same conventions as every prior part.
 
@@ -6915,6 +6915,357 @@ fix is about 1.3x in compile time.
 | `fix_validation_v2b.txt` | the valid run |
 | [`psf_compile.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/psf_compile.py) | VERSION 2026-09-26.2 (SHA-256 `c6621f71...`) |
 | [`benchmarks/psf_compile.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_compile.py) | the redirect to the root file |
+
+<!-- ===== Addendum 191 (source: spare-qubit-cliff-addendum-191-2026-09-26.md) ===== -->
+
+> **Note added when merging:** Timing breakdown on the Nighthawk cliff: the Rust core is 1% of PSF-Zero's 83 ms; the rest is Python around it (CX-core rebuild, polishing, L1 transpile, a failed first VF2 attempt). Qiskit L3's 13 s is two equal halves, VF2Layout and VF2PostLayout -- and PSF-Zero skips the latter.
+
+## Addendum 191 -- Where the time goes: PSF-Zero's 0.08 s on the Nighthawk cliff is mostly Python around a Rust core that takes 1% of it, and Qiskit L3's 13 s is two failed VF2 searches of equal size -- VF2Layout and VF2PostLayout (2026-09-26)
+
+**Diagnostic, not pre-registered** (no predictions were made; the purpose
+was to decide what a speed-up prototype should target). Run on WSL2 (home),
+12 cores, Python 3.12.13, Qiskit 2.5.2, rustworkx 0.18.1, networkx 3.7.
+Log and CSVs received as files.
+
+## 0. In one line
+
+In PSF-Zero's 83 ms at spare 0, the Rust core's decomposition is 0.7 ms
+(1%); the largest items are the CX-basis core rebuilt through Qiskit's own
+decomposer for every block (18.9 ms, 23%), polishing (14.9 ms), Qiskit's
+level-1 translation (14.5 ms) and a first VF2 attempt that fails before the
+second succeeds (12.7 ms). Qiskit L3's 12.7-13.0 s splits almost evenly
+between VF2Layout (6.2-6.3 s) and VF2PostLayout (6.4-6.7 s).
+
+## 1. Method
+
+`diag_compile_breakdown.py` (18,620 bytes, normalized SHA-256
+`004435389e83...`) wraps the functions of `psf_compile.py` and
+`psf_smart_layout.py` in timers in place and restores them afterwards, so
+the measured path is the one `compile_for_hardware()` runs. Arguments as in
+`nighthawk_deadline_cliff.py`. FakeNighthawk, dense pair blocks (20 gates
+per pair), spare 0 and 8, seeds 0-4, 5 plain and 5 instrumented calls each,
+CX-core cache cleared before every call; one process, first call excluded.
+Loaded files: root `psf_compile.py` VERSION 2026-09-26.2 (normalized
+SHA-256 `4e85e932...`; `c6621f71...` in Addendum 189 is the raw-file hash
+of the same file) and `benchmarks/psf_smart_layout.py` (`1ad0b3e8...`).
+
+Instrumentation overhead: instrumented / plain median = 0.988 (spare 0),
+0.999 (spare 8).
+
+## 2. PSF-Zero, median per call
+
+| Component | spare 0 | spare 8 |
+|---|---|---|
+| compile_for_hardware, total | 83.4 ms | 68.5 ms |
+| consolidation (Collect2qBlocks + ConsolidateBlocks) | 8.0 | 8.5 |
+| Rust core decomposition | **0.73** | 0.69 |
+| polishing (check + Gauss-Newton) | 14.9 | 14.0 |
+| circuit building, of which CX core | 25.6, **18.9** | 24.3, 18.0 |
+| other synthesis / compile bookkeeping | 4.0 | 3.8 |
+| layout search, total | 15.3 | 2.6 |
+| -- networkx matching check | 2.2 | 2.2 |
+| -- rustworkx vf2_mapping | **12.7** | 0.12 |
+| Qiskit transpile, level 1 | 14.5 | 14.6 |
+| blocks polished per call | 18 of 60 | 17 of 56 |
+| CX-core cache hits / misses | 0 / 60 | 0 / 56 |
+
+Layout at spare 0: found in stage 1 at the second ordering every time (the
+first ordering exhausts its 50,000-call limit); at spare 8, at the first.
+In the level-1 transpile the passes themselves sum to about 5 ms; the rest
+is setup.
+
+## 3. Feasibility check alone (Nighthawk coupling graph)
+
+networkx `max_weight_matching` 2.02 ms; rustworkx `max_weight_matching`
+0.21 ms; networkx Hopcroft-Karp 0.37 ms. All three: 60 pairs.
+
+## 4. Qiskit transpile(optimization_level=3), per pass
+
+| | total | VF2Layout | VF2PostLayout | VF2Layout stop reason |
+|---|---|---|---|---|
+| spare 0, seeds 0-2 | 12.7-13.0 s | 6.24-6.31 s | 6.40-6.68 s | NO_SOLUTION_FOUND |
+| spare 8, seeds 0-2 | 0.154-0.157 s | 0.028 s | 0.10 s | SOLUTION_FOUND |
+
+## 5. Reading
+
+- **Rust core**: 1% of the time. Parallelising or porting the core, or
+  moving the layout search to Rust (its expensive part, VF2, is already
+  rustworkx), cannot give a large gain. The cost is in the Python around
+  the core.
+- **CX core**: with `entangling_basis="cx"`, each block's canonical core is
+  turned into a circuit, then an `Operator`, then decomposed again by
+  Qiskit's `TwoQubitBasisDecomposer`. Random blocks never repeat, so the
+  cache never hits. A closed-form CX construction of the canonical gate
+  would remove this.
+- **Layout**: the spare-0 cost is one failed VF2 attempt, not the search
+  that succeeds.
+- **Qiskit's cliff has two halves.** Until now only VF2Layout was examined.
+  PSF-Zero passes `initial_layout`, which skips VF2PostLayout entirely, so
+  roughly half of the ~160x on this cliff comes from not running that pass.
+  VF2PostLayout rescores the layout with the device's error rates; skipping
+  it can cost fidelity on a real device (already noted in
+  `compile_for_hardware`'s docstring). Here it spends 6.5 s and, judging by
+  the equal 2-qubit counts, changes nothing -- but a fair statement of the
+  speed-up must say which half is avoided by solving the layout and which
+  by skipping the rescoring.
+- NO_SOLUTION_FOUND does not distinguish an exhausted search space from a
+  hit call limit; the near-constant 6.3 s across seeds is consistent with
+  the limit, but the budget-exhaustion hypothesis remains unconfirmed.
+- 18 of 60 blocks are polished -- more often than "only near the face
+  c = 0" suggested. Precision is not affected (Addendum 190); recorded as
+  an observation.
+- PSF-Zero at spare 8 here: 0.068 s; Addendum 190 gave 0.046 s from
+  `deadline_compound_chain.py`. The harnesses and circuits differ (fresh
+  circuits with the cache cleared here, chain laps there); the difference
+  is not resolved.
+
+## 6. What follows
+
+The layout search needs no VF2 at all for this circuit family: when the
+interaction graph is a set of disjoint pairs, a maximum matching of the
+coupling graph -- which the feasibility check already computes -- is itself
+a valid layout. That is the first prototype (Addendum 192). The closed-form
+CX core is the second.
+
+## 7. Files
+
+| File | What it is |
+|---|---|
+| `benchmarks/diag_compile_breakdown.py` | the diagnostic |
+| `data/logs/diag_compile_breakdown.txt` | the log |
+| `data/diag_compile_breakdown_2026-09-26.csv` | per-call, per-component times |
+| `data/diag_compile_breakdown_passes_2026-09-26.csv` | per-pass times (L1 and L3) |
+
+---
+
+<!-- ===== Addendum 192 pre-registration (source: spare-qubit-cliff-addendum-192-preregistration-2026-09-26.md) ===== -->
+
+> **Note added when merging:** Prototype: for matching-shaped interaction graphs, take the layout directly from a maximum matching of the coupling graph instead of VF2.
+
+## Addendum 192 -- Pre-registration: when the interaction graph is a set of disjoint pairs, take the layout directly from a maximum matching of the coupling graph instead of searching with VF2; checks that it is correct, removes the spare-0 layout cost, and leaves every other circuit untouched (2026-09-26)
+
+**Status: pre-registration. The prototype is written and its logic was
+checked in isolation; no run on the real stack (Qiskit, rustworkx, the Rust
+core) has been made.**
+
+## 1. Why
+
+Addendum 191: at spare 0 on FakeNighthawk, PSF-Zero's layout search takes
+15.3 ms of 83 ms, of which 12.7 ms is a first VF2 attempt that fails, and
+2.2 ms is the networkx matching check. For this circuit family the
+interaction graph is a matching (disjoint pairs). Placing k disjoint
+logical pairs on the chip is exactly choosing k disjoint physical edges --
+a matching of the coupling graph -- so the maximum matching the feasibility
+check already computes is itself a valid layout. No subgraph search is
+needed, and none of the ordering luck that makes VF2 fail first.
+
+## 2. Change
+
+**`benchmarks/psf_smart_layout.py`, LAYOUT_VERSION 2026-09-26.m1**
+(22,450 bytes, normalized SHA-256
+`a639efdef484379d23b4c0a52dffe557c47c30f639c41e4f8521ca608712d875`;
+against the current file, 117 lines added, 1 changed, nothing removed):
+
+- `_interaction_is_matching(pairs)`: every logical qubit in at most one
+  pair, no self-loops.
+- `matching_layout(coupling_map, pairs, edge_weights=None)`: rustworkx
+  maximum-cardinality matching; pairs (sorted) are placed on matching edges
+  (sorted). Returns None if the matching is too small -- the same criterion
+  as the existing feasibility check. Optional integer `edge_weights`
+  (larger is better): heaviest matching first, cardinality forced only if
+  it is too small, heaviest k edges used (a heuristic, not a proven optimum).
+- `smart_vf2_layout(..., use_matching_shortcut=None, edge_weights=None)`:
+  a new stage 0 runs first when the shortcut is on and the interaction
+  graph is a non-empty matching, and returns phase 0. `None` reads the
+  module flag `USE_MATCHING_SHORTCUT` (default True), which is how the
+  validation switches arms, since `compile_for_hardware` cannot pass the
+  argument. Every other interaction graph goes through stages 1-2
+  unchanged.
+
+`psf_compile.py` is not changed. Weighted matching is not reachable from
+`compile_for_hardware` in this prototype (it has only a coupling map); it
+is exercised only in X1 below.
+
+Checked in isolation before any run (networkx standing in for rustworkx,
+since the sandbox has neither Qiskit nor rustworkx): 4x4 grid with 8 pairs
+-- stage 0 taken, all pairs on edges, all physical qubits distinct; 5-node
+line with 3 pairs -- None, feasible False; path-shaped and self-loop pair
+lists rejected as non-matchings; on a line a-b-c-d with a heavy b-c, one
+weighted pair lands on b-c (the first version, which forced cardinality,
+put it on a-b; fixed before this registration).
+
+New tests: `test_matching_layout.py` (2,278 bytes, `3c953144...`), 8 cases.
+
+## 3. Predictions
+
+Validation script `verify_matching_layout.py` (14,263 bytes, normalized
+SHA-256 `2e687b2971a8c8737eb74b0a3766bed19dd1db9fb1cfb20e45585301c0085b67`).
+FakeNighthawk; one process; old arm = shortcut off, new arm = shortcut on;
+the two arms interleaved, alternating which goes first; CX-core cache
+cleared before every call.
+
+**M0 (right file).** The log's `LOADED` lines show root `psf_compile.py`
+VERSION 2026-09-26.2 and `benchmarks/psf_smart_layout.py` LAYOUT_VERSION
+2026-09-26.m1 (the script stops otherwise).
+
+**M1 (correct).** Dense pair blocks, spare in {0, 2, 4, 8}, seeds 0-4
+(20 cases): the new arm takes stage 0 in every case; its routed 2-qubit
+count equals the old arm's; the exact per-pair check applies and its worst
+infidelity is <= 1e-12.
+
+**M2 (faster where it should be, no slower elsewhere).** Medians over
+5 seeds x 5 reps:
+- spare 0: new layout-search time <= 1.0 ms (Addendum 191: 15.3 ms), and
+  new total <= old total - 10 ms. Expected new total about 68-70 ms.
+- spare 2, 4, 8: new total <= old total + 1 ms.
+
+**M3 (other circuits untouched).** Chain circuits (interaction graph is a
+path), 40 logical qubits, seeds 0-2: the new arm does not take stage 0,
+and both arms return the same initial layout and 2-qubit count.
+
+**M4 (tests).** The existing 36 tests and the 8 new ones pass (44).
+
+**X1 (exploratory, not scored).** At spare 0 and 8, seed 0: mean and sum of
+FakeNighthawk's 2-qubit gate error over the physical edges used, for PSF
+old, PSF new, PSF new with weighted matching (weights round(1e6 x
+(1 - error))), and Qiskit L3 (which runs VF2PostLayout). Expectation, not a
+prediction: weighted <= unweighted. FakeNighthawk's error values are, by
+its own warning, not representative of the device, so X1 can show only
+whether weighting works mechanically, not what it is worth on hardware.
+
+## 4. What each outcome means
+
+- M1 fails: the shortcut is wrong somewhere and stays off; the failure is
+  recorded as found.
+- M1 holds, M2 fails at spare 0: the saving is smaller than the diagnostic
+  implied; recorded with the measured split.
+- M3 fails: the change leaked into the general path -- a defect regardless
+  of M1/M2.
+
+## 5. Scope stated in advance
+
+This helps only circuits whose 2-qubit interactions form disjoint pairs --
+the cliff family used throughout this series. It does nothing for chains,
+QAOA-like graphs or general circuits (M3 checks that it also does no harm
+there). With the shortcut, PSF-Zero still skips VF2PostLayout; X1 is a
+first look at whether an error-weighted matching could stand in for it.
+
+## 6. Command
+
+```
+python -m pytest -q test_tape_conversion_fidelity.py test_weakness_probes.py \
+  test_pennylane_gpu_ibm_pipeline_mock.py test_gpu_real_verification.py \
+  test_full_chain_gpu.py test_real_submit_local_mode.py test_matching_layout.py
+python -u verify_matching_layout.py 2>&1 | tee matching_layout_result.txt
+```
+
+---
+
+<!-- ===== Addendum 193 (source: spare-qubit-cliff-addendum-193-2026-09-26.md) ===== -->
+
+> **Note added when merging:** All predictions hold: correct in 20/20 cases, spare-0 layout search 15.3 ms -> 0.45 ms, total 84 -> 69 ms, non-matching circuits unchanged. Exploratory: an error-weighted matching picks edges ~30% less error-prone than Qiskit L3's on FakeNighthawk (one seed, non-representative error values).
+
+## Addendum 193 -- Reading the layout straight off a maximum matching is correct in all 20 cases, cuts the spare-0 layout search from 15.3 ms to 0.45 ms and PSF-Zero's cliff compile time from 84 ms to 69 ms, and leaves non-matching circuits bit-for-bit unchanged; an error-weighted matching uses edges about 30% less error-prone than Qiskit L3's on FakeNighthawk (exploratory) (2026-09-26)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-192-preregistration-2026-09-26.md`. Run on WSL2
+(home), 12 cores, Python 3.12.13, Qiskit 2.5.2. Log received as a file.
+
+## 0. In one line
+
+M0-M4 all hold. Stage 0 is taken in 20/20 cases with the same 2-qubit
+counts as VF2 and a worst per-pair infidelity of 2.2e-15; at spare 0 the
+median total drops from 83.83 ms to 68.66 ms (-15.2 ms, -18%); chain
+circuits never take the shortcut and come out identical; 44 tests pass.
+
+## 1. Header
+
+`LOADED .../psf_compile.py 2026-09-26.2 4e85e932...`;
+`LOADED .../benchmarks/psf_smart_layout.py 2026-09-26.m1 a639efde...`;
+`SCRIPT .../verify_matching_layout.py 2e687b29...` -- all three match the
+pre-registration. File sizes 22,450 / 14,263 / 2,278 bytes as registered.
+
+## 2. Results
+
+| Prediction | Result |
+|---|---|
+| M0: right files loaded | **CONFIRMED** |
+| M1: stage 0 in 20/20, same 2q count, per-pair worst <= 1e-12 | **CONFIRMED** -- 20/20 phase 0; 2q 180/177/174/168 in both arms; worst 1.998e-15 to 2.220e-15 |
+| M2: spare 0 layout <= 1.0 ms and total <= old - 10 ms; spare 2/4/8 total <= old + 1 ms | **CONFIRMED** -- see table |
+| M3: chains do not take stage 0; identical layout and 2q | **CONFIRMED** -- 3/3: phase 1 in both arms, same layout, 117 2q gates |
+| M4: 44 tests pass | **CONFIRMED** -- 44 passed |
+
+Medians, 5 seeds x 5 reps, arms interleaved:
+
+| spare | total old -> new | layout search old -> new | 2q |
+|---|---|---|---|
+| 0 | 83.83 -> **68.66 ms** | 15.304 -> 0.452 ms | 180 |
+| 2 | 83.22 -> **68.39 ms** | 15.360 -> 0.446 ms | 177 |
+| 4 | 69.10 -> 68.48 ms | 2.684 -> 0.455 ms | 174 |
+| 8 | 66.61 -> 66.06 ms | 2.609 -> 0.441 ms | 168 |
+
+Not anticipated in the registration: **spare 2 behaves like spare 0** in
+the old path (the first VF2 ordering fails there too; 15.4 ms). The
+failed-first-attempt cost therefore extends past exactly-saturated
+layouts. At spare 4 and 8 the gain is the networkx check alone (about
+2.2 ms), mostly within the noise of the total.
+
+Compared with Qiskit's default at spare 0 (12.9 s, Addendum 191 and X1
+below), PSF-Zero's cliff compile is now about 190x faster. Addendum 191's
+caveat carries over unchanged: roughly half of that factor is VF2PostLayout,
+which PSF-Zero skips.
+
+## 3. X1 (exploratory, one seed, FakeNighthawk error values)
+
+Native 2-qubit gate `cz`; 218 edges carry an error value; chip mean
+2.828e-3.
+
+| | spare 0: mean edge error (sum over 60) | spare 8: mean (sum over 56) |
+|---|---|---|
+| PSF old (VF2) | 2.819e-3 (0.169) | 2.634e-3 (0.148) |
+| PSF new (matching) | 2.819e-3 (0.169) | 2.736e-3 (0.153) |
+| **PSF new (weighted matching)** | **1.980e-3 (0.119)** | **1.854e-3 (0.104)** |
+| Qiskit L3 | 2.966e-3 (0.178) | 2.844e-3 (0.159) |
+
+- Weighting works mechanically: -30% (spare 0) and -32% (spare 8) against
+  the unweighted matching.
+- Both unweighted arms and Qiskit L3 sit at about the chip mean, i.e. no
+  better than an error-blind choice on this metric -- including Qiskit at
+  spare 8, where its VF2PostLayout runs and succeeds.
+- **Limits of this comparison.** One seed. FakeNighthawk states that its
+  error values are not representative of the device. The metric counts
+  only 2-qubit gate error on the edges used; VF2PostLayout scores with its
+  own function, which also weighs single-qubit and readout errors, so it is
+  not trying to minimise this number. The weighted path is not reachable
+  from `compile_for_hardware` yet (the weights were built by hand here).
+  What X1 shows is that an error-aware layout costs nothing in time on this
+  circuit family -- not that PSF-Zero produces better circuits than Qiskit
+  on hardware.
+
+## 4. Where this leaves the speed work
+
+| | before (Addendum 191) | now |
+|---|---|---|
+| spare-0 compile_for_hardware | 83.4 ms | 68.7 ms |
+| layout search | 15.3 ms | 0.45 ms |
+| largest remaining items | -- | CX-core rebuild 18.9 ms, polishing 14.9 ms, L1 transpile 14.5 ms |
+
+Next: the closed-form CX core (Addendum 191, Section 5). Separately, a
+registered test of the weighted matching with the error rates taken from
+the backend's Target inside `compile_for_hardware`, scored against
+VF2PostLayout's own score and not only against this 2-qubit metric.
+
+## 5. Files
+
+| File | What it is |
+|---|---|
+| `benchmarks/psf_smart_layout.py` | LAYOUT_VERSION 2026-09-26.m1 (`a639efde...`) |
+| `benchmarks/test_matching_layout.py` | 8 new tests |
+| `benchmarks/verify_matching_layout.py` | the validation script (`2e687b29...`) |
+| `data/logs/matching_layout_result.txt` | the log |
+| `data/matching_layout_2026-09-26.csv` | per-call rows (214) |
+
+---
 
 ---
 

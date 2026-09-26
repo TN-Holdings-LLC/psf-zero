@@ -1,0 +1,1123 @@
+part,spare,seed,mode,rep,component,seconds,count
+A,0,0,first_call,0,total,0.11496889900001861,1
+A,0,0,plain,0,total,0.10356883499997593,1
+A,0,0,plain,1,total,0.08673064300000988,1
+A,0,0,plain,2,total,0.08695858999999473,1
+A,0,0,plain,3,total,0.0872753059999809,1
+A,0,0,plain,4,total,0.08691591799998832,1
+A,0,0,instrumented,0,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.008631721000028847,1
+A,0,0,instrumented,0,A1b.1 core decompose (Rust),0.0007198870000024726,60
+A,0,0,instrumented,0,A1b.2 polish (check + Gauss-Newton),0.017798706000121456,60
+A,0,0,instrumented,0,A1b.3a cx core lookup/build,0.019072800000230927,60
+A,0,0,instrumented,0,A1b.3 build circuit (incl. CX core),0.025525569999899744,60
+A,0,0,instrumented,0,A1b  synthesize [all blocks],0.04640810200004353,60
+A,0,0,instrumented,0,A1 psf.compile [total],0.057296538000002784,1
+A,0,0,instrumented,0,A2a  matching check (networkx),0.0021896490000017366,1
+A,0,0,instrumented,0,A2b  orderings,0.0005103389999590036,1
+A,0,0,instrumented,0,A2c  relabel graph,7.705600000917912e-05,2
+A,0,0,instrumented,0,A2d  vf2_mapping (rustworkx),0.01291378899998108,2
+A,0,0,instrumented,0,A2 layout search [total],0.015840638999975454,1
+A,0,0,instrumented,0,A3 layout map -> list,1.1211000014554884e-05,1
+A,0,0,instrumented,0,A4 qiskit transpile L1 [total],0.014647418000038215,1
+A,0,0,instrumented,0,A0 compile_for_hardware [total],0.08826706000002105,
+A,0,0,instrumented,0,"A1c  compile other (to_matrix, compose, loop)",0.0022567149999304092,
+A,0,0,instrumented,0,"A1b.4 synthesize other (tolist, verify, checks)",0.0023639390000198546,
+A,0,0,instrumented,0,"A5 compile_for_hardware other (pair collection, import)",0.00047125399999004003,
+A,0,0,instrumented,0,refine_triggered,,23
+A,0,0,instrumented,0,cx_cache_hit,,0
+A,0,0,instrumented,0,cx_cache_miss,,60
+A,0,0,instrumented,1,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.07899530899999263,1
+A,0,0,instrumented,1,A1b.1 core decompose (Rust),0.0007165629999121848,60
+A,0,0,instrumented,1,A1b.2 polish (check + Gauss-Newton),0.01682278499987433,60
+A,0,0,instrumented,1,A1b.3a cx core lookup/build,0.01887711400019043,60
+A,0,0,instrumented,1,A1b.3 build circuit (incl. CX core),0.025458303000050364,60
+A,0,0,instrumented,1,A1b  synthesize [all blocks],0.04521390600035602,60
+A,0,0,instrumented,1,A1 psf.compile [total],0.12634890500004303,1
+A,0,0,instrumented,1,A2a  matching check (networkx),0.0021673370000030445,1
+A,0,0,instrumented,1,A2b  orderings,0.0002251079999950889,1
+A,0,0,instrumented,1,A2c  relabel graph,7.676600000650069e-05,2
+A,0,0,instrumented,1,A2d  vf2_mapping (rustworkx),0.012891787000000932,2
+A,0,0,instrumented,1,A2 layout search [total],0.015470915999969748,1
+A,0,0,instrumented,1,A3 layout map -> list,1.0228999997252686e-05,1
+A,0,0,instrumented,1,A4 qiskit transpile L1 [total],0.015602806000003966,1
+A,0,0,instrumented,1,A0 compile_for_hardware [total],0.15793088399999533,
+A,0,0,instrumented,1,"A1c  compile other (to_matrix, compose, loop)",0.002139689999694383,
+A,0,0,instrumented,1,"A1b.4 synthesize other (tolist, verify, checks)",0.0022162550005191406,
+A,0,0,instrumented,1,"A5 compile_for_hardware other (pair collection, import)",0.000498027999981332,
+A,0,0,instrumented,1,refine_triggered,,23
+A,0,0,instrumented,1,cx_cache_hit,,0
+A,0,0,instrumented,1,cx_cache_miss,,60
+A,0,0,instrumented,2,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.007685193999975581,1
+A,0,0,instrumented,2,A1b.1 core decompose (Rust),0.0007381580002743249,60
+A,0,0,instrumented,2,A1b.2 polish (check + Gauss-Newton),0.01752122199980022,60
+A,0,0,instrumented,2,A1b.3a cx core lookup/build,0.019371222999950533,60
+A,0,0,instrumented,2,A1b.3 build circuit (incl. CX core),0.026508500000147706,60
+A,0,0,instrumented,2,A1b  synthesize [all blocks],0.04713283199998841,60
+A,0,0,instrumented,2,A1 psf.compile [total],0.05695681300005617,1
+A,0,0,instrumented,2,A2a  matching check (networkx),0.0024828059999890684,1
+A,0,0,instrumented,2,A2b  orderings,0.00023760099998071382,1
+A,0,0,instrumented,2,A2c  relabel graph,7.844900000009147e-05,2
+A,0,0,instrumented,2,A2d  vf2_mapping (rustworkx),0.01303055500005712,2
+A,0,0,instrumented,2,A2 layout search [total],0.01594558300001836,1
+A,0,0,instrumented,2,A3 layout map -> list,1.0209000038230442e-05,1
+A,0,0,instrumented,2,A4 qiskit transpile L1 [total],0.013442032999989806,1
+A,0,0,instrumented,2,A0 compile_for_hardware [total],0.0868316939999545,
+A,0,0,instrumented,2,"A1c  compile other (to_matrix, compose, loop)",0.0021387870000921794,
+A,0,0,instrumented,2,"A1b.4 synthesize other (tolist, verify, checks)",0.0023649519997661628,
+A,0,0,instrumented,2,"A5 compile_for_hardware other (pair collection, import)",0.0004770559998519275,
+A,0,0,instrumented,2,refine_triggered,,23
+A,0,0,instrumented,2,cx_cache_hit,,0
+A,0,0,instrumented,2,cx_cache_miss,,60
+A,0,0,instrumented,3,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.007528866999962247,1
+A,0,0,instrumented,3,A1b.1 core decompose (Rust),0.0007911829998761277,60
+A,0,0,instrumented,3,A1b.2 polish (check + Gauss-Newton),0.017303908000201318,60
+A,0,0,instrumented,3,A1b.3a cx core lookup/build,0.019643136999889066,60
+A,0,0,instrumented,3,A1b.3 build circuit (incl. CX core),0.026476368999624356,60
+A,0,0,instrumented,3,A1b  synthesize [all blocks],0.046808000000226,60
+A,0,0,instrumented,3,A1 psf.compile [total],0.05650850699998955,1
+A,0,0,instrumented,3,A2a  matching check (networkx),0.0023083250000013322,1
+A,0,0,instrumented,3,A2b  orderings,0.0002109710000013365,1
+A,0,0,instrumented,3,A2c  relabel graph,7.573400006322117e-05,2
+A,0,0,instrumented,3,A2d  vf2_mapping (rustworkx),0.012477129999922454,2
+A,0,0,instrumented,3,A2 layout search [total],0.015184131999944839,1
+A,0,0,instrumented,3,A3 layout map -> list,1.0129000031611213e-05,1
+A,0,0,instrumented,3,A4 qiskit transpile L1 [total],0.013432796000017788,1
+A,0,0,instrumented,3,A0 compile_for_hardware [total],0.08569641900004399,
+A,0,0,instrumented,3,"A1c  compile other (to_matrix, compose, loop)",0.0021716399998013003,
+A,0,0,instrumented,3,"A1b.4 synthesize other (tolist, verify, checks)",0.002236540000524201,
+A,0,0,instrumented,3,"A5 compile_for_hardware other (pair collection, import)",0.0005608550000602008,
+A,0,0,instrumented,3,refine_triggered,,23
+A,0,0,instrumented,3,cx_cache_hit,,0
+A,0,0,instrumented,3,cx_cache_miss,,60
+A,0,0,instrumented,4,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.007080168000015874,1
+A,0,0,instrumented,4,A1b.1 core decompose (Rust),0.0007279019999941738,60
+A,0,0,instrumented,4,A1b.2 polish (check + Gauss-Newton),0.01733995099976937,60
+A,0,0,instrumented,4,A1b.3a cx core lookup/build,0.019066775000112557,60
+A,0,0,instrumented,4,A1b.3 build circuit (incl. CX core),0.025697061000016674,60
+A,0,0,instrumented,4,A1b  synthesize [all blocks],0.04608920699990904,60
+A,0,0,instrumented,4,A1 psf.compile [total],0.05519658299999719,1
+A,0,0,instrumented,4,A2a  matching check (networkx),0.002281524000011359,1
+A,0,0,instrumented,4,A2b  orderings,0.00020630199998095122,1
+A,0,0,instrumented,4,A2c  relabel graph,7.451200002606129e-05,2
+A,0,0,instrumented,4,A2d  vf2_mapping (rustworkx),0.012585725999997521,2
+A,0,0,instrumented,4,A2 layout search [total],0.015256900000053975,1
+A,0,0,instrumented,4,A3 layout map -> list,1.0209999970811623e-05,1
+A,0,0,instrumented,4,A4 qiskit transpile L1 [total],0.0140873240000019,1
+A,0,0,instrumented,4,A0 compile_for_hardware [total],0.0850032859999601,
+A,0,0,instrumented,4,"A1c  compile other (to_matrix, compose, loop)",0.002027208000072278,
+A,0,0,instrumented,4,"A1b.4 synthesize other (tolist, verify, checks)",0.0023242930001288187,
+A,0,0,instrumented,4,"A5 compile_for_hardware other (pair collection, import)",0.0004522689999362228,
+A,0,0,instrumented,4,refine_triggered,,23
+A,0,0,instrumented,4,cx_cache_hit,,0
+A,0,0,instrumented,4,cx_cache_miss,,60
+A,0,1,plain,0,total,0.08377158299998655,1
+A,0,1,plain,1,total,0.08189633400002094,1
+A,0,1,plain,2,total,0.08301373599999806,1
+A,0,1,plain,3,total,0.08247724299997117,1
+A,0,1,plain,4,total,0.08507260300001462,1
+A,0,1,instrumented,0,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.007186460000013994,1
+A,0,1,instrumented,0,A1b.1 core decompose (Rust),0.0007209869998519025,60
+A,0,1,instrumented,0,A1b.2 polish (check + Gauss-Newton),0.014207215999931577,60
+A,0,1,instrumented,0,A1b.3a cx core lookup/build,0.01837373500012518,60
+A,0,1,instrumented,0,A1b.3 build circuit (incl. CX core),0.024927031999823157,60
+A,0,1,instrumented,0,A1b  synthesize [all blocks],0.04161330100032501,60
+A,0,1,instrumented,0,A1 psf.compile [total],0.05085439599997699,1
+A,0,1,instrumented,0,A2a  matching check (networkx),0.002211270000032073,1
+A,0,1,instrumented,0,A2b  orderings,0.00021243300000151066,1
+A,0,1,instrumented,0,A2c  relabel graph,7.612399997469765e-05,2
+A,0,1,instrumented,0,A2d  vf2_mapping (rustworkx),0.012738056000046072,2
+A,0,1,instrumented,0,A2 layout search [total],0.01534887399998297,1
+A,0,1,instrumented,0,A3 layout map -> list,1.0651000025063695e-05,1
+A,0,1,instrumented,0,A4 qiskit transpile L1 [total],0.013380385000004935,1
+A,0,1,instrumented,0,A0 compile_for_hardware [total],0.08005950999995548,
+A,0,1,instrumented,0,"A1c  compile other (to_matrix, compose, loop)",0.002054634999637983,
+A,0,1,instrumented,0,"A1b.4 synthesize other (tolist, verify, checks)",0.0017580660007183724,
+A,0,1,instrumented,0,"A5 compile_for_hardware other (pair collection, import)",0.0004652039999655244,
+A,0,1,instrumented,0,refine_triggered,,18
+A,0,1,instrumented,0,cx_cache_hit,,0
+A,0,1,instrumented,0,cx_cache_miss,,60
+A,0,1,instrumented,1,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.008029211000007308,1
+A,0,1,instrumented,1,A1b.1 core decompose (Rust),0.0007410380000010264,60
+A,0,1,instrumented,1,A1b.2 polish (check + Gauss-Newton),0.014476161000345655,60
+A,0,1,instrumented,1,A1b.3a cx core lookup/build,0.01882493099998328,60
+A,0,1,instrumented,1,A1b.3 build circuit (incl. CX core),0.02562450100026581,60
+A,0,1,instrumented,1,A1b  synthesize [all blocks],0.04260669100017367,60
+A,0,1,instrumented,1,A1 psf.compile [total],0.052867309999953704,1
+A,0,1,instrumented,1,A2a  matching check (networkx),0.0022788389999846004,1
+A,0,1,instrumented,1,A2b  orderings,0.00020656200001667457,1
+A,0,1,instrumented,1,A2c  relabel graph,8.481999998366518e-05,2
+A,0,1,instrumented,1,A2d  vf2_mapping (rustworkx),0.012688440999966133,2
+A,0,1,instrumented,1,A2 layout search [total],0.015377459000035287,1
+A,0,1,instrumented,1,A3 layout map -> list,1.275400001077287e-05,1
+A,0,1,instrumented,1,A4 qiskit transpile L1 [total],0.013722025000049598,1
+A,0,1,instrumented,1,A0 compile_for_hardware [total],0.08245440000001736,
+A,0,1,instrumented,1,"A1c  compile other (to_matrix, compose, loop)",0.0022314079997727276,
+A,0,1,instrumented,1,"A1b.4 synthesize other (tolist, verify, checks)",0.0017649909995611779,
+A,0,1,instrumented,1,"A5 compile_for_hardware other (pair collection, import)",0.00047485199996799565,
+A,0,1,instrumented,1,refine_triggered,,18
+A,0,1,instrumented,1,cx_cache_hit,,0
+A,0,1,instrumented,1,cx_cache_miss,,60
+A,0,1,instrumented,2,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.008111878000022443,1
+A,0,1,instrumented,2,A1b.1 core decompose (Rust),0.0007386070000734435,60
+A,0,1,instrumented,2,A1b.2 polish (check + Gauss-Newton),0.01460624200001348,60
+A,0,1,instrumented,2,A1b.3a cx core lookup/build,0.01847553200019547,60
+A,0,1,instrumented,2,A1b.3 build circuit (incl. CX core),0.02556911900006753,60
+A,0,1,instrumented,2,A1b  synthesize [all blocks],0.04273955899981274,60
+A,0,1,instrumented,2,A1 psf.compile [total],0.0529136479999579,1
+A,0,1,instrumented,2,A2a  matching check (networkx),0.0023618660000011005,1
+A,0,1,instrumented,2,A2b  orderings,0.00020480899996755397,1
+A,0,1,instrumented,2,A2c  relabel graph,7.429099997580124e-05,2
+A,0,1,instrumented,2,A2d  vf2_mapping (rustworkx),0.012518888999977662,2
+A,0,1,instrumented,2,A2 layout search [total],0.015267941000047358,1
+A,0,1,instrumented,2,A3 layout map -> list,9.697999985291972e-06,1
+A,0,1,instrumented,2,A4 qiskit transpile L1 [total],0.01492561099996692,1
+A,0,1,instrumented,2,A0 compile_for_hardware [total],0.08356902700001001,
+A,0,1,instrumented,2,"A1c  compile other (to_matrix, compose, loop)",0.0020622110001227156,
+A,0,1,instrumented,2,"A1b.4 synthesize other (tolist, verify, checks)",0.0018255909996582886,
+A,0,1,instrumented,2,"A5 compile_for_hardware other (pair collection, import)",0.00045212900005253687,
+A,0,1,instrumented,2,refine_triggered,,18
+A,0,1,instrumented,2,cx_cache_hit,,0
+A,0,1,instrumented,2,cx_cache_miss,,60
+A,0,1,instrumented,3,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.007664342999987639,1
+A,0,1,instrumented,3,A1b.1 core decompose (Rust),0.0007340849999195598,60
+A,0,1,instrumented,3,A1b.2 polish (check + Gauss-Newton),0.014901013000041985,60
+A,0,1,instrumented,3,A1b.3a cx core lookup/build,0.019204552000246622,60
+A,0,1,instrumented,3,A1b.3 build circuit (incl. CX core),0.025970519000225067,60
+A,0,1,instrumented,3,A1b  synthesize [all blocks],0.04344782099985878,60
+A,0,1,instrumented,3,A1 psf.compile [total],0.05329175000002806,1
+A,0,1,instrumented,3,A2a  matching check (networkx),0.0022298760000012408,1
+A,0,1,instrumented,3,A2b  orderings,0.00020466899997018118,1
+A,0,1,instrumented,3,A2c  relabel graph,7.520299999441704e-05,2
+A,0,1,instrumented,3,A2d  vf2_mapping (rustworkx),0.012620242000025428,2
+A,0,1,instrumented,3,A2 layout search [total],0.015254906000052415,1
+A,0,1,instrumented,3,A3 layout map -> list,1.042899998537905e-05,1
+A,0,1,instrumented,3,A4 qiskit transpile L1 [total],0.013848820000021078,1
+A,0,1,instrumented,3,A0 compile_for_hardware [total],0.0830503599999588,
+A,0,1,instrumented,3,"A1c  compile other (to_matrix, compose, loop)",0.0021795860001816436,
+A,0,1,instrumented,3,"A1b.4 synthesize other (tolist, verify, checks)",0.001842203999672165,
+A,0,1,instrumented,3,"A5 compile_for_hardware other (pair collection, import)",0.0006444549998718685,
+A,0,1,instrumented,3,refine_triggered,,18
+A,0,1,instrumented,3,cx_cache_hit,,0
+A,0,1,instrumented,3,cx_cache_miss,,60
+A,0,1,instrumented,4,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.007723811999994723,1
+A,0,1,instrumented,4,A1b.1 core decompose (Rust),0.0007425719999787361,60
+A,0,1,instrumented,4,A1b.2 polish (check + Gauss-Newton),0.014371857999947224,60
+A,0,1,instrumented,4,A1b.3a cx core lookup/build,0.018126424000172392,60
+A,0,1,instrumented,4,A1b.3 build circuit (incl. CX core),0.025306280000222614,60
+A,0,1,instrumented,4,A1b  synthesize [all blocks],0.04222469100017179,60
+A,0,1,instrumented,4,A1 psf.compile [total],0.052079363000018475,1
+A,0,1,instrumented,4,A2a  matching check (networkx),0.0021630179999760912,1
+A,0,1,instrumented,4,A2b  orderings,0.0002274319999742147,1
+A,0,1,instrumented,4,A2c  relabel graph,7.650500003819616e-05,2
+A,0,1,instrumented,4,A2d  vf2_mapping (rustworkx),0.012795493999988139,2
+A,0,1,instrumented,4,A2 layout search [total],0.01537326100003611,1
+A,0,1,instrumented,4,A3 layout map -> list,1.033899997082699e-05,1
+A,0,1,instrumented,4,A4 qiskit transpile L1 [total],0.01470934999997553,1
+A,0,1,instrumented,4,A0 compile_for_hardware [total],0.0826338010000427,
+A,0,1,instrumented,4,"A1c  compile other (to_matrix, compose, loop)",0.002130859999851964,
+A,0,1,instrumented,4,"A1b.4 synthesize other (tolist, verify, checks)",0.0018039810000232137,
+A,0,1,instrumented,4,"A5 compile_for_hardware other (pair collection, import)",0.0004614880000417543,
+A,0,1,instrumented,4,refine_triggered,,18
+A,0,1,instrumented,4,cx_cache_hit,,0
+A,0,1,instrumented,4,cx_cache_miss,,60
+A,0,2,plain,0,total,0.08220000699998309,1
+A,0,2,plain,1,total,0.0804848379999612,1
+A,0,2,plain,2,total,0.07642929500002538,1
+A,0,2,plain,3,total,0.07834536500001832,1
+A,0,2,plain,4,total,0.07936389700000746,1
+A,0,2,instrumented,0,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.007337448999976459,1
+A,0,2,instrumented,0,A1b.1 core decompose (Rust),0.0007405620000326962,60
+A,0,2,instrumented,0,A1b.2 polish (check + Gauss-Newton),0.011903277000044454,60
+A,0,2,instrumented,0,A1b.3a cx core lookup/build,0.018926722000003338,60
+A,0,2,instrumented,0,A1b.3 build circuit (incl. CX core),0.02546866699998418,60
+A,0,2,instrumented,0,A1b  synthesize [all blocks],0.039482169000052636,60
+A,0,2,instrumented,0,A1 psf.compile [total],0.04892539300004728,1
+A,0,2,instrumented,0,A2a  matching check (networkx),0.0025987669999949503,1
+A,0,2,instrumented,0,A2b  orderings,0.0002053410000257827,1
+A,0,2,instrumented,0,A2c  relabel graph,7.588400001168338e-05,2
+A,0,2,instrumented,0,A2d  vf2_mapping (rustworkx),0.01275756199999023,2
+A,0,2,instrumented,0,A2 layout search [total],0.01575623900004075,1
+A,0,2,instrumented,0,A3 layout map -> list,1.1292000010598713e-05,1
+A,0,2,instrumented,0,A4 qiskit transpile L1 [total],0.015249025000002803,1
+A,0,2,instrumented,0,A0 compile_for_hardware [total],0.08051316199998837,
+A,0,2,instrumented,0,"A1c  compile other (to_matrix, compose, loop)",0.002105775000018184,
+A,0,2,instrumented,0,"A1b.4 synthesize other (tolist, verify, checks)",0.0013696629999913057,
+A,0,2,instrumented,0,"A5 compile_for_hardware other (pair collection, import)",0.0005712129998869386,
+A,0,2,instrumented,0,refine_triggered,,12
+A,0,2,instrumented,0,cx_cache_hit,,0
+A,0,2,instrumented,0,cx_cache_miss,,60
+A,0,2,instrumented,1,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.007624252000027809,1
+A,0,2,instrumented,1,A1b.1 core decompose (Rust),0.0008963040000367073,60
+A,0,2,instrumented,1,A1b.2 polish (check + Gauss-Newton),0.011789491999934398,60
+A,0,2,instrumented,1,A1b.3a cx core lookup/build,0.01894280099986645,60
+A,0,2,instrumented,1,A1b.3 build circuit (incl. CX core),0.025812116999759382,60
+A,0,2,instrumented,1,A1b  synthesize [all blocks],0.03988900699994247,60
+A,0,2,instrumented,1,A1 psf.compile [total],0.04973184900001115,1
+A,0,2,instrumented,1,A2a  matching check (networkx),0.002199666999956662,1
+A,0,2,instrumented,1,A2b  orderings,0.000225489000001744,1
+A,0,2,instrumented,1,A2c  relabel graph,7.781799996564587e-05,2
+A,0,2,instrumented,1,A2d  vf2_mapping (rustworkx),0.012784294000027785,2
+A,0,2,instrumented,1,A2 layout search [total],0.01540235599998141,1
+A,0,2,instrumented,1,A3 layout map -> list,1.3576000014836609e-05,1
+A,0,2,instrumented,1,A4 qiskit transpile L1 [total],0.014857725999945615,1
+A,0,2,instrumented,1,A0 compile_for_hardware [total],0.08047707299999729,
+A,0,2,instrumented,1,"A1c  compile other (to_matrix, compose, loop)",0.0022185900000408765,
+A,0,2,instrumented,1,"A1b.4 synthesize other (tolist, verify, checks)",0.0013910940002119787,
+A,0,2,instrumented,1,"A5 compile_for_hardware other (pair collection, import)",0.00047156600004427673,
+A,0,2,instrumented,1,refine_triggered,,12
+A,0,2,instrumented,1,cx_cache_hit,,0
+A,0,2,instrumented,1,cx_cache_miss,,60
+A,0,2,instrumented,2,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.0075593389999539795,1
+A,0,2,instrumented,2,A1b.1 core decompose (Rust),0.0007076859999983753,60
+A,0,2,instrumented,2,A1b.2 polish (check + Gauss-Newton),0.011706213000024945,60
+A,0,2,instrumented,2,A1b.3a cx core lookup/build,0.018363177000082942,60
+A,0,2,instrumented,2,A1b.3 build circuit (incl. CX core),0.024793745000124545,60
+A,0,2,instrumented,2,A1b  synthesize [all blocks],0.03859122799963188,60
+A,0,2,instrumented,2,A1 psf.compile [total],0.04825139100000797,1
+A,0,2,instrumented,2,A2a  matching check (networkx),0.0021875950000094235,1
+A,0,2,instrumented,2,A2b  orderings,0.00020509900002707582,1
+A,0,2,instrumented,2,A2c  relabel graph,7.644599998002377e-05,2
+A,0,2,instrumented,2,A2d  vf2_mapping (rustworkx),0.012733416999992642,2
+A,0,2,instrumented,2,A2 layout search [total],0.015328535999969972,1
+A,0,2,instrumented,2,A3 layout map -> list,1.085000002376546e-05,1
+A,0,2,instrumented,2,A4 qiskit transpile L1 [total],0.013726995000013176,1
+A,0,2,instrumented,2,A0 compile_for_hardware [total],0.07778462999999647,
+A,0,2,instrumented,2,"A1c  compile other (to_matrix, compose, loop)",0.002100824000422108,
+A,0,2,instrumented,2,"A1b.4 synthesize other (tolist, verify, checks)",0.0013835839994840171,
+A,0,2,instrumented,2,"A5 compile_for_hardware other (pair collection, import)",0.0004668579999815847,
+A,0,2,instrumented,2,refine_triggered,,12
+A,0,2,instrumented,2,cx_cache_hit,,0
+A,0,2,instrumented,2,cx_cache_miss,,60
+A,0,2,instrumented,3,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.007951654000009967,1
+A,0,2,instrumented,3,A1b.1 core decompose (Rust),0.0007643150001968024,60
+A,0,2,instrumented,3,A1b.2 polish (check + Gauss-Newton),0.01176672000013923,60
+A,0,2,instrumented,3,A1b.3a cx core lookup/build,0.018352809999896635,60
+A,0,2,instrumented,3,A1b.3 build circuit (incl. CX core),0.024895244999925126,60
+A,0,2,instrumented,3,A1b  synthesize [all blocks],0.03894488900016313,60
+A,0,2,instrumented,3,A1 psf.compile [total],0.049002808000011555,1
+A,0,2,instrumented,3,A2a  matching check (networkx),0.002186974000039754,1
+A,0,2,instrumented,3,A2b  orderings,0.0002471490000175436,1
+A,0,2,instrumented,3,A2c  relabel graph,9.69530000247687e-05,2
+A,0,2,instrumented,3,A2d  vf2_mapping (rustworkx),0.012573914999961744,2
+A,0,2,instrumented,3,A2 layout search [total],0.01524322399995981,1
+A,0,2,instrumented,3,A3 layout map -> list,1.7352999975628336e-05,1
+A,0,2,instrumented,3,A4 qiskit transpile L1 [total],0.015132112000003417,1
+A,0,2,instrumented,3,A0 compile_for_hardware [total],0.07989043800000672,
+A,0,2,instrumented,3,"A1c  compile other (to_matrix, compose, loop)",0.0021062649998384586,
+A,0,2,instrumented,3,"A1b.4 synthesize other (tolist, verify, checks)",0.0015186089999019714,
+A,0,2,instrumented,3,"A5 compile_for_hardware other (pair collection, import)",0.0004949410000563148,
+A,0,2,instrumented,3,refine_triggered,,12
+A,0,2,instrumented,3,cx_cache_hit,,0
+A,0,2,instrumented,3,cx_cache_miss,,60
+A,0,2,instrumented,4,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.008301603999996132,1
+A,0,2,instrumented,4,A1b.1 core decompose (Rust),0.0007563639998693361,60
+A,0,2,instrumented,4,A1b.2 polish (check + Gauss-Newton),0.012169736000146258,60
+A,0,2,instrumented,4,A1b.3a cx core lookup/build,0.019582051999975647,60
+A,0,2,instrumented,4,A1b.3 build circuit (incl. CX core),0.02631264099989039,60
+A,0,2,instrumented,4,A1b  synthesize [all blocks],0.04062814000008075,60
+A,0,2,instrumented,4,A1 psf.compile [total],0.05105529299999034,1
+A,0,2,instrumented,4,A2a  matching check (networkx),0.002200530000038725,1
+A,0,2,instrumented,4,A2b  orderings,0.00020687299996779984,1
+A,0,2,instrumented,4,A2c  relabel graph,7.844900000009147e-05,2
+A,0,2,instrumented,4,A2d  vf2_mapping (rustworkx),0.012933556999996654,2
+A,0,2,instrumented,4,A2 layout search [total],0.015531021000015244,1
+A,0,2,instrumented,4,A3 layout map -> list,1.0069000040857645e-05,1
+A,0,2,instrumented,4,A4 qiskit transpile L1 [total],0.014643178000028456,1
+A,0,2,instrumented,4,A0 compile_for_hardware [total],0.08171242899999243,
+A,0,2,instrumented,4,"A1c  compile other (to_matrix, compose, loop)",0.0021255489999134625,
+A,0,2,instrumented,4,"A1b.4 synthesize other (tolist, verify, checks)",0.0013893990001747625,
+A,0,2,instrumented,4,"A5 compile_for_hardware other (pair collection, import)",0.0004728679999175256,
+A,0,2,instrumented,4,refine_triggered,,12
+A,0,2,instrumented,4,cx_cache_hit,,0
+A,0,2,instrumented,4,cx_cache_miss,,60
+A,0,3,plain,0,total,0.085748040999988,1
+A,0,3,plain,1,total,0.08499236400001564,1
+A,0,3,plain,2,total,0.08227385599997206,1
+A,0,3,plain,3,total,0.0843515029999935,1
+A,0,3,plain,4,total,0.08167249399997445,1
+A,0,3,instrumented,0,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.007876592000002347,1
+A,0,3,instrumented,0,A1b.1 core decompose (Rust),0.0007674580000980313,60
+A,0,3,instrumented,0,A1b.2 polish (check + Gauss-Newton),0.014781974000186437,60
+A,0,3,instrumented,0,A1b.3a cx core lookup/build,0.019020239999917976,60
+A,0,3,instrumented,0,A1b.3 build circuit (incl. CX core),0.025579455999832135,60
+A,0,3,instrumented,0,A1b  synthesize [all blocks],0.04295606300001964,60
+A,0,3,instrumented,0,A1 psf.compile [total],0.05292647300001363,1
+A,0,3,instrumented,0,A2a  matching check (networkx),0.002257187999987309,1
+A,0,3,instrumented,0,A2b  orderings,0.0002480009999885624,1
+A,0,3,instrumented,0,A2c  relabel graph,7.67059999589037e-05,2
+A,0,3,instrumented,0,A2d  vf2_mapping (rustworkx),0.012617887000033079,2
+A,0,3,instrumented,0,A2 layout search [total],0.015312346000030175,1
+A,0,3,instrumented,0,A3 layout map -> list,1.5279000024293055e-05,1
+A,0,3,instrumented,0,A4 qiskit transpile L1 [total],0.013709821000020384,1
+A,0,3,instrumented,0,A0 compile_for_hardware [total],0.08246212400001696,
+A,0,3,instrumented,0,"A1c  compile other (to_matrix, compose, loop)",0.002093817999991643,
+A,0,3,instrumented,0,"A1b.4 synthesize other (tolist, verify, checks)",0.0018271749999030362,
+A,0,3,instrumented,0,"A5 compile_for_hardware other (pair collection, import)",0.0004982049999284754,
+A,0,3,instrumented,0,refine_triggered,,18
+A,0,3,instrumented,0,cx_cache_hit,,0
+A,0,3,instrumented,0,cx_cache_miss,,60
+A,0,3,instrumented,1,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.00836075099999789,1
+A,0,3,instrumented,1,A1b.1 core decompose (Rust),0.000708215999964068,60
+A,0,3,instrumented,1,A1b.2 polish (check + Gauss-Newton),0.014644746999977087,60
+A,0,3,instrumented,1,A1b.3a cx core lookup/build,0.01851795999988326,60
+A,0,3,instrumented,1,A1b.3 build circuit (incl. CX core),0.025024690000122973,60
+A,0,3,instrumented,1,A1b  synthesize [all blocks],0.042204697999977725,60
+A,0,3,instrumented,1,A1 psf.compile [total],0.0526478830000201,1
+A,0,3,instrumented,1,A2a  matching check (networkx),0.0022646420000000944,1
+A,0,3,instrumented,1,A2b  orderings,0.0002452159999961623,1
+A,0,3,instrumented,1,A2c  relabel graph,7.897000000411936e-05,2
+A,0,3,instrumented,1,A2d  vf2_mapping (rustworkx),0.012611955000011221,2
+A,0,3,instrumented,1,A2 layout search [total],0.015319768999972894,1
+A,0,3,instrumented,1,A3 layout map -> list,1.0870999972212303e-05,1
+A,0,3,instrumented,1,A4 qiskit transpile L1 [total],0.014054540000017823,1
+A,0,3,instrumented,1,A0 compile_for_hardware [total],0.0825820169999929,
+A,0,3,instrumented,1,"A1c  compile other (to_matrix, compose, loop)",0.0020824340000444863,
+A,0,3,instrumented,1,"A1b.4 synthesize other (tolist, verify, checks)",0.0018270449999135963,
+A,0,3,instrumented,1,"A5 compile_for_hardware other (pair collection, import)",0.0005489540000098714,
+A,0,3,instrumented,1,refine_triggered,,18
+A,0,3,instrumented,1,cx_cache_hit,,0
+A,0,3,instrumented,1,cx_cache_miss,,60
+A,0,3,instrumented,2,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.0074510240000336125,1
+A,0,3,instrumented,2,A1b.1 core decompose (Rust),0.0008098819997712781,60
+A,0,3,instrumented,2,A1b.2 polish (check + Gauss-Newton),0.014826529999993454,60
+A,0,3,instrumented,2,A1b.3a cx core lookup/build,0.01960800300014398,60
+A,0,3,instrumented,2,A1b.3 build circuit (incl. CX core),0.026438893000147345,60
+A,0,3,instrumented,2,A1b  synthesize [all blocks],0.0441172339996001,60
+A,0,3,instrumented,2,A1 psf.compile [total],0.05370873799995479,1
+A,0,3,instrumented,2,A2a  matching check (networkx),0.0022410070000091764,1
+A,0,3,instrumented,2,A2b  orderings,0.00020756399999299902,1
+A,0,3,instrumented,2,A2c  relabel graph,7.617400001436181e-05,2
+A,0,3,instrumented,2,A2d  vf2_mapping (rustworkx),0.012893079999969359,2
+A,0,3,instrumented,2,A2 layout search [total],0.015528216000006978,1
+A,0,3,instrumented,2,A3 layout map -> list,9.777999991911202e-06,1
+A,0,3,instrumented,2,A4 qiskit transpile L1 [total],0.013671078000015768,1
+A,0,3,instrumented,2,A0 compile_for_hardware [total],0.08337180299997726,
+A,0,3,instrumented,2,"A1c  compile other (to_matrix, compose, loop)",0.0021404800003210767,
+A,0,3,instrumented,2,"A1b.4 synthesize other (tolist, verify, checks)",0.002041928999688025,
+A,0,3,instrumented,2,"A5 compile_for_hardware other (pair collection, import)",0.00045399300000781295,
+A,0,3,instrumented,2,refine_triggered,,18
+A,0,3,instrumented,2,cx_cache_hit,,0
+A,0,3,instrumented,2,cx_cache_miss,,60
+A,0,3,instrumented,3,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.009271430000012515,1
+A,0,3,instrumented,3,A1b.1 core decompose (Rust),0.0007141480000427691,60
+A,0,3,instrumented,3,A1b.2 polish (check + Gauss-Newton),0.015020714000002044,60
+A,0,3,instrumented,3,A1b.3a cx core lookup/build,0.01895467599985068,60
+A,0,3,instrumented,3,A1b.3 build circuit (incl. CX core),0.025770408000141742,60
+A,0,3,instrumented,3,A1b  synthesize [all blocks],0.043327416000011,60
+A,0,3,instrumented,3,A1 psf.compile [total],0.054987797000023875,1
+A,0,3,instrumented,3,A2a  matching check (networkx),0.0022221209999884195,1
+A,0,3,instrumented,3,A2b  orderings,0.00020894699997597854,1
+A,0,3,instrumented,3,A2c  relabel graph,7.726699999466291e-05,2
+A,0,3,instrumented,3,A2d  vf2_mapping (rustworkx),0.012866760000008526,2
+A,0,3,instrumented,3,A2 layout search [total],0.015484233000051972,1
+A,0,3,instrumented,3,A3 layout map -> list,9.928999986641429e-06,1
+A,0,3,instrumented,3,A4 qiskit transpile L1 [total],0.014044701999978315,1
+A,0,3,instrumented,3,A0 compile_for_hardware [total],0.08496859899997844,
+A,0,3,instrumented,3,"A1c  compile other (to_matrix, compose, loop)",0.002388951000000361,
+A,0,3,instrumented,3,"A1b.4 synthesize other (tolist, verify, checks)",0.0018221459998244427,
+A,0,3,instrumented,3,"A5 compile_for_hardware other (pair collection, import)",0.00044193799993763605,
+A,0,3,instrumented,3,refine_triggered,,18
+A,0,3,instrumented,3,cx_cache_hit,,0
+A,0,3,instrumented,3,cx_cache_miss,,60
+A,0,3,instrumented,4,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.008470234000014898,1
+A,0,3,instrumented,4,A1b.1 core decompose (Rust),0.0007263780000243969,60
+A,0,3,instrumented,4,A1b.2 polish (check + Gauss-Newton),0.01505277700039187,60
+A,0,3,instrumented,4,A1b.3a cx core lookup/build,0.01947818699994741,60
+A,0,3,instrumented,4,A1b.3 build circuit (incl. CX core),0.026145755999891662,60
+A,0,3,instrumented,4,A1b  synthesize [all blocks],0.04386078000015914,60
+A,0,3,instrumented,4,A1 psf.compile [total],0.05442727299998751,1
+A,0,3,instrumented,4,A2a  matching check (networkx),0.002202883999984806,1
+A,0,3,instrumented,4,A2b  orderings,0.00021623100002443607,1
+A,0,3,instrumented,4,A2c  relabel graph,8.868899999470159e-05,2
+A,0,3,instrumented,4,A2d  vf2_mapping (rustworkx),0.012756832000036411,2
+A,0,3,instrumented,4,A2 layout search [total],0.01537680800004182,1
+A,0,3,instrumented,4,A3 layout map -> list,1.2183000023924251e-05,1
+A,0,3,instrumented,4,A4 qiskit transpile L1 [total],0.015319890000000669,1
+A,0,3,instrumented,4,A0 compile_for_hardware [total],0.08562774699998954,
+A,0,3,instrumented,4,"A1c  compile other (to_matrix, compose, loop)",0.0020962589998134717,
+A,0,3,instrumented,4,"A1b.4 synthesize other (tolist, verify, checks)",0.001935868999851209,
+A,0,3,instrumented,4,"A5 compile_for_hardware other (pair collection, import)",0.0004915929999356194,
+A,0,3,instrumented,4,refine_triggered,,18
+A,0,3,instrumented,4,cx_cache_hit,,0
+A,0,3,instrumented,4,cx_cache_miss,,60
+A,0,4,plain,0,total,0.0844774370000323,1
+A,0,4,plain,1,total,0.08507994600000757,1
+A,0,4,plain,2,total,0.08357648099996595,1
+A,0,4,plain,3,total,0.0847453800000153,1
+A,0,4,plain,4,total,0.0847057160000304,1
+A,0,4,instrumented,0,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.008361501999957,1
+A,0,4,instrumented,0,A1b.1 core decompose (Rust),0.0007326030000172068,60
+A,0,4,instrumented,0,A1b.2 polish (check + Gauss-Newton),0.014956440999867482,60
+A,0,4,instrumented,0,A1b.3a cx core lookup/build,0.018675389999827985,60
+A,0,4,instrumented,0,A1b.3 build circuit (incl. CX core),0.025574171999778628,60
+A,0,4,instrumented,0,A1b  synthesize [all blocks],0.04315347200008546,60
+A,0,4,instrumented,0,A1 psf.compile [total],0.05356628700002375,1
+A,0,4,instrumented,0,A2a  matching check (networkx),0.0022206279999750222,1
+A,0,4,instrumented,0,A2b  orderings,0.00021287399999891932,1
+A,0,4,instrumented,0,A2c  relabel graph,7.475199998907556e-05,2
+A,0,4,instrumented,0,A2d  vf2_mapping (rustworkx),0.012515702999962741,2
+A,0,4,instrumented,0,A2 layout search [total],0.015134948000024906,1
+A,0,4,instrumented,0,A3 layout map -> list,9.93899999457426e-06,1
+A,0,4,instrumented,0,A4 qiskit transpile L1 [total],0.015270114000031754,1
+A,0,4,instrumented,0,A0 compile_for_hardware [total],0.08443300600004022,
+A,0,4,instrumented,0,"A1c  compile other (to_matrix, compose, loop)",0.002051312999981292,
+A,0,4,instrumented,0,"A1b.4 synthesize other (tolist, verify, checks)",0.0018902560004221414,
+A,0,4,instrumented,0,"A5 compile_for_hardware other (pair collection, import)",0.00045171799996523987,
+A,0,4,instrumented,0,refine_triggered,,20
+A,0,4,instrumented,0,cx_cache_hit,,0
+A,0,4,instrumented,0,cx_cache_miss,,60
+A,0,4,instrumented,1,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.009236846000021615,1
+A,0,4,instrumented,1,A1b.1 core decompose (Rust),0.0007299859998965985,60
+A,0,4,instrumented,1,A1b.2 polish (check + Gauss-Newton),0.01525332699992532,60
+A,0,4,instrumented,1,A1b.3a cx core lookup/build,0.018907415000114725,60
+A,0,4,instrumented,1,A1b.3 build circuit (incl. CX core),0.025564089999932094,60
+A,0,4,instrumented,1,A1b  synthesize [all blocks],0.04352409000011903,60
+A,0,4,instrumented,1,A1 psf.compile [total],0.054894860999979755,1
+A,0,4,instrumented,1,A2a  matching check (networkx),0.0022179230000460848,1
+A,0,4,instrumented,1,A2b  orderings,0.00021552000004021465,1
+A,0,4,instrumented,1,A2c  relabel graph,7.657599996946374e-05,2
+A,0,4,instrumented,1,A2d  vf2_mapping (rustworkx),0.012459404999958679,2
+A,0,4,instrumented,1,A2 layout search [total],0.015079804000038166,1
+A,0,4,instrumented,1,A3 layout map -> list,1.0299999985363684e-05,1
+A,0,4,instrumented,1,A4 qiskit transpile L1 [total],0.014505863000010777,1
+A,0,4,instrumented,1,A0 compile_for_hardware [total],0.08497939500000484,
+A,0,4,instrumented,1,"A1c  compile other (to_matrix, compose, loop)",0.0021339249998391097,
+A,0,4,instrumented,1,"A1b.4 synthesize other (tolist, verify, checks)",0.0019766870003650183,
+A,0,4,instrumented,1,"A5 compile_for_hardware other (pair collection, import)",0.0004885669999907805,
+A,0,4,instrumented,1,refine_triggered,,20
+A,0,4,instrumented,1,cx_cache_hit,,0
+A,0,4,instrumented,1,cx_cache_miss,,60
+A,0,4,instrumented,2,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.00808148099997652,1
+A,0,4,instrumented,2,A1b.1 core decompose (Rust),0.0007105449999471602,60
+A,0,4,instrumented,2,A1b.2 polish (check + Gauss-Newton),0.015687671000080172,60
+A,0,4,instrumented,2,A1b.3a cx core lookup/build,0.018830134999859638,60
+A,0,4,instrumented,2,A1b.3 build circuit (incl. CX core),0.02534370199981595,60
+A,0,4,instrumented,2,A1b  synthesize [all blocks],0.04372274799999332,60
+A,0,4,instrumented,2,A1 psf.compile [total],0.053878069999996114,1
+A,0,4,instrumented,2,A2a  matching check (networkx),0.0022425600000133272,1
+A,0,4,instrumented,2,A2b  orderings,0.0002166019999663149,1
+A,0,4,instrumented,2,A2c  relabel graph,7.622399999718255e-05,2
+A,0,4,instrumented,2,A2d  vf2_mapping (rustworkx),0.012439378000010493,2
+A,0,4,instrumented,2,A2 layout search [total],0.015106443999968633,1
+A,0,4,instrumented,2,A3 layout map -> list,9.798999997201463e-06,1
+A,0,4,instrumented,2,A4 qiskit transpile L1 [total],0.015440748999992593,1
+A,0,4,instrumented,2,A0 compile_for_hardware [total],0.08488656899999114,
+A,0,4,instrumented,2,"A1c  compile other (to_matrix, compose, loop)",0.0020738410000262775,
+A,0,4,instrumented,2,"A1b.4 synthesize other (tolist, verify, checks)",0.0019808300001500356,
+A,0,4,instrumented,2,"A5 compile_for_hardware other (pair collection, import)",0.0004515070000365995,
+A,0,4,instrumented,2,refine_triggered,,20
+A,0,4,instrumented,2,cx_cache_hit,,0
+A,0,4,instrumented,2,cx_cache_miss,,60
+A,0,4,instrumented,3,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.00885952900000575,1
+A,0,4,instrumented,3,A1b.1 core decompose (Rust),0.0007029420000890241,60
+A,0,4,instrumented,3,A1b.2 polish (check + Gauss-Newton),0.015206434000049285,60
+A,0,4,instrumented,3,A1b.3a cx core lookup/build,0.01839310800005478,60
+A,0,4,instrumented,3,A1b.3 build circuit (incl. CX core),0.02477846499999714,60
+A,0,4,instrumented,3,A1b  synthesize [all blocks],0.04267558700007612,60
+A,0,4,instrumented,3,A1 psf.compile [total],0.05355061799997429,1
+A,0,4,instrumented,3,A2a  matching check (networkx),0.0021338629999831937,1
+A,0,4,instrumented,3,A2b  orderings,0.00021457799999780036,1
+A,0,4,instrumented,3,A2c  relabel graph,7.649499997341991e-05,2
+A,0,4,instrumented,3,A2d  vf2_mapping (rustworkx),0.012518989999932728,2
+A,0,4,instrumented,3,A2 layout search [total],0.01505162000000837,1
+A,0,4,instrumented,3,A3 layout map -> list,1.0048999968148564e-05,1
+A,0,4,instrumented,3,A4 qiskit transpile L1 [total],0.015663261999975475,1
+A,0,4,instrumented,3,A0 compile_for_hardware [total],0.0847597389999919,
+A,0,4,instrumented,3,"A1c  compile other (to_matrix, compose, loop)",0.0020155019998924217,
+A,0,4,instrumented,3,"A1b.4 synthesize other (tolist, verify, checks)",0.001987745999940671,
+A,0,4,instrumented,3,"A5 compile_for_hardware other (pair collection, import)",0.00048419000006560964,
+A,0,4,instrumented,3,refine_triggered,,20
+A,0,4,instrumented,3,cx_cache_hit,,0
+A,0,4,instrumented,3,cx_cache_miss,,60
+A,0,4,instrumented,4,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.008886740000036752,1
+A,0,4,instrumented,4,A1b.1 core decompose (Rust),0.0007647480002219709,60
+A,0,4,instrumented,4,A1b.2 polish (check + Gauss-Newton),0.015195205000225087,60
+A,0,4,instrumented,4,A1b.3a cx core lookup/build,0.01867473699991251,60
+A,0,4,instrumented,4,A1b.3 build circuit (incl. CX core),0.02506495699981315,60
+A,0,4,instrumented,4,A1b  synthesize [all blocks],0.04302044600007093,60
+A,0,4,instrumented,4,A1 psf.compile [total],0.05399901900000259,1
+A,0,4,instrumented,4,A2a  matching check (networkx),0.002234794999992573,1
+A,0,4,instrumented,4,A2b  orderings,0.0002170520000390752,1
+A,0,4,instrumented,4,A2c  relabel graph,9.219599996868055e-05,2
+A,0,4,instrumented,4,A2d  vf2_mapping (rustworkx),0.012571007999952144,2
+A,0,4,instrumented,4,A2 layout search [total],0.01522816600004262,1
+A,0,4,instrumented,4,A3 layout map -> list,1.0801000030369323e-05,1
+A,0,4,instrumented,4,A4 qiskit transpile L1 [total],0.013627346000021134,1
+A,0,4,instrumented,4,A0 compile_for_hardware [total],0.08333592500002851,
+A,0,4,instrumented,4,"A1c  compile other (to_matrix, compose, loop)",0.002091832999894905,
+A,0,4,instrumented,4,"A1b.4 synthesize other (tolist, verify, checks)",0.001995535999810727,
+A,0,4,instrumented,4,"A5 compile_for_hardware other (pair collection, import)",0.00047059299993179593,
+A,0,4,instrumented,4,refine_triggered,,20
+A,0,4,instrumented,4,cx_cache_hit,,0
+A,0,4,instrumented,4,cx_cache_miss,,60
+A,8,0,plain,0,total,0.07054336900000635,1
+A,8,0,plain,1,total,0.06861134100000754,1
+A,8,0,plain,2,total,0.06970546700000568,1
+A,8,0,plain,3,total,0.06934813399999484,1
+A,8,0,plain,4,total,0.06881696499999634,1
+A,8,0,instrumented,0,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.00739535299999261,1
+A,8,0,instrumented,0,A1b.1 core decompose (Rust),0.0007011860001284731,56
+A,8,0,instrumented,0,A1b.2 polish (check + Gauss-Newton),0.015613807000192992,56
+A,8,0,instrumented,0,A1b.3a cx core lookup/build,0.017760536999901433,56
+A,8,0,instrumented,0,A1b.3 build circuit (incl. CX core),0.024130870999954368,56
+A,8,0,instrumented,0,A1b  synthesize [all blocks],0.04242431600027885,56
+A,8,0,instrumented,0,A1 psf.compile [total],0.05209371500001225,1
+A,8,0,instrumented,0,A2a  matching check (networkx),0.0023262990000034733,1
+A,8,0,instrumented,0,A2b  orderings,0.0002198270000235425,1
+A,8,0,instrumented,0,A2c  relabel graph,3.662900002154856e-05,1
+A,8,0,instrumented,0,A2d  vf2_mapping (rustworkx),0.00013477599998168444,1
+A,8,0,instrumented,0,A2 layout search [total],0.002820778000000246,1
+A,8,0,instrumented,0,A3 layout map -> list,9.43800000641204e-06,1
+A,8,0,instrumented,0,A4 qiskit transpile L1 [total],0.013079147000041758,1
+A,8,0,instrumented,0,A0 compile_for_hardware [total],0.06845522800000481,
+A,8,0,instrumented,0,"A1c  compile other (to_matrix, compose, loop)",0.0022740459997407925,
+A,8,0,instrumented,0,"A1b.4 synthesize other (tolist, verify, checks)",0.001978452000003017,
+A,8,0,instrumented,0,"A5 compile_for_hardware other (pair collection, import)",0.0004521499999441403,
+A,8,0,instrumented,0,refine_triggered,,20
+A,8,0,instrumented,0,cx_cache_hit,,0
+A,8,0,instrumented,0,cx_cache_miss,,56
+A,8,0,instrumented,1,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.007999936000032903,1
+A,8,0,instrumented,1,A1b.1 core decompose (Rust),0.0006790809999870362,56
+A,8,0,instrumented,1,A1b.2 polish (check + Gauss-Newton),0.014917350999667178,56
+A,8,0,instrumented,1,A1b.3a cx core lookup/build,0.017789433999951143,56
+A,8,0,instrumented,1,A1b.3 build circuit (incl. CX core),0.02395954100018116,56
+A,8,0,instrumented,1,A1b  synthesize [all blocks],0.04148121500008983,56
+A,8,0,instrumented,1,A1 psf.compile [total],0.05147571700001663,1
+A,8,0,instrumented,1,A2a  matching check (networkx),0.002115238000044428,1
+A,8,0,instrumented,1,A2b  orderings,0.00022252200000139055,1
+A,8,0,instrumented,1,A2c  relabel graph,3.753100003223153e-05,1
+A,8,0,instrumented,1,A2d  vf2_mapping (rustworkx),0.00011813399999027752,1
+A,8,0,instrumented,1,A2 layout search [total],0.002593115999957263,1
+A,8,0,instrumented,1,A3 layout map -> list,9.176999981264089e-06,1
+A,8,0,instrumented,1,A4 qiskit transpile L1 [total],0.013123553000013999,1
+A,8,0,instrumented,1,A0 compile_for_hardware [total],0.06763279200004035,
+A,8,0,instrumented,1,"A1c  compile other (to_matrix, compose, loop)",0.0019945659998938936,
+A,8,0,instrumented,1,"A1b.4 synthesize other (tolist, verify, checks)",0.0019252420002544568,
+A,8,0,instrumented,1,"A5 compile_for_hardware other (pair collection, import)",0.00043122900007119824,
+A,8,0,instrumented,1,refine_triggered,,20
+A,8,0,instrumented,1,cx_cache_hit,,0
+A,8,0,instrumented,1,cx_cache_miss,,56
+A,8,0,instrumented,2,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.007919417999971756,1
+A,8,0,instrumented,2,A1b.1 core decompose (Rust),0.0006883450000145785,56
+A,8,0,instrumented,2,A1b.2 polish (check + Gauss-Newton),0.014802979999899435,56
+A,8,0,instrumented,2,A1b.3a cx core lookup/build,0.017594911999822216,56
+A,8,0,instrumented,2,A1b.3 build circuit (incl. CX core),0.023762235000162946,56
+A,8,0,instrumented,2,A1b  synthesize [all blocks],0.041140395999832435,56
+A,8,0,instrumented,2,A1 psf.compile [total],0.05103127699999277,1
+A,8,0,instrumented,2,A2a  matching check (networkx),0.002150674999995772,1
+A,8,0,instrumented,2,A2b  orderings,0.00021867500004191243,1
+A,8,0,instrumented,2,A2c  relabel graph,3.6740000041390886e-05,1
+A,8,0,instrumented,2,A2d  vf2_mapping (rustworkx),0.0001174930000047425,1
+A,8,0,instrumented,2,A2 layout search [total],0.0026238030000058643,1
+A,8,0,instrumented,2,A3 layout map -> list,9.137000006376184e-06,1
+A,8,0,instrumented,2,A4 qiskit transpile L1 [total],0.013627695000025142,1
+A,8,0,instrumented,2,A0 compile_for_hardware [total],0.06773623699996278,
+A,8,0,instrumented,2,"A1c  compile other (to_matrix, compose, loop)",0.001971463000188578,
+A,8,0,instrumented,2,"A1b.4 synthesize other (tolist, verify, checks)",0.0018868359997554762,
+A,8,0,instrumented,2,"A5 compile_for_hardware other (pair collection, import)",0.00044432499993263264,
+A,8,0,instrumented,2,refine_triggered,,20
+A,8,0,instrumented,2,cx_cache_hit,,0
+A,8,0,instrumented,2,cx_cache_miss,,56
+A,8,0,instrumented,3,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.00873646499996994,1
+A,8,0,instrumented,3,A1b.1 core decompose (Rust),0.0006927300001393633,56
+A,8,0,instrumented,3,A1b.2 polish (check + Gauss-Newton),0.014999907000230905,56
+A,8,0,instrumented,3,A1b.3a cx core lookup/build,0.018152872999678493,56
+A,8,0,instrumented,3,A1b.3 build circuit (incl. CX core),0.024502760000132184,56
+A,8,0,instrumented,3,A1b  synthesize [all blocks],0.04221402199982549,56
+A,8,0,instrumented,3,A1 psf.compile [total],0.0530006129999947,1
+A,8,0,instrumented,3,A2a  matching check (networkx),0.0021000390000267544,1
+A,8,0,instrumented,3,A2b  orderings,0.0002206089999958749,1
+A,8,0,instrumented,3,A2c  relabel graph,3.7711999993916834e-05,1
+A,8,0,instrumented,3,A2d  vf2_mapping (rustworkx),0.000119357000016862,1
+A,8,0,instrumented,3,A2 layout search [total],0.0025781370000004245,1
+A,8,0,instrumented,3,A3 layout map -> list,9.097000031488278e-06,1
+A,8,0,instrumented,3,A4 qiskit transpile L1 [total],0.015182158000015988,1
+A,8,0,instrumented,3,A0 compile_for_hardware [total],0.07117228900000327,
+A,8,0,instrumented,3,"A1c  compile other (to_matrix, compose, loop)",0.0020501260001992705,
+A,8,0,instrumented,3,"A1b.4 synthesize other (tolist, verify, checks)",0.0020186249993230376,
+A,8,0,instrumented,3,"A5 compile_for_hardware other (pair collection, import)",0.0004022839999606731,
+A,8,0,instrumented,3,refine_triggered,,20
+A,8,0,instrumented,3,cx_cache_hit,,0
+A,8,0,instrumented,3,cx_cache_miss,,56
+A,8,0,instrumented,4,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.0074305400000298505,1
+A,8,0,instrumented,4,A1b.1 core decompose (Rust),0.0006769590000317294,56
+A,8,0,instrumented,4,A1b.2 polish (check + Gauss-Newton),0.015075575999901503,56
+A,8,0,instrumented,4,A1b.3a cx core lookup/build,0.01787958299979664,56
+A,8,0,instrumented,4,A1b.3 build circuit (incl. CX core),0.024473772000021654,56
+A,8,0,instrumented,4,A1b  synthesize [all blocks],0.042216901000017515,56
+A,8,0,instrumented,4,A1 psf.compile [total],0.051711575000013,1
+A,8,0,instrumented,4,A2a  matching check (networkx),0.0021102679999671636,1
+A,8,0,instrumented,4,A2b  orderings,0.0002222930000357337,1
+A,8,0,instrumented,4,A2c  relabel graph,3.7471000041477964e-05,1
+A,8,0,instrumented,4,A2d  vf2_mapping (rustworkx),0.00013590800000429226,1
+A,8,0,instrumented,4,A2 layout search [total],0.002606841000044824,1
+A,8,0,instrumented,4,A3 layout map -> list,9.217000012995413e-06,1
+A,8,0,instrumented,4,A4 qiskit transpile L1 [total],0.014603098999998565,1
+A,8,0,instrumented,4,A0 compile_for_hardware [total],0.06935514900004591,
+A,8,0,instrumented,4,"A1c  compile other (to_matrix, compose, loop)",0.002064133999965634,
+A,8,0,instrumented,4,"A1b.4 synthesize other (tolist, verify, checks)",0.0019905940000626288,
+A,8,0,instrumented,4,"A5 compile_for_hardware other (pair collection, import)",0.00042441699997652904,
+A,8,0,instrumented,4,refine_triggered,,20
+A,8,0,instrumented,4,cx_cache_hit,,0
+A,8,0,instrumented,4,cx_cache_miss,,56
+A,8,1,plain,0,total,0.06941313900000523,1
+A,8,1,plain,1,total,0.06874293399999942,1
+A,8,1,plain,2,total,0.0648817759999929,1
+A,8,1,plain,3,total,0.06965286799999149,1
+A,8,1,plain,4,total,0.06872115400000212,1
+A,8,1,instrumented,0,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.00909489600002189,1
+A,8,1,instrumented,0,A1b.1 core decompose (Rust),0.0006947949996742864,56
+A,8,1,instrumented,0,A1b.2 polish (check + Gauss-Newton),0.014005130999919402,56
+A,8,1,instrumented,0,A1b.3a cx core lookup/build,0.018074087999877975,56
+A,8,1,instrumented,0,A1b.3 build circuit (incl. CX core),0.024304226000083418,56
+A,8,1,instrumented,0,A1b  synthesize [all blocks],0.04070715499989319,56
+A,8,1,instrumented,0,A1 psf.compile [total],0.05200129399997877,1
+A,8,1,instrumented,0,A2a  matching check (networkx),0.0021346139999991465,1
+A,8,1,instrumented,0,A2b  orderings,0.0002317909999760559,1
+A,8,1,instrumented,0,A2c  relabel graph,3.786199999922246e-05,1
+A,8,1,instrumented,0,A2d  vf2_mapping (rustworkx),0.00012428600001612722,1
+A,8,1,instrumented,0,A2 layout search [total],0.0026311270000292097,1
+A,8,1,instrumented,0,A3 layout map -> list,9.43800000641204e-06,1
+A,8,1,instrumented,0,A4 qiskit transpile L1 [total],0.014117085999998835,1
+A,8,1,instrumented,0,A0 compile_for_hardware [total],0.06929724799999804,
+A,8,1,instrumented,0,"A1c  compile other (to_matrix, compose, loop)",0.0021992430000636887,
+A,8,1,instrumented,0,"A1b.4 synthesize other (tolist, verify, checks)",0.0017030030002160856,
+A,8,1,instrumented,0,"A5 compile_for_hardware other (pair collection, import)",0.0005383029999848077,
+A,8,1,instrumented,0,refine_triggered,,16
+A,8,1,instrumented,0,cx_cache_hit,,0
+A,8,1,instrumented,0,cx_cache_miss,,56
+A,8,1,instrumented,1,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.008539369999994051,1
+A,8,1,instrumented,1,A1b.1 core decompose (Rust),0.0007801669998457328,56
+A,8,1,instrumented,1,A1b.2 polish (check + Gauss-Newton),0.01387534200000573,56
+A,8,1,instrumented,1,A1b.3a cx core lookup/build,0.018936917000075937,56
+A,8,1,instrumented,1,A1b.3 build circuit (incl. CX core),0.02544280000006438,56
+A,8,1,instrumented,1,A1b  synthesize [all blocks],0.04182370500006982,56
+A,8,1,instrumented,1,A1 psf.compile [total],0.052505512000038834,1
+A,8,1,instrumented,1,A2a  matching check (networkx),0.0023562449999872115,1
+A,8,1,instrumented,1,A2b  orderings,0.00023894399998880544,1
+A,8,1,instrumented,1,A2c  relabel graph,4.123899998376146e-05,1
+A,8,1,instrumented,1,A2d  vf2_mapping (rustworkx),0.00011905599995998273,1
+A,8,1,instrumented,1,A2 layout search [total],0.00286601300001621,1
+A,8,1,instrumented,1,A3 layout map -> list,1.3045000002875895e-05,1
+A,8,1,instrumented,1,A4 qiskit transpile L1 [total],0.01568867600002477,1
+A,8,1,instrumented,1,A0 compile_for_hardware [total],0.07158008900000823,
+A,8,1,instrumented,1,"A1c  compile other (to_matrix, compose, loop)",0.0021424369999749615,
+A,8,1,instrumented,1,"A1b.4 synthesize other (tolist, verify, checks)",0.001725396000153978,
+A,8,1,instrumented,1,"A5 compile_for_hardware other (pair collection, import)",0.0005068429999255386,
+A,8,1,instrumented,1,refine_triggered,,16
+A,8,1,instrumented,1,cx_cache_hit,,0
+A,8,1,instrumented,1,cx_cache_miss,,56
+A,8,1,instrumented,2,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.008792671999970025,1
+A,8,1,instrumented,2,A1b.1 core decompose (Rust),0.0007229930002381479,56
+A,8,1,instrumented,2,A1b.2 polish (check + Gauss-Newton),0.013310573999831377,56
+A,8,1,instrumented,2,A1b.3a cx core lookup/build,0.018610365999848,56
+A,8,1,instrumented,2,A1b.3 build circuit (incl. CX core),0.025088330000130554,56
+A,8,1,instrumented,2,A1b  synthesize [all blocks],0.04084358700026769,56
+A,8,1,instrumented,2,A1 psf.compile [total],0.05187509900002851,1
+A,8,1,instrumented,2,A2a  matching check (networkx),0.002208766000023843,1
+A,8,1,instrumented,2,A2b  orderings,0.0002709749999780797,1
+A,8,1,instrumented,2,A2c  relabel graph,3.885400002445749e-05,1
+A,8,1,instrumented,2,A2d  vf2_mapping (rustworkx),0.0001347560000226622,1
+A,8,1,instrumented,2,A2 layout search [total],0.0027713329999983216,1
+A,8,1,instrumented,2,A3 layout map -> list,1.1652000011963537e-05,1
+A,8,1,instrumented,2,A4 qiskit transpile L1 [total],0.016318656999999348,1
+A,8,1,instrumented,2,A0 compile_for_hardware [total],0.07147047000000839,
+A,8,1,instrumented,2,"A1c  compile other (to_matrix, compose, loop)",0.002238839999790798,
+A,8,1,instrumented,2,"A1b.4 synthesize other (tolist, verify, checks)",0.0017216900000676105,
+A,8,1,instrumented,2,"A5 compile_for_hardware other (pair collection, import)",0.0004937289999702443,
+A,8,1,instrumented,2,refine_triggered,,16
+A,8,1,instrumented,2,cx_cache_hit,,0
+A,8,1,instrumented,2,cx_cache_miss,,56
+A,8,1,instrumented,3,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.008542015999978503,1
+A,8,1,instrumented,3,A1b.1 core decompose (Rust),0.0007805389999475665,56
+A,8,1,instrumented,3,A1b.2 polish (check + Gauss-Newton),0.014271437999923364,56
+A,8,1,instrumented,3,A1b.3a cx core lookup/build,0.0192465180000454,56
+A,8,1,instrumented,3,A1b.3 build circuit (incl. CX core),0.026010266000128013,56
+A,8,1,instrumented,3,A1b  synthesize [all blocks],0.042838120000226354,56
+A,8,1,instrumented,3,A1 psf.compile [total],0.0536598250000111,1
+A,8,1,instrumented,3,A2a  matching check (networkx),0.002186884000025202,1
+A,8,1,instrumented,3,A2b  orderings,0.00023609799995938374,1
+A,8,1,instrumented,3,A2c  relabel graph,3.7722000001849665e-05,1
+A,8,1,instrumented,3,A2d  vf2_mapping (rustworkx),0.00011753400002589842,1
+A,8,1,instrumented,3,A2 layout search [total],0.002687695000020085,1
+A,8,1,instrumented,3,A3 layout map -> list,9.578000003784837e-06,1
+A,8,1,instrumented,3,A4 qiskit transpile L1 [total],0.0160867719999942,1
+A,8,1,instrumented,3,A0 compile_for_hardware [total],0.07295866700002307,
+A,8,1,instrumented,3,"A1c  compile other (to_matrix, compose, loop)",0.0022796889998062397,
+A,8,1,instrumented,3,"A1b.4 synthesize other (tolist, verify, checks)",0.0017758770002274105,
+A,8,1,instrumented,3,"A5 compile_for_hardware other (pair collection, import)",0.000514796999993905,
+A,8,1,instrumented,3,refine_triggered,,16
+A,8,1,instrumented,3,cx_cache_hit,,0
+A,8,1,instrumented,3,cx_cache_miss,,56
+A,8,1,instrumented,4,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.009347941999976683,1
+A,8,1,instrumented,4,A1b.1 core decompose (Rust),0.0006751020000592689,56
+A,8,1,instrumented,4,A1b.2 polish (check + Gauss-Newton),0.013251146000129665,56
+A,8,1,instrumented,4,A1b.3a cx core lookup/build,0.01769965700003695,56
+A,8,1,instrumented,4,A1b.3 build circuit (incl. CX core),0.023887896000189812,56
+A,8,1,instrumented,4,A1b  synthesize [all blocks],0.039518507999900976,56
+A,8,1,instrumented,4,A1 psf.compile [total],0.05090965699997696,1
+A,8,1,instrumented,4,A2a  matching check (networkx),0.0021875049999948715,1
+A,8,1,instrumented,4,A2b  orderings,0.00022532799999908093,1
+A,8,1,instrumented,4,A2c  relabel graph,3.728100000444101e-05,1
+A,8,1,instrumented,4,A2d  vf2_mapping (rustworkx),0.0001213600000369297,1
+A,8,1,instrumented,4,A2 layout search [total],0.0026750320000132888,1
+A,8,1,instrumented,4,A3 layout map -> list,9.116999990510521e-06,1
+A,8,1,instrumented,4,A4 qiskit transpile L1 [total],0.01414622100003271,1
+A,8,1,instrumented,4,A0 compile_for_hardware [total],0.06822050699997817,
+A,8,1,instrumented,4,"A1c  compile other (to_matrix, compose, loop)",0.002043207000099301,
+A,8,1,instrumented,4,"A1b.4 synthesize other (tolist, verify, checks)",0.0017043639995222293,
+A,8,1,instrumented,4,"A5 compile_for_hardware other (pair collection, import)",0.00048047999996470026,
+A,8,1,instrumented,4,refine_triggered,,16
+A,8,1,instrumented,4,cx_cache_hit,,0
+A,8,1,instrumented,4,cx_cache_miss,,56
+A,8,2,plain,0,total,0.06770763299999771,1
+A,8,2,plain,1,total,0.0652425960000187,1
+A,8,2,plain,2,total,0.0637732650000089,1
+A,8,2,plain,3,total,0.06385017100001278,1
+A,8,2,plain,4,total,0.06636080499998798,1
+A,8,2,instrumented,0,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.008531990999983918,1
+A,8,2,instrumented,0,A1b.1 core decompose (Rust),0.0006832240000562706,56
+A,8,2,instrumented,0,A1b.2 polish (check + Gauss-Newton),0.011612956000135455,56
+A,8,2,instrumented,0,A1b.3a cx core lookup/build,0.01840861800019411,56
+A,8,2,instrumented,0,A1b.3 build circuit (incl. CX core),0.02464049499991461,56
+A,8,2,instrumented,0,A1b  synthesize [all blocks],0.038307241000040904,56
+A,8,2,instrumented,0,A1 psf.compile [total],0.048866285000030985,1
+A,8,2,instrumented,0,A2a  matching check (networkx),0.0021880970000438538,1
+A,8,2,instrumented,0,A2b  orderings,0.00022066899998662848,1
+A,8,2,instrumented,0,A2c  relabel graph,3.68599999660546e-05,1
+A,8,2,instrumented,0,A2d  vf2_mapping (rustworkx),0.00012091900003952105,1
+A,8,2,instrumented,0,A2 layout search [total],0.002668689000017821,1
+A,8,2,instrumented,0,A3 layout map -> list,8.886999978585663e-06,1
+A,8,2,instrumented,0,A4 qiskit transpile L1 [total],0.01522218600001679,1
+A,8,2,instrumented,0,A0 compile_for_hardware [total],0.06718984300005104,
+A,8,2,instrumented,0,"A1c  compile other (to_matrix, compose, loop)",0.0020270530000061626,
+A,8,2,instrumented,0,"A1b.4 synthesize other (tolist, verify, checks)",0.0013705659999345698,
+A,8,2,instrumented,0,"A5 compile_for_hardware other (pair collection, import)",0.0004237960000068597,
+A,8,2,instrumented,0,refine_triggered,,12
+A,8,2,instrumented,0,cx_cache_hit,,0
+A,8,2,instrumented,0,cx_cache_miss,,56
+A,8,2,instrumented,1,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.008532327000011719,1
+A,8,2,instrumented,1,A1b.1 core decompose (Rust),0.0006646720001981521,56
+A,8,2,instrumented,1,A1b.2 polish (check + Gauss-Newton),0.011297316999844043,56
+A,8,2,instrumented,1,A1b.3a cx core lookup/build,0.017549594000058732,56
+A,8,2,instrumented,1,A1b.3 build circuit (incl. CX core),0.023872732000199903,56
+A,8,2,instrumented,1,A1b  synthesize [all blocks],0.037313207000238435,56
+A,8,2,instrumented,1,A1 psf.compile [total],0.047817312000006496,1
+A,8,2,instrumented,1,A2a  matching check (networkx),0.002129956000032962,1
+A,8,2,instrumented,1,A2b  orderings,0.00022275300000274,1
+A,8,2,instrumented,1,A2c  relabel graph,3.7551999980678374e-05,1
+A,8,2,instrumented,1,A2d  vf2_mapping (rustworkx),0.00011952700003803329,1
+A,8,2,instrumented,1,A2 layout search [total],0.0026254470000139918,1
+A,8,2,instrumented,1,A3 layout map -> list,9.408000039456965e-06,1
+A,8,2,instrumented,1,A4 qiskit transpile L1 [total],0.013834409000025971,1
+A,8,2,instrumented,1,A0 compile_for_hardware [total],0.06472598100003779,
+A,8,2,instrumented,1,"A1c  compile other (to_matrix, compose, loop)",0.001971777999756341,
+A,8,2,instrumented,1,"A1b.4 synthesize other (tolist, verify, checks)",0.0014784859999963373,
+A,8,2,instrumented,1,"A5 compile_for_hardware other (pair collection, import)",0.00043940499995187565,
+A,8,2,instrumented,1,refine_triggered,,12
+A,8,2,instrumented,1,cx_cache_hit,,0
+A,8,2,instrumented,1,cx_cache_miss,,56
+A,8,2,instrumented,2,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.008238118999997823,1
+A,8,2,instrumented,2,A1b.1 core decompose (Rust),0.0006681519998323893,56
+A,8,2,instrumented,2,A1b.2 polish (check + Gauss-Newton),0.011235272000078567,56
+A,8,2,instrumented,2,A1b.3a cx core lookup/build,0.018098619000227245,56
+A,8,2,instrumented,2,A1b.3 build circuit (incl. CX core),0.024389229000121304,56
+A,8,2,instrumented,2,A1b  synthesize [all blocks],0.03771512899993468,56
+A,8,2,instrumented,2,A1 psf.compile [total],0.04800689199998942,1
+A,8,2,instrumented,2,A2a  matching check (networkx),0.002205008000032649,1
+A,8,2,instrumented,2,A2b  orderings,0.00022961700000223573,1
+A,8,2,instrumented,2,A2c  relabel graph,3.7540999983320944e-05,1
+A,8,2,instrumented,2,A2d  vf2_mapping (rustworkx),0.00012068899997075277,1
+A,8,2,instrumented,2,A2 layout search [total],0.002698737000002893,1
+A,8,2,instrumented,2,A3 layout map -> list,9.02699997595846e-06,1
+A,8,2,instrumented,2,A4 qiskit transpile L1 [total],0.01463319300000876,1
+A,8,2,instrumented,2,A0 compile_for_hardware [total],0.06578779400001622,
+A,8,2,instrumented,2,"A1c  compile other (to_matrix, compose, loop)",0.00205364400005692,
+A,8,2,instrumented,2,"A1b.4 synthesize other (tolist, verify, checks)",0.0014224759999024172,
+A,8,2,instrumented,2,"A5 compile_for_hardware other (pair collection, import)",0.000439945000039188,
+A,8,2,instrumented,2,refine_triggered,,12
+A,8,2,instrumented,2,cx_cache_hit,,0
+A,8,2,instrumented,2,cx_cache_miss,,56
+A,8,2,instrumented,3,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.008254729999976007,1
+A,8,2,instrumented,3,A1b.1 core decompose (Rust),0.0006635339997274059,56
+A,8,2,instrumented,3,A1b.2 polish (check + Gauss-Newton),0.011308297000198309,56
+A,8,2,instrumented,3,A1b.3a cx core lookup/build,0.01720762299976286,56
+A,8,2,instrumented,3,A1b.3 build circuit (incl. CX core),0.02358510699997396,56
+A,8,2,instrumented,3,A1b  synthesize [all blocks],0.03694190999988223,56
+A,8,2,instrumented,3,A1 psf.compile [total],0.04717399399999067,1
+A,8,2,instrumented,3,A2a  matching check (networkx),0.0021229729999845404,1
+A,8,2,instrumented,3,A2b  orderings,0.00022234199997228643,1
+A,8,2,instrumented,3,A2c  relabel graph,3.6879999981920264e-05,1
+A,8,2,instrumented,3,A2d  vf2_mapping (rustworkx),0.00011600099998076985,1
+A,8,2,instrumented,3,A2 layout search [total],0.002600298999993811,1
+A,8,2,instrumented,3,A3 layout map -> list,9.718000001157634e-06,1
+A,8,2,instrumented,3,A4 qiskit transpile L1 [total],0.015241967999997996,1
+A,8,2,instrumented,3,A0 compile_for_hardware [total],0.06548441199998933,
+A,8,2,instrumented,3,"A1c  compile other (to_matrix, compose, loop)",0.0019773540001324363,
+A,8,2,instrumented,3,"A1b.4 synthesize other (tolist, verify, checks)",0.0013849719999825538,
+A,8,2,instrumented,3,"A5 compile_for_hardware other (pair collection, import)",0.000458433000005698,
+A,8,2,instrumented,3,refine_triggered,,12
+A,8,2,instrumented,3,cx_cache_hit,,0
+A,8,2,instrumented,3,cx_cache_miss,,56
+A,8,2,instrumented,4,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.009363797999981216,1
+A,8,2,instrumented,4,A1b.1 core decompose (Rust),0.0006941499997878964,56
+A,8,2,instrumented,4,A1b.2 polish (check + Gauss-Newton),0.011366659999850981,56
+A,8,2,instrumented,4,A1b.3a cx core lookup/build,0.018129585999986375,56
+A,8,2,instrumented,4,A1b.3 build circuit (incl. CX core),0.024530321000270305,56
+A,8,2,instrumented,4,A1b  synthesize [all blocks],0.038049723999961316,56
+A,8,2,instrumented,4,A1 psf.compile [total],0.049400128999991466,1
+A,8,2,instrumented,4,A2a  matching check (networkx),0.002142429999992146,1
+A,8,2,instrumented,4,A2b  orderings,0.0002443449999987024,1
+A,8,2,instrumented,4,A2c  relabel graph,3.692100000307619e-05,1
+A,8,2,instrumented,4,A2d  vf2_mapping (rustworkx),0.0001203790000090521,1
+A,8,2,instrumented,4,A2 layout search [total],0.0026427810000200225,1
+A,8,2,instrumented,4,A3 layout map -> list,8.847000003697758e-06,1
+A,8,2,instrumented,4,A4 qiskit transpile L1 [total],0.01553997299998855,1
+A,8,2,instrumented,4,A0 compile_for_hardware [total],0.06802537300001177,
+A,8,2,instrumented,4,"A1c  compile other (to_matrix, compose, loop)",0.0019866070000489344,
+A,8,2,instrumented,4,"A1b.4 synthesize other (tolist, verify, checks)",0.001458593000052133,
+A,8,2,instrumented,4,"A5 compile_for_hardware other (pair collection, import)",0.0004336430000080327,
+A,8,2,instrumented,4,refine_triggered,,12
+A,8,2,instrumented,4,cx_cache_hit,,0
+A,8,2,instrumented,4,cx_cache_miss,,56
+A,8,3,plain,0,total,0.06852587500003438,1
+A,8,3,plain,1,total,0.0698782739999615,1
+A,8,3,plain,2,total,0.06717916099995591,1
+A,8,3,plain,3,total,0.0669453269999849,1
+A,8,3,plain,4,total,0.06556161899999324,1
+A,8,3,instrumented,0,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.008041466999998192,1
+A,8,3,instrumented,0,A1b.1 core decompose (Rust),0.0006707480000613941,56
+A,8,3,instrumented,0,A1b.2 polish (check + Gauss-Newton),0.013567828999782705,56
+A,8,3,instrumented,0,A1b.3a cx core lookup/build,0.017461062999984733,56
+A,8,3,instrumented,0,A1b.3 build circuit (incl. CX core),0.023516119999953844,56
+A,8,3,instrumented,0,A1b  synthesize [all blocks],0.03950801900015222,56
+A,8,3,instrumented,0,A1 psf.compile [total],0.049455295000029764,1
+A,8,3,instrumented,0,A2a  matching check (networkx),0.002166655999985778,1
+A,8,3,instrumented,0,A2b  orderings,0.00022588899997799672,1
+A,8,3,instrumented,0,A2c  relabel graph,3.602900000032605e-05,1
+A,8,3,instrumented,0,A2d  vf2_mapping (rustworkx),0.00011843400000088877,1
+A,8,3,instrumented,0,A2 layout search [total],0.0026670059999673867,1
+A,8,3,instrumented,0,A3 layout map -> list,9.158000011666445e-06,1
+A,8,3,instrumented,0,A4 qiskit transpile L1 [total],0.013932676000024458,1
+A,8,3,instrumented,0,A0 compile_for_hardware [total],0.06648063599999432,
+A,8,3,instrumented,0,"A1c  compile other (to_matrix, compose, loop)",0.0019058089998793548,
+A,8,3,instrumented,0,"A1b.4 synthesize other (tolist, verify, checks)",0.0017533220003542738,
+A,8,3,instrumented,0,"A5 compile_for_hardware other (pair collection, import)",0.0004165009999610447,
+A,8,3,instrumented,0,refine_triggered,,17
+A,8,3,instrumented,0,cx_cache_hit,,0
+A,8,3,instrumented,0,cx_cache_miss,,56
+A,8,3,instrumented,1,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.0075085019999505676,1
+A,8,3,instrumented,1,A1b.1 core decompose (Rust),0.000682957999856626,56
+A,8,3,instrumented,1,A1b.2 polish (check + Gauss-Newton),0.013674525999874731,56
+A,8,3,instrumented,1,A1b.3a cx core lookup/build,0.01790689200026918,56
+A,8,3,instrumented,1,A1b.3 build circuit (incl. CX core),0.024302045000297312,56
+A,8,3,instrumented,1,A1b  synthesize [all blocks],0.040424140999789415,56
+A,8,3,instrumented,1,A1 psf.compile [total],0.04991048899995576,1
+A,8,3,instrumented,1,A2a  matching check (networkx),0.002150825999990502,1
+A,8,3,instrumented,1,A2b  orderings,0.00022569899999780318,1
+A,8,3,instrumented,1,A2c  relabel graph,3.7571999996544037e-05,1
+A,8,3,instrumented,1,A2d  vf2_mapping (rustworkx),0.00011442800001759679,1
+A,8,3,instrumented,1,A2 layout search [total],0.0026304659999709656,1
+A,8,3,instrumented,1,A3 layout map -> list,8.85699995478717e-06,1
+A,8,3,instrumented,1,A4 qiskit transpile L1 [total],0.015256380000039371,1
+A,8,3,instrumented,1,A0 compile_for_hardware [total],0.06825464400003511,
+A,8,3,instrumented,1,"A1c  compile other (to_matrix, compose, loop)",0.001977846000215777,
+A,8,3,instrumented,1,"A1b.4 synthesize other (tolist, verify, checks)",0.0017646119997607457,
+A,8,3,instrumented,1,"A5 compile_for_hardware other (pair collection, import)",0.00044845200011423003,
+A,8,3,instrumented,1,refine_triggered,,17
+A,8,3,instrumented,1,cx_cache_hit,,0
+A,8,3,instrumented,1,cx_cache_miss,,56
+A,8,3,instrumented,2,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.008434176999969623,1
+A,8,3,instrumented,2,A1b.1 core decompose (Rust),0.000697546000139937,56
+A,8,3,instrumented,2,A1b.2 polish (check + Gauss-Newton),0.014120167999863042,56
+A,8,3,instrumented,2,A1b.3a cx core lookup/build,0.018613991000108854,56
+A,8,3,instrumented,2,A1b.3 build circuit (incl. CX core),0.024853665999614805,56
+A,8,3,instrumented,2,A1b  synthesize [all blocks],0.0414448110000194,56
+A,8,3,instrumented,2,A1 psf.compile [total],0.051867921999985356,1
+A,8,3,instrumented,2,A2a  matching check (networkx),0.00212951499997871,1
+A,8,3,instrumented,2,A2b  orderings,0.00024313200003689417,1
+A,8,3,instrumented,2,A2c  relabel graph,3.841300002704884e-05,1
+A,8,3,instrumented,2,A2d  vf2_mapping (rustworkx),0.00012045900001567134,1
+A,8,3,instrumented,2,A2 layout search [total],0.0026314489999776924,1
+A,8,3,instrumented,2,A3 layout map -> list,8.666999974593637e-06,1
+A,8,3,instrumented,2,A4 qiskit transpile L1 [total],0.014630506000003152,1
+A,8,3,instrumented,2,A0 compile_for_hardware [total],0.0698329630000103,
+A,8,3,instrumented,2,"A1c  compile other (to_matrix, compose, loop)",0.001988933999996334,
+A,8,3,instrumented,2,"A1b.4 synthesize other (tolist, verify, checks)",0.0017734310004016152,
+A,8,3,instrumented,2,"A5 compile_for_hardware other (pair collection, import)",0.0006944190000695016,
+A,8,3,instrumented,2,refine_triggered,,17
+A,8,3,instrumented,2,cx_cache_hit,,0
+A,8,3,instrumented,2,cx_cache_miss,,56
+A,8,3,instrumented,3,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.007078124999964075,1
+A,8,3,instrumented,3,A1b.1 core decompose (Rust),0.000650829999869984,56
+A,8,3,instrumented,3,A1b.2 polish (check + Gauss-Newton),0.013371189999986655,56
+A,8,3,instrumented,3,A1b.3a cx core lookup/build,0.017235020999976314,56
+A,8,3,instrumented,3,A1b.3 build circuit (incl. CX core),0.023343017000001964,56
+A,8,3,instrumented,3,A1b  synthesize [all blocks],0.039045157999623825,56
+A,8,3,instrumented,3,A1 psf.compile [total],0.048056877000021814,1
+A,8,3,instrumented,3,A2a  matching check (networkx),0.002172997000002397,1
+A,8,3,instrumented,3,A2b  orderings,0.00022984700001416059,1
+A,8,3,instrumented,3,A2c  relabel graph,3.743100000974664e-05,1
+A,8,3,instrumented,3,A2d  vf2_mapping (rustworkx),0.0001173929999822576,1
+A,8,3,instrumented,3,A2 layout search [total],0.002662116999999853,1
+A,8,3,instrumented,3,A3 layout map -> list,9.878000014396093e-06,1
+A,8,3,instrumented,3,A4 qiskit transpile L1 [total],0.01312596399998256,1
+A,8,3,instrumented,3,A0 compile_for_hardware [total],0.06434680099999923,
+A,8,3,instrumented,3,"A1c  compile other (to_matrix, compose, loop)",0.0019335940004339136,
+A,8,3,instrumented,3,"A1b.4 synthesize other (tolist, verify, checks)",0.0016801209997652222,
+A,8,3,instrumented,3,"A5 compile_for_hardware other (pair collection, import)",0.0004919649999806097,
+A,8,3,instrumented,3,refine_triggered,,17
+A,8,3,instrumented,3,cx_cache_hit,,0
+A,8,3,instrumented,3,cx_cache_miss,,56
+A,8,3,instrumented,4,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.008791540999993686,1
+A,8,3,instrumented,4,A1b.1 core decompose (Rust),0.0007384479997085691,56
+A,8,3,instrumented,4,A1b.2 polish (check + Gauss-Newton),0.013794353000037063,56
+A,8,3,instrumented,4,A1b.3a cx core lookup/build,0.01789209999992636,56
+A,8,3,instrumented,4,A1b.3 build circuit (incl. CX core),0.02406216899987612,56
+A,8,3,instrumented,4,A1b  synthesize [all blocks],0.0403205069999899,56
+A,8,3,instrumented,4,A1 psf.compile [total],0.05111286200002496,1
+A,8,3,instrumented,4,A2a  matching check (networkx),0.002103426000019226,1
+A,8,3,instrumented,4,A2b  orderings,0.000224716999980501,1
+A,8,3,instrumented,4,A2c  relabel graph,3.6618999956772313e-05,1
+A,8,3,instrumented,4,A2d  vf2_mapping (rustworkx),0.000118584999995619,1
+A,8,3,instrumented,4,A2 layout search [total],0.0025835280000023886,1
+A,8,3,instrumented,4,A3 layout map -> list,9.337999983927148e-06,1
+A,8,3,instrumented,4,A4 qiskit transpile L1 [total],0.015060559000005469,1
+A,8,3,instrumented,4,A0 compile_for_hardware [total],0.06917583500001001,
+A,8,3,instrumented,4,"A1c  compile other (to_matrix, compose, loop)",0.0020008140000413732,
+A,8,3,instrumented,4,"A1b.4 synthesize other (tolist, verify, checks)",0.0017255370003681492,
+A,8,3,instrumented,4,"A5 compile_for_hardware other (pair collection, import)",0.00040954799999326497,
+A,8,3,instrumented,4,refine_triggered,,17
+A,8,3,instrumented,4,cx_cache_hit,,0
+A,8,3,instrumented,4,cx_cache_miss,,56
+A,8,4,plain,0,total,0.067564673999982,1
+A,8,4,plain,1,total,0.07056834499996967,1
+A,8,4,plain,2,total,0.06611670799998137,1
+A,8,4,plain,3,total,0.06910929800000076,1
+A,8,4,plain,4,total,0.0663823890000117,1
+A,8,4,instrumented,0,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.00858564899999692,1
+A,8,4,instrumented,0,A1b.1 core decompose (Rust),0.0006889779995162826,56
+A,8,4,instrumented,0,A1b.2 polish (check + Gauss-Newton),0.014849111000216908,56
+A,8,4,instrumented,0,A1b.3a cx core lookup/build,0.01801980199996933,56
+A,8,4,instrumented,0,A1b.3 build circuit (incl. CX core),0.024114278000070044,56
+A,8,4,instrumented,0,A1b  synthesize [all blocks],0.041539198999828386,56
+A,8,4,instrumented,0,A1 psf.compile [total],0.05215612400002101,1
+A,8,4,instrumented,0,A2a  matching check (networkx),0.0021009609999964596,1
+A,8,4,instrumented,0,A2b  orderings,0.00024015599996118908,1
+A,8,4,instrumented,0,A2c  relabel graph,3.769199997805117e-05,1
+A,8,4,instrumented,0,A2d  vf2_mapping (rustworkx),0.00013206099998797072,1
+A,8,4,instrumented,0,A2 layout search [total],0.002632770999980494,1
+A,8,4,instrumented,0,A3 layout map -> list,9.337999983927148e-06,1
+A,8,4,instrumented,0,A4 qiskit transpile L1 [total],0.015096276000008402,1
+A,8,4,instrumented,0,A0 compile_for_hardware [total],0.07031293300002517,
+A,8,4,instrumented,0,"A1c  compile other (to_matrix, compose, loop)",0.002031276000195703,
+A,8,4,instrumented,0,"A1b.4 synthesize other (tolist, verify, checks)",0.0018868320000251515,
+A,8,4,instrumented,0,"A5 compile_for_hardware other (pair collection, import)",0.0004184240000313366,
+A,8,4,instrumented,0,refine_triggered,,19
+A,8,4,instrumented,0,cx_cache_hit,,0
+A,8,4,instrumented,0,cx_cache_miss,,56
+A,8,4,instrumented,1,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.007962150000025758,1
+A,8,4,instrumented,1,A1b.1 core decompose (Rust),0.0006699789997810512,56
+A,8,4,instrumented,1,A1b.2 polish (check + Gauss-Newton),0.014433693000057701,56
+A,8,4,instrumented,1,A1b.3a cx core lookup/build,0.01754406200006997,56
+A,8,4,instrumented,1,A1b.3 build circuit (incl. CX core),0.023622366999859423,56
+A,8,4,instrumented,1,A1b  synthesize [all blocks],0.04061795299980986,56
+A,8,4,instrumented,1,A1 psf.compile [total],0.05060592000000952,1
+A,8,4,instrumented,1,A2a  matching check (networkx),0.002139314000032755,1
+A,8,4,instrumented,1,A2b  orderings,0.0002456770000094366,1
+A,8,4,instrumented,1,A2c  relabel graph,3.684000000703236e-05,1
+A,8,4,instrumented,1,A2d  vf2_mapping (rustworkx),0.00012134100001048864,1
+A,8,4,instrumented,1,A2 layout search [total],0.0026461069999754727,1
+A,8,4,instrumented,1,A3 layout map -> list,9.327000043413136e-06,1
+A,8,4,instrumented,1,A4 qiskit transpile L1 [total],0.013047634000031394,1
+A,8,4,instrumented,1,A0 compile_for_hardware [total],0.06673737200003416,
+A,8,4,instrumented,1,"A1c  compile other (to_matrix, compose, loop)",0.0020258170001739018,
+A,8,4,instrumented,1,"A1b.4 synthesize other (tolist, verify, checks)",0.001891914000111683,
+A,8,4,instrumented,1,"A5 compile_for_hardware other (pair collection, import)",0.0004283839999743577,
+A,8,4,instrumented,1,refine_triggered,,19
+A,8,4,instrumented,1,cx_cache_hit,,0
+A,8,4,instrumented,1,cx_cache_miss,,56
+A,8,4,instrumented,2,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.009467851000010796,1
+A,8,4,instrumented,2,A1b.1 core decompose (Rust),0.0006940119999967465,56
+A,8,4,instrumented,2,A1b.2 polish (check + Gauss-Newton),0.014582741000026544,56
+A,8,4,instrumented,2,A1b.3a cx core lookup/build,0.018448344000034922,56
+A,8,4,instrumented,2,A1b.3 build circuit (incl. CX core),0.024723566000034225,56
+A,8,4,instrumented,2,A1b  synthesize [all blocks],0.04183233399999153,56
+A,8,4,instrumented,2,A1 psf.compile [total],0.053343756999993275,1
+A,8,4,instrumented,2,A2a  matching check (networkx),0.002176996000002873,1
+A,8,4,instrumented,2,A2b  orderings,0.0002244359999963308,1
+A,8,4,instrumented,2,A2c  relabel graph,3.7962000021707354e-05,1
+A,8,4,instrumented,2,A2d  vf2_mapping (rustworkx),0.00012265300000535717,1
+A,8,4,instrumented,2,A2 layout search [total],0.0026641610000410765,1
+A,8,4,instrumented,2,A3 layout map -> list,9.10699998257769e-06,1
+A,8,4,instrumented,2,A4 qiskit transpile L1 [total],0.015298369999982242,1
+A,8,4,instrumented,2,A0 compile_for_hardware [total],0.07184176399999842,
+A,8,4,instrumented,2,"A1c  compile other (to_matrix, compose, loop)",0.002043571999990945,
+A,8,4,instrumented,2,"A1b.4 synthesize other (tolist, verify, checks)",0.0018320149999340174,
+A,8,4,instrumented,2,"A5 compile_for_hardware other (pair collection, import)",0.0005263689999992494,
+A,8,4,instrumented,2,refine_triggered,,19
+A,8,4,instrumented,2,cx_cache_hit,,0
+A,8,4,instrumented,2,cx_cache_miss,,56
+A,8,4,instrumented,3,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.008191635000002861,1
+A,8,4,instrumented,3,A1b.1 core decompose (Rust),0.0006949390002546352,56
+A,8,4,instrumented,3,A1b.2 polish (check + Gauss-Newton),0.014808229999857758,56
+A,8,4,instrumented,3,A1b.3a cx core lookup/build,0.01851426499979425,56
+A,8,4,instrumented,3,A1b.3 build circuit (incl. CX core),0.025076998999963962,56
+A,8,4,instrumented,3,A1b  synthesize [all blocks],0.04260106899988614,56
+A,8,4,instrumented,3,A1 psf.compile [total],0.052894567999999254,1
+A,8,4,instrumented,3,A2a  matching check (networkx),0.0021489520000272933,1
+A,8,4,instrumented,3,A2b  orderings,0.00022328400001470072,1
+A,8,4,instrumented,3,A2c  relabel graph,3.7301000020306674e-05,1
+A,8,4,instrumented,3,A2d  vf2_mapping (rustworkx),0.00011919700000362354,1
+A,8,4,instrumented,3,A2 layout search [total],0.0026295750000144835,1
+A,8,4,instrumented,3,A3 layout map -> list,9.377999958815053e-06,1
+A,8,4,instrumented,3,A4 qiskit transpile L1 [total],0.014090797000051225,1
+A,8,4,instrumented,3,A0 compile_for_hardware [total],0.07006969299999355,
+A,8,4,instrumented,3,"A1c  compile other (to_matrix, compose, loop)",0.002101864000110254,
+A,8,4,instrumented,3,"A1b.4 synthesize other (tolist, verify, checks)",0.0020209009998097827,
+A,8,4,instrumented,3,"A5 compile_for_hardware other (pair collection, import)",0.00044537499996977203,
+A,8,4,instrumented,3,refine_triggered,,19
+A,8,4,instrumented,3,cx_cache_hit,,0
+A,8,4,instrumented,3,cx_cache_miss,,56
+A,8,4,instrumented,4,A1a  consolidate (Collect2qBlocks+ConsolidateBlocks),0.008631446000038068,1
+A,8,4,instrumented,4,A1b.1 core decompose (Rust),0.0006724450000774596,56
+A,8,4,instrumented,4,A1b.2 polish (check + Gauss-Newton),0.014987159000270367,56
+A,8,4,instrumented,4,A1b.3a cx core lookup/build,0.018045168999890393,56
+A,8,4,instrumented,4,A1b.3 build circuit (incl. CX core),0.02429759799997555,56
+A,8,4,instrumented,4,A1b  synthesize [all blocks],0.04193093100002443,56
+A,8,4,instrumented,4,A1 psf.compile [total],0.052565521000019544,1
+A,8,4,instrumented,4,A2a  matching check (networkx),0.00217731600002935,1
+A,8,4,instrumented,4,A2b  orderings,0.00022986699997318283,1
+A,8,4,instrumented,4,A2c  relabel graph,3.650999997262261e-05,1
+A,8,4,instrumented,4,A2d  vf2_mapping (rustworkx),0.00012099999997872146,1
+A,8,4,instrumented,4,A2 layout search [total],0.002685661999976219,1
+A,8,4,instrumented,4,A3 layout map -> list,9.318000024904904e-06,1
+A,8,4,instrumented,4,A4 qiskit transpile L1 [total],0.014932610000016666,1
+A,8,4,instrumented,4,A0 compile_for_hardware [total],0.07062091300002749,
+A,8,4,instrumented,4,"A1c  compile other (to_matrix, compose, loop)",0.0020031439999570466,
+A,8,4,instrumented,4,"A1b.4 synthesize other (tolist, verify, checks)",0.001973728999701052,
+A,8,4,instrumented,4,"A5 compile_for_hardware other (pair collection, import)",0.00042780199999015167,
+A,8,4,instrumented,4,refine_triggered,,19
+A,8,4,instrumented,4,cx_cache_hit,,0
+A,8,4,instrumented,4,cx_cache_miss,,56
+B,,,networkx max_weight_matching (current),0,matching,0.002044829999988451,60
+B,,,networkx max_weight_matching (current),1,matching,0.0023390430000063134,60
+B,,,networkx max_weight_matching (current),2,matching,0.0019290540000156398,60
+B,,,networkx max_weight_matching (current),3,matching,0.0019045980000100826,60
+B,,,networkx max_weight_matching (current),4,matching,0.0020185850000302707,60
+B,,,rustworkx max_weight_matching,0,matching,0.0002968840000221462,60
+B,,,rustworkx max_weight_matching,1,matching,0.0002112810000198806,60
+B,,,rustworkx max_weight_matching,2,matching,0.00020725299998503033,60
+B,,,rustworkx max_weight_matching,3,matching,0.00017955099997379875,60
+B,,,rustworkx max_weight_matching,4,matching,0.00017498300002216638,60
+B,,,networkx hopcroft_karp (bipartite only),0,matching,0.0012326019999591153,60
+B,,,networkx hopcroft_karp (bipartite only),1,matching,0.0003717570000389969,60
+B,,,networkx hopcroft_karp (bipartite only),2,matching,0.00041175199999088363,60
+B,,,networkx hopcroft_karp (bipartite only),3,matching,0.0003369799999859424,60
+B,,,networkx hopcroft_karp (bipartite only),4,matching,0.0003062320000140062,60
+C,0,0,qiskit_L3,0,total,12.961676374000035,180
+C,0,1,qiskit_L3,0,total,12.706721003999974,180
+C,0,2,qiskit_L3,0,total,12.968693683000026,180
+C,8,0,qiskit_L3,0,total,0.15738544100003082,168
+C,8,1,qiskit_L3,0,total,0.15385833400000593,168
+C,8,2,qiskit_L3,0,total,0.1573482439999907,168

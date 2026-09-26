@@ -1,0 +1,93 @@
+platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | cpu x86_64 | cores 12 | python 3.12.13
+qiskit 2.5.2 | rustworkx 0.18.1 | networkx 3.7 | RAYON_NUM_THREADS=None
+LOADED /home/psf/psf_zero_fresh_test/psf_compile.py 2026-09-26.2 4e85e9323ebbd7048c8c638434488789f84e07eca20edff2f6239674eb2e7414
+LOADED /home/psf/psf_zero_fresh_test/benchmarks/psf_smart_layout.py 1ad0b3e8435d348cff6727f4af6e07a43563166db3e8b62ef322f696109e634f
+SCRIPT /home/psf/psf_zero_fresh_test/diag_compile_breakdown.py 004435389e832e621374fa572e6855e95b0d3ec7acbbad3b2cb843e437d4ad94
+/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit_ibm_runtime/fake_provider/backends/nighthawk/fake_nighthawk.py:78: UserWarning: Properties of fake_nighthawk are not intended to represent typical nighthawk error values.
+  warnings.warn(
+first PSF-Zero call in process (imports, caches): 0.1150s
+spare=0 seed=0 plain median=0.0870s instr median=0.0868s 2q=180 layout(found,phase,attempts)=(True, 1, 2)
+spare=0 seed=1 plain median=0.0830s instr median=0.0826s 2q=180 layout(found,phase,attempts)=(True, 1, 2)
+spare=0 seed=2 plain median=0.0794s instr median=0.0805s 2q=180 layout(found,phase,attempts)=(True, 1, 2)
+spare=0 seed=3 plain median=0.0844s instr median=0.0834s 2q=180 layout(found,phase,attempts)=(True, 1, 2)
+spare=0 seed=4 plain median=0.0847s instr median=0.0848s 2q=180 layout(found,phase,attempts)=(True, 1, 2)
+spare=8 seed=0 plain median=0.0693s instr median=0.0685s 2q=168 layout(found,phase,attempts)=(True, 1, 1)
+spare=8 seed=1 plain median=0.0687s instr median=0.0715s 2q=168 layout(found,phase,attempts)=(True, 1, 1)
+spare=8 seed=2 plain median=0.0652s instr median=0.0658s 2q=168 layout(found,phase,attempts)=(True, 1, 1)
+spare=8 seed=3 plain median=0.0672s instr median=0.0683s 2q=168 layout(found,phase,attempts)=(True, 1, 1)
+spare=8 seed=4 plain median=0.0676s instr median=0.0703s 2q=168 layout(found,phase,attempts)=(True, 1, 1)
+
+=== Part A: PSF-Zero breakdown (median over seeds x reps, instrumented) ===
+
+-- spare=0 (logical 120) --
+plain total median 0.0844s | instrumented 0.0834s | overhead x0.988
+layout (found, phase, attempts) seen: [(True, 1, 2)]
+  A0 compile_for_hardware [total]                                83.37 ms  100.0%
+  A1 psf.compile [total]                                         53.55 ms   64.2%
+  A1a  consolidate (Collect2qBlocks+ConsolidateBlocks)            8.03 ms    9.6%
+  A1b  synthesize [all blocks]                                   43.02 ms   51.6%
+  A1b.1 core decompose (Rust)                                     0.73 ms    0.9%
+  A1b.2 polish (check + Gauss-Newton)                            14.90 ms   17.9%
+  A1b.3 build circuit (incl. CX core)                            25.57 ms   30.7%
+  A1b.3a cx core lookup/build                                    18.91 ms   22.7%
+  A1b.4 synthesize other (tolist, verify, checks)                 1.84 ms    2.2%
+  A1c  compile other (to_matrix, compose, loop)                   2.11 ms    2.5%
+  A2 layout search [total]                                       15.33 ms   18.4%
+  A2a  matching check (networkx)                                  2.22 ms    2.7%
+  A2b  orderings                                                  0.21 ms    0.3%
+  A2c  relabel graph                                              0.08 ms    0.1%
+  A2d  vf2_mapping (rustworkx)                                   12.69 ms   15.2%
+  A3 layout map -> list                                           0.01 ms    0.0%
+  A4 qiskit transpile L1 [total]                                 14.51 ms   17.4%
+  A5 compile_for_hardware other (pair collection, import)         0.47 ms    0.6%
+  refine_triggered                                                18.0 (count per call)
+  cx_cache_hit                                                     0.0 (count per call)
+  cx_cache_miss                                                   60.0 (count per call)
+  transpile L1 top passes (median ms): Optimize1qGatesDecomposition 2.6, BasisTranslator 1.3, FilterOpNodes 0.4, InverseCancellation 0.2, Depth 0.2, ApplyLayout 0.2, GatesInBasis 0.1, HighLevelSynthesis 0.1
+
+-- spare=8 (logical 112) --
+plain total median 0.0685s | instrumented 0.0685s | overhead x0.999
+layout (found, phase, attempts) seen: [(True, 1, 1)]
+  A0 compile_for_hardware [total]                                68.46 ms  100.0%
+  A1 psf.compile [total]                                         51.48 ms   75.2%
+  A1a  consolidate (Collect2qBlocks+ConsolidateBlocks)            8.53 ms   12.5%
+  A1b  synthesize [all blocks]                                   40.84 ms   59.7%
+  A1b.1 core decompose (Rust)                                     0.69 ms    1.0%
+  A1b.2 polish (check + Gauss-Newton)                            14.01 ms   20.5%
+  A1b.3 build circuit (incl. CX core)                            24.30 ms   35.5%
+  A1b.3a cx core lookup/build                                    18.02 ms   26.3%
+  A1b.4 synthesize other (tolist, verify, checks)                 1.76 ms    2.6%
+  A1c  compile other (to_matrix, compose, loop)                   2.03 ms    3.0%
+  A2 layout search [total]                                        2.64 ms    3.9%
+  A2a  matching check (networkx)                                  2.15 ms    3.1%
+  A2b  orderings                                                  0.23 ms    0.3%
+  A2c  relabel graph                                              0.04 ms    0.1%
+  A2d  vf2_mapping (rustworkx)                                    0.12 ms    0.2%
+  A3 layout map -> list                                           0.01 ms    0.0%
+  A4 qiskit transpile L1 [total]                                 14.63 ms   21.4%
+  A5 compile_for_hardware other (pair collection, import)         0.44 ms    0.6%
+  refine_triggered                                                17.0 (count per call)
+  cx_cache_hit                                                     0.0 (count per call)
+  cx_cache_miss                                                   56.0 (count per call)
+  transpile L1 top passes (median ms): Optimize1qGatesDecomposition 2.8, BasisTranslator 1.4, FilterOpNodes 0.4, InverseCancellation 0.2, ApplyLayout 0.2, Depth 0.2, GatesInBasis 0.1, HighLevelSynthesis 0.1
+
+=== Part B: feasibility check alone (Nighthawk coupling graph) ===
+  networkx max_weight_matching (current)     median     2.02 ms  pairs=60 (perfect needs 60)
+  rustworkx max_weight_matching              median     0.21 ms  pairs=60 (perfect needs 60)
+  networkx hopcroft_karp (bipartite only)    median     0.37 ms  pairs=60 (perfect needs 60)
+
+=== Part C: Qiskit transpile(optimization_level=3) per-pass ===
+spare=0 seed=0 total 12.962s 2q=180 VF2Layout stop_reason=VF2LayoutStopReason.NO_SOLUTION_FOUND
+    top passes: VF2PostLayout 6.676s, VF2Layout 6.243s, CommutativeCancellation 0.009s, SabreLayout 0.008s, UnitarySynthesis 0.004s, ConsolidateBlocks 0.003s
+spare=0 seed=1 total 12.707s 2q=180 VF2Layout stop_reason=VF2LayoutStopReason.NO_SOLUTION_FOUND
+    top passes: VF2PostLayout 6.396s, VF2Layout 6.272s, SabreLayout 0.007s, CommutativeCancellation 0.007s, Optimize1qGatesDecomposition 0.003s, TwoQubitPeepholeOptimization 0.002s
+spare=0 seed=2 total 12.969s 2q=180 VF2Layout stop_reason=VF2LayoutStopReason.NO_SOLUTION_FOUND
+    top passes: VF2PostLayout 6.620s, VF2Layout 6.312s, SabreLayout 0.009s, CommutativeCancellation 0.005s, Optimize1qGatesDecomposition 0.003s, UnitarySynthesis 0.002s
+spare=8 seed=0 total 0.157s 2q=168 VF2Layout stop_reason=VF2LayoutStopReason.SOLUTION_FOUND
+    top passes: VF2PostLayout 0.102s, VF2Layout 0.028s, Optimize1qGatesDecomposition 0.004s, TwoQubitPeepholeOptimization 0.003s, ConsolidateBlocks 0.003s, CommutativeCancellation 0.003s
+spare=8 seed=1 total 0.154s 2q=168 VF2Layout stop_reason=VF2LayoutStopReason.SOLUTION_FOUND
+    top passes: VF2PostLayout 0.103s, VF2Layout 0.028s, CommutativeCancellation 0.004s, ConsolidateBlocks 0.002s, UnitarySynthesis 0.002s, TwoQubitPeepholeOptimization 0.002s
+spare=8 seed=2 total 0.157s 2q=168 VF2Layout stop_reason=VF2LayoutStopReason.SOLUTION_FOUND
+    top passes: VF2PostLayout 0.101s, VF2Layout 0.028s, TwoQubitPeepholeOptimization 0.005s, CommutativeCancellation 0.004s, ConsolidateBlocks 0.003s, Optimize1qGatesDecomposition 0.002s
+
+Wrote diag_compile_breakdown_2026-09-26.csv (1122 rows) and diag_compile_breakdown_passes_2026-09-26.csv (1009 rows)
