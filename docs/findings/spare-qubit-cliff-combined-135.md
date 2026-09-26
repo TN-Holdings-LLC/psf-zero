@@ -7204,6 +7204,13 @@ Medians, 5 seeds x 5 reps, arms interleaved:
 | 4 | 69.10 -> 68.48 ms | 2.684 -> 0.455 ms | 174 |
 | 8 | 66.61 -> 66.06 ms | 2.609 -> 0.441 ms | 168 |
 
+Single calls vary: the slowest old-arm call is the very first one
+(spare 0, seed 0: 0.230 s, of which 0.084 s layout search -- the first VF2
+call in the process), and a handful of calls in either arm reach
+0.10-0.17 s (e.g. new arm, spare 8, seed 0, rep 0: 0.152 s). They are
+isolated, occur in both arms, and do not move the medians; every call is
+under 0.25 s.
+
 Not anticipated in the registration: **spare 2 behaves like spare 0** in
 the old path (the first VF2 ordering fails there too; 15.4 ms). The
 failed-first-attempt cost therefore extends past exactly-saturated
@@ -7263,7 +7270,7 @@ VF2PostLayout's own score and not only against this 2-qubit metric.
 | `benchmarks/test_matching_layout.py` | 8 new tests |
 | `benchmarks/verify_matching_layout.py` | the validation script (`2e687b29...`) |
 | `data/logs/matching_layout_result.txt` | the log |
-| `data/matching_layout_2026-09-26.csv` | per-call rows (214) |
+| `data/matching_layout_2026-09-26.csv` | per-call rows (214; received and checked against the log) |
 
 ---
 
