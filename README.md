@@ -55,7 +55,8 @@ otherwise.
 
 Source: [`psf_compile.py`](psf_compile.py) — the pass itself, and the one place the
 current compiler lives. Its `VERSION:` line names the revision; that line is bumped
-in place, so there is never a second, differently-named copy to pick between ·
+in place, so there is never a second, differently-named copy to pick between
+(`benchmarks/psf_compile.py` holds no code: it only loads this file) ·
 [`lib.rs`](lib.rs) — the Rust core (`psf_zero_core`) it calls into ·
 [`psf_smart_layout.py`](benchmarks/psf_smart_layout.py) — the layout-search prototype,
 repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see below).
@@ -300,6 +301,25 @@ regardless of ε, not ~ε as intended — fixed and re-run, see
 `strict` tier is what rules out endian mismatches and ZYZ phase/sign drift between
 the two sides.
 
+**Precision under repeated recompilation (found and fixed 2026-09-26).** The
+table above measures infidelity (1 - fidelity), in which an operator error
+of size e appears as roughly e squared. Measured instead as an operator
+distance -- which is what accumulates when a circuit's own compiled output
+is compiled again, lap after lap -- the core's returned parameters were off
+by up to 1.8e-11 on some inputs (those near the Weyl-chamber face c = 0),
+against at most 1.8e-13 for Qiskit's own decomposer on the same inputs; over
+10 recompilations the distance grew to 6.5e-10, versus about 4e-13 for
+Qiskit. `psf_compile.py` VERSION 2026-09-26.2 adds a closed-form
+Gauss-Newton polishing step on the 16 decomposition parameters, run only
+when the residual exceeds 1e-13: worst per-call distance 6.2e-14 (median
+6.7e-15, below Qiskit's 8.7e-15), 10-lap drift 7.3e-13, at about 1.3x the
+previous compile time. Physically none of this was ever visible (as
+infidelity, below 1e-21), but the loop exposed it and it is now fixed. The
+remaining drift still grows about ten times faster per lap than Qiskit's.
+Full account, including a mistaken intermediate conclusion and its
+correction: [`docs/findings/spare-qubit-cliff-combined-135.md`](docs/findings/spare-qubit-cliff-combined-135.md),
+Addenda 181-190.
+
 Raw data: [`data/core_verification_2026-09-12.csv`](data/core_verification_2026-09-12.csv).
 Reproduce with `maturin develop --release && python benchmarks/verify_core_infidelity.py`.
 Full account: [`docs/findings/core-verification.md`](docs/findings/core-verification.md).
@@ -434,10 +454,14 @@ representative of the device, and a circuit family built to reach saturation;
 not yet checked against real Nighthawk hardware. Where the cliff does not
 occur, a separate pre-registered depth sweep on four IBM fake backends (CZ and
 ECR devices, up to 72 CX) found no difference in noisy output quality between
-PSF-Zero and Qiskit's default at any depth. Full data and every
-pre-registered prediction:
+PSF-Zero and Qiskit's default at any depth. **In a recompile loop the cliff
+recurs on every lap**: feeding each compiled circuit back through
+PennyLane and compiling again, 10 times, Qiskit spent 129 s in total and met
+the 1 s deadline on 0 of 10 laps, while PSF-Zero spent 0.9 s and met it on
+all 10 -- so a training loop that recompiles pays Qiskit's cliff every
+iteration, not once. Full data and every pre-registered prediction:
 [`docs/findings/spare-qubit-cliff-combined-135.md`](docs/findings/spare-qubit-cliff-combined-135.md),
-Addenda 177-180.
+Addenda 177-190.
 
 **Still open**: whether a same-condition run-to-run variance found at
 `optimization_level=3` (up to ~3x on one measurement) reflects `VF2Layout`'s own
