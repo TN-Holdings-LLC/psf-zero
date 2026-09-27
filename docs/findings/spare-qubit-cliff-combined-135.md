@@ -7864,6 +7864,232 @@ the version-1 DOIs kept alongside.
 
 ---
 
+<!-- ===== Addendum 199 pre-registration (source: spare-qubit-cliff-addendum-199-preregistration-2026-09-27.md) ===== -->
+
+> **Note added when merging:** An endurance test of the compile loop: a real training loop through PSF-Zero, and 1,000-lap cliff-scale loops, fresh and compounding. Thresholds are flags to find problems, not verdicts.
+
+## Addendum 199 -- Pre-registration: an endurance test of the compile loop -- a real training loop through PSF-Zero, and thousands of cliff-scale compiles, fresh and compounding -- to find what breaks (2026-09-27)
+
+**Status: pre-registration. The script is written and syntax-checked; it has
+not been run.**
+
+## 1. Why
+
+Every PSF-Zero result so far measured a compile, or a chain of ten. A
+variational training loop compiles thousands of times in one process, with
+parameters that drift and can approach special values. Before anything is
+run on hardware or put into a larger pipeline, the loop itself should be
+run long enough to show what goes wrong: wrong results, slow or stalled
+laps, growing memory, exceptions, the correctness guard of 2026-09-26.4
+firing, and drift. The aim is to find problems, so the thresholds below
+are flags -- each one that trips is a finding to investigate, not a
+verdict on the project.
+
+One distinction matters. Addendum 197's drift test fed each lap's output
+into the next lap: a worst case. A training loop instead rebuilds the
+circuit from new parameters every step, so no error should accumulate.
+Both are run here.
+
+## 2. The test
+
+`loop_endurance.py` (19,814 bytes, normalized SHA-256
+`e0bfd5e6be2761aa5d317e0673350edf1fcf01617f373d7c40b04b79f334f38c`),
+`psf_compile.py` VERSION 2026-09-26.4, one process, defaults:
+
+- **Part E, training loop, executed.** 12 qubits, 11 two-qubit blocks in
+  two brick layers, 15 parameterized gates per block (165 parameters),
+  trained by SPSA for 600 steps towards a target state whose ZZ angles are
+  all zero (so trained blocks move towards the degenerate region where
+  Qiskit's defect lives). Each loss evaluation compiles with
+  `compile_for_hardware` (line coupling map, trivial layout, basis
+  [cx, rz, sx, x], `entangling_basis="cx"`) and computes the loss from the
+  compiled circuit and from the uncompiled one. Arms: ref-driven (SPSA
+  follows the reference loss), ref-driven with the guard off (the released
+  2026-09-26.2 behaviour), compiled-driven (SPSA follows the compiled loss).
+- **Part F, fresh each lap, cliff scale.** FakeNighthawk, 120 logical
+  qubits (spare 0), 60 pairs of 24 parameterized gates; 1,000 laps, each a
+  random-walk step (sigma 0.02) of all 1,440 parameters, a rebuilt circuit
+  and `compile_for_hardware(layout_search=True)`. Exact per-pair check every
+  50 laps.
+- **Part C, compounding, cliff scale.** Same device and family; 1,000 laps,
+  each compiling the previous lap's output mapped back to logical qubits.
+  Per-pair distance to the lap-0 circuit every 50 laps.
+
+All parts record per-compile time, resident memory every 50 laps,
+exceptions (caught and counted; the loop continues), and `GUARD_STATS`.
+
+## 3. Flags, fixed before the run
+
+**Part E**
+- E1: in both guard-on arms, every evaluation has |compiled loss -
+  reference loss| <= 1e-10.
+- E2: compiled-driven and ref-driven parameters differ by at most 1e-6
+  after 600 steps (compilation does not change what is learned).
+- E3: training works at all: final loss below half the starting loss in
+  every arm.
+- E4: no exceptions, no permuted outputs.
+- E5 (exploratory, no flag): guard rejections, and whether the guard-off
+  arm ever differs from the reference. Expectation: SPSA does not converge
+  finely enough to reach the band (about 3e-8 to 3e-7), so 0 rejections and
+  no difference -- which would say the defect is rare in this kind of loop,
+  not that it cannot occur.
+
+**Part F**
+- F1: every lap within 1 s; p99 <= 2 x median.
+- F2: the matching shortcut (layout phase 0) on every lap.
+- F3: every exact per-pair check <= 1e-12.
+- F4: resident memory grows by at most 100 MB between the first and last
+  check.
+- F5: no exceptions.
+
+**Part C**
+- C1: 1,000 laps without an exception.
+- C2: distance at lap 1,000 <= 1e-10, growing linearly (ratio of lap-1,000
+  to lap-500 distance between 1.6 and 2.4). Addendum 197 measured
+  6.2e-14 per lap on a different circuit family; the rate here is reported,
+  not predicted.
+- C3: memory growth <= 100 MB; p99 <= 2 x median.
+
+## 4. What would count as a problem, and what would not
+
+A tripped flag is recorded as a finding with its data, investigated, and
+fixed or documented before the loop is used for anything else. Timing is
+single-machine and single-run; a single slow lap is reported, not
+explained away. None of this touches hardware: the IBM step stays at the
+planned minimal check.
+
+## 5. Command
+
+```
+python -u benchmarks/loop_endurance.py 2>&1 | tee loop_endurance.txt
+```
+
+Expected wall time: about 5-8 minutes.
+
+---
+
+<!-- ===== Addendum 200 (source: spare-qubit-cliff-addendum-200-2026-09-27.md) ===== -->
+
+> **Note added when merging:** 12 of 13 flags clear: no wrong result, exception or memory growth; compounding drift exactly linear. The tripped flag (slow laps) is traced to Python's generation-2 garbage collection (38/38 slow laps). The guard never engaged in training, which leaves its in-loop behaviour untested.
+
+## Addendum 200 -- The compile loop survives 3,600 training compiles and 2,000 cliff-scale laps with no wrong result, no exception and no memory growth; compounding drift is exactly linear (6.1e-11 after 1,000 laps); one flag tripped -- slow laps in the compounding loop -- and a follow-up traces every one of them to Python's generation-2 garbage collection (2026-09-27)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-199-preregistration-2026-09-27.md`. Section 4
+is a follow-up whose predictions were fixed in the script's docstring
+before it ran. WSL2 (home), 12 cores, Python 3.12.13, Qiskit 2.5.2,
+`psf_compile.py` 2026-09-26.4 (`b4fa92ad...`), `psf_smart_layout.py`
+2026-09-26.m1 (`a639efde...`), `loop_endurance.py` (`e0bfd5e6...`).
+Total wall time 227 s.
+
+## 0. In one line
+
+12 of 13 flags clear. The one that tripped (C3: p99 > 2 x median in the
+compounding loop) is fully explained: all 38 slow laps out of 1,000
+contain a generation-2 garbage collection (about 77 ms each), and with the
+collector disabled the tail disappears (p99 54.9 ms against a 42.2 ms
+median). The correctness guard never engaged: the training loop never
+brought a block near the Qiskit defect band, so the guard's behaviour
+inside training remains untested.
+
+## 1. Part E -- training loop, executed (12 qubits, 165 parameters, 600 SPSA steps)
+
+| Arm | final loss (start 0.932) | max \|compiled - ref\| | evals > 1e-10 | compile median / p99 / max | RSS | exceptions | guard checks |
+|---|---|---|---|---|---|---|---|
+| ref-driven | 0.157 | 1.18e-14 | 0 / 1,200 | 10.3 / 17.4 / 71.7 ms | 181 -> 190 MB | 0 | 0 |
+| ref-driven, guard off | 0.157 | 1.18e-14 | 0 / 1,200 | 10.3 / 15.1 / 81.3 ms | 190 -> 189 MB | 0 | 0 |
+| compiled-driven | 0.157 | 1.22e-14 | 0 / 1,200 | 10.1 / 13.2 / 71.3 ms | 189 -> 189 MB | 0 | 0 |
+
+Compiled-driven against ref-driven: largest parameter difference after 600
+steps 1.33e-14.
+
+## 2. Part F -- fresh circuit each lap, cliff scale (1,000 laps)
+
+Compile median 41.4 ms, p99 54.8 ms, max 124.5 ms; no lap over 1 s; layout
+phase 0 on every lap; 20 exact per-pair checks, worst 8.9e-16; RSS
+194 -> 217 MB (max 240); no exceptions; guard never checked.
+
+## 3. Part C -- compounding, cliff scale (1,000 laps)
+
+| lap | 1 | 200 | 400 | 600 | 800 | 1,000 |
+|---|---|---|---|---|---|---|
+| max per-pair distance | 8.9e-14 | 1.17e-11 | 2.38e-11 | 3.60e-11 | 4.80e-11 | 6.11e-11 |
+
+6.11e-14 per lap, ratio of lap 1,000 to lap 500 2.04 -- linear, and
+nearly the same rate as Addendum 197 measured on a different circuit family
+(6.21e-14). Compile median 41.3 ms, **p99 118.3 ms**, max 199.1 ms; RSS
+219 -> 221 MB; no exceptions; guard never checked.
+
+## 4. Scoring
+
+| Flag | Result |
+|---|---|
+| E1: \|compiled - ref\| <= 1e-10 in both guard-on arms | **clear** (1.2e-14) |
+| E2: parameters differ <= 1e-6 after 600 steps | **clear** (1.3e-14) |
+| E3: final loss < half the start in every arm | **clear** (0.157 vs 0.932) |
+| E4: no exceptions or permuted outputs | **clear** |
+| E5 (exploratory) | guard never engaged; guard-off arm identical |
+| F1: every lap <= 1 s; p99 <= 2 x median | **clear** (124.5 ms max; 54.8 <= 82.8) |
+| F2: layout phase 0 every lap | **clear** |
+| F3: every per-pair check <= 1e-12 | **clear** (8.9e-16) |
+| F4: memory growth <= 100 MB | **clear** (+23 MB) |
+| F5: no exceptions | **clear** |
+| C1: 1,000 laps without exception | **clear** |
+| C2: <= 1e-10 at lap 1,000, ratio 1.6-2.4 | **clear** (6.1e-11, 2.04) |
+| C3: memory <= 100 MB; p99 <= 2 x median | **TRIPPED** -- memory clear (+2 MB), p99 118.3 > 82.6 ms |
+
+## 5. Follow-up: the slow laps (`diag_compound_tail.py`)
+
+Only every 50th lap had been written to the CSV, so the tail could not be
+examined from the registered run (a design weakness of Addendum 199's
+script). The follow-up recorded every lap and, through `gc.callbacks`,
+every garbage collection inside each timed compile. Predictions, fixed in
+the script before running: T1, at least 80% of laps slower than 2 x median
+contain a generation-2 collection (collector on); T2, with the collector
+off, p99 <= 2 x median.
+
+| Arm (1,000 laps each) | median | p99 | max | laps > 2 x median | of which with a gen-2 collection | gen-2 collections, total time |
+|---|---|---|---|---|---|---|
+| C, collector on | 41.9 ms | 124.4 ms | 151.2 ms | 38 | **38** | 38, 2,932 ms |
+| C, collector off | 42.2 ms | **54.9 ms** | 72.2 ms | 0 | 0 | 0 |
+| F, collector on (control) | 42.1 ms | 57.6 ms | 119.6 ms | 3 | 3 | 3, 225 ms |
+
+T1 confirmed (38/38), T2 confirmed (54.9 <= 84.4 ms). Mapping the routed
+output back to logical qubits (13.9 ms per lap, outside the timed compile)
+creates enough short-lived objects to trigger a generation-2 collection
+about every 26 laps, each about 77 ms, and it lands inside the next
+compile. The fresh loop triggers one about every 330 laps.
+
+Reading: this is a property of running a long Python loop, not a defect of
+the compiler. Its average cost is small (2.9 ms per lap), but it adds
+about 80 ms to one lap in 26 -- which matters for deadline-bound use (for
+example compiling the next circuit while the previous one runs on
+hardware). Disabling the collector is not the fix: Addenda 93-99 found
+reference cycles in Qiskit's circuit objects that only the collector
+reclaims. Candidates, untested: `gc.freeze()` after set-up, or collecting
+explicitly at lap boundaries with the collector paused during compiles.
+
+## 6. What the test did not cover
+
+- The guard inside training: SPSA reached a loss of 0.157, far from
+  converging the ZZ angles into the defect band, so no block came near it
+  (0 guard checks in all parts). A test that deliberately places training
+  blocks in the band is needed to show the guard working inside a loop.
+- Hardware, and PennyLane or GPU execution in the loop (Part E used
+  Qiskit's statevector).
+- Circuit families other than paired blocks at cliff scale.
+
+## 7. Files
+
+| File | What it is |
+|---|---|
+| `benchmarks/loop_endurance.py` | the registered test |
+| `benchmarks/diag_compound_tail.py` | the follow-up |
+| `data/logs/loop_endurance.txt`, `data/loop_endurance_2026-09-27.csv` | registered run (CSV: every 50th lap and summaries) |
+| `data/logs/diag_compound_tail.txt`, `data/diag_compound_tail_2026-09-27.csv` | follow-up (every lap, 3,000 rows) |
+
+---
+
 ---
 
 **End of Part 8 of 8 (end of document, for now).** Back to [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

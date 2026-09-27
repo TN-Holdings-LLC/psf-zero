@@ -1,0 +1,9 @@
+LOADED /home/psf/psf_zero_fresh_test/psf_compile.py 2026-09-26.4
+LOADED /home/psf/psf_zero_fresh_test/benchmarks/loop_endurance.py
+C, gc on  : compile median 41.9 ms, p99 124.4 ms, max 151.2 ms; laps > 2 x median: 38 (of which with a gen-2 collection inside: 38); laps containing a gen-2 collection: 38, total gen-2 time 2932 ms; back-to-logical median 13.9 ms
+C, gc off : compile median 42.2 ms, p99 54.9 ms, max 72.2 ms; laps > 2 x median: 0 (of which with a gen-2 collection inside: 0); laps containing a gen-2 collection: 0, total gen-2 time 0 ms; back-to-logical median 13.5 ms
+F, gc on  : compile median 42.1 ms, p99 57.6 ms, max 119.6 ms; laps > 2 x median: 3 (of which with a gen-2 collection inside: 3); laps containing a gen-2 collection: 3, total gen-2 time 225 ms
+
+T1 (>= 80% of slow laps contain a gen-2 collection, gc on): CONFIRMED (38/38)
+T2 (gc off: p99 <= 2 x median): CONFIRMED (54.9 vs 84.4 ms)
+Wrote diag_compound_tail_2026-09-27.csv (3000 rows)

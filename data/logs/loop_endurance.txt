@@ -1,0 +1,29 @@
+platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | cores 12 | python 3.12.13 | qiskit 2.5.2
+LOADED /home/psf/psf_zero_fresh_test/psf_compile.py 2026-09-26.4 b4fa92ad85f04cfa05b7732b634da9f876bb034735be806825b87b62c72cb670
+LOADED /home/psf/psf_zero_fresh_test/benchmarks/psf_smart_layout.py 2026-09-26.m1 a639efdef484379d23b4c0a52dffe557c47c30f639c41e4f8521ca608712d875
+SCRIPT /home/psf/psf_zero_fresh_test/benchmarks/loop_endurance.py e0bfd5e6be2761aa5d317e0673350edf1fcf01617f373d7c40b04b79f334f38c
+
+=== E: training loop, executed (12 qubits, 11 blocks, 165 parameters, 600 SPSA steps) ===
+  ref-driven            : final loss 1.567e-01 (start 9.322e-01); max |compiled - ref| 1.18e-14 (0/1200 evals > 1e-10); compile median 10.3 ms, p99 17.4 ms, max 71.7 ms; RSS 181 -> 190 MB (max 192); exceptions 0; guard {'checked': 0, 'zsx_rejected': 0, 'default_rejected': 0, 'closed_form_forced': 0}
+  ref-driven, guard off : final loss 1.567e-01 (start 9.322e-01); max |compiled - ref| 1.18e-14 (0/1200 evals > 1e-10); compile median 10.3 ms, p99 15.1 ms, max 81.3 ms; RSS 190 -> 189 MB (max 190); exceptions 0; guard {'checked': 0, 'zsx_rejected': 0, 'default_rejected': 0, 'closed_form_forced': 0}
+  compiled-driven       : final loss 1.567e-01 (start 9.322e-01); max |compiled - ref| 1.22e-14 (0/1200 evals > 1e-10); compile median 10.1 ms, p99 13.2 ms, max 71.3 ms; RSS 189 -> 189 MB (max 189); exceptions 0; guard {'checked': 0, 'zsx_rejected': 0, 'default_rejected': 0, 'closed_form_forced': 0}
+  compiled-driven vs ref-driven: max parameter difference after 600 steps 1.33e-14
+
+=== F: compile-only loop, fresh circuit each lap (FakeNighthawk, 120 logical, 1000 laps) ===
+  lap 200: last 43.0 ms, pair worst 5.551115123125783e-16, RSS 232 MB
+  lap 400: last 41.1 ms, pair worst 5.551115123125783e-16, RSS 229 MB
+  lap 600: last 44.4 ms, pair worst 6.661338147750939e-16, RSS 222 MB
+  lap 800: last 39.4 ms, pair worst 8.881784197001252e-16, RSS 227 MB
+  lap 1000: last 42.0 ms, pair worst 6.661338147750939e-16, RSS 217 MB
+  compile median 41.4 ms, p99 54.8 ms, max 124.5 ms; laps over 1 s: 0; layout phases [0]; pair checks worst 8.88e-16 over 20 checks; RSS 194 -> 217 MB (max 240); exceptions 0; guard {'checked': 0, 'zsx_rejected': 0, 'default_rejected': 0, 'closed_form_forced': 0}
+
+=== C: compile-only loop, compounding (FakeNighthawk, 120 logical, 1000 laps) ===
+  lap 1: max per-pair distance 8.896e-14, last 43.1 ms, RSS 225 MB
+  lap 200: max per-pair distance 1.170e-11, last 49.8 ms, RSS 218 MB
+  lap 400: max per-pair distance 2.384e-11, last 41.0 ms, RSS 221 MB
+  lap 600: max per-pair distance 3.601e-11, last 40.9 ms, RSS 222 MB
+  lap 800: max per-pair distance 4.797e-11, last 41.0 ms, RSS 221 MB
+  lap 1000: max per-pair distance 6.106e-11, last 37.8 ms, RSS 221 MB
+  compile median 41.3 ms, p99 118.3 ms, max 199.1 ms; distance at lap 1000: 6.106e-11 (per lap 6.11e-14; ratio to half-way 2.04); RSS 219 -> 221 MB (max 225); exceptions 0; guard {'checked': 0, 'zsx_rejected': 0, 'default_rejected': 0, 'closed_form_forced': 0}
+
+Wrote loop_endurance_2026-09-27.csv (83 rows); total wall time 227 s
