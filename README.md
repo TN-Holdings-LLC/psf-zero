@@ -61,11 +61,13 @@ in place, so there is never a second, differently-named copy to pick between
 [`psf_smart_layout.py`](benchmarks/psf_smart_layout.py) — the layout-search prototype,
 repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see below).
 
-> **Current version: `psf_compile.py` 2026-09-27.2.** It changes one default:
-> `block_gate_floor` is now 8 (was 12), so some circuits -- brick-layer ansatze in
-> particular -- consolidate more blocks and compile to fewer two-qubit gates;
-> pass `block_gate_floor=12` for the previous behaviour. See "Update
-> (2026-09-27)" below.
+> **Current version: `psf_compile.py` 2026-09-27.3.** The default `block_gate_floor`
+> is 12 again: 2026-09-27.2 had lowered it to 8, and 100,000 compiles then found rare
+> accuracy losses (loss error up to 1.3e-7 in 4 of 3,000 checked 12-qubit training
+> compiles) on blocks that the lower floor sends to Qiskit's synthesis as a fallback.
+> `block_gate_floor=8` is still available -- 33 instead of 48 two-qubit gates on a
+> brick-layer ansatz -- with that caveat, until the fallback is made exact. See
+> "Update (2026-09-27)" below.
 
 > **Correctness notice (2026-09-26) -- if you use `entangling_basis="cx"`, update to
 > `psf_compile.py` VERSION 2026-09-26.4 or later.** Qiskit's own
@@ -560,8 +562,14 @@ disjoint-pair circuits only, and untested on hardware.
   parameterized circuit: 55), and a check over eight circuit families found no
   two-qubit count that rose, depth +2% at most, every compile exact; floors
   below 8 lengthen hardware-efficient ansatze (depth 33 -> 91 at 4). VERSION
-  2026-09-27.2 makes 8 the default. Trotter circuits with short bond runs are
-  not helped by any safe floor (a per-run rule is untested).
+  2026-09-27.2 made 8 the default; 2026-09-27.3 returns it to 12 after a
+  100,000-compile run (Addendum 214) found that 13% of the newly consolidated
+  training blocks fall back from the Rust core to Qiskit's synthesis and that
+  0.13% of those compiles lose accuracy (up to 1.3e-7). The same run confirmed
+  stability at scale -- no exception, flat memory, no slow-down, linear drift --
+  and the correctness guard repairing 7 defective blocks inside the loops.
+  Trotter circuits with short bond runs are not helped by any safe floor (a
+  per-run rule is untested).
 - *Against transpile-once-and-bind.* PSF-Zero resynthesizes from numeric angles,
   so it recompiles whenever parameters change; the usual Qiskit route transpiles
   a parameterized circuit once and only binds values. With Qiskit's reference

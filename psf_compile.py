@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-09-27.2 (previous revision: 2026-09-27.1)
+VERSION: 2026-09-27.3 (previous revision: 2026-09-27.2)
 
 Where to look for what
 ----------------------
@@ -335,6 +335,18 @@ Changes in the 2026-09-26.4 revision (spare-qubit-cliff Addenda 195-196)
     safe as a default: at 6 and 4 the HEA depth grew from 33 to 41 and 91
     with no change in two-qubit count. Pass `block_gate_floor=12` for the
     previous behaviour.
+
+22. **Default `block_gate_floor` back to 12 (item 21 withdrawn as a
+    default).** 100,000 compiles (Addendum 214) found that at 8, 13% of the
+    brick-layer training blocks fall back from the Rust core
+    (`SU2ExtractionSingular`) to Qiskit's CX synthesis, and 4 of 3,000
+    checked compiles lost accuracy (loss error 1.7e-9 to 1.3e-7, against
+    <= 1e-14 everywhere else). At 12 those blocks are not synthesized and the
+    result is exact. The likely mechanism -- Qiskit's Weyl decomposition
+    snapping near-special inputs within about 1e-9 infidelity, which the
+    guard's 1e-8 tolerance accepts -- is under investigation.
+    `block_gate_floor=8` remains available and gives 33 instead of 48
+    two-qubit gates on that circuit, with this accuracy caveat.
 """
 from __future__ import annotations
 
@@ -364,7 +376,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-09-27.2"
+VERSION = "2026-09-27.3"
 __version__ = VERSION
 
 __all__ = [
@@ -394,8 +406,8 @@ _PSF_DEGENERATE_ERRORS = tuple(
 
 logger = logging.getLogger(__name__)
 
-# Changelog item 21 (was 12).
-DEFAULT_BLOCK_GATE_FLOOR = 8
+# Changelog items 21 and 22: 8 in 2026-09-27.2, back to 12 in 2026-09-27.3.
+DEFAULT_BLOCK_GATE_FLOOR = 12
 
 _VALID_ENTANGLING_BASES = ("canonical", "cx")
 _VALID_ON_UNSUPPORTED = ("keep", "raise")
@@ -1112,8 +1124,8 @@ def compile(
     Only runs of more than `block_gate_floor` gates on the same qubit pair are
     collected, so a wide-and-shallow circuit (`random_circuit()`, say) has few
     or no blocks and comes back largely untouched by design rather than by
-    accident (at the default of 8: 0-6 blocks on 8-qubit, depth-12 random
-    circuits, with the same two-qubit count as at 12; Addendum 210).
+    accident (at the default of 12: 0-4 blocks on 8-qubit, depth-12 random
+    circuits; Addendum 210).
     Everything that is not a 2-qubit `unitary` block is copied through as-is,
     keeping the input's registers, bits, name and metadata.
 

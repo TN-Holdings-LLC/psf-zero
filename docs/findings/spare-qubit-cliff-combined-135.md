@@ -9207,6 +9207,344 @@ new version; they record what was verified at the time.
 | [`data/logs/verify_block_floor.txt`](../../data/logs/verify_block_floor.txt) | log (received and checked) |
 | [`data/verify_block_floor_2026-09-27.csv`](../../data/verify_block_floor_2026-09-27.csv) | 100 rows (not yet received) |
 
+
+---
+
+<!-- ===== Addendum 211 (source: spare-qubit-cliff-addendum-211-preregistration-2026-09-27.md) ===== -->
+
+> **Note added when merging:** Pre-registration of Stage 2 (2026-09-28): the XOR classifier on a real IBM device, device and arm chosen by a fixed rule from the day's calibration, one job of 8 circuits, predictions fixed before results are read. Includes an amendment made before any real-device step (sys.path fix after the first preflight).
+
+## Addendum 211 -- Preregistration, Stage 2: the XOR classifier on a real IBM device -- device and arm chosen by a fixed rule from today's calibration, one job of 8 circuits (chosen arm and pinned control), predictions fixed before results are read (2026-09-27, for 2026-09-28)
+
+**Written before any real-device data.** Results will be recorded as
+Addendum 212, including every prediction that fails. This completes the
+outline in the Stage-1 preregistration (Addendum 167, section 6) using the
+Stage-1 and Stage-1b results (Addenda 168, 170).
+
+- Script: [`benchmarks/xor_stage2_real.py`](../../benchmarks/xor_stage2_real.py), 19,627 bytes, normalized SHA-256
+  `1e013e6b100d26b0fa364596b7715c59a4577c40620c869b4b4e9d281f4c830c`.
+  Syntax-checked here; not run here (no Qiskit, no IBM access in this
+  environment).
+- **Amendment before any real-device step (2026-09-27).** The first
+  `preflight` on the home machine (script `85389961...`, 19,011 bytes)
+  passed H0 and then stopped with `PermissionError` on
+  `/root/psf-zero/benchmarks`: the locked Stage-1 script adds its pod path
+  to `sys.path`, and Qiskit's plugin loader stats every entry, which the
+  home user may not read. The script now drops unreadable `sys.path`
+  entries after importing the Stage-1/1b modules (printed when it happens).
+  Nothing else changed; no prediction or threshold was altered, and no
+  data had been produced. The same run confirmed that the home copies of
+  the Stage-1 and Stage-1b scripts match their locked hashes (`28197bc4...`,
+  `ec7f173c...`).
+- Reuses, unchanged: [`xor_prereg_stage1_sweep.py`](../../benchmarks/xor_prereg_stage1_sweep.py) (circuits, pinned
+  routing, ISA check) and [`xor_prereg_stage1b_sweep.py`](../../benchmarks/xor_prereg_stage1b_sweep.py) (arms A, B, M1,
+  M4; Aer helper). Their hashes are printed by the script.
+- Environment: home WSL2, the machine used for the earlier IBM work. The
+  IBM API key is entered only in the terminal (`save_account`); the script
+  never reads or writes it.
+
+## 1. What is being tested
+
+1. **Pipeline**: login, device list, compilation against a real device's
+   Target, one submitted job, results and QPU usage retrieved.
+2. **The Stage-1b procedure on hardware**: does the arm chosen by
+   simulating today's calibration classify all four XOR inputs correctly,
+   and how close is the observed margin to the model's prediction?
+3. **The selection against a fixed control**: the chosen arm against the
+   pinned layout (arm A, logical qubits on physical 0-3).
+4. **Timing**: queue wait and execution time of one job, for the question
+   of how much of a hardware training loop compilation is.
+
+No PSF-Zero claim is made from the XOR circuits: PSF-Zero consolidates no
+block in them (Addendum 168, P5: `blocks` = 0). PSF-Zero enters only in the
+compile-only `layout` step (section 5).
+
+## 2. Fixed procedure
+
+**preflight (no QPU; may be run on 2026-09-27).**
+- H0: the four circuits reproduce exact <Z0> = +-0.99776 with the right
+  signs (Stage-1 harness check).
+- H1: on FakeBrisbane, arm A, seed 0, 4,000 shots, each input's <Z0> lies
+  within 3 sqrt(2) standard errors of the Stage-1 values
+  (-0.9000, 0.9105, 0.9065, -0.9095).
+- H2: on FakeKingston, arm M1, the mean margin M lies within 0.03 of the
+  Stage-1b value 0.9815.
+- The real devices available are listed (name, qubits, pending jobs).
+If H0, H1 or H2 fails, nothing is submitted; the mismatch is investigated
+first.
+
+**submit (one job).**
+- *Device rule*: among real devices that are operational at submission time
+  and have at least 100 qubits, build an Aer noise model from each device's
+  current calibration (`AerSimulator.from_backend`), predict M for arms A,
+  B, M1 and M4 (20,000 shots, simulator seed 1000), and take each device's
+  best arm. The device with the highest best-arm prediction is chosen; if
+  others are within 0.005 of it, the one with the fewest pending jobs among
+  them is chosen.
+- *Arm rule*: the chosen device's best arm (Stage-1b Q6 procedure; M4 is
+  the expected default). *Control*: arm A; if the chosen arm is A, the
+  control is M4.
+- Transpiler seed 0 for every arm; only logical qubit 0 is measured
+  (Stage-1/1b design; a single classical bit `z0`).
+- Before submission the manifest is written to disk: device, calibration
+  time, per-circuit layout, measured physical qubit, two-qubit count,
+  predicted <Z0>, predicted M for every arm, the error of every operation
+  the circuits use in today's Target, and all candidate devices' predictions.
+  The job ID is added after submission. The script refuses to submit if a
+  manifest already exists (no second job).
+- One `SamplerV2` job, 8 circuits (chosen arm and control, inputs 00, 01,
+  10, 11), 4,000 shots each.
+
+**score (after the job finishes).** Reads counts, computes <Z0> per circuit,
+M per arm, and the job's metrics (QPU seconds, timestamps).
+
+## 3. Predictions
+
+M is the mean over the four inputs of label x <Z0> (label = -1 for 00 and
+11, +1 for 01 and 10). SE of M from the binomial model, sqrt(sum(1 -
+z_i^2)/S)/4 with S = 4,000 (Stage-1 P4 confirmed this model, pooled ratio
+0.986).
+
+| ID | Prediction |
+|---|---|
+| S1 | The chosen arm classifies all four inputs correctly (label x <Z0> > 0 for each). |
+| S2 | The chosen arm's observed M is at least its predicted M minus 0.15. Below that, the device performed worse than its calibration can explain. |
+| S3 | The chosen arm's observed M is below its predicted M plus 3 SE: the real device does not beat its own noise model beyond shot noise. |
+| S4 | The chosen arm's observed M is at least the control's observed M minus 0.02. |
+| P0 | Every step completes, and the job uses at most 60 QPU seconds. |
+
+Reasoning, stated now:
+
+- S1: in Stage 1b every selected arm on every scored fake backend was
+  correct, with M >= 0.91. A real device adds crosstalk, drift, leakage,
+  coherent errors and idle decoherence that the model lacks; with 9 routed
+  two-qubit gates, these would have to cut the margin by more than 0.9 to
+  flip a sign.
+- S2's floor of 0.15 is generous on purpose: it separates "the model is
+  optimistic, as expected" from "something is wrong" (wrong qubit measured,
+  bit order, a calibration badly out of date).
+- S3 is the one-sided expectation of the Stage-1 outline: the model omits
+  error sources, so the device should not score above it.
+- S4 tests the selection procedure against the pinned layout on hardware.
+  If the chosen arm and the control share their physical qubits (possible
+  when both land on qubits 0-3), S4 is reported as uninformative.
+- The control arm's own margin is reported but not predicted: in Stage 1
+  the pinned layout ranged from 0.000 to 0.971 across devices.
+
+## 4. What this cannot show
+
+- One device, one job, one calibration snapshot: no statement about other
+  days or devices.
+- The XOR circuits are small (4 logical qubits, 9 two-qubit gates) and
+  PSF-Zero does not change them; this is a test of the pipeline and of the
+  layout-selection procedure, not of PSF-Zero's compression.
+- Queue time depends on the day's load; it is recorded, not predicted.
+
+## 5. layout (compile-only, no QPU)
+
+On the chosen device's real Target (or, if no manifest exists, the largest
+available device): 80 logical qubits in 40 pair24 blocks, seeds 0-2.
+PSF-Zero 2026-09-27.2 with the error-weighted layout
+(`layout_edge_errors`, `layout_qubit_errors` from the Target) against
+Qiskit `transpile(optimization_level=3)`; ESP = product over operations of
+(1 - error) from the Target.
+
+| ID | Prediction |
+|---|---|
+| W1 | The weighted layout's ESP is at least Qiskit L3's on all three seeds. |
+| W2 | The weighted output passes the exact per-pair check (<= 1e-12) on all three seeds. |
+
+W1 is the first test of Addendum 197's model result (4/4 device models) on
+a real calibration.
+
+## 6. Order on 2026-09-28
+
+1. `preflight` (H0-H2 must pass).
+2. `submit` (one job; the manifest is written before it).
+3. `layout` (while the job waits in the queue).
+4. `score` (after the job finishes).
+
+Logs: `stage2_preflight.txt`, `stage2_submit.txt`, `stage2_layout.txt`,
+`stage2_score.txt`; manifests `stage2_manifest_2026-09-28.json` and
+`stage2_manifest_2026-09-28_scored.json`. Before publication the manifests
+are checked for account names, instance names and local paths.
+
+---
+
+<!-- ===== Addendum 213 (source: spare-qubit-cliff-addendum-213-preregistration-2026-09-27.md) ===== -->
+
+> **Note added when merging:** Pre-registration of about 100,000 unattended compiles with psf_compile.py 2026-09-27.2.
+
+## Addendum 213 -- Preregistration: about 100,000 compiles with psf_compile.py 2026-09-27.2, unattended (2026-09-27)
+
+**Written before running.** Results will be recorded as Addendum 214.
+(Addendum 212 is reserved for the Stage-2 results of Addendum 211.)
+
+- Script: [`benchmarks/long_loop_100k.py`](../../benchmarks/long_loop_100k.py), 12,738 bytes, normalized SHA-256
+  `5b887b136700dafae6873475fe24210014c71fe22c8b96575dde8621751b175c`.
+  Syntax-checked here; not run here. A `--smoke` run (1/100 scale) is made
+  first to check that the script runs; its numbers are not scored.
+- Requires `psf_compile.py` 2026-09-27.2 (the script stops otherwise).
+
+## Why
+
+Addendum 200 ran 1,000 laps per loop with 2026-09-26.4. Since then the
+compiler changed (batched polish, default `block_gate_floor` 8), and one
+event appeared that 1,000 laps rarely show: a Rust-core decomposition
+failure (`SU2ExtractionSingular`, 2 of 11 blocks in one training compile,
+handled correctly by the fallback). This run looks for rare events, slow
+memory growth, slow-down over time, and the shape of compounding drift at
+about 100 times the earlier scale, with the garbage-collection setting of
+Addendum 202.
+
+## Design
+
+| Part | What | Laps |
+|---|---|---|
+| F | fresh cliff circuits (FakeNighthawk, 120 logical, 60 pair24 blocks), parameters on a random walk; exact per-pair check every 1,000 laps | 50,000 |
+| C | compounding: each output mapped back and compiled again; per-pair distance to lap 0 every 1,000 laps | 20,000 |
+| E | fresh 12-qubit training circuits (11 blocks at the new default floor); loss against the uncompiled reference every 10 laps | 30,000 |
+
+`on_unsupported="keep"` everywhere, so a core failure falls back and is
+counted (parsed from `compile()`'s summary warning) instead of stopping
+the run. Every lap is written to CSV, flushed every 1,000 laps.
+
+## Flags (a tripped flag is a finding, as in Addendum 199)
+
+| ID | Flag clears if |
+|---|---|
+| L1 | no exception in any part |
+| L2 | RSS growth <= 100 MB per part, from lap 1,000 to the end |
+| L3 | per part: compile p99 <= 2 x median, and max <= 1 s |
+| L4 | F: every per-pair check <= 1e-12; E: every loss difference <= 1e-10 |
+| L5 | C: distance at lap 20,000 <= 2e-9 (20,000 x 1e-13), and its ratio to lap 10,000 in [1.6, 2.4] |
+| L6 | per part: median compile time of the last 10% of laps <= 1.1 x the first 10% |
+
+Exploratory, no threshold: fallbacks per block in each part, guard counts.
+
+Expectations stated now: L5's bound extrapolates the measured 6.1e-14 per
+lap (Addendum 200) and 6.5e-14 (Addendum 208) linearly; a ratio above 2.4
+would mean drift accelerates. L6 is the one most exposed to the machine
+itself (thermal throttling, other load, sleep); if it trips, the CSV's
+per-lap times show whether the change is gradual or a step.
+
+## Limits
+
+One machine, WSL2, unattended: other activity on the PC, or sleep, can
+affect times (not results). Expected wall time about 50-60 minutes.
+
+---
+
+<!-- ===== Addendum 214 (source: spare-qubit-cliff-addendum-214-2026-09-27.md) ===== -->
+
+> **Note added when merging:** Five of six flags clear: stable at 100,000 compiles, guard repairs 7 defective blocks inside the loops, drift linear. One flag tripped: rare accuracy losses (up to 1.3e-7) in training circuits at the new default block_gate_floor 8; the default returns to 12 in 2026-09-27.3. Corrects Addendum 210's exactness claim.
+
+## Addendum 214 -- 100,000 compiles with 2026-09-27.2: no exception, no memory growth, no slow-down, drift linear to 20,000 laps, and the correctness guard engaged and repaired 7 blocks inside the loops; one flag tripped: in the 12-qubit training circuits, 4 of 3,000 checked compiles lost accuracy (loss error 1.7e-9 to 1.3e-7), a regression exposed by the new default block_gate_floor 8 (2026-09-27)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-213-preregistration-2026-09-27.md`. WSL2
+(home), 12 cores, Python 3.12.13, Qiskit 2.5.2, `psf_compile.py`
+2026-09-27.2 (`d987422b...`), [`long_loop_100k.py`](../../benchmarks/long_loop_100k.py) (`5b887b13...`), both
+verified by the script. Unattended; total wall time 2,805 s (47 min).
+
+## 0. In one line
+
+Five of six flags clear. L4 tripped in part E: the compiled training
+circuit's loss differed from the uncompiled one by up to 1.3e-7 on 4 of
+3,000 checks, where every earlier training-loop check (Addenda 199-200,
+at the old floor of 12) stayed at or below 1.2e-14. The likely cause is
+recorded below as a hypothesis; the fix is not yet made.
+
+## 1. Results
+
+| Part | Laps | Compile median / p99 / max | RSS growth | Last 10% vs first 10% | Rust-core fallbacks | Guard (ZSX rejected -> repaired) | Accuracy |
+|---|---|---|---|---|---|---|---|
+| F fresh cliff (120 q) | 50,000 | 26.1 / 37.0 / 72 ms | -5 MB | 26.1 vs 26.6 ms | 0 of 3,000,000 blocks | 26 checked, 6 rejected, 6 repaired | worst per-pair 1.0e-15 |
+| C compounding (120 q) | 20,000 | 26.7 / 31.7 / 43 ms | 0 MB | 26.8 vs 26.6 ms | 0 of 1,200,000 | none new | drift 8.33e-10 at lap 20,000 |
+| E training (12 q) | 30,000 | 10.0 / 13.5 / 22 ms | +5 MB | 10.1 vs 9.9 ms | **43,829 of 330,000 (13.3%)** | 1 rejected, 1 repaired (plus the checks of every fallback block) | **worst loss error 1.3e-7** |
+
+| Flag | Result |
+|---|---|
+| L1 no exception | **clear** (100,000 of 100,000 laps) |
+| L2 RSS growth <= 100 MB | **clear** (-5, 0, +5 MB) |
+| L3 p99 <= 2 x median, max <= 1 s | **clear** in all parts |
+| L4 F per-pair <= 1e-12; E loss error <= 1e-10 | **TRIPPED** (F 1.0e-15; E 1.3e-7) |
+| L5 C drift <= 2e-9 at lap 20,000; ratio to lap 10,000 in [1.6, 2.4] | **clear** (8.33e-10; 2.00) |
+| L6 no slow-down (last 10% <= 1.1 x first 10%) | **clear** in all parts |
+
+## 2. What went right
+
+- **Stability at scale.** 100,000 compiles, no exception, memory flat, no
+  slow-down, and with the Addendum 202 collector setting the worst lap of
+  70,000 cliff compiles was 72 ms (median 26 ms).
+- **The guard worked inside a loop for the first time.** Addendum 200 could
+  not test it (0 checks). Here, 26 cliff blocks were degenerate enough to
+  go to Qiskit's CX decomposer; 6 of them were returned wrong by the ZSX
+  decomposer (the Qiskit #17057 defect) and each was repaired by the
+  default-Euler retry (laps 7,000-48,000 of part F). A seventh occurred in
+  part E. No block needed the forced closed form.
+- **Drift stays linear.** 6.2e-11 at lap 1,000 (Addendum 200: 6.1e-11),
+  4.17e-10 at 10,000, 8.33e-10 at 20,000: ratio 2.00, about 4.1e-14 per lap
+  after the first thousand. No acceleration.
+- **The Rust core never failed on the cliff circuits** (4.2 million blocks).
+
+## 3. What went wrong (L4)
+
+Checked every 10th of the 30,000 training compiles: 2,996 checks at or
+below 1e-14, and 4 far above it -- 1.30e-7 (lap 3,600), 3.82e-9 (4,580),
+3.28e-9 (1,030), 1.66e-9 (6,720). Nothing in between: a separate failure
+mode, not noise.
+
+Every one of the 4 had Rust-core fallbacks in that compile (1-3 blocks),
+as did 83% of all checked laps. The fallback rate itself is new: 13.3% of
+training blocks fall back with `SU2ExtractionSingular` at the new default
+floor of 8, versus none at 12, where those blocks were not synthesized at
+all (Addendum 206: the second-layer blocks passed through as written, exact).
+
+**Hypothesis (not yet tested).** A block that falls back is synthesized by
+Qiskit's `TwoQubitBasisDecomposer`, and the guard accepts its output if the
+average gate infidelity is at most 1e-8 (chosen in Addendum 196 so as not to
+reject Qiskit's documented approximations). Qiskit's Weyl decomposition
+snaps inputs close to a special case onto that case when the fidelity loss
+is below about 1e-9 -- an amplitude error of order 1e-5 -- which would pass
+the guard and produce loss errors of the size observed. At floor 12 these
+blocks never reached that path.
+
+So two things combine: (1) the Rust core fails on 13% of the new
+second-layer blocks (their structure: leading single-qubit rotations taken
+by the neighbouring blocks); (2) the fallback accepts approximations up to
+1e-8 infidelity. (2) exists at any floor, for any circuit whose blocks fall
+back; floor 8 made it frequent on brick-layer circuits.
+
+**Practical size.** 0.13% of training compiles, loss error at most 1.3e-7:
+far below shot noise on hardware, but outside this project's exactness
+standard (1e-10), and it breaks the claim of Addendum 210 (F2) that floor 8
+is exact everywhere -- that check had 3 brick instances and could not see a
+0.1% event.
+
+## 4. Next steps (not yet done)
+
+1. Diagnose: capture the failing blocks (Rust-core error, Weyl
+   coordinates, the fallback circuit's infidelity) and confirm or reject
+   the hypothesis.
+2. Fix the fallback's accuracy, for example by requiring an exact result
+   (infidelity near machine precision) and otherwise building the block
+   from Qiskit's unsnapped Weyl coordinates with the closed-form core; and
+   look at why the Rust core fails on these blocks.
+3. **Release decision (made after this run): the default returns to 12 in
+   `psf_compile.py` 2026-09-27.3** (changelog item 22; normalized SHA-256
+   `9892dd48...`). The only change from 2026-09-27.2 is that constant and
+   its docstrings. `block_gate_floor=8` stays available with the caveat
+   above; it becomes the default again only once the fallback is exact.
+
+## 5. Files
+
+| File | What it is |
+|---|---|
+| [`benchmarks/long_loop_100k.py`](../../benchmarks/long_loop_100k.py) | the registered test |
+| [`data/logs/long_loop_100k.txt`](../../data/logs/long_loop_100k.txt) | log (received and checked) |
+| [`data/long_loop_F_2026-09-27.csv`](../../data/long_loop_F_2026-09-27.csv), [`data/long_loop_C_2026-09-27.csv`](../../data/long_loop_C_2026-09-27.csv), [`data/long_loop_E_2026-09-27.csv`](../../data/long_loop_E_2026-09-27.csv) | every lap (50,000, 20,000, 30,000 rows; received; summaries recomputed from them match the log) |
+
 ---
 
 ---

@@ -1,0 +1,41 @@
+platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | cores 12 | python 3.12.13 | qiskit 2.5.2 | FULL
+LOADED /home/psf/psf_zero_fresh_test/psf_compile.py 2026-09-27.2 d987422b40d9dbbd00b1f28e57b36f6fcdb47c7270ba004a99e2c223f9e1e61c
+SCRIPT /home/psf/psf_zero_fresh_test/benchmarks/long_loop_100k.py 5b887b136700dafae6873475fe24210014c71fe22c8b96575dde8621751b175c
+
+=== F: 50000 laps ===
+  lap 10000: median 26.2 ms, p99 34.3 ms, max 56 ms; fallbacks so far 0; RSS 202 MB; last check 6.661338147750939e-16; 314 s
+  lap 20000: median 26.3 ms, p99 45.6 ms, max 72 ms; fallbacks so far 0; RSS 209 MB; last check 5.551115123125783e-16; 640 s
+  lap 30000: median 26.2 ms, p99 41.3 ms, max 72 ms; fallbacks so far 0; RSS 203 MB; last check 8.881784197001252e-16; 954 s
+  lap 40000: median 26.1 ms, p99 38.8 ms, max 72 ms; fallbacks so far 0; RSS 207 MB; last check 8.881784197001252e-16; 1269 s
+  lap 50000: median 26.1 ms, p99 37.0 ms, max 72 ms; fallbacks so far 0; RSS 203 MB; last check 6.661338147750939e-16; 1583 s
+  F done: 50000 laps in 1583 s; median 26.1 ms, p99 37.0 ms, max 72 ms; fallbacks 0 of about 3000000 blocks; guard {'checked': 26, 'zsx_rejected': 6, 'default_rejected': 0, 'closed_form_forced': 0}
+
+=== C: 20000 laps ===
+  lap 10000: median 26.7 ms, p99 31.8 ms, max 43 ms; fallbacks so far 0; RSS 212 MB; last check 4.172891871508736e-10; 417 s
+  lap 20000: median 26.7 ms, p99 31.7 ms, max 43 ms; fallbacks so far 0; RSS 211 MB; last check 8.328945272469166e-10; 836 s
+  C done: 20000 laps in 836 s; median 26.7 ms, p99 31.7 ms, max 43 ms; fallbacks 0 of about 1200000 blocks; guard {'checked': 26, 'zsx_rejected': 6, 'default_rejected': 0, 'closed_form_forced': 0}
+
+=== E: 30000 laps ===
+  lap 10000: median 10.0 ms, p99 13.4 ms, max 18 ms; fallbacks so far 14630; RSS 197 MB; last check 0.0; 128 s
+  lap 20000: median 10.0 ms, p99 13.5 ms, max 18 ms; fallbacks so far 29255; RSS 205 MB; last check 1.1102230246251565e-16; 256 s
+  lap 30000: median 10.0 ms, p99 13.5 ms, max 22 ms; fallbacks so far 43829; RSS 205 MB; last check 0.0; 386 s
+  E done: 30000 laps in 386 s; median 10.0 ms, p99 13.5 ms, max 22 ms; fallbacks 43829 of about 330000 blocks; guard {'checked': 43858, 'zsx_rejected': 7, 'default_rejected': 0, 'closed_form_forced': 0}
+
+=== flags ===
+L1 no exception: {'F': 0, 'C': 0, 'E': 0}; laps done {'F': 50000, 'C': 20000, 'E': 30000} -> clear
+L2 F: RSS growth -5 MB -> clear
+L3 F: p99 37.0 vs 2 x median 52.3 ms; max 72 ms -> clear
+L6 F: last-10% median 26.1 vs first-10% 26.6 ms -> clear
+   F: fallbacks 0 of about 3000000 blocks (0.00e+00 per block); guard {'checked': 26, 'zsx_rejected': 6, 'default_rejected': 0, 'closed_form_forced': 0}
+L2 C: RSS growth -0 MB -> clear
+L3 C: p99 31.7 vs 2 x median 53.4 ms; max 43 ms -> clear
+L6 C: last-10% median 26.8 vs first-10% 26.6 ms -> clear
+   C: fallbacks 0 of about 1200000 blocks (0.00e+00 per block); guard {'checked': 26, 'zsx_rejected': 6, 'default_rejected': 0, 'closed_form_forced': 0}
+L2 E: RSS growth +5 MB -> clear
+L3 E: p99 13.5 vs 2 x median 20.0 ms; max 22 ms -> clear
+L6 E: last-10% median 10.1 vs first-10% 9.9 ms -> clear
+   E: fallbacks 43829 of about 330000 blocks (1.33e-01 per block); guard {'checked': 43858, 'zsx_rejected': 7, 'default_rejected': 0, 'closed_form_forced': 0}
+L4 F worst per-pair check 9.99e-16 (<= 1e-12); E worst loss difference 1.30e-07 (<= 1e-10) -> TRIPPED
+L5 C distance at lap 20000 8.329e-10 (<= 2.0e-09); ratio to lap 10000 2.00 (1.6-2.4) -> clear
+
+DONE
