@@ -1,0 +1,35 @@
+platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | python 3.12.13 | qiskit 2.5.2
+LOADED /home/psf/psf_zero_fresh_test/psf_compile.py 2026-09-27.3 9892dd4844a155cafb7d8a4e034108922792a219dc1d79eeba05951a395a7f27
+SCRIPT /home/psf/psf_zero_fresh_test/benchmarks/diag_fallback_accuracy.py bb8f4e72b08ced8d42bb652a42b51b56f37dee055b7663f33b92d6faa86faa8e
+  lap 500: 731 fallback blocks so far
+  lap 1000: 1419 fallback blocks so far
+  lap 1500: 2139 fallback blocks so far
+  lap 2000: 2860 fallback blocks so far
+  lap 2500: 3596 fallback blocks so far
+  lap 3000: 4293 fallback blocks so far
+
+=== failing laps of Addendum 214 ===
+  lap 3600: loss error 1.296e-07 (recorded 1.296e-07); exact rebuild 1.1e-16; fallback blocks: (1, 2) infid 2.0e-10 spec ? rebuild 0.0e+00; (5, 6) infid 6.7e-16 spec ? rebuild 2.2e-16
+  lap 4580: loss error 3.822e-09 (recorded 3.822e-09); exact rebuild 0.0e+00; fallback blocks: (5, 6) infid 1.8e-11 spec ? rebuild 3.3e-16
+  lap 1030: loss error 3.277e-09 (recorded 3.277e-09); exact rebuild 0.0e+00; fallback blocks: (1, 2) infid 8.6e-11 spec ? rebuild -4.4e-16; (7, 8) infid 2.2e-16 spec ? rebuild 3.3e-16; (9, 10) infid 5.6e-16 spec ? rebuild -6.7e-16
+  lap 6720: loss error 1.658e-09 (recorded 1.658e-09); exact rebuild 0.0e+00; fallback blocks: (5, 6) infid 0.0e+00 spec ? rebuild -4.4e-16; (9, 10) infid 1.3e-12 spec ? rebuild -6.7e-16
+
+=== laps 1-3000 ===
+  fallback blocks 4293 in 3000 compiles; by pair {'(1, 2)': 932, '(3, 4)': 741, '(5, 6)': 864, '(9, 10)': 885, '(7, 8)': 870, '(0, 1)': 1}
+  core error messages {'SU2ExtractionSingular': 4292, 'NumericInstability': 1}
+  returned-circuit infidelity in (0e+00, 1e-14]: 4292; specializations {'?': 4292}
+  returned-circuit infidelity in (1e-14, 1e-12]: 0; specializations {}
+  returned-circuit infidelity in (1e-12, 1e-10]: 1; specializations {'?': 1}
+  returned-circuit infidelity in (1e-10, 1e-08]: 0; specializations {}
+  returned-circuit infidelity in (1e-08, 1e+00]: 0; specializations {}
+  compiles with loss error > 1e-10: 5 of 3003
+  (H-C) smallest |tr|/2 of Qiskit's exact local factors: fallback blocks median 5.40e-16, max 7.07e-01; non-fallback blocks (200 compiles) median 7.38e-02, min 3.58e-19
+
+=== predictions ===
+R1 the four laps reproduce their recorded loss errors within 1% -> CONFIRMED
+R2 not evaluable: this Qiskit does not expose the Weyl specialization ({'?': 4})
+R3 exact rebuild infidelity <= 1e-14 for every fallback block (worst 1.4e-15) -> CONFIRMED
+R4 with the exact rebuild, all four failing laps <= 1e-14 (1.1e-16, 0.0e+00, 0.0e+00, 0.0e+00) -> CONFIRMED
+R5 every fallback block on a second-layer pair (['(0, 1)', '(1, 2)', '(3, 4)', '(5, 6)', '(7, 8)', '(9, 10)']) -> NOT CONFIRMED
+
+Wrote diag_fallback_accuracy_2026-09-27.csv (4298 fallback blocks) and the per-lap file; total 106 s

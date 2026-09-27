@@ -1,0 +1,16 @@
+platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | python 3.12.13 | qiskit 2.5.2
+LOADED /home/psf/psf_zero_fresh_test/psf_compile.py 2026-09-27.6 20eef8dd67159b45e6dce3096610e5da0637f124f8ff8dc352eddb346d79fc89
+SCRIPT /home/psf/psf_zero_fresh_test/benchmarks/verify_exact_fallback.py 097daa0687cedb90905fc6d12eaab2e9310c5dc80b78d2ff8330e8161344482e
+  fixed   : worst loss error 2.78e-15; compiles > 1e-10: 0; > 1e-14: 0; compile median 11.21 ms; guard {'checked': 4300, 'zsx_rejected': 1, 'default_rejected': 0, 'closed_form_forced': 0, 'inexact': 69, 'exact_rebuilt': 15, 'best_effort': 0, 'best_effort_worst': 0, 'psf_rerouted': 1, 'psf_rerouted_worst_residual': 5.853514210303842e-07}
+  previous: worst loss error 1.30e-07; compiles > 1e-10: 5; > 1e-14: 5; compile median 11.19 ms; guard {'checked': 4299, 'zsx_rejected': 1, 'default_rejected': 0, 'closed_form_forced': 0, 'inexact': 0, 'exact_rebuilt': 0, 'best_effort': 0, 'best_effort_worst': 0, 'psf_rerouted': 0, 'psf_rerouted_worst_residual': 0}
+  cliff: identical outputs 30/30
+  floor 12: identical outputs 100/100
+
+=== predictions ===
+V1 with the fix every loss error <= 1e-14 (worst 2.78e-15; without the fix 1.30e-07, 5 above 1e-10) -> CONFIRMED
+V2 two-qubit counts identical (3003/3003); blocks rebuilt 15 (expected 5..4298) -> CONFIRMED
+V3 cliff outputs identical (30/30) -> CONFIRMED
+V4 compile median with the fix 11.21 vs 11.19 ms (ratio 1.002 <= 1.10) -> CONFIRMED
+V5 floor 12 outputs identical (100/100) -> CONFIRMED
+
+Wrote verify_exact_fallback_2026-09-27.csv (6006 rows); total wall time 188 s

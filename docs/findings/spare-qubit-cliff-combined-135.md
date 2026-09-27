@@ -9545,6 +9545,508 @@ is exact everywhere -- that check had 3 brick instances and could not see a
 | [`data/logs/long_loop_100k.txt`](../../data/logs/long_loop_100k.txt) | log (received and checked) |
 | [`data/long_loop_F_2026-09-27.csv`](../../data/long_loop_F_2026-09-27.csv), [`data/long_loop_C_2026-09-27.csv`](../../data/long_loop_C_2026-09-27.csv), [`data/long_loop_E_2026-09-27.csv`](../../data/long_loop_E_2026-09-27.csv) | every lap (50,000, 20,000, 30,000 rows; received; summaries recomputed from them match the log) |
 
+
+---
+
+<!-- ===== Addendum 215 (source: spare-qubit-cliff-addendum-215-preregistration-2026-09-27.md) ===== -->
+
+> **Note added when merging:** Pre-registration of the diagnosis of Addendum 214's accuracy losses: the fallback path, Qiskit's Weyl specialization, and the Rust core's SU(2) extraction.
+
+## Addendum 215 -- Preregistration: why 4 of 3,000 training compiles lost accuracy at block_gate_floor 8 (Addendum 214, L4) -- the fallback path, Qiskit's Weyl specialization, and the Rust core's SU(2) extraction (2026-09-27)
+
+**Written before running.** Results will be recorded as Addendum 216.
+
+- Script: [`benchmarks/diag_fallback_accuracy.py`](../../benchmarks/diag_fallback_accuracy.py), 12,823 bytes, normalized
+  SHA-256 `bb8f4e72b08ced8d42bb652a42b51b56f37dee055b7663f33b92d6faa86faa8e`.
+  Syntax-checked here; not run here.
+- Requires `psf_compile.py` 2026-09-27.3; `block_gate_floor=8` is passed
+  explicitly (the default is 12 again).
+
+## 1. Hypotheses
+
+- **H-A (from Addendum 214).** Blocks the Rust core cannot decompose fall
+  back to Qiskit's CX synthesis. Qiskit's Weyl decomposition snaps an input
+  that lies close to a special case onto that case when the fidelity loss is
+  below about 1e-9, and the guard (tolerance 1e-8 average gate infidelity,
+  Addendum 196) accepts the result. The loss errors come from those blocks.
+- **H-B.** Rebuilding such a block exactly -- Qiskit's Weyl decomposition
+  without specialization, then PSF-Zero's closed-form core -- removes the
+  error. This is the candidate fix.
+- **H-C (the Rust core's failure; exploratory).** In `lib.rs`,
+  `so4_to_su2_pair` extracts each SU(2) factor from combinations of the SO(4)
+  matrix in which every quaternion component of one factor is multiplied by
+  the scalar part of the other. If a factor has zero trace (an exact
+  Pauli-type rotation), all components of the other vanish and the function
+  raises `SU2ExtractionSingular`, although the decomposition exists. The
+  second-layer blocks of the brick ansatz lose their leading single-qubit
+  rotations to their neighbours, which could make such a factor exact. The
+  core's own factors are not visible from Python, so this is examined only
+  through Qiskit's exact local factors (related, not identical).
+
+## 2. Design
+
+- **Part R.** Laps 1-3,000 and the four failing laps (1,030, 3,600, 4,580,
+  6,720) of Addendum 214's part E are rebuilt exactly (same seeds: target
+  from `default_rng(7)`, perturbations from `default_rng(202)` in lap
+  order) and compiled at floor 8. For every compile: the consolidated
+  blocks and their qubit pairs; for every fallback block: the core's error,
+  the average gate infidelity of the circuit Qiskit returned, the
+  specialization Qiskit's default Weyl decomposition chooses, the
+  infidelity of the exact rebuild, and the smallest |tr|/2 among Qiskit's
+  four exact local factors. 200 compiles also give the same |tr|/2 for
+  blocks that did not fall back.
+- **Part X.** The four failing laps are compiled again with every fallback
+  replaced by the exact rebuild.
+
+## 3. Predictions
+
+| ID | Prediction |
+|---|---|
+| R1 | The four laps reproduce their recorded loss errors (1.30e-7, 3.82e-9, 3.28e-9, 1.66e-9) to within 1%. |
+| R2 | Every fallback block whose returned circuit has infidelity > 1e-14 is one where Qiskit's default Weyl decomposition specializes (not "General"). |
+| R3 | The exact rebuild has infidelity <= 1e-14 for every fallback block. |
+| R4 | With the exact rebuild, all four failing laps have loss error <= 1e-14. |
+| R5 | Every fallback block lies on a second-layer pair: (1,2), (3,4), (5,6), (7,8) or (9,10). |
+
+Exploratory: the distribution of fallback-block infidelities over the 3,000
+compiles; |tr|/2 of fallback versus non-fallback blocks (H-C).
+
+What follows from each outcome, stated now:
+
+- R1 fails: the failure is not deterministic, and the investigation changes
+  direction (state carried between compiles).
+- R2 or R3 fails: the mechanism is not Qiskit's specialization, or the
+  rebuild is wrong; H-B is not the fix.
+- R4 holds with R2 and R3: the fix is to require an exact fallback (for
+  example, tighten the fallback check and rebuild from unspecialized
+  coordinates when it fails); after that, floor 8 can be tested again as a
+  default.
+- R5 fails: the core also fails on other blocks, and H-C has to explain
+  those too.
+- If H-C is supported, the lasting fix is in the Rust core: choose the
+  extraction from the largest of the 16 quaternion-product combinations
+  instead of always from the trace, so that no factor with a vanishing
+  scalar part makes it singular.
+
+## 4. Output
+
+[`diag_fallback_accuracy.txt`](../../data/logs/diag_fallback_accuracy.txt) (log), [`diag_fallback_accuracy_2026-09-27.csv`](../../data/diag_fallback_accuracy_2026-09-27.csv)
+(every fallback block) and [`diag_fallback_accuracy_2026-09-27_laps.csv`](../../data/diag_fallback_accuracy_2026-09-27_laps.csv)
+(every compile). Expected wall time 1-3 minutes.
+
+---
+
+<!-- ===== Addendum 216 (source: spare-qubit-cliff-addendum-216-2026-09-27.md) ===== -->
+
+> **Note added when merging:** The losses are deterministic and an exact rebuild of fallback blocks removes those four; the guard measured infidelity instead of operator distance. Its reading that losses occur only with fallback blocks is corrected by Addendum 218.
+
+## Addendum 216 -- The accuracy losses of Addendum 214 are reproduced exactly and come only from blocks that fall back to Qiskit's CX synthesis; rebuilding those blocks from Qiskit's unspecialized Weyl coordinates with PSF-Zero's closed-form core removes them completely; the fallback check measures the wrong quantity (infidelity instead of operator distance); the Rust-core failure hypothesis is neither confirmed nor refuted by the proxy used (2026-09-27)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-215-preregistration-2026-09-27.md`. WSL2
+(home), Python 3.12.13, Qiskit 2.5.2, `psf_compile.py` 2026-09-27.3
+(`9892dd48...`) with `block_gate_floor=8` passed explicitly,
+[`diag_fallback_accuracy.py`](../../benchmarks/diag_fallback_accuracy.py) (`bb8f4e72...`), both verified by the script.
+Total wall time 106 s.
+
+## 0. In one line
+
+R1, R3 and R4 confirmed, R2 not evaluable, R5 not confirmed (one exception
+in 4,298). The losses are deterministic, confined to compiles with fallback
+blocks, and removed by the exact rebuild -- which is the fix to make.
+
+## 1. Results
+
+**The four failing laps of Addendum 214** (compiled again at floor 8):
+
+| Lap | Loss error (recorded) | With exact rebuild | Fallback blocks: pair, returned-circuit infidelity |
+|---|---|---|---|
+| 3,600 | 1.296e-7 (1.296e-7) | 1.1e-16 | (1,2) 2.0e-10; (5,6) 6.7e-16 |
+| 4,580 | 3.822e-9 (3.822e-9) | 0 | (5,6) 1.8e-11 |
+| 1,030 | 3.277e-9 (3.277e-9) | 0 | (1,2) 8.6e-11; (7,8) 2.2e-16; (9,10) 5.6e-16 |
+| 6,720 | 1.658e-9 (1.658e-9) | 0 | (5,6) 0; (9,10) 1.3e-12 |
+
+**Laps 1-3,000** (3,003 compiles including the four; 11 blocks each):
+
+- 4,298 fallback blocks: 4,297 `SU2ExtractionSingular` on the second-layer
+  pairs (1,2) 932, (3,4) 741, (5,6) 864, (7,8) 870, (9,10) 885; one
+  `NumericInstability` on the first-layer pair (0,1) (lap 2,112; returned
+  circuit exact). Every returned circuit uses 3 CXs.
+- Compiles without any fallback (566): worst loss error 1.6e-15. Compiles
+  with fallback (2,437): 5 above 1e-10 (the four above and lap 2,138,
+  4.6e-9), none between 1.6e-15 and 1e-10.
+- Returned-circuit infidelity: > 1e-14 for only 4 of 4,298 blocks.
+
+## 2. Scoring
+
+| ID | Prediction | Result |
+|---|---|---|
+| R1 | the four laps reproduce their errors within 1% | **confirmed** (all four to four digits) |
+| R2 | every inexact fallback has a specialized Weyl decomposition | **not evaluable**: Qiskit 2.5.2's `TwoQubitWeylDecomposition` does not expose `specialization` from Python |
+| R3 | exact rebuild <= 1e-14 for every fallback block | **confirmed** (worst 1.4e-15 over 4,298) |
+| R4 | with the rebuild, the four laps <= 1e-14 | **confirmed** (1.1e-16, 0, 0, 0) |
+| R5 | every fallback block on a second-layer pair | **not confirmed** (4,297 of 4,298; the exception is a different core error on (0,1)) |
+
+## 3. Reading
+
+**The check measured the wrong quantity.** Lap 2,138 lost 4.6e-9 in loss
+while its only fallback block had an average gate infidelity of 6.7e-16.
+Infidelity is quadratic in the operator error: 1e-15 corresponds to an
+operator error of order 3e-8, enough for loss errors of 1e-9 to 1e-8. The
+same lesson as Addendum 206 (the per-pair check could not see drift): the
+guard's infidelity threshold of 1e-8 (Addendum 196) admits operator errors
+up to about 1e-4, and even a much tighter infidelity threshold cannot tell
+an exact block from one off by 1e-8. A fallback must be checked by
+phase-aligned operator distance, the quantity PSF-Zero's own polish works
+to (Addendum 186).
+
+**Where the error comes from inside Qiskit's synthesis is not settled.**
+The snapping hypothesis (H-A) could not be tested directly (R2). Whatever
+the mechanism, the exact rebuild -- Qiskit's Weyl decomposition with
+`fidelity=None`, local factors as single-qubit unitaries, and the
+closed-form core with `force=True` -- is exact to 1.4e-15 on every one of
+4,298 blocks and removes every loss error.
+
+**The Rust core's failure (H-C) is not resolved by this proxy.** 55% of
+fallback blocks (2,367 of 4,298) have a Qiskit local factor with
+|tr|/2 < 1e-8, but 45% have none above 1e-3, and some blocks that did not
+fall back also have near-traceless Qiskit factors (minimum 3.6e-19). Local
+factors are defined only up to a gauge (Pauli and Weyl-group
+conjugations), so Qiskit's factors cannot stand in for the core's. A
+direct test needs the SO(4) matrix the core passes to `so4_to_su2_pair`:
+either a debug entry point in the core, or a Python reimplementation of
+its steps.
+
+## 4. Next steps
+
+1. **Fix the fallback (Python only).** In `_fallback` (and in
+   `_guarded_cx_synthesis`, used for degenerate CX cores), accept Qiskit's
+   circuit only if its phase-aligned operator distance to the target is at
+   most 1e-13 (Frobenius); otherwise use the exact rebuild. Keep the
+   2-CX output of Qiskit wherever it is exact, so degenerate blocks are not
+   lengthened. Verify: the 3,003 compiles of this addendum at floor 8 with
+   every loss error <= 1e-14, the four failing laps, the existing tests,
+   and the cliff circuits unchanged.
+2. **Then test floor 8 as the default again**, with the 100,000-compile run
+   of Addendum 213.
+3. **Root cause in the core (Rust).** Reproduce `SU2ExtractionSingular`
+   directly on the captured blocks and, if the extraction is the cause,
+   choose the quaternion components from the largest of the 16 product
+   combinations instead of always from the trace.
+
+## 5. Files
+
+| File | What it is |
+|---|---|
+| [`benchmarks/diag_fallback_accuracy.py`](../../benchmarks/diag_fallback_accuracy.py) | the registered test |
+| [`data/logs/diag_fallback_accuracy.txt`](../../data/logs/diag_fallback_accuracy.txt) | log (received and checked) |
+| [`data/diag_fallback_accuracy_2026-09-27.csv`](../../data/diag_fallback_accuracy_2026-09-27.csv) | every fallback block (4,298 rows; received) |
+| [`data/diag_fallback_accuracy_2026-09-27_laps.csv`](../../data/diag_fallback_accuracy_2026-09-27_laps.csv) | every compile (3,003 rows; received) |
+
+---
+
+<!-- ===== Addendum 217 (source: spare-qubit-cliff-addendum-217-preregistration-2026-09-27.md) ===== -->
+
+> **Note added when merging:** Pre-registration of the exact fallback (changelog item 23), with an amendment before any scored result: 2026-09-27.4 withdrawn, 2026-09-27.5 rebuilds through PSF-Zero's own polish.
+
+## Addendum 217 -- Preregistration: psf_compile.py 2026-09-27.5 (first built as 2026-09-27.4) -- every circuit taken from Qiskit's CX decomposer checked by operator distance and rebuilt exactly when it is not exact (2026-09-27)
+
+**Written before running.** Results will be recorded as Addendum 218.
+
+## The change (changelog item 23)
+
+Addendum 216: the accuracy losses of Addendum 214 came only from blocks that
+fell back to Qiskit's CX synthesis, and the guard of item 17 checks average
+gate infidelity (tolerance 1e-8), which is quadratic in the operator error:
+one block at 6.7e-16 infidelity still cost a loss error of 4.6e-9.
+
+- `_guarded_cx_synthesis` (used for fallback blocks and for degenerate CX
+  cores) now accepts a decomposer result only if, in addition to the
+  infidelity check, its phase-aligned Frobenius distance to the target is
+  at most `_EXACT_TOL` = 1e-13.
+- If neither the ZSX nor the default-Euler decomposer passes, the block is
+  rebuilt (as amended below) and must itself pass the 1e-13 check.
+- Exact decomposer results (including 2-CX ones) are kept unchanged.
+- `USE_EXACT_FALLBACK = False` restores 2026-09-27.3. The default
+  `block_gate_floor` stays 12 in this revision.
+
+## Amendment before any scored result (2026-09-27, 20:10)
+
+The first build, 2026-09-27.4 (`3a49dce2...`, 77,804 bytes), passed all 74
+tests but stopped the verification on an early training compile with
+`RuntimeError: CX-basis synthesis of a fallback block failed verification`:
+for one fallback block, the ZSX result, the default-Euler result and the
+rebuild all missed the 1e-13 operator-distance check. The rebuild's
+accuracy had been judged from Addendum 216's R3, which measured
+infidelity (worst 1.4e-15) -- the same quadratic measure this change was
+written to replace; 1.4e-15 in infidelity allows operator distances far
+above 1e-13. No prediction was scored and no data from that run is used.
+
+2026-09-27.4 is withdrawn before release. 2026-09-27.5 changes only the
+rebuild and adds a last resort:
+
+- The rebuild converts Qiskit's unspecialized Weyl decomposition into
+  PSF-Zero's own parameters (ZYZ angles of each local factor, Weyl
+  coordinates, global phase), polishes them with `_refine_decomposition`
+  (Addendum 186, which minimizes exactly this Frobenius distance), and
+  emits the block as PSF-Zero emits its own blocks, with the closed-form
+  core. Checked here in numpy: the conversion is exact to 2.8e-15 on 2,000
+  random blocks (one third with a traceless local factor); with every
+  factor perturbed by 1e-8, the polish brings the distance from 1.3e-7 to
+  9.9e-15.
+- If even the rebuild misses 1e-13, the most accurate candidate is used
+  when its distance is at most 1e-10, counted in
+  `GUARD_STATS["best_effort"]` with the worst distance recorded. Otherwise
+  the block is reported as before.
+
+Predictions V1-V5 and T1 are unchanged; the verification script now
+prints `best_effort` with the other guard counts, and a nonzero count is
+reported as a finding.
+
+## Files
+
+| File | Bytes | Normalized SHA-256 |
+|---|---|---|
+| `psf_compile.py` 2026-09-27.5 | 80,200 | `81509afc6f103e08b504fcd3a30999e377105789df68a7eb01c9a9279f711957` |
+| [`benchmarks/test_exact_fallback.py`](../../benchmarks/test_exact_fallback.py) | 3,209 | `a506a62927cfb0aeef2750d414208c02d1285385e8aa06ee72042240ce9bff04` |
+| [`benchmarks/verify_exact_fallback.py`](../../benchmarks/verify_exact_fallback.py) | 7,782 | `b637073ff3cd7428e0ec4056f977f21f176834a0adbb92556026b466a6da348b` |
+
+Syntax-checked here; not run here (no Qiskit in this environment).
+
+## Predictions (scored by [`verify_exact_fallback.py`](../../benchmarks/verify_exact_fallback.py), both settings in one process)
+
+| ID | Prediction |
+|---|---|
+| V1 | The 3,003 training compiles of Addendum 216 at floor 8: with the fix, every loss error <= 1e-14. (Without it, the five compiles above 1e-10 reappear -- a check of the harness, not a prediction.) |
+| V2 | Two-qubit counts identical in every compile in both settings; blocks rebuilt between 5 and 4,298. |
+| V3 | 30 fresh cliff circuits: identical output text in both settings. |
+| V4 | Floor-8 training compile median with the fix <= 1.10 x without. |
+| V5 | 100 training compiles at floor 12: identical output in both settings. |
+| T1 | The new [`test_exact_fallback.py`](../../benchmarks/test_exact_fallback.py) and the four existing test files all pass. |
+
+Reasoning: the rebuild is exact to 1.4e-15 on all 4,298 fallback blocks
+(Addendum 216, R3), and every fallback circuit Qiskit returned used 3 CXs,
+as does the rebuild (V2). How many blocks the stricter check rejects is not
+known in advance: operator distances were not recorded in Addendum 216, so
+V2's range is wide on purpose. V3 and V5: the cliff circuits and floor 12
+have almost no decomposer blocks (Addendum 214: 26 degenerate cores in 3
+million blocks), so outputs should not change.
+
+## Next (Addendum 219)
+
+If V1-V5 and T1 hold, the 100,000-compile run of Addendum 213 is repeated
+at floor 8 with 2026-09-27.4 ([`long_loop_100k_v2.py`](../../benchmarks/long_loop_100k_v2.py)); its result decides
+whether 8 becomes the default.
+
+---
+
+<!-- ===== Addendum 218 (source: spare-qubit-cliff-addendum-218-2026-09-27.md) ===== -->
+
+> **Note added when merging:** 2026-09-27.5: 4 of 5 losses removed; the fifth is a block PSF-Zero synthesized itself, off by 5.9e-7, accepted by the infidelity-based block check.
+
+## Addendum 218 -- psf_compile.py 2026-09-27.5: the exact fallback removes 4 of the 5 accuracy losses; the fifth comes from a block PSF-Zero synthesized itself, off by 5.9e-7 in operator distance, which the block check (infidelity, tol 1e-5) accepts (2026-09-27)
+
+**Pre-registered in**: Addendum 217 (amended). WSL2 (home), Qiskit 2.5.2,
+`psf_compile.py` 2026-09-27.5 (`81509afc...`), [`verify_exact_fallback.py`](../../benchmarks/verify_exact_fallback.py)
+(`b637073f...`), both verified by the script. Tests: 74 passed. Wall time
+192 s.
+
+## Results
+
+| ID | Prediction | Result |
+|---|---|---|
+| V1 | every loss error <= 1e-14 with the fix | **not confirmed**: worst 4.63e-9; 1 compile above 1e-10 (without the fix: 5, worst 1.30e-7) |
+| V2 | two-qubit counts identical; 5-4,298 blocks rebuilt | **confirmed** (3,003/3,003; 14 rebuilt; 67 decomposer results rejected by the new check; 0 best-effort) |
+| V3 | cliff outputs identical | **confirmed** (30/30) |
+| V4 | compile time <= 1.10x | **confirmed** (11.34 vs 11.35 ms) |
+| V5 | floor-12 outputs identical | **confirmed** (100/100) |
+| T1 | tests pass | **confirmed** (74) |
+
+## The remaining loss (lap 2,138)
+
+Its loss error, 4.63e-9, is unchanged from Addendum 216. A probe of that
+compile (every block's phase-aligned Frobenius distance, and the loss at
+each stage):
+
+- loss error after consolidation only: 0; after PSF-Zero's `compile()`:
+  4.63e-9; after `compile_for_hardware`: 4.63e-9. The error enters in
+  PSF-Zero's synthesis, not in Qiskit's transpile.
+- 10 of 11 blocks at 1.0e-15 to 2.8e-14, including the one fallback block
+  (1.5e-15). Block (7,8), synthesized by PSF-Zero itself (no fallback):
+  **5.85e-7**.
+
+So Addendum 216's reading -- that losses occur only in compiles with
+fallback blocks -- was a coincidence of lap 2,138 also having one; the
+cause there is different. The block check behind `verify=True` compares
+the core's infidelity with `tol` = 1e-5; 5.85e-7 in operator distance is
+about 1e-13 in infidelity and passes. The polish (Addendum 186) did not
+bring this block below 1e-13. Why is not established; the block is on a
+second-layer pair, where the Rust core also raises `SU2ExtractionSingular`
+13% of the time, which suggests the same ill-conditioned extraction
+without reaching the exception threshold, and possibly a local-angle
+singularity (theta near 0 in a ZYZ triple) limiting the Gauss-Newton step.
+
+## Consequence
+
+The operator-distance standard of item 23 has to apply to PSF-Zero's own
+blocks too. Revision 2026-09-27.6 (changelog item 24): a block whose
+polished residual exceeds 1e-13 goes through the checked path of item 23
+instead. Pre-registered in Addendum 220.
+
+---
+
+<!-- ===== Addendum 219 (source: spare-qubit-cliff-addendum-219-preregistration-2026-09-27.md) ===== -->
+
+> **Note added when merging:** Pre-registration of the 100,000-compile run at block_gate_floor 8 with 2026-09-27.6, and the rule that decides the default floor.
+
+## Addendum 219 -- Preregistration: the 100,000-compile run repeated at block_gate_floor 8 with psf_compile.py 2026-09-27.6, to decide whether 8 becomes the default (2026-09-27)
+
+**Written before running.** Results will be recorded as Addendum 222 (Addendum 221 records Addendum 220). Run
+only if Addendum 220's predictions V1-V5 and T1 hold.
+
+- Script: [`benchmarks/long_loop_100k_v2.py`](../../benchmarks/long_loop_100k_v2.py), 13,412 bytes, normalized
+  SHA-256 `d9ee35a13f7d318ff35282e18b06f8ea08ab89e6aee759d39e60da6002a3f27d`
+  (amended with Addenda 217 and 220: version check 2026-09-27.6).
+  It is [`long_loop_100k.py`](../../benchmarks/long_loop_100k.py) (Addendum 213) with four changes: the version
+  check (2026-09-27.6), `block_gate_floor` passed explicitly (`--floor`,
+  default 8, in every part), the part-E accuracy threshold 1e-13 instead of
+  1e-10, and output names ending `_v2`. Same seeds, laps and flags otherwise.
+
+## Flags
+
+L1 (no exception), L2 (RSS growth <= 100 MB per part), L3 (p99 <= 2 x
+median and max <= 1 s), L5 (drift at lap 20,000 <= 2e-9, ratio to lap
+10,000 in [1.6, 2.4]) and L6 (no slow-down) as in Addendum 213; L4 now
+requires F per-pair <= 1e-12 and **E loss error <= 1e-13** on every one of
+the 3,000 checks.
+
+## Decision rule, fixed now
+
+If all six flags clear, the next release makes `block_gate_floor` 8 the
+default again (Addendum 210's gate-count gain: 48 -> 33 on the brick
+ansatz, no change on seven other families). If any flag trips, the default
+stays 12 and the tripped flag is investigated first.
+
+Expected: part E's Rust-core fallback rate unchanged (about 13% of blocks;
+the core is not modified), with every fallback block now exact.
+
+Also reported: `GUARD_STATS["exact_rebuilt"]`, `["psf_rerouted"]` and `["best_effort"]` for
+the whole run; a nonzero `best_effort` is a finding even if every flag
+clears.
+
+---
+
+<!-- ===== Addendum 220 (source: spare-qubit-cliff-addendum-220-preregistration-2026-09-27.md) ===== -->
+
+> **Note added when merging:** Pre-registration of 2026-09-27.6 (changelog item 24): PSF-Zero's own blocks held to the same operator-distance standard.
+
+## Addendum 220 -- Preregistration: psf_compile.py 2026-09-27.6 -- PSF-Zero's own blocks rerouted to the checked path when their polished residual exceeds 1e-13 (2026-09-27)
+
+**Written before running.** Results will be recorded as Addendum 221.
+
+## The change (changelog item 24)
+
+In `_finish`, before building a block: if `USE_EXACT_FALLBACK` and the
+polished residual (`_refine_decomposition`'s phase-aligned Frobenius
+distance) is above `_EXACT_TOL` = 1e-13, the block is synthesized by
+`_guarded_cx_synthesis` (Qiskit's decomposer if exact, otherwise the exact
+rebuild of item 23). Counted in `GUARD_STATS["psf_rerouted"]`, with the
+largest residual rerouted. Nothing else changes from 2026-09-27.5.
+
+## Files
+
+| File | Bytes | Normalized SHA-256 |
+|---|---|---|
+| `psf_compile.py` 2026-09-27.6 | 81,655 | `20eef8dd67159b45e6dce3096610e5da0637f124f8ff8dc352eddb346d79fc89` |
+| [`benchmarks/test_exact_fallback.py`](../../benchmarks/test_exact_fallback.py) (adds lap 2,138) | 4,407 | `e26a8d8221ab1170a5529fb69e64c74a8d270047fc42cdd8bef36d7bc9819756` |
+| [`benchmarks/verify_exact_fallback.py`](../../benchmarks/verify_exact_fallback.py) (version check only) | 7,782 | `097daa0687cedb90905fc6d12eaab2e9310c5dc80b78d2ff8330e8161344482e` |
+
+## Predictions
+
+The same five as Addendum 217, scored by the same script against the
+same `USE_EXACT_FALLBACK = False` baseline, plus the tests:
+
+| ID | Prediction |
+|---|---|
+| V1 | Every one of the 3,003 floor-8 training compiles has loss error <= 1e-14. |
+| V2 | Two-qubit counts identical in both settings in every compile; blocks rebuilt 5-4,298. |
+| V3 | 30 of 30 cliff outputs identical. |
+| V4 | Compile median <= 1.10x. |
+| V5 | 100 of 100 floor-12 outputs identical. |
+| T1 | All tests pass, including the new lap-2,138 test. |
+
+V2 is at risk: a rerouted PSF block may come back from Qiskit with a
+different CX count; if so, V2 fails and the counts are reported.
+V3 and V5 rely on Addendum 206's polished residuals (at most 9.8e-14 on
+cliff and floor-12 circuits) staying below 1e-13; a block just above it
+would be rerouted and change an output.
+
+If V1-V5 and T1 hold, Addendum 219's 100,000-compile run follows (script
+version check now 2026-09-27.6).
+
+---
+
+<!-- ===== Addendum 221 (source: spare-qubit-cliff-addendum-221-2026-09-27.md) ===== -->
+
+> **Note added when merging:** All predictions hold: every floor-8 training compile exact (worst 2.8e-15), no change in gate counts, cliff or floor-12 outputs, or time. 2026-09-27.6 becomes the current compiler.
+
+## Addendum 221 -- psf_compile.py 2026-09-27.6 holds every prediction: all 3,003 floor-8 training compiles exact (worst loss error 2.8e-15, against 1.3e-7 without the fix), with identical two-qubit counts, identical cliff and floor-12 outputs, and no slow-down (2026-09-27)
+
+**Pre-registered in**: `spare-qubit-cliff-addendum-220-preregistration-2026-09-27.md`.
+WSL2 (home), Python 3.12.13, Qiskit 2.5.2, `psf_compile.py` 2026-09-27.6
+(`20eef8dd...`), [`verify_exact_fallback.py`](../../benchmarks/verify_exact_fallback.py) (`097daa06...`), both verified
+by the script. Tests: 75 passed. Wall time 188 s.
+
+## Results
+
+| ID | Prediction | Result |
+|---|---|---|
+| V1 | every loss error <= 1e-14 | **confirmed**: worst 2.78e-15 (without the fix: worst 1.30e-7, 5 compiles above 1e-10) |
+| V2 | two-qubit counts identical; 5-4,298 blocks rebuilt | **confirmed**: 3,003/3,003 identical; 15 rebuilt |
+| V3 | cliff outputs identical | **confirmed** (30/30) |
+| V4 | compile median <= 1.10x | **confirmed** (11.21 vs 11.19 ms, 1.002) |
+| V5 | floor-12 outputs identical | **confirmed** (100/100) |
+| T1 | tests pass | **confirmed** (75, including laps 2,138 and 3,600) |
+
+Guard counts over the 3,003 floor-8 compiles with the fix: 4,300 decomposer
+checks; 1 ZSX result rejected by the infidelity check (the #17057 defect);
+69 decomposer results rejected by the new operator-distance check; 15
+blocks rebuilt exactly; 1 PSF-Zero block rerouted (the lap-2,138 block,
+residual 5.85e-7); 0 best-effort.
+
+## Reading
+
+- Both flaws found today are the same flaw in two places: accepting a
+  synthesized block by average gate infidelity, which is quadratic in the
+  operator error. Addendum 206 met it in the per-pair check (blind to
+  drift), Addendum 216 in the fallback guard, Addendum 218 in PSF-Zero's own
+  block check. From 2026-09-27.6, every block that reaches the output --
+  PSF-Zero's own, Qiskit's decomposer output, or the rebuild -- is held to
+  a phase-aligned Frobenius distance of 1e-13.
+- The costs are nil where it matters: no change on the cliff circuits or
+  at floor 12, no change in gate counts, no measurable time.
+- Not fixed: the Rust core still fails on about 13% of floor-8 second-layer
+  blocks (`SU2ExtractionSingular`) and was off by 5.9e-7 on one block
+  without failing. Both are now caught and repaired in Python; the root
+  cause in the core (Addendum 215, H-C) is still open.
+
+## Release
+
+2026-09-27.6 becomes the current `psf_compile.py` (default
+`block_gate_floor` still 12). Whether 8 becomes the default is decided by
+Addendum 219's 100,000-compile run (results in Addendum 222).
+
+## Files
+
+| File | What it is |
+|---|---|
+| [`benchmarks/verify_exact_fallback.py`](../../benchmarks/verify_exact_fallback.py) | the registered test |
+| [`benchmarks/test_exact_fallback.py`](../../benchmarks/test_exact_fallback.py) | 35 tests for items 23-24 |
+| [`data/logs/verify_exact_fallback_v5.txt`](../../data/logs/verify_exact_fallback_v5.txt) | the 2026-09-27.5 run (Addendum 218; from the pasted terminal output) |
+| [`data/logs/verify_exact_fallback_v6.txt`](../../data/logs/verify_exact_fallback_v6.txt) | this run |
+| [`data/verify_exact_fallback_v6_2026-09-27.csv`](../../data/verify_exact_fallback_v6_2026-09-27.csv) | every compile of this run, both settings (6,006 rows). The .5 run's CSV was overwritten by this run (same file name); its summary is in its log |
+| [`benchmarks/probe_lap2138.py`](../../benchmarks/probe_lap2138.py), [`data/logs/probe_lap2138.txt`](../../data/logs/probe_lap2138.txt) | the probe of Addendum 218 |
+
 ---
 
 ---

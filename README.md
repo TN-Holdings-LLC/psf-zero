@@ -61,13 +61,17 @@ in place, so there is never a second, differently-named copy to pick between
 [`psf_smart_layout.py`](benchmarks/psf_smart_layout.py) — the layout-search prototype,
 repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see below).
 
-> **Current version: `psf_compile.py` 2026-09-27.3.** The default `block_gate_floor`
-> is 12 again: 2026-09-27.2 had lowered it to 8, and 100,000 compiles then found rare
-> accuracy losses (loss error up to 1.3e-7 in 4 of 3,000 checked 12-qubit training
-> compiles) on blocks that the lower floor sends to Qiskit's synthesis as a fallback.
-> `block_gate_floor=8` is still available -- 33 instead of 48 two-qubit gates on a
-> brick-layer ansatz -- with that caveat, until the fallback is made exact. See
-> "Update (2026-09-27)" below.
+> **Current version: `psf_compile.py` 2026-09-27.6.** Every two-qubit block that reaches
+> the output -- synthesized by PSF-Zero itself, or taken from Qiskit's CX decomposer --
+> is now checked by phase-aligned operator distance (1e-13) and rebuilt exactly when it
+> misses. Earlier revisions accepted blocks by average gate infidelity, which is
+> quadratic in the operator error and let rare blocks through with operator errors up
+> to about 1e-4 (a loss error of up to 1.3e-7 in 5 of 3,003 training compiles at
+> `block_gate_floor=8`; none at the default floor or on the cliff circuits). With this
+> revision all 3,003 are exact (worst 2.8e-15), at no cost in gate count or time
+> (Addenda 214-221). The default `block_gate_floor` is 12; whether 8 (33 instead of 48
+> two-qubit gates on a brick-layer ansatz) becomes the default is being decided by a
+> 100,000-compile run. See "Update (2026-09-27)" below.
 
 > **Correctness notice (2026-09-26) -- if you use `entangling_basis="cx"`, update to
 > `psf_compile.py` VERSION 2026-09-26.4 or later.** Qiskit's own

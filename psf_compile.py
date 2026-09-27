@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-09-27.3 (previous revision: 2026-09-27.2)
+VERSION: 2026-09-27.6 (previous revision: 2026-09-27.3; 2026-09-27.4 and .5 not released)
 
 Where to look for what
 ----------------------
@@ -347,6 +347,47 @@ Changes in the 2026-09-26.4 revision (spare-qubit-cliff Addenda 195-196)
     guard's 1e-8 tolerance accepts -- is under investigation.
     `block_gate_floor=8` remains available and gives 33 instead of 48
     two-qubit gates on that circuit, with this accuracy caveat.
+
+23. **FIX (correctness): every circuit taken from Qiskit's CX decomposer is
+    now checked by phase-aligned operator distance, and rebuilt exactly when
+    it is not exact.** Addendum 216: the losses of item 22 came only from
+    blocks that fell back to Qiskit's synthesis; the guard of item 17
+    measures average gate infidelity (tolerance 1e-8), which is quadratic in
+    the operator error and admitted operator errors up to about 1e-4 (one
+    block with infidelity 6.7e-16 still cost a loss error of 4.6e-9). A
+    decomposer result is now accepted only if, additionally, its
+    phase-aligned Frobenius distance to the target is at most
+    `_EXACT_TOL` = 1e-13; otherwise the block is rebuilt from Qiskit's Weyl
+    decomposition without specialization (`fidelity=None`), converted to
+    PSF-Zero's own parameters (ZYZ angles of each local factor, Weyl
+    coordinates, global phase), polished by `_refine_decomposition` (the
+    Gauss-Newton step of Addendum 186, which works in the same Frobenius
+    distance), and emitted as PSF-Zero emits its own blocks, with the
+    closed-form core (`force=True`, three CXs). Exact results from Qiskit,
+    including 2-CX ones, are kept as before. Rebuilt blocks are counted in
+    `GUARD_STATS["exact_rebuilt"]`. If even the rebuild misses 1e-13, the
+    most accurate candidate is used when its distance is at most 1e-10
+    (`GUARD_STATS["best_effort"]`, worst distance in
+    `GUARD_STATS["best_effort_worst"]`); otherwise the block is reported as
+    before. `USE_EXACT_FALLBACK = False` restores the 2026-09-27.3 behavior.
+    Revision 2026-09-27.4 (withdrawn before release) rebuilt the local
+    factors with an Euler decomposition and no polish; on one fallback block
+    its rebuild missed 1e-13 and the compile stopped (Addendum 217,
+    amendment).
+
+24. **FIX (correctness): PSF-Zero's own blocks are held to the same
+    operator-distance standard.** With item 23 in place (revision .5), one
+    of the 3,003 floor-8 training compiles still lost 4.6e-9 in loss
+    (Addendum 218): not a fallback block, but a block PSF-Zero synthesized
+    itself, off by 5.9e-7 in operator distance after the polish. It was
+    accepted because the block check compares infidelity (the core's own,
+    against `tol` = 1e-5), in which 5.9e-7 is about 1e-13. A block whose
+    polished residual (`_refine_decomposition`'s Frobenius distance) is
+    above `_EXACT_TOL` is now synthesized instead through the checked path
+    of item 23 (`_guarded_cx_synthesis`: Qiskit's decomposer if exact,
+    otherwise the exact rebuild). Counted in `GUARD_STATS["psf_rerouted"]`.
+    Addendum 206 measured polished residuals of at most 9.8e-14 on cliff and
+    floor-12 training circuits, so those are not expected to change.
 """
 from __future__ import annotations
 
@@ -360,7 +401,7 @@ import numpy as np
 from qiskit import QuantumCircuit, transpile
 from qiskit.circuit.library import CXGate
 from qiskit.quantum_info import Operator
-from qiskit.synthesis import TwoQubitBasisDecomposer
+from qiskit.synthesis import TwoQubitBasisDecomposer, TwoQubitWeylDecomposition
 from qiskit.transpiler import CouplingMap, PassManager
 from qiskit.transpiler.passes import Collect2qBlocks, ConsolidateBlocks
 
@@ -376,7 +417,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-09-27.3"
+VERSION = "2026-09-27.6"
 __version__ = VERSION
 
 __all__ = [
@@ -423,18 +464,96 @@ USE_CX_GUARD = True
 # default requested fidelity (1 - 1e-9), so its documented approximations
 # (dropping a tiny interaction to save a CX) pass and the 7e-2 failures do not.
 _GUARD_TOL = 1e-8
-GUARD_STATS = {"checked": 0, "zsx_rejected": 0, "default_rejected": 0, "closed_form_forced": 0}
+GUARD_STATS = {"checked": 0, "zsx_rejected": 0, "default_rejected": 0, "closed_form_forced": 0,
+               "inexact": 0, "exact_rebuilt": 0, "best_effort": 0, "best_effort_worst": 0.0,
+               "psf_rerouted": 0, "psf_rerouted_worst_residual": 0.0}
+# Changelog item 23. Module-level so a validation run can switch it off.
+USE_EXACT_FALLBACK = True
+_EXACT_TOL = 1e-13
+_BEST_EFFORT_TOL = 1e-10
 
 
-def _aligned_distance(u: np.ndarray, circ: QuantumCircuit):
-    """Average gate infidelity between `u` and the circuit's unitary
-    (1 - (4 f^2 + 1) / 5 with f = |tr(V^dag U)| / 4), and the phase angle p
-    with u ~= exp(i p) * unitary(circ)."""
+def _aligned_errors(u: np.ndarray, circ: QuantumCircuit):
+    """(average gate infidelity, phase angle p, phase-aligned Frobenius
+    distance ||u - exp(i p) V||) between `u` and the circuit's unitary V,
+    with u ~= exp(i p) * V. Infidelity is quadratic in the operator error;
+    the Frobenius distance is linear in it (changelog item 23)."""
     v = Operator(circ).data
     t = np.trace(v.conj().T @ u)
     ph = t / abs(t) if abs(t) > 0 else 1.0
     f = abs(t) / 4.0
-    return float(1.0 - (4.0 * f * f + 1.0) / 5.0), float(np.angle(ph))
+    return (float(1.0 - (4.0 * f * f + 1.0) / 5.0), float(np.angle(ph)),
+            float(np.linalg.norm(u - ph * v)))
+
+
+def _aligned_distance(u: np.ndarray, circ: QuantumCircuit):
+    """Average gate infidelity and phase angle (kept for existing callers)."""
+    infid, phase, _ = _aligned_errors(u, circ)
+    return infid, phase
+
+
+def _weyl_exact(u: np.ndarray):
+    """Qiskit's Weyl decomposition without specialization (no snapping of
+    near-special inputs onto the special case)."""
+    try:
+        return TwoQubitWeylDecomposition(u, fidelity=None)
+    except TypeError:
+        from qiskit._accelerate.two_qubit_decompose import Specialization
+        return TwoQubitWeylDecomposition(u, _specialization=Specialization.General)
+
+
+def _su2_zyz(k: np.ndarray):
+    """(phi, theta, lam) with _zyz_matrix(phi, theta, lam) = exp(-i alpha) k,
+    and alpha (half the phase of det k). Exact for any 2x2 unitary."""
+    alpha = float(np.angle(np.linalg.det(k)) / 2.0)
+    s = k * np.exp(-1j * alpha)
+    a, b = s[0, 0], s[1, 0]
+    theta = 2.0 * float(np.arctan2(abs(b), abs(a)))
+    ssum = -2.0 * float(np.angle(a)) if abs(a) > 1e-12 else 0.0
+    sdiff = 2.0 * float(np.angle(b)) if abs(b) > 1e-12 else 0.0
+    return ((ssum + sdiff) / 2.0, theta, (ssum - sdiff) / 2.0), alpha
+
+
+def _exact_rebuild(u: np.ndarray) -> QuantumCircuit:
+    """Exact CX-basis circuit for `u` (changelog item 23): Qiskit's
+    unspecialized Weyl decomposition, converted to PSF-Zero's parameters,
+    polished, and emitted like a PSF-Zero block with the closed-form core."""
+    d = _weyl_exact(u)
+    t1l, a1 = _su2_zyz(np.asarray(d.K1l))
+    t1r, a2 = _su2_zyz(np.asarray(d.K1r))
+    t2l, a3 = _su2_zyz(np.asarray(d.K2l))
+    t2r, a4 = _su2_zyz(np.asarray(d.K2r))
+    cartan = (float(d.a), float(d.b), float(d.c))
+    phase = float(d.global_phase) + a1 + a2 + a3 + a4
+    (cartan, k1, k2, phase), _, _ = _refine_decomposition(u, cartan, (t1l, t1r), (t2l, t2r), phase)
+    qc = QuantumCircuit(2, global_phase=float(phase))
+
+    def local(triple, qubit):
+        phi, theta, lam = (float(x) for x in triple)
+        qc.rz(lam, qubit)
+        qc.ry(theta, qubit)
+        qc.rz(phi, qubit)
+
+    local(k2[0], 1)
+    local(k2[1], 0)
+    _append_cx_core_closed_form(qc, *(float(x) for x in cartan), force=True)
+    local(k1[0], 1)
+    local(k1[1], 0)
+    return qc
+
+
+def _accept(u, circ, stat_key):
+    """Returns the phase-corrected circuit if it passes both checks, else
+    None. `stat_key` is counted when the infidelity check (item 17) fails."""
+    infid, phase, frob = _aligned_errors(u, circ)
+    if infid > _GUARD_TOL:
+        GUARD_STATS[stat_key] += 1
+        return None
+    if USE_EXACT_FALLBACK and frob > _EXACT_TOL:
+        GUARD_STATS["inexact"] += 1
+        return None
+    circ.global_phase += phase
+    return circ
 
 
 def _guarded_cx_synthesis(u: np.ndarray):
@@ -449,18 +568,39 @@ def _guarded_cx_synthesis(u: np.ndarray):
     if not USE_CX_GUARD:
         return circ, True
     GUARD_STATS["checked"] += 1
-    dist, phase = _aligned_distance(u, circ)
-    if dist <= _GUARD_TOL:
-        circ.global_phase += phase
-        return circ, True
-    GUARD_STATS["zsx_rejected"] += 1
-    logger.debug("PSF-Zero guard: ZSX decomposer infidelity %.3e; retrying", dist)
+    ok = _accept(u, circ, "zsx_rejected")
+    if ok is not None:
+        return ok, True
+    logger.debug("PSF-Zero guard: ZSX decomposer result rejected; retrying")
     circ = _CX_DECOMPOSER_DEFAULT_EULER(u)
-    dist, phase = _aligned_distance(u, circ)
-    if dist <= _GUARD_TOL:
-        circ.global_phase += phase
-        return circ, True
-    GUARD_STATS["default_rejected"] += 1
+    ok = _accept(u, circ, "default_rejected")
+    if ok is not None:
+        return ok, True
+    if USE_EXACT_FALLBACK:
+        # Changelog item 23: neither decomposer returned an exact circuit.
+        candidates = []
+        for c in (_CX_DECOMPOSER(u), circ):
+            infid, phase, frob = _aligned_errors(u, c)
+            if infid <= _GUARD_TOL:
+                candidates.append((frob, phase, c))
+        try:
+            rebuilt = _exact_rebuild(u)
+        except Exception as exc:  # reported; the best remaining candidate applies
+            logger.debug("PSF-Zero guard: exact rebuild failed: %s", exc)
+        else:
+            infid, phase, frob = _aligned_errors(u, rebuilt)
+            if frob <= _EXACT_TOL:
+                rebuilt.global_phase += phase
+                GUARD_STATS["exact_rebuilt"] += 1
+                return rebuilt, True
+            candidates.append((frob, phase, rebuilt))
+        if candidates:
+            frob, phase, best = min(candidates, key=lambda x: x[0])
+            if frob <= _BEST_EFFORT_TOL:
+                best.global_phase += phase
+                GUARD_STATS["best_effort"] += 1
+                GUARD_STATS["best_effort_worst"] = max(GUARD_STATS["best_effort_worst"], frob)
+                return best, True
     return circ, False
 
 # XX, YY and ZZ commute and share one eigenbasis, so the canonical core's
@@ -974,6 +1114,14 @@ class SU4GeodesicPSFSynthesizer:
     def _finish(self, U_target, cartan, k1, k2, global_phase, core_infid, res_before, res_after):
         """Bookkeeping of the polish, circuit construction and verification
         of one decomposed (and polished) block."""
+        if USE_EXACT_FALLBACK and res_after > _EXACT_TOL:
+            # Changelog item 24: the polished decomposition is not exact.
+            circ, ok = _guarded_cx_synthesis(np.asarray(U_target))
+            if ok:
+                GUARD_STATS["psf_rerouted"] += 1
+                GUARD_STATS["psf_rerouted_worst_residual"] = max(
+                    GUARD_STATS["psf_rerouted_worst_residual"], float(res_after))
+                return circ
         if res_before > REFINE_THRESHOLD:
             self.refine_count += 1
             self.refine_max_before = max(self.refine_max_before, res_before)
