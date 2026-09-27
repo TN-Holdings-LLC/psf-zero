@@ -1,0 +1,42 @@
+platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | cores 12 | python 3.12.13 | qiskit 2.5.2 | FULL | block_gate_floor 8
+LOADED /home/psf/psf_zero_fresh_test/psf_compile.py 2026-09-27.6 20eef8dd67159b45e6dce3096610e5da0637f124f8ff8dc352eddb346d79fc89
+SCRIPT /home/psf/psf_zero_fresh_test/benchmarks/long_loop_100k_v2.py d9ee35a13f7d318ff35282e18b06f8ea08ab89e6aee759d39e60da6002a3f27d
+
+=== F: 50000 laps ===
+  lap 10000: median 27.0 ms, p99 34.7 ms, max 55 ms; fallbacks so far 0; RSS 208 MB; last check 6.661338147750939e-16; 322 s
+  lap 20000: median 27.3 ms, p99 38.9 ms, max 101 ms; fallbacks so far 0; RSS 208 MB; last check 5.551115123125783e-16; 656 s
+  lap 30000: median 27.4 ms, p99 40.2 ms, max 101 ms; fallbacks so far 0; RSS 209 MB; last check 8.881784197001252e-16; 992 s
+  lap 40000: median 27.4 ms, p99 39.4 ms, max 101 ms; fallbacks so far 0; RSS 203 MB; last check 8.881784197001252e-16; 1325 s
+  lap 50000: median 27.4 ms, p99 39.1 ms, max 101 ms; fallbacks so far 0; RSS 210 MB; last check 6.661338147750939e-16; 1662 s
+  F done: 50000 laps in 1662 s; median 27.4 ms, p99 39.1 ms, max 101 ms; fallbacks 0 of about 3000000 blocks; guard {'checked': 26, 'zsx_rejected': 6, 'default_rejected': 0, 'closed_form_forced': 0, 'inexact': 9, 'exact_rebuilt': 0, 'best_effort': 0, 'best_effort_worst': 0.0, 'psf_rerouted': 0, 'psf_rerouted_worst_residual': 0.0}
+
+=== C: 20000 laps ===
+  lap 10000: median 27.6 ms, p99 36.0 ms, max 54 ms; fallbacks so far 0; RSS 211 MB; last check 4.172891871508736e-10; 432 s
+  lap 20000: median 27.7 ms, p99 35.2 ms, max 54 ms; fallbacks so far 0; RSS 211 MB; last check 8.328945272469166e-10; 865 s
+  C done: 20000 laps in 865 s; median 27.7 ms, p99 35.2 ms, max 54 ms; fallbacks 0 of about 1200000 blocks; guard {'checked': 26, 'zsx_rejected': 6, 'default_rejected': 0, 'closed_form_forced': 0, 'inexact': 9, 'exact_rebuilt': 0, 'best_effort': 0, 'best_effort_worst': 0.0, 'psf_rerouted': 0, 'psf_rerouted_worst_residual': 0.0}
+
+=== E: 30000 laps ===
+  lap 10000: median 10.5 ms, p99 14.5 ms, max 21 ms; fallbacks so far 14630; RSS 205 MB; last check 0.0; 134 s
+  lap 20000: median 10.5 ms, p99 14.6 ms, max 21 ms; fallbacks so far 29255; RSS 204 MB; last check 1.1102230246251565e-16; 270 s
+  lap 30000: median 10.6 ms, p99 14.7 ms, max 21 ms; fallbacks so far 43829; RSS 204 MB; last check 0.0; 407 s
+  E done: 30000 laps in 407 s; median 10.6 ms, p99 14.7 ms, max 21 ms; fallbacks 43829 of about 330000 blocks; guard {'checked': 43859, 'zsx_rejected': 7, 'default_rejected': 0, 'closed_form_forced': 0, 'inexact': 646, 'exact_rebuilt': 150, 'best_effort': 0, 'best_effort_worst': 0.0, 'psf_rerouted': 1, 'psf_rerouted_worst_residual': 5.853514210303842e-07}
+
+=== flags ===
+L1 no exception: {'F': 0, 'C': 0, 'E': 0}; laps done {'F': 50000, 'C': 20000, 'E': 30000} -> clear
+L2 F: RSS growth +2 MB -> clear
+L3 F: p99 39.1 vs 2 x median 54.9 ms; max 101 ms -> clear
+L6 F: last-10% median 28.7 vs first-10% 27.1 ms -> clear
+   F: fallbacks 0 of about 3000000 blocks (0.00e+00 per block); guard {'checked': 26, 'zsx_rejected': 6, 'default_rejected': 0, 'closed_form_forced': 0, 'inexact': 9, 'exact_rebuilt': 0, 'best_effort': 0, 'best_effort_worst': 0.0, 'psf_rerouted': 0, 'psf_rerouted_worst_residual': 0.0}
+L2 C: RSS growth -1 MB -> clear
+L3 C: p99 35.2 vs 2 x median 55.3 ms; max 54 ms -> clear
+L6 C: last-10% median 27.7 vs first-10% 27.5 ms -> clear
+   C: fallbacks 0 of about 1200000 blocks (0.00e+00 per block); guard {'checked': 26, 'zsx_rejected': 6, 'default_rejected': 0, 'closed_form_forced': 0, 'inexact': 9, 'exact_rebuilt': 0, 'best_effort': 0, 'best_effort_worst': 0.0, 'psf_rerouted': 0, 'psf_rerouted_worst_residual': 0.0}
+L2 E: RSS growth +3 MB -> clear
+L3 E: p99 14.7 vs 2 x median 21.1 ms; max 21 ms -> clear
+L6 E: last-10% median 10.6 vs first-10% 10.5 ms -> clear
+   E: fallbacks 43829 of about 330000 blocks (1.33e-01 per block); guard {'checked': 43859, 'zsx_rejected': 7, 'default_rejected': 0, 'closed_form_forced': 0, 'inexact': 646, 'exact_rebuilt': 150, 'best_effort': 0, 'best_effort_worst': 0.0, 'psf_rerouted': 1, 'psf_rerouted_worst_residual': 5.853514210303842e-07}
+   blocks rebuilt exactly (changelog item 23), whole run: 150
+L4 F worst per-pair check 9.99e-16 (<= 1e-12); E worst loss difference 1.89e-15 (<= 1e-13) -> clear
+L5 C distance at lap 20000 8.329e-10 (<= 2.0e-09); ratio to lap 10000 2.00 (1.6-2.4) -> clear
+
+DONE

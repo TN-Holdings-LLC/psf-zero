@@ -10047,6 +10047,104 @@ Addendum 219's 100,000-compile run (results in Addendum 222).
 | [`data/verify_exact_fallback_v6_2026-09-27.csv`](../../data/verify_exact_fallback_v6_2026-09-27.csv) | every compile of this run, both settings (6,006 rows). The .5 run's CSV was overwritten by this run (same file name); its summary is in its log |
 | [`benchmarks/probe_lap2138.py`](../../benchmarks/probe_lap2138.py), [`data/logs/probe_lap2138.txt`](../../data/logs/probe_lap2138.txt) | the probe of Addendum 218 |
 
+
+---
+
+<!-- ===== Addendum 222 (source: spare-qubit-cliff-addendum-222-2026-09-27.md) ===== -->
+
+> **Note added when merging:** Addendum 219's 100,000-compile run at block_gate_floor 8 with 2026-09-27.6: all six flags clear, worst loss error 1.9e-15; by the pre-registered rule the default becomes 8 again in 2026-09-27.7.
+
+## Addendum 222 -- 100,000 compiles at block_gate_floor 8 with psf_compile.py 2026-09-27.6: all six flags clear, every checked compile exact (worst loss error 1.9e-15, against 1.3e-7 in Addendum 214); by the pre-registered rule, 8 becomes the default again in 2026-09-27.7 (2026-09-27)
+
+**Pre-registered in**: `spare-qubit-cliff-addendum-219-preregistration-2026-09-27.md`.
+WSL2 (home, 12 cores), Python 3.12.13, Qiskit 2.5.2, `block_gate_floor` 8.
+`psf_compile.py` 2026-09-27.6 (`20eef8dd...`) and
+[`benchmarks/long_loop_100k_v2.py`](../../benchmarks/long_loop_100k_v2.py) (`d9ee35a1...`), both as registered and
+both printed by the script before the first lap. Part wall times
+1,662 s (F), 865 s (C) and 407 s (E), 2,934 s in all.
+
+## 1. Results
+
+| Part | Laps | Compile median / p99 / max | RSS growth | Last 10% vs first 10% | Rust-core fallbacks | Accuracy |
+|---|---|---|---|---|---|---|
+| F fresh cliff (120 q) | 50,000 | 27.4 / 39.1 / 101 ms | +2 MB | 28.7 vs 27.1 ms | 0 of 3,000,000 blocks | worst per-pair check 9.99e-16 (50 checks) |
+| C compounding (120 q) | 20,000 | 27.7 / 35.2 / 54 ms | -1 MB | 27.7 vs 27.5 ms | 0 of 1,200,000 | drift 4.17e-10 at lap 10,000, 8.33e-10 at lap 20,000 |
+| E training (12 q) | 30,000 | 10.6 / 14.7 / 21 ms | +3 MB | 10.6 vs 10.5 ms | 43,829 of about 330,000 (13.3%) | **worst loss error 1.89e-15** (3,000 checks, none above 1e-13) |
+
+| Flag | Result |
+|---|---|
+| L1 no exception | **clear** (0, 0, 0; all laps done) |
+| L2 RSS growth <= 100 MB | **clear** (+2, -1, +3 MB) |
+| L3 p99 <= 2 x median, max <= 1 s | **clear** in all parts |
+| L4 F per-pair <= 1e-12; E loss error <= 1e-13 on every check | **clear** (9.99e-16; 1.89e-15) |
+| L5 C drift <= 2e-9 at lap 20,000; ratio to lap 10,000 in [1.6, 2.4] | **clear** (8.33e-10; 2.00) |
+| L6 no slow-down | **clear** in all parts |
+
+Guard counts (`GUARD_STATS`, cumulative over the run, as printed after
+part E): 43,859 decomposer results checked; 7 ZSX results rejected by the
+infidelity check (6 in part F, the #17057 defect, and 1 in part E); 646
+rejected by the operator-distance check of changelog item 23; **150 blocks
+rebuilt exactly**; **1 PSF-Zero block rerouted** (residual 5.85e-7; the
+counter first reads 1 at the lap-3,000 checkpoint, consistent with the
+lap-2,138 block of Addenda 218 and 220, since the seeds are those of
+Addendum 213); **0 best-effort**. Part F's 26 checks and 6 rejections are
+the same as in Addendum 214.
+
+The CSVs were received and the summaries recomputed from them: row counts
+(50,000 / 20,000 / 30,000), zero unexpected errors, the fallback total, the
+median, p99 and maximum of every part, the worst checks and the RSS range
+all match the log.
+
+## 2. Reading
+
+- **The accuracy regression of Addendum 214 is gone at scale.** The same
+  seeds and laps that produced 4 losses of up to 1.3e-7 now give a worst
+  loss error of 1.9e-15. The fallback rate is unchanged (43,829 blocks,
+  exactly the count of Addendum 214: the Rust core is untouched and the
+  run is deterministic), so the fix works by repairing those blocks, not
+  by avoiding them -- as pre-registered.
+- **Scope of the accuracy statement.** Part E checks the loss on every
+  10th lap (3,000 of 30,000 compiles). The guard, however, checks every
+  block in every compile; the 150 rebuilds and 1 reroute are counts over
+  all 30,000 laps, and none reached the best-effort path.
+- **Part C is bit-for-bit the path of Addendum 214** (no fallbacks at the
+  cliff, drift 8.33e-10 in both runs): the exactness fixes do not touch
+  the cliff circuits, as Addendum 221 (V3) found.
+- **Timing.** Medians are about 5% above Addendum 214 (F 26.1 -> 27.4 ms,
+  C 26.7 -> 27.7, E 10.0 -> 10.6). This is a comparison between runs on
+  different evenings, not a controlled one; the same-process comparison
+  of Addendum 221 (V4) measured the fix at 1.002x. Part F had 30 laps
+  above twice the median (maximum 101 ms at lap 14,511, a cluster near lap
+  23,500), all within L3.
+- **Still open**: the Rust core's `SU2ExtractionSingular` on 13% of the
+  floor-8 second-layer blocks, and its silent 5.9e-7 error on one block
+  (Addendum 215, hypothesis H-C). Python now catches and repairs both; the
+  root cause is not fixed.
+
+## 3. Decision (rule of Addendum 219)
+
+All six flags clear, so `block_gate_floor` 8 becomes the default again in
+**`psf_compile.py` 2026-09-27.7** (changelog item 25; 82,829 bytes,
+normalized SHA-256
+`bd987d52e321162225e23a1417488dbbccc3dc6385cee54fe68443663703ba7f`). The
+only changes from 2026-09-27.6 are `DEFAULT_BLOCK_GATE_FLOOR` (12 -> 8),
+its comment, one docstring sentence (restored from 2026-09-27.2) and the
+changelog. Pass `block_gate_floor=12` for the previous behaviour.
+
+Effect on Stage 2 (Addendum 211): its `layout` step compiles pair24
+blocks, 24 gates per pair, which are collected at either floor; Addendum
+210 found no change in two-qubit count on 120-qubit pair blocks at 8. The
+`layout` log prints the loaded `VERSION`, which Addendum 212 will record.
+
+## 4. Files
+
+| File | What it is |
+|---|---|
+| [`benchmarks/long_loop_100k_v2.py`](../../benchmarks/long_loop_100k_v2.py) | the registered test |
+| [`data/logs/long_loop_100k_v2.txt`](../../data/logs/long_loop_100k_v2.txt) | log (received and checked) |
+| [`data/long_loop_F_2026-09-27_v2.csv`](../../data/long_loop_F_2026-09-27_v2.csv), [`data/long_loop_C_2026-09-27_v2.csv`](../../data/long_loop_C_2026-09-27_v2.csv), [`data/long_loop_E_2026-09-27_v2.csv`](../../data/long_loop_E_2026-09-27_v2.csv) | every lap (50,000, 20,000, 30,000 rows; received; summaries recomputed from them match the log) |
+| `psf_compile.py` 2026-09-27.7 | the release decided here |
+
 ---
 
 ---

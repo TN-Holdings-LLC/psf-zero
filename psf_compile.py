@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-09-27.6 (previous revision: 2026-09-27.3; 2026-09-27.4 and .5 not released)
+VERSION: 2026-09-27.7 (previous revision: 2026-09-27.6)
 
 Where to look for what
 ----------------------
@@ -388,6 +388,23 @@ Changes in the 2026-09-26.4 revision (spare-qubit-cliff Addenda 195-196)
     otherwise the exact rebuild). Counted in `GUARD_STATS["psf_rerouted"]`.
     Addendum 206 measured polished residuals of at most 9.8e-14 on cliff and
     floor-12 training circuits, so those are not expected to change.
+
+25. **Default `block_gate_floor` 12 -> 8 again (item 21 restored).** The
+    accuracy caveat of item 22 is removed by items 23 and 24. Addendum 219
+    pre-registered the rule: 8 becomes the default again only if the
+    100,000-compile run of Addendum 213 clears all six flags at floor 8 with
+    revision .6. It did (Addendum 222): no exception, no memory growth, no
+    slow-down, linear drift, every checked compile exact (worst loss error
+    1.9e-15 over 3,000 training checks, against 1.3e-7 in Addendum 214;
+    worst per-pair check 1.0e-15 over 50 cliff checks). In the training
+    part, 43,829 of about 330,000 blocks still fall back from the Rust core
+    (`SU2ExtractionSingular`, unchanged since Addendum 214), and 150 of
+    them and 1 PSF-Zero block were rebuilt exactly; none needed the
+    best-effort path. Gains, as in item 21: 33 instead of 48 two-qubit
+    gates on the 12-qubit brick-layer training circuit, no change in
+    two-qubit count on seven other families (Addendum 210). The only change
+    from 2026-09-27.6 is this constant and its docstrings; pass
+    `block_gate_floor=12` for the previous behaviour.
 """
 from __future__ import annotations
 
@@ -417,7 +434,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-09-27.6"
+VERSION = "2026-09-27.7"
 __version__ = VERSION
 
 __all__ = [
@@ -447,8 +464,9 @@ _PSF_DEGENERATE_ERRORS = tuple(
 
 logger = logging.getLogger(__name__)
 
-# Changelog items 21 and 22: 8 in 2026-09-27.2, back to 12 in 2026-09-27.3.
-DEFAULT_BLOCK_GATE_FLOOR = 12
+# Changelog items 21, 22 and 25: 8 in 2026-09-27.2, 12 in 2026-09-27.3 to .6,
+# 8 again from 2026-09-27.7.
+DEFAULT_BLOCK_GATE_FLOOR = 8
 
 _VALID_ENTANGLING_BASES = ("canonical", "cx")
 _VALID_ON_UNSUPPORTED = ("keep", "raise")
@@ -1272,8 +1290,8 @@ def compile(
     Only runs of more than `block_gate_floor` gates on the same qubit pair are
     collected, so a wide-and-shallow circuit (`random_circuit()`, say) has few
     or no blocks and comes back largely untouched by design rather than by
-    accident (at the default of 12: 0-4 blocks on 8-qubit, depth-12 random
-    circuits; Addendum 210).
+    accident (at the default of 8: 0-6 blocks on 8-qubit, depth-12 random
+    circuits, with the same two-qubit count as at 12; Addendum 210).
     Everything that is not a 2-qubit `unitary` block is copied through as-is,
     keeping the input's registers, bits, name and metadata.
 
