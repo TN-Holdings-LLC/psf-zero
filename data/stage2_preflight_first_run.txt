@@ -1,0 +1,64 @@
+-credential-manager.exe"
+((psf_zero_wsl_env_fresh) ) psf@TN-Holdings:~/psf_zero_fresh_test$ F=$(find /mnt/c/Users -maxdepth 5 -iname "xor_stage2_real*.py" 2>/dev/null | head -1); echo "file: $F"
+[ -n "$F" ] && cp "$F" benchmarks/xor_stage2_real.py && wc -c benchmarks/xor_stage2_real.py \
+ && python -u benchmarks/xor_stage2_real.py preflight 2>&1 | tee stage2_preflight.txt
+file: /mnt/c/Users/Administrator/Desktop/psf_zero_project/xor_stage2_real.py
+19011 benchmarks/xor_stage2_real.py
+platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | python 3.12.13 | qiskit 2.5.2
+  qiskit_aer 0.17.2
+  qiskit_ibm_runtime 0.49.0
+  pennylane 0.45.1
+SCRIPT /home/psf/psf_zero_fresh_test/benchmarks/xor_stage2_real.py 8538996115e5f533b8f6116e27467ad1f0a52d1bb937c698784ed7e910bd1275
+LOADED /home/psf/psf_zero_fresh_test/benchmarks/xor_prereg_stage1_sweep.py 28197bc43fa70bb06a928da9a84552644d683353bc4eb6cb94e37ba72c45cf0f
+LOADED /home/psf/psf_zero_fresh_test/benchmarks/xor_prereg_stage1b_sweep.py ec7f173cb36fa071b9dbd03de40ead48947edbbc955f6781369c2d8e71105d8e
+H0 exact <Z0>: [-0.99776, 0.99776, 0.99776, -0.99776] -> PASS
+Traceback (most recent call last):
+  File "/home/psf/psf_zero_fresh_test/benchmarks/xor_stage2_real.py", line 416, in <module>
+    cmds[sys.argv[1]]()
+  File "/home/psf/psf_zero_fresh_test/benchmarks/xor_stage2_real.py", line 183, in preflight
+    zs = [S1b.z_from_sim(sim, mqc, SHOTS, 0) for mqc, _, _ in S1b.build_arm("A", circuits, bris)]
+                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/psf/psf_zero_fresh_test/benchmarks/xor_prereg_stage1b_sweep.py", line 65, in build_arm
+    routed = S1.route(arm, qc, backend, SEED)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/psf/psf_zero_fresh_test/benchmarks/xor_prereg_stage1_sweep.py", line 143, in route
+    return route_for_backend(qc, backend, seed_transpiler=seed)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/psf/psf_zero_fresh_test/psf_pennylane_gpu_ibm_prototype.py", line 157, in route_for_backend
+    return transpile(
+           ^^^^^^^^^^
+  File "/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit/compiler/transpiler.py", line 291, in transpile
+    pm = generate_preset_pass_manager(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit/transpiler/preset_passmanagers/generate_preset_pass_manager.py", line 282, in generate_preset_pass_manager
+    pm = level_1_pass_manager(pm_config)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit/transpiler/preset_passmanagers/level1.py", line 47, in level_1_pass_manager
+    plugin_manager = PassManagerStagePluginManager()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit/transpiler/preset_passmanagers/plugin.py", line 240, in __init__
+    self.init_plugins = stevedore.ExtensionManager(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/stevedore/extension.py", line 196, in __init__
+    extensions = self._load_plugins(
+                 ^^^^^^^^^^^^^^^^^^^
+  File "/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/stevedore/extension.py", line 297, in _load_plugins
+    for ep in self.list_entry_points():
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/stevedore/extension.py", line 282, in list_entry_points
+    eps = list(_cache.get_group_all(self.namespace))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/stevedore/_cache.py", line 190, in get_group_all
+    data = self._get_data_for_path(path)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/stevedore/_cache.py", line 164, in _get_data_for_path
+    digest, path_values = _hash_settings_for_path(internal_key)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/stevedore/_cache.py", line 86, in _hash_settings_for_path
+    mtime = _get_mtime(entry)
+            ^^^^^^^^^^^^^^^^^
+  File "/home/psf/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/stevedore/_cache.py", line 59, in _get_mtime
+    s = os.stat(name)
+        ^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/root/psf-zero/benchmarks'
+((psf_zero_wsl_env_fresh) ) psf@TN-Holdings:~/psf_zero_fresh_test$ 

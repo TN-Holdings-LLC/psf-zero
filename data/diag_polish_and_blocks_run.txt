@@ -1,0 +1,50 @@
+((psf_zero_wsl_env_fresh) ) psf@TN-Holdings:~/psf_zero_fresh_test$ cp "/mnt/c/Users/Administrator/Desktop/psf_zero_project/diag_polish_and_blocks.py" benchmarks/
+wc -c benchmarks/diag_polish_and_blocks.py
+python -u benchmarks/diag_polish_and_blocks.py 2>&1 | tee diag_polish_and_blocks.txt
+19233 benchmarks/diag_polish_and_blocks.py
+platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | cores 12 | python 3.12.13 | qiskit 2.5.2
+LOADED /home/psf/psf_zero_fresh_test/psf_compile.py 2026-09-26.4 b4fa92ad85f04cfa05b7732b634da9f876bb034735be806825b87b62c72cb670
+SCRIPT /home/psf/psf_zero_fresh_test/benchmarks/diag_polish_and_blocks.py 2d0f2ea86cff655b0ede77d75bc801291c9f05646fd71f9a451964228bad4a56
+
+=== P1: fresh cliff circuits (30) ===
+    1e-13 (current) : 1800 calls (60.0 per compile), step taken on 433 (24.1%); residual before: median 1.25e-14, p90 1.05e-12, max 8.40e-10; after: max 9.84e-14; polish 12.30 ms per compile (per call: with step 553 us, without 81 us); compile median 40.8 ms; worst per-pair check 8.88e-16
+    1e-12           : 1800 calls (60.0 per compile), step taken on 184 (10.2%); residual before: median 1.25e-14, p90 1.05e-12, max 8.40e-10; after: max 1.00e-12; polish 8.34 ms per compile (per call: with step 565 us, without 80 us); compile median 37.2 ms; worst per-pair check 8.88e-16
+    1e-11           : 1800 calls (60.0 per compile), step taken on 38 (2.1%); residual before: median 1.25e-14, p90 1.05e-12, max 8.40e-10; after: max 9.60e-12; polish 5.82 ms per compile (per call: with step 593 us, without 78 us); compile median 35.0 ms; worst per-pair check 8.88e-16
+    off             : 1800 calls (60.0 per compile), step taken on 0 (0.0%); residual before: median 1.25e-14, p90 1.05e-12, max 8.40e-10; after: max 8.40e-10; polish 5.28 ms per compile (per call: with step nan us, without 79 us); compile median 34.6 ms; worst per-pair check 8.88e-16
+    by |c| at the current threshold: |c| < 1e-3: 0 calls, 0 stepped, median residual nan; |c| >= 1e-3: 1800 calls, 433 stepped, median residual 1.25e-14
+
+=== P2: fresh training circuits (30, 12 qubits) ===
+    1e-13 (current) : 180 calls (6.0 per compile), step taken on 42 (23.3%); residual before: median 1.16e-14, p90 7.85e-13, max 1.87e-10; after: max 9.60e-14; polish 1.32 ms per compile (per call: with step 629 us, without 88 us); compile median 10.2 ms; worst |loss - reference| 6.66e-16
+    1e-12           : 180 calls (6.0 per compile), step taken on 15 (8.3%); residual before: median 1.16e-14, p90 7.85e-13, max 1.87e-10; after: max 9.34e-13; polish 0.88 ms per compile (per call: with step 654 us, without 88 us); compile median 10.0 ms; worst |loss - reference| 5.11e-15
+    1e-11           : 180 calls (6.0 per compile), step taken on 4 (2.2%); residual before: median 1.16e-14, p90 7.85e-13, max 1.87e-10; after: max 8.74e-12; polish 0.68 ms per compile (per call: with step 661 us, without 87 us); compile median 9.8 ms; worst |loss - reference| 2.03e-14
+    off             : 180 calls (6.0 per compile), step taken on 0 (0.0%); residual before: median 1.16e-14, p90 7.85e-13, max 1.87e-10; after: max 1.87e-10; polish 0.62 ms per compile (per call: with step nan us, without 92 us); compile median 9.8 ms; worst |loss - reference| 1.10e-12
+
+=== P3: cliff compounding loop (100 laps per threshold) ===
+    1e-13 (current) : 6000 calls (60.0 per compile), step taken on 1524 (25.4%); residual before: median 9.47e-15, p90 4.79e-13, max 1.52e-12; after: max 9.97e-14; polish 12.66 ms per compile (per call: with step 551 us, without 80 us); compile median 41.4 ms; distance lap 10 4.27e-13, lap 50 2.65e-12, lap 100 6.02e-12
+    1e-12           : 6000 calls (60.0 per compile), step taken on 344 (5.7%); residual before: median 9.52e-15, p90 4.90e-13, max 1.85e-12; after: max 9.93e-13; polish 7.00 ms per compile (per call: with step 575 us, without 79 us); compile median 35.8 ms; distance lap 10 9.69e-12, lap 50 4.85e-11, lap 100 9.69e-11
+    1e-11           : 6000 calls (60.0 per compile), step taken on 0 (0.0%); residual before: median 9.52e-15, p90 4.90e-13, max 2.23e-12; after: max 2.23e-12; polish 5.21 ms per compile (per call: with step nan us, without 78 us); compile median 33.6 ms; distance lap 10 1.35e-11, lap 50 6.73e-11, lap 100 1.35e-10
+    off             : 6000 calls (60.0 per compile), step taken on 0 (0.0%); residual before: median 9.52e-15, p90 4.90e-13, max 2.23e-12; after: max 2.23e-12; polish 5.24 ms per compile (per call: with step nan us, without 78 us); compile median 33.7 ms; distance lap 10 1.35e-11, lap 50 6.73e-11, lap 100 1.35e-10
+
+=== G: training circuit -- which pairs become blocks, by block_gate_floor ===
+  floor 12: 6 blocks on [(0, 1), (2, 3), (4, 5), (6, 7), (8, 9), (10, 11)]; unconsolidated two-qubit gates 15 {'rxx': 5, 'ryy': 5, 'rzz': 5} on [(1, 2), (3, 4), (5, 6), (7, 8), (9, 10)]; final two-qubit gates 48; compile median 8.4 ms; |loss - reference| 1.1e-16
+  floor 10: 6 blocks on [(0, 1), (2, 3), (4, 5), (6, 7), (8, 9), (10, 11)]; unconsolidated two-qubit gates 15 {'rxx': 5, 'ryy': 5, 'rzz': 5} on [(1, 2), (3, 4), (5, 6), (7, 8), (9, 10)]; final two-qubit gates 48; compile median 9.2 ms; |loss - reference| 1.1e-16
+  floor  8: 11 blocks on [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 8), (8, 9), (9, 10), (10, 11)]; unconsolidated two-qubit gates 0 {} on []; final two-qubit gates 33; compile median 13.2 ms; |loss - reference| 3.3e-16
+  floor  6: 11 blocks on [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 8), (8, 9), (9, 10), (10, 11)]; unconsolidated two-qubit gates 0 {} on []; final two-qubit gates 33; compile median 13.3 ms; |loss - reference| 3.3e-16
+  floor  4: 11 blocks on [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 8), (8, 9), (9, 10), (10, 11)]; unconsolidated two-qubit gates 0 {} on []; final two-qubit gates 33; compile median 13.1 ms; |loss - reference| 3.3e-16
+  floor  2: 11 blocks on [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 8), (8, 9), (9, 10), (10, 11)]; unconsolidated two-qubit gates 0 {} on []; final two-qubit gates 33; compile median 13.2 ms; |loss - reference| 3.3e-16
+
+=== G: other families, by block_gate_floor ===
+  hea  : floor 12: 44 2q, 8.3 ms, exact 1.1e-15; floor 10: 44 2q, 15.8 ms, exact 1.1e-15; floor 8: 44 2q, 9.3 ms, exact 1.1e-15; floor 6: 44 2q, 9.8 ms, exact 6.7e-16; floor 4: 44 2q, 20.6 ms, exact -4.4e-16; floor 2: 44 2q, 40.5 ms, exact -2.7e-15
+  qaoa : floor 12: 66 2q, 6.3 ms, exact -2.2e-15; floor 10: 66 2q, 6.3 ms, exact -2.2e-15; floor 8: 66 2q, 6.6 ms, exact -2.2e-15; floor 6: 66 2q, 6.4 ms, exact -2.2e-15; floor 4: 66 2q, 6.1 ms, exact -2.2e-15; floor 2: 66 2q, 19.8 ms, exact -8.9e-16
+  cliff: floor 12: 180 2q, 38.9 ms, exact 8.9e-16; floor 10: 180 2q, 38.2 ms, exact 8.9e-16; floor 8: 180 2q, 40.0 ms, exact 8.9e-16; floor 6: 180 2q, 39.9 ms, exact 8.9e-16; floor 4: 180 2q, 37.9 ms, exact 8.9e-16; floor 2: 180 2q, 38.1 ms, exact 8.9e-16
+
+=== predictions ===
+Q1 at the current threshold the step runs on >= 80% of calls in P1, P2 and P3 (P1 24.1%, P2 23.3%, P3 25.4%) -> NOT CONFIRMED
+Q2 median residual before the polish < 1e-12 in every set (1.25e-14, 1.16e-14, 9.47e-15) -> CONFIRMED
+Q3 threshold 1e-12: P1 polish time <= 30% of current (8.34 vs 12.30 ms), worst per-pair check <= 1e-12 (8.88e-16), P3 distance at lap 100 <= 2 x current (9.69e-11 vs 6.02e-12) -> NOT CONFIRMED
+H1 floor 12: 6 blocks and 15 unconsolidated two-qubit gates in the training circuit (6, 15) -> CONFIRMED
+H2 floor 8: 11 blocks, no unconsolidated two-qubit gate, 33 final two-qubit gates, exact (11, 0, 33, 3.3e-16) -> CONFIRMED
+H3 floor 8 does not increase two-qubit gates in hea, qaoa or cliff (hea 44->44, qaoa 66->66, cliff 180->180), and every compile in G is exact (<= 1e-10) -> CONFIRMED
+
+Wrote diag_polish_and_blocks_2026-09-27.csv (8016 rows); total wall time 85 s
+((psf_zero_wsl_env_fresh) ) psf@TN-Holdings:~/psf_zero_fresh_test$ 
