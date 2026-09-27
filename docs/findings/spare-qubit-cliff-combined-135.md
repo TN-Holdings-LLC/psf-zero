@@ -8054,11 +8054,15 @@ off, p99 <= 2 x median.
 | C, collector off | 42.2 ms | **54.9 ms** | 72.2 ms | 0 | 0 | 0 |
 | F, collector on (control) | 42.1 ms | 57.6 ms | 119.6 ms | 3 | 3 | 3, 225 ms |
 
-T1 confirmed (38/38), T2 confirmed (54.9 <= 84.4 ms). Mapping the routed
-output back to logical qubits (13.9 ms per lap, outside the timed compile)
-creates enough short-lived objects to trigger a generation-2 collection
-about every 26 laps, each about 77 ms, and it lands inside the next
-compile. The fresh loop triggers one about every 330 laps.
+T1 confirmed (38/38), T2 confirmed (54.9 <= 84.4 ms). From the per-lap
+CSV (received and checked against the log): subtracting each lap's
+generation-2 collection time from its compile time brings the p99 of
+"C, gc on" to 54.2 ms -- the same as with the collector off (54.9 ms) -- so
+the collections account for the whole tail. Mapping the routed output back
+to logical qubits (13.9 ms per lap, outside the timed compile) creates
+enough short-lived objects to trigger a generation-2 collection every 21-43
+laps (median 22), each 63-99 ms (median 77 ms), which lands inside a
+compile. The fresh loop triggers one about every 300 laps (gaps 286-315).
 
 Reading: this is a property of running a long Python loop, not a defect of
 the compiler. Its average cost is small (2.9 ms per lap), but it adds
@@ -8086,7 +8090,1122 @@ explicitly at lap boundaries with the collector paused during compiles.
 | `benchmarks/loop_endurance.py` | the registered test |
 | `benchmarks/diag_compound_tail.py` | the follow-up |
 | `data/logs/loop_endurance.txt`, `data/loop_endurance_2026-09-27.csv` | registered run (CSV: every 50th lap and summaries) |
-| `data/logs/diag_compound_tail.txt`, `data/diag_compound_tail_2026-09-27.csv` | follow-up (every lap, 3,000 rows) |
+| `data/logs/diag_compound_tail.txt`, `data/diag_compound_tail_2026-09-27.csv` | follow-up (every lap, 3,000 rows; received and checked) |
+
+
+---
+
+<!-- ===== Addendum 201 (source: spare-qubit-cliff-addendum-201-preregistration-2026-09-27.md) ===== -->
+
+> **Note added when merging:** Pre-registration of two remedies for the loop: garbage-collection strategies against the slow laps of Addendum 200, and parallel batch compilation.
+
+## Addendum 201 -- Preregistration: garbage-collection strategies for the compounding loop, and parallel batch compilation (2026-09-27)
+
+**Written before running.** The script is fixed by its hash below; the
+predictions are the ones it scores, word for word. Results will be recorded
+as Addendum 202, including any prediction that fails.
+
+- Script: `benchmarks/gc_and_parallel.py`, 12,392 bytes, normalized SHA-256
+  `4eb877ad43b87216d1c0c0e522b0dbd1bbf89428782d7d94017c572235bfea5a`
+  (lines right-stripped, trailing blank lines removed, joined with `\n`).
+- Depends on: `psf_compile.py` 2026-09-26.4 (`b4fa92ad...`; the script stops
+  if the version differs), `psf_smart_layout.py` 2026-09-26.m1
+  (`a639efde...`), `benchmarks/loop_endurance.py` (`e0bfd5e6...`).
+- Machine: WSL2 (home), 12 cores, Python 3.12.13, Qiskit 2.5.2.
+
+## 1. Why
+
+Addendum 200 found one weakness in the loop: in the compounding loop a
+generation-2 garbage collection (63-99 ms, median 77 ms) lands inside a
+compile about every 22 laps, putting the compile p99 at about 3 x median.
+Two of the four suggestions reviewed afterwards are cheap to test and are
+tested here:
+
+1. Changing how the collector runs (not disabling it: Addenda 93-99 showed
+   Qiskit circuit objects form reference cycles that only the collector
+   reclaims).
+2. Compiling a batch of circuits (as in SPSA or parameter-shift gradients)
+   in parallel processes.
+
+The other two (preallocating circuit objects in place; moving the core to
+Rust) are not tested here. The first does not fit how Qiskit builds
+circuits; the second is not justified while the remaining compile time is
+spread over Qiskit's own passes (Addendum 191).
+
+## 2. Design
+
+**Part G** -- the compounding loop of Addendum 200 (FakeNighthawk, 120
+logical qubits, 60 paired 24-parameter blocks, output mapped back to
+logical qubits and fed into the next lap), 800 laps per arm. Each arm runs
+in its own freshly spawned process, so no arm inherits another's heap. One
+untimed warm-up compile precedes each arm.
+
+| Arm | What changes |
+|---|---|
+| default | nothing |
+| freeze | `gc.collect(); gc.freeze()` once, after set-up and warm-up |
+| pause | collector disabled during each compile and back-mapping; `gc.collect()` at every lap boundary |
+| freeze+pause | both |
+
+Recorded per lap: compile time, boundary-collection time (pause arms), and
+the number of generation-2 collections inside the compile. Per arm: loop
+wall time and resident memory before and after.
+
+**Part P** -- a batch of 24 circuits differing only in parameters, 5
+batches per setting. Serial compilation in the main process against a pool
+of W spawned processes (W = 2, 4, 8, 12); each pool is created once, and
+every worker is warmed up, outside the timing (start-up time is reported
+separately). Two sizes: cliff scale (FakeNighthawk, 120 logical qubits) and
+small (the 12-qubit, 165-parameter training circuit of Addendum 199 on a
+line). Every compiled circuit is hashed (SHA-256 of its OpenQASM 2 text)
+and compared with the serial output of the same circuit.
+
+## 3. Predictions (as scored by the script)
+
+| ID | Prediction |
+|---|---|
+| G1 | `freeze` has a lower compile p99 than `default`. |
+| G2 | In each of `pause` and `freeze+pause`: compile p99 <= 2 x median, **and** resident memory grows by at most 50 MB over 800 laps. |
+| G3 | The median boundary collection in `freeze+pause` is at most half that in `pause`. |
+| P1 | Every parallel output (4 pool sizes x 2 sizes x 120 circuits) is identical to the serial output. |
+| P2 | The best cliff-scale speed-up over serial is at least 4x. |
+| P3 | The best small-circuit speed-up is below the best cliff-scale speed-up. |
+
+Reasoning, stated now so that failures can be read against it:
+
+- G1: freezing moves the set-up objects (backend, target, Qiskit caches)
+  out of the collector's reach, so each generation-2 collection scans less.
+  It does not remove the collections, so G1 predicts only "lower", not
+  "within 2 x median".
+- G2: with the collector paused, no collection can land inside a compile;
+  the memory condition checks that collecting at every boundary still
+  reclaims the cycles.
+- G3: most of the work in a full collection is scanning long-lived objects;
+  freezing should remove much of it. This is the least certain prediction:
+  the compounding circuit itself is live and not frozen.
+- P2: compiles are independent and CPU-bound, 12 cores are available, but
+  per-task overhead (pickling parameters, spawn workers re-importing Qiskit
+  and rebuilding the device model) and shared memory bandwidth will cost
+  something; 4x is a deliberately modest bar.
+- P3: small compiles (~10 ms) are closer to the per-task overhead, so they
+  should gain less.
+
+## 4. What this cannot show, stated in advance
+
+- Collecting at every boundary moves the pause, it does not remove it.
+  Whether that is worth it depends on the boundary landing in idle time --
+  for example while the previous circuit runs on hardware. The loop wall
+  time of the pause arms will show the full cost if it does not.
+- The cost of a generation-2 collection grows with the live heap; these
+  numbers hold for this heap size (~200 MB) only.
+- Parallelism raises throughput for a batch; it does not shorten any single
+  compile. For a loop that needs one circuit at a time, Part G is the
+  relevant part.
+- Spawn start-up (several seconds per pool) is excluded from the
+  speed-up and reported separately; a pool must live for many batches to
+  earn it back.
+- One machine, one run. WSL2 scheduling can add noise to the parallel
+  timings.
+
+## 5. Output
+
+`gc_and_parallel.txt` (log) and `gc_and_parallel_2026-09-27.csv` (every
+Part G lap, plus a summary row per arm and per Part P setting).
+
+---
+
+<!-- ===== Addendum 202 (source: spare-qubit-cliff-addendum-202-2026-09-27.md) ===== -->
+
+> **Note added when merging:** All six predictions hold. Freezing set-up objects plus collecting at lap boundaries removes the slow laps at no cost; batch compilation in 8 processes is about 5x faster with bit-identical output. P3 holds only by a margin within noise.
+
+## Addendum 202 -- All six predictions hold: freezing the set-up objects and collecting at lap boundaries removes the slow laps of the compounding loop at no cost (boundary collection 1.0 ms instead of 57 ms; loop 5% faster than default); almost all of a full collection's cost was scanning set-up objects, not the circuit; batch compilation in 8 processes is 4.8-5.0x faster with outputs bit-identical to serial (2026-09-27)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-201-preregistration-2026-09-27.md`. WSL2
+(home), 12 cores, Python 3.12.13, Qiskit 2.5.2, `psf_compile.py`
+2026-09-26.4 (`b4fa92ad...`, verified by the script),
+`gc_and_parallel.py` (`4eb877ad...`, verified by the script). Total wall
+time 275 s.
+
+## 0. In one line
+
+The recommended setting for a long compile loop is `gc.collect();
+gc.freeze()` once after set-up, then the collector disabled during each
+compile and one `gc.collect()` at each lap boundary: compile p99 57.9 ms
+against 115.9 ms by default, boundary collection 1.0 ms median, memory
+flat, and the whole loop slightly faster than with the default collector.
+Collecting at the boundary without freezing also removes the slow laps but
+doubles the loop's wall time.
+
+## 1. Part G -- garbage-collection strategies (compounding loop, 800 laps per arm, each arm in its own process)
+
+| Arm | compile median | p99 | max | laps > 2 x median | laps with gen-2 inside compile | boundary collect median (p99, max) | loop wall time | RSS |
+|---|---|---|---|---|---|---|---|---|
+| default | 41.4 ms | 115.9 ms | 135.4 ms | 33 | 33 | -- | 47.4 s | 207 -> 217 MB |
+| freeze | 41.7 ms | 53.5 ms | 72.3 ms | 0 | 30 | -- | 45.2 s | 207 -> 223 MB |
+| pause | 40.4 ms | **47.2 ms** | 56.9 ms | 0 | 0 | 57.4 ms (69.0, 83.8) | **89.7 s** | 205 -> 207 MB |
+| freeze+pause | 40.4 ms | 57.9 ms | 114.7 ms | 1 | 0 | **1.0 ms** (2.7, 13.7) | **44.9 s** | 205 -> 207 MB |
+
+From the per-lap CSV (received and checked against the log):
+
+- **Freezing does not change how often a generation-2 collection runs; it
+  changes what it costs.** In both `default` and `freeze` a collection
+  lands inside a compile every 21-43 laps (median 22), as in Addendum 200.
+  Laps containing one are 72.7 ms slower than the median lap without one
+  by default, and 9.2 ms slower with freezing. The same shows at the lap
+  boundary: a full collection takes 57.4 ms without freezing and 1.0 ms
+  with it. So about 98% of a full collection's time was spent scanning
+  long-lived set-up objects (the device model, its target and Qiskit's
+  caches), not the circuit that is rebuilt every lap.
+- **The cost of collecting every lap without freezing is real**: 800 x
+  57 ms = 46 s, which doubles the loop's wall time (89.7 s against 47.4 s).
+  This arm has the lowest compile p99, but only by moving the pause to the
+  boundary. With freezing, the boundary collections total 0.9 s, and the
+  loop is 5% faster than default (44.9 s) because no compile carries a
+  collection.
+- **The one slow lap in `freeze+pause`** (lap 500, 114.7 ms; also laps
+  499, 545 and 553 at 62-78 ms) contains no generation-2 collection, and
+  no collector is running during compiles in this arm. Its cause is not
+  identified by this run; the clustering in time suggests interference
+  from outside the process (WSL2 or the host). It does not affect the
+  p99.
+- **Memory**: `freeze` grew 16 MB over 800 laps (default 10 MB); both
+  pause arms grew 2 MB. No arm showed unbounded growth, which confirms
+  that collecting only at boundaries still reclaims Qiskit's reference
+  cycles (Addenda 93-99).
+
+## 2. Part P -- batch compilation (24 circuits per batch, 5 batches per setting)
+
+| Workers | cliff (120 q): batch median | per circuit | speed-up | small (12 q): batch median | per circuit | speed-up | pool start-up incl. warm-up (cliff / small) |
+|---|---|---|---|---|---|---|---|
+| serial | 1.432 s | 59.7 ms | 1.00x | 0.322 s | 13.4 ms | 1.00x | -- |
+| 2 | 0.770 s | 32.1 ms | 1.86x | 0.175 s | 7.3 ms | 1.84x | 1.4 / 1.5 s |
+| 4 | 0.441 s | 18.4 ms | 3.25x | 0.130 s | 5.4 ms | 2.47x | 1.6 / 1.7 s |
+| 8 | 0.297 s | 12.4 ms | 4.82x | 0.067 s | 2.8 ms | **4.80x** | 2.3 / 2.3 s |
+| 12 | 0.288 s | 12.0 ms | **4.97x** | 0.075 s | 3.1 ms | 4.27x | 3.1 / 2.9 s |
+
+- Every one of the 960 parallel outputs was identical (SHA-256 of the
+  OpenQASM 2 text) to the serial output of the same circuit.
+- Speed-up flattens between 8 and 12 workers for both sizes, which fits 12
+  logical cores sharing fewer physical cores and memory bandwidth.
+- "Per circuit" is batch wall time divided by 24 and includes building
+  the circuit and hashing its output, so the serial cliff figure (59.7 ms)
+  is above the compile-only median of Part G (about 41 ms).
+- Pool start-up (1.4-3.1 s) is paid once per pool; at cliff scale a pool
+  of 8 earns it back after about two batches of 24.
+
+## 3. Scoring
+
+| ID | Prediction | Result |
+|---|---|---|
+| G1 | `freeze` lowers compile p99 | **holds** (53.5 vs 115.9 ms) |
+| G2 | `pause`: p99 <= 2 x median and RSS growth <= 50 MB | **holds** (47.2 <= 80.8 ms; +1 MB by the script's RSS reading) |
+| G2 | `freeze+pause`: the same | **holds** (57.9 <= 80.9 ms; +1 MB) |
+| G3 | `freeze+pause` boundary collection <= half of `pause` | **holds** (1.0 vs 57.4 ms) |
+| P1 | every parallel output identical to serial | **holds** (0 of 960 differ) |
+| P2 | best cliff-scale speed-up >= 4x | **holds** (4.97x) |
+| P3 | best small speed-up below best cliff-scale speed-up | **holds formally** (4.80x vs 4.97x) |
+
+Reading P3 honestly: the margin (0.17x) is within what one run on WSL2 can
+resolve, and the small circuits reached 4.80x at 8 workers, far closer to
+the cliff scale than the reasoning in Addendum 201 expected (per-task
+overhead eating most of the gain for ~13 ms compiles). The per-task
+overhead of a warmed spawn pool is smaller than assumed; the two sizes
+should be treated as scaling about equally.
+
+## 4. What this means for the loop
+
+- For a loop that compiles one circuit at a time (compounding, or any
+  loop waiting on each result), `freeze+pause` removes the
+  garbage-collection tail at no cost. It is a few lines in the calling
+  code, not a change to the compiler. Addendum 200's "slow laps" finding
+  is resolved for this workload.
+- For batches of independent circuits (SPSA perturbations,
+  parameter-shift gradients), a spawn pool of about 8 processes gives
+  roughly 5x throughput with bit-identical output. It does not shorten any
+  single compile.
+- Of the four suggestions reviewed before this test, the two tested here
+  answer the problem found: a Rust rewrite of the loop is not needed to fix
+  the tail.
+
+## 5. Limits
+
+- One machine, one run per setting; the WSL2 outlier in `freeze+pause`
+  shows the size of outside noise.
+- The collection costs hold for this live heap (~200 MB, one 120-qubit
+  device model). A process holding more long-lived objects gains more from
+  freezing, and objects created after `gc.freeze()` are not frozen: set-up
+  must be finished (including a warm-up compile) before freezing.
+- Part P used parameter-only variation of one circuit structure, so the
+  layout shortcut (phase 0) applied to every circuit; structurally
+  different batches may balance less evenly across workers.
+- The guard inside a training loop is still untested (Addendum 200,
+  section 6).
+
+## 6. Files
+
+| File | What it is |
+|---|---|
+| `benchmarks/gc_and_parallel.py` | the registered test |
+| `data/logs/gc_and_parallel.txt` | log |
+| `data/gc_and_parallel_2026-09-27.csv` | every Part G lap (3,200 rows) and summaries (received and checked) |
+
+---
+
+<!-- ===== Addendum 203 (source: spare-qubit-cliff-addendum-203-preregistration-2026-09-27.md) ===== -->
+
+> **Note added when merging:** Pre-registration of a time breakdown of one loop lap (cliff compounding loop, 12-qubit training loop) with the standard Qiskit transpile-once-and-bind route as reference. Diagnostic: expectations, not verdicts.
+
+## Addendum 203 -- Preregistration: where the time of one loop lap goes -- cliff-scale compounding loop, training loop through PSF-Zero, and the standard Qiskit parameterized route as reference (2026-09-27)
+
+**Written before running.** Diagnostic: the expectations below are
+scored by the script as "as expected" or "not as expected", not as
+pass/fail. Results will be recorded as Addendum 204, whichever way they
+fall.
+
+- Script: `benchmarks/loop_breakdown.py`, 19,561 bytes, normalized SHA-256
+  `1bba4c4ed6a4b296a074d83a7e67b90ed5f50fb14531f4dabf51892fd88e7d71`.
+  Syntax-checked here; not run here (Qiskit cannot be installed in this
+  environment).
+- Depends on: `psf_compile.py` 2026-09-26.4 (the script stops otherwise),
+  `psf_smart_layout.py` 2026-09-26.m1, `benchmarks/loop_endurance.py`.
+
+## 1. Why
+
+Addendum 202 removed the garbage-collection tail. What a lap costs on
+average has not been broken down since the compiler changed: Addendum 191
+measured the inside of the compile at 2026-09-26.1 (83 ms at cliff scale,
+before the closed-form core, the matching shortcut and the guard), and no
+test has measured the parts of the loop outside the compile. The
+compounding loop spends about 14 ms per lap mapping the output back to
+logical qubits, a quarter of the lap, not yet examined. The answer decides
+what to optimize next, or whether anything is worth optimizing.
+
+The comparison with the standard Qiskit route is included because it is
+the most important cost of PSF-Zero in a training loop: PSF-Zero
+synthesizes from numeric angles, so it must recompile whenever the
+parameters change, while the usual Qiskit practice is to transpile a
+parameterized circuit once and only bind values afterwards. The two routes
+should be compared on both time per step and circuit size.
+
+## 2. Design
+
+All loops use the setting recommended by Addendum 202 (`gc.freeze()` after
+set-up; collector off during a lap; `gc.collect()` at the lap boundary,
+timed as a stage).
+
+- **Part A**: the cliff-scale compounding loop of Addenda 200 and 202
+  (FakeNighthawk, 120 logical qubits, `layout_search=True`), 300 laps. Lap
+  stages: compile; serialization of the compiled circuit with `qpy` (what
+  IBM Runtime sends); mapping back to logical qubits; boundary collection.
+- **Part B**: the training loop of Addendum 199 Part E (12 qubits, 165
+  parameters, SPSA, statevector), driven by the loss of the compiled
+  circuit, 300 steps (600 compiles). Step stages: perturbation, circuit
+  build, compile, simulation, loss, update, boundary collection.
+- **Part C** (reference): the same training loop with the parameterized
+  circuit transpiled once by Qiskit (`optimization_level=3`, same line,
+  basis `[cx, rz, sx, x]` and trivial layout); each evaluation binds
+  parameters and simulates. Same seeds, so its SPSA path should match Part
+  B's to rounding (both are exact). The one-time transpile times at L1 and
+  L3 are reported.
+
+Parts A and B each run twice from the same start: **plain** (lap-level
+stages only) and **instrumented** (timed wrappers swapped into
+`psf_compile` and `psf_smart_layout` for the duration of the phase:
+consolidation, per-block synthesis split into Rust core, polish, block
+build, and CX core by closed form or by decomposer plus guard; layout
+search; the internal Qiskit `transpile` call with its per-pass times from
+the callback; residuals labelled "other"). Both loops are deterministic, so
+the two phases must produce identical results (checked); the ratio of the
+compile medians is reported as the instrumentation overhead.
+
+## 3. Expectations (as scored by the script)
+
+| ID | Expectation |
+|---|---|
+| X1 | Cliff loop, plain: compile >= 60% of mean lap time, and mapping back to logical qubits >= 15%. |
+| X2 | Cliff compile, instrumented: of the three top-level parts (PSF-Zero compile, layout search, Qiskit transpile), the Qiskit transpile call takes the most time. |
+| X3 | Training loop, plain: compile >= 50% of mean step time. |
+| X4 | The Qiskit parameterized route is faster per step than the PSF-Zero route, **and** its circuit has at least 1.5x the two-qubit gates. |
+| X5 | Instrumentation overhead <= 15% in both A and B, with identical results in both phases (all 300 compiled circuits in A, all 600 loss values in B). |
+
+Reasoning, stated now:
+
+- X1: from Addenda 200 and 202, compile ~41 ms and back-mapping ~14 ms
+  per lap; `qpy` and the boundary collection (~1 ms) should be small.
+- X2: at 2026-09-26.1 the transpile call was already the largest part;
+  since then the closed form and the matching shortcut cut the PSF-Zero
+  side, so this should hold more strongly.
+- X3: a 12-qubit statevector simulation of a few hundred gates should take
+  a few milliseconds against ~10 ms per compile.
+- X4: binding 165 values and simulating should be faster than rebuilding
+  and recompiling. PSF-Zero's closed-form core writes each block with 3
+  CXs, while Qiskit cannot consolidate parameterized blocks and translates
+  `rxx`, `ryy` and `rzz` with 2 CXs each (6 per block). This expectation
+  is the one that may show PSF-Zero's cost most plainly. It is stated as a
+  trade: time per step against circuit size, which on hardware becomes
+  error per shot.
+- X5: the wrappers add a few function calls per block; 60 blocks per cliff
+  compile should cost well under 15%.
+
+## 4. Limits, stated in advance
+
+- On hardware the wait for results (seconds to minutes per job) dwarfs
+  everything measured here. This breakdown matters for simulator-driven
+  training and for compiling many circuits, not for one job at a time.
+- Part C's circuit is larger, so its simulation is slower; part of PSF-Zero's
+  recompilation cost is paid back in simulation. The script reports both
+  stages so this is visible.
+- One machine, one run; WSL2.
+
+## 5. Output
+
+`loop_breakdown.txt` (log) and `loop_breakdown_2026-09-27.csv` (every lap
+and stage, long format: part, phase, index, stage, seconds).
+
+---
+
+<!-- ===== Addendum 204 (source: spare-qubit-cliff-addendum-204-2026-09-27.md) ===== -->
+
+> **Note added when merging:** 2 of 5 expectations held. PSF-Zero's own compile now outweighs the Qiskit transpile call at cliff scale, with the polish step as its largest part; in the training loop simulation dominates, and the per-step advantage of the PSF-Zero route depends on the simulator. The training circuit has 48 two-qubit gates where 33 were expected; a hypothesis is recorded. Its inference that the polish step runs on most blocks is corrected by Addendum 206.
+
+## Addendum 204 -- Where a loop lap goes: at cliff scale PSF-Zero's own compile (27 ms) now outweighs the Qiskit transpile call (14 ms), and its largest part is the Gauss-Newton polish (12.7 ms, 21% of the lap); in the 12-qubit training loop simulation, not compilation, is the largest stage, and the PSF-Zero route beats the standard transpile-once-and-bind route per step (47 vs 57 ms) because its circuit simulates 2.3x faster -- a result that depends on the simulator; and the training circuit has 48 two-qubit gates where 33 were expected (2026-09-27)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-203-preregistration-2026-09-27.md`. WSL2
+(home), 12 cores, Python 3.12.13, Qiskit 2.5.2, `psf_compile.py`
+2026-09-26.4 (`b4fa92ad...`), `psf_smart_layout.py` 2026-09-26.m1
+(`a639efde...`), `loop_breakdown.py` (`1bba4c4e...`), all verified by the
+script. Total wall time 92 s. Garbage collection as recommended by
+Addendum 202 in every loop.
+
+## 0. In one line
+
+Two of five expectations held (X1, X5); three did not (X2, X3, X4), and
+each miss is informative. The measurement itself is clean: the
+instrumented phases reproduced the plain phases exactly (300/300 compiled
+circuits, 600/600 loss values) with no measurable overhead (compile
+median ratio 1.002 and 1.000).
+
+## 1. Part A -- cliff-scale compounding loop (120 logical qubits, 300 laps)
+
+Plain phase: lap mean 60.4 ms.
+
+| Stage | mean ms | share of lap |
+|---|---|---|
+| compile (`compile_for_hardware`) | 42.96 | 71.1% |
+| map back to logical qubits | 13.74 | 22.7% |
+| serialize with `qpy` (120 KiB) | 2.45 | 4.1% |
+| boundary garbage collection | 1.25 | 2.1% |
+
+Inside the compile (instrumented phase; lap mean 59.8 ms):
+
+| Stage | mean ms | share of lap |
+|---|---|---|
+| **PSF-Zero `compile()`** | **27.24** | **45.6%** |
+| - consolidate (Collect2qBlocks + ConsolidateBlocks) | 3.03 | 5.1% |
+| - synthesize, all blocks | 21.70 | 36.3% |
+| -- Rust core decomposition | 0.70 | 1.2% |
+| -- **polish (Gauss-Newton, Addendum 186)** | **12.69** | **21.2%** |
+| -- build block circuit | 6.84 | 11.4% |
+| --- CX core, closed form | 2.65 | 4.4% |
+| --- CX core, decomposer + guard | 0.00 | 0.0% |
+| --- local rotations and other | 4.19 | 7.0% |
+| -- synthesize, other | 1.47 | 2.5% |
+| - compile, other (to_matrix, compose, copy) | 2.51 | 4.2% |
+| layout search (matching shortcut) | 0.45 | 0.7% |
+| **Qiskit `transpile` (L1)** | **14.35** | **24.0%** |
+| - outside any pass (conversion, set-up) | 8.76 | 14.6% |
+| - Optimize1qGatesDecomposition | 2.85 | 4.8% |
+| - BasisTranslator | 1.21 | 2.0% |
+| - the other 15 passes | 1.54 | 2.6% |
+| `compile_for_hardware`, other | 0.44 | 0.7% |
+
+Readings:
+
+- **The polish is the largest single stage PSF-Zero owns.** Its check alone
+  is one 4x4 reconstruction per block (tens of microseconds); 12.7 ms over
+  60 blocks is about 0.21 ms per block, which suggests the Gauss-Newton
+  step (Jacobian and least squares) runs on most blocks, not only on the
+  near-face inputs it was added for (residual threshold 1e-13 Frobenius).
+  The same per-block cost appears in Part B (about 0.23 ms), on fresh
+  circuits. This is a hypothesis to test, not a finding: the run did not
+  count how many blocks were polished.
+- **About 9 ms of the transpile call is spent outside every pass.** A
+  likely candidate is building a `Target` from `coupling_map` and
+  `basis_gates` on every call (120 qubits); untested.
+- **The closed-form core costs 2.65 ms for all 60 blocks** and the guard
+  path was never taken, as expected on this circuit family.
+- **Mapping back to logical qubits (22.7%) is a cost of the test
+  harness**, needed only when a compiled circuit is fed back in. A
+  training or batch pipeline does not pay it.
+
+## 2. Part B -- training loop through PSF-Zero (12 qubits, 300 SPSA steps, 2 compiles per step)
+
+Plain phase: step mean 47.67 ms.
+
+| Stage (per step) | mean ms | share |
+|---|---|---|
+| **simulate (Qiskit `Statevector`)** | **25.08** | **52.6%** |
+| compile | 20.72 | 43.5% |
+| build circuit | 1.16 | 2.4% |
+| boundary garbage collection | 0.49 | 1.0% |
+| perturb, loss, update | 0.18 | 0.4% |
+
+Inside the compile (two per step): Qiskit `transpile` 13.93 ms (of which
+6.74 ms outside every pass and 5.10 ms Optimize1qGatesDecomposition),
+PSF-Zero `compile()` 6.75 ms (polish 2.72 ms).
+
+## 3. Part C -- the standard Qiskit route (transpile once at L3, bind each evaluation)
+
+One-time transpile: L1 37 ms (66 two-qubit gates), L3 25 ms (55
+two-qubit gates). Step mean 58.42 ms: simulation 56.79 ms (97.2%),
+binding 0.76 ms. Against Part B: largest loss difference 1.42e-14,
+largest parameter difference after 300 steps 1.15e-14. Both routes are
+exact and follow the same optimization path.
+
+## 4. Scoring
+
+| ID | Expectation | Result |
+|---|---|---|
+| X1 | cliff: compile >= 60%, back-mapping >= 15% | **as expected** (71.1%, 22.7%) |
+| X2 | cliff: Qiskit transpile is the largest top-level part | **not as expected**: PSF-Zero's `compile()` 27.2 ms vs transpile 14.4 ms |
+| X3 | training: compile >= 50% of a step | **not as expected** (43.5%; simulation 52.6%) |
+| X4 | Qiskit route faster per step and >= 1.5x the two-qubit gates | **not as expected on both counts**: slower (57.5 vs 47.4 ms median), and 55 vs 48 gates (1.15x) |
+| X5 | overhead <= 15%, identical results | **as expected** (1.002 / 1.000; 300/300, 600/600) |
+
+## 5. What the misses mean
+
+**X2.** Addendum 191's breakdown (at 2026-09-26.1) is out of date: the
+closed form and the matching shortcut removed most of the layout and
+core cost, and the polish added in Addendum 186 is now the largest
+PSF-Zero stage. The reasoning in Addendum 203 did not account for the
+polish.
+
+**X4, time.** The PSF-Zero route was faster per step because its compiled
+circuit simulated 2.3x faster (12.5 vs 28.4 ms per evaluation); the
+transpile-once circuit carries its parameterized single-qubit rotations
+through translation unmerged, and the reference `Statevector` simulator's
+cost grows with the number of gates. **This is a property of this
+simulator, not of the two routes in general.** With a faster simulator
+(Aer, or a GPU statevector, where 12 qubits take well under a
+millisecond), simulation shrinks and the per-step cost becomes mostly
+PSF-Zero's recompilation (about 10 ms per evaluation), against well under
+1 ms to bind: the transpile-once route would then be faster per step,
+probably by an order of magnitude. Not measured here; stated so that this
+result is not read as a general speed advantage.
+
+**X4, gates -- and a discrepancy in the training circuit.** Addendum 199
+described every one of the 11 blocks as consolidated and resynthesized;
+that would give 11 x 3 = 33 two-qubit gates with the closed-form core.
+The compiled circuit has 48. The number fits exactly the following
+hypothesis: the 6 first-layer blocks are resynthesized (6 x 3 = 18), but
+the 5 second-layer blocks are not -- `Collect2qBlocks` assigns their
+leading single-qubit rotations to the neighbouring first-layer blocks, the
+remaining run (3 two-qubit rotations plus 6 trailing single-qubit gates =
+9 gates) falls below `block_gate_floor = 12`, and their `rxx`, `ryy` and
+`rzz` reach Qiskit L1 unconsolidated, at 2 CXs each (5 x 6 = 30; 18 + 30
+= 48). Qiskit L3 on the parameterized circuit reaches 55 (5 per block).
+If confirmed:
+
+- The results of Addenda 199-200 stand (every compiled loss matched its
+  reference to 1.2e-14), but the description "every block is consolidated"
+  is wrong for 5 of 11 blocks, and the training loop exercised PSF-Zero's
+  synthesis on only 6 blocks per compile.
+- It is a real limitation for brick-layer ansätze: the gate-count
+  advantage over Qiskit here was 13%, not the 40% (33 vs 55) that full
+  consolidation would give.
+
+## 6. Candidates, in order of expected gain (none tested yet)
+
+1. **Polish**: count how many blocks the Gauss-Newton step actually runs
+   on and with what residuals; then either make the step cheaper or
+   trigger it only where it is needed. Any change must be checked against
+   the accuracy and drift results it was added for (Addenda 186, 197).
+2. **The training-circuit consolidation**: confirm the 48-gate hypothesis
+   block by block, and test whether a smaller `block_gate_floor` or a
+   different collection brings the circuit to 33 without harming other
+   families.
+3. **The transpile set-up** (~9 ms at cliff scale, ~3.4 ms per 12-qubit
+   compile): check whether building the `Target` once and reusing it
+   gives identical output faster.
+4. **X4 with a faster simulator** (Aer, if available in the WSL
+   environment), to measure the per-step trade where recompilation cost
+   is not hidden by simulation.
+
+## 7. Files
+
+| File | What it is |
+|---|---|
+| `benchmarks/loop_breakdown.py` | the registered test |
+| `data/logs/loop_breakdown.txt` | log (received and checked) |
+| `data/loop_breakdown_2026-09-27.csv` | every lap and stage, 29,100 rows (received; per-stage means recomputed from it match the log) |
+
+---
+
+<!-- ===== Addendum 205 (source: spare-qubit-cliff-addendum-205-preregistration-2026-09-27.md) ===== -->
+
+> **Note added when merging:** Pre-registration of a diagnosis of the polish step (trigger rate, residuals, accuracy at looser thresholds) and of the 48-gate training circuit (block_gate_floor).
+
+## Addendum 205 -- Preregistration: does the polish step run on almost every block, and why does the training circuit have 48 two-qubit gates instead of 33? (2026-09-27)
+
+**Written before running.** Results will be recorded as Addendum 206,
+including every prediction that fails.
+
+- Script: `benchmarks/diag_polish_and_blocks.py`, 19,233 bytes, normalized
+  SHA-256 `2d0f2ea86cff655b0ede77d75bc801291c9f05646fd71f9a451964228bad4a56`.
+  Syntax-checked here; not run here.
+- Depends on: `psf_compile.py` 2026-09-26.4 (the script stops otherwise),
+  `psf_smart_layout.py` 2026-09-26.m1, `benchmarks/loop_endurance.py`.
+  Nothing in `psf_compile.py` is changed: the polish threshold and
+  `block_gate_floor` are varied from outside.
+
+## 1. Why
+
+Addendum 204 left two open questions that decide what to optimize next.
+
+1. The polish step (Gauss-Newton on the 16 decomposition parameters,
+   Addendum 186) took 12.7 ms of a 60 ms cliff lap, about 0.21 ms per
+   block. The step was added for inputs near the Weyl-chamber face c = 0,
+   where the Rust core's error reached ~1.8e-11; its trigger is a
+   reconstruction residual above 1e-13 (Frobenius). If the step runs on
+   almost every block, the cheapest fix may be to trigger it only where it
+   is needed, in Python, without moving anything to Rust. If it is needed on
+   almost every block, moving it into the Rust core is the natural option.
+2. The 12-qubit training circuit compiled to 48 two-qubit gates where 33
+   (11 blocks x 3) were expected. The recorded hypothesis: the 5
+   second-layer blocks lose their leading single-qubit rotations to the
+   neighbouring first-layer blocks during collection, the remaining run of
+   9 gates falls below `block_gate_floor = 12`, and their `rxx`, `ryy`,
+   `rzz` reach Qiskit unconsolidated at 2 CXs each (6 x 3 + 5 x 6 = 48).
+
+## 2. Design
+
+**Part P (polish).** Every polish call is recorded: residual before and
+after, whether a step was taken, its time, and |c|. Three sets, each run at
+trigger thresholds 1e-13 (current), 1e-12, 1e-11 and "off" (never step):
+
+- P1: 30 fresh cliff circuits (FakeNighthawk, 120 logical qubits, 60
+  pair24 blocks); accuracy by the exact per-pair check (worst infidelity).
+- P2: 30 fresh training circuits (the Addendum 199 ansatz, 12 qubits);
+  accuracy as |compiled loss - reference loss|.
+- P3: the cliff compounding loop, 100 laps; accuracy as the largest
+  per-pair distance to the lap-0 circuit at laps 10, 50 and 100 (the drift
+  measure of Addenda 197 and 200).
+
+**Part G (blocks).** The consolidated circuit built inside `compile()` is
+captured for the training circuit at `block_gate_floor` 12 (default), 10,
+8, 6, 4 and 2, listing the pairs that became blocks and the two-qubit
+gates that passed through unconsolidated; with the final two-qubit count,
+compile time and exactness. The same floors are applied to three other
+families to see whether a lower floor costs anything elsewhere: a
+hardware-efficient ansatz (4 layers of `ry`, `rz` and a CX ladder), QAOA on
+a line (p = 3, `rzz` and `rx`), and the cliff pair24 circuit.
+
+## 3. Predictions (as scored by the script)
+
+| ID | Prediction |
+|---|---|
+| Q1 | At the current threshold, the Gauss-Newton step runs on at least 80% of polish calls in each of P1, P2 and P3. |
+| Q2 | The median residual before polishing is below 1e-12 in each set (that is, most steps are taken on residuals that are already tiny). |
+| Q3 | With the threshold at 1e-12: P1 polish time is at most 30% of the current, the worst P1 per-pair check stays at or below 1e-12, and the P3 distance at lap 100 is at most 2 x the current threshold's. |
+| H1 | At floor 12, the training circuit has exactly 6 blocks and 15 unconsolidated two-qubit gates. |
+| H2 | At floor 8, all 11 pairs become blocks, nothing is left unconsolidated, the final count is 33, and the result is exact (<= 1e-10). |
+| H3 | Floor 8 does not increase the two-qubit count of the HEA, QAOA or cliff circuits relative to floor 12, and every compile in Part G is exact (<= 1e-10). |
+
+Notes stated now:
+
+- Q3 is the least certain. Addendum 197's low drift (6.2e-14 per lap) may
+  depend on the polish running on every block; if residuals of ~1e-13 are
+  left in, the drift can grow. Q3 allows a factor of 2. If Q3 fails on
+  drift but not on time, the result still tells how much accuracy the
+  12.7 ms buys.
+- H3 has a known risk: a short run such as `rzz` with neighbouring `rx`
+  needs 2 CXs as written, but resynthesized as a general block it may take
+  3 (the closed form is used whenever no coordinate is a multiple of pi/2).
+  QAOA is included for that reason. If H3 fails, the floor cannot simply
+  be lowered, and a per-block choice (keep the original run when it has
+  fewer two-qubit gates) is the candidate.
+- "off" is included for scale only: it shows what the polish buys in
+  accuracy and costs in time; it is not a candidate setting.
+
+## 4. Output
+
+`diag_polish_and_blocks.txt` (log) and `diag_polish_and_blocks_2026-09-27.csv`
+(every polish call at the current threshold, a summary per set and
+threshold, and every Part G row).
+
+---
+
+<!-- ===== Addendum 206 (source: spare-qubit-cliff-addendum-206-2026-09-27.md) ===== -->
+
+> **Note added when merging:** The polish step runs on a quarter of the blocks but is needed: without it compounding drift is 22x larger. It should be made faster, not looser. The 48-gate hypothesis is confirmed; block_gate_floor 8 gives 33 gates with no change on three other families. Corrects Addenda 199-200 (6 of 11 training blocks were synthesized) and Addendum 204 (polish trigger rate).
+
+## Addendum 206 -- The polish step is not running on "almost every block" (24%), but each step costs 0.55 ms and even the check costs 80 us per block; it is doing real work -- without it compounding drift is 22x larger and residuals reach 8.4e-10, far from the Weyl-chamber face it was attributed to -- so it should be made cheaper, not triggered less; and the training circuit's 48 two-qubit gates are confirmed as 5 unconsolidated blocks, fixed by block_gate_floor 8 (33 gates, exact, no change on three other families) (2026-09-27)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-205-preregistration-2026-09-27.md`. WSL2
+(home), 12 cores, Python 3.12.13, Qiskit 2.5.2, `psf_compile.py`
+2026-09-26.4 (`b4fa92ad...`), `diag_polish_and_blocks.py`
+(`2d0f2ea8...`), both verified by the script. Total wall time 85 s.
+
+## 0. In one line
+
+4 of 6 predictions confirmed (Q2, H1, H2, H3), 2 not (Q1, Q3). Both
+misses change the plan in the same direction: the polish cannot be
+switched off or loosened without a large loss of accuracy under repeated
+compilation, so its cost has to be reduced by making it faster.
+
+## 1. Part P -- the polish step
+
+| Set | threshold | step taken | residual before (median / p90 / max) | after (max) | polish per compile | compile median | accuracy |
+|---|---|---|---|---|---|---|---|
+| P1 fresh cliff (30) | 1e-13 (current) | 24.1% | 1.25e-14 / 1.05e-12 / **8.40e-10** | 9.84e-14 | 12.30 ms | 40.8 ms | per-pair 8.9e-16 |
+| | 1e-12 | 10.2% | | 1.00e-12 | 8.34 ms | 37.2 ms | 8.9e-16 |
+| | 1e-11 | 2.1% | | 9.60e-12 | 5.82 ms | 35.0 ms | 8.9e-16 |
+| | off | 0% | | 8.40e-10 | 5.28 ms | 34.6 ms | 8.9e-16 |
+| P2 fresh training (30) | 1e-13 (current) | 23.3% | 1.16e-14 / 7.85e-13 / 1.87e-10 | 9.60e-14 | 1.32 ms | 10.2 ms | loss 6.7e-16 |
+| | 1e-12 | 8.3% | | 9.34e-13 | 0.88 ms | 10.0 ms | 5.1e-15 |
+| | 1e-11 | 2.2% | | 8.74e-12 | 0.68 ms | 9.8 ms | 2.0e-14 |
+| | off | 0% | | 1.87e-10 | 0.62 ms | 9.8 ms | **1.1e-12** |
+| P3 compounding (100 laps) | 1e-13 (current) | 25.4% | 9.47e-15 / 4.79e-13 / 1.52e-12 | 9.97e-14 | 12.66 ms | 41.4 ms | drift at lap 100 **6.02e-12** |
+| | 1e-12 | 5.7% | | 9.93e-13 | 7.00 ms | 35.8 ms | 9.69e-11 (16x) |
+| | 1e-11 | 0% | | 2.23e-12 | 5.21 ms | 33.6 ms | 1.35e-10 (22x) |
+| | off | 0% | | 2.23e-12 | 5.24 ms | 33.7 ms | 1.35e-10 (22x) |
+
+Per call: a step costs 0.55-0.66 ms; a call without a step costs 78-92
+us, which is the residual check itself (one 4x4 reconstruction in numpy).
+At cliff scale the current polish is therefore about 5.3 ms of checks (60
+blocks) plus about 7.0 ms of steps (14 blocks per compile).
+
+Readings:
+
+- **Q1 is wrong, and Addendum 204's inference was wrong with it.** The
+  step runs on about a quarter of the blocks, not on almost all. The cost
+  comes from each step being expensive (Jacobian of 16 4x4 matrices and a
+  least-squares solve, in numpy), and from the check alone costing 80 us.
+- **The polish is doing real work.** Without steps the compounding drift at
+  lap 100 is 22 times larger (1.35e-10 against 6.0e-12), and the training
+  loss error rises to 1.1e-12. Loosening the trigger to 1e-12 already
+  costs a factor of 16 in drift. The per-pair check of P1 does not see any
+  of this (8.9e-16 at every threshold) because infidelity is quadratic in
+  the error; the drift and loss measures do.
+- **The residual tail is not where it was attributed.** Addendum 185 traced
+  the core's error to inputs near the face c = 0 (up to ~1.8e-11). Here no
+  block had |c| < 1e-3, yet residuals reached 8.4e-10 on fresh cliff
+  circuits and 1.9e-10 on training circuits. The Rust core's error tail is
+  wider than recorded; its source is not identified by this run.
+- **Consequence for optimization.** Turning the polish down trades accuracy
+  for at most ~7 ms per cliff compile. Making it fast keeps the accuracy:
+  both the check and the step are small fixed-size linear algebra (4x4
+  complex, 32x16 least squares) where numpy's per-call overhead dominates.
+  Done inside the Rust core, or batched across all blocks of a circuit in
+  one numpy call, the 12.3 ms should fall to about 1 ms. With the polish
+  near zero, the cliff compile would be about 29 ms instead of 41 ms.
+
+## 2. Part G -- block consolidation
+
+Training circuit (12 qubits, 11 blocks):
+
+| block_gate_floor | blocks | unconsolidated two-qubit gates | final two-qubit gates | compile median | exact |
+|---|---|---|---|---|---|
+| 12 (default) | 6 (first layer only) | 15 (`rxx`, `ryy`, `rzz` on the 5 second-layer pairs) | 48 | 8.4 ms | 1.1e-16 |
+| 10 | 6 | 15 | 48 | 9.2 ms | 1.1e-16 |
+| **8** | **11** | **0** | **33** | 13.2 ms | 3.3e-16 |
+| 6, 4, 2 | 11 | 0 | 33 | 13.1-13.3 ms | 3.3e-16 |
+
+Other families (two-qubit gates at every floor 12 ... 2): HEA 44, QAOA on
+a line 66, cliff pair24 180 -- unchanged, all exact (<= 3e-15). Compile
+time is unchanged at floor 8 (HEA 9.3 vs 8.3 ms, QAOA 6.6 vs 6.3, cliff
+40.0 vs 38.9); lower floors cost time on HEA (20.6 ms at 4, 40.5 ms at 2)
+and on QAOA at 2 (19.8 ms) for no gain.
+
+Readings:
+
+- The hypothesis of Addendum 204 is confirmed exactly: at floor 12 the
+  second-layer blocks are left with 9 gates each and pass through; at
+  floor 8 all 11 become blocks and the count is 33, 40% below Qiskit L3 on
+  the parameterized circuit (55) instead of 13%.
+- Floor 8 costs 4.8 ms more per 12-qubit compile (five more blocks
+  synthesized).
+- **Correction to Addenda 199-200**: their training loop synthesized 6 of 11
+  blocks per compile, not all 11. Their correctness results are
+  unaffected (every loss matched to 1.2e-14).
+
+## 3. Scoring
+
+| ID | Prediction | Result |
+|---|---|---|
+| Q1 | step on >= 80% of calls in P1, P2, P3 | **not confirmed** (24.1%, 23.3%, 25.4%) |
+| Q2 | median residual before < 1e-12 in every set | **confirmed** (1.25e-14, 1.16e-14, 9.47e-15) |
+| Q3 | threshold 1e-12: time <= 30%, per-pair <= 1e-12, drift <= 2x | **not confirmed**: time 68% of current; per-pair holds (8.9e-16); drift 16x |
+| H1 | floor 12: 6 blocks, 15 unconsolidated | **confirmed** |
+| H2 | floor 8: 11 blocks, 0 unconsolidated, 33 gates, exact | **confirmed** |
+| H3 | floor 8 does not increase HEA, QAOA or cliff counts; all exact | **confirmed** (44, 66, 180 unchanged) |
+
+## 4. Next steps (not yet done)
+
+1. **Make the polish fast without changing what it computes.** Two
+   routes: (a) batch the check and the step over all blocks of a circuit
+   in numpy (Python only, no rebuild); (b) move both into the Rust core,
+   next to the decomposition (requires rebuilding the core on every
+   machine). Either must reproduce the current parameters to rounding and
+   the current drift (6.0e-12 at lap 100). Route (a) can be tried first;
+   route (b) is where it belongs if (a) leaves too much.
+2. **Default `block_gate_floor` 12 -> 8.** Supported by four families
+   here; a release default needs a broader check (the benchmark families of
+   the earlier addenda, and wide-and-shallow circuits, for which the floor
+   was originally chosen) before it changes.
+3. **The residual tail of the Rust core** (up to 8.4e-10 away from the
+   c = 0 face): identify the inputs and whether the core itself can be
+   made accurate, which would also shrink the polish's work.
+
+## 5. Files
+
+| File | What it is |
+|---|---|
+| `benchmarks/diag_polish_and_blocks.py` | the registered test |
+| `data/logs/diag_polish_and_blocks.txt` | log (received and checked) |
+| `data/diag_polish_and_blocks_2026-09-27.csv` | every polish call at the current threshold, summaries, Part G rows (8,016 rows; not yet received) |
+
+---
+
+<!-- ===== Addendum 207 (source: spare-qubit-cliff-addendum-207-preregistration-2026-09-27.md) ===== -->
+
+> **Note added when merging:** Pre-registration of psf_compile.py 2026-09-27.1: the polish batched over all blocks of a circuit, computing the same thing without numpy per-call overhead.
+
+## Addendum 207 -- Preregistration: psf_compile.py 2026-09-27.1 -- the polish batched over all blocks of a circuit, computing the same thing without numpy's per-call overhead (2026-09-27)
+
+**Written before running on the home machine.** Results will be recorded
+as Addendum 208, including every prediction that fails.
+
+## 1. Why
+
+Addendum 206: the polish of Addendum 186 costs 12.3 ms of a ~41 ms
+120-qubit compile (80 us per residual check on each of 60 blocks, 0.55 ms
+per Gauss-Newton step on about a quarter of them), and it cannot be
+loosened: without it compounding drift is 22x larger. The arithmetic is
+4x4 complex matrices and 32x16 least squares, so almost all of the time is
+numpy's per-call overhead. Doing the same arithmetic for all blocks at once
+should remove most of it, in Python, without touching the Rust core.
+
+## 2. The change (changelog item 20)
+
+- `compile()` decomposes every block first, then polishes all of them in
+  one call (`_refine_batch`), then builds the circuits in the original
+  order.
+- `_refine_batch`: one vectorized residual check over all blocks; for the
+  blocks above the threshold, a batched Jacobian (closed form, as
+  `_reconstruct_with_jacobian`) and a batched SVD least-squares solve with
+  the cutoff `numpy.linalg.lstsq` uses for `rcond=None`; the per-block
+  stopping rules of `_refine_decomposition` unchanged (a step is accepted
+  only if it lowers the residual; stop at <= 1e-14 or when a step fails to
+  halve it; at most 3 steps).
+- `SU4GeodesicPSFSynthesizer.synthesize()` (one block) is unchanged. It is
+  split internally into `_decompose` and `_finish`, which the new
+  `synthesize_many` also uses. `USE_BATCHED_POLISH = False` restores the
+  per-block polish inside `compile()`.
+- Nothing else changes: threshold, target, maximum steps, the guard, the
+  closed form, layout and routing.
+
+Checked here (numpy only; Qiskit cannot be installed in this environment):
+the batched reconstruction and Jacobian match the per-block ones to
+1e-14; on 300 synthetic blocks with parameter errors from 1e-16 to 1e-9,
+the same 203 blocks were stepped, the largest residual after polishing was
+9.51e-14 (per-block 9.51e-14), and polished parameters differed by at most
+1.2e-12 (in directions the unitary does not depend on; residuals match).
+Time for 60 blocks with a quarter stepped: 1.8 ms batched against 11.6 ms
+per block; for 6 blocks, 1.4 against 2.6 ms; for 1 block, 0.19 against
+0.14 ms (a single block is slightly slower batched).
+
+## 3. Files
+
+| File | Size | Normalized SHA-256 |
+|---|---|---|
+| `psf_compile.py` (2026-09-27.1) | 72,437 | `c0ee600a53d42766876091f5ef3827bc17355d49af557e0d447fd545a0f90702` |
+| `benchmarks/test_batched_polish.py` | 3,819 | `2d2dc8b9aeb4f88997003daf37a9e4b6890829824ca18ea7354a4c767d8ed8a2` |
+| `benchmarks/verify_batched_polish.py` | 11,946 | `071d236d21e27f3a4ce83278e8c58dcacc0906792e86e5a0ba8c71ece88911ee` |
+
+## 4. Predictions (as scored by `verify_batched_polish.py`)
+
+Every comparison runs both settings on the same input in one process.
+
+| ID | Prediction |
+|---|---|
+| B1 | 30 fresh cliff circuits: the batched output passes the exact per-pair check at <= 1e-12, and batched and per-block outputs agree per pair to <= 1e-12. |
+| B2 | Every compile steps the same number of blocks in both settings (cliff and training). |
+| B3 | Compounding loop, 100 laps: batched drift at lap 100 <= 1.5 x per-block and <= 1e-11 (Addendum 206: 6.0e-12). |
+| B4 | 30 fresh training circuits at `block_gate_floor` 12 and 8, both settings: worst loss error <= 1e-14. |
+| B5 | Cliff: batched polish <= 3 ms per compile, and the compile median lower than per-block by >= 8 ms. |
+| B6 | Training circuit at floor 8: batched compile median not above per-block. |
+
+And outside the script:
+
+| ID | Prediction |
+|---|---|
+| T1 | The existing tests in `benchmarks/` (63, including `test_matching_layout.py`, `test_closed_form_core.py` and `test_guard_v4.py`) and the new `test_batched_polish.py` (13) all pass under 2026-09-27.1. |
+
+Risks stated now:
+
+- B2 compares a threshold decision computed in two ways. A residual within
+  rounding (~1e-16) of 1e-13 could fall on different sides; the expected
+  number of such blocks in ~2,000 is well below one, but not zero.
+- B3: the batched step can differ from the per-block step at the 1e-16
+  level, and compounding amplifies differences linearly; 1.5x allows for
+  that.
+- Instruments that wrap `_refine_decomposition` (Addenda 203 and 205
+  scripts) no longer see the polish in the default setting, because
+  `compile()` now calls `_refine_batch`.
+
+## 5. Output
+
+`verify_batched_polish.txt` (log), `verify_batched_polish_2026-09-27.csv`,
+and the pytest output.
+
+---
+
+<!-- ===== Addendum 208 (source: spare-qubit-cliff-addendum-208-2026-09-27.md) ===== -->
+
+> **Note added when merging:** All predictions hold: polish 12.0 -> 1.8 ms and cliff compile 38.8 -> 28.4 ms per compile, same stepped blocks, outputs agreeing to 4e-15, drift within 8%. 2026-09-27.1 becomes the current compiler.
+
+## Addendum 208 -- psf_compile.py 2026-09-27.1 holds every prediction: batching the polish over all blocks cuts it from 12.0 to 1.8 ms per 120-qubit compile and the compile from 38.8 to 28.4 ms (-27%), with the same stepped blocks, outputs agreeing to 4e-15 and compounding drift within 8% (2026-09-27)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-207-preregistration-2026-09-27.md`. WSL2
+(home), 12 cores, Python 3.12.13, Qiskit 2.5.2, `psf_compile.py`
+2026-09-27.1 (`c0ee600a...`), `verify_batched_polish.py` (`071d236d...`),
+both verified by the script. Total wall time 46 s.
+
+## 0. In one line
+
+All six scripted predictions confirmed, and every test in the four test
+files run passed (40/40). The polish now costs 1.8 ms instead of 12.0 ms
+per 120-qubit compile, and it computes the same thing.
+
+## 1. Results
+
+| ID | Prediction | Result |
+|---|---|---|
+| B1 | per-pair check <= 1e-12; batched vs per-block <= 1e-12 (30 fresh cliff circuits) | **confirmed** (8.9e-16; 4.0e-15) |
+| B2 | same number of stepped blocks in every compile | **confirmed** (cliff 30/30, training 60/60) |
+| B3 | drift at lap 100 <= 1.5 x per-block and <= 1e-11 | **confirmed** (6.48e-12 vs 6.02e-12, ratio 1.08) |
+| B4 | training, floors 12 and 8: loss error <= 1e-14 | **confirmed** (worst 5.11e-15; per-block 5.00e-15) |
+| B5 | cliff: polish <= 3 ms, compile median lower by >= 8 ms | **confirmed** (1.81 vs 12.00 ms; 28.4 vs 38.8 ms) |
+| B6 | training floor 8: not slower | **confirmed** (12.04 vs 12.69 ms) |
+| T1 | tests pass | **confirmed for the files run**: 40 passed (`test_batched_polish.py` 13, `test_closed_form_core.py`, `test_guard_v4.py`, `test_matching_layout.py`) |
+
+Compounding drift, per-block / batched: lap 10 4.27e-13 / 6.80e-13, lap 50
+2.65e-12 / 3.45e-12, lap 100 6.02e-12 / 6.48e-12. The per-block figures
+reproduce Addendum 206 exactly (same code path). The batched path differs
+from the per-block one at rounding level in each step, which the
+compounding loop accumulates; by lap 100 the difference is 8%, inside the
+registered margin, and both stay linear.
+
+## 2. Reading
+
+- With the cliff compile at 28.4 ms, PSF-Zero's own `compile()` and the
+  Qiskit `transpile` call (about 14 ms, Addendum 204) are now of similar
+  size. `compile()` is about 16 ms by Addendum 204's breakdown with the
+  polish replaced: consolidation 3.0, block construction 6.8, polish 1.8,
+  the Rust core 0.7, and about 4 ms of bookkeeping (matrix extraction,
+  composing, copying).
+- On the 12-qubit training circuit the gain is small (0.65 ms at floor 8)
+  because it has only 6-11 blocks; batching pays with many blocks.
+- A single block is slightly slower batched (0.19 vs 0.14 ms, measured in
+  numpy); `synthesize()` for one block keeps the per-block polish.
+- T1 ran four test files. The other test files in `benchmarks/` include
+  older scripts that need packages absent from this environment
+  (PennyLane and others) and fail at collection; they were not run, and
+  the "63" of the preregistration was not checked as a total.
+
+## 3. Status of the release
+
+2026-09-27.1 replaces 2026-09-26.4 as the current `psf_compile.py`:
+the same outputs to rounding, 27% faster at cliff scale. The instruments
+of Addenda 203 and 205 wrap `_refine_decomposition` and no longer see the
+polish in the default setting.
+
+## 4. Files
+
+| File | What it is |
+|---|---|
+| `psf_compile.py` | 2026-09-27.1 (72,437 bytes, `c0ee600a...`) |
+| `benchmarks/test_batched_polish.py` | 13 tests (3,819 bytes) |
+| `benchmarks/verify_batched_polish.py` | the registered verification (11,946 bytes) |
+| `data/logs/verify_batched_polish.txt` | log (received and checked) |
+| `data/verify_batched_polish_2026-09-27.csv` | 154 rows (not yet received) |
+
+---
+
+<!-- ===== Addendum 209 (source: spare-qubit-cliff-addendum-209-preregistration-2026-09-27.md) ===== -->
+
+> **Note added when merging:** Pre-registration of a check of block_gate_floor 8 against 12 across eight circuit families, with the decision rule fixed in advance.
+
+## Addendum 209 -- Preregistration: should the default block_gate_floor change from 12 to 8? A check across eight circuit families (2026-09-27)
+
+**Written before running.** Results will be recorded as Addendum 210.
+
+- Script: `benchmarks/verify_block_floor.py`, 11,948 bytes, normalized
+  SHA-256 `9135447811bc3dff856b8360a2cf138f35611101e203b61f3f962dfe0bbe4dc0`.
+  Syntax-checked here; not run here.
+- Requires `psf_compile.py` 2026-09-27.1 (the script stops otherwise).
+  Nothing is changed in it: the floor is passed as an argument.
+
+## 1. Why
+
+Addendum 206 found that at the default floor of 12, the second layer of a
+brick-layer ansatz is left unconsolidated (48 two-qubit gates instead of
+33, against 55 for Qiskit L3), and that floor 8 fixes it with no change on
+three other families. The floor was originally chosen so that
+wide-and-shallow circuits pass through untouched. A default affects every
+caller, so it changes only if a wider check shows no regression.
+
+## 2. Design
+
+Floors 12 (current default), 10, 8, 6 and 4; the decision concerns 8 vs 12,
+the others are for context. All line families compile on a line coupling
+map with basis `[cx, rz, sx, x]`, `entangling_basis="cx"`, trivial initial
+layout.
+
+| Family | Qubits | Instances | Notes |
+|---|---|---|---|
+| brick12 | 12 | 3 | Addendum 199 training ansatz, random parameters |
+| heis12 | 12 | 3 | Heisenberg-chain Trotter, 4 steps, even/odd bonds of rxx, ryy, rzz, then rz on every qubit |
+| qaoa12 | 12 | 3 | QAOA on a line, p = 3 |
+| hea12 | 12 | 3 | 4 layers of ry, rz and a CX ladder |
+| dense12 | 12 | 3 | 60 gates per pair on 6 disjoint pairs |
+| random8 | 8 | 3 | `random_circuit(8, 12, max_operands=2)`, routed |
+| qft8 | 8 | 1 | QFT, routed |
+| cliff120 | 120 | 1 | pair24 blocks on FakeNighthawk, `layout_search=True` |
+
+Recorded per compile: two-qubit count, depth, number of blocks
+consolidated, compile time (median of 5), exactness (state fidelity from
+|0> and from a random product state for unrouted 12-qubit families;
+`Operator.from_circuit` against `Operator(input)` for routed 8-qubit
+families; the exact per-pair check for cliff120).
+
+## 3. Predictions (floor 8 against floor 12)
+
+| ID | Prediction |
+|---|---|
+| F1 | No instance has more two-qubit gates at floor 8. |
+| F2 | Every compile at every floor is exact (<= 1e-10). |
+| F3 | Mean compile time at floor 8 is at most 1.5x floor 12 in every family. |
+| F4 | heis12: the two-qubit count is identical at 12 and 8. |
+| F5 | Depth at floor 8 is at most 1.1x floor 12 in every instance. |
+
+Reasoning:
+
+- F1: a run consolidated at a lower floor is resynthesized with the fewest
+  CXs its Weyl coordinates allow (1 or 2 when the run is CX- or rzz-like,
+  where the closed form steps aside; 3 otherwise), while a run left as
+  written costs 2 CXs for each `rxx`, `ryy` or `rzz`. A run of 9-12 gates
+  containing three or more two-qubit rotations can only get cheaper.
+- F4: in the Trotter circuit each bond's run is 3-5 gates before a
+  neighbouring bond interrupts it, below both floors. This predicts that
+  floor 8 does not help here; if smaller floors (6, 4) do, that is a
+  separate finding about short runs.
+- F3 allows the extra synthesis of more blocks; Addendum 206 measured
+  +4.8 ms (57%) on the brick circuit at 2026-09-26.4, which batching
+  (Addendum 208) should reduce. brick12 is the family most likely to break
+  F3.
+
+If F1, F2 and F5 hold, the default is changed to 8 in the next release,
+with F3's cost recorded. If any of them fails, the default stays at 12 and
+the failure is investigated.
+
+## 4. Output
+
+`verify_block_floor.txt` (log) and `verify_block_floor_2026-09-27.csv`.
+
+---
+
+<!-- ===== Addendum 210 (source: spare-qubit-cliff-addendum-210-2026-09-27.md) ===== -->
+
+> **Note added when merging:** All five predictions hold; by the preregistered rule the default block_gate_floor becomes 8 (psf_compile.py 2026-09-27.2). Floors below 8 are unsafe (HEA depth). Trotter circuits would need a per-run rule, not a lower floor.
+
+## Addendum 210 -- block_gate_floor 8 is safe across eight circuit families (no two-qubit count rises, depth +2% at most, every compile exact) and fixes the brick-layer ansatz (48 -> 33); lower floors are not safe as a default (HEA depth 33 -> 91 at 4); the default becomes 8 in psf_compile.py 2026-09-27.2 (2026-09-27)
+
+**Pre-registered in**:
+`spare-qubit-cliff-addendum-209-preregistration-2026-09-27.md`. WSL2
+(home), 12 cores, Python 3.12.13, Qiskit 2.5.2, `psf_compile.py`
+2026-09-27.1 (`c0ee600a...`), `verify_block_floor.py` (`91354478...`),
+both verified by the script. Total wall time 16 s.
+
+## 0. In one line
+
+All five predictions confirmed. By the rule fixed in the preregistration
+(F1, F2 and F5 hold), the default `block_gate_floor` changes from 12 to 8.
+
+## 1. Results
+
+Two-qubit gates / depth / blocks consolidated (per instance) and mean
+compile time:
+
+| Family | floor 12 | floor 8 | floor 6 | floor 4 |
+|---|---|---|---|---|
+| brick12 (3) | 48 / 35 / 6, 9.0 ms | **33 / 31 / 11**, 10.4 ms | 33 / 31 / 11, 10.1 ms | 33 / 31 / 11, 10.0 ms |
+| heis12 (3) | 264 / 121 / 0, 8.3 ms | 264 / 121 / 0, 8.1 ms | 264 / 121 / 0, 8.1 ms | **204** / 109-111 / 20, 18.8 ms |
+| qaoa12 (3) | 66 / 63 / 0, 5.9 ms | 66 / 63 / 0, 5.5 ms | 66 / 63 / 0, 6.0 ms | 66 / 63 / 0, 5.8 ms |
+| hea12 (3) | 44 / 33 / 0, 7.5 ms | 44 / 33 / 0, 7.3 ms | 44 / **41-42** / 2, 10.2 ms | 44 / **88-91** / 13, 20.4 ms |
+| dense12 (3) | 12 / 13 / 6, 13.4 ms | same, 13.0 ms | same | same |
+| random8 (3) | 47, 54, 108 / 56, 65, 111 / 4, 4, 0 | 47, 54, 108 / 57, 65, 111 / 6, 4, 0 | 47, 54, 105 | 47, 54, 105 |
+| qft8 (1) | 176 / 138 / 0, 7.2 ms | same, 9.9 ms | same, 5.8 ms | same, 8.8 ms |
+| cliff120 (1) | 180 / 21 / 60, 27.5 ms | same, 26.9 ms | same | same |
+
+Worst exactness over all 100 compiles: 7.1e-15.
+
+| ID | Prediction | Result |
+|---|---|---|
+| F1 | no instance has more two-qubit gates at 8 | **confirmed** (20/20) |
+| F2 | every compile exact (<= 1e-10) | **confirmed** (7.1e-15) |
+| F3 | mean compile time at 8 <= 1.5x of 12 in every family | **confirmed** (brick12 1.16, qft8 1.36, others 0.93-1.06) |
+| F4 | heis12 identical at 12 and 8 | **confirmed** (264 = 264) |
+| F5 | depth at 8 <= 1.1x of 12 in every instance | **confirmed** (worst 1.02) |
+
+## 2. Reading
+
+- **Floor 8 is the lowest safe default in this set.** At 6 the HEA depth
+  already rises by about 25% (33 -> 41-42) with no two-qubit saving, and at
+  4 it nearly triples (88-91); consolidating runs of single-qubit
+  rotations around one CX and resynthesizing them lengthens the circuit.
+  At 8 nothing moved except the brick circuits (better) and one random
+  instance (depth +1, two more blocks, same two-qubit count).
+- **qft8's time ratio (1.36) is noise.** It has no blocks at any floor, so
+  the compile is identical; its times scatter between 5.8 and 9.9 ms
+  across floors.
+- **The Trotter circuit is a separate case.** Its bond runs are 3-5 gates,
+  so floors 12-6 leave all 264 two-qubit gates (6 CXs per bond-step as
+  written). Floor 4 consolidates them and saves 23% (264 -> 204) at 2.3x
+  compile time, but floor 4 is not safe for HEA. A per-run rule --
+  consolidate when the run as written would cost more two-qubit gates
+  than its resynthesis, regardless of length -- would capture the Trotter
+  gain without the HEA depth cost. Not tested.
+- **random8** gains 3 two-qubit gates on one instance only below 8.
+
+## 3. Release: psf_compile.py 2026-09-27.2
+
+The only change from 2026-09-27.1 is `DEFAULT_BLOCK_GATE_FLOOR = 8`
+(changelog item 21) and three docstring passages that described the old
+behaviour ("reports 0/0 blocks" on random circuits, which is no longer
+exact at 8). Callers who pass `block_gate_floor` explicitly are
+unaffected; `block_gate_floor=12` restores the previous default.
+
+| File | Size | Normalized SHA-256 |
+|---|---|---|
+| `psf_compile.py` 2026-09-27.2 | 73,463 | `d987422b40d9dbbd00b1f28e57b36f6fcdb47c7270ba004a99e2c223f9e1e61c` |
+
+Scripts written for a specific version (`verify_batched_polish.py` checks
+for 2026-09-27.1, earlier ones for 2026-09-26.4) stop by design under the
+new version; they record what was verified at the time.
+
+## 4. Files
+
+| File | What it is |
+|---|---|
+| `benchmarks/verify_block_floor.py` | the registered test |
+| `data/logs/verify_block_floor.txt` | log (received and checked) |
+| `data/verify_block_floor_2026-09-27.csv` | 100 rows (not yet received) |
 
 ---
 

@@ -1,0 +1,30 @@
+platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | cores 12 | python 3.12.13 | qiskit 2.5.2
+LOADED /home/psf/psf_zero_fresh_test/psf_compile.py 2026-09-27.1 c0ee600a53d42766876091f5ef3827bc17355d49af557e0d447fd545a0f90702
+SCRIPT /home/psf/psf_zero_fresh_test/benchmarks/verify_batched_polish.py 071d236d21e27f3a4ce83278e8c58dcacc0906792e86e5a0ba8c71ece88911ee
+
+=== B1/B2/B5: fresh cliff circuits (30) ===
+  per-block: compile median 38.8 ms, polish 12.00 ms per compile
+  batched  : compile median 28.4 ms, polish 1.81 ms per compile
+  batched output: worst per-pair check 8.88e-16; worst per-pair distance between batched and per-block outputs 4.01e-15; compiles with a different number of stepped blocks: 0/30
+
+=== B3: cliff compounding loop (100 laps per setting) ===
+  per-block: lap 10 4.27e-13, lap 50 2.65e-12, lap 100 6.02e-12
+  batched  : lap 10 6.80e-13, lap 50 3.45e-12, lap 100 6.48e-12
+
+=== B4/B6: fresh training circuits (30, 12 qubits) ===
+  floor 12, per-block: worst |loss - reference| 1.78e-15
+  floor 12, batched  : worst |loss - reference| 1.78e-15
+  floor  8, per-block: worst |loss - reference| 5.00e-15
+  floor  8, batched  : worst |loss - reference| 5.11e-15
+  floor  8, per-block: compile median 12.69 ms
+  floor  8, batched  : compile median 12.04 ms
+
+=== predictions ===
+B1 batched per-pair check <= 1e-12 and batched vs per-block per-pair distance <= 1e-12 (8.88e-16, 4.01e-15) -> CONFIRMED
+B2 same number of stepped blocks in every compile (cliff 30/30, training 60/60) -> CONFIRMED
+B3 drift at lap 100: batched <= 1.5 x per-block and <= 1e-11 (6.48e-12 vs 6.02e-12) -> CONFIRMED
+B4 training, floors 12 and 8, both settings: worst |loss - reference| <= 1e-14 (5.11e-15) -> CONFIRMED
+B5 cliff: batched polish <= 3 ms per compile (1.81 vs 12.00 ms) and compile median lower by >= 8 ms (28.4 vs 38.8 ms) -> CONFIRMED
+B6 training floor 8: batched compile median not above per-block (12.04 vs 12.69 ms) -> CONFIRMED
+
+Wrote verify_batched_polish_2026-09-27.csv (154 rows); total wall time 46 s

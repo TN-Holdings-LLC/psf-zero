@@ -1,0 +1,20 @@
+platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | cores 12 | python 3.12.13 | qiskit 2.5.2
+LOADED /home/psf/psf_zero_fresh_test/psf_compile.py 2026-09-27.1 c0ee600a53d42766876091f5ef3827bc17355d49af557e0d447fd545a0f90702
+SCRIPT /home/psf/psf_zero_fresh_test/benchmarks/verify_block_floor.py 9135447811bc3dff856b8360a2cf138f35611101e203b61f3f962dfe0bbe4dc0
+  brick12 : floor 12: 2q 48/48/48, depth 35/35/35, blocks 6/6/6, 9.0 ms, exact 8.9e-16; floor 10: 2q 48/48/48, depth 35/35/35, blocks 6/6/6, 8.8 ms, exact 8.9e-16; floor 8: 2q 33/33/33, depth 31/31/31, blocks 11/11/11, 10.4 ms, exact 8.9e-16; floor 6: 2q 33/33/33, depth 31/31/31, blocks 11/11/11, 10.1 ms, exact 8.9e-16; floor 4: 2q 33/33/33, depth 31/31/31, blocks 11/11/11, 10.0 ms, exact 8.9e-16
+  heis12  : floor 12: 2q 264/264/264, depth 121/121/121, blocks 0/0/0, 8.3 ms, exact 7.1e-15; floor 10: 2q 264/264/264, depth 121/121/121, blocks 0/0/0, 8.3 ms, exact 7.1e-15; floor 8: 2q 264/264/264, depth 121/121/121, blocks 0/0/0, 8.1 ms, exact 7.1e-15; floor 6: 2q 264/264/264, depth 121/121/121, blocks 0/0/0, 8.1 ms, exact 7.1e-15; floor 4: 2q 204/204/204, depth 111/109/111, blocks 20/20/20, 18.8 ms, exact 5.1e-15
+  qaoa12  : floor 12: 2q 66/66/66, depth 63/63/63, blocks 0/0/0, 5.9 ms, exact 2.9e-15; floor 10: 2q 66/66/66, depth 63/63/63, blocks 0/0/0, 5.6 ms, exact 2.9e-15; floor 8: 2q 66/66/66, depth 63/63/63, blocks 0/0/0, 5.5 ms, exact 2.9e-15; floor 6: 2q 66/66/66, depth 63/63/63, blocks 0/0/0, 6.0 ms, exact 2.9e-15; floor 4: 2q 66/66/66, depth 63/63/63, blocks 0/0/0, 5.8 ms, exact 2.9e-15
+  hea12   : floor 12: 2q 44/44/44, depth 33/33/33, blocks 0/0/0, 7.5 ms, exact 2.2e-16; floor 10: 2q 44/44/44, depth 33/33/33, blocks 0/0/0, 7.4 ms, exact 2.2e-16; floor 8: 2q 44/44/44, depth 33/33/33, blocks 0/0/0, 7.3 ms, exact 2.2e-16; floor 6: 2q 44/44/44, depth 41/42/42, blocks 2/2/2, 10.2 ms, exact 0.0e+00; floor 4: 2q 44/44/44, depth 91/88/91, blocks 13/13/13, 20.4 ms, exact 4.4e-16
+  dense12 : floor 12: 2q 12/12/12, depth 13/13/13, blocks 6/6/6, 13.4 ms, exact 2.7e-15; floor 10: 2q 12/12/12, depth 13/13/13, blocks 6/6/6, 13.3 ms, exact 2.7e-15; floor 8: 2q 12/12/12, depth 13/13/13, blocks 6/6/6, 13.0 ms, exact 2.7e-15; floor 6: 2q 12/12/12, depth 13/13/13, blocks 6/6/6, 13.6 ms, exact 2.7e-15; floor 4: 2q 12/12/12, depth 13/13/13, blocks 6/6/6, 13.5 ms, exact 2.7e-15
+  random8 : floor 12: 2q 47/54/108, depth 56/65/111, blocks 4/4/0, 10.5 ms, exact 8.9e-16; floor 10: 2q 47/54/108, depth 57/65/111, blocks 6/4/0, 10.4 ms, exact 1.3e-15; floor 8: 2q 47/54/108, depth 57/65/111, blocks 6/4/0, 11.1 ms, exact 1.3e-15; floor 6: 2q 47/54/105, depth 57/65/105, blocks 6/4/2, 11.5 ms, exact 1.3e-15; floor 4: 2q 47/54/105, depth 57/65/105, blocks 7/5/5, 13.5 ms, exact 8.9e-16
+  qft8    : floor 12: 2q 176, depth 138, blocks 0, 7.2 ms, exact 1.0e-15; floor 10: 2q 176, depth 138, blocks 0, 5.8 ms, exact 1.0e-15; floor 8: 2q 176, depth 138, blocks 0, 9.9 ms, exact 1.0e-15; floor 6: 2q 176, depth 138, blocks 0, 5.8 ms, exact 1.0e-15; floor 4: 2q 176, depth 138, blocks 0, 8.8 ms, exact 1.0e-15
+  cliff120: floor 12: 2q 180, depth 21, blocks 60, 27.5 ms, exact 6.7e-16; floor 10: 2q 180, depth 21, blocks 60, 27.1 ms, exact 6.7e-16; floor 8: 2q 180, depth 21, blocks 60, 26.9 ms, exact 6.7e-16; floor 6: 2q 180, depth 21, blocks 60, 28.0 ms, exact 6.7e-16; floor 4: 2q 180, depth 21, blocks 60, 27.7 ms, exact 6.7e-16
+
+=== predictions (floor 8 against floor 12) ===
+F1 no instance has more two-qubit gates at floor 8: 20/20  -> CONFIRMED
+F2 every compile at every floor exact (<= 1e-10): worst 7.1e-15 -> CONFIRMED
+F3 compile time at floor 8 <= 1.5 x floor 12 in every family (brick12 1.16, cliff120 0.98, dense12 0.97, hea12 0.97, heis12 0.97, qaoa12 0.93, qft8 1.36, random8 1.06) -> CONFIRMED
+F4 heis12: two-qubit count identical at floors 12 and 8 in every instance ([(264, 264), (264, 264), (264, 264)]) -> CONFIRMED
+F5 depth at floor 8 <= 1.1 x floor 12 in every instance (worst ratio 1.02) -> CONFIRMED
+
+Wrote verify_block_floor_2026-09-27.csv (100 rows); total wall time 16 s

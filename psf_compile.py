@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-09-26.4 (previous revision: 2026-09-26.3)
+VERSION: 2026-09-27.2 (previous revision: 2026-09-27.1)
 
 Where to look for what
 ----------------------
@@ -308,6 +308,33 @@ Changes in the 2026-09-26.4 revision (spare-qubit-cliff Addenda 195-196)
     `sx` per qubit (one per middle gap plus the outer layers; matches the
     measured 7 per qubit for 3-CX blocks). Addendum 195 (Q3): without it,
     the weighted layout placed pairs on a qubit whose `sx` has error 1.0.
+
+20. **Polish batched over all blocks of a circuit.** `compile()` now
+    decomposes every block first, then runs the polish of Addendum 186 on
+    all of them at once (`_refine_batch`): one vectorized residual check,
+    and Gauss-Newton steps on the blocks above the threshold with a batched
+    Jacobian and a batched SVD least-squares solve (same cutoff as
+    `numpy.linalg.lstsq(rcond=None)`), with the same per-block stopping
+    rules as `_refine_decomposition`. What is computed is unchanged; only
+    numpy's per-call overhead is removed. Addendum 206: the per-block
+    polish cost 12.3 ms per 120-qubit compile (80 us per check, 0.55 ms per
+    step) and cannot be loosened without a 16-22x rise in drift under
+    repeated recompilation. `SU4GeodesicPSFSynthesizer.synthesize()` (one
+    block) is unchanged. `USE_BATCHED_POLISH = False` restores the
+    per-block polish inside `compile()` (for A/B validation).
+
+21. **Default `block_gate_floor` 12 -> 8.** At 12, the second layer of a
+    brick-layer ansatz lost its leading single-qubit rotations to the
+    neighbouring blocks during collection, kept runs of 9 gates, and passed
+    through unconsolidated: 48 two-qubit gates instead of 33 on the 12-qubit
+    training circuit (Addendum 206). Addendum 210 checked 20 instances of 8
+    families (brick, Heisenberg Trotter, QAOA, HEA, dense pairs, random,
+    QFT, 120-qubit pair blocks): at 8, no two-qubit count rose, depth rose
+    by at most 2%, every compile was exact, and the brick circuits fell from
+    48 to 33 (depth 35 -> 31) for +16% compile time. Lower floors are not
+    safe as a default: at 6 and 4 the HEA depth grew from 33 to 41 and 91
+    with no change in two-qubit count. Pass `block_gate_floor=12` for the
+    previous behaviour.
 """
 from __future__ import annotations
 
@@ -337,7 +364,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-09-26.4"
+VERSION = "2026-09-27.2"
 __version__ = VERSION
 
 __all__ = [
@@ -367,7 +394,8 @@ _PSF_DEGENERATE_ERRORS = tuple(
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_BLOCK_GATE_FLOOR = 12
+# Changelog item 21 (was 12).
+DEFAULT_BLOCK_GATE_FLOOR = 8
 
 _VALID_ENTANGLING_BASES = ("canonical", "cx")
 _VALID_ON_UNSUPPORTED = ("keep", "raise")
@@ -614,6 +642,122 @@ def _refine_decomposition(U_target, cartan, k1, k2, phase, threshold=REFINE_THRE
     return _unpack(p), before, norm_r
 
 
+# Changelog item 20. Module-level so a validation run can switch it off.
+USE_BATCHED_POLISH = True
+
+
+def _zyz_batch(t: np.ndarray) -> np.ndarray:
+    """_zyz_matrix for each row (phi, theta, lam) of t, shape (N, 3) -> (N, 2, 2)."""
+    phi, theta, lam = t[:, 0], t[:, 1], t[:, 2]
+    c, s = np.cos(theta / 2.0), np.sin(theta / 2.0)
+    ep, em = np.exp(-0.5j * phi), np.exp(0.5j * phi)
+    lp, lm = np.exp(-0.5j * lam), np.exp(0.5j * lam)
+    out = np.empty((t.shape[0], 2, 2), dtype=complex)
+    out[:, 0, 0] = ep * c * lp
+    out[:, 0, 1] = -ep * s * lm
+    out[:, 1, 0] = em * s * lp
+    out[:, 1, 1] = em * c * lm
+    return out
+
+
+def _zyz_derivatives_batch(t: np.ndarray, m: np.ndarray):
+    """Derivatives of _zyz_batch(t) in phi, theta and lam (each (N, 2, 2)),
+    as in _zyz_and_derivatives; m is _zyz_batch(t)."""
+    phi, theta, lam = t[:, 0], t[:, 1], t[:, 2]
+    c, s = np.cos(theta / 2.0), np.sin(theta / 2.0)
+    ep, em = np.exp(-0.5j * phi), np.exp(0.5j * phi)
+    lp, lm = np.exp(-0.5j * lam), np.exp(0.5j * lam)
+    d_theta = np.empty_like(m)
+    d_theta[:, 0, 0] = 0.5 * (-ep * s * lp)
+    d_theta[:, 0, 1] = 0.5 * (-ep * c * lm)
+    d_theta[:, 1, 0] = 0.5 * (em * c * lp)
+    d_theta[:, 1, 1] = 0.5 * (-em * s * lm)
+    return _HALF_Z @ m, d_theta, m @ _HALF_Z
+
+
+def _kron_batch(a: np.ndarray, b: np.ndarray) -> np.ndarray:
+    """np.kron of each pair of 2x2 matrices, (N, 2, 2) x (N, 2, 2) -> (N, 4, 4)."""
+    return np.einsum("nij,nkl->nikjl", a, b).reshape(a.shape[0], 4, 4)
+
+
+def _reconstruct_batch(p: np.ndarray, with_jacobian: bool = False):
+    """_reconstruct for each packed parameter row of p (N, 16) -> (N, 4, 4);
+    with_jacobian also returns the derivative with respect to each of the 16
+    parameters, (N, 16, 4, 4), in the order of _reconstruct_with_jacobian."""
+    diag = np.exp(1j * (p[:, 0:1] * _WX + p[:, 1:2] * _WY + p[:, 2:3] * _WZ))
+    core = (_CORE_BASIS[None, :, :] * diag[:, None, :]) @ _CORE_BASIS_H
+    l0, l1 = _zyz_batch(p[:, 3:6]), _zyz_batch(p[:, 6:9])
+    r0, r1 = _zyz_batch(p[:, 9:12]), _zyz_batch(p[:, 12:15])
+    left, right = _kron_batch(l0, l1), _kron_batch(r0, r1)
+    g = np.exp(1j * p[:, 15])[:, None, None]
+    cr = core @ right
+    u = g * (left @ cr)
+    if not with_jacobian:
+        return u
+    lc = left @ core
+    jac = []
+    for w in (_WX, _WY, _WZ):
+        dcore = (_CORE_BASIS[None, :, :] * (1j * w * diag)[:, None, :]) @ _CORE_BASIS_H
+        jac.append(g * (left @ dcore @ right))
+    for d in _zyz_derivatives_batch(p[:, 3:6], l0):
+        jac.append(g * (_kron_batch(d, l1) @ cr))
+    for d in _zyz_derivatives_batch(p[:, 6:9], l1):
+        jac.append(g * (_kron_batch(l0, d) @ cr))
+    for d in _zyz_derivatives_batch(p[:, 9:12], r0):
+        jac.append(g * (lc @ _kron_batch(d, r1)))
+    for d in _zyz_derivatives_batch(p[:, 12:15], r1):
+        jac.append(g * (lc @ _kron_batch(r0, d)))
+    jac.append(1j * u)
+    return u, np.stack(jac, axis=1)
+
+
+def _lstsq_batch(a: np.ndarray, b: np.ndarray) -> np.ndarray:
+    """Minimum-norm least-squares solution of a[n] x = b[n] for each n,
+    (N, M, K) and (N, M) -> (N, K), by SVD with the cutoff that
+    numpy.linalg.lstsq uses for rcond=None (eps * max(M, K) * s_max)."""
+    u, s, vh = np.linalg.svd(a, full_matrices=False)
+    cutoff = np.finfo(float).eps * max(a.shape[1], a.shape[2]) * s[:, :1]
+    keep = s > cutoff
+    s_inv = np.where(keep, 1.0 / np.where(keep, s, 1.0), 0.0)
+    ub = np.einsum("nmk,nm->nk", u, b)
+    return np.einsum("nkj,nk->nj", vh, s_inv * ub)
+
+
+def _refine_batch(U_targets: np.ndarray, p: np.ndarray, threshold=REFINE_THRESHOLD, max_iter=3):
+    """_refine_decomposition for N blocks at once (changelog item 20).
+
+    U_targets (N, 4, 4), p (N, 16) packed parameters. Returns the polished
+    parameters (N, 16), and the residual norms before and after (N,). The
+    per-block rules are those of _refine_decomposition: blocks at or below
+    `threshold` are left untouched; otherwise up to `max_iter` Gauss-Newton
+    steps, a step is accepted only if it lowers the residual, and a block
+    stops once its residual is <= _REFINE_TARGET or a step fails to halve it.
+    """
+    p = p.copy()
+    n = p.shape[0]
+    d = (_reconstruct_batch(p) - U_targets).reshape(n, 16)
+    before = np.linalg.norm(d, axis=1)
+    norm_r = before.copy()
+    active = before > threshold
+    for _ in range(max_iter):
+        idx = np.flatnonzero(active)
+        if idx.size == 0:
+            break
+        _, jac = _reconstruct_batch(p[idx], with_jacobian=True)
+        jm = jac.reshape(idx.size, 16, 16).transpose(0, 2, 1)
+        jr = np.concatenate([jm.real, jm.imag], axis=1)
+        r = np.concatenate([d[idx].real, d[idx].imag], axis=1)
+        q = p[idx] + _lstsq_batch(jr, -r)
+        d_q = (_reconstruct_batch(q) - U_targets[idx]).reshape(idx.size, 16)
+        norm_q = np.linalg.norm(d_q, axis=1)
+        improved = norm_q < norm_r[idx]
+        progress = norm_q < 0.5 * norm_r[idx]
+        acc = idx[improved]
+        p[acc], d[acc], norm_r[acc] = q[improved], d_q[improved], norm_q[improved]
+        active[idx] = improved & progress & (norm_q > _REFINE_TARGET)
+    return p, before, norm_r
+
+
 class SU4GeodesicPSFSynthesizer:
     """Synthesize a 2-qubit unitary via the Rust core's Cartan decomposition.
 
@@ -741,6 +885,57 @@ class SU4GeodesicPSFSynthesizer:
         return _infidelity(U_target, _reconstruct(cartan, k1, k2, phase))
 
     def synthesize(self, U_target: np.ndarray) -> QuantumCircuit:
+        dec = self._decompose(U_target)
+        if isinstance(dec, QuantumCircuit):
+            return dec
+        cartan, k1, k2, global_phase, core_infid = dec
+        # Polish the core's parameters before building the circuit (Addendum
+        # 186). Near the Weyl-chamber face c = 0 the core's output can be off
+        # by ~1e-11; one Gauss-Newton step on the 16 parameters brings it to
+        # machine precision. A no-op when the residual is already <= 1e-13.
+        (cartan, k1, k2, global_phase), res_before, res_after = _refine_decomposition(
+            U_target, cartan, k1, k2, global_phase
+        )
+        return self._finish(U_target, cartan, k1, k2, global_phase, core_infid, res_before, res_after)
+
+    def synthesize_many(self, U_targets: list) -> list:
+        """Synthesize several blocks; the polish runs on all of them at once
+        (changelog item 20). Returns [(circuit, fell_back)] in input order.
+        Results match calling synthesize() on each block, up to rounding in
+        the polished parameters."""
+        decs = []
+        out: list = [None] * len(U_targets)
+        for i, u in enumerate(U_targets):
+            before = self.fallback_count
+            dec = self._decompose(u)
+            if isinstance(dec, QuantumCircuit):
+                out[i] = (dec, self.fallback_count != before)
+            else:
+                decs.append((i, dec))
+        if not decs:
+            return out
+        if USE_BATCHED_POLISH:
+            us = np.stack([U_targets[i] for i, _ in decs])
+            p0 = np.stack([_pack(*dec[:4]) for _, dec in decs])
+            p1, before_all, after_all = _refine_batch(us, p0)
+        for j, (i, (cartan, k1, k2, global_phase, core_infid)) in enumerate(decs):
+            u = U_targets[i]
+            if USE_BATCHED_POLISH:
+                res_before, res_after = float(before_all[j]), float(after_all[j])
+                if res_before > REFINE_THRESHOLD:
+                    cartan, k1, k2, global_phase = _unpack(p1[j])
+            else:
+                (cartan, k1, k2, global_phase), res_before, res_after = _refine_decomposition(
+                    u, cartan, k1, k2, global_phase
+                )
+            before = self.fallback_count
+            circ = self._finish(u, cartan, k1, k2, global_phase, core_infid, res_before, res_after)
+            out[i] = (circ, self.fallback_count != before)
+        return out
+
+    def _decompose(self, U_target: np.ndarray):
+        """Rust core decomposition of one block. Returns (cartan, k1, k2,
+        global_phase, core_infid), or the fallback circuit if the core failed."""
         if U_target.shape != (4, 4):
             raise ValueError("Input must be a 4x4 unitary matrix.")
 
@@ -762,14 +957,11 @@ class SU4GeodesicPSFSynthesizer:
             # itself misbehaved, and the two are worth counting separately.
             expected = isinstance(exc, _PSF_DEGENERATE_ERRORS) if _PSF_DEGENERATE_ERRORS else True
             return self._fallback(U_target, f"Decomposition failed or degenerate: {exc}", expected)
+        return cartan, k1, k2, global_phase, core_infid
 
-        # Polish the core's parameters before building the circuit (Addendum
-        # 186). Near the Weyl-chamber face c = 0 the core's output can be off
-        # by ~1e-11; one Gauss-Newton step on the 16 parameters brings it to
-        # machine precision. A no-op when the residual is already <= 1e-13.
-        (cartan, k1, k2, global_phase), res_before, res_after = _refine_decomposition(
-            U_target, cartan, k1, k2, global_phase
-        )
+    def _finish(self, U_target, cartan, k1, k2, global_phase, core_infid, res_before, res_after):
+        """Bookkeeping of the polish, circuit construction and verification
+        of one decomposed (and polished) block."""
         if res_before > REFINE_THRESHOLD:
             self.refine_count += 1
             self.refine_max_before = max(self.refine_max_before, res_before)
@@ -918,8 +1110,10 @@ def compile(
     through the Rust core's Cartan (KAK) decomposition.
 
     Only runs of more than `block_gate_floor` gates on the same qubit pair are
-    collected, so a wide-and-shallow circuit (`random_circuit()`, say) reports
-    "0/0 blocks" and comes back untouched by design rather than by accident.
+    collected, so a wide-and-shallow circuit (`random_circuit()`, say) has few
+    or no blocks and comes back largely untouched by design rather than by
+    accident (at the default of 8: 0-6 blocks on 8-qubit, depth-12 random
+    circuits, with the same two-qubit count as at 12; Addendum 210).
     Everything that is not a 2-qubit `unitary` block is copied through as-is,
     keeping the input's registers, bits, name and metadata.
 
@@ -971,21 +1165,27 @@ def compile(
     blocks_processed = 0
     blocks_seen = 0
 
-    for inst in qc_blocked.data:
+    # All blocks are decomposed and polished together (changelog item 20),
+    # then emitted in their original order.
+    block_mats = {}
+    for i, inst in enumerate(qc_blocked.data):
         op = inst.operation
-
         if len(inst.qubits) == 2 and op.name == "unitary":
             mat = op.to_matrix()
             if mat is not None and mat.shape == (4, 4):
-                blocks_seen += 1
-                before = synth.fallback_count
-                synthesized_block = synth.synthesize(mat)
-                if synth.fallback_count == before:
-                    blocks_processed += 1
-                qc_psf.compose(synthesized_block, inst.qubits, inplace=True)
-                continue
+                block_mats[i] = mat
+    order = list(block_mats)
+    synthesized = dict(zip(order, synth.synthesize_many([block_mats[i] for i in order])))
 
-        qc_psf.append(op, inst.qubits, inst.clbits)
+    for i, inst in enumerate(qc_blocked.data):
+        if i in synthesized:
+            synthesized_block, fell_back = synthesized[i]
+            blocks_seen += 1
+            if not fell_back:
+                blocks_processed += 1
+            qc_psf.compose(synthesized_block, inst.qubits, inplace=True)
+            continue
+        qc_psf.append(inst.operation, inst.qubits, inst.clbits)
 
     logger.debug(
         "PSF-Zero Rust Core executed for %d/%d blocks (%d fell back); "
@@ -1157,8 +1357,8 @@ def compile_for_hardware(
     This pass only helps circuits with deep interaction on the same qubit pair,
     the ones `Collect2qBlocks` can gather into blocks longer than
     `block_gate_floor`. On wide-and-shallow input (`random_circuit`, say) it
-    reports "0/0 blocks", returns the circuit untouched by design, and is then
-    pure overhead ahead of the Qiskit call.
+    finds few or no blocks, returns the circuit largely untouched by design,
+    and is then mostly overhead ahead of the Qiskit call.
 
     `tol` is forwarded to `compile()`. It previously was not, so the
     acceptance threshold was pinned at its default on this path with no way to

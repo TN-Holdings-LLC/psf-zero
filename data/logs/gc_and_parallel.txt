@@ -1,0 +1,32 @@
+platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | cores 12 | python 3.12.13 | qiskit 2.5.2
+LOADED /home/psf/psf_zero_fresh_test/psf_compile.py 2026-09-26.4 b4fa92ad85f04cfa05b7732b634da9f876bb034735be806825b87b62c72cb670
+SCRIPT /home/psf/psf_zero_fresh_test/benchmarks/gc_and_parallel.py 4eb877ad43b87216d1c0c0e522b0dbd1bbf89428782d7d94017c572235bfea5a
+
+=== G: garbage-collection strategies, compounding loop, 800 laps per arm (each arm in a fresh process) ===
+  default      : compile median 41.4 ms, p99 115.9 ms, max 135.4 ms; laps > 2 x median 33; laps with a gen-2 collection inside the compile 33; loop wall time 47.4 s; RSS 207 -> 217 MB
+  freeze       : compile median 41.7 ms, p99 53.5 ms, max 72.3 ms; laps > 2 x median 0; laps with a gen-2 collection inside the compile 30; loop wall time 45.2 s; RSS 207 -> 223 MB
+  pause        : compile median 40.4 ms, p99 47.2 ms, max 56.9 ms; laps > 2 x median 0; laps with a gen-2 collection inside the compile 0; boundary collect median 57.4 ms, total 46.4 s; loop wall time 89.7 s; RSS 205 -> 207 MB
+  freeze+pause : compile median 40.4 ms, p99 57.9 ms, max 114.7 ms; laps > 2 x median 1; laps with a gen-2 collection inside the compile 0; boundary collect median 1.0 ms, total 0.9 s; loop wall time 44.9 s; RSS 205 -> 207 MB
+
+=== P: batch compilation, batch of 24 circuits, 5 batches per setting ===
+  [cliff] serial: batch median 1.432 s (59.7 ms per circuit)
+  [cliff]  2 workers: batch median 0.770 s (32.1 ms per circuit), speed-up 1.86x; outputs differing from serial: 0/120; pool start-up incl. warm-up 1.4 s
+  [cliff]  4 workers: batch median 0.441 s (18.4 ms per circuit), speed-up 3.25x; outputs differing from serial: 0/120; pool start-up incl. warm-up 1.6 s
+  [cliff]  8 workers: batch median 0.297 s (12.4 ms per circuit), speed-up 4.82x; outputs differing from serial: 0/120; pool start-up incl. warm-up 2.3 s
+  [cliff] 12 workers: batch median 0.288 s (12.0 ms per circuit), speed-up 4.97x; outputs differing from serial: 0/120; pool start-up incl. warm-up 3.1 s
+  [small] serial: batch median 0.322 s (13.4 ms per circuit)
+  [small]  2 workers: batch median 0.175 s (7.3 ms per circuit), speed-up 1.84x; outputs differing from serial: 0/120; pool start-up incl. warm-up 1.5 s
+  [small]  4 workers: batch median 0.130 s (5.4 ms per circuit), speed-up 2.47x; outputs differing from serial: 0/120; pool start-up incl. warm-up 1.7 s
+  [small]  8 workers: batch median 0.067 s (2.8 ms per circuit), speed-up 4.80x; outputs differing from serial: 0/120; pool start-up incl. warm-up 2.3 s
+  [small] 12 workers: batch median 0.075 s (3.1 ms per circuit), speed-up 4.27x; outputs differing from serial: 0/120; pool start-up incl. warm-up 2.9 s
+
+=== scoring ===
+G1 freeze: p99 53.5 vs default 115.9 ms -> lower
+G2 pause: compile p99 <= 2 x median (47.2 vs 80.8 ms) and RSS growth <= 50 MB (+1) -> PASS
+G2 freeze+pause: compile p99 <= 2 x median (57.9 vs 80.9 ms) and RSS growth <= 50 MB (+1) -> PASS
+G3 freeze+pause boundary collect <= half of pause: 1.0 vs 57.4 ms -> PASS
+P1 every parallel output identical to serial: PASS (0 differing)
+P2 cliff-scale best speed-up >= 4x: 4.97x -> PASS
+P3 small-circuit best speed-up below the cliff-scale best: 4.80x vs 4.97x -> PASS
+
+Wrote gc_and_parallel_2026-09-27.csv (3214 rows); total wall time 275 s

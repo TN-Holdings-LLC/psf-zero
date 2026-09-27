@@ -61,8 +61,14 @@ in place, so there is never a second, differently-named copy to pick between
 [`psf_smart_layout.py`](benchmarks/psf_smart_layout.py) — the layout-search prototype,
 repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see below).
 
+> **Current version: `psf_compile.py` 2026-09-27.2.** It changes one default:
+> `block_gate_floor` is now 8 (was 12), so some circuits -- brick-layer ansatze in
+> particular -- consolidate more blocks and compile to fewer two-qubit gates;
+> pass `block_gate_floor=12` for the previous behaviour. See "Update
+> (2026-09-27)" below.
+
 > **Correctness notice (2026-09-26) -- if you use `entangling_basis="cx"`, update to
-> `psf_compile.py` VERSION 2026-09-26.4.** Qiskit's own
+> `psf_compile.py` VERSION 2026-09-26.4 or later.** Qiskit's own
 > `TwoQubitBasisDecomposer(CXGate(), euler_basis="ZSX")` (Qiskit 2.5.2) returns a
 > wrong circuit -- average gate infidelity about 7% -- for two-qubit unitaries whose
 > smallest canonical coordinate lies roughly between 3e-8 and 3e-7; plain
@@ -360,7 +366,14 @@ exactly linearly -- lower than 2026-09-26.2 at every lap, but still growing wher
 Qiskit's does not (Qiskit stays at 3.4e-13), so PSF-Zero passes Qiskit's level
 after six laps and 1e-12 after about sixteen. (An intermediate revision whose
 middle gaps were left for Qiskit to translate drifted 2.6x faster, 1.9e-12 after
-ten laps; recorded in Addendum 195.)
+ten laps; recorded in Addendum 195.) **Update (2026-09-27, Addenda 199-208):**
+over 1,000 laps the drift stays exactly linear (6.1e-11 at lap 1,000). The
+polishing step runs on about a quarter of the blocks and cannot be loosened --
+without it the drift after 100 laps is 22 times larger -- and the core's
+residual before polishing reaches 8.4e-10 on some inputs away from the face
+c = 0, so its error is wider than the account above. Since VERSION 2026-09-27.1
+the polish runs on all blocks of a circuit at once, with the same result
+(drift after 100 laps 6.5e-12 against 6.0e-12 per block).
 
 Raw data: [`data/core_verification_2026-09-12.csv`](data/core_verification_2026-09-12.csv).
 Reproduce with `maturin develop --release && python benchmarks/verify_core_infidelity.py`.
@@ -525,6 +538,38 @@ FakeNighthawk (120 and 112 logical qubits), 2.11x on FakeTorino and 1.29x on
 FakeFez (80 logical), with identical gate counts. This is a model result
 (independent gate errors; synthetic or dated calibration data) for
 disjoint-pair circuits only, and untested on hardware.
+
+**Update (2026-09-27, Addenda 199-210): the compile loop itself.**
+- *Endurance.* 3,600 compiles inside a 12-qubit SPSA training loop and 2,000
+  compiles at cliff scale (fresh and compounding) gave no wrong result, no
+  exception and no memory growth. The one problem found -- occasional slow laps
+  (p99 about 3x the median) -- is Python's generation-2 garbage collection;
+  calling `gc.collect(); gc.freeze()` once after set-up, and collecting at lap
+  boundaries with the collector paused during compiles, removes it at no cost
+  (p99 116 -> 58 ms; boundary collection 1.0 ms).
+- *Throughput.* Independent circuits (SPSA perturbations, parameter shifts)
+  compile about 5x faster in a pool of 8 spawned processes, with output
+  bit-identical to serial compilation (960 of 960).
+- *Compile time.* A breakdown showed the polishing step (above) taking 12 ms of
+  each cliff compile, almost all numpy call overhead. VERSION 2026-09-27.1
+  batches it over all blocks: 12.0 -> 1.8 ms, cliff compile **38.8 -> 28.4 ms**,
+  same outputs to 4e-15.
+- *Gate count.* The 12-qubit brick-layer training circuit compiled to 48
+  two-qubit gates, not 33: at the old default `block_gate_floor=12` its second
+  layer was left unconsolidated. At 8 it compiles to 33 (Qiskit L3 on the
+  parameterized circuit: 55), and a check over eight circuit families found no
+  two-qubit count that rose, depth +2% at most, every compile exact; floors
+  below 8 lengthen hardware-efficient ansatze (depth 33 -> 91 at 4). VERSION
+  2026-09-27.2 makes 8 the default. Trotter circuits with short bond runs are
+  not helped by any safe floor (a per-run rule is untested).
+- *Against transpile-once-and-bind.* PSF-Zero resynthesizes from numeric angles,
+  so it recompiles whenever parameters change; the usual Qiskit route transpiles
+  a parameterized circuit once and only binds values. With Qiskit's reference
+  `Statevector` simulator the PSF-Zero route was faster per step (47 vs 57 ms),
+  but only because its smaller circuit simulated faster; with a fast simulator
+  the recompilation (about 10 ms per evaluation) would dominate and binding would
+  win. The trade is time per step against circuit size, which on hardware is
+  error per shot. Measured with a reference simulator only.
 
 **Still open**: whether a same-condition run-to-run variance found at
 `optimization_level=3` (up to ~3x on one measurement) reflects `VF2Layout`'s own
