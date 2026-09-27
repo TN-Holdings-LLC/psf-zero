@@ -6352,10 +6352,10 @@ stability across laps.
 
 ## 5. Script lock
 
-`deadline_compound_chain.py`, normalized SHA-256:
+[`deadline_compound_chain.py`](../../benchmarks/deadline_compound_chain.py), normalized SHA-256:
 `8ffabd4e1b34e00a30c54dc181d48cd791a2362d49357612fbfca6833d359ccf`.
 Re-check on the machine BEFORE running and keep the check in the saved
-log. Output: `deadline_compound_chain_2026-09-26.csv` (up to 40 rows for
+log. Output: [`deadline_compound_chain_2026-09-26.csv`](../../data/deadline_compound_chain_2026-09-26.csv) (up to 40 rows for
 10 laps), rewritten after every lap.
 
 ---
@@ -6439,7 +6439,7 @@ worst pair is among those present in both (same seed, same pairs).
 |---|---|
 | [`deadline_compound_chain.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/deadline_compound_chain.py) | the script (hash-locked in Addendum 183) |
 | [`deadline_compound_chain_2026-09-26.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/deadline_compound_chain_2026-09-26.csv) | raw results, 40 rows |
-| `deadline_chain_result.txt` | raw log, including the pre-run hash check |
+| [`deadline_chain_result.txt`](../../data/logs/deadline_chain_result.txt) | raw log, including the pre-run hash check |
 
 ## 6. Replication (second run, same day)
 
@@ -6449,8 +6449,8 @@ at most 1% (Q3 at spare 0: 12.879 s -> 12.998 s; total 129.3 s -> 130.4 s;
 P at spare 0: 0.061 s -> 0.061 s, total 0.8 s -> 0.9 s), and every
 per-lap maximum pair distance, for all four runs, was identical to the
 first run's to the last digit -- the drift is deterministic, not noise.
-Files: `deadline_compound_chain_2026-09-26_rep2.csv`,
-`deadline_chain_result_rep2.txt`.
+Files: [`deadline_compound_chain_2026-09-26_rep2.csv`](../../data/deadline_compound_chain_2026-09-26_rep2.csv),
+[`deadline_chain_result_rep2.txt`](../../data/logs/deadline_chain_result_rep2.txt).
 
 ---
 
@@ -6527,7 +6527,7 @@ precision on the same inputs, so PSF-Zero can too.
 | File | What it is |
 |---|---|
 | [`diag_psf_drift.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/diag_psf_drift.py) | the diagnostic script |
-| `diag_psf_drift.txt` | its raw output (received; matches Section 1) |
+| [`diag_psf_drift.txt`](../../data/logs/diag_psf_drift.txt) | its raw output (received; matches Section 1) |
 
 ---
 
@@ -6576,15 +6576,15 @@ The old file is kept as `psf_compile_2026-09-21.py`.
 
 ## 3. Validation plan (scripts unchanged)
 
-1. `diag_core_worst_pairs.py` (Addendum 185's follow-up diagnostic) with
+1. [`diag_core_worst_pairs.py`](../../benchmarks/diag_core_worst_pairs.py) (Addendum 185's follow-up diagnostic) with
    the new `psf_compile.py`.
 2. The six connection test suites (36 tests, Addendum 166).
-3. `deadline_compound_chain.py`, hash-locked in Addendum 183
+3. [`deadline_compound_chain.py`](../../benchmarks/deadline_compound_chain.py), hash-locked in Addendum 183
    (`8ffabd4e...`), `--laps 10`, unchanged.
 
 ## 4. Pre-registered predictions
 
-**V1 (precision fixed at the source).** In `diag_core_worst_pairs.py`, the
+**V1 (precision fixed at the source).** In [`diag_core_worst_pairs.py`](../../benchmarks/diag_core_worst_pairs.py), the
 maximum PSF-Zero error over the 60 pairs is <= 1e-13 (was 1.76e-11).
 **If V1 fails, the error is not in the core's parameters (it would have to
 be in the circuit construction), and the fix is wrong-headed -- reported as
@@ -6592,7 +6592,7 @@ such.**
 
 **V2 (nothing broken).** All 36 tests pass.
 
-**V3 (drift gone in the real loop).** In `deadline_compound_chain.py`,
+**V3 (drift gone in the real loop).** In [`deadline_compound_chain.py`](../../benchmarks/deadline_compound_chain.py),
 PSF-Zero's maximum per-pair distance is <= 1e-12 at every lap, at both
 spares (was 1.76e-11 at lap 1, 6.47e-10 at lap 10).
 
@@ -6618,7 +6618,7 @@ Addendum 184's, to the last digit (the fix does not touch Qiskit's path).
 (home). The log begins: `psf_compile.py` 47,606 bytes, SHA-256
 `a1a20781...`, VERSION 2026-09-26 (the fixed file, as registered). The
 log's second hash, `2e32646d...`, is the raw `sha256sum` of
-`deadline_compound_chain.py`; the lock in Addendum 183 is a normalized hash
+[`deadline_compound_chain.py`](../../benchmarks/deadline_compound_chain.py); the lock in Addendum 183 is a normalized hash
 (`8ffabd4e...`), so the two are not comparable -- the script's identity is
 supported instead by Qiskit's per-lap values reproducing Addendum 184
 exactly (V5). Log and both CSVs received as files.
@@ -6660,7 +6660,7 @@ Across all 60 pairs, PSF-Zero's error correlates with small |c| (Spearman
 In `entangling_basis="cx"` mode the middle, entangling part of each block
 is not built by PSF-Zero: `_cx_core_cached(a, b, c)` asks Qiskit's
 `TwoQubitBasisDecomposer` to decompose the canonical gate. That is the
-leading candidate; `diag_construction.py` separates it from the local
+leading candidate; [`diag_construction.py`](../../benchmarks/diag_construction.py) separates it from the local
 rotations and from the canonical-basis construction.
 
 ## 4. Disposition of the fix
@@ -6675,7 +6675,7 @@ a future path produces parameter-level error.
 
 | File | What it is |
 |---|---|
-| `fix_validation.txt` | raw log of the three validation runs |
+| [`fix_validation.txt`](../../data/logs/fix_validation.txt) | raw log of the three validation runs |
 | [`diag_core_worst_pairs_2026-09-26.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/diag_core_worst_pairs_2026-09-26.csv) | the diagnostic with the fixed file (identical errors) |
 | [`deadline_compound_chain_2026-09-26_fixrun.csv`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/data/deadline_compound_chain_2026-09-26_fixrun.csv) | the timed loop with the fixed file |
 | [`diag_construction.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/diag_construction.py) | the next diagnostic |
@@ -6691,7 +6691,7 @@ a future path produces parameter-level error.
 **Pre-registered in**:
 `spare-qubit-cliff-addendum-186-preregistration-2026-09-26.md` (predictions
 unchanged). Run on WSL2 (home). Log received as a file:
-`fix_validation_run2.txt`.
+[`fix_validation_run2.txt`](../../data/logs/fix_validation_run2.txt).
 
 ## 0. In one line
 
@@ -6707,7 +6707,7 @@ V3 and V5 hold; V4 (median compile time <= 0.12 s) fails at 0.135 s.
 
 ## 1. How the mistake was found
 
-`diag_construction.py`, run after Addendum 187, showed the core's own
+[`diag_construction.py`](../../benchmarks/diag_construction.py), run after Addendum 187, showed the core's own
 parameters, rebuilt by `_reconstruct`, off by up to 1.76e-11 (`d_model`),
 while the middle CX part (`d_core_cx`, max 4.9e-14) and the local
 rotations (`d_local`, max 3.6e-16) were accurate. A parameter error of
@@ -6735,7 +6735,7 @@ SHA-256 `a1a20781...`) in both `psf_compile.py` and
 | V4: 10/10 laps within 1 s at spare 0, median <= 0.12 s | **REFUTED** -- 10/10 within 1 s, but median 0.135 s (was 0.061 s); at spare 8, 0.095 s (was 0.028 s) |
 | V5: Qiskit's per-lap values identical to Addendum 184 | **CONFIRMED** |
 
-`diag_construction.py` in the same run still shows `d_model` = 1.76e-11:
+[`diag_construction.py`](../../benchmarks/diag_construction.py) in the same run still shows `d_model` = 1.76e-11:
 it calls the core directly, bypassing the polishing step, so this is the
 expected confirmation that the core itself is unchanged and the polishing
 is what removes the error.
@@ -6766,7 +6766,7 @@ changed.
 
 | File | What it is |
 |---|---|
-| `fix_validation_run2.txt` | raw log of the valid run, including the loaded-file check |
+| [`fix_validation_run2.txt`](../../data/logs/fix_validation_run2.txt) | raw log of the valid run, including the loaded-file check |
 | `psf_compile_fix_2026-09-26/psf_compile.py` | the fixed file (SHA-256 `a1a20781...`) |
 | [`diag_construction.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/diag_construction.py) | the diagnostic that exposed the mistake |
 
@@ -6820,12 +6820,12 @@ order.
 **W0 (one copy).** With `benchmarks/psf_compile.py` removed, the scripts'
 import order loads the root `psf_compile.py`, VERSION 2026-09-26.2.
 
-**W1 (precision kept).** `diag_core_worst_pairs.py`: maximum PSF-Zero
+**W1 (precision kept).** [`diag_core_worst_pairs.py`](../../benchmarks/diag_core_worst_pairs.py): maximum PSF-Zero
 error over the 60 pairs <= 1e-13.
 
 **W2.** 36 tests pass.
 
-**W3 (drift kept low).** `deadline_compound_chain.py` (hash-locked,
+**W3 (drift kept low).** [`deadline_compound_chain.py`](../../benchmarks/deadline_compound_chain.py) (hash-locked,
 Addendum 183): PSF-Zero's maximum per-pair distance <= 1e-12 at every lap.
 
 **W4 (speed returns).** PSF-Zero at spare 0: 10/10 laps within 1 s, median
@@ -6864,10 +6864,10 @@ version), so that copy stayed and the loaded-file check printed
 `benchmarks/psf_compile.py 2026-09-26`. The numbers from that run match
 Addendum 188's (median 0.135 s) because they are Addendum 188's code. The
 check caught the mismatch before any result was read; the run is recorded
-(`fix_validation_v2.txt`) and not scored. Forced removal
+([`fix_validation_v2.txt`](../../data/logs/fix_validation_v2.txt)) and not scored. Forced removal
 (`git rm -f`) followed.
 
-## 2. The valid run (`fix_validation_v2b.txt`)
+## 2. The valid run ([`fix_validation_v2b.txt`](../../data/logs/fix_validation_v2b.txt))
 
 Header: root `psf_compile.py` 49,442 bytes, SHA-256 `c6621f71...`; with the
 scripts' own import order, `LOADED .../psf_compile.py 2026-09-26.2`; from
@@ -6911,8 +6911,8 @@ fix is about 1.3x in compile time.
 
 | File | What it is |
 |---|---|
-| `fix_validation_v2.txt` | the first attempt (loaded the old copy; not scored) |
-| `fix_validation_v2b.txt` | the valid run |
+| [`fix_validation_v2.txt`](../../data/logs/fix_validation_v2.txt) | the first attempt (loaded the old copy; not scored) |
+| [`fix_validation_v2b.txt`](../../data/logs/fix_validation_v2b.txt) | the valid run |
 | [`psf_compile.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/psf_compile.py) | VERSION 2026-09-26.2 (SHA-256 `c6621f71...`) |
 | [`benchmarks/psf_compile.py`](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/benchmarks/psf_compile.py) | the redirect to the root file |
 
@@ -6938,16 +6938,16 @@ between VF2Layout (6.2-6.3 s) and VF2PostLayout (6.4-6.7 s).
 
 ## 1. Method
 
-`diag_compile_breakdown.py` (18,620 bytes, normalized SHA-256
+[`diag_compile_breakdown.py`](../../benchmarks/diag_compile_breakdown.py) (18,620 bytes, normalized SHA-256
 `004435389e83...`) wraps the functions of `psf_compile.py` and
-`psf_smart_layout.py` in timers in place and restores them afterwards, so
+[`psf_smart_layout.py`](../../benchmarks/psf_smart_layout.py) in timers in place and restores them afterwards, so
 the measured path is the one `compile_for_hardware()` runs. Arguments as in
-`nighthawk_deadline_cliff.py`. FakeNighthawk, dense pair blocks (20 gates
+[`nighthawk_deadline_cliff.py`](../../benchmarks/nighthawk_deadline_cliff.py). FakeNighthawk, dense pair blocks (20 gates
 per pair), spare 0 and 8, seeds 0-4, 5 plain and 5 instrumented calls each,
 CX-core cache cleared before every call; one process, first call excluded.
 Loaded files: root `psf_compile.py` VERSION 2026-09-26.2 (normalized
 SHA-256 `4e85e932...`; `c6621f71...` in Addendum 189 is the raw-file hash
-of the same file) and `benchmarks/psf_smart_layout.py` (`1ad0b3e8...`).
+of the same file) and [`benchmarks/psf_smart_layout.py`](../../benchmarks/psf_smart_layout.py) (`1ad0b3e8...`).
 
 Instrumentation overhead: instrumented / plain median = 0.988 (spare 0),
 0.999 (spare 8).
@@ -7015,7 +7015,7 @@ networkx `max_weight_matching` 2.02 ms; rustworkx `max_weight_matching`
   c = 0" suggested. Precision is not affected (Addendum 190); recorded as
   an observation.
 - PSF-Zero at spare 8 here: 0.068 s; Addendum 190 gave 0.046 s from
-  `deadline_compound_chain.py`. The harnesses and circuits differ (fresh
+  [`deadline_compound_chain.py`](../../benchmarks/deadline_compound_chain.py). The harnesses and circuits differ (fresh
   circuits with the cache cleared here, chain laps there); the difference
   is not resolved.
 
@@ -7031,10 +7031,10 @@ CX core is the second.
 
 | File | What it is |
 |---|---|
-| `benchmarks/diag_compile_breakdown.py` | the diagnostic |
-| `data/logs/diag_compile_breakdown.txt` | the log |
-| `data/diag_compile_breakdown_2026-09-26.csv` | per-call, per-component times |
-| `data/diag_compile_breakdown_passes_2026-09-26.csv` | per-pass times (L1 and L3) |
+| [`benchmarks/diag_compile_breakdown.py`](../../benchmarks/diag_compile_breakdown.py) | the diagnostic |
+| [`data/logs/diag_compile_breakdown.txt`](../../data/logs/diag_compile_breakdown.txt) | the log |
+| [`data/diag_compile_breakdown_2026-09-26.csv`](../../data/diag_compile_breakdown_2026-09-26.csv) | per-call, per-component times |
+| [`data/diag_compile_breakdown_passes_2026-09-26.csv`](../../data/diag_compile_breakdown_passes_2026-09-26.csv) | per-pass times (L1 and L3) |
 
 ---
 
@@ -7061,7 +7061,7 @@ needed, and none of the ordering luck that makes VF2 fail first.
 
 ## 2. Change
 
-**`benchmarks/psf_smart_layout.py`, LAYOUT_VERSION 2026-09-26.m1**
+**[`benchmarks/psf_smart_layout.py`](../../benchmarks/psf_smart_layout.py), LAYOUT_VERSION 2026-09-26.m1**
 (22,450 bytes, normalized SHA-256
 `a639efdef484379d23b4c0a52dffe557c47c30f639c41e4f8521ca608712d875`;
 against the current file, 117 lines added, 1 changed, nothing removed):
@@ -7094,18 +7094,18 @@ lists rejected as non-matchings; on a line a-b-c-d with a heavy b-c, one
 weighted pair lands on b-c (the first version, which forced cardinality,
 put it on a-b; fixed before this registration).
 
-New tests: `test_matching_layout.py` (2,278 bytes, `3c953144...`), 8 cases.
+New tests: [`test_matching_layout.py`](../../benchmarks/test_matching_layout.py) (2,278 bytes, `3c953144...`), 8 cases.
 
 ## 3. Predictions
 
-Validation script `verify_matching_layout.py` (14,263 bytes, normalized
+Validation script [`verify_matching_layout.py`](../../benchmarks/verify_matching_layout.py) (14,263 bytes, normalized
 SHA-256 `2e687b2971a8c8737eb74b0a3766bed19dd1db9fb1cfb20e45585301c0085b67`).
 FakeNighthawk; one process; old arm = shortcut off, new arm = shortcut on;
 the two arms interleaved, alternating which goes first; CX-core cache
 cleared before every call.
 
 **M0 (right file).** The log's `LOADED` lines show root `psf_compile.py`
-VERSION 2026-09-26.2 and `benchmarks/psf_smart_layout.py` LAYOUT_VERSION
+VERSION 2026-09-26.2 and [`benchmarks/psf_smart_layout.py`](../../benchmarks/psf_smart_layout.py) LAYOUT_VERSION
 2026-09-26.m1 (the script stops otherwise).
 
 **M1 (correct).** Dense pair blocks, spare in {0, 2, 4, 8}, seeds 0-4
@@ -7266,11 +7266,11 @@ VF2PostLayout's own score and not only against this 2-qubit metric.
 
 | File | What it is |
 |---|---|
-| `benchmarks/psf_smart_layout.py` | LAYOUT_VERSION 2026-09-26.m1 (`a639efde...`) |
-| `benchmarks/test_matching_layout.py` | 8 new tests |
-| `benchmarks/verify_matching_layout.py` | the validation script (`2e687b29...`) |
-| `data/logs/matching_layout_result.txt` | the log |
-| `data/matching_layout_2026-09-26.csv` | per-call rows (214; received and checked against the log) |
+| [`benchmarks/psf_smart_layout.py`](../../benchmarks/psf_smart_layout.py) | LAYOUT_VERSION 2026-09-26.m1 (`a639efde...`) |
+| [`benchmarks/test_matching_layout.py`](../../benchmarks/test_matching_layout.py) | 8 new tests |
+| [`benchmarks/verify_matching_layout.py`](../../benchmarks/verify_matching_layout.py) | the validation script (`2e687b29...`) |
+| [`data/logs/matching_layout_result.txt`](../../data/logs/matching_layout_result.txt) | the log |
+| [`data/matching_layout_2026-09-26.csv`](../../data/matching_layout_2026-09-26.csv) | per-call rows (214; received and checked against the log) |
 
 ---
 
@@ -7333,19 +7333,19 @@ matching is weighted by round(1e6 x (1 + log(1 - error))) (error capped at
 0.5), i.e. it maximizes the product of the edge fidelities used. Ignored
 otherwise. Single-qubit and readout errors are not considered.
 
-**`benchmarks/psf_smart_layout.py`** unchanged (LAYOUT_VERSION
+**[`benchmarks/psf_smart_layout.py`](../../benchmarks/psf_smart_layout.py)** unchanged (LAYOUT_VERSION
 2026-09-26.m1 already accepts `edge_weights`).
 
-New tests: `test_closed_form_core.py` (2,352 bytes, `4f3fdb7f...`), 11 cases.
+New tests: [`test_closed_form_core.py`](../../benchmarks/test_closed_form_core.py) (2,352 bytes, `4f3fdb7f...`), 11 cases.
 
 ## 3. Predictions
 
-Validation script `verify_closed_form_and_weighted.py` (17,975 bytes,
+Validation script [`verify_closed_form_and_weighted.py`](../../benchmarks/verify_closed_form_and_weighted.py) (17,975 bytes,
 normalized SHA-256
 `9e2562d8c4b39c80890cd88a3f8aad550454a92472d247e4df433762227ed1ec`), one
 process; plus two hash-locked scripts from earlier addenda, unchanged.
 
-**C0.** Log shows `psf_compile.py` 2026-09-26.3 and `psf_smart_layout.py`
+**C0.** Log shows `psf_compile.py` 2026-09-26.3 and [`psf_smart_layout.py`](../../benchmarks/psf_smart_layout.py)
 2026-09-26.m1 (the script stops otherwise).
 
 **C1 (block level).** 300 random unitaries plus 10 special ones (identity,
@@ -7361,10 +7361,10 @@ cases; median time new <= old - 10 ms at both spares (expected about
 
 **C3 (tests).** 55 pass (44 + 11 new).
 
-**C4 (precision, `diag_core_worst_pairs.py`, Addendum 185).** Maximum
+**C4 (precision, [`diag_core_worst_pairs.py`](../../benchmarks/diag_core_worst_pairs.py), Addendum 185).** Maximum
 PSF-Zero error over the 60 pairs <= 1e-13 (Addendum 190: 6.18e-14).
 
-**C5 (drift, `deadline_compound_chain.py`, Addendum 183).** PSF-Zero's
+**C5 (drift, [`deadline_compound_chain.py`](../../benchmarks/deadline_compound_chain.py), Addendum 183).** PSF-Zero's
 maximum per-pair distance <= 1e-12 at every lap (Addendum 190: 7.27e-13 at
 lap 10); Qiskit's per-lap values identical to Addendum 190.
 
@@ -7448,8 +7448,8 @@ registered. 55 tests passed.
 | C1: all 310 blocks <= 1e-13 (phase included), same CX, sx new <= old, closed form on 300/300 random | **FAILED** -- see below |
 | C2: same 2q, sx new <= old, per-pair <= 1e-12; median new <= old - 10 ms | **CONFIRMED** -- 2q 180/168 and sx 840/784 identical in 10/10; per-pair worst 2.7e-15; spare 0: 68.2 -> **49.5 ms**; spare 8: 64.7 -> 48.6 ms |
 | C3: 55 tests | **CONFIRMED** |
-| C4: `diag_core_worst_pairs.py` max <= 1e-13 | **CONFIRMED** -- 6.15e-14 (Addendum 190: 6.18e-14) |
-| C5: `deadline_compound_chain.py` PSF-Zero <= 1e-12 at every lap; Qiskit identical | **FAILED** -- PSF-Zero 2.32e-13 at lap 1, crosses 1e-12 at lap 6, 1.92e-12 at lap 10 (was 6.2e-14, 7.27e-13); Qiskit's distances identical to Addendum 190 |
+| C4: [`diag_core_worst_pairs.py`](../../benchmarks/diag_core_worst_pairs.py) max <= 1e-13 | **CONFIRMED** -- 6.15e-14 (Addendum 190: 6.18e-14) |
+| C5: [`deadline_compound_chain.py`](../../benchmarks/deadline_compound_chain.py) PSF-Zero <= 1e-12 at every lap; Qiskit identical | **FAILED** -- PSF-Zero 2.32e-13 at lap 1, crosses 1e-12 at lap 6, 1.92e-12 at lap 10 (was 6.2e-14, 7.27e-13); Qiskit's distances identical to Addendum 190 |
 
 Depth also fell, 23 -> 21 (22 for seed 1), which was not predicted.
 
@@ -7512,7 +7512,7 @@ log10 ESP (identical across seeds -- see below):
   (mean edge error 0.107 / 0.056): without weights the shortcut is blind to
   device quality, as expected.
 
-## 4. Diagnostic: where the 0.598 comes from (`diag_cx_fallback.py`)
+## 4. Diagnostic: where the 0.598 comes from ([`diag_cx_fallback.py`](../../benchmarks/diag_cx_fallback.py))
 
 For the dressed core with c = 1e-7 (and 3e-7): the cached CX core, the old
 block, the new block, and **Qiskit's decomposer applied directly to the
@@ -7524,8 +7524,8 @@ approximation); above it (1e-6 .. 1e-5) the error is 7.5e-17 / c
 the undressed cores the Rust core raises `PsfSU2SingularError` (a known
 degeneracy) and the block falls back to the same decomposer.
 
-## 5. Diagnostic: who is exposed (`diag_qiskit_2q_window.py`,
-`repro_qiskit_zsx_2q.py`, `repro_qiskit_zsx_2q_v2.py`)
+## 5. Diagnostic: who is exposed ([`diag_qiskit_2q_window.py`](../../benchmarks/diag_qiskit_2q_window.py),
+[`repro_qiskit_zsx_2q.py`](../../benchmarks/repro_qiskit_zsx_2q.py), [`repro_qiskit_zsx_2q_v2.py`](../../benchmarks/repro_qiskit_zsx_2q_v2.py))
 
 Minimal input, Qiskit only: exp(i(0.6 XX + 0.3 YY + c ZZ)), plain and with
 fixed single-qubit layers. 1 - F_avg:
@@ -7579,12 +7579,12 @@ Separately: report the defect to Qiskit with the minimal script.
 | File | What it is |
 |---|---|
 | `psf_compile.py` VERSION 2026-09-26.3 | not yet adopted in the repository |
-| `benchmarks/verify_closed_form_and_weighted.py`, `benchmarks/test_closed_form_core.py` | as registered |
-| `data/logs/closed_form_weighted_result.txt`, `data/closed_form_weighted_2026-09-26.csv` | the registered run |
-| `data/logs/diag_core_worst_pairs_v3.txt`, `data/logs/deadline_chain_result_v3.txt` | C4, C5 |
-| `benchmarks/diag_cx_fallback.py`, `data/logs/diag_cx_fallback.txt` | Section 4 |
-| `benchmarks/diag_qiskit_2q_window.py`, `data/logs/diag_qiskit_2q_window.txt`, `data/diag_qiskit_2q_window_2026-09-26.csv` | Section 5, scan |
-| `benchmarks/repro_qiskit_zsx_2q.py`, `benchmarks/repro_qiskit_zsx_2q_v2.py` and their logs | Section 5, minimal reproduction |
+| [`benchmarks/verify_closed_form_and_weighted.py`](../../benchmarks/verify_closed_form_and_weighted.py), [`benchmarks/test_closed_form_core.py`](../../benchmarks/test_closed_form_core.py) | as registered |
+| [`data/logs/closed_form_weighted_result.txt`](../../data/logs/closed_form_weighted_result.txt), [`data/closed_form_weighted_2026-09-26.csv`](../../data/closed_form_weighted_2026-09-26.csv) | the registered run |
+| [`data/logs/diag_core_worst_pairs_v3.txt`](../../data/logs/diag_core_worst_pairs_v3.txt), [`data/logs/deadline_chain_result_v3.txt`](../../data/logs/deadline_chain_result_v3.txt) | C4, C5 |
+| [`benchmarks/diag_cx_fallback.py`](../../benchmarks/diag_cx_fallback.py), [`data/logs/diag_cx_fallback.txt`](../../data/logs/diag_cx_fallback.txt) | Section 4 |
+| [`benchmarks/diag_qiskit_2q_window.py`](../../benchmarks/diag_qiskit_2q_window.py), [`data/logs/diag_qiskit_2q_window.txt`](../../data/logs/diag_qiskit_2q_window.txt), [`data/diag_qiskit_2q_window_2026-09-26.csv`](../../data/diag_qiskit_2q_window_2026-09-26.csv) | Section 5, scan |
+| [`benchmarks/repro_qiskit_zsx_2q.py`](../../benchmarks/repro_qiskit_zsx_2q.py), [`benchmarks/repro_qiskit_zsx_2q_v2.py`](../../benchmarks/repro_qiskit_zsx_2q_v2.py) and their logs | Section 5, minimal reproduction |
 
 ---
 
@@ -7647,14 +7647,14 @@ n2 = mean 2-qubit gates per interacting pair in the compressed circuit,
 n1 = 2 n2 + 1. Checked in isolation: an edge touching a qubit with error 1.0
 weighs 62% of an otherwise equal neighbour.
 
-**Tests.** `test_closed_form_core.py` updated (2,627 bytes, `d813f5a7...`):
+**Tests.** [`test_closed_form_core.py`](../../benchmarks/test_closed_form_core.py) updated (2,627 bytes, `d813f5a7...`):
 one test identified the closed form by the presence of `rx`, which the
 native form no longer emits; it now compares gate sequences. New
-`test_guard_v4.py` (1,821 bytes, `1e3f38d0...`), 8 cases.
+[`test_guard_v4.py`](../../benchmarks/test_guard_v4.py) (1,821 bytes, `1e3f38d0...`), 8 cases.
 
 ## 3. Predictions
 
-Validation script `verify_v4.py` (18,022 bytes, normalized SHA-256
+Validation script [`verify_v4.py`](../../benchmarks/verify_v4.py) (18,022 bytes, normalized SHA-256
 `88e1d259e6c952361985dadbd416f8660d1448d5f02965be05efa7c83b265c7b`), plus
 the two hash-locked scripts rerun unchanged.
 
@@ -7675,11 +7675,11 @@ identical to the 2026-09-26.3 gaps on every block.
 **N2.** FakeNighthawk, spare 0 and 8, seeds 0-4: 2q and `sx` identical
 between the two gap forms, per-pair <= 1e-12; spare-0 median with native
 gaps <= 55 ms.
-**N3 (the C5 retest).** `deadline_compound_chain.py`: PSF-Zero <= 1e-12 at
+**N3 (the C5 retest).** [`deadline_compound_chain.py`](../../benchmarks/deadline_compound_chain.py): PSF-Zero <= 1e-12 at
 every lap; Qiskit's distances identical to Addendum 190. This is the
 hypothesis that the extra drift came from translating the gaps; if it fails,
 the drift has another source and the registration says so.
-**N4.** `diag_core_worst_pairs.py`: maximum <= 1e-13.
+**N4.** [`diag_core_worst_pairs.py`](../../benchmarks/diag_core_worst_pairs.py): maximum <= 1e-13.
 **N5.** 63 tests pass (44 + 11 + 8).
 
 **W1.** Edge + qubit weighted ESP >= Qiskit L3 on all 4 configurations
@@ -7748,7 +7748,7 @@ matches or beats it on the fourth.
 | N1: native gaps <= 1e-13; CX and sx identical to .3 gaps, block by block | **CONFIRMED** -- 9.67e-14 (.3 gaps 9.66e-14); 0 differences in 300 |
 | N2: same 2q and sx, per-pair <= 1e-12, spare-0 median <= 55 ms | **CONFIRMED** -- 180/168 and 840/784 in both arms; worst 2.7e-15; 49.75 ms (spare 8: 48.09 ms) |
 | N3: drift <= 1e-12 at every lap; Qiskit identical | **CONFIRMED** -- 6.21e-14 at lap 1, 6.21e-13 at lap 10; Qiskit's distances identical to Addendum 190 |
-| N4: `diag_core_worst_pairs.py` max <= 1e-13 | **CONFIRMED** -- 6.16e-14 |
+| N4: [`diag_core_worst_pairs.py`](../../benchmarks/diag_core_worst_pairs.py) max <= 1e-13 | **CONFIRMED** -- 6.16e-14 |
 | N5: 63 tests | **CONFIRMED** |
 | W1: edge + qubit ESP >= Qiskit L3 on 4/4 | **CONFIRMED** |
 | W2: edge + qubit >= edge only on 4/4 | **CONFIRMED** |
@@ -7812,9 +7812,9 @@ the layout applies only to matching-shaped circuits.
 | File | What it is |
 |---|---|
 | `psf_compile.py` | VERSION 2026-09-26.4 (`b4fa92ad...`) |
-| `benchmarks/verify_v4.py`, `benchmarks/test_guard_v4.py`, `benchmarks/test_closed_form_core.py` | as registered |
-| `data/logs/v4_result.txt`, `data/v4_2026-09-26.csv` | the registered run |
-| `data/logs/diag_core_worst_pairs_v4.txt`, `data/logs/deadline_chain_result_v4.txt` | N4, N3 |
+| [`benchmarks/verify_v4.py`](../../benchmarks/verify_v4.py), [`benchmarks/test_guard_v4.py`](../../benchmarks/test_guard_v4.py), [`benchmarks/test_closed_form_core.py`](../../benchmarks/test_closed_form_core.py) | as registered |
+| [`data/logs/v4_result.txt`](../../data/logs/v4_result.txt), [`data/v4_2026-09-26.csv`](../../data/v4_2026-09-26.csv) | the registered run |
+| [`data/logs/diag_core_worst_pairs_v4.txt`](../../data/logs/diag_core_worst_pairs_v4.txt), [`data/logs/deadline_chain_result_v4.txt`](../../data/logs/deadline_chain_result_v4.txt) | N4, N3 |
 
 ---
 
@@ -7828,7 +7828,7 @@ the layout applies only to matching-shaped circuits.
 
 ## 1. Reproduction on the latest release
 
-`benchmarks/repro_qiskit_zsx_2q_v2.py` was run in a new virtual environment
+[`benchmarks/repro_qiskit_zsx_2q_v2.py`](../../benchmarks/repro_qiskit_zsx_2q_v2.py) was run in a new virtual environment
 created only for this purpose (`pip install -U qiskit`): Qiskit 2.5.2 -- the
 latest release on PyPI at the time -- with numpy 2.5.3, scipy 1.18.1,
 rustworkx 0.18.1, Python 3.12.13. The output is identical to Addendum 195's
@@ -7837,7 +7837,7 @@ run in the working environment, cell for cell: 24 cells above 1e-8, all at
 c = 3e-8, 1e-7 and 3e-7 through `transpile(basis_gates=["cx","rz","sx","x"])`
 at levels 0-3; none with a CZ basis, a `GenericBackendV2` target, or
 RXX/RYY/RZZ input. The development branch (`main`) was not tested (it needs a
-Rust build). Log: `data/logs/repro_latest_qiskit.txt`.
+Rust build). Log: [`data/logs/repro_latest_qiskit.txt`](../../data/logs/repro_latest_qiskit.txt).
 
 ## 2. Reported upstream
 
@@ -7892,7 +7892,7 @@ Both are run here.
 
 ## 2. The test
 
-`loop_endurance.py` (19,814 bytes, normalized SHA-256
+[`loop_endurance.py`](../../benchmarks/loop_endurance.py) (19,814 bytes, normalized SHA-256
 `e0bfd5e6be2761aa5d317e0673350edf1fcf01617f373d7c40b04b79f334f38c`),
 `psf_compile.py` VERSION 2026-09-26.4, one process, defaults:
 
@@ -7978,8 +7978,8 @@ Expected wall time: about 5-8 minutes.
 `spare-qubit-cliff-addendum-199-preregistration-2026-09-27.md`. Section 4
 is a follow-up whose predictions were fixed in the script's docstring
 before it ran. WSL2 (home), 12 cores, Python 3.12.13, Qiskit 2.5.2,
-`psf_compile.py` 2026-09-26.4 (`b4fa92ad...`), `psf_smart_layout.py`
-2026-09-26.m1 (`a639efde...`), `loop_endurance.py` (`e0bfd5e6...`).
+`psf_compile.py` 2026-09-26.4 (`b4fa92ad...`), [`psf_smart_layout.py`](../../benchmarks/psf_smart_layout.py)
+2026-09-26.m1 (`a639efde...`), [`loop_endurance.py`](../../benchmarks/loop_endurance.py) (`e0bfd5e6...`).
 Total wall time 227 s.
 
 ## 0. In one line
@@ -8038,7 +8038,7 @@ nearly the same rate as Addendum 197 measured on a different circuit family
 | C2: <= 1e-10 at lap 1,000, ratio 1.6-2.4 | **clear** (6.1e-11, 2.04) |
 | C3: memory <= 100 MB; p99 <= 2 x median | **TRIPPED** -- memory clear (+2 MB), p99 118.3 > 82.6 ms |
 
-## 5. Follow-up: the slow laps (`diag_compound_tail.py`)
+## 5. Follow-up: the slow laps ([`diag_compound_tail.py`](../../benchmarks/diag_compound_tail.py))
 
 Only every 50th lap had been written to the CSV, so the tail could not be
 examined from the registered run (a design weakness of Addendum 199's
@@ -8087,10 +8087,10 @@ explicitly at lap boundaries with the collector paused during compiles.
 
 | File | What it is |
 |---|---|
-| `benchmarks/loop_endurance.py` | the registered test |
-| `benchmarks/diag_compound_tail.py` | the follow-up |
-| `data/logs/loop_endurance.txt`, `data/loop_endurance_2026-09-27.csv` | registered run (CSV: every 50th lap and summaries) |
-| `data/logs/diag_compound_tail.txt`, `data/diag_compound_tail_2026-09-27.csv` | follow-up (every lap, 3,000 rows; received and checked) |
+| [`benchmarks/loop_endurance.py`](../../benchmarks/loop_endurance.py) | the registered test |
+| [`benchmarks/diag_compound_tail.py`](../../benchmarks/diag_compound_tail.py) | the follow-up |
+| [`data/logs/loop_endurance.txt`](../../data/logs/loop_endurance.txt), [`data/loop_endurance_2026-09-27.csv`](../../data/loop_endurance_2026-09-27.csv) | registered run (CSV: every 50th lap and summaries) |
+| [`data/logs/diag_compound_tail.txt`](../../data/logs/diag_compound_tail.txt), [`data/diag_compound_tail_2026-09-27.csv`](../../data/diag_compound_tail_2026-09-27.csv) | follow-up (every lap, 3,000 rows; received and checked) |
 
 
 ---
@@ -8105,12 +8105,12 @@ explicitly at lap boundaries with the collector paused during compiles.
 predictions are the ones it scores, word for word. Results will be recorded
 as Addendum 202, including any prediction that fails.
 
-- Script: `benchmarks/gc_and_parallel.py`, 12,392 bytes, normalized SHA-256
+- Script: [`benchmarks/gc_and_parallel.py`](../../benchmarks/gc_and_parallel.py), 12,392 bytes, normalized SHA-256
   `4eb877ad43b87216d1c0c0e522b0dbd1bbf89428782d7d94017c572235bfea5a`
   (lines right-stripped, trailing blank lines removed, joined with `\n`).
 - Depends on: `psf_compile.py` 2026-09-26.4 (`b4fa92ad...`; the script stops
-  if the version differs), `psf_smart_layout.py` 2026-09-26.m1
-  (`a639efde...`), `benchmarks/loop_endurance.py` (`e0bfd5e6...`).
+  if the version differs), [`psf_smart_layout.py`](../../benchmarks/psf_smart_layout.py) 2026-09-26.m1
+  (`a639efde...`), [`benchmarks/loop_endurance.py`](../../benchmarks/loop_endurance.py) (`e0bfd5e6...`).
 - Machine: WSL2 (home), 12 cores, Python 3.12.13, Qiskit 2.5.2.
 
 ## 1. Why
@@ -8209,7 +8209,7 @@ Reasoning, stated now so that failures can be read against it:
 
 ## 5. Output
 
-`gc_and_parallel.txt` (log) and `gc_and_parallel_2026-09-27.csv` (every
+[`gc_and_parallel.txt`](../../data/logs/gc_and_parallel.txt) (log) and [`gc_and_parallel_2026-09-27.csv`](../../data/gc_and_parallel_2026-09-27.csv) (every
 Part G lap, plus a summary row per arm and per Part P setting).
 
 ---
@@ -8224,7 +8224,7 @@ Part G lap, plus a summary row per arm and per Part P setting).
 `spare-qubit-cliff-addendum-201-preregistration-2026-09-27.md`. WSL2
 (home), 12 cores, Python 3.12.13, Qiskit 2.5.2, `psf_compile.py`
 2026-09-26.4 (`b4fa92ad...`, verified by the script),
-`gc_and_parallel.py` (`4eb877ad...`, verified by the script). Total wall
+[`gc_and_parallel.py`](../../benchmarks/gc_and_parallel.py) (`4eb877ad...`, verified by the script). Total wall
 time 275 s.
 
 ## 0. In one line
@@ -8346,9 +8346,9 @@ should be treated as scaling about equally.
 
 | File | What it is |
 |---|---|
-| `benchmarks/gc_and_parallel.py` | the registered test |
-| `data/logs/gc_and_parallel.txt` | log |
-| `data/gc_and_parallel_2026-09-27.csv` | every Part G lap (3,200 rows) and summaries (received and checked) |
+| [`benchmarks/gc_and_parallel.py`](../../benchmarks/gc_and_parallel.py) | the registered test |
+| [`data/logs/gc_and_parallel.txt`](../../data/logs/gc_and_parallel.txt) | log |
+| [`data/gc_and_parallel_2026-09-27.csv`](../../data/gc_and_parallel_2026-09-27.csv) | every Part G lap (3,200 rows) and summaries (received and checked) |
 
 ---
 
@@ -8363,12 +8363,12 @@ scored by the script as "as expected" or "not as expected", not as
 pass/fail. Results will be recorded as Addendum 204, whichever way they
 fall.
 
-- Script: `benchmarks/loop_breakdown.py`, 19,561 bytes, normalized SHA-256
+- Script: [`benchmarks/loop_breakdown.py`](../../benchmarks/loop_breakdown.py), 19,561 bytes, normalized SHA-256
   `1bba4c4ed6a4b296a074d83a7e67b90ed5f50fb14531f4dabf51892fd88e7d71`.
   Syntax-checked here; not run here (Qiskit cannot be installed in this
   environment).
 - Depends on: `psf_compile.py` 2026-09-26.4 (the script stops otherwise),
-  `psf_smart_layout.py` 2026-09-26.m1, `benchmarks/loop_endurance.py`.
+  [`psf_smart_layout.py`](../../benchmarks/psf_smart_layout.py) 2026-09-26.m1, [`benchmarks/loop_endurance.py`](../../benchmarks/loop_endurance.py).
 
 ## 1. Why
 
@@ -8460,7 +8460,7 @@ Reasoning, stated now:
 
 ## 5. Output
 
-`loop_breakdown.txt` (log) and `loop_breakdown_2026-09-27.csv` (every lap
+[`loop_breakdown.txt`](../../data/logs/loop_breakdown.txt) (log) and [`loop_breakdown_2026-09-27.csv`](../../data/loop_breakdown_2026-09-27.csv) (every lap
 and stage, long format: part, phase, index, stage, seconds).
 
 ---
@@ -8474,8 +8474,8 @@ and stage, long format: part, phase, index, stage, seconds).
 **Pre-registered in**:
 `spare-qubit-cliff-addendum-203-preregistration-2026-09-27.md`. WSL2
 (home), 12 cores, Python 3.12.13, Qiskit 2.5.2, `psf_compile.py`
-2026-09-26.4 (`b4fa92ad...`), `psf_smart_layout.py` 2026-09-26.m1
-(`a639efde...`), `loop_breakdown.py` (`1bba4c4e...`), all verified by the
+2026-09-26.4 (`b4fa92ad...`), [`psf_smart_layout.py`](../../benchmarks/psf_smart_layout.py) 2026-09-26.m1
+(`a639efde...`), [`loop_breakdown.py`](../../benchmarks/loop_breakdown.py) (`1bba4c4e...`), all verified by the
 script. Total wall time 92 s. Garbage collection as recommended by
 Addendum 202 in every loop.
 
@@ -8637,9 +8637,9 @@ If confirmed:
 
 | File | What it is |
 |---|---|
-| `benchmarks/loop_breakdown.py` | the registered test |
-| `data/logs/loop_breakdown.txt` | log (received and checked) |
-| `data/loop_breakdown_2026-09-27.csv` | every lap and stage, 29,100 rows (received; per-stage means recomputed from it match the log) |
+| [`benchmarks/loop_breakdown.py`](../../benchmarks/loop_breakdown.py) | the registered test |
+| [`data/logs/loop_breakdown.txt`](../../data/logs/loop_breakdown.txt) | log (received and checked) |
+| [`data/loop_breakdown_2026-09-27.csv`](../../data/loop_breakdown_2026-09-27.csv) | every lap and stage, 29,100 rows (received; per-stage means recomputed from it match the log) |
 
 ---
 
@@ -8652,11 +8652,11 @@ If confirmed:
 **Written before running.** Results will be recorded as Addendum 206,
 including every prediction that fails.
 
-- Script: `benchmarks/diag_polish_and_blocks.py`, 19,233 bytes, normalized
+- Script: [`benchmarks/diag_polish_and_blocks.py`](../../benchmarks/diag_polish_and_blocks.py), 19,233 bytes, normalized
   SHA-256 `2d0f2ea86cff655b0ede77d75bc801291c9f05646fd71f9a451964228bad4a56`.
   Syntax-checked here; not run here.
 - Depends on: `psf_compile.py` 2026-09-26.4 (the script stops otherwise),
-  `psf_smart_layout.py` 2026-09-26.m1, `benchmarks/loop_endurance.py`.
+  [`psf_smart_layout.py`](../../benchmarks/psf_smart_layout.py) 2026-09-26.m1, [`benchmarks/loop_endurance.py`](../../benchmarks/loop_endurance.py).
   Nothing in `psf_compile.py` is changed: the polish threshold and
   `block_gate_floor` are varied from outside.
 
@@ -8731,7 +8731,7 @@ Notes stated now:
 
 ## 4. Output
 
-`diag_polish_and_blocks.txt` (log) and `diag_polish_and_blocks_2026-09-27.csv`
+[`diag_polish_and_blocks.txt`](../../data/logs/diag_polish_and_blocks.txt) (log) and [`diag_polish_and_blocks_2026-09-27.csv`](../../data/diag_polish_and_blocks_2026-09-27.csv)
 (every polish call at the current threshold, a summary per set and
 threshold, and every Part G row).
 
@@ -8746,7 +8746,7 @@ threshold, and every Part G row).
 **Pre-registered in**:
 `spare-qubit-cliff-addendum-205-preregistration-2026-09-27.md`. WSL2
 (home), 12 cores, Python 3.12.13, Qiskit 2.5.2, `psf_compile.py`
-2026-09-26.4 (`b4fa92ad...`), `diag_polish_and_blocks.py`
+2026-09-26.4 (`b4fa92ad...`), [`diag_polish_and_blocks.py`](../../benchmarks/diag_polish_and_blocks.py)
 (`2d0f2ea8...`), both verified by the script. Total wall time 85 s.
 
 ## 0. In one line
@@ -8864,9 +8864,9 @@ Readings:
 
 | File | What it is |
 |---|---|
-| `benchmarks/diag_polish_and_blocks.py` | the registered test |
-| `data/logs/diag_polish_and_blocks.txt` | log (received and checked) |
-| `data/diag_polish_and_blocks_2026-09-27.csv` | every polish call at the current threshold, summaries, Part G rows (8,016 rows; not yet received) |
+| [`benchmarks/diag_polish_and_blocks.py`](../../benchmarks/diag_polish_and_blocks.py) | the registered test |
+| [`data/logs/diag_polish_and_blocks.txt`](../../data/logs/diag_polish_and_blocks.txt) | log (received and checked) |
+| [`data/diag_polish_and_blocks_2026-09-27.csv`](../../data/diag_polish_and_blocks_2026-09-27.csv) | every polish call at the current threshold, summaries, Part G rows (8,016 rows; not yet received) |
 
 ---
 
@@ -8923,10 +8923,10 @@ per block; for 6 blocks, 1.4 against 2.6 ms; for 1 block, 0.19 against
 | File | Size | Normalized SHA-256 |
 |---|---|---|
 | `psf_compile.py` (2026-09-27.1) | 72,437 | `c0ee600a53d42766876091f5ef3827bc17355d49af557e0d447fd545a0f90702` |
-| `benchmarks/test_batched_polish.py` | 3,819 | `2d2dc8b9aeb4f88997003daf37a9e4b6890829824ca18ea7354a4c767d8ed8a2` |
-| `benchmarks/verify_batched_polish.py` | 11,946 | `071d236d21e27f3a4ce83278e8c58dcacc0906792e86e5a0ba8c71ece88911ee` |
+| [`benchmarks/test_batched_polish.py`](../../benchmarks/test_batched_polish.py) | 3,819 | `2d2dc8b9aeb4f88997003daf37a9e4b6890829824ca18ea7354a4c767d8ed8a2` |
+| [`benchmarks/verify_batched_polish.py`](../../benchmarks/verify_batched_polish.py) | 11,946 | `071d236d21e27f3a4ce83278e8c58dcacc0906792e86e5a0ba8c71ece88911ee` |
 
-## 4. Predictions (as scored by `verify_batched_polish.py`)
+## 4. Predictions (as scored by [`verify_batched_polish.py`](../../benchmarks/verify_batched_polish.py))
 
 Every comparison runs both settings on the same input in one process.
 
@@ -8943,7 +8943,7 @@ And outside the script:
 
 | ID | Prediction |
 |---|---|
-| T1 | The existing tests in `benchmarks/` (63, including `test_matching_layout.py`, `test_closed_form_core.py` and `test_guard_v4.py`) and the new `test_batched_polish.py` (13) all pass under 2026-09-27.1. |
+| T1 | The existing tests in `benchmarks/` (63, including [`test_matching_layout.py`](../../benchmarks/test_matching_layout.py), [`test_closed_form_core.py`](../../benchmarks/test_closed_form_core.py) and [`test_guard_v4.py`](../../benchmarks/test_guard_v4.py)) and the new [`test_batched_polish.py`](../../benchmarks/test_batched_polish.py) (13) all pass under 2026-09-27.1. |
 
 Risks stated now:
 
@@ -8959,7 +8959,7 @@ Risks stated now:
 
 ## 5. Output
 
-`verify_batched_polish.txt` (log), `verify_batched_polish_2026-09-27.csv`,
+[`verify_batched_polish.txt`](../../data/logs/verify_batched_polish.txt) (log), [`verify_batched_polish_2026-09-27.csv`](../../data/verify_batched_polish_2026-09-27.csv),
 and the pytest output.
 
 ---
@@ -8973,7 +8973,7 @@ and the pytest output.
 **Pre-registered in**:
 `spare-qubit-cliff-addendum-207-preregistration-2026-09-27.md`. WSL2
 (home), 12 cores, Python 3.12.13, Qiskit 2.5.2, `psf_compile.py`
-2026-09-27.1 (`c0ee600a...`), `verify_batched_polish.py` (`071d236d...`),
+2026-09-27.1 (`c0ee600a...`), [`verify_batched_polish.py`](../../benchmarks/verify_batched_polish.py) (`071d236d...`),
 both verified by the script. Total wall time 46 s.
 
 ## 0. In one line
@@ -8992,7 +8992,7 @@ per 120-qubit compile, and it computes the same thing.
 | B4 | training, floors 12 and 8: loss error <= 1e-14 | **confirmed** (worst 5.11e-15; per-block 5.00e-15) |
 | B5 | cliff: polish <= 3 ms, compile median lower by >= 8 ms | **confirmed** (1.81 vs 12.00 ms; 28.4 vs 38.8 ms) |
 | B6 | training floor 8: not slower | **confirmed** (12.04 vs 12.69 ms) |
-| T1 | tests pass | **confirmed for the files run**: 40 passed (`test_batched_polish.py` 13, `test_closed_form_core.py`, `test_guard_v4.py`, `test_matching_layout.py`) |
+| T1 | tests pass | **confirmed for the files run**: 40 passed ([`test_batched_polish.py`](../../benchmarks/test_batched_polish.py) 13, [`test_closed_form_core.py`](../../benchmarks/test_closed_form_core.py), [`test_guard_v4.py`](../../benchmarks/test_guard_v4.py), [`test_matching_layout.py`](../../benchmarks/test_matching_layout.py)) |
 
 Compounding drift, per-block / batched: lap 10 4.27e-13 / 6.80e-13, lap 50
 2.65e-12 / 3.45e-12, lap 100 6.02e-12 / 6.48e-12. The per-block figures
@@ -9030,10 +9030,10 @@ polish in the default setting.
 | File | What it is |
 |---|---|
 | `psf_compile.py` | 2026-09-27.1 (72,437 bytes, `c0ee600a...`) |
-| `benchmarks/test_batched_polish.py` | 13 tests (3,819 bytes) |
-| `benchmarks/verify_batched_polish.py` | the registered verification (11,946 bytes) |
-| `data/logs/verify_batched_polish.txt` | log (received and checked) |
-| `data/verify_batched_polish_2026-09-27.csv` | 154 rows (not yet received) |
+| [`benchmarks/test_batched_polish.py`](../../benchmarks/test_batched_polish.py) | 13 tests (3,819 bytes) |
+| [`benchmarks/verify_batched_polish.py`](../../benchmarks/verify_batched_polish.py) | the registered verification (11,946 bytes) |
+| [`data/logs/verify_batched_polish.txt`](../../data/logs/verify_batched_polish.txt) | log (received and checked) |
+| [`data/verify_batched_polish_2026-09-27.csv`](../../data/verify_batched_polish_2026-09-27.csv) | 154 rows (not yet received) |
 
 ---
 
@@ -9045,7 +9045,7 @@ polish in the default setting.
 
 **Written before running.** Results will be recorded as Addendum 210.
 
-- Script: `benchmarks/verify_block_floor.py`, 11,948 bytes, normalized
+- Script: [`benchmarks/verify_block_floor.py`](../../benchmarks/verify_block_floor.py), 11,948 bytes, normalized
   SHA-256 `9135447811bc3dff856b8360a2cf138f35611101e203b61f3f962dfe0bbe4dc0`.
   Syntax-checked here; not run here.
 - Requires `psf_compile.py` 2026-09-27.1 (the script stops otherwise).
@@ -9116,7 +9116,7 @@ the failure is investigated.
 
 ## 4. Output
 
-`verify_block_floor.txt` (log) and `verify_block_floor_2026-09-27.csv`.
+[`verify_block_floor.txt`](../../data/logs/verify_block_floor.txt) (log) and [`verify_block_floor_2026-09-27.csv`](../../data/verify_block_floor_2026-09-27.csv).
 
 ---
 
@@ -9129,7 +9129,7 @@ the failure is investigated.
 **Pre-registered in**:
 `spare-qubit-cliff-addendum-209-preregistration-2026-09-27.md`. WSL2
 (home), 12 cores, Python 3.12.13, Qiskit 2.5.2, `psf_compile.py`
-2026-09-27.1 (`c0ee600a...`), `verify_block_floor.py` (`91354478...`),
+2026-09-27.1 (`c0ee600a...`), [`verify_block_floor.py`](../../benchmarks/verify_block_floor.py) (`91354478...`),
 both verified by the script. Total wall time 16 s.
 
 ## 0. In one line
@@ -9195,7 +9195,7 @@ unaffected; `block_gate_floor=12` restores the previous default.
 |---|---|---|
 | `psf_compile.py` 2026-09-27.2 | 73,463 | `d987422b40d9dbbd00b1f28e57b36f6fcdb47c7270ba004a99e2c223f9e1e61c` |
 
-Scripts written for a specific version (`verify_batched_polish.py` checks
+Scripts written for a specific version ([`verify_batched_polish.py`](../../benchmarks/verify_batched_polish.py) checks
 for 2026-09-27.1, earlier ones for 2026-09-26.4) stop by design under the
 new version; they record what was verified at the time.
 
@@ -9203,9 +9203,9 @@ new version; they record what was verified at the time.
 
 | File | What it is |
 |---|---|
-| `benchmarks/verify_block_floor.py` | the registered test |
-| `data/logs/verify_block_floor.txt` | log (received and checked) |
-| `data/verify_block_floor_2026-09-27.csv` | 100 rows (not yet received) |
+| [`benchmarks/verify_block_floor.py`](../../benchmarks/verify_block_floor.py) | the registered test |
+| [`data/logs/verify_block_floor.txt`](../../data/logs/verify_block_floor.txt) | log (received and checked) |
+| [`data/verify_block_floor_2026-09-27.csv`](../../data/verify_block_floor_2026-09-27.csv) | 100 rows (not yet received) |
 
 ---
 
