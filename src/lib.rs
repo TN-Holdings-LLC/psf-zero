@@ -99,6 +99,14 @@
 //      regression here was to rebuild the wheel and run a Python script;
 //      `cargo test` now covers it.
 //
+//  11. (2026-09-28) `so4_to_su2_pair` reads each SU(2) factor from the
+//      best-conditioned of the 16 quaternion products instead of always from
+//      the ones scaled by the other factor's scalar part (Addendum 215, H-C).
+//      Removes SU2ExtractionSingular for (nearly) traceless local factors and
+//      the eps / |scalar part| precision loss just above that threshold.
+//      The module now exposes `CORE_VERSION` ("2026-09-28.1") so a log can
+//      show which core was loaded; cores built before this item have none.
+//
 // Retained verbatim from the previous round (still true, still verified):
 // random SU(4) precision worst case (1-fidelity) ~1.3e-15; CNOT, SWAP,
 // iSWAP, identity all decompose exactly with no fallback.
@@ -200,6 +208,30 @@ static MAGIC_Q: LazyLock<Mat4> = LazyLock::new(|| {
 /// `MAGIC_Q.adjoint()`, computed once rather than on every decomposition.
 static MAGIC_Q_DAG: LazyLock<Mat4> = LazyLock::new(|| MAGIC_Q.adjoint());
 
+/// The 16 real matrices E_kl = Re(Q^dagger (s_k kron s_l) Q), index 4k + l,
+/// for the quaternion basis s = (I, iX, iY, iZ) in the convention
+/// `so4_to_su2_pair` uses to build an SU(2) matrix from (w, x, y, z):
+/// [[w + iz, y + ix], [-y + ix, w - iz]] = w I + x iX + y iY + z iZ.
+/// Q^dagger (A kron B) Q is real for A, B in that real span, and the E_kl are
+/// Frobenius-orthogonal with norm^2 4 (checked in the tests below).
+static QUAT_PRODUCT_BASIS: LazyLock<Vec<RMat4>> = LazyLock::new(|| {
+    let c = |re: f64, im: f64| Complex64::new(re, im);
+    let quat = [
+        Mat2::new(c(1.0, 0.0), c(0.0, 0.0), c(0.0, 0.0), c(1.0, 0.0)),  // I
+        Mat2::new(c(0.0, 0.0), c(0.0, 1.0), c(0.0, 1.0), c(0.0, 0.0)),  // iX
+        Mat2::new(c(0.0, 0.0), c(1.0, 0.0), c(-1.0, 0.0), c(0.0, 0.0)), // iY
+        Mat2::new(c(0.0, 1.0), c(0.0, 0.0), c(0.0, 0.0), c(0.0, -1.0)), // iZ
+    ];
+    let mut out = Vec::with_capacity(16);
+    for k in 0..4 {
+        for l in 0..4 {
+            let m = &*MAGIC_Q_DAG * kron2(&quat[k], &quat[l]) * &*MAGIC_Q;
+            out.push(m.map(|v| v.re));
+        }
+    }
+    out
+});
+
 /// The three canonical two-qubit interaction generators, in the same
 /// operator ordering `psf_compile.py` sees (Qiskit's little-endian
 /// convention, where a gate placed on qubits (0, 1) has matrix
@@ -267,41 +299,59 @@ fn to_complex(m: &RMat4) -> Mat4 {
 ///      of those two reconstructs `o`. That is resolved here with an explicit
 ///      reconstruct-and-compare check rather than assumed away.
 fn so4_to_su2_pair(o: &RMat4) -> Result<(Mat2, Mat2), CartanError> {
-    // Both quaternions' scalar parts are the same combination -- the trace --
-    // so it is computed once. (It was written out twice, identically, which
-    // reads as though the two were expected to differ.)
-    let w = o[(0, 0)] + o[(1, 1)] + o[(2, 2)] + o[(3, 3)];
-    let x = o[(1, 0)] - o[(0, 1)] - o[(3, 2)] + o[(2, 3)];
-    let y = o[(2, 0)] + o[(3, 1)] - o[(0, 2)] - o[(1, 3)];
-    let z = o[(3, 0)] - o[(2, 1)] + o[(1, 2)] - o[(0, 3)];
-    let det_l = w * w + x * x + y * y + z * z;
-    if det_l < SU2_SINGULAR_TOL {
+    // Changelog item 11 (2026-09-28). `o` is bilinear in the two factors'
+    // quaternions a and b: o = sum_{k,l} a_k b_l E_kl, where the 16 real
+    // matrices E_kl (see `QUAT_PRODUCT_BASIS`) are Frobenius-orthogonal with
+    // norm^2 4. So every product is available as P_kl = <E_kl, o> / 4, and P is
+    // the rank-one matrix a b^T. The previous version always read the left
+    // factor from column 0 (a_k * b_0) and the right one from row 0
+    // (a_0 * b_l): exact in exact arithmetic, but when one factor is (nearly)
+    // traceless (b_0 or a_0 near 0, e.g. an exact Pauli-type rotation) every
+    // component vanishes together, giving SU2ExtractionSingular at b_0 = 0
+    // and a relative error of order eps / |b_0| just above the threshold.
+    // Reading the left factor from the largest column of P and the right one
+    // from the largest row keeps the divisor at least 1/2 for every valid o.
+    let basis = &*QUAT_PRODUCT_BASIS;
+    let mut p = [[0.0_f64; 4]; 4];
+    for k in 0..4 {
+        for l in 0..4 {
+            p[k][l] = basis[4 * k + l].component_mul(o).sum() / 4.0;
+        }
+    }
+    let col_norm_sq = |l: usize| (0..4).map(|k| p[k][l] * p[k][l]).sum::<f64>();
+    let row_norm_sq = |k: usize| (0..4).map(|l| p[k][l] * p[k][l]).sum::<f64>();
+    let l_star = (0..4)
+        .max_by(|&i, &j| col_norm_sq(i).total_cmp(&col_norm_sq(j)))
+        .unwrap();
+    let k_star = (0..4)
+        .max_by(|&i, &j| row_norm_sq(i).total_cmp(&row_norm_sq(j)))
+        .unwrap();
+
+    let det_l = col_norm_sq(l_star);
+    if !det_l.is_finite() || det_l < SU2_SINGULAR_TOL {
         return Err(CartanError::SU2ExtractionSingular);
     }
-    let norm_l = det_l.sqrt();
+    let (w, x, y, z) = (p[0][l_star], p[1][l_star], p[2][l_star], p[3][l_star]);
     let mut k_l = Mat2::new(
         Complex64::new(w, z), Complex64::new(y, x),
         Complex64::new(-y, x), Complex64::new(w, -z),
     );
-    k_l /= Complex64::new(norm_l, 0.0);
+    k_l /= Complex64::new(det_l.sqrt(), 0.0);
 
-    let w_r = w;
-    let x_r = o[(1, 0)] - o[(0, 1)] + o[(3, 2)] - o[(2, 3)];
-    let y_r = -o[(2, 0)] + o[(3, 1)] + o[(0, 2)] - o[(1, 3)];
-    let z_r = o[(3, 0)] + o[(2, 1)] - o[(1, 2)] - o[(0, 3)];
-    let det_r = w_r * w_r + x_r * x_r + y_r * y_r + z_r * z_r;
-    if det_r < SU2_SINGULAR_TOL {
+    let det_r = row_norm_sq(k_star);
+    if !det_r.is_finite() || det_r < SU2_SINGULAR_TOL {
         return Err(CartanError::SU2ExtractionSingular);
     }
-    let norm_r = det_r.sqrt();
+    let (w_r, x_r, y_r, z_r) = (p[k_star][0], p[k_star][1], p[k_star][2], p[k_star][3]);
     let mut k_r = Mat2::new(
         Complex64::new(w_r, z_r), Complex64::new(y_r, x_r),
         Complex64::new(-y_r, x_r), Complex64::new(w_r, -z_r),
     );
-    k_r /= Complex64::new(norm_r, 0.0);
+    k_r /= Complex64::new(det_r.sqrt(), 0.0);
 
-    // Resolve the residual relative sign between k_l and k_r by checking
-    // which choice actually reconstructs `o`.
+    // Column l* carries the sign of b_{l*} and row k* the sign of a_{k*}, so
+    // the pair may reconstruct -o instead of o. Resolve the residual relative
+    // sign by checking which choice actually reconstructs `o` (unchanged).
     let candidate = &*MAGIC_Q_DAG * kron2(&k_l, &k_r) * &*MAGIC_Q;
     let candidate_real = candidate.map(|c| c.re);
     if (candidate_real - o).norm() > (candidate_real + o).norm() {
@@ -1073,6 +1123,7 @@ fn psf_zero_core(py: Python, m: &PyModule) -> PyResult<()> {
     m.add("PsfDegenerateError", py.get_type::<PsfDegenerateError>())?;
     m.add("PsfNumericError", py.get_type::<PsfNumericError>())?;
     m.add("PsfSU2SingularError", py.get_type::<PsfSU2SingularError>())?;
+    m.add("CORE_VERSION", "2026-09-28.1")?;
     Ok(())
 }
 
@@ -1223,7 +1274,76 @@ mod tests {
             );
         }
     }
+
+    // ---- changelog item 11: best-conditioned quaternion extraction ----
+
+    #[test]
+    fn quat_product_basis_is_orthogonal() {
+        let b = &*QUAT_PRODUCT_BASIS;
+        for i in 0..16 {
+            for j in 0..16 {
+                let ip = b[i].component_mul(&b[j]).sum();
+                let want = if i == j { 4.0 } else { 0.0 };
+                assert!((ip - want).abs() < 1e-12, "<E_{}, E_{}> = {}", i, j, ip);
+            }
+        }
+    }
+
+    /// Phase-aligned distance between A kron B and the extracted pair.
+    fn pair_error(a: &Mat2, b: &Mat2) -> f64 {
+        let o = (&*MAGIC_Q_DAG * kron2(a, b) * &*MAGIC_Q).map(|v| v.re);
+        let (ka, kb) = so4_to_su2_pair(&o).expect("extraction failed on a valid SO(4) input");
+        let want = kron2(a, b);
+        let got = kron2(&ka, &kb);
+        (got - want).norm().min((got + want).norm())
+    }
+
+    fn su2(w: f64, x: f64, y: f64, z: f64) -> Mat2 {
+        let n = (w * w + x * x + y * y + z * z).sqrt();
+        let (w, x, y, z) = (w / n, x / n, y / n, z / n);
+        Mat2::new(c(w, z), c(y, x), c(-y, x), c(w, -z))
+    }
+
+    #[test]
+    fn traceless_factors_extract_exactly() {
+        // Before item 11, b_0 = 0 raised SU2ExtractionSingular and a_0 = 0
+        // likewise for the right factor.
+        let generic = su2(0.3, -0.5, 0.7, 0.4);
+        let paulis = [su2(0.0, 1.0, 0.0, 0.0), su2(0.0, 0.0, 1.0, 0.0), su2(0.0, 0.0, 0.0, 1.0),
+                      su2(0.0, 0.6, -0.8, 0.0), su2(0.0, 0.2, 0.3, -0.9)];
+        for p in paulis.iter() {
+            for (a, b) in [(&generic, p), (p, &generic), (p, p)] {
+                let e = pair_error(a, b);
+                assert!(e < 1e-14, "traceless factor: error {:.3e}", e);
+            }
+        }
+    }
+
+    #[test]
+    fn nearly_traceless_factors_keep_full_precision() {
+        // Just above the old threshold the old formula lost eps / |b_0|.
+        let generic = su2(0.3, -0.5, 0.7, 0.4);
+        for &eps in &[1e-6, 1e-8, 1e-10, 1e-12] {
+            let near = su2(eps, 0.6, -0.8, 0.1);
+            for (a, b) in [(&generic, &near), (&near, &generic)] {
+                let e = pair_error(a, b);
+                assert!(e < 1e-14, "scalar part {:.0e}: error {:.3e}", eps, e);
+            }
+        }
+    }
+
+    #[test]
+    fn random_pairs_extract_exactly() {
+        let mut state: u64 = 12345;
+        let mut next = move || {
+            state = state.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
+            ((state >> 11) as f64 / (1u64 << 53) as f64) * 2.0 - 1.0
+        };
+        for _ in 0..2000 {
+            let a = su2(next(), next(), next(), next());
+            let b = su2(next(), next(), next(), next());
+            let e = pair_error(&a, &b);
+            assert!(e < 1e-14, "random pair: error {:.3e}", e);
+        }
+    }
 }
-
-
-

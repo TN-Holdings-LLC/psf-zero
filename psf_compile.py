@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-09-27.7 (previous revision: 2026-09-27.6)
+VERSION: 2026-09-28.1 (previous revision: 2026-09-27.7)
 
 Where to look for what
 ----------------------
@@ -405,6 +405,27 @@ Changes in the 2026-09-26.4 revision (spare-qubit-cliff Addenda 195-196)
     two-qubit count on seven other families (Addendum 210). The only change
     from 2026-09-27.6 is this constant and its docstrings; pass
     `block_gate_floor=12` for the previous behaviour.
+
+26. **`REFINE_THRESHOLD` 1e-13 -> 1e-14** (= `_REFINE_TARGET`, the polish's
+    own stopping point). With the Rust core fix of 2026-09-28 (core changelog
+    item 11, `CORE_VERSION` 2026-09-28.1), the core's raw residual on some
+    blocks is a smooth function of the block that lies just below 1e-13 (one
+    block at 8.3e-14 in the compounding chain of Addendum 219, part C). Such a
+    block was never polished, and in a chain that compiles its own output
+    again and again the same error was added in the same direction on every
+    lap: the chain's drift doubled against the pre-fix core (1.66e-9 at lap
+    20,000; Addenda 235-237). At 1e-14 about twice as many blocks are polished
+    and the drift falls to 1.22e-10, seven times below the pre-fix core's,
+    for 5-8% compile time in the workplace sandbox (Addenda 238-239); every
+    output stays exact, and the whole-circuit GPU check at 20-26 qubits gives
+    a worst error of 1.1e-14 with unchanged CX counts (Addenda 240-241). The
+    threshold was not measured with the pre-fix core. Every change of this kind alters output bits, not structure. Setting
+    `REFINE_THRESHOLD` (and the defaults of `_refine_batch` and
+    `_refine_decomposition`) back to 1e-13 restores the previous behaviour.
+
+27. **`CORE_VERSION`** is exported: the loaded Rust core's own version string
+    (`psf_zero_core.CORE_VERSION`), or None for cores built before
+    2026-09-28, so that logs can show which core ran.
 """
 from __future__ import annotations
 
@@ -434,11 +455,16 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-09-27.7"
+VERSION = "2026-09-28.1"
 __version__ = VERSION
+
+# Changelog item 27: the version string of the loaded Rust core, for logs.
+# Cores built before 2026-09-28 do not define it.
+CORE_VERSION = getattr(psf_zero_core, "CORE_VERSION", None)
 
 __all__ = [
     "VERSION",
+    "CORE_VERSION",
     "compile",
     "compile_for_hardware",
     "GeodesicPSFHyper",
@@ -718,7 +744,8 @@ def _infidelity(U_target: np.ndarray, U_out: np.ndarray) -> float:
     return float(1.0 - (np.abs(tr) ** 2 + d) / (d * (d + 1)))
 
 
-REFINE_THRESHOLD = 1e-13
+# Changelog item 26: 1e-13 until 2026-09-27.7.
+REFINE_THRESHOLD = 1e-14
 _REFINE_TARGET = 1e-14
 _HALF_Z = np.diag([-0.5j, 0.5j])
 

@@ -61,17 +61,19 @@ in place, so there is never a second, differently-named copy to pick between
 [`psf_smart_layout.py`](benchmarks/psf_smart_layout.py) — the layout-search prototype,
 repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see below).
 
-> **Current version: `psf_compile.py` 2026-09-27.7.** The default `block_gate_floor` is 8
-> (33 instead of 48 two-qubit gates on a brick-layer ansatz, no change on seven other
-> circuit families). Since 2026-09-27.6 every two-qubit block that reaches the output --
-> synthesized by PSF-Zero itself, or taken from Qiskit's CX decomposer -- is checked by
-> phase-aligned operator distance (1e-13) and rebuilt exactly when it misses; earlier
-> revisions accepted blocks by average gate infidelity, which is quadratic in the
-> operator error and let rare blocks through with operator errors up to about 1e-4. A
-> pre-registered 100,000-compile run at floor 8 then cleared every flag: no exception,
-> memory growth or slow-down, and every checked compile exact (worst loss error 1.9e-15,
-> against 1.3e-7 before the fix). Pass `block_gate_floor=12` for the previous default
-> (Addenda 214-222). See "Update (2026-09-27)" below.
+> **Current version: `psf_compile.py` 2026-09-28.1 with the Rust core `CORE_VERSION`
+> 2026-09-28.1 -- rebuild the core (`maturin develop --release`) when you update.** The
+> core now extracts the two single-qubit factors of each block from their best-conditioned
+> quaternion products; before, it failed (and Python fell back to Qiskit's synthesis) on
+> about 13% of the blocks of a brick-layer training circuit, and was off by up to 8e-7 on
+> a few blocks without failing. `REFINE_THRESHOLD` is now 1e-14, so that small residuals
+> the new core leaves are polished instead of adding up when a circuit is compiled again
+> and again. A pre-registered 100,000-compile run at home: fallbacks 43,829 -> 15, the
+> compounding drift 8.33e-10 -> 1.22e-10, every checked compile exact, compile time 0.90x
+> (training circuit) and 1.08x (120-qubit cliff circuit) of the previous release
+> (Addenda 223-244). Outputs are equivalent to the previous release's but not
+> bit-identical. The default `block_gate_floor` is 8; every emitted two-qubit block is
+> checked by phase-aligned operator distance (1e-13), as since 2026-09-27.6.
 
 > **Correctness notice (2026-09-26) -- if you use `entangling_basis="cx"`, update to
 > `psf_compile.py` VERSION 2026-09-26.4 or later.** Qiskit's own

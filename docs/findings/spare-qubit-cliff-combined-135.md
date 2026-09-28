@@ -12366,6 +12366,185 @@ Consequences for this project's comparisons:
 Sources: https://github.com/Qiskit/qiskit/issues/16864 ,
 https://github.com/Qiskit/qiskit/issues/16974 (read 2026-09-28).
 
+
+---
+
+<!-- ===== Addendum 243 (source: spare-qubit-cliff-addendum-243-preregistration-2026-09-28.md) ===== -->
+
+> **Note added when merging:** Home pre-registration of the candidate release: the fixed Rust core with psf_compile.py 2026-09-28.1 (REFINE_THRESHOLD 1e-14) over the 100,000-compile run, against v2 (Addendum 222) on the same machine.
+
+## Addendum 243 -- Pre-registration: the candidate release at home -- the fixed Rust core (CORE_VERSION 2026-09-28.1) with psf_compile.py 2026-09-28.1 (REFINE_THRESHOLD 1e-14) over the 100,000-compile run (2026-09-28)
+
+**Written before running.** Results will be recorded as Addendum 244.
+Run at home (WSL2), after Stage 2's `layout` step (Addendum 211), so that
+Stage 2 is not affected by the change of core.
+
+## 1. Why
+
+The workplace results of 2026-09-28 (Addenda 223-242) point to one release:
+
+- the core fix removes the core's extraction failures (Addenda 224, 236:
+  training-loop fallbacks 43,829 -> 15) and keeps every output exact with
+  unchanged CX counts (Addenda 224, 241);
+- alone, it doubles the drift of the compounding chain (Addenda 236-237);
+- `REFINE_THRESHOLD` 1e-14 removes that and more (drift 7x below the pre-fix
+  core) for 5-8% compile time (Addenda 238-239).
+
+All of that was measured at the workplace (sandbox and RunPod pod), with the
+threshold set in memory. Before the pair becomes the default, it is run at
+home, as one release, over the full 100,000-compile run, so that it can be
+set against the home v2 run (Addendum 222) on the same machine.
+
+## 2. What is tested
+
+- **Rust core:** `src/lib.rs` replaced by the patched file of
+  `patches/rust_core_fix_2026-09-28.1/` (normalized SHA-256
+  `bf3bf537...d234`; [`apply_update.py`](../../patches/rust_core_fix_2026-09-28.1/apply_update.py) refuses unless the current file is the
+  `100e768` base `b11f35b5...9077`), built with `maturin develop --release`
+  after `cargo test --release --lib` (9 tests).
+- **`psf_compile.py` 2026-09-28.1** (changelog items 26-27): `REFINE_THRESHOLD`
+  1e-13 -> 1e-14 and `CORE_VERSION` exported. Nothing else changes.
+
+| File | Bytes | Normalized SHA-256 |
+|---|---|---|
+| `psf_compile.py` 2026-09-28.1 | 84,542 | `3616efc8b8a7bea184d6170fb7379d509d0bfec9828f4eb2f703dd4d26d8c60b` |
+| [`benchmarks/long_loop_100k_v4.py`](../../benchmarks/long_loop_100k_v4.py) | 16,024 | `2c928b1bfa0e6baf9825f9415d181fab4e4a13bfc3970130986b31021e3390e0` |
+| [`benchmarks/test_release_2026_09_28.py`](../../benchmarks/test_release_2026_09_28.py) | 1,539 | `b97276a63e7c1019271b9cf7d6c8b7dbc8f937b6c58ba0fdcf23ef8443bbb5a9` |
+
+Syntax-checked here; not run here (no Qiskit or Rust core in this environment).
+
+[`long_loop_100k_v4.py`](../../benchmarks/long_loop_100k_v4.py) is the workplace's [`long_loop_100k_v3.py`](../../benchmarks/long_loop_100k_v3.py) with the
+version check (`psf_compile.py` 2026-09-28.1 with `REFINE_THRESHOLD` 1e-14,
+and `CORE_VERSION` 2026-09-28.1), output names `_v4`, and lines N1-N7 instead
+of M1-M4. Laps, seeds, floor 8, checks and L1-L6 are those of v2 and v3.
+
+## 3. Pre-registered predictions
+
+Harness gate **V0** (in the script): the three versions above, printed before
+the first lap; otherwise nothing runs. **T0** (before the run): `cargo test`
+9 passed; pytest on [`test_exact_fallback.py`](../../benchmarks/test_exact_fallback.py), [`test_batched_polish.py`](../../benchmarks/test_batched_polish.py),
+[`test_closed_form_core.py`](../../benchmarks/test_closed_form_core.py), [`test_guard_v4.py`](../../benchmarks/test_guard_v4.py), [`test_matching_layout.py`](../../benchmarks/test_matching_layout.py)
+and [`test_release_2026_09_28.py`](../../benchmarks/test_release_2026_09_28.py) all pass (75 + 8). If T0 fails, the run is
+not started and the failure is recorded.
+
+| ID | Prediction | Confirmed if | Refuted if |
+|---|---|---|---|
+| N1 | the training loop's fallbacks stay gone | E fallbacks <= 50 (v2 43,829; v3 15) | >= 500 |
+| N2 | the repair paths are rarely used | `exact_rebuilt` + `psf_rerouted` + `best_effort` <= 10 (v2 151; v3 4) | >= 30 |
+| N3 | no fallbacks on the cliff | F + C fallbacks = 0 | any |
+| N4 | the compounding drift is removed | C drift at lap 20,000 <= 3e-10 (v2 8.33e-10; v3 1.66e-9) | >= 8.3e-10 |
+| N5 | nothing else breaks | L1, L2, L4 (E loss <= 1e-13), L5 clear | any trips |
+| N6 | cost at home, against v2 on the same machine | E median <= 1.00 x 10.6 ms and F median <= 1.15 x 27.4 ms | E >= 1.15 x or F >= 1.30 x |
+| N7 | the drift is environment-independent | C drift at laps 1,000 and 20,000 within 1% of the sandbox's 1e-14 arm (6.056e-12, 1.219e-10) | either off by > 10% |
+
+Between the bounds: ambiguous. Reasoning: N1-N3 and N5 follow v3 (the
+threshold only adds polish steps, which do not create fallbacks). N4 and N7
+follow Addendum 239 and the bit-identical non-timing values found across the
+sandbox and the pod (Addendum 224). N6: the fixed core removed the fallback
+path from E (sandbox 10.5 -> 8.5 ms, Addendum 224's dry run) and the threshold
+adds 5% there, so E should not be slower than v2; F has no fallbacks to lose
+and gains the threshold's 8%. The v2 medians are from one run; runs on
+different evenings differed by about 5% (Addendum 222).
+
+**Reported without prediction:** `GUARD_STATS`, RSS, L3 and L6, the blocks
+behind any fallback or repair.
+
+## 4. Decision rule, fixed now
+
+If V0, T0 and N1-N5 hold, `psf_compile.py` 2026-09-28.1 with the fixed core
+becomes the release: the core patch is committed (`src/lib.rs`, not the
+`.bak` file), the README notice is updated, and N6-N7 are reported whatever
+their verdict. If N1-N5 fail in any part, the core is rolled back
+(`src/lib.rs.bak_2026-09-28`, rebuild) and `psf_compile.py` stays at
+2026-09-27.7 until the failure is understood.
+
+## 5. What this does not establish
+
+The real device; circuits beyond the three families of the long loop and
+the GPU checks of Addenda 230 and 241; other machines' timing.
+
+
+---
+
+<!-- ===== Addendum 244 (source: spare-qubit-cliff-addendum-244-2026-09-28.md) ===== -->
+
+> **Note added when merging:** Every prediction of Addendum 243 holds at home: fallbacks 43,829 -> 15, drift 8.33e-10 -> 1.22e-10 (equal to the workplace sandbox), E 0.90x and F 1.08x of v2's compile time. The fixed core with psf_compile.py 2026-09-28.1 becomes the release.
+
+## Addendum 244 -- The candidate release at home: the fixed Rust core with psf_compile.py 2026-09-28.1 (REFINE_THRESHOLD 1e-14) clears every prediction over 100,000 compiles; the compounding drift falls to 1.22e-10 (v2 8.33e-10) and matches the workplace sandbox to all printed digits; by the pre-registered rule, the pair becomes the release (2026-09-28)
+
+**Pre-registered in**: `spare-qubit-cliff-addendum-243-preregistration-2026-09-28.md`.
+Home WSL2 (12 cores), Python 3.12.13, Qiskit 2.5.2, `block_gate_floor` 8.
+`psf_compile.py` 2026-09-28.1 (`3616efc8...c60b`), [`long_loop_100k_v4.py`](../../benchmarks/long_loop_100k_v4.py)
+(`2c928b1b...90e0`) and `CORE_VERSION` 2026-09-28.1 (built at home from the
+patched `src/lib.rs` with cargo 1.98.1 and maturin 1.15.0), all printed by the
+script before the first lap, with `REFINE_THRESHOLD` 1e-14. Run after Stage 2's
+`layout` step (W1 and W2 used the previous core). Part wall times 1,772 s (F),
+945 s (C), 383 s (E).
+
+**T0:** `cargo test --release --lib` 9 passed; pytest on the five existing
+test files and [`test_release_2026_09_28.py`](../../benchmarks/test_release_2026_09_28.py): 83 passed. A 1/100-scale smoke
+run was made first (plumbing only; its C drift at lap 200 was 1.16e-12).
+
+## 1. Scoring
+
+| ID | Prediction | Result | v2 (home, pre-fix core, 222) | v3 (workplace, fixed core, 1e-13, 236) |
+|---|---|---|---|---|
+| N1 | E fallbacks <= 50 | **confirmed**: 15 | 43,829 | 15 |
+| N2 | repair paths <= 10 | **confirmed**: 4 (`exact_rebuilt` 4, `psf_rerouted` 0, `best_effort` 0) | 151 | 4 |
+| N3 | F + C fallbacks = 0 | **confirmed**: 0 | 0 | 0 |
+| N4 | C drift at lap 20,000 <= 3e-10 | **confirmed**: 1.219e-10 | 8.33e-10 | 1.66e-9 |
+| N5 | L1, L2, L4, L5 clear | **confirmed** (F per-pair 9.99e-16, E loss 3.3e-16) | clear | clear |
+| N6 | E median <= 1.00 x v2, F median <= 1.15 x v2 | **confirmed**: E 9.5 ms (0.90 x), F 29.6 ms (1.08 x) | E 10.6, F 27.4 ms | (sandbox) |
+| N7 | C drift within 1% of the sandbox's 1e-14 arm | **confirmed**: 6.0565e-12 and 1.2191e-10 against 6.056e-12 and 1.219e-10 | -- | -- |
+
+Timing flags L3 and L6 clear in all parts. RSS growth +8, -4, -3 MB.
+
+The CSVs were received and the summaries recomputed from them (row counts,
+fallbacks, worst checks, medians, p99, maxima, C drift at laps 1,000, 5,000,
+10,000 and 20,000): all match the log.
+
+## 2. Reading
+
+1. **The pair does what each half did separately.** The core fix removes
+   the training loop's fallbacks (43,829 -> 15) and the rerouted block; the
+   lower threshold removes the drift the fix had introduced, and more: the
+   compounding chain drifts 6.1e-15 per lap, seven times less than with the
+   pre-fix core. Every output stays exact.
+2. **Cross-environment agreement.** The drift at laps 1,000 and 20,000 equals
+   the workplace sandbox's value (Python 3.11, numpy 2.4.4, core built with
+   rustc 1.95.0, threshold set in memory) to all printed digits, although
+   Python, numpy, CPU and the build all differ. The 15 E fallbacks fall on the
+   same 15 laps as in v3 (2,112, 4,003, ..., 29,982): they are a property of
+   the core on those inputs, untouched by the threshold. F's per-pair check
+   values differ from v3's, as expected: the threshold changes polish steps
+   and so output bits, not structure.
+3. **Cost at home.** F is 8% slower than v2 (more blocks polished; the cliff
+   has no fallbacks to lose), E 10% faster (the fixed core no longer sends 13%
+   of its blocks to Qiskit's synthesis). This is a comparison between runs on
+   different evenings on the same machine (runs differed by about 5% before).
+4. **Not explained:** the 15 fallback blocks (degenerate/numeric in the core;
+   lap 2,112 is the known `PsfNumericError` block) and the 4 exact rebuilds.
+   Both are caught and repaired in Python; their cause is open.
+
+## 3. Decision (rule of Addendum 243)
+
+V0, T0 and N1-N5 hold, so **the fixed core (`CORE_VERSION` 2026-09-28.1) with
+`psf_compile.py` 2026-09-28.1 becomes the release**: `src/lib.rs` is committed
+(the patch of `patches/rust_core_fix_2026-09-28.1/`; not the `.bak` file) and
+the README notice is updated. Anyone building from source gets the new core
+with `maturin develop --release`; an older build of the core still works with
+`psf_compile.py` 2026-09-28.1 (`CORE_VERSION` is then None), but without the
+fix.
+
+## 4. Files
+
+| File | What it is |
+|---|---|
+| [`benchmarks/long_loop_100k_v4.py`](../../benchmarks/long_loop_100k_v4.py) | the registered test |
+| [`benchmarks/test_release_2026_09_28.py`](../../benchmarks/test_release_2026_09_28.py) | tests for changelog items 26-27 |
+| [`data/logs/long_loop_100k_v4.txt`](../../data/logs/long_loop_100k_v4.txt) | log (received and checked) |
+| [`data/long_loop_F_2026-09-28_v4.csv`](../../data/long_loop_F_2026-09-28_v4.csv), [`data/long_loop_C_2026-09-28_v4.csv`](../../data/long_loop_C_2026-09-28_v4.csv), [`data/long_loop_E_2026-09-28_v4.csv`](../../data/long_loop_E_2026-09-28_v4.csv) | every lap (50,000, 20,000, 30,000 rows; received; summaries recomputed) |
+
 ---
 
 ---
