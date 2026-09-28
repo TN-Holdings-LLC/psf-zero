@@ -1,0 +1,41 @@
+platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | cores 12 | python 3.12.13 | qiskit 2.5.2
+LOADED <repo>/psf_compile.py 2026-09-28.1 3616efc8b8a7bea184d6170fb7379d509d0bfec9828f4eb2f703dd4d26d8c60b | CORE_VERSION 2026-09-28.1
+SCRIPT <repo>/benchmarks/real_target_cliff.py 11d2ce81be09dd4ad060806e945a55c37b65cde8bc5f44a90ad415135a0614b4
+Stage 0: device ibm_kingston, 156 qubits, degree min/median/max 1/2.0/3, max matching 64 pairs (128 qubits), native ['cz', 'rz', 'sx', 'x', 'id'], calibration 2026-09-28 19:55:28+09:00
+No job is submitted; the Target was read once and pickled for the children.
+spare= 0 n=128 input=0 Q3 OK       0.303s 2q=192 pair_check=True worst=0.00010772340309414328
+spare= 0 n=128 input=0 P  OK       0.051s 2q=192 pair_check=True worst=9.285793126325116e-15
+spare= 0 n=128 input=1 Q3 OK       0.272s 2q=192 pair_check=True worst=4.67228461771105e-14
+spare= 0 n=128 input=1 P  OK       0.053s 2q=192 pair_check=True worst=9.83957079087159e-15
+spare= 0 n=128 input=2 Q3 OK       0.271s 2q=192 pair_check=True worst=4.8523838405394964e-14
+spare= 0 n=128 input=2 P  OK       0.056s 2q=192 pair_check=True worst=8.837273272229771e-15
+spare= 2 n=126 input=0 Q3 OK       0.275s 2q=189 pair_check=True worst=5.112066241831921e-14
+spare= 2 n=126 input=0 P  OK       0.050s 2q=189 pair_check=True worst=1.0180921089545519e-14
+spare= 2 n=126 input=1 Q3 OK       0.290s 2q=189 pair_check=True worst=7.1465506726641e-05
+spare= 2 n=126 input=1 P  OK       0.053s 2q=189 pair_check=True worst=1.0659392877580675e-14
+spare= 2 n=126 input=2 Q3 OK       0.273s 2q=189 pair_check=True worst=6.416723428015617e-14
+spare= 2 n=126 input=2 P  OK       0.051s 2q=189 pair_check=True worst=1.0023602607418602e-14
+spare= 8 n=120 input=0 Q3 OK       0.298s 2q=180 pair_check=True worst=2.323516380234038e-14
+spare= 8 n=120 input=0 P  OK       0.062s 2q=180 pair_check=True worst=9.225464947993344e-15
+spare= 8 n=120 input=1 Q3 OK       0.301s 2q=180 pair_check=True worst=3.308753187765319e-14
+spare= 8 n=120 input=1 P  OK       0.052s 2q=180 pair_check=True worst=1.0688266950133626e-14
+spare= 8 n=120 input=2 Q3 OK       0.298s 2q=180 pair_check=True worst=4.8888141349701447e-14
+spare= 8 n=120 input=2 P  OK       0.051s 2q=180 pair_check=True worst=8.056669832992051e-15
+spare=16 n=112 input=0 Q3 OK       0.308s 2q=168 pair_check=True worst=6.468658310643867e-14
+spare=16 n=112 input=0 P  OK       0.047s 2q=168 pair_check=True worst=9.757260724111824e-15
+spare=16 n=112 input=1 Q3 OK       0.305s 2q=168 pair_check=True worst=7.548966601811328e-14
+spare=16 n=112 input=1 P  OK       0.050s 2q=168 pair_check=True worst=1.0528690742426728e-14
+spare=16 n=112 input=2 Q3 OK       0.326s 2q=168 pair_check=True worst=3.313047115872275e-14
+spare=16 n=112 input=2 P  OK       0.050s 2q=168 pair_check=True worst=9.290532442087998e-15
+
+=== pre-registered (Addendum 245) ===
+C0 every PSF-Zero compile finished without error: True
+R1 spare 0: PSF-Zero within 1 s in 3/3 (confirmed 3/3, refuted <= 2) -> CONFIRMED
+R2 spare 0: Qiskit L3 median / PSF-Zero median = 0.272 / 0.053 s = 5.1 (confirmed >= 10, refuted < 3; DNF counted as 180 s) -> AMBIGUOUS
+R3 spare 16: ratio 6.2 (confirmed < 3, refuted >= 10) -> AMBIGUOUS
+R4 two-qubit count: PSF-Zero equal in 12/12, above Qiskit in 0 (confirmed: never above; refuted: above in any) -> CONFIRMED
+R5 PSF-Zero exact per pair (<= 1e-12) wherever the check applies: 12/12 applicable, worst 1.0688266950133626e-14 -> CONFIRMED
+Reported without prediction: Qiskit L3 per-pair worst 0.00010772340309414328 over 12 applicable; medians per spare: {0: (0.272, 0.053), 2: (0.275, 0.051), 8: (0.298, 0.052), 16: (0.308, 0.05)}
+
+Wrote real_target_cliff_2026-09-28.csv and real_target_cliff_2026-09-28.json (24 rows)
+DONE

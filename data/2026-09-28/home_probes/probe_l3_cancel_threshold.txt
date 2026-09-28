@@ -1,0 +1,24 @@
+SCRIPT <repo>/benchmarks/probe_l3_cancel_threshold.py 0046dcb2cae3f31b549ee653fbfb97c0b86ab8b628b34c48895e852057efc705
+qiskit 2.5.2
+case theta -1.077232e-04 a -1.570796: removed True, distance 1.077e-04, gates ['cz']
+case theta -1.077232e-04 a +0.300000: removed True, distance 1.077e-04, gates ['cz']
+case theta +7.146579e-05 a -1.570796: removed True, distance 7.147e-05, gates ['cz']
+case theta +7.146579e-05 a +0.300000: removed True, distance 7.147e-05, gates ['cz']
+
+across_cz a -1.570796 sign +1 approx None: removed below |theta| = 1.256637e-04 (distance there 1.257e-04); kept from 1.256637e-04 (distance 2.822e-17)
+Traceback (most recent call last):
+  File "<repo>/benchmarks/probe_l3_cancel_threshold.py", line 110, in <module>
+    main()
+  File "<repo>/benchmarks/probe_l3_cancel_threshold.py", line 105, in main
+    print(f"{shape:9s} a {a:+.6f} sign {sign:+d} approx {approx}: {boundary(shape, a, sign, approx)}", flush=True)
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/benchmarks/probe_l3_cancel_threshold.py", line 73, in boundary
+    rem_lo, _, _ = run(shape, a, sign * lo, approx)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/benchmarks/probe_l3_cancel_threshold.py", line 65, in run
+    out = PassManager([CommutativeCancellation(**kw)]).run(qc)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit/transpiler/basepasses.py", line 50, in __call__
+    pass_instance = type.__call__(cls, *args, **kwargs)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: CommutativeCancellation.__init__() got an unexpected keyword argument 'approximation_degree'

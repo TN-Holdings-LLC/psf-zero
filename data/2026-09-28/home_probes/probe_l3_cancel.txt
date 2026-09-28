@@ -1,0 +1,149 @@
+SCRIPT <repo>/benchmarks/probe_l3_cancel.py ab390a5bc8a628086e0c37da93932c2903dfff70e3e80ab72db0a44815b18c3d
+
+=== spare 0 input 0 pair 7 ===
+before CommutativeCancellation: 37 gates, distance 2.750e-15
+   0 rz  q[0] -1.731793377
+   1 sx  q[0] 
+   2 rz  q[0] -1.677772520
+   3 sx  q[0] 
+   4 rz  q[0] -1.570904050
+   5 rz  q[1] +2.866398960
+   6 sx  q[1] 
+   7 rz  q[1] -1.883076708
+   8 sx  q[1] 
+   9 rz  q[1] +1.495599356
+  10 cz  q[0, 1] 
+  11 rz  q[0] +1.570796327
+  12 sx  q[0] 
+  13 rz  q[0] -2.401047099
+  14 sx  q[0] 
+  15 rz  q[0] +1.570796327
+  16 rz  q[1] -1.570796327
+  17 sx  q[1] 
+  18 rz  q[1] -1.168180060
+  19 cz  q[0, 1] 
+  20 rz  q[0] -1.570796327
+  21 sx  q[0] 
+  22 rz  q[0] -2.504707629
+  23 sx  q[0] 
+  24 rz  q[1] +1.570796327
+  25 sx  q[1] 
+  26 cz  q[0, 1] 
+  27 rz  q[0] -0.300607982
+  28 sx  q[0] 
+  29 rz  q[0] -2.279005682
+  30 sx  q[0] 
+  31 rz  q[0] -1.225372336
+  32 rz  q[1] +0.478676623
+  33 sx  q[1] 
+  34 rz  q[1] -1.449790563
+  35 sx  q[1] 
+  36 rz  q[1] -0.819827719
+after: 31 gates, distance 1.077e-04
+   0 rz  q[0] -1.731793377
+   1 sx  q[0] 
+   2 rz  q[0] -1.677772520
+   3 sx  q[0] 
+   4 rz  q[1] +2.866398960
+   5 sx  q[1] 
+   6 rz  q[1] -1.883076708
+   7 sx  q[1] 
+   8 rz  q[1] -0.075196971
+   9 cz  q[0, 1] 
+  10 sx  q[0] 
+  11 rz  q[0] -2.401047099
+  12 sx  q[0] 
+  13 sx  q[1] 
+  14 rz  q[1] +0.402616267
+  15 cz  q[0, 1] 
+  16 sx  q[0] 
+  17 rz  q[0] -2.504707629
+  18 sx  q[0] 
+  19 sx  q[1] 
+  20 cz  q[0, 1] 
+  21 rz  q[0] -0.300607982
+  22 sx  q[0] 
+  23 rz  q[0] -2.279005682
+  24 sx  q[0] 
+  25 rz  q[0] -1.225372336
+  26 rz  q[1] +0.478676623
+  27 sx  q[1] 
+  28 rz  q[1] -1.449790563
+  29 sx  q[1] 
+  30 rz  q[1] -0.819827719
+CommutativeCancellation alone on the 'before' list: 31 gates, distance 1.077e-04 (with target); 31 gates, 1.077e-04 (without)
+
+=== spare 2 input 1 pair 47 ===
+before CommutativeCancellation: 37 gates, distance 2.646e-15
+   0 rz  q[0] +0.792260625
+   1 sx  q[0] 
+   2 rz  q[0] -1.462596807
+   3 sx  q[0] 
+   4 rz  q[0] +2.721703299
+   5 rz  q[1] -1.556126843
+   6 sx  q[1] 
+   7 rz  q[1] -1.958340796
+   8 sx  q[1] 
+   9 rz  q[1] +0.215127046
+  10 cz  q[0, 1] 
+  11 rz  q[0] +1.570796327
+  12 sx  q[0] 
+  13 rz  q[0] -2.084841221
+  14 sx  q[0] 
+  15 rz  q[0] +1.570796327
+  16 rz  q[1] -1.570796327
+  17 sx  q[1] 
+  18 rz  q[1] -1.570724861
+  19 cz  q[0, 1] 
+  20 rz  q[0] -1.570796327
+  21 sx  q[0] 
+  22 rz  q[0] +2.572114337
+  23 sx  q[0] 
+  24 rz  q[1] +1.570796327
+  25 sx  q[1] 
+  26 cz  q[0, 1] 
+  27 rz  q[0] +1.417983827
+  28 sx  q[0] 
+  29 rz  q[0] -1.209170348
+  30 sx  q[0] 
+  31 rz  q[0] -0.357882980
+  32 rz  q[1] -3.062418462
+  33 sx  q[1] 
+  34 rz  q[1] -1.934227564
+  35 sx  q[1] 
+  36 rz  q[1] -2.911911448
+after: 31 gates, distance 7.147e-05
+   0 rz  q[0] +0.792260625
+   1 sx  q[0] 
+   2 rz  q[0] -1.462596807
+   3 sx  q[0] 
+   4 rz  q[0] +4.292499626
+   5 rz  q[1] -1.556126843
+   6 sx  q[1] 
+   7 rz  q[1] -1.958340796
+   8 sx  q[1] 
+   9 rz  q[1] -1.355669281
+  10 cz  q[0, 1] 
+  11 sx  q[0] 
+  12 rz  q[0] -2.084841221
+  13 sx  q[0] 
+  14 sx  q[1] 
+  15 cz  q[0, 1] 
+  16 sx  q[0] 
+  17 rz  q[0] +2.572114337
+  18 sx  q[0] 
+  19 sx  q[1] 
+  20 cz  q[0, 1] 
+  21 rz  q[0] +1.417983827
+  22 sx  q[0] 
+  23 rz  q[0] -1.209170348
+  24 sx  q[0] 
+  25 rz  q[0] -0.357882980
+  26 rz  q[1] -3.062418462
+  27 sx  q[1] 
+  28 rz  q[1] -1.934227564
+  29 sx  q[1] 
+  30 rz  q[1] -2.911911448
+CommutativeCancellation alone on the 'before' list: 31 gates, distance 7.147e-05 (with target); 31 gates, 7.147e-05 (without)
+
+DONE

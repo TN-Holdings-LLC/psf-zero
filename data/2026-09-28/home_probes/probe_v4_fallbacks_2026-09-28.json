@@ -1,0 +1,493 @@
+[
+ {
+  "lap": 2112,
+  "position": 0,
+  "pair": [
+   0,
+   1
+  ],
+  "layer": 1,
+  "error": "PsfNumericError",
+  "message": "Cartan decomposition failed: NumericInstability",
+  "weyl": [
+   0.2023103785218776,
+   0.20127744973394224,
+   -0.20106204743763945
+  ],
+  "special": {
+   "a-b": 0.0010329287879353721,
+   "b-|c|": 0.00021540229630279129,
+   "|c|": 0.20106204743763945,
+   "pi/4-a": 0.5830877848755707,
+   "b": 0.20127744973394224
+  },
+  "rxx_ryy_rzz": [
+   -2.7390377541219086,
+   2.7394685587145142,
+   -0.4046207570437547
+  ],
+  "rebuilt": false,
+  "guard_delta": {
+   "checked": 1
+  }
+ },
+ {
+  "lap": 4003,
+  "position": 4,
+  "pair": [
+   3,
+   4
+  ],
+  "layer": 2,
+  "error": "PsfNumericError",
+  "message": "Cartan decomposition failed: NumericInstability",
+  "weyl": [
+   0.39784954517434645,
+   0.3780220678045174,
+   -0.0013966458703431606
+  ],
+  "special": {
+   "a-b": 0.01982747736982904,
+   "b-|c|": 0.37662542193417425,
+   "|c|": 0.0013966458703431606,
+   "pi/4-a": 0.3875486182231018,
+   "b": 0.3780220678045174
+  },
+  "rxx_ryy_rzz": [
+   2.3855485179807583,
+   -2.3458935632411007,
+   -0.002793291740686609
+  ],
+  "rebuilt": false,
+  "guard_delta": {
+   "checked": 1
+  }
+ },
+ {
+  "lap": 7849,
+  "position": 8,
+  "pair": [
+   7,
+   8
+  ],
+  "layer": 2,
+  "error": "PsfNumericError",
+  "message": "Cartan decomposition failed: NumericInstability",
+  "weyl": [
+   0.26556322896884055,
+   0.24860921897078758,
+   0.0022039536013584993
+  ],
+  "special": {
+   "a-b": 0.016954009998052966,
+   "b-|c|": 0.24640526536942908,
+   "|c|": 0.0022039536013584993,
+   "pi/4-a": 0.5198349344286077,
+   "b": 0.24860921897078758
+  },
+  "rxx_ryy_rzz": [
+   0.00440790720271611,
+   0.4972184379415753,
+   -0.5311264579376804
+  ],
+  "rebuilt": false,
+  "guard_delta": {
+   "checked": 1
+  }
+ },
+ {
+  "lap": 7882,
+  "position": 10,
+  "pair": [
+   9,
+   10
+  ],
+  "layer": 2,
+  "error": "PsfNumericError",
+  "message": "Cartan decomposition failed: NumericInstability",
+  "weyl": [
+   0.30153425098694786,
+   0.2978386312641074,
+   -0.005350645351718697
+  ],
+  "special": {
+   "a-b": 0.0036956197228404375,
+   "b-|c|": 0.2924879859123887,
+   "|c|": 0.005350645351718697,
+   "pi/4-a": 0.4838639124105004,
+   "b": 0.2978386312641074
+  },
+  "rxx_ryy_rzz": [
+   -0.595677262528215,
+   0.010701290703437172,
+   -0.6030685019738959
+  ],
+  "rebuilt": false,
+  "guard_delta": {
+   "checked": 1,
+   "inexact": 1
+  }
+ },
+ {
+  "lap": 10193,
+  "position": 4,
+  "pair": [
+   3,
+   4
+  ],
+  "layer": 2,
+  "error": "PsfNumericError",
+  "message": "Cartan decomposition failed: NumericInstability",
+  "weyl": [
+   0.2672086176408408,
+   0.2658492315737383,
+   -0.018604483815873207
+  ],
+  "special": {
+   "a-b": 0.0013593860671025082,
+   "b-|c|": 0.2472447477578651,
+   "|c|": 0.018604483815873207,
+   "pi/4-a": 0.5181895457566075,
+   "b": 0.2658492315737383
+  },
+  "rxx_ryy_rzz": [
+   3.1043836859580467,
+   -2.6098941904423167,
+   -0.5344172352816816
+  ],
+  "rebuilt": false,
+  "guard_delta": {
+   "checked": 1
+  }
+ },
+ {
+  "lap": 11864,
+  "position": 2,
+  "pair": [
+   1,
+   2
+  ],
+  "layer": 2,
+  "error": "PsfNumericError",
+  "message": "Cartan decomposition failed: NumericInstability",
+  "weyl": [
+   0.37573335313877676,
+   0.2335348636906147,
+   -0.14214709095291145
+  ],
+  "special": {
+   "a-b": 0.14219848944816205,
+   "b-|c|": 0.09138777273770327,
+   "|c|": 0.14214709095291145,
+   "pi/4-a": 0.4096648102586715,
+   "b": 0.2335348636906147
+  },
+  "rxx_ryy_rzz": [
+   -3.893059359867347,
+   -0.2842941819058229,
+   0.46706972738123
+  ],
+  "rebuilt": false,
+  "guard_delta": {
+   "checked": 1
+  }
+ },
+ {
+  "lap": 13732,
+  "position": 8,
+  "pair": [
+   7,
+   8
+  ],
+  "layer": 2,
+  "error": "PsfNumericError",
+  "message": "Cartan decomposition failed: NumericInstability",
+  "weyl": [
+   0.2767997120394252,
+   0.19121339673562715,
+   -0.00019425686811591625
+  ],
+  "special": {
+   "a-b": 0.08558631530379807,
+   "b-|c|": 0.19101913986751123,
+   "|c|": 0.00019425686811591625,
+   "pi/4-a": 0.5085984513580231,
+   "b": 0.19121339673562715
+  },
+  "rxx_ryy_rzz": [
+   0.38242679347125436,
+   -0.5535994240788505,
+   -0.00038851373623163815
+  ],
+  "rebuilt": true,
+  "guard_delta": {
+   "checked": 1,
+   "inexact": 2,
+   "exact_rebuilt": 1
+  }
+ },
+ {
+  "lap": 14566,
+  "position": 8,
+  "pair": [
+   7,
+   8
+  ],
+  "layer": 2,
+  "error": "PsfNumericError",
+  "message": "Cartan decomposition failed: NumericInstability",
+  "weyl": [
+   0.30846209064688423,
+   0.24694104260446692,
+   0.00018976325294506324
+  ],
+  "special": {
+   "a-b": 0.061521048042417315,
+   "b-|c|": 0.24675127935152186,
+   "|c|": 0.00018976325294506324,
+   "pi/4-a": 0.47693607275056404,
+   "b": 0.24694104260446692
+  },
+  "rxx_ryy_rzz": [
+   0.4938820852089337,
+   -0.6169241812937682,
+   0.0003795265058909327
+  ],
+  "rebuilt": false,
+  "guard_delta": {
+   "checked": 1,
+   "inexact": 1
+  }
+ },
+ {
+  "lap": 16244,
+  "position": 4,
+  "pair": [
+   3,
+   4
+  ],
+  "layer": 2,
+  "error": "PsfNumericError",
+  "message": "Cartan decomposition failed: NumericInstability",
+  "weyl": [
+   0.3182548576083182,
+   0.31732943747363224,
+   -0.030001665328650562
+  ],
+  "special": {
+   "a-b": 0.0009254201346859392,
+   "b-|c|": 0.2873277721449817,
+   "|c|": 0.030001665328650562,
+   "pi/4-a": 0.4671433057891301,
+   "b": 0.31732943747363224
+  },
+  "rxx_ryy_rzz": [
+   2.5069337786425288,
+   -2.5050829383731577,
+   -0.060003330657301006
+  ],
+  "rebuilt": false,
+  "guard_delta": {
+   "checked": 1
+  }
+ },
+ {
+  "lap": 16272,
+  "position": 4,
+  "pair": [
+   3,
+   4
+  ],
+  "layer": 2,
+  "error": "PsfNumericError",
+  "message": "Cartan decomposition failed: NumericInstability",
+  "weyl": [
+   0.36916011191202536,
+   0.3685244432652211,
+   -0.061477666383902285
+  ],
+  "special": {
+   "a-b": 0.0006356686468042549,
+   "b-|c|": 0.3070467768813188,
+   "|c|": 0.061477666383902285,
+   "pi/4-a": 0.4162380514854229,
+   "b": 0.3685244432652211
+  },
+  "rxx_ryy_rzz": [
+   2.404543767059351,
+   -2.4032724297657424,
+   -0.12295533276780458
+  ],
+  "rebuilt": false,
+  "guard_delta": {
+   "checked": 1
+  }
+ },
+ {
+  "lap": 16760,
+  "position": 8,
+  "pair": [
+   7,
+   8
+  ],
+  "layer": 2,
+  "error": "PsfNumericError",
+  "message": "Cartan decomposition failed: NumericInstability",
+  "weyl": [
+   0.3880275265622801,
+   0.3851387289715366,
+   0.02459429160190396
+  ],
+  "special": {
+   "a-b": 0.002888797590743508,
+   "b-|c|": 0.36054443736963265,
+   "|c|": 0.02459429160190396,
+   "pi/4-a": 0.39737063683516816,
+   "b": 0.3851387289715366
+  },
+  "rxx_ryy_rzz": [
+   0.7760550531245605,
+   -0.049188583203808256,
+   0.7702774579430733
+  ],
+  "rebuilt": false,
+  "guard_delta": {
+   "checked": 1,
+   "inexact": 1
+  }
+ },
+ {
+  "lap": 27127,
+  "position": 4,
+  "pair": [
+   3,
+   4
+  ],
+  "layer": 2,
+  "error": "PsfNumericError",
+  "message": "Cartan decomposition failed: NumericInstability",
+  "weyl": [
+   0.40504039529892033,
+   0.404677112075309,
+   -0.06023499954503819
+  ],
+  "special": {
+   "a-b": 0.0003632832236113437,
+   "b-|c|": 0.3444421125302708,
+   "|c|": 0.06023499954503819,
+   "pi/4-a": 0.38035776809852795,
+   "b": 0.404677112075309
+  },
+  "rxx_ryy_rzz": [
+   3.0211226544997167,
+   -2.332238429439175,
+   -0.81008079059784
+  ],
+  "rebuilt": true,
+  "guard_delta": {
+   "checked": 1,
+   "inexact": 2,
+   "exact_rebuilt": 1
+  }
+ },
+ {
+  "lap": 27467,
+  "position": 4,
+  "pair": [
+   3,
+   4
+  ],
+  "layer": 2,
+  "error": "PsfNumericError",
+  "message": "Cartan decomposition failed: NumericInstability",
+  "weyl": [
+   0.3147258373349002,
+   0.31239039022587456,
+   0.005151528903966529
+  ],
+  "special": {
+   "a-b": 0.002335447109025668,
+   "b-|c|": 0.30723886132190803,
+   "|c|": 0.005151528903966529,
+   "pi/4-a": 0.47067232606254805,
+   "b": 0.31239039022587456
+  },
+  "rxx_ryy_rzz": [
+   2.516811873138044,
+   -2.5121409789199936,
+   0.010303057807932682
+  ],
+  "rebuilt": false,
+  "guard_delta": {
+   "checked": 1
+  }
+ },
+ {
+  "lap": 27857,
+  "position": 4,
+  "pair": [
+   3,
+   4
+  ],
+  "layer": 2,
+  "error": "PsfNumericError",
+  "message": "Cartan decomposition failed: NumericInstability",
+  "weyl": [
+   0.5665579149078095,
+   0.431050308613274,
+   -0.00011826426382666178
+  ],
+  "special": {
+   "a-b": 0.1355076062945355,
+   "b-|c|": 0.4309320443494473,
+   "|c|": 0.00011826426382666178,
+   "pi/4-a": 0.2188402484896388,
+   "b": 0.431050308613274
+  },
+  "rxx_ryy_rzz": [
+   2.279492036363245,
+   -2.008476823774175,
+   -0.0002365285276532418
+  ],
+  "rebuilt": true,
+  "guard_delta": {
+   "checked": 1,
+   "inexact": 2,
+   "exact_rebuilt": 1
+  }
+ },
+ {
+  "lap": 29982,
+  "position": 6,
+  "pair": [
+   5,
+   6
+  ],
+  "layer": 2,
+  "error": "PsfNumericError",
+  "message": "Cartan decomposition failed: NumericInstability",
+  "weyl": [
+   0.7488137111005253,
+   0.14797277646942447,
+   0.14792709248671687
+  ],
+  "special": {
+   "a-b": 0.6008409346311008,
+   "b-|c|": 4.5683982707600546e-05,
+   "|c|": 0.14792709248671687,
+   "pi/4-a": 0.036584452296922976,
+   "b": 0.14797277646942447
+  },
+  "rxx_ryy_rzz": [
+   -1.643965231388742,
+   -0.29585418497343385,
+   0.2959455529388489
+  ],
+  "rebuilt": true,
+  "guard_delta": {
+   "checked": 1,
+   "inexact": 2,
+   "exact_rebuilt": 1
+  }
+ }
+]

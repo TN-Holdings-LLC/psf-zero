@@ -9299,6 +9299,34 @@ Stage-1 and Stage-1b results (Addenda 168, 170).
   data had been produced. The same run confirmed that the home copies of
   the Stage-1 and Stage-1b scripts match their locked hashes (`28197bc4...`,
   `ec7f173c...`).
+- **Amendment 2, before any result (written 2026-09-28, after the
+  cancellation and before attempt 2).** `preflight`
+  passed and `submit` sent the job on 2026-09-28 at 18:54:37 JST
+  (attempt 1: ibm_kingston, calibration 18:30:17 JST, chosen arm M1,
+  control A, job `dat3inihcrkc73dtjrvg`). The account's open-plan usage allowance was
+  already used up, so the job stayed queued. The dashboard showed the
+  allowance renewing on 2026-09-29 at 19:29 JST. An older job from
+  2026-09-04 was also still pending; it is unrelated to this experiment.
+  The owner cancelled it first, then cancelled attempt 1 at 21:21 JST
+  while it was still queued. The dashboard showed a usage of 2 s for each
+  cancelled job. **No result of attempt 1 exists or was read.** Stage 2 is
+  submitted again after the allowance renews (attempt 2):
+  - the procedure, the rules, the predictions S1-S4 and P0, and the script
+    (`1e013e6b...`) are unchanged;
+  - attempt 1's manifest is kept as
+    `stage2_manifest_2026-09-28_attempt1_canceled.json` and its logs as
+    `stage2_submit_attempt1_canceled.txt` and
+    `stage2_score_attempt1_canceled.txt` (the job still queued).
+    `stage2_layout.txt` keeps its name (see below). Attempt 2 applies the device and
+    arm rules to the calibration at its own submission time and writes a
+    new manifest under the script's fixed name
+    (`stage2_manifest_2026-09-28.json`). Its predicted M values are the
+    ones scored;
+  - the `layout` step (W1, W2) already ran on 2026-09-28 on attempt 1's
+    device (ibm_kingston), with the pre-fix core. It is compile-only and is not repeated;
+    Addendum 212 reports it as run;
+  - P0's 60 s budget counts attempt 2's job. The 2 s shown for the
+    cancelled job is reported next to it.
 - Reuses, unchanged: [`xor_prereg_stage1_sweep.py`](../../benchmarks/xor_prereg_stage1_sweep.py) (circuits, pinned
   routing, ISA check) and [`xor_prereg_stage1b_sweep.py`](../../benchmarks/xor_prereg_stage1b_sweep.py) (arms A, B, M1,
   M4; Aer helper). Their hashes are printed by the script.
@@ -12544,6 +12572,327 @@ fix.
 | [`benchmarks/test_release_2026_09_28.py`](../../benchmarks/test_release_2026_09_28.py) | tests for changelog items 26-27 |
 | [`data/logs/long_loop_100k_v4.txt`](../../data/logs/long_loop_100k_v4.txt) | log (received and checked) |
 | [`data/long_loop_F_2026-09-28_v4.csv`](../../data/long_loop_F_2026-09-28_v4.csv), [`data/long_loop_C_2026-09-28_v4.csv`](../../data/long_loop_C_2026-09-28_v4.csv), [`data/long_loop_E_2026-09-28_v4.csv`](../../data/long_loop_E_2026-09-28_v4.csv) | every lap (50,000, 20,000, 30,000 rows; received; summaries recomputed) |
+
+
+---
+
+<!-- ===== Addendum 245 (source: spare-qubit-cliff-addendum-245-preregistration-2026-09-28.md) ===== -->
+
+> **Note added when merging:** Home pre-registration: the layout cliff on ibm_kingston's live Target (156 qubits, heavy-hex), compile time only, no QPU.
+
+## Addendum 245 -- Pre-registration: the layout cliff on a real device's Target (ibm_kingston, heavy-hex Heron r2, 156 qubits), compile time only, no QPU (2026-09-28)
+
+**Written before running.** Results will be recorded as Addendum 246.
+
+## 1. Why
+
+The cliff has been measured on fake devices: FakeNighthawk (square lattice,
+Addenda 178-184, 225-226) and earlier fake heavy-hex and grid devices. Stage 2
+(Addendum 211) read the live Target of ibm_kingston for its `layout` step. This
+experiment uses the same live Target to ask whether the cliff appears on a real
+device that can be used today, and whether PSF-Zero meets a 1-second deadline
+there. **No job is submitted and no QPU time is used**: the Target is read once
+through `QiskitRuntimeService` and pickled for the child processes.
+
+## 2. Design ([`benchmarks/real_target_cliff.py`](../../benchmarks/real_target_cliff.py))
+
+- Device: ibm_kingston. Stage 0 prints the qubit count, degree range, native
+  gates, calibration time and the maximum matching M of the coupling map.
+- Widths: n = 2M - spare logical qubits, spare in {0, 2, 8, 16}; spare 0 uses
+  every qubit that can be paired.
+- Circuits: n/2 disjoint `pair24` blocks (`loop_endurance.add_pair24`), random
+  angles, 3 inputs per width (seed 1000 x spare + input).
+- Arms, each compile in its own spawned child, timed around the compile call
+  only, cap 180 s (DNF):
+  - Q3: `transpile(qc, target=target, optimization_level=3, seed_transpiler=0)`;
+  - P: `compile_for_hardware(qc, coupling_map=target's, basis_gates=native,
+    entangling_basis="cx", layout_search=True, on_unsupported="raise",
+    seed_transpiler=0)`, with `psf_compile.py` 2026-09-28.1 and the fixed core
+    (`CORE_VERSION` 2026-09-28.1).
+- Quality: routed two-qubit count; where no two-qubit gate joins different
+  pairs, the per-pair phase-aligned Frobenius distance to the logical pair.
+
+| File | Bytes | Normalized SHA-256 |
+|---|---|---|
+| [`benchmarks/real_target_cliff.py`](../../benchmarks/real_target_cliff.py) | 10,736 | `11d2ce81be09dd4ad060806e945a55c37b65cde8bc5f44a90ad415135a0614b4` |
+
+Syntax-checked here; not run here.
+
+## 3. Predictions
+
+Gate **C0**: every PSF-Zero compile finishes without error (reported; if it
+fails, R1-R5 are read with that caveat).
+
+| ID | Prediction | Confirmed if | Refuted if |
+|---|---|---|---|
+| R1 | PSF-Zero meets a 1 s deadline at spare 0 | 3 of 3 | 2 or fewer |
+| R2 | the cliff appears at spare 0 | Qiskit L3 median / PSF-Zero median >= 10 (DNF counted as 180 s) | < 3 |
+| R3 | it disappears with room to spare | ratio at spare 16 < 3 | >= 10 |
+| R4 | PSF-Zero does not pay in two-qubit gates | never above Qiskit L3's count | above in any compile |
+| R5 | PSF-Zero's outputs are exact | per-pair distance <= 1e-12 wherever the check applies | > 1e-12 anywhere |
+
+Between the bounds: ambiguous. R2 is a genuine question: the cliff has been
+strong on square and grid lattices; heavy-hex has lower degree, and whether a
+156-qubit heavy-hex Target at full pairing triggers it is not known here. A
+refuted R2 is a finding about where the cliff does and does not occur, not a
+failure of the harness.
+
+**Reported without prediction:** the medians per spare, Qiskit L3's per-pair
+distances, every compile time.
+
+## 4. What this does not establish
+
+Execution on the device (nothing is run); other devices; circuits other than
+disjoint pair blocks. Times are home-WSL times.
+
+---
+
+<!-- ===== Addendum 246 (source: spare-qubit-cliff-addendum-246-2026-09-28.md) ===== -->
+
+> **Note added when merging:** R1, R4, R5 confirmed; R2, R3 ambiguous: no cliff at any tested width, but disjoint pairs fill only 128 of the 156 qubits, so the device was never saturated. Qiskit L3 was inexact (about 1e-4) on 2 of 12 outputs; see Addendum 247.
+
+## Addendum 246 -- The layout cliff on a real device's Target (ibm_kingston, 156 qubits): no cliff at any tested width; PSF-Zero compiles in about 0.05 s, exact, with Qiskit L3's two-qubit count; R2 and R3 are ambiguous because disjoint pair blocks can fill only 128 of the 156 qubits, so the device was never saturated (2026-09-28)
+
+**Pre-registered in**: `spare-qubit-cliff-addendum-245-preregistration-2026-09-28.md`
+(Addendum 245). Home WSL2 (12 cores), Python 3.12.13, Qiskit 2.5.2,
+`psf_compile.py` 2026-09-28.1 (`3616efc8...c60b`) with `CORE_VERSION`
+2026-09-28.1, [`benchmarks/real_target_cliff.py`](../../benchmarks/real_target_cliff.py) `11d2ce81...14b4` (the
+registered hash), all printed by the script. Run at 21:07 JST.
+
+**Stage 0.** ibm_kingston: 156 qubits, degree min/median/max 1/2/3, maximum
+matching 64 pairs (128 qubits), native gates cz, rz, sx, x, id, calibration
+2026-09-28 19:55:28 JST. The Target was read once through
+`QiskitRuntimeService` and pickled for the children. **No job was submitted
+and no QPU time was used.**
+
+**C0**: every PSF-Zero compile finished without error.
+
+## 1. Scoring
+
+| ID | Prediction | Result |
+|---|---|---|
+| R1 | PSF-Zero meets 1 s at spare 0 (3 of 3) | **confirmed**: 3 of 3 (0.051-0.056 s) |
+| R2 | the cliff appears at spare 0 (Qiskit L3 / PSF-Zero median >= 10; refuted < 3) | **ambiguous**: 0.272 / 0.053 s = 5.1 |
+| R3 | it disappears with room to spare (ratio at spare 16 < 3; refuted >= 10) | **ambiguous**: 6.2 |
+| R4 | PSF-Zero never above Qiskit L3's two-qubit count | **confirmed**: equal in 12 of 12 |
+| R5 | PSF-Zero exact per pair (<= 1e-12) | **confirmed**: 12 of 12 applicable, worst 1.07e-14 |
+
+Medians over the three inputs (seconds, compile call only):
+
+| spare | logical qubits | Qiskit L3 median [min, max] | PSF-Zero median [min, max] | ratio | two-qubit gates (both arms) |
+|---|---|---|---|---|---|
+| 0 | 128 | 0.272 [0.271, 0.303] | 0.053 [0.051, 0.056] | 5.1 | 192 |
+| 2 | 126 | 0.275 [0.273, 0.290] | 0.051 [0.050, 0.053] | 5.4 | 189 |
+| 8 | 120 | 0.298 [0.298, 0.301] | 0.052 [0.051, 0.062] | 5.7 | 180 |
+| 16 | 112 | 0.308 [0.305, 0.326] | 0.050 [0.047, 0.050] | 6.2 | 168 |
+
+**Reported without prediction.** Qiskit L3's per-pair distance: 10 of 12
+outputs at or below 7.5e-14; two outputs have one pair each off by
+**1.077e-4** (spare 0, input 0, pair 7) and **7.147e-5** (spare 2, input 1,
+pair 47). Their cause is traced in Addendum 247.
+
+The CSV was recomputed here (medians, ranges, ratios, worst distances): it
+matches the log.
+
+## 2. Reading
+
+1. **PSF-Zero meets the deadline with a wide margin on a real device's
+   Target.** About 0.05 s at every width, 20 times under the 1 s deadline,
+   with the same two-qubit count as Qiskit L3 and exact outputs.
+2. **No cliff at the tested widths, but the question R2 asked was not
+   reached.** Qiskit L3 took 0.27-0.33 s at every width. It was slightly
+   slower with *more* room, the opposite of a cliff. The ratio of 5-6 is a
+   constant factor present at every width, not the growth near saturation
+   that defines the cliff on square and grid lattices (Addenda 178-184,
+   225). The reason is a design flaw of the pre-registration: spare was
+   counted from 2M = 128, the qubits that disjoint pairs can fill. On this
+   heavy-hex map the maximum matching leaves 28 of the 156 qubits unpaired.
+   So "spare 0" still had 28 free physical qubits, and the layout search
+   was never under pressure. Both compilers found a layout without a single
+   SWAP (two-qubit count = 3 per pair = the logical count). **Whether a
+   saturated heavy-hex Target shows the cliff remains open**; testing it
+   needs a circuit family that can occupy all 156 qubits (not only disjoint
+   pairs).
+3. **By the pre-registered bounds, R2 and R3 are ambiguous, and they are
+   recorded as such.** The reading above explains why. It does not change
+   the verdicts.
+4. **Qiskit L3 is not exact on 2 of 12 outputs.** Each affected output has
+   one pair off at the 1e-4 level. The size is far below today's hardware
+   error rates, but it occurs at Qiskit's default (no approximation)
+   setting. Addendum 247 shows it comes from `CommutativeCancellation`
+   removing a merged Z rotation smaller than a fixed cutoff.
+
+## 3. What this does not establish
+
+A saturated heavy-hex device (see 2.2); execution on hardware (nothing was
+run); other devices or circuit families. Times are home-WSL times with one
+calibration snapshot.
+
+## 4. Files
+
+| File | What it is |
+|---|---|
+| [`benchmarks/real_target_cliff.py`](../../benchmarks/real_target_cliff.py) | the registered script (`11d2ce81...14b4`) |
+| [`data/2026-09-28/real_target_cliff/real_target_cliff.txt`](../../data/2026-09-28/real_target_cliff/real_target_cliff.txt) | log (the two `qiskit_runtime_service` warning lines, which name the account's instance, are removed; the repository path is replaced by `<repo>`) |
+| [`data/2026-09-28/real_target_cliff/real_target_cliff_2026-09-28.csv`](../../data/2026-09-28/real_target_cliff/real_target_cliff_2026-09-28.csv), `.json` | all 24 compiles (received; summaries recomputed) |
+
+The pickled Target (`real_target_2026-09-28.pkl`) is kept locally and not
+published: loading a pickle runs code, so it is not something to hand out
+for others to load.
+
+---
+
+<!-- ===== Addendum 247 (source: spare-qubit-cliff-addendum-247-2026-09-28.md) ===== -->
+
+> **Note added when merging:** Exploratory: the 15 core fallbacks of the v4 run lie near degenerate Weyl loci; Qiskit L3's two inexact outputs come from CommutativeCancellation removing merged Z rotations below 4 pi x 1e-5.
+
+## Addendum 247 -- Exploratory: (A) the 15 core fallbacks of the v4 run all lie near degenerate Weyl loci; (B) Qiskit L3's two inexact real-target outputs come from CommutativeCancellation removing a merged Z rotation below a fixed cutoff (|angle| < 4 pi x 1e-5 = 1.2566e-4 in Qiskit 2.5.2, not adjustable) (2026-09-28)
+
+**Not pre-registered.** Probes run at home after Addenda 244 and 246 (home
+WSL2, Python 3.12.13, Qiskit 2.5.2, `psf_compile.py` 2026-09-28.1 with
+`CORE_VERSION` 2026-09-28.1). No IBM connection: part B uses the Target
+pickled by the Addendum 245 run. Every script prints its own normalized
+SHA-256. The hashes below were checked against the files published here.
+
+## A. The 15 E fallbacks of the v4 run (Addendum 244, section 2.4)
+
+[`probe_v4_fallbacks.py`](../../data/2026-09-28/home_probes/probe_v4_fallbacks.py) (`bd456db0...`) reads the fallback laps from
+[`data/long_loop_E_2026-09-28_v4.csv`](../../data/long_loop_E_2026-09-28_v4.csv), rebuilds those laps' circuits and
+records, for each block that the core refuses, the error type, the layer,
+the pair and the Weyl coordinates.
+
+- **Reproduced**: 15 core failures (the v4 log: 15) on the same laps; 4
+  exact rebuilds (the v4 log: 4).
+- **All 15 are `PsfNumericError`**; 14 are in layer 2. By pair: (3, 4) 7
+  times, (7, 8) 4 times, one each for (0, 1), (1, 2), (5, 6) and (9, 10).
+- **All 15 are within 3.7e-3 of a degenerate Weyl locus.** Nearest locus:
+  a = b for 7 blocks (3.6e-4 to 3.7e-3), c = 0 for 5 (1.2e-4 to 2.2e-3),
+  b = |c| for 2 (4.6e-5 and 2.2e-4), and a = b + |c| for one (lap 11,864,
+  5.1e-5, computed from the printed coordinates; the probe's own list of
+  loci did not include this one).
+- **The 4 exact rebuilds** (laps 13,732, 27,127, 27,857, 29,982) are all
+  within 3.7e-4 of a locus. Three other blocks just as close were repaired
+  without a rebuild (laps 2,112, 11,864, 14,566), so closeness alone does not
+  decide which path is taken.
+
+**Hypothesis (not tested):** a = b, b = |c| and c = 0 are where two
+eigenvalues of the magic-basis matrix coincide, so the eigenvectors the core
+extracts are ill-conditioned near them. Lap 11,864 (near a = b + |c|) is not
+such a coincidence and does not fit the hypothesis cleanly. Every one of
+these blocks is caught and repaired in Python (outputs stay exact). The cost
+is 15 fallbacks in 30,000 compiles. The cause in the core is left for later
+work.
+
+## B. Qiskit L3's inexact outputs on the real Target (Addendum 246)
+
+Two of Qiskit L3's 12 outputs had one pair off by 1.077e-4 (spare 0,
+input 0, pair 7) and 7.147e-5 (spare 2, input 1, pair 47). Four probes, in
+order:
+
+1. **[`probe_l3_real_target.py`](../../data/2026-09-28/home_probes/probe_l3_real_target.py)** (`05341f70...`). The same compile
+   reproduces both errors exactly, also with `approximation_degree=1.0`
+   given explicitly. Qiskit's CZ-basis decomposer applied to each pair
+   alone is exact (1.9e-15, 1.7e-15). Two control circuits stay at
+   4.7e-14 and 4.9e-14. Weyl coordinates: pair 7 (0.584090, 0.370273,
+   0.318443), not near any special locus (nearest b = |c| at 0.052); pair 47
+   (0.785362, 0.528376, -0.284739), **pi/4 - a = 3.6e-5**. The script's
+   "specialization" column printed None and is not used.
+2. **[`probe_l3_passes.py`](../../data/2026-09-28/home_probes/probe_l3_passes.py)** (`7d0c5514...`, first version) and
+   **[`probe_l3_passes_r2.py`](../../data/2026-09-28/home_probes/probe_l3_passes_r2.py)** (`075fb76d...`). The level-3 preset pass
+   manager was run with a callback that measures the pair's distance after
+   every pass. The first version blamed `EnlargeWithAncilla` for pair 7
+   (distance 2.58). That was a **harness bug**: it switched to physical
+   qubit indices as soon as a layout existed, before `ApplyLayout` had
+   moved the circuit, so it compared the wrong qubits. Revision 2 switches
+   only after `ApplyLayout`. **Both errors then enter at pass 29,
+   `CommutativeCancellation`** (37 -> 31 gates on the pair), and each
+   equals the final error. Pair 7's Weyl coordinates are unchanged by the
+   pass (only the local part moved). Pair 47's a moves exactly onto pi/4.
+3. **[`probe_l3_cancel.py`](../../data/2026-09-28/home_probes/probe_l3_cancel.py)** (`ab390a5b...`). It lists the pair's gates
+   just before and after the pass. In both pairs, one qubit carries
+   `rz(x) . cz . rz(pi/2)` with x = -1.570904050 (pair 7, qubit 0) and
+   x = -1.570724861 (pair 47, qubit 1). The pass moves the rotations
+   through the CZ (correct, CZ is diagonal) and merges them into one
+   rotation of **-1.0772e-4** and **+7.1466e-5**, which it then
+   **removes**. Removing Rz(theta) changes the pair by exactly |theta| in
+   this distance: both errors match to 3 digits. For pair 47,
+   7.1466e-5 is about 2 x (pi/4 - a) = 2 x 3.57e-5, which is why a lands
+   on pi/4. All other
+   merges in the two lists are exact (for example
+   1.495599356 - pi/2 = -0.075196971). Running `CommutativeCancellation`
+   alone on the "before" list gives the same errors, with and without the
+   Target.
+4. **[`probe_l3_cancel_threshold.py`](../../data/2026-09-28/home_probes/probe_l3_cancel_threshold.py)** (`0046dcb2...`; it stopped after
+   the first setting because Qiskit 2.5.2's `CommutativeCancellation` takes
+   no `approximation_degree` argument) and
+   **[`probe_l3_cancel_threshold_r2.py`](../../data/2026-09-28/home_probes/probe_l3_cancel_threshold_r2.py)** (`6ac2dab6...`). Minimal
+   2-qubit circuits, bisecting the angle at which the pass removes the
+   merged rotation:
+
+| shape | merged angle near | removed when |angle - offset| < | value |
+|---|---|---|---|
+| `rz(a) . cz . rz(theta - a)` and `rz(a) . rz(theta - a)`, a = -pi/2 or 0.3, both signs | 0 | 1.256637e-4 | 4 pi x 1e-5 |
+| same, a = -pi/2 | 2 pi (Rz = -I) | 6.283185e-5 | 2 pi x 1e-5 |
+| same, a = -pi/2 | 4 pi | 1.256637e-4 | 4 pi x 1e-5 |
+| `rz(theta)` alone | 0 | never (down to 1e-9) | -- |
+
+Just above the boundary the merged rotation is kept and exact (2.8e-17 to
+2.4e-16). At 2 pi the removal keeps the global phase right (the error equals
+the residual angle).
+
+**Reading.**
+
+1. **Mechanism.** In Qiskit 2.5.2, `CommutativeCancellation` removes a
+   merged Z rotation whose angle is within 4 pi x 1e-5 of 0 (mod 4 pi), or
+   within 2 pi x 1e-5 of 2 pi. The error it introduces is up to 1.26e-4 per
+   removal, in operator distance. The pass's Python module (on Qiskit's main branch) defines
+   `_CUTOFF_PRECISION = 1e-5`. The boundaries match that constant taken
+   relative to the period being tested (4 pi for the identity, 2 pi for -I)
+   to all printed digits. The Rust implementation was not read, so this
+   interpretation is not confirmed.
+2. **Not adjustable.** The cutoff is fixed, and in 2.5.2 the pass has no
+   `approximation_degree` argument. The removal happens with
+   `optimization_level=3` at the default "no approximation" setting.
+3. **Not a Weyl-locus effect.** A merged angle is small whenever the
+   decomposer's angle lands near ±pi/2 next to a ±pi/2 on the other side of
+   the CZ. For pair 47 this coincides with a ≈ pi/4. Pair 7 is near no
+   special locus.
+4. **Rate here: 2 of 729 pairs** (12 circuits). Why the merged angles fall
+   inside the cutoff this often was not investigated.
+5. **Relation to Addendum 242.** That was a different pass
+   (`TwoQubitPeepholeOptimization`, a fidelity tolerance of 1 - 1e-9,
+   reported with #16864). Both are small tolerances that apply at Qiskit's
+   default setting. This one is a fixed angle cutoff inside a pass that
+   users rarely think of as approximating.
+6. **Size in practice.** A removed rotation of 1.26e-4 has an average gate
+   infidelity near 3e-9, far below hardware errors today. Whether removals
+   add up in deep circuits was not examined.
+
+## C. Corrections made while probing
+
+- An intermediate statement in the session, that the two Qiskit error
+  blocks were far from special Weyl loci, was wrong for pair 47: it had not
+  checked pi/4 - a (3.6e-5). The mechanism in B does not depend on Weyl
+  loci, but the statement is withdrawn.
+- The pass attribution of the first [`probe_l3_passes.py`](../../data/2026-09-28/home_probes/probe_l3_passes.py) was a harness bug
+  (B.2). Its output is kept next to revision 2's.
+
+## D. Files (`data/2026-09-28/home_probes/`)
+
+| Script (normalized SHA-256) | Output |
+|---|---|
+| [`probe_v4_fallbacks.py`](../../data/2026-09-28/home_probes/probe_v4_fallbacks.py) (`bd456db0...`) | [`probe_v4_fallbacks.txt`](../../data/2026-09-28/home_probes/probe_v4_fallbacks.txt), [`probe_v4_fallbacks_2026-09-28.json`](../../data/2026-09-28/home_probes/probe_v4_fallbacks_2026-09-28.json) |
+| [`probe_l3_real_target.py`](../../data/2026-09-28/home_probes/probe_l3_real_target.py) (`05341f70...`) | [`probe_l3_real_target.txt`](../../data/2026-09-28/home_probes/probe_l3_real_target.txt) |
+| [`probe_l3_passes.py`](../../data/2026-09-28/home_probes/probe_l3_passes.py) (`7d0c5514...`, first version with the bug) | [`probe_l3_passes.txt`](../../data/2026-09-28/home_probes/probe_l3_passes.txt) |
+| [`probe_l3_passes_r2.py`](../../data/2026-09-28/home_probes/probe_l3_passes_r2.py) (`075fb76d...`) | [`probe_l3_passes_r2.txt`](../../data/2026-09-28/home_probes/probe_l3_passes_r2.txt) |
+| [`probe_l3_cancel.py`](../../data/2026-09-28/home_probes/probe_l3_cancel.py) (`ab390a5b...`) | [`probe_l3_cancel.txt`](../../data/2026-09-28/home_probes/probe_l3_cancel.txt) |
+| [`probe_l3_cancel_threshold.py`](../../data/2026-09-28/home_probes/probe_l3_cancel_threshold.py) (`0046dcb2...`) | [`probe_l3_cancel_threshold.txt`](../../data/2026-09-28/home_probes/probe_l3_cancel_threshold.txt) (stops with the `TypeError`) |
+| [`probe_l3_cancel_threshold_r2.py`](../../data/2026-09-28/home_probes/probe_l3_cancel_threshold_r2.py) (`6ac2dab6...`) | [`probe_l3_cancel_threshold_r2.txt`](../../data/2026-09-28/home_probes/probe_l3_cancel_threshold_r2.txt) |
+
+In the outputs the repository path is replaced by `<repo>`. The probes
+import [`loop_endurance.py`](../../benchmarks/loop_endurance.py) and [`real_target_cliff.py`](../../benchmarks/real_target_cliff.py) from `benchmarks/`,
+and part B needs the local `real_target_2026-09-28.pkl` (not published; see
+Addendum 246).
 
 ---
 

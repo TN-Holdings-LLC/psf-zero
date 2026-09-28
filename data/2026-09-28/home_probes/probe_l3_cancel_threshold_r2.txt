@@ -1,0 +1,25 @@
+SCRIPT <repo>/benchmarks/probe_l3_cancel_threshold_r2.py 6ac2dab68d2aae9c6f51831208c1ceb33cbc180a05f34ef85156ab1d3248d163
+qiskit 2.5.2 | approximation_degree accepted: False
+reference: 4*pi*1e-5 = 1.256637e-04 | 2*pi*1e-5 = 6.283185e-05
+case theta -1.077232e-04 a -1.570796: removed True, distance 1.077e-04, gates ['cz']
+case theta -1.077232e-04 a +0.300000: removed True, distance 1.077e-04, gates ['cz']
+case theta +7.146579e-05 a -1.570796: removed True, distance 7.147e-05, gates ['cz']
+case theta +7.146579e-05 a +0.300000: removed True, distance 7.147e-05, gates ['cz']
+
+across_cz a -1.570796 sign +1 approx None: removed below |theta| = 1.256637e-04 (distance there 1.257e-04); kept from 1.256637e-04 (distance 2.822e-17)
+across_cz a -1.570796 sign -1 approx None: removed below |theta| = 1.256637e-04 (distance there 1.257e-04); kept from 1.256637e-04 (distance 2.238e-16)
+across_cz a +0.300000 sign +1 approx None: removed below |theta| = 1.256637e-04 (distance there 1.257e-04); kept from 1.256637e-04 (distance 2.729e-17)
+across_cz a +0.300000 sign -1 approx None: removed below |theta| = 1.256637e-04 (distance there 1.257e-04); kept from 1.256637e-04 (distance 2.238e-16)
+adjacent  a -1.570796 sign +1 approx None: removed below |theta| = 1.256637e-04 (distance there 1.257e-04); kept from 1.256637e-04 (distance 2.822e-17)
+adjacent  a -1.570796 sign -1 approx None: removed below |theta| = 1.256637e-04 (distance there 1.257e-04); kept from 1.256637e-04 (distance 2.238e-16)
+adjacent  a +0.300000 sign +1 approx None: removed below |theta| = 1.256637e-04 (distance there 1.257e-04); kept from 1.256637e-04 (distance 2.729e-17)
+adjacent  a +0.300000 sign -1 approx None: removed below |theta| = 1.256637e-04 (distance there 1.257e-04); kept from 1.256637e-04 (distance 2.238e-16)
+single    a -1.570796 sign +1 approx None: never removed (even 1e-9)
+single    a -1.570796 sign -1 approx None: never removed (even 1e-9)
+
+across_cz a -1.570796 offset 2*pi sign +1: removed below |theta| = 6.283185e-05 (distance there 6.283e-05); kept from 6.283185e-05 (distance 3.323e-17)
+across_cz a -1.570796 offset 2*pi sign -1: removed below |theta| = 6.283185e-05 (distance there 6.283e-05); kept from 6.283185e-05 (distance 1.254e-17)
+across_cz a -1.570796 offset 4*pi sign +1: removed below |theta| = 1.256637e-04 (distance there 1.257e-04); kept from 1.256637e-04 (distance 2.396e-16)
+across_cz a -1.570796 offset 4*pi sign -1: removed below |theta| = 1.256637e-04 (distance there 1.257e-04); kept from 1.256637e-04 (distance 1.850e-16)
+
+DONE
