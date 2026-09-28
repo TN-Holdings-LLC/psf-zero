@@ -1,0 +1,13 @@
+CORE_VERSION 2026-09-28.1 force polish False
+lap-1 raw residual over 60 blocks: median 6.97e-15, max 1.35e-12, <= 1e-13 (unpolished): 46, in (1e-14, 1e-13]: 12
+pair 51: raw 8.282e-14, Weyl (a, b, c) = (-0.323571, 0.524268, 0.667866)
+lap 1: pair 51 distance to lap 0 8.344e-14; worst pair 51 8.344e-14
+lap 2: pair 51 distance to lap 0 1.666e-13; worst pair 51 1.666e-13
+lap 3: pair 51 distance to lap 0 2.502e-13; worst pair 51 2.502e-13
+lap 4: pair 51 distance to lap 0 3.342e-13; worst pair 51 3.342e-13
+lap 5: pair 51 distance to lap 0 4.178e-13; worst pair 51 4.178e-13
+lap 6: pair 51 distance to lap 0 5.010e-13; worst pair 51 5.010e-13
+lap 7: pair 51 distance to lap 0 5.847e-13; worst pair 51 5.847e-13
+lap 8: pair 51 distance to lap 0 6.674e-13; worst pair 51 6.674e-13
+lap 9: pair 51 distance to lap 0 7.510e-13; worst pair 51 7.510e-13
+lap 10: pair 51 distance to lap 0 8.345e-13; worst pair 51 8.345e-13

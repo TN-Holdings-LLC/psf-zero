@@ -1,0 +1,12 @@
+Mon Sep 28 04:06:01 UTC 2026
+NVIDIA GeForce RTX 4090, 580.159.04, 24564 MiB
+CPU(s):                                  64
+Model name:                              AMD EPYC 7282 16-Core Processor
+CPU(s) scaling MHz:                      77%
+-rw-r--r-- 1 root root     2850 2026-09-28 03:48:20.841388759 +0000 /root/core_fix_base.json
+-rw-r--r-- 1 root root     2508 2026-09-28 03:48:20.841388759 +0000 /root/core_fix_base.txt
+-rw-r--r-- 1 root root 10956496 2026-09-28 03:48:11.948261675 +0000 /root/core_fix_blocks_base.npz
+-rw-r--r-- 1 root root     2796 2026-09-28 04:05:51.340909430 +0000 /root/core_fix_fixed.json
+-rw-r--r-- 1 root root     2455 2026-09-28 04:05:51.340909430 +0000 /root/core_fix_fixed.txt
+-rw-r--r-- 1 root root    13697 2026-09-28 03:45:10.250665193 +0000 /root/core_fix_pod_check.py
+-rw-r--r-- 1 root root     1741 2026-09-28 04:05:51.468911350 +0000 /root/core_fix_score.txt

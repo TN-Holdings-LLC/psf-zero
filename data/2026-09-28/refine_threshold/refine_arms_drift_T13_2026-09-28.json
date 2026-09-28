@@ -1,0 +1,39 @@
+{
+ "env": {
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "python": "3.11.15",
+  "qiskit": "2.5.2",
+  "numpy": "2.4.4",
+  "psf_compile": "2026-09-27.7",
+  "core_version": "2026-09-28.1",
+  "cpu": "x86_64",
+  "cores": 2
+ },
+ "arm": "T13",
+ "threshold": 1e-13,
+ "laps": 1000,
+ "checks": {
+  "500": {
+   "max": 4.157236073788763e-11,
+   "pair": 51
+  },
+  "1000": {
+   "max": 8.312179676392683e-11,
+   "pair": 51
+  }
+ },
+ "fallbacks": 0,
+ "guard": {
+  "checked": 0,
+  "zsx_rejected": 0,
+  "default_rejected": 0,
+  "closed_form_forced": 0,
+  "inexact": 0,
+  "exact_rebuilt": 0,
+  "best_effort": 0,
+  "best_effort_worst": 0.0,
+  "psf_rerouted": 0,
+  "psf_rerouted_worst_residual": 0.0
+ },
+ "wall_s": 56.488123178482056
+}

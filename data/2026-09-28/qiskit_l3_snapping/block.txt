@@ -1,0 +1,6 @@
+11 blocks; worst synthesis errors:
+  qubits [5, 6]: synthesis error 2.852e-05; default Weyl calc fid 0.999999999837, 1-fid 1.63e-10; (a,b,c) default (0.329741343, 0.329741343, -0.13673868) vs fidelity=None (0.329751427, 0.329731259, -0.13673868); CX 3
+  qubits [2, 6]: synthesis error 8.984e-14; default Weyl calc fid 1.000000000000, 1-fid 0.00e+00; (a,b,c) default (0.090080182, 0.070377859, -0.035477655) vs fidelity=None (0.090080182, 0.070377859, -0.035477655); CX 3
+  qubits [8, 9]: synthesis error 5.732e-14; default Weyl calc fid 1.000000000000, 1-fid 0.00e+00; (a,b,c) default (0.547974974, 0.086812458, -0.039909287) vs fidelity=None (0.547974974, 0.086812458, -0.039909287); CX 3
+  qubits [0, 1]: synthesis error 7.357e-15; default Weyl calc fid 1.000000000000, 1-fid 0.00e+00; (a,b,c) default (0.762765327, 0.104970696, 0.015380915) vs fidelity=None (0.762765327, 0.104970696, 0.015380915); CX 3
+  qubits [10, 11]: synthesis error 5.206e-15; default Weyl calc fid 1.000000000000, 1-fid 0.00e+00; (a,b,c) default (0.682404489, 0.287104647, -0.011892853) vs fidelity=None (0.682404489, 0.287104647, -0.011892853); CX 3

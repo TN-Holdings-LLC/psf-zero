@@ -1,0 +1,7 @@
+ENV {"platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39", "python": "3.11.15", "qiskit": "2.5.2", "numpy": "2.4.4", "psf_compile": "2026-09-27.7", "core_version": "2026-09-28.1", "cpu": "x86_64", "cores": 2}
+LOADED psf_compile.py 2026-09-27.7 bd987d52e321162225e23a1417488dbbccc3dc6385cee54fe68443663703ba7f
+SCRIPT refine_threshold_arms.py caabaea2f3981ebd0c6b590e552b1ce386477a70f746f4fc870de64e9601b126
+CORE_VERSION 2026-09-28.1
+  part f done, 285 s
+  part e done, 531 s
+wrote refine_arms_timing_2026-09-28.json

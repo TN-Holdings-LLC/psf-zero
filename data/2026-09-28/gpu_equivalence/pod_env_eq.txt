@@ -1,0 +1,9 @@
+Mon Sep 28 04:58:54 UTC 2026
+NVIDIA GeForce RTX 4090, 580.159.04, 24564 MiB
+CPU(s):                                  64
+Model name:                              AMD EPYC 7282 16-Core Processor
+CPU(s) scaling MHz:                      103%
+-rw-r--r-- 1 root root 15878 2026-09-28 04:57:31.548426217 +0000 /root/eq_gpu_2026-09-28.json
+-rw-r--r-- 1 root root 13989 2026-09-28 04:57:31.548426217 +0000 /root/eq_gpu_run.txt
+-rw-r--r-- 1 root root  3163 2026-09-28 04:57:32.250436295 +0000 /root/eq_gpu_score.txt
+-rw-r--r-- 1 root root 12899 2026-09-28 04:55:46.517918382 +0000 /root/gpu_whole_circuit_equivalence.py

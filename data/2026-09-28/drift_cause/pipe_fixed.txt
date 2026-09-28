@@ -1,0 +1,8 @@
+CORE_VERSION 2026-09-28.1
+native basis ['id', 'x', 'sx', 'rz', 'cz']
+lap 1: compile 8.275e-14 (cos None) | transpile 2.784e-15 (cos None) | total 8.344e-14 (cos None) | compiled ops {'rz': 14, 'ry': 4, 'cx': 3, 'sx': 2} | out ops {'rz': 20, 'sx': 14, 'cz': 3}
+lap 2: compile 8.308e-14 (cos 0.9998) | transpile 1.535e-15 (cos 0.2215) | total 8.319e-14 (cos 0.9991) | compiled ops {'rz': 14, 'ry': 4, 'cx': 3, 'sx': 2} | out ops {'rz': 20, 'sx': 14, 'cz': 3}
+lap 3: compile 8.324e-14 (cos 0.9995) | transpile 2.369e-15 (cos 0.6621) | total 8.362e-14 (cos 0.9992) | compiled ops {'rz': 14, 'ry': 4, 'cx': 3, 'sx': 2} | out ops {'rz': 20, 'sx': 14, 'cz': 3}
+lap 4: compile 8.374e-14 (cos 0.9993) | transpile 2.096e-15 (cos 0.4055) | total 8.402e-14 (cos 0.9987) | compiled ops {'rz': 14, 'ry': 4, 'cx': 3, 'sx': 2} | out ops {'rz': 20, 'sx': 14, 'cz': 3}
+lap 5: compile 8.340e-14 (cos 0.9994) | transpile 2.612e-15 (cos 0.6242) | total 8.363e-14 (cos 0.9989) | compiled ops {'rz': 14, 'ry': 4, 'cx': 3, 'sx': 2} | out ops {'rz': 20, 'sx': 14, 'cz': 3}
+lap 6: compile 8.345e-14 (cos 0.9996) | transpile 1.640e-15 (cos 0.634) | total 8.332e-14 (cos 0.9989) | compiled ops {'rz': 14, 'ry': 4, 'cx': 3, 'sx': 2} | out ops {'rz': 20, 'sx': 14, 'cz': 3}

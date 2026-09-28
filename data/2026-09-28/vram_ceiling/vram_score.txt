@@ -1,0 +1,19 @@
+==============================================================================
+SCORING (thresholds exactly as pre-registered)
+==============================================================================
+ENV {"platform": "Linux-6.8.0-124-generic-x86_64-with-glibc2.39", "python": "3.12.3", "pennylane": "0.45.1", "device": "lightning.gpu", "sizes": [26, 27, 28, 29, 30, 31], "timeout_s": 900, "gpu": "NVIDIA GeForce RTX 4090, 580.159.04, 24564 MiB", "pennylane_lightning": "0.45.0", "pennylane_lightning_gpu": "0.45.0"}
+C0: sizes [26, 27, 28, 29, 30, 31], device lightning.gpu, n=12 GPU vs CPU value -0.786005651951213 vs -0.7860056519512131
+   per-gate time (median of calls 2-3): {26: '1.963 ms', 27: '3.860 ms', 28: '7.668 ms', 29: '15.284 ms', 30: '30.464 ms'}
+   ratio to n-1: {27: 1.97, 28: 1.99, 29: 1.99, 30: 1.99}
+W1 no silent jump among completed sizes: max ratio 1.9933354485522217 (confirmed <= 3.0, refuted >= 5.0) -> CONFIRMED
+W2 the first size that does not fit (n=31) ends with an explicit error, not a timeout: status error -> CONFIRMED
+   message: RuntimeError: [/project/pennylane_lightning/core/utils/cuda_utils/DataBuffer.hpp][Line:57][Method:DataBuffer]: Error in PennyLane Lightning: out of memory
+W3 largest completed size is 29 or 30: 30 -> CONFIRMED
+
+Reported without prediction (RunPod pod):
+   {"n": 26, "status": "ok", "call_s": [0.41523058991879225, 0.2521988404914737, 0.2502890294417739], "base_mib": 1, "peak_mib": 1458, "wall_s": 3.311296238563955, "returncode": 0}
+   {"n": 27, "status": "ok", "call_s": [0.6912458445876837, 0.5129172829911113, 0.5137596251443028], "base_mib": 1, "peak_mib": 2482, "wall_s": 4.147882585413754, "returncode": 0}
+   {"n": 28, "status": "ok", "call_s": [1.20973199326545, 1.0573183419182897, 1.0589290065690875], "base_mib": 1, "peak_mib": 4530, "wall_s": 5.8309662491083145, "returncode": 0}
+   {"n": 29, "status": "ok", "call_s": [2.3314279625192285, 2.1860068682581186, 2.1852242378517985], "base_mib": 1, "peak_mib": 8626, "wall_s": 9.203123960644007, "returncode": 0}
+   {"n": 30, "status": "ok", "call_s": [4.6694240579381585, 4.510902552865446, 4.506487078033388], "base_mib": 1, "peak_mib": 16818, "wall_s": 16.272894909605384, "returncode": 0}
+   {"n": 31, "status": "error", "call_s": null, "base_mib": 1, "peak_mib": 396, "wall_s": 2.6070307372137904, "returncode": 0}

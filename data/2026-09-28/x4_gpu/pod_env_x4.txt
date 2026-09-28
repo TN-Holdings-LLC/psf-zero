@@ -1,0 +1,11 @@
+Mon Sep 28 04:46:16 UTC 2026
+NVIDIA GeForce RTX 4090, 580.159.04, 24564 MiB
+CPU(s):                                  64
+Model name:                              AMD EPYC 7282 16-Core Processor
+CPU(s) scaling MHz:                      62%
+-rw-r--r-- 1 root root 32531 2026-09-28 04:39:28.392770601 +0000 /root/x4_gpu_2026-09-28.csv
+-rw-r--r-- 1 root root  3963 2026-09-28 04:39:28.392770601 +0000 /root/x4_gpu_2026-09-28.json
+-rw-r--r-- 1 root root 13134 2026-09-28 04:28:55.930613776 +0000 /root/x4_gpu_bind_vs_recompile.py
+-rw-r--r-- 1 root root 13134 2026-09-28 04:28:55.930613776 +0000 /root/x4_gpu_bind_vs_recompile.py
+-rw-r--r-- 1 root root  3531 2026-09-28 04:39:28.392770601 +0000 /root/x4_gpu_run.txt
+-rw-r--r-- 1 root root  2436 2026-09-28 04:39:29.067780372 +0000 /root/x4_gpu_score.txt

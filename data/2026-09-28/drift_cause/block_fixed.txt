@@ -1,0 +1,6 @@
+CORE_VERSION 2026-09-28.1
+lap 1: consolidation |U-M| 6.192e-16 (qubit order swapped: False) | core raw 8.241e-14 batched polish 8.248e-14->8.248e-14 | emitted(batched) vs M 8.250e-14 | emitted(single) vs M 8.250e-14
+lap 2: consolidation |U-M| 2.834e-15 (qubit order swapped: False) | core raw 8.304e-14 batched polish 8.308e-14->8.308e-14 | emitted(batched) vs M 8.301e-14 | emitted(single) vs M 8.301e-14
+lap 3: consolidation |U-M| 1.591e-15 (qubit order swapped: False) | core raw 8.304e-14 batched polish 8.303e-14->8.303e-14 | emitted(batched) vs M 8.306e-14 | emitted(single) vs M 8.306e-14
+lap 4: consolidation |U-M| 2.092e-15 (qubit order swapped: False) | core raw 8.371e-14 batched polish 8.359e-14->8.359e-14 | emitted(batched) vs M 8.363e-14 | emitted(single) vs M 8.363e-14
+lap 5: consolidation |U-M| 2.235e-15 (qubit order swapped: False) | core raw 8.335e-14 batched polish 8.335e-14->8.335e-14 | emitted(batched) vs M 8.329e-14 | emitted(single) vs M 8.329e-14

@@ -1,0 +1,16 @@
+LOADED /root/psf-zero/psf_compile.py 2026-09-27.7
+CORE /root/psf_zero_fixed_env/lib/python3.12/site-packages/psf_zero_core/__init__.py CORE_VERSION 2026-09-28.1
+ENV Linux-6.8.0-124-generic-x86_64-with-glibc2.39 | python 3.12.3 | qiskit 2.5.2 | numpy 2.5.3
+V0 passed
+E pass 1: {"laps": 3000, "fallbacks": 1, "worst_loss_error": 2.886579864025407e-15, "cx_counts": {"33": 3000}, "median_ms": 8.968055248260498, "p90_ms": 10.991114843636751, "guard_stats": {"checked": 2, "zsx_rejected": 1, "default_rejected": 0, "closed_form_forced": 0, "inexact": 0, "exact_rebuilt": 0, "best_effort": 0, "best_effort_worst": 0.0, "psf_rerouted": 0, "psf_rerouted_worst_residual": 0.0}}
+E pass 2 (capture): {"blocks": 33000, "tags": {"ok": 32999, "PsfNumericError": 1}}
+lap 2138: {"blocks_per_lap": 11, "raw": [2.8221693497630873e-15, 1.5903434704817243e-13, 1.2350305278689404e-15, 1.350585966985825e-12, 6.092261415640686e-13, 2.2623561001103027e-15, 1.952606200949929e-15, 2.702109150697648e-14, 1.9220704415365463e-13, 1.0359145944227195e-14, 7.57947358768279e-15], "pos_is_pair_7_8": true}
+raw, all captured blocks: {"failed": 1, "max": 9.909289530184753e-07, "over_1e_13": 6483}
+cliff {"rep": 0, "twoq": 180, "pair_ok": true, "worst": 5.551115123125783e-16, "fallbacks": 0, "ms": 97.53162041306496, "hash": "a1c4016f8172f1dbfaae72da3c0cda352c6e7594858f87fe9b55e151dddf145a"}
+cliff {"rep": 1, "twoq": 180, "pair_ok": true, "worst": 6.661338147750939e-16, "fallbacks": 0, "ms": 36.92165669053793, "hash": "3611379f5eb286286a51a9e1dea0ee390304cde05f1b3650c57fd99b5fa0e04a"}
+cliff {"rep": 2, "twoq": 180, "pair_ok": true, "worst": 5.551115123125783e-16, "fallbacks": 0, "ms": 36.579299718141556, "hash": "7efc447b4852e3b4233fb2ed714e0fa7b05fb71e5a5468e9222d24b7bee18604"}
+cliff {"rep": 3, "twoq": 180, "pair_ok": true, "worst": 8.881784197001252e-16, "fallbacks": 0, "ms": 37.742829881608486, "hash": "b199f38eac45d373606a43c6a1c21933b40ef32191b23913a2502fca9dc26c49"}
+cliff {"rep": 4, "twoq": 180, "pair_ok": true, "worst": 6.661338147750939e-16, "fallbacks": 0, "ms": 37.139940075576305, "hash": "8919a11de050a8abf86b4d5a74c0bb56fdb8bf651922be543c89602c652fb3ea"}
+cliff {"rep": 5, "twoq": 180, "pair_ok": true, "worst": 6.661338147750939e-16, "fallbacks": 0, "ms": 37.10753936320543, "hash": "70c305586a0b1aef783b18dd967d3147a305fda006007995df360916950eab18"}
+tests: {"passed": 75, "failed": 0, "su2_warning_lines": 0, "returncode": 0}
+wrote /root/core_fix_fixed.json

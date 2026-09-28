@@ -1,0 +1,10 @@
+ENV {"platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39", "python": "3.11.15", "qiskit": "2.5.2", "numpy": "2.4.4", "psf_compile": "2026-09-27.7", "core_version": "2026-09-28.1", "cpu": "x86_64", "cores": 2}
+LOADED psf_compile.py 2026-09-27.7 bd987d52e321162225e23a1417488dbbccc3dc6385cee54fe68443663703ba7f
+SCRIPT refine_threshold_arms.py caabaea2f3981ebd0c6b590e552b1ce386477a70f746f4fc870de64e9601b126
+CORE_VERSION 2026-09-28.1
+ARM T0 REFINE_THRESHOLD 0.0 laps 20000
+  lap 5000: max distance 8.3396e-12 (pair 53); fallbacks 0; 349 s
+  lap 10000: max distance 1.6804e-11 (pair 53); fallbacks 0; 700 s
+  lap 15000: max distance 2.5302e-11 (pair 53); fallbacks 0; 1046 s
+  lap 20000: max distance 3.3575e-11 (pair 53); fallbacks 0; 1399 s
+wrote refine_arms_drift_T0_2026-09-28.json

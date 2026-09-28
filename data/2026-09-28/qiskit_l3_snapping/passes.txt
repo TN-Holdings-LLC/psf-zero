@@ -1,0 +1,45 @@
+  0 ContainsInstruction                      1.228e-15
+  1 UnitarySynthesis                         1.228e-15
+  2 HighLevelSynthesis                       1.228e-15
+  3 BasisTranslator                          1.228e-15
+  4 ElidePermutations                        1.228e-15
+  5 RemoveDiagonalGatesBeforeMeasure         1.228e-15
+  6 RemoveIdentityEquivalent                 1.228e-15
+  7 InverseCancellation                      1.228e-15
+  8 ContractIdleWiresInControlFlow           1.228e-15
+  9 CommutativeCancellation                  1.205e-15
+ 10 ConsolidateBlocks                        1.285e-15
+ 11 Split2QUnitaries                         1.285e-15
+ 12 SetLayout                                1.285e-15
+ 13 VF2Layout                                (after layout: None)
+ 14 FullAncillaAllocation                    (after layout: None)
+ 15 EnlargeWithAncilla                       (after layout: None)
+ 16 ApplyLayout                              1.209e-15
+ 17 CheckMap                                 1.209e-15
+ 18 FilterOpNodes                            1.209e-15
+ 19 UnitarySynthesis                         6.578e-15
+ 20 HighLevelSynthesis                       6.578e-15
+ 21 BasisTranslator                          7.094e-15
+ 22 Size                                     7.094e-15
+ 23 Depth                                    7.094e-15
+ 24 MinimumPoint                             7.094e-15
+ 25 TwoQubitPeepholeOptimization             1.166e-05  <-- first above 1e-10
+ 26 RemoveIdentityEquivalent                 1.166e-05
+ 27 Optimize1qGatesDecomposition             1.166e-05
+ 28 CommutativeCancellation                  1.166e-05
+ 29 ContractIdleWiresInControlFlow           1.166e-05
+ 30 GatesInBasis                             1.166e-05
+ 31 Size                                     1.166e-05
+ 32 Depth                                    1.166e-05
+ 33 MinimumPoint                             1.166e-05
+ 34 TwoQubitPeepholeOptimization             1.166e-05
+ 35 RemoveIdentityEquivalent                 1.166e-05
+ 36 Optimize1qGatesDecomposition             1.166e-05
+ 37 CommutativeCancellation                  1.166e-05
+ 38 ContractIdleWiresInControlFlow           1.166e-05
+ 39 GatesInBasis                             1.166e-05
+ 40 Size                                     1.166e-05
+ 41 Depth                                    1.166e-05
+ 42 MinimumPoint                             1.166e-05
+ 43 VF2PostLayout                            1.166e-05
+ 44 ContainsInstruction                      1.166e-05

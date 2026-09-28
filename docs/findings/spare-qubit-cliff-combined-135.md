@@ -1695,6 +1695,20 @@ swapping mislabelled as GPU speed.
 - Noisy/density-matrix simulation -- unchanged limit from Addendum 137-142.
 - Anything about NVIDIA, CUDA-Q, or partnership.
 
+
+> **Note (2026-09-28), from Addenda 233-234.** On native Linux with an RTX 4090
+> (24 GB), `lightning.gpu` did not slow down silently: per-gate time doubled
+> cleanly up to 30 qubits and 31 qubits failed at once with an out-of-memory
+> error. That makes a WSL2-specific effect the most plausible reading of the
+> result above, but it is not proven (card, driver and system differ). One point
+> in the result above does not fit the simple spill-over reading:
+> `find_vram_ceiling.py` ran a single statevector, which at 29 qubits needs about
+> 8.6 GB -- below the RTX 4070's 12 GB -- yet 29 qubits ran 15 times slower than
+> 28. So the state alone did not outgrow the card at 29 qubits. Memory used by
+> the display or other processes, or WSL2's handling of GPU memory, may explain
+> it; this was not checked. That 30 qubits (17.2 GB) "succeeded" does show an
+> allocation beyond the card passing without an error.
+
 ---
 
 <!-- ===== Addendum 144 (source: spare-qubit-cliff-addendum-144-2026-09-23.md) ===== -->
@@ -1832,6 +1846,13 @@ compile-only data; no execution or combined-time figure exists for n=28.**
   were fabricated or estimated.
 - Pre-publication check: `grep` against this project's private
   personal-information pattern list, this document -> 0 hits.
+
+
+> **Note (2026-09-28), from Addenda 233-234.** The n = 28 run that was stopped
+> after more than 2 hours here was the benchmark itself, which may hold more
+> than one statevector; a native-Linux RTX 4090 runs a single 28-qubit state in
+> about 1 s per circuit call (Addendum 234). The cause of the 2-hour run was
+> not investigated.
 
 ---
 
@@ -5554,6 +5575,36 @@ bit-order fix, not this.)
 Pre-publication grep of the CSV for account names, local paths and host
 names: 0 hits.
 
+
+> **Update (2026-09-28) -- the meaning check re-measured by phase-aligned
+> operator distance** (workplace, exploratory; files in `data/2026-09-28/ka_frobenius/`).
+> The meaning test above (A2, A5) used average gate infidelity with a tolerance
+> of 1e-12, which admits operator errors of order 1e-6 (the lesson of Addenda
+> 206, 216 and 218). The chain was rebuilt as in the locked script (same 19
+> tapes, both converters, 100 steps) and every step compared with its tape by
+> phase-aligned Frobenius distance (`ka_frobenius_recheck.py`, workplace
+> sandbox: Python 3.11.15, numpy 2.4.4, Qiskit 2.5.2; NEW =
+> `benchmarks/psf_pennylane_gpu_prototype.py` at `100e768`, identical to the
+> file at `2501c7e` used on the pod, `bddb3c15...b176`; OLD = the pre-fix
+> workplace copy, `d0ef66f7...df05`):
+>
+> | Family | NEW, Frobenius min..max | OLD, Frobenius min..max |
+> |---|---|---|
+> | F1, 10 tapes | 1.5e-15 .. 1.9e-15 | 5.20 .. 5.61 |
+> | F2, 5 tapes | 1.6e-15 .. 1.8e-15 | 5.47 .. 5.60 |
+> | F3 XOR, 4 tapes | 1.0e-15 .. 1.1e-15 | 5.35 |
+>
+> Each chain again took a single value over all 100 steps. The fixed converter
+> is exact under the stricter measure too (largest 1.9e-15), and the
+> conclusions above stand. The pre-fix converter's distances agree with
+> Addendum 182's broken control (5.63). The 1e-12 infidelity tolerance is
+> recorded as a weakness of the original design, not as a changed verdict.
+> Addendum 224 (section 4) adds that compiled outputs were bit-identical
+> between the workplace sandbox and a pod, so the "Consequence" paragraph above
+> (do not expect bit-identity across machines) is too general for this
+> project's compiled outputs; it stands for the random input matrices it was
+> about.
+
 ---
 
 <!-- ===== Addendum 177 pre-registration (source: spare-qubit-cliff-addendum-177-preregistration-2026-09-25.md) ===== -->
@@ -8641,6 +8692,18 @@ If confirmed:
 | [`data/logs/loop_breakdown.txt`](../../data/logs/loop_breakdown.txt) | log (received and checked) |
 | [`data/loop_breakdown_2026-09-27.csv`](../../data/loop_breakdown_2026-09-27.csv) | every lap and stage, 29,100 rows (received; per-stage means recomputed from it match the log) |
 
+
+> **Note (2026-09-28), from Addenda 227-228.** The expectation stated above --
+> with a faster simulator the transpile-once route would be faster per step,
+> probably by an order of magnitude -- did not hold on a GPU statevector
+> simulator (PennyLane `lightning.gpu`, RTX 4090). The recompile-every-step
+> route was as fast at 12 qubits (A/B 0.99) and faster from 16 qubits on
+> (0.39 at 28 qubits), because the transpile-once circuit keeps every
+> parameterized rotation unmerged (2.5x the gates) and a statevector simulator
+> pays per gate. The diagnosis above (the PSF-Zero circuit simulates faster
+> because it is smaller) is what carries over. Not tested: Aer, shot-based
+> execution, hand-merged parameterized rotations.
+
 ---
 
 <!-- ===== Addendum 205 (source: spare-qubit-cliff-addendum-205-preregistration-2026-09-27.md) ===== -->
@@ -10144,6 +10207,2164 @@ blocks, 24 gates per pair, which are collected at either floor; Addendum
 | [`data/logs/long_loop_100k_v2.txt`](../../data/logs/long_loop_100k_v2.txt) | log (received and checked) |
 | [`data/long_loop_F_2026-09-27_v2.csv`](../../data/long_loop_F_2026-09-27_v2.csv), [`data/long_loop_C_2026-09-27_v2.csv`](../../data/long_loop_C_2026-09-27_v2.csv), [`data/long_loop_E_2026-09-27_v2.csv`](../../data/long_loop_E_2026-09-27_v2.csv) | every lap (50,000, 20,000, 30,000 rows; received; summaries recomputed from them match the log) |
 | `psf_compile.py` 2026-09-27.7 | the release decided here |
+
+
+---
+
+<!-- ===== Addendum 223 (source: spare-qubit-cliff-addendum-223-preregistration-2026-09-28.md) ===== -->
+
+> **Note added when merging:** Workplace pre-registration of the Rust core fix check on a RunPod pod (locked 03:43:56 UTC, before the pod run; not blind, a sandbox dry run had shown the verdicts). The '100,000-compile run planned as Addendum 223' mentioned in its text was later made at the workplace and is Addenda 235-236.
+
+## Addendum 223 -- Pre-registration: the Rust core fix (CORE_VERSION 2026-09-28.1) on the RunPod pod (2026-09-28)
+
+**Status: pre-registration, locked at the Project save time of this
+document**, before any run on the pod. **Not a blind prediction:** a
+workplace-sandbox dry run of the same script with both cores (section 5)
+already produced every verdict below. The pod run tests whether the
+sandbox result replicates in a different environment (Python 3.12.3,
+numpy 2.5.3, scipy 1.18.1, a different CPU), with the cores built as
+Python 3.12 wheels from the same sources.
+
+**Relation to the home record:** this does not replace the home
+pre-registration planned as Addendum 223 (flags of the instruction
+document `指示書_2026-09-28_rust-core-su2-extraction.md` section 3, V0, the
+100,000-compile run). It is a smaller, independent replication on the pod.
+
+## 1. What is compared
+
+- **base**: `psf_zero_core` built from `src/lib.rs` of repository commit
+  `100e768` (normalized SHA-256 `b11f35b5...89077`), no `CORE_VERSION`.
+  Wheel `psf_zero_core-0.1.0-cp312-cp312-manylinux_2_35_x86_64.whl`,
+  sha256 `7c8e02dd...9075a`.
+- **fixed**: the same file with changelog item 11 (best-conditioned
+  quaternion extraction in `so4_to_su2_pair`) and `CORE_VERSION =
+  "2026-09-28.1"` (`bf3bf537...d234`). Wheel sha256 `9066ac8f...a3fbf`.
+- Both with `psf_compile.py` 2026-09-27.7 from `~/psf-zero` (commit
+  `100e768`), unchanged. Each measured in its own venv; the script stops
+  unless the loaded core matches the label (V0).
+
+## 2. Fixed design ([`core_fix_pod_check.py`](../../benchmarks/core_fix_pod_check.py))
+
+Per core:
+
+1. **E, pass 1.** The Addendum 219/222 training circuit (12 qubits, 11
+   blocks, same random streams: target seed 7 with every `rzz` angle 0,
+   perturbations seed 202, sigma 0.5), floor 8, 3,000 compiles: fallbacks
+   (from `compile()`'s warning), worst loss error, CX count per compile,
+   `GUARD_STATS`, compile median and p90 (garbage collector frozen after
+   set-up, collection every 50 laps).
+2. **E, pass 2.** The same 3,000 compiles with every block handed to the
+   core recorded, with the core's error type. The base run saves the 33,000
+   blocks; both cores are then run directly on that same set (raw,
+   unpolished phase-aligned Frobenius distance), and on lap 2,138's 11
+   blocks. Capture position 8 is checked to be the circuit's pair (7, 8)
+   by comparing Weyl coordinates.
+3. **Cliff.** FakeNighthawk, 60 disjoint `pair24` blocks (spare 0), 6
+   repetitions (angles seed 101), `compile_for_hardware(layout_search=True,
+   entangling_basis="cx", floor 8)`: two-qubit count, exact per-pair check,
+   fallbacks, time, SHA-256 of the output (gate names, qubits, parameters).
+4. **Unit tests.** [`test_exact_fallback.py`](../../benchmarks/test_exact_fallback.py), [`test_closed_form_core.py`](../../benchmarks/test_closed_form_core.py),
+   [`test_batched_polish.py`](../../benchmarks/test_batched_polish.py), [`test_guard_v4.py`](../../benchmarks/test_guard_v4.py), [`test_matching_layout.py`](../../benchmarks/test_matching_layout.py):
+   passed, failed, and the number of `SU2ExtractionSingular` lines in the
+   output.
+
+## 3. Pre-registered predictions
+
+Harness gate **V0**: base loads no `CORE_VERSION`, fixed loads
+`2026-09-28.1`, both load `~/psf-zero/psf_compile.py` 2026-09-27.7.
+Otherwise nothing is scored.
+
+| ID | Prediction | Confirmed if | Refuted if |
+|---|---|---|---|
+| C1 | base core fails with `SU2ExtractionSingular` on the E blocks | 4,000 to 4,600 of 33,000 | outside |
+| C2 | fixed core: no `SU2ExtractionSingular`, at most 2 other core errors | both hold | either fails |
+| C3 | both cores: every compile exact and 33 CX | worst loss error <= 1e-13 and CX 33 in all 3,000, for both | otherwise |
+| C4 | fixed: no block needs the repair paths | `exact_rebuilt` = `psf_rerouted` = `best_effort` = 0 | any > 0 |
+| C5 | lap 2,138, position 8 (pair (7, 8)): the Addendum 218 block | position check true, base raw >= 1e-7, fixed raw <= 1e-12 | otherwise |
+| C6 | cliff: same result quality | both cores 180 two-qubit gates, per-pair worst <= 1e-13, 0 fallbacks, in all 6 | otherwise |
+| C7 | cliff: equivalent but not bit-identical | output hashes differ in all 6 | differ in fewer than 6 |
+| C8 | unit tests | 75 passed and 0 failed in both; `SU2ExtractionSingular` lines >= 1 in base and 0 in fixed | otherwise |
+| C9 | compile time (RunPod pod only) | E median fixed/base <= 0.95 | >= 1.00 (between: ambiguous) |
+
+Reported without prediction: base `GUARD_STATS`; raw error over all 33,000
+blocks for both cores (maximum, count above 1e-13); cliff medians.
+
+## 4. What this can and cannot establish
+
+It can show that the fix removes the extraction failures and the
+Addendum 218 inaccuracy, keeps every output exact and the gate counts
+unchanged, and changes cliff outputs only in their bits, in a second
+environment. It does not test the 100,000-compile scale (home, Addendum
+223), other circuit families, or the remaining raw errors of up to about
+1e-6 on second-layer pairs, which are a separate issue.
+
+## 5. Dry run before locking (methodology; outcome known)
+
+Workplace sandbox: Python 3.11.15, numpy 2.4.4, Qiskit 2.5.2, cores built
+from the same sources as Python 3.11 wheels. Result: V0 passed; C1 4,292;
+C2 0 and 1 (`PsfNumericError`, the lap-2,112 block known from the home
+record); C3 2.78e-15 and 2.89e-15, CX 33 in all; C4 0/0/0 (base 12/1/0);
+C5 position (7, 8) true, base 8.28e-7, fixed 1.92e-13; C6 180, exact, 0
+fallbacks in all 6; C7 6 of 6 differ; C8 75/75, SU2 lines 3 and 0; C9
+8.55/10.31 = 0.83. Base `GUARD_STATS` reported
+`psf_rerouted_worst_residual` = 5.85e-7, the Addendum 218 value. No design
+change followed the dry run; the thresholds were set from the sandbox
+values with margins before this document was saved.
+
+## 6. Files, integrity check, run commands
+
+[`core_fix_pod_check.py`](../../benchmarks/core_fix_pod_check.py) (Project: `psf-zero/benchmarks/`; on the pod: `~/`),
+13,697 bytes, normalized SHA-256
+`55f1ea07fb7c5f74fe29dcc0ff12e5499bc27c961d78d2861449ef1a05e0cb8e`.
+
+```
+python -c "import hashlib;print(hashlib.sha256('\n'.join(l.rstrip() for l in open('/root/core_fix_pod_check.py',encoding='utf-8').read().strip().splitlines()).encode()).hexdigest())"
+source ~/psf_zero_runpod_env/bin/activate
+python -u ~/core_fix_pod_check.py measure --label base  2>&1 | tee ~/core_fix_base.txt
+source ~/psf_zero_fixed_env/bin/activate
+python -u ~/core_fix_pod_check.py measure --label fixed 2>&1 | tee ~/core_fix_fixed.txt
+python -u ~/core_fix_pod_check.py score 2>&1 | tee ~/core_fix_score.txt
+```
+
+Expected run time about 3 minutes per core (sandbox 2.6 minutes).
+
+---
+
+<!-- ===== Addendum 224 (source: spare-qubit-cliff-addendum-224-2026-09-28.md) ===== -->
+
+> **Note added when merging:** All nine predictions confirmed on the pod: SU2ExtractionSingular 4,292 -> 0, the Addendum 218 block 8.3e-7 -> 1.9e-13, outputs exact with unchanged gate counts, cliff outputs equivalent but bit-different.
+
+## Addendum 224 -- The Rust core fix on the RunPod pod: all nine predictions confirmed; extraction failures 4,292 -> 0, the Addendum 218 block 8.3e-7 -> 1.9e-13, outputs exact and unchanged in gate count, cliff outputs equivalent but bit-different (2026-09-28)
+
+**Scored against:** `core-fix-pod-check-preregistration-2026-09-28.md`
+(home: Addendum 223), locked in the Project at **2026-09-28 03:43:56 UTC**
+(script [`core_fix_pod_check.py`](../../benchmarks/core_fix_pod_check.py) at 03:43:57 UTC). Thresholds applied
+exactly as written. As the pre-registration states, this is not a blind
+prediction: the sandbox dry run had produced the same verdicts; the pod run
+tests replication in a second environment.
+
+**Run:** RunPod pod, NVIDIA GeForce RTX 4090 (driver 580.159.04, 24,564 MiB;
+not used by this check), AMD EPYC 7282 16-Core Processor (64 CPUs shown),
+`Linux-6.8.0-124-generic-x86_64-with-glibc2.39`, Python 3.12.3, Qiskit
+2.5.2, numpy 2.5.3. Repository `~/psf-zero` at commit `100e768`
+(`psf_compile.py` 2026-09-27.7). Cores installed from the Python 3.12
+wheels described in the pre-registration (rustup could not be installed on
+this pod). **All times are from this RunPod pod** and are not comparable
+with the home, workplace-sandbox or earlier-pod numbers.
+
+**Integrity and timeline** (file times on the pod, UTC):
+
+| Event | Time |
+|---|---|
+| pre-registration and script saved in the Project (lock) | 03:43:56 / 03:43:57 |
+| script placed on the pod | 03:45:10 |
+| base measurement finished ([`core_fix_base.json`](../../data/2026-09-28/core_fix_pod/core_fix_base.json)) | 03:48:20 |
+| fixed measurement, run 1 (output overwritten, see below) | between 03:48 and 04:05 (not recorded) |
+| fixed measurement, run 2, and scoring | 04:05:51 |
+
+Script hash on the pod: `55f1ea07fb7c5f74fe29dcc0ff12e5499bc27c961d78d2861449ef1a05e0cb8e`,
+matching the locked value. The check was made after the base run, not
+before it.
+
+**Loaded code (first lines of each log):**
+
+```
+base : LOADED /root/psf-zero/psf_compile.py 2026-09-27.7
+       CORE /root/psf_zero_runpod_env/lib/python3.12/site-packages/psf_zero_core/__init__.py CORE_VERSION None
+fixed: LOADED /root/psf-zero/psf_compile.py 2026-09-27.7
+       CORE /root/psf_zero_fixed_env/lib/python3.12/site-packages/psf_zero_core/__init__.py CORE_VERSION 2026-09-28.1
+```
+
+**Amendments after the lock:** none.
+
+**Deviations in execution (not amendments):**
+
+1. The script hash was checked after the base run (value matched).
+2. The first attempt at the fixed measurement ran before the fixed venv
+   existed; the script's V0 check stopped it with no output.
+3. The fixed measurement then ran **twice** (the command block was
+   executed a second time). Run 2 overwrote run 1's files; run 1's output
+   survives only in the chat log. Every non-timing value was identical in
+   the two runs, and every verdict is the same. The files and the table
+   below are run 2; run 1's timings are listed alongside.
+
+## 1. Scoring
+
+| ID | Prediction | Verdict | Pod numbers |
+|---|---|---|---|
+| V0 | right code loaded | passed | base no `CORE_VERSION`, fixed `2026-09-28.1`, both `psf_compile.py` 2026-09-27.7 |
+| C1 | base `SU2ExtractionSingular` 4,000-4,600 of 33,000 | CONFIRMED | 4,292 (plus 1 `PsfNumericError`) |
+| C2 | fixed: 0 `SU2ExtractionSingular`, <= 2 other core errors | CONFIRMED | 0, and 1 `PsfNumericError` (the lap-2,112 block known from the home record) |
+| C3 | both: loss error <= 1e-13 and CX 33 in all 3,000 | CONFIRMED | 2.78e-15 and 2.89e-15; CX 33 in 3,000 of 3,000 for both |
+| C4 | fixed: `exact_rebuilt` = `psf_rerouted` = `best_effort` = 0 | CONFIRMED | 0 / 0 / 0 (base 12 / 1 / 0) |
+| C5 | lap 2,138, position 8 = pair (7, 8): base >= 1e-7, fixed <= 1e-12 | CONFIRMED | position check true; base 8.28e-7, fixed 1.92e-13 |
+| C6 | cliff: 180 two-qubit gates, exact, 0 fallbacks, both cores, all 6 | CONFIRMED | 180 in 12 of 12; worst per-pair 8.9e-16; 0 fallbacks |
+| C7 | cliff outputs bit-different in all 6 | CONFIRMED | 6 of 6 |
+| C8 | 75 passed / 0 failed in both; SU2 lines >= 1 base, 0 fixed | CONFIRMED | 75/0 and 75/0; 3 and 0 lines |
+| C9 | E median fixed/base <= 0.95 | CONFIRMED | 8.97 / 10.20 ms = 0.879 (run 1: 8.96 / 10.20 = 0.878) |
+
+## 2. Other numbers (reported without prediction)
+
+| | base | fixed (run 2) | fixed (run 1) |
+|---|---|---|---|
+| E compile p90 | 12.18 ms | 10.99 ms | 10.71 ms |
+| `GUARD_STATS` checked / inexact / exact_rebuilt / psf_rerouted | 4,295 / 63 / 12 / 1 | 2 / 0 / 0 / 0 | same as run 2 |
+| base `psf_rerouted_worst_residual` | 5.85e-7 | -- | -- |
+| raw (unpolished) error over the 33,000 base-captured blocks: failed / max / count > 1e-13 | 4,293 / 2.09e-6 / 6,087 | 1 / 9.91e-7 / 6,483 | same |
+| cliff compile median (6 reps) | 35.8 ms | 37.1 ms (first rep 97.5 ms) | 40.3 ms |
+
+## 3. Reading
+
+1. **The fix does what it was designed to do, in a second environment.**
+   The extraction failures disappear (4,292 -> 0), and with them every use
+   of the repair paths in the training loop. The single block that the
+   Python checks had to reroute before (psf_rerouted 1, residual 5.85e-7 --
+   exactly the Addendum 218 value) is the lap-2,138 block at pair (7, 8),
+   whose raw error drops from 8.3e-7 to 1.9e-13. Nothing that reaches the
+   output changes in quality: every compile exact, 33 CX, 180 two-qubit
+   gates on the cliff, 75 tests passing.
+2. **Cliff outputs change only in their bits** (C7): the same unitaries,
+   written with different local-factor parameters. Any future check that
+   compares cliff output hashes with pre-fix records will not match.
+3. **The compile loop is faster** (0.88x the median here; 0.83x in the
+   sandbox), because blocks that used to fall back to Qiskit's synthesis are
+   now decomposed by the core.
+4. **The raw error left in the core is a separate issue.** Up to 9.9e-7
+   before polishing remains on second-layer pairs (the same blocks as in
+   the sandbox), repaired by the polish; the number of blocks above 1e-13
+   rises because the 4,292 blocks that failed before are now decomposed and
+   some of them are not exact before polishing.
+
+## 4. Exploratory observations
+
+- **Nearly bit-identical across environments.** The non-timing values in
+  the base and fixed JSON -- failure counts, `GUARD_STATS` counts, loss
+  errors, the lap-2,138 raw errors, the raw-error summaries, and all twelve
+  cliff output hashes -- are identical to the workplace-sandbox dry run
+  (Python 3.11.15, numpy 2.4.4). The one exception found is the base
+  `psf_rerouted_worst_residual`: 5.853514210303842e-7 on the pod against
+  5.853514209337027e-7 in the sandbox (agreement to 8 significant digits).
+  The compound round-trip chain (Addendum 176) found byte-level differences
+  across machines in its random input matrices; the compiled outputs here
+  did not differ. That record's "Consequence" paragraph (do not expect
+  bit-identity across machines) is therefore too general as a statement
+  about this project's outputs. Not investigated further.
+- **Cliff compile time.** The fixed core's cliff median was 40.3 ms in run 1
+  and 37.1 ms in run 2, against 35.8 ms for base (one run); the sandbox gave
+  30.7 and 31.7 ms. The spread between the two fixed runs is as large as the
+  base-fixed difference, so no conclusion is drawn.
+
+## 5. Files
+
+| File | What it is |
+|---|---|
+| [`core_fix_base.txt`](../../data/2026-09-28/core_fix_pod/core_fix_base.txt), [`core_fix_fixed.txt`](../../data/2026-09-28/core_fix_pod/core_fix_fixed.txt), [`core_fix_score.txt`](../../data/2026-09-28/core_fix_pod/core_fix_score.txt) | pod logs (fixed and score: run 2) |
+| [`core_fix_base.json`](../../data/2026-09-28/core_fix_pod/core_fix_base.json), [`core_fix_fixed.json`](../../data/2026-09-28/core_fix_pod/core_fix_fixed.json) | measurements (fixed: run 2) |
+| `core_fix_blocks_base.npz` | the 33,000 blocks captured with the base core (10,956,496 bytes) |
+| `pod_env_2026-09-28.txt` | date, GPU, CPU, file times |
+| [`core_fix_pod_check.py`](../../benchmarks/core_fix_pod_check.py), `core-fix-pod-check-preregistration-2026-09-28.md` | the locked script and pre-registration |
+
+The values above were taken from the pod logs as printed in the session.
+The raw files are to be attached to the hand-off zip when downloaded from
+the pod; if they differ from the logs, an Update will be added here.
+
+> **Update (2026-09-28): raw files received and checked.** The pod files
+> (`pod_core_fix_outputs_2026-09-28.zip`) were downloaded and checked in the
+> workplace sandbox: the script on the pod has the locked hash
+> (`55f1ea07...cb8e`); rerunning `score` on the two JSON files reproduces
+> [`core_fix_score.txt`](../../data/2026-09-28/core_fix_pod/core_fix_score.txt) character for character; every number above matches
+> the files. The base core and the fixed core (sandbox builds of the same
+> sources) give 8.28e-7 and 1.92e-13 on lap 2,138, position 8 of the pod's
+> own capture, as on the pod. The 33,000 captured blocks in the pod's
+> `core_fix_blocks_base.npz` are **bit-identical** to the sandbox dry run's
+> capture (all 33,000 x 16 entries equal, all error tags equal), which
+> supports the cross-environment observation in section 4.
+
+---
+
+<!-- ===== Addendum 225 (source: spare-qubit-cliff-addendum-225-2026-09-28.md) ===== -->
+
+> **Note added when merging:** Replication (not pre-registered): the Nighthawk deadline cliff holds on a RunPod pod with 2026-09-27.7.
+
+## Addendum 225 -- The deadline cliff on FakeNighthawk replicated on a RunPod pod with psf_compile.py 2026-09-27.7: at spare 0 and 2 Qiskit L3 takes 21.3-21.9 s and misses a 1 s deadline 0/5, PSF-Zero takes 0.07-0.10 s and meets it 5/5, with identical two-qubit counts (2026-09-28)
+
+**Replication, not pre-registered.** Run at the workplace on a RunPod pod,
+recorded at home from the hand-off `work_2026-09-28_nighthawk_pod`
+(checked against its manifest).
+
+**Run:** RunPod pod, NVIDIA GeForce RTX 4090 (not used), AMD EPYC 7282
+16-Core Processor, `Linux-6.8.0-124-generic-x86_64-with-glibc2.39`, Python
+3.12.3, Qiskit 2.5.2, qiskit-ibm-runtime 0.50.0, numpy 2.5.3. Repository
+`100e768` (`psf_compile.py` 2026-09-27.7), pre-fix Rust core (wheel built
+from `100e768`). Script [`benchmarks/nighthawk_deadline_cliff.py`](../../benchmarks/nighthawk_deadline_cliff.py),
+unchanged, the one of Addenda 178 and 180. **All times are RunPod-pod
+times** and are not compared number for number with the home runs.
+
+## Result (medians over 5 seeds)
+
+| Spare qubits | Qiskit L3 | PSF-Zero | 1 s deadline (Qiskit / PSF-Zero) | Two-qubit gates |
+|---|---|---|---|---|
+| 0 | 21.52 s | 0.085 s | 0/5 / 5/5 | 180 |
+| 2 | 21.54 s | 0.095 s | 0/5 / 5/5 | 177 |
+| 4 | 0.271 s | 0.092 s | 5/5 / 5/5 | 174 |
+| 8 | 0.284 s | 0.082 s | 5/5 / 5/5 | 168 |
+
+- In all 40 cells the two-qubit count is the same for both compilers, and
+  every per-pair check passes (worst 2.8e-15).
+- Against the home records ([`data/nighthawk_deadline_cliff_2026-09-25.csv`](../../data/nighthawk_deadline_cliff_2026-09-25.csv)
+  and its `_rep2`): the columns spare, seed, arm, two-qubit count and
+  verdict agree in all 40 rows; Qiskit's `pair_worst_infid` agrees bit for
+  bit in all 20 Qiskit rows; 16 of the 20 PSF-Zero rows differ in the last
+  digits of `pair_worst_infid` (2.0e-15 against 2.1e-15, for example),
+  consistent with the PSF-Zero version change between the runs (not
+  checked).
+
+## Reading
+
+The shape of Addendum 180 holds on a second machine and with the current
+compiler: at the cliff only Qiskit misses the deadline, and away from it
+the gap closes. The absolute times differ from home (Qiskit 12.9 s at home,
+21.5 s here; PSF-Zero 0.16 s at home, 0.09 s here), because both the
+machine and the PSF-Zero version differ. That Qiskit's cliff time is nearly
+constant (21.3-21.9 s) fits the home reading that its search runs to a
+budget, but this run does not test that.
+
+## Files
+
+| File | What it is |
+|---|---|
+| [`data/2026-09-28/nighthawk_pod/nighthawk_deadline_cliff_pod_2026-09-28.csv`](../../data/2026-09-28/nighthawk_pod/nighthawk_deadline_cliff_pod_2026-09-28.csv) | the 40 rows |
+| [`data/2026-09-28/nighthawk_pod/nighthawk_pod_2026-09-28.txt`](../../data/2026-09-28/nighthawk_pod/nighthawk_pod_2026-09-28.txt) | full log (including FakeNighthawk warnings) |
+| [`data/2026-09-28/nighthawk_pod/pod_env_2026-09-28.txt`](../../data/2026-09-28/nighthawk_pod/pod_env_2026-09-28.txt) | date, GPU, CPU |
+
+---
+
+<!-- ===== Addendum 226 (source: spare-qubit-cliff-addendum-226-2026-09-28.md) ===== -->
+
+> **Note added when merging:** Replication (not pre-registered): the per-lap cliff and the 36 GPU tests on a RunPod pod; non-timing columns bit-identical to the home record.
+
+## Addendum 226 -- The per-lap cliff (Addenda 183-184) and the 36 GPU tests replicated on a RunPod pod: Qiskit L3 196.6 s and 0/10 laps within 1 s at spare 0, PSF-Zero 0.4 s and 10/10; every non-timing column bit-identical to the home record; 36 of 36 tests pass (2026-09-28)
+
+**Replication, not pre-registered.** Run at the workplace on a RunPod pod,
+recorded at home from the hand-off `work_2026-09-28_pod_replication`
+(checked against its manifest).
+
+**Run:** RunPod pod, NVIDIA GeForce RTX 4090 (used by the GPU tests), AMD
+EPYC 7282 16-Core Processor, `Linux-6.8.0-124-generic-x86_64-with-glibc2.39`,
+Python 3.12.3, Qiskit 2.5.2, qiskit-aer 0.17.2, qiskit-ibm-runtime 0.50.0,
+PennyLane 0.45.1, pennylane-lightning-gpu 0.45.0, numpy 2.5.3. Repository
+`100e768` (`psf_compile.py` 2026-09-27.7), pre-fix Rust core. **All times are
+RunPod-pod times.**
+
+## 1. The deadline cliff on every recompilation (`deadline_compound_chain.py --laps 10`, unchanged)
+
+| | Qiskit L3 total / median | PSF-Zero total / median | 1 s deadline (Qiskit / PSF-Zero) | Drift at lap 10 (Qiskit / PSF-Zero) |
+|---|---|---|---|---|
+| spare 0 | 196.6 s / 19.68 s | 0.4 s / 0.041 s | 0/10 / 10/10 | 3.40e-13 / 6.21e-13 |
+| spare 8 | 2.2 s / 0.212 s | 0.5 s / 0.039 s | 10/10 / 10/10 | 4.34e-13 / 6.21e-13 |
+
+- The cliff recurs on every lap; two-qubit counts are the same for both
+  compilers (180 and 168); every meaning check passes.
+- PSF-Zero's drift grows linearly by 6.21e-14 per lap, as recorded at home.
+- Against [`data/deadline_compound_chain_2026-09-26_v4.csv`](../../data/deadline_compound_chain_2026-09-26_v4.csv) (home, 2026-09-26.4):
+  `max_pair_distance`, `ops`, `routed_twoq`, `layout_changed` and `status`
+  are bit-identical in all 40 rows. Only the timing columns differ (and with
+  them `within_0.1s` in one row). The compiled outputs of this circuit did
+  not change between 2026-09-26.4 and 2026-09-27.7, or between machines.
+
+## 2. GPU tests
+
+The six test files ([`test_tape_conversion_fidelity.py`](../../benchmarks/test_tape_conversion_fidelity.py),
+[`test_gpu_real_verification.py`](../../benchmarks/test_gpu_real_verification.py), [`test_full_chain_gpu.py`](../../benchmarks/test_full_chain_gpu.py),
+[`test_weakness_probes.py`](../../benchmarks/test_weakness_probes.py), [`test_pennylane_gpu_ibm_pipeline_mock.py`](../../benchmarks/test_pennylane_gpu_ibm_pipeline_mock.py),
+[`test_real_submit_local_mode.py`](../../benchmarks/test_real_submit_local_mode.py)): **36 passed**, 0 failed. The 8 warnings are
+one kind, in [`test_real_submit_local_mode.py`](../../benchmarks/test_real_submit_local_mode.py): `SamplerV2` is deprecated in
+qiskit-ibm-runtime 0.50.0. It still works; the submission code
+([`psf_ibm_real_submit.py`](../../benchmarks/psf_ibm_real_submit.py)) may need updating with a later release. On the
+2026-09-25 pod several of these files were not yet on GitHub; this time all
+six ran.
+
+## Files
+
+| File | What it is |
+|---|---|
+| [`data/2026-09-28/pod_replication/deadline_compound_chain_pod_2026-09-28.csv`](../../data/2026-09-28/pod_replication/deadline_compound_chain_pod_2026-09-28.csv) | the 40 rows |
+| [`data/2026-09-28/pod_replication/deadline_chain_pod_2026-09-28.txt`](../../data/2026-09-28/pod_replication/deadline_chain_pod_2026-09-28.txt) | full log |
+| [`data/2026-09-28/pod_replication/gpu_tests_pod_2026-09-28.txt`](../../data/2026-09-28/pod_replication/gpu_tests_pod_2026-09-28.txt) | pytest output |
+| [`data/2026-09-28/pod_replication/pod_env_2026-09-28.txt`](../../data/2026-09-28/pod_replication/pod_env_2026-09-28.txt) | date, GPU, CPU |
+
+---
+
+<!-- ===== Addendum 227 (source: spare-qubit-cliff-addendum-227-preregistration-2026-09-28.md) ===== -->
+
+> **Note added when merging:** Workplace pre-registration of X4 on a GPU statevector simulator, betting against Addendum 204's expectation.
+
+## Addendum 227 -- Pre-registration: transpile-once-and-bind versus recompile-every-step with a GPU statevector simulator (home Addendum 204, X4) (2026-09-28)
+
+**Status: pre-registration, locked at the Project save time of this
+document**, before any GPU run. A workplace-sandbox dry run on a CPU
+simulator (section 6) was made before locking and informed the thresholds;
+its outcome is disclosed. The GPU numbers are not known.
+
+## 1. Why this experiment exists
+
+PSF-Zero synthesizes from numeric angles, so a training loop must recompile
+at every evaluation. The usual Qiskit practice is to transpile a
+parameterized circuit once and only bind values. Home Addendum 204 (X4)
+found the PSF-Zero route faster per step (47.4 vs 57.5 ms) but attributed
+that to the slow reference `Statevector` simulator, and wrote: *with a
+faster simulator (Aer, or a GPU statevector) ... the transpile-once route
+would then be faster per step, probably by an order of magnitude. Not
+measured here.* The README repeats this as an expectation. This experiment
+measures it on a GPU statevector simulator (PennyLane `lightning.gpu`,
+RTX 4090 on the RunPod pod).
+
+The dry run already shows why the expectation may fail: the transpile-once
+circuit keeps every parameterized single-qubit rotation unmerged (2.5 times
+the gates of the PSF-Zero circuit), and a statevector simulator pays per
+gate. The predictions below therefore bet **against** the Addendum 204
+expectation.
+
+## 2. Fixed design ([`x4_gpu_bind_vs_recompile.py`](../../benchmarks/x4_gpu_bind_vs_recompile.py))
+
+- **Circuit:** the brick-layer ansatz of home Addenda 199-222 generalized to
+  n qubits on a line: blocks on (0,1), (2,3), ... then (1,2), (3,4), ...;
+  each block is the same 15-gate sequence as `loop_endurance.add_block`
+  (ZYZ on both qubits, `rxx`, `ryy`, `rzz`, ZYZ on both). n in
+  {12, 16, 20, 24, 26, 28}.
+- **Angles:** per n, base angles uniform in [-pi, pi] (seed 1000 + n) plus
+  22 perturbations (normal, sigma 0.5): 2 warm-up evaluations (not scored),
+  20 measured.
+- **Route A (PSF-Zero):** build the numeric circuit, `compile_for_hardware`
+  (line coupling map, basis cx/rz/sx/x, trivial initial layout,
+  `entangling_basis="cx"`, `block_gate_floor=8`), convert, simulate.
+- **Route B (Qiskit):** transpile the parameterized circuit once
+  (`optimization_level=3`, same line, basis and layout, seed 0; time
+  reported, not counted per evaluation); per evaluation
+  `assign_parameters`, convert, simulate.
+- **Simulation:** the same PennyLane device for both routes, energy of the
+  nearest-neighbour ZZ chain `sum_i Z_i Z_{i+1}`. Conversion maps Qiskit
+  qubit i to wire i gate by gate (cx, rz, sx, x; anything else stops the
+  run). The chain is symmetric under reversal, so the energy does not
+  depend on the bit-order convention.
+- Evaluations alternate A, B with identical angles; garbage collector frozen
+  after set-up and paused during each evaluation. Per evaluation: stage
+  times, energy, CX count, total gate count, layout check.
+- `psf_compile.py` must be 2026-09-27.7 (V0). The core used is whatever the
+  venv holds and is logged (on the pod: the pre-fix core,
+  `psf_zero_runpod_env`).
+
+## 3. Pre-registered predictions
+
+Harness gate **C0**: the six sizes all ran; at n = 12 the first route-A
+energy agrees with Qiskit's `Statevector` of the uncompiled circuit to
+<= 1e-10; every compiled circuit (both routes) has a trivial layout.
+Otherwise nothing is scored.
+
+| ID | Prediction | Confirmed if | Refuted if |
+|---|---|---|---|
+| Y1 | the two routes give the same energies | max \|E_A - E_B\| <= 1e-10 over all evaluations | > 1e-10 |
+| Y2 | **against Addendum 204's expectation:** at n = 12 the transpile-once route is not even twice as fast | median A/B < 2.0 | >= 2.0 |
+| Y3 | at n = 28 the PSF-Zero route is clearly faster | A/B <= 0.6 | >= 0.8 (between: ambiguous) |
+| Y4 | the crossover is at small n | smallest n with A/B <= 1 is 12 or 16 | any other (or none) |
+| Y5 | PSF-Zero's circuit has fewer two-qubit gates | CX A/B <= 0.7 at every n | > 0.7 at any n |
+| Y6 | at n = 28 route A is simulation-bound | simulation >= 90% of route A's median | < 90% |
+| Y7 | the transpile-once circuit carries many more gates | total gates B/A >= 2.0 at every n | < 2.0 at any n |
+
+A/B is the ratio of the median time per evaluation (all stages). All
+times are from the RunPod pod and are not compared with home or sandbox
+numbers.
+
+## 4. What this can and cannot establish
+
+It measures the per-evaluation trade-off with a GPU statevector simulator,
+the case Addendum 204 left open. It does not cover shot-based execution on
+hardware (where circuit size means error, not time), other simulators
+(Aer), other ansatz families, or gradient methods that evaluate many
+shifted circuits. Route B uses Qiskit's own best effort on a parameterized
+circuit (level 3); a hand-written merge of parameterized rotations is not
+tested.
+
+## 5. Files, integrity check, run commands
+
+[`x4_gpu_bind_vs_recompile.py`](../../benchmarks/x4_gpu_bind_vs_recompile.py) (Project: `psf-zero/benchmarks/`; on the pod:
+`~/`), 13,134 bytes, normalized SHA-256
+`3f084a7b40e51c080a3701ab8ff89920fae1dceeea0adfa88fb84977b5db854b`.
+
+```
+python -c "import hashlib;print(hashlib.sha256('\n'.join(l.rstrip() for l in open('/root/x4_gpu_bind_vs_recompile.py',encoding='utf-8').read().strip().splitlines()).encode()).hexdigest())"
+source ~/psf_zero_runpod_env/bin/activate
+python -u ~/x4_gpu_bind_vs_recompile.py run   2>&1 | tee ~/x4_gpu_run.txt | grep -v -i warn
+python -u ~/x4_gpu_bind_vs_recompile.py score 2>&1 | tee ~/x4_gpu_score.txt
+```
+
+Outputs: [`~/x4_gpu_2026-09-28.csv`](../../data/2026-09-28/x4_gpu/x4_gpu_2026-09-28.csv), [`~/x4_gpu_2026-09-28.json`](../../data/2026-09-28/x4_gpu/x4_gpu_2026-09-28.json), and the two
+logs. Expected run time on the pod: roughly 10-20 minutes (estimate; n = 28
+dominates).
+
+## 6. Dry run before locking (methodology; CPU, outcome disclosed)
+
+Workplace sandbox, `--device lightning.qubit --sizes 12,16,20` (CPU, no
+GPU): C0 converter check 1.6e-14, all layouts trivial; routes agree to
+7.8e-14; median A/B 1.26 (n = 12), 0.72 (16), 0.47 (20); CX 33/55, 45/75,
+57/95 (0.60); total gates 265-269 vs 671 (2.5x) at n = 12; route A 97%
+simulation at n = 20; the one-time level-3 transpile 14-16 ms (596 ms on the
+first call, including warm-up). Scoring was exercised on these files with
+the size gate bypassed in a copy of the script (the locked script refuses
+to score fewer than six sizes). One fix was made before locking: the CSV
+writer's field list (the first dry run stopped on it). GPU per-gate costs
+differ from CPU ones (kernel launches at small n, memory bandwidth at large
+n), so Y2-Y4 are genuine predictions for the GPU; Y5 and Y7 are structural
+and expected to hold as in the dry run.
+
+---
+
+<!-- ===== Addendum 228 (source: spare-qubit-cliff-addendum-228-2026-09-28.md) ===== -->
+
+> **Note added when merging:** All seven predictions confirmed: with lightning.gpu the recompile-every-step route is as fast at 12 qubits and 2.5x faster at 24-28 qubits, because the transpile-once circuit has 2.5x the gates.
+
+## Addendum 228 -- Transpile-once-and-bind versus recompile-every-step on a GPU statevector simulator: all seven predictions confirmed; the Addendum 204 expectation does not hold -- the recompiling PSF-Zero route ties at 12 qubits and is 2.5x faster from 24 qubits, because the transpile-once circuit carries 2.5x the gates (2026-09-28)
+
+**Scored against:** `x4-gpu-preregistration-2026-09-28.md`, locked in the
+Project at 2026-09-28 04:27 UTC (script [`x4_gpu_bind_vs_recompile.py`](../../benchmarks/x4_gpu_bind_vs_recompile.py)
+saved 04:27:44 UTC). Thresholds applied exactly as written.
+
+**Run:** RunPod pod, NVIDIA GeForce RTX 4090 (driver 580.159.04, 24,564
+MiB), AMD EPYC 7282 16-Core Processor (64 CPUs shown),
+`Linux-6.8.0-124-generic-x86_64-with-glibc2.39`, Python 3.12.3, Qiskit
+2.5.2, PennyLane 0.45.1 with `lightning.gpu` 0.45.0, numpy 2.5.3.
+Repository `100e768` (`psf_compile.py` 2026-09-27.7), pre-fix core (no
+`CORE_VERSION`). Script placed on the pod 04:28:55 UTC, run finished
+04:39:28 UTC. **All times are from this RunPod pod.**
+
+**Integrity:** the pod's script has the locked normalized SHA-256
+`3f084a7b40e51c080a3701ab8ff89920fae1dceeea0adfa88fb84977b5db854b` (checked
+after the run) and is byte-identical to the Project copy. Rerunning `score`
+on the downloaded JSON in the workplace sandbox reproduces
+[`x4_gpu_score.txt`](../../data/2026-09-28/x4_gpu/x4_gpu_score.txt) character for character. **Amendments after the lock:**
+none.
+
+## 1. Scoring
+
+| ID | Prediction | Verdict | Pod numbers |
+|---|---|---|---|
+| C0 | converter check, trivial layouts, all six sizes | passed | 5.8e-15; all layouts trivial; n = 12, 16, 20, 24, 26, 28 |
+| Y1 | energies of the two routes agree (<= 1e-10) | CONFIRMED | max 8.3e-14 over 120 paired evaluations |
+| Y2 | n = 12: transpile-once not twice as fast (A/B < 2.0) | CONFIRMED | A/B = 0.99 |
+| Y3 | n = 28: A/B <= 0.6 | CONFIRMED | 0.39 |
+| Y4 | smallest n with A/B <= 1 is 12 or 16 | CONFIRMED | 12 |
+| Y5 | CX A/B <= 0.7 at every n | CONFIRMED | 0.60 at every n (33/55 ... 81/135) |
+| Y6 | n = 28: route A >= 90% simulation | CONFIRMED | 99.5% |
+| Y7 | total gates B/A >= 2.0 at every n | CONFIRMED | 2.46-2.53 |
+
+## 2. Numbers (medians of 20 evaluations)
+
+| n | Route A total (compile / simulate) | Route B total (bind / simulate) | A/B | A faster in | CX A / B | gates A / B |
+|---|---|---|---|---|---|---|
+| 12 | 24.0 ms (12.5 / 10.1) | 24.2 ms (0.51 / 22.2) | 0.99 | 10 of 20 | 33 / 55 | 265-269 / 671 |
+| 16 | 31.3 ms (15.1 / 14.3) | 34.7 ms (0.91 / 31.6) | 0.90 | 18 of 20 | 45 / 75 | 360-364 / 915 |
+| 20 | 41.9 ms (17.3 / 22.3) | 55.3 ms (1.00 / 51.6) | 0.76 | 20 of 20 | 57 / 95 | 454-471 / 1,159 |
+| 24 | 350 ms (19.1 / 327) | 838 ms (1.45 / 833) | 0.42 | 20 of 20 | 69 / 115 | 550-557 / 1,403 |
+| 26 | 1.38 s (25.0 / 1,350) | 3.48 s (1.77 / 3,476) | 0.40 | 20 of 20 | 75 / 125 | 597-611 / 1,525 |
+| 28 | 5.79 s (23.7 / 5,766) | 14.86 s (2.02 / 14,849) | 0.39 | 20 of 20 | 81 / 135 | 647-651 / 1,647 |
+
+The one-time level-3 transpile of the parameterized circuit took 13-19 ms
+(732 ms at n = 12, the first call, including warm-up). "A faster in" counts
+paired evaluations with route A's total below route B's; paired ratios at
+n = 12 ranged 0.70-1.46.
+
+**Simulation time per gate** (median of simulate time divided by the
+circuit's gate count) was almost the same for the two routes at every n:
+38 vs 33 us (n = 12), 39 vs 35 (16), 49 vs 45 (20), 0.59 vs 0.59 ms (24),
+2.25 vs 2.28 ms (26), 8.9 vs 9.0 ms (28).
+
+## 3. Reading
+
+1. **The deciding factor is circuit size, not bind versus recompile.**
+   Binding is cheap (0.5-2 ms) and recompiling costs 12-25 ms, as Addendum
+   204 assumed. But a statevector simulator pays per gate -- the per-gate
+   cost was the same for both routes -- and the transpile-once circuit
+   keeps every parameterized single-qubit rotation unmerged, 2.5 times the
+   gates of the PSF-Zero circuit. Its simulation therefore costs about 2.5
+   times as much.
+2. **At 12 qubits the two effects cancel** (A/B 0.99; each route faster in
+   10 of 20 evaluations): route A's extra 12 ms of compilation matches
+   route B's extra 12 ms of simulation. From 16 qubits route A is faster,
+   and from 24 qubits, where simulation dominates both routes, A/B settles
+   at about 0.4, the inverse of the gate ratio.
+3. **Addendum 204's expectation is not borne out on this simulator.** It
+   expected the transpile-once route to be faster per step "probably by an
+   order of magnitude" once simulation became fast. On a GPU statevector
+   simulator the simulation became fast, but not independent of gate count,
+   so the expectation fails at every size tested. Its own diagnosis of X4
+   (the PSF-Zero circuit simulates faster because it is smaller) is what
+   carries over.
+4. **Two-qubit gates: 0.60 of Qiskit's at every size** (3 per block
+   against 5), the property that matters on hardware, where circuit size
+   means error rather than time.
+
+## 4. What this does not establish
+
+- A simulator that fuses gates (for example Aer with gate fusion) could
+  reduce the cost of the unmerged rotations and change the balance. Not
+  tested.
+- Hardware execution is shot-based; the time ratios here do not transfer.
+- Gradient methods that evaluate many shifted circuits per step, other
+  ansatz families, and a hand-written merge of parameterized rotations on
+  the Qiskit side were not tested.
+- The pre-fix Rust core was used; route A's compile time with the fixed
+  core would be slightly lower (0.88x in the core check), which does not
+  change any verdict.
+
+## 5. Files
+
+| File | What it is |
+|---|---|
+| [`x4_gpu_2026-09-28.csv`](../../data/2026-09-28/x4_gpu/x4_gpu_2026-09-28.csv) | per-evaluation rows (240) |
+| [`x4_gpu_2026-09-28.json`](../../data/2026-09-28/x4_gpu/x4_gpu_2026-09-28.json) | per-size summary with environment |
+| [`x4_gpu_run.txt`](../../data/2026-09-28/x4_gpu/x4_gpu_run.txt), [`x4_gpu_score.txt`](../../data/2026-09-28/x4_gpu/x4_gpu_score.txt) | pod logs |
+| [`pod_env_x4.txt`](../../data/2026-09-28/x4_gpu/pod_env_x4.txt) | date, GPU, CPU, file times |
+| [`x4_gpu_bind_vs_recompile.py`](../../benchmarks/x4_gpu_bind_vs_recompile.py), `x4-gpu-preregistration-2026-09-28.md` | the locked script and pre-registration |
+
+---
+
+<!-- ===== Addendum 229 (source: spare-qubit-cliff-addendum-229-preregistration-2026-09-28.md) ===== -->
+
+> **Note added when merging:** Workplace pre-registration of a whole-circuit mirror check on a GPU statevector at 20-26 qubits.
+
+## Addendum 229 -- Pre-registration: whole-circuit equivalence of compiled circuits on a GPU statevector (2026-09-28)
+
+**Status: pre-registration, locked at the Project save time of this
+document**, before any GPU run. A workplace-sandbox dry run on a CPU
+simulator at smaller sizes (section 6) was made before locking; its outcome
+is disclosed.
+
+## 1. Why this experiment exists
+
+This project's correctness checks at scale are per qubit pair: each
+2-qubit block of the output is compared with the matching block of the
+input. For circuits made of disjoint pairs that is a complete check, but
+for circuits whose blocks overlap (brick layers) or that need routing, a
+per-pair check cannot see errors in how blocks are chained or where qubits
+end up. The README states that full-scale unitary equivalence was not
+computed because it is infeasible. A GPU holds a 26-qubit statevector
+(1 GB), so a whole-circuit check becomes possible at 20-26 qubits.
+
+## 2. Fixed design ([`gpu_whole_circuit_equivalence.py`](../../benchmarks/gpu_whole_circuit_equivalence.py))
+
+**Mirror test.** For a circuit C on n logical qubits and a compiled output
+C' on m >= n physical qubits with final layout pi (logical i ends on
+physical pi(i)), the GPU simulates C' followed by the inverse of the
+original C applied to wires pi(i), from |0...0>. If C' implements C under
+pi, the result is |0...0> up to a global phase. **Error = the norm of all
+other amplitudes, sqrt(sum over k != 0 of |a_k|^2)**, summed directly: no
+infidelity and no 1 - |a_0| (both lose precision quadratically, the lesson
+of home Addenda 206, 216 and 218). The mirror uses the ORIGINAL circuit,
+not a second compilation.
+
+**Circuits** (each begins with a random single-qubit `u` on every qubit, so
+the input is a random product state; 3 random instances per family and
+size):
+
+- F1 `brick_line`: the brick-layer ansatz of home Addenda 199-222 (15-gate
+  blocks on (0,1), (2,3), ... then (1,2), (3,4), ...), line coupling map,
+  trivial initial layout (no routing needed; tests overlapping blocks).
+- F2 `brick_grid`: the same circuit on a grid coupling map (4x5, 4x6 and
+  2x13 for n = 20, 24, 26), layout chosen by the compiler (tests layout and
+  final-position bookkeeping).
+- F3 `random_pairs_grid`: 3 layers of Haar-random 2-qubit unitaries on
+  random disjoint pairs (not neighbours), same grids (routing with SWAPs).
+
+**Two compilers per circuit:** PSF-Zero `compile_for_hardware` (basis
+cx/rz/sx/x, `entangling_basis="cx"`, `block_gate_floor=8`, seed 0; trivial
+initial layout for F1 only) and Qiskit `transpile` at
+`optimization_level=3` (same map and basis, seed 0) as a reference checked
+by the same gauge.
+
+**Sizes:** n = 20, 24, 26 (54 compiled circuits; 3 families x 3 inputs x 2
+compilers x 3 sizes). Device: PennyLane `lightning.gpu`.
+
+**Controls built in:**
+
+- C0 converter check (n = 10): the PennyLane statevector of the uncompiled
+  F2 and F3 circuits must match Qiskit's `Statevector` (with bit order
+  reversed) to <= 1e-12; and the same F3 check with the old 2-qubit
+  bit-order bug switched on must differ by >= 0.01 (it can see that bug).
+- Wrong-layout control: for the first PSF-Zero output of each family and
+  size, the mirror is repeated with the final positions of logical qubits 0
+  and 1 swapped; it must fail clearly.
+
+## 3. Pre-registered predictions
+
+Harness gate **C0**: `psf_compile.py` 2026-09-27.7; the converter checks
+above; all three sizes ran with 54 cells; at least one PSF-Zero output has
+a non-identity final layout. Otherwise nothing is scored.
+
+| ID | Prediction | Confirmed if | Refuted if |
+|---|---|---|---|
+| Z1 | every PSF-Zero output implements its circuit | worst error <= 1e-10 over 27 outputs | > 1e-10 |
+| Z2 | every Qiskit L3 output passes the same check (reference) | worst <= 1e-10 over 27 | > 1e-10 |
+| Z3 | the check is sensitive: a wrong final layout fails | error >= 0.1 in all 9 controls | < 0.1 in any |
+| Z4 | routing is actually exercised | >= 5 of the 9 PSF-Zero F3 outputs have a non-identity final layout | < 5 |
+| Z5 | under routing PSF-Zero does not beat Qiskit L3 on two-qubit count | mean CX ratio PSF/L3 over F3 >= 1.00 | <= 0.95 (between: ambiguous) |
+
+Z5 is stated because the dry run showed it (section 6): PSF-Zero delegates
+routing to Qiskit at optimization level 1 (`routing_optimization_level` default) and resynthesizes blocks,
+while level 3 optimizes the routed circuit as a whole. The README lists
+"not yet tested under real routing pressure"; this is a first measurement
+of gate count there, not of time.
+
+## 4. What this can and cannot establish
+
+It can show, at 20-26 qubits, that compiled circuits with overlapping
+blocks, compiler-chosen layouts and SWAP routing implement their input
+exactly, by a whole-circuit measure. It cannot reach the 42-120-qubit
+cliff sizes (a statevector does not fit), and it checks the circuits
+compiled here, not every family. Times are not scored.
+
+## 5. Files, integrity check, run commands
+
+[`gpu_whole_circuit_equivalence.py`](../../benchmarks/gpu_whole_circuit_equivalence.py) (Project: `psf-zero/benchmarks/`; on the
+pod: `~/`), 12,899 bytes, normalized SHA-256
+`59674e2286cd823c3f061f72877ebebfc4f3d2a1e68473e3d1490984d175e5f6`.
+
+```
+python -c "import hashlib;print(hashlib.sha256('\n'.join(l.rstrip() for l in open('/root/gpu_whole_circuit_equivalence.py',encoding='utf-8').read().strip().splitlines()).encode()).hexdigest())"
+source ~/psf_zero_runpod_env/bin/activate
+python -u ~/gpu_whole_circuit_equivalence.py run   2>&1 | tee ~/eq_gpu_run.txt | grep -v -i warn
+python -u ~/gpu_whole_circuit_equivalence.py score 2>&1 | tee ~/eq_gpu_score.txt
+```
+
+Output: [`~/eq_gpu_2026-09-28.json`](../../data/2026-09-28/gpu_equivalence/eq_gpu_2026-09-28.json) and the two logs. Expected run time:
+several minutes (estimate; n = 26 dominates).
+
+## 6. Dry run before locking (methodology; CPU, outcome disclosed)
+
+Workplace sandbox, `--device lightning.qubit --sizes 12,16` (grids 3x4 and
+4x4; CPU): C0 converter 1.4e-16 (F2) and 5.7e-17 (F3), bug control 0.19
+(F3); every PSF-Zero and Qiskit L3 output passed with error 6e-15 to
+6.4e-14; wrong-layout controls 0.81-1.00; all F2 and F3 outputs had
+non-identity final layouts; CX equal on F1 and F2 (33 and 45 for both
+compilers), PSF-Zero above Qiskit L3 on F3 (mean ratio 1.11). Two fixes
+before locking: the C0 bug control is required only for F3 (F2 has no
+2-qubit unitaries, so the bug cannot show there), and Z5 was added after
+seeing the F3 counts. Scoring was exercised with the size gate bypassed in
+a copy; the locked script refuses to score other sizes.
+
+---
+
+<!-- ===== Addendum 230 (source: spare-qubit-cliff-addendum-230-2026-09-28.md) ===== -->
+
+> **Note added when merging:** All five predictions confirmed: every PSF-Zero output equivalent (worst 8.9e-14); under routing PSF-Zero uses about 1.17x Qiskit L3's CX count at the default routing level.
+
+## Addendum 230 -- Whole-circuit equivalence on a GPU statevector: all five predictions confirmed; every compiled circuit at 20-26 qubits (overlapping blocks, compiler-chosen layouts, SWAP routing) is exact, and under routing PSF-Zero uses 1.06-1.32x Qiskit L3's CX count (2026-09-28)
+
+**Scored against:** `gpu-equivalence-preregistration-2026-09-28.md`, locked
+in the Project at **2026-09-28 04:54:32 UTC** (script
+[`gpu_whole_circuit_equivalence.py`](../../benchmarks/gpu_whole_circuit_equivalence.py) saved alongside). Thresholds applied
+exactly as written.
+
+**Run:** RunPod pod, NVIDIA GeForce RTX 4090 (driver 580.159.04, 24,564
+MiB), AMD EPYC 7282 16-Core Processor (64 CPUs shown),
+`Linux-6.8.0-124-generic-x86_64-with-glibc2.39`, Python 3.12.3, Qiskit
+2.5.2, PennyLane 0.45.1 with `lightning.gpu` 0.45.0, numpy 2.5.3.
+Repository `100e768` (`psf_compile.py` 2026-09-27.7), pre-fix core (no
+`CORE_VERSION`). Script placed on the pod 04:55:46 UTC, run finished
+04:57:31 UTC. Times were recorded but are not scored.
+
+**Integrity:** the pod's script is byte-identical to the Project copy and
+has the locked normalized SHA-256
+`59674e2286cd823c3f061f72877ebebfc4f3d2a1e68473e3d1490984d175e5f6`
+(computed on the downloaded file; the check was not shown on the pod before
+the run). Rerunning `score` on the downloaded JSON reproduces
+[`eq_gpu_score.txt`](../../data/2026-09-28/gpu_equivalence/eq_gpu_score.txt) character for character. **Amendments after the lock:**
+none.
+
+## 1. Scoring
+
+| ID | Prediction | Verdict | Pod numbers |
+|---|---|---|---|
+| C0 | converter checks, three sizes, 54 cells, a moved PSF-Zero layout | passed | converter 1.7e-16 (F2), 6.5e-17 (F3); bit-order-bug control 0.19 (F3); 54 cells |
+| Z1 | every PSF-Zero output implements its circuit (<= 1e-10) | CONFIRMED | worst 8.9e-14 over 27 |
+| Z2 | every Qiskit L3 output passes the same check | CONFIRMED | worst 4.2e-13 over 27 |
+| Z3 | a wrong final layout fails (>= 0.1) in all 9 controls | CONFIRMED | 0.69-1.00 |
+| Z4 | >= 5 of 9 PSF-Zero F3 outputs have a non-identity final layout | CONFIRMED | 9 of 9 |
+| Z5 | under routing, CX ratio PSF/L3 >= 1.00 | CONFIRMED | mean 1.165 (range 1.06-1.32) |
+
+## 2. Numbers
+
+| n | family | PSF-Zero worst error / CX | Qiskit L3 worst error / CX | final layout moved (PSF, L3) |
+|---|---|---|---|---|
+| 20 | F1 brick, line | 3.8e-14 / 57 | 8.4e-14 / 57 | 0/3, 0/3 |
+| 20 | F2 brick, 4x5 grid | 3.2e-14 / 57 | 4.2e-13 / 57 | 3/3, 3/3 |
+| 20 | F3 random pairs, 4x5 grid | 7.6e-14 / 120-126 | 5.0e-14 / 105-111 | 3/3, 3/3 |
+| 24 | F1 | 5.6e-14 / 69 | 4.8e-14 / 69 | 0/3, 0/3 |
+| 24 | F2, 4x6 grid | 4.4e-14 / 69 | 8.0e-14 / 69 | 3/3, 3/3 |
+| 24 | F3, 4x6 grid | 6.7e-14 / 153-159 | 3.4e-14 / 132-144 | 3/3, 3/3 |
+| 26 | F1 | 6.2e-14 / 75 | 3.8e-14 / 75 | 0/3, 0/3 |
+| 26 | F2, 2x13 grid | 5.8e-14 / 75 | 4.6e-14 / 75 | 3/3, 3/3 |
+| 26 | F3, 2x13 grid | 8.9e-14 / 189-240 | 4.8e-14 / 174-195 | 3/3, 3/3 |
+
+F3 CX ratios PSF/L3 per circuit: 1.20, 1.14, 1.14 (n = 20); 1.06, 1.18,
+1.13 (24); 1.32, 1.23, 1.09 (26). Total gate counts on F3 were close
+(PSF-Zero 700-994, L3 680-1,080; either could be larger), so the extra CX
+are partly offset by fewer single-qubit gates. Wrong-layout controls: 0.98, 0.74, 0.77 (n = 20;
+F1, F2, F3), 1.00, 0.69, 0.86 (24), 0.84, 0.83, 0.85 (26).
+
+## 3. Reading
+
+1. **Whole-circuit equivalence, measured.** Until now this project checked
+   large outputs per qubit pair and stated that full equivalence was not
+   computable. At 20-26 qubits it is, on a GPU: all 27 PSF-Zero outputs
+   (and all 27 Qiskit L3 outputs) implement their input circuits exactly,
+   including brick layers whose blocks overlap, layouts chosen by the
+   compiler on grids, and random circuits routed with SWAPs. The check is
+   not blind: a wrong final position of two qubits gives errors of 0.7-1.0,
+   and the converter check sees the old bit-order bug.
+2. **Routing pressure: correct, but more two-qubit gates.** On the
+   random-pair circuits PSF-Zero's output carries 6-32% more CX than
+   Qiskit's level 3 (mean 17%). Where no routing is needed, or where the
+   brick circuit maps onto the grid without extra SWAPs, the counts are
+   identical. A likely cause is that `compile_for_hardware` routes with
+   Qiskit at optimization level 1 (`routing_optimization_level` default)
+   and resynthesizes blocks, while level 3 optimizes the routed circuit as
+   a whole; not tested here. This is the first gate-count measurement for
+   the README's open item "not yet tested under real routing pressure", and
+   it goes against PSF-Zero.
+
+## 4. What this does not establish
+
+- Sizes above about 28 qubits (the 42-120-qubit cliff regime) do not fit a
+  statevector; there the per-pair check remains the only one.
+- Only the three families above; 3 random instances each.
+- Whether `routing_optimization_level=3` closes the CX gap, and at what
+  compile-time cost, is not tested.
+- The pre-fix core was used; the core fix does not change outputs'
+  correctness (Addendum core-fix pod check) and is not expected to change
+  these conclusions.
+
+## 5. Files
+
+| File | What it is |
+|---|---|
+| [`eq_gpu_2026-09-28.json`](../../data/2026-09-28/gpu_equivalence/eq_gpu_2026-09-28.json) | all 54 cells, 9 controls, C0 checks, environment |
+| [`eq_gpu_run.txt`](../../data/2026-09-28/gpu_equivalence/eq_gpu_run.txt), [`eq_gpu_score.txt`](../../data/2026-09-28/gpu_equivalence/eq_gpu_score.txt) | pod logs |
+| [`pod_env_eq.txt`](../../data/2026-09-28/gpu_equivalence/pod_env_eq.txt) | date, GPU, CPU, file times |
+| [`gpu_whole_circuit_equivalence.py`](../../benchmarks/gpu_whole_circuit_equivalence.py), `gpu-equivalence-preregistration-2026-09-28.md` | the locked script and pre-registration |
+
+---
+
+<!-- ===== Addendum 231 (source: spare-qubit-cliff-addendum-231-preregistration-2026-09-28.md) ===== -->
+
+> **Note added when merging:** Workplace pre-registration of four routing arms to explain the CX gap of Addendum 230.
+
+## Addendum 231 -- Pre-registration: two-qubit count under routing pressure -- compress-then-route versus route-then-resynthesize (2026-09-28)
+
+**Status: pre-registration, locked at the Project save time of this
+document**, before the scored run. A workplace-sandbox dry run at smaller
+sizes (section 6) was made before locking and informed the thresholds; its
+outcome is disclosed. **The scored run is also made in the workplace
+sandbox** (no GPU is needed), so all times are sandbox times.
+
+## 1. Why this experiment exists
+
+The GPU whole-circuit check of the same day (its Z5) found PSF-Zero's
+routed outputs carrying 1.06-1.32x Qiskit L3's CX count on random-pair
+circuits. `compile_for_hardware` compresses first and then routes with
+Qiskit at `routing_optimization_level=1`; at level 1 each routing SWAP is
+emitted as 3 CX and never merged with the blocks around it. Two remedies
+are compared:
+
+- raising `routing_optimization_level` to 3 (the docstring warns that
+  Qiskit then re-runs block consolidation and synthesis, i.e. largely
+  replaces PSF-Zero's work), and
+- a new order: **route first, then let PSF-Zero consolidate** the routed
+  circuit, so that each SWAP merges with its neighbouring blocks.
+
+## 2. Fixed design ([`routing_pressure_arms.py`](../../benchmarks/routing_pressure_arms.py))
+
+Circuits: the three families of [`gpu_whole_circuit_equivalence.py`](../../benchmarks/gpu_whole_circuit_equivalence.py)
+(random product input layer; F1 brick on a line with trivial layout, F2
+brick on a grid, F3 three layers of Haar-random 2-qubit unitaries on random
+disjoint pairs on a grid). n = 20, 24, 26 (grids 4x5, 4x6, 2x13), **5
+instances** per family and size. Basis cx/rz/sx/x.
+
+| Arm | What it does |
+|---|---|
+| A | `compile_for_hardware`, `routing_optimization_level=1` (default), floor 8 |
+| B | `compile_for_hardware`, `routing_optimization_level=3`, floor 8 |
+| C | Qiskit `transpile` at level 1 with no basis (SWAPs kept as gates; trivial layout for F1), then `compile_for_hardware` on the routed circuit with a trivial layout and `block_gate_floor=1` |
+| D | Qiskit `transpile`, `optimization_level=3` (reference) |
+
+Recorded per output: CX, total gates, depth, compile time, whether every
+2-qubit gate lies on a coupling-map edge and every gate is in the basis.
+**Correctness at n = 20** (all 60 outputs): the mirror test (output, then
+the inverse of the original circuit on the final positions; error = norm of
+all non-zero amplitudes) on a CPU statevector (`lightning.qubit`).
+
+Arm C uses floor 1 because a SWAP next to a short remainder must be merged;
+at floor 8 such blocks are left alone (the first dry run showed C doubling
+the CX of F1 for exactly this reason).
+
+## 3. Pre-registered predictions
+
+Harness gate **C0**: `psf_compile.py` 2026-09-27.7; sizes 20, 24, 26 with
+check at 20; 180 outputs; every output on coupling-map edges and in the
+basis. Otherwise nothing is scored. Ratios are means over the 15 F3
+circuits of per-circuit CX ratios.
+
+| ID | Prediction | Confirmed if | Refuted if |
+|---|---|---|---|
+| R1 | arms A and C (synthesized by PSF-Zero) are exact | worst mirror error <= 1e-10 over their 30 checked outputs | > 1e-10 |
+| R2 | compress then route at level 3 is not worse than Qiskit L3 on F3 CX | mean B/D <= 1.02 | >= 1.05 |
+| R3 | route-then-resynthesize removes CX versus the default on F3 | mean C/A <= 0.95 | >= 1.00 |
+| R4 | route-then-resynthesize comes close to Qiskit L3 on F3 CX | mean C/D <= 1.08 | > 1.12 |
+| R5 | no regression where routing is light | C <= A in CX in all 30 F1/F2 circuits | any C > A |
+
+Between the bounds: ambiguous. Reported without prediction: the number of
+B and D outputs whose mirror error exceeds 1e-10 (the dry run found one
+Qiskit L3 output at 1.17e-5, see section 6), the F3 circuits where B and D
+have equal CX, depths and sandbox compile times.
+
+## 4. What this can and cannot establish
+
+It can show where the routed-CX gap comes from and whether reordering
+routing and resynthesis closes it, at 20-26 qubits on three families. It
+does not test the cliff regime (layout search), other routers, or
+hardware; compile times are from the workplace sandbox only. Arm C is a
+prototype order built from public calls, not a change to
+`compile_for_hardware`.
+
+## 5. Files, integrity check, run command
+
+[`routing_pressure_arms.py`](../../benchmarks/routing_pressure_arms.py) (Project: `psf-zero/benchmarks/`), 13,348 bytes,
+normalized SHA-256
+`b3700751637d4b7f55a3a4b9dbe2733d358c1cb0e66644bd160d3a2da787ad62`.
+
+```
+python -u routing_pressure_arms.py run   2>&1 | tee ~/routing_arms_run.txt
+python -u routing_pressure_arms.py score 2>&1 | tee ~/routing_arms_score.txt
+```
+
+Run in the workplace sandbox with the pre-fix core built from `100e768`
+(Python 3.11.15, Qiskit 2.5.2, numpy 2.4.4), the same core as the pod
+runs of the day.
+
+## 6. Dry run before locking (methodology; outcome disclosed)
+
+Workplace sandbox, `--sizes 12,16 --check-n 12`. First version: arm C at
+floor 8 gave twice the CX on F1/F2 (short blocks left unconsolidated after
+routing); changed to floor 1. Second version: R1 over A and C 6.2e-14; one
+Qiskit L3 output (F2, n = 12, instance 0) had mirror error **1.17e-5**, all
+other B and D outputs <= 2.8e-13; F3 mean ratios B/D 0.999, C/A 0.919, C/D
+1.040; C <= A on all F1/F2 circuits (equal counts). The R1 scope was
+narrowed to the PSF-Zero-synthesized arms after seeing the Qiskit L3
+outlier, and the thresholds of R2-R4 were set from these dry-run values
+with margins. Scoring was exercised with the size gate overridden in a
+copy; the locked script refuses other sizes.
+
+---
+
+<!-- ===== Addendum 232 (source: spare-qubit-cliff-addendum-232-2026-09-28.md) ===== -->
+
+> **Note added when merging:** Routing at level 3 closes the gap (0.99x L3, exact); route-then-resynthesize does not (R3/R4 ambiguous, R5 refuted).
+
+## Addendum 232 -- Two-qubit count under routing pressure: routing at level 3 closes the gap to Qiskit L3 (B/D 0.99, exact outputs); the route-then-resynthesize prototype does not (C/A 0.975, C/D 1.09, ambiguous) and regresses brick circuits on grids (R5 refuted) (2026-09-28)
+
+**Scored against:** `routing-arms-preregistration-2026-09-28.md`, locked in
+the Project before the scored run. Thresholds applied exactly as written.
+
+**Run:** workplace sandbox (not the pod), 2 CPUs shown, Intel(R) Xeon(R)
+Processor @ 2.10GHz, `Linux-6.18.44-fc-v37-x86_64-with-glibc2.39`, Python
+3.11.15, Qiskit 2.5.2, PennyLane 0.45.1 (`lightning.qubit` for the mirror
+checks), numpy 2.4.4. Repository `100e768` (`psf_compile.py` 2026-09-27.7,
+clean checkout), pre-fix core built from `100e768` with rustc 1.95.0 (no
+`CORE_VERSION`). Run started 2026-09-28 05:06:29 UTC, after the lock; the
+script run is the Project copy, normalized SHA-256
+`b3700751637d4b7f55a3a4b9dbe2733d358c1cb0e66644bd160d3a2da787ad62`,
+checked immediately before the run. **All times are workplace-sandbox
+times.** **Amendments after the lock:** none.
+
+## 1. Scoring
+
+| ID | Prediction | Verdict | Numbers |
+|---|---|---|---|
+| C0 | sizes 20/24/26, 180 outputs, all on coupling-map edges and in basis | passed | 180 of 180 |
+| R1 | arms A and C exact at n = 20 (<= 1e-10) | CONFIRMED | worst 6.7e-14 over 30 |
+| R2 | mean F3 CX B/D <= 1.02 | CONFIRMED | 0.994 (per circuit 0.89-1.06) |
+| R3 | mean F3 CX C/A <= 0.95 | **AMBIGUOUS** | 0.975 (0.88-1.08); refutation bound 1.00 not reached |
+| R4 | mean F3 CX C/D <= 1.08 | **AMBIGUOUS** | 1.089 (0.98-1.29); refutation bound 1.12 not reached |
+| R5 | C <= A in CX on all 30 F1/F2 circuits | **REFUTED** | 15 of 30: equal on all F1, worse on all 15 F2 (69 vs 57, 78 vs 69, 90 vs 75) |
+
+Reported without prediction: arms B and D had no checked output above
+1e-10 (worst 1.0e-13 and 1.3e-13); B and D had equal F3 CX in 2 of 15
+circuits.
+
+## 2. Numbers (means over 5 instances; compile time median, sandbox)
+
+| n | family | A (route level 1) | B (route level 3) | C (route, then PSF) | D (Qiskit L3) |
+|---|---|---|---|---|---|
+| 20 | F1 line | 57 CX, d 31, 19 ms | 57, d 29, 22 ms | 57, d 31, 26 ms | 57, d 27, 16 ms |
+| 20 | F2 grid | 57, d 31, 20 ms | 57, d 29, 46 ms | 69, d 73, 29 ms | 57, d 27, 34 ms |
+| 20 | F3 grid | 125.4, d 84, 19 ms | 112.2, d 79, 29 ms | 118.8, d 113, 28 ms | 111.0, d 82, 20 ms |
+| 24 | F1 | 69, d 32 | 69, d 29 | 69, d 32 | 69, d 27 |
+| 24 | F2 | 69, d 31 | 69, d 29 | 78, d 52 | 69, d 27 |
+| 24 | F3 | 148.2, d 85 | 134.4, d 71 | 147.0, d 115 | 136.2, d 82 |
+| 26 | F1 | 75, d 31 | 75, d 29 | 75, d 31 | 75, d 27 |
+| 26 | F2 | 75, d 31 | 75, d 29 | 90, d 49 | 75, d 27 |
+| 26 | F3 | 202.8, d 98 | 176.4, d 97 | 199.2, d 142 | 179.4, d 96 |
+
+F3 means over the 15 circuits: A/D 1.119 (consistent with the GPU check's
+1.165 over 9), B/D 0.994, C/A 0.975, C/D 1.089. F3 median compile time: A
+20.6 ms, B 30.4 ms, C 27.3 ms, D 22.6 ms.
+
+## 3. Reading
+
+1. **The gap comes from the routing level.** With routing at level 3 (arm
+   B), PSF-Zero's compressed circuit ends with the same CX count as
+   Qiskit L3 on average (0.994), sometimes fewer, sometimes more, and every
+   checked output is exact. The price here is compile time (about 1.5x arm
+   A on F3, about 2.3x on F2) -- at these sizes, with no cliff, B is not
+   faster than plain Qiskit L3. The docstring's warning that level 3
+   largely replaces PSF-Zero's own work is consistent with this: B behaves
+   like L3.
+2. **Route-then-resynthesize, as prototyped, is not the remedy.** It trims
+   F3 by 2.5% on average against the default (ambiguous under the
+   pre-registered bounds) and stays 9% above Qiskit L3. On the brick
+   circuits on grids it is clearly worse (12-20% more CX and much deeper).
+   A plausible reason, not verified: routing the uncompressed circuit lets
+   Qiskit's level-1 layout and router work on 15-gate blocks rather than on
+   one block per pair, and they place and route it less well than the
+   compressed circuit. The prediction that it would never be worse (R5) is
+   refuted.
+3. **Practical reading for `compile_for_hardware`:** at the default level
+   1, routing-heavy circuits cost about 12-17% more CX than Qiskit L3;
+   passing `routing_optimization_level=3` removes that gap at a compile-time
+   cost, which matters inside the cliff (Addenda 24-25 in the home record:
+   level 3 brings back the cliff) and matters little outside it.
+
+## 4. Other observations
+
+- The dry run's Qiskit L3 output with mirror error 1.17e-5 (F2, n = 12)
+  did not recur in the scored run (0 of 15 at n = 20). One case at n = 12
+  is recorded in the pre-registration; its cause (for example Qiskit's
+  synthesis accepting a decomposition within an infidelity tolerance, which
+  allows operator errors of order 1e-5) was not investigated.
+
+## 5. What this does not establish
+
+- The cliff regime (saturated maps, `layout_search=True`) was not tested;
+  there, level 3 is known to cost far more time.
+- Only three families and one router configuration per arm.
+- Arm C could be improved (for example compressing before the first
+  routing and merging SWAPs afterwards); only the simple order was tested.
+
+## 6. Files
+
+| File | What it is |
+|---|---|
+| [`routing_arms_2026-09-28.json`](../../data/2026-09-28/routing_arms/routing_arms_2026-09-28.json) | all 180 outputs with environment |
+| [`routing_arms_run.txt`](../../data/2026-09-28/routing_arms/routing_arms_run.txt), [`routing_arms_score.txt`](../../data/2026-09-28/routing_arms/routing_arms_score.txt) | logs (in the run log the sandbox's working path is replaced by `<sandbox>`) |
+| [`sandbox_env_routing.txt`](../../data/2026-09-28/routing_arms/sandbox_env_routing.txt) | start time, script hash, CPU |
+| [`routing_pressure_arms.py`](../../benchmarks/routing_pressure_arms.py), `routing-arms-preregistration-2026-09-28.md` | the locked script and pre-registration |
+
+---
+
+<!-- ===== Addendum 233 (source: spare-qubit-cliff-addendum-233-preregistration-2026-09-28.md) ===== -->
+
+> **Note added when merging:** Workplace pre-registration: does lightning.gpu slow down silently beyond device memory on native Linux?
+
+## Addendum 233 -- Pre-registration: the GPU memory ceiling of lightning.gpu on native Linux -- error or silent slowdown? (2026-09-28)
+
+**Status: pre-registration, locked at the Project save time of this
+document**, before any GPU run. The workplace sandbox has no GPU; a CPU
+dry run (section 6) checked only the plumbing.
+
+## 1. Why this experiment exists
+
+Home Addenda 143-144 (RTX 4070, 12 GB, WSL2) found that exact statevector
+simulation with `lightning.gpu` did not fail when the state outgrew the
+card: at 29 qubits it ran about 15 times slower with no error, apparently
+because CUDA allocations spilled into system memory, and at 28 qubits one
+execution ran for over 2 hours. The README states the hazard as
+"WSL2-specific ... apparently". This experiment asks whether the same
+happens on a native-Linux RunPod pod with an RTX 4090 (24,564 MiB), or
+whether the run stops with an explicit error.
+
+Statevector size in complex128: 2^n x 16 bytes -- 29 qubits 8.6 GB,
+30 qubits 17.2 GB, 31 qubits 34.4 GB (more than the card).
+
+## 2. Fixed design ([`gpu_memory_ceiling.py`](../../benchmarks/gpu_memory_ceiling.py))
+
+- Sizes n = 26, 27, 28, 29, 30, 31, each in its own child process with a
+  900 s timeout, one after another.
+- Circuit: H on every qubit, then two layers of (RY with random angles on
+  every qubit, CNOT chain), expectation of Z0; `n + 2(2n - 1)` gates. Three
+  calls per size; the first includes allocation and is not used for the
+  per-gate time.
+- Recorded per size: status (ok / error with message / crash with stderr /
+  timeout), the three call times, the device memory in use before and at
+  peak (polled from `nvidia-smi` every 0.2 s), wall time.
+- **C0:** at n = 12 the `lightning.gpu` value must equal the
+  `lightning.qubit` (CPU) value to <= 1e-10; the device must be
+  `lightning.gpu` and all six sizes must have been attempted.
+
+## 3. Pre-registered predictions
+
+**Per-gate time** = median of calls 2-3 divided by the gate count. For a
+memory-bound statevector simulator it should roughly double per added
+qubit (the X4 run of the same day: 0.59, 2.25 and 8.9 ms per gate at 24,
+26 and 28 qubits, a factor of about 2 per qubit).
+
+| ID | Prediction | Confirmed if | Refuted if |
+|---|---|---|---|
+| W1 | no silent jump among the sizes that complete | per-gate time ratio to n - 1 <= 3.0 for every completed n | >= 5.0 for any (the WSL2 effect was about 15) |
+| W2 | the first size that does not fit stops with an explicit error | its status is error or crash (non-zero exit), not timeout | timeout, or every size completes with a ratio >= 5 |
+| W3 | the largest size that completes is 29 or 30 | 29 or 30 | any other |
+
+If every size completes and no ratio reaches 5.0, W2 is ambiguous (the
+card or the library handled more than expected). Reported without
+prediction: device memory before and at peak for every size, the error
+text, wall times.
+
+## 4. What this can and cannot establish
+
+It shows how `lightning.gpu` behaves at and beyond the memory of a 24 GB
+card on native Linux, one card and one driver (580.159.04). It does not by
+itself prove that WSL2 caused the home result: the home card, driver and
+system also differ. A confirmed W2 would make "specific to that WSL2 setup"
+the most plausible reading; a refuted W1 would show the silent slowdown is
+not WSL2-only.
+
+## 5. Files, integrity check, run commands
+
+[`gpu_memory_ceiling.py`](../../benchmarks/gpu_memory_ceiling.py) (Project: `psf-zero/benchmarks/`; on the pod: `~/`),
+8,421 bytes, normalized SHA-256
+`e1e9c5195a07f011ecf50c80d9500a4dc52b197d34dfcec00256a590681ba994`.
+
+```
+python -c "import hashlib;print(hashlib.sha256('\n'.join(l.rstrip() for l in open('/root/gpu_memory_ceiling.py',encoding='utf-8').read().strip().splitlines()).encode()).hexdigest())"
+source ~/psf_zero_runpod_env/bin/activate
+python -u ~/gpu_memory_ceiling.py run   2>&1 | tee ~/vram_run.txt
+python -u ~/gpu_memory_ceiling.py score 2>&1 | tee ~/vram_score.txt
+```
+
+Output: [`~/vram_2026-09-28.json`](../../data/2026-09-28/vram_ceiling/vram_2026-09-28.json) and the two logs. Expected run time:
+a few minutes if the largest size fails quickly; at most about 1.5 hours
+if every size runs to its timeout (not expected).
+
+## 6. Dry run before locking (plumbing only)
+
+Workplace sandbox, CPU, `--device lightning.qubit --sizes 12,13,14`: every
+size completed, the child/parent reporting, JSON and scoring worked (C0 and
+the size gate relaxed in a copy). Two changes before locking: the rotation
+layer was changed from RZ to RY (with RZ the expectation of Z0 is exactly 0
+for every n, which would make the C0 comparison empty), and the library
+versions are read from package metadata. No GPU numbers are known.
+
+---
+
+<!-- ===== Addendum 234 (source: spare-qubit-cliff-addendum-234-2026-09-28.md) ===== -->
+
+> **Note added when merging:** All three predictions confirmed on an RTX 4090: clean 2x per qubit up to 30 qubits, an explicit out-of-memory error at 31. See the note on Addendum 143.
+
+## Addendum 234 -- On native Linux with an RTX 4090, lightning.gpu does not slow down silently: per-gate time doubles cleanly per qubit up to 30 qubits, and 31 qubits stops at once with "out of memory" (W1-W3 confirmed) (2026-09-28)
+
+**Scored against:** `vram-ceiling-preregistration-2026-09-28.md`, locked in
+the Project (2026-09-28 05:15:52 UTC) before the GPU run. Thresholds applied
+exactly as written.
+
+**Run:** on a RunPod pod (not the workplace sandbox, not home): NVIDIA
+GeForce RTX 4090, 24,564 MiB, driver 580.159.04;
+`Linux-6.8.0-124-generic-x86_64-with-glibc2.39`; Python 3.12.3; PennyLane
+0.45.1, pennylane-lightning 0.45.0, pennylane-lightning-gpu 0.45.0. The
+script run was the Project copy, normalized SHA-256
+`e1e9c5195a07f011ecf50c80d9500a4dc52b197d34dfcec00256a590681ba994`,
+checked on the pod immediately before the run (the check was printed to
+the terminal, not into the logs; its output is quoted in the README of the
+hand-off zip).
+**All times are RunPod-pod times** and are not compared with home or the
+workplace sandbox. **Amendments after the lock:** none. PSF-Zero's
+compiler and Rust core are not involved in this test.
+
+## 1. Scoring
+
+| ID | Prediction | Verdict | Numbers |
+|---|---|---|---|
+| C0 | n = 12 GPU value equals CPU value to <= 1e-10; device lightning.gpu; all six sizes attempted | passed | -0.786005651951213 vs -0.7860056519512131 (difference 1.1e-16) |
+| W1 | no silent jump: per-gate ratio to n - 1 <= 3.0 | **CONFIRMED** | ratios 1.97, 1.99, 1.99, 1.99 (max 1.993) |
+| W2 | first size that does not fit stops with an explicit error, not a timeout | **CONFIRMED** | n = 31: `RuntimeError: ... DataBuffer.hpp ... Error in PennyLane Lightning: out of memory` after 2.6 s wall |
+| W3 | largest completed size is 29 or 30 | **CONFIRMED** | 30 |
+
+## 2. Numbers (RunPod pod)
+
+| n | state (complex128) | status | calls 1 / 2 / 3 (s) | per-gate (calls 2-3) | peak device memory | wall |
+|---|---|---|---|---|---|---|
+| 26 | 1,024 MiB | ok | 0.415 / 0.252 / 0.250 | 1.963 ms | 1,458 MiB | 3.3 s |
+| 27 | 2,048 MiB | ok | 0.691 / 0.513 / 0.514 | 3.860 ms | 2,482 MiB | 4.1 s |
+| 28 | 4,096 MiB | ok | 1.210 / 1.057 / 1.059 | 7.668 ms | 4,530 MiB | 5.8 s |
+| 29 | 8,192 MiB | ok | 2.331 / 2.186 / 2.185 | 15.284 ms | 8,626 MiB | 9.2 s |
+| 30 | 16,384 MiB | ok | 4.669 / 4.511 / 4.506 | 30.464 ms | 16,818 MiB | 16.3 s |
+| 31 | 32,768 MiB | **error** (out of memory) | -- | -- | 396 MiB | 2.6 s |
+
+Device memory before each size: 1 MiB. The n = 12 C0 run peaked at
+434 MiB.
+
+## 3. Reading
+
+1. **No silent slowdown on this setup.** Up to the largest size that fits,
+   the time per gate doubles per added qubit (ratio 1.97-1.99), which is
+   what a memory-bound statevector simulator should do. At the first size
+   that does not fit, allocation fails at once with a Python-level
+   `RuntimeError` that a caller can catch (the child caught it and exited
+   normally; nothing hung, nothing ran into the timeout).
+2. **Memory use is one statevector plus a fixed overhead.** At every
+   completed size the peak equals 2^n x 16 bytes plus exactly 434 MiB (the
+   same as the whole n = 12 run, so most likely the CUDA context and
+   library workspace). No second copy of the state was allocated for this
+   circuit (gates plus one expectation value, `diff_method=None`). So on a
+   24 GB card the limit is 30 qubits for this kind of run, and n = 31
+   (32 GB) cannot fit.
+3. **What this means for the home observation (Addenda 143-144, RTX 4070,
+   12 GB, WSL2).** The pre-registered reading applies: with W2 confirmed,
+   "specific to that WSL2 setup" is the most plausible reading of the
+   silent slowdown, but it is not proven (card, driver and system also
+   differ). One point is worth checking at home and is **not verified
+   here**: by the memory model of item 2, a single-statevector run like
+   this one needs about 8.6 GB at 29 qubits and 4.5 GB at 28, both below
+   12 GB. If the home runs that slowed down at 28-29 qubits were of this
+   kind, the state alone did not outgrow the card, and the slowdown would
+   need another explanation (memory the workload allocates in addition to
+   one state, for example for gradients or several outputs; memory already
+   in use by the display or other processes; or WSL2's handling of GPU
+   memory). The home record of what exactly was run at those sizes decides
+   this.
+
+## 4. What this does not establish
+
+- One card, one driver, one library version, one circuit type. Workloads
+  that allocate more than one state (adjoint gradients, batched
+  observables, shots) were not tested; their ceiling will be lower.
+- It does not test WSL2 or a 12 GB card. It shows only that native Linux
+  with this card and driver fails loudly rather than slowing down.
+- Per-gate times are for this circuit's gate mix (H, RY, CNOT); the X4 run
+  of the same day (general two-qubit unitaries) had 8.9 ms per gate at 28
+  qubits against 7.7 ms here, which is not a contradiction.
+
+## 5. Re-scoring and file integrity
+
+The scoring was repeated in the workplace sandbox with the locked script's
+`score` mode on a JSON rebuilt from the pasted run log (the ENV, C0 and
+SIZE lines carry every field of the JSON). The rebuilt JSON and the two
+logs as pasted have the same byte counts and the same SHA-256 as the pod's
+files (`sha256sum` run on the pod: JSON `c56cdfd4...d37e0`, run log
+`dcbad2fc...aa58d`, score log `92ff1e7e...ae291`), so the files in the
+hand-off zip are byte-identical to the pod's, and the sandbox re-score
+reproduces the pod's score log exactly.
+
+Pod file times (UTC): script placed 05:17:34, JSON and run log written
+05:18:49, score log 05:18:50 -- after the lock.
+
+## 6. Files
+
+| File | What it is |
+|---|---|
+| [`vram_2026-09-28.json`](../../data/2026-09-28/vram_ceiling/vram_2026-09-28.json) | environment, C0 and all six sizes (identical to the pod's file) |
+| [`vram_run.txt`](../../data/2026-09-28/vram_ceiling/vram_run.txt), [`vram_score.txt`](../../data/2026-09-28/vram_ceiling/vram_score.txt) | pod logs (identical to the pod's files) |
+| [`gpu_memory_ceiling.py`](../../benchmarks/gpu_memory_ceiling.py), `vram-ceiling-preregistration-2026-09-28.md` | the locked script and pre-registration |
+
+---
+
+<!-- ===== Addendum 235 (source: spare-qubit-cliff-addendum-235-preregistration-2026-09-28.md) ===== -->
+
+> **Note added when merging:** Workplace pre-registration of the Addendum 219 100,000-compile run with the fixed core (sandbox).
+
+## Addendum 235 -- Pre-registration: the 100,000-compile run (Addendum 219) repeated with the fixed Rust core (2026-09-28)
+
+**Status: pre-registration, locked at the Project save time of this
+document**, before the full run. Two 1/100-scale smoke runs were made
+before locking (section 6); their outcome is disclosed. **The full run is
+made in the workplace sandbox**, so all times are sandbox times and are not
+compared with home or the RunPod pod.
+
+## 1. Why this experiment exists
+
+The Rust core fix (changelog item 11, `CORE_VERSION` 2026-09-28.1) was
+checked on 3,000 training compiles (core-fix pod check, home Addenda
+223-224): the core's `SU2ExtractionSingular` failures went from 4,292 to 0,
+the repair paths in `psf_compile.py` were no longer used, and the lap-2,138
+block (Addendum 218) dropped from 8.3e-7 to 1.9e-13. Before the core is
+replaced at home, the full 100,000-compile run of Addendum 219 is the
+natural test at scale: the v2 run (pre-fix core, home WSL) had **43,829**
+blocks falling back to Qiskit's CX synthesis in part E (13% of about
+330,000 blocks), and its repair counters ended at `exact_rebuilt` 150,
+`psf_rerouted` 1 (residual 5.85e-7), `best_effort` 0.
+
+## 2. Fixed design ([`long_loop_100k_v3.py`](../../benchmarks/long_loop_100k_v3.py))
+
+[`long_loop_100k_v3.py`](../../benchmarks/long_loop_100k_v3.py) is [`long_loop_100k_v2.py`](../../benchmarks/long_loop_100k_v2.py) (repository `100e768`)
+with only these changes (the diff is in the hand-off zip):
+
+- version check: `psf_compile.py` 2026-09-27.7 **and**
+  `psf_zero_core.CORE_VERSION` 2026-09-28.1, printed on a `CORE` line;
+  otherwise V0 fails and nothing runs;
+- output files `long_loop_{F,C,E}_2026-09-28_v3.csv`;
+- the pre-registered lines M1-M4 printed after the v2 flags.
+
+Everything else is unchanged: F 50,000 laps (fresh cliff circuits,
+FakeNighthawk, 120 qubits, 60 pair blocks, parameters on a random walk),
+C 20,000 laps (compounding), E 30,000 compiles (12-qubit training circuit,
+11 blocks), the seeds (101, 13, 7, 202), `block_gate_floor` 8, the check
+intervals and the thresholds of L1-L6. So every non-timing value can be set
+against the v2 run.
+
+## 3. Pre-registered predictions
+
+Harness gate **V0**: as above. Counts are over the whole run unless stated.
+
+| ID | Prediction | Confirmed if | Refuted if | v2 (pre-fix) |
+|---|---|---|---|---|
+| M1 | the fallbacks in the training loop disappear | E fallbacks <= 50 | >= 500 | 43,829 |
+| M2 | no repair path is used | `exact_rebuilt` + `psf_rerouted` + `best_effort` = 0 | >= 15 | 151 |
+| M3 | the cliff parts stay free of fallbacks | F + C fallbacks = 0 | any | 0 |
+| M4 | nothing else breaks | the non-timing v2 flags L1 (no exception), L2 (RSS growth <= 100 MB per part), L4 (F per-pair <= 1e-12, E loss difference <= 1e-13) and L5 (C drift <= 2e-9 and linear, ratio 1.6-2.4) all clear | any of them trips | all clear |
+
+Between the bounds: ambiguous. Basis for M1: in the core-fix check the
+fixed core left one `PsfNumericError` block in 3,000 compiles (the lap-2,112
+block known from the home record); at the same rate part E would have about
+10, well below 50.
+
+**Reported without prediction:** the timing flags L3 and L6 (printed as in
+v2, not scored, because the sandbox is shared and its timing is noisy; see
+section 6), compile medians per part (sandbox), `GUARD_STATS`, RSS, and the
+C drift at laps 1,000, 10,000 and 20,000 against v2 (6.19e-11, 4.17e-10,
+8.33e-10). The fix is not aimed at the compounding drift (home handover
+item 11), so no prediction is made for it.
+
+## 4. What this can and cannot establish
+
+It shows whether the fixed core removes the fallbacks and repair paths at
+the full 100,000-compile scale, and whether anything else in the v2 flags
+changes. It is run in the workplace sandbox, not at home: the comparison
+with v2 relies on the non-timing values being environment-independent,
+which the core-fix check supported (sandbox and pod gave identical
+non-timing values, the 33,000 captured blocks bit-identical). Timing is not
+compared with v2. It does not test the real device or Stage 2.
+
+## 5. Environment, files, run command
+
+Workplace sandbox: Python 3.11.15, Qiskit 2.5.2, numpy 2.4.4; a clean
+clone of the repository at `100e768` (`psf_compile.py` 2026-09-27.7) with
+[`benchmarks/long_loop_100k_v3.py`](../../benchmarks/long_loop_100k_v3.py) added; the fixed core built in the
+sandbox with rustc 1.95.0 from the patched `src/lib.rs` (source SHA-256
+`bf3bf537df3eb3e81444d2d2ba6fe723770048f2c80c5c6bb9da48884148d234`), the
+same core as the pod checks.
+
+[`long_loop_100k_v3.py`](../../benchmarks/long_loop_100k_v3.py) (Project: `psf-zero/benchmarks/`), 16,292 bytes,
+normalized SHA-256
+`bb79f17b61f591774cc8eceb6e84a8295bb62bdac768ad66af9a57ab690e4d05`.
+
+```
+python -u benchmarks/long_loop_100k_v3.py 2>&1 | tee long_loop_100k_v3.txt
+```
+
+(run from a separate output directory with the script path given in full;
+the CSVs are written to the working directory). Expected time about one
+hour (from the smoke runs).
+
+## 6. Smoke runs before locking (outcome disclosed)
+
+Workplace sandbox, fixed core, `--smoke` (F 500, C 200, E 300 laps).
+The M1-M3 thresholds were written into the script before the first smoke
+run. First run (36 s): V0 passed; 0 fallbacks in every part; all repair
+counters 0 (`GUARD_STATS` checked 11, inexact 0); L1, L2, L4, L5 clear;
+C drift 1.66e-11 at lap 200; **L6 tripped on C** (last-10% median 38.8 ms
+against 31.5 ms over 20 laps each) -- a timing flag on a shared sandbox.
+After that, M4 was added (non-timing flags only) and L3/L6 were set to be
+reported, not scored. The second smoke run gave the same counts and check values (RSS
+differed by up to 7 MB)
+and printed M1-M4 as confirmed at smoke scale. The smoke scale is 1/100
+of the full run, whose outcome is not known.
+
+---
+
+<!-- ===== Addendum 236 (source: spare-qubit-cliff-addendum-236-2026-09-28.md) ===== -->
+
+> **Note added when merging:** M1, M3, M4 confirmed, M2 ambiguous: training-loop fallbacks 43,829 -> 15, but the compounding drift of part C doubles (1.66e-9), traced to the core in Addendum 237.
+
+## Addendum 236 -- The 100,000-compile run with the fixed Rust core: training-loop fallbacks 43,829 -> 15 and no rerouted block (M1, M3, M4 confirmed), 4 exact rebuilds remain (M2 ambiguous), and the compounding drift doubles, from the core (2026-09-28)
+
+**Scored against:** `longloop-v3-fixed-core-preregistration-2026-09-28.md`,
+locked in the Project (2026-09-28 05:33 UTC, script
+[`long_loop_100k_v3.py`](../../benchmarks/long_loop_100k_v3.py) at the same time) before the full run. Thresholds
+applied exactly as written.
+
+**Run:** workplace sandbox (not home, not the pod): Intel(R) Xeon(R)
+Processor @ 2.10GHz, 2 CPUs, `Linux-6.18.44-fc-v37-x86_64-with-glibc2.39`,
+Python 3.11.15, Qiskit 2.5.2, numpy 2.4.4. Clean clone of the repository at
+`100e768` plus [`benchmarks/long_loop_100k_v3.py`](../../benchmarks/long_loop_100k_v3.py); `psf_compile.py`
+2026-09-27.7 (normalized SHA-256 `bd987d52...03ba7f` as printed on the
+LOADED line); fixed core `CORE_VERSION` 2026-09-28.1 (sandbox build,
+rustc 1.95.0). Script normalized SHA-256
+`bb79f17b61f591774cc8eceb6e84a8295bb62bdac768ad66af9a57ab690e4d05`,
+checked immediately before the run and printed again by the script.
+Started 05:34:09 UTC, finished 06:28:16 UTC. **All times are
+workplace-sandbox times** and are not compared with the v2 run at home.
+**Amendments after the lock:** none. One inaccuracy in the locked script:
+its docstring says "M1-M3 lines added"; the script prints M1-M4 as the
+pre-registration states.
+
+## 1. Scoring
+
+| ID | Prediction | Verdict | v3 (fixed core) | v2 (pre-fix, home) |
+|---|---|---|---|---|
+| V0 | right code loaded | passed | `psf_compile.py` 2026-09-27.7, `CORE_VERSION` 2026-09-28.1 | -- |
+| M1 | E fallbacks <= 50 (refuted >= 500) | **CONFIRMED** | 15 of about 330,000 blocks | 43,829 |
+| M2 | `exact_rebuilt` + `psf_rerouted` + `best_effort` = 0 (refuted >= 15) | **AMBIGUOUS** | 4 + 0 + 0 = 4 | 150 + 1 + 0 |
+| M3 | F + C fallbacks = 0 | **CONFIRMED** | 0 | 0 |
+| M4 | L1, L2, L4, L5 clear | **CONFIRMED** | all clear | all clear |
+
+## 2. Numbers
+
+| Part | laps | fallbacks | worst check | RSS growth | compile median / p99 / max (sandbox) |
+|---|---|---|---|---|---|
+| F | 50,000 | 0 of 3,000,000 blocks | per-pair 9.99e-16 | -0 MB | 28.6 / 44.7 / 553 ms |
+| C | 20,000 | 0 of 1,200,000 | drift 1.662e-9 at lap 20,000 (ratio to lap 10,000: 2.00) | +1 MB | 29.8 / 51.0 / 402 ms |
+| E | 30,000 | 15 of 330,000 | loss difference 1.78e-15 | -1 MB | 8.1 / 15.0 / 156 ms |
+
+Timing flags (reported, not scored): L3 and L6 clear in all three parts.
+
+- **The 15 E fallbacks** are one block each, all counted as
+  "degenerate/numeric", none "unexpected", at laps 2,112, 4,003, 7,849,
+  7,882, 10,193, 11,864, 13,732, 14,566, 16,244, 16,272, 16,760, 27,127,
+  27,467, 27,857 and 29,982. Lap 2,112 is the block known from the home
+  record and the core-fix check. v2 had fallbacks on 24,636 of the 30,000
+  laps.
+- **`GUARD_STATS` at the end:** checked 44, `zsx_rejected` 7, inexact 22,
+  `exact_rebuilt` 4, `psf_rerouted` 0, `best_effort` 0. F and C left the
+  counters exactly as v2 did (checked 26, `zsx_rejected` 6, inexact 9 after
+  set-up, unchanged through F and C). The 4 exact rebuilds happened in E
+  (counter read every 1,000 laps: 1 between laps 13,001 and 14,000, 2
+  between 27,001 and 28,000, 1 between 28,001 and 30,000); which blocks they
+  were was not recorded.
+- **No block was rerouted** (`psf_rerouted` 0 against 1 in v2): the
+  lap-2,138 block of Addendum 218 no longer needs the Python repair.
+
+## 3. The compounding drift doubled -- from the core (exploratory)
+
+Part C's distance to lap 0 (reported without prediction):
+
+| lap | v2 (pre-fix, home) | v3 (fixed, sandbox) | v3 / v2 |
+|---|---|---|---|
+| 1,000 | 6.188e-11 | 8.312e-11 | 1.34 |
+| 5,000 | 2.081e-10 | 4.155e-10 | 2.00 |
+| 10,000 | 4.173e-10 | 8.311e-10 | 1.99 |
+| 20,000 | 8.329e-10 | 1.662e-9 | 2.00 |
+
+With the fixed core the drift grows by a constant 8.31e-14 per lap from
+the first lap to the last. L5 is still clear (limit 2.0e-9), but with
+little margin.
+
+To tell whether this comes from the core or from the machine, part C
+alone was run afterwards for 1,000 laps in the same sandbox with each
+core ([`c_drift_probe.py`](../../data/2026-09-28/longloop_v3/c_drift_probe.py), exploratory, not pre-registered). The pre-fix
+core gave **6.1877e-11** at lap 1,000, the v2 home value (6.188e-11) to
+all printed digits; the fixed core gave 8.3122e-11, the v3 value. **So the
+difference comes from the core, not the machine.** With both cores the
+worst pair is pair 51 at every checkpoint except one (pre-fix core, lap 2:
+pair 13). With the fixed core that
+pair gains 8.3e-14 on every lap. With the pre-fix core it gains a similar
+amount at first (8.9e-14 after lap 1), but the growth slows later
+(6.2e-14 per lap on average over 1,000 laps, 4.2e-14 over 20,000).
+
+Reading, not verified: the fixed extraction writes this one pair's local
+factors with a small error that is the same on every lap, so the errors
+add up linearly. The pre-fix core's error on that pair varied from lap to
+lap and partly cancelled. Each compile is still exact (F per-pair 1e-15,
+E loss 1.8e-15). Only the compounding case, where an output is compiled
+again and again, shows it. The home handover's item 11 (residual drift
+per lap) gets worse with the fix, by about a factor of 2 at long run
+lengths.
+
+## 4. Reading
+
+1. **The fix holds at full scale.** The training loop's fallbacks fall from
+   43,829 to 15 (from 13% of blocks to 4.5e-5), and the rerouted block is
+   gone. The remaining 15 are numeric-degenerate blocks of the kind that
+   the core-fix check also left (1 in 3,000 compiles there; 15 in 30,000
+   here). Nothing that reaches the outputs got worse: every check is at
+   1e-15, no exceptions, no memory growth.
+2. **M2 is ambiguous, not confirmed:** 4 blocks still needed the exact
+   rebuild of changelog item 23 (v2: 150). So the Python safety net is
+   used far less, but it is still needed occasionally.
+3. **The price is the compounding drift** (section 3). It matters only
+   where an output is compiled again and again (Addendum 176 type chains).
+   Before the core is replaced at home, it is worth deciding whether 8.3e-14
+   per lap on one pair is acceptable, or whether the extraction should be
+   looked at for that pair.
+
+## 5. What this does not establish
+
+- The blocks behind the 4 exact rebuilds and the 15 fallbacks were not
+  captured; their cause is not known.
+- The mechanism of the linear drift on pair 51 (section 3) is a reading,
+  not a measurement.
+- Timing is sandbox-only; the E median (8.1 ms) is not compared with v2's
+  home value.
+
+## 6. Files
+
+| File | What it is |
+|---|---|
+| [`long_loop_100k_v3.txt`](../../data/2026-09-28/longloop_v3/long_loop_100k_v3.txt) | full run log (the sandbox's working path is replaced by `<sandbox>`) |
+| [`long_loop_F_2026-09-28_v3.csv`](../../data/2026-09-28/longloop_v3/long_loop_F_2026-09-28_v3.csv), [`long_loop_C_2026-09-28_v3.csv`](../../data/2026-09-28/longloop_v3/long_loop_C_2026-09-28_v3.csv), [`long_loop_E_2026-09-28_v3.csv`](../../data/2026-09-28/longloop_v3/long_loop_E_2026-09-28_v3.csv) | per-lap data |
+| [`sandbox_env_longloop.txt`](../../data/2026-09-28/longloop_v3/sandbox_env_longloop.txt) | start time, script hash, commit, CPU |
+| [`c_drift_probe.py`](../../data/2026-09-28/longloop_v3/c_drift_probe.py), [`probe_base.txt`](../../data/2026-09-28/longloop_v3/probe_base.txt), [`probe_fixed.txt`](../../data/2026-09-28/longloop_v3/probe_fixed.txt) | exploratory C-drift probe (section 3) |
+| `long_loop_100k_v2_to_v3.diff` | the changes from v2 |
+| [`long_loop_100k_v3.py`](../../benchmarks/long_loop_100k_v3.py), `longloop-v3-fixed-core-preregistration-2026-09-28.md` | the locked script and pre-registration |
+
+---
+
+<!-- ===== Addendum 237 (source: spare-qubit-cliff-addendum-237-2026-09-28.md) ===== -->
+
+> **Note added when merging:** Exploratory: the doubled drift comes from a core residual (8.3e-14) just below REFINE_THRESHOLD (1e-13), unpolished and repeated in the same direction on every lap.
+
+## Addendum 237 -- Exploratory: why the fixed core doubles the compounding drift -- an unpolished core residual just below REFINE_THRESHOLD, repeated in the same direction on every lap (2026-09-28)
+
+**Status: exploratory** (not pre-registered). It follows the v3 run of the
+same day (`longloop-v3-fixed-core-results-2026-09-28.md`, section 3), whose
+part C drift was twice v2's. A remedy is to be tested next under a
+pre-registration.
+
+**Run:** workplace sandbox (Intel(R) Xeon(R) Processor @ 2.10GHz, 2 CPUs),
+Python 3.11.15, Qiskit 2.5.2, numpy 2.4.4, repository `100e768`
+(`psf_compile.py` 2026-09-27.7), the pre-fix core (built from `100e768`)
+and the fixed core (`CORE_VERSION` 2026-09-28.1), both sandbox builds.
+Part C of [`long_loop_100k_v3.py`](../../benchmarks/long_loop_100k_v3.py) was re-created in small scripts (same
+seed 13, same compile call) for 1 to 10 laps; no timing is reported.
+
+## 1. Findings, in order
+
+1. **Where the change enters.** Split of one lap into PSF-Zero's
+   `compile()` and the Qiskit transpile at routing level 1
+   ([`drift_pipeline.py`](../../data/2026-09-28/drift_cause/drift_pipeline.py), pair 51): with the fixed core, `compile()` adds
+   8.3e-14 on every lap, while the transpile to the native set
+   (`x, cz, sx, id, rz`) adds 1.5-2.8e-15. **The drift comes from
+   PSF-Zero's synthesis, not from Qiskit.** The same holds with the
+   pre-fix core (compile 1.3e-15 to 9.8e-14, transpile 1.6-2.5e-15).
+2. **Consolidation is not the cause** ([`drift_block.py`](../../data/2026-09-28/drift_cause/drift_block.py)): the matrix
+   Qiskit's `ConsolidateBlocks` hands to the synthesizer differs from the
+   pair's exact operator by 0.6-2.8e-15.
+3. **The core's raw residual stays just below the polish threshold.** On
+   that matrix the fixed core leaves a raw residual of 8.24-8.37e-14 on
+   every lap. `REFINE_THRESHOLD` is 1e-13, so the Gauss-Newton polish
+   (Addenda 186, 189) is skipped, and the emitted block carries the same
+   8.3e-14. The batched and the single synthesis paths give the same
+   numbers. With the pre-fix core the same block's raw residual was
+   8.5e-14 to 1.0e-13 and sometimes above the threshold, so on some laps
+   it was polished to 3e-15.
+4. **The error points the same way on every lap** ([`drift_stages.py`](../../data/2026-09-28/drift_cause/drift_stages.py),
+   [`drift_pipeline.py`](../../data/2026-09-28/drift_cause/drift_pipeline.py)): the cosine between successive per-lap changes of
+   pair 51 is 0.998-0.9998 with the fixed core, against 0.16-0.92 with the
+   pre-fix core. In part C each lap's input is the previous output, so the
+   block is nearly the same matrix on every lap. A residual that depends
+   smoothly on the input therefore adds up linearly
+   (8.3e-14 x laps, as in v3). The pre-fix core's residual varied in
+   direction and was sometimes polished away, so its errors partly
+   cancelled.
+5. **Causal check** ([`drift_cause.py`](../../data/2026-09-28/drift_cause/drift_cause.py), 10 laps, fixed core): with the polish
+   forced on every block (`REFINE_THRESHOLD` set to 0 in memory, nothing
+   else changed), pair 51's distance to lap 0 after 10 laps falls from
+   8.3e-13 to 1.3e-14, and the worst pair's from 8.3e-13 to 2.0e-14.
+   Without the change the run reproduces v3 exactly (8.344e-14 per lap).
+6. **Scale of the effect.** At lap 1, the fixed core's raw residual over
+   the 60 blocks has median 7.0e-15 and max 1.35e-12. 46 blocks are at or
+   below 1e-13 and so are not polished; 12 of them lie between 1e-14 and
+   1e-13 (pre-fix core: median 1.1e-14, 45 not polished, 17 between 1e-14
+   and 1e-13). Pair 51 is the largest of those left unpolished. Its Weyl
+   coordinates as returned by the core are (-0.3236, 0.5243, 0.6679); no
+   special structure was looked for.
+
+## 2. Reading
+
+The fix did not introduce an error of a new kind. Both cores leave raw
+residuals up to about 1e-13 that the polish, by design, does not touch
+(Addendum 189: polish only when the residual exceeds 1e-13). What changed
+is that the fixed core's residual is a smooth, deterministic function of
+the block. In a chain where the same block is compiled again and again,
+the same error is added in the same direction every time. Any single
+compile is still within 1e-13 per block, as before.
+
+Remedies to be tested (next, pre-registered):
+
+- lower `REFINE_THRESHOLD` to `_REFINE_TARGET` (1e-14), or
+- polish every block (threshold 0).
+
+Both cost compile time, because more blocks go through the polish; how
+much is not measured here. A core-side refinement (a Newton step in Rust)
+is also possible but was not tried.
+
+## 3. What this does not establish
+
+- Only pair 51 was followed closely, over at most 10 laps; the 10-lap
+  causal check is not a measurement of the 20,000-lap drift.
+- Why the fixed core's residual on this block is about 8e-14 (and not
+  1e-15) was not investigated.
+- No compile-time cost of the remedies is known yet.
+
+## 4. Files
+
+| File | What it is |
+|---|---|
+| [`drift_stages.py`](../../data/2026-09-28/drift_cause/drift_stages.py), [`stages_base.txt`](../../data/2026-09-28/drift_cause/stages_base.txt), [`stages_fixed.txt`](../../data/2026-09-28/drift_cause/stages_fixed.txt) | per-lap raw residual, polish, synthesizer-alone error, direction (8 laps) |
+| [`drift_pipeline.py`](../../data/2026-09-28/drift_cause/drift_pipeline.py), [`pipe_base.txt`](../../data/2026-09-28/drift_cause/pipe_base.txt), [`pipe_fixed.txt`](../../data/2026-09-28/drift_cause/pipe_fixed.txt) | compile vs transpile split (6 laps) |
+| [`drift_block.py`](../../data/2026-09-28/drift_cause/drift_block.py), [`block_base.txt`](../../data/2026-09-28/drift_cause/block_base.txt), [`block_fixed.txt`](../../data/2026-09-28/drift_cause/block_fixed.txt) | consolidation vs synthesis, batched vs single (5 laps) |
+| [`drift_cause.py`](../../data/2026-09-28/drift_cause/drift_cause.py), [`cause_fixed_none.txt`](../../data/2026-09-28/drift_cause/cause_fixed_none.txt), [`cause_fixed_force.txt`](../../data/2026-09-28/drift_cause/cause_fixed_force.txt) | residual spread and forced-polish causal check (10 laps) |
+
+Note on [`drift_stages.py`](../../data/2026-09-28/drift_cause/drift_stages.py): it decomposes the pair's exact operator rather
+than the consolidated matrix. Those differ by about 2e-15, and on that input
+the fixed core's raw residual happened to be 3.2e-13, so polished. That is
+why that script shows the fixed core's pair 51 as polished from lap 2 on,
+while [`drift_block.py`](../../data/2026-09-28/drift_cause/drift_block.py), which uses the matrix `compile()` actually
+receives, shows it unpolished. The difference shows how sensitive the raw
+residual is near this block; it does not change the conclusion.
+
+---
+
+<!-- ===== Addendum 238 (source: spare-qubit-cliff-addendum-238-preregistration-2026-09-28.md) ===== -->
+
+> **Note added when merging:** Workplace pre-registration: REFINE_THRESHOLD 1e-14 and 0 against 1e-13 with the fixed core.
+
+## Addendum 238 -- Pre-registration: lowering REFINE_THRESHOLD to remove the compounding drift of the fixed core -- 1e-14 and 0 against 1e-13 (2026-09-28)
+
+**Status: pre-registration, locked at the Project save time of this
+document**, before the scored runs. A small-scale dry run (section 6) was
+made before locking; the thresholds of P1-P5 were written into the script
+before it, and its outcome is disclosed. **All runs are in the workplace
+sandbox**; times are sandbox times.
+
+## 1. Why this experiment exists
+
+The v3 100,000-compile run with the fixed core (`CORE_VERSION`
+2026-09-28.1) found part C's compounding drift twice v2's (1.662e-9 at lap
+20,000). The exploratory follow-up of the same day
+(`drift-cause-exploratory-2026-09-28.md`) traced it to one mechanism:
+the core leaves raw residuals up to about 1e-13 on some blocks, and
+`psf_compile.py` polishes only residuals above `REFINE_THRESHOLD` =
+1e-13. With the fixed core the unpolished residual of one block (pair 51,
+8.3e-14) points the same way on every lap, so it adds up linearly. Forcing
+the polish on every block for 10 laps removed it (8.3e-13 -> 2.0e-14).
+This experiment measures the two candidate remedies at full length and
+their compile-time cost.
+
+## 2. Fixed design ([`refine_threshold_arms.py`](../../benchmarks/refine_threshold_arms.py))
+
+Arms, with the threshold set in memory (module variable and the default
+argument of `_refine_batch` and `_refine_decomposition`); `psf_compile.py`
+is not edited:
+
+| Arm | `REFINE_THRESHOLD` |
+|---|---|
+| T13 | 1e-13 (current; control) |
+| T14 | 1e-14 (= `_REFINE_TARGET`, the polish's own stopping point) |
+| T0 | 0 (every block polished) |
+
+- **Drift:** part C of [`long_loop_100k_v3.py`](../../benchmarks/long_loop_100k_v3.py) (seed 13, the same compile
+  call), distance to lap 0 every 1,000 laps. T14 and T0: 20,000 laps each.
+  T13: 1,000 laps only, as the harness control (its 20,000-lap value is
+  known from v3).
+- **Cost and exactness:** the same 2,000 fresh cliff circuits (part F of
+  v3) and 6,000 fresh training circuits (part E) for every arm, compiled
+  with the three arms interleaved in chunks of 100 compiles. Recorded: per-compile
+  time, F per-pair check every 100th, E loss difference every 10th,
+  fallbacks, exceptions, `GUARD_STATS` per arm. Then an untimed pass
+  counting how many blocks each arm polishes (100 F, 300 E compiles).
+
+## 3. Pre-registered predictions
+
+Harness gate **C0**: `psf_compile.py` 2026-09-27.7 and `CORE_VERSION`
+2026-09-28.1 in every run; laps T13 1,000, T14 and T0 20,000; T13's
+distance at lap 1,000 within 1% of v3's 8.312e-11. Otherwise nothing is
+scored.
+
+| ID | Prediction | Confirmed if | Refuted if |
+|---|---|---|---|
+| P1 | T14 removes most of the drift | drift at lap 20,000 <= 3e-10 | >= 8.3e-10 (not better than v2) |
+| P2 | T0 removes nearly all of it | drift at lap 20,000 <= 1e-10 | >= 4e-10 |
+| P3 | both remedies stay exact | in every arm: no exception, F per-pair <= 1e-12, E loss difference <= 1e-13, E fallbacks <= 5 | any fails |
+| P4 | T14 is cheap | median compile time / T13's <= 1.10 for both F and E | > 1.25 for either |
+| P5 | T0 is affordable | median compile time / T13's <= 1.25 for both F and E | > 1.50 for either |
+
+Between the bounds: ambiguous. P4 and P5 are acceptance criteria as much as
+predictions: they state what would count as cheap. **Reported without
+prediction:** the drift at every checkpoint and which pair is worst, the
+number of blocks each arm polishes, `GUARD_STATS`, the medians themselves
+(sandbox).
+
+## 4. What this can and cannot establish
+
+It measures, for this chain (part C) and these circuits (parts F and E),
+how much each threshold reduces the drift and what it costs in this
+sandbox. It does not change `psf_compile.py`; if a remedy is adopted, the
+change (one constant) goes to home as a patch with a hash-checked apply
+script, per the hand-off rules. Timing ratios are from one shared sandbox
+and interleaving reduces, but does not remove, load effects. Other chains,
+cores or the cliff at scale are not tested.
+
+## 5. Environment, files, run commands
+
+Workplace sandbox: Python 3.11.15, Qiskit 2.5.2, numpy 2.4.4; clean clone
+of `100e768` with [`benchmarks/long_loop_100k_v3.py`](../../benchmarks/long_loop_100k_v3.py) and
+[`benchmarks/refine_threshold_arms.py`](../../benchmarks/refine_threshold_arms.py) added; fixed core as in the v3 run.
+
+[`refine_threshold_arms.py`](../../benchmarks/refine_threshold_arms.py) (Project: `psf-zero/benchmarks/`), 13,898
+bytes, normalized SHA-256
+`caabaea2f3981ebd0c6b590e552b1ce386477a70f746f4fc870de64e9601b126`.
+
+```
+python -u refine_threshold_arms.py drift --arm T13 --laps 1000
+python -u refine_threshold_arms.py drift --arm T14 --laps 20000
+python -u refine_threshold_arms.py drift --arm T0  --laps 20000
+python -u refine_threshold_arms.py timing
+python -u refine_threshold_arms.py score
+```
+
+The two 20,000-lap drift runs are started in parallel (the sandbox has 2
+CPUs; drift values do not depend on timing). The timing mode is run
+afterwards, alone.
+
+## 6. Dry run before locking (outcome disclosed)
+
+Workplace sandbox, a copy of the script with reduced sizes (drift 60 laps
+per arm, checks every 20; timing 40 F and 120 E compiles in chunks of 20;
+counting 5 F and 20 E), and the C0 lap numbers adjusted in the copy. As
+expected, C0 failed in the copy with the unadjusted reference (60 laps
+compared with v3's lap-1,000 value), which exercised the gate; with the
+reference set to the copy's own value, scoring ran through.
+
+Dry-run values:
+
+- **Drift at lap 60:** T13 4.99e-12 (8.3e-14 per lap, pair 51), T14
+  3.68e-13 (pair 33), T0 1.04e-13 (pair 7).
+- **Exactness:** F per-pair <= 6.7e-16 and E <= 1.2e-15 in every arm; no
+  fallbacks.
+- **Medians over 40 F and 120 E compiles:**
+  - T13: 30.5 / 8.5 ms
+  - T14: 34.2 / 9.1 ms, ratios 1.12 / 1.07
+  - T0: 39.8 / 10.3 ms, ratios 1.31 / 1.22
+- **Blocks polished** (F, over 5 compiles / E, over 20): T13 58 of 300 /
+  43 of 220; T14 105 / 87; T0 all.
+
+The cost thresholds were not changed after the dry run. At this small
+size, P4 and P5 would both be ambiguous (F above the confirmation bound).
+
+---
+
+<!-- ===== Addendum 239 (source: spare-qubit-cliff-addendum-239-2026-09-28.md) ===== -->
+
+> **Note added when merging:** P1-P4 confirmed, P5 ambiguous: at 1e-14 the drift falls 14-fold (7-fold below the pre-fix core) for 5-8% compile time. psf_compile.py is not changed by this record; adoption is decided at home.
+
+## Addendum 239 -- REFINE_THRESHOLD 1e-14 cuts the fixed core's compounding drift 14-fold (below the pre-fix level) for 5-8% compile time; threshold 0 cuts it 50-fold for 19-30% (P1-P4 confirmed, P5 ambiguous) (2026-09-28)
+
+**Scored against:** `refine-threshold-preregistration-2026-09-28.md`,
+locked in the Project (2026-09-28 06:41 UTC, with
+[`refine_threshold_arms.py`](../../benchmarks/refine_threshold_arms.py)) before the scored runs. Thresholds applied
+exactly as written.
+
+**Run:** workplace sandbox: Intel(R) Xeon(R) Processor @ 2.10GHz, 2 CPUs,
+`Linux-6.18.44-fc-v37-x86_64-with-glibc2.39`, Python 3.11.15, Qiskit 2.5.2,
+numpy 2.4.4; clean clone of `100e768` (`psf_compile.py` 2026-09-27.7, not
+edited; the threshold set in memory per arm) plus the two benchmark
+scripts; fixed core `CORE_VERSION` 2026-09-28.1. Script normalized SHA-256
+`caabaea2f3981ebd0c6b590e552b1ce386477a70f746f4fc870de64e9601b126`,
+checked before the runs and printed by each run. Drift runs T14 and T0
+06:41:45-07:07 UTC in parallel; T13 control 07:07-07:08; timing
+07:08:11-07:19 alone. **All times are workplace-sandbox times.**
+**Amendments after the lock:** none.
+
+## 1. Scoring
+
+| ID | Prediction | Verdict | Numbers |
+|---|---|---|---|
+| C0 | versions, lap counts, T13 lap-1,000 within 1% of v3 (8.312e-11) | passed | 8.3122e-11 |
+| P1 | T14 drift at lap 20,000 <= 3e-10 | **CONFIRMED** | 1.219e-10 |
+| P2 | T0 drift at lap 20,000 <= 1e-10 | **CONFIRMED** | 3.357e-11 |
+| P3 | every arm exact: no exception, F <= 1e-12, E <= 1e-13, E fallbacks <= 5 | **CONFIRMED** | F 7.8e-16, E <= 1.9e-15, 2 fallbacks in 6,000 E compiles per arm, 0 exceptions |
+| P4 | T14 median compile time <= 1.10 x T13 (F and E) | **CONFIRMED** | F 1.079, E 1.054 |
+| P5 | T0 median compile time <= 1.25 x T13 (F and E) | **AMBIGUOUS** | F 1.301, E 1.190 (refutation bound 1.50 not reached) |
+
+## 2. Numbers
+
+Drift of part C (distance to lap 0; worst pair in brackets):
+
+| lap | T13 (1e-13, current) | T14 (1e-14) | T0 (0) | v2, pre-fix core |
+|---|---|---|---|---|
+| 1,000 | 8.312e-11 (51) | 6.056e-12 (33) | 1.651e-12 (53) | 6.188e-11 |
+| 10,000 | 8.311e-10 (v3) | 6.081e-11 (33) | 1.680e-11 (53) | 4.173e-10 |
+| 20,000 | 1.662e-9 (v3) | 1.219e-10 (33) | 3.357e-11 (53) | 8.329e-10 |
+| per lap | 8.3e-14 | 6.1e-15 | 1.7e-15 | -- |
+
+Compile medians over the same 2,000 F / 6,000 E compiles (sandbox):
+T13 32.38 / 8.70 ms, T14 34.94 / 9.16 ms, T0 42.14 / 10.35 ms.
+
+Blocks polished (untimed pass, 100 F and 300 E compiles): T13 1,346 of
+6,000 (22%) / 620 of 3,300 (19%); T14 2,476 (41%) / 1,237 (37%); T0 all.
+`GUARD_STATS` in the timing pass were identical in the three arms
+(checked 3, `zsx_rejected` 1, all repair counters 0).
+
+## 3. Reading
+
+1. **The remedy works as the exploratory check suggested.** At 1e-14,
+   the drift over 20,000 laps is 14 times smaller than with the current
+   threshold and 7 times smaller than the pre-fix core's (v2). At 0, it is
+   50 times smaller than the current threshold, 25 times smaller than v2.
+   Every arm stays exact on fresh circuits.
+2. **Cost.** 1e-14 costs 5-8% of compile time here (about twice as many
+   blocks go through the polish). 0 costs 19-30%.
+3. **The remaining drift is still linear** in both arms (6.1e-15 per lap on
+   pair 33 at 1e-14; 1.7e-15 per lap on pair 53 at 0). So each arm still
+   leaves a small error that has the same direction on every lap. With
+   threshold 0 this is probably the polish stopping at its target
+   (`_REFINE_TARGET` = 1e-14) or rounding in the other stages; not
+   investigated.
+4. **Practical reading (a decision for home, not made here):** if the
+   fixed core is adopted, lowering `REFINE_THRESHOLD` to 1e-14 removes the
+   regression in compounding use (and more than removes it) for a single-digit
+   percentage of compile time. Threshold 0 is better for drift but costs
+   about a quarter more time. Either change alters output bits, like the
+   core fix did.
+
+## 4. What this does not establish
+
+- One chain (part C, seed 13) and two families of fresh circuits; not the
+  cliff at other sizes or other chains (e.g. Addendum 176's).
+- Timing is from one shared 2-CPU sandbox; interleaving reduces but does
+  not remove load effects. The ratios are not transferable to home without
+  re-measuring there.
+- The drift left at 1e-14 and at 0 was not traced.
+
+## 5. Files
+
+| File | What it is |
+|---|---|
+| `refine_arms_drift_{T13,T14,T0}_2026-09-28.json`, `arms_drift_{T13,T14,T0}.txt` | drift runs |
+| [`refine_arms_timing_2026-09-28.json`](../../data/2026-09-28/refine_threshold/refine_arms_timing_2026-09-28.json), [`arms_timing.txt`](../../data/2026-09-28/refine_threshold/arms_timing.txt) | cost and exactness run |
+| [`arms_score.txt`](../../data/2026-09-28/refine_threshold/arms_score.txt) | scoring output |
+| [`sandbox_env_arms.txt`](../../data/2026-09-28/refine_threshold/sandbox_env_arms.txt) | start time, script hash, commit, CPU |
+| [`refine_threshold_arms.py`](../../benchmarks/refine_threshold_arms.py), `refine-threshold-preregistration-2026-09-28.md` | the locked script and pre-registration |
+
+---
+
+<!-- ===== Addendum 240 (source: spare-qubit-cliff-addendum-240-preregistration-2026-09-28.md) ===== -->
+
+> **Note added when merging:** Workplace pre-registration: the GPU whole-circuit check with the fixed core at thresholds 1e-13 and 1e-14.
+
+## Addendum 240 -- Pre-registration: whole-circuit equivalence with the fixed core, at REFINE_THRESHOLD 1e-13 and 1e-14 (2026-09-28)
+
+**Status: pre-registration, locked at the Project save time of this
+document**, before the GPU run. A CPU dry run at small sizes (section 6)
+checked the plumbing; its outcome is disclosed.
+
+## 1. Why this experiment exists
+
+The GPU whole-circuit check of the same day
+(`gpu-equivalence-results-2026-09-28.md`) established with the **pre-fix**
+core that every PSF-Zero output at 20-26 qubits implements its circuit
+(worst 8.9e-14). Since then, the core fix (`CORE_VERSION` 2026-09-28.1) was
+checked at full scale (v3), and lowering `REFINE_THRESHOLD` to 1e-14 was
+found to remove the compounding drift for 5-8% compile time
+(`refine-threshold-results-2026-09-28.md`). Before home decides to replace
+the core (and possibly the threshold), this is the final check: the same
+circuits, the same compile call and the same GPU mirror test, with the fixed
+core at both thresholds.
+
+## 2. Fixed design ([`gpu_equivalence_fixed_core.py`](../../benchmarks/gpu_equivalence_fixed_core.py))
+
+The script is [`gpu_whole_circuit_equivalence.py`](../../benchmarks/gpu_whole_circuit_equivalence.py) (locked 04:54:32 UTC)
+with these changes only:
+
+- two PSF-Zero arms instead of PSF and Qiskit L3:
+  - `PSF_T13`: fixed core, `REFINE_THRESHOLD` 1e-13 (current)
+  - `PSF_T14`: fixed core, `REFINE_THRESHOLD` 1e-14, set in memory as in
+    [`refine_threshold_arms.py`](../../benchmarks/refine_threshold_arms.py); `psf_compile.py` is not edited
+- the version check requires `CORE_VERSION` 2026-09-28.1;
+- the first run's PSF-Zero CX counts (pre-fix core) are embedded as
+  `BASE_CX`;
+- output [`~/eq2_fixed_core_2026-09-28.json`](../../data/2026-09-28/gpu_equivalence_fixed_core/eq2_fixed_core_2026-09-28.json); scoring E1-E4 below.
+
+Unchanged:
+
+- the three families (F1 brick on a line, F2 brick on a grid, F3 random
+  pairs on a grid);
+- n = 20, 24, 26; 3 inputs per family and size; the same seeds;
+- the compile call (`compile_for_hardware`, basis cx/rz/sx/x, floor 8,
+  seed 0, trivial layout for F1);
+- the mirror test on `lightning.gpu`; the converter check C0 with its
+  bit-order control; the wrong-layout control (on `PSF_T13`, input 0).
+
+## 3. Pre-registered predictions
+
+Harness gate **C0**: converter check as before (<= 1e-12, F3 bug control
+>= 0.01); `CORE_VERSION` 2026-09-28.1; device `lightning.gpu`; sizes 20,
+24, 26; 54 outputs; at least one output with a non-identity final layout.
+Otherwise nothing is scored.
+
+| ID | Prediction | Confirmed if | Refuted if |
+|---|---|---|---|
+| E1 | every output of both arms implements its circuit | worst mirror error <= 1e-10 over 54 | > 1e-10 |
+| E2 | the core fix and the threshold change only parameters, not structure | CX count equal to the pre-fix run in all 27 cells, both arms | any cell differs |
+| E3 | the check still detects a wrong final layout | error >= 0.1 in all 9 controls | < 0.1 in any |
+| E4 | the outputs stay at the pre-fix precision level | worst error of each arm <= 1e-12 | > 1e-10 |
+
+Between the bounds: ambiguous. **Reported without prediction:** worst error
+per arm, family and size (whether `PSF_T14` is tighter than `PSF_T13`),
+final-layout movement, compile times (RunPod pod).
+
+## 4. What this can and cannot establish
+
+It checks, on the GPU, whole-circuit correctness of the fixed core with and
+without the threshold change at 20-26 qubits, and whether the circuit
+structure (CX count) is unchanged against the pre-fix run. It does not test
+the cliff sizes (too large for a statevector), other circuit families, or
+the real device.
+
+## 5. Files, integrity check, run commands
+
+[`gpu_equivalence_fixed_core.py`](../../benchmarks/gpu_equivalence_fixed_core.py) (Project: `psf-zero/benchmarks/`; on the
+pod: `~/`), 13,669 bytes, normalized SHA-256
+`feda44855470d9ef6708dbe1fd92cd2cc288c8848f6aef6e3b8938d439be66a3`.
+Fixed-core wheel (Python 3.12):
+`psf_zero_core_wheels_cp312.zip` -> `fixed_2026-09-28.1/`, SHA-256
+`9066ac8f9b3c8a89d05bc2204edafd3d5ddbc6dda36917985de89e519e6a3fbf`.
+
+```
+python -c "import hashlib;print(hashlib.sha256('\n'.join(l.rstrip() for l in open('/root/gpu_equivalence_fixed_core.py',encoding='utf-8').read().strip().splitlines()).encode()).hexdigest())"
+python -u ~/gpu_equivalence_fixed_core.py run   2>&1 | tee ~/eq2_run.txt | grep -v -i warn
+python -u ~/gpu_equivalence_fixed_core.py score 2>&1 | tee ~/eq2_score.txt
+```
+
+run in a Python 3.12 environment with the repository `~/psf-zero` at
+`100e768`, PennyLane 0.45.1, pennylane-lightning-gpu 0.45.0 and the fixed
+core installed.
+
+## 6. Dry run before locking (plumbing only)
+
+Workplace sandbox, CPU (`--device lightning.qubit --sizes 12,16`), fixed
+core. All 36 outputs were equivalent: worst `PSF_T13` 5.0e-14 and
+`PSF_T14` 9.8e-15. The two arms gave the same CX counts in every cell. The
+6 wrong-layout controls gave 0.81-1.00. C0 failed on the device and size
+gate, as intended. Scoring was exercised in a copy with the gate relaxed
+and the base counts for sizes 12 and 16 set from the dry run itself, since
+the first run has none at those sizes. No value at 20-26 qubits is known
+for the fixed core.
+
+---
+
+<!-- ===== Addendum 241 (source: spare-qubit-cliff-addendum-241-2026-09-28.md) ===== -->
+
+> **Note added when merging:** All four predictions confirmed: every output equivalent (worst 1.1e-14 at 1e-14), CX counts unchanged.
+
+## Addendum 241 -- Whole-circuit equivalence with the fixed core holds at 20-26 qubits, at REFINE_THRESHOLD 1e-13 and 1e-14; circuit structure unchanged; 1e-14 is about 7 times tighter (E1-E4 confirmed) (2026-09-28)
+
+**Scored against:** `gpu-equivalence-fixed-core-preregistration-2026-09-28.md`,
+locked in the Project (2026-09-28, about 07:27-07:28 UTC, with
+[`gpu_equivalence_fixed_core.py`](../../benchmarks/gpu_equivalence_fixed_core.py)) before the GPU run. Thresholds applied
+exactly as written.
+
+**Run:** RunPod pod, NVIDIA GeForce RTX 4090 (driver 580.159.04, 24,564
+MiB), AMD EPYC 7282 16-Core Processor,
+`Linux-6.8.0-124-generic-x86_64-with-glibc2.39`, Python 3.12.3, Qiskit
+2.5.2, PennyLane 0.45.1, pennylane-lightning-gpu 0.45.0, numpy 2.5.3.
+Repository `~/psf-zero` at `100e768` (`psf_compile.py` 2026-09-27.7);
+fixed core from the sandbox-built Python 3.12 wheel (`CORE_VERSION`
+2026-09-28.1). The script hash was checked on the pod immediately before
+the run and matched the locked value (`feda4485...66a3`). **Times are
+RunPod-pod times.** **Amendments after the lock:** none.
+
+## 1. Scoring
+
+| ID | Prediction | Verdict | Numbers |
+|---|---|---|---|
+| C0 | converter <= 1e-12 with F3 bug control >= 0.01; fixed core; `lightning.gpu`; sizes 20/24/26; 54 outputs; routing exercised | passed | converter 1.7e-16 / 6.5e-17, bug control 0.190 |
+| E1 | every output of both arms equivalent (<= 1e-10) | **CONFIRMED** | worst `PSF_T13` 7.39e-14, `PSF_T14` 1.10e-14, over 54 |
+| E2 | CX count equal to the pre-fix run in all 27 cells, both arms | **CONFIRMED** | 0 cells differ |
+| E3 | wrong final layout detected (>= 0.1) in all 9 controls | **CONFIRMED** | min 0.692 |
+| E4 | worst error of each arm <= 1e-12 | **CONFIRMED** | 7.39e-14 and 1.10e-14 (pre-fix run: 8.86e-14) |
+
+## 2. Numbers (worst mirror error per family and size)
+
+| n | family | `PSF_T13` (fixed, 1e-13) | `PSF_T14` (fixed, 1e-14) | CX (both arms = pre-fix run) |
+|---|---|---|---|---|
+| 20 | F1 line | 3.8e-14 | 7.2e-15 | 57, 57, 57 |
+| 20 | F2 grid | 3.1e-14 | 9.2e-15 | 57, 57, 57 |
+| 20 | F3 random pairs | 7.1e-14 | 1.1e-14 | 126, 126, 120 |
+| 24 | F1 | 5.8e-14 | 6.1e-15 | 69, 69, 69 |
+| 24 | F2 | 4.3e-14 | 7.1e-15 | 69, 69, 69 |
+| 24 | F3 | 6.3e-14 | 1.1e-14 | 153, 156, 159 |
+| 26 | F1 | 5.6e-14 | 9.7e-15 | 75, 75, 75 |
+| 26 | F2 | 5.2e-14 | 7.5e-15 | 75, 75, 75 |
+| 26 | F3 | 7.4e-14 | 1.1e-14 | 234, 240, 189 |
+
+Final layouts moved in all F2 and F3 outputs (18 of 18 per arm), none in F1
+(trivial layout, as designed). Median compile time (pod): `PSF_T13`
+18.0 ms, `PSF_T14` 19.3 ms (1.07x). GPU check time per output: about
+0.08 s at 20 qubits, 0.74 s at 24, 2.9 s at 26.
+
+## 3. Reading
+
+1. **The fixed core passes the final whole-circuit check.** All 54 outputs
+   implement their circuits under the reported final layout, at 20-26
+   qubits, on a line and on grids, with and without routing. The check is
+   sensitive, as before: every wrong-layout control fails at 0.69-1.00.
+2. **Structure is unchanged.** The core fix and the threshold change alter
+   only the parameters of the emitted gates. The CX count equals the pre-fix
+   run in every cell, and so the routing comparison with Qiskit L3 of the
+   first run (1.06-1.32x on F3) still applies.
+3. **1e-14 makes every output tighter.** With the threshold at 1e-14 the
+   worst whole-circuit error falls by a factor of 3.4-9.5 per family and size, to about
+   1e-14 (worst 1.10e-14 against 7.39e-14 at 1e-13 and 8.86e-14 for the
+   pre-fix core). The pod's compile-time ratio (1.07) agrees with the
+   sandbox measurement (1.05-1.08).
+4. **For home's decision:** the fixed core is correct on this check at
+   either threshold. The choice of threshold is the one described in
+   `refine-threshold-results-2026-09-28.md`: 1e-14 costs 5-8% compile time
+   and removes the compounding drift.
+
+## 4. What this does not establish
+
+- 20-26 qubits only; the cliff sizes (42-120 qubits) are beyond a
+  statevector and remain checked per pair.
+- Three families, three inputs each; not the real device.
+
+## 5. Files
+
+| File | What it is |
+|---|---|
+| [`eq2_fixed_core_2026-09-28.json`](../../data/2026-09-28/gpu_equivalence_fixed_core/eq2_fixed_core_2026-09-28.json) | all 54 outputs, controls, C0, environment |
+| [`eq2_run.txt`](../../data/2026-09-28/gpu_equivalence_fixed_core/eq2_run.txt), [`eq2_score.txt`](../../data/2026-09-28/gpu_equivalence_fixed_core/eq2_score.txt) | pod logs |
+| [`gpu_equivalence_fixed_core.py`](../../benchmarks/gpu_equivalence_fixed_core.py), `gpu-equivalence-fixed-core-preregistration-2026-09-28.md` | the locked script and pre-registration |
+
+**File integrity.** The three files in the hand-off zip were rebuilt in the
+workplace sandbox from the pod output pasted into the session, and all
+three are byte-identical to the pod's files: same byte counts and the
+same SHA-256 as `sha256sum` printed on the pod.
+
+| File | SHA-256 |
+|---|---|
+| JSON | `399b6950...03d4b7` |
+| run log | `37e826dd...ac609d` |
+| score log | `45fa5165...04573b5` |
+
+The run log contained no warning lines, so the pasted output was the
+complete log. Rerunning the locked script's `score` on the rebuilt JSON
+reproduces the pod's score log byte for byte.
+
+Pod file times (UTC): script placed 07:29:07, JSON and run log written
+07:31:48, score log 07:31:49. All are after the lock.
+
+---
+
+<!-- ===== Addendum 242 (source: spare-qubit-cliff-addendum-242-2026-09-28.md) ===== -->
+
+> **Note added when merging:** Exploratory: the one Qiskit L3 output off by 1.2e-5 comes from Weyl specialization in TwoQubitPeepholeOptimization, a documented tolerance discussed in Qiskit issue #16864; not a new bug. One case; no rate is claimed.
+
+## Addendum 242 -- Exploratory: the Qiskit L3 output with mirror error 1.17e-5 comes from TwoQubitPeepholeOptimization snapping one block onto the Weyl special case a = b (documented 1 - 1e-9 fidelity tolerance, also at approximation_degree 1.0) (2026-09-28)
+
+**Status: exploratory** (not pre-registered). It follows up the one Qiskit
+L3 output with mirror error 1.17e-5 seen in the dry run of the routing-arms
+experiment (`routing-arms-preregistration-2026-09-28.md`, section 6), which
+did not recur in the scored run (0 of 15 at n = 20).
+
+**Run:** workplace sandbox, Python 3.11.15, Qiskit 2.5.2, numpy 2.4.4. The
+circuit is built with `build()` of the locked [`routing_pressure_arms.py`](../../benchmarks/routing_pressure_arms.py)
+(family F2 brick on a grid, n = 12, instance 0, seed 240100, 3x4 grid); the
+compile call is the dry run's (`transpile`, basis cx/rz/sx/x,
+`optimization_level=3`, `seed_transpiler=0`). The transpile times printed in [`repro.txt`](../../data/2026-09-28/qiskit_l3_snapping/repro.txt) are sandbox times and are not used.
+
+## 1. Findings
+
+1. **Reproduced, deterministically** ([`repro.py`](../../data/2026-09-28/qiskit_l3_snapping/repro.py)): three L3 runs give 33 CX
+   and mirror error 1.166e-5 each (the dry run's 1.17e-5). L2 gives the
+   same output and error; L1 (66 CX) is exact (2.7e-15).
+2. **The pass** ([`passes.py`](../../data/2026-09-28/qiskit_l3_snapping/passes.py), error measured after every pass): the error
+   stays at 1e-15 through consolidation, layout (VF2Layout found a perfect
+   layout, so there is no routing), the first `UnitarySynthesis` and basis
+   translation, and appears at the first **`TwoQubitPeepholeOptimization`**
+   (7.1e-15 -> 1.166e-5). No later pass changes it.
+3. **The block** ([`block.py`](../../data/2026-09-28/qiskit_l3_snapping/block.py), the 11 two-qubit blocks the peephole pass
+   sees): one block, on physical qubits 5 and 6, has Weyl coordinates
+   (0.329751, 0.329731, -0.136739) -- a and b differ by 2.0e-5.
+   - Qiskit's default Weyl decomposition (requested fidelity 1 - 1e-9) snaps
+     it onto the special case a = b (0.329741, 0.329741), at a calculated
+     infidelity of 1.6e-10.
+   - `TwoQubitBasisDecomposer(CX)` then returns a circuit with
+     phase-aligned operator distance **2.85e-5** from the block.
+   - The other 10 blocks synthesize to 5e-15 to 9e-14.
+4. **Causal check** ([`confirm.py`](../../data/2026-09-28/qiskit_l3_snapping/confirm.py)):
+   - The same block rebuilt from Qiskit's Weyl decomposition *without*
+     specialization (`fidelity=None`, then PSF-Zero's polish and closed-form
+     core; `psf_compile._exact_rebuild`) is exact (2.0e-15).
+   - Passing `approximation_degree=1.0` to `transpile` explicitly changes
+     nothing (1.166e-5); it is already the default.
+
+## 2. Reading
+
+This is the Weyl-specialization effect already traced in the home record
+for PSF-Zero's own fallback path (Addenda 215-216; `psf_compile.py`
+changelog item 23 rebuilds such blocks without specialization). Here it
+appears in **plain Qiskit L3 output**. The pass that re-synthesizes blocks
+in the optimization loop accepts a decomposition that is within Qiskit's
+fidelity tolerance (infidelity <= 1e-9), which allows operator errors of
+order 1e-5 on a block.
+
+Upstream this is known and under discussion:
+
+- Qiskit issue #16864 (open) reports that `TwoQubitPeepholeOptimization`
+  applies a fidelity cutoff despite `approximation_degree=1.0`.
+- Issue #16974 (closed as its duplicate) reports the same for
+  `TwoQubitBasisDecomposer`.
+- The maintainers' position in #16864 is that this is intended behaviour:
+  approximation degree 1.0 means "no approximation up to numerical
+  tolerance". A more central definition of the tolerance constants is
+  suggested there.
+
+So this is not a new bug report. It is one concrete, reproducible instance
+(a random brick circuit, one block with a - b = 2e-5, operator error 2.85e-5
+on the block, 1.17e-5 on the whole-circuit mirror state).
+
+Consequences for this project's comparisons:
+
+- Qiskit L3 outputs are exact only up to that tolerance. Occasional errors
+  of 1e-6 to 1e-4 on a whole circuit are expected when a block lies near a
+  high-symmetry locus of the Weyl chamber.
+- PSF-Zero's outputs do not have this property, because its fallback path
+  rebuilds such blocks without specialization.
+- The dry-run case was the only one among all Qiskit L3 outputs checked
+  that day: 15 at n = 12 in the dry run, 15 at n = 20 in the scored run,
+  and 27 in the GPU whole-circuit check. That count is too small to give a
+  rate.
+
+## 3. What this does not establish
+
+- How often this occurs on random circuits (only one case, found by
+  chance). A rate would need a pre-registered sweep.
+- Whether other L3 passes (for example `UnitarySynthesis` on consolidated
+  blocks) do the same; here the first synthesis was exact because the
+  snapping block only formed when the peephole pass re-collected blocks.
+- Nothing is posted upstream. Adding this case to #16864 would be a
+  decision for the user.
+
+## 4. Files
+
+| File | What it is |
+|---|---|
+| [`repro.py`](../../data/2026-09-28/qiskit_l3_snapping/repro.py), [`repro.txt`](../../data/2026-09-28/qiskit_l3_snapping/repro.txt) | reproduction at L3 (3 runs), L2, L1 |
+| [`passes.py`](../../data/2026-09-28/qiskit_l3_snapping/passes.py), [`passes.txt`](../../data/2026-09-28/qiskit_l3_snapping/passes.txt) | error after every pass of the L3 run |
+| [`block.py`](../../data/2026-09-28/qiskit_l3_snapping/block.py), [`block.txt`](../../data/2026-09-28/qiskit_l3_snapping/block.txt) | the 11 blocks at the peephole pass, Weyl coordinates, synthesis error |
+| [`confirm.py`](../../data/2026-09-28/qiskit_l3_snapping/confirm.py), [`confirm.txt`](../../data/2026-09-28/qiskit_l3_snapping/confirm.txt) | exact rebuild of the block; explicit approximation_degree=1.0 |
+
+Sources: https://github.com/Qiskit/qiskit/issues/16864 ,
+https://github.com/Qiskit/qiskit/issues/16974 (read 2026-09-28).
 
 ---
 

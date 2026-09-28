@@ -1,0 +1,13 @@
+NEW benchmarks/psf_pennylane_gpu_prototype.py bddb3c1513067cbbfd43b3888f38db7c8cf5957a2d42054d40c79123d586b176
+OLD psf_pennylane_gpu_prototype_prefix.py d0ef66f7f9fecbaf761daaf98f0aff591c651a97aab5a7422a85d99ccc32df05
+
+family            conv  tapes  Frobenius min..max        infidelity max   distinct Frobenius values per chain
+F1_int_wires      NEW      10  1.46e-15 .. 1.86e-15   4.22e-15         1
+F1_int_wires      OLD      10  5.20e+00 .. 5.61e+00   9.41e-01         1
+F2_mixed_labels   NEW       5  1.60e-15 .. 1.80e-15   3.33e-15         1
+F2_mixed_labels   OLD       5  5.47e+00 .. 5.60e+00   9.41e-01         1
+F3_xor            NEW       4  1.04e-15 .. 1.11e-15   8.88e-16         1
+F3_xor            OLD       4  5.35e+00 .. 5.35e+00   9.31e-01         1
+
+NEW: largest phase-aligned Frobenius distance over all tapes and steps = 1.86e-15
+OLD: smallest phase-aligned Frobenius distance over all tapes and steps = 5.20e+00

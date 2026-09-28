@@ -1,0 +1,14 @@
+# Pod terminal output quoted verbatim (RunPod pod, 2026-09-28)
+# 1) hash check immediately before the run
+e1e9c5195a07f011ecf50c80d9500a4dc52b197d34dfcec00256a590681ba994
+# 2) file times
+-rw-r--r-- 1 root root 8421 2026-09-28 05:17:34.576701398 +0000 /root/gpu_memory_ceiling.py
+-rw-r--r-- 1 root root 3255 2026-09-28 05:18:49.764781831 +0000 /root/vram_2026-09-28.json
+-rw-r--r-- 1 root root 2802 2026-09-28 05:18:49.765781845 +0000 /root/vram_run.txt
+-rw-r--r-- 1 root root 2347 2026-09-28 05:18:50.083786415 +0000 /root/vram_score.txt
+# 3) CPU
+Model name:                              AMD EPYC 7282 16-Core Processor
+# 4) sha256sum of the pod files
+c56cdfd48802d827dea041b26664523512333e09ac03857086e49269f62d37e0  /root/vram_2026-09-28.json
+dcbad2fc6227bbdaa9744689907ce92b5b61cae810ebd0f207a47685543aa58d  /root/vram_run.txt
+92ff1e7eea8b12f871098c8695a6bbf665b8b390ed0550a61fb9a4dcfd2ae291  /root/vram_score.txt

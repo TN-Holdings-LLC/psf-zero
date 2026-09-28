@@ -1,0 +1,24 @@
+==============================================================================
+SCORING (thresholds exactly as pre-registered)
+==============================================================================
+ENV {"platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39", "python": "3.11.15", "qiskit": "2.5.2", "pennylane": "0.45.1", "numpy": "2.4.4", "psf_compile_version": "2026-09-27.7", "core_version": null, "sizes": [20, 24, 26], "check_n": 20}
+C0 harness: sizes [20, 24, 26], cells 180, all outputs on coupling-map edges and in basis: True
+R1 every checked output of the PSF-Zero-synthesized arms A and C is exact (n=20, 30 outputs): worst 6.68e-14 (<= 1e-10) -> CONFIRMED
+R2 compress then route at level 3 is not worse than Qiskit L3 on F3 CX: mean B/D = 0.994 (confirmed <= 1.02, refuted >= 1.05) -> CONFIRMED
+R3 route-then-resynthesize removes CX versus the default on F3: mean C/A = 0.975 (confirmed <= 0.95, refuted >= 1.00) -> AMBIGUOUS
+R4 route-then-resynthesize comes close to Qiskit L3 on F3 CX: mean C/D = 1.089 (confirmed <= 1.08, refuted > 1.12) -> AMBIGUOUS
+R5 no regression where routing is light (F1, F2): C <= A in CX in 15 of 30 -> REFUTED
+   reported: B_psf_route3 checked outputs above 1e-10: 0 of 15, worst 1.02e-13
+   reported: D_qiskit_L3 checked outputs above 1e-10: 0 of 15, worst 1.29e-13
+   reported: F3 cells where B and D have the same CX count: 2 of 15
+
+Reported without prediction (workplace sandbox times; not comparable with home or pod):
+  n=20 F1_brick_line         A cx 57.0 d 31 t 19ms | B cx 57.0 d 29 t 22ms | C cx 57.0 d 31 t 26ms | D cx 57.0 d 27 t 16ms
+  n=20 F2_brick_grid         A cx 57.0 d 31 t 20ms | B cx 57.0 d 29 t 46ms | C cx 69.0 d 73 t 29ms | D cx 57.0 d 27 t 34ms
+  n=20 F3_random_pairs_grid  A cx 125.4 d 84 t 19ms | B cx 112.2 d 79 t 29ms | C cx 118.8 d 113 t 28ms | D cx 111.0 d 82 t 20ms
+  n=24 F1_brick_line         A cx 69.0 d 32 t 19ms | B cx 69.0 d 29 t 20ms | C cx 69.0 d 32 t 23ms | D cx 69.0 d 27 t 10ms
+  n=24 F2_brick_grid         A cx 69.0 d 31 t 17ms | B cx 69.0 d 29 t 46ms | C cx 78.0 d 52 t 24ms | D cx 69.0 d 27 t 33ms
+  n=24 F3_random_pairs_grid  A cx 148.2 d 85 t 19ms | B cx 134.4 d 71 t 27ms | C cx 147.0 d 115 t 24ms | D cx 136.2 d 82 t 21ms
+  n=26 F1_brick_line         A cx 75.0 d 31 t 22ms | B cx 75.0 d 29 t 23ms | C cx 75.0 d 31 t 28ms | D cx 75.0 d 27 t 11ms
+  n=26 F2_brick_grid         A cx 75.0 d 31 t 25ms | B cx 75.0 d 29 t 47ms | C cx 90.0 d 49 t 29ms | D cx 75.0 d 27 t 30ms
+  n=26 F3_random_pairs_grid  A cx 202.8 d 98 t 21ms | B cx 176.4 d 97 t 35ms | C cx 199.2 d 142 t 32ms | D cx 179.4 d 96 t 24ms

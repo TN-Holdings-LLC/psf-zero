@@ -1,0 +1,17 @@
+==============================================================================
+SCORING (thresholds exactly as pre-registered)
+==============================================================================
+V0 harness: base core None | fixed core 2026-09-28.1 | psf_compile 2026-09-27.7 2026-09-27.7
+C1 base SU2 failures in [4000, 4600]: 4292 -> CONFIRMED
+C2 fixed SU2 failures = 0 and other core errors <= 2: SU2 0, other 1 -> CONFIRMED
+C3 both: worst loss error <= 1e-13 and CX 33 in every compile: 2.78e-15 {'33': 3000} | 2.89e-15 {'33': 3000} -> CONFIRMED
+C4 fixed: exact_rebuilt = psf_rerouted = best_effort = 0: 0 0 0 | base: 12 1 0 -> CONFIRMED
+C5 lap 2138, position 8 (pair (7,8): True): base 8.278119185363933e-07 >= 1e-7 and fixed 1.9220704415365463e-13 <= 1e-12 -> CONFIRMED
+C6 cliff: both 180 two-qubit gates, exact, 0 fallbacks in all reps -> CONFIRMED
+C7 cliff outputs bit-different in all 6 reps: 6 -> CONFIRMED
+C8 tests: 75 passed in both; SU2 warning in base only: {'passed': 75, 'failed': 0, 'su2_warning_lines': 3, 'returncode': 0} {'passed': 75, 'failed': 0, 'su2_warning_lines': 0, 'returncode': 0} -> CONFIRMED
+C9 (timing, RunPod pod) E median fixed/base = 8.97/10.20 = 0.879 -> CONFIRMED
+
+Reported without prediction: base GUARD_STATS {'checked': 4295, 'zsx_rejected': 1, 'default_rejected': 0, 'closed_form_forced': 0, 'inexact': 63, 'exact_rebuilt': 12, 'best_effort': 0, 'best_effort_worst': 0.0, 'psf_rerouted': 1, 'psf_rerouted_worst_residual': 5.853514210303842e-07}
+raw error over all captured blocks: base {'failed': 4293, 'max': 2.085543519958119e-06, 'over_1e_13': 6087} | fixed {'failed': 1, 'max': 9.909289530184753e-07, 'over_1e_13': 6483}
+cliff median ms: base 35.751058254390955 | fixed 37.12373971939087

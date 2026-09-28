@@ -1,0 +1,6 @@
+start 2026-09-28 05:34:09 UTC
+script bb79f17b61f591774cc8eceb6e84a8295bb62bdac768ad66af9a57ab690e4d05
+100e768 psf_compile.py 2026-09-27.7: default block_gate_floor 8 after the 100k run (Addendum 222)
+?? benchmarks/long_loop_100k_v3.py
+Model name:                              Intel(R) Xeon(R) Processor @ 2.10GHz
+2

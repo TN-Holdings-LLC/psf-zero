@@ -1,0 +1,6 @@
+qiskit 2.5.2
+L3 rep 0: cx 33 ops 258 mirror 1.166e-05 (transpile 0.9 s, check 0.0 s)
+L3 rep 1: cx 33 ops 258 mirror 1.166e-05 (transpile 0.0 s, check 0.0 s)
+L3 rep 2: cx 33 ops 258 mirror 1.166e-05 (transpile 0.0 s, check 0.0 s)
+L2 rep 0: cx 33 ops 258 mirror 1.166e-05 (transpile 0.0 s, check 0.0 s)
+L1 rep 0: cx 66 ops 335 mirror 2.709e-15 (transpile 0.0 s, check 0.0 s)

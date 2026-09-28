@@ -1,0 +1,31 @@
+==============================================================================
+SCORING (thresholds exactly as pre-registered)
+==============================================================================
+ENV {"platform": "Linux-6.8.0-124-generic-x86_64-with-glibc2.39", "python": "3.12.3", "qiskit": "2.5.2", "pennylane": "0.45.1", "numpy": "2.5.3", "device": "lightning.gpu", "psf_compile_version": "2026-09-27.7", "core_version": "2026-09-28.1", "gpu": "NVIDIA GeForce RTX 4090, 580.159.04, 24564 MiB"}
+C0 converter: {"F2_brick_grid": {"max_diff": 1.6829500065255886e-16, "bug_control_max_diff": 1.6829500065255886e-16}, "F3_random_pairs_grid": {"max_diff": 6.500585459698245e-17, "bug_control_max_diff": 0.19012095357957493}} | core 2026-09-28.1 | device lightning.gpu | sizes [20, 24, 26] | an output with a non-identity final layout exists: True
+E1 every output of both arms equivalent (error <= 1e-10): worst T13 7.39e-14, T14 1.10e-14 over 54 -> CONFIRMED
+E2 CX count equal to the pre-fix run in all 27 cells, both arms: differing cells 0 {"PSF_T13": [], "PSF_T14": []} -> CONFIRMED
+E3 wrong final layout detected (error >= 0.1) in all 9 controls: min 0.692 -> CONFIRMED
+E4 worst error of each arm <= 1e-12 (pre-fix run: 8.86e-14): T13 7.39e-14, T14 1.10e-14 -> CONFIRMED
+
+Reported without prediction:
+  n=20 F1_brick_line         PSF_T13 worst 3.8e-14 cx [57, 57, 57] moved 0/3 | PSF_T14 worst 7.2e-15 cx [57, 57, 57] moved 0/3
+  n=20 F2_brick_grid         PSF_T13 worst 3.1e-14 cx [57, 57, 57] moved 3/3 | PSF_T14 worst 9.2e-15 cx [57, 57, 57] moved 3/3
+  n=20 F3_random_pairs_grid  PSF_T13 worst 7.1e-14 cx [126, 126, 120] moved 3/3 | PSF_T14 worst 1.1e-14 cx [126, 126, 120] moved 3/3
+  n=24 F1_brick_line         PSF_T13 worst 5.8e-14 cx [69, 69, 69] moved 0/3 | PSF_T14 worst 6.1e-15 cx [69, 69, 69] moved 0/3
+  n=24 F2_brick_grid         PSF_T13 worst 4.3e-14 cx [69, 69, 69] moved 3/3 | PSF_T14 worst 7.1e-15 cx [69, 69, 69] moved 3/3
+  n=24 F3_random_pairs_grid  PSF_T13 worst 6.3e-14 cx [153, 156, 159] moved 3/3 | PSF_T14 worst 1.1e-14 cx [153, 156, 159] moved 3/3
+  n=26 F1_brick_line         PSF_T13 worst 5.6e-14 cx [75, 75, 75] moved 0/3 | PSF_T14 worst 9.7e-15 cx [75, 75, 75] moved 0/3
+  n=26 F2_brick_grid         PSF_T13 worst 5.2e-14 cx [75, 75, 75] moved 3/3 | PSF_T14 worst 7.5e-15 cx [75, 75, 75] moved 3/3
+  n=26 F3_random_pairs_grid  PSF_T13 worst 7.4e-14 cx [234, 240, 189] moved 3/3 | PSF_T14 worst 1.1e-14 cx [234, 240, 189] moved 3/3
+  PSF_T13: median compile 18.0 ms (RunPod pod)
+  PSF_T14: median compile 19.3 ms (RunPod pod)
+  control {'n': 20, 'family': 'F1_brick_line', 'error_wrong_layout': 0.9830325353412975}
+  control {'n': 20, 'family': 'F2_brick_grid', 'error_wrong_layout': 0.7413501777732734}
+  control {'n': 20, 'family': 'F3_random_pairs_grid', 'error_wrong_layout': 0.7693106117248055}
+  control {'n': 24, 'family': 'F1_brick_line', 'error_wrong_layout': 0.9963800225145212}
+  control {'n': 24, 'family': 'F2_brick_grid', 'error_wrong_layout': 0.6921590218438888}
+  control {'n': 24, 'family': 'F3_random_pairs_grid', 'error_wrong_layout': 0.8592455906205962}
+  control {'n': 26, 'family': 'F1_brick_line', 'error_wrong_layout': 0.8449991982876301}
+  control {'n': 26, 'family': 'F2_brick_grid', 'error_wrong_layout': 0.8341109671755217}
+  control {'n': 26, 'family': 'F3_random_pairs_grid', 'error_wrong_layout': 0.8504975508678385}

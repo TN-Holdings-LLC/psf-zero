@@ -1,0 +1,99 @@
+--- benchmarks/long_loop_100k_v2.py
++++ benchmarks/long_loop_100k_v3.py
+@@ -1,9 +1,26 @@
+-"""long_loop_100k_v2.py -- Addendum 219: the run of Addendum 213 repeated with
+-psf_compile.py 2026-09-27.6 (exact fallback, changelog item 23) at
+-block_gate_floor 8, to decide whether 8 can become the default again.
+-Identical to long_loop_100k.py except: the version check, the floor passed
+-explicitly (--floor, default 8), the E check threshold (L4: 1e-13 instead of
+-1e-10, since the fix aims at exactness), and the output file names.
++"""long_loop_100k_v3.py -- pre-registered (workplace, 2026-09-28): the run of
++Addendum 219 (long_loop_100k_v2.py) repeated with the fixed Rust core
++(CORE_VERSION 2026-09-28.1, changelog item 11: SU(2) factors read from the
++best-conditioned column/row of P = a b^T) and psf_compile.py 2026-09-27.7
++(default block_gate_floor 8). The question: over the full 100,000 compiles,
++do the core's decomposition failures and the repair paths they caused
++disappear, while every v2 flag stays clear?
++
++Identical to long_loop_100k_v2.py except: the version check (psf_compile.py
++2026-09-27.7 and psf_zero_core.CORE_VERSION 2026-09-28.1, printed on a CORE
++line), the output file names (_v3), and the pre-registered M1-M3 lines added
++after the v2 flags. Laps, seeds, floor, checks and thresholds L1-L6 are
++unchanged, so every non-timing value can be set against the v2 run.
++
++Pre-registered (see the pre-registration document of 2026-09-28):
++  M1 E: blocks that fell back to Qiskit's CX synthesis <= 50 of about 330,000
++     (v2: 43,829); refuted if >= 500
++  M2 whole run: exact_rebuilt + psf_rerouted + best_effort == 0
++     (v2: 150 + 1 + 0); refuted if >= 15
++  M3 F and C: 0 fallbacks (as in v2); refuted if any
++  M4 the non-timing v2 flags L1, L2, L4 and L5 all clear; refuted if any trips
++     (L3 and L6 are timing flags; they are printed as in v2 but not scored,
++     because the run is made in a shared workplace sandbox)
+ 
+ Original description (Addendum 213): about 100,000 compiles, unattended.
+ 
+@@ -38,8 +55,8 @@
+   (exploratory) fallback rate per block, guard counts
+ 
+ Usage (repository root; loop_endurance.py in benchmarks/):
+-    python -u benchmarks/long_loop_100k_v2.py --smoke     # about 1-2 minutes, 1/100 scale
+-    nohup python -u benchmarks/long_loop_100k_v2.py > long_loop_100k_v2.txt 2>&1 &
++    python -u benchmarks/long_loop_100k_v3.py --smoke     # 1/100 scale, plumbing only
++    nohup python -u benchmarks/long_loop_100k_v3.py > long_loop_100k_v3.txt 2>&1 &
+ """
+ from __future__ import annotations
+ 
+@@ -204,10 +221,13 @@
+           f"| qiskit {qiskit.__version__} | {'SMOKE' if args.smoke else 'FULL'} | block_gate_floor {FLOOR}")
+     print("LOADED", pc.__file__, pc.VERSION, le.normalized_sha256(pc.__file__))
+     print("SCRIPT", os.path.abspath(__file__), le.normalized_sha256(os.path.abspath(__file__)))
+-    if pc.VERSION != "2026-09-27.6":
+-        print("V0 FAILED: psf_compile.py is not 2026-09-27.6. Stopping.")
++    import psf_zero_core as core
++    core_version = getattr(core, "CORE_VERSION", None)
++    print("CORE", core.__file__, "CORE_VERSION", core_version)
++    if pc.VERSION != "2026-09-27.7" or core_version != "2026-09-28.1":
++        print("V0 FAILED: need psf_compile.py 2026-09-27.7 and CORE_VERSION 2026-09-28.1. Stopping.")
+         return
+-    tag = ("smoke" if args.smoke else "2026-09-27") + "_v2"
++    tag = ("smoke" if args.smoke else "2026-09-28") + "_v3"
+     backend, native = le.nighthawk()
+     n = backend.coupling_map.size()
+     cmap = CouplingMap.from_line(le.E_QUBITS)
+@@ -311,6 +331,35 @@
+               f"{C_LAPS // 2} {ratio:.2f} (1.6-2.4) -> {v(cc[last_lap] <= C_LAPS * 1e-13 and 1.6 <= ratio <= 2.4)}")
+     else:
+         print("L5 C: not evaluable (part stopped early)")
++
++    # ---- pre-registered lines for v3 (thresholds from the pre-registration)
++    print("\n=== pre-registered (v3) ===")
++    if args.smoke:
++        print("(smoke run: the thresholds below are for the full run; shown for plumbing only)")
++
++    def verdict(ok, bad):
++        return "REFUTED" if bad else ("CONFIRMED" if ok else "AMBIGUOUS")
++
++    fe = summary["E"]["fallbacks"]
++    print(f"M1 E fallbacks {fe} of about {summary['E']['blocks']} blocks (v2: 43829; confirmed <= 50, refuted >= 500)"
++          f" -> {verdict(fe <= 50, fe >= 500)}")
++    g = dict(pc.GUARD_STATS)
++    rep = g.get("exact_rebuilt", 0) + g.get("psf_rerouted", 0) + g.get("best_effort", 0)
++    print(f"M2 repair paths, whole run: exact_rebuilt {g.get('exact_rebuilt')} + psf_rerouted {g.get('psf_rerouted')}"
++          f" + best_effort {g.get('best_effort')} = {rep} (v2: 151; confirmed 0, refuted >= 15) ->"
++          f" {verdict(rep == 0, rep >= 15)}")
++    ffc = summary["F"]["fallbacks"] + summary["C"]["fallbacks"]
++    print(f"M3 F + C fallbacks {ffc} (v2: 0; confirmed 0, refuted any) -> {verdict(ffc == 0, ffc > 0)}")
++    l1 = all(r["errors"] == 0 for r in summary.values())
++    l2 = True
++    for r in summary.values():
++        base = next((x for lap, x in r["rss"] if lap >= CHECK), r["rss"][0][1] if r["rss"] else float("nan"))
++        l2 = l2 and bool(r["rss"]) and (r["rss"][-1][1] - base) <= 100
++    l4 = wf <= 1e-12 and we <= E_TOL
++    l5 = bool(cc and half) and cc[last_lap] <= C_LAPS * 1e-13 and 1.6 <= cc[last_lap] / half <= 2.4
++    m4 = l1 and l2 and l4 and l5
++    print(f"M4 non-timing v2 flags clear: L1 {l1}, L2 {l2}, L4 {l4}, L5 {l5} -> {verdict(m4, not m4)}")
++    print(f"   whole-run GUARD_STATS {g}")
+     print("\nDONE")
+ 
+ 

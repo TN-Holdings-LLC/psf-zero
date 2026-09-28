@@ -1,0 +1,9 @@
+CORE_VERSION None REFINE_THRESHOLD 1e-13
+lap 1: pair 51: raw 8.954e-14 polished False after 8.954e-14 synth-alone 8.977e-14 lap-step 8.896e-14 cos(prev) None | all pairs: unpolished 45, max step 8.896e-14 (pair 51), max unpolished raw 8.954e-14
+lap 2: pair 51: raw 3.158e-13 polished True after 1.043e-15 synth-alone 9.982e-16 lap-step 1.772e-15 cos(prev) 0.309183 | all pairs: unpolished 46, max step 9.918e-14 (pair 4), max unpolished raw 9.221e-14
+lap 3: pair 51: raw 8.317e-14 polished False after 8.317e-14 synth-alone 8.312e-14 lap-step 9.815e-14 cos(prev) 0.221658 | all pairs: unpolished 47, max step 9.815e-14 (pair 51), max unpolished raw 9.959e-14
+lap 4: pair 51: raw 3.167e-13 polished True after 8.178e-16 synth-alone 1.183e-15 lap-step 8.433e-14 cos(prev) 0.770053 | all pairs: unpolished 48, max step 8.433e-14 (pair 51), max unpolished raw 6.352e-14
+lap 5: pair 51: raw 9.250e-14 polished False after 9.250e-14 synth-alone 9.239e-14 lap-step 8.567e-14 cos(prev) 0.833979 | all pairs: unpolished 47, max step 9.024e-14 (pair 4), max unpolished raw 9.250e-14
+lap 6: pair 51: raw 8.120e-14 polished False after 8.120e-14 synth-alone 8.130e-14 lap-step 9.842e-14 cos(prev) 0.917021 | all pairs: unpolished 48, max step 9.842e-14 (pair 51), max unpolished raw 8.120e-14
+lap 7: pair 51: raw 9.206e-14 polished False after 9.206e-14 synth-alone 9.213e-14 lap-step 1.656e-15 cos(prev) 0.162852 | all pairs: unpolished 48, max step 5.453e-14 (pair 13), max unpolished raw 9.804e-14
+lap 8: pair 51: raw 1.021e-13 polished True after 1.137e-15 synth-alone 1.422e-15 lap-step 8.216e-14 cos(prev) 0.200939 | all pairs: unpolished 46, max step 8.216e-14 (pair 51), max unpolished raw 5.409e-14

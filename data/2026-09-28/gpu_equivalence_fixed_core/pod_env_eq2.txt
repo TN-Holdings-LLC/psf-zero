@@ -1,0 +1,13 @@
+# Pod terminal output quoted verbatim (RunPod pod, 2026-09-28)
+# 1) hash check immediately before the run
+feda44855470d9ef6708dbe1fd92cd2cc288c8848f6aef6e3b8938d439be66a3
+# 2) file times
+-rw-r--r-- 1 root root 17189 2026-09-28 07:31:48.344993083 +0000 /root/eq2_fixed_core_2026-09-28.json
+-rw-r--r-- 1 root root 15153 2026-09-28 07:31:48.345993096 +0000 /root/eq2_run.txt
+-rw-r--r-- 1 root root  3387 2026-09-28 07:31:49.066002947 +0000 /root/eq2_score.txt
+-rw-r--r-- 1 root root 13669 2026-09-28 07:29:07.707775523 +0000 /root/gpu_equivalence_fixed_core.py
+# 3) sha256sum of the pod files
+399b6950f470be9df32f43448ab7f0f264fa18f94393b597c8a22668d203d4b7  /root/eq2_fixed_core_2026-09-28.json
+37e826ddfd779dcfd7839beb1e7bd7c518d108a02cb7b056382b61fb22ac609d  /root/eq2_run.txt
+45fa5165323a97be22e579d3d0ae5903c618d753214d48f41425dd01104573b5  /root/eq2_score.txt
+# GPU/CPU: NVIDIA GeForce RTX 4090, 580.159.04, 24564 MiB; AMD EPYC 7282 16-Core Processor (same pod as earlier runs)

@@ -1,0 +1,30 @@
+==============================================================================
+SCORING (thresholds exactly as pre-registered)
+==============================================================================
+ENV {"platform": "Linux-6.8.0-124-generic-x86_64-with-glibc2.39", "python": "3.12.3", "qiskit": "2.5.2", "pennylane": "0.45.1", "numpy": "2.5.3", "device": "lightning.gpu", "psf_compile_version": "2026-09-27.7", "core_version": null, "gpu": "NVIDIA GeForce RTX 4090, 580.159.04, 24564 MiB"}
+C0 converter: {"F2_brick_grid": {"max_diff": 1.6829500065255886e-16, "bug_control_max_diff": 1.6829500065255886e-16}, "F3_random_pairs_grid": {"max_diff": 6.500585459698245e-17, "bug_control_max_diff": 0.19012095357957493}} | sizes [20, 24, 26] | a PSF output with a non-identity final layout exists: True
+Z1 every PSF-Zero output equivalent to its circuit (error <= 1e-10): worst 8.86e-14 over 27 -> CONFIRMED
+Z2 every Qiskit L3 output equivalent (reference, same gauge): worst 4.24e-13 over 27 -> CONFIRMED
+Z3 wrong final layout detected (error >= 0.1) in all 9 controls: min 0.692 -> CONFIRMED
+Z4 routing exercised: PSF-Zero F3 outputs with a non-identity final layout: 9 of 9 (>= 5) -> CONFIRMED
+Z5 under routing (F3) PSF-Zero does not beat Qiskit L3 on CX: mean CX ratio PSF/L3 = 1.165 (confirmed >= 1.00, refuted <= 0.95) -> CONFIRMED
+
+Reported without prediction:
+  n=20 F1_brick_line         PSF worst 3.8e-14 cx [57] moved 0/3 | L3 worst 8.4e-14 cx [57] moved 0/3
+  n=20 F2_brick_grid         PSF worst 3.2e-14 cx [57] moved 3/3 | L3 worst 4.2e-13 cx [57] moved 3/3
+  n=20 F3_random_pairs_grid  PSF worst 7.6e-14 cx [120, 126] moved 3/3 | L3 worst 5.0e-14 cx [105, 111] moved 3/3
+  n=24 F1_brick_line         PSF worst 5.6e-14 cx [69] moved 0/3 | L3 worst 4.8e-14 cx [69] moved 0/3
+  n=24 F2_brick_grid         PSF worst 4.4e-14 cx [69] moved 3/3 | L3 worst 8.0e-14 cx [69] moved 3/3
+  n=24 F3_random_pairs_grid  PSF worst 6.7e-14 cx [153, 156, 159] moved 3/3 | L3 worst 3.4e-14 cx [132, 141, 144] moved 3/3
+  n=26 F1_brick_line         PSF worst 6.2e-14 cx [75] moved 0/3 | L3 worst 3.8e-14 cx [75] moved 0/3
+  n=26 F2_brick_grid         PSF worst 5.8e-14 cx [75] moved 3/3 | L3 worst 4.6e-14 cx [75] moved 3/3
+  n=26 F3_random_pairs_grid  PSF worst 8.9e-14 cx [189, 234, 240] moved 3/3 | L3 worst 4.8e-14 cx [174, 177, 195] moved 3/3
+  control {'n': 20, 'family': 'F1_brick_line', 'error_wrong_layout': 0.9830325353412973}
+  control {'n': 20, 'family': 'F2_brick_grid', 'error_wrong_layout': 0.7413501777732722}
+  control {'n': 20, 'family': 'F3_random_pairs_grid', 'error_wrong_layout': 0.7693106117248059}
+  control {'n': 24, 'family': 'F1_brick_line', 'error_wrong_layout': 0.9963800225145218}
+  control {'n': 24, 'family': 'F2_brick_grid', 'error_wrong_layout': 0.6921590218438879}
+  control {'n': 24, 'family': 'F3_random_pairs_grid', 'error_wrong_layout': 0.8592455906205961}
+  control {'n': 26, 'family': 'F1_brick_line', 'error_wrong_layout': 0.8449991982876305}
+  control {'n': 26, 'family': 'F2_brick_grid', 'error_wrong_layout': 0.8341109671755218}
+  control {'n': 26, 'family': 'F3_random_pairs_grid', 'error_wrong_layout': 0.8504975508678386}
