@@ -1,0 +1,12 @@
+start 2026-09-29 13:58:27 UTC
+run script ?
+pl_heavyhex_100k.py dad56b1b2f2351b413e6f2b096ee4f9b2e3ae6d8db405760a5fcb0ae523288cb
+pl_heavyhex_gpu.py  a0081c2917591de57a2e3a9d4914441c47f030282c5128b3f18642b7dd8402ea
+release core 2026-09-28.1 (repo lib.rs bf3bf537df3eb3e81444d2d2ba6fe723770048f2c80c5c6bb9da48884148d234) | candidate core 2026-09-29.1 (lib.rs 5364630ec4e3648fe944b4103d76e8caa440e722c27ee6621b0ac51fdb26ad8f)
+release layout a639efdef484379d23b4c0a52dffe557c47c30f639c41e4f8521ca608712d875 | candidate layout e25952a33bacfbb8de7a439b53892e9bab88329d8c47c6de867c29fc660145fa
+NVIDIA GeForce RTX 4070, 12282 MiB, 616.92
+Model name:                              AMD Ryzen 5 5500
+12
+Python 3.12.13
+47809d7 Addendum 261: pre-registration of the home 100,000-lap run (Part I of 258)
+end 2026-09-29 16:45:09 UTC

@@ -1,0 +1,16 @@
+==============================================================================
+SCORING (thresholds exactly as pre-registered)
+==============================================================================
+C0 all parts 100,000 laps: True; versions as expected: True; device lightning.gpu: True; C1 control smallest 2.87e-07 (>= 1e-9) -> passed
+   A (PN, spare 0): compile median 13.12 ms, p99 100.51 ms, max 131 ms; within 1 s 100000; mapped 100000; 2q [51] (swap-free 51); fallbacks 0 in 0 laps; block distance lap 1 / 1,000 / last 1.27e-14 / 2.95e-12 / 2.95e-10; whole-circuit max 8.04e-11; RSS 557 -> 565 MB; first/last 10% median 13.10 / 13.04 ms
+   B (PN, spare 4): compile median 12.51 ms, p99 21.81 ms, max 128 ms; within 1 s 100000; mapped 100000; 2q [45] (swap-free 45); fallbacks 0 in 0 laps; block distance lap 1 / 1,000 / last 6.91e-15 / 2.91e-12 / 3.02e-10; whole-circuit max 7.68e-11; RSS 557 -> 561 MB; first/last 10% median 12.60 / 12.43 ms
+   C (P, spare 4): compile median 12.85 ms, p99 105.24 ms, max 205 ms; within 1 s 100000; mapped 100000; 2q [45] (swap-free 45); fallbacks 0 in 0 laps; block distance lap 1 / 1,000 / last 7.33e-15 / 2.91e-12 / 3.02e-10; whole-circuit max 7.68e-11; RSS 557 -> 564 MB; first/last 10% median 12.92 / 12.86 ms
+H1 A within 1 s in 100000/100000 (confirmed >= 99990, refuted < 99000) -> CONFIRMED
+H2 A swap-free and mapped back in 100000/100000 (confirmed 100000, refuted < 99900) -> CONFIRMED
+H3 candidate core fallbacks in A + B: 0 (confirmed 0, refuted >= 3) -> CONFIRMED
+H4 A drift does not accelerate: laps 1-1,000 slope 2.915e-15/lap, extrapolated to lap 100000 2.915e-10, measured 2.951e-10, ratio 1.01 (confirmed <= 2, refuted > 10) -> CONFIRMED
+H5 whole-circuit GPU check at every checkpoint of A and B: max 8.04e-11 (confirmed <= 1e-8, refuted > 1e-6) -> CONFIRMED
+H6 RSS growth from lap 1,000 to the end, per part: [0, 0, 0] MB (confirmed all <= 100, refuted any > 500) -> CONFIRMED
+H7 spare 4, candidate / release block distance at the end: 3.018e-10 / 3.018e-10 = 1.00 (confirmed 0.5-2, refuted < 0.2 or > 5) -> CONFIRMED
+H8 A timing stable: last-10% / first-10% median 1.00 (confirmed <= 1.5, refuted > 3) -> CONFIRMED
+Reported without prediction: release core fallbacks in C 0 (0 laps); mapped in C 100000

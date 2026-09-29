@@ -2113,6 +2113,94 @@ One machine, one device model, one circuit family; the candidate stack is still 
 the release. If the PC sleeps or the run stops, the run is reported as far as it got
 and no threshold is scaled after the fact.
 
+
+---
+
+<!-- ===== Addendum 262 (source: spare-qubit-cliff-addendum-262-2026-09-29.md) ===== -->
+
+> **Note added when merging:** H1-H8 of Addendum 258 confirmed at 100,000 laps at home; R1-R3 confirmed: laps 1-30,000 of all three parts equal the pod's run to the printed digits.
+
+## Addendum 262 -- The PennyLane loop on a fully occupied heavy-hex device over 100,000 laps at home: H1-H8 of Addendum 258 confirmed at the original thresholds, and the first 30,000 laps of all three parts equal the pod's run lap by lap to the printed digits (R1-R3 confirmed) (2026-09-29/30)
+
+**Pre-registered in**: Addendum 261 (pushed as `47809d7` before the run started).
+Scored with the locked script's own `score` (H1-H8, the original 100,000-lap thresholds of
+Addendum 258, Part I) and with [`benchmarks/compare_100k_home_pod.py`](../../benchmarks/compare_100k_home_pod.py) (R1-R3; written after
+the run, applying the thresholds of Addendum 261 exactly).
+
+**Run (home):** 2026-09-29 13:58:27 to 16:45:09 UTC (2 h 47 min for the three parts in
+parallel). WSL2, AMD Ryzen 5 5500 (12 threads), NVIDIA GeForce RTX 4070 12 GB (Windows
+driver 616.92), Python 3.12.13, Qiskit 2.5.2, PennyLane 0.45.1, `lightning.gpu`. Repository at
+`47809d7`. The environment record shows the locked scripts (`dad56b1b...`, `a0081c29...`),
+the release core 2026-09-28.1 (repository `lib.rs` `bf3bf537...`), the candidate core
+2026-09-29.1 (`5364630e...`), the release layout (`a639efde...`) and the candidate layout
+(`e25952a3...`); each part's log prints its versions. **Times are home times.**
+
+**One recording gap:** the environment record says `run script ?` instead of the run
+script's hash. The script changed into the output folder before hashing itself by its
+relative path. The script that ran is `benchmarks/pod/run_100k_home_2026-09-29.sh` as
+committed in `47809d7` with Addendum 261 (normalized SHA-256 `02177d34...`, stated there);
+the run was started from that repository checkout.
+
+## 1. Scoring
+
+**C0:** all parts 100,000 laps; versions as expected; `lightning.gpu`; the RX(1e-6) control
+detected (smallest 2.87e-7) -> passed.
+
+| ID | Prediction (Addendum 258, Part I) | Result |
+|---|---|---|
+| H1 | A within 1 s in >= 99,990 of 100,000 | **confirmed**: 100,000 (median 13.1 ms, max 131 ms) |
+| H2 | A swap-free and mapped back in 100,000 | **confirmed**: 100,000, 51 two-qubit gates every lap |
+| H3 | candidate core fallbacks in A + B: 0 | **confirmed**: 0 |
+| H4 | A's drift at lap 100,000 <= 2 x the line fitted to laps 1-1,000 | **confirmed**: 2.951e-10 against 2.915e-10 extrapolated (ratio 1.01) |
+| H5 | whole-circuit GPU check at every checkpoint of A and B <= 1e-8 | **confirmed**: max 8.04e-11 |
+| H6 | RSS growth from lap 1,000 to the end <= 100 MB in every part | **confirmed**: 0, 0, 0 MB |
+| H7 | B / C block distance at lap 100,000 in 0.5-2 | **confirmed**: 3.018e-10 / 3.018e-10 = 1.00 |
+| H8 | A's last-10% / first-10% median compile time <= 1.5 | **confirmed**: 1.00 |
+
+| ID | Prediction (Addendum 261) | Result |
+|---|---|---|
+| R1 | A's block distance equals the pod's at laps 1-30,000 | **confirmed**: identical as printed at 30,000 of 30,000 laps |
+| R2 | the same for B and C | **confirmed**: 30,000 of 30,000 in each |
+| R3 | two-qubit count, mapped flag and fallbacks equal the pod's at laps 1-30,000 | **confirmed**: equal at every lap of A, B and C |
+
+Reported without prediction: release core fallbacks in C: 0; C mapped back on all 100,000
+laps. Compile medians A 13.1, B 12.5, C 12.9 ms; p99 100.5, 21.8, 105.2 ms.
+
+## 2. Reading
+
+1. **The 100,000-lap claim of Addendum 258 is now established at the original
+   thresholds**, on a second machine. Amendment 1's 30,000-lap stop (Addendum 259) is no
+   longer the limit of the record.
+2. **Drift stays linear to 100,000 laps:** about 2.95e-15 per lap on A, 2.95e-10 at the
+   end, within 1% of the straight line from the first 1,000 laps. The whole-circuit check
+   stays at 8e-11. No acceleration, no memory growth, no slow-down.
+3. **Machine independence:** the home run reproduces the pod's run lap by lap (block
+   distance to 7 significant digits, gate counts, flags) for all 30,000 overlapping laps of
+   all three parts, although GPU, CPU, OS and both core builds differ. With Addendum 260
+   (500 laps) this is a strong reproducibility result for the candidate stack.
+4. **Candidate and release at spare 4** end at the same distance (3.018e-10) but are not
+   identical lap by lap (13,059 of 100,000 laps equal as printed; they differ from lap 1,
+   6.906e-15 against 7.326e-15). The two layout modules place the circuit differently at
+   spare 4 (the candidate takes the new short-path shortcut), so the compiled circuits
+   presumably differ in their placement and single-qubit parts (not examined); the drift
+   rate is the same.
+
+## 3. What this does not establish
+
+The candidates are still not the release (this is not the adoption check). One device
+model (FakeAuckland), one circuit family; no Qiskit L3 arm in this run.
+
+## 4. Files
+
+| File | What it is |
+|---|---|
+| `benchmarks/pod/run_100k_home_2026-09-29.sh` | the run script (Addendum 261) |
+| [`benchmarks/compare_100k_home_pod.py`](../../benchmarks/compare_100k_home_pod.py) | R1-R3 scoring against the pod's CSVs |
+| `data/2026-09-29/pl_heavyhex_100k_home/pl_100k_{A,B,C}_home.csv` | every lap (100,000 rows each) |
+| `data/2026-09-29/pl_heavyhex_100k_home/pl_100k_{A,B,C}_home.txt` | run logs |
+| [`data/2026-09-29/pl_heavyhex_100k_home/pl_100k_score_home.txt`](../../data/2026-09-29/pl_heavyhex_100k_home/pl_100k_score_home.txt), [`compare_100k_home_pod.txt`](../../data/2026-09-29/pl_heavyhex_100k_home/compare_100k_home_pod.txt) | H1-H8 and R1-R3 scoring |
+| [`data/2026-09-29/pl_heavyhex_100k_home/home_env_100k.txt`](../../data/2026-09-29/pl_heavyhex_100k_home/home_env_100k.txt), [`run_100k_home_log.txt`](../../data/2026-09-29/pl_heavyhex_100k_home/run_100k_home_log.txt) | environment and console log |
+
 ---
 
 ---

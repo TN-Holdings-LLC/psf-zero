@@ -1,0 +1,30 @@
+part B arm PN spare 4 laps 100000 | CORE_VERSION 2026-09-29.1 | LAYOUT 2026-09-29.c1 e25952a33bac | psf_compile 2026-09-28.1 3616efc8b8a7
+python 3.12.13 | qiskit 2.5.2 | pennylane 0.45.1 | SCRIPT pl_heavyhex_100k.py dad56b1b2f2351b413e6f2b096ee4f9b2e3ae6d8db405760a5fcb0ae523288cb | pl_heavyhex_gpu.py a0081c2917591de57a2e3a9d4914441c47f030282c5128b3f18642b7dd8402ea
+Stage 0: FakeAuckland, 27 qubits, max matching 10, factor found
+device lightning.gpu; 23 wires; C1 RX(1e-6) control changes the values by 2.87e-07
+B lap      1 compile   28.46 ms 2q=45 mapped=1 fallbacks=0 block=6.906359e-15 whole=9.103829e-15 rss=556.7 wall=16s
+B lap     10 compile   14.73 ms 2q=45 mapped=1 fallbacks=0 block=3.217195e-14 whole=1.443290e-14 rss=562.0 wall=33s
+B lap    100 compile   12.88 ms 2q=45 mapped=1 fallbacks=0 block=3.129949e-13 whole=8.953949e-14 rss=564.6 wall=56s
+B lap   1000 compile   12.57 ms 2q=45 mapped=1 fallbacks=0 block=2.910442e-12 whole=9.866552e-13 rss=560.9 wall=149s
+B lap   5000 compile   13.96 ms 2q=45 mapped=1 fallbacks=0 block=1.453578e-11 whole=4.292844e-12 rss=561.5 wall=518s
+B lap  10000 compile   12.51 ms 2q=45 mapped=1 fallbacks=0 block=2.992079e-11 whole=8.226198e-12 rss=561.2 wall=972s
+B lap  15000 compile   14.05 ms 2q=45 mapped=1 fallbacks=0 block=4.552255e-11 whole=1.215883e-11 rss=562.4 wall=1423s
+B lap  20000 compile   12.01 ms 2q=45 mapped=1 fallbacks=0 block=6.073834e-11 whole=1.596512e-11 rss=561.6 wall=1874s
+B lap  25000 compile   12.77 ms 2q=45 mapped=1 fallbacks=0 block=7.591523e-11 whole=1.972095e-11 rss=561.6 wall=2325s
+B lap  30000 compile   11.89 ms 2q=45 mapped=1 fallbacks=0 block=9.116431e-11 whole=2.360284e-11 rss=562.7 wall=2776s
+B lap  35000 compile   12.26 ms 2q=45 mapped=1 fallbacks=0 block=1.062588e-10 whole=2.732248e-11 rss=561.2 wall=3226s
+B lap  40000 compile   12.41 ms 2q=45 mapped=1 fallbacks=0 block=1.212992e-10 whole=3.108597e-11 rss=563.7 wall=3676s
+B lap  45000 compile   14.14 ms 2q=45 mapped=1 fallbacks=0 block=1.362569e-10 whole=3.485556e-11 rss=563.5 wall=4125s
+B lap  50000 compile   18.04 ms 2q=45 mapped=1 fallbacks=0 block=1.514542e-10 whole=3.876138e-11 rss=560.9 wall=4579s
+B lap  55000 compile   13.06 ms 2q=45 mapped=1 fallbacks=0 block=1.664025e-10 whole=4.257450e-11 rss=563.4 wall=5030s
+B lap  60000 compile   12.12 ms 2q=45 mapped=1 fallbacks=0 block=1.815308e-10 whole=4.638107e-11 rss=564.5 wall=5481s
+B lap  65000 compile   13.42 ms 2q=45 mapped=1 fallbacks=0 block=1.966384e-10 whole=5.017931e-11 rss=562.9 wall=5930s
+B lap  70000 compile   12.35 ms 2q=45 mapped=1 fallbacks=0 block=2.118178e-10 whole=5.393103e-11 rss=561.5 wall=6381s
+B lap  75000 compile   12.04 ms 2q=45 mapped=1 fallbacks=0 block=2.268338e-10 whole=5.772677e-11 rss=560.6 wall=6831s
+B lap  80000 compile   12.73 ms 2q=45 mapped=1 fallbacks=0 block=2.417591e-10 whole=6.150164e-11 rss=562.8 wall=7282s
+B lap  85000 compile   14.14 ms 2q=45 mapped=1 fallbacks=0 block=2.567439e-10 whole=6.538114e-11 rss=564.1 wall=7732s
+B lap  90000 compile   12.89 ms 2q=45 mapped=1 fallbacks=0 block=2.716687e-10 whole=6.923312e-11 rss=561.5 wall=8188s
+B lap  95000 compile   12.43 ms 2q=45 mapped=1 fallbacks=0 block=2.867374e-10 whole=7.305756e-11 rss=560.9 wall=8641s
+B lap 100000 compile   13.51 ms 2q=45 mapped=1 fallbacks=0 block=3.018425e-10 whole=7.681966e-11 rss=561.1 wall=9090s
+part B done: 100000 laps in 9090 s; C1 2.868e-07; device lightning.gpu; versions 2026-09-29.1 2026-09-29.c1
+DONE

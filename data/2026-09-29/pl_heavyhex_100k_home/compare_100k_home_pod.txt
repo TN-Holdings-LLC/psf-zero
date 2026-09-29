@@ -1,0 +1,6 @@
+A: laps compared 30000 (home 30000, pod 30000); block distance identical as printed 30000; largest relative difference 0.000e+00; first difference None; laps with a different two-qubit count / mapped / fallbacks 0
+B: laps compared 30000 (home 30000, pod 30000); block distance identical as printed 30000; largest relative difference 0.000e+00; first difference None; laps with a different two-qubit count / mapped / fallbacks 0
+C: laps compared 30000 (home 30000, pod 30000); block distance identical as printed 30000; largest relative difference 0.000e+00; first difference None; laps with a different two-qubit count / mapped / fallbacks 0
+R1 part A identical at all 30000 laps -> CONFIRMED
+R2 parts B and C identical at all 30000 laps -> CONFIRMED
+R3 two-qubit count, mapped and fallbacks equal at every lap -> CONFIRMED
