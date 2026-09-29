@@ -1,4 +1,4 @@
-# spare-qubit-cliff: Combined Addenda, Part 6 of 8 (Addendum 88 through Addendum 107)
+# spare-qubit-cliff: Combined Addenda, Part 6 of 9 (Addendum 88 through Addendum 107)
 
 **Continued from [Part 5](spare-qubit-cliff-combined-51.md) (and [Part 1](spare-qubit-cliff-combined.md), [Part 2](spare-qubit-cliff-combined-17.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 4](spare-qubit-cliff-combined-41.md)).** Same conventions as every prior part: nothing has been deleted or rewritten; navigation notes added when merging are clearly marked and separate from the original text.
 
