@@ -1,0 +1,14 @@
+arm Q3 | device lightning.qubit | platform Linux-6.18.44-fc-v37-x86_64-with-glibc2.39 | cores 2 | python 3.11.15 | qiskit 2.5.2 | pennylane 0.45.1
+SCRIPT pl_heavyhex_gpu.py a8926178c23f14b4d17e38adb98c4f60d52bcb4f49622e0150173653d26f7af6
+Stage 0: GenericBackendV2 heavy-hex d=3, 19 qubits, max matching 8, {P2,P3}-factor found
+DEVICE lightning.qubit 
+spare=0 n=19 reference 49 values in 0.51s | C0 9-wire GPU vs CPU 0.00e+00 | C1 RX(1e-6) control changes the values by 5.06e-07
+Q3 spare=0 lap   1 compile   1.168s gpu   0.30s 2q=33 (swap-free 33) whole=1.175e-13 block=3.102e-13 OK
+Q3 spare=0 lap   2 compile   0.409s gpu   0.34s 2q=33 (swap-free 33) whole=1.206e-13 block=3.142e-13 OK
+Q3 spare=0 lap   3 compile   0.389s gpu   0.27s 2q=33 (swap-free 33) whole=1.210e-13 block=3.140e-13 OK
+spare=2 n=17 reference 44 values in 0.47s | C0 9-wire GPU vs CPU 0.00e+00 | C1 RX(1e-6) control changes the values by 4.18e-07
+Q3 spare=2 lap   1 compile   0.099s gpu   0.26s 2q=30 (swap-free 30) whole=5.268e-14 block=1.349e-13 OK
+Q3 spare=2 lap   2 compile   0.092s gpu   0.32s 2q=30 (swap-free 30) whole=5.335e-14 block=1.346e-13 OK
+Q3 spare=2 lap   3 compile   0.100s gpu   0.24s 2q=30 (swap-free 30) whole=5.344e-14 block=1.371e-13 OK
+Wrote pl_heavyhex_gpu_Q3_dry.csv (6 rows)
+DONE

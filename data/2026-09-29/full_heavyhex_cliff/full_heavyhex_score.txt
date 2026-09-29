@@ -1,0 +1,41 @@
+==============================================================================
+SCORING (thresholds exactly as pre-registered); device FakeKingston (fake provider snapshot); DNF counted as 180 s
+==============================================================================
+C0 no errors: True; every PSF-Zero compile finished: True; layout modules {'P': ['2026-09-26.m1'], 'PX': ['2026-09-29.c1']} -> passed
+   B spare  0: | Q3 med 0.346 [0.341,0.346,0.353] 2q [192, 192, 192] <=1s 3/3 | P med 0.052 [0.056,0.052,0.052] 2q [192, 192, 192] <=1s 3/3 | PX med 0.057 [0.052,0.057,0.059] 2q [192, 192, 192] <=1s 3/3 | no-swap 192
+   T spare  0: | Q3 med 24.943 [25.030,24.943,24.881] 2q [315, 315, 315] <=1s 0/3 | P med 0.276 [0.276,0.305,0.275] 2q [327, 327, 327] <=1s 3/3 | PX med 0.214 [0.214,0.219,0.214] 2q [276, 276, 276] <=1s 3/3 | no-swap 276
+   T spare  2: | Q3 med 24.187 [24.306,24.167,24.187] 2q [309, 309, 309] <=1s 0/3 | P med 0.275 [0.291,0.275,0.268] 2q [324, 324, 324] <=1s 3/3 | PX med 0.215 [0.214,0.215,0.225] 2q [273, 273, 273] <=1s 3/3 | no-swap 273
+   T spare  8: | Q3 med 28.372 [27.952,28.372,29.189] 2q [282, 282, 282] <=1s 0/3 | P med 0.295 [0.290,0.298,0.295] 2q [309, 309, 309] <=1s 3/3 | PX med 0.228 [0.247,0.228,0.216] 2q [264, 264, 264] <=1s 3/3 | no-swap 264
+   T spare 16: | Q3 med 0.281 [0.285,0.281,0.277] 2q [252, 252, 252] <=1s 3/3 | P med 0.210 [0.210,0.199,0.233] 2q [252, 252, 252] <=1s 3/3 | PX med 0.209 [0.209,0.209,0.216] 2q [252, 252, 252] <=1s 3/3 | no-swap 252
+   S spare  0: | Q3 med 0.090 [0.090,0.087,0.091] 2q [192, 192, 192] <=1s 3/3 | P med 0.054 [0.054,0.056,0.052] 2q [192, 192, 192] <=1s 3/3 | PX med 0.056 [0.060,0.056,0.053] 2q [192, 192, 192] <=1s 3/3 | no-swap 192
+   S spare  2: | Q3 med 0.092 [0.114,0.092,0.091] 2q [189, 189, 189] <=1s 3/3 | P med 0.060 [0.089,0.060,0.054] 2q [189, 189, 189] <=1s 3/3 | PX med 0.054 [0.061,0.054,0.051] 2q [189, 189, 189] <=1s 3/3 | no-swap 189
+   S spare  8: | Q3 med 0.098 [0.108,0.098,0.096] 2q [180, 180, 180] <=1s 3/3 | P med 0.055 [0.056,0.054,0.055] 2q [180, 180, 180] <=1s 3/3 | PX med 0.054 [0.054,0.054,0.054] 2q [180, 180, 180] <=1s 3/3 | no-swap 180
+   S spare 16: | Q3 med 0.100 [0.097,0.108,0.100] 2q [168, 168, 168] <=1s 3/3 | P med 0.052 [0.050,0.052,0.052] 2q [168, 168, 168] <=1s 3/3 | PX med 0.052 [0.050,0.052,0.053] 2q [168, 168, 168] <=1s 3/3 | no-swap 168
+H1 T: Qiskit L3 median spare 0 / spare 16 = 88.7 (confirmed >= 10, refuted < 3) -> CONFIRMED
+H2 T spare 0: the release PSF-Zero (P) inserts SWAPs (2q above the no-swap count) in 3/3 (confirmed 3/3, refuted 0) -> CONFIRMED
+H3 T spare 0: the candidate (PX) is swap-free in 3/3 and within 1 s in 3/3 (confirmed both 3/3, refuted either <= 1) -> CONFIRMED
+H4 T spare 0: Qiskit L3 median / PX median = 116.4 (confirmed >= 10, refuted < 3) -> CONFIRMED
+H5 S: Qiskit L3 median spare 0 / spare 16 = 0.9 (confirmed < 3, refuted >= 10) -> CONFIRMED
+H6 S spare 0: P and PX within 1 s, fewer of the two: 3/3 (confirmed 3/3, refuted <= 1) -> CONFIRMED
+H7 B and S (matching-shaped): PX output identical to P (digest) in 15/15 (confirmed all, refuted any differs) -> CONFIRMED
+H8 PX two-qubit count never above Qiskit L3: above in 0 of 27 (confirmed 0, refuted any) -> CONFIRMED
+H9 P and PX exact per block (<= 1e-12) wherever the check applies: 45/54 applicable, worst 1.71674893430951e-14 -> CONFIRMED
+Reported without prediction: Qiskit L3 per-block worst 3.3729458820926026e-13 over 18/27 applicable, above 1e-12: 0; B ratio Q3/P at spare 0 6.6; P above Qiskit L3 in 2q: 9
+   PSF layout search (diagnostic): ('P', 'B', 0, 'found=True phase=0 order=matching_direct tried=0')
+   PSF layout search (diagnostic): ('P', 'S', 0, 'found=True phase=0 order=matching_direct tried=0')
+   PSF layout search (diagnostic): ('P', 'S', 2, 'found=True phase=0 order=matching_direct tried=0')
+   PSF layout search (diagnostic): ('P', 'S', 8, 'found=True phase=0 order=matching_direct tried=0')
+   PSF layout search (diagnostic): ('P', 'S', 16, 'found=True phase=0 order=matching_direct tried=0')
+   PSF layout search (diagnostic): ('P', 'T', 0, 'found=False phase=None order=None tried=0')
+   PSF layout search (diagnostic): ('P', 'T', 2, 'found=False phase=None order=None tried=0')
+   PSF layout search (diagnostic): ('P', 'T', 8, 'found=False phase=None order=None tried=0')
+   PSF layout search (diagnostic): ('P', 'T', 16, 'found=False phase=None order=None tried=0')
+   PSF layout search (diagnostic): ('PX', 'B', 0, 'found=True phase=0 order=matching_direct tried=0')
+   PSF layout search (diagnostic): ('PX', 'S', 0, 'found=True phase=0 order=matching_direct tried=0')
+   PSF layout search (diagnostic): ('PX', 'S', 2, 'found=True phase=0 order=matching_direct tried=0')
+   PSF layout search (diagnostic): ('PX', 'S', 8, 'found=True phase=0 order=matching_direct tried=0')
+   PSF layout search (diagnostic): ('PX', 'S', 16, 'found=True phase=0 order=matching_direct tried=0')
+   PSF layout search (diagnostic): ('PX', 'T', 0, 'found=True phase=0 order=path_direct tried=0')
+   PSF layout search (diagnostic): ('PX', 'T', 2, 'found=True phase=0 order=path_direct tried=0')
+   PSF layout search (diagnostic): ('PX', 'T', 8, 'found=True phase=0 order=path_direct tried=0')
+   PSF layout search (diagnostic): ('PX', 'T', 16, 'found=True phase=0 order=path_direct tried=0')

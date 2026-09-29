@@ -1,0 +1,8 @@
+CORE <sandbox>/deg/pkg_rel/psf_zero_core/__init__.py CORE_VERSION 2026-09-28.1
+LOADED psf_compile 2026-09-28.1
+release RAND: accepted 50000/50000; raw residual max 5.91e-09
+release NEAR: accepted 4999/5000; raw residual max 1.84e-07
+release TIE: accepted 10000/10000; raw residual max 8.90e-07
+release EFRESH: accepted 329989/330000; raw residual max 7.89e-07
+release V4: accepted 0/15; raw residual max nan
+wrote eigen_check_release.npz

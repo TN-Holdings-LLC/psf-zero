@@ -1,0 +1,47 @@
+LOADED <sandbox>/repo929/psf_compile.py 2026-09-28.1 3616efc8b8a7bea184d6170fb7379d509d0bfec9828f4eb2f703dd4d26d8c60b | CORE_VERSION 2026-09-29.1
+LAYOUT <sandbox>/hh/cand_layout/psf_smart_layout.py 2026-09-29.c1 e25952a33bacfbb8de7a439b53892e9bab88329d8c47c6de867c29fc660145fa
+arm PN | platform Linux-6.18.44-fc-v37-x86_64-with-glibc2.39 | cores 2 | python 3.11.15 | qiskit 2.5.2 | pennylane 0.45.1
+SCRIPT <sandbox>/repo929/benchmarks/pl_heavyhex_chain.py 84aafa1f56680e4e77be2e6261b2d45e669c5fa48a3db25f88e8180ccf8e005f
+Stage 0: FakeKingston, 156 qubits, max matching 64, {P2,P3}-factor found
+PN spare= 0 lap   1 compile    0.121s lap    0.89s 2q=276 (swap-free 276) max_block_dist=1.216e-14 layout_changed=False OK
+PN spare= 0 lap   2 compile    0.076s lap    0.87s 2q=276 (swap-free 276) max_block_dist=1.888e-14 layout_changed=False OK
+PN spare= 0 lap   3 compile    0.079s lap    1.07s 2q=276 (swap-free 276) max_block_dist=2.531e-14 layout_changed=False OK
+PN spare= 0 lap   4 compile    0.088s lap    1.01s 2q=276 (swap-free 276) max_block_dist=2.683e-14 layout_changed=False OK
+PN spare= 0 lap   5 compile    0.065s lap    0.79s 2q=276 (swap-free 276) max_block_dist=3.711e-14 layout_changed=False OK
+PN spare= 0 lap   6 compile    0.083s lap    0.79s 2q=276 (swap-free 276) max_block_dist=4.988e-14 layout_changed=False OK
+PN spare= 0 lap   7 compile    0.073s lap    0.85s 2q=276 (swap-free 276) max_block_dist=6.245e-14 layout_changed=False OK
+PN spare= 0 lap   8 compile    0.073s lap    1.02s 2q=276 (swap-free 276) max_block_dist=7.659e-14 layout_changed=False OK
+PN spare= 0 lap   9 compile    0.061s lap    0.64s 2q=276 (swap-free 276) max_block_dist=7.867e-14 layout_changed=False OK
+PN spare= 0 lap  10 compile    0.062s lap    0.68s 2q=276 (swap-free 276) max_block_dist=7.984e-14 layout_changed=False OK
+PN spare= 0 lap  11 compile    0.069s lap    0.69s 2q=276 (swap-free 276) max_block_dist=8.436e-14 layout_changed=False OK
+PN spare= 0 lap  12 compile    0.061s lap    0.70s 2q=276 (swap-free 276) max_block_dist=9.155e-14 layout_changed=False OK
+PN spare= 0 lap  13 compile    0.067s lap    0.69s 2q=276 (swap-free 276) max_block_dist=9.713e-14 layout_changed=False OK
+PN spare= 0 lap  14 compile    0.068s lap    0.87s 2q=276 (swap-free 276) max_block_dist=1.071e-13 layout_changed=False OK
+PN spare= 0 lap  15 compile    0.077s lap    0.73s 2q=276 (swap-free 276) max_block_dist=1.106e-13 layout_changed=False OK
+PN spare= 0 lap  16 compile    0.066s lap    0.71s 2q=276 (swap-free 276) max_block_dist=1.244e-13 layout_changed=False OK
+PN spare= 0 lap  17 compile    0.065s lap    0.77s 2q=276 (swap-free 276) max_block_dist=1.250e-13 layout_changed=False OK
+PN spare= 0 lap  18 compile    0.078s lap    0.96s 2q=276 (swap-free 276) max_block_dist=1.302e-13 layout_changed=False OK
+PN spare= 0 lap  19 compile    0.217s lap    1.04s 2q=276 (swap-free 276) max_block_dist=1.377e-13 layout_changed=False OK
+PN spare= 0 lap  20 compile    0.065s lap    0.72s 2q=276 (swap-free 276) max_block_dist=1.445e-13 layout_changed=False OK
+PN spare=16 lap   1 compile    0.053s lap    0.56s 2q=252 (swap-free 252) max_block_dist=1.850e-14 layout_changed=False OK
+PN spare=16 lap   2 compile    0.068s lap    0.64s 2q=252 (swap-free 252) max_block_dist=1.826e-14 layout_changed=False OK
+PN spare=16 lap   3 compile    0.053s lap    0.61s 2q=252 (swap-free 252) max_block_dist=2.353e-14 layout_changed=False OK
+PN spare=16 lap   4 compile    0.061s lap    0.79s 2q=252 (swap-free 252) max_block_dist=2.784e-14 layout_changed=False OK
+PN spare=16 lap   5 compile    0.058s lap    0.63s 2q=252 (swap-free 252) max_block_dist=3.240e-14 layout_changed=False OK
+PN spare=16 lap   6 compile    0.052s lap    0.59s 2q=252 (swap-free 252) max_block_dist=3.753e-14 layout_changed=False OK
+PN spare=16 lap   7 compile    0.059s lap    0.60s 2q=252 (swap-free 252) max_block_dist=4.548e-14 layout_changed=False OK
+PN spare=16 lap   8 compile    0.056s lap    0.61s 2q=252 (swap-free 252) max_block_dist=5.238e-14 layout_changed=False OK
+PN spare=16 lap   9 compile    0.053s lap    0.71s 2q=252 (swap-free 252) max_block_dist=5.825e-14 layout_changed=False OK
+PN spare=16 lap  10 compile    0.056s lap    0.62s 2q=252 (swap-free 252) max_block_dist=6.411e-14 layout_changed=False OK
+PN spare=16 lap  11 compile    0.063s lap    0.62s 2q=252 (swap-free 252) max_block_dist=6.987e-14 layout_changed=False OK
+PN spare=16 lap  12 compile    0.055s lap    0.65s 2q=252 (swap-free 252) max_block_dist=7.620e-14 layout_changed=False OK
+PN spare=16 lap  13 compile    0.053s lap    0.67s 2q=252 (swap-free 252) max_block_dist=8.316e-14 layout_changed=False OK
+PN spare=16 lap  14 compile    0.061s lap    0.63s 2q=252 (swap-free 252) max_block_dist=8.355e-14 layout_changed=False OK
+PN spare=16 lap  15 compile    0.058s lap    0.77s 2q=252 (swap-free 252) max_block_dist=9.046e-14 layout_changed=False OK
+PN spare=16 lap  16 compile    0.056s lap    0.63s 2q=252 (swap-free 252) max_block_dist=9.715e-14 layout_changed=False OK
+PN spare=16 lap  17 compile    0.073s lap    0.67s 2q=252 (swap-free 252) max_block_dist=1.042e-13 layout_changed=False OK
+PN spare=16 lap  18 compile    0.059s lap    0.65s 2q=252 (swap-free 252) max_block_dist=1.118e-13 layout_changed=False OK
+PN spare=16 lap  19 compile    0.056s lap    0.63s 2q=252 (swap-free 252) max_block_dist=1.186e-13 layout_changed=False OK
+PN spare=16 lap  20 compile    0.057s lap    0.59s 2q=252 (swap-free 252) max_block_dist=1.187e-13 layout_changed=False OK
+Wrote pl_heavyhex_chain_PN_2026-09-29.csv (40 rows)
+DONE

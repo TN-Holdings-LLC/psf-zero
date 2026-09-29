@@ -1,0 +1,22 @@
+# battery.py outputs (workplace sandbox, 2026-09-29), copied from the console; per-block JSON (about 20 MB per core) not included
+rel v4_15: accepted 0/15
+rel E33000: accepted 32999/33000; raw residual median 4.31e-15 max 9.91e-07 count>1e-13 6483 count>1e-10 227
+rel rand20000: accepted 20000/20000; raw residual median 7.23e-15 max 5.73e-09 count>1e-13 4722 count>1e-10 39
+rel neardeg4000: accepted 4000/4000; raw residual median 2.17e-13 max 2.04e-07 count>1e-13 2194 count>1e-10 723
+f1 v4_15: accepted 0/15
+f1 E33000: accepted 32986/33000; raw residual median 2.74e-15 max 9.91e-07 count>1e-13 2314 count>1e-10 278
+f1 rand20000: accepted 20000/20000; raw residual median 3.45e-15 max 5.73e-09 count>1e-13 533 count>1e-10 2
+f1 neardeg4000: accepted 3998/4000; raw residual median 3.41e-15 max 2.04e-07 count>1e-13 1623 count>1e-10 927
+f2 v4_15: accepted 15/15; raw residual median 1.70e-15 max 1.53e-10 count>1e-13 2 count>1e-10 1
+f2 E33000: accepted 33000/33000; raw residual median 4.31e-15 max 9.91e-07 count>1e-13 6483 count>1e-10 227
+f2 rand20000: accepted 20000/20000; raw residual median 7.23e-15 max 5.73e-09 count>1e-13 4722 count>1e-10 39
+f2 neardeg4000: accepted 4000/4000; raw residual median 2.17e-13 max 2.04e-07 count>1e-13 2194 count>1e-10 723
+# comparison with the release core (returned values compared exactly)
+v4_15: f1 bit-identical to release on 0/0 release-accepted blocks; newly accepted 0; newly rejected 0
+v4_15: f2 bit-identical to release on 0/0 release-accepted blocks; newly accepted 15; newly rejected 0
+E33000: f1 bit-identical to release on 23608/32999 release-accepted blocks; newly accepted 0; newly rejected 13
+E33000: f2 bit-identical to release on 32999/32999 release-accepted blocks; newly accepted 1; newly rejected 0
+rand20000: f1 bit-identical to release on 12975/20000 release-accepted blocks; newly accepted 0; newly rejected 0
+rand20000: f2 bit-identical to release on 20000/20000 release-accepted blocks; newly accepted 0; newly rejected 0
+neardeg4000: f1 bit-identical to release on 1613/4000 release-accepted blocks; newly accepted 0; newly rejected 2
+neardeg4000: f2 bit-identical to release on 4000/4000 release-accepted blocks; newly accepted 0; newly rejected 0

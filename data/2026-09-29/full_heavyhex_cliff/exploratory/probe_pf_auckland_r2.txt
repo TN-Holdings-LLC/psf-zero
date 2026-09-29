@@ -1,0 +1,6 @@
+spare 0 release    2026-09-26.m1: found False, phase None, None, orderings tried 0, 0.001 s
+spare 0 check only 2026-09-29.c1: found False, phase None, None, orderings tried 9, 1.167 s
+spare 0 candidate  2026-09-29.c1: found True, phase 0, path_direct, orderings tried 0, 0.001 s
+spare 2 release    2026-09-26.m1: found False, phase None, None, orderings tried 0, 0.001 s
+spare 2 check only 2026-09-29.c1: found True, phase 1, bfs_from_max_degree, orderings tried 1, 0.004 s
+spare 2 candidate  2026-09-29.c1: found True, phase 0, path_direct, orderings tried 0, 0.001 s

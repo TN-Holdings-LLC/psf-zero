@@ -1,0 +1,14 @@
+part A arm PN spare 0 laps 100000 | CORE_VERSION 2026-09-29.1 | LAYOUT 2026-09-29.c1 e25952a33bac | psf_compile 2026-09-28.1 3616efc8b8a7
+python 3.12.3 | qiskit 2.5.2 | pennylane 0.45.1 | SCRIPT pl_heavyhex_100k.py dad56b1b2f2351b413e6f2b096ee4f9b2e3ae6d8db405760a5fcb0ae523288cb | pl_heavyhex_gpu.py a0081c2917591de57a2e3a9d4914441c47f030282c5128b3f18642b7dd8402ea
+Stage 0: FakeAuckland, 27 qubits, max matching 10, factor found
+device lightning.gpu; 27 wires; C1 RX(1e-6) control changes the values by 5.06e-07
+A lap      1 compile   29.11 ms 2q=51 mapped=1 fallbacks=0 block=1.266790e-14 whole=1.099121e-14 rss=533.4 wall=6s
+A lap     10 compile   14.97 ms 2q=51 mapped=1 fallbacks=0 block=3.643687e-14 whole=1.487699e-14 rss=537.0 wall=14s
+A lap    100 compile   17.48 ms 2q=51 mapped=1 fallbacks=0 block=2.991092e-13 whole=8.449491e-14 rss=538.6 wall=29s
+A lap   1000 compile   15.54 ms 2q=51 mapped=1 fallbacks=0 block=2.948950e-12 whole=8.165343e-13 rss=530.7 wall=132s
+A lap   5000 compile   18.38 ms 2q=51 mapped=1 fallbacks=0 block=1.424257e-11 whole=4.190537e-12 rss=523.6 wall=599s
+A lap  10000 compile   16.82 ms 2q=51 mapped=1 fallbacks=0 block=2.922133e-11 whole=8.359993e-12 rss=517.6 wall=1165s
+A lap  15000 compile   14.89 ms 2q=51 mapped=1 fallbacks=0 block=4.418851e-11 whole=1.236966e-11 rss=516.0 wall=1730s
+A lap  20000 compile   16.26 ms 2q=51 mapped=1 fallbacks=0 block=5.856809e-11 whole=1.651682e-11 rss=513.1 wall=2297s
+A lap  25000 compile   15.83 ms 2q=51 mapped=1 fallbacks=0 block=7.323298e-11 whole=2.047809e-11 rss=516.6 wall=2867s
+A lap  30000 compile   14.12 ms 2q=51 mapped=1 fallbacks=0 block=8.794333e-11 whole=2.450698e-11 rss=516.5 wall=3438s

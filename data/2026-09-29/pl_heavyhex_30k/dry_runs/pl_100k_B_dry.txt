@@ -1,0 +1,11 @@
+part B arm PN spare 4 laps 1200 | CORE_VERSION 2026-09-29.1 | LAYOUT 2026-09-29.c1 e25952a33bac | psf_compile 2026-09-28.1 3616efc8b8a7
+python 3.11.15 | qiskit 2.5.2 | pennylane 0.45.1 | SCRIPT pl_heavyhex_100k.py dad56b1b2f2351b413e6f2b096ee4f9b2e3ae6d8db405760a5fcb0ae523288cb | pl_heavyhex_gpu.py a0081c2917591de57a2e3a9d4914441c47f030282c5128b3f18642b7dd8402ea
+Stage 0: GenericBackendV2 heavy-hex d=3, 19 qubits, max matching 8, factor found
+device lightning.qubit; 15 wires; C1 RX(1e-6) control changes the values by 2.87e-07
+B lap      1 compile  868.12 ms 2q=27 mapped=1 fallbacks=0 block=5.028616e-15 whole=7.549517e-15 rss=304.1 wall=1s
+B lap     10 compile   42.64 ms 2q=27 mapped=1 fallbacks=0 block=3.392343e-14 whole=1.709743e-14 rss=301.3 wall=3s
+B lap    100 compile   24.45 ms 2q=27 mapped=1 fallbacks=0 block=3.160970e-13 whole=1.550982e-13 rss=306.5 wall=14s
+B lap   1000 compile   28.48 ms 2q=27 mapped=1 fallbacks=0 block=3.107525e-12 whole=1.498801e-12 rss=305.2 wall=106s
+B lap   1200 compile   18.33 ms 2q=27 mapped=1 fallbacks=0 block=3.726917e-12 whole=1.803446e-12 rss=305.7 wall=124s
+part B done: 1200 laps in 124 s; C1 2.868e-07; device lightning.qubit; versions 2026-09-29.1 2026-09-29.c1
+DONE

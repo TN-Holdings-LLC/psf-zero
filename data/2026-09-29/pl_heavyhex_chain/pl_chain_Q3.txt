@@ -1,0 +1,45 @@
+arm Q3 | platform Linux-6.18.44-fc-v37-x86_64-with-glibc2.39 | cores 2 | python 3.11.15 | qiskit 2.5.2 | pennylane 0.45.1
+SCRIPT <sandbox>/repo929/benchmarks/pl_heavyhex_chain.py 84aafa1f56680e4e77be2e6261b2d45e669c5fa48a3db25f88e8180ccf8e005f
+Stage 0: FakeKingston, 156 qubits, max matching 64, {P2,P3}-factor found
+Q3 spare= 0 lap   1 compile   27.458s lap   27.55s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3 spare= 0 lap   2 compile   25.927s lap   26.00s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3 spare= 0 lap   3 compile   26.585s lap   26.67s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3 spare= 0 lap   4 compile   26.699s lap   26.83s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3 spare= 0 lap   5 compile   27.689s lap   27.83s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3 spare= 0 lap   6 compile   26.718s lap   26.81s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3 spare= 0 lap   7 compile   28.157s lap   28.26s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3 spare= 0 lap   8 compile   25.908s lap   26.03s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3 spare= 0 lap   9 compile   25.973s lap   26.08s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3 spare= 0 lap  10 compile   26.050s lap   26.16s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3 spare= 0 lap  11 compile   26.505s lap   26.58s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3 spare= 0 lap  12 compile   26.695s lap   26.78s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3 spare= 0 lap  13 compile   26.867s lap   26.96s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3 spare= 0 lap  14 compile   26.529s lap   26.64s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3 spare= 0 lap  15 compile   27.882s lap   27.97s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3 spare= 0 lap  16 compile   26.793s lap   26.87s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3 spare= 0 lap  17 compile   26.608s lap   26.72s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3 spare= 0 lap  18 compile   25.997s lap   26.11s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3 spare= 0 lap  19 compile   26.452s lap   26.74s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3 spare= 0 lap  20 compile   26.340s lap   26.45s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3 spare=16 lap   1 compile    0.340s lap    0.86s 2q=252 (swap-free 252) max_block_dist=1.777e-13 layout_changed=False OK
+Q3 spare=16 lap   2 compile    0.292s lap    0.81s 2q=252 (swap-free 252) max_block_dist=1.759e-13 layout_changed=True OK
+Q3 spare=16 lap   3 compile    0.268s lap    0.82s 2q=252 (swap-free 252) max_block_dist=2.255e-13 layout_changed=False OK
+Q3 spare=16 lap   4 compile    0.285s lap    0.95s 2q=252 (swap-free 252) max_block_dist=2.128e-13 layout_changed=False OK
+Q3 spare=16 lap   5 compile    0.288s lap    0.97s 2q=252 (swap-free 252) max_block_dist=1.911e-13 layout_changed=False OK
+Q3 spare=16 lap   6 compile    0.322s lap    1.20s 2q=252 (swap-free 252) max_block_dist=1.776e-13 layout_changed=False OK
+Q3 spare=16 lap   7 compile    0.322s lap    0.92s 2q=252 (swap-free 252) max_block_dist=1.832e-13 layout_changed=False OK
+Q3 spare=16 lap   8 compile    0.300s lap    0.97s 2q=252 (swap-free 252) max_block_dist=1.718e-13 layout_changed=False OK
+Q3 spare=16 lap   9 compile    0.307s lap    1.00s 2q=252 (swap-free 252) max_block_dist=2.137e-13 layout_changed=False OK
+Q3 spare=16 lap  10 compile    0.312s lap    0.96s 2q=252 (swap-free 252) max_block_dist=2.129e-13 layout_changed=False OK
+Q3 spare=16 lap  11 compile    0.305s lap    1.06s 2q=252 (swap-free 252) max_block_dist=2.246e-13 layout_changed=False OK
+Q3 spare=16 lap  12 compile    0.323s lap    1.01s 2q=252 (swap-free 252) max_block_dist=3.288e-13 layout_changed=False OK
+Q3 spare=16 lap  13 compile    0.500s lap    1.30s 2q=252 (swap-free 252) max_block_dist=3.780e-13 layout_changed=False OK
+Q3 spare=16 lap  14 compile    0.318s lap    1.19s 2q=252 (swap-free 252) max_block_dist=4.057e-13 layout_changed=False OK
+Q3 spare=16 lap  15 compile    0.340s lap    1.10s 2q=252 (swap-free 252) max_block_dist=5.176e-13 layout_changed=False OK
+Q3 spare=16 lap  16 compile    0.302s lap    0.97s 2q=252 (swap-free 252) max_block_dist=5.156e-13 layout_changed=False OK
+Q3 spare=16 lap  17 compile    0.294s lap    0.97s 2q=252 (swap-free 252) max_block_dist=5.752e-13 layout_changed=False OK
+Q3 spare=16 lap  18 compile    0.323s lap    0.92s 2q=252 (swap-free 252) max_block_dist=5.418e-13 layout_changed=False OK
+Q3 spare=16 lap  19 compile    0.301s lap    1.12s 2q=252 (swap-free 252) max_block_dist=5.062e-13 layout_changed=False OK
+Q3 spare=16 lap  20 compile    0.273s lap    0.80s 2q=252 (swap-free 252) max_block_dist=4.553e-13 layout_changed=False OK
+Wrote pl_heavyhex_chain_Q3_2026-09-29.csv (40 rows)
+DONE

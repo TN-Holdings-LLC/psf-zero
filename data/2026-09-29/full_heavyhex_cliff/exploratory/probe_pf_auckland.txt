@@ -1,0 +1,4 @@
+0 release benchmarks found False phase None None tried 0 0.001s
+0 patched cand_layout found True phase 0 path_direct tried 0 0.001s
+2 release benchmarks found False phase None None tried 0 0.001s
+2 patched cand_layout found True phase 0 path_direct tried 0 0.001s

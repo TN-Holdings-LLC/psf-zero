@@ -1,0 +1,68 @@
+arm Q3 | device lightning.gpu | platform Linux-6.8.0-71-generic-x86_64-with-glibc2.39 | cores 96 | python 3.12.3 | qiskit 2.5.2 | pennylane 0.45.1
+SCRIPT pl_heavyhex_gpu.py a0081c2917591de57a2e3a9d4914441c47f030282c5128b3f18642b7dd8402ea
+Stage 0: FakeAuckland, 27 qubits, max matching 10, {P2,P3}-factor found
+DEVICE lightning.gpu 
+spare=0 n=27 reference 71 values in 1.41s | C0 9-wire GPU vs CPU 1.22e-15 | C1 RX(1e-6) control changes the values by 5.06e-07
+Q3 spare=0 lap   1 compile   9.620s gpu   2.33s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap   2 compile   9.474s gpu   2.31s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap   3 compile   9.622s gpu   2.30s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap   4 compile   9.878s gpu   2.33s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap   5 compile   9.505s gpu   2.31s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap   6 compile   9.420s gpu   2.31s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap   7 compile   9.682s gpu   2.30s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap   8 compile   9.608s gpu   2.32s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap   9 compile   9.476s gpu   2.31s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap  10 compile   9.660s gpu   2.30s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap  11 compile   9.572s gpu   2.30s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap  12 compile   9.499s gpu   2.31s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap  13 compile   9.573s gpu   2.31s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap  14 compile   9.971s gpu   2.33s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap  15 compile   9.533s gpu   2.30s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap  16 compile   9.514s gpu   2.30s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap  17 compile   9.560s gpu   2.44s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap  18 compile   9.421s gpu   2.33s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap  19 compile   9.539s gpu   2.33s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap  20 compile   9.625s gpu   2.30s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap  21 compile   9.557s gpu   2.30s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap  22 compile   9.567s gpu   2.32s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap  23 compile   9.621s gpu   2.34s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap  24 compile   9.506s gpu   2.30s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap  25 compile   9.485s gpu   2.33s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap  26 compile   9.454s gpu   2.31s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap  27 compile   9.612s gpu   2.31s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap  28 compile   9.467s gpu   2.31s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap  29 compile   9.816s gpu   2.32s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+Q3 spare=0 lap  30 compile   9.434s gpu   2.31s 2q=54 (swap-free 51) whole=4.885e-14 block=- swap: routing permuted qubits
+spare=4 n=23 reference 61 values in 0.94s | C0 9-wire GPU vs CPU 1.28e-15 | C1 RX(1e-6) control changes the values by 2.87e-07
+Q3 spare=4 lap   1 compile   0.112s gpu   2.00s 2q=45 (swap-free 45) whole=6.634e-14 block=7.839e-14 OK
+Q3 spare=4 lap   2 compile   0.117s gpu   1.99s 2q=45 (swap-free 45) whole=6.761e-14 block=1.039e-13 OK
+Q3 spare=4 lap   3 compile   0.110s gpu   1.99s 2q=45 (swap-free 45) whole=6.950e-14 block=1.020e-13 OK
+Q3 spare=4 lap   4 compile   0.109s gpu   1.99s 2q=45 (swap-free 45) whole=7.028e-14 block=1.374e-13 OK
+Q3 spare=4 lap   5 compile   0.110s gpu   2.00s 2q=45 (swap-free 45) whole=7.006e-14 block=1.382e-13 OK
+Q3 spare=4 lap   6 compile   0.114s gpu   2.01s 2q=45 (swap-free 45) whole=6.883e-14 block=1.341e-13 OK
+Q3 spare=4 lap   7 compile   0.111s gpu   2.03s 2q=45 (swap-free 45) whole=6.900e-14 block=1.433e-13 OK
+Q3 spare=4 lap   8 compile   0.115s gpu   2.02s 2q=45 (swap-free 45) whole=6.778e-14 block=1.670e-13 OK
+Q3 spare=4 lap   9 compile   0.110s gpu   2.01s 2q=45 (swap-free 45) whole=6.817e-14 block=1.694e-13 OK
+Q3 spare=4 lap  10 compile   0.113s gpu   2.02s 2q=45 (swap-free 45) whole=6.833e-14 block=1.666e-13 OK
+Q3 spare=4 lap  11 compile   0.112s gpu   2.00s 2q=45 (swap-free 45) whole=6.856e-14 block=1.836e-13 OK
+Q3 spare=4 lap  12 compile   0.114s gpu   2.00s 2q=45 (swap-free 45) whole=6.661e-14 block=2.020e-13 OK
+Q3 spare=4 lap  13 compile   0.114s gpu   2.00s 2q=45 (swap-free 45) whole=6.817e-14 block=2.256e-13 OK
+Q3 spare=4 lap  14 compile   0.112s gpu   2.00s 2q=45 (swap-free 45) whole=6.789e-14 block=2.475e-13 OK
+Q3 spare=4 lap  15 compile   0.116s gpu   2.00s 2q=45 (swap-free 45) whole=6.722e-14 block=2.681e-13 OK
+Q3 spare=4 lap  16 compile   0.113s gpu   1.99s 2q=45 (swap-free 45) whole=6.828e-14 block=2.892e-13 OK
+Q3 spare=4 lap  17 compile   0.112s gpu   2.01s 2q=45 (swap-free 45) whole=7.286e-14 block=3.093e-13 OK
+Q3 spare=4 lap  18 compile   0.112s gpu   2.13s 2q=45 (swap-free 45) whole=7.808e-14 block=3.257e-13 OK
+Q3 spare=4 lap  19 compile   0.111s gpu   2.01s 2q=45 (swap-free 45) whole=8.184e-14 block=3.462e-13 OK
+Q3 spare=4 lap  20 compile   0.117s gpu   2.00s 2q=45 (swap-free 45) whole=8.632e-14 block=3.618e-13 OK
+Q3 spare=4 lap  21 compile   0.109s gpu   2.00s 2q=45 (swap-free 45) whole=8.896e-14 block=3.801e-13 OK
+Q3 spare=4 lap  22 compile   0.114s gpu   2.00s 2q=45 (swap-free 45) whole=9.251e-14 block=4.006e-13 OK
+Q3 spare=4 lap  23 compile   0.123s gpu   1.99s 2q=45 (swap-free 45) whole=9.745e-14 block=4.162e-13 OK
+Q3 spare=4 lap  24 compile   0.109s gpu   1.99s 2q=45 (swap-free 45) whole=1.020e-13 block=4.322e-13 OK
+Q3 spare=4 lap  25 compile   0.112s gpu   2.01s 2q=45 (swap-free 45) whole=1.067e-13 block=4.460e-13 OK
+Q3 spare=4 lap  26 compile   0.114s gpu   2.02s 2q=45 (swap-free 45) whole=1.120e-13 block=4.647e-13 OK
+Q3 spare=4 lap  27 compile   0.115s gpu   2.01s 2q=45 (swap-free 45) whole=1.169e-13 block=4.788e-13 OK
+Q3 spare=4 lap  28 compile   0.113s gpu   2.00s 2q=45 (swap-free 45) whole=1.207e-13 block=4.928e-13 OK
+Q3 spare=4 lap  29 compile   0.114s gpu   2.00s 2q=45 (swap-free 45) whole=1.246e-13 block=5.093e-13 OK
+Q3 spare=4 lap  30 compile   0.111s gpu   1.99s 2q=45 (swap-free 45) whole=1.287e-13 block=5.233e-13 OK
+Wrote pl_heavyhex_gpu_Q3_2026-09-29.csv (60 rows)
+DONE

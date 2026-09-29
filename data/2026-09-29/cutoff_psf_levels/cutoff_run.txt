@@ -1,0 +1,190 @@
+ENV {"platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39", "python": "3.11.15", "qiskit": "2.5.2", "numpy": "2.4.4", "psf_compile": "2026-09-28.1", "core_version": "2026-09-28.1", "refine_threshold": 1e-14, "offsets": [5e-05, -5e-05, 0.0001, -0.0001, 0.00012, -0.00012, 0.00013, -0.00013, 0.0002, -0.0002, 0.001, -0.001], "n_r": 50}
+LOADED psf_compile.py 2026-09-28.1 3616efc8b8a7bea184d6170fb7379d509d0bfec9828f4eb2f703dd4d26d8c60b
+SCRIPT cutoff_psf_levels.py 064558605d749a15ae3ca5b8eead366739d273ab8fd419b3928326aed0ca830a
+M {"delta": 5e-05, "arm": "Q3", "error": 4.999999999890474e-05, "ops": {"cz": 1}}
+M {"delta": 5e-05, "arm": "P1", "error": 0.0, "ops": {"rz": 2, "cz": 1}}
+M {"delta": 5e-05, "arm": "P3", "error": 4.999999999890474e-05, "ops": {"cz": 1}}
+M {"delta": -5e-05, "arm": "Q3", "error": 4.999999999879371e-05, "ops": {"cz": 1}}
+M {"delta": -5e-05, "arm": "P1", "error": 0.0, "ops": {"rz": 2, "cz": 1}}
+M {"delta": -5e-05, "arm": "P3", "error": 4.999999999879371e-05, "ops": {"cz": 1}}
+M {"delta": 0.0001, "arm": "Q3", "error": 9.999999998949461e-05, "ops": {"cz": 1}}
+M {"delta": 0.0001, "arm": "P1", "error": 0.0, "ops": {"rz": 2, "cz": 1}}
+M {"delta": 0.0001, "arm": "P3", "error": 9.999999998949461e-05, "ops": {"cz": 1}}
+M {"delta": -0.0001, "arm": "Q3", "error": 9.99999999894946e-05, "ops": {"cz": 1}}
+M {"delta": -0.0001, "arm": "P1", "error": 0.0, "ops": {"rz": 2, "cz": 1}}
+M {"delta": -0.0001, "arm": "P3", "error": 9.99999999894946e-05, "ops": {"cz": 1}}
+M {"delta": 0.00012, "arm": "Q3", "error": 0.00011999999998206653, "ops": {"cz": 1}}
+M {"delta": 0.00012, "arm": "P1", "error": 0.0, "ops": {"rz": 2, "cz": 1}}
+M {"delta": 0.00012, "arm": "P3", "error": 0.00011999999998206653, "ops": {"cz": 1}}
+M {"delta": -0.00012, "arm": "Q3", "error": 0.00011999999998206654, "ops": {"cz": 1}}
+M {"delta": -0.00012, "arm": "P1", "error": 0.0, "ops": {"rz": 2, "cz": 1}}
+M {"delta": -0.00012, "arm": "P3", "error": 0.00011999999998206654, "ops": {"cz": 1}}
+M {"delta": 0.00013, "arm": "Q3", "error": 5.927875378064495e-17, "ops": {"rz": 1, "cz": 1}}
+M {"delta": 0.00013, "arm": "P1", "error": 0.0, "ops": {"rz": 2, "cz": 1}}
+M {"delta": 0.00013, "arm": "P3", "error": 5.927875378064495e-17, "ops": {"rz": 1, "cz": 1}}
+M {"delta": -0.00013, "arm": "Q3", "error": 5.927875378064495e-17, "ops": {"rz": 1, "cz": 1}}
+M {"delta": -0.00013, "arm": "P1", "error": 0.0, "ops": {"rz": 2, "cz": 1}}
+M {"delta": -0.00013, "arm": "P3", "error": 5.927875378064495e-17, "ops": {"rz": 1, "cz": 1}}
+M {"delta": 0.0002, "arm": "Q3", "error": 4.437097390896927e-17, "ops": {"rz": 1, "cz": 1}}
+M {"delta": 0.0002, "arm": "P1", "error": 0.0, "ops": {"rz": 2, "cz": 1}}
+M {"delta": 0.0002, "arm": "P3", "error": 4.437097390896927e-17, "ops": {"rz": 1, "cz": 1}}
+M {"delta": -0.0002, "arm": "Q3", "error": 2.318322802680119e-16, "ops": {"rz": 1, "cz": 1}}
+M {"delta": -0.0002, "arm": "P1", "error": 0.0, "ops": {"rz": 2, "cz": 1}}
+M {"delta": -0.0002, "arm": "P3", "error": 2.318322802680119e-16, "ops": {"rz": 1, "cz": 1}}
+M {"delta": 0.001, "arm": "Q3", "error": 3.1127079948087744e-16, "ops": {"rz": 1, "cz": 1}}
+M {"delta": 0.001, "arm": "P1", "error": 0.0, "ops": {"rz": 2, "cz": 1}}
+M {"delta": 0.001, "arm": "P3", "error": 3.1127079948087744e-16, "ops": {"rz": 1, "cz": 1}}
+M {"delta": -0.001, "arm": "Q3", "error": 1.1492543028346347e-16, "ops": {"rz": 1, "cz": 1}}
+M {"delta": -0.001, "arm": "P1", "error": 0.0, "ops": {"rz": 2, "cz": 1}}
+M {"delta": -0.001, "arm": "P3", "error": 1.1492543028346347e-16, "ops": {"rz": 1, "cz": 1}}
+R {"seed": 5000, "arm": "Q3", "applicable": true, "compile_s": 18.434565250000105, "twoq": 180, "worst": 2.751171188173745e-14, "inexact": []}
+R {"seed": 5000, "arm": "P1", "applicable": true, "compile_s": 0.03871077700000569, "twoq": 180, "worst": 8.45433819525977e-15, "inexact": []}
+R {"seed": 5000, "arm": "P3", "applicable": true, "compile_s": 0.04532512300011149, "twoq": 180, "worst": 3.3576034387098566e-14, "inexact": []}
+R {"seed": 5001, "arm": "Q3", "applicable": true, "compile_s": 18.56328964399995, "twoq": 180, "worst": 9.823324053720019e-14, "inexact": []}
+R {"seed": 5001, "arm": "P1", "applicable": true, "compile_s": 0.03771081300010337, "twoq": 180, "worst": 1.0054967853909362e-14, "inexact": []}
+R {"seed": 5001, "arm": "P3", "applicable": true, "compile_s": 0.05422995100002481, "twoq": 180, "worst": 1.470226437598397e-13, "inexact": []}
+R {"seed": 5002, "arm": "Q3", "applicable": true, "compile_s": 18.555748183999867, "twoq": 180, "worst": 3.172712171232329e-14, "inexact": []}
+R {"seed": 5002, "arm": "P1", "applicable": true, "compile_s": 0.03730030499991699, "twoq": 180, "worst": 9.24745013415463e-15, "inexact": []}
+R {"seed": 5002, "arm": "P3", "applicable": true, "compile_s": 0.04310924099991098, "twoq": 180, "worst": 2.2965988309179004e-14, "inexact": []}
+R {"seed": 5003, "arm": "Q3", "applicable": true, "compile_s": 18.505683657999953, "twoq": 180, "worst": 7.463003840292043e-14, "inexact": []}
+R {"seed": 5003, "arm": "P1", "applicable": true, "compile_s": 0.07626335400004791, "twoq": 180, "worst": 9.170141437065788e-15, "inexact": []}
+R {"seed": 5003, "arm": "P3", "applicable": true, "compile_s": 0.05079469800011793, "twoq": 180, "worst": 6.207513004034031e-14, "inexact": []}
+R {"seed": 5004, "arm": "Q3", "applicable": true, "compile_s": 18.63343742699999, "twoq": 180, "worst": 6.36976016705073e-14, "inexact": []}
+R {"seed": 5004, "arm": "P1", "applicable": true, "compile_s": 0.03731364999998732, "twoq": 180, "worst": 8.083159175274765e-15, "inexact": []}
+R {"seed": 5004, "arm": "P3", "applicable": true, "compile_s": 0.041670773999840094, "twoq": 180, "worst": 2.5974982918667814e-14, "inexact": []}
+R {"seed": 5005, "arm": "Q3", "applicable": true, "compile_s": 18.926156815000013, "twoq": 180, "worst": 1.7645338426006178e-14, "inexact": []}
+R {"seed": 5005, "arm": "P1", "applicable": true, "compile_s": 0.03921397699991758, "twoq": 180, "worst": 1.0294016906102523e-14, "inexact": []}
+R {"seed": 5005, "arm": "P3", "applicable": true, "compile_s": 0.047492190000184564, "twoq": 180, "worst": 5.901961125249398e-14, "inexact": []}
+R {"seed": 5006, "arm": "Q3", "applicable": true, "compile_s": 18.424549533000118, "twoq": 180, "worst": 2.272266704578238e-14, "inexact": []}
+R {"seed": 5006, "arm": "P1", "applicable": true, "compile_s": 0.038202822000130254, "twoq": 180, "worst": 1.0961838846814955e-14, "inexact": []}
+R {"seed": 5006, "arm": "P3", "applicable": true, "compile_s": 0.04375685299987708, "twoq": 180, "worst": 1.6919527401486456e-14, "inexact": []}
+R {"seed": 5007, "arm": "Q3", "applicable": true, "compile_s": 18.376932535999913, "twoq": 180, "worst": 3.128172727471547e-13, "inexact": []}
+R {"seed": 5007, "arm": "P1", "applicable": true, "compile_s": 0.039113101999873834, "twoq": 180, "worst": 9.160583087287642e-15, "inexact": []}
+R {"seed": 5007, "arm": "P3", "applicable": true, "compile_s": 0.045979165000062494, "twoq": 180, "worst": 2.740787955802934e-14, "inexact": []}
+R {"seed": 5008, "arm": "Q3", "applicable": true, "compile_s": 18.541278162000026, "twoq": 180, "worst": 4.878259240808867e-14, "inexact": []}
+R {"seed": 5008, "arm": "P1", "applicable": true, "compile_s": 0.0393978590000188, "twoq": 180, "worst": 9.4739459163984e-15, "inexact": []}
+R {"seed": 5008, "arm": "P3", "applicable": true, "compile_s": 0.04297436899992135, "twoq": 180, "worst": 1.4461054442655024e-14, "inexact": []}
+R {"seed": 5009, "arm": "Q3", "applicable": true, "compile_s": 18.52503101000002, "twoq": 180, "worst": 5.891473171044467e-14, "inexact": []}
+R {"seed": 5009, "arm": "P1", "applicable": true, "compile_s": 0.03892392100010511, "twoq": 180, "worst": 9.632969288801682e-15, "inexact": []}
+R {"seed": 5009, "arm": "P3", "applicable": true, "compile_s": 0.05434814799991727, "twoq": 180, "worst": 7.131957114130942e-14, "inexact": []}
+R {"seed": 5010, "arm": "Q3", "applicable": true, "compile_s": 18.484335008000016, "twoq": 180, "worst": 2.902672458947508e-14, "inexact": []}
+R {"seed": 5010, "arm": "P1", "applicable": true, "compile_s": 0.0366932800000086, "twoq": 180, "worst": 8.896004871937701e-15, "inexact": []}
+R {"seed": 5010, "arm": "P3", "applicable": true, "compile_s": 0.04137932899993757, "twoq": 180, "worst": 9.237172547535102e-14, "inexact": []}
+R {"seed": 5011, "arm": "Q3", "applicable": true, "compile_s": 18.211460733999957, "twoq": 180, "worst": 4.542326514176788e-14, "inexact": []}
+R {"seed": 5011, "arm": "P1", "applicable": true, "compile_s": 0.036227189999863185, "twoq": 180, "worst": 8.658258417437402e-15, "inexact": []}
+R {"seed": 5011, "arm": "P3", "applicable": true, "compile_s": 0.04330629799983399, "twoq": 180, "worst": 4.353161669496597e-14, "inexact": []}
+R {"seed": 5012, "arm": "Q3", "applicable": true, "compile_s": 18.33191364900017, "twoq": 180, "worst": 1.8781357183625774e-14, "inexact": []}
+R {"seed": 5012, "arm": "P1", "applicable": true, "compile_s": 0.03830943200000547, "twoq": 180, "worst": 8.973755895637775e-15, "inexact": []}
+R {"seed": 5012, "arm": "P3", "applicable": true, "compile_s": 0.04476375699982782, "twoq": 180, "worst": 3.950765394982518e-14, "inexact": []}
+R {"seed": 5013, "arm": "Q3", "applicable": true, "compile_s": 18.38301525099996, "twoq": 180, "worst": 3.211433595916326e-14, "inexact": []}
+R {"seed": 5013, "arm": "P1", "applicable": true, "compile_s": 0.039959762999842496, "twoq": 180, "worst": 8.193908005462085e-15, "inexact": []}
+R {"seed": 5013, "arm": "P3", "applicable": true, "compile_s": 0.044420148999961384, "twoq": 180, "worst": 1.059510833195677e-14, "inexact": []}
+R {"seed": 5014, "arm": "Q3", "applicable": true, "compile_s": 18.605841730000066, "twoq": 180, "worst": 1.6044976476285841e-13, "inexact": []}
+R {"seed": 5014, "arm": "P1", "applicable": true, "compile_s": 0.0397593909999614, "twoq": 180, "worst": 8.809892529811465e-15, "inexact": []}
+R {"seed": 5014, "arm": "P3", "applicable": true, "compile_s": 0.04403302499986239, "twoq": 180, "worst": 3.1665116226123174e-14, "inexact": []}
+R {"seed": 5015, "arm": "Q3", "applicable": true, "compile_s": 18.824671109000064, "twoq": 180, "worst": 5.96127305506067e-14, "inexact": []}
+R {"seed": 5015, "arm": "P1", "applicable": true, "compile_s": 0.051775697000039145, "twoq": 180, "worst": 1.1196958892522967e-14, "inexact": []}
+R {"seed": 5015, "arm": "P3", "applicable": true, "compile_s": 0.04558803400004763, "twoq": 180, "worst": 2.0050429846545171e-13, "inexact": []}
+R {"seed": 5016, "arm": "Q3", "applicable": true, "compile_s": 18.46684858599997, "twoq": 180, "worst": 4.051198450216306e-14, "inexact": []}
+R {"seed": 5016, "arm": "P1", "applicable": true, "compile_s": 0.039315437000141173, "twoq": 180, "worst": 9.235256456214281e-15, "inexact": []}
+R {"seed": 5016, "arm": "P3", "applicable": true, "compile_s": 0.043995549000101164, "twoq": 180, "worst": 8.578819804972563e-14, "inexact": []}
+R {"seed": 5017, "arm": "Q3", "applicable": true, "compile_s": 18.66230567699995, "twoq": 180, "worst": 1.5620438009372215e-13, "inexact": []}
+R {"seed": 5017, "arm": "P1", "applicable": true, "compile_s": 0.036961678999887226, "twoq": 180, "worst": 1.029733725659941e-14, "inexact": []}
+R {"seed": 5017, "arm": "P3", "applicable": true, "compile_s": 0.04150918299978912, "twoq": 180, "worst": 2.744605300289817e-14, "inexact": []}
+R {"seed": 5018, "arm": "Q3", "applicable": true, "compile_s": 18.621206763000146, "twoq": 180, "worst": 7.696345578137466e-14, "inexact": []}
+R {"seed": 5018, "arm": "P1", "applicable": true, "compile_s": 0.040171948999841334, "twoq": 180, "worst": 8.939366509559666e-15, "inexact": []}
+R {"seed": 5018, "arm": "P3", "applicable": true, "compile_s": 0.05088999999998123, "twoq": 180, "worst": 4.1734641763422425e-14, "inexact": []}
+R {"seed": 5019, "arm": "Q3", "applicable": true, "compile_s": 18.820461002000002, "twoq": 180, "worst": 5.687664164274443e-14, "inexact": []}
+R {"seed": 5019, "arm": "P1", "applicable": true, "compile_s": 0.03842089199997645, "twoq": 180, "worst": 1.0418455739528365e-14, "inexact": []}
+R {"seed": 5019, "arm": "P3", "applicable": true, "compile_s": 0.0457546130000992, "twoq": 180, "worst": 3.2198005749027005e-14, "inexact": []}
+R {"seed": 5020, "arm": "Q3", "applicable": true, "compile_s": 18.618600913000137, "twoq": 180, "worst": 3.6498886004586716e-14, "inexact": []}
+R {"seed": 5020, "arm": "P1", "applicable": true, "compile_s": 0.0377658600000359, "twoq": 180, "worst": 9.762143375670761e-15, "inexact": []}
+R {"seed": 5020, "arm": "P3", "applicable": true, "compile_s": 0.04620255100007853, "twoq": 180, "worst": 2.809187681414285e-14, "inexact": []}
+R {"seed": 5021, "arm": "Q3", "applicable": true, "compile_s": 18.424454126, "twoq": 180, "worst": 2.3882813604646094e-13, "inexact": []}
+R {"seed": 5021, "arm": "P1", "applicable": true, "compile_s": 0.03961817799972778, "twoq": 180, "worst": 9.502826126542519e-15, "inexact": []}
+R {"seed": 5021, "arm": "P3", "applicable": true, "compile_s": 0.04788506399972903, "twoq": 180, "worst": 2.157652166539957e-14, "inexact": []}
+R {"seed": 5022, "arm": "Q3", "applicable": true, "compile_s": 19.05203634999998, "twoq": 180, "worst": 2.657351460100258e-14, "inexact": []}
+R {"seed": 5022, "arm": "P1", "applicable": true, "compile_s": 0.03816976200005229, "twoq": 180, "worst": 9.01216160154921e-15, "inexact": []}
+R {"seed": 5022, "arm": "P3", "applicable": true, "compile_s": 0.04407640299996274, "twoq": 180, "worst": 1.9002260725150733e-14, "inexact": []}
+R {"seed": 5023, "arm": "Q3", "applicable": true, "compile_s": 18.536675187000128, "twoq": 180, "worst": 1.4754437758778976e-13, "inexact": []}
+R {"seed": 5023, "arm": "P1", "applicable": true, "compile_s": 0.036557321999680426, "twoq": 180, "worst": 1.0607084395946869e-14, "inexact": []}
+R {"seed": 5023, "arm": "P3", "applicable": true, "compile_s": 0.04339725699992414, "twoq": 180, "worst": 6.490494415014272e-14, "inexact": []}
+R {"seed": 5024, "arm": "Q3", "applicable": true, "compile_s": 18.553654369000014, "twoq": 180, "worst": 5.628109924805874e-14, "inexact": []}
+R {"seed": 5024, "arm": "P1", "applicable": true, "compile_s": 0.03696024700002454, "twoq": 180, "worst": 9.310293470058762e-15, "inexact": []}
+R {"seed": 5024, "arm": "P3", "applicable": true, "compile_s": 0.04105805100016369, "twoq": 180, "worst": 1.700988038031878e-14, "inexact": []}
+R {"seed": 5025, "arm": "Q3", "applicable": true, "compile_s": 18.759247247000076, "twoq": 180, "worst": 1.5870176098615987e-14, "inexact": []}
+R {"seed": 5025, "arm": "P1", "applicable": true, "compile_s": 0.03516612500015981, "twoq": 180, "worst": 8.207610165642662e-15, "inexact": []}
+R {"seed": 5025, "arm": "P3", "applicable": true, "compile_s": 0.042475809000279696, "twoq": 180, "worst": 1.3590379944679546e-14, "inexact": []}
+R {"seed": 5026, "arm": "Q3", "applicable": true, "compile_s": 18.42652433000012, "twoq": 180, "worst": 4.074774978494491e-14, "inexact": []}
+R {"seed": 5026, "arm": "P1", "applicable": true, "compile_s": 0.03684093700030644, "twoq": 180, "worst": 9.475788804080536e-15, "inexact": []}
+R {"seed": 5026, "arm": "P3", "applicable": true, "compile_s": 0.04487224900003639, "twoq": 180, "worst": 4.380260372539788e-14, "inexact": []}
+R {"seed": 5027, "arm": "Q3", "applicable": true, "compile_s": 18.40918900099996, "twoq": 180, "worst": 7.784989722257492e-14, "inexact": []}
+R {"seed": 5027, "arm": "P1", "applicable": true, "compile_s": 0.037548704000073485, "twoq": 180, "worst": 1.076118702808404e-14, "inexact": []}
+R {"seed": 5027, "arm": "P3", "applicable": true, "compile_s": 0.042013641000266944, "twoq": 180, "worst": 3.33022068995573e-14, "inexact": []}
+R {"seed": 5028, "arm": "Q3", "applicable": true, "compile_s": 18.404414691000056, "twoq": 180, "worst": 3.18707276316292e-14, "inexact": []}
+R {"seed": 5028, "arm": "P1", "applicable": true, "compile_s": 0.03764876799959893, "twoq": 180, "worst": 9.758142591082977e-15, "inexact": []}
+R {"seed": 5028, "arm": "P3", "applicable": true, "compile_s": 0.044695788999888464, "twoq": 180, "worst": 1.8003619309565504e-14, "inexact": []}
+R {"seed": 5029, "arm": "Q3", "applicable": true, "compile_s": 18.633616043000075, "twoq": 180, "worst": 1.4177848592344615e-14, "inexact": []}
+R {"seed": 5029, "arm": "P1", "applicable": true, "compile_s": 0.04039491200001066, "twoq": 180, "worst": 1.0064222176035432e-14, "inexact": []}
+R {"seed": 5029, "arm": "P3", "applicable": true, "compile_s": 0.05396018600004027, "twoq": 180, "worst": 1.1499231615859644e-14, "inexact": []}
+R {"seed": 5030, "arm": "Q3", "applicable": true, "compile_s": 18.381381750999935, "twoq": 180, "worst": 4.718592016465755e-14, "inexact": []}
+R {"seed": 5030, "arm": "P1", "applicable": true, "compile_s": 0.03661866499987809, "twoq": 180, "worst": 8.822107942503688e-15, "inexact": []}
+R {"seed": 5030, "arm": "P3", "applicable": true, "compile_s": 0.04230366100000538, "twoq": 180, "worst": 4.667635294807354e-14, "inexact": []}
+R {"seed": 5031, "arm": "Q3", "applicable": true, "compile_s": 18.59690876400009, "twoq": 180, "worst": 2.3293462993251464e-14, "inexact": []}
+R {"seed": 5031, "arm": "P1", "applicable": true, "compile_s": 0.03722358400000303, "twoq": 180, "worst": 1.0270869944289552e-14, "inexact": []}
+R {"seed": 5031, "arm": "P3", "applicable": true, "compile_s": 0.0454025389999515, "twoq": 180, "worst": 2.0692427624251162e-14, "inexact": []}
+R {"seed": 5032, "arm": "Q3", "applicable": true, "compile_s": 18.761007638000137, "twoq": 180, "worst": 6.686574957916457e-14, "inexact": []}
+R {"seed": 5032, "arm": "P1", "applicable": true, "compile_s": 0.04831677100037268, "twoq": 180, "worst": 9.517415815907984e-15, "inexact": []}
+R {"seed": 5032, "arm": "P3", "applicable": true, "compile_s": 0.0400185399998918, "twoq": 180, "worst": 1.0814961342232236e-13, "inexact": []}
+R {"seed": 5033, "arm": "Q3", "applicable": true, "compile_s": 18.49314170300022, "twoq": 180, "worst": 1.0697900517910458e-13, "inexact": []}
+R {"seed": 5033, "arm": "P1", "applicable": true, "compile_s": 0.03690477700001793, "twoq": 180, "worst": 7.959641007615278e-15, "inexact": []}
+R {"seed": 5033, "arm": "P3", "applicable": true, "compile_s": 0.04110329500008447, "twoq": 180, "worst": 3.4515733889909594e-14, "inexact": []}
+R {"seed": 5034, "arm": "Q3", "applicable": true, "compile_s": 18.373866751999685, "twoq": 180, "worst": 3.938253957962488e-14, "inexact": []}
+R {"seed": 5034, "arm": "P1", "applicable": true, "compile_s": 0.04522357699988788, "twoq": 180, "worst": 8.675157677564412e-15, "inexact": []}
+R {"seed": 5034, "arm": "P3", "applicable": true, "compile_s": 0.03853621400003249, "twoq": 180, "worst": 1.3030005301229547e-14, "inexact": []}
+R {"seed": 5035, "arm": "Q3", "applicable": true, "compile_s": 18.289532349000183, "twoq": 180, "worst": 2.4084874338447635e-14, "inexact": []}
+R {"seed": 5035, "arm": "P1", "applicable": true, "compile_s": 0.0360109499997634, "twoq": 180, "worst": 1.0499962015645882e-14, "inexact": []}
+R {"seed": 5035, "arm": "P3", "applicable": true, "compile_s": 0.04295983400015757, "twoq": 180, "worst": 4.079348786941337e-14, "inexact": []}
+R {"seed": 5036, "arm": "Q3", "applicable": true, "compile_s": 18.298080824999943, "twoq": 180, "worst": 9.846587081056813e-14, "inexact": []}
+R {"seed": 5036, "arm": "P1", "applicable": true, "compile_s": 0.04274856300025931, "twoq": 180, "worst": 7.89703992720784e-15, "inexact": []}
+R {"seed": 5036, "arm": "P3", "applicable": true, "compile_s": 0.04838582000002134, "twoq": 180, "worst": 8.863662754613715e-14, "inexact": []}
+R {"seed": 5037, "arm": "Q3", "applicable": true, "compile_s": 18.23615225499998, "twoq": 180, "worst": 8.237311271642294e-14, "inexact": []}
+R {"seed": 5037, "arm": "P1", "applicable": true, "compile_s": 0.03824367400011397, "twoq": 180, "worst": 7.498127463268567e-15, "inexact": []}
+R {"seed": 5037, "arm": "P3", "applicable": true, "compile_s": 0.04130917300017245, "twoq": 180, "worst": 2.9790066387438266e-14, "inexact": []}
+R {"seed": 5038, "arm": "Q3", "applicable": true, "compile_s": 18.63948177300017, "twoq": 180, "worst": 1.619303996808801e-14, "inexact": []}
+R {"seed": 5038, "arm": "P1", "applicable": true, "compile_s": 0.03662825999981578, "twoq": 180, "worst": 9.031529535391207e-15, "inexact": []}
+R {"seed": 5038, "arm": "P3", "applicable": true, "compile_s": 0.04600031499967372, "twoq": 180, "worst": 3.96808458017302e-14, "inexact": []}
+R {"seed": 5039, "arm": "Q3", "applicable": true, "compile_s": 19.2772770749998, "twoq": 180, "worst": 1.2286144228104643e-13, "inexact": []}
+R {"seed": 5039, "arm": "P1", "applicable": true, "compile_s": 0.03933399700008522, "twoq": 180, "worst": 8.177182543104209e-15, "inexact": []}
+R {"seed": 5039, "arm": "P3", "applicable": true, "compile_s": 0.04353601799994067, "twoq": 180, "worst": 4.641834955506466e-14, "inexact": []}
+R {"seed": 5040, "arm": "Q3", "applicable": true, "compile_s": 18.672097903999656, "twoq": 180, "worst": 1.485215562715655e-13, "inexact": []}
+R {"seed": 5040, "arm": "P1", "applicable": true, "compile_s": 0.03690980600003968, "twoq": 180, "worst": 1.0925446828769082e-14, "inexact": []}
+R {"seed": 5040, "arm": "P3", "applicable": true, "compile_s": 0.04109102500024164, "twoq": 180, "worst": 1.1576414134440214e-13, "inexact": []}
+R {"seed": 5041, "arm": "Q3", "applicable": true, "compile_s": 18.356344008999713, "twoq": 180, "worst": 5.3351807360264474e-14, "inexact": []}
+R {"seed": 5041, "arm": "P1", "applicable": true, "compile_s": 0.12418281500004014, "twoq": 180, "worst": 1.0491130867112546e-14, "inexact": []}
+R {"seed": 5041, "arm": "P3", "applicable": true, "compile_s": 0.04433750299995154, "twoq": 180, "worst": 1.1347217139240413e-13, "inexact": []}
+R {"seed": 5042, "arm": "Q3", "applicable": true, "compile_s": 18.533613412999784, "twoq": 180, "worst": 2.4333029076070036e-14, "inexact": []}
+R {"seed": 5042, "arm": "P1", "applicable": true, "compile_s": 0.03791609299969423, "twoq": 180, "worst": 8.471671874912157e-15, "inexact": []}
+R {"seed": 5042, "arm": "P3", "applicable": true, "compile_s": 0.04919851700014988, "twoq": 180, "worst": 2.2724598719824026e-14, "inexact": []}
+R {"seed": 5043, "arm": "Q3", "applicable": true, "compile_s": 18.99648852900009, "twoq": 180, "worst": 6.868421268599617e-14, "inexact": []}
+R {"seed": 5043, "arm": "P1", "applicable": true, "compile_s": 0.03630371999997806, "twoq": 180, "worst": 9.383473339348494e-15, "inexact": []}
+R {"seed": 5043, "arm": "P3", "applicable": true, "compile_s": 0.04119096200020067, "twoq": 180, "worst": 5.949087194407334e-14, "inexact": []}
+R {"seed": 5044, "arm": "Q3", "applicable": true, "compile_s": 18.55670957099983, "twoq": 180, "worst": 2.5165713523589794e-14, "inexact": []}
+R {"seed": 5044, "arm": "P1", "applicable": true, "compile_s": 0.037752450999960274, "twoq": 180, "worst": 1.0343620604183897e-14, "inexact": []}
+R {"seed": 5044, "arm": "P3", "applicable": true, "compile_s": 0.04305635799983065, "twoq": 180, "worst": 1.0766438366104781e-13, "inexact": []}
+R {"seed": 5045, "arm": "Q3", "applicable": true, "compile_s": 18.61030664200007, "twoq": 180, "worst": 7.866803816295128e-14, "inexact": []}
+R {"seed": 5045, "arm": "P1", "applicable": true, "compile_s": 0.04147634100036157, "twoq": 180, "worst": 9.59166808163399e-15, "inexact": []}
+R {"seed": 5045, "arm": "P3", "applicable": true, "compile_s": 0.046189978000256815, "twoq": 180, "worst": 8.677523330238942e-14, "inexact": []}
+R {"seed": 5046, "arm": "Q3", "applicable": true, "compile_s": 18.49029708499984, "twoq": 180, "worst": 1.6009957074151323e-13, "inexact": []}
+R {"seed": 5046, "arm": "P1", "applicable": true, "compile_s": 0.03952547199969558, "twoq": 180, "worst": 9.233498801233021e-15, "inexact": []}
+R {"seed": 5046, "arm": "P3", "applicable": true, "compile_s": 0.04666833100009171, "twoq": 180, "worst": 2.7623244065382868e-14, "inexact": []}
+R {"seed": 5047, "arm": "Q3", "applicable": true, "compile_s": 18.36401100799958, "twoq": 180, "worst": 5.470310642895269e-14, "inexact": []}
+R {"seed": 5047, "arm": "P1", "applicable": true, "compile_s": 0.04240463499991165, "twoq": 180, "worst": 6.112098179457077e-15, "inexact": []}
+R {"seed": 5047, "arm": "P3", "applicable": true, "compile_s": 0.04302295800016509, "twoq": 180, "worst": 3.1350971806277694e-14, "inexact": []}
+R {"seed": 5048, "arm": "Q3", "applicable": true, "compile_s": 18.920224155999676, "twoq": 180, "worst": 7.258962405362491e-14, "inexact": []}
+R {"seed": 5048, "arm": "P1", "applicable": true, "compile_s": 0.04225360400005229, "twoq": 180, "worst": 9.695483106281193e-15, "inexact": []}
+R {"seed": 5048, "arm": "P3", "applicable": true, "compile_s": 0.0489528349999091, "twoq": 180, "worst": 2.625695224237602e-13, "inexact": []}
+R {"seed": 5049, "arm": "Q3", "applicable": true, "compile_s": 18.258889066999927, "twoq": 180, "worst": 1.7064299102692367e-14, "inexact": []}
+R {"seed": 5049, "arm": "P1", "applicable": true, "compile_s": 0.04132082800015269, "twoq": 180, "worst": 9.5092041068723e-15, "inexact": []}
+R {"seed": 5049, "arm": "P3", "applicable": true, "compile_s": 0.0466540869997516, "twoq": 180, "worst": 6.894197113379095e-14, "inexact": []}
+wrote cutoff_psf_levels_2026-09-29.json

@@ -1,0 +1,19 @@
+==============================================================================
+SCORING (thresholds exactly as pre-registered)
+==============================================================================
+C0 every arm ran 3 laps at spares [0, 2]: True; versions {'P': [('2026-09-28.1', '2026-09-26.m1')], 'PN': [('2026-09-29.1', '2026-09-29.c1')]} -> passed
+   spare  0 Q3: median 8.835 s, max 8.951 s, within 1 s 0/3, swap laps 3, 2q [54] (swap-free 51), block distance first/last -, layout changes 0
+   spare  0 P : median 0.035 s, max 0.050 s, within 1 s 3/3, swap laps 3, 2q [63] (swap-free 51), block distance first/last -, layout changes 0
+   spare  0 PN: median 0.015 s, max 0.030 s, within 1 s 3/3, swap laps 0, 2q [51] (swap-free 51), block distance first/last 8.27e-15 / 1.63e-14, layout changes 0
+   spare  2 Q3: median 0.084 s, max 0.093 s, within 1 s 3/3, swap laps 0, 2q [48] (swap-free 48), block distance first/last 1.79e-13 / 1.78e-13, layout changes 1
+   spare  2 P : median 0.014 s, max 0.014 s, within 1 s 3/3, swap laps 0, 2q [48] (swap-free 48), block distance first/last 1.47e-14 / 2.09e-14, layout changes 0
+   spare  2 PN: median 0.016 s, max 0.023 s, within 1 s 3/3, swap laps 0, 2q [48] (swap-free 48), block distance first/last 1.48e-14 / 2.09e-14, layout changes 0
+D1 spare 0: PN within 1 s in 3/3 laps (confirmed 3/3, refuted <= 1) -> CONFIRMED
+D2 spare 0: Qiskit L3 within 1 s in 0/3 laps (confirmed 0, refuted >= 1) -> CONFIRMED
+D3 spare 0: PN swap-free and mapped back in 3/3 laps (confirmed 3/3, refuted <= 1) -> CONFIRMED
+D4 PN meaning kept over 3 compounded laps (both spares): worst block distance to lap 0 2.0906195029146933e-14 (confirmed <= 1e-12 at every checked lap, refuted > 1e-10 at any) -> CONFIRMED
+D5 spare 0: the release P's output has SWAPs in 3/3 laps (confirmed 3/3, refuted 0) -> CONFIRMED
+D6 spare 2: Qiskit L3 within 1 s in 3/3 laps (confirmed >= 1, refuted <= 1) -> CONFIRMED
+D7 spare 2: PN within 1 s, swap-free and mapped back in 3/3 laps (confirmed 3/3, refuted <= 1) -> CONFIRMED
+Reported without prediction: Q3 worst block distance over checked laps 1.7918395722848861e-13 (3 checked laps)
+Reported without prediction: P worst block distance over checked laps 2.0906195029146933e-14 (3 checked laps)

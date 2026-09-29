@@ -1,0 +1,13 @@
+LOADED <sandbox>/repo929/psf_compile.py 2026-09-28.1 3616efc8b8a7bea184d6170fb7379d509d0bfec9828f4eb2f703dd4d26d8c60b | CORE_VERSION 2026-09-29.1
+LAYOUT <sandbox>/hh/cand_layout/psf_smart_layout.py 2026-09-29.c1 e25952a33bacfbb8de7a439b53892e9bab88329d8c47c6de867c29fc660145fa
+arm PN | platform Linux-6.18.44-fc-v37-x86_64-with-glibc2.39 | cores 2 | python 3.11.15 | qiskit 2.5.2 | pennylane 0.45.1
+SCRIPT <sandbox>/repo929/benchmarks/pl_heavyhex_chain.py 84aafa1f56680e4e77be2e6261b2d45e669c5fa48a3db25f88e8180ccf8e005f
+Stage 0: FakeAuckland, 27 qubits, max matching 10, {P2,P3}-factor found
+PN spare= 0 lap   1 compile    0.030s lap    0.11s 2q=51 (swap-free 51) max_block_dist=8.267e-15 layout_changed=False OK
+PN spare= 0 lap   2 compile    0.015s lap    0.09s 2q=51 (swap-free 51) max_block_dist=1.808e-14 layout_changed=False OK
+PN spare= 0 lap   3 compile    0.014s lap    0.10s 2q=51 (swap-free 51) max_block_dist=1.627e-14 layout_changed=False OK
+PN spare= 2 lap   1 compile    0.014s lap    0.09s 2q=48 (swap-free 48) max_block_dist=1.482e-14 layout_changed=False OK
+PN spare= 2 lap   2 compile    0.016s lap    0.10s 2q=48 (swap-free 48) max_block_dist=1.609e-14 layout_changed=False OK
+PN spare= 2 lap   3 compile    0.023s lap    0.12s 2q=48 (swap-free 48) max_block_dist=2.091e-14 layout_changed=False OK
+Wrote pl_heavyhex_chain_PN_dry.csv (6 rows)
+DONE

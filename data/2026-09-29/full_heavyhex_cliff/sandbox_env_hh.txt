@@ -1,0 +1,12 @@
+start 2026-09-29 02:28:01 UTC
+full_heavyhex_cliff.py 1264fadacab44403d0dbc40a5cab8c0c60281b013f6f2c33e6ba91181eb502e4
+candidate psf_smart_layout.py e25952a33bacfbb8de7a439b53892e9bab88329d8c47c6de867c29fc660145fa
+release psf_smart_layout.py a639efdef484379d23b4c0a52dffe557c47c30f639c41e4f8521ca608712d875
+f4b4a6c Addenda 245-247 and Amendment 2 to Addendum 211 (home, 2026-09-28)
+?? benchmarks/blocks15.npz
+?? benchmarks/core_eigen_route_check.py
+?? benchmarks/cutoff_psf_levels.py
+?? benchmarks/full_heavyhex_cliff.py
+?? benchmarks/long_loop_100k_v5.py
+Model name:                              Intel(R) Xeon(R) Processor @ 2.80GHz
+2

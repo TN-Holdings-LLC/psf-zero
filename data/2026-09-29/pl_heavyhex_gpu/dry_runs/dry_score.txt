@@ -1,0 +1,21 @@
+==============================================================================
+SCORING (thresholds exactly as pre-registered)
+==============================================================================
+C0 laps complete True; versions {'P': [('2026-09-28.1', '2026-09-26.m1')], 'PN': [('2026-09-29.1', '2026-09-29.c1')]}; device ['lightning.qubit']; small sub-circuit GPU vs CPU max 0.00e+00 (<= 1e-12) -> FAILED
+C1 the RX(1e-6) control is detected: smallest change 4.18e-07 (>= 1e-9) -> passed
+   spare 0 Q3: compile median 0.409 s (max 1.168), within 1 s 2/3, swap laps 0, 2q [33] (swap-free 33), whole-circuit max 1.21e-13 (lap 1 1.17e-13, last 1.21e-13), block last 3.14e-13, GPU check median 0.30 s
+   spare 0 P : compile median 0.027 s (max 0.546), within 1 s 3/3, swap laps 3, 2q [36] (swap-free 33), whole-circuit max 1.72e-14 (lap 1 1.72e-14, last 1.72e-14), block last -, GPU check median 0.30 s
+   spare 0 PN: compile median 0.013 s (max 0.568), within 1 s 3/3, swap laps 0, 2q [33] (swap-free 33), whole-circuit max 1.99e-14 (lap 1 1.98e-14, last 1.97e-14), block last 1.42e-14, GPU check median 0.27 s
+   spare 2 Q3: compile median 0.099 s (max 0.100), within 1 s 3/3, swap laps 0, 2q [30] (swap-free 30), whole-circuit max 5.34e-14 (lap 1 5.27e-14, last 5.34e-14), block last 1.37e-13, GPU check median 0.26 s
+   spare 2 P : compile median 0.012 s (max 0.012), within 1 s 3/3, swap laps 0, 2q [30] (swap-free 30), whole-circuit max 1.13e-14 (lap 1 1.07e-14, last 9.99e-15), block last 1.87e-14, GPU check median 0.28 s
+   spare 2 PN: compile median 0.014 s (max 0.020), within 1 s 3/3, swap laps 0, 2q [30] (swap-free 30), whole-circuit max 1.35e-14 (lap 1 1.35e-14, last 1.31e-14), block last 1.88e-14, GPU check median 0.32 s
+E1 spare 0: PN within 1 s in 3/3 (confirmed 3/3, refuted <= 1) -> CONFIRMED
+E2 spare 0: Qiskit L3 within 1 s in 2/3 (confirmed 0, refuted >= 1) -> REFUTED
+E3 spare 0: PN swap-free and mapped back in 3/3 (confirmed 3/3, refuted <= 1) -> CONFIRMED
+E4 PN whole-circuit check on the GPU, both spares, every lap: max 1.99e-14 (confirmed <= 1e-12, refuted > 1e-10) -> CONFIRMED
+E5 spare 0: the SWAP outputs of Q3 and P are correct as whole circuits: max 1.21e-13 over 6 laps (confirmed <= 1e-10 in every lap, refuted > 1e-6 in any) -> CONFIRMED
+E6 spare 2: Qiskit L3 within 1 s in 3/3 (confirmed >= 1, refuted <= 1) -> CONFIRMED
+E7 spare 2: PN within 1 s, swap-free and mapped back in 3/3 (confirmed 3/3, refuted <= 1) -> CONFIRMED
+Reported without prediction: Q3 whole-circuit max 1.21e-13; block distance max 3.14e-13 over 6 mapped laps
+Reported without prediction: P whole-circuit max 1.72e-14; block distance max 1.87e-14 over 3 mapped laps
+Reported without prediction: PN whole-circuit max 1.99e-14; block distance max 1.88e-14 over 6 mapped laps

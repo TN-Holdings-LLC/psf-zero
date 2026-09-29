@@ -1,0 +1,50 @@
+platform Linux-6.18.44-fc-v37-x86_64-with-glibc2.39 | cores 2 | python 3.11.15 | qiskit 2.5.2
+LOADED <sandbox>/repo929/psf_compile.py 2026-09-28.1 3616efc8b8a7bea184d6170fb7379d509d0bfec9828f4eb2f703dd4d26d8c60b | CORE_VERSION 2026-09-28.1
+SCRIPT <sandbox>/repo929/benchmarks/full_heavyhex_cliff.py dd9d7e1d5b687ac4edd59ee04fac0907f2c3d6ce9990bdaf8b837cfaa82f0fbf
+Stage 0: device FakeAuckland (fake provider snapshot), 27 qubits, 28 edges, degree min/median/max 1/2/3, max matching 10 pairs (20 qubits, 7 unmatched), native ['x', 'rz', 'sx', 'cx', 'id']
+G0 {P2,P3}-factor with 7 triples and 3 pairs: found (triples [(0, 1, 4), (2, 3, 5), (6, 7, 10), (9, 8, 11), (13, 12, 15), (17, 18, 21), (20, 19, 22)])
+B spare= 0 n=20 input=0 Q3 OK       0.131s 2q=30 (no-swap 30) check=True worst=1.7156451333158017e-13
+B spare= 0 n=20 input=0 P  OK       0.023s 2q=30 (no-swap 30) check=True worst=4.363536565668959e-15 | found=True phase=0 order=matching_direct tried=0 search_s=0.000
+B spare= 0 n=20 input=1 Q3 OK       0.108s 2q=30 (no-swap 30) check=True worst=2.1942578619096352e-14
+B spare= 0 n=20 input=1 P  OK       0.024s 2q=30 (no-swap 30) check=True worst=4.611992939249644e-15 | found=True phase=0 order=matching_direct tried=0 search_s=0.000
+B spare= 0 n=20 input=2 Q3 OK       0.119s 2q=30 (no-swap 30) check=True worst=7.413473176219514e-14
+B spare= 0 n=20 input=2 P  OK       0.024s 2q=30 (no-swap 30) check=True worst=1.0421609429842405e-14 | found=True phase=0 order=matching_direct tried=0 search_s=0.000
+T spare= 0 n=27 input=0 Q3 OK       8.487s 2q=54 (no-swap 51) check=False worst=None
+T spare= 0 n=27 input=0 P  OK       0.131s 2q=63 (no-swap 51) check=False worst=None | found=False phase=None order=None tried=0 search_s=0.001
+T spare= 0 n=27 input=1 Q3 OK       8.729s 2q=54 (no-swap 51) check=False worst=None
+T spare= 0 n=27 input=1 P  OK       0.124s 2q=63 (no-swap 51) check=False worst=None | found=False phase=None order=None tried=0 search_s=0.001
+T spare= 0 n=27 input=2 Q3 OK       8.500s 2q=54 (no-swap 51) check=False worst=None
+T spare= 0 n=27 input=2 P  OK       0.135s 2q=63 (no-swap 51) check=False worst=None | found=False phase=None order=None tried=0 search_s=0.001
+T spare= 2 n=25 input=0 Q3 OK       0.094s 2q=48 (no-swap 48) check=True worst=1.8889732781581563e-13
+T spare= 2 n=25 input=0 P  OK       0.117s 2q=48 (no-swap 48) check=True worst=1.0993929202918962e-14 | found=False phase=None order=None tried=0 search_s=0.001
+T spare= 2 n=25 input=1 Q3 OK       0.099s 2q=48 (no-swap 48) check=True worst=1.246202515989277e-13
+T spare= 2 n=25 input=1 P  OK       0.114s 2q=48 (no-swap 48) check=True worst=8.531658579916277e-15 | found=False phase=None order=None tried=0 search_s=0.001
+T spare= 2 n=25 input=2 Q3 OK       0.095s 2q=48 (no-swap 48) check=True worst=2.936592967629199e-14
+T spare= 2 n=25 input=2 P  OK       0.109s 2q=48 (no-swap 48) check=True worst=9.224931803642076e-15 | found=False phase=None order=None tried=0 search_s=0.001
+T spare= 4 n=23 input=0 Q3 OK       0.110s 2q=45 (no-swap 45) check=True worst=4.925389755857764e-14
+T spare= 4 n=23 input=0 P  OK       0.113s 2q=45 (no-swap 45) check=True worst=1.1961345255002615e-14 | found=False phase=None order=None tried=0 search_s=0.001
+T spare= 4 n=23 input=1 Q3 OK       0.118s 2q=45 (no-swap 45) check=True worst=2.6543946381271012e-14
+T spare= 4 n=23 input=1 P  OK       0.112s 2q=45 (no-swap 45) check=True worst=1.512365414625519e-14 | found=False phase=None order=None tried=0 search_s=0.001
+T spare= 4 n=23 input=2 Q3 OK       0.118s 2q=45 (no-swap 45) check=True worst=2.783842873735321e-14
+T spare= 4 n=23 input=2 P  OK       0.108s 2q=45 (no-swap 45) check=True worst=1.345121079187071e-14 | found=False phase=None order=None tried=0 search_s=0.001
+S spare= 0 n=27 input=0 Q3 OK       0.038s 2q=30 (no-swap 30) check=True worst=5.1762383539816285e-14
+S spare= 0 n=27 input=0 P  OK       0.026s 2q=30 (no-swap 30) check=True worst=8.323266147437452e-15 | found=True phase=0 order=matching_direct tried=0 search_s=0.000
+S spare= 0 n=27 input=1 Q3 OK       0.042s 2q=30 (no-swap 30) check=True worst=2.233135774345274e-14
+S spare= 0 n=27 input=1 P  OK       0.025s 2q=30 (no-swap 30) check=True worst=8.011031145608622e-15 | found=True phase=0 order=matching_direct tried=0 search_s=0.000
+S spare= 0 n=27 input=2 Q3 OK       0.045s 2q=30 (no-swap 30) check=True worst=1.8506335034587867e-14
+S spare= 0 n=27 input=2 P  OK       0.025s 2q=30 (no-swap 30) check=True worst=7.974259474071699e-15 | found=True phase=0 order=matching_direct tried=0 search_s=0.000
+S spare= 2 n=25 input=0 Q3 OK       0.043s 2q=27 (no-swap 27) check=True worst=3.4020679987118994e-14
+S spare= 2 n=25 input=0 P  OK       0.024s 2q=27 (no-swap 27) check=True worst=3.155058843380366e-15 | found=True phase=0 order=matching_direct tried=0 search_s=0.000
+S spare= 2 n=25 input=1 Q3 OK       0.045s 2q=27 (no-swap 27) check=True worst=1.4433828368087206e-14
+S spare= 2 n=25 input=1 P  OK       0.024s 2q=27 (no-swap 27) check=True worst=5.711406269967958e-15 | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+S spare= 2 n=25 input=2 Q3 OK       0.042s 2q=27 (no-swap 27) check=True worst=9.563827391218297e-14
+S spare= 2 n=25 input=2 P  OK       0.027s 2q=27 (no-swap 27) check=True worst=3.4869167371635158e-15 | found=True phase=0 order=matching_direct tried=0 search_s=0.000
+S spare= 4 n=23 input=0 Q3 OK       0.042s 2q=24 (no-swap 24) check=True worst=1.5336564600381787e-14
+S spare= 4 n=23 input=0 P  OK       0.023s 2q=24 (no-swap 24) check=True worst=5.513643374092311e-15 | found=True phase=0 order=matching_direct tried=0 search_s=0.000
+S spare= 4 n=23 input=1 Q3 OK       0.049s 2q=24 (no-swap 24) check=True worst=8.44663278143434e-15
+S spare= 4 n=23 input=1 P  OK       0.025s 2q=24 (no-swap 24) check=True worst=7.716909583739958e-15 | found=True phase=0 order=matching_direct tried=0 search_s=0.000
+S spare= 4 n=23 input=2 Q3 OK       0.044s 2q=24 (no-swap 24) check=True worst=7.532998344658969e-15
+S spare= 4 n=23 input=2 P  OK       0.023s 2q=24 (no-swap 24) check=True worst=4.2558052741232246e-15 | found=True phase=0 order=matching_direct tried=0 search_s=0.000
+
+Wrote full_heavyhex_cliff_dry.csv and full_heavyhex_cliff_dry.json (42 rows)
+DONE

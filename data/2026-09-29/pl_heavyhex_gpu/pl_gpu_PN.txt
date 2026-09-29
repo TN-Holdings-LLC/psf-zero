@@ -1,0 +1,70 @@
+LOADED psf_compile 2026-09-28.1 3616efc8b8a7bea184d6170fb7379d509d0bfec9828f4eb2f703dd4d26d8c60b | CORE_VERSION 2026-09-29.1
+LAYOUT 2026-09-29.c1 e25952a33bacfbb8de7a439b53892e9bab88329d8c47c6de867c29fc660145fa
+arm PN | device lightning.gpu | platform Linux-6.8.0-71-generic-x86_64-with-glibc2.39 | cores 96 | python 3.12.3 | qiskit 2.5.2 | pennylane 0.45.1
+SCRIPT pl_heavyhex_gpu.py a0081c2917591de57a2e3a9d4914441c47f030282c5128b3f18642b7dd8402ea
+Stage 0: FakeAuckland, 27 qubits, max matching 10, {P2,P3}-factor found
+DEVICE lightning.gpu 
+spare=0 n=27 reference 71 values in 1.37s | C0 9-wire GPU vs CPU 1.05e-15 | C1 RX(1e-6) control changes the values by 5.06e-07
+PN spare=0 lap   1 compile   0.037s gpu   2.38s 2q=51 (swap-free 51) whole=1.099e-14 block=1.267e-14 OK
+PN spare=0 lap   2 compile   0.015s gpu   2.37s 2q=51 (swap-free 51) whole=9.215e-15 block=1.344e-14 OK
+PN spare=0 lap   3 compile   0.015s gpu   2.38s 2q=51 (swap-free 51) whole=8.771e-15 block=1.555e-14 OK
+PN spare=0 lap   4 compile   0.015s gpu   2.38s 2q=51 (swap-free 51) whole=1.066e-14 block=1.896e-14 OK
+PN spare=0 lap   5 compile   0.015s gpu   2.39s 2q=51 (swap-free 51) whole=1.205e-14 block=2.195e-14 OK
+PN spare=0 lap   6 compile   0.016s gpu   2.38s 2q=51 (swap-free 51) whole=1.199e-14 block=2.544e-14 OK
+PN spare=0 lap   7 compile   0.016s gpu   2.38s 2q=51 (swap-free 51) whole=1.243e-14 block=2.968e-14 OK
+PN spare=0 lap   8 compile   0.015s gpu   2.39s 2q=51 (swap-free 51) whole=1.288e-14 block=3.354e-14 OK
+PN spare=0 lap   9 compile   0.014s gpu   2.37s 2q=51 (swap-free 51) whole=1.299e-14 block=3.831e-14 OK
+PN spare=0 lap  10 compile   0.015s gpu   2.37s 2q=51 (swap-free 51) whole=1.488e-14 block=3.644e-14 OK
+PN spare=0 lap  11 compile   0.015s gpu   2.37s 2q=51 (swap-free 51) whole=1.510e-14 block=4.100e-14 OK
+PN spare=0 lap  12 compile   0.016s gpu   2.37s 2q=51 (swap-free 51) whole=1.454e-14 block=4.426e-14 OK
+PN spare=0 lap  13 compile   0.016s gpu   2.38s 2q=51 (swap-free 51) whole=1.499e-14 block=4.601e-14 OK
+PN spare=0 lap  14 compile   0.015s gpu   2.37s 2q=51 (swap-free 51) whole=1.488e-14 block=4.771e-14 OK
+PN spare=0 lap  15 compile   0.016s gpu   2.40s 2q=51 (swap-free 51) whole=1.532e-14 block=4.993e-14 OK
+PN spare=0 lap  16 compile   0.016s gpu   2.38s 2q=51 (swap-free 51) whole=1.632e-14 block=5.158e-14 OK
+PN spare=0 lap  17 compile   0.016s gpu   2.40s 2q=51 (swap-free 51) whole=1.971e-14 block=5.616e-14 OK
+PN spare=0 lap  18 compile   0.016s gpu   2.38s 2q=51 (swap-free 51) whole=1.982e-14 block=6.385e-14 OK
+PN spare=0 lap  19 compile   0.016s gpu   2.37s 2q=51 (swap-free 51) whole=1.837e-14 block=6.638e-14 OK
+PN spare=0 lap  20 compile   0.015s gpu   2.39s 2q=51 (swap-free 51) whole=2.243e-14 block=7.038e-14 OK
+PN spare=0 lap  21 compile   0.016s gpu   2.39s 2q=51 (swap-free 51) whole=2.293e-14 block=7.457e-14 OK
+PN spare=0 lap  22 compile   0.016s gpu   2.51s 2q=51 (swap-free 51) whole=2.415e-14 block=7.275e-14 OK
+PN spare=0 lap  23 compile   0.015s gpu   2.37s 2q=51 (swap-free 51) whole=2.393e-14 block=7.846e-14 OK
+PN spare=0 lap  24 compile   0.016s gpu   2.37s 2q=51 (swap-free 51) whole=2.581e-14 block=8.199e-14 OK
+PN spare=0 lap  25 compile   0.015s gpu   2.40s 2q=51 (swap-free 51) whole=2.692e-14 block=8.516e-14 OK
+PN spare=0 lap  26 compile   0.016s gpu   2.37s 2q=51 (swap-free 51) whole=2.909e-14 block=8.645e-14 OK
+PN spare=0 lap  27 compile   0.014s gpu   2.37s 2q=51 (swap-free 51) whole=2.709e-14 block=9.003e-14 OK
+PN spare=0 lap  28 compile   0.015s gpu   2.37s 2q=51 (swap-free 51) whole=2.603e-14 block=9.384e-14 OK
+PN spare=0 lap  29 compile   0.015s gpu   2.37s 2q=51 (swap-free 51) whole=2.842e-14 block=9.767e-14 OK
+PN spare=0 lap  30 compile   0.015s gpu   2.36s 2q=51 (swap-free 51) whole=2.920e-14 block=9.852e-14 OK
+spare=4 n=23 reference 61 values in 0.94s | C0 9-wire GPU vs CPU 1.11e-15 | C1 RX(1e-6) control changes the values by 2.87e-07
+PN spare=4 lap   1 compile   0.015s gpu   2.06s 2q=45 (swap-free 45) whole=9.326e-15 block=6.906e-15 OK
+PN spare=4 lap   2 compile   0.014s gpu   2.07s 2q=45 (swap-free 45) whole=1.144e-14 block=1.254e-14 OK
+PN spare=4 lap   3 compile   0.014s gpu   2.07s 2q=45 (swap-free 45) whole=1.210e-14 block=1.603e-14 OK
+PN spare=4 lap   4 compile   0.015s gpu   2.07s 2q=45 (swap-free 45) whole=9.770e-15 block=1.753e-14 OK
+PN spare=4 lap   5 compile   0.016s gpu   2.08s 2q=45 (swap-free 45) whole=1.243e-14 block=2.140e-14 OK
+PN spare=4 lap   6 compile   0.015s gpu   2.07s 2q=45 (swap-free 45) whole=1.255e-14 block=2.046e-14 OK
+PN spare=4 lap   7 compile   0.014s gpu   2.07s 2q=45 (swap-free 45) whole=1.277e-14 block=2.206e-14 OK
+PN spare=4 lap   8 compile   0.014s gpu   2.07s 2q=45 (swap-free 45) whole=1.288e-14 block=2.823e-14 OK
+PN spare=4 lap   9 compile   0.014s gpu   2.07s 2q=45 (swap-free 45) whole=1.410e-14 block=2.848e-14 OK
+PN spare=4 lap  10 compile   0.014s gpu   2.07s 2q=45 (swap-free 45) whole=1.443e-14 block=3.217e-14 OK
+PN spare=4 lap  11 compile   0.014s gpu   2.08s 2q=45 (swap-free 45) whole=1.760e-14 block=3.639e-14 OK
+PN spare=4 lap  12 compile   0.016s gpu   2.07s 2q=45 (swap-free 45) whole=1.765e-14 block=4.000e-14 OK
+PN spare=4 lap  13 compile   0.014s gpu   2.09s 2q=45 (swap-free 45) whole=1.676e-14 block=4.048e-14 OK
+PN spare=4 lap  14 compile   0.014s gpu   2.07s 2q=45 (swap-free 45) whole=1.765e-14 block=4.362e-14 OK
+PN spare=4 lap  15 compile   0.014s gpu   2.07s 2q=45 (swap-free 45) whole=1.799e-14 block=4.574e-14 OK
+PN spare=4 lap  16 compile   0.015s gpu   2.07s 2q=45 (swap-free 45) whole=1.910e-14 block=4.890e-14 OK
+PN spare=4 lap  17 compile   0.014s gpu   2.06s 2q=45 (swap-free 45) whole=2.032e-14 block=5.514e-14 OK
+PN spare=4 lap  18 compile   0.015s gpu   2.06s 2q=45 (swap-free 45) whole=2.243e-14 block=5.790e-14 OK
+PN spare=4 lap  19 compile   0.014s gpu   2.07s 2q=45 (swap-free 45) whole=2.173e-14 block=5.959e-14 OK
+PN spare=4 lap  20 compile   0.015s gpu   2.08s 2q=45 (swap-free 45) whole=2.220e-14 block=6.046e-14 OK
+PN spare=4 lap  21 compile   0.015s gpu   2.09s 2q=45 (swap-free 45) whole=2.245e-14 block=6.584e-14 OK
+PN spare=4 lap  22 compile   0.014s gpu   2.07s 2q=45 (swap-free 45) whole=2.340e-14 block=6.935e-14 OK
+PN spare=4 lap  23 compile   0.014s gpu   2.07s 2q=45 (swap-free 45) whole=2.401e-14 block=7.158e-14 OK
+PN spare=4 lap  24 compile   0.016s gpu   2.07s 2q=45 (swap-free 45) whole=2.481e-14 block=7.559e-14 OK
+PN spare=4 lap  25 compile   0.014s gpu   2.07s 2q=45 (swap-free 45) whole=2.470e-14 block=7.655e-14 OK
+PN spare=4 lap  26 compile   0.015s gpu   2.07s 2q=45 (swap-free 45) whole=2.642e-14 block=8.138e-14 OK
+PN spare=4 lap  27 compile   0.014s gpu   2.09s 2q=45 (swap-free 45) whole=2.473e-14 block=8.424e-14 OK
+PN spare=4 lap  28 compile   0.015s gpu   2.09s 2q=45 (swap-free 45) whole=2.512e-14 block=8.761e-14 OK
+PN spare=4 lap  29 compile   0.017s gpu   2.07s 2q=45 (swap-free 45) whole=2.523e-14 block=8.960e-14 OK
+PN spare=4 lap  30 compile   0.014s gpu   2.06s 2q=45 (swap-free 45) whole=2.617e-14 block=9.237e-14 OK
+Wrote pl_heavyhex_gpu_PN_2026-09-29.csv (60 rows)
+DONE

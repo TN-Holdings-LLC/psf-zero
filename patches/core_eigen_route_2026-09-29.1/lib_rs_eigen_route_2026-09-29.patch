@@ -1,0 +1,122 @@
+--- a/src/lib.rs
++++ b/src/lib.rs
+@@ -107,6 +107,23 @@
+ //      The module now exposes `CORE_VERSION` ("2026-09-28.1") so a log can
+ //      show which core was loaded; cores built before this item have none.
+ //
++//  12. (2026-09-29) Eigen-route fallback in `decompose_one`. The SVD route
++//      works on Re(u_m), whose singular values are |cos(theta_k)|. Two
++//      well-separated magic-basis phases can still give nearly equal |cos|
++//      (both near 0, both near pi, or theta_i ~ pi - theta_j); nalgebra's SVD
++//      then returns left and right singular vectors that are individually
++//      accurate to about 1e-9 / gap but not rotated consistently, and the
++//      group correction (which assumes one common rotation) cannot remove the
++//      mismatch: the off-diagonal check fails (1e-6 to 1e-4) and the block
++//      raises NumericInstability. All 15 core fallbacks of the home v4 run
++//      were of this kind (Addendum 247 A; workplace probes of 2026-09-29).
++//      When every SVD candidate fails, O2 is now taken from an eigenbasis of
++//      the real symmetric pencil of M = u_m^T u_m (whose eigenvalues
++//      exp(2 i theta_k) stay separated there) and O1 from u_m O2^T; the rest
++//      of the pipeline is unchanged. Blocks the SVD route accepts are
++//      decomposed exactly as before (bit-identical). `CORE_VERSION`
++//      "2026-09-29.1".
++//
+ // Retained verbatim from the previous round (still true, still verified):
+ // random SU(4) precision worst case (1-fidelity) ~1.3e-15; CNOT, SWAP,
+ // iSWAP, identity all decompose exactly with no fallback.
+@@ -941,11 +958,23 @@
+ 
+     // Computed once and shared across every tolerance candidate below -- it
+     // does not depend on group_tol (changelog item 1).
+-    let basis = compute_svd_basis(&u_m_real)?;
+-
+     let mut last_err = CartanError::DegenerateWeylPoint;
+-    for &group_tol in &GROUP_TOL_CANDIDATES {
+-        match try_decompose_with_tol(&u_m, &basis, group_tol) {
++    match compute_svd_basis(&u_m_real) {
++        Ok(basis) => {
++            for &group_tol in &GROUP_TOL_CANDIDATES {
++                match try_decompose_with_tol(&u_m, &basis, group_tol) {
++                    Ok((angles, locals)) => return Ok((angles, locals, phase)),
++                    Err(e) => last_err = e,
++                }
++            }
++        }
++        Err(e) => last_err = e,
++    }
++
++    // Eigen route, tried only when every SVD candidate above failed, so every
++    // block the SVD route accepts is decomposed exactly as before.
++    for basis in eigen_route_bases(&u_m) {
++        match try_decompose_with_tol(&u_m, &basis, 0.0) {
+             Ok((angles, locals)) => return Ok((angles, locals, phase)),
+             Err(e) => last_err = e,
+         }
+@@ -953,6 +982,58 @@
+     Err(last_err)
+ }
+ 
++/// Candidate (O1, O2) pairs from the eigenvectors of the real symmetric pencil of
++/// M = u_m^T u_m = O2^T D^2 O2, ordered by how well each diagonalizes u_m.
++///
++/// The SVD route works on Re(u_m), whose singular values are |cos(theta_k)|. Two
++/// well-separated magic-basis phases can still give nearly equal |cos| (both near
++/// 0, both near pi, or theta_i ~ pi - theta_j), and there the singular vectors are
++/// ill-conditioned even though the decomposition itself is not. M's eigenvalues
++/// exp(2 i theta_k) stay separated in that case, so O2 comes from an eigenbasis of
++/// cos(phi) Re(M) + sin(phi) Im(M), and each column of O1 from the matching column
++/// x of u_m O2^T as Re(x / sqrt(x^T x)).
++fn eigen_route_bases(u_m: &Mat4) -> Vec<SvdBasis> {
++    let m = u_m.transpose() * u_m;
++    let re = DMatrix::<f64>::from_fn(4, 4, |r, c| (m[(r, c)].re + m[(c, r)].re) * 0.5);
++    let im = DMatrix::<f64>::from_fn(4, 4, |r, c| (m[(r, c)].im + m[(c, r)].im) * 0.5);
++    let mut scored: Vec<(f64, SvdBasis)> = Vec::new();
++    for &phi in COMBINATION_ANGLES.iter() {
++        let a = &re * phi.cos() + &im * phi.sin();
++        let v = a.symmetric_eigen().eigenvectors;
++        let o2 = RMat4::from_fn(|r, c| v[(c, r)]);
++        let x = u_m * to_complex(&o2).transpose();
++        let mut o1 = RMat4::zeros();
++        let mut ok = true;
++        for k in 0..4 {
++            let col = x.column(k);
++            let s: Complex64 = col.iter().map(|z| z * z).sum();
++            let ph = s.sqrt();
++            if !ph.is_finite() || ph.norm() < 1e-12 {
++                ok = false;
++                break;
++            }
++            for r in 0..4 {
++                o1[(r, k)] = (col[r] / ph).re;
++            }
++        }
++        if !ok {
++            continue;
++        }
++        let d = to_complex(&o1).transpose() * u_m * to_complex(&o2).transpose();
++        let mut off = 0.0;
++        for r in 0..4 {
++            for c in 0..4 {
++                if r != c {
++                    off += d[(r, c)].norm_sqr();
++                }
++            }
++        }
++        scored.push((off.sqrt(), SvdBasis { o1, o2, s_sorted: [4.0, 3.0, 2.0, 1.0] }));
++    }
++    scored.sort_by(|a, b| a.0.total_cmp(&b.0));
++    scored.into_iter().map(|(_, b)| b).collect()
++}
++
+ /// Map `decompose_one`'s four raw magic-basis diagonal angles onto the three
+ /// XX/YY/ZZ Cartan coefficients the caller wants. This specific mapping was
+ /// reverse-engineered and verified against 1000+ random two-qubit unitaries
+@@ -1123,7 +1204,7 @@
+     m.add("PsfDegenerateError", py.get_type::<PsfDegenerateError>())?;
+     m.add("PsfNumericError", py.get_type::<PsfNumericError>())?;
+     m.add("PsfSU2SingularError", py.get_type::<PsfSU2SingularError>())?;
+-    m.add("CORE_VERSION", "2026-09-28.1")?;
++    m.add("CORE_VERSION", "2026-09-29.1")?;
+     Ok(())
+ }
+ 

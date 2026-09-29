@@ -1,0 +1,16 @@
+==============================================================================
+SCORING, Amendment 1: laps 1-30,000 (thresholds as written in the amendment)
+==============================================================================
+C0 all parts have laps 1-30,000: True ([30000, 30000, 30000]); versions: True; lightning.gpu: True; C1 smallest 2.87e-07 -> passed
+   A (PN, spare 0): compile median 15.09 ms, p99 119.35 ms, max 197 ms; within 1 s 30000; mapped 30000; 2q [51]; fallbacks 0; block lap 1 / 1,000 / 30,000: 1.27e-14 / 2.95e-12 / 8.79e-11; whole-circuit checkpoints [(1, '1.1e-14'), (10, '1.5e-14'), (100, '8.4e-14'), (1000, '8.2e-13'), (5000, '4.2e-12'), (10000, '8.4e-12'), (15000, '1.2e-11'), (20000, '1.7e-11'), (25000, '2.0e-11'), (30000, '2.5e-11')]; RSS 533 -> 516 MB; first/last 10% median 15.23 / 15.07 ms
+   B (PN, spare 4): compile median 14.04 ms, p99 20.31 ms, max 170 ms; within 1 s 30000; mapped 30000; 2q [45]; fallbacks 0; block lap 1 / 1,000 / 30,000: 6.91e-15 / 2.91e-12 / 9.12e-11; whole-circuit checkpoints [(1, '9.3e-15'), (10, '1.4e-14'), (100, '9.0e-14'), (1000, '9.9e-13'), (5000, '4.3e-12'), (10000, '8.2e-12'), (15000, '1.2e-11'), (20000, '1.6e-11'), (25000, '2.0e-11'), (30000, '2.4e-11')]; RSS 530 -> 516 MB; first/last 10% median 14.28 / 13.95 ms
+   C (P, spare 4): compile median 14.70 ms, p99 21.95 ms, max 191 ms; within 1 s 30000; mapped 30000; 2q [45]; fallbacks 0; block lap 1 / 1,000 / 30,000: 7.33e-15 / 2.91e-12 / 9.12e-11; whole-circuit checkpoints [(1, '9.5e-15'), (10, '1.4e-14'), (100, '9.0e-14'), (1000, '9.9e-13'), (5000, '4.3e-12'), (10000, '8.2e-12'), (15000, '1.2e-11'), (20000, '1.6e-11'), (25000, '2.0e-11'), (30000, '2.4e-11')]; RSS 529 -> 508 MB; first/last 10% median 14.83 / 14.68 ms
+H1 A within 1 s in 30000/30000 (confirmed >= 29997, refuted < 29700) -> CONFIRMED
+H2 A swap-free and mapped back in 30000/30000 (confirmed 30000, refuted < 29970) -> CONFIRMED
+H3 candidate core fallbacks in A + B: 0 (confirmed 0, refuted >= 3) -> CONFIRMED
+H4 A drift: slope laps 1-1,000 2.915e-15/lap, extrapolated to lap 30,000 8.746e-11, measured 8.794e-11, ratio 1.01 (confirmed <= 2, refuted > 10) -> CONFIRMED
+H5 whole-circuit check, every checkpoint of A and B up to lap 30,000: max 2.45e-11 (confirmed <= 1e-8, refuted > 1e-6) -> CONFIRMED
+H6 RSS growth from lap 1,000 to lap 30,000: [-14, -11, -18] MB (confirmed all <= 100, refuted any > 500) -> CONFIRMED
+H7 spare 4, candidate / release block distance at lap 30,000: 9.116e-11 / 9.116e-11 = 1.00 (confirmed 0.5-2, refuted < 0.2 or > 5) -> CONFIRMED
+H8 A timing: last-10% / first-10% median 0.99 (confirmed <= 1.5, refuted > 3) -> CONFIRMED
+Reported without prediction: release core fallbacks in C 0; rows present beyond lap 30,000 were ignored

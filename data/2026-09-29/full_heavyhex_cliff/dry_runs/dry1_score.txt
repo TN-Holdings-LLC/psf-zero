@@ -1,0 +1,26 @@
+==============================================================================
+SCORING (thresholds exactly as pre-registered); device FakeAuckland (fake provider snapshot); DNF counted as 60 s
+==============================================================================
+C0 no compile ended in an error: True; every PSF-Zero compile finished: True -> passed
+   B spare  0: Q3 median    0.119 s [0.131,0.108,0.119] | P median   0.024 s | 2q Q3 [30, 30, 30] P [30, 30, 30] (no-swap 30) | P<=1s 3/3 Q3<=1s 3/3
+   T spare  0: Q3 median    8.500 s [8.487,8.729,8.500] | P median   0.131 s | 2q Q3 [54, 54, 54] P [63, 63, 63] (no-swap 51) | P<=1s 3/3 Q3<=1s 0/3
+   T spare  2: Q3 median    0.095 s [0.094,0.099,0.095] | P median   0.114 s | 2q Q3 [48, 48, 48] P [48, 48, 48] (no-swap 48) | P<=1s 3/3 Q3<=1s 3/3
+   T spare  4: Q3 median    0.118 s [0.110,0.118,0.118] | P median   0.112 s | 2q Q3 [45, 45, 45] P [45, 45, 45] (no-swap 45) | P<=1s 3/3 Q3<=1s 3/3
+   S spare  0: Q3 median    0.042 s [0.038,0.042,0.045] | P median   0.025 s | 2q Q3 [30, 30, 30] P [30, 30, 30] (no-swap 30) | P<=1s 3/3 Q3<=1s 3/3
+   S spare  2: Q3 median    0.043 s [0.043,0.045,0.042] | P median   0.024 s | 2q Q3 [27, 27, 27] P [27, 27, 27] (no-swap 27) | P<=1s 3/3 Q3<=1s 3/3
+   S spare  4: Q3 median    0.044 s [0.042,0.049,0.044] | P median   0.023 s | 2q Q3 [24, 24, 24] P [24, 24, 24] (no-swap 24) | P<=1s 3/3 Q3<=1s 3/3
+H1 T: Qiskit L3 median spare 0 / spare 4 = 72.3 (confirmed >= 10, refuted < 3) -> CONFIRMED
+H2 T spare 0: PSF-Zero within 1 s in 3/3 (confirmed 3/3, refuted <= 1) -> CONFIRMED
+H3 T spare 0: Qiskit L3 median / PSF-Zero median = 64.9 (confirmed >= 10, refuted < 3) -> CONFIRMED
+H4 S: Qiskit L3 median spare 0 / spare 4 = 1.0 (confirmed < 3, refuted >= 10) -> CONFIRMED
+H5 S spare 0: PSF-Zero within 1 s in 3/3 (confirmed 3/3, refuted <= 1) -> CONFIRMED
+H6 two-qubit count: PSF-Zero equal in 18/21, above Qiskit L3 in 3 (confirmed never above, refuted above in any) -> REFUTED
+H7 PSF-Zero exact per block (<= 1e-12) wherever the check applies: 18/21 applicable, worst 1.512365414625519e-14 -> CONFIRMED
+Reported without prediction: Qiskit L3 per-block worst 1.8889732781581563e-13 over 18/21 applicable; Qiskit L3 outputs above 1e-12: 0; B ratio Q3/P at spare 0 5.0
+   PSF layout search (diagnostic): ('B', 0, 'found=True phase=0 order=matching_direct tried=0')
+   PSF layout search (diagnostic): ('S', 0, 'found=True phase=0 order=matching_direct tried=0')
+   PSF layout search (diagnostic): ('S', 2, 'found=True phase=0 order=matching_direct tried=0')
+   PSF layout search (diagnostic): ('S', 4, 'found=True phase=0 order=matching_direct tried=0')
+   PSF layout search (diagnostic): ('T', 0, 'found=False phase=None order=None tried=0')
+   PSF layout search (diagnostic): ('T', 2, 'found=False phase=None order=None tried=0')
+   PSF layout search (diagnostic): ('T', 4, 'found=False phase=None order=None tried=0')

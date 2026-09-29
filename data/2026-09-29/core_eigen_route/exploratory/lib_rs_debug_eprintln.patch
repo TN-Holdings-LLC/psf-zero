@@ -1,0 +1,41 @@
+--- a/src/lib.rs
++++ b/src/lib.rs
+@@ -721,6 +721,8 @@
+ /// threshold for clustering (near-)tied singular values into correction
+ /// groups. The SVD basis is computed once by the caller and shared across
+ /// tolerance retries, since it does not depend on `group_tol`.
++fn dbg_on() -> bool { std::env::var("PSF_CORE_DEBUG").is_ok() }
++
+ fn try_decompose_with_tol(
+     u_m: &Mat4,
+     basis: &SvdBasis,
+@@ -797,6 +799,9 @@
+             }
+         }
+     }
++    if dbg_on() {
++        eprintln!("DBG tol={:e} s={:?} groups={:?} offdiag={:e}", group_tol, s_sorted, groups, offdiag_norm_sq.sqrt());
++    }
+     if offdiag_norm_sq.sqrt() > 1e-6 {
+         return Err(CartanError::NumericInstability);
+     }
+@@ -814,6 +819,9 @@
+     // free. See changelog item 4.
+     let angle_sum = angles.0 + angles.1 + angles.2 + angles.3;
+     let wrapped = angle_sum - (angle_sum / (2.0 * PI)).round() * 2.0 * PI;
++    if dbg_on() {
++        eprintln!("DBG tol={:e} anglesum_wrapped={:e}", group_tol, wrapped);
++    }
+     if wrapped.abs() > ANGLE_SUM_TOL {
+         return Err(CartanError::NumericInstability);
+     }
+@@ -919,6 +927,9 @@
+         }
+     }
+ 
++    if dbg_on() {
++        eprintln!("DBG tol={:e} su2_ok={}", group_tol, su2_result.is_ok());
++    }
+     let ((k1l, k1r), (k2l, k2r)) = su2_result?;
+ 
+     Ok((

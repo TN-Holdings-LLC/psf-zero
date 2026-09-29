@@ -1,0 +1,82 @@
+family,spare,logical_qubits,physical_qubits,input,arm,elapsed_s,twoq,expected_twoq,block_check_applicable,block_worst,digest,layout_module,psf_layout_diag,status,within_0.1s,within_1.0s,within_10.0s
+B,0,128,156,0,Q3,0.3412909529997705,192,192,True,1.7315027786921775e-13,187c59ceb71d4a6c,,,OK,False,True,True
+B,0,128,156,0,P,0.055792829998608795,192,192,True,6.918557484250949e-15,5cd9cdb992c4788d,2026-09-26.m1 a639efdef484,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+B,0,128,156,0,PX,0.05150068100010685,192,192,True,6.918557484250949e-15,5cd9cdb992c4788d,2026-09-29.c1 e25952a33bac,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+B,0,128,156,1,Q3,0.3458537320002506,192,192,True,3.4277670245837605e-14,bf2feea607b7c8cd,,,OK,False,True,True
+B,0,128,156,1,P,0.05231372299931536,192,192,True,9.877693543292396e-15,0e6b4f2f8d33342f,2026-09-26.m1 a639efdef484,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+B,0,128,156,1,PX,0.057053683000049205,192,192,True,9.877693543292396e-15,0e6b4f2f8d33342f,2026-09-29.c1 e25952a33bac,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+B,0,128,156,2,Q3,0.3531313709991082,192,192,True,1.0745883179496739e-13,f903428b2598032a,,,OK,False,True,True
+B,0,128,156,2,P,0.05237812999985181,192,192,True,1.0500029177823661e-14,7ca4c267df96089a,2026-09-26.m1 a639efdef484,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+B,0,128,156,2,PX,0.0588021449984808,192,192,True,1.0500029177823661e-14,7ca4c267df96089a,2026-09-29.c1 e25952a33bac,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+T,0,156,156,0,Q3,25.03021858700049,315,276,False,,a5ba77fd622bd3aa,,,OK,False,False,False
+T,0,156,156,0,P,0.2755193259999942,327,276,False,,22184973b3eee2ad,2026-09-26.m1 a639efdef484,found=False phase=None order=None tried=0 search_s=0.010,OK,False,True,True
+T,0,156,156,0,PX,0.2142611119998037,276,276,True,1.0945345581342506e-14,cad5a2976d494b66,2026-09-29.c1 e25952a33bac,found=True phase=0 order=path_direct tried=0 search_s=0.011,OK,False,True,True
+T,0,156,156,1,Q3,24.943252334000135,315,276,False,,c5c0da4b64c58144,,,OK,False,False,False
+T,0,156,156,1,P,0.3047596939995856,327,276,False,,87fe39e64f51099d,2026-09-26.m1 a639efdef484,found=False phase=None order=None tried=0 search_s=0.010,OK,False,True,True
+T,0,156,156,1,PX,0.2191340699991997,276,276,True,1.559733305026796e-14,075775ca2ab91418,2026-09-29.c1 e25952a33bac,found=True phase=0 order=path_direct tried=0 search_s=0.011,OK,False,True,True
+T,0,156,156,2,Q3,24.880888318999496,315,276,False,,60c399a6cf7792d8,,,OK,False,False,False
+T,0,156,156,2,P,0.2747955049999291,327,276,False,,931ff23b3010881a,2026-09-26.m1 a639efdef484,found=False phase=None order=None tried=0 search_s=0.010,OK,False,True,True
+T,0,156,156,2,PX,0.21395336400019005,276,276,True,1.3959895004493993e-14,06c7b20876de27a3,2026-09-29.c1 e25952a33bac,found=True phase=0 order=path_direct tried=0 search_s=0.014,OK,False,True,True
+T,2,154,156,0,Q3,24.30626833399947,309,273,False,,01b05b49d8bfd241,,,OK,False,False,False
+T,2,154,156,0,P,0.29054211499897065,324,273,False,,6568914a81e073d8,2026-09-26.m1 a639efdef484,found=False phase=None order=None tried=0 search_s=0.010,OK,False,True,True
+T,2,154,156,0,PX,0.21394383700135222,273,273,True,1.3362803991076122e-14,b37c021312d2d8da,2026-09-29.c1 e25952a33bac,found=True phase=0 order=path_direct tried=0 search_s=0.011,OK,False,True,True
+T,2,154,156,1,Q3,24.166672641998957,309,273,False,,9aefd8c17f8a3902,,,OK,False,False,False
+T,2,154,156,1,P,0.27484567999999854,324,273,False,,02252c011e342bb9,2026-09-26.m1 a639efdef484,found=False phase=None order=None tried=0 search_s=0.010,OK,False,True,True
+T,2,154,156,1,PX,0.2151220200012176,273,273,True,1.597478682362425e-14,e6620fd8d6d619e8,2026-09-29.c1 e25952a33bac,found=True phase=0 order=path_direct tried=0 search_s=0.011,OK,False,True,True
+T,2,154,156,2,Q3,24.186751486000503,309,273,False,,40454dc870122dcd,,,OK,False,False,False
+T,2,154,156,2,P,0.2677477720008028,324,273,False,,0515615a31c129f9,2026-09-26.m1 a639efdef484,found=False phase=None order=None tried=0 search_s=0.010,OK,False,True,True
+T,2,154,156,2,PX,0.22464159699848096,273,273,True,1.5636306121957356e-14,989e67037f256351,2026-09-29.c1 e25952a33bac,found=True phase=0 order=path_direct tried=0 search_s=0.011,OK,False,True,True
+T,8,148,156,0,Q3,27.952018034000503,282,264,False,,c85dba69259f00fd,,,OK,False,False,False
+T,8,148,156,0,P,0.28970938500060583,309,264,False,,845b3dfc9344276b,2026-09-26.m1 a639efdef484,found=False phase=None order=None tried=0 search_s=0.010,OK,False,True,True
+T,8,148,156,0,PX,0.2472874649993173,264,264,True,9.233843645555552e-15,54bc97278054cc57,2026-09-29.c1 e25952a33bac,found=True phase=0 order=path_direct tried=0 search_s=0.012,OK,False,True,True
+T,8,148,156,1,Q3,28.37156268399849,282,264,False,,730c9b35c06c602c,,,OK,False,False,False
+T,8,148,156,1,P,0.29838143000051787,309,264,False,,d2a97bf83c0eeac7,2026-09-26.m1 a639efdef484,found=False phase=None order=None tried=0 search_s=0.010,OK,False,True,True
+T,8,148,156,1,PX,0.2280826429996523,264,264,True,1.71674893430951e-14,a67ebb1f770b34de,2026-09-29.c1 e25952a33bac,found=True phase=0 order=path_direct tried=0 search_s=0.011,OK,False,True,True
+T,8,148,156,2,Q3,29.189489281001443,282,264,False,,21aadb3c289d8839,,,OK,False,False,False
+T,8,148,156,2,P,0.29490947900012543,309,264,False,,5177a0e28ea0a61f,2026-09-26.m1 a639efdef484,found=False phase=None order=None tried=0 search_s=0.011,OK,False,True,True
+T,8,148,156,2,PX,0.2163220589991397,264,264,True,1.4220065179101174e-14,73547e7f499b15ac,2026-09-29.c1 e25952a33bac,found=True phase=0 order=path_direct tried=0 search_s=0.011,OK,False,True,True
+T,16,140,156,0,Q3,0.284635480000361,252,252,True,4.049815237946873e-14,b46ab191ae6dc0fc,,,OK,False,True,True
+T,16,140,156,0,P,0.21001203700143378,252,252,True,1.529267994910123e-14,f4fb88522cc58743,2026-09-26.m1 a639efdef484,found=False phase=None order=None tried=0 search_s=0.010,OK,False,True,True
+T,16,140,156,0,PX,0.2092059459992015,252,252,True,1.503572023120433e-14,a9ae13ccc04534a1,2026-09-29.c1 e25952a33bac,found=True phase=0 order=path_direct tried=0 search_s=0.011,OK,False,True,True
+T,16,140,156,1,Q3,0.28133833200081426,252,252,True,3.3729458820926026e-13,7b5259791ace8b6b,,,OK,False,True,True
+T,16,140,156,1,P,0.198634944999867,252,252,True,1.3416847721025045e-14,767d2fa70a4e22fe,2026-09-26.m1 a639efdef484,found=False phase=None order=None tried=0 search_s=0.011,OK,False,True,True
+T,16,140,156,1,PX,0.20943644300132291,252,252,True,1.3376291711112235e-14,51de0f30d0b35b9e,2026-09-29.c1 e25952a33bac,found=True phase=0 order=path_direct tried=0 search_s=0.011,OK,False,True,True
+T,16,140,156,2,Q3,0.27710221400047885,252,252,True,6.018029882900677e-14,c2456c0ed6c28e5c,,,OK,False,True,True
+T,16,140,156,2,P,0.23275431500042032,252,252,True,1.097952445233002e-14,acf9ad0c65504b06,2026-09-26.m1 a639efdef484,found=False phase=None order=None tried=0 search_s=0.014,OK,False,True,True
+T,16,140,156,2,PX,0.21643304399913177,252,252,True,1.097952445233002e-14,37a654da5fc26fd8,2026-09-29.c1 e25952a33bac,found=True phase=0 order=path_direct tried=0 search_s=0.011,OK,False,True,True
+S,0,156,156,0,Q3,0.08997665800052346,192,192,True,9.80813448577532e-14,5112e3737b9c8d2d,,,OK,True,True,True
+S,0,156,156,0,P,0.05417811600091227,192,192,True,8.909248789618568e-15,11339d6e22580fd0,2026-09-26.m1 a639efdef484,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+S,0,156,156,0,PX,0.060180116999617894,192,192,True,8.909248789618568e-15,11339d6e22580fd0,2026-09-29.c1 e25952a33bac,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+S,0,156,156,1,Q3,0.08694982800079742,192,192,True,1.4278530450140078e-13,cc28f29f7fe4ca10,,,OK,True,True,True
+S,0,156,156,1,P,0.05616915300015535,192,192,True,8.298830807581823e-15,3931f8a1b97dbb9c,2026-09-26.m1 a639efdef484,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+S,0,156,156,1,PX,0.05584795399954601,192,192,True,8.298830807581823e-15,3931f8a1b97dbb9c,2026-09-29.c1 e25952a33bac,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+S,0,156,156,2,Q3,0.09127804099989589,192,192,True,1.8077716218541243e-14,f6a3493a4464936b,,,OK,True,True,True
+S,0,156,156,2,P,0.05216243100039719,192,192,True,1.011313510207042e-14,35bf2bf6e3a4e5a5,2026-09-26.m1 a639efdef484,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+S,0,156,156,2,PX,0.05331645800106344,192,192,True,1.011313510207042e-14,35bf2bf6e3a4e5a5,2026-09-29.c1 e25952a33bac,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+S,2,154,156,0,Q3,0.11369389699939347,189,189,True,3.503434613539889e-14,c6374d07b87cb717,,,OK,False,True,True
+S,2,154,156,0,P,0.08943929300039599,189,189,True,8.958405624729892e-15,befbe1bae590fd85,2026-09-26.m1 a639efdef484,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+S,2,154,156,0,PX,0.06068181299997377,189,189,True,8.958405624729892e-15,befbe1bae590fd85,2026-09-29.c1 e25952a33bac,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+S,2,154,156,1,Q3,0.09201012699850253,189,189,True,2.21612957509256e-14,e2c799f6e92a8bd0,,,OK,True,True,True
+S,2,154,156,1,P,0.0599243540000316,189,189,True,7.464415741766072e-15,320737661b442afb,2026-09-26.m1 a639efdef484,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+S,2,154,156,1,PX,0.05384694600070361,189,189,True,7.464415741766072e-15,320737661b442afb,2026-09-29.c1 e25952a33bac,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+S,2,154,156,2,Q3,0.09068503300113662,189,189,True,1.0122736928179105e-13,79db02a1301ab188,,,OK,True,True,True
+S,2,154,156,2,P,0.054221734000748256,189,189,True,1.0750162979784976e-14,bc9b0e72bf86cdc8,2026-09-26.m1 a639efdef484,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+S,2,154,156,2,PX,0.05121376199895167,189,189,True,1.0750162979784976e-14,bc9b0e72bf86cdc8,2026-09-29.c1 e25952a33bac,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+S,8,148,156,0,Q3,0.10754677799923229,180,180,True,5.097716340485753e-14,f5fee18679329d09,,,OK,False,True,True
+S,8,148,156,0,P,0.05626373099948978,180,180,True,9.819395455310898e-15,3a95eef6c53326c0,2026-09-26.m1 a639efdef484,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+S,8,148,156,0,PX,0.05359534099989105,180,180,True,9.819395455310898e-15,3a95eef6c53326c0,2026-09-29.c1 e25952a33bac,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+S,8,148,156,1,Q3,0.09752950900110591,180,180,True,3.018221362413846e-14,f76c04e863df8a22,,,OK,True,True,True
+S,8,148,156,1,P,0.05365221799911524,180,180,True,8.978440220882248e-15,25aed44167cb1509,2026-09-26.m1 a639efdef484,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+S,8,148,156,1,PX,0.05360934499913128,180,180,True,8.978440220882248e-15,25aed44167cb1509,2026-09-29.c1 e25952a33bac,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+S,8,148,156,2,Q3,0.09557020300053409,180,180,True,1.5260679109880458e-14,138e6574a2e62d58,,,OK,True,True,True
+S,8,148,156,2,P,0.055287412000325276,180,180,True,1.0763107988025475e-14,c238796c9075c13f,2026-09-26.m1 a639efdef484,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+S,8,148,156,2,PX,0.053853207999054575,180,180,True,1.0763107988025475e-14,c238796c9075c13f,2026-09-29.c1 e25952a33bac,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+S,16,140,156,0,Q3,0.09741492699868104,168,168,True,2.4164249457704752e-14,f227364a90d1ae80,,,OK,True,True,True
+S,16,140,156,0,P,0.049783803000536864,168,168,True,9.212612542816458e-15,3672083e38acbf69,2026-09-26.m1 a639efdef484,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+S,16,140,156,0,PX,0.04995945299924642,168,168,True,9.212612542816458e-15,3672083e38acbf69,2026-09-29.c1 e25952a33bac,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+S,16,140,156,1,Q3,0.10799483699884149,168,168,True,3.640916448532848e-14,862666cbdefafa3c,,,OK,False,True,True
+S,16,140,156,1,P,0.05166945899873099,168,168,True,9.556267799698973e-15,7c16f348931975f2,2026-09-26.m1 a639efdef484,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+S,16,140,156,1,PX,0.05154667500028154,168,168,True,9.556267799698973e-15,7c16f348931975f2,2026-09-29.c1 e25952a33bac,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+S,16,140,156,2,Q3,0.0999693899993872,168,168,True,1.0545468537942834e-13,1c423b755e7c1be0,,,OK,True,True,True
+S,16,140,156,2,P,0.05150933600089047,168,168,True,9.397684112594127e-15,7106bb81e5d9cfcd,2026-09-26.m1 a639efdef484,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True
+S,16,140,156,2,PX,0.0529605330011691,168,168,True,9.397684112594127e-15,7106bb81e5d9cfcd,2026-09-29.c1 e25952a33bac,found=True phase=0 order=matching_direct tried=0 search_s=0.001,OK,True,True,True

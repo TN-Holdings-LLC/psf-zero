@@ -1,0 +1,11 @@
+arm Q3 | platform Linux-6.18.44-fc-v37-x86_64-with-glibc2.39 | cores 2 | python 3.11.15 | qiskit 2.5.2 | pennylane 0.45.1
+SCRIPT <sandbox>/repo929/benchmarks/pl_heavyhex_chain.py 84aafa1f56680e4e77be2e6261b2d45e669c5fa48a3db25f88e8180ccf8e005f
+Stage 0: FakeAuckland, 27 qubits, max matching 10, {P2,P3}-factor found
+Q3 spare= 0 lap   1 compile    8.754s lap    8.77s 2q=54 (swap-free 51) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3 spare= 0 lap   2 compile    8.951s lap    8.97s 2q=54 (swap-free 51) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3 spare= 0 lap   3 compile    8.835s lap    8.85s 2q=54 (swap-free 51) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3 spare= 2 lap   1 compile    0.093s lap    0.17s 2q=48 (swap-free 48) max_block_dist=1.787e-13 layout_changed=False OK
+Q3 spare= 2 lap   2 compile    0.083s lap    0.16s 2q=48 (swap-free 48) max_block_dist=1.792e-13 layout_changed=True OK
+Q3 spare= 2 lap   3 compile    0.084s lap    0.16s 2q=48 (swap-free 48) max_block_dist=1.782e-13 layout_changed=False OK
+Wrote pl_heavyhex_chain_Q3_dry.csv (6 rows)
+DONE

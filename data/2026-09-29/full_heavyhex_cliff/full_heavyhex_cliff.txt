@@ -1,0 +1,90 @@
+platform Linux-6.18.44-fc-v37-x86_64-with-glibc2.39 | cores 2 | python 3.11.15 | qiskit 2.5.2
+LOADED <sandbox>/repo929/psf_compile.py 2026-09-28.1 3616efc8b8a7bea184d6170fb7379d509d0bfec9828f4eb2f703dd4d26d8c60b | CORE_VERSION 2026-09-28.1
+SCRIPT <sandbox>/repo929/benchmarks/full_heavyhex_cliff.py 1264fadacab44403d0dbc40a5cab8c0c60281b013f6f2c33e6ba91181eb502e4
+PX layout module <sandbox>/hh/cand_layout/psf_smart_layout.py e25952a33bacfbb8de7a439b53892e9bab88329d8c47c6de867c29fc660145fa
+Stage 0: device FakeKingston (fake provider snapshot), 156 qubits, 176 edges, degree min/median/max 1/2.0/3, max matching 64 pairs (128 qubits, 28 unmatched), native ['id', 'rz', 'x', 'sx', 'cz']
+G0 {P2,P3}-factor with 28 triples and 36 pairs: found (triples [(0, 1, 2), (4, 3, 16), (8, 7, 17), (12, 11, 18), (20, 21, 36), (22, 23, 24), (26, 25, 37), (30, 29, 38), (40, 41, 42), (44, 43, 56), (48, 47, 57), (52, 51, 58), (60, 61, 76), (62, 63, 64), (66, 65, 77), (70, 69, 78), (80, 81, 82), (84, 83, 96), (88, 87, 97), (92, 91, 98), (100, 101, 116), (102, 103, 104), (106, 105, 117), (110, 109, 118), (120, 121, 122), (124, 123, 136), (128, 127, 137), (132, 131, 138)])
+B spare= 0 n=128 input=0 Q3 OK       0.341s 2q=192 (no-swap 192) check=True worst=1.7315027786921775e-13 digest=187c59ceb71d4a6c
+B spare= 0 n=128 input=0 P  OK       0.056s 2q=192 (no-swap 192) check=True worst=6.918557484250949e-15 digest=5cd9cdb992c4788d | 2026-09-26.m1 a639efdef484 | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+B spare= 0 n=128 input=0 PX OK       0.052s 2q=192 (no-swap 192) check=True worst=6.918557484250949e-15 digest=5cd9cdb992c4788d | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+B spare= 0 n=128 input=1 Q3 OK       0.346s 2q=192 (no-swap 192) check=True worst=3.4277670245837605e-14 digest=bf2feea607b7c8cd
+B spare= 0 n=128 input=1 P  OK       0.052s 2q=192 (no-swap 192) check=True worst=9.877693543292396e-15 digest=0e6b4f2f8d33342f | 2026-09-26.m1 a639efdef484 | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+B spare= 0 n=128 input=1 PX OK       0.057s 2q=192 (no-swap 192) check=True worst=9.877693543292396e-15 digest=0e6b4f2f8d33342f | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+B spare= 0 n=128 input=2 Q3 OK       0.353s 2q=192 (no-swap 192) check=True worst=1.0745883179496739e-13 digest=f903428b2598032a
+B spare= 0 n=128 input=2 P  OK       0.052s 2q=192 (no-swap 192) check=True worst=1.0500029177823661e-14 digest=7ca4c267df96089a | 2026-09-26.m1 a639efdef484 | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+B spare= 0 n=128 input=2 PX OK       0.059s 2q=192 (no-swap 192) check=True worst=1.0500029177823661e-14 digest=7ca4c267df96089a | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+T spare= 0 n=156 input=0 Q3 OK      25.030s 2q=315 (no-swap 276) check=False worst=None digest=a5ba77fd622bd3aa
+T spare= 0 n=156 input=0 P  OK       0.276s 2q=327 (no-swap 276) check=False worst=None digest=22184973b3eee2ad | 2026-09-26.m1 a639efdef484 | found=False phase=None order=None tried=0 search_s=0.010
+T spare= 0 n=156 input=0 PX OK       0.214s 2q=276 (no-swap 276) check=True worst=1.0945345581342506e-14 digest=cad5a2976d494b66 | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=path_direct tried=0 search_s=0.011
+T spare= 0 n=156 input=1 Q3 OK      24.943s 2q=315 (no-swap 276) check=False worst=None digest=c5c0da4b64c58144
+T spare= 0 n=156 input=1 P  OK       0.305s 2q=327 (no-swap 276) check=False worst=None digest=87fe39e64f51099d | 2026-09-26.m1 a639efdef484 | found=False phase=None order=None tried=0 search_s=0.010
+T spare= 0 n=156 input=1 PX OK       0.219s 2q=276 (no-swap 276) check=True worst=1.559733305026796e-14 digest=075775ca2ab91418 | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=path_direct tried=0 search_s=0.011
+T spare= 0 n=156 input=2 Q3 OK      24.881s 2q=315 (no-swap 276) check=False worst=None digest=60c399a6cf7792d8
+T spare= 0 n=156 input=2 P  OK       0.275s 2q=327 (no-swap 276) check=False worst=None digest=931ff23b3010881a | 2026-09-26.m1 a639efdef484 | found=False phase=None order=None tried=0 search_s=0.010
+T spare= 0 n=156 input=2 PX OK       0.214s 2q=276 (no-swap 276) check=True worst=1.3959895004493993e-14 digest=06c7b20876de27a3 | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=path_direct tried=0 search_s=0.014
+T spare= 2 n=154 input=0 Q3 OK      24.306s 2q=309 (no-swap 273) check=False worst=None digest=01b05b49d8bfd241
+T spare= 2 n=154 input=0 P  OK       0.291s 2q=324 (no-swap 273) check=False worst=None digest=6568914a81e073d8 | 2026-09-26.m1 a639efdef484 | found=False phase=None order=None tried=0 search_s=0.010
+T spare= 2 n=154 input=0 PX OK       0.214s 2q=273 (no-swap 273) check=True worst=1.3362803991076122e-14 digest=b37c021312d2d8da | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=path_direct tried=0 search_s=0.011
+T spare= 2 n=154 input=1 Q3 OK      24.167s 2q=309 (no-swap 273) check=False worst=None digest=9aefd8c17f8a3902
+T spare= 2 n=154 input=1 P  OK       0.275s 2q=324 (no-swap 273) check=False worst=None digest=02252c011e342bb9 | 2026-09-26.m1 a639efdef484 | found=False phase=None order=None tried=0 search_s=0.010
+T spare= 2 n=154 input=1 PX OK       0.215s 2q=273 (no-swap 273) check=True worst=1.597478682362425e-14 digest=e6620fd8d6d619e8 | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=path_direct tried=0 search_s=0.011
+T spare= 2 n=154 input=2 Q3 OK      24.187s 2q=309 (no-swap 273) check=False worst=None digest=40454dc870122dcd
+T spare= 2 n=154 input=2 P  OK       0.268s 2q=324 (no-swap 273) check=False worst=None digest=0515615a31c129f9 | 2026-09-26.m1 a639efdef484 | found=False phase=None order=None tried=0 search_s=0.010
+T spare= 2 n=154 input=2 PX OK       0.225s 2q=273 (no-swap 273) check=True worst=1.5636306121957356e-14 digest=989e67037f256351 | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=path_direct tried=0 search_s=0.011
+T spare= 8 n=148 input=0 Q3 OK      27.952s 2q=282 (no-swap 264) check=False worst=None digest=c85dba69259f00fd
+T spare= 8 n=148 input=0 P  OK       0.290s 2q=309 (no-swap 264) check=False worst=None digest=845b3dfc9344276b | 2026-09-26.m1 a639efdef484 | found=False phase=None order=None tried=0 search_s=0.010
+T spare= 8 n=148 input=0 PX OK       0.247s 2q=264 (no-swap 264) check=True worst=9.233843645555552e-15 digest=54bc97278054cc57 | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=path_direct tried=0 search_s=0.012
+T spare= 8 n=148 input=1 Q3 OK      28.372s 2q=282 (no-swap 264) check=False worst=None digest=730c9b35c06c602c
+T spare= 8 n=148 input=1 P  OK       0.298s 2q=309 (no-swap 264) check=False worst=None digest=d2a97bf83c0eeac7 | 2026-09-26.m1 a639efdef484 | found=False phase=None order=None tried=0 search_s=0.010
+T spare= 8 n=148 input=1 PX OK       0.228s 2q=264 (no-swap 264) check=True worst=1.71674893430951e-14 digest=a67ebb1f770b34de | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=path_direct tried=0 search_s=0.011
+T spare= 8 n=148 input=2 Q3 OK      29.189s 2q=282 (no-swap 264) check=False worst=None digest=21aadb3c289d8839
+T spare= 8 n=148 input=2 P  OK       0.295s 2q=309 (no-swap 264) check=False worst=None digest=5177a0e28ea0a61f | 2026-09-26.m1 a639efdef484 | found=False phase=None order=None tried=0 search_s=0.011
+T spare= 8 n=148 input=2 PX OK       0.216s 2q=264 (no-swap 264) check=True worst=1.4220065179101174e-14 digest=73547e7f499b15ac | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=path_direct tried=0 search_s=0.011
+T spare=16 n=140 input=0 Q3 OK       0.285s 2q=252 (no-swap 252) check=True worst=4.049815237946873e-14 digest=b46ab191ae6dc0fc
+T spare=16 n=140 input=0 P  OK       0.210s 2q=252 (no-swap 252) check=True worst=1.529267994910123e-14 digest=f4fb88522cc58743 | 2026-09-26.m1 a639efdef484 | found=False phase=None order=None tried=0 search_s=0.010
+T spare=16 n=140 input=0 PX OK       0.209s 2q=252 (no-swap 252) check=True worst=1.503572023120433e-14 digest=a9ae13ccc04534a1 | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=path_direct tried=0 search_s=0.011
+T spare=16 n=140 input=1 Q3 OK       0.281s 2q=252 (no-swap 252) check=True worst=3.3729458820926026e-13 digest=7b5259791ace8b6b
+T spare=16 n=140 input=1 P  OK       0.199s 2q=252 (no-swap 252) check=True worst=1.3416847721025045e-14 digest=767d2fa70a4e22fe | 2026-09-26.m1 a639efdef484 | found=False phase=None order=None tried=0 search_s=0.011
+T spare=16 n=140 input=1 PX OK       0.209s 2q=252 (no-swap 252) check=True worst=1.3376291711112235e-14 digest=51de0f30d0b35b9e | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=path_direct tried=0 search_s=0.011
+T spare=16 n=140 input=2 Q3 OK       0.277s 2q=252 (no-swap 252) check=True worst=6.018029882900677e-14 digest=c2456c0ed6c28e5c
+T spare=16 n=140 input=2 P  OK       0.233s 2q=252 (no-swap 252) check=True worst=1.097952445233002e-14 digest=acf9ad0c65504b06 | 2026-09-26.m1 a639efdef484 | found=False phase=None order=None tried=0 search_s=0.014
+T spare=16 n=140 input=2 PX OK       0.216s 2q=252 (no-swap 252) check=True worst=1.097952445233002e-14 digest=37a654da5fc26fd8 | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=path_direct tried=0 search_s=0.011
+S spare= 0 n=156 input=0 Q3 OK       0.090s 2q=192 (no-swap 192) check=True worst=9.80813448577532e-14 digest=5112e3737b9c8d2d
+S spare= 0 n=156 input=0 P  OK       0.054s 2q=192 (no-swap 192) check=True worst=8.909248789618568e-15 digest=11339d6e22580fd0 | 2026-09-26.m1 a639efdef484 | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+S spare= 0 n=156 input=0 PX OK       0.060s 2q=192 (no-swap 192) check=True worst=8.909248789618568e-15 digest=11339d6e22580fd0 | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+S spare= 0 n=156 input=1 Q3 OK       0.087s 2q=192 (no-swap 192) check=True worst=1.4278530450140078e-13 digest=cc28f29f7fe4ca10
+S spare= 0 n=156 input=1 P  OK       0.056s 2q=192 (no-swap 192) check=True worst=8.298830807581823e-15 digest=3931f8a1b97dbb9c | 2026-09-26.m1 a639efdef484 | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+S spare= 0 n=156 input=1 PX OK       0.056s 2q=192 (no-swap 192) check=True worst=8.298830807581823e-15 digest=3931f8a1b97dbb9c | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+S spare= 0 n=156 input=2 Q3 OK       0.091s 2q=192 (no-swap 192) check=True worst=1.8077716218541243e-14 digest=f6a3493a4464936b
+S spare= 0 n=156 input=2 P  OK       0.052s 2q=192 (no-swap 192) check=True worst=1.011313510207042e-14 digest=35bf2bf6e3a4e5a5 | 2026-09-26.m1 a639efdef484 | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+S spare= 0 n=156 input=2 PX OK       0.053s 2q=192 (no-swap 192) check=True worst=1.011313510207042e-14 digest=35bf2bf6e3a4e5a5 | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+S spare= 2 n=154 input=0 Q3 OK       0.114s 2q=189 (no-swap 189) check=True worst=3.503434613539889e-14 digest=c6374d07b87cb717
+S spare= 2 n=154 input=0 P  OK       0.089s 2q=189 (no-swap 189) check=True worst=8.958405624729892e-15 digest=befbe1bae590fd85 | 2026-09-26.m1 a639efdef484 | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+S spare= 2 n=154 input=0 PX OK       0.061s 2q=189 (no-swap 189) check=True worst=8.958405624729892e-15 digest=befbe1bae590fd85 | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+S spare= 2 n=154 input=1 Q3 OK       0.092s 2q=189 (no-swap 189) check=True worst=2.21612957509256e-14 digest=e2c799f6e92a8bd0
+S spare= 2 n=154 input=1 P  OK       0.060s 2q=189 (no-swap 189) check=True worst=7.464415741766072e-15 digest=320737661b442afb | 2026-09-26.m1 a639efdef484 | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+S spare= 2 n=154 input=1 PX OK       0.054s 2q=189 (no-swap 189) check=True worst=7.464415741766072e-15 digest=320737661b442afb | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+S spare= 2 n=154 input=2 Q3 OK       0.091s 2q=189 (no-swap 189) check=True worst=1.0122736928179105e-13 digest=79db02a1301ab188
+S spare= 2 n=154 input=2 P  OK       0.054s 2q=189 (no-swap 189) check=True worst=1.0750162979784976e-14 digest=bc9b0e72bf86cdc8 | 2026-09-26.m1 a639efdef484 | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+S spare= 2 n=154 input=2 PX OK       0.051s 2q=189 (no-swap 189) check=True worst=1.0750162979784976e-14 digest=bc9b0e72bf86cdc8 | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+S spare= 8 n=148 input=0 Q3 OK       0.108s 2q=180 (no-swap 180) check=True worst=5.097716340485753e-14 digest=f5fee18679329d09
+S spare= 8 n=148 input=0 P  OK       0.056s 2q=180 (no-swap 180) check=True worst=9.819395455310898e-15 digest=3a95eef6c53326c0 | 2026-09-26.m1 a639efdef484 | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+S spare= 8 n=148 input=0 PX OK       0.054s 2q=180 (no-swap 180) check=True worst=9.819395455310898e-15 digest=3a95eef6c53326c0 | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+S spare= 8 n=148 input=1 Q3 OK       0.098s 2q=180 (no-swap 180) check=True worst=3.018221362413846e-14 digest=f76c04e863df8a22
+S spare= 8 n=148 input=1 P  OK       0.054s 2q=180 (no-swap 180) check=True worst=8.978440220882248e-15 digest=25aed44167cb1509 | 2026-09-26.m1 a639efdef484 | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+S spare= 8 n=148 input=1 PX OK       0.054s 2q=180 (no-swap 180) check=True worst=8.978440220882248e-15 digest=25aed44167cb1509 | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+S spare= 8 n=148 input=2 Q3 OK       0.096s 2q=180 (no-swap 180) check=True worst=1.5260679109880458e-14 digest=138e6574a2e62d58
+S spare= 8 n=148 input=2 P  OK       0.055s 2q=180 (no-swap 180) check=True worst=1.0763107988025475e-14 digest=c238796c9075c13f | 2026-09-26.m1 a639efdef484 | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+S spare= 8 n=148 input=2 PX OK       0.054s 2q=180 (no-swap 180) check=True worst=1.0763107988025475e-14 digest=c238796c9075c13f | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+S spare=16 n=140 input=0 Q3 OK       0.097s 2q=168 (no-swap 168) check=True worst=2.4164249457704752e-14 digest=f227364a90d1ae80
+S spare=16 n=140 input=0 P  OK       0.050s 2q=168 (no-swap 168) check=True worst=9.212612542816458e-15 digest=3672083e38acbf69 | 2026-09-26.m1 a639efdef484 | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+S spare=16 n=140 input=0 PX OK       0.050s 2q=168 (no-swap 168) check=True worst=9.212612542816458e-15 digest=3672083e38acbf69 | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+S spare=16 n=140 input=1 Q3 OK       0.108s 2q=168 (no-swap 168) check=True worst=3.640916448532848e-14 digest=862666cbdefafa3c
+S spare=16 n=140 input=1 P  OK       0.052s 2q=168 (no-swap 168) check=True worst=9.556267799698973e-15 digest=7c16f348931975f2 | 2026-09-26.m1 a639efdef484 | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+S spare=16 n=140 input=1 PX OK       0.052s 2q=168 (no-swap 168) check=True worst=9.556267799698973e-15 digest=7c16f348931975f2 | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+S spare=16 n=140 input=2 Q3 OK       0.100s 2q=168 (no-swap 168) check=True worst=1.0545468537942834e-13 digest=1c423b755e7c1be0
+S spare=16 n=140 input=2 P  OK       0.052s 2q=168 (no-swap 168) check=True worst=9.397684112594127e-15 digest=7106bb81e5d9cfcd | 2026-09-26.m1 a639efdef484 | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+S spare=16 n=140 input=2 PX OK       0.053s 2q=168 (no-swap 168) check=True worst=9.397684112594127e-15 digest=7106bb81e5d9cfcd | 2026-09-29.c1 e25952a33bac | found=True phase=0 order=matching_direct tried=0 search_s=0.001
+
+Wrote full_heavyhex_cliff_2026-09-29.csv and full_heavyhex_cliff_2026-09-29.json (81 rows)
+DONE

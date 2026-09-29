@@ -1,0 +1,12 @@
+start 2026-09-29 01:02:21 UTC
+core_eigen_route_check.py 113df1c6e1855c279ad7f00ac6eef570413ad2991c7320ad2e592859190191f8
+long_loop_100k_v5.py 12b4c1c122fcaa758ec3cc0b2c6e468a2e06655cbfd4fb61cad0e04d46a0df56
+candidate lib.rs 5364630ec4e3648fe944b4103d76e8caa440e722c27ee6621b0ac51fdb26ad8f
+f4b4a6c Addenda 245-247 and Amendment 2 to Addendum 211 (home, 2026-09-28)
+?? benchmarks/blocks15.npz
+?? benchmarks/core_eigen_route_check.py
+?? benchmarks/cutoff_psf_levels.py
+?? benchmarks/long_loop_100k_v5.py
+Model name:                              Intel(R) Xeon(R) Processor @ 2.80GHz
+2
+T0 core 2026-09-29.1

@@ -1,0 +1,6 @@
+qubits 156 edges 176 degree min/median/max 1 2.0 3 deg hist {1: 8, 2: 100, 3: 48}
+max matching 64 unmatched 28 bipartite True connected True
+native ['rz', 'id', 'measure', 'cz', 'sx', 'if_else', 'reset', 'delay', 'measure_2', 'x']
+SDR attach (first matching): (28, 28)
+factor found with seed 0 28 28
+best 28

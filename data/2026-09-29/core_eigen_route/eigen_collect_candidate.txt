@@ -1,0 +1,8 @@
+CORE <sandbox>/deg/pkg_cand/psf_zero_core/__init__.py CORE_VERSION 2026-09-29.1
+LOADED psf_compile 2026-09-28.1
+candidate RAND: accepted 50000/50000; raw residual max 5.91e-09
+candidate NEAR: accepted 5000/5000; raw residual max 1.84e-07
+candidate TIE: accepted 10000/10000; raw residual max 8.90e-07
+candidate EFRESH: accepted 330000/330000; raw residual max 7.89e-07
+candidate V4: accepted 15/15; raw residual max 1.53e-10
+wrote eigen_check_candidate.npz

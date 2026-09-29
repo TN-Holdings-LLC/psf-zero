@@ -1,0 +1,14 @@
+==============================================================================
+SCORING (thresholds exactly as pre-registered)
+==============================================================================
+C0: release core 2026-09-28.1, candidate core 2026-09-29.1, set sizes {'RAND': 50000, 'NEAR': 5000, 'TIE': 10000, 'EFRESH': 330000, 'V4': 15} -> passed
+   RAND: {"rel_acc": 50000, "cand_acc": 50000, "identical": 50000, "newly_acc": 0, "newly_rej": 0, "cand_res_max": 5.907424700787316e-09, "new_res_max": 0.0}
+   NEAR: {"rel_acc": 4999, "cand_acc": 5000, "identical": 4999, "newly_acc": 1, "newly_rej": 0, "cand_res_max": 1.8377514278131577e-07, "new_res_max": 2.1436656170136684e-15}
+   TIE: {"rel_acc": 10000, "cand_acc": 10000, "identical": 10000, "newly_acc": 0, "newly_rej": 0, "cand_res_max": 8.900418141893012e-07, "new_res_max": 0.0}
+   EFRESH: {"rel_acc": 329989, "cand_acc": 330000, "identical": 329989, "newly_acc": 11, "newly_rej": 0, "cand_res_max": 7.890604400030785e-07, "new_res_max": 2.297161672831019e-15}
+   V4: {"rel_acc": 0, "cand_acc": 15, "identical": 0, "newly_acc": 15, "newly_rej": 0, "cand_res_max": 1.5267834670159895e-10, "new_res_max": 1.5267834670159895e-10}
+E1 bit-identical on every block the release core accepts (RAND, NEAR, TIE, EFRESH): [('RAND', 50000, 50000), ('NEAR', 4999, 4999), ('TIE', 10000, 10000), ('EFRESH', 329989, 329989)] -> CONFIRMED
+E2 no block newly rejected (all sets): 0 -> CONFIRMED
+E3 candidate accepts every EFRESH block, newly accepted ones with raw residual <= 1e-8: accepted 330000/330000, newly accepted 11, their worst raw residual 2.30e-15 (refuted if any rejected or > 1e-6) -> CONFIRMED
+E4 the release core rejects between 1 and 100 EFRESH blocks (v4 rate: 15 in about 330,000): 11 -> CONFIRMED
+E5 (control) candidate accepts all 15 V4 blocks: 15/15; worst raw residual 1.53e-10 -> CONFIRMED
