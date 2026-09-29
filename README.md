@@ -75,6 +75,35 @@ repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see belo
 > bit-identical. The default `block_gate_floor` is 8; every emitted two-qubit block is
 > checked by phase-aligned operator distance (1e-13), as since 2026-09-27.6.
 
+> **Update (2026-09-29) -- heavy-hex, a layout gap in the current release, and a Qiskit
+> angle cutoff** ([Part 9](docs/findings/spare-qubit-cliff-combined-248.md), Addenda
+> 248-259; notes on Addenda 246-247 in Part 8). All pre-registered; compile-only, fake
+> backends, no QPU.
+>
+> - **A fully occupied heavy-hex device does show the cliff.** Pairs alone cannot fill a
+>   heavy-hex graph (it has no perfect matching), which is why earlier heavy-hex tests
+>   saw no cliff. Filling FakeKingston (156 qubits) with pairs *and* 3-qubit paths,
+>   Qiskit `optimization_level=3` took a median 24-28 s at 0-8 spare qubits (0.28 s at
+>   16) and added 18-39 two-qubit gates, although a swap-free layout exists.
+> - **Known gap in the current release.** On those circuits PSF-Zero's layout search
+>   (`psf_smart_layout` 2026-09-26.m1) wrongly reports "no layout" and falls back to
+>   Qiskit's level-1 layout: fast (0.28 s) but with 45-51 more two-qubit gates than a
+>   swap-free layout, more than Qiskit L3. The output is still correct (whole-circuit
+>   GPU checks on a 27-qubit heavy-hex model, including SWAPs: <= 4.9e-14). Circuits
+>   made of disjoint pairs are not affected. A candidate fix (2026-09-29.c1, in
+>   [`patches/`](patches/)) places them swap-free in about 0.21 s and leaves pair-only
+>   outputs unchanged; it is being checked at home before it becomes the release.
+> - **Qiskit's `CommutativeCancellation` drops merged Z rotations smaller than
+>   4 pi x 1e-5 (about 1.26e-4 rad)**, a fixed cutoff that `approximation_degree` does
+>   not change (Qiskit 2.5.2; also on main as of 2026-09-28). PSF-Zero's default path
+>   (routing level 1) never runs that pass and stayed exact; passing
+>   `routing_optimization_level=3` runs it and accepts the same cutoff (operator
+>   errors up to about 1.3e-4 on the affected pair).
+> - **A candidate Rust core (2026-09-29.1)** removes the last 15 core fallbacks of the
+>   100,000-compile run (0 fallbacks, 0 repairs) and is bit-identical to the release
+>   core on the 394,988 blocks where that core succeeds. Also in `patches/`, not yet
+>   the release.
+
 > **Correctness notice (2026-09-26) -- if you use `entangling_basis="cx"`, update to
 > `psf_compile.py` VERSION 2026-09-26.4 or later.** Qiskit's own
 > `TwoQubitBasisDecomposer(CXGate(), euler_basis="ZSX")` (Qiskit 2.5.2) returns a
@@ -498,8 +527,10 @@ and every pre-registered prediction: `spare-qubit-cliff-combined.md`, Addendum 3
 **On IBM's square-lattice generation (2026-09-25): the cliff is there, with
 Qiskit given the full device target.** Until now the cliff was a finding on
 grids built for the purpose: IBM's current heavy-hex devices cannot reach the
-saturated condition at all, because a heavy-hex graph has no perfect
-matching. FakeNighthawk -- `qiskit_ibm_runtime`'s snapshot of IBM's
+saturated condition with disjoint-pair circuits, because a heavy-hex graph has
+no perfect matching. (*Corrected 2026-09-29:* this sentence said "at all".
+Circuits that also use 3-qubit paths can fill a heavy-hex device completely,
+and there the cliff does appear -- see the update at the top, Addenda 252-253.) FakeNighthawk -- `qiskit_ibm_runtime`'s snapshot of IBM's
 square-lattice Nighthawk generation (120 qubits, degree at most 4) -- can: its
 coupling graph is bipartite 60/60 with a perfect matching. On the same dense
 adjacent-pair circuit family, with `transpile()` given the full backend rather
@@ -703,6 +734,11 @@ follows when publishing a measurement, most of them adopted after being burned b
 their absence.
 
 ## Open questions
+
+- **NEW (2026-09-29).** The heavy-hex cliff and the release's layout gap above were
+  measured on FakeKingston; the live ibm_kingston Target (read once at home, not
+  published) has not been run yet. Also open: why Qiskit L3's `CommutativeCancellation`
+  cutoff hit 2 of 729 pairs on ibm_kingston's Target but 0 of 3,000 on FakeNighthawk.
 
 - What causes the ~3x same-condition run-to-run variance found at
   `optimization_level=3` — `VF2Layout`'s own `seed=-1` shuffle behaving
