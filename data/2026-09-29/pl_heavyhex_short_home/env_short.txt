@@ -1,0 +1,6 @@
+start 2026-09-29 12:10:57 UTC
+NVIDIA GeForce RTX 4070, 12282 MiB, 616.92
+Model name:                              AMD Ryzen 5 5500
+Python 3.12.13
+b8f3ec3 README: 2026-09-29 update (heavy-hex cliff, release layout gap, Qiskit angle cutoff); correct heavy-hex sentence
+total wall including imports and setup of the run: 72 s

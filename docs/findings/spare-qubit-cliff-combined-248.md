@@ -1974,6 +1974,81 @@ The numbers above were recomputed here from the CSVs.
 | `pod_scripts/run_100k_2026-09-29.sh` | the run script as used on the pod |
 | `dry_runs/` | the sandbox dry runs |
 
+
+---
+
+<!-- ===== Addendum 260 (source: spare-qubit-cliff-addendum-260-2026-09-29.md) ===== -->
+
+> **Note added when merging:** Home run of Part II of Addendum 258 (500 laps, candidate stack, RTX 4070): S0-S6 confirmed; the block distance equals the pod's at all 500 laps to the printed digits.
+
+## Addendum 260 -- The 500-lap home short version (Part II of Addendum 258): S0-S6 all confirmed; the candidate stack's block distance at every one of the 500 laps equals the pod's run to all printed digits, on a different GPU, CPU and build (2026-09-29)
+
+**Pre-registered in**: Addendum 258, Part II (`pl-heavyhex-100k-preregistration-2026-09-29.md`),
+locked at the workplace before either run. Run at home with the kit handed over as
+`work_2026-09-29_home_short_kit` (checked with `check_intake.py`: all listed files
+verified), using `short_500_2026-09-29.sh` (now `benchmarks/pod/`).
+
+**Run (home, 2026-09-29 12:10:57 UTC):** WSL2, AMD Ryzen 5 5500, NVIDIA GeForce RTX 4070
+(12,282 MiB; Windows driver 616.92), Python 3.12.13, Qiskit 2.5.2, PennyLane 0.45.1,
+`lightning.gpu`. Repository at `b8f3ec3`, not changed by the run. The script checked the
+locked files before running ([`pl_heavyhex_100k.py`](../../benchmarks/pl_heavyhex_100k.py) `dad56b1b...`, [`pl_heavyhex_gpu.py`](../../benchmarks/pl_heavyhex_gpu.py)
+`a0081c29...`) and the release files it builds from (`src/lib.rs` `bf3bf537...`,
+[`benchmarks/psf_smart_layout.py`](../../benchmarks/psf_smart_layout.py) `a639efde...`). It built the candidate core outside the
+repository (release `lib.rs` + `lib_rs_eigen_route_2026-09-29.patch`, hash-checked; cargo
+release build, maturin wheel for CPython 3.12) and extracted the candidate layout. The
+run log prints `CORE_VERSION 2026-09-29.1 | LAYOUT 2026-09-29.c1 e25952a33bac |
+psf_compile 2026-09-28.1 3616efc8b8a7`. Part A of the pre-registration: FakeAuckland
+(27 qubits, fully occupied with pairs and 3-qubit paths), 500 compounded PennyLane laps,
+whole-circuit GPU checks at laps 1, 10, 100 and 500. **Times are home times** (not
+compared with the pod or the workplace).
+
+## 1. Scoring (thresholds as pre-registered)
+
+| ID | Prediction | Result |
+|---|---|---|
+| S0 | 500 laps, candidate versions, `lightning.gpu`, C1 control detected (>= 1e-9) | **passed** (C1 5.06e-7) |
+| S1 | within 1 s in 500/500 (refuted <= 450) | **confirmed**: 500/500 |
+| S2 | swap-free and mapped back in 500/500 (refuted <= 450) | **confirmed**: 500/500, 51 two-qubit gates every lap |
+| S3 | core fallbacks 0 (refuted >= 3) | **confirmed**: 0 |
+| S4 | lap-500 block distance <= 1e-11 and whole-circuit max <= 1e-10 | **confirmed**: 1.51e-12 and 4.22e-13 |
+| S5 | whole run <= 120 s (refuted > 600) | **confirmed**: 64 s |
+| S6 | lap-500 block distance / pod's (1.511411e-12) in 0.5-2 | **confirmed**: 1.511411e-12 / 1.511411e-12 = 1.00 |
+
+Reported without prediction: compile median 13.2 ms (min 11.3, max 108 ms); the four GPU
+checks took 4.8-5.1 s each; total wall including imports 72 s.
+
+## 2. Comparison with the pod (done here, not pre-registered)
+
+The home CSV was compared lap by lap with the pod's Part A CSV (Addendum 259,
+[`data/2026-09-29/pl_heavyhex_30k/pl_100k_A_2026-09-29.csv`](../../data/2026-09-29/pl_heavyhex_30k/pl_100k_A_2026-09-29.csv), laps 1-500):
+
+- **block distance to lap 0: identical as printed (7 significant digits) at all 500
+  laps**; two-qubit count, mapped flag and fallbacks identical at every lap;
+- whole-circuit GPU check at the shared checkpoints: home 1.121e-14, 1.477e-14,
+  8.448e-14 against the pod's 1.099e-14, 1.488e-14, 8.449e-14 at laps 1, 10, 100 (the
+  pod had no checkpoint at lap 500). These differ in the last digits, as expected for
+  statevector simulations on different GPUs; they are all at the 1e-14-1e-13 level.
+
+So the candidate stack's compiled circuits, as seen through PennyLane's block matrices,
+evolve identically over 500 compounded laps on the pod (RTX 4090, AMD EPYC, Linux, core
+built there) and at home (RTX 4070, Ryzen, WSL2, core built here).
+
+## 3. What this does not establish
+
+The candidates are still not the release (this is a replication of Part II, not the
+adoption check). Qiskit L3 and the release stack were not run here. 500 laps, one
+device model, one circuit family.
+
+## 4. Files (`data/2026-09-29/pl_heavyhex_short_home/`)
+
+| File | What it is |
+|---|---|
+| [`env_short.txt`](../../data/2026-09-29/pl_heavyhex_short_home/env_short.txt) | start time, GPU, CPU, Python, repository commit, total wall |
+| [`pl_100k_A_short.txt`](../../data/2026-09-29/pl_heavyhex_short_home/pl_100k_A_short.txt) | run log (versions, script hashes, checkpoints) |
+| [`pl_100k_A_short.csv`](../../data/2026-09-29/pl_heavyhex_short_home/pl_100k_A_short.csv) | every lap (500 rows) |
+| [`score_short.txt`](../../data/2026-09-29/pl_heavyhex_short_home/score_short.txt) | scoring |
+| [`short_500_home_console.txt`](../../data/2026-09-29/pl_heavyhex_short_home/short_500_home_console.txt) | console output (end of the core build and the scoring) |
+
 ---
 
 ---

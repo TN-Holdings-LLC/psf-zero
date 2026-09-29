@@ -1,0 +1,11 @@
+==============================================================================
+SCORING (thresholds exactly as pre-registered)
+==============================================================================
+S0 500 laps, candidate versions, lightning.gpu: True; C1 5.06e-07 (>= 1e-9) -> passed
+S1 within 1 s in 500/500 (confirmed 500, refuted <= 450) -> CONFIRMED
+S2 swap-free and mapped back in 500/500 (confirmed 500, refuted <= 450) -> CONFIRMED
+S3 core fallbacks 0 (confirmed 0, refuted >= 3) -> CONFIRMED
+S4 lap-500 block distance 1.51e-12 (confirmed <= 1e-11, refuted > 1e-9) and whole-circuit max 4.22e-13 (confirmed <= 1e-10, refuted > 1e-8) -> CONFIRMED
+S5 whole run 64 s (confirmed <= 120, refuted > 600) -> CONFIRMED
+S6 lap-500 block distance, this machine / pod: 1.511e-12 / 1.511e-12 = 1.00 (confirmed 0.5-2, refuted < 0.1 or > 10) -> CONFIRMED
+Reported without prediction: compile median 13.23 ms, max 108 ms; GPU checks [4.759, 4.754, 5.124, 5.071] s
