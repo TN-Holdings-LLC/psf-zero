@@ -2049,6 +2049,70 @@ device model, one circuit family.
 | [`score_short.txt`](../../data/2026-09-29/pl_heavyhex_short_home/score_short.txt) | scoring |
 | [`short_500_home_console.txt`](../../data/2026-09-29/pl_heavyhex_short_home/short_500_home_console.txt) | console output (end of the core build and the scoring) |
 
+
+---
+
+<!-- ===== Addendum 261 (source: spare-qubit-cliff-addendum-261-preregistration-2026-09-29.md) ===== -->
+
+> **Note added when merging:** Home pre-registration, pushed before running: Part I of Addendum 258 at the original 100,000 laps overnight, H1-H8 unchanged, plus lap-by-lap replication against the pod's first 30,000 laps (R1-R3).
+
+## Addendum 261 -- Pre-registration: Part I of Addendum 258 at the originally registered 100,000 laps, at home (RTX 4070), overnight; plus a lap-by-lap replication check against the pod's first 30,000 laps (2026-09-29)
+
+**Written and pushed before running.** Results will be recorded as Addendum 262.
+
+## 1. Why
+
+Part I of Addendum 258 (the PennyLane compounding loop on a fully occupied heavy-hex
+device, 100,000 laps) was stopped at 30,000 laps on the pod for time (Amendment 1;
+Addendum 259). Its 100,000-lap claim is therefore not established. The home short
+version (Addendum 260) showed that the candidate stack's block distance on the home
+machine equals the pod's at all 500 laps to the printed digits. This run completes
+Part I as originally registered, on the home machine, overnight.
+
+## 2. Design
+
+Exactly Part I of Addendum 258: the locked `pl_heavyhex_100k.py` (`dad56b1b...`) with the
+locked `pl_heavyhex_gpu.py` (`a0081c29...`); FakeAuckland (27 qubits), family T;
+parts A (candidate stack, spare 0), B (candidate stack, spare 4), C (release stack,
+spare 4) in parallel; 100,000 laps each; the default checkpoints (1, 10, 100, 1,000,
+5,000, then every 5,000); `lightning.gpu`. Tag `home`.
+
+- Stacks: candidate core 2026-09-29.1 (`~/core_cand_0929`, built from the release
+  `lib.rs` + the patch, `5364630e...`) with candidate layout 2026-09-29.c1
+  (`e25952a3...`); release core 2026-09-28.1 (installed in the environment; repository
+  `lib.rs` `bf3bf537...`) with the repository's layout 2026-09-26.m1 (`a639efde...`).
+- Run script `benchmarks/pod/run_100k_home_2026-09-29.sh` (normalized SHA-256
+  `02177d34e7d2eb0ab889c6c58db4a8ae44d7b0c55678ec00f3e382cfae8e2945`). It checks every hash and both core versions,
+  refuses to start if more than 4,000 MiB of GPU memory is already in use, records the
+  environment, runs the three parts, then scores with the script's own `score` (the
+  original 100,000-lap thresholds).
+- Machine: home, WSL2, AMD Ryzen 5 5500, RTX 4070 12 GB, Python 3.12.13. Times are
+  home times, not compared with the pod.
+
+## 3. Predictions
+
+**H1-H8 of Addendum 258, Part I, unchanged** (100,000 laps; the thresholds as written
+there, applied by the script's `score`).
+
+**Added here** (replication; possible because the pod's CSVs are in the repository,
+`data/2026-09-29/pl_heavyhex_30k/`):
+
+| ID | Prediction | Confirmed if | Refuted if |
+|---|---|---|---|
+| R1 | A's block distance equals the pod's at laps 1-30,000 | identical as printed (7 significant digits) at all 30,000 laps | any lap differs by more than 1% |
+| R2 | the same for B and C | identical as printed at all 30,000 laps of each | any lap differs by more than 1% |
+| R3 | two-qubit count, mapped flag and fallbacks equal the pod's at laps 1-30,000 | equal at every lap in A, B and C | any difference |
+
+Between the bounds: ambiguous. R1-R3 are scored at home the next day from the CSVs
+(the comparison script will be published with the results). The whole-circuit GPU
+values are not compared (they differ in the last digits between GPUs; Addendum 260).
+
+## 4. What this cannot establish
+
+One machine, one device model, one circuit family; the candidate stack is still not
+the release. If the PC sleeps or the run stops, the run is reported as far as it got
+and no threshold is scaled after the fact.
+
 ---
 
 ---
