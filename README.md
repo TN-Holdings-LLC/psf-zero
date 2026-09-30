@@ -104,6 +104,41 @@ repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see belo
 >   core on the 394,988 blocks where that core succeeds. Also in `patches/`, not yet
 >   the release.
 
+> **Update (2026-09-30) -- 100,000 compounded laps, and a first recorded test of a
+> language-model front end** ([Part 9](docs/findings/spare-qubit-cliff-combined-248.md),
+> Addenda 258-270). All pre-registered except three pilots marked exploratory;
+> fake backends, no QPU; the language-model tests ran on rented RunPod GPUs.
+>
+> - **100,000 compounded PennyLane laps on a fully occupied heavy-hex device**
+>   (FakeAuckland, 27 qubits) with the candidate stack (core 2026-09-29.1, layout
+>   2026-09-29.c1): every lap within 1 s (median 13 ms), swap-free, 0 core fallbacks;
+>   drift linear in laps (2.95e-10 at lap 100,000), memory flat. Run at home; its
+>   first 30,000 laps equal an earlier pod run lap by lap to the printed digits, on a
+>   different GPU, CPU and build (Addenda 258-262). The candidates are still not the
+>   release.
+> - **vLLM x PSF-Zero, on the record with a stop-loss rule.** An open model served by
+>   vLLM writes a circuit for a described target state, PSF-Zero compiles it, and the
+>   model gets state feedback for up to 6 rounds; five tasks, pre-registered go/no-go
+>   criteria.
+>   - First test (B200 pod; Qwen2.5-7B, Qwen2.5-72B, gpt-oss-120b): **CUT**. The best
+>     model solved 12/15, but the W state on 3 qubits 0/3: every one of its W3 replies
+>     used the whole 16,000-token budget on reasoning (Addenda 263-264).
+>   - Three exploratory pilots then tuned the harness on W3 (Addenda 265-267), and a
+>     new pre-registration tested it (H200 pod): **INVEST, at the smallest possible
+>     margin**. gpt-oss-120b solved 14/15 with W3 at 2/3 against a bar of 2/3
+>     (Addenda 268-269); Qwen2.5-7B did not improve (7/15). This means the line is
+>     worth further testing, not that it works reliably. Model time was 5,937 s summed
+>     over the 15 task-runs, against under a second of PSF-Zero compile time.
+>   - An evaluation on five held-out tasks that no model has seen is pre-registered
+>     and has not run yet (Addendum 270).
+> - **PSF-Zero inside that loop.** On the correct 27-qubit circuits the models wrote
+>   (FakeAuckland filled with GHZ-3 states and Bell pairs), PSF-Zero compiled in
+>   10-21 ms against Qiskit L3's 5.9-11.1 s (500-730x), with 17 two-qubit gates
+>   against 20, in both tests (B200 and H200 pods; times are not compared across
+>   them). A new tiling of nine GHZ-3 states does not take the candidate layout's
+>   short-path route (workplace sandbox, 2 CPUs: 1.2-1.3 s against L3's 8.4-8.8 s);
+>   it is one of the held-out tasks and will be addressed after that evaluation.
+
 > **Correctness notice (2026-09-26) -- if you use `entangling_basis="cx"`, update to
 > `psf_compile.py` VERSION 2026-09-26.4 or later.** Qiskit's own
 > `TwoQubitBasisDecomposer(CXGate(), euler_basis="ZSX")` (Qiskit 2.5.2) returns a
@@ -734,6 +769,11 @@ follows when publishing a measurement, most of them adopted after being burned b
 their absence.
 
 ## Open questions
+
+- **NEW (2026-09-30).** Whether the vLLM x PSF-Zero loop generalises beyond the tasks
+  it was tuned on (held-out evaluation, Addendum 270, not yet run), and whether a
+  model small enough for one consumer GPU can do the job at all: Qwen2.5-7B solved
+  neither W3 nor the 3-qubit QFT task in either test.
 
 - **NEW (2026-09-29).** The heavy-hex cliff and the release's layout gap above were
   measured on FakeKingston; the live ibm_kingston Target (read once at home, not
