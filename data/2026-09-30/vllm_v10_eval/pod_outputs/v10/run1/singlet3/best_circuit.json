@@ -1,0 +1,93 @@
+{
+ "n_qubits": 6,
+ "gates": [
+  {
+   "name": "x",
+   "qubits": [
+    1
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": []
+  },
+  {
+   "name": "z",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "x",
+   "qubits": [
+    3
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    2,
+    3
+   ],
+   "params": []
+  },
+  {
+   "name": "z",
+   "qubits": [
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "x",
+   "qubits": [
+    5
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    4
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    4,
+    5
+   ],
+   "params": []
+  },
+  {
+   "name": "z",
+   "qubits": [
+    4
+   ],
+   "params": []
+  }
+ ],
+ "note": "Three singlet pairs prepared with three CX gates (minimal entangling operations)."
+}

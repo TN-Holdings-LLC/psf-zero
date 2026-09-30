@@ -1,0 +1,85 @@
+{
+ "n_qubits": 4,
+ "gates": [
+  {
+   "name": "ry",
+   "qubits": [
+    0
+   ],
+   "params": [
+    1.5707963267948966
+   ]
+  },
+  {
+   "name": "ry",
+   "qubits": [
+    1
+   ],
+   "params": [
+    1.9106332362490186
+   ]
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": [
+    -0.6796738189082439
+   ]
+  },
+  {
+   "name": "x",
+   "qubits": [
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    0,
+    2
+   ],
+   "params": [
+    -1.5707963267948966
+   ]
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    1,
+    2
+   ],
+   "params": [
+    -1.5707963267948966
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    0,
+    3
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    1,
+    3
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    2,
+    3
+   ],
+   "params": []
+  }
+ ],
+ "note": "Circuit prepares the 4\u2011qubit Dicke state |D4^2>."
+}

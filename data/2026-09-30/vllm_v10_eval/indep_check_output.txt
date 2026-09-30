@@ -1,0 +1,3 @@
+circuits 103  max |F_indep - F_recorded| 4.44e-16  solved disagreements 0  fill27g9 cross-group skipped 0
+v9: solved (independent, logical) 15/15  {'w4': 3, 'dicke42': 3, 'ghz3i': 3, 'singlet3': 3, 'fill27g9': 3}
+v10: solved (independent, logical) 14/15  {'w4': 3, 'dicke42': 2, 'ghz3i': 3, 'singlet3': 3, 'fill27g9': 3}

@@ -1,0 +1,67 @@
+{
+ "n_qubits": 4,
+ "gates": [
+  {
+   "name": "x",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": [
+    1.047197551
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    1,
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    0,
+    2
+   ],
+   "params": [
+    1.230959417
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    2,
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    0,
+    3
+   ],
+   "params": [
+    1.570796327
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    3,
+    0
+   ],
+   "params": []
+  }
+ ],
+ "note": "W4 state via sequential partial\u2011swap using CRY and CX, 6 two\u2011qubit gates."
+}

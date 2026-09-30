@@ -1,0 +1,67 @@
+{
+ "n_qubits": 4,
+ "gates": [
+  {
+   "name": "x",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    0,
+    2
+   ],
+   "params": [
+    1.570796
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    2,
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": [
+    1.570796
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    1,
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    2,
+    3
+   ],
+   "params": [
+    1.570796
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    3,
+    2
+   ],
+   "params": []
+  }
+ ],
+ "note": "Prepares the 4-qubit W state using partial swaps."
+}

@@ -1,0 +1,10 @@
+v10 2026-09-30 | model openai/gpt-oss-120b | device FakeAuckland | sim lightning.qubit | psf_compile 2026-09-28.1 | CORE_VERSION 2026-09-29.1 | layout 2026-09-29.c1
+== dicke42 (run 21): Prepare the 4-qubit Dicke state with two excitations: the equal superposition of the six basis states with exactly two 1s, (|0011> + |0101> + |0110> + |1001> + |1010> + |1100>)/sqrt(6).
+  dicke42 run 21 round 1: llm 851.721 s | F_log 0.742442 F_cmp 0.742442 2q 8->15 (L3 15) compile 88.9 ms (L3 9.4 ms)
+  dicke42 run 21 round 2: llm 750.679 s | F_log 0.742442 F_cmp 0.742442 2q 23->41 (L3 34) compile 16.2 ms (L3 10.0 ms)
+  dicke42 run 21 round 3: llm 566.619 s | F_log 0.552764 F_cmp 0.552764 2q 9->16 (L3 15) compile 18.7 ms (L3 7.5 ms)
+  dicke42 run 21 round 4: llm 520.916 s | F_log 0.742442 F_cmp 0.742442 2q 10->19 (L3 13) compile 14.8 ms (L3 10.4 ms)
+  dicke42 run 21 round 5: llm 379.343 s | F_log 0.742442 F_cmp 0.742442 2q 13->22 (L3 16) compile 13.4 ms (L3 7.3 ms)
+  dicke42 run 21 round 6: llm 286.11 s | F_log 0.742442 F_cmp 0.742442 2q 10->20 (L3 16) compile 14.7 ms (L3 12.1 ms)
+  -> {"task": "dicke42", "run": 21, "model": "openai/gpt-oss-120b", "n_qubits": 4, "rounds": 6, "solved": false, "errors": 0, "http400": 0, "llm_s_total": 3355.39, "baseline_psf_2q": 17, "baseline_q3_2q": 13, "baseline_psf_fidelity": 0.9999999999999998, "baseline_psf_s": 0.0091, "baseline_q3_s": 0.0087, "best_round": 5, "fidelity_compiled": 0.7424422794821645, "logical_2q": 13, "routed_2q": 22, "routed_swaps": 0, "depth": 76, "compile_s": 0.0134, "q3_s": 0.0073, "q3_2q": 16, "q3_fidelity": 0.7424422794821631}
+DONE

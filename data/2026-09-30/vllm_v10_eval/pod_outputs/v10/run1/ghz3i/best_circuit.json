@@ -1,0 +1,36 @@
+{
+ "n_qubits": 3,
+ "gates": [
+  {
+   "name": "h",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    0,
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "s",
+   "qubits": [
+    0
+   ],
+   "params": []
+  }
+ ],
+ "note": "Creates (|000>+i|111>)/sqrt(2) using a GHZ block and an S phase."
+}

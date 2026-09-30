@@ -1,0 +1,38 @@
+{
+ "n_qubits": 3,
+ "gates": [
+  {
+   "name": "h",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    0,
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "rz",
+   "qubits": [
+    2
+   ],
+   "params": [
+    1.57079632679
+   ]
+  }
+ ],
+ "note": "GHZ preparation then Rz(\u03c0/2) adds the i phase to |111>"
+}

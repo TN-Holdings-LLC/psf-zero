@@ -1,0 +1,68 @@
+{
+ "arms": {
+  "v9": {
+   "tuned": 0,
+   "held_out": 15,
+   "total": 15,
+   "per_task": {
+    "w4": 3,
+    "dicke42": 3,
+    "ghz3i": 3,
+    "singlet3": 3,
+    "fill27g9": 3
+   },
+   "missing": 0,
+   "llm_s": 13713.5
+  },
+  "v10": {
+   "tuned": 0,
+   "held_out": 14,
+   "total": 14,
+   "per_task": {
+    "w4": 3,
+    "dicke42": 2,
+    "ghz3i": 3,
+    "singlet3": 3,
+    "fill27g9": 3
+   },
+   "missing": 0,
+   "llm_s": 16397.4
+  }
+ },
+ "H1": {
+  "verdict": "go",
+  "v10_held_out": 14
+ },
+ "H2": {
+  "verdict": "no clear difference",
+  "v10_minus_v9": -1
+ },
+ "H3": {
+  "verdict": "go",
+  "solved": 14,
+  "le": 14,
+  "gt": 0
+ },
+ "H4": {
+  "verdict": "stop",
+  "circuits": 3,
+  "median_psf_s": 1.2097026229894254,
+  "median_ratio": 6.647002158375925,
+  "min_ratio": 6.42751198552426,
+  "max_ratio": 6.788390286910269,
+  "psf_le_l3": 2,
+  "psf_gt_l3": 1,
+  "psf_2q": [
+   18,
+   18,
+   24
+  ],
+  "l3_2q": [
+   18,
+   18,
+   18
+  ]
+ },
+ "default_harness": "KEEP v9",
+ "line": "CONTINUE"
+}

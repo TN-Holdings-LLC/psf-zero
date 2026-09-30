@@ -1,0 +1,67 @@
+{
+ "n_qubits": 4,
+ "gates": [
+  {
+   "name": "x",
+   "qubits": [
+    3
+   ],
+   "params": []
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    3,
+    2
+   ],
+   "params": [
+    2.094395102
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    2,
+    3
+   ],
+   "params": []
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    2,
+    1
+   ],
+   "params": [
+    1.910633236
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    1,
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    1,
+    0
+   ],
+   "params": [
+    1.570796327
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": []
+  }
+ ],
+ "note": "Efficient 4\u2011qubit W\u2011state using 3 cry and 3 cx gates."
+}

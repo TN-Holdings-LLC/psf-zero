@@ -1,0 +1,36 @@
+{
+ "n_qubits": 3,
+ "gates": [
+  {
+   "name": "h",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    0,
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "s",
+   "qubits": [
+    0
+   ],
+   "params": []
+  }
+ ],
+ "note": "Standard GHZ with an S gate adds the required i phase."
+}

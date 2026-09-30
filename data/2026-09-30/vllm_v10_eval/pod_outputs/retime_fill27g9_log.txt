@@ -1,0 +1,6 @@
+v10 2026-09-30 | model Qwen/Qwen2.5-7B-Instruct | device FakeAuckland | sim lightning.qubit | psf_compile 2026-09-28.1 | CORE_VERSION 2026-09-29.1 | layout 2026-09-29.c1
+retime: 3 distinct valid fill27g9 circuits
+  2b48f48b9b91d16d: psf 1209.7 ms 18 2q | L3 8040.9 ms 18 2q | F 1.000000
+  34540ad379c1aa4c: psf 1199.3 ms 18 2q | L3 8141.2 ms 18 2q | F 1.000000
+  9af9e6992f185151: psf 1266.2 ms 24 2q | L3 8138.6 ms 18 2q | F 1.000000
+wrote /root/v10eval_out_0930/retime_fill27g9.csv

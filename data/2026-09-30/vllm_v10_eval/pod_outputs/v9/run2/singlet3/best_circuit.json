@@ -1,0 +1,72 @@
+{
+ "n_qubits": 6,
+ "gates": [
+  {
+   "name": "h",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    4
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    2,
+    3
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    4,
+    5
+   ],
+   "params": []
+  },
+  {
+   "name": "y",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "y",
+   "qubits": [
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "y",
+   "qubits": [
+    4
+   ],
+   "params": []
+  }
+ ],
+ "note": "Three singlet pairs prepared with minimal two\u2011qubit gates."
+}

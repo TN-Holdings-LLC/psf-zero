@@ -1,0 +1,8 @@
+v10 2026-09-30 | model openai/gpt-oss-120b | device FakeAuckland | sim lightning.qubit | psf_compile 2026-09-28.1 | CORE_VERSION 2026-09-29.1 | layout 2026-09-29.c1
+== ghz3i (run 23): Prepare the 3-qubit state (|000> + i|111>)/sqrt(2), where i is the imaginary unit.
+  ghz3i run 23 round 1: llm 23.936 s | F_log 1.000000 F_cmp 1.000000 2q 3->7 (L3 7) compile 90.0 ms (L3 8.6 ms)
+  ghz3i run 23 round 2: llm 40.939 s | F_log 1.000000 F_cmp 1.000000 2q 2->2 (L3 2) compile 9.4 ms (L3 5.9 ms)
+  ghz3i run 23 round 3: llm 21.242 s | F_log 1.000000 F_cmp 1.000000 2q 2->2 (L3 2) compile 7.5 ms (L3 5.0 ms)
+  ghz3i run 23 round 4: llm 39.585 s | F_log 1.000000 F_cmp 1.000000 2q 2->2 (L3 2) compile 7.5 ms (L3 5.2 ms)
+  -> {"task": "ghz3i", "run": 23, "model": "openai/gpt-oss-120b", "n_qubits": 3, "rounds": 4, "solved": true, "errors": 0, "http400": 0, "llm_s_total": 125.7, "baseline_psf_2q": 7, "baseline_q3_2q": 7, "baseline_psf_fidelity": 0.9999999999999991, "baseline_psf_s": 0.0063, "baseline_q3_s": 0.0061, "best_round": 2, "fidelity_compiled": 0.9999999999999993, "logical_2q": 2, "routed_2q": 2, "routed_swaps": 0, "depth": 10, "compile_s": 0.0094, "q3_s": 0.0059, "q3_2q": 2, "q3_fidelity": 0.9999999999999996}
+DONE

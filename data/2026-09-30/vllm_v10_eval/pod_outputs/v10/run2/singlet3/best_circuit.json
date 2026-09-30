@@ -1,0 +1,72 @@
+{
+ "n_qubits": 6,
+ "gates": [
+  {
+   "name": "h",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": []
+  },
+  {
+   "name": "y",
+   "qubits": [
+    1
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    2,
+    3
+   ],
+   "params": []
+  },
+  {
+   "name": "y",
+   "qubits": [
+    3
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    4
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    4,
+    5
+   ],
+   "params": []
+  },
+  {
+   "name": "y",
+   "qubits": [
+    5
+   ],
+   "params": []
+  }
+ ],
+ "note": "Singlet pairs on (0,1), (2,3), (4,5) via H\u2011CX\u2011Y per pair."
+}

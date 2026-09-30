@@ -3564,6 +3564,190 @@ Nothing from them can enter the score, because no task-run finished.
 - **Smoke run:** the disclosed smoke run (tuned tasks only, not scored) may be
   repeated after a rebuild.
 
+
+---
+
+<!-- ===== Addendum 271 (source: spare-qubit-cliff-addendum-271-2026-09-30.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered v10 evaluation (Addendum 270, Revision 1, Amendment 1), re-run at home on a RunPod H200 with the same files and seeds: on five held-out tasks v9 solved 15/15 and v10 14/15; H1 go, H2 no clear difference, H3 go, H4 stop (PSF-Zero 1.2 s against L3's 8.0 s on the nine-GHZ-3 tiling). Decisions: KEEP v9, CONTINUE. Data: `data/2026-09-30/vllm_v10_eval/`.
+
+## Addendum 271 -- Results: v10 evaluation on five held-out tasks (re-run under Amendment 1, RunPod H200). v9 solved 15/15 and v10 14/15; H1 go, H2 no clear difference, H3 go, H4 stop. Decisions: KEEP v9, CONTINUE (2026-09-30)
+
+**Pre-registration:** Addendum 270, as governed by its Revision 1 (held-out tasks only) and Amendment 1 (re-run after
+the first attempt's pod went down with no task-run finished). All three were locked at the workplace Project's save
+time before any model saw a held-out task. This re-run used the same locked files, the same seeds (runs 21-23) and the
+same criteria. Nothing was re-run to improve a score.
+
+**Run:** at home, through VS Code on a RunPod H200 pod. `env.txt` records the start at 2026-09-30 13:52:06 UTC. The
+server was ready at 13:53:27, and its last request was at 14:49:36. The fill27g9 re-timing and the scoring followed.
+The locked files ran unchanged; `env.txt` records the same raw SHA-256 values that the kit and Revision 1 state:
+
+- [`e2e_vllm_psf_v10.py`](../../benchmarks/e2e_vllm_psf_v10.py): `e00487a0...`;
+- [`score_v10_eval_r1.py`](../../benchmarks/score_v10_eval_r1.py): `cdb53a78...`;
+- `run_v10_eval_r1_2026-09-30.sh`: `8f595bcc...`.
+
+The outputs zip as received is `v10eval_outputs_0930.zip` (SHA-256 `7d9b21a3...`, 218 files plus its MANIFEST).
+
+## 0. In one line
+
+On five tasks that no model had seen, the v9 harness (the one that passed Addendum 269) solved all 15 task-runs. The
+new v10 harness (three candidates per round and verbal feedback) solved 14. It did not beat v9 and used three times
+the tokens, so **v9 stays the default harness and the line continues.** H4 is a stop, as predicted: on the new
+nine-GHZ-3 tiling PSF-Zero took 1.2 s against Qiskit L3's 8.0 s. That is a finding about PSF-Zero's candidate layout,
+not about the model.
+
+## 1. Environment (H200 pod; times are H200-pod times, not compared with any other machine)
+
+- **Hardware:** NVIDIA H200 (143,771 MiB, driver 595.91.07); 96 CPUs (Intel Xeon Platinum 8568Y+).
+- **Software:** vLLM 0.30.0, torch 2.13.0+cu130, Qiskit 2.5.2, PennyLane 0.45.1.
+- **PSF-Zero stack:** psf_compile 2026-09-28.1, candidate core 2026-09-29.1, candidate layout 2026-09-29.c1. The setup
+  script `setup_gpu_2026-09-29.sh` printed `SETUP DONE` with both cores and `pl_heavyhex_gpu.py a0081c29...`.
+- **GPU memory in use** with the server up: 129,467 MiB.
+- **Same as the day's workplace H200 pods:** GPU, driver and CPU count are identical to those of Addenda 265-269, so
+  Amendment 1's "record any difference" has nothing to record.
+
+**Two pods were rejected before anything ran on them.** Both reported driver 570.124.06 (CUDA 12.8), which cannot run
+the pinned torch 2.13.0+cu130 (CUDA 13.0 needs driver 580 or later). They were terminated after the first check,
+before any install, model download or smoke run. The third pod was chosen with RunPod's CUDA-version filter set to 13.0
+or later.
+
+**Smoke run** (disclosed, not scored; v10 arm, ghz5 and bell3, tuned tasks only, seed run 97, 2 rounds): the server was
+ready after 171 s, and both tasks were solved without errors. Its output stayed on the pod and was not downloaded; the
+console lines are the record.
+
+## 2. Results (scored by the locked [`score_v10_eval_r1.py`](../../benchmarks/score_v10_eval_r1.py), from files)
+
+| arm | held-out /15 | w4 | dicke42 | ghz3i | singlet3 | fill27g9 | missing | reply errors | HTTP 400 |
+|---|---|---|---|---|---|---|---|---|---|
+| v9 (1 candidate, numeric feedback) | **15** | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 0 | 0 | 0 |
+| v10 (3 candidates, verbal feedback) | **14** | 3/3 | 2/3 | 3/3 | 3/3 | 3/3 | 0 | 0 | 0 |
+
+- **H1 = go.** The v10 arm solved 14/15 held-out task-runs (go needs >= 12).
+- **H2 = no clear difference.** v10 minus v9 is -1 (better needs >= +2, worse needs <= -2).
+- **H3 = go.** On all 14 of the v10 arm's solved task-runs, the device two-qubit count after PSF-Zero was at most the
+  StatePreparation baseline's.
+- **H4 = stop.** On the three distinct correct fill27g9 circuits:
+  - median PSF-Zero time 1.21 s, above the 1 s limit;
+  - median ratio L3/PSF 6.6 (range 6.4-6.8), below 10;
+  - PSF-Zero two-qubit count <= L3 on 2 of the 3 circuits.
+- **Decisions** (Revision 1):
+  - **Default harness: KEEP v9**, because H2 is not "better";
+  - **Line: CONTINUE**, because neither arm is at or below 7/15.
+
+### 2.1 Expectations (written before the run)
+
+| | expectation | outcome |
+|---|---|---|
+| P1 | both arms solve ghz3i and singlet3 in every run | **confirmed** (3/3 each, all in round 1) |
+| P2 | w4 and dicke42 are the hard tasks, and v10 solves more of them than v9 | **half**: they were the hard tasks (980-3,355 s of model time per task-run), but v9 solved 6/6 and v10 5/6 |
+| P3 | H2 better, but "no clear difference" would not surprise | **no clear difference** |
+| P4 | H4 not go on time | **confirmed**: 1.21 s, ratio 6.6 |
+
+### 2.2 Cost of the two arms
+
+Summed over the 15 task-runs of each arm, which ran in parallel against one server:
+
+| arm | completion tokens | model time (s) |
+|---|---|---|
+| v9 | 823,352 | 13,714 |
+| v10 | 2,500,505 | 16,397 |
+
+v10 used about 3.0 times the tokens and 1.2 times the model time, and solved one task-run fewer.
+
+- Most of the cost sits in w4 and dicke42 (980-3,355 s per task-run in both arms). ghz3i, singlet3 and fill27g9 were
+  solved in round 1 of every run, at 100-170 s per task-run.
+- 17 of v10's 150 candidates ended at the 48,000-token limit without a circuit.
+- Six rounds (2 in v10, 4 in v9) were cut at the limit and went to the salvage request.
+
+### 2.3 The one failure
+
+v10, dicke42, run 1:
+
+- 6 rounds, best compiled fidelity 0.742;
+- 663,326 completion tokens and 3,355 s of model time, the most of any task-run.
+
+The two other v10 dicke42 runs solved it in round 1, and v9 solved all three (in rounds 1, 4 and 1).
+
+## 3. Two-qubit counts (device count after compiling; best circuit of each solved task-run)
+
+| task | v9: model (PSF) | v10: model (PSF) | baseline (PSF / L3) | model circuit through L3 |
+|---|---|---|---|---|
+| w4 | 9, 9, 9 | 10, 9, 9 | 17 / 13 | 6-10 |
+| dicke42 | 12, 16, 15 | 13, 11 | 17 / 13 | 9-16 |
+| ghz3i | 2, 2, 2 | 2, 2, 2 | 7 / 7 | 2 |
+| singlet3 | 3, 3, 3 | 3, 3, 3 | 3 / 3 | 3 |
+| fill27g9 | 18, 18, 18 | 18, 18, 18 | 63 / 53 | 18 |
+
+**Reported without prediction:** on W4 and Dicke(4,2), Qiskit L3 compiling the same model circuit often reached fewer
+two-qubit gates than PSF-Zero:
+
+- W4: 6 against 9 in five of the six solved task-runs;
+- Dicke(4,2): 10 against 12 and 9 against 11.
+
+On these small, dense 4-qubit circuits L3's resynthesis finds shorter circuits than PSF-Zero's block-by-block
+synthesis. It is the opposite of the fill27 and fill27g9 results, where PSF-Zero is equal or better. The model's
+circuits were at or below the StatePreparation baseline either way (H3).
+
+## 4. PSF-Zero on the nine-GHZ-3 tiling (H4)
+
+Re-timing: sequential, 5 repetitions, median. There were 3 distinct correct circuits, one of which was written 15 times.
+
+| circuit | PSF-Zero | L3 | two-qubit PSF / L3 |
+|---|---|---|---|
+| `34540ad3...` (15 occurrences) | 1.199 s | 8.141 s | 18 / 18 |
+| `2b48f48b...` (3) | 1.210 s | 8.041 s | 18 / 18 |
+| `9af9e699...` (1) | 1.266 s | 8.139 s | 24 / 18 |
+
+- All three are correct after compiling (fidelity within 1e-14 of 1), and there are no swaps in any of them.
+- On the tilings of Addenda 264 and 269 (seven GHZ-3 states and three Bell pairs), PSF-Zero took 10-21 ms. Here it took
+  1.2 s: the nine-GHZ-3 tiling does not take the candidate layout's short-path route.
+- One circuit (a round-1 answer, not the best of its run) got 24 two-qubit gates against L3's 18.
+- This confirms, on the pod's CPU, what Addendum 270 disclosed from the sandbox (1.24-1.31 s against 8.4-8.8 s). It
+  was not tuned on. The improvement of layout c1 for this tiling can now start, with its own pre-registration.
+
+## 5. Checks (home)
+
+- **Manifest:** all 218 files of the outputs zip match its MANIFEST (normalized SHA-256 for text, raw for binary).
+- **Re-scoring:** the locked [`score_v10_eval_r1.py`](../../benchmarks/score_v10_eval_r1.py) run again on the unpacked files gives an identical [`score_v10.md`](../../data/2026-09-30/vllm_v10_eval/pod_outputs/score_v10.md)
+  and an identical [`score_v10.json`](../../data/2026-09-30/vllm_v10_eval/pod_outputs/score_v10.json).
+- **Independent numpy check** ([`benchmarks/indep_check_v10_heldout.py`](../../benchmarks/indep_check_v10_heldout.py); no PennyLane, no Qiskit):
+  - The script builds the five held-out targets from their definitions in Addendum 270, not from the harness. All five
+    are symmetric under relabelling within each group (the singlets up to a global sign), so the check does not depend
+    on the harness's bit order.
+  - It recomputed all 103 recorded round circuits (fill27g9 group by group; no gate crossed groups): largest difference
+    4.4e-16, and 0 disagreements on solved or not solved.
+  - It gives v9 15/15 and v10 14/15, with the same per-task counts as the scorer.
+  - The outputs keep, for the v10 arm's non-chosen candidates, only their finish reason, reasoning length and fidelity,
+    not the circuits. Those candidates could not be re-simulated.
+
+## 6. What this does and does not establish
+
+**It establishes:**
+
+- With the v9 harness, gpt-oss-120b coupled to PSF-Zero solved 15 of 15 runs of five tasks that no model had seen and
+  that were not used for tuning, within 6 rounds.
+- Together with Addendum 269, the harness that passed at the margin on its tuning tasks also held on new ones.
+- v10's two changes, several candidates per round and verbal feedback, did not help on these tasks and tripled the
+  token cost.
+
+**It does not establish:**
+
+- **Reliability at scale.** There were three runs per task.
+- **Generality.** Three of the five held-out tasks (ghz3i, singlet3, fill27g9) are close relatives of the tuned GHZ and
+  Bell tasks and were solved in round 1. The hard two, W4 and Dicke(4,2), are relatives of W3. States of a different
+  kind remain untested.
+- **Cost-effectiveness.** The w4 and dicke42 runs took 16-56 minutes of model time each.
+- **Anything about real hardware.**
+
+## 7. Files
+
+| file | what it is |
+|---|---|
+| `data/2026-09-30/vllm_v10_eval/pod_outputs/` | the unpacked `v10eval_outputs_0930.zip`: per arm and run, `rounds.jsonl`, `result.json`, best circuits; logs, server log, [`retime_fill27g9.csv`](../../data/2026-09-30/vllm_v10_eval/pod_outputs/retime_fill27g9.csv), [`score_v10.md`](../../data/2026-09-30/vllm_v10_eval/pod_outputs/score_v10.md) and `.json`, `env.txt`, `MANIFEST.tsv` |
+| [`data/2026-09-30/vllm_v10_eval/indep_check_output.txt`](../../data/2026-09-30/vllm_v10_eval/indep_check_output.txt) | output of the independent check |
+| [`benchmarks/indep_check_v10_heldout.py`](../../benchmarks/indep_check_v10_heldout.py) | the independent check (targets rebuilt from Addendum 270) |
+| [`benchmarks/e2e_vllm_psf_v10.py`](../../benchmarks/e2e_vllm_psf_v10.py), [`benchmarks/score_v10_eval_r1.py`](../../benchmarks/score_v10_eval_r1.py), `benchmarks/pod/run_v10_eval_r1_2026-09-30.sh` | the locked files (already in the repository with Addendum 270) |
+
 ---
 
 ---

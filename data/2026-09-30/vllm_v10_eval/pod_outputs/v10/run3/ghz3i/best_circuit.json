@@ -1,0 +1,38 @@
+{
+ "n_qubits": 3,
+ "gates": [
+  {
+   "name": "h",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    0,
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "rz",
+   "qubits": [
+    0
+   ],
+   "params": [
+    1.570796
+   ]
+  }
+ ],
+ "note": "State (|000> + i|111>)/sqrt(2) prepared up to a global phase."
+}

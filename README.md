@@ -129,15 +129,19 @@ repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see belo
 >     (Addenda 268-269); Qwen2.5-7B did not improve (7/15). This means the line is
 >     worth further testing, not that it works reliably. Model time was 5,937 s summed
 >     over the 15 task-runs, against under a second of PSF-Zero compile time.
->   - An evaluation on five held-out tasks that no model has seen is pre-registered
->     and has not run yet (Addendum 270).
+>   - On five held-out tasks that no model had seen, the same harness then solved 15/15
+>     (W4, Dicke(4,2), a phased GHZ, three singlets, nine GHZ-3 states on 27 qubits);
+>     a variant with three candidates per round and verbal feedback solved 14/15 at
+>     three times the tokens and was not adopted (Addenda 270-271). Three runs per task;
+>     three of the five tasks are close relatives of tuned ones.
 > - **PSF-Zero inside that loop.** On the correct 27-qubit circuits the models wrote
 >   (FakeAuckland filled with GHZ-3 states and Bell pairs), PSF-Zero compiled in
 >   10-21 ms against Qiskit L3's 5.9-11.1 s (500-730x), with 17 two-qubit gates
 >   against 20, in both tests (B200 and H200 pods; times are not compared across
 >   them). A new tiling of nine GHZ-3 states does not take the candidate layout's
 >   short-path route (workplace sandbox, 2 CPUs: 1.2-1.3 s against L3's 8.4-8.8 s);
->   it is one of the held-out tasks and will be addressed after that evaluation.
+>   the held-out evaluation confirmed it on the pod (1.2 s against 8.0 s, Addendum 271),
+>   and it is the next layout improvement to pre-register.
 
 > **Correctness notice (2026-09-26) -- if you use `entangling_basis="cx"`, update to
 > `psf_compile.py` VERSION 2026-09-26.4 or later.** Qiskit's own
@@ -771,7 +775,8 @@ their absence.
 ## Open questions
 
 - **NEW (2026-09-30).** Whether the vLLM x PSF-Zero loop generalises beyond the tasks
-  it was tuned on (held-out evaluation, Addendum 270, not yet run), and whether a
+  it was tuned on to states of a different kind (15/15 on five held-out tasks in
+  Addendum 271, three of them close relatives of tuned tasks), and whether a
   model small enough for one consumer GPU can do the job at all: Qwen2.5-7B solved
   neither W3 nor the 3-qubit QFT task in either test.
 

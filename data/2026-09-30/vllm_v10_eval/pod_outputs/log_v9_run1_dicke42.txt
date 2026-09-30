@@ -1,0 +1,8 @@
+v10 2026-09-30 | model openai/gpt-oss-120b | device FakeAuckland | sim lightning.qubit | psf_compile 2026-09-28.1 | CORE_VERSION 2026-09-29.1 | layout 2026-09-29.c1
+== dicke42 (run 21): Prepare the 4-qubit Dicke state with two excitations: the equal superposition of the six basis states with exactly two 1s, (|0011> + |0101> + |0110> + |1001> + |1010> + |1100>)/sqrt(6).
+  dicke42 run 21 round 1: llm 403.527 s | F_log 1.000000 F_cmp 1.000000 2q 6->15 (L3 15) compile 95.5 ms (L3 8.7 ms)
+  dicke42 run 21 round 2: llm 745.75 s | F_log 1.000000 F_cmp 1.000000 2q 6->12 (L3 10) compile 16.4 ms (L3 10.1 ms)
+  dicke42 run 21 round 3: llm 812.745 s | F_log 0.041667 F_cmp 0.041667 2q 5->3 (L3 6) compile 9.0 ms (L3 6.7 ms)
+  dicke42 run 21 round 4: llm 640.496 s | F_log 0.012346 F_cmp 0.012346 2q 6->12 (L3 10) compile 18.2 ms (L3 15.1 ms)
+  -> {"task": "dicke42", "run": 21, "model": "openai/gpt-oss-120b", "n_qubits": 4, "rounds": 4, "solved": true, "errors": 0, "http400": 0, "llm_s_total": 2602.52, "baseline_psf_2q": 17, "baseline_q3_2q": 13, "baseline_psf_fidelity": 0.9999999999999998, "baseline_psf_s": 0.0102, "baseline_q3_s": 0.0106, "best_round": 2, "fidelity_compiled": 1.0, "logical_2q": 6, "routed_2q": 12, "routed_swaps": 0, "depth": 36, "compile_s": 0.0164, "q3_s": 0.0101, "q3_2q": 10, "q3_fidelity": 1.0}
+DONE

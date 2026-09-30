@@ -1,0 +1,7 @@
+v10 2026-09-30 | model openai/gpt-oss-120b | device FakeAuckland | sim lightning.qubit | psf_compile 2026-09-28.1 | CORE_VERSION 2026-09-29.1 | layout 2026-09-29.c1
+== w4 (run 23): Prepare the 4-qubit W state (|0001> + |0010> + |0100> + |1000>)/2.
+  w4 run 23 round 1: llm 384.602 s | F_log 1.000000 F_cmp 1.000000 2q 6->9 (L3 6) compile 90.3 ms (L3 10.0 ms)
+  w4 run 23 round 2: llm 553.334 s | F_log 1.000000 F_cmp 1.000000 2q 6->9 (L3 6) compile 10.4 ms (L3 7.9 ms)
+  w4 run 23 round 3: llm 875.137 s | F_log 0.041667 F_cmp 0.041667 2q 3->6 (L3 6) compile 15.7 ms (L3 10.3 ms)
+  -> {"task": "w4", "run": 23, "model": "openai/gpt-oss-120b", "n_qubits": 4, "rounds": 3, "solved": true, "errors": 0, "http400": 0, "llm_s_total": 1813.07, "baseline_psf_2q": 17, "baseline_q3_2q": 13, "baseline_psf_fidelity": 0.9999999999999998, "baseline_psf_s": 0.0121, "baseline_q3_s": 0.0101, "best_round": 1, "fidelity_compiled": 0.9999999999999454, "logical_2q": 6, "routed_2q": 9, "routed_swaps": 0, "depth": 26, "compile_s": 0.0903, "q3_s": 0.01, "q3_2q": 6, "q3_fidelity": 0.9999999999999463}
+DONE

@@ -1,0 +1,7 @@
+v10 2026-09-30 | model openai/gpt-oss-120b | device FakeAuckland | sim lightning.qubit | psf_compile 2026-09-28.1 | CORE_VERSION 2026-09-29.1 | layout 2026-09-29.c1
+== fill27g9 (run 22): Prepare nine 3-qubit GHZ states (|000> + |111>)/sqrt(2), on qubits (0,1,2), (3,4,5), (6,7,8), (9,10,11), (12,13,14), (15,16,17), (18,19,20), (21,22,23) and (24,25,26). The circuit will run on a 27-qubit device whose qubits are connected as a heavy-hexagon lattice (every qubit has at most three neighbours, and two-qubit gates act only between neighbours), and all 27 qubits are needed, so there is no spare qubit.
+  fill27g9 run 22 round 1: llm 43.026 s | F_log 1.000000 F_cmp 1.000000 2q 18->18 (L3 18) compile 1297.5 ms (L3 8039.3 ms)
+  fill27g9 run 22 round 2: llm 57.707 s | F_log 1.000000 F_cmp 1.000000 2q 18->18 (L3 18) compile 1218.6 ms (L3 8253.8 ms)
+  fill27g9 run 22 round 3: llm 48.033 s | F_log 1.000000 F_cmp 1.000000 2q 18->18 (L3 18) compile 1211.1 ms (L3 8169.8 ms)
+  -> {"task": "fill27g9", "run": 22, "model": "openai/gpt-oss-120b", "n_qubits": 27, "rounds": 3, "solved": true, "errors": 0, "http400": 0, "llm_s_total": 148.77, "baseline_psf_2q": 63, "baseline_q3_2q": 53, "baseline_psf_fidelity": 0.9999999999999922, "baseline_psf_s": 0.0181, "baseline_q3_s": 4.5334, "best_round": 1, "fidelity_compiled": 0.9999999999999947, "logical_2q": 18, "routed_2q": 18, "routed_swaps": 0, "depth": 15, "compile_s": 1.2975, "q3_s": 8.0393, "q3_2q": 18, "q3_fidelity": 0.9999999999999938}
+DONE

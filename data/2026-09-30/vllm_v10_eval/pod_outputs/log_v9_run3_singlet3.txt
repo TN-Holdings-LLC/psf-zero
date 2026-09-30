@@ -1,0 +1,7 @@
+v10 2026-09-30 | model openai/gpt-oss-120b | device FakeAuckland | sim lightning.qubit | psf_compile 2026-09-28.1 | CORE_VERSION 2026-09-29.1 | layout 2026-09-29.c1
+== singlet3 (run 23): Prepare three singlet pairs (|01> - |10>)/sqrt(2): one on qubits (0,1), one on (2,3), one on (4,5). In each pair the first qubit listed is the left bit of the ket.
+  singlet3 run 23 round 1: llm 35.306 s | F_log 1.000000 F_cmp 1.000000 2q 3->3 (L3 3) compile 17.3 ms (L3 29.3 ms)
+  singlet3 run 23 round 2: llm 50.665 s | F_log 1.000000 F_cmp 1.000000 2q 3->3 (L3 3) compile 7.8 ms (L3 20.7 ms)
+  singlet3 run 23 round 3: llm 41.5 s | F_log 1.000000 F_cmp 1.000000 2q 3->3 (L3 3) compile 7.4 ms (L3 20.1 ms)
+  -> {"task": "singlet3", "run": 23, "model": "openai/gpt-oss-120b", "n_qubits": 6, "rounds": 3, "solved": true, "errors": 0, "http400": 0, "llm_s_total": 127.47, "baseline_psf_2q": 3, "baseline_q3_2q": 3, "baseline_psf_fidelity": 0.9999999999999987, "baseline_psf_s": 0.0077, "baseline_q3_s": 0.0219, "best_round": 1, "fidelity_compiled": 0.9999999999999987, "logical_2q": 3, "routed_2q": 3, "routed_swaps": 0, "depth": 9, "compile_s": 0.0173, "q3_s": 0.0293, "q3_2q": 3, "q3_fidelity": 0.9999999999999989}
+DONE
