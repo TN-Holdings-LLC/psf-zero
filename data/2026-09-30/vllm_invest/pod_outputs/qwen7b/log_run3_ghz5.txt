@@ -1,0 +1,9 @@
+v6 2026-09-30 | model Qwen/Qwen2.5-7B-Instruct | device FakeAuckland | sim lightning.qubit | psf_compile 2026-09-28.1 | CORE_VERSION 2026-09-29.1 | layout 2026-09-29.c1
+== ghz5 (run 3): Prepare the 5-qubit GHZ state (|00000> + |11111>)/sqrt(2).
+  ghz5 run 3 round 1: llm 8.09 s | F_log 0.250000 F_cmp 0.250000 2q 4->7 (L3 7) compile 181.6 ms (L3 44.5 ms)
+  ghz5 run 3 round 2: llm 2.246 s | F_log 1.000000 F_cmp 1.000000 2q 4->7 (L3 7) compile 35.3 ms (L3 25.6 ms)
+  ghz5 run 3 round 3: llm 1.315 s | F_log 1.000000 F_cmp 1.000000 2q 4->7 (L3 7) compile 33.9 ms (L3 25.7 ms)
+  ghz5 run 3 round 4: llm 2.582 s | error ValueError: gate 1: unknown gate 'crx'
+  ghz5 run 3 round 5: llm 1.003 s | F_log 0.260838 F_cmp 0.260838 2q 4->11 (L3 11) compile 33.4 ms (L3 28.7 ms)
+  -> {"task": "ghz5", "run": 3, "model": "Qwen/Qwen2.5-7B-Instruct", "n_qubits": 5, "rounds": 5, "solved": true, "errors": 1, "http400": 0, "llm_s_total": 15.24, "baseline_psf_2q": 47, "baseline_q3_2q": 34, "baseline_psf_fidelity": 0.9999999999999998, "baseline_psf_s": 0.0346, "baseline_q3_s": 0.0425, "best_round": 2, "fidelity_compiled": 0.9999999999999991, "logical_2q": 4, "routed_2q": 7, "routed_swaps": 0, "depth": 18, "compile_s": 0.0353, "q3_s": 0.0256, "q3_2q": 7, "q3_fidelity": 0.9999999999999993}
+DONE

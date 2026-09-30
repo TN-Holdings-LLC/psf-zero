@@ -1,0 +1,13 @@
+{
+ "n_qubits": 3,
+ "gates": [
+  {
+   "name": "x",
+   "qubits": [
+    0
+   ],
+   "params": []
+  }
+ ],
+ "note": "x"
+}

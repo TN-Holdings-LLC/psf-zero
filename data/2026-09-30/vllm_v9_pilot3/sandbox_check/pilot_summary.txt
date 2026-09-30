@@ -1,0 +1,53 @@
+== guard_tool run7 bell3
+  round 1: finish stop | tokens 529 | reasoning chars 1112 | llm 9.058 s | F 1.000000 2q 3
+  round 2: finish stop | tokens 474 | reasoning chars 1242 | llm 5.992 s | F 1.000000 2q 3
+  round 3: finish stop | tokens 946 | reasoning chars 3208 | llm 12.026 s | F 1.000000 2q 3
+== guard_tool run7 fill27
+  round 1: finish stop | tokens 2984 | reasoning chars 8395 | llm 40.037 s | F 1.000000 2q 17
+  round 2: finish stop | tokens 866 | reasoning chars 1545 | llm 7.626 s | F 1.000000 2q 17
+  round 3: finish stop | tokens 1005 | reasoning chars 2346 | llm 8.928 s | F 1.000000 2q 17
+== guard_tool run7 ghz5
+  round 1: finish stop | tokens 1136 | reasoning chars 3098 | llm 16.825 s | F 1.000000 2q 7
+  round 2: finish stop | tokens 932 | reasoning chars 2709 | llm 11.828 s | F 1.000000 2q 4
+  round 3: finish stop | tokens 945 | reasoning chars 3099 | llm 11.782 s | F 1.000000 2q 7
+  round 4: finish stop | tokens 717 | reasoning chars 2334 | llm 6.37 s | F 1.000000 2q 4
+== guard_tool run7 qft3
+  round 1: finish stop | tokens 5529 | reasoning chars 15556 | llm 62.568 s | tool calls 1 | F 1.000000 2q 12
+  round 2: finish stop | tokens 53481 | reasoning chars 152743 | llm 525.644 s | tool calls 7 | F 0.000000 2q 0
+  round 3: finish stop | tokens 53370 | reasoning chars 151108 | llm 531.402 s | tool calls 8 | error ValueError: no JSON object found in the reply
+  round 4: finish stop | tokens 1391 | reasoning chars 3432 | llm 13.933 s | F 1.000000 2q 12
+== w3_notool run7 w3
+  round 1: finish stop | tokens 41564 | reasoning chars 116817 | llm 409.069 s | F 0.205950 2q 9
+  round 2: finish stop | tokens 24476 | reasoning chars 65313 | llm 246.603 s | F 1.000000 2q 7
+  round 3: finish stop | tokens 45633 | reasoning chars 128791 | llm 456.533 s | F 1.000000 2q 7
+  round 4: finish stop | tokens 12048 | reasoning chars 35510 | llm 113.641 s | F 0.853553 2q 7
+== w3_notool run8 w3
+  round 1: finish stop | tokens 31653 | reasoning chars 93679 | llm 309.53 s | F 0.205950 2q 9
+  round 2: finish stop | tokens 41325 | reasoning chars 113604 | llm 414.045 s | F 0.444444 2q 9
+  round 3: finish stop | tokens 9087 | reasoning chars 24111 | llm 91.113 s | F 1.000000 2q 7
+  round 4: finish stop | tokens 42662 | reasoning chars 118460 | llm 418.297 s | F 1.000000 2q 7
+  round 5: finish stop | tokens 42996 | reasoning chars 118402 | llm 295.841 s | F 1.000000 2q 7
+== w3_notool run9 w3
+  round 1: finish stop | tokens 8272 | reasoning chars 22070 | llm 86.966 s | F 1.000000 2q 7
+  round 2: finish length | tokens 48000 | reasoning chars 126061 | llm 484.934 s | salvaged | F 0.055556 2q 2
+  round 3: finish stop | tokens 23303 | reasoning chars 66621 | llm 228.854 s | F 1.000000 2q 7
+== w3_tool run7 w3
+  round 1: finish stop | tokens 164433 | reasoning chars 452012 | llm 1506.381 s | tool calls 8 | F 0.271038 2q 13
+  round 2: finish stop | tokens 13790 | reasoning chars 35678 | llm 94.603 s | tool calls 4 | F 1.000000 2q 7
+  round 3: finish stop | tokens 108576 | reasoning chars 299720 | llm 734.611 s | tool calls 8 | error ValueError: no JSON object found in the reply
+  round 4: finish stop | tokens 97596 | reasoning chars 280972 | llm 649.051 s | tool calls 6 | F 1.000000 2q 7
+  round 5: finish stop | tokens 60911 | reasoning chars 178675 | llm 405.959 s | tool calls 6 | F 1.000000 2q 7
+== w3_tool run8 w3
+  round 1: finish stop | tokens 59221 | reasoning chars 160460 | llm 592.305 s | tool calls 8 | error ValueError: no JSON object found in the reply
+  round 2: finish stop | tokens 47614 | reasoning chars 131501 | llm 469.886 s | tool calls 2 | F 0.241286 2q 9
+  round 3: finish stop | tokens 77820 | reasoning chars 213982 | llm 580.779 s | tool calls 8 | error ValueError: no JSON object found in the reply
+  round 4: finish stop | tokens 99341 | reasoning chars 264051 | llm 674.375 s | tool calls 8 | error ValueError: no JSON object found in the reply
+  round 5: finish stop | tokens 117643 | reasoning chars 321470 | llm 783.113 s | tool calls 8 | F 1.000000 2q 6
+  round 6: finish stop | tokens 128124 | reasoning chars 354303 | llm 707.453 s | tool calls 8 | F 1.000000 2q 6
+== w3_tool run9 w3
+  round 1: finish length | tokens 58409 | reasoning chars 162966 | llm 600.279 s | salvaged | tool calls 2 | F 0.055556 2q 4
+  round 2: finish length | tokens 48000 | reasoning chars 138815 | llm 503.018 s | salvaged | F 0.444444 2q 2
+  round 3: finish stop | tokens 167944 | reasoning chars 476433 | llm 1176.334 s | tool calls 8 | F 0.869825 2q 9
+  round 4: finish stop | tokens 139611 | reasoning chars 395893 | llm 931.293 s | tool calls 8 | error ValueError: no JSON object found in the reply
+  round 5: finish stop | tokens 23187 | reasoning chars 67349 | llm 153.931 s | F 1.000000 2q 7
+  round 6: finish stop | tokens 71653 | reasoning chars 192932 | llm 367.099 s | tool calls 8 | F 1.000000 2q 6

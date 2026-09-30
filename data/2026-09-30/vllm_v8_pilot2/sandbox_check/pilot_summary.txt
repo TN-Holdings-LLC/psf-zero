@@ -1,0 +1,52 @@
+== qft3_high run4
+  round 1: finish stop | tokens 4333 | reasoning chars 12612 | llm 54.858 s | F 0.000000 2q 12
+  round 2: finish stop | tokens 7331 | reasoning chars 18353 | llm 99.327 s | F 1.000000 2q 12
+  round 3: finish stop | tokens 7234 | reasoning chars 20507 | llm 102.436 s | F 1.000000 2q 0
+  round 4: finish stop | tokens 2027 | reasoning chars 5098 | llm 19.779 s | F 1.000000 2q 0
+  round 5: finish stop | tokens 4650 | reasoning chars 13334 | llm 45.034 s | F 1.000000 2q 0
+== qft3_high run5
+  round 1: finish stop | tokens 3271 | reasoning chars 9502 | llm 41.392 s | F 1.000000 2q 12
+  round 2: finish stop | tokens 22801 | reasoning chars 65474 | llm 284.481 s | F 1.000000 2q 0
+  round 3: finish stop | tokens 22135 | reasoning chars 54647 | llm 189.648 s | F 0.000000 2q 0
+  round 4: finish stop | tokens 16454 | reasoning chars 48008 | llm 119.803 s | F 1.000000 2q 0
+== qft3_high run6
+  round 1: finish stop | tokens 2018 | reasoning chars 5290 | llm 25.635 s | F 1.000000 2q 12
+  round 2: finish stop | tokens 4868 | reasoning chars 13171 | llm 63.124 s | F 0.000000 2q 0
+  round 3: finish stop | tokens 11853 | reasoning chars 33241 | llm 165.881 s | F 1.000000 2q 0
+  round 4: finish stop | tokens 15936 | reasoning chars 42078 | llm 153.591 s | F 1.000000 2q 0
+  round 5: finish stop | tokens 3850 | reasoning chars 10222 | llm 36.076 s | F 0.125000 2q 0
+== w3_high run4
+  round 1: finish stop | tokens 11298 | reasoning chars 27020 | llm 149.245 s | F 1.000000 2q 7
+  round 2: finish length | tokens 32000 | reasoning chars 84590 | llm 333.243 s | salvaged | F 0.000000 2q 2
+  round 3: finish length | tokens 32000 | reasoning chars 89006 | llm 234.492 s | salvaged | F 1.000000 2q 7
+== w3_high run5
+  round 1: finish length | tokens 32000 | reasoning chars 91751 | llm 387.237 s | salvaged | F 0.000000 2q 2
+  round 2: finish stop | tokens 29112 | reasoning chars 84277 | llm 226.927 s | F 1.000000 2q 14
+  round 3: finish length | tokens 32000 | reasoning chars 93475 | llm 190.691 s | salvaged | F 0.000000 2q 5
+  round 4: finish stop | tokens 23128 | reasoning chars 57552 | llm 100.726 s | F 1.000000 2q 7
+  round 5: finish length | tokens 32000 | reasoning chars 92364 | llm 142.097 s | salvaged | F 0.000000 2q 4
+  round 6: finish length | tokens 32000 | reasoning chars 91738 | llm 143.302 s | salvaged | F 1.000000 2q 7
+== w3_high run6
+  round 1: finish stop | tokens 25693 | reasoning chars 71549 | llm 322.242 s | F 1.000000 2q 4
+  round 2: finish length | tokens 32000 | reasoning chars 81796 | llm 265.555 s | salvaged | F 0.000000 2q 3
+  round 3: finish stop | tokens 22431 | reasoning chars 64107 | llm 152.687 s | F 1.000000 2q 4
+== w3_medium run4
+  round 1: finish stop | tokens 5315 | reasoning chars 13429 | llm 67.435 s | F 0.552764 2q 9
+  round 2: finish stop | tokens 3180 | reasoning chars 7183 | llm 43.449 s | F 0.742442 2q 9
+  round 3: finish stop | tokens 3365 | reasoning chars 8141 | llm 45.987 s | F 0.284518 2q 9
+  round 4: finish stop | tokens 4005 | reasoning chars 10923 | llm 55.552 s | F 0.055556 2q 2
+  round 5: finish stop | tokens 3711 | reasoning chars 8574 | llm 50.55 s | F 0.869825 2q 10
+  round 6: finish stop | tokens 4598 | reasoning chars 10910 | llm 44.455 s | F 0.444444 2q 10
+== w3_medium run5
+  round 1: finish stop | tokens 2009 | reasoning chars 5268 | llm 25.445 s | F 0.027778 2q 3
+  round 2: finish stop | tokens 2809 | reasoning chars 6972 | llm 35.629 s | F 0.041667 2q 4
+  round 3: finish stop | tokens 5471 | reasoning chars 13569 | llm 73.847 s | F 0.444444 2q 2
+  round 4: finish stop | tokens 4555 | reasoning chars 12133 | llm 62.777 s | F 0.185730 2q 3
+  round 5: finish stop | tokens 1619 | reasoning chars 3651 | llm 25.44 s | F 0.027778 2q 3
+  round 6: finish stop | tokens 2328 | reasoning chars 5672 | llm 32.526 s | F 0.444444 2q 3
+== w3_medium run6
+  round 1: finish stop | tokens 3947 | reasoning chars 9457 | llm 49.966 s | F 0.444444 2q 3
+  round 2: finish stop | tokens 7457 | reasoning chars 19486 | llm 100.807 s | F 0.444444 2q 4
+  round 3: finish stop | tokens 4260 | reasoning chars 11161 | llm 58.815 s | F 1.000000 2q 7
+  round 4: finish stop | tokens 3106 | reasoning chars 7676 | llm 45.74 s | F 1.000000 2q 7
+  round 5: finish stop | tokens 2156 | reasoning chars 5930 | llm 21.198 s | F 1.000000 2q 7

@@ -1,0 +1,50 @@
+{
+ "n_qubits": 3,
+ "gates": [
+  {
+   "name": "h",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    1
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "z",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "s",
+   "qubits": [
+    1
+   ],
+   "params": []
+  },
+  {
+   "name": "rz",
+   "qubits": [
+    2
+   ],
+   "params": [
+    3.926991
+   ]
+  }
+ ],
+ "note": "Zero two\u2011qubit gates; exact QFT output for |101> (up to global phase)."
+}

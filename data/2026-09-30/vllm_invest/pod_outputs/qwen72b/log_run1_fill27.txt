@@ -1,0 +1,7 @@
+v6 2026-09-30 | model Qwen/Qwen2.5-72B-Instruct | device FakeAuckland | sim lightning.qubit | psf_compile 2026-09-28.1 | CORE_VERSION 2026-09-29.1 | layout 2026-09-29.c1
+== fill27 (run 1): Prepare seven 3-qubit GHZ states (|000> + |111>)/sqrt(2), on qubits (0,1,2), (3,4,5), (6,7,8), (9,10,11), (12,13,14), (15,16,17) and (18,19,20), and three Bell pairs (|00> + |11>)/sqrt(2), on qubits (21,22), (23,24) and (25,26). The circuit will run on a 27-qubit device whose qubits are connected as a heavy-hexagon lattice (every qubit has at most three neighbours, and two-qubit gates act only between neighbours), and all 27 qubits are needed, so there is no spare qubit.
+  fill27 run 1 round 1: llm 31.772 s | F_log 1.000000 F_cmp 1.000000 2q 17->17 (L3 20) compile 158.5 ms (L3 11202.0 ms)
+  fill27 run 1 round 2: llm 24.248 s | F_log 1.000000 F_cmp 1.000000 2q 17->17 (L3 20) compile 46.5 ms (L3 11057.5 ms)
+  fill27 run 1 round 3: llm 24.797 s | F_log 1.000000 F_cmp 1.000000 2q 17->17 (L3 20) compile 31.8 ms (L3 10942.4 ms)
+  -> {"task": "fill27", "run": 1, "model": "Qwen/Qwen2.5-72B-Instruct", "n_qubits": 27, "rounds": 3, "solved": true, "errors": 0, "http400": 0, "llm_s_total": 80.82, "baseline_psf_2q": 52, "baseline_q3_2q": 46, "baseline_psf_fidelity": 0.9999999999999927, "baseline_psf_s": 0.0268, "baseline_q3_s": 5.5437, "best_round": 1, "fidelity_compiled": 0.9999999999999927, "logical_2q": 17, "routed_2q": 17, "routed_swaps": 0, "depth": 10, "compile_s": 0.1585, "q3_s": 11.202, "q3_2q": 20, "q3_fidelity": 0.9999999999999958}
+DONE

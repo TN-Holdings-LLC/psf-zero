@@ -1,0 +1,61 @@
+{
+ "n_qubits": 3,
+ "gates": [
+  {
+   "name": "h",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    1,
+    0
+   ],
+   "params": [
+    0.785398
+   ]
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    2,
+    0
+   ],
+   "params": [
+    1.5708
+   ]
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    2,
+    1
+   ],
+   "params": [
+    0.785398
+   ]
+  },
+  {
+   "name": "crz",
+   "qubits": [
+    2,
+    0
+   ],
+   "params": [
+    -1.5708
+   ]
+  },
+  {
+   "name": "swap",
+   "qubits": [
+    1,
+    2
+   ],
+   "params": []
+  }
+ ],
+ "note": "Corrected QFT on |101> to get the desired state."
+}

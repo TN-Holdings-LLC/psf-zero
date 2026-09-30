@@ -1,0 +1,1 @@
+independent numpy check (indep_check_2026-09-30.py + cp): circuits 24 max |F_indep - F_recorded| 2.7755575615628914e-17 correct 9

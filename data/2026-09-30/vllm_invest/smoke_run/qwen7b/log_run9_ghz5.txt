@@ -1,0 +1,6 @@
+v6 2026-09-30 | model Qwen/Qwen2.5-7B-Instruct | device FakeAuckland | sim lightning.qubit | psf_compile 2026-09-28.1 | CORE_VERSION 2026-09-29.1 | layout 2026-09-29.c1
+== ghz5 (run 9): Prepare the 5-qubit GHZ state (|00000> + |11111>)/sqrt(2).
+  ghz5 run 9 round 1: llm 2.267 s | F_log 0.250000 F_cmp 0.250000 2q 4->4 (L3 4) compile 154.7 ms (L3 39.0 ms)
+  ghz5 run 9 round 2: llm 2.56 s | F_log 0.260838 F_cmp 0.260838 2q 4->8 (L3 8) compile 29.9 ms (L3 34.5 ms)
+  -> {"task": "ghz5", "run": 9, "model": "Qwen/Qwen2.5-7B-Instruct", "n_qubits": 5, "rounds": 2, "solved": false, "errors": 0, "http400": 0, "llm_s_total": 4.83, "baseline_psf_2q": 47, "baseline_q3_2q": 34, "baseline_psf_fidelity": 0.9999999999999998, "baseline_psf_s": 0.0556, "baseline_q3_s": 0.0652, "best_round": 2, "fidelity_compiled": 0.26083828532550435, "logical_2q": 4, "routed_2q": 8, "routed_swaps": 0, "depth": 26, "compile_s": 0.0299, "q3_s": 0.0345, "q3_2q": 8, "q3_fidelity": 0.26083828532550446}
+DONE

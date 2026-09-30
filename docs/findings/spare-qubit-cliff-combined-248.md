@@ -2201,6 +2201,1369 @@ model (FakeAuckland), one circuit family; no Qiskit L3 arm in this run.
 | [`data/2026-09-29/pl_heavyhex_100k_home/pl_100k_score_home.txt`](../../data/2026-09-29/pl_heavyhex_100k_home/pl_100k_score_home.txt), [`compare_100k_home_pod.txt`](../../data/2026-09-29/pl_heavyhex_100k_home/compare_100k_home_pod.txt) | H1-H8 and R1-R3 scoring |
 | [`data/2026-09-29/pl_heavyhex_100k_home/home_env_100k.txt`](../../data/2026-09-29/pl_heavyhex_100k_home/home_env_100k.txt), [`run_100k_home_log.txt`](../../data/2026-09-29/pl_heavyhex_100k_home/run_100k_home_log.txt) | environment and console log |
 
+
+---
+
+<!-- ===== Addendum 263 (source: spare-qubit-cliff-addendum-263-2026-09-30.md) ===== -->
+
+> **Note added when merging:** Workplace pre-registration (RunPod B200): a go/no-go test of vLLM x PSF-Zero with explicit stop-loss criteria (G1-G3). From 2026-09-30 the vLLM line is on the record, by the owner's decision. Locked at the workplace Project's save time, not by a git commit; it entered this repository after the run. Document names used in Addenda 263-270: `vllm-invest-preregistration` = 263, `vllm-invest-results` = 264, `vllm-w3-pilot-exploratory` = 265, `vllm-v8-pilot2-exploratory` = 266, `vllm-v9-pilot3-exploratory` = 267, `vllm-invest2-preregistration` = 268, `vllm-invest2-results` = 269, `vllm-v10-eval-preregistration` (with `-rev1` and `-amendment1`) = 270.
+
+## Addendum 263 -- Pre-registration: is vLLM x PSF-Zero worth further investment? A go/no-go test with explicit stop-loss criteria on one RunPod B200 (2026-09-30)
+
+**Status: pre-registration, locked at the Project save time of this
+document**, before any scored run. Designed and dry-run in the workplace
+sandbox. The scored run is on a RunPod B200 pod. No IBM account, no network
+access to IBM, no QPU: the device is the FakeAuckland snapshot.
+
+## 1. Why, and what changes today
+
+Until yesterday the vLLM line was exploratory and unrecorded (hand-off 4-8,
+`work_2026-09-29_e2e_vllm_exploratory.zip`). From today it is **on the
+record**, by the owner's decision, with a **stop-loss rule**:
+
+- the test gives the idea the strongest conditions we can buy today (the
+  largest GPU on offer, the strongest open models that fit it, unquantized
+  where possible), so that a negative result cannot be blamed on weak
+  conditions;
+- failures are recorded like successes;
+- if the criteria below say it is not worth it, the line is **cut
+  immediately**. Reopening it needs a new pre-registration.
+
+Cost is not a constraint (owner, 2026-09-30). The only limits are the wall
+time rules in section 5.
+
+What the exploratory runs of 2026-09-29 showed (7B, pod RTX 4090, v1-v3;
+home RTX 4070, v5), for context only: GHZ5 and Bell3 solved; W3 and QFT3
+never solved by the 7B model; PSF-Zero compiled in 15-27 ms and the model
+took more than 90% of the time; on the fully filled 27-qubit task, free-text
+7B circuits compiled by PSF-Zero in about 12 ms with 17 two-qubit gates
+against Qiskit L3's 6.4 s and 20 (home), but circuits built from triangles
+compiled to 48 against L3's 39 (home, `--structured`), the known limit of
+the c1 short-path shortcut.
+
+## 2. Design ([`e2e_vllm_psf_v6.py`](../../benchmarks/e2e_vllm_psf_v6.py), `run_invest_2026-09-30.sh`, [`score_vllm_invest.py`](../../benchmarks/score_vllm_invest.py))
+
+**Hardware.** One RunPod B200 (183 GB, driver 595.91.07), 192 CPUs, 2 TB RAM,
+300 GB disk. All times in this test are **B200-pod times** and are not
+compared with any other machine.
+
+**Models** (served one at a time by vLLM, `--gpu-memory-utilization 0.90
+--max-model-len 32768`, `VLLM_USE_FLASHINFER_SAMPLER=0`):
+
+| tag | model | reply budget |
+|---|---|---|
+| qwen7b | Qwen/Qwen2.5-7B-Instruct (bf16) | 4,000 tokens; the baseline that failed yesterday |
+| qwen72b | Qwen/Qwen2.5-72B-Instruct (bf16, not quantized) | 4,000 tokens |
+| gptoss120b | openai/gpt-oss-120b (as published) | 16,000 tokens, `reasoning_effort=high` |
+
+**Tasks** (the target state is computed by the script and never shown to
+the model):
+
+| task | qubits | what |
+|---|---|---|
+| ghz5 | 5 | (&#124;00000> + &#124;11111>)/sqrt(2) |
+| w3 | 3 | W state |
+| bell3 | 6 | three Bell pairs |
+| qft3 | 3 | QFT of &#124;101> |
+| fill27 | 27 | the whole FakeAuckland device filled: seven GHZ-3 and three Bell pairs |
+
+**Per task and run, up to 6 rounds:**
+
+1. The model reasons and gives a JSON circuit (free text; the last JSON
+   block counts). A few gate aliases are accepted (cnot, sdag, ...);
+   parameters on parameter-free gates are ignored and reported back.
+2. Logical check on the CPU (lightning.qubit), component by component (the
+   target is a product over groups).
+3. PSF-Zero `compile_for_hardware` (candidate core 2026-09-29.1 + candidate
+   layout 2026-09-29.c1, `layout_search=True`, `entangling_basis="cx"`,
+   synthesis cache cleared before each compile) and Qiskit
+   `transpile(optimization_level=3)` on the same input.
+4. Compiled check of the PSF output, read at the final layout.
+5. Feedback: fidelities, the wrong groups with their amplitudes next to the
+   target's, and for tasks of at most 4 qubits the state after every gate.
+   The temperature starts at 0.2 and rises by 0.3 (up to 1.0) when the same
+   wrong answer or the same error repeats.
+
+- **Solved** = compiled fidelity >= 0.9999 in any round.
+- **Early stop:** after a solve, stop when two further rounds do not improve
+  the device two-qubit count.
+- **Request seed** = 1000 x run + round. Each task-run is its own process;
+  the 15 task-runs of a model run in parallel against its server.
+- History keeps the system prompt, the task and the last two exchanges.
+- **HTTP 400** (context): retry once with only the task and the last
+  feedback, at half the reply budget.
+- Other HTTP errors cost the round and are recorded.
+- An unreachable server ends the task-run.
+
+**Baseline for G2.** Qiskit `StatePreparation` of each group's target (qubits
+passed in reverse, because the script's qubit 0 is the most significant
+bit), decomposed to cx + u at level 0, compiled by PSF-Zero and by L3 the
+same way, with its compiled fidelity checked.
+
+**G3 re-timing pass.** After all model runs, with nothing else running,
+every distinct valid fill27 circuit from all models is compiled by PSF-Zero
+and by L3, **5 times each, sequentially**, and the median is used. The
+per-round times recorded during the parallel runs are reported, but they are
+not used for G3.
+
+**Scale.** 3 models x 5 tasks x 3 runs = 45 task-runs, at most 270 model
+calls.
+
+## 3. Criteria (scored only by [`score_vllm_invest.py`](../../benchmarks/score_vllm_invest.py), from files)
+
+**G1: can the best model do the job?**
+
+- Best model = most solved task-runs out of 15. Ties go to more w3 + qft3
+  solves.
+- **go:** >= 12/15 solved, and w3 >= 2/3, and qft3 >= 2/3.
+- **stop:** <= 7/15.
+- Otherwise ambiguous.
+
+**G2: does the model add anything over a generic method?** On the best
+model's solved task-runs, compare the device two-qubit count (PSF-Zero) of
+its best circuit with the StatePreparation baseline compiled by PSF-Zero.
+
+- **go:** the model is <= baseline on >= 80% of them.
+- **stop:** the model is worse on > 50% of them, or nothing is solved.
+- Otherwise ambiguous.
+
+**G3: does PSF-Zero matter inside the loop, at full-device scale?** Over the
+distinct fill27 circuits from all models that are correct after compiling
+(re-timing pass):
+
+- **go:** median PSF-Zero time <= 1 s, and median per-circuit time ratio
+  L3/PSF-Zero >= 10, and PSF-Zero two-qubit count <= L3 on >= 80% of the
+  circuits.
+- **stop:** median ratio < 3, or PSF-Zero > L3 on > 50% of the circuits, or
+  median PSF-Zero time > 1 s, or no correct fill27 circuit at all.
+- Otherwise ambiguous.
+
+**Decision.**
+
+- **INVEST** only if G1 = go, G2 != stop and G3 = go.
+- **Anything else is CUT**, including any ambiguous G1 or G3.
+- A CUT is final for this line. It is recorded with the failures, and
+  reopening needs a new pre-registration with a different premise (not just
+  a bigger model).
+
+## 4. Expectations (written before the run; they do not change the decision)
+
+- **P1.** qwen7b repeats yesterday: ghz5 and bell3 solved in every run; w3
+  and qft3 solved in at most 1 of 3 runs each.
+- **P2.** At least one of qwen72b and gptoss120b solves w3 in >= 2 of 3 runs.
+- **P3.** On correct fill27 circuits, PSF-Zero is >= 10x faster than L3
+  (median). Whether its two-qubit count is <= L3 depends on the circuit
+  shape (paths versus triangles); no prediction is made.
+- **Overall:** no prediction. G1 is the open question.
+
+## 5. Wall time rules and failures
+
+- A model whose server is not ready within 40 minutes is recorded as a
+  server failure ([`SERVER_FAILED.txt`](../../data/2026-09-30/vllm_invest/smoke_run/qwen7b/SERVER_FAILED.txt) with the log tail). Its 15 task-runs
+  count as not solved.
+- Each task-run process is killed after 90 minutes. A missing result counts
+  as not solved.
+- **Nothing is re-run to improve a score.** A re-run is allowed only for an
+  infrastructure fault outside the model (for example, the pod restarting).
+  It must be recorded as an amendment before the re-run, and the first
+  attempt's files are kept.
+
+## 6. Dry runs (disclosed)
+
+- **Sandbox, mock model** (canned replies):
+  - all five tasks run end to end;
+  - the checker catches a wrong W3 parameter (fidelity 0.889) and an
+    incomplete fill27 circuit (0.0078 = 1/2 x (1/4)^3);
+  - the correct mock circuits reach fidelity 1 - 1e-14.
+- **Sandbox, fake HTTP server:**
+  - an HTTP 400 is followed by a retry at half the budget, with seeds
+    2001, 2001, 2002, ...;
+  - an HTTP 500 costs one round;
+  - an empty reply is recorded as an error;
+  - a triangle fill27 circuit is checked correctly (PSF 38 = L3 38).
+- **Sandbox, full run script with a fake server** (2 models x 2 tasks x
+  1 run): server start and stop, the re-timing pass, the scorer and the zip
+  all worked.
+- **Sandbox timing note** (not a result): fill27 L3 took 4-8 s against
+  PSF-Zero's 13-100 ms, on 2 sandbox CPUs.
+- **Pod smoke run** (`SMOKE=1`: qwen7b, ghz5 and fill27, run 9, 2 rounds,
+  into `~/invest_smoke_0930`), allowed after this lock. It checks the real
+  server path on the B200 and **is not scored**. Its output is kept and
+  handed off.
+
+## 7. What this will not establish
+
+- Anything about real hardware fidelity (no QPU).
+- Models other than the three listed, or prompting other than section 2.
+  The structured-output mode of home's v5 is not part of this test.
+- Whether the idea could work with fine-tuning or tools. A CUT here means
+  "not worth investing on this premise".
+
+## 8. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| [`benchmarks/e2e_vllm_psf_v6.py`](../../benchmarks/e2e_vllm_psf_v6.py) | `4b24734fd315f188fb14d3e67253c55819e4dc771bb321f1a3330fb30552fd10` |
+| [`benchmarks/score_vllm_invest.py`](../../benchmarks/score_vllm_invest.py) | `1e154fb1caddad67bda4f399f2eaaf6d8665e64c78a1ab7313c37f8a17c986ee` |
+| `benchmarks/pod/run_invest_2026-09-30.sh` | `64446a98cf0073959871ac9e2f53496f6afc108a7672f31cccd6c115cf221168` |
+
+The stack on the pod is the one `setup_gpu_2026-09-29.sh` builds:
+
+- `psf_compile` 2026-09-28.1;
+- candidate core 2026-09-29.1;
+- candidate layout 2026-09-29.c1.
+
+Setup on this pod printed `SETUP DONE` with both cores and
+`pl_heavyhex_gpu.py a0081c29...`.
+
+---
+
+<!-- ===== Addendum 264 (source: spare-qubit-cliff-addendum-264-2026-09-30.md) ===== -->
+
+> **Note added when merging:** Decision CUT: G1 ambiguous (gpt-oss-120b 12/15, but W3 0/3: all 18 of its W3 rounds used the 16,000-token reply budget without giving a circuit), G2 go, G3 go (on correct 27-qubit circuits PSF-Zero 10-21 ms against Qiskit L3's 5.9-11.1 s, 17 against 20 two-qubit gates). The CUT stands as the result of these conditions; the line was reopened only under a new pre-registration (Addendum 268). Data: `data/2026-09-30/vllm_invest/` (pod outputs unpacked).
+
+## Addendum 264 -- Results: vLLM x PSF-Zero go/no-go on one RunPod B200. Decision: CUT (2026-09-30)
+
+**Pre-registration:** `vllm-invest-preregistration-2026-09-30.md`, locked at
+its Project save time (2026-09-30 about 00:11 UTC), before any run on the
+pod. The scored run started at 00:33 UTC and finished at 01:13 UTC.
+
+**Nothing was re-run to improve a score.** The locked scripts ran unchanged:
+`env.txt` on the pod records the same raw SHA-256 values that were checked
+before the run (`05e2ee77...`, `0b1136e8...`, `0434e66d...`).
+
+## 0. In one line
+
+Under the pre-registered conditions the line is **not worth further
+investment**, and it is **cut**.
+
+- **G1 = ambiguous.** The best model, gpt-oss-120b, solved 12/15 task-runs
+  but W3 0/3. No model solved W3 in any run.
+- **G2 = go.**
+- **G3 = go.**
+
+The rule is that anything other than G1 = go and G3 = go is CUT.
+
+Two results stand independently of the cut:
+
+- On the fully filled 27-qubit device, every correct circuit compiled by
+  PSF-Zero in 10-21 ms against Qiskit L3's 5.9-11.1 s (500-660x). PSF-Zero
+  used 17 two-qubit gates against L3's 20 on all 7 distinct correct
+  circuits.
+- The deciding failure was a budget failure, not a wrong answer: in all 18
+  W3 rounds gpt-oss-120b used its whole 16,000-token reply budget on
+  reasoning and never produced a circuit. Section 3 says what that does and
+  does not mean.
+
+## 1. Environment (B200 pod; times are B200-pod times, not compared with any other machine)
+
+- **Hardware:** NVIDIA B200 (183,359 MiB, driver 595.91.07); 192 CPUs (Intel
+  Xeon Platinum 8568Y+); 2 TB RAM.
+- **Software:** vLLM 0.30.0, torch 2.13.0+cu130, Qiskit 2.5.2, PennyLane
+  0.45.1.
+- **PSF-Zero stack:** psf_compile 2026-09-28.1, candidate core 2026-09-29.1,
+  candidate layout 2026-09-29.c1, built by `setup_gpu_2026-09-29.sh`.
+- **GPU memory in use** with each server up: 163,796 MiB (7B), 163,802 MiB
+  (72B) and 165,102 MiB (gpt-oss-120b).
+- **Server start:** gpt-oss-120b took 932 s to be ready, inside the 40-minute
+  limit.
+- **Environment additions made before the scored run** (disclosed; none of
+  them changes a locked file):
+  1. The first smoke attempt failed at server start: FlashInfer's JIT build
+     found no `ninja`.
+  2. `ninja` was installed into the vLLM venv and linked into
+     `/usr/local/bin`.
+  3. `/usr/local/cuda/bin` (nvcc 12.8.93) was put on `PATH`, with
+     `CUDA_HOME=/usr/local/cuda`, in the terminal that then ran both the
+     second smoke attempt and the scored run.
+- **Smoke run** (disclosed, not scored; qwen7b, ghz5 and fill27, run 9, 2
+  rounds):
+  - fill27 was solved;
+  - ghz5 was not. The model used H + CZ chains and CRY chains, and the
+    fidelities 0.25 and 0.2608 were checked by hand.
+  - [`SERVER_FAILED.txt`](../../data/2026-09-30/vllm_invest/smoke_run/qwen7b/SERVER_FAILED.txt) in the smoke zip is from the first (ninja) attempt.
+    Its `vllm_server.log` was overwritten by the second attempt.
+
+## 2. Results (scored by [`score_vllm_invest.py`](../../benchmarks/score_vllm_invest.py), from files)
+
+| model | solved /15 | ghz5 | w3 | bell3 | qft3 | fill27 | reply errors | HTTP 400 | missing |
+|---|---|---|---|---|---|---|---|---|---|
+| gpt-oss-120b | **12** | 3/3 | **0/3** | 3/3 | 3/3 | 3/3 | 24 | 0 | 0 |
+| Qwen2.5-72B | 9 | 3/3 | 0/3 | 3/3 | 0/3 | 3/3 | 4 | 0 | 0 |
+| Qwen2.5-7B | 7 | 3/3 | 0/3 | 2/3 | 0/3 | 2/3 | 4 | 0 | 0 |
+
+**Model time**, summed over the task-runs of each model (the 15 ran in
+parallel):
+
+- 7B: 377 s (median 2.8-5.9 s per call by task);
+- 72B: 1,731 s (11-35 s per call);
+- gpt-oss-120b: 2,731 s (8-84 s per call).
+
+**G1 = ambiguous.** gpt-oss-120b solved 12/15 and QFT3 3/3, but W3 was 0/3.
+The go rule needs W3 >= 2/3.
+
+**G2 = go.** gpt-oss-120b's device two-qubit count was at most the
+StatePreparation baseline on 11 of its 12 solved task-runs:
+
+| task | model (PSF) | baseline (PSF) | baseline (L3) |
+|---|---|---|---|
+| bell3 | 3 | 3 | 3 |
+| ghz5 | 4 | 47 | 34 |
+| fill27 | 17 | 52 | 46 |
+| qft3 run 1 | 0 | 7 | 3 |
+| qft3 run 2 | 3 | 7 | 3 |
+| qft3 run 3 | 12 | 7 | 3 |
+
+- QFT of a basis state is a product state. gpt-oss-120b found the
+  zero-two-qubit circuit in run 1.
+- Run 3 used the textbook QFT, which is the one case worse than the
+  baseline.
+
+**G3 = go.** The re-timing pass ran sequentially with nothing else running,
+5 repetitions each, and the median is used. It found 13 distinct valid
+fill27 circuits, 7 of them correct.
+
+- **Correct circuits:**
+  - PSF-Zero median 16.9 ms (range 9.7-21.3 ms);
+  - L3 5.87-11.10 s;
+  - per-circuit ratio 501-659x (median 612x);
+  - two-qubit count PSF-Zero 17 against L3 20 on all 7;
+  - no swaps in any of them.
+- **Wrong circuits (not scored):**
+  - 15 = 15 on three circuits;
+  - 30 = 30 on one;
+  - PSF-Zero lower on two (34 against 37).
+
+**Decision: CUT.**
+
+**Expectations** (from section 4 of the pre-registration):
+
+| | expectation | outcome |
+|---|---|---|
+| P1 | qwen7b: ghz5 and bell3 solved every run; w3, qft3 at most 1/3 | **not confirmed**: bell3 2/3 (run 3 ended at fidelity 0.0156). The rest held (w3 0/3, qft3 0/3). |
+| P2 | qwen72b or gpt-oss-120b: w3 >= 2/3 | **not confirmed**: both 0/3 |
+| P3 | PSF-Zero >= 10x faster than L3 on correct fill27 | **confirmed**: minimum 501x |
+
+## 3. The failures, as they are
+
+**gpt-oss-120b, W3 (the deciding cell).**
+
+- In all 18 rounds (3 runs x 6) the reply ended with `finish_reason=length`
+  after 41,920-52,708 characters of reasoning, and no JSON was produced.
+- The same happened in 6 of its 16 QFT3 rounds, but QFT3 was still solved
+  3/3.
+- The 16,000-token budget was pre-registered and was the same in every
+  round.
+
+What this means:
+
+- By the rules, running out of budget is model behaviour, not an
+  infrastructure fault, so it counts as not solved and is not re-run.
+- **The budget was decisive.** Had gpt-oss-120b solved W3 in 2 of 3 runs, G1
+  would have been go, and with G2 go and G3 go the decision would have been
+  INVEST.
+- All 18 rounds ran out in the same way, so the model did not look close to
+  an answer. Even so, whether a larger budget would have produced a correct
+  W3 was not tested and is not known.
+- Raising the budget and running again would chase a pass by changing the
+  conditions. Under section 3 of the pre-registration that needs a new
+  pre-registration with a different premise.
+
+**Qwen2.5-72B and 7B, W3.** Both answered every round with wrong circuits:
+
+- best compiled fidelity 0.037-0.094 (72B) and 0.333 (7B);
+- 72B also used `ccx` once.
+
+**QFT3.**
+
+- 72B always used the textbook circuit on the wrong input (best 0.568).
+- 7B never exceeded 0.071.
+
+**Reply errors that were not the model's reasoning.** Qwen2.5-72B wrote
+parameters twice as `2 * Math.acos(...)` (capital M), which the parser does
+not accept.
+
+- Evaluated by hand, both circuits give W3 fidelity 0.037, so neither
+  acceptance would have changed a count.
+- The other errors are the model's: an unknown gate (`crx`, `ccx`), qubit
+  index 3 on a 3-qubit task, and `h` on more than one qubit.
+
+## 4. Checks of the harness (workplace sandbox, from the zip)
+
+- The zip (`invest_outputs_0930.zip`, SHA-256 `c7a976d6...`, 318 files)
+  matches its MANIFEST: 0 mismatches.
+- Re-scoring the files with the locked scorer gives the same verdicts and
+  numbers. The only differences are float summation order in four sums, at
+  the 1e-13 level.
+- An independent numpy simulator (no PennyLane, no Qiskit;
+  [`indep_check_2026-09-30.py`](../../benchmarks/indep_check_2026-09-30.py)) recomputed the logical fidelity of every
+  parsed circuit:
+  - 141 circuits on the small tasks: largest difference 4.4e-16, and 0
+    disagreements on solved or not solved;
+  - 32 fill27 circuits, checked group by group: difference 0.
+
+## 5. What this does and does not establish
+
+**It establishes** that under these conditions a vLLM-served open model
+coupled to PSF-Zero does not reliably solve the pre-registered five tasks:
+
+- the best open models that fit one B200, unquantized, with free-text
+  reasoning, 6 rounds of state feedback, and 4,000 tokens (Qwen) or 16,000
+  tokens with high reasoning effort (gpt-oss) per reply;
+- in particular, none of them produced a 3-qubit W state in any of 9
+  task-runs.
+
+**It does not establish:**
+
+- that the idea fails with a larger reply budget, tools (for example a
+  simulator the model can call), fine-tuning, or other models;
+- anything about real hardware.
+
+**It separately establishes, for PSF-Zero itself** (B200-pod CPU,
+sequential): on correct fill27 circuits written by the models, PSF-Zero
+compiles in about 17 ms against L3's 6-11 s, with fewer two-qubit gates (17
+against 20).
+
+## 6. Files
+
+- **Pod outputs:** `invest_outputs_0930.zip`, per model and run:
+  - `rounds.jsonl` (every reply, feedback and number);
+  - `result.json`;
+  - best circuits;
+  - server logs;
+  - `retime_fill27.csv`;
+  - `score.md` and `score.json`;
+  - `env.txt`.
+- **Smoke run:** `invest_smoke_0930.zip` (SHA-256 `2f9036bf...`).
+- **Locked scripts:**
+  - [`benchmarks/e2e_vllm_psf_v6.py`](../../benchmarks/e2e_vllm_psf_v6.py);
+  - [`benchmarks/score_vllm_invest.py`](../../benchmarks/score_vllm_invest.py);
+  - `benchmarks/pod/run_invest_2026-09-30.sh`.
+- **Independent check:** [`benchmarks/indep_check_2026-09-30.py`](../../benchmarks/indep_check_2026-09-30.py).
+
+---
+
+<!-- ===== Addendum 265 (source: spare-qubit-cliff-addendum-265-2026-09-30.md) ===== -->
+
+> **Note added when merging:** Exploratory, after the CUT of Addendum 264, not scored: v7 (32,000-token replies, the cp gate, a short-reasoning prompt) on W3 only, RunPod H200: high effort 3/3, medium 1/3. Data: `data/2026-09-30/vllm_w3_pilot/`.
+
+## Addendum 265 -- Exploratory (not pre-registered, not scored): W3 pilot of v7 with gpt-oss-120b on a RunPod H200 (2026-09-30)
+
+**Status: exploratory.** This pilot came after the CUT of
+`vllm-invest-results-2026-09-30.md`, at the owner's request ("improve only,
+then look at the weak point with a short test first"). It does not change
+that decision. Its only use is to decide whether to pre-register one new
+run.
+
+## Why
+
+The deciding failure of the scored run was W3 with gpt-oss-120b. In all 18
+rounds it used the whole 16,000-token reply budget on reasoning and gave no
+circuit. v7 changes only the three points named after the CUT:
+
+1. reply budget 32,000 tokens;
+2. the controlled-phase gate `cp` is allowed;
+3. the system prompt asks for short reasoning and always a final JSON.
+
+Everything else is v6.
+
+## Setup
+
+- **Hardware:** RunPod **H200** (143,771 MiB, driver 595.91.07), 96 CPUs,
+  2 TB RAM. B200 was out of capacity. GPU times are H200-pod times.
+- **Software:** vLLM 0.30.0 (pinned, as on the B200), torch 2.13.0+cu130,
+  the same PSF-Zero stack (setup printed `SETUP DONE`, both cores).
+- **Server:** `--max-model-len 40960`; ready after 171 s.
+- **Scripts:**
+  - [`e2e_vllm_psf_v7.py`](../../benchmarks/e2e_vllm_psf_v7.py) (raw SHA-256 `8dd7a285...`);
+  - `pilot_w3_2026-09-30.sh` (`c2c16432...`).
+- **Design:** gpt-oss-120b, task w3 only, `reasoning_effort` high and medium,
+  3 runs each, up to 6 rounds, 6 task-runs in parallel.
+- **Outputs:** `pilot_outputs_0930.zip` (SHA-256 `2624fd49...`).
+
+## What happened
+
+| arm | run | solved | first exact round | rounds that hit the 32,000-token limit (no answer) |
+|---|---|---|---|---|
+| high | 1 | yes | 1 | 2 of 6 |
+| high | 2 | yes | 2 | 4 of 6 |
+| high | 3 | yes | 5 | 4 of 6 |
+| medium | 1 | yes | 2 | 0 of 4 |
+| medium | 2 | no (best 0.742) | - | 0 of 6 |
+| medium | 3 | no (best 0.445) | - | 0 of 6 |
+
+**Arm totals:** high **3/3** solved, medium **1/3**.
+
+**Compared with the scored run** (v6, 16,000 tokens, B200): 0/3 solved, and
+18/18 rounds hit the limit.
+
+**The correct circuits** are the standard construction:
+
+- RY(1.231) = RY(2 acos sqrt(2/3)) on qubit 0;
+- a controlled RY(pi/2) with X conjugation;
+- then CNOTs to distribute the excitation.
+
+Device two-qubit counts after PSF-Zero were 4-7, against the StatePreparation
+baseline's 7.
+
+**Independent check.** A numpy simulator without PennyLane or Qiskit
+([`indep_check_2026-09-30.py`](../../benchmarks/indep_check_2026-09-30.py) plus `cp`) recomputed all 24 parsed circuits:
+the largest difference was 2.8e-17, and it found the same 9 correct circuits.
+
+## What it suggests, and what it does not
+
+**What it suggests:**
+
+- With the three changes, the high arm now reaches a correct W3 in every
+  run, within the 6-round cap.
+- Medium answers every round but is less accurate.
+
+**What it does not show:**
+
+- **The high arm is still fragile:** 10 of its 18 rounds still hit the
+  32,000-token limit. Run 3 needed 5 rounds.
+- **The sample is small:** three runs are not enough to be confident of the
+  >= 2/3 pre-registered bar.
+- **Nothing about the other four tasks or the full criteria.** Only W3 was
+  run.
+- **A different GPU** (H200, not B200). The model and vLLM version are the
+  same.
+
+**Next, if the owner agrees:**
+
+- one new pre-registered run with v7 unchanged (high, 32,000 tokens) on the
+  H200;
+- gpt-oss-120b plus Qwen2.5-7B as the control;
+- all five tasks x 3 runs, with the same G1-G3 criteria and decision rule.
+
+No further tuning on W3 before that run.
+
+---
+
+<!-- ===== Addendum 266 (source: spare-qubit-cliff-addendum-266-2026-09-30.md) ===== -->
+
+> **Note added when merging:** Exploratory, not scored: v8 (a salvage request after a cut reply, best-circuit memory): W3 high 3/3, W3 medium 1/3, QFT3 high 3/3, all three with zero two-qubit gates. Data: `data/2026-09-30/vllm_v8_pilot2/`.
+
+## Addendum 266 -- Exploratory (not pre-registered, not scored): pilot 2 of v8 with gpt-oss-120b on a RunPod H200 (2026-09-30)
+
+**Status: exploratory**, like pilot 1 (`vllm-w3-pilot-exploratory-2026-09-30.md`).
+It does not change the CUT of `vllm-invest-results-2026-09-30.md`. It is the
+last tuning step on W3. The next step, if any, is one pre-registered run on
+all five tasks with fresh seeds.
+
+## What changed from v7 (two hints from pilot 1)
+
+4. **Salvage.** When a reply ends at the token limit with no JSON, one short
+   follow-up request is sent in the same round (reasoning effort low, 4,000
+   tokens): "give your best circuit now".
+   - Pilot 1 lost 10 of 18 high rounds this way.
+5. **Memory.** The feedback carries the best circuit so far and its fidelity.
+   - The history keeps only the last two exchanges, and pilot 1 showed answers
+     oscillating and regressing.
+
+A sandbox test of v8 caught one bug before the pod run: the memory lines
+had broken an `if/else`, so correct rounds also received the "NOT correct"
+text. It was fixed before any pod use.
+
+## Setup
+
+- **Hardware and software:** the same H200 pod as pilot 1 (vLLM 0.30.0,
+  gpt-oss-120b, `--max-model-len 40960`).
+- **Seeds:** fresh (runs 4-6).
+- **Arms:**
+  - w3 at high effort;
+  - w3 at medium effort;
+  - qft3 at high effort, the other task that had hit the token limit.
+- **Scale:** 3 runs each, up to 6 rounds, 32,000-token replies, 9 task-runs
+  in parallel.
+- **Scripts:**
+  - [`e2e_vllm_psf_v8.py`](../../benchmarks/e2e_vllm_psf_v8.py) (raw SHA-256 `2d8a8c49...`);
+  - `pilot2_v8_2026-09-30.sh` (`1ac42ad9...`).
+- **Outputs:** `pilot2_outputs_0930.zip` (SHA-256 `c2c5f0ec...`).
+
+## What happened
+
+| arm | solved | first exact round per run | rounds cut at the limit | of those, salvaged to a correct circuit |
+|---|---|---|---|---|
+| w3 high | **3/3** | 1, 2, 1 | 7 of 12 | 2 |
+| w3 medium | 1/3 | -, -, 3 | 0 of 17 | - |
+| qft3 high | **3/3** | 2, 1, 1 | 0 of 14 | - |
+
+**W3, high effort.**
+
+- 3/3 again, now with **6/6 across the two pilots**. The first exact round
+  came earlier than in pilot 1 (1, 2, 1 against 1, 2, 5).
+- Every round now yields a circuit. There were no "no JSON" errors, against
+  10 in pilot 1's high arm.
+- Salvage requests took 1.6-4.8 s each, and 2 of the 7 gave a correct
+  circuit.
+- The best device two-qubit count reached 4, against the StatePreparation
+  baseline's 7.
+
+**QFT3, high effort.**
+
+- 3/3, with no round cut at the limit. v6 on the B200 had 6 of 16 rounds
+  cut.
+- **All three runs found a zero-two-qubit circuit**, because the QFT of a
+  basis state is a product state: H on each qubit plus single-qubit phases.
+  On the B200, v6 found such a circuit in 1 of 3 runs.
+
+**W3, medium effort.**
+
+- Still 1/3. The memory did not stop the oscillation: run 4 went 0.55,
+  0.74, 0.28, 0.06, 0.87, 0.44.
+- Medium answers quickly but does not converge.
+
+**Regressions after a solve.** When asked for fewer two-qubit gates, a
+solved run often proposed a wrong circuit (fidelity 0). The best exact
+circuit is kept, so the solved count is not affected, but those rounds are
+spent.
+
+**Independent check.** A numpy simulator without PennyLane or Qiskit
+([`indep_check_2026-09-30.py`](../../benchmarks/indep_check_2026-09-30.py) plus `cp`) recomputed every parsed circuit:
+
+- 29 W3 circuits and 14 QFT3 circuits;
+- the recorded fidelities were reproduced exactly;
+- the same 10 + 10 correct circuits were found.
+
+## What it suggests, and what it does not
+
+**What it suggests:** with v8 at high effort, gpt-oss-120b now solves the two
+tasks it struggled with (W3 6/6 over two pilots, QFT3 3/3 with optimal
+circuits) within the 6-round cap.
+
+**What it does not show:**
+
+- **Small samples:** 3 and 6 runs.
+- **Only two of the five tasks were run.**
+- **W3 still hits the limit in about half of its high rounds.** Salvage
+  turns those into answers, but mostly wrong ones.
+- **W3 has now been the tuning target twice**, so its numbers are optimistic
+  by construction. The scored test must use fresh seeds and all five tasks.
+- **A different GPU from the scored run** (H200, not B200).
+
+**Next, if the owner agrees:**
+
+- one pre-registered run with v8 unchanged, at high effort, 32,000 tokens,
+  with salvage and memory on;
+- on the H200, with gpt-oss-120b plus Qwen2.5-7B as the control;
+- all five tasks x 3 runs on fresh seeds;
+- the same G1-G3 criteria and decision rule as the 2026-09-30 test.
+
+A CUT there ends the line.
+
+---
+
+<!-- ===== Addendum 267 (source: spare-qubit-cliff-addendum-267-2026-09-30.md) ===== -->
+
+> **Note added when merging:** Exploratory, not scored: v9 (stronger salvage, 48,000-token replies, an optional simulator tool): W3 without the tool 3/3; the tool slowed convergence (up to 168,000 tokens and 25 minutes in one round) and was dropped. W3 was the tuning target of all three pilots (Addenda 265-267), so their W3 numbers are optimistic. Data: `data/2026-09-30/vllm_v9_pilot3/`.
+
+## Addendum 267 -- Exploratory (not pre-registered, not scored): pilot 3 of v9 with gpt-oss-120b on a RunPod H200 (2026-09-30)
+
+**Status: exploratory**, like pilots 1 and 2 (`vllm-w3-pilot-exploratory-2026-09-30.md`,
+`vllm-v8-pilot2-exploratory-2026-09-30.md`). The CUT of
+`vllm-invest-results-2026-09-30.md` stands. This was the third tuning step,
+at the owner's request ("if there is still room, improve again and
+retest").
+
+## What changed from v8 (hints from pilot 2)
+
+6. **Salvage** at medium effort and 8,000 tokens. At low effort it had given
+   2 correct circuits of 7.
+7. **Reply budget of 48,000 tokens.** W3 had still hit 32,000 in 7 of 12
+   high rounds.
+8. **Optional simulate() tool** (`--tool-sim`).
+   - The model may simulate its own candidate circuit during a round (up to 8
+     calls per round).
+   - The tool returns only the amplitudes of that circuit: never the target,
+     never a fidelity.
+   - The tool's numpy simulator matched PennyLane on 300 random circuits to
+     1.6e-16. Here, 88 tool answers were re-checked independently with no
+     missing basis state.
+
+## Setup
+
+- **Hardware:** the same H200 pod.
+- **Server:** vLLM 0.30.0 with `--tool-call-parser openai
+  --enable-auto-tool-choice` ([`server_mode.txt`](../../data/2026-09-30/vllm_v9_pilot3/pod_outputs/server_mode.txt): tools on), and
+  `--max-model-len 65536`.
+- **Model and seeds:** gpt-oss-120b, reasoning effort high, fresh seeds
+  (runs 7-9).
+- **Scale:** 10 task-runs in parallel.
+- **Scripts:**
+  - [`e2e_vllm_psf_v9.py`](../../benchmarks/e2e_vllm_psf_v9.py) (raw SHA-256 `11f747fa...`);
+  - `pilot3_v9_2026-09-30.sh` (`cae07919...`).
+- **Outputs:** `pilot3_outputs_0930.zip` (SHA-256 `911929ef...`).
+
+## What happened
+
+| arm | solved | first exact round per run | rounds with no usable circuit | typical tokens per round |
+|---|---|---|---|---|
+| w3, no tool | **3/3** | 2, 3, 1 | 0 of 12 (1 hit the limit; salvage gave a wrong circuit) | 8k-46k |
+| w3, tool | 3/3 | 2, **5, 5** | 5 of 17 (ended at the 8-call cap without JSON) | 14k-**168k** |
+| guard: ghz5, bell3, fill27 (tool offered) | 3/3 | 1, 1, 1 | 0 | 0.5k-3k (no tool calls) |
+| guard: qft3 (tool offered) | 1/1 | 1 | 1 of 4 | 1.4k-53k |
+
+**W3 without the tool.**
+
+- 3/3 solved.
+- Across the three pilots, the high arm without the tool has now solved W3
+  in **9 of 9 runs**: v7 at rounds 1, 2, 5; v8 at 1, 2, 1; v9 at 2, 3, 1.
+- With 48,000 tokens, only 1 of 12 rounds hit the limit.
+
+**W3 with the tool.**
+
+- Also 3/3, but late: runs 8 and 9 first solved in round 5. Round 5 of run 9
+  made no tool call.
+- **It was much more expensive:** up to 168,000 tokens and 25 minutes in one
+  round.
+- 5 of 17 rounds used all 8 calls and then gave no circuit.
+- In this form the tool made the model explore, not converge.
+
+**Guard tasks** (not used for tuning so far):
+
+- ghz5, bell3 and fill27 were solved in round 1 with small replies. The
+  model did not call the tool on them.
+- qft3 was solved in round 1. In later rounds, while trying to remove
+  two-qubit gates, it called the tool 7-8 times and lost those rounds.
+- No regression was seen on the untuned tasks.
+
+**Independent check.** A numpy simulator without PennyLane or Qiskit
+recomputed every parsed circuit (w3 24, qft3 3, ghz5 4, bell3 3):
+
+- largest difference 4.4e-16;
+- same correct circuits (14, 2, 4, 3).
+
+## What it suggests, and what it does not
+
+**What it suggests:**
+
+- The useful v9 change is the larger budget, together with the stronger
+  salvage.
+- The simulator tool, as offered here, does not help. It slows convergence
+  and multiplies token use.
+- If a scored run follows, it should use v9 **without** `--tool-sim`.
+
+**What it does not show:**
+
+- **Small samples** (3 runs per arm).
+- **W3 has now been the tuning target three times**, so its numbers are
+  optimistic by construction.
+- **Only one guard run per untuned task.**
+- **Other tool designs** (fewer calls, or a tool that answers yes/no to
+  "is this the target") were not tried. A yes/no tool would leak the target
+  and is not fair.
+
+**Proposal:**
+
+- stop tuning;
+- one pre-registered run with v9 (no tool, high effort, 48,000 tokens) on
+  the H200;
+- gpt-oss-120b plus Qwen2.5-7B as the control;
+- all five tasks x 3 runs on fresh seeds;
+- the same G1-G3 and decision rule.
+
+The owner's idea of feedback in words (a verbal description of how the
+state differs, generated mechanically, not how to fix it) could be a second,
+pre-registered arm in that run, instead of another W3 pilot.
+
+---
+
+<!-- ===== Addendum 268 (source: spare-qubit-cliff-addendum-268-2026-09-30.md) ===== -->
+
+> **Note added when merging:** Workplace pre-registration (RunPod H200) of a second go/no-go under a new premise: the v9 harness without the tool, gpt-oss-120b and Qwen2.5-7B, five tasks x 3 runs on fresh seeds, criteria unchanged from Addendum 263; a CUT here would end the line. Locked at the workplace Project's save time, not by a git commit; it entered this repository after the run.
+
+## Addendum 268 -- Pre-registration: second vLLM x PSF-Zero go/no-go, v9 without the tool, on a RunPod H200 (2026-09-30)
+
+**Status: pre-registration, locked at the Project save time of this
+document**, before any scored run of this test. No IBM account, no network
+access to IBM, no QPU: the device is the FakeAuckland snapshot.
+
+## 1. Why a second test, and what is different
+
+The first test of today (`vllm-invest-preregistration-2026-09-30.md`,
+results in `vllm-invest-results-2026-09-30.md`) ended in **CUT**:
+
+- G1 was ambiguous: gpt-oss-120b solved 12/15 but W3 0/3, because all 18 of
+  its W3 rounds used the 16,000-token budget on reasoning;
+- G2 and G3 were go.
+
+That CUT stands as the result of that test. Its rule said that reopening
+needs a new pre-registration with a different premise. This is that
+pre-registration.
+
+**The new premise:** the harness changes found in three exploratory pilots
+(all on the H200, gpt-oss-120b, recorded in
+`vllm-w3-pilot-exploratory-2026-09-30.md`,
+`vllm-v8-pilot2-exploratory-2026-09-30.md` and
+`vllm-v9-pilot3-exploratory-2026-09-30.md`):
+
+1. short-reasoning prompt with a mandatory final JSON;
+2. the controlled-phase gate `cp`;
+3. a larger reply budget (48,000 tokens for gpt-oss);
+4. a salvage request when a reply is cut at the limit;
+5. the best circuit so far carried in the feedback.
+
+The simulate() tool tried in pilot 3 is **not** used: it slowed convergence
+and multiplied token use. A restricted-tool variant was never tried, so it
+is not introduced here either.
+
+**Disclosed tuning history** (why these numbers are optimistic for W3):
+
+- W3 was the tuning target in all three pilots, where the high-effort arm
+  without the tool solved it 9 of 9 times;
+- QFT3 was piloted once (3/3);
+- ghz5, bell3 and fill27 were each piloted once with the tool offered (not
+  used), all solved in round 1.
+
+This test uses **fresh seeds** and **all five tasks**, and the criteria are
+unchanged from the first test.
+
+## 2. Design ([`e2e_vllm_psf_v9.py`](../../benchmarks/e2e_vllm_psf_v9.py) without `--tool-sim`, `run_invest2_2026-09-30.sh`, [`score_vllm_invest.py`](../../benchmarks/score_vllm_invest.py))
+
+- **Hardware:** RunPod **H200** (143,771 MiB, driver 595.91.07), 96 CPUs,
+  2 TB RAM. The first test ran on a B200; times are H200-pod times and are
+  not compared across machines.
+- **Software:**
+  - vLLM 0.30.0 (as in the first test), torch 2.13.0+cu130;
+  - PSF-Zero stack from `setup_gpu_2026-09-29.sh` (psf_compile 2026-09-28.1,
+    candidate core 2026-09-29.1, candidate layout 2026-09-29.c1);
+  - `ninja`, and `PATH` and `CUDA_HOME` set for `/usr/local/cuda` inside the
+    run script.
+
+**Models** (served one at a time, `--gpu-memory-utilization 0.90`):
+
+| tag | model | reply budget | reasoning effort | `--max-model-len` |
+|---|---|---|---|---|
+| qwen7b | Qwen/Qwen2.5-7B-Instruct | 8,000 | not sent | 32,768 |
+| gptoss120b | openai/gpt-oss-120b | 48,000 | high (salvage at medium, 8,000 tokens) | 65,536 |
+
+Qwen2.5-72B is dropped. It was not the best model in the first test, and
+the question is whether the deciding model now passes.
+
+- **Tasks:** ghz5, w3, bell3, qft3 and fill27, identical to the first test.
+- **Runs:** 3 per task and model. The request seeds use run numbers 11, 12
+  and 13 (seed = 1000 x run + round), and results are written to
+  `run1`-`run3`.
+- **Rounds:** up to 6, with the same solve rule (compiled fidelity >= 0.9999)
+  and early stop as in the first test.
+- **Parallelism:** the 15 task-runs of a model run in parallel against its
+  server.
+- **Scoring:** after the model runs, the G3 re-timing pass (5 repetitions,
+  median) and scoring by the **unchanged** [`score_vllm_invest.py`](../../benchmarks/score_vllm_invest.py), from
+  files.
+
+## 3. Criteria (unchanged from the first test)
+
+- **G1:**
+  - go if the best model solves >= 12/15, with w3 >= 2/3 and qft3 >= 2/3;
+  - stop if it solves <= 7/15.
+- **G2:** device two-qubit count (PSF) against the StatePreparation baseline
+  on the best model's solved task-runs.
+  - go if it is <= baseline on >= 80% of them;
+  - stop if it is worse on > 50% of them, or nothing is solved.
+- **G3** (re-timing pass, correct fill27 circuits):
+  - go if the median PSF time is <= 1 s, the median ratio L3/PSF is >= 10,
+    and PSF two-qubit count <= L3 on >= 80% of the circuits;
+  - stop if the median ratio is < 3, or PSF > L3 on > 50% of the circuits,
+    or the median PSF time is > 1 s, or there is no correct circuit.
+- **Decision:**
+  - **INVEST** only if G1 = go, G2 != stop and G3 = go;
+  - anything else is **CUT**, and a CUT here **ends the vLLM line**. No
+    further pilots or reopening on this premise.
+
+## 4. Expectations (written before the run; they do not change the decision)
+
+- **P1.** gpt-oss-120b solves ghz5, bell3 and fill27 in every run (as in the
+  first test).
+- **P2.** gpt-oss-120b solves w3 in >= 2 of 3 runs (pilots: 9/9 on other
+  seeds).
+- **P3.** gpt-oss-120b solves qft3 in >= 2 of 3 runs.
+- **P4.** qwen7b does not solve w3 or qft3 in more than 1 of 3 runs each.
+- **Overall:** INVEST is expected but not certain. W3 still hit the limit in
+  1 of 12 pilot rounds, and three runs per task leave little margin.
+
+## 5. Wall-time rules and failures
+
+- **Server start:** a server not ready within 40 minutes is recorded as a
+  server failure, and its task-runs count as not solved.
+- **Task-run limit:** each task-run process is killed after 120 minutes, and
+  a missing result counts as not solved.
+- **No re-runs to improve a score.** A re-run is allowed only for an
+  infrastructure fault outside the model, recorded as an amendment first,
+  with the first attempt's files kept.
+
+## 6. Dry runs (disclosed)
+
+- **Sandbox, full run script with a fake vLLM server** (2 models x 5 tasks x
+  3 runs, then re-timing, scoring and zip): completed.
+  - The decision it printed comes from canned replies and means nothing.
+  - The Qwen arm was checked to send no reasoning_effort (salvage effort
+    empty).
+- **Sandbox, v9 components:**
+  - the tool path and its fallback are tested but not used here;
+  - salvage and memory were tested in pilot 2 and 3.
+- **Pod smoke run** (`SMOKE=1`: qwen7b, ghz5 and w3, seed run 99, 2 rounds,
+  into `~/invest2_smoke_0930`), allowed after this lock. It checks the Qwen
+  download and server path on the H200 and **is not scored**.
+
+## 7. Locked files (normalized SHA-256; raw SHA-256 in brackets)
+
+| file | normalized | raw |
+|---|---|---|
+| [`benchmarks/e2e_vllm_psf_v9.py`](../../benchmarks/e2e_vllm_psf_v9.py) (same file as pilot 3) | `5f9f769c3b5d69f338b4296b3cbbf898a97aedfa2817f7323622d371df23eb0b` | `11f747fa...` |
+| [`benchmarks/score_vllm_invest.py`](../../benchmarks/score_vllm_invest.py) (unchanged since the morning lock) | `1e154fb1caddad67bda4f399f2eaaf6d8665e64c78a1ab7313c37f8a17c986ee` | `0b1136e8...` |
+| `benchmarks/pod/run_invest2_2026-09-30.sh` | `d999fbc4b33acdf48af645b7de0c4437348aa4b9e5d06ccd486f9b69e57a60b9` | `291e263e...` |
+
+---
+
+<!-- ===== Addendum 269 (source: spare-qubit-cliff-addendum-269-2026-09-30.md) ===== -->
+
+> **Note added when merging:** Decision INVEST, at the smallest possible margin: G1 go (14/15; W3 2/3 against a bar of 2/3, on the task used for tuning), G2 go (14/14), G3 go (PSF-Zero 10-11 ms against L3's 7.4 s, 17 against 20 two-qubit gates), the PSF-Zero advantage reproduced on a second machine. The CUT of Addendum 264 remains the result of the v6 conditions. After this result the owner made the vLLM line a continuing project. Data: `data/2026-09-30/vllm_invest2/`.
+
+## Addendum 269 -- Results: second vLLM x PSF-Zero go/no-go (v9 without the tool, RunPod H200). Decision: INVEST (2026-09-30)
+
+**Pre-registration:** `vllm-invest2-preregistration-2026-09-30.md`, locked at
+its Project save time (about 05:26 UTC), before any scored run of this test.
+The scored run started at 05:34 UTC and finished at 06:06 UTC.
+
+**Nothing was re-run.** `env.txt` records the raw SHA-256 values of the
+three locked files as checked before the run:
+
+- [`e2e_vllm_psf_v9.py`](../../benchmarks/e2e_vllm_psf_v9.py): `11f747fa...`;
+- [`score_vllm_invest.py`](../../benchmarks/score_vllm_invest.py): `0b1136e8...`;
+- `run_invest2_2026-09-30.sh`: `291e263e...`.
+
+## 0. In one line
+
+Under the pre-registered conditions the second test passes:
+
+- **G1 = go:** gpt-oss-120b solved 14/15, with w3 2/3 and qft3 3/3;
+- **G2 = go:** 14/14 solved task-runs at or below the StatePreparation
+  baseline;
+- **G3 = go:** PSF-Zero 10-11 ms against L3's 7.4 s on the correct fill27
+  circuits, with 17 two-qubit gates against 20.
+
+The decision is **INVEST**. The margin on W3 is the smallest possible (2 of 3
+against a bar of 2 of 3), and W3 was the tuning target of three pilots; see
+section 3.
+
+This result is the second test. It does not erase the first test's CUT
+(`vllm-invest-results-2026-09-30.md`), which remains the result of the v6
+conditions.
+
+## 1. Environment (H200 pod; times are H200-pod times, not compared with the B200 run)
+
+- **Hardware:** NVIDIA H200 (143,771 MiB, driver 595.91.07); 96 CPUs (Intel
+  Xeon Platinum 8568Y+); 2 TB RAM.
+- **Software:** vLLM 0.30.0, torch 2.13.0+cu130, Qiskit 2.5.2, PennyLane
+  0.45.1.
+- **PSF-Zero stack:** psf_compile 2026-09-28.1, candidate core 2026-09-29.1,
+  layout 2026-09-29.c1.
+- **GPU memory in use** with each server up: 128,705 MiB (7B) and 129,467 MiB
+  (gpt-oss-120b).
+- **Smoke run** (disclosed, not scored; qwen7b, ghz5 and w3, seed run 99, 2
+  rounds): the Qwen download and server path worked on the H200 (ready in
+  120 s). Both tasks went unsolved in 2 rounds.
+
+## 2. Results (scored by the unchanged [`score_vllm_invest.py`](../../benchmarks/score_vllm_invest.py), from files)
+
+| model | solved /15 | ghz5 | w3 | bell3 | qft3 | fill27 | reply errors | HTTP 400 | missing | model s (sum) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| gpt-oss-120b | **14** | 3/3 | **2/3** | 3/3 | 3/3 | 3/3 | 0 | 0 | 0 | 5,937 |
+| Qwen2.5-7B | 7 | 3/3 | 0/3 | 3/3 | 0/3 | 1/3 | 0 | 0 | 0 | 278 |
+
+**G1 = go.** gpt-oss-120b solved 14/15; w3 2/3 and qft3 3/3 meet the bar.
+
+**G2 = go.** The best circuit was at most the StatePreparation baseline
+(device two-qubit count after PSF-Zero) on **14 of 14** solved task-runs:
+
+| task | model | baseline (PSF) |
+|---|---|---|
+| bell3 | 3 | 3 |
+| ghz5 | 4 | 47 |
+| fill27 | 17 | 52 |
+| w3 | 6, 6 | 7 |
+| qft3 | 0, 0, 3 | 7 |
+
+In two of three QFT3 runs the model found the zero-two-qubit circuit.
+
+**G3 = go.** The re-timing pass (sequential, 5 repetitions, median) found 12
+distinct valid fill27 circuits, 2 of them correct.
+
+- **Correct circuits:** PSF-Zero 10.1 and 11.1 ms against L3 7.37 and 7.40 s,
+  a ratio of 665-731x. Two-qubit counts were 17 against 20.
+- **Wrong circuits (not scored):** mostly equal counts. On two circuits L3
+  was lower (22 against 13, and 33 against 24). Both were wrong circuits.
+
+**Decision: INVEST.**
+
+**Expectations** (from section 4 of the pre-registration):
+
+| | expectation | outcome |
+|---|---|---|
+| P1 | gpt-oss: ghz5, bell3, fill27 every run | confirmed (3/3 each) |
+| P2 | gpt-oss: w3 >= 2/3 | confirmed, at the edge (2/3) |
+| P3 | gpt-oss: qft3 >= 2/3 | confirmed (3/3) |
+| P4 | qwen7b: w3, qft3 at most 1/3 each | confirmed (0/3, 0/3) |
+
+## 3. How close it was, as it is
+
+**W3 with gpt-oss-120b**, compiled fidelity per round (L = cut at 48,000
+tokens, S = salvage):
+
+- run 1: L+S 0.056, L+S 0.648, **1.000**, L+S 1.000, 1.000, 0.324;
+- run 2: 0.016, 0.870, 0.049, 0.206, 0.648, 0.111 (**not solved**);
+- run 3: 0.049, 0.278, 0.870, 0.241, **1.000** (round 5), 0.056.
+
+What this shows:
+
+- Two of three runs solved W3, one at round 3 and one at round 5 of 6. One
+  more miss would have made G1 ambiguous and the decision CUT.
+- 3 of the 18 W3 rounds still hit the 48,000-token limit. Salvage turned one
+  of them into a correct circuit.
+- **Disclosed tuning:** W3 was the tuning target in three exploratory
+  pilots, where the same configuration solved it 9/9 on other seeds. The
+  scored 2/3 is lower than the pilots suggested. That is consistent with
+  the pilots being optimistic, as the pre-registration warned.
+
+**QFT3 run 3** solved in round 2. Later attempts to remove two-qubit gates
+failed (fidelity 0), which does not affect the count.
+
+**Qwen2.5-7B** is unchanged in kind from the first test: W3 and QFT3 are
+never solved, and fill27 fell to 1/3 (2/3 in the first test). The v9
+changes did not help the small model.
+
+## 4. Checks of the harness (workplace sandbox, from the zip)
+
+- The zip (`invest2_outputs_0930.zip`, SHA-256 `01865ca5...`, 220 files)
+  matches its MANIFEST: 0 mismatches.
+- Re-scoring the files with the locked scorer gives the same G1-G3, best
+  model and decision.
+- An independent numpy simulator without PennyLane or Qiskit
+  ([`indep_check_2026-09-30.py`](../../benchmarks/indep_check_2026-09-30.py), plus `cp`) recomputed:
+  - 111 parsed circuits on the small tasks: largest difference 4.4e-16, and
+    0 disagreements on solved or not;
+  - 25 fill27 circuits, group by group: difference 0.
+
+## 5. What this does and does not establish
+
+**It establishes** that under the pre-registered v9 conditions, vLLM-served
+gpt-oss-120b coupled to PSF-Zero clears the go/no-go bar set in the morning,
+with PSF-Zero's advantage at full-device scale reproduced on a second
+machine and a second model setup. The conditions were: short-reasoning
+prompt, cp gate, 48,000-token replies at high effort, salvage, best-circuit
+memory, no tools, one H200.
+
+**It does not establish:**
+
+- **Reliability.** Three runs per task, and W3 passed at the minimum. A
+  repeat could fail G1.
+- **Anything beyond these five tasks**, or anything on real hardware.
+- **That the pilots' tuning generalises.** The untuned tasks were solved,
+  but they were already solved under v6.
+- **Cost-effectiveness.** gpt-oss-120b spent 5,937 model-seconds on 15
+  task-runs; PSF-Zero compile time was a fraction of a second in total.
+
+**What INVEST means here**, by the rule set in the morning: the line is worth
+further investment. The next pre-registered steps should target the weak
+point directly (for example more runs on W3-like states, or new state
+families), not repeat this test.
+
+## 6. Files
+
+- **Pod outputs:** `invest2_outputs_0930.zip`, per model and run:
+  - `rounds.jsonl`;
+  - `result.json`;
+  - best circuits;
+  - server logs;
+  - `retime_fill27.csv`;
+  - `score.md` and `score.json`;
+  - `env.txt`.
+- **Locked scripts:**
+  - [`benchmarks/e2e_vllm_psf_v9.py`](../../benchmarks/e2e_vllm_psf_v9.py);
+  - [`benchmarks/score_vllm_invest.py`](../../benchmarks/score_vllm_invest.py);
+  - `benchmarks/pod/run_invest2_2026-09-30.sh`.
+- **Independent check:** [`benchmarks/indep_check_2026-09-30.py`](../../benchmarks/indep_check_2026-09-30.py).
+
+---
+
+<!-- ===== Addendum 270 (source: spare-qubit-cliff-addendum-270-2026-09-30.md) ===== -->
+
+> **Note added when merging:** Workplace pre-registration of the v10 evaluation (three candidates per round and verbal feedback) against v9 on five held-out tasks never shown to any model. Revision 1 (before any run: held-out tasks only) and Amendment 1 (the pod went down for a billing reason before any task-run finished; re-run with the same files, seeds and criteria) are appended. **No result yet.** Locked at the workplace Project's save time, not by a git commit; it entered this repository after the run. The original `score_v10_eval.py` and `run_v10_eval_2026-09-30.sh`, superseded by Revision 1 before any run, are not in this repository; the scripts that govern are [`benchmarks/score_v10_eval_r1.py`](../../benchmarks/score_v10_eval_r1.py) and `benchmarks/pod/run_v10_eval_r1_2026-09-30.sh`.
+
+## Addendum 270 -- Pre-registration: v10 evaluation (several candidates per round + verbal feedback) against v9, on tuned and held-out tasks, gpt-oss-120b on a RunPod H200 (2026-09-30)
+
+**Status: pre-registration, locked at the Project save time of this
+document**, before any model sees the held-out tasks. No IBM account, no
+network access to IBM, no QPU: the device is the FakeAuckland snapshot.
+
+## 1. Why
+
+The second go/no-go test (`vllm-invest2-results-2026-09-30.md`) passed with
+the smallest possible margin: W3 2/3 against a bar of 2/3. It passed on
+tasks that had been used for tuning. The owner made the line a continuing
+project and chose two changes for v10:
+
+- **(9) Several candidates per round** (`--n-candidates 3`, vLLM `n`). In the
+  scored W3 failure, the answers oscillated (0.016, 0.870, 0.049, 0.206,
+  0.648, 0.111), so more draws per round should raise the chance of an exact
+  one.
+  - The harness parses every candidate, checks it against the target, and
+    keeps the best for the round.
+  - Candidates are sampled at temperature >= 0.8.
+- **(10) Verbal feedback** (`--verbal`), the owner's idea. For a wrong group
+  of at most 6 qubits, the feedback also states in words how the state
+  differs from the target:
+  - basis states missing or extra;
+  - magnitudes too large or too small;
+  - relative sign or phase wrong;
+  - whether the target is an equal-magnitude superposition.
+
+  It is computed mechanically from the two state vectors and **never says
+  how to fix the circuit**.
+
+The owner also chose to judge the change on **held-out tasks**, to guard
+against overfitting to the tasks used in the pilots.
+
+## 2. Tasks
+
+**Tuned tasks** (used in pilots or earlier tests): ghz5, w3, bell3, qft3,
+fill27, identical to before.
+
+**Held-out tasks** were defined for this test, and no model has seen them
+before this lock. Only the sandbox mock replies written by hand were run on
+them.
+
+| task | qubits | target |
+|---|---|---|
+| w4 | 4 | W state (&#124;0001> + &#124;0010> + &#124;0100> + &#124;1000>)/2 |
+| dicke42 | 4 | Dicke state D(4,2): the equal superposition of the six basis states with two 1s |
+| ghz3i | 3 | (&#124;000> + i&#124;111>)/sqrt(2) |
+| singlet3 | 6 | three singlets (&#124;01> - &#124;10>)/sqrt(2) on (0,1), (2,3), (4,5) |
+| fill27g9 | 27 | the whole FakeAuckland device filled with nine GHZ-3 states on (0,1,2) ... (24,25,26) |
+
+## 3. Design ([`e2e_vllm_psf_v10.py`](../../benchmarks/e2e_vllm_psf_v10.py), `run_v10_eval_2026-09-30.sh`, `score_v10_eval.py`)
+
+**Hardware and software** are as in the second go/no-go test:
+
+- RunPod H200, vLLM 0.30.0, gpt-oss-120b (`--max-model-len 65536`);
+- PSF-Zero stack from `setup_gpu_2026-09-29.sh`.
+
+Times are H200-pod times.
+
+**Two arms** run at the same time against one server, both with high
+reasoning effort, 48,000-token replies, salvage at medium effort,
+best-circuit memory and no tool:
+
+- **v9 arm:** 1 candidate per round, numeric feedback only. This is the v9
+  harness of the INVEST test, run through the v10 script.
+- **v10 arm:** `--n-candidates 3 --verbal`.
+
+**Runs and timing:**
+
+- 10 tasks x 3 runs per arm, 60 task-runs in parallel;
+- request seeds use runs 21-23, written to `run1`-`run3`;
+- up to 6 rounds, with the same solve rule (compiled fidelity >= 0.9999)
+  and early stop as before;
+- each task-run is killed after 180 minutes, and a missing result counts as
+  not solved.
+
+**Afterwards:**
+
+- re-timing of the correct fill27 and fill27g9 circuits (sequential, 5
+  repetitions, median);
+- `score_v10_eval.py`, from files.
+
+## 4. Criteria
+
+- **H1, held-out generalisation** (v10 arm, 15 held-out task-runs):
+  - go if >= 12/15 are solved;
+  - stop if <= 7/15;
+  - otherwise ambiguous.
+- **H2, v10 against v9** (30 task-runs each):
+  - better if v10 solves >= v9 + 3;
+  - worse if v10 solves <= v9 - 2;
+  - otherwise no clear difference.
+- **H3, G2 on the held-out tasks** (v10 arm): compare the device two-qubit
+  count (PSF-Zero) of the best circuit with the StatePreparation baseline on
+  its solved held-out task-runs.
+  - go if it is <= baseline on >= 80% of them;
+  - stop if it is worse on > 50% of them, or nothing is solved.
+- **H4, G3 on fill27g9** (correct circuits of both arms), with the thresholds
+  of the go/no-go tests:
+  - go if the median PSF time is <= 1 s, the median ratio L3/PSF is >= 10,
+    and PSF 2q <= L3 on >= 80% of the circuits;
+  - stop if the median ratio is < 3, or PSF > L3 on > 50% of the circuits,
+    or the median PSF time is > 1 s, or there is no correct circuit.
+- **G3 on fill27** is reported with the same thresholds, for comparison.
+- **Decisions:**
+  - **Default harness:** ADOPT v10 if H2 = better and H1 != stop; otherwise
+    KEEP v9.
+  - **Line:** CONTINUE unless both arms solve <= 7/15 held-out task-runs,
+    in which case CUT: the approach does not generalise beyond the tasks it
+    was tuned on.
+  - H3 and H4 are reported and do not change these two decisions. A stop in
+    H4 is a finding about PSF-Zero on a new tiling, not about the model.
+
+## 5. Expectations (written before the run; they do not change any decision)
+
+- **P1.** Both arms solve ghz3i and singlet3 in every run. They are close
+  relatives of GHZ and Bell.
+- **P2.** w4 and dicke42 are the hard held-out tasks. The v10 arm solves more
+  of them than the v9 arm.
+- **P3.** H2: better, but a small effect is likely with 3 runs per task. "No
+  clear difference" would not surprise.
+- **P4.** H4 is not go on time. In the sandbox dry run, PSF-Zero took 1.24-1.30
+  s on a correct fill27g9 circuit (2-CPU sandbox; median of 3 and 5 repetitions)
+  against L3's 8.7-8.8 s, a ratio of about 7. The nine-GHZ-3 tiling does not
+  take the fast short-path route of layout c1. The pod CPU is faster, but the
+  ratio is expected to stay below 10. The sandbox check is disclosed here; it
+  was not tuned on.
+
+## 6. Dry runs (disclosed)
+
+- **Sandbox, fake vLLM server with `n` choices:**
+  - one wrong, one cut and one correct W3 candidate;
+  - the harness kept the correct one, recorded all three, and sampled at
+    temperature 0.8.
+- **Sandbox, verbal feedback:** checked on hand-made W3 and QFT3 states.
+  Missing and extra basis states, magnitudes and sign or phase are stated
+  correctly.
+- **Sandbox, held-out targets:** printed and checked (normalised; the
+  StatePreparation baseline reaches fidelity 1 after PSF-Zero). Hand-written
+  mock circuits ran through the pipeline:
+  - ghz3i, singlet3 and fill27g9 correct;
+  - w4 and dicke42 deliberately wrong.
+- **Sandbox, full run script with a fake server** (1 run per arm): both
+  re-timing passes, the scorer and the zip worked. The fake server does not
+  know the held-out tasks, so their verdicts there mean nothing.
+- **Pod smoke run** (`SMOKE=1`: v10 arm, ghz5 and bell3 only, which are tuned
+  tasks, seed run 97, 2 rounds), allowed after this lock. It is **not
+  scored**, and it does not touch any held-out task.
+
+## 7. Locked files (normalized SHA-256; raw in brackets)
+
+| file | normalized | raw |
+|---|---|---|
+| [`benchmarks/e2e_vllm_psf_v10.py`](../../benchmarks/e2e_vllm_psf_v10.py) | `7203a243722dbdd3ab1718b09d2a12cb96e7c33c16732e015abf1f7cc7052c43` | `e00487a0...` |
+| `benchmarks/score_v10_eval.py` | `69d757376b4a3f49ccfe071f7037398b505ea708ed97330f552313d32789fe9a` | `dc52d625...` |
+| `benchmarks/pod/run_v10_eval_2026-09-30.sh` | `8b4f510f8eefbc2d33c857d9e62e9daf1012c2c7153eb26098780f4d4c4f344b` | `25ff91ee...` |
+
+### Revision 1 (before any run) of the v10 evaluation pre-registration -- held-out tasks only, to fit in about one hour (2026-09-30)
+
+**Status: revision of `vllm-v10-eval-preregistration-2026-09-30.md`, locked at
+the Project save time of this document.** No run of the original design, and
+no smoke run, happened before this revision. The original document is kept
+unchanged. Where they differ, this revision governs.
+
+## Why
+
+The owner asked for the evaluation to take about one hour. The original
+design (10 tasks x 3 runs x 2 arms, 60 task-runs, with the v10 arm drawing 3
+candidates per round) was estimated at 1.5-3 hours.
+
+The five tuned tasks were already scored this afternoon with the v9
+harness, which solved 14/15 in the INVEST test. They carry no information
+about generalisation, and W3 was the tuning target. They are therefore
+dropped. The held-out tasks, which answer both questions (does v10 help,
+and does the approach generalise), are kept in full.
+
+## What changes
+
+- **Tasks:** only the five held-out tasks (w4, dicke42, ghz3i, singlet3,
+  fill27g9), 3 runs per arm, 30 task-runs in all. Arms, seeds (runs 21-23),
+  budgets, rounds and the solve rule are unchanged.
+- **H1** is unchanged: v10 arm, held-out, go if >= 12/15 solved, stop if
+  <= 7/15.
+- **H2** is rescaled to 15 task-runs per arm:
+  - better if v10 solves >= v9 + 2;
+  - worse if v10 solves <= v9 - 2;
+  - otherwise no clear difference.
+- **H3** and **H4** are unchanged.
+- **G3 on fill27** is not run. It was measured in the INVEST test.
+- **Decisions** are unchanged:
+  - ADOPT v10 if H2 = better and H1 != stop, otherwise KEEP v9;
+  - line CUT only if both arms solve <= 7/15 held-out task-runs.
+- **Expectations:**
+  - P1, P2 and P4 are unchanged.
+  - P3 now reads: "H2 better, but with 15 task-runs per arm, no clear
+    difference would not surprise".
+- **Time estimate:** about 45-75 minutes on the H200, including the server
+  start, the re-timing and the scoring.
+
+## Dry run (disclosed)
+
+- **Sandbox, the revised run script with a fake server** that answers the
+  held-out tasks with hand-written mock circuits:
+  - server start, the 30 task-runs, the fill27g9 re-timing, the revised
+    scorer and the zip all worked;
+  - two fill27g9 processes were killed by the sandbox's 7 GB memory limit
+    with 30 processes at once. The same task-run alone completed. The pod
+    has 2 TB.
+- **Sandbox timing** of fill27g9 on the mock circuit (2-CPU sandbox, as
+  disclosed in P4): PSF-Zero 1.27-1.31 s, L3 8.4-8.8 s.
+- **Pod smoke run** (`SMOKE=1`: v10 arm, ghz5 and bell3, tuned tasks only, seed
+  run 97, 2 rounds), allowed after this lock. It is not scored.
+
+## Locked files (normalized SHA-256; raw in brackets)
+
+| file | normalized | raw |
+|---|---|---|
+| [`benchmarks/e2e_vllm_psf_v10.py`](../../benchmarks/e2e_vllm_psf_v10.py) (unchanged) | `7203a243722dbdd3ab1718b09d2a12cb96e7c33c16732e015abf1f7cc7052c43` | `e00487a0...` |
+| [`benchmarks/score_v10_eval_r1.py`](../../benchmarks/score_v10_eval_r1.py) | `c1f599e6055b1a9895c273dbe524f1060e61753f9495466f50aa4efaf2634234` | `cdb53a78...` |
+| `benchmarks/pod/run_v10_eval_r1_2026-09-30.sh` | `43c94396a1e1a85cf8b445dbdeb77ad8e0460ecb7db8a6e049427353d0768c32` | `8f595bcc...` |
+
+The original `score_v10_eval.py` and `run_v10_eval_2026-09-30.sh` are kept
+in the Project but are not used.
+
+### Amendment 1 to the v10 evaluation (revision 1): infrastructure interruption and re-run (2026-09-30)
+
+**Status: amendment, written and saved before the re-run.** It follows
+section 5 of the go/no-go pre-registrations (carried into the v10
+evaluation), which allows a re-run only for an infrastructure fault outside
+the model, recorded as an amendment first.
+
+## What happened
+
+- The scored run of `run_v10_eval_r1_2026-09-30.sh` started on the H200 pod,
+  with the locked hashes printed in its log. The server was ready after 81 s
+  and 30 task-runs started.
+- Shortly after, the pod went down because of a **billing-card issue** on the
+  hosting account. The owner reported this; it was not caused by the
+  harness or the model.
+- At the last check before the interruption, **0 of 15 task-runs had
+  finished in each arm**. No result, fidelity or score of the held-out tasks
+  had been seen by anyone.
+
+## What is kept
+
+The first attempt's files are kept if the pod still has them. Stopping a pod
+resets its container disk, so they may be lost; that is recorded as such.
+Nothing from them can enter the score, because no task-run finished.
+
+## Re-run
+
+- **Unchanged:**
+  - the locked files ([`e2e_vllm_psf_v10.py`](../../benchmarks/e2e_vllm_psf_v10.py) `e00487a0...`,
+    [`score_v10_eval_r1.py`](../../benchmarks/score_v10_eval_r1.py) `cdb53a78...`, `run_v10_eval_r1_2026-09-30.sh`
+    `8f595bcc...`);
+  - the seeds (runs 21-23);
+  - the criteria and decisions of revision 1.
+- **Same seeds:** they are kept because nothing from the first attempt was
+  observed.
+- **Environment:** if the pod has to be rebuilt, the setup is repeated as
+  before:
+  - `setup_gpu_2026-09-29.sh`;
+  - vLLM 0.30.0 plus ninja in `~/vllm_env`;
+  - gpt-oss-120b in `/workspace/hf_cache`.
+
+  Any difference in the rebuilt environment (GPU type, driver, vLLM version)
+  is recorded in the results. A different GPU type is allowed only if the
+  H200 is unavailable, and must be stated.
+- **Smoke run:** the disclosed smoke run (tuned tasks only, not scored) may be
+  repeated after a rebuild.
+
 ---
 
 ---

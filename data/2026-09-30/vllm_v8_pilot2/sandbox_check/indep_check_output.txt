@@ -1,0 +1,6 @@
+independent numpy check w3: circuits 29 max |F_indep - F_recorded| 0.00e+00 correct 10
+independent numpy check qft3: circuits 14 max |F_indep - F_recorded| 0.00e+00 correct 10
+salvage requests: 7 correct after salvage: 2 salvage finish: ['stop'] salvage llm_s: [2.433, 3.597, 4.833, 4.374, 1.602, 2.838, 2.787]
+qft3_high/run4/qft3/best_circuit.json [('h', [0], []), ('h', [1], []), ('h', [2], []), ('z', [0], []), ('s', [1], []), ('rz', [2], [3.927])]
+qft3_high/run5/qft3/best_circuit.json [('x', [0], []), ('x', [2], []), ('h', [0], []), ('h', [1], []), ('rz', [1], [1.5708]), ('h', [2], []), ('rz', [2], [0.7854])]
+qft3_high/run6/qft3/best_circuit.json [('x', [0], []), ('x', [2], []), ('h', [2], []), ('rz', [2], [0.7854]), ('h', [1], []), ('rz', [1], [1.5708]), ('h', [0], [])]

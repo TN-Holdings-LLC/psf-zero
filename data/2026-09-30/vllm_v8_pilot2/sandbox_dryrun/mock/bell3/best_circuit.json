@@ -1,0 +1,45 @@
+{
+ "n_qubits": 6,
+ "gates": [
+  {
+   "name": "h",
+   "qubits": [
+    0
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    0,
+    1
+   ]
+  },
+  {
+   "name": "h",
+   "qubits": [
+    2
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    2,
+    3
+   ]
+  },
+  {
+   "name": "h",
+   "qubits": [
+    4
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    4,
+    5
+   ]
+  }
+ ],
+ "note": "three H+CNOT"
+}

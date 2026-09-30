@@ -1,0 +1,70 @@
+{
+ "n_qubits": 3,
+ "gates": [
+  {
+   "name": "ry",
+   "qubits": [
+    0
+   ],
+   "params": [
+    1.2309594173407747
+   ]
+  },
+  {
+   "name": "x",
+   "qubits": [
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "x",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": [
+    1.5707963267948966
+   ]
+  },
+  {
+   "name": "x",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    1,
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": []
+  }
+ ],
+ "note": "Replaced non\u2011nearest\u2011neighbor CX(0,2) with a nearest\u2011neighbor bridge, reducing compiled two\u2011qubit gates while preserving exact W state."
+}

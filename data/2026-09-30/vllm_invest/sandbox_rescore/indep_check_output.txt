@@ -1,0 +1,2 @@
+small tasks: circuits 141 max |F_indep - F_recorded| 4.440892098500626e-16 solved disagreements 0
+fill27: circuits 32 max diff 0 cross-group circuits skipped 0

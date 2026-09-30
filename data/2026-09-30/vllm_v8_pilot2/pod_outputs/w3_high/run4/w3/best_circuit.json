@@ -1,0 +1,62 @@
+{
+ "n_qubits": 3,
+ "gates": [
+  {
+   "name": "ry",
+   "qubits": [
+    0
+   ],
+   "params": [
+    1.23095941734
+   ]
+  },
+  {
+   "name": "x",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": [
+    1.57079632679
+   ]
+  },
+  {
+   "name": "x",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    0,
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    1,
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "x",
+   "qubits": [
+    2
+   ],
+   "params": []
+  }
+ ],
+ "note": "Prepared 3\u2011qubit W state using three two\u2011qubit gates."
+}

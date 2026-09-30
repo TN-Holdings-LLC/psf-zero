@@ -1,0 +1,2 @@
+small tasks: circuits 111 max diff 4.440892098500626e-16 solved disagreements 0
+fill27: circuits 25 max diff 0 cross-group skipped 0

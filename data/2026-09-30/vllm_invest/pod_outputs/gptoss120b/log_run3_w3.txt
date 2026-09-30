@@ -1,0 +1,10 @@
+v6 2026-09-30 | model openai/gpt-oss-120b | device FakeAuckland | sim lightning.qubit | psf_compile 2026-09-28.1 | CORE_VERSION 2026-09-29.1 | layout 2026-09-29.c1
+== w3 (run 3): Prepare the 3-qubit W state (|001> + |010> + |100>)/sqrt(3).
+  w3 run 3 round 1: llm 96.846 s | error ValueError: no JSON object found in the reply
+  w3 run 3 round 2: llm 83.177 s | error ValueError: no JSON object found in the reply
+  w3 run 3 round 3: llm 84.326 s | error ValueError: no JSON object found in the reply
+  w3 run 3 round 4: llm 83.655 s | error ValueError: no JSON object found in the reply
+  w3 run 3 round 5: llm 66.246 s | error ValueError: no JSON object found in the reply
+  w3 run 3 round 6: llm 63.004 s | error ValueError: no JSON object found in the reply
+  -> {"task": "w3", "run": 3, "model": "openai/gpt-oss-120b", "n_qubits": 3, "rounds": 6, "solved": false, "errors": 6, "http400": 0, "llm_s_total": 477.25, "baseline_psf_2q": 7, "baseline_q3_2q": 7, "baseline_psf_fidelity": 1.0, "baseline_psf_s": 0.1908, "baseline_q3_s": 0.0528}
+DONE

@@ -1,0 +1,45 @@
+{
+ "n_qubits": 5,
+ "gates": [
+  {
+   "name": "h",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    1,
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    2,
+    3
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    3,
+    4
+   ],
+   "params": []
+  }
+ ],
+ "note": "5\u2011qubit GHZ using a linear chain to minimise compiled two\u2011qubit gates"
+}

@@ -1,0 +1,16 @@
+{
+ "task": "w3",
+ "run": 1,
+ "model": "openai/gpt-oss-120b",
+ "n_qubits": 3,
+ "rounds": 6,
+ "solved": false,
+ "errors": 6,
+ "http400": 0,
+ "llm_s_total": 477.3,
+ "baseline_psf_2q": 7,
+ "baseline_q3_2q": 7,
+ "baseline_psf_fidelity": 1.0,
+ "baseline_psf_s": 0.2041,
+ "baseline_q3_s": 0.0433
+}

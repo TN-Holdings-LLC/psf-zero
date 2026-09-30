@@ -1,0 +1,5 @@
+independent numpy check w3: circuits 24 max |F_indep - F_recorded| 4.44e-16 correct 14
+independent numpy check qft3: circuits 3 max |F_indep - F_recorded| 0.00e+00 correct 2
+independent numpy check ghz5: circuits 4 max |F_indep - F_recorded| 0.00e+00 correct 4
+independent numpy check bell3: circuits 3 max |F_indep - F_recorded| 4.44e-16 correct 3
+tool results re-checked: 88 calls; basis states missing from the tool's answer: 0

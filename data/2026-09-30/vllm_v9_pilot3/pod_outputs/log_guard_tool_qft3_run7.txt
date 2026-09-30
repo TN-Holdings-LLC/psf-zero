@@ -1,0 +1,8 @@
+v9 2026-09-30 | model openai/gpt-oss-120b | device FakeAuckland | sim lightning.qubit | psf_compile 2026-09-28.1 | CORE_VERSION 2026-09-29.1 | layout 2026-09-29.c1
+== qft3 (run 7): Start from the basis state |101> (qubit 0 = 1, qubit 1 = 0, qubit 2 = 1) and apply the 3-qubit quantum Fourier transform, so that the result is sum_k exp(2*pi*i*5*k/8)|k>/sqrt(8), where k is read with qubit 0 as the most significant bit.
+  qft3 run 7 round 1: llm 62.568 s | F_log 1.000000 F_cmp 1.000000 2q 4->12 (L3 9) compile 89.8 ms (L3 8.1 ms)
+  qft3 run 7 round 2: llm 525.644 s | F_log 0.000000 F_cmp 0.000000 2q 0->0 (L3 0) compile 23.5 ms (L3 17.9 ms)
+  qft3 run 7 round 3: llm 531.402 s | error ValueError: no JSON object found in the reply
+  qft3 run 7 round 4: llm 13.933 s | F_log 1.000000 F_cmp 1.000000 2q 4->12 (L3 9) compile 37.4 ms (L3 21.4 ms)
+  -> {"task": "qft3", "run": 7, "model": "openai/gpt-oss-120b", "n_qubits": 3, "rounds": 4, "solved": true, "errors": 1, "http400": 0, "llm_s_total": 1133.55, "baseline_psf_2q": 7, "baseline_q3_2q": 3, "baseline_psf_fidelity": 0.9999999999999991, "baseline_psf_s": 0.0142, "baseline_q3_s": 0.0155, "best_round": 1, "fidelity_compiled": 0.9999999999999998, "logical_2q": 4, "routed_2q": 12, "routed_swaps": 0, "depth": 30, "compile_s": 0.0898, "q3_s": 0.0081, "q3_2q": 9, "q3_fidelity": 1.0}
+DONE

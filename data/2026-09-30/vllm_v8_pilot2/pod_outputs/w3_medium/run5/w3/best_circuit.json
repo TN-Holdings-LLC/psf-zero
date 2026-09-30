@@ -1,0 +1,54 @@
+{
+ "n_qubits": 3,
+ "gates": [
+  {
+   "name": "ry",
+   "qubits": [
+    0
+   ],
+   "params": [
+    1.230959417
+   ]
+  },
+  {
+   "name": "x",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": [
+    1.570796327
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    1,
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "x",
+   "qubits": [
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "x",
+   "qubits": [
+    0
+   ],
+   "params": []
+  }
+ ],
+ "note": "Produces the 3\u2011qubit W state with 2 two\u2011qubit gates (cry, cx) and 3 Xs."
+}

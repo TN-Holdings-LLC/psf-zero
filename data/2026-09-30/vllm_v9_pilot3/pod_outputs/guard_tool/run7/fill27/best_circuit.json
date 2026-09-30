@@ -1,0 +1,185 @@
+{
+ "n_qubits": 27,
+ "gates": [
+  {
+   "name": "h",
+   "qubits": [
+    0
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    0,
+    1
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    1,
+    2
+   ]
+  },
+  {
+   "name": "h",
+   "qubits": [
+    3
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    3,
+    4
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    4,
+    5
+   ]
+  },
+  {
+   "name": "h",
+   "qubits": [
+    6
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    6,
+    7
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    7,
+    8
+   ]
+  },
+  {
+   "name": "h",
+   "qubits": [
+    9
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    9,
+    10
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    10,
+    11
+   ]
+  },
+  {
+   "name": "h",
+   "qubits": [
+    12
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    12,
+    13
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    13,
+    14
+   ]
+  },
+  {
+   "name": "h",
+   "qubits": [
+    15
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    15,
+    16
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    16,
+    17
+   ]
+  },
+  {
+   "name": "h",
+   "qubits": [
+    18
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    18,
+    19
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    19,
+    20
+   ]
+  },
+  {
+   "name": "h",
+   "qubits": [
+    21
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    21,
+    22
+   ]
+  },
+  {
+   "name": "h",
+   "qubits": [
+    23
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    23,
+    24
+   ]
+  },
+  {
+   "name": "h",
+   "qubits": [
+    25
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    25,
+    26
+   ]
+  }
+ ],
+ "note": "Prepare seven 3\u2011qubit GHZ states and three Bell pairs using H and CX gates respecting heavy\u2011hex connectivity."
+}

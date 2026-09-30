@@ -1,0 +1,49 @@
+{
+ "n_qubits": 3,
+ "gates": [
+  {
+   "name": "h",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": [
+    1.047198
+   ]
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    0,
+    2
+   ],
+   "params": [
+    1.047198
+   ]
+  },
+  {
+   "name": "cz",
+   "qubits": [
+    1,
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    1,
+    2
+   ],
+   "params": []
+  }
+ ],
+ "note": "Prepares the 3-qubit W state"
+}

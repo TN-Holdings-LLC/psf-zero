@@ -1,0 +1,54 @@
+{
+ "n_qubits": 3,
+ "gates": [
+  {
+   "name": "h",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "rz",
+   "qubits": [
+    0
+   ],
+   "params": [
+    3.141592653589793
+   ]
+  },
+  {
+   "name": "h",
+   "qubits": [
+    1
+   ],
+   "params": []
+  },
+  {
+   "name": "rz",
+   "qubits": [
+    1
+   ],
+   "params": [
+    1.5707963267948966
+   ]
+  },
+  {
+   "name": "h",
+   "qubits": [
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "rz",
+   "qubits": [
+    2
+   ],
+   "params": [
+    3.9269908169872414
+   ]
+  }
+ ],
+ "note": "Direct preparation of QFT|101> using only single\u2011qubit gates (no two\u2011qubit gates)."
+}

@@ -1,0 +1,8 @@
+v9 2026-09-30 | model openai/gpt-oss-120b | device FakeAuckland | sim lightning.qubit | psf_compile 2026-09-28.1 | CORE_VERSION 2026-09-29.1 | layout 2026-09-29.c1
+== ghz5 (run 12): Prepare the 5-qubit GHZ state (|00000> + |11111>)/sqrt(2).
+  ghz5 run 12 round 1: llm 8.399 s | F_log 1.000000 F_cmp 1.000000 2q 4->7 (L3 7) compile 154.9 ms (L3 9.1 ms)
+  ghz5 run 12 round 2: llm 8.371 s | F_log 1.000000 F_cmp 1.000000 2q 4->4 (L3 4) compile 13.3 ms (L3 11.8 ms)
+  ghz5 run 12 round 3: llm 7.637 s | F_log 1.000000 F_cmp 1.000000 2q 4->4 (L3 4) compile 19.5 ms (L3 15.7 ms)
+  ghz5 run 12 round 4: llm 11.923 s | F_log 1.000000 F_cmp 1.000000 2q 4->4 (L3 4) compile 22.8 ms (L3 18.8 ms)
+  -> {"task": "ghz5", "run": 12, "model": "openai/gpt-oss-120b", "n_qubits": 5, "rounds": 4, "solved": true, "errors": 0, "http400": 0, "llm_s_total": 36.33, "baseline_psf_2q": 47, "baseline_q3_2q": 34, "baseline_psf_fidelity": 0.9999999999999998, "baseline_psf_s": 0.0134, "baseline_q3_s": 0.0153, "best_round": 2, "fidelity_compiled": 0.9999999999999989, "logical_2q": 4, "routed_2q": 4, "routed_swaps": 0, "depth": 27, "compile_s": 0.0133, "q3_s": 0.0118, "q3_2q": 4, "q3_fidelity": 0.9999999999999989}
+DONE

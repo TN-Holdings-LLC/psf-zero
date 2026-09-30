@@ -1,0 +1,73 @@
+{
+ "models": {
+  "gptoss120b": {
+   "solved": 14,
+   "per_task": {
+    "ghz5": 3,
+    "w3": 2,
+    "bell3": 3,
+    "qft3": 3,
+    "fill27": 3
+   },
+   "g1": "go",
+   "errors": 0,
+   "http400": 0,
+   "missing": 0,
+   "llm_s": 5937.379999999999,
+   "best_compile_s_sum": 0.43729999999999997
+  },
+  "qwen7b": {
+   "solved": 7,
+   "per_task": {
+    "ghz5": 3,
+    "w3": 0,
+    "bell3": 3,
+    "qft3": 0,
+    "fill27": 1
+   },
+   "g1": "stop",
+   "errors": 0,
+   "http400": 0,
+   "missing": 0,
+   "llm_s": 277.59000000000003,
+   "best_compile_s_sum": 0.4198
+  }
+ },
+ "best_model": "gptoss120b",
+ "G1": {
+  "verdict": "go",
+  "solved": 14,
+  "per_task": {
+   "ghz5": 3,
+   "w3": 2,
+   "bell3": 3,
+   "qft3": 3,
+   "fill27": 3
+  }
+ },
+ "G2": {
+  "verdict": "go",
+  "solved_task_runs": 14,
+  "model_le_baseline": 14,
+  "model_gt_baseline": 0
+ },
+ "G3": {
+  "verdict": "go",
+  "circuits": 2,
+  "median_psf_s": 0.010606724499666598,
+  "median_ratio": 697.9320624558952,
+  "min_ratio": 664.5265137531188,
+  "max_ratio": 731.3376111586715,
+  "psf_le_l3": 2,
+  "psf_gt_l3": 0,
+  "psf_2q": [
+   17,
+   17
+  ],
+  "l3_2q": [
+   20,
+   20
+  ]
+ },
+ "decision": "INVEST"
+}

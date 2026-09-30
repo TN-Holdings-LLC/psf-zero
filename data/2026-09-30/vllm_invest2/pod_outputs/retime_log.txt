@@ -1,0 +1,15 @@
+v9 2026-09-30 | model Qwen/Qwen2.5-7B-Instruct | device FakeAuckland | sim lightning.qubit | psf_compile 2026-09-28.1 | CORE_VERSION 2026-09-29.1 | layout 2026-09-29.c1
+retime: 12 distinct valid fill27 circuits
+  0ea12f2e41c4dd10: psf 7.7 ms 10 2q | L3 78.8 ms 10 2q | F 0.000061
+  1851176d22157ac8: psf 8.3 ms 11 2q | L3 69.0 ms 11 2q | F 0.000244
+  1bf091142e8a4d2c: psf 8.3 ms 11 2q | L3 67.7 ms 11 2q | F 0.000031
+  4faa66732c2c1b3d: psf 7.7 ms 20 2q | L3 80.9 ms 20 2q | F 0.000007
+  79310c6c9a5e521c: psf 11.1 ms 17 2q | L3 7400.6 ms 20 2q | F 1.000000
+  87162ee5ae5e04df: psf 8.3 ms 22 2q | L3 76.0 ms 22 2q | F 0.000010
+  9624a39ba2cf7e31: psf 7.5 ms 20 2q | L3 80.8 ms 20 2q | F 0.000001
+  97eba2697bf3a311: psf 10.1 ms 17 2q | L3 7369.5 ms 20 2q | F 1.000000
+  ad0ca48d580391d7: psf 10.4 ms 22 2q | L3 75.8 ms 13 2q | F 0.000000
+  c1acebcb33359cf8: psf 12.0 ms 33 2q | L3 80.4 ms 24 2q | F 0.000000
+  d5c6bdbb72b3c5f9: psf 8.7 ms 15 2q | L3 68.1 ms 15 2q | F 0.250000
+  f3b216f308602966: psf 7.4 ms 10 2q | L3 80.6 ms 10 2q | F 0.000001
+wrote /root/invest2_out_0930/retime_fill27.csv

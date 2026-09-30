@@ -1,0 +1,170 @@
+{
+ "n_qubits": 3,
+ "gates": [
+  {
+   "name": "ry",
+   "qubits": [
+    0
+   ],
+   "params": [
+    1.230959417
+   ]
+  },
+  {
+   "name": "x",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": [
+    1.570796327
+   ]
+  },
+  {
+   "name": "x",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "x",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "x",
+   "qubits": [
+    1
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    1,
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "t",
+   "qubits": [
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    0,
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "tdg",
+   "qubits": [
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    1,
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "t",
+   "qubits": [
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    0,
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "tdg",
+   "qubits": [
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    1,
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "t",
+   "qubits": [
+    1
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "s",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "s",
+   "qubits": [
+    1
+   ],
+   "params": []
+  },
+  {
+   "name": "x",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "x",
+   "qubits": [
+    1
+   ],
+   "params": []
+  }
+ ],
+ "note": "Creates the exact 3\u2011qubit W state using one controlled\u2011Ry and a Toffoli (implemented with 6 CXs)."
+}

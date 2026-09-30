@@ -1,0 +1,51 @@
+{
+ "n_qubits": 6,
+ "gates": [
+  {
+   "name": "h",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    2,
+    3
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    4
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    4,
+    5
+   ],
+   "params": []
+  }
+ ],
+ "note": "Three Bell pairs on (0,1), (2,3), (4,5)."
+}

@@ -1,0 +1,10 @@
+v6 2026-09-30 | model Qwen/Qwen2.5-72B-Instruct | device FakeAuckland | sim lightning.qubit | psf_compile 2026-09-28.1 | CORE_VERSION 2026-09-29.1 | layout 2026-09-29.c1
+== w3 (run 3): Prepare the 3-qubit W state (|001> + |010> + |100>)/sqrt(3).
+  w3 run 3 round 1: llm 24.584 s | error ValueError: unsupported expression '2 * Math.acos(Math.sqrt(1/3))'
+  w3 run 3 round 2: llm 7.108 s | F_log 0.037037 F_cmp 0.037037 2q 3->8 (L3 8) compile 152.5 ms (L3 31.1 ms)
+  w3 run 3 round 3: llm 25.735 s | F_log 0.037037 F_cmp 0.037037 2q 5->13 (L3 11) compile 39.0 ms (L3 36.5 ms)
+  w3 run 3 round 4: llm 33.778 s | F_log 0.037037 F_cmp 0.037037 2q 5->13 (L3 11) compile 44.9 ms (L3 36.9 ms)
+  w3 run 3 round 5: llm 28.21 s | error ValueError: gate 2: unknown gate 'ccx'
+  w3 run 3 round 6: llm 35.145 s | F_log 0.002482 F_cmp 0.002482 2q 7->13 (L3 9) compile 35.5 ms (L3 26.8 ms)
+  -> {"task": "w3", "run": 3, "model": "Qwen/Qwen2.5-72B-Instruct", "n_qubits": 3, "rounds": 6, "solved": false, "errors": 2, "http400": 0, "llm_s_total": 154.56, "baseline_psf_2q": 7, "baseline_q3_2q": 7, "baseline_psf_fidelity": 1.0, "baseline_psf_s": 0.0198, "baseline_q3_s": 0.0273, "best_round": 3, "fidelity_compiled": 0.03703706034115401, "logical_2q": 5, "routed_2q": 13, "routed_swaps": 0, "depth": 29, "compile_s": 0.039, "q3_s": 0.0365, "q3_2q": 11, "q3_fidelity": 0.03703706034115372}
+DONE

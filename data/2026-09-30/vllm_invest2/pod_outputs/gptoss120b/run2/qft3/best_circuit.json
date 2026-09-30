@@ -1,0 +1,59 @@
+{
+ "n_qubits": 3,
+ "gates": [
+  {
+   "name": "x",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "x",
+   "qubits": [
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    1
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "rz",
+   "qubits": [
+    1
+   ],
+   "params": [
+    1.5707963267948966
+   ]
+  },
+  {
+   "name": "rz",
+   "qubits": [
+    2
+   ],
+   "params": [
+    0.7853981633974483
+   ]
+  }
+ ],
+ "note": "Exact 3\u2011qubit QFT on |101> using only single\u2011qubit gates (no two\u2011qubit gates)."
+}

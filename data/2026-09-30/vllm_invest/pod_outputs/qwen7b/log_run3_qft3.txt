@@ -1,0 +1,10 @@
+v6 2026-09-30 | model Qwen/Qwen2.5-7B-Instruct | device FakeAuckland | sim lightning.qubit | psf_compile 2026-09-28.1 | CORE_VERSION 2026-09-29.1 | layout 2026-09-29.c1
+== qft3 (run 3): Start from the basis state |101> (qubit 0 = 1, qubit 1 = 0, qubit 2 = 1) and apply the 3-qubit quantum Fourier transform, so that the result is sum_k exp(2*pi*i*5*k/8)|k>/sqrt(8), where k is read with qubit 0 as the most significant bit.
+  qft3 run 3 round 1: llm 10.445 s | F_log 0.024201 F_cmp 0.024201 2q 2->4 (L3 4) compile 152.5 ms (L3 14.7 ms)
+  qft3 run 3 round 2: llm 6.088 s | F_log 0.004354 F_cmp 0.004354 2q 2->4 (L3 4) compile 34.8 ms (L3 41.3 ms)
+  qft3 run 3 round 3: llm 5.296 s | F_log 0.004354 F_cmp 0.004354 2q 2->4 (L3 4) compile 30.1 ms (L3 20.5 ms)
+  qft3 run 3 round 4: llm 5.394 s | F_log 0.004354 F_cmp 0.004354 2q 2->4 (L3 4) compile 41.9 ms (L3 19.4 ms)
+  qft3 run 3 round 5: llm 5.584 s | F_log 0.004354 F_cmp 0.004354 2q 2->4 (L3 4) compile 32.0 ms (L3 21.2 ms)
+  qft3 run 3 round 6: llm 5.521 s | F_log 0.004354 F_cmp 0.004354 2q 2->4 (L3 4) compile 31.4 ms (L3 21.5 ms)
+  -> {"task": "qft3", "run": 3, "model": "Qwen/Qwen2.5-7B-Instruct", "n_qubits": 3, "rounds": 6, "solved": false, "errors": 0, "http400": 0, "llm_s_total": 38.33, "baseline_psf_2q": 7, "baseline_q3_2q": 3, "baseline_psf_fidelity": 0.9999999999999991, "baseline_psf_s": 0.0231, "baseline_q3_s": 0.0267, "best_round": 1, "fidelity_compiled": 0.02420072800869217, "logical_2q": 2, "routed_2q": 4, "routed_swaps": 0, "depth": 15, "compile_s": 0.1525, "q3_s": 0.0147, "q3_2q": 4, "q3_fidelity": 0.024200728008692256}
+DONE

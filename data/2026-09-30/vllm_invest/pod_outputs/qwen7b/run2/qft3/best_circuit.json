@@ -1,0 +1,57 @@
+{
+ "n_qubits": 3,
+ "gates": [
+  {
+   "name": "h",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    1
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    1,
+    2
+   ],
+   "params": [
+    -3.9269908169872414
+   ]
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": [
+    -3.141592653589793
+   ]
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    0,
+    2
+   ],
+   "params": [
+    -3.141592653589793
+   ]
+  }
+ ],
+ "note": "3-qubit QFT on |101> with phase adjustments"
+}

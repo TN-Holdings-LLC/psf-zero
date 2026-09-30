@@ -1,0 +1,40 @@
+== high run1
+  round 1: finish stop | tokens 16166 | reasoning chars 44304 | llm 213.21 s | F 1.000000 2q 7
+  round 2: finish stop | tokens 29502 | reasoning chars 82652 | llm 249.407 s | F 1.000000 2q 5
+  round 3: finish stop | tokens 21808 | reasoning chars 60042 | llm 146.918 s | F 0.111111 2q 6
+  round 4: finish length | tokens 32000 | reasoning chars 87824 | llm 219.003 s | error ValueError: no JSON object found in the reply
+  round 5: finish length | tokens 32000 | reasoning chars 91073 | llm 221.037 s | error ValueError: no JSON object found in the reply
+  round 6: finish stop | tokens 18274 | reasoning chars 50048 | llm 120.331 s | F 1.000000 2q 7
+== high run2
+  round 1: finish length | tokens 32000 | reasoning chars 92216 | llm 368.585 s | error ValueError: no JSON object found in the reply
+  round 2: finish stop | tokens 8840 | reasoning chars 22226 | llm 60.568 s | F 1.000000 2q 6
+  round 3: finish length | tokens 32000 | reasoning chars 80468 | llm 217.512 s | error ValueError: no JSON object found in the reply
+  round 4: finish stop | tokens 29968 | reasoning chars 78165 | llm 206.272 s | F 1.000000 2q 4
+  round 5: finish length | tokens 32000 | reasoning chars 95456 | llm 219.002 s | error ValueError: no JSON object found in the reply
+  round 6: finish length | tokens 32000 | reasoning chars 88178 | llm 185.116 s | error ValueError: no JSON object found in the reply
+== high run3
+  round 1: finish length | tokens 32000 | reasoning chars 89765 | llm 368.67 s | error ValueError: no JSON object found in the reply
+  round 2: finish length | tokens 32000 | reasoning chars 90127 | llm 217.5 s | error ValueError: no JSON object found in the reply
+  round 3: finish length | tokens 32000 | reasoning chars 96178 | llm 218.516 s | error ValueError: no JSON object found in the reply
+  round 4: finish length | tokens 32000 | reasoning chars 97800 | llm 221.039 s | error ValueError: no JSON object found in the reply
+  round 5: finish stop | tokens 12947 | reasoning chars 35096 | llm 85.974 s | F 1.000000 2q 7
+  round 6: finish stop | tokens 24671 | reasoning chars 76867 | llm 139.989 s | F 0.434913 2q 8
+== medium run1
+  round 1: finish stop | tokens 5211 | reasoning chars 12167 | llm 106.866 s | F 0.055556 2q 6
+  round 2: finish stop | tokens 8126 | reasoning chars 21118 | llm 78.323 s | F 1.000000 2q 7
+  round 3: finish stop | tokens 2572 | reasoning chars 6990 | llm 24.484 s | F 1.000000 2q 7
+  round 4: finish stop | tokens 4295 | reasoning chars 11359 | llm 46.005 s | F 1.000000 2q 7
+== medium run2
+  round 1: finish stop | tokens 9022 | reasoning chars 22982 | llm 141.56 s | F 0.111111 2q 13
+  round 2: finish stop | tokens 7250 | reasoning chars 17934 | llm 72.859 s | F 0.111111 2q 13
+  round 3: finish stop | tokens 2170 | reasoning chars 5540 | llm 21.389 s | F 0.027778 2q 2
+  round 4: finish stop | tokens 1661 | reasoning chars 3136 | llm 17.891 s | F 0.379357 2q 9
+  round 5: finish stop | tokens 4890 | reasoning chars 11105 | llm 49.347 s | F 0.742442 2q 9
+  round 6: finish stop | tokens 5004 | reasoning chars 11618 | llm 51.54 s | F 0.222222 2q 10
+== medium run3
+  round 1: finish stop | tokens 4948 | reasoning chars 12994 | llm 104.5 s | F 0.444444 2q 3
+  round 2: finish stop | tokens 5755 | reasoning chars 16029 | llm 55.878 s | F 0.055556 2q 5
+  round 3: finish stop | tokens 5390 | reasoning chars 13617 | llm 51.112 s | F 0.111111 2q 2
+  round 4: finish stop | tokens 6682 | reasoning chars 16938 | llm 68.952 s | F 0.333333 2q 3
+  round 5: finish stop | tokens 6386 | reasoning chars 16106 | llm 64.598 s | F 0.222222 2q 8
+  round 6: finish stop | tokens 7073 | reasoning chars 16625 | llm 52.408 s | F 0.360839 2q 9

@@ -1,0 +1,53 @@
+{
+ "n_qubits": 5,
+ "gates": [
+  {
+   "name": "h",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": [
+    0.785398
+   ]
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    1,
+    2
+   ],
+   "params": [
+    0.785398
+   ]
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    2,
+    3
+   ],
+   "params": [
+    0.785398
+   ]
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    3,
+    4
+   ],
+   "params": [
+    0.785398
+   ]
+  }
+ ],
+ "note": "Prepares the 5-qubit GHZ state using controlled-Ry gates"
+}

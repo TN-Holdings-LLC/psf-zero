@@ -1,0 +1,156 @@
+{
+ "n_qubits": 27,
+ "gates": [
+  {
+   "name": "h",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    3
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    6
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    9
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    12
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    15
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    18
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    21
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    23
+   ],
+   "params": []
+  },
+  {
+   "name": "h",
+   "qubits": [
+    25
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    3,
+    4
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    6,
+    7
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    9,
+    10
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    12,
+    13
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    15,
+    16
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    18,
+    19
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    21,
+    22
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    23,
+    24
+   ],
+   "params": []
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    25,
+    26
+   ],
+   "params": []
+  }
+ ],
+ "note": "Prepared 7 GHZ states and 3 Bell pairs"
+}

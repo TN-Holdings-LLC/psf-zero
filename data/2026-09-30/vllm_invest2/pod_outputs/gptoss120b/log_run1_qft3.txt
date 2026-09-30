@@ -1,0 +1,9 @@
+v9 2026-09-30 | model openai/gpt-oss-120b | device FakeAuckland | sim lightning.qubit | psf_compile 2026-09-28.1 | CORE_VERSION 2026-09-29.1 | layout 2026-09-29.c1
+== qft3 (run 11): Start from the basis state |101> (qubit 0 = 1, qubit 1 = 0, qubit 2 = 1) and apply the 3-qubit quantum Fourier transform, so that the result is sum_k exp(2*pi*i*5*k/8)|k>/sqrt(8), where k is read with qubit 0 as the most significant bit.
+  qft3 run 11 round 1: llm 38.31 s | F_log 1.000000 F_cmp 1.000000 2q 4->12 (L3 9) compile 88.4 ms (L3 8.0 ms)
+  qft3 run 11 round 2: llm 182.609 s | F_log 1.000000 F_cmp 1.000000 2q 4->12 (L3 9) compile 12.4 ms (L3 10.3 ms)
+  qft3 run 11 round 3: llm 54.029 s | F_log 1.000000 F_cmp 1.000000 2q 0->0 (L3 0) compile 10.6 ms (L3 12.1 ms)
+  qft3 run 11 round 4: llm 114.989 s | F_log 1.000000 F_cmp 1.000000 2q 0->0 (L3 0) compile 18.6 ms (L3 17.3 ms)
+  qft3 run 11 round 5: llm 20.755 s | F_log 1.000000 F_cmp 1.000000 2q 0->0 (L3 0) compile 6.6 ms (L3 11.2 ms)
+  -> {"task": "qft3", "run": 11, "model": "openai/gpt-oss-120b", "n_qubits": 3, "rounds": 5, "solved": true, "errors": 0, "http400": 0, "llm_s_total": 410.69, "baseline_psf_2q": 7, "baseline_q3_2q": 3, "baseline_psf_fidelity": 0.9999999999999991, "baseline_psf_s": 0.0093, "baseline_q3_s": 0.0106, "best_round": 3, "fidelity_compiled": 0.9999999999999996, "logical_2q": 0, "routed_2q": 0, "routed_swaps": 0, "depth": 3, "compile_s": 0.0106, "q3_s": 0.0121, "q3_2q": 0, "q3_fidelity": 0.9999999999999996}
+DONE

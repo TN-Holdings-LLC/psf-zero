@@ -1,0 +1,8 @@
+v9 2026-09-30 | model openai/gpt-oss-120b | device FakeAuckland | sim lightning.qubit | psf_compile 2026-09-28.1 | CORE_VERSION 2026-09-29.1 | layout 2026-09-29.c1
+== w3 (run 7): Prepare the 3-qubit W state (|001> + |010> + |100>)/sqrt(3).
+  w3 run 7 round 1: llm 409.069 s | F_log 0.205950 F_cmp 0.205950 2q 5->9 (L3 8) compile 90.5 ms (L3 8.4 ms)
+  w3 run 7 round 2: llm 246.603 s | F_log 1.000000 F_cmp 1.000000 2q 3->7 (L3 7) compile 10.5 ms (L3 6.9 ms)
+  w3 run 7 round 3: llm 456.533 s | F_log 1.000000 F_cmp 1.000000 2q 3->7 (L3 5) compile 18.2 ms (L3 17.5 ms)
+  w3 run 7 round 4: llm 113.641 s | F_log 0.853553 F_cmp 0.853553 2q 4->7 (L3 7) compile 23.1 ms (L3 21.2 ms)
+  -> {"task": "w3", "run": 7, "model": "openai/gpt-oss-120b", "n_qubits": 3, "rounds": 4, "solved": true, "errors": 0, "http400": 0, "llm_s_total": 1225.85, "baseline_psf_2q": 7, "baseline_q3_2q": 7, "baseline_psf_fidelity": 1.0, "baseline_psf_s": 0.0134, "baseline_q3_s": 0.0138, "best_round": 2, "fidelity_compiled": 1.0, "logical_2q": 3, "routed_2q": 7, "routed_swaps": 0, "depth": 20, "compile_s": 0.0105, "q3_s": 0.0069, "q3_2q": 7, "q3_fidelity": 1.0}
+DONE

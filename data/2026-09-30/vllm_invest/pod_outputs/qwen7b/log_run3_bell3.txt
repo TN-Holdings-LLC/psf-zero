@@ -1,0 +1,10 @@
+v6 2026-09-30 | model Qwen/Qwen2.5-7B-Instruct | device FakeAuckland | sim lightning.qubit | psf_compile 2026-09-28.1 | CORE_VERSION 2026-09-29.1 | layout 2026-09-29.c1
+== bell3 (run 3): Prepare three Bell pairs (|00> + |11>)/sqrt(2): one on qubits (0,1), one on (2,3), one on (4,5).
+  bell3 run 3 round 1: llm 8.868 s | F_log 0.015625 F_cmp 0.015625 2q 3->3 (L3 3) compile 37.1 ms (L3 84.9 ms)
+  bell3 run 3 round 2: llm 3.488 s | F_log 0.015625 F_cmp 0.015625 2q 3->3 (L3 3) compile 27.9 ms (L3 82.9 ms)
+  bell3 run 3 round 3: llm 3.806 s | F_log 0.015625 F_cmp 0.015625 2q 3->3 (L3 3) compile 28.9 ms (L3 81.9 ms)
+  bell3 run 3 round 4: llm 6.683 s | F_log 0.015625 F_cmp 0.015625 2q 3->3 (L3 3) compile 28.4 ms (L3 75.7 ms)
+  bell3 run 3 round 5: llm 4.226 s | F_log 0.015625 F_cmp 0.015625 2q 3->3 (L3 3) compile 27.0 ms (L3 85.2 ms)
+  bell3 run 3 round 6: llm 4.218 s | F_log 0.015625 F_cmp 0.015625 2q 3->3 (L3 3) compile 26.2 ms (L3 61.2 ms)
+  -> {"task": "bell3", "run": 3, "model": "Qwen/Qwen2.5-7B-Instruct", "n_qubits": 6, "rounds": 6, "solved": false, "errors": 0, "http400": 0, "llm_s_total": 31.29, "baseline_psf_2q": 3, "baseline_q3_2q": 3, "baseline_psf_fidelity": 0.9999999999999987, "baseline_psf_s": 0.0116, "baseline_q3_s": 0.043, "best_round": 1, "fidelity_compiled": 0.01562500000000002, "logical_2q": 3, "routed_2q": 3, "routed_swaps": 0, "depth": 9, "compile_s": 0.0371, "q3_s": 0.0849, "q3_2q": 3, "q3_fidelity": 0.015624999999999976}
+DONE

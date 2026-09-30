@@ -1,0 +1,73 @@
+{
+ "n_qubits": 3,
+ "gates": [
+  {
+   "name": "x",
+   "qubits": [
+    0
+   ]
+  },
+  {
+   "name": "x",
+   "qubits": [
+    2
+   ]
+  },
+  {
+   "name": "h",
+   "qubits": [
+    0
+   ]
+  },
+  {
+   "name": "cp",
+   "qubits": [
+    1,
+    0
+   ],
+   "params": [
+    1.5707963267948966
+   ]
+  },
+  {
+   "name": "cphase",
+   "qubits": [
+    2,
+    0
+   ],
+   "params": [
+    0.7853981633974483
+   ]
+  },
+  {
+   "name": "h",
+   "qubits": [
+    1
+   ]
+  },
+  {
+   "name": "cp",
+   "qubits": [
+    2,
+    1
+   ],
+   "params": [
+    1.5707963267948966
+   ]
+  },
+  {
+   "name": "h",
+   "qubits": [
+    2
+   ]
+  },
+  {
+   "name": "swap",
+   "qubits": [
+    0,
+    2
+   ]
+  }
+ ],
+ "note": "textbook QFT with cp"
+}

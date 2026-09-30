@@ -1,0 +1,10 @@
+v6 2026-09-30 | model Qwen/Qwen2.5-7B-Instruct | device FakeAuckland | sim lightning.qubit | psf_compile 2026-09-28.1 | CORE_VERSION 2026-09-29.1 | layout 2026-09-29.c1
+== w3 (run 1): Prepare the 3-qubit W state (|001> + |010> + |100>)/sqrt(3).
+  w3 run 1 round 1: llm 8.662 s | F_log 0.333333 F_cmp 0.333333 2q 2->3 (L3 3) compile 143.8 ms (L3 27.1 ms)
+  w3 run 1 round 2: llm 3.182 s | F_log 0.083333 F_cmp 0.083333 2q 2->2 (L3 2) compile 31.2 ms (L3 23.4 ms)
+  w3 run 1 round 3: llm 3.845 s | F_log 0.083333 F_cmp 0.083333 2q 2->2 (L3 2) compile 28.1 ms (L3 20.9 ms)
+  w3 run 1 round 4: llm 4.242 s | F_log 0.083333 F_cmp 0.083333 2q 2->2 (L3 2) compile 27.4 ms (L3 23.5 ms)
+  w3 run 1 round 5: llm 4.686 s | F_log 0.060713 F_cmp 0.060713 2q 2->4 (L3 4) compile 28.1 ms (L3 22.5 ms)
+  w3 run 1 round 6: llm 4.122 s | F_log 0.000000 F_cmp 0.000000 2q 2->2 (L3 2) compile 27.8 ms (L3 22.5 ms)
+  -> {"task": "w3", "run": 1, "model": "Qwen/Qwen2.5-7B-Instruct", "n_qubits": 3, "rounds": 6, "solved": false, "errors": 0, "http400": 0, "llm_s_total": 28.74, "baseline_psf_2q": 7, "baseline_q3_2q": 7, "baseline_psf_fidelity": 1.0, "baseline_psf_s": 0.0268, "baseline_q3_s": 0.0394, "best_round": 1, "fidelity_compiled": 0.3333333333333334, "logical_2q": 2, "routed_2q": 3, "routed_swaps": 0, "depth": 15, "compile_s": 0.1438, "q3_s": 0.0271, "q3_2q": 3, "q3_fidelity": 0.33333333333333315}
+DONE

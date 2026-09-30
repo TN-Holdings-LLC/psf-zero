@@ -1,0 +1,38 @@
+{
+ "n_qubits": 3,
+ "gates": [
+  {
+   "name": "h",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cz",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": []
+  },
+  {
+   "name": "cz",
+   "qubits": [
+    0,
+    2
+   ],
+   "params": []
+  },
+  {
+   "name": "rz",
+   "qubits": [
+    1
+   ],
+   "params": [
+    -1.0471975511965976
+   ]
+  }
+ ],
+ "note": "Corrected circuit to prepare the 3-qubit W state"
+}

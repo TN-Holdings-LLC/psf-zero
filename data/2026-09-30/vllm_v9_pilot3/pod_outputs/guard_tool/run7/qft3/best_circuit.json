@@ -1,0 +1,73 @@
+{
+ "n_qubits": 3,
+ "gates": [
+  {
+   "name": "x",
+   "qubits": [
+    0
+   ]
+  },
+  {
+   "name": "x",
+   "qubits": [
+    2
+   ]
+  },
+  {
+   "name": "h",
+   "qubits": [
+    0
+   ]
+  },
+  {
+   "name": "cp",
+   "qubits": [
+    1,
+    0
+   ],
+   "params": [
+    1.57079632679
+   ]
+  },
+  {
+   "name": "cp",
+   "qubits": [
+    2,
+    0
+   ],
+   "params": [
+    0.785398163397
+   ]
+  },
+  {
+   "name": "h",
+   "qubits": [
+    1
+   ]
+  },
+  {
+   "name": "cp",
+   "qubits": [
+    2,
+    1
+   ],
+   "params": [
+    1.57079632679
+   ]
+  },
+  {
+   "name": "h",
+   "qubits": [
+    2
+   ]
+  },
+  {
+   "name": "swap",
+   "qubits": [
+    0,
+    2
+   ]
+  }
+ ],
+ "note": "QFT applied to |101> yields the desired state."
+}

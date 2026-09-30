@@ -1,0 +1,49 @@
+{
+ "n_qubits": 3,
+ "gates": [
+  {
+   "name": "x",
+   "qubits": [
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    0,
+    1
+   ],
+   "params": [
+    1.230959417
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    1,
+    0
+   ],
+   "params": []
+  },
+  {
+   "name": "cry",
+   "qubits": [
+    0,
+    2
+   ],
+   "params": [
+    1.570796327
+   ]
+  },
+  {
+   "name": "cx",
+   "qubits": [
+    2,
+    0
+   ],
+   "params": []
+  }
+ ],
+ "note": "Exact 3\u2011qubit W state using 2 partial swaps (4 two\u2011qubit gates)"
+}
