@@ -1,0 +1,52 @@
+v11 2026-10-01 | model MOCK | device FakeAuckland | sim lightning.qubit | psf_compile 2026-10-01.c2 | CORE_VERSION 2026-09-29.1 | layout 2026-10-01.c2 | compiler psf
+== ghz5 (run 1): Prepare the 5-qubit GHZ state (|00000> + |11111>)/sqrt(2).
+  ghz5 run 1 round 1: llm 0.0 s | F_log 1.000000 F_cmp 1.000000 2q 4->4 (L3 4) compile 197.7 ms (L3 13.1 ms)
+  ghz5 run 1 round 2: llm 0.0 s | F_log 1.000000 F_cmp 1.000000 2q 4->4 (L3 4) compile 12.1 ms (L3 6.2 ms)
+  ghz5 run 1 round 3: llm 0.0 s | F_log 1.000000 F_cmp 1.000000 2q 4->4 (L3 4) compile 9.0 ms (L3 7.6 ms)
+  -> {"task": "ghz5", "run": 1, "model": "MOCK", "n_qubits": 5, "rounds": 3, "solved": true, "errors": 0, "http400": 0, "llm_s_total": 0.0, "baseline_psf_2q": 41, "baseline_q3_2q": 34, "baseline_psf_fidelity": 0.9999999999999989, "baseline_psf_s": 0.0168, "baseline_q3_s": 0.0083, "best_round": 1, "fidelity_compiled": 0.9999999999999989, "logical_2q": 4, "routed_2q": 4, "routed_swaps": 0, "depth": 27, "compile_s": 0.1977, "q3_s": 0.0131, "q3_2q": 4, "q3_fidelity": 0.9999999999999989}
+== w3 (run 1): Prepare the 3-qubit W state (|001> + |010> + |100>)/sqrt(3).
+  w3 run 1 round 1: llm 0.0 s | F_log 0.000000 F_cmp 0.000000 2q 2->2 (L3 2) compile 22.0 ms (L3 6.1 ms)
+  w3 run 1 round 2: llm 0.0 s | F_log 1.000000 F_cmp 1.000000 2q 3->5 (L3 5) compile 14.9 ms (L3 10.5 ms)
+  w3 run 1 round 3: llm 0.0 s | F_log 1.000000 F_cmp 1.000000 2q 3->5 (L3 5) compile 12.9 ms (L3 6.8 ms)
+  -> {"task": "w3", "run": 1, "model": "MOCK", "n_qubits": 3, "rounds": 3, "solved": true, "errors": 0, "http400": 0, "llm_s_total": 0.0, "baseline_psf_2q": 7, "baseline_q3_2q": 7, "baseline_psf_fidelity": 1.0, "baseline_psf_s": 0.0072, "baseline_q3_s": 0.007, "best_round": 2, "fidelity_compiled": 1.0000000000000004, "logical_2q": 3, "routed_2q": 5, "routed_swaps": 0, "depth": 23, "compile_s": 0.0149, "q3_s": 0.0105, "q3_2q": 5, "q3_fidelity": 1.0}
+== bell3 (run 1): Prepare three Bell pairs (|00> + |11>)/sqrt(2): one on qubits (0,1), one on (2,3), one on (4,5).
+  bell3 run 1 round 1: llm 0.0 s | F_log 1.000000 F_cmp 1.000000 2q 3->3 (L3 3) compile 8.5 ms (L3 19.5 ms)
+  bell3 run 1 round 2: llm 0.0 s | F_log 1.000000 F_cmp 1.000000 2q 3->3 (L3 3) compile 11.5 ms (L3 27.0 ms)
+  bell3 run 1 round 3: llm 0.0 s | F_log 1.000000 F_cmp 1.000000 2q 3->3 (L3 3) compile 8.2 ms (L3 18.9 ms)
+  -> {"task": "bell3", "run": 1, "model": "MOCK", "n_qubits": 6, "rounds": 3, "solved": true, "errors": 0, "http400": 0, "llm_s_total": 0.0, "baseline_psf_2q": 3, "baseline_q3_2q": 3, "baseline_psf_fidelity": 0.9999999999999987, "baseline_psf_s": 0.0098, "baseline_q3_s": 0.0221, "best_round": 1, "fidelity_compiled": 0.9999999999999987, "logical_2q": 3, "routed_2q": 3, "routed_swaps": 0, "depth": 9, "compile_s": 0.0085, "q3_s": 0.0195, "q3_2q": 3, "q3_fidelity": 0.9999999999999993}
+== qft3 (run 1): Start from the basis state |101> (qubit 0 = 1, qubit 1 = 0, qubit 2 = 1) and apply the 3-qubit quantum Fourier transform, so that the result is sum_k exp(2*pi*i*5*k/8)|k>/sqrt(8), where k is read with qubit 0 as the most significant bit.
+  qft3 run 1 round 1: llm 0.0 s | F_log 0.312500 F_cmp 0.312500 2q 1->2 (L3 2) compile 6.3 ms (L3 5.1 ms)
+  qft3 run 1 round 2: llm 0.0 s | F_log 1.000000 F_cmp 1.000000 2q 4->9 (L3 9) compile 9.9 ms (L3 6.6 ms)
+  qft3 run 1 round 3: llm 0.0 s | F_log 1.000000 F_cmp 1.000000 2q 4->9 (L3 9) compile 11.6 ms (L3 113.5 ms)
+  -> {"task": "qft3", "run": 1, "model": "MOCK", "n_qubits": 3, "rounds": 3, "solved": true, "errors": 0, "http400": 0, "llm_s_total": 0.0, "baseline_psf_2q": 7, "baseline_q3_2q": 3, "baseline_psf_fidelity": 0.9999999999999991, "baseline_psf_s": 0.0104, "baseline_q3_s": 0.0085, "best_round": 2, "fidelity_compiled": 0.9999999999999998, "logical_2q": 4, "routed_2q": 9, "routed_swaps": 0, "depth": 21, "compile_s": 0.0099, "q3_s": 0.0066, "q3_2q": 9, "q3_fidelity": 0.9999999999999998}
+== fill27 (run 1): Prepare seven 3-qubit GHZ states (|000> + |111>)/sqrt(2), on qubits (0,1,2), (3,4,5), (6,7,8), (9,10,11), (12,13,14), (15,16,17) and (18,19,20), and three Bell pairs (|00> + |11>)/sqrt(2), on qubits (21,22), (23,24) and (25,26). The circuit will run on a 27-qubit device whose qubits are connected as a heavy-hexagon lattice (every qubit has at most three neighbours, and two-qubit gates act only between neighbours), and all 27 qubits are needed, so there is no spare qubit.
+  fill27 run 1 round 1: llm 0.0 s | F_log 0.007812 F_cmp 0.007812 2q 12->12 (L3 12) compile 12.8 ms (L3 29.5 ms)
+  fill27 run 1 round 2: llm 0.0 s | F_log 1.000000 F_cmp 1.000000 2q 17->17 (L3 20) compile 15.5 ms (L3 7701.5 ms)
+  fill27 run 1 round 3: llm 0.0 s | F_log 1.000000 F_cmp 1.000000 2q 17->17 (L3 20) compile 10.4 ms (L3 8195.1 ms)
+  -> {"task": "fill27", "run": 1, "model": "MOCK", "n_qubits": 27, "rounds": 3, "solved": true, "errors": 0, "http400": 0, "llm_s_total": 0.0, "baseline_psf_2q": 42, "baseline_q3_2q": 46, "baseline_psf_fidelity": 0.9999999999999944, "baseline_psf_s": 0.0231, "baseline_q3_s": 4.1239, "best_round": 2, "fidelity_compiled": 0.9999999999999936, "logical_2q": 17, "routed_2q": 17, "routed_swaps": 0, "depth": 15, "compile_s": 0.0155, "q3_s": 7.7015, "q3_2q": 20, "q3_fidelity": 0.9999999999999949}
+== w4 (run 1): Prepare the 4-qubit W state (|0001> + |0010> + |0100> + |1000>)/2.
+  w4 run 1 round 1: llm 0.0 s | F_log 0.250000 F_cmp 0.250000 2q 0->0 (L3 0) compile 9.7 ms (L3 11.2 ms)
+  w4 run 1 round 2: llm 0.0 s | F_log 0.250000 F_cmp 0.250000 2q 0->0 (L3 0) compile 6.4 ms (L3 8.3 ms)
+  w4 run 1 round 3: llm 0.0 s | F_log 0.250000 F_cmp 0.250000 2q 0->0 (L3 0) compile 10.0 ms (L3 9.4 ms)
+  -> {"task": "w4", "run": 1, "model": "MOCK", "n_qubits": 4, "rounds": 3, "solved": false, "errors": 0, "http400": 0, "llm_s_total": 0.0, "baseline_psf_2q": 13, "baseline_q3_2q": 13, "baseline_psf_fidelity": 0.9999999999999998, "baseline_psf_s": 0.0133, "baseline_q3_s": 0.0181, "best_round": 1, "fidelity_compiled": 0.2499999999999999, "logical_2q": 0, "routed_2q": 0, "routed_swaps": 0, "depth": 3, "compile_s": 0.0097, "q3_s": 0.0112, "q3_2q": 0, "q3_fidelity": 0.2499999999999999}
+== dicke42 (run 1): Prepare the 4-qubit Dicke state with two excitations: the equal superposition of the six basis states with exactly two 1s, (|0011> + |0101> + |0110> + |1001> + |1010> + |1100>)/sqrt(6).
+  dicke42 run 1 round 1: llm 0.0 s | F_log 0.166667 F_cmp 0.166667 2q 0->0 (L3 0) compile 6.3 ms (L3 5.8 ms)
+  dicke42 run 1 round 2: llm 0.0 s | F_log 0.166667 F_cmp 0.166667 2q 0->0 (L3 0) compile 5.7 ms (L3 5.5 ms)
+  dicke42 run 1 round 3: llm 0.0 s | F_log 0.166667 F_cmp 0.166667 2q 0->0 (L3 0) compile 6.5 ms (L3 5.0 ms)
+  -> {"task": "dicke42", "run": 1, "model": "MOCK", "n_qubits": 4, "rounds": 3, "solved": false, "errors": 0, "http400": 0, "llm_s_total": 0.0, "baseline_psf_2q": 13, "baseline_q3_2q": 13, "baseline_psf_fidelity": 1.0, "baseline_psf_s": 0.0116, "baseline_q3_s": 0.0081, "best_round": 1, "fidelity_compiled": 0.1666666666666667, "logical_2q": 0, "routed_2q": 0, "routed_swaps": 0, "depth": 1, "compile_s": 0.0063, "q3_s": 0.0058, "q3_2q": 0, "q3_fidelity": 0.1666666666666667}
+== ghz3i (run 1): Prepare the 3-qubit state (|000> + i|111>)/sqrt(2), where i is the imaginary unit.
+  ghz3i run 1 round 1: llm 0.0 s | F_log 0.500000 F_cmp 0.500000 2q 2->2 (L3 2) compile 8.4 ms (L3 5.9 ms)
+  ghz3i run 1 round 2: llm 0.0 s | F_log 1.000000 F_cmp 1.000000 2q 2->2 (L3 2) compile 9.6 ms (L3 6.1 ms)
+  ghz3i run 1 round 3: llm 0.0 s | F_log 1.000000 F_cmp 1.000000 2q 2->2 (L3 2) compile 18.0 ms (L3 7.5 ms)
+  -> {"task": "ghz3i", "run": 1, "model": "MOCK", "n_qubits": 3, "rounds": 3, "solved": true, "errors": 0, "http400": 0, "llm_s_total": 0.0, "baseline_psf_2q": 7, "baseline_q3_2q": 7, "baseline_psf_fidelity": 0.9999999999999991, "baseline_psf_s": 0.0087, "baseline_q3_s": 0.0085, "best_round": 2, "fidelity_compiled": 0.9999999999999996, "logical_2q": 2, "routed_2q": 2, "routed_swaps": 0, "depth": 15, "compile_s": 0.0096, "q3_s": 0.0061, "q3_2q": 2, "q3_fidelity": 0.9999999999999996}
+== singlet3 (run 1): Prepare three singlet pairs (|01> - |10>)/sqrt(2): one on qubits (0,1), one on (2,3), one on (4,5). In each pair the first qubit listed is the left bit of the ket.
+  singlet3 run 1 round 1: llm 0.0 s | F_log 1.000000 F_cmp 1.000000 2q 3->3 (L3 3) compile 9.9 ms (L3 21.8 ms)
+  singlet3 run 1 round 2: llm 0.0 s | F_log 1.000000 F_cmp 1.000000 2q 3->3 (L3 3) compile 8.2 ms (L3 23.0 ms)
+  singlet3 run 1 round 3: llm 0.0 s | F_log 1.000000 F_cmp 1.000000 2q 3->3 (L3 3) compile 9.0 ms (L3 21.6 ms)
+  -> {"task": "singlet3", "run": 1, "model": "MOCK", "n_qubits": 6, "rounds": 3, "solved": true, "errors": 0, "http400": 0, "llm_s_total": 0.0, "baseline_psf_2q": 3, "baseline_q3_2q": 3, "baseline_psf_fidelity": 0.9999999999999987, "baseline_psf_s": 0.0071, "baseline_q3_s": 0.0234, "best_round": 1, "fidelity_compiled": 0.9999999999999987, "logical_2q": 3, "routed_2q": 3, "routed_swaps": 0, "depth": 9, "compile_s": 0.0099, "q3_s": 0.0218, "q3_2q": 3, "q3_fidelity": 0.9999999999999991}
+== fill27g9 (run 1): Prepare nine 3-qubit GHZ states (|000> + |111>)/sqrt(2), on qubits (0,1,2), (3,4,5), (6,7,8), (9,10,11), (12,13,14), (15,16,17), (18,19,20), (21,22,23) and (24,25,26). The circuit will run on a 27-qubit device whose qubits are connected as a heavy-hexagon lattice (every qubit has at most three neighbours, and two-qubit gates act only between neighbours), and all 27 qubits are needed, so there is no spare qubit.
+  fill27g9 run 1 round 1: llm 0.0 s | F_log 1.000000 F_cmp 1.000000 2q 18->18 (L3 18) compile 12.4 ms (L3 8027.1 ms)
+  fill27g9 run 1 round 2: llm 0.0 s | F_log 1.000000 F_cmp 1.000000 2q 18->18 (L3 18) compile 12.9 ms (L3 8246.5 ms)
+  fill27g9 run 1 round 3: llm 0.0 s | F_log 1.000000 F_cmp 1.000000 2q 18->18 (L3 18) compile 11.3 ms (L3 7726.9 ms)
+  -> {"task": "fill27g9", "run": 1, "model": "MOCK", "n_qubits": 27, "rounds": 3, "solved": true, "errors": 0, "http400": 0, "llm_s_total": 0.0, "baseline_psf_2q": 53, "baseline_q3_2q": 53, "baseline_psf_fidelity": 0.9999999999999942, "baseline_psf_s": 0.0232, "baseline_q3_s": 4.5778, "best_round": 1, "fidelity_compiled": 0.9999999999999947, "logical_2q": 18, "routed_2q": 18, "routed_swaps": 0, "depth": 15, "compile_s": 0.0124, "q3_s": 8.0271, "q3_2q": 18, "q3_fidelity": 0.9999999999999938}
+DONE

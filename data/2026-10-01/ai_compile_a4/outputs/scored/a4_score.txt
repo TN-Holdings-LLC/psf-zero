@@ -1,0 +1,15 @@
+C0 versions: OK 2026-10-01.c2 2026-10-01.c2 2026-10-01.a1 2026-10-01.a2 2026-10-01.a4 core 2026-09-29.1
+F1 all outputs exact without noise: 0 failures -> CONFIRMED
+   FakeAuckland: mean infidelity A2 0.0694 A4 0.0601 L3 0.0978 L3T 0.0707 | 2q A2 574 A4 582 L3 596 L3T 596 | A4/A2 0.867 A4/L3T 0.851 A4/L3 0.615 | A4 lower than L3T in 29/40 | A4 median 221 ms
+   FakeTorino: mean infidelity A2 0.0425 A4 0.0422 L3 0.1196 L3T 0.0451 | 2q A2 583 A4 584 L3 608 L3T 608 | A4/A2 0.994 A4/L3T 0.937 A4/L3 0.353 | A4 lower than L3T in 33/40 | A4 median 407 ms
+   FakeKingston: mean infidelity A2 0.0195 A4 0.0192 L3 0.0239 L3T 0.0205 | 2q A2 583 A4 583 L3 603 L3T 601 | A4/A2 0.983 A4/L3T 0.936 A4/L3 0.801 | A4 lower than L3T in 37/40 | A4 median 426 ms
+F2a Auckland: A4 <= 0.9 x A2 (refuted above 1.0 x) -> CONFIRMED
+F2b Torino, Kingston: A4 <= 1.0 x A2 (refuted above 1.05 x) -> CONFIRMED
+F3a Auckland: A4 <= 0.9 x L3T (refuted above 1.0 x) -> CONFIRMED
+F3b Torino, Kingston: A4 <= 1.0 x L3T (refuted above 1.05 x) -> CONFIRMED
+F4 A4 beats Qiskit L3 without errors (<= 0.9 x L3; refuted above 1.0 x) -> CONFIRMED
+F5 A4 keeps the 2-qubit count (<= 1.03 x A2; refuted above 1.1 x) -> CONFIRMED
+F6 A4 time: medians FakeAuckland 221 ms, FakeTorino 407 ms, FakeKingston 426 ms, max 0.66 s -> CONFIRMED
+F7 A4 without a target identical to A1: 20/20 -> CONFIRMED
+SUMMARY {"F1": "CONFIRMED", "F2a": "CONFIRMED", "F2b": "CONFIRMED", "F3a": "CONFIRMED", "F3b": "CONFIRMED", "F4": "CONFIRMED", "F5": "CONFIRMED", "F6": "CONFIRMED", "F7": "CONFIRMED"}
+DECISION: ALL CONFIRMED

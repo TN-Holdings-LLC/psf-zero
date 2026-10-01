@@ -1,0 +1,26 @@
+C0 versions: OK 2026-10-01.c2 2026-10-01.c2 2026-10-01.a2 core 2026-09-29.1 | items 153 | skipped 0
+E1 all outputs exact without noise: 0 failures of 1224 -> CONFIRMED
+   FakeAuckland (n=153): mean infidelity C2 0.0554 A2 0.0542 L3 0.0519 L3T 0.0568 | 2q C2 963 A2 885 L3 965 L3T 963 | A2/C2 0.978 A2/L3T 0.955 | A2 better/worse than L3T 85/67 | A2 median 119 ms
+      bell3     n=  1 mean infidelity C2 0.0220 A2 0.0135 L3 0.0162 L3T 0.0163 | 2q C2 3 A2 3 L3 3 L3T 3
+      dicke42   n= 16 mean infidelity C2 0.1388 A2 0.1122 L3 0.1326 L3T 0.1233 | 2q C2 216 A2 190 L3 219 L3T 217
+      ghz3i     n=  4 mean infidelity C2 0.0329 A2 0.0331 L3 0.0279 L3T 0.0314 | 2q C2 14 A2 14 L3 14 L3T 14
+      ghz5      n=  7 mean infidelity C2 0.0572 A2 0.0522 L3 0.0562 L3T 0.0504 | 2q C2 43 A2 41 L3 45 L3T 45
+      qft3      n= 28 mean infidelity C2 0.0353 A2 0.0368 L3 0.0338 L3T 0.0408 | 2q C2 137 A2 113 L3 137 L3T 137
+      singlet3  n=  2 mean infidelity C2 0.0348 A2 0.0289 L3 0.0292 L3T 0.0280 | 2q C2 6 A2 6 L3 6 L3T 6
+      w3        n= 83 mean infidelity C2 0.0447 A2 0.0487 L3 0.0426 L3T 0.0502 | 2q C2 452 A2 426 L3 449 L3T 449
+      w4        n= 12 mean infidelity C2 0.0781 A2 0.0712 L3 0.0634 L3T 0.0711 | 2q C2 92 A2 92 L3 92 L3T 92
+   FakeTorino (n=153): mean infidelity C2 0.0386 A2 0.0197 L3 0.0366 L3T 0.0208 | 2q C2 965 A2 894 L3 959 L3T 961 | A2/C2 0.511 A2/L3T 0.946 | A2 better/worse than L3T 79/63 | A2 median 243 ms
+      bell3     n=  1 mean infidelity C2 0.0132 A2 0.0059 L3 0.0138 L3T 0.0054 | 2q C2 3 A2 3 L3 3 L3T 3
+      dicke42   n= 16 mean infidelity C2 0.1259 A2 0.0449 L3 0.1234 L3T 0.0477 | 2q C2 213 A2 198 L3 217 L3T 217
+      ghz3i     n=  4 mean infidelity C2 0.0204 A2 0.0109 L3 0.0172 L3T 0.0112 | 2q C2 14 A2 14 L3 14 L3T 14
+      ghz5      n=  7 mean infidelity C2 0.0302 A2 0.0214 L3 0.0296 L3T 0.0236 | 2q C2 48 A2 39 L3 45 L3T 45
+      qft3      n= 28 mean infidelity C2 0.0242 A2 0.0133 L3 0.0226 L3T 0.0161 | 2q C2 137 A2 115 L3 135 L3T 137
+      singlet3  n=  2 mean infidelity C2 0.0167 A2 0.0076 L3 0.0218 L3T 0.0080 | 2q C2 6 A2 6 L3 6 L3T 6
+      w3        n= 83 mean infidelity C2 0.0291 A2 0.0166 L3 0.0255 L3T 0.0170 | 2q C2 452 A2 427 L3 447 L3T 447
+      w4        n= 12 mean infidelity C2 0.0386 A2 0.0276 L3 0.0450 L3T 0.0277 | 2q C2 92 A2 92 L3 92 L3T 92
+E2 A2 beats C2 (the compiler v10 used) under noise: mean infidelity <= 0.90 x C2 -> AMBIGUOUS
+E3 A2 at the harness's own Qiskit comparison (L3 with target): <= 1.05 x L3T -> CONFIRMED
+E4 A2 2-qubit sum <= L3T's -> CONFIRMED
+E5 A2 time per compile: medians FakeAuckland 119 ms, FakeTorino 243 ms, max 0.96 s -> CONFIRMED
+SUMMARY {"E1": "CONFIRMED", "E2": "AMBIGUOUS", "E3": "CONFIRMED", "E4": "CONFIRMED", "E5": "CONFIRMED"}
+DECISION: NOT ALL CONFIRMED

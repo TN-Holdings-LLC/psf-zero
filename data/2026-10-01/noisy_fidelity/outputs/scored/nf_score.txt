@@ -1,0 +1,11 @@
+C0 versions: OK 2026-09-28.1 2026-09-26.m1 2026-10-01.c2 2026-10-01.c2 2026-10-01.a1 | noiseless fidelity < 1-1e-9: 0
+   FakeAuckland (n=40): mean infidelity REL 0.1360 C2 0.0880 A1 0.0850 L3 0.0803 | 2q sums REL 932 C2 530 A1 486 L3 505 | A1 better than REL in 97% of 39 circuits with different 2q counts
+   FakeTorino (n=40): mean infidelity REL 0.1097 C2 0.0581 A1 0.0591 L3 0.0676 | 2q sums REL 980 C2 524 A1 501 L3 511 | A1 better than REL in 92% of 39 circuits with different 2q counts
+N0 every compiled output exact without noise (fidelity >= 1-1e-9): 0 failures -> CONFIRMED
+N1 A1 lower infidelity than the released stack (mean, and >= 70 % of differing circuits) -> CONFIRMED
+N2 A1 at L3 level (mean infidelity <= 1.05 x L3) -> AMBIGUOUS
+N3 fewer 2-qubit gates -> lower infidelity, within-circuit arm pairs (>= 70 % per device): FakeAuckland 91.6% of 155, FakeTorino 92.4% of 144 -> CONFIRMED
+N4 A1 not worse than C2 (mean infidelity) -> AMBIGUOUS
+   model circuits (FakeAuckland, unique, n=77; reported without prediction): mean infidelity REL 0.0580 C2 0.0491 A1 0.0454 L3 0.0436
+SUMMARY {"N1": "CONFIRMED", "N2": "AMBIGUOUS", "N3": "CONFIRMED", "N4": "AMBIGUOUS", "N0": "CONFIRMED"}
+DECISION: NOT ALL CONFIRMED

@@ -1,0 +1,86 @@
+C0 versions: OK 2026-10-01.c2 2026-10-01.c2 2026-10-01.a0 core 2026-09-29.1
+A1 A0 outputs not equivalent: 0, not checkable: 0 of 252 -> CONFIRMED
+A2 A0 above C2: 0 of 252 -> CONFIRMED
+   FakeAuckland: sum2q C2 850 A0 807 L3 828 | A0/L3 0.975 A0>L3 3.3% | A0/C2 0.949 | A0 median 50 ms
+   FakeKingston: sum2q C2 879 A0 841 L3 850 | A0/L3 0.989 A0>L3 8.3% | A0/C2 0.957 | A0 median 135 ms
+   FakeTorino: sum2q C2 884 A0 832 L3 852 | A0/L3 0.977 A0>L3 5.0% | A0/C2 0.941 | A0 median 127 ms
+A3 A0 at L3 level (sum <= 1.02 x L3 and <= 10 % above, every device) -> CONFIRMED
+A4 A0 improves on C2 (sum <= 0.97 x C2, every device) -> CONFIRMED
+A5 textbook compiles with A0 <= L3: 77.8% of 72 -> AMBIGUOUS
+   FakeAuckland  IQFT4/gates            C2  18 A0  18 L3  18      22 ms
+   FakeAuckland  IQFT4/unitary          C2  18 A0  18 L3  18      23 ms
+   FakeAuckland  W6/gates               C2  10 A0  10 L3  10      23 ms
+   FakeAuckland  W6/unitary             C2  10 A0  10 L3  10      25 ms
+   FakeAuckland  GHZline6/gates         C2   5 A0   5 L3   5      19 ms
+   FakeAuckland  GHZline6/unitary       C2   5 A0   5 L3   5      19 ms
+   FakeAuckland  BV5/gates              C2   3 A0   3 L3   3      27 ms
+   FakeAuckland  BV5/unitary            C2   3 A0   3 L3   3      36 ms
+   FakeAuckland  QAOAring4/gates        C2  11 A0  11 L3  11      46 ms
+   FakeAuckland  QAOAring4/unitary      C2  11 A0  11 L3  11      44 ms
+   FakeAuckland  QAOAring5/gates        C2  14 A0  14 L3  16      42 ms
+   FakeAuckland  QAOAring5/unitary      C2  14 A0  14 L3  16      48 ms
+   FakeAuckland  HEA4/gates             C2  17 A0  17 L3  17      35 ms
+   FakeAuckland  HEA4/unitary           C2  17 A0  17 L3  17     126 ms
+   FakeAuckland  Heisenberg4/gates      C2  18 A0  18 L3  18      21 ms
+   FakeAuckland  Heisenberg4/unitary    C2  18 A0  18 L3  18      25 ms
+   FakeAuckland  Grover3/gates          C2  18 A0  18 L3  17      69 ms
+   FakeAuckland  Grover3/unitary        C2  19 A0  19 L3  17      38 ms
+   FakeAuckland  QPE3/gates             C2  13 A0  13 L3  15      43 ms
+   FakeAuckland  QPE3/unitary           C2  13 A0  13 L3  15      56 ms
+   FakeAuckland  Rotate5/gates          C2   2 A0   2 L3   2      31 ms
+   FakeAuckland  Rotate5/unitary        C2   2 A0   2 L3   2      33 ms
+   FakeAuckland  Bell2Swap/gates        C2   7 A0   7 L3   7      19 ms
+   FakeAuckland  Bell2Swap/unitary      C2   7 A0   7 L3   7      22 ms
+   FakeKingston  IQFT4/gates            C2  18 A0  17 L3  18     139 ms
+   FakeKingston  IQFT4/unitary          C2  18 A0  17 L3  18     138 ms
+   FakeKingston  W6/gates               C2  10 A0  10 L3  10      56 ms
+   FakeKingston  W6/unitary             C2  10 A0  10 L3  10      57 ms
+   FakeKingston  GHZline6/gates         C2   5 A0   5 L3   5      45 ms
+   FakeKingston  GHZline6/unitary       C2   5 A0   5 L3   5      52 ms
+   FakeKingston  BV5/gates              C2   3 A0   3 L3   3      95 ms
+   FakeKingston  BV5/unitary            C2   3 A0   3 L3   3     104 ms
+   FakeKingston  QAOAring4/gates        C2  12 A0  11 L3  11     263 ms
+   FakeKingston  QAOAring4/unitary      C2  12 A0  11 L3  11     277 ms
+   FakeKingston  QAOAring5/gates        C2  18 A0  18 L3  16     132 ms
+   FakeKingston  QAOAring5/unitary      C2  18 A0  18 L3  16     135 ms
+   FakeKingston  HEA4/gates             C2  20 A0  18 L3  17     234 ms
+   FakeKingston  HEA4/unitary           C2  20 A0  20 L3  17     285 ms
+   FakeKingston  Heisenberg4/gates      C2  18 A0  18 L3  18      54 ms
+   FakeKingston  Heisenberg4/unitary    C2  18 A0  18 L3  18      54 ms
+   FakeKingston  Grover3/gates          C2  18 A0  18 L3  17     180 ms
+   FakeKingston  Grover3/unitary        C2  19 A0  19 L3  17     124 ms
+   FakeKingston  QPE3/gates             C2  13 A0  13 L3  13     131 ms
+   FakeKingston  QPE3/unitary           C2  13 A0  13 L3  13     133 ms
+   FakeKingston  Rotate5/gates          C2   2 A0   2 L3   2      92 ms
+   FakeKingston  Rotate5/unitary        C2   2 A0   2 L3   2      87 ms
+   FakeKingston  Bell2Swap/gates        C2   7 A0   7 L3   7     133 ms
+   FakeKingston  Bell2Swap/unitary      C2   7 A0   7 L3   7     133 ms
+   FakeTorino    IQFT4/gates            C2  19 A0  17 L3  16     106 ms
+   FakeTorino    IQFT4/unitary          C2  19 A0  17 L3  16     124 ms
+   FakeTorino    W6/gates               C2  10 A0  10 L3  10      38 ms
+   FakeTorino    W6/unitary             C2  10 A0  10 L3  10      42 ms
+   FakeTorino    GHZline6/gates         C2   5 A0   5 L3   5      40 ms
+   FakeTorino    GHZline6/unitary       C2   5 A0   5 L3   5      42 ms
+   FakeTorino    BV5/gates              C2   3 A0   3 L3   3      82 ms
+   FakeTorino    BV5/unitary            C2   3 A0   3 L3   3      92 ms
+   FakeTorino    QAOAring4/gates        C2  12 A0  12 L3  11     117 ms
+   FakeTorino    QAOAring4/unitary      C2  12 A0  12 L3  11     111 ms
+   FakeTorino    QAOAring5/gates        C2  14 A0  14 L3  14     313 ms
+   FakeTorino    QAOAring5/unitary      C2  14 A0  14 L3  14     192 ms
+   FakeTorino    HEA4/gates             C2  20 A0  18 L3  17     117 ms
+   FakeTorino    HEA4/unitary           C2  20 A0  20 L3  17     128 ms
+   FakeTorino    Heisenberg4/gates      C2  18 A0  18 L3  18      45 ms
+   FakeTorino    Heisenberg4/unitary    C2  18 A0  18 L3  18      46 ms
+   FakeTorino    Grover3/gates          C2  18 A0  18 L3  17     164 ms
+   FakeTorino    Grover3/unitary        C2  19 A0  19 L3  17     100 ms
+   FakeTorino    QPE3/gates             C2  15 A0  13 L3  15     212 ms
+   FakeTorino    QPE3/unitary           C2  15 A0  13 L3  15     233 ms
+   FakeTorino    Rotate5/gates          C2   2 A0   2 L3   2      52 ms
+   FakeTorino    Rotate5/unitary        C2   2 A0   2 L3   2      58 ms
+   FakeTorino    Bell2Swap/gates        C2   7 A0   7 L3   7      90 ms
+   FakeTorino    Bell2Swap/unitary      C2   7 A0   7 L3   7     100 ms
+A6 A0 time: medians FakeAuckland 47 ms, FakeKingston 133 ms, FakeTorino 114 ms; max 0.31 s -> CONFIRMED
+A7 measured circuits with TVD > 0.03: 0 of 30 (max 0.0112) -> CONFIRMED
+A8 circuits above 8 qubits where A0 output != C2 output: 0 of 8 -> CONFIRMED
+SUMMARY {"A1": "CONFIRMED", "A2": "CONFIRMED", "A3": "CONFIRMED", "A4": "CONFIRMED", "A5": "AMBIGUOUS", "A6": "CONFIRMED", "A7": "CONFIRMED", "A8": "CONFIRMED"}
+DECISION: NOT ALL CONFIRMED

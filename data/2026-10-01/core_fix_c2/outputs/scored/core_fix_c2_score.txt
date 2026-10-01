@@ -1,0 +1,75 @@
+C0 harness versions: OK 2026-09-28.1 2026-10-01.c2 {'m1': '2026-09-26.m1', 'c1': '2026-09-29.c1', 'c2': '2026-10-01.c2'}
+L1 feasible tilings placed swap-free within 1 s by c2: 10/10 (infeasible 2, unknown 7) -> CONFIRMED
+L2 c2 above min(m1,c1): 0; c1-swap-free digests changed by c2: 1 -> AMBIGUOUS
+L3 infeasible/unknown tilings where c2 time > c1 time + 1.2 s: 0/9 -> CONFIRMED
+L4 layout outputs checked 30/57, below 1-1e-9: 0 -> CONFIRMED
+C1 CAND not equivalent: 0, not checkable: 0 (REL not equivalent: 0) of 224 -> CONFIRMED
+   FakeAuckland: sum2q REL 1905 CAND 1147 L3 1117 | CAND>REL 0.0% | CAND/L3 1.027 CAND>L3 13.3%
+   FakeKingston: sum2q REL 2013 CAND 1168 L3 1122 | CAND>REL 0.0% | CAND/L3 1.041 CAND>L3 15.6%
+C2 CAND below REL (sum lower, <=5% circuits worse) -> CONFIRMED
+C3 CAND near L3 (sum <=1.08x, <=25% circuits above) -> CONFIRMED
+C4 textbook circuits where CAND > REL: 0/44 -> CONFIRMED
+   FakeAuckland  W3/gates               REL   6 CAND   4 L3   4
+   FakeAuckland  W3/unitary             REL   6 CAND   4 L3   4
+   FakeAuckland  W4/gates               REL   9 CAND   6 L3   6
+   FakeAuckland  W4/unitary             REL   9 CAND   6 L3   6
+   FakeAuckland  W5/gates               REL  12 CAND   8 L3   8
+   FakeAuckland  W5/unitary             REL  12 CAND   8 L3   8
+   FakeAuckland  Dicke42/gates          REL  30 CAND  18 L3  18
+   FakeAuckland  Dicke42/unitary        REL  30 CAND  18 L3  18
+   FakeAuckland  QFT3/gates             REL  12 CAND   9 L3   7
+   FakeAuckland  QFT3/unitary           REL  12 CAND   9 L3   9
+   FakeAuckland  QFT4/gates             REL  27 CAND  18 L3  18
+   FakeAuckland  QFT4/unitary           REL  27 CAND  18 L3  18
+   FakeAuckland  QFT5/gates             REL  41 CAND  31 L3  29
+   FakeAuckland  QFT5/unitary           REL  41 CAND  31 L3  31
+   FakeAuckland  GHZstar4/gates         REL   3 CAND   3 L3   3
+   FakeAuckland  GHZstar4/unitary       REL   3 CAND   3 L3   3
+   FakeAuckland  GHZstar5/gates         REL   7 CAND   7 L3   7
+   FakeAuckland  GHZstar5/unitary       REL   7 CAND   7 L3   7
+   FakeAuckland  SwapNet4/gates         REL  30 CAND  18 L3  18
+   FakeAuckland  SwapNet4/unitary       REL  30 CAND  18 L3  18
+   FakeAuckland  Reverse5/gates         REL  19 CAND   4 L3   4
+   FakeAuckland  Reverse5/unitary       REL  19 CAND   4 L3   4
+   FakeKingston  W3/gates               REL   6 CAND   4 L3   4
+   FakeKingston  W3/unitary             REL   6 CAND   4 L3   4
+   FakeKingston  W4/gates               REL   9 CAND   6 L3   6
+   FakeKingston  W4/unitary             REL   9 CAND   6 L3   6
+   FakeKingston  W5/gates               REL  12 CAND   8 L3   8
+   FakeKingston  W5/unitary             REL  12 CAND   8 L3   8
+   FakeKingston  Dicke42/gates          REL  30 CAND  18 L3  18
+   FakeKingston  Dicke42/unitary        REL  30 CAND  18 L3  18
+   FakeKingston  QFT3/gates             REL  12 CAND   9 L3   9
+   FakeKingston  QFT3/unitary           REL  12 CAND   9 L3   9
+   FakeKingston  QFT4/gates             REL  27 CAND  18 L3  18
+   FakeKingston  QFT4/unitary           REL  27 CAND  18 L3  18
+   FakeKingston  QFT5/gates             REL  41 CAND  31 L3  31
+   FakeKingston  QFT5/unitary           REL  41 CAND  31 L3  31
+   FakeKingston  GHZstar4/gates         REL   3 CAND   3 L3   3
+   FakeKingston  GHZstar4/unitary       REL   3 CAND   3 L3   3
+   FakeKingston  GHZstar5/gates         REL  10 CAND  10 L3   7
+   FakeKingston  GHZstar5/unitary       REL  10 CAND  10 L3   7
+   FakeKingston  SwapNet4/gates         REL  30 CAND  15 L3  15
+   FakeKingston  SwapNet4/unitary       REL  30 CAND  15 L3  15
+   FakeKingston  Reverse5/gates         REL  22 CAND   4 L3   4
+   FakeKingston  Reverse5/unitary       REL  16 CAND   4 L3   4
+C5 canonical-basis outputs differing REL vs CAND: 0/90 -> CONFIRMED
+C6 measured circuits with TVD > 0.03 (20,000 shots): 0/30, max 0.0089 -> CONFIRMED
+R1 larger circuits where CAND 2q > REL: 0/12 -> CONFIRMED
+   random_circuit 16q d20 s2001       2q REL   970 CAND   843 | time REL    54.2 ms CAND    66.4 ms | fid checked False
+   random_circuit 32q d20 s2002       2q REL  2411 CAND  2342 | time REL    84.4 ms CAND   127.1 ms | fid checked False
+   random_circuit 48q d15 s2003       2q REL  4116 CAND  3756 | time REL   139.6 ms CAND   152.7 ms | fid checked False
+   random_circuit 80q d10 s2004       2q REL  1446 CAND  1204 | time REL   109.4 ms CAND   110.6 ms | fid checked False
+   random_circuit 120q d8 s2005       2q REL  1354 CAND  1253 | time REL   108.7 ms CAND   136.0 ms | fid checked False
+   dense_pair_blocks 60q s1           2q REL    90 CAND    90 | time REL    26.3 ms CAND    28.8 ms | fid checked True
+   dense_pair_blocks 120q s1          2q REL   180 CAND   180 | time REL    33.5 ms CAND    43.2 ms | fid checked True
+   dense_pair_blocks 156q s1          2q REL   282 CAND   282 | time REL   108.5 ms CAND   120.0 ms | fid checked True
+   k_chains 80q s1                    2q REL   237 CAND   237 | time REL    50.6 ms CAND    53.2 ms | fid checked False
+   linear_chain 80q s1                2q REL   237 CAND   237 | time REL    49.7 ms CAND    53.6 ms | fid checked False
+   random_regular 80q s1              2q REL  1356 CAND  1296 | time REL   138.2 ms CAND   171.2 ms | fid checked False
+   ghz_star 80q s1                    2q REL   468 CAND   243 | time REL   101.8 ms CAND   132.0 ms | fid checked False
+R2 time on unchanged families (<=1.25x+10 ms) -> CONFIRMED
+R3 time on other circuits (<=2x+20 ms) -> CONFIRMED
+R4 larger outputs checked 6/24, below 1-1e-9: 0 -> CONFIRMED
+SUMMARY {"L1": "CONFIRMED", "L2": "AMBIGUOUS", "L3": "CONFIRMED", "L4": "CONFIRMED", "C1": "CONFIRMED", "C2": "CONFIRMED", "C3": "CONFIRMED", "C4": "CONFIRMED", "C5": "CONFIRMED", "C6": "CONFIRMED", "R1": "CONFIRMED", "R2": "CONFIRMED", "R3": "CONFIRMED", "R4": "CONFIRMED"}
+DECISION: NOT ALL CONFIRMED (see above)

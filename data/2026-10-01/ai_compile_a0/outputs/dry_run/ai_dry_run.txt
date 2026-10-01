@@ -1,0 +1,28 @@
+META {"compile_version": "2026-10-01.c2", "layout_version": "2026-10-01.c2", "ai_version": "2026-10-01.a0", "core_version": "2026-09-29.1", "dry": true, "qiskit": "2.5.2", "cpu_count": 2, "sha": {"compile": "e22dc6ddf4bf717d722a3f7ce01e23ecbe096d41730f7fe54c0d29eeaa4a3bd1", "layout": "f0d38519adad04864de42c456564a8321584ae3feadd744101a4cb719070fc14", "ai": "7105fb3591df4648f64f4c260d1e3ad427e5323ee70d36aa0f44483f12c69949", "script": "0e50983993a52accefe557388518182baede91cb6e3a2034077b4dd6493c215d", "helpers": "9f4e124f996bbf83a15768148631279c5e1ce73541d929d0701dbe91da871bac"}}
+R {"device": "FakeAuckland", "seed": 703001, "n": 4, "c2": 17, "a0": 15, "L3": 15, "a0_s": 0.0931, "a0_fid": 0.9999999999999994, "c2_fid": 0.9999999999999993}
+R {"device": "FakeAuckland", "seed": 703002, "n": 3, "c2": 8, "a0": 8, "L3": 8, "a0_s": 0.0229, "a0_fid": 0.9999999999999994, "c2_fid": 0.9999999999999994}
+R {"device": "FakeAuckland", "seed": 703003, "n": 5, "c2": 15, "a0": 13, "L3": 15, "a0_s": 0.0996, "a0_fid": 0.9999999999999997, "c2_fid": 0.9999999999999996}
+R {"device": "FakeAuckland", "seed": 703004, "n": 5, "c2": 26, "a0": 24, "L3": 26, "a0_s": 0.0722, "a0_fid": 1.0, "c2_fid": 1.0}
+T {"device": "FakeAuckland", "name": "IQFT4/gates", "n": 4, "c2": 18, "a0": 18, "L3": 18, "a0_s": 0.0215, "a0_fid": 0.9999999999999986, "c2_fid": 0.9999999999999986}
+T {"device": "FakeAuckland", "name": "IQFT4/unitary", "n": 4, "c2": 18, "a0": 18, "L3": 18, "a0_s": 0.024, "a0_fid": 0.9999999999999996, "c2_fid": 0.9999999999999996}
+T {"device": "FakeAuckland", "name": "W6/gates", "n": 6, "c2": 10, "a0": 10, "L3": 10, "a0_s": 0.0194, "a0_fid": 0.9999999999999992, "c2_fid": 0.9999999999999992}
+T {"device": "FakeAuckland", "name": "W6/unitary", "n": 6, "c2": 10, "a0": 10, "L3": 10, "a0_s": 0.0214, "a0_fid": 0.9999999999999992, "c2_fid": 0.9999999999999992}
+R {"device": "FakeKingston", "seed": 703001, "n": 4, "c2": 17, "a0": 17, "L3": 17, "a0_s": 0.1258, "a0_fid": 0.9999999999999984, "c2_fid": 0.9999999999999984}
+R {"device": "FakeKingston", "seed": 703002, "n": 3, "c2": 8, "a0": 8, "L3": 8, "a0_s": 0.0648, "a0_fid": 0.9999999999999991, "c2_fid": 0.9999999999999991}
+R {"device": "FakeKingston", "seed": 703003, "n": 5, "c2": 15, "a0": 13, "L3": 15, "a0_s": 0.2502, "a0_fid": 0.9999999999999993, "c2_fid": 0.9999999999999997}
+R {"device": "FakeKingston", "seed": 703004, "n": 5, "c2": 26, "a0": 26, "L3": 26, "a0_s": 0.1382, "a0_fid": 1.0, "c2_fid": 1.0}
+T {"device": "FakeKingston", "name": "IQFT4/gates", "n": 4, "c2": 18, "a0": 17, "L3": 18, "a0_s": 0.1264, "a0_fid": 0.9999999999999989, "c2_fid": 0.9999999999999987}
+T {"device": "FakeKingston", "name": "IQFT4/unitary", "n": 4, "c2": 18, "a0": 17, "L3": 18, "a0_s": 0.2056, "a0_fid": 0.9999999999999982, "c2_fid": 0.9999999999999989}
+T {"device": "FakeKingston", "name": "W6/gates", "n": 6, "c2": 10, "a0": 10, "L3": 10, "a0_s": 0.0482, "a0_fid": 0.9999999999999993, "c2_fid": 0.9999999999999993}
+T {"device": "FakeKingston", "name": "W6/unitary", "n": 6, "c2": 10, "a0": 10, "L3": 10, "a0_s": 0.0663, "a0_fid": 0.9999999999999993, "c2_fid": 0.9999999999999993}
+R {"device": "FakeTorino", "seed": 703001, "n": 4, "c2": 17, "a0": 17, "L3": 17, "a0_s": 0.2269, "a0_fid": 0.9999999999999988, "c2_fid": 0.9999999999999988}
+R {"device": "FakeTorino", "seed": 703002, "n": 3, "c2": 8, "a0": 8, "L3": 8, "a0_s": 0.0542, "a0_fid": 0.9999999999999988, "c2_fid": 0.9999999999999988}
+R {"device": "FakeTorino", "seed": 703003, "n": 5, "c2": 17, "a0": 15, "L3": 17, "a0_s": 0.2252, "a0_fid": 0.9999999999999998, "c2_fid": 0.9999999999999999}
+R {"device": "FakeTorino", "seed": 703004, "n": 5, "c2": 26, "a0": 26, "L3": 26, "a0_s": 0.1095, "a0_fid": 0.9999999999999998, "c2_fid": 0.9999999999999998}
+T {"device": "FakeTorino", "name": "IQFT4/gates", "n": 4, "c2": 19, "a0": 17, "L3": 16, "a0_s": 0.0939, "a0_fid": 0.9999999999999986, "c2_fid": 0.999999999999998}
+T {"device": "FakeTorino", "name": "IQFT4/unitary", "n": 4, "c2": 19, "a0": 17, "L3": 16, "a0_s": 0.1293, "a0_fid": 0.9999999999999983, "c2_fid": 0.9999999999999986}
+T {"device": "FakeTorino", "name": "W6/gates", "n": 6, "c2": 10, "a0": 10, "L3": 10, "a0_s": 0.0476, "a0_fid": 0.9999999999999993, "c2_fid": 0.9999999999999993}
+T {"device": "FakeTorino", "name": "W6/unitary", "n": 6, "c2": 10, "a0": 10, "L3": 10, "a0_s": 0.044, "a0_fid": 0.9999999999999993, "c2_fid": 0.9999999999999993}
+F {"n": 10, "depth": 10, "c2_digest": "778135013a21a6c3", "a0_digest": "778135013a21a6c3", "c2": 46, "a0": 46}
+F {"n": 12, "depth": 8, "c2_digest": "927ce318c7df547e", "a0_digest": "927ce318c7df547e", "c2": 58, "a0": 58}
+wrote dry/ai_dry_raw.json

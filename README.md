@@ -61,7 +61,49 @@ in place, so there is never a second, differently-named copy to pick between
 [`psf_smart_layout.py`](benchmarks/psf_smart_layout.py) — the layout-search prototype,
 repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see below).
 
-> **Current version: `psf_compile.py` 2026-09-28.1 with the Rust core `CORE_VERSION`
+> **Current version (2026-10-01): `psf_compile.py` 2026-10-01.1, `psf_smart_layout` 2026-10-01.1
+> and the Rust core `CORE_VERSION` 2026-09-29.1 -- rebuild the core (`maturin develop --release`)
+> when you update** ([Part 9](docs/findings/spare-qubit-cliff-combined-248.md), Addenda 272-274; core:
+> Addenda 250-251). Pre-registered on held-out inputs in the workplace sandbox (2 CPUs, fake backends;
+> times are sandbox times) and adopted by the owner with 13 of 14 predictions confirmed and one
+> ambiguous (a different, equally swap-free layout in one tiling).
+>
+> - **Layout:** the 2026-09-29 candidate (corrected feasibility check, short-path shortcut) plus an
+>   exact packing search for disjoint 2- and 3-qubit paths. All 10 feasible held-out heavy-hex
+>   tilings were placed swap-free within 1 s, which closes the layout gap reported in the 2026-09-29
+>   update below. Four large mixed tilings on FakeTorino and FakeKingston remain unplaced by both
+>   versions; whether they are feasible is unknown.
+> - **Compile (`entangling_basis="cx"` only):** short blocks are consolidated when that saves CX
+>   gates, SWAPs are removed by relabelling, and routed SWAPs are re-synthesised with their
+>   neighbours. On 90 held-out dense random circuits per device, two-qubit gates fell from 1,905 to
+>   1,147 (FakeAuckland) and from 2,013 to 1,168 (FakeKingston), none worse; the ratio to Qiskit L3
+>   went from 1.71-1.79 to 1.03-1.04. The canonical basis is unchanged bit for bit. Larger circuits
+>   got no more gates; compile time rose by at most 1.29x on PSF-Zero's favourable families and
+>   1.51x on random circuits.
+> - **Core 2026-09-29.1:** an eigen-route fallback, with output identical to 2026-09-28.1 wherever
+>   that core succeeded and no fallbacks in the 100,000-compile run. Every evaluation since
+>   2026-09-29 used it.
+
+> **Update (2026-10-01) -- noise-model estimates and an AI front end (prototype)** (Addenda 275-289).
+> Noisy simulation with Qiskit Aer and the fake devices' published calibration; not real hardware.
+>
+> - **Fewer two-qubit gates did mean higher fidelity in this model:** in about 92% of same-circuit
+>   pairs the compile with fewer two-qubit gates had the higher fidelity, and infidelity fell by
+>   38-46% from the previous release to the front end below (Addendum 281).
+> - **A front end for model-written circuits** (`benchmarks/psf_ai_compile.py`, prototype
+>   2026-10-01.a5, separate from `psf_compile.py`) tries several placements and decompositions and,
+>   given a device Target, keeps the candidate with the lowest estimated error, estimating each
+>   gate's error from the circuit's ideal state at that point. Mean infidelity on 40 held-out random
+>   circuits per device: 0.0601 against Qiskit L3 with error-aware layout 0.0707 (FakeAuckland),
+>   0.0422 against 0.0451 (FakeTorino), 0.0192 against 0.0205 (FakeKingston). 30,000 repeated
+>   compiles with the calibration changed every 1,000 showed no drift in output, time or memory
+>   (Addenda 288-289).
+> - **Caveat:** the estimate uses the same physics as the simulator that scores it, so these wins
+>   are partly built in. On FakeAuckland some qubits' published two-qubit errors are below the bound
+>   their own T1/T2 imply, which misled every error-aware method there. Whether real devices show
+>   this, and whether the gains survive on hardware, is not yet tested.
+
+> **Previous release: `psf_compile.py` 2026-09-28.1 with the Rust core `CORE_VERSION`
 > 2026-09-28.1 -- rebuild the core (`maturin develop --release`) when you update.** The
 > core now extracts the two single-qubit factors of each block from their best-conditioned
 > quaternion products; before, it failed (and Python fell back to Qiskit's synthesis) on
@@ -773,6 +815,10 @@ follows when publishing a measurement, most of them adopted after being burned b
 their absence.
 
 ## Open questions
+
+- **NEW (2026-10-01).** Whether real IBM Targets also publish two-qubit errors below the bound
+  their own T1/T2 imply (readable without running a job), and whether the AI front end's estimated
+  advantage over error-aware Qiskit L3 holds on hardware.
 
 - **NEW (2026-09-30).** Whether the vLLM x PSF-Zero loop generalises beyond the tasks
   it was tuned on to states of a different kind (15/15 on five held-out tasks in

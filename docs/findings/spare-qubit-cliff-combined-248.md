@@ -3748,6 +3748,2260 @@ Re-timing: sequential, 5 repetitions, median. There were 3 distinct correct circ
 | [`benchmarks/indep_check_v10_heldout.py`](../../benchmarks/indep_check_v10_heldout.py) | the independent check (targets rebuilt from Addendum 270) |
 | [`benchmarks/e2e_vllm_psf_v10.py`](../../benchmarks/e2e_vllm_psf_v10.py), [`benchmarks/score_v10_eval_r1.py`](../../benchmarks/score_v10_eval_r1.py), `benchmarks/pod/run_v10_eval_r1_2026-09-30.sh` | the locked files (already in the repository with Addendum 270) |
 
+
+---
+
+<!-- ===== Addendum 272 (source: spare-qubit-cliff-addendum-272-2026-10-01.md) ===== -->
+
+> **Note added when merging:** Workplace pre-registration of the PSF-Zero core fixes c2 (psf_compile and psf_smart_layout), made after the weaknesses found in Addendum 271. Locked at the workplace Project's save time, not by a git commit; it entered this repository after the run. Document names used in Addenda 272-289: core-fix-c2 = 272-274, ai-compile-a0 = 275-277, ai-compile-a1 = 278-279, noisy-fidelity = 280-281, ai-compile-a2 = 282-283, vllm-a2-replay = 284-285, ai-compile-a4 = 286-287, long-loop-a5 = 288-289. Note on section 1: on the H200 pod of Addendum 271, layout c1 placed the nine-GHZ-3 circuits swap-free after about 1.2 s (18 or 24 two-qubit gates); the sandbox re-check here found SWAPs (30). A time-budgeted search that finishes on the faster pod CPU and not on 2 sandbox CPUs would explain both; not tested.
+
+## Addendum 272 -- Pre-registration: PSF-Zero core fixes of 2026-10-01 -- psf_compile 2026-10-01.c2 (cheaper short blocks, SWAP elision, routing-SWAP absorption) and psf_smart_layout 2026-10-01.c2 (exact packing of 2- and 3-qubit paths), on held-out inputs (2026-10-01)
+
+**Status: pre-registration. It is locked at the Project save time of this
+document**, before the scored run. Development used other inputs; they and
+one harness dry run are disclosed in sections 1 and 7. **All runs are in the
+workplace sandbox (Linux, 2 CPUs, Python 3.11.15, Qiskit 2.5.2). No IBM
+account, no network access to IBM and no QPU are used.** Devices are
+fake-provider snapshots.
+
+## 1. Why, and what development found (not pre-registered)
+
+**The two weaknesses (Addendum 271, v10 held-out evaluation, sandbox
+re-checks).** Both were in PSF-Zero itself, not in the language model.
+
+- **Slow layout on the nine-GHZ-3 tiling (fill27g9).** Nine disjoint 3-qubit
+  paths fill FakeAuckland's 27 qubits exactly.
+  - Layout c1's short-path shortcut (a maximum matching plus one neighbour
+    per path) does not find this tiling.
+  - The VF2 stages then search for 1.1-1.2 s (sandbox) and still route with
+    SWAPs (30 two-qubit gates against 18 swap-free).
+- **More two-qubit gates than Qiskit L3 on small dense circuits.**
+  - Examples: model-written W4 and Dicke(4,2) circuits.
+  - Short same-pair runs such as (cry, cx) are left alone by
+    `block_gate_floor = 8`. They cost 3 CX where 2 suffice.
+
+**Development data.** All of these are now excluded from the scored inputs:
+
+- the 149 model circuits of 2026-09-30 (`data/2026-09-30/**/best_circuit.json`);
+- random dense circuits with Python `random` seeds 7, 8 and 9 (60 circuits
+  each, FakeAuckland and FakeKingston);
+- `random_circuit` seeds 1-6;
+- `dense_pair_blocks` and the families with seed 0;
+- synthetic tilings: Auckland k3 = 7, 8 and 9; Kingston k3 = 39, 50 and 52.
+
+**How the candidates changed during development**, in order:
+
+1. **Layout c2.** After the c1 shortcut fails, an exact depth-first packing
+   search runs. It places the 3-qubit paths and pairs on vertex-disjoint
+   physical paths and edges.
+   - Budget: min(1 s, half the layout budget). It runs only if a matching of
+     the needed size exists.
+   - Results: fill27g9 is placed in about 0.11 s (11-13 ms median inside
+   `compile_for_hardware`, against 1,209 ms for c1).
+   - Auckland k3 = 8 and 9 and Kingston k3 = 39, 50 and 52 are placed.
+   - The failures checked were proved infeasible.
+   - Kingston (39, 17) needed 0.79 s, so the budget was raised from 0.5 to
+     1.0 s.
+2. **Compile c1: cost-aware consolidation.**
+   - Rule: a block at or below the floor is consolidated if it has two or
+     more 2-qubit gates and its Weyl-optimal CX count is below its CX cost as
+     written.
+   - Model circuits: 0 fidelity changes, and no circuit got worse. W4 went
+     from 55 to 40 two-qubit gates in total, W3 from 209 to 196, Dicke from
+     89 to 85.
+   - An apparent regression on a 40-qubit random circuit (346 against 342)
+     was a counting artifact: gates were counted as written. Counted in CX
+     after translation, it was 641 → 632.
+   - Under `entangling_basis="canonical"` the rule made things worse
+     (641 → 648). **It is therefore restricted to `"cx"`.**
+   - The `Operator`-based block matrix was replaced by a numpy builder
+     (600 of 600 blocks equal to `Operator`). Blocks costing more than 3 CX
+     skip the matrix.
+3. **Remaining gap to L3.** It came from SWAPs.
+   - Model-written QFT circuits end in a SWAP, and Qiskit 2.5 levels 2 and 3
+     remove such SWAPs by relabelling: ElidePermutations, and
+     Split2QUnitaries(split_swap=True) for a SWAP written as a `unitary`, as
+     PennyLane tapes arrive.
+   - Routing SWAPs next to a gate on the same pair can also be merged
+     (SWAP + CRY: 5 CX as written, 3 needed).
+   - Compile c2 adds both: `elide_permutations="auto"` and
+     `post_routing_resynthesis="auto"`.
+   - **One bug was found and fixed during development.** The first version
+     read the elided permutation from `PassManager.property_set` after
+     `run()`. That returns nothing in Qiskit 2.5, so elision silently never
+     applied (outputs were correct, just not improved). It is now read via
+     the run callback.
+   - The first post-routing version re-synthesised every block after
+     translation. That cost +60 % time on `dense_pair_blocks` 156q for no
+     gain. It now runs in the `post_routing` stage, on blocks that contain a
+     SWAP only.
+   - Cost of that change on the development set: one model W4 circuit went
+     back from 33 to 34 two-qubit gates (L3: 33).
+4. **Development results of the final candidates** (sandbox, development
+   inputs; all outputs equivalent):
+   - **Model circuits (149):** 1,146 → 1,030 two-qubit gates. The release
+     stack here is compile 2026-09-28.1 with layout 2026-09-29.c1, as in the
+     9/30 runs; both stacks use core 2026-09-29.1. 0 circuits worse, 0
+     fidelity changes.
+     - Circuits above L3, counted over unique circuits with the release
+       compile and the candidate compile (both with layout c2):
+       QFT3 9/19 → 0/19, W3 13/30 → 1/30, W4 5/5 → 1/5 (by 1 gate),
+       Dicke 3/6 → 2/6.
+     - Sums over the unique circuits: W4 46 → 34 (L3 33), Dicke 89 → 83
+       (L3 79), QFT3 115 → 86 (L3 86).
+   - **Random dense, 3-5 qubits** (seeds 7, 8 on Auckland; 9 on Kingston):
+     sums 1,291 / 1,350 / 1,377 (release) against 824 / 827 / 836
+     (candidate) and 807 / 793 / 791 (L3).
+     - Candidate above release: 0, 0 and 1 circuits of 60. The one case
+       comes from a different routing; before routing, the candidate had
+       fewer CX.
+   - **Larger circuits on Kingston:** never more two-qubit gates.
+     - Example: ghz_star 60q, 348 → 183.
+     - `dense_pair_blocks` and `k_chains` are unchanged in gates, with
+       0-10 % more time.
+     - `random_circuit` circuits are 5-11 % fewer gates, with 15-50 % more
+       time.
+
+## 2. The candidates
+
+**Rust core.** Neither candidate touches it. All arms run on the sandbox
+build of core **2026-09-29.1** (the candidate core of 9/29, the same as the
+v10 runs).
+
+**`psf_compile.py` 2026-10-01.c2.** The base is release 2026-09-28.1
+(changelog items 28-30 in the file).
+
+- **(28)** Cost-aware consolidation of short blocks, only for
+  `entangling_basis="cx"`.
+- **(29)** `compile_for_hardware(elide_permutations="auto")`:
+  - ElidePermutations + Split2QUnitaries(split_swap=True) run before
+    compiling;
+  - the permutation is carried into the preset pipeline's final layout;
+  - the output qubits must be read through `out.layout.final_index_layout()`,
+    as the e2e checker and the IBM pipeline already do.
+- **(30)** `compile_for_hardware(post_routing_resynthesis="auto")`: blocks
+  with a routing SWAP are re-synthesised by the PSF core in the
+  `post_routing` stage.
+- **"auto" = on for `"cx"` only.** The canonical path is meant to be
+  bit-identical to the release.
+- **Unchanged:**
+  - the core interface;
+  - `block_gate_floor`;
+  - `routing_optimization_level = 1`;
+  - the layout search call;
+  - `verify` and `tol`.
+
+**`psf_smart_layout.py` 2026-10-01.c2.** The base is candidate 2026-09-29.c1:
+the corrected feasibility check and the short-path shortcut.
+
+- After the shortcut fails, `packing_layout()` runs: an exact packing search
+  with budget min(1.0 s, 0.5 × layout budget).
+- Everything else is as in c1.
+
+## 3. Design ([`benchmarks/core_fix_c2_eval.py`](../../benchmarks/core_fix_c2_eval.py))
+
+All compiles use `compile_for_hardware(coupling_map, basis_gates=native,
+entangling_basis="cx", layout_search=True, seed_transpiler=0)`, unless noted.
+The layout module is switched between arms by replacing
+`sys.modules["psf_smart_layout"]`.
+
+**Part L (layout).** Tilings of k3 disjoint 3-qubit paths (h, cx, ry, cx, rz)
+and k2 pairs (h, cx, ry). Logical labels are shuffled (seed 5000 + 100 ×
+device index + combination index). One circuit per combination.
+
+| Device | Qubits / max matching | (k3, k2) |
+|---|---|---|
+| FakeAuckland | 27 / 10 | (6,4), (5,6), (4,7), (6,3) |
+| FakeTorino | 133 / 56 | (21,35), (25,29), (30,21), (37,11), (44,0), (20,36) |
+| FakeKingston | 156 / 64 | (28,36), (32,30), (40,18), (46,9), (30,32) |
+| FakeNighthawk | 120 / 60 | (10,45), (20,30), (40,0), (26,21) |
+
+- **Ground truth:** `packing_layout` with a 30 s budget, outside any timed
+  call. "Feasible" = a layout is found. "Infeasible" = the search ends with
+  none in under 28.5 s. "Unknown" = it times out.
+- **Arms:** layout m1 (release 2026-09-26.m1), c1 and c2, all with compile
+  c2.
+- **Recorded:** the two-qubit count against the swap-free count
+  (2 × k3 + k2); median time of 3; an output digest; and a component-wise
+  equivalence check.
+- **The equivalence check:** statevector with 3 random inputs per logical
+  component, read at `final_index_layout`, with ancillas in |0>. It is done
+  only where a component's physical support is 12 qubits or fewer.
+
+**Part C (small dense, both FakeAuckland and FakeKingston).**
+
+- **Random:** 90 circuits per device, Python `random` seeds 1001-1090.
+  - 3-5 qubits and 6-20 gates. 30 % single-qubit gates: h, x, s, t, ry.
+  - 2-qubit gates: cx, cry, crz, cp, swap, cz. Half of the SWAPs are written
+    as `unitary`.
+- **Textbook:** 13 circuits, each in gate form and in PennyLane-style form
+  (every multi-qubit gate as `unitary`).
+  - W3-W5: a cry cascade with cx.
+  - Dicke(4,2): cx-cry-cx steps.
+  - QFT3-QFT5 with final swaps.
+  - GHZ star 4 and 5.
+  - A 4-qubit swap network with phases.
+  - A 5-qubit reversal by SWAPs.
+- **Arms:**
+  - REL = compile 2026-09-28.1;
+  - CAND = compile 2026-10-01.c2;
+  - both with layout c2;
+  - Qiskit `transpile(optimization_level=3, seed_transpiler=0)` as the
+    reference (L3).
+- **Also recorded:**
+  - **(K)** For the 90 Auckland random circuits, the REL and CAND digests
+    with `entangling_basis="canonical"`.
+  - **(M)** For Auckland seeds 1001-1030, `measure_all()` is added, the
+    circuit is compiled by CAND and run on AerSimulator (20,000 shots), and
+    the TVD to the exact distribution is recorded.
+
+**Part R (larger, FakeKingston).** REL against CAND (layout c2 for both),
+median time of 3.
+
+- **"other":** `random_circuit` (16q d20 s2001, 32q d20 s2002, 48q d15 s2003,
+  80q d10 s2004, 120q d8 s2005), plus `random_regular` and `ghz_star` (80q,
+  seed 1).
+- **"unchanged":** `dense_pair_blocks` (60, 120 and 156q, seed 1), plus
+  `k_chains` and `linear_chain` (80q, seed 1). These are families with no
+  short cheaper blocks and no SWAPs before routing.
+
+## 4. Pre-registered predictions
+
+**C0 (harness):** no compile raises, and the loaded versions are
+2026-09-28.1, 2026-10-01.c2 and layouts 2026-09-26.m1, 2026-09-29.c1 and
+2026-10-01.c2. "Fidelity OK" means > 1 - 1e-9.
+
+| ID | Prediction | Confirmed if | Refuted if |
+|---|---|---|---|
+| L1 | c2 places every feasible tiling swap-free, fast | all ground-truth-feasible combinations: c2 two-qubit count = swap-free count **and** median time <= 1.0 s | 2 or more feasible combinations miss either |
+| L2 | c2 never costs gates and changes nothing c1 already solves | c2 two-qubit <= min(m1, c1) everywhere **and** c2 digest = c1 digest wherever c1 was swap-free | c2 above min(m1, c1) anywhere |
+| L3 | the packing budget bounds the extra time | on infeasible/unknown combinations, c2 time <= c1 time + 1.2 s | exceeded on 2 or more |
+| L4 | layout outputs are exact | no checked output below 1 - 1e-9 (all arms) | any checked output below |
+| C1 | CAND outputs are exact | no checked C/T output below 1 - 1e-9 **and** at most 5 % not checkable | any checked output below |
+| C2 | CAND uses fewer two-qubit gates than REL | per device: sum CAND < sum REL **and** CAND > REL in <= 5 % of circuits | sum not lower, or > 10 % worse |
+| C3 | CAND is close to Qiskit L3 | per device: sum CAND <= 1.08 × sum L3 **and** CAND > L3 in <= 25 % | > 1.15 × or > 40 % |
+| C4 | textbook circuits never get worse | CAND <= REL on all 52 textbook compiles | above on any |
+| C5 | the canonical path is unchanged | REL and CAND canonical digests equal on all 90 | any differs |
+| C6 | measured circuits come out right (final-layout bookkeeping) | TVD <= 0.03 on all 30 | above on any |
+| R1 | no gate regression on larger circuits | CAND two-qubit <= REL on all 12 | above on any |
+| R2 | small time cost where nothing changes | "unchanged" cases: CAND <= 1.25 × REL + 10 ms | any > 1.5 × REL + 20 ms |
+| R3 | bounded time cost elsewhere | "other" cases: CAND <= 2 × REL + 20 ms | any > 3 × REL + 50 ms |
+| R4 | larger outputs are exact | no checked output below 1 - 1e-9 | any checked output below |
+
+Between the bounds: ambiguous.
+
+**Decision rule.** If C0 holds and all 14 predictions are CONFIRMED, the
+recommendation to home is to adopt both candidates. Adopting them is home's
+decision. Otherwise the failing items are reported, and nothing is re-run to
+improve a score. A re-run is allowed only for an infrastructure fault, and
+only after an amendment.
+
+**Expectations stated before running:**
+
+- **L1:** about 0.7 s was needed for Kingston (39, 17) in development, so a
+  Torino or Kingston combination could exceed 1 s. That would be a real
+  failure of the budget, and it is not excluded.
+- **C3:** development ratios were 1.02-1.06. Qiskit's L3 also uses
+  commutation-based cancellation, which the candidate does not.
+- **C2:** the 5 % allowance is for routing differences, which development
+  showed (1 of 60 on Kingston).
+
+**Reported without prediction:**
+
+- all per-circuit counts and times;
+- REL's own equivalence;
+- the ground-truth search times;
+- a supplementary repeat of Parts C and R with the release core 2026-09-28.1
+  (if run).
+
+## 5. What this can and cannot establish
+
+**It tests** whether the two weaknesses found in Addendum 271 are fixed on
+inputs not used in development, and whether the fixes cost gates,
+correctness or much time elsewhere.
+
+**It does not establish:**
+
+- hardware fidelity: compile time and gate counts are not fidelity;
+- the live IBM Targets;
+- the weighted layout path (`layout_edge_errors`), where the packing search
+  is not used;
+- `entangling_basis="canonical"` improvements (deliberately off);
+- circuits with mid-circuit measurement beyond one smoke test;
+- the GPU tests of the repository, which need lightning.gpu and were not run
+  here.
+
+Times are sandbox times. They are not compared with home or the pod.
+
+## 6. Files, integrity, run commands
+
+| File | Bytes | Normalized SHA-256 |
+|---|---|---|
+| [`benchmarks/core_fix_c2_eval.py`](../../benchmarks/core_fix_c2_eval.py) | 27,244 | `9f4e124f996bbf83a15768148631279c5e1ce73541d929d0701dbe91da871bac` |
+| candidate `psf_compile.py` (2026-10-01.c2) | 95,818 | `e22dc6ddf4bf717d722a3f7ce01e23ecbe096d41730f7fe54c0d29eeaa4a3bd1` |
+| candidate `psf_smart_layout.py` (2026-10-01.c2) | 32,708 | `f0d38519adad04864de42c456564a8321584ae3feadd744101a4cb719070fc14` |
+| candidate [`benchmarks/test_core_fix_c2.py`](../../benchmarks/test_core_fix_c2.py) | 6,857 | `d2a188d694585588f6950176daf6d9ff256956f44c4a24e0f51d795a0d06e8fb` |
+| release `psf_compile.py` (2026-09-28.1, base) | 84,542 | `3616efc8b8a7bea184d6170fb7379d509d0bfec9828f4eb2f703dd4d26d8c60b` |
+| release [`benchmarks/psf_smart_layout.py`](../../benchmarks/psf_smart_layout.py) (2026-09-26.m1) | 22,450 | `a639efdef484379d23b4c0a52dffe557c47c30f639c41e4f8521ca608712d875` |
+| candidate layout 2026-09-29.c1 (`patches/psf_smart_layout_c1_2026-09-29/`) | 27,664 | `e25952a33bacfbb8de7a439b53892e9bab88329d8c47c6de867c29fc660145fa` |
+| `core_fix_c2_2026-10-01.patch` (git diff against `9131cee`, 4 files) | 62,762 | raw SHA-256 `46223e8c3fb1f2d70edbfbd37a7e868568c407668dada4d135ce876c819b5dd3` |
+
+The patch reproduces the four candidate files byte for byte on a clean
+`9131cee`. [`apply_core_fix_c2_2026-10-01.py`](../../patches/core_fix_c2_2026-10-01/apply_core_fix_c2_2026-10-01.py) installs them only over the
+listed bases and keeps backups.
+
+Run from a clean clone at `9131cee` with the candidate files in
+`<cand>/compile` and `<cand>/layout`, and core 2026-09-29.1 in `<core>`:
+
+```
+PYTHONPATH=<core> python -u benchmarks/core_fix_c2_eval.py run \
+  --rel-compile psf_compile.py --cand-compile <cand>/compile/psf_compile.py \
+  --layout-m1 benchmarks/psf_smart_layout.py \
+  --layout-c1 patches/psf_smart_layout_c1_2026-09-29/psf_smart_layout.py \
+  --layout-c2 <cand>/layout/psf_smart_layout.py --families benchmarks \
+  --out core_fix_c2_raw.json > core_fix_c2_run.txt 2>&1
+python benchmarks/core_fix_c2_eval.py score --out core_fix_c2_raw.json > core_fix_c2_score.txt
+```
+
+## 7. Before locking (disclosed)
+
+**Harness dry run** (`--dry`): development cases and seeds offset by 900,000.
+
+- Inputs: layout Auckland (7,3) and (9,0) and Kingston (39,17); 6 random
+  circuits per device; 4 textbook compiles per device; 3 larger circuits.
+- Every item scored CONFIRMED there.
+- c2 placed Kingston (39,17) swap-free in 0.71 s, against 2.08 s and 260
+  two-qubit gates for c1.
+- After the dry run, C1's scoring was changed: an output too large to check
+  now counts as "not checkable" rather than as a failure, with a 5 % cap.
+
+**Repository tests** (pytest on `benchmarks/test_*.py`, candidate tree
+against release tree, same core):
+
+- The same 13 tests fail in both. They need lightning.gpu or an IBM-style
+  GPU device.
+- 7 files cannot be collected in either (pytket is missing).
+- The only new failures are the two version-string assertions:
+  - `test_release_2026_09_28.py::test_version`, which expects 2026-09-28.1;
+  - `test_short_path_layout.py::test_version_is_candidate`, which expects
+    2026-09-29.c1.
+- The new `test_core_fix_c2.py` passes 10 of 10.
+- Totals: 124 passed with the candidates, against 106 with the release. The
+  candidate tree has the two extra test files.
+
+**No scored input was compiled before locking.**
+
+---
+
+<!-- ===== Addendum 273 (source: spare-qubit-cliff-addendum-273-2026-10-01.md) ===== -->
+
+> **Note added when merging:** 13 of 14 CONFIRMED, L2 AMBIGUOUS, none refuted; the pre-registered automatic adoption rule did not fire. Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in `data/2026-10-01/core_fix_c2/as_run/`; the outputs are in `data/2026-10-01/core_fix_c2/`.
+
+## Addendum 273 -- Results: PSF-Zero core fixes of 2026-10-01 (psf_compile 2026-10-01.c2, psf_smart_layout 2026-10-01.c2) on held-out inputs -- 13 of 14 CONFIRMED, L2 AMBIGUOUS (2026-10-01)
+
+**Pre-registration:** `docs/findings/core-fix-c2-preregistration-2026-10-01.md`.
+It was locked at its Project save time before this run. This run compiled
+the scored inputs for the first time. **Environment:** workplace sandbox,
+Linux, 2 CPUs, Python 3.11.15, Qiskit 2.5.2. Core 2026-09-29.1 (sandbox
+build) in all arms. Fake-provider devices; no IBM access. Times are sandbox
+times, median of 3, and are compared only within this run.
+
+## 1. Verdict
+
+**C0 (harness):** OK. Versions loaded: 2026-09-28.1 and 2026-10-01.c2;
+layouts 2026-09-26.m1, 2026-09-29.c1 and 2026-10-01.c2. No compile raised.
+
+| ID | Result | Numbers |
+|---|---|---|
+| L1 | CONFIRMED | 10 of 10 ground-truth-feasible tilings placed swap-free by c2 within 1 s (slowest: Kingston (40,18), 0.955 s) |
+| L2 | **AMBIGUOUS** | c2 never above min(m1, c1) (0 of 19); but 1 of 6 tilings that c1 already placed swap-free got a different output from c2 (section 2) |
+| L3 | CONFIRMED | 0 of 9 infeasible/unknown tilings where c2 took more than c1 + 1.2 s |
+| L4 | CONFIRMED | 30 of 57 layout outputs checkable, 0 below 1 - 1e-9 |
+| C1 | CONFIRMED | 224 C/T outputs, 0 not equivalent, 0 not checkable (REL also 0) |
+| C2 | CONFIRMED | Auckland: REL 1,905 → CAND 1,147; Kingston: 2,013 → 1,168. CAND above REL in 0 % |
+| C3 | CONFIRMED | CAND / L3 = 1.027 (Auckland), 1.041 (Kingston); CAND above L3 in 13.3 % / 15.6 % |
+| C4 | CONFIRMED | 0 of 44 textbook compiles above REL (see the count correction in section 4) |
+| C5 | CONFIRMED | 90 of 90 canonical-basis outputs identical, REL vs CAND |
+| C6 | CONFIRMED | 30 of 30 measured circuits within TVD 0.03 (max 0.0089, 20,000 shots) |
+| R1 | CONFIRMED | 0 of 12 larger circuits above REL |
+| R2 | CONFIRMED | "unchanged" families: +2.5 to +11.5 ms (largest ratio 1.29 at 120q, 33.5 → 43.2 ms, within 1.25 × + 10 ms) |
+| R3 | CONFIRMED | "other": at most 1.51 × (32q random, 84 → 127 ms) |
+| R4 | CONFIRMED | 6 of 24 checkable, 0 below 1 - 1e-9 |
+
+**Decision under the pre-registered rule:** not every item is CONFIRMED, so
+the run **does not** produce the automatic "adopt" recommendation. The single
+non-confirmed item is explained in section 2. Whether to adopt the
+candidates anyway is home's decision. Nothing was re-run.
+
+## 2. L2 AMBIGUOUS: what happened
+
+**The case is FakeNighthawk with (k3, k2) = (20, 30).**
+
+| Layout | Two-qubit gates | Time | How the layout was found |
+|---|---|---|---|
+| c1 | 70 (swap-free) | 0.039 s | `smart_vf2_layout`: VF2 phase 1, ordering `bfs_from_min_degree`, 0.144 s standalone |
+| c2 | 70 (swap-free) | 0.019 s | `path_packing` (phase 0), 0.006 s standalone |
+
+**Why the prediction assumed otherwise.**
+
+- The second clause of L2 assumed that a tiling c1 places swap-free is
+  always placed by c1's short-path shortcut. Since c2 runs only after that
+  shortcut fails, c2 would then leave the output unchanged.
+- Here c1's shortcut failed and its ordinary VF2 stage succeeded. c2's
+  packing search runs before VF2 and found a different, equally swap-free
+  layout first.
+
+**Consequence.** The outputs differ, with the same gate count. Both are
+exact (component check passed) and c2 is faster. Under the pre-registered
+bounds this is AMBIGUOUS: not confirmed, and not refuted, since c2 is never
+above min(m1, c1). The assumption behind the clause was wrong. The
+candidate's behaviour matches its design.
+
+## 3. Layout details (Part L)
+
+| Device | (k3,k2) | Ground truth (30 s) | m1 2q | c1 2q / s | c2 2q / s | Swap-free |
+|---|---|---|---|---|---|---|
+| Auckland | (6,4) | feasible | 19 | 16 / 0.007 | 16 / 0.007 | 16 |
+| Auckland | (5,6) | infeasible | 37 | 37 / 0.020 | 37 / 0.021 | 16 |
+| Auckland | (4,7) | infeasible | 18 | 18 / 0.023 | 18 / 0.024 | 15 |
+| Auckland | (6,3) | feasible | 15 | 15 / 0.007 | 15 / 0.006 | 15 |
+| Torino | (21,35) | unknown | 147 | 77 / 0.022 | 77 / 0.021 | 77 |
+| Torino | (25,29) | unknown | 178 | 178 / 2.07 | 178 / 2.06 | 79 |
+| Torino | (30,21) | unknown | 192 | 192 / 2.04 | 192 / 2.06 | 81 |
+| Torino | (37,11) | feasible | 195 | 195 / 2.05 | **85 / 0.068** | 85 |
+| Torino | (44,0) | feasible | 244 | 244 / 2.08 | **88 / 0.029** | 88 |
+| Torino | (20,36) | unknown | 160 | 76 / 0.023 | 76 / 0.020 | 76 |
+| Kingston | (28,36) | unknown | 202 | 92 / 0.029 | 92 / 0.026 | 92 |
+| Kingston | (32,30) | unknown | 214 | 214 / 2.15 | 214 / 2.24 | 94 |
+| Kingston | (40,18) | feasible | 219 | 219 / 2.12 | **98 / 0.955** | 98 |
+| Kingston | (46,9) | feasible | 263 | 263 / 2.09 | **101 / 0.034** | 101 |
+| Kingston | (30,32) | unknown | 227 | 227 / 2.08 | 227 / 2.18 | 92 |
+| Nighthawk | (10,45) | feasible | 92 | 92 / 1.90 | **65 / 0.016** | 65 |
+| Nighthawk | (20,30) | feasible | 113 | 70 / 0.039 | 70 / 0.019 | 70 |
+| Nighthawk | (40,0) | feasible | 152 | 152 / 2.09 | **80 / 0.020** | 80 |
+| Nighthawk | (26,21) | feasible | 124 | 124 / 2.01 | **73 / 0.019** | 73 |
+
+**What this shows beyond the scored items (not predicted).**
+
+- **c2 fixes most c1 misses.** In 7 combinations c1 spent about 2 s and
+  still routed with SWAPs. c2 placed them swap-free in 0.016-0.955 s, with
+  1.4-2.8 × fewer two-qubit gates.
+- **The packing search is not efficient enough on the large heavy-hex
+  devices when many pairs are mixed with the 3-qubit paths.**
+  - 7 of 19 ground-truth runs ended "unknown" at 30 s.
+  - Three of them (Torino (21,35) and (20,36), Kingston (28,36)) are in fact
+    feasible: c1's shortcut found a swap-free layout at once. So the
+    exhaustive search is far from deciding these instances.
+  - In 4 "unknown" combinations (Torino (25,29) and (30,21), Kingston (32,30)
+    and (30,32)) neither c1 nor c2 found a swap-free layout. They may or may
+    not be feasible.
+  - This is the remaining layout weakness.
+  - **Next step:** a better search order (for example, choose the most
+    constrained uncovered qubit, or seed from c1's matching construction)
+    before the full search.
+- **Kingston (40,18) needed 0.955 s**, close to the 1 s bound.
+
+## 4. Compile details (Parts C and R)
+
+**Random dense circuits (90 per device).**
+
+| Device | CAND vs REL: better / same / worse | CAND vs L3: below / equal / above |
+|---|---|---|
+| FakeAuckland | 82 / 8 / 0 | 3 / 75 / 12 |
+| FakeKingston | 84 / 6 / 0 | 4 / 72 / 14 |
+
+**Textbook circuits (44 compiles).**
+
+- **Equal to L3:** CAND equals L3 everywhere except three cases:
+  - QFT3 in gate form on Auckland: 9 against 7;
+  - QFT5 in gate form on Auckland: 31 against 29;
+  - GHZ star 5 on Kingston: 10 against 7, unchanged from REL. It is a
+    degree-4 star on a degree-3 device, and routing differs.
+- **Largest gains:**
+  - Reverse5: 19-22 → 4 (the SWAPs are elided);
+  - SwapNet4: 30 → 18 on Auckland, 15 on Kingston;
+  - Dicke(4,2): 30 → 18;
+  - W3-W5: 6/9/12 → 4/6/8.
+
+**Correction to the pre-registration text (append-only note).**
+
+- Section 3 of the pre-registration says "13 circuits" and C4 says "all 52
+  textbook compiles". The locked script `core_fix_c2_eval.py` (hash in the
+  pre-registration) defines 11 circuits:
+  - W3, W4, W5;
+  - Dicke(4,2);
+  - QFT3, QFT4, QFT5;
+  - GHZ star 4 and 5;
+  - SwapNet4;
+  - Reverse5.
+- Each comes in two forms on two devices, so there are 44 compiles. The
+  text count was a counting error in writing. The scored set is the
+  script's. C4 is scored on 44, and the result is 0 of 44.
+
+**Larger circuits (FakeKingston).**
+
+| Circuit | 2q REL → CAND | Time REL → CAND |
+|---|---|---|
+| random_circuit 16q d20 | 970 → 843 | 54 → 66 ms |
+| random_circuit 32q d20 | 2,411 → 2,342 | 84 → 127 ms |
+| random_circuit 48q d15 | 4,116 → 3,756 | 140 → 153 ms |
+| random_circuit 80q d10 | 1,446 → 1,204 | 109 → 111 ms |
+| random_circuit 120q d8 | 1,354 → 1,253 | 109 → 136 ms |
+| dense_pair_blocks 60q | 90 → 90 | 26 → 29 ms |
+| dense_pair_blocks 120q | 180 → 180 | 34 → 43 ms |
+| dense_pair_blocks 156q | 282 → 282 | 109 → 120 ms |
+| k_chains 80q | 237 → 237 | 51 → 53 ms |
+| linear_chain 80q | 237 → 237 | 50 → 54 ms |
+| random_regular 80q | 1,356 → 1,296 | 138 → 171 ms |
+| ghz_star 80q | 468 → 243 | 102 → 132 ms |
+
+**Not run:** the supplementary repeat with the release core 2026-09-28.1
+(optional in the pre-registration).
+
+## 5. What this establishes, and what not
+
+**Established on held-out inputs:**
+
+- The two weaknesses of Addendum 271 are fixed.
+  - Disjoint 3-qubit-path tilings that c1 missed are placed swap-free in
+    well under 1 s, wherever the exhaustive search could decide feasibility.
+  - Small dense circuits now come within 3-4 % of Qiskit L3's two-qubit
+    count, against 70-80 % above before (REL / L3 = 1.71 and 1.79).
+- The fixes cost:
+  - no gates anywhere tested;
+  - no correctness anywhere tested: 0 non-equivalent outputs, final-layout
+    bookkeeping right for measured circuits, canonical path bit-identical;
+  - up to about 1.5 × time on random circuits;
+  - at most 1.29 × on the families PSF-Zero is built for.
+
+**Not established:**
+
+- hardware fidelity (fewer two-qubit gates is not measured fidelity);
+- the live IBM Targets;
+- the weighted layout path;
+- the canonical basis;
+- the 4 large heavy-hex tilings that neither layout could place, and whose
+  feasibility is unknown.
+
+## 6. Files
+
+| File | Bytes | SHA-256 (raw) |
+|---|---|---|
+| [`core_fix_c2_raw.json`](../../data/2026-10-01/core_fix_c2/outputs/scored/core_fix_c2_raw.json) | 68,556 | `ebc54f1f235c13473cf9541915ee98b3c9338a1a4c3e9f8a5ae5f506f92bb440` |
+| [`core_fix_c2_run.txt`](../../data/2026-10-01/core_fix_c2/outputs/scored/core_fix_c2_run.txt) | 45,859 | `f17de2f6ecd6aadc373aac955e22ebe7a03a3382ecde88723c80aff9f7307dc7` |
+| [`core_fix_c2_score.txt`](../../data/2026-10-01/core_fix_c2/outputs/scored/core_fix_c2_score.txt) | 5,856 | `95b517c204e4ed8d5a46a7a6288078ca6aaaa4fd45513ada6b7bc5a8491fc9b9` |
+
+The candidate files, the patch and the apply script are those listed in
+the pre-registration, section 6. Their hashes are unchanged, and the run's
+META line records them.
+
+---
+
+<!-- ===== Addendum 274 (source: spare-qubit-cliff-addendum-274-2026-10-01.md) ===== -->
+
+> **Note added when merging:** The owner adopted c2 on the evidence (2026-10-01). At home the same evening the owner also adopted the Rust core 2026-09-29.1, on which every evaluation since 2026-09-29 ran, so that the tested combination is the release: commit `d358e87` makes psf_compile and psf_smart_layout 2026-10-01.1 and the core 2026-09-29.1 ([`patches/core_fix_c2_2026-10-01/release_2026-10-01.py`](../../patches/core_fix_c2_2026-10-01/release_2026-10-01.py)). Checks there: cargo test 9 of 9; 103 of 103 in the core, synthesis, layout, release and c2 test files run together. Run as one session, the whole `benchmarks/` suite has collection errors that predate this release (one test module leaves a stand-in `psf_zero_core` behind; 9 such errors before, the same plus the new c2 test file after).
+
+## Addendum 274 -- Adoption decision: psf_compile 2026-10-01.c2 and psf_smart_layout 2026-10-01.c2 (2026-10-01, workplace)
+
+**Decision.** The project owner decided on 2026-10-01 to adopt both candidates evaluated in
+`core-fix-c2-results-2026-10-01.md`.
+
+**What the evaluation showed.**
+
+- 13 of 14 predictions were CONFIRMED and none was refuted.
+- L2 was AMBIGUOUS. In one tiling (FakeNighthawk, 20 and 30), c2 produced a different swap-free layout
+  from c1, with the same 70 two-qubit gates. It was faster (0.039 s → 0.019 s), and both outputs were
+  exact.
+- The pre-registered automatic rule did not fire, because it required all 14 to be CONFIRMED. The
+  owner adopted on the evidence, not on the rule. This is recorded so the distinction is not lost.
+
+**Scope of what is adopted.**
+
+| File | Version | Base |
+|---|---|---|
+| `psf_compile.py` | 2026-10-01.c2 | release 2026-09-28.1 |
+| [`benchmarks/psf_smart_layout.py`](../../benchmarks/psf_smart_layout.py) | 2026-10-01.c2 | release 2026-09-26.m1 |
+
+- The layout file includes the 2026-09-29.c1 changes: the corrected feasibility check and the
+  short-path shortcut. Adopting c2 therefore also adopts c1.
+- [`benchmarks/test_core_fix_c2.py`](../../benchmarks/test_core_fix_c2.py) and [`benchmarks/core_fix_c2_eval.py`](../../benchmarks/core_fix_c2_eval.py) are added.
+- The Rust core is not part of this decision.
+  - The evaluation ran on core 2026-09-29.1, the 9/29 candidate, which is not yet adopted.
+  - The Python changes do not depend on the core version.
+  - Running the c2 files on the release core 2026-09-28.1 was not measured.
+
+**Still to do (at home, where the repository is pushed).**
+
+1. Apply the change from `core_fix_c2_2026-10-01.patch` (git diff against `9131cee`), or with
+   [`apply_core_fix_c2_2026-10-01.py`](../../patches/core_fix_c2_2026-10-01/apply_core_fix_c2_2026-10-01.py).
+2. Decide the release version strings. The files currently say `2026-10-01.c2` (candidate).
+3. Update the two version-string tests, which expect 2026-09-28.1 and 2026-09-29.c1.
+4. Run the test suite.
+5. Give the pre-registration, results and this note Addendum numbers in Part 9. The next number is
+   planned to be 272.
+6. Add a README update following the psf-zero-repo-publish rules. Report numbers with their sandbox
+   conditions, and never compare timings across machines.
+7. Decide separately whether to adopt core 2026-09-29.1.
+
+**Known limitation carried into the release.** Four large heavy-hex tilings remain unplaced by both
+c1 and c2, with feasibility unknown:
+
+- FakeTorino (25, 29) and (30, 21);
+- FakeKingston (32, 30) and (30, 32).
+
+---
+
+<!-- ===== Addendum 275 (source: spare-qubit-cliff-addendum-275-2026-10-01.md) ===== -->
+
+> **Note added when merging:** Exploratory, not pre-registered: the first AI front end a0 ([`benchmarks/psf_ai_compile_a0.py`](../../benchmarks/psf_ai_compile_a0.py)), developed before Addendum 276. Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in `data/2026-10-01/ai_compile_a0/as_run/`; the outputs are in `data/2026-10-01/ai_compile_a0/`.
+
+## Addendum 275 -- Exploratory (not pre-registered): psf_ai_compile 2026-10-01.a0, a PSF-Zero front end for model-written circuits (2026-10-01, workplace)
+
+**Status.** This is an exploratory prototype, measured on *development* inputs only. No claim here is
+a confirmed result. A pre-registered test on new inputs would be the next step.
+
+- **Environment:** workplace sandbox, Linux, 2 CPUs, Python 3.11.15, Qiskit 2.5.2.
+- **Compiler and core:** the adopted psf_compile 2026-10-01.c2 and psf_smart_layout 2026-10-01.c2, on
+  core 2026-09-29.1. Neither file is changed.
+- **Devices:** fake-provider only; no IBM access.
+
+## 1. Idea (the project owner's, 2026-09-30/10-01)
+
+- `lib.rs` and `psf_compile.py` stay as they are.
+- What sits around them is specialised for the vLLM use: small circuits, many SWAPs and redundant
+  gates, PennyLane-style `unitary` gates, and many compiles per task.
+- The separation chosen is a separate module on top: `psf_ai_compile.py`. It calls
+  `compile_for_hardware()` and nothing below it, so the compiler's release and its speed claims are
+  untouched.
+
+## 2. What the prototype does (`compile_for_model_circuit`)
+
+For circuits of at most 8 qubits it keeps the best result (fewest 2-qubit gates, then 2-qubit depth)
+over the following combinations:
+
+- **Starting points:**
+  - the input as written;
+  - the input after Qiskit's `CommutativeCancellation`.
+- **Routing seeds:** 0, 1, 2 and 3. It stops early when two seeds in a row give the same layout and
+  count, which happens when the layout search has fixed the layout.
+- **Polish of each routed result:** `CommutativeCancellation` on the physical circuit, then
+  re-synthesis by the PSF-Zero core of every 2-qubit block whose optimal CX count is below what it holds,
+  then translation. This repeats while the count drops, up to 3 rounds. The routed layout (initial and
+  final) is kept.
+
+Larger circuits go straight to `compile_for_hardware()`.
+
+## 3. Development results
+
+These are the same inputs used to develop c2. They are not held out.
+
+**Random dense circuits, 3-5 qubits, 60 per row.** All 360 outputs (c2 and a0) are equivalent to their
+input; statevector, read at the final layout.
+
+| Device, seed | c2 | a0 | Qiskit L3 | a0 above c2 | a0 above L3 | Median time c2 / a0 |
+|---|---|---|---|---|---|---|
+| FakeAuckland, 7 | 824 | 788 | 807 | 0 | 3 | 11 / 49 ms |
+| FakeAuckland, 8 | 829 | 787 | 793 | 0 | 1 | 10 / 48 ms |
+| FakeKingston, 9 | 840 | 794 | 791 | 0 | 4 | 28 / 128 ms |
+
+**Ablation** (sum of 2-qubit gates, median time):
+
+| Configuration | Auckland seed 7 | Kingston seed 9 |
+|---|---|---|
+| c2 only (1 seed) | 824, 11 ms | 840, 29 ms |
+| + 4 routing seeds | 801, 24 ms | 809, 59 ms |
+| + commuted start | 819, 18 ms | 824, 53 ms |
+| + polish | 818, 12 ms | 831, 31 ms |
+| all three (a0) | 788, 53 ms | 794, 130 ms |
+
+Routing seeds give the largest single gain, and the three combine.
+
+**The 149 model circuits of 2026-09-30** (FakeAuckland, unique circuits). There were 0 fidelity changes
+against c2 (component-wise check of the e2e harness).
+
+| Task | Unique | c2 | a0 | L3 | a0 above L3 |
+|---|---|---|---|---|---|
+| dicke42 | 6 | 83 | 75 | 79 | 0 |
+| w3 | 30 | 144 | 136 | 142 | 1 |
+| w4 | 5 | 34 | 33 | 33 | 0 |
+| qft3 | 19 | 86 | 86 | 86 | 0 |
+| fill27 (27 qubits, fast path) | 9 | 138 | 138 | 174 | 0 |
+| bell3, fill27g9, ghz3i, ghz5, singlet3 | 18 | 76 | 76 | 76 | 0 |
+
+**Time.** The median a0 compile for these circuits is 10-54 ms. That is small next to the model's
+generation time in the vLLM loop, which takes seconds per round.
+
+## 4. Reading
+
+- On development inputs the prototype reaches or beats Qiskit L3's 2-qubit count on small circuits.
+  - The sums are below L3 on both Auckland rows, about equal on Kingston, and below L3 on the model's
+    Dicke and W3 circuits.
+  - It is never worse than c2.
+  - It costs 4-5 × c2's time, still tens of milliseconds.
+- **What this does not change:**
+  - The vLLM pass rate. The model's failures in the go/no-go tests were wrong circuits (mostly phases),
+    not compiler output.
+  - What improves is the gate-count side: comparisons with L3 and with the StatePreparation baseline.
+
+**Not established:**
+
+- new inputs (a pre-registration would use fresh seeds and new textbook or model circuits);
+- hardware fidelity;
+- error-aware layout choice, where a small circuit could afford to score every embedding by the device's
+  error rates. This was not tried here, and the e2e harness passes no error rates.
+
+## 5. Next steps (proposed)
+
+1. Pre-register a held-out test of a0 against c2 and L3: new random seeds, new textbook circuits, and
+   both devices.
+2. If confirmed, wire it into the e2e harness (v11) as the compile step, behind a flag.
+3. Optionally add error-aware layout scoring for small circuits, when a Target with error rates is
+   available.
+
+**Files:** `psf_ai_compile.py`, 5,926 bytes, normalized SHA-256
+`7105fb3591df4648f64f4c260d1e3ad427e5323ee70d36aa0f44483f12c69949`.
+
+---
+
+<!-- ===== Addendum 276 (source: spare-qubit-cliff-addendum-276-2026-10-01.md) ===== -->
+
+> **Note added when merging:** Workplace pre-registration of a0 on held-out inputs. Locked at the workplace Project's save time, not by a git commit; it entered this repository after the run. The a0 module was then named `psf_ai_compile.py`; in this repository it is [`benchmarks/psf_ai_compile_a0.py`](../../benchmarks/psf_ai_compile_a0.py) and [`benchmarks/psf_ai_compile.py`](../../benchmarks/psf_ai_compile.py) is the latest version (a5).
+
+## Addendum 276 -- Pre-registration: psf_ai_compile 2026-10-01.a0 (PSF-Zero front end for model-written circuits) on held-out inputs (2026-10-01)
+
+**Status: pre-registration, locked at the Project save time of this document**, before the scored run.
+The prototype and its development results are in `ai-compile-a0-exploratory-2026-10-01.md`, which lists
+the development inputs. One harness dry run is disclosed in section 6.
+
+- **Environment:** workplace sandbox, Linux, 2 CPUs, Python 3.11.15, Qiskit 2.5.2.
+- **Compiler:** the adopted psf_compile 2026-10-01.c2 and psf_smart_layout 2026-10-01.c2.
+- **Core:** 2026-09-29.1, sandbox build.
+- **Devices:** fake-provider only; no IBM access.
+
+## 1. What is tested
+
+`psf_ai_compile.compile_for_model_circuit()` works on circuits of at most 8 qubits:
+
+- it starts from two points, the input and the input after CommutativeCancellation;
+- it tries routing seeds 0-3 for each;
+- it polishes each routed result (commutative cancellation plus PSF-core re-synthesis of blocks that save
+  CX);
+- it keeps the result with the fewest 2-qubit gates.
+
+Larger circuits go straight to `compile_for_hardware()`. `psf_compile.py` and the core are not changed.
+
+## 2. Design (`ai_a0_eval.py`; helpers from the locked `core_fix_c2_eval.py`)
+
+**Arms:**
+
+- **C2:** `compile_for_hardware(entangling_basis="cx", layout_search=True, seed_transpiler=0)`.
+- **A0:** `compile_for_model_circuit()` with default settings.
+- **L3:** Qiskit `transpile(optimization_level=3, seed_transpiler=0)`, as the reference.
+
+**Devices:** FakeAuckland (cx), FakeKingston (cz), FakeTorino (cz). FakeTorino was not used in a0's
+development.
+
+**Inputs.** None of these were used in development.
+
+- **R:** random dense circuits from Python `random` seeds 3001-3060, on each device.
+  - 3-5 qubits and 6-20 gates.
+  - Single-qubit gates: h, x, s, t, ry.
+  - 2-qubit gates: cx, cry, crz, cp, swap, cz. Half of the SWAPs are written as `unitary`.
+- **T:** 12 new textbook circuits, each in gate form and in PennyLane-style `unitary` form, on each
+  device (72 compiles):
+  - inverse QFT4 with leading swaps;
+  - W6 (cry cascade);
+  - a linear GHZ6;
+  - Bernstein-Vazirani with 5 qubits;
+  - a QAOA ring of 4 and of 5 qubits (p = 1);
+  - a 4-qubit hardware-efficient ansatz (2 layers, cz ring);
+  - a 4-qubit Heisenberg chain (2 Trotter steps, rxx/ryy/rzz);
+  - Grover on 3 qubits (one iteration, ccz);
+  - QPE with 3 counting qubits;
+  - a 5-qubit cyclic shift by SWAPs;
+  - two Bell pairs exchanged by a SWAP.
+- **M:** measured copies of the first 30 Auckland R circuits, compiled by A0 and run on AerSimulator
+  (20,000 shots). The TVD to the exact distribution is recorded.
+- **F:** 8 `random_circuit` inputs of 10-20 qubits on FakeKingston (seeds 4001-4008), above the 8-qubit
+  limit.
+
+**Recorded:** 2-qubit counts; A0 wall time; and component-wise equivalence (statevector, read at the
+final layout, ancillas in |0>, where the support is 12 qubits or fewer).
+
+## 3. Predictions
+
+**C0:** the loaded versions are 2026-10-01.c2 (compile and layout) and 2026-10-01.a0.
+
+| ID | Prediction | Confirmed if | Refuted if |
+|---|---|---|---|
+| A1 | A0 outputs are exact | no checked R/T output below 1 - 1e-9, and at most 5 % not checkable | any checked output below |
+| A2 | A0 never uses more 2-qubit gates than C2 (holds by construction; this checks the implementation) | 0 R/T circuits with A0 > C2 | any |
+| A3 | A0 reaches Qiskit L3 | every device: sum A0 <= 1.02 × sum L3, **and** A0 > L3 in <= 10 % of R circuits | any device > 1.06 × or > 20 % |
+| A4 | A0 improves on C2 | every device: sum A0 <= 0.97 × sum C2 | any device > 0.99 × |
+| A5 | textbook circuits at L3 level | A0 <= L3 in >= 90 % of the 72 T compiles | < 75 % |
+| A6 | A0 is fast enough for the vLLM loop | per-device median A0 time (R and T) <= 250 ms, **and** max <= 2 s | any median > 500 ms |
+| A7 | measured circuits come out right | TVD <= 0.03 on all 30 | above on any |
+| A8 | larger circuits fall through unchanged | A0 output digest = C2 digest on all 8 F inputs | any differs |
+
+Between the bounds: ambiguous. No re-runs to improve a score.
+
+**Expectations from development (Auckland and Kingston, 60 circuits each).**
+
+| Prediction | Development values |
+|---|---|
+| A3: A0 / L3 | 0.976, 0.992, 1.004 |
+| A3: share above L3 | 1.7-6.7 % |
+| A4: A0 / C2 | 0.945-0.956 |
+| A6: median time | 48-128 ms |
+
+FakeTorino is new to a0, so its numbers could fall outside these ranges.
+
+## 4. What this can and cannot establish
+
+**It can establish** whether the front end keeps its development advantage on new circuits and on a new
+device, at a time cost acceptable inside the vLLM loop.
+
+**It cannot establish:**
+
+- hardware fidelity;
+- the vLLM pass rate, which depends on the model's circuits rather than on the compiler;
+- error-aware layout choice, which a0 does not have;
+- live IBM Targets.
+
+Times are sandbox times, not compared with home or the pod.
+
+## 5. Files and run commands
+
+| File | Bytes | Normalized SHA-256 |
+|---|---|---|
+| `ai_a0_eval.py` | 11,849 | `0e50983993a52accefe557388518182baede91cb6e3a2034077b4dd6493c215d` |
+| `psf_ai_compile.py` (2026-10-01.a0) | 5,926 | `7105fb3591df4648f64f4c260d1e3ad427e5323ee70d36aa0f44483f12c69949` |
+| `core_fix_c2_eval.py` (helpers, locked earlier today) | 27,244 | `9f4e124f996bbf83a15768148631279c5e1ce73541d929d0701dbe91da871bac` |
+| `psf_compile.py` 2026-10-01.c2 | 95,818 | `e22dc6ddf4bf717d722a3f7ce01e23ecbe096d41730f7fe54c0d29eeaa4a3bd1` |
+| `psf_smart_layout.py` 2026-10-01.c2 | 32,708 | `f0d38519adad04864de42c456564a8321584ae3feadd744101a4cb719070fc14` |
+
+```
+PYTHONPATH=<core 2026-09-29.1> python -u ai_a0_eval.py run --compile <psf_compile.py> \
+  --layout <psf_smart_layout.py> --ai psf_ai_compile.py --out ai_a0_raw.json > ai_a0_run.txt 2>&1
+python ai_a0_eval.py score --out ai_a0_raw.json > ai_a0_score.txt
+```
+
+The two eval scripts must be in the same folder.
+
+## 6. Dry run before locking (disclosed)
+
+**Inputs:** `--dry` uses seeds offset by 700,000. That gives 4 R circuits per device, the first 2
+textbook circuits (IQFT4 and W6, 12 compiles), 4 M circuits and 2 F inputs.
+
+**Results:**
+
+- A1, A2, A3, A6, A7 and A8 scored CONFIRMED.
+- A4 and A5 scored AMBIGUOUS. With 4 circuits per device the A0/C2 ratios were 0.91-0.97, and 10 of the
+  12 textbook compiles had A0 <= L3: IQFT4 on FakeTorino came out 17 against L3's 16.
+
+**Changes after the dry run:** none to the predictions or thresholds. One cosmetic line in the scorer
+was cleaned.
+
+**No scored input was compiled before locking.**
+
+---
+
+<!-- ===== Addendum 277 (source: spare-qubit-cliff-addendum-277-2026-10-01.md) ===== -->
+
+> **Note added when merging:** 7 of 8 CONFIRMED, A5 AMBIGUOUS (3-qubit gates and ring-shaped circuits). Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in `data/2026-10-01/ai_compile_a0/as_run/`; the outputs are in `data/2026-10-01/ai_compile_a0/`.
+
+## Addendum 277 -- Results: psf_ai_compile 2026-10-01.a0 on held-out inputs -- 7 of 8 CONFIRMED, A5 (textbook circuits) AMBIGUOUS (2026-10-01)
+
+**Pre-registration:** `docs/findings/ai-compile-a0-preregistration-2026-10-01.md`. It was locked at its
+Project save time before this run.
+
+- **Environment:** workplace sandbox, Linux, 2 CPUs, Qiskit 2.5.2.
+- **Compiler and core:** psf_compile and psf_smart_layout 2026-10-01.c2; core 2026-09-29.1.
+- **Devices:** fake-provider only.
+- **Hashes:** the run's META line records the same hashes as the pre-registration.
+
+## 1. Verdict
+
+**C0:** OK.
+
+| ID | Result | Numbers |
+|---|---|---|
+| A1 | CONFIRMED | 252 R/T outputs, 0 not equivalent, 0 not checkable |
+| A2 | CONFIRMED | 0 of 252 with A0 above C2 |
+| A3 | CONFIRMED | A0/L3 = 0.975 (Auckland), 0.989 (Kingston), 0.977 (Torino); A0 above L3 in 3.3 %, 8.3 %, 5.0 % |
+| A4 | CONFIRMED | A0/C2 = 0.949, 0.957, 0.941 |
+| A5 | **AMBIGUOUS** | A0 <= L3 in 77.8 % of the 72 textbook compiles (confirm >= 90 %, refute < 75 %) |
+| A6 | CONFIRMED | median 47 / 133 / 114 ms, max 0.31 s |
+| A7 | CONFIRMED | 30 of 30 measured circuits within TVD 0.03 (max 0.0112) |
+| A8 | CONFIRMED | 8 of 8 inputs above 8 qubits: output identical to C2 |
+
+Not every item is CONFIRMED, so the pre-registered decision line reads "NOT ALL CONFIRMED". Nothing was
+re-run.
+
+## 2. Random circuits (R, 60 per device)
+
+| Device | Sum of 2-qubit gates: C2 / A0 / L3 | A0 below / equal / above L3 |
+|---|---|---|
+| FakeAuckland | 850 / 807 / 828 | 12 / 46 / 2 |
+| FakeKingston | 879 / 841 / 850 | 13 / 42 / 5 |
+| FakeTorino (new to a0) | 884 / 832 / 852 | 17 / 40 / 3 |
+
+The development advantage held on new circuits and on the new device: below Qiskit L3 in sum everywhere,
+and 5-6 % below C2.
+
+## 3. Textbook circuits (T): where A5 fell short
+
+**Sums over the 72 compiles:** C2 849, A0 833, L3 822.
+
+**A0 above L3 (16 compiles).** Each circuit counts twice, once in gate form and once in unitary form.
+
+- **Grover3 on all three devices** (6 compiles): 18-19 against 17. The circuit contains 3-qubit `ccz`
+  gates. A0's improvements all act on 2-qubit blocks, so the 3-qubit gates are decomposed by Qiskit's
+  default path, and L3 does better on them.
+- **Ring-shaped interaction graphs on the heavy-hex Kingston and Torino** (10 compiles):
+  - HEA4 (cz ring): 18-20 against 17;
+  - QAOAring5 on Kingston: 18 against 16;
+  - QAOAring4 on Torino: 12 against 11;
+  - IQFT4 on Torino: 17 against 16.
+
+  A ring cannot be embedded in heavy-hex, so routing is needed. L3's layout and routing search (more
+  Sabre trials plus VF2PostLayout) finds a cheaper routing than four seeds of level-1 routing.
+- HEA4 in `unitary` form stayed at 20, where the gate form reached 18. The commuted starting point does
+  not see through `unitary` gates.
+
+**A0 below L3 (8 compiles):**
+
+- QAOAring5 and QPE3 on Auckland (14 against 16, 13 against 15);
+- IQFT4 on Kingston (17 against 18);
+- QPE3 on Torino (13 against 15).
+
+## 4. Reading
+
+- On random small dense circuits, which are the kind a model writes, the front end is at or below
+  Qiskit L3 on all three devices. It costs about 50-130 ms per compile, without changing
+  `psf_compile.py` or the core.
+- **Two weaknesses remain,** both visible in the textbook set:
+  1. 3-qubit gates, which are handled by Qiskit's default decomposition rather than optimised;
+  2. ring-shaped interaction graphs that need routing on heavy-hex.
+- **Candidate remedies for a next version (a1):**
+  - more routing seeds, or a level-3-style routing call for small circuits, keeping the best;
+  - decomposing 3-qubit gates before the front end works on 2-qubit blocks;
+  - converting `unitary` gates to standard gates when they match one, before the commuted starting
+    point.
+
+  Each would need a new pre-registration on new inputs.
+- The vLLM pass rate is not affected. This front end changes gate counts, not which circuits are
+  correct.
+
+## 5. Files
+
+| File | Bytes | SHA-256 (raw) |
+|---|---|---|
+| [`ai_a0_raw.json`](../../data/2026-10-01/ai_compile_a0/outputs/scored/ai_a0_raw.json) | 50,391 | `f738fe6182019611284ef04f9eb748c164d783159b2967b8370c9aa610fc7c60` |
+| [`ai_a0_run.txt`](../../data/2026-10-01/ai_compile_a0/outputs/scored/ai_a0_run.txt) | 40,766 | `39652cf826315e2278e11902acd5ab1d9d433d627222afa95a81512bac898880` |
+| [`ai_a0_score.txt`](../../data/2026-10-01/ai_compile_a0/outputs/scored/ai_a0_score.txt) | 6,323 | `07cbfc4e35d205eebbcc80f835e74c0508ef496d5029c6a0af980250ce265514` |
+
+---
+
+<!-- ===== Addendum 278 (source: spare-qubit-cliff-addendum-278-2026-10-01.md) ===== -->
+
+> **Note added when merging:** Workplace pre-registration of a1 (3-qubit decomposition, L3 placement candidates). Locked at the workplace Project's save time, not by a git commit; it entered this repository after the run.
+
+## Addendum 278 -- Pre-registration: psf_ai_compile 2026-10-01.a1 on held-out inputs (2026-10-01)
+
+**Status: pre-registration, locked at the Project save time of this document**, before the scored run.
+
+- **Environment:** workplace sandbox, Linux, 2 CPUs, Qiskit 2.5.2.
+- **Compiler and core:** psf_compile and psf_smart_layout 2026-10-01.c2; core 2026-09-29.1.
+- **Devices:** fake-provider only; no IBM access.
+
+## 1. Why a1, and what changed from a0 (development, not pre-registered)
+
+The held-out test of a0 (`ai-compile-a0-results-2026-10-01.md`) scored 7 of 8 CONFIRMED. A5 was
+AMBIGUOUS: only 77.8 % of the textbook compiles were at or below L3. The misses came from two sources:
+
+- 3-qubit gates (Grover3);
+- ring-shaped interaction graphs that need routing on heavy-hex (HEA4, QAOA rings, IQFT4).
+
+a1 keeps a0 unchanged as the first part of its search, so its candidate set contains a0's. It adds:
+
+1. **Split starting points.** When the input has gates on 3 or more qubits, two more starting points
+   use those gates decomposed: as written, and after commutative cancellation.
+2. **Expanded starting point.** When the input has 2-qubit `unitary` gates, one more starting point
+   re-expresses every 2-qubit gate in CX form (`psf_compile.compile`) and then commutatively cancels.
+3. **Level-3 layout candidate.** One more candidate per starting point routes from the initial layout
+   that Qiskit's level-3 search picks on the (split) input. Only the layout is borrowed; synthesis,
+   routing (level 1) and the polish stay PSF-Zero's.
+4. **Seeds.** The extra starting points use the first routing seed only; a0's two starting points keep
+   all four seeds.
+
+**Development data:** the a0 held-out set, now seen. That is R seeds 3001-3060 on Auckland, Kingston
+and Torino, and the a0 textbook set. All outputs were equivalent.
+
+| Device | R sums: a0 / a1 / L3 | a1 above L3 (R) | T sums: a0 / a1 / L3 | a1 above L3 (T) | a1 median time (R) |
+|---|---|---|---|---|---|
+| FakeAuckland | 807 / 796 / 828 | 1 of 60 | 273 / 270 / 278 | 0 of 24 | 101 ms |
+| FakeKingston | 841 / 816 / 850 | 0 of 60 | 283 / 272 / 274 | 0 of 24 | 224 ms |
+| FakeTorino | 832 / 810 / 852 | 0 of 60 | 277 / 266 / 270 | 0 of 24 | 206 ms |
+
+a1 was never above a0 on these inputs.
+
+**Ablation on Kingston (R + T), before item 4 was added:**
+
+- full a1: 1,084 two-qubit gates;
+- without the level-3 layout candidate: 1,117;
+- without the expanded start: 1,089;
+- without the split: 1,084 (the a0 textbook set has one 3-qubit-gate circuit).
+
+## 2. Design (`ai_a1_eval.py`; helpers from the locked `core_fix_c2_eval.py`)
+
+**Arms:**
+
+- **C2:** `compile_for_hardware(cx, layout_search=True, seed 0)`.
+- **A0:** psf_ai_compile 2026-10-01.a0.
+- **A1:** psf_ai_compile 2026-10-01.a1.
+- **L3:** Qiskit level 3, seed 0, as the reference.
+
+**Devices:** FakeAuckland, FakeKingston, FakeTorino and **FakeFez**. FakeFez has not been used before in
+these tests.
+
+**Inputs.** None of these were used in developing a0 or a1.
+
+- **R:** random dense circuits from Python `random` seeds 5001-5060 on each device. The generator is the
+  same as before: 3-5 qubits and 6-20 gates, with half of the SWAPs written as `unitary`.
+- **T:** a third textbook set of 12 circuits, each in gate form and in `unitary` form, on each device
+  (96 compiles). The `unitary` matrices are taken via `Operator`, so multi-controlled gates work too.
+  - CCZchain4: two overlapping ccz gates;
+  - CuccaroMajUma3: the MAJ and UMA blocks of the ripple-carry adder;
+  - Grover4: mcx;
+  - QAOAring6 with rzz;
+  - HEA5ring with a cx ring;
+  - IsingRing5: 2 Trotter steps;
+  - DJ4;
+  - DraperAdd2;
+  - GHZstar6;
+  - W4tree, which contains a ccx;
+  - TeleportUnitary;
+  - Clifford4: `random_clifford(4, seed=5101)`.
+- **M:** measured copies of the first 30 Auckland R circuits, compiled by A1 and run on AerSimulator
+  (20,000 shots).
+- **F:** 8 `random_circuit` inputs of 10-20 qubits on FakeKingston (seeds 6001-6008).
+
+## 3. Predictions
+
+**C0:** the versions loaded are c2, c2, a0 and a1.
+
+| ID | Prediction | Confirmed if | Refuted if |
+|---|---|---|---|
+| B1 | A1 outputs are exact | no checked R/T output below 1 - 1e-9, and at most 5 % not checkable | any checked output below |
+| B2 | A1 improves on A0 | every device: R+T sum A1 < A0, **and** A1 > A0 in <= 2 % of R+T circuits | any device: sum not lower, or > 5 % worse |
+| B3 | A1 is at or below L3 on random circuits | every device: R sum A1 <= 1.00 × L3, **and** A1 > L3 in <= 5 % | any device > 1.04 × or > 15 % |
+| B4 | textbook circuits at L3 level (a0 missed this) | A1 <= L3 in >= 90 % of the 96 T compiles | < 75 % |
+| B5 | fast enough for the vLLM loop | per-device median A1 time (R+T) <= 400 ms, **and** max <= 2 s | any median > 800 ms |
+| B6 | measured circuits come out right | TVD <= 0.03 on all 30 | above on any |
+| B7 | larger circuits fall through unchanged | A1 digest = C2 digest on all 8 F | any differs |
+
+Between the bounds: ambiguous. No re-runs to improve a score.
+
+**Expectations stated before running:**
+
+- **B2:** A1 > A0 should not happen, since the candidate set contains a0's. A nonzero count would point
+  to an implementation fault.
+- **B3:** development R ratios were 0.95-0.96.
+- **B4:** the third set has more 3-qubit gates and rings than the a0 set. A6-style misses are the main
+  risk.
+- **B5:** development medians were 100-224 ms on R; FakeFez is the size of Kingston.
+
+## 4. What this cannot establish
+
+- hardware fidelity;
+- the vLLM pass rate;
+- error-aware layout;
+- live Targets.
+
+Times are sandbox times.
+
+## 5. Files and run commands
+
+| File | Bytes | Normalized SHA-256 |
+|---|---|---|
+| `ai_a1_eval.py` | 13,441 | `b30a46508fa858363d115958b7d246f75a2ae1de6852c1ddb602963c0c639f5a` |
+| `psf_ai_compile.py` 2026-10-01.a1 | 9,336 | `625e569dee1e69fae0890b5f89ea8acc8b659869bcf6cbbae5594df9ecd6b281` |
+| `psf_ai_compile.py` 2026-10-01.a0 | 5,926 | `7105fb3591df4648f64f4c260d1e3ad427e5323ee70d36aa0f44483f12c69949` |
+| `core_fix_c2_eval.py` (helpers) | 27,244 | `9f4e124f996bbf83a15768148631279c5e1ce73541d929d0701dbe91da871bac` |
+| `psf_compile.py` / `psf_smart_layout.py` 2026-10-01.c2 | | as in the c2 pre-registration |
+
+```
+PYTHONPATH=<core 2026-09-29.1> python -u ai_a1_eval.py run --compile <psf_compile.py> --layout <psf_smart_layout.py> \
+  --a0 psf_ai_compile_a0.py --a1 psf_ai_compile_a1.py --out ai_a1_raw.json > ai_a1_run.txt 2>&1
+python ai_a1_eval.py score --out ai_a1_raw.json > ai_a1_score.txt
+```
+
+## 6. Dry runs before locking (disclosed)
+
+**Dry-run inputs:** `--dry` uses R seeds offset by 800,000 (3 per device), 2 F inputs, and its own two
+textbook circuits.
+
+**First dry run.**
+
+- It used the first two circuits of the then textbook set, ToffoliAdder and SwapTest5.
+- It showed a1 above a0 on SwapTest5 in `unitary` form on Kingston and Fez (27 against 26). The early a1
+  replaced a0's starting points with the split ones.
+- **Changes made:**
+  - a1 was changed to keep a0's starting points first (item 1 above);
+  - ToffoliAdder and SwapTest5 were moved out of the scored set into the dry-run set, and replaced by
+    CCZchain4 and CuccaroMajUma3, which no run has compiled.
+  - The `unitary` form was switched to `Operator` matrices, because MCXGate has no `to_matrix`.
+
+**Second dry run.** All CONFIRMED except B5 (Kingston 398 ms, Fez 433 ms medians, on 7 items per
+device of which 4 have 3-qubit gates). Item 4 (one seed on the extra starting points) was then added.
+
+**Third dry run, with the final files.** All 7 CONFIRMED. Medians were 144-318 ms.
+
+**No scored input was compiled before locking.**
+
+---
+
+<!-- ===== Addendum 279 (source: spare-qubit-cliff-addendum-279-2026-10-01.md) ===== -->
+
+> **Note added when merging:** 7 of 7 CONFIRMED. Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in `data/2026-10-01/ai_compile_a1/as_run/`; the outputs are in `data/2026-10-01/ai_compile_a1/`.
+
+## Addendum 279 -- Results: psf_ai_compile 2026-10-01.a1 on held-out inputs -- 7 of 7 CONFIRMED (2026-10-01)
+
+**Pre-registration:** `docs/findings/ai-compile-a1-preregistration-2026-10-01.md`. It was locked at its
+Project save time before this run.
+
+- **Environment:** workplace sandbox, Linux, 2 CPUs, Qiskit 2.5.2.
+- **Compiler and core:** psf_compile and psf_smart_layout 2026-10-01.c2; core 2026-09-29.1.
+- **Devices:** fake-provider only.
+- **Hashes:** the run's META line records the same hashes as the pre-registration. Nothing was re-run.
+
+## 1. Verdict
+
+**C0:** OK.
+
+| ID | Result | Numbers |
+|---|---|---|
+| B1 | CONFIRMED | 336 R/T outputs, 0 not equivalent, 0 not checkable |
+| B2 | CONFIRMED | A1 below A0 in sum on every device; A1 above A0 in 0 of 336 |
+| B3 | CONFIRMED | A1/L3 on R = 0.975 (Auckland), 0.973 (Kingston), 0.968 (Torino), 0.973 (Fez); A1 above L3 in 0 of 240 |
+| B4 | CONFIRMED | A1 <= L3 in 99.0 % of the 96 textbook compiles (95 of 96) |
+| B5 | CONFIRMED | median 94 / 208 / 204 / 206 ms, max 0.77 s |
+| B6 | CONFIRMED | 30 of 30 measured circuits within TVD 0.03 (max 0.0148) |
+| B7 | CONFIRMED | 8 of 8 inputs above 8 qubits: output identical to C2 |
+
+**Decision line:** ALL CONFIRMED.
+
+## 2. Random circuits (R, 60 per device)
+
+| Device | Sums: C2 / A0 / A1 / L3 | A1 below / equal / above L3 |
+|---|---|---|
+| FakeAuckland | 799 / 778 / 770 / 790 | 11 / 49 / 0 |
+| FakeKingston | 829 / 804 / 794 / 816 | 12 / 48 / 0 |
+| FakeTorino | 821 / 796 / 788 / 814 | 13 / 47 / 0 |
+| FakeFez | 829 / 804 / 794 / 816 | 12 / 48 / 0 |
+
+FakeKingston and FakeFez gave identical sums in all four arms. In this fake-provider version the two
+seem to share the same coupling map; this was not checked edge by edge. Fez therefore does not add an
+independent topology here.
+
+## 3. Textbook circuits (T, third set, 96 compiles)
+
+**Totals:** C2 2,381, A0 2,307, **A1 2,145**, L3 2,208. A1 is below L3 in 31 compiles, equal in 64 and
+above in 1.
+
+| Circuit (both forms, 4 devices) | C2 | A0 | A1 | L3 |
+|---|---|---|---|---|
+| CCZchain4 | 136 | 128 | 116 | 116 |
+| CuccaroMajUma3 | 204 | 192 | 192 | 192 |
+| Grover4 | 832 | 822 | 730 | 736 |
+| QAOAring6 | 180 | 174 | 166 | 174 |
+| HEA5ring | 212 | 212 | 204 | 204 |
+| IsingRing5 | 292 | 290 | 282 | 284 |
+| DJ4 | 24 | 24 | 24 | 24 |
+| DraperAdd2 | 108 | 88 | 88 | 88 |
+| GHZstar6 | 74 | 70 | 70 | 88 |
+| W4tree | 139 | 131 | 122 | 126 |
+| TeleportUnitary | 56 | 56 | 40 | 56 |
+| Clifford4 | 124 | 120 | 111 | 120 |
+
+**The one compile above L3:** W4tree in gate form on FakeAuckland, 16 against 14. That circuit contains
+a ccx.
+
+**For comparison:** a0 would have met B4's bound in only 68.8 % of these compiles. The two a0
+weaknesses (3-qubit gates, ring-shaped graphs on heavy-hex) are what a1 fixed.
+
+## 4. Reading
+
+- On held-out inputs the AI front end is now at or below Qiskit L3 everywhere tested:
+  - random small dense circuits on four devices: 0 of 240 above L3, sums 2.5-3.2 % below;
+  - textbook circuits with 3-qubit gates and rings: 95 of 96 at or below L3, sum 2.9 % below.
+- It never loses to a0, keeps every output exact (final-layout bookkeeping included), and takes about
+  0.1-0.2 s per compile.
+- `psf_compile.py` and the Rust core were not changed for this. The gains come from the front end:
+  - several starting points;
+  - several routing seeds;
+  - the level-3 initial layout as one extra candidate;
+  - a commutation-plus-PSF-re-synthesis polish.
+- **Borrowed from Qiskit:** CommutativeCancellation, decomposition of 3-qubit gates, and the level-3
+  *layout* choice.
+- **Not borrowed:** level-3 synthesis and routing are not used. Every 2-qubit block that is
+  re-synthesised goes through the PSF-Zero core.
+
+**Not established:**
+
+- hardware fidelity;
+- the vLLM pass rate (the front end changes gate counts, not which circuits are correct);
+- error-aware layout;
+- live Targets;
+- circuits above 8 qubits (they fall through to c2 unchanged, by design).
+
+## 5. Next steps (proposed)
+
+1. Use a1 as the compile step of the e2e harness (v11), behind a flag, and record the gate counts the
+   model's circuits now get.
+2. Optionally add error-aware layout scoring when a Target with error rates is available.
+
+## 6. Files
+
+| File | Bytes | SHA-256 (raw) |
+|---|---|---|
+| [`ai_a1_raw.json`](../../data/2026-10-01/ai_compile_a1/outputs/scored/ai_a1_raw.json) | 65,910 | `ebaeb84525d124497650296231a0014990c5897f82f57144ff57e64c932059fb` |
+| [`ai_a1_run.txt`](../../data/2026-10-01/ai_compile_a1/outputs/scored/ai_a1_run.txt) | 52,638 | `18c86f79f415a98e780c0f98f8e530e1d8d718cf217638ec846195fe34c4d547` |
+| [`ai_a1_score.txt`](../../data/2026-10-01/ai_compile_a1/outputs/scored/ai_a1_score.txt) | 9,058 | `9b95d3fba5d06ca1b03afd32d916d9aa950df6a6006a129731c9aa3107cac8e5` |
+
+---
+
+<!-- ===== Addendum 280 (source: spare-qubit-cliff-addendum-280-2026-10-01.md) ===== -->
+
+> **Note added when merging:** Workplace pre-registration: do fewer two-qubit gates give higher fidelity under the fake devices' noise (Qiskit Aer noise models from published calibration; not real hardware)? Locked at the workplace Project's save time, not by a git commit; it entered this repository after the run.
+
+## Addendum 280 -- Pre-registration: do fewer 2-qubit gates give higher fidelity under the fake devices' noise? Released stack vs c2 vs psf_ai_compile a1 vs Qiskit L3 (2026-10-01)
+
+**Status: pre-registration, locked at the Project save time of this document**, before the scored run.
+
+- **Environment:** workplace sandbox, Linux, 2 CPUs, Qiskit 2.5.2, qiskit-aer 0.17.2.
+- **Core:** 2026-09-29.1, sandbox build.
+- **Hardware:** no IBM access and no hardware. This is a noise *simulation*.
+
+## 1. Why
+
+Every PSF-Zero comparison so far counts 2-qubit gates. Whether fewer gates actually give better results
+has not been measured. This test is the inexpensive step before any hardware run (which happens only at
+home, on the owner's signal).
+
+## 2. Design (`nf_eval.py`; helpers from the locked `core_fix_c2_eval.py`)
+
+**Arms.** Every arm uses `compile_for_hardware(entangling_basis="cx", layout_search=True,
+seed_transpiler=0)` unless noted.
+
+| Arm | What it is |
+|---|---|
+| REL | the released stack: psf_compile 2026-09-28.1 + psf_smart_layout 2026-09-26.m1 |
+| C2 | the adopted stack: psf_compile and psf_smart_layout 2026-10-01.c2 |
+| A1 | psf_ai_compile 2026-10-01.a1 on top of C2 |
+| L3 | Qiskit `transpile(optimization_level=3, seed_transpiler=0)` |
+
+**Noise.** `qiskit_aer.noise.NoiseModel.from_backend(<fake device>)`:
+
+- per-gate depolarizing error plus thermal relaxation, from the snapshot's gate errors, T1/T2 and gate
+  lengths;
+- no idle (delay) noise, no crosstalk;
+- readout is irrelevant, because nothing is measured.
+
+**Fidelity.**
+
+- F = <psi|rho|psi>.
+  - psi is the ideal output of the logical circuit from |0...0>.
+  - rho is the density matrix of the compiled circuit, taken on its final-layout qubits (AerSimulator,
+    density_matrix method; unused qubits truncated).
+- Infidelity = 1 - F.
+- The same simulation without noise checks exactness (N0).
+
+**Devices:** FakeAuckland (27 qubits, cx) and FakeTorino (133 qubits, cz).
+
+**Inputs:** new random dense circuits from Python `random` seeds 7001-7040 on each device (40 per device).
+The generator is the same as before: 3-5 qubits, 6-20 gates, half of the SWAPs written as `unitary`.
+
+**Secondary set, reported without prediction:** the unique model-written circuits of 2026-09-30 with
+at most 8 qubits, on FakeAuckland. They were used in development.
+
+## 3. Predictions
+
+**C0:** the versions loaded are 2026-09-28.1, 2026-09-26.m1, and 2026-10-01.c2 / c2 / a1.
+
+| ID | Prediction | Confirmed if | Refuted if |
+|---|---|---|---|
+| N0 | every compiled output is exact without noise | noiseless F >= 1 - 1e-9 for all 4 arms, all circuits | any below |
+| N1 | A1 beats the released stack under noise | every device: mean infidelity A1 < REL, **and** A1 lower than REL in >= 70 % of circuits where their 2-qubit counts differ | any device: mean A1 >= REL |
+| N2 | A1 is at Qiskit L3's level under noise | every device: mean infidelity A1 <= 1.05 × L3 | any device > 1.15 × L3 |
+| N3 | the 2-qubit count is the right proxy | within a circuit, between two arms with different 2-qubit counts, the one with fewer 2-qubit gates has the lower infidelity in >= 70 % of such pairs, per device | < 55 % on any device |
+| N4 | A1 is not worse than C2 under noise | every device: mean infidelity A1 <= C2 | any device > 1.02 × C2 |
+
+Between the bounds: ambiguous. No re-runs to improve a score.
+
+**Expectations stated before running.**
+
+- **N1:** REL has about 40 % more 2-qubit gates than A1 on such circuits, so a clear gap is expected.
+- **N2:** A1 has about 3 % fewer 2-qubit gates than L3, so the infidelities should be close. Layout
+  matters too, because on Torino the error rates differ from qubit to qubit and the arms may pick
+  different physical qubits.
+- **N3:** on Torino, the physical qubits chosen can outweigh a one-gate difference. That is why the bound
+  is 70 % and not higher.
+
+## 4. What this cannot establish
+
+- **Hardware.** The noise model is a simplified snapshot: no idle noise, no crosstalk, no drift.
+- Circuits with measurement.
+- Larger circuits.
+- The vLLM pass rate.
+
+**A positive result here is a reason to run the hardware test, not a substitute for it.**
+
+## 5. Files and run commands
+
+| File | Bytes | Normalized SHA-256 |
+|---|---|---|
+| `nf_eval.py` | 11,813 | `9a2fe1a3beb18da63dfd58440f74ba4c330266753040917a5b8ad0756e6bbf71` |
+| `psf_ai_compile.py` 2026-10-01.a1 | 9,336 | `625e569dee1e69fae0890b5f89ea8acc8b659869bcf6cbbae5594df9ecd6b281` |
+| `core_fix_c2_eval.py` (helpers) | 27,244 | `9f4e124f996bbf83a15768148631279c5e1ce73541d929d0701dbe91da871bac` |
+| release `psf_compile.py` 2026-09-28.1 | 84,542 | `3616efc8b8a7bea184d6170fb7379d509d0bfec9828f4eb2f703dd4d26d8c60b` |
+| release [`benchmarks/psf_smart_layout.py`](../../benchmarks/psf_smart_layout.py) 2026-09-26.m1 | 22,450 | `a639efdef484379d23b4c0a52dffe557c47c30f639c41e4f8521ca608712d875` |
+| c2 `psf_compile.py` / `psf_smart_layout.py` | 95,818 / 32,708 | `e22dc6dd...a3bd1` / `f0d38519...70fc14` |
+
+```
+PYTHONPATH=<core>:<repo>/benchmarks python -u nf_eval.py run --rel-compile <repo>/psf_compile.py \
+  --rel-layout <repo>/benchmarks/psf_smart_layout.py --compile <c2>/psf_compile.py --layout <c2>/psf_smart_layout.py \
+  --a1 psf_ai_compile_a1.py --model-dir <repo>/data/2026-09-30 --v10-dir <dir of e2e_vllm_psf_v10.py> \
+  --out nf_raw.json > nf_run.txt 2>&1
+python nf_eval.py score --out nf_raw.json > nf_score.txt
+```
+
+## 6. Dry run before locking (disclosed)
+
+**Inputs:** `--dry` uses seeds offset by 900,000, 3 circuits per device, and no model circuits.
+
+**First scoring.** N0, N1, N2 and N4 were CONFIRMED. N3 was then defined as a Spearman correlation
+across all compiled outputs. It scored 0.87 on Auckland and -0.09 on Torino, and so came out REFUTED.
+
+- **Why that was the wrong measure:** it pools different circuits, and their sizes and the physical
+  qubits they land on dominate the infidelity.
+- **Change:** N3 was redefined as the within-circuit pairwise comparison above. On the same dry-run data
+  it gives 85.7 % (Auckland) and 81.8 % (Torino).
+- This change was made after seeing dry-run data, on dev seeds only, and it is disclosed here.
+
+The model-circuit loading path was smoke-tested on one file (loading only, no compile).
+
+**No scored input was compiled before locking.**
+
+---
+
+<!-- ===== Addendum 281 (source: spare-qubit-cliff-addendum-281-2026-10-01.md) ===== -->
+
+> **Note added when merging:** N0, N1, N3 CONFIRMED; N2 and N4 AMBIGUOUS. Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in `data/2026-10-01/noisy_fidelity/as_run/`; the outputs are in `data/2026-10-01/noisy_fidelity/`.
+
+## Addendum 281 -- Results: noisy-simulation fidelity, released stack vs c2 vs a1 vs Qiskit L3 -- N0, N1, N3 CONFIRMED; N2, N4 AMBIGUOUS (2026-10-01)
+
+**Pre-registration:** `docs/findings/noisy-fidelity-preregistration-2026-10-01.md`. It was locked at its
+Project save time before this run.
+
+- **Environment:** workplace sandbox, Qiskit 2.5.2, qiskit-aer 0.17.2, core 2026-09-29.1.
+- **Noise:** `NoiseModel.from_backend` of FakeAuckland and FakeTorino (gate noise only).
+- **Hashes:** the run's META line records the pre-registered hashes. Nothing was re-run.
+
+## 1. Verdict
+
+**C0:** OK.
+
+| ID | Result | Numbers |
+|---|---|---|
+| N0 | CONFIRMED | all 4 arms exact without noise on all 80 random and 77 model circuits |
+| N1 | CONFIRMED | mean infidelity REL → A1: Auckland 0.136 → 0.085, Torino 0.110 → 0.059; A1 lower than REL in 97 % / 92 % of circuits with different 2-qubit counts |
+| N2 | **AMBIGUOUS** | A1 / L3 mean infidelity: Auckland 1.058 (bound 1.05), Torino 0.874 |
+| N3 | CONFIRMED | within a circuit, the arm with fewer 2-qubit gates had the lower infidelity in 91.6 % (Auckland, 155 pairs) and 92.4 % (Torino, 144 pairs) |
+| N4 | **AMBIGUOUS** | A1 / C2 mean infidelity: Auckland 0.966, Torino 1.017 (bound 1.00, refute above 1.02) |
+
+## 2. Numbers (40 random circuits per device)
+
+| Device | Mean infidelity REL / C2 / A1 / L3 | 2-qubit sums | 1-qubit sums |
+|---|---|---|---|
+| FakeAuckland | 0.1360 / 0.0880 / 0.0850 / 0.0803 | 932 / 530 / 486 / 505 | 1,704 / 1,522 / 1,620 / 1,430 |
+| FakeTorino | 0.1097 / 0.0581 / 0.0591 / 0.0676 | 980 / 524 / 501 / 511 | 3,804 / 2,539 / 2,519 / 2,162 |
+
+**Model-written circuits of 9/30** (77 unique, at most 8 qubits, FakeAuckland; reported without a
+prediction): mean infidelity REL 0.0580, C2 0.0491, A1 0.0454, L3 0.0436.
+
+## 3. Reading
+
+- **The 2-qubit count is the right first target.**
+  - Within a circuit, fewer 2-qubit gates meant lower infidelity in about 92 % of comparisons on both
+    devices (N3).
+  - The improvement from the released stack to c2 and a1 shows up as a large fidelity gain: infidelity
+    falls by 38 % on Auckland and 46 % on Torino (N1).
+- **It is not the only factor once the 2-qubit counts are close.**
+  - **A1 against L3:** in the 26 Auckland circuits where A1 and L3 have the same 2-qubit count, A1 was
+    worse in 16. Its mean infidelity there was 0.0715 against L3's 0.0675, and one case was 0.094 against
+    0.051 at 9 two-qubit gates each.
+  - **A1 against C2 on Torino:** A1 has fewer 2-qubit gates (501 against 524), but its mean infidelity
+    is 1.7 % higher.
+  - **Why, as far as the data shows:**
+    - **Which physical qubits and couplers a circuit lands on.** The snapshots' error rates vary from
+      qubit to qubit, and no arm was given error rates, so this is effectively luck.
+    - **Single-qubit gate count.** A1 has more single-qubit gates than L3: 1,620 against 1,430 on
+      Auckland, 2,519 against 2,162 on Torino.
+  - The prediction-free causal split between these two factors was not measured.
+- **Next lever (proposed a2).** a1 already produces several candidate circuits. It currently picks the
+  one with the fewest 2-qubit gates. It could instead pick by *estimated fidelity* from the device's own
+  error rates: the product of (1 - error) over the gates used, on the qubits used. It could also pass
+  edge errors to the layout search, which PSF-Zero already supports (`layout_edge_errors`).
+  - This needs a Target with error rates, which the fake devices have and the live devices provide.
+  - It also needs a new pre-registration.
+
+**Not established:** hardware results. The noise model has no idle noise, crosstalk or drift, and
+nothing here is measured on a QPU.
+
+## 4. Files
+
+| File | Bytes | SHA-256 (raw) |
+|---|---|---|
+| [`nf_raw.json`](../../data/2026-10-01/noisy_fidelity/outputs/scored/nf_raw.json) | 81,799 | `83e475986c5205db694248e4c62ed1eb2cba340d2f2636426e4d0e70230dc8bf` |
+| [`nf_run.txt`](../../data/2026-10-01/noisy_fidelity/outputs/scored/nf_run.txt) | 64,774 | `86acf2f3f3a55b134cf384c93811c4685beb0cbfe56ed63721e9be53de5765cf` |
+| [`nf_score.txt`](../../data/2026-10-01/noisy_fidelity/outputs/scored/nf_score.txt) | 1,223 | `46e17691035e2c5d6c01839aee1ba061d786fadd2ac94b2409f483096fb5fe9c` |
+
+---
+
+<!-- ===== Addendum 282 (source: spare-qubit-cliff-addendum-282-2026-10-01.md) ===== -->
+
+> **Note added when merging:** Workplace pre-registration of a2 (error-aware placement and selection). Locked at the workplace Project's save time, not by a git commit; it entered this repository after the run.
+
+## Addendum 282 -- Pre-registration: psf_ai_compile 2026-10-01.a2 (error-aware placement and selection) under noisy simulation (2026-10-01)
+
+**Status: pre-registration, locked at the Project save time of this document**, before the scored run.
+
+- **Environment:** workplace sandbox, Qiskit 2.5.2, qiskit-aer 0.17.2.
+- **Compiler and core:** psf_compile and psf_smart_layout 2026-10-01.c2; core 2026-09-29.1.
+- **Devices and noise:** fake-provider devices and their noise models. No IBM access, no hardware.
+
+## 1. Why a2, and what development showed (not pre-registered)
+
+**The starting point.** The noisy-fidelity test (`noisy-fidelity-results-2026-10-01.md`) showed two
+things:
+
+- fewer 2-qubit gates meant lower infidelity in about 92 % of within-circuit comparisons;
+- once the 2-qubit counts were close, the physical qubits chosen decided the result. a1 was not given
+  any error rates, and lost to L3 on FakeAuckland (1.06 ×).
+
+**a2 = a1 plus the following, used only when a `target` with error rates is given:**
+
+1. **Re-placement.** Each of the best candidates (at most 6, within 2 two-qubit gates of the fewest) is
+   re-placed on the device.
+   - Every coupling-preserving placement of its used qubits and couplers is scored by the target's own
+     gate errors (subgraph isomorphism, at most 5,000 placements).
+   - This is the idea of Qiskit's VF2PostLayout, applied to PSF-Zero's routed circuit.
+2. **Selection by estimated fidelity.** The final choice minimises the sum of -log(1 - error) over the
+   gates, rather than the 2-qubit count.
+3. **Error-aware layout candidate.** One more candidate per starting point routes from the initial
+   layout that Qiskit level 3 picks *with* the target. Only the layout is borrowed.
+
+Without a target, a2 is identical to a1.
+
+**Development data:** the seeds of the noisy-fidelity test (7001-7040), FakeAuckland and FakeTorino.
+They are now excluded. The table gives mean infidelity.
+
+| Device | A1 | A2 | L3 | L3T (Qiskit L3 with target) | A2 lower than L3T | A2 median time |
+|---|---|---|---|---|---|---|
+| FakeAuckland | 0.0850 | 0.0654 | 0.0803 | 0.0617 | 13 of 40 | 161 ms |
+| FakeTorino | 0.0591 | 0.0356 | 0.0676 | 0.0364 | 24 of 40 | 383 ms |
+
+- **2-qubit sums:** A2 487 / 501, A1 486 / 501.
+- **Before item 3 was added,** A2 was 0.0654 / 0.0357; item 3 changed almost nothing.
+- **A diagnostic on Auckland:** the estimated cost and the simulated infidelity correlate at 0.75 across
+  compiled outputs. Some outputs with equal estimates differ by up to 2 × in simulated infidelity. The
+  estimate ignores where in the circuit an error falls and which qubits are traced out.
+- **Not done, on purpose:** selection by simulating the noise model itself. That would select by the
+  evaluation metric, and it would not carry over to real hardware.
+
+## 2. Design (`a2_eval.py`)
+
+**Arms.**
+
+| Arm | What it is |
+|---|---|
+| A1 | psf_ai_compile a1, no error information |
+| A2 | psf_ai_compile a2 with `target=<device Target>` |
+| L3 | Qiskit level 3, no error information |
+| L3T | Qiskit level 3 with `target=<device Target>`, error-aware |
+
+**Noise.** `NoiseModel.from_backend` of each fake device: per-gate depolarizing plus thermal relaxation;
+no idle noise, crosstalk or readout.
+
+**Fidelity.** <psi|rho|psi> on the final-layout qubits (density matrix).
+
+**Devices:** FakeAuckland, FakeTorino, **FakeKingston** (Kingston's noise has not been used before).
+
+**Inputs.** None of these were used in development.
+
+- **Random dense circuits** from Python `random` seeds 8001-8040, 3-5 qubits, the same generator as
+  before, on each device.
+- **The A2-without-target check:** A2 called without a target, on the first 20 Auckland circuits,
+  compared with A1.
+
+## 3. Predictions
+
+**C0:** the versions loaded are c2, c2, a1 and a2.
+
+| ID | Prediction | Confirmed if | Refuted if |
+|---|---|---|---|
+| D1 | all outputs are exact without noise | noiseless F >= 1 - 1e-9 for every arm and circuit | any below |
+| D2 | error-aware a2 beats a1 under noise | every device: mean infidelity A2 <= 0.90 × A1 | any device: A2 >= A1 |
+| D3 | a2 is at error-aware Qiskit L3's level | every device: A2 <= 1.10 × L3T | any device > 1.25 × |
+| D4 | a2 beats Qiskit L3 without error information | every device: A2 <= 0.95 × L3 | any device: A2 > L3 |
+| D5 | a2 does not pay in 2-qubit gates | every device: 2-qubit sum A2 <= 1.03 × A1 | any device > 1.10 × |
+| D6 | fast enough for the vLLM loop | per-device median A2 time <= 600 ms **and** max <= 3 s | any median > 1.2 s |
+| D7 | without a target, a2 is a1 | identical output digests on all 20 | any differs |
+
+Between the bounds: ambiguous. No re-runs to improve a score.
+
+**Expectations stated before running.**
+
+- **D3:** development ratios were 1.06 (Auckland) and 0.98 (Torino). Auckland is the risk.
+- **D2:** development ratios were 0.77 and 0.60. On a device where A1 already lands on good qubits,
+  the gain could be smaller.
+- **D6:** development medians were 161-383 ms. Kingston has 156 qubits, so it is expected to be
+  slowest.
+
+## 4. What this cannot establish
+
+- **Hardware results.** The simplified noise model has no idle noise, crosstalk or drift. The error
+  rates are a snapshot.
+- The vLLM pass rate.
+- Larger circuits.
+
+A positive result is a reason to try a2 on hardware with the live Target's error rates. That happens at
+home.
+
+## 5. Files and run commands
+
+| File | Bytes | Normalized SHA-256 |
+|---|---|---|
+| `a2_eval.py` | 8,406 | `88c098ea963df2c704219e235bf68c983e975485f3c642f1446433eafa70722c` |
+| `psf_ai_compile.py` 2026-10-01.a2 | 15,874 | `dda42b284f2f0aed430d72d6ae701af996892623f3fca53753bde20774ce19e6` |
+| `psf_ai_compile.py` 2026-10-01.a1 | 9,336 | `625e569dee1e69fae0890b5f89ea8acc8b659869bcf6cbbae5594df9ecd6b281` |
+| `core_fix_c2_eval.py` (helpers) | 27,244 | `9f4e124f996bbf83a15768148631279c5e1ce73541d929d0701dbe91da871bac` |
+
+```
+PYTHONPATH=<core> python -u a2_eval.py run --compile <c2>/psf_compile.py --layout <c2>/psf_smart_layout.py \
+  --a1 psf_ai_compile_a1.py --a2 psf_ai_compile_a2.py --out a2_raw.json > a2_run.txt 2>&1
+python a2_eval.py score --out a2_raw.json > a2_score.txt
+```
+
+## 6. Dry run before locking (disclosed)
+
+**Inputs:** `--dry` uses seeds offset by 900,000, 3 per device.
+
+**Results:**
+
+- D1 and D4-D7 were CONFIRMED.
+- D2 and D3 were AMBIGUOUS:
+  - A2/A1 was 0.67, 0.83 and 0.93;
+  - A2/L3T was 1.16 on Auckland and 0.97 on Torino and Kingston.
+
+**Changes after the dry run:** none.
+
+**No scored input was compiled before locking.**
+
+---
+
+<!-- ===== Addendum 283 (source: spare-qubit-cliff-addendum-283-2026-10-01.md) ===== -->
+
+> **Note added when merging:** 7 of 7 CONFIRMED. Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in `data/2026-10-01/ai_compile_a2/as_run/`; the outputs are in `data/2026-10-01/ai_compile_a2/`.
+
+## Addendum 283 -- Results: psf_ai_compile 2026-10-01.a2 (error-aware) under noisy simulation -- 7 of 7 CONFIRMED (2026-10-01)
+
+**Pre-registration:** `docs/findings/ai-compile-a2-preregistration-2026-10-01.md`. It was locked at its
+Project save time before this run.
+
+- **Environment:** workplace sandbox, Qiskit 2.5.2, qiskit-aer 0.17.2.
+- **Compiler and core:** psf_compile and psf_smart_layout 2026-10-01.c2; core 2026-09-29.1.
+- **Noise:** each fake device's own noise model.
+- **Hashes:** the run's META line records the pre-registered hashes. Nothing was re-run.
+
+## 1. Verdict
+
+**C0:** OK. **Decision line:** ALL CONFIRMED.
+
+| ID | Result | Numbers |
+|---|---|---|
+| D1 | CONFIRMED | all 480 outputs (4 arms × 120 circuits) exact without noise |
+| D2 | CONFIRMED | A2/A1 mean infidelity: 0.772 (Auckland), 0.559 (Torino), 0.842 (Kingston) |
+| D3 | CONFIRMED | A2/L3T: 1.000, 0.972, 0.977 |
+| D4 | CONFIRMED | A2/L3: 0.769, 0.498, 0.812 |
+| D5 | CONFIRMED | 2-qubit sums A2/A1: 554/554, 552/551, 551/551 |
+| D6 | CONFIRMED | median 167 / 359 / 417 ms, max 1.13 s |
+| D7 | CONFIRMED | without a target, A2's output equals A1's in 20 of 20 |
+
+## 2. Numbers (40 new random circuits per device)
+
+| Device | Mean infidelity A1 / A2 / L3 / L3T | A2 lower than L3T | 2-qubit sums A1 / A2 / L3 / L3T |
+|---|---|---|---|
+| FakeAuckland | 0.0870 / 0.0672 / 0.0874 / 0.0672 | 20 of 40 | 554 / 554 / 564 / 564 |
+| FakeTorino | 0.0714 / 0.0399 / 0.0801 / 0.0410 | 29 of 40 | 551 / 552 / 564 / 564 |
+| FakeKingston | 0.0218 / 0.0183 / 0.0226 / 0.0188 | 28 of 40 | 551 / 551 / 558 / 558 |
+
+## 3. Reading
+
+- **Giving the AI front end the device's error rates (a2) cuts the simulated error a lot:**
+  - 23 % on Auckland, 44 % on Torino and 16 % on Kingston, compared with a1;
+  - it costs essentially no 2-qubit gates (one extra gate on Torino, in total).
+- **Against error-aware Qiskit level 3 (L3T), a2 is level or slightly better:**
+  - equal on Auckland, 2-3 % lower on Torino and Kingston;
+  - it has the lower error in 77 of 120 circuits.
+- **Against Qiskit level 3 without error rates,** a2 has 19-50 % lower error.
+- **Without a target,** a2 is exactly a1, so it is safe to use where no error rates are available.
+- **Nothing in PSF-Zero's compiler or core was changed.**
+  - From the error rates, a2 picks the qubits (re-placement) and the candidate (estimated fidelity).
+  - The level-3 layout it borrows is only one more starting layout; synthesis and routing remain
+    PSF-Zero's.
+
+**Not established:**
+
+- **Hardware results.** The noise model has no idle noise, crosstalk or drift, and the error rates are a
+  fixed snapshot.
+- The vLLM pass rate.
+- Circuits above 8 qubits, which fall through to c2.
+
+**Next step (at home, on the owner's signal):** run a2 with the live device's Target against L3T on a
+small set of circuits on hardware.
+
+## 4. Files
+
+| File | Bytes | SHA-256 (raw) |
+|---|---|---|
+| [`a2_raw.json`](../../data/2026-10-01/ai_compile_a2/outputs/scored/a2_raw.json) | 63,742 | `9c20727e3034484bccadae25ea6e91d786a73de6456684785186c605de29aaf7` |
+| [`a2_run.txt`](../../data/2026-10-01/ai_compile_a2/outputs/scored/a2_run.txt) | 48,627 | `8db0ad5b014ea9039b8f43fbee3cfe7b99864842e334cbb36d776b58dbed1420` |
+| [`a2_score.txt`](../../data/2026-10-01/ai_compile_a2/outputs/scored/a2_score.txt) | 1,396 | `19e41944c54eeec00528b4530f9179f83c00d9cc387681c2fe6c6e5bc0cb894a` |
+
+---
+
+<!-- ===== Addendum 284 (source: spare-qubit-cliff-addendum-284-2026-10-01.md) ===== -->
+
+> **Note added when merging:** Workplace pre-registration: a2 on 153 model-written circuits of 2026-09-30 that no earlier test used, and the harness v11 ([`benchmarks/e2e_vllm_psf_v11.py`](../../benchmarks/e2e_vllm_psf_v11.py)). Locked at the workplace Project's save time, not by a git commit; it entered this repository after the run.
+
+## Addendum 284 -- Pre-registration: the AI front end a2 in the vLLM setting -- replay of 153 unused model-written circuits under noisy simulation, and the e2e harness v11 (2026-10-01)
+
+**Status: pre-registration, locked at the Project save time of this document**, before the scored run.
+
+- **Environment:** workplace sandbox, Qiskit 2.5.2, qiskit-aer 0.17.2.
+- **Compiler and core:** psf_compile and psf_smart_layout 2026-10-01.c2; core 2026-09-29.1.
+- **No GPU, no pod, no IBM access.** The language model is not run again. Its circuits from 9/30 are
+  replayed.
+
+## 1. What is tested, and why this way
+
+**The question.** What does the AI front end a2 change for the circuits a language model actually
+writes in the vLLM loop?
+
+**Why not on the pod.** Running the model again would mostly re-measure the model; the pass rate does
+not depend on the compiler. This test replays the circuits the models wrote on 9/30 instead.
+
+**Inputs.**
+
+- Every circuit in the pod runs' `rounds.jsonl` (field `spec`) that is **not** one of the
+  `best_circuit.json` files, unique per task, with at most 8 qubits. The best circuits were used in
+  developing c2 and a0; these were never compiled in any test.
+- **153 circuits:** w3 83, qft3 28, dicke42 16, w4 12, ghz5 7, ghz3i 4, singlet3 2, bell3 1.
+- They come from gpt-oss-120b, Qwen2.5-7B and Qwen2.5-72B, in the go/no-go, pilot and v10 runs.
+- They include wrong answers. That does not matter here: the comparison is between compilers of the
+  same logical circuit.
+- They are converted exactly as the harness does (`to_tape` → `tape_to_qiskit`), so 2-qubit gates
+  arrive as `unitary`.
+
+**Arms.**
+
+| Arm | What it is |
+|---|---|
+| C2 | `compile_for_hardware(cx, layout_search=True, seed 0)`, the compile step of v10, adopted version |
+| A2 | psf_ai_compile 2026-10-01.a2 with the device Target, the compile step of v11 `--compiler ai` |
+| L3 | Qiskit level 3 without error rates |
+| L3T | Qiskit level 3 with the Target, the harness's own "Q3" comparison |
+
+**Devices:** FakeAuckland (the e2e device) and FakeTorino.
+
+**Noise and fidelity:** `NoiseModel.from_backend`; fidelity on the final-layout qubits (density matrix).
+
+## 2. Predictions
+
+**C0:** the versions loaded are c2, c2 and a2. Circuits the harness itself would reject are skipped and
+counted.
+
+| ID | Prediction | Confirmed if | Refuted if |
+|---|---|---|---|
+| E1 | all outputs are exact without noise | every arm, every circuit: F >= 1 - 1e-9 | any below |
+| E2 | a2 beats the compile step v10 used | every device: mean infidelity A2 <= 0.90 × C2 | any device: A2 >= C2 |
+| E3 | a2 is at the harness's Qiskit comparison | every device: A2 <= 1.05 × L3T | any device > 1.20 × |
+| E4 | a2 does not use more 2-qubit gates than L3T | every device: A2 sum <= L3T sum | any device > 1.05 × |
+| E5 | fast enough per round | per-device median A2 time <= 0.6 s, **and** max <= 3 s | any median > 1.2 s |
+
+Between the bounds: ambiguous. No re-runs to improve a score.
+
+**Reported without prediction:** per-task means, and better/worse counts against L3T.
+
+**Expectations.** These are similar to the a2 test on random circuits. Model-written circuits are smaller
+and simpler, so the differences between arms may be smaller. On FakeAuckland (27 qubits) every arm has
+few qubits to choose from.
+
+## 3. Harness v11 (exploratory, done before locking, disclosed)
+
+**What v11 is:** `e2e_vllm_psf_v11.py` = v10 plus `--compiler {psf,ai}` and `--ai-module`. With `ai` the
+compile step calls `compile_for_model_circuit(qc, coupling_map, basis_gates, target=target)`. Everything
+else is unchanged: the fidelity checks, the Qiskit comparison, the feedback text.
+
+**Mock-LLM run** (`--mock-llm`, 3 rounds, all 10 tasks, FakeAuckland, against a repository tree with the
+c2 patch applied):
+
+- Both settings completed without error.
+- With `ai`, the compiled fidelity equalled the logical fidelity in every round, so the final-layout
+  bookkeeping works through the harness.
+- qft3's correct mock circuit compiled to 7 two-qubit gates, against 9 with `psf` and 9 for the
+  harness's L3.
+- The StatePreparation baselines dropped:
+  - ghz5 41 → 34;
+  - qft3 7 → 3.
+- **Compile time per round with `ai`:** 40-200 ms for 3-5 qubits, about 0.5 s for the 6-qubit tasks.
+  The 27-qubit tasks fall through to c2 and stay at about 12 ms.
+
+These runs are not scored.
+
+## 4. What this cannot establish
+
+- The model's behaviour with a2 in the loop. The feedback contains gate counts, so a model *could* react
+  to lower counts. That needs a pod run.
+- Hardware results.
+- The 27-qubit tasks, which fall through to c2.
+
+## 5. Files and run commands
+
+| File | Bytes | Normalized SHA-256 |
+|---|---|---|
+| `rp_eval.py` | 9,832 | `c5ded2a900078b909491d2883750c67e718f2edbb61b39779520b59e6f2e595b` |
+| `e2e_vllm_psf_v11.py` | 58,424 | `96474c6f8722c08fb7d069124a8ad6bd444b007a39e92e5e56509582984940c5` |
+| `psf_ai_compile.py` 2026-10-01.a2 | 15,874 | `dda42b284f2f0aed430d72d6ae701af996892623f3fca53753bde20774ce19e6` |
+| `core_fix_c2_eval.py` (helpers) | 27,244 | `9f4e124f996bbf83a15768148631279c5e1ce73541d929d0701dbe91da871bac` |
+
+```
+PYTHONPATH=<core>:<repo>/benchmarks python -u rp_eval.py run --compile <c2>/psf_compile.py \
+  --layout <c2>/psf_smart_layout.py --a2 psf_ai_compile.py --data <repo>/data/2026-09-30 \
+  --v10-dir <dir of e2e_vllm_psf_v10.py> --out rp_raw.json > rp_run.txt 2>&1
+python rp_eval.py score --out rp_raw.json > rp_score.txt
+```
+
+## 6. Dry run before locking (disclosed)
+
+**Inputs:** `--dry` uses circuits from the `sandbox_dryrun` folders. These are mock and fake-model
+circuits, never the scored pod circuits; 3 were usable.
+
+**Results:** all 5 items CONFIRMED.
+
+**Changes after the dry run:** none to the predictions. Before the dry run, its input was changed from a
+slice of the scored set to the `sandbox_dryrun` folders, so that no scored circuit is compiled before
+locking.
+
+**No scored circuit was compiled before locking.**
+
+---
+
+<!-- ===== Addendum 285 (source: spare-qubit-cliff-addendum-285-2026-10-01.md) ===== -->
+
+> **Note added when merging:** E1, E3, E4, E5 CONFIRMED; E2 (FakeAuckland) AMBIGUOUS. Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in `data/2026-10-01/vllm_a2_replay/as_run/`; the outputs are in `data/2026-10-01/vllm_a2_replay/`.
+
+## Addendum 285 -- Results: a2 on 153 unused model-written circuits (noisy simulation) -- E1, E3, E4, E5 CONFIRMED; E2 AMBIGUOUS (FakeAuckland) (2026-10-01)
+
+**Pre-registration:** `docs/findings/vllm-a2-replay-preregistration-2026-10-01.md`. It was locked at its
+Project save time before this run.
+
+- **Environment:** workplace sandbox, Qiskit 2.5.2, qiskit-aer 0.17.2.
+- **Compiler and core:** psf_compile and psf_smart_layout 2026-10-01.c2; core 2026-09-29.1.
+- **Run:** nothing was re-run. 153 circuits, 0 skipped.
+
+## 1. Verdict
+
+**C0:** OK.
+
+| ID | Result | Numbers |
+|---|---|---|
+| E1 | CONFIRMED | 1,224 outputs (4 arms × 153 × 2 devices), all exact without noise |
+| E2 | **AMBIGUOUS** | A2/C2 mean infidelity: 0.978 (Auckland; bound 0.90), 0.511 (Torino) |
+| E3 | CONFIRMED | A2/L3T: 0.955 (Auckland), 0.946 (Torino) |
+| E4 | CONFIRMED | 2-qubit sums A2/L3T: 885/963 (Auckland), 894/961 (Torino) |
+| E5 | CONFIRMED | median 119 / 243 ms, max 0.96 s |
+
+## 2. Numbers
+
+| Device | Mean infidelity C2 / A2 / L3 / L3T | 2-qubit sums C2 / A2 / L3 / L3T | A2 better / worse than L3T |
+|---|---|---|---|
+| FakeAuckland | 0.0554 / 0.0542 / 0.0519 / 0.0568 | 963 / 885 / 965 / 963 | 85 / 67 |
+| FakeTorino | 0.0386 / 0.0197 / 0.0366 / 0.0208 | 965 / 894 / 959 / 961 | 79 / 63 |
+
+**Per task (mean infidelity C2 → A2).**
+
+| Task | FakeAuckland | FakeTorino |
+|---|---|---|
+| dicke42 | 0.139 → 0.112 | 0.126 → 0.045 |
+| qft3 | 0.035 → 0.037 | 0.024 → 0.013 |
+| w3 | 0.045 → 0.049 | 0.029 → 0.017 |
+
+**2-qubit counts:** A2 has 8 % fewer 2-qubit gates than C2 on Auckland (885 against 963) and 7 % fewer
+on Torino (894 against 965). For qft3 the figure is 113 against 137, mostly SWAP elision.
+
+## 3. Reading
+
+**On FakeTorino** a2 does what the earlier tests predicted for the model's own circuits:
+
+- it halves the simulated error of the compile step v10 used;
+- it beats Qiskit level 3 with the target, with lower mean infidelity and fewer 2-qubit gates.
+
+**On FakeAuckland** the picture is different, and it was not anticipated.
+
+- **Both error-aware compilers are behind the error-blind Qiskit L3.** A2 is at 0.0542 and L3T at
+  0.0568, while L3 reaches 0.0519.
+- **A2 against C2:** A2 is only 2 % better than C2 overall, and slightly worse on w3 and qft3, although
+  it uses fewer 2-qubit gates.
+- **A2 against L3T:** A2 still beats Qiskit's own error-aware level 3 (E3).
+- **One hypothesis, not tested here:** on this device, choosing qubits by the reported gate error rates
+  does not track the simulated noise well. The noise model adds thermal relaxation from each qubit's
+  T1/T2 and the gate durations, and the reported error numbers may not reflect that.
+  - This contrasts with the a2 test on random circuits, where on Auckland A2 had 23 % lower infidelity
+    than L3 and equalled L3T. The model's circuits are smaller and simpler, and here the choice of
+    qubits seems to matter differently.
+  - A cost that also uses T1/T2 and gate durations would be the next thing to try. It would need a new
+    pre-registration.
+- **Not established:**
+  - hardware results;
+  - the model's behaviour with a2 in the loop (a pod run);
+  - the 27-qubit tasks, which fall through to c2.
+
+## 4. Harness v11
+
+`e2e_vllm_psf_v11.py` (`--compiler ai --ai-module psf_ai_compile.py`) passed its mock-LLM check before
+locking. Section 3 of the pre-registration has the details. It is ready for a pod run if the owner wants
+one.
+
+## 5. Files
+
+| File | Bytes | SHA-256 (raw) |
+|---|---|---|
+| [`rp_raw.json`](../../data/2026-10-01/vllm_a2_replay/outputs/scored/rp_raw.json) | 183,771 | `f8a590b9f2ccb8c99746b10a43de039784f96fb9e6d516cf1e22968eddaedc77` |
+| [`rp_run.txt`](../../data/2026-10-01/vllm_a2_replay/outputs/scored/rp_run.txt) | 148,828 | `3a15538393cb49c16fa1c3496c9cad5fe93a00d61ee7e3eb3c2640badc457b5a` |
+| [`rp_score.txt`](../../data/2026-10-01/vllm_a2_replay/outputs/scored/rp_score.txt) | 2,760 | `e7bce3de31d97d31c15eccd9834808fc6513473e9a9edf86ede9f4b1d85c6cb7` |
+
+---
+
+<!-- ===== Addendum 286 (source: spare-qubit-cliff-addendum-286-2026-10-01.md) ===== -->
+
+> **Note added when merging:** Workplace pre-registration: the FakeAuckland anomaly and a4 (state-aware error estimate). Locked at the workplace Project's save time, not by a git commit; it entered this repository after the run.
+
+## Addendum 286 -- Pre-registration: why error-aware placement failed on FakeAuckland, and psf_ai_compile 2026-10-01.a4 (state-aware error estimate) (2026-10-01)
+
+**Status: pre-registration, locked at the Project save time of this document**, before the scored run.
+
+- **Environment:** workplace sandbox, Qiskit 2.5.2, qiskit-aer 0.17.2.
+- **Compiler and core:** psf_compile and psf_smart_layout 2026-10-01.c2; core 2026-09-29.1.
+- **Devices and noise:** fake-provider devices and their noise models. No IBM access, no hardware.
+
+## 1. The FakeAuckland puzzle, and what development found (not pre-registered)
+
+**The puzzle.** In the replay of model-written circuits (`vllm-a2-replay-results-2026-10-01.md`), both
+error-aware compilers lost to error-blind Qiskit level 3 on FakeAuckland:
+
+| Compiler | Mean infidelity |
+|---|---|
+| A2 | 0.0542 |
+| Qiskit L3 with target (L3T) | 0.0568 |
+| Qiskit L3 without target (L3) | 0.0519 |
+
+**Finding 1: reported errors understate decoherence on some qubits.**
+
+- On FakeAuckland, the reported gate error is below what the same snapshot's T1/T2 and gate duration
+  allow on 16 of 56 cx gates and on some single-qubit gates.
+  - Qubit 24 has T2 = 26 µs.
+  - cx(24,25) is reported at 0.0055, but its decoherence limit is 0.0089.
+- Aer's device noise model applies the decoherence limit. The channels it builds have average
+  infidelity up to 1.6× (cx) and 2.1× (sx) the reported value.
+- So placing by reported error lures circuits onto qubits 22-26.
+- On FakeTorino no cz gate is affected.
+
+**Candidate a3:** use max(reported, decoherence limit) per gate. On the replay set (FakeAuckland) it gave
+0.0432 against A2's 0.0542. On the a2 random seeds 8001-8040 it gave 0.0701 against 0.0672, worse.
+
+**Finding 2: the score itself was the problem.**
+
+- On 20 random circuits × 4 compilers (FakeAuckland), the sum of average gate infidelities ranked the
+  compiled versions of the same circuit correctly in only 63 of 117 pairs, about chance.
+- **The cause:** relaxation and dephasing barely affect a qubit sitting in a basis state, while
+  depolarizing noise affects every state. In one example a3 moved a circuit from the short-T2 qubits
+  22-26 to long-T2 qubits 3-11. Its average-infidelity score fell from 0.149 to 0.132, but the simulated
+  infidelity rose from 0.057 to 0.091.
+
+**Candidate a4: a state-aware first-order estimate.**
+
+- Every gate's error is split into Pauli components:
+  - Pauli-twirled thermal relaxation on each qubit, from T1, T2 and the gate duration;
+  - plus a depolarizing remainder, up to the reported error.
+- Each component P with probability p costs p × (1 - <P>²), with <P> taken on the ideal state of the
+  routed circuit right after the gate (statevector of the used qubits).
+- The expectation values do not depend on where the circuit is placed, so every placement is scored from
+  precomputed sums.
+- On the same 117 pairs it ranked 109 correctly. Its correlation with the simulated infidelity was 0.96,
+  against 0.85 for the average-infidelity score.
+
+**Caution.** The estimate makes the same physical assumptions as Aer's device noise model:
+depolarizing plus thermal relaxation per gate. A noisy-simulation test is therefore favourable to it by
+construction. Its value on hardware is untested.
+
+**Development results of a4.** These are on development inputs: the a2 seeds 8001-8040 and the replay
+set. The table gives mean infidelity.
+
+| Set | A2 | A4 | L3 | L3T | A4 median time |
+|---|---|---|---|---|---|
+| Auckland random (8001-8040) | 0.0672 | 0.0540 | 0.0874 | 0.0672 | 278 ms |
+| Auckland replay (153 model circuits) | 0.0542 | 0.0422 | 0.0519 | 0.0568 | 149 ms |
+| Torino random | 0.0399 | 0.0396 | 0.0801 | 0.0410 | 373 ms |
+| Kingston random | 0.0183 | 0.0180 | 0.0226 | 0.0188 | 368 ms |
+
+- **2-qubit sums:** essentially unchanged (Auckland random: A4 562 against A2 554).
+- **Against L3:** A4 was lower in 40 of 40 random circuits on each device, and in 133 of 153 replay
+  circuits.
+
+## 2. Design (`a4_eval.py`)
+
+**Arms.**
+
+| Arm | What it is |
+|---|---|
+| A2 | psf_ai_compile a2 with the target |
+| A4 | psf_ai_compile a4 with the target |
+| L3 | Qiskit level 3, no target |
+| L3T | Qiskit level 3 with the target |
+
+A1 is used only for the no-target identity check.
+
+**Noise and fidelity:** `NoiseModel.from_backend`; fidelity on the final-layout qubits (density matrix).
+
+**Devices:** FakeAuckland, FakeTorino, FakeKingston.
+
+**Inputs (new):** random dense circuits from Python `random` seeds 9001-9040, 3-5 qubits, the same
+generator as before. Also, A4 without a target against A1 on the first 20 Auckland circuits.
+
+## 3. Predictions
+
+**C0:** the versions loaded are c2, c2, a1, a2 and a4. F2 and F3 are split by device, as development
+suggests.
+
+| ID | Prediction | Confirmed if | Refuted if |
+|---|---|---|---|
+| F1 | all outputs are exact without noise | all arms, all circuits | any below 1 - 1e-9 |
+| F2a | a4 fixes the Auckland problem | FakeAuckland: mean infidelity A4 <= 0.90 × A2 | > 1.00 × |
+| F2b | a4 is not worse elsewhere | FakeTorino and FakeKingston: A4 <= 1.00 × A2 | either > 1.05 × |
+| F3a | a4 beats error-aware Qiskit on Auckland | FakeAuckland: A4 <= 0.90 × L3T | > 1.00 × |
+| F3b | a4 is at least level with error-aware Qiskit elsewhere | FakeTorino and FakeKingston: A4 <= 1.00 × L3T | either > 1.05 × |
+| F4 | a4 beats Qiskit L3 without error information | every device: A4 <= 0.90 × L3 | any > 1.00 × |
+| F5 | a4 keeps the 2-qubit count | every device: sum A4 <= 1.03 × A2 | any > 1.10 × |
+| F6 | fast enough for the vLLM loop | every median <= 0.8 s, max <= 4 s | any median > 1.6 s |
+| F7 | without a target, a4 is a1 | 20 of 20 identical | any differs |
+
+Between the bounds: ambiguous. No re-runs to improve a score.
+
+## 4. What this cannot establish
+
+- Hardware. See the caution in section 1: the estimate and the simulator share their physical model.
+- The vLLM pass rate.
+- Larger circuits.
+
+## 5. Files and run commands
+
+| File | Bytes | Normalized SHA-256 |
+|---|---|---|
+| `a4_eval.py` | 9,810 | `7658769db090682820e2b4954a5af526444935af6cad5436cc094c870e02ec61` |
+| `psf_ai_compile.py` 2026-10-01.a4 | 25,676 | `06ac6750705ce5159753d283d043ac4fff936f4c3023bf7c0199143b38fa1a13` |
+| `psf_ai_compile.py` 2026-10-01.a2 / a1 | 15,874 / 9,336 | `dda42b28...ce19e6` / `625e569d...b281` |
+| `core_fix_c2_eval.py` (helpers) | 27,244 | `9f4e124f996bbf83a15768148631279c5e1ce73541d929d0701dbe91da871bac` |
+
+```
+PYTHONPATH=<core> python -u a4_eval.py run --compile <c2>/psf_compile.py --layout <c2>/psf_smart_layout.py \
+  --a1 psf_ai_compile_a1.py --a2 psf_ai_compile_a2.py --a4 psf_ai_compile_a4.py --out a4_raw.json > a4_run.txt 2>&1
+python a4_eval.py score --out a4_raw.json > a4_score.txt
+```
+
+## 6. Dry run before locking (disclosed)
+
+**Inputs:** `--dry` uses seeds offset by 900,000, 3 per device.
+
+**Results:** all 9 items CONFIRMED. A4/A2 was 0.88, 1.00 and 0.98; A4/L3T was 0.80, 0.91 and 0.94.
+
+**Changes after the dry run:** none.
+
+**No scored input was compiled before locking.**
+
+---
+
+<!-- ===== Addendum 287 (source: spare-qubit-cliff-addendum-287-2026-10-01.md) ===== -->
+
+> **Note added when merging:** 9 of 9 CONFIRMED. The estimate shares its physics with the simulator that scores it, so these results favour it by construction; a real-device check is needed. Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in `data/2026-10-01/ai_compile_a4/as_run/`; the outputs are in `data/2026-10-01/ai_compile_a4/`.
+
+## Addendum 287 -- Results: psf_ai_compile 2026-10-01.a4 (state-aware error estimate) under noisy simulation -- 9 of 9 CONFIRMED (2026-10-01)
+
+**Pre-registration:** `docs/findings/ai-compile-a4-preregistration-2026-10-01.md`. It was locked at its
+Project save time before this run.
+
+- **Environment:** workplace sandbox, Qiskit 2.5.2, qiskit-aer 0.17.2.
+- **Compiler and core:** psf_compile and psf_smart_layout 2026-10-01.c2; core 2026-09-29.1.
+- **Run:** new seeds 9001-9040. Nothing was re-run.
+
+## 1. Verdict
+
+**C0:** OK. **Decision line:** ALL CONFIRMED.
+
+| ID | Result | Numbers |
+|---|---|---|
+| F1 | CONFIRMED | all 480 outputs exact without noise |
+| F2a | CONFIRMED | Auckland A4/A2 = 0.867 |
+| F2b | CONFIRMED | Torino 0.994, Kingston 0.983 |
+| F3a | CONFIRMED | Auckland A4/L3T = 0.851 |
+| F3b | CONFIRMED | Torino 0.937, Kingston 0.936 |
+| F4 | CONFIRMED | A4/L3 = 0.615, 0.353, 0.801 |
+| F5 | CONFIRMED | 2-qubit sums A4/A2 = 582/574, 584/583, 583/583 |
+| F6 | CONFIRMED | median 221 / 407 / 426 ms, max 0.66 s |
+| F7 | CONFIRMED | without a target, A4's output equals A1's in 20 of 20 |
+
+## 2. Numbers (40 new random circuits per device)
+
+| Device | Mean infidelity A2 / A4 / L3 / L3T | A4 lower than L3T |
+|---|---|---|
+| FakeAuckland | 0.0694 / 0.0601 / 0.0978 / 0.0707 | 29 of 40 |
+| FakeTorino | 0.0425 / 0.0422 / 0.1196 / 0.0451 | 33 of 40 |
+| FakeKingston | 0.0195 / 0.0192 / 0.0239 / 0.0205 | 37 of 40 |
+
+## 3. Reading
+
+- **The FakeAuckland puzzle is explained, and the fix holds on new circuits.** It had two layers:
+  - **Reported errors understate decoherence.** On FakeAuckland the reported gate errors are below the
+    decoherence limit implied by the same snapshot's T1/T2 on several qubits, so error-aware placement
+    was lured onto them.
+  - **The score could not rank candidates.** The sum of average gate infidelities ranked a circuit's
+    compiled versions about as well as chance, because relaxation and dephasing barely affect qubits in
+    basis states.
+- **What a4 does about it.** a4 scores with a state-aware first-order estimate, built from T1, T2, gate
+  durations and reported errors and evaluated on the circuit's own ideal state. On FakeAuckland it lowers
+  the simulated error by 13 % against a2 and by 15 % against Qiskit level 3 with the target.
+- **Elsewhere,** a4 is level with a2 (within 2 %) and 6 % better than Qiskit L3T. It is lower than L3T in
+  99 of 120 circuits.
+- **Unchanged:** the 2-qubit counts, exactness, and the no-target behaviour (identical to a1).
+- **Caution, repeated from the pre-registration.** The estimate makes the same physical assumptions as
+  Aer's device noise model, so these simulations favour it by construction. The decoherence finding, that
+  reported error is below the T1/T2 limit, is a property of the snapshot data. On a live device it can
+  be checked directly from the Target.
+- **Not established:** hardware results; the vLLM pass rate; larger circuits.
+
+## 4. How to use
+
+- **In the e2e harness v11:** `--compiler ai --ai-module psf_ai_compile_a4.py`. The harness passes the
+  device Target.
+- **Directly:** `compile_for_model_circuit(qc, coupling_map, basis_gates, target=target)`.
+
+## 5. Files
+
+| File | Bytes | SHA-256 (raw) |
+|---|---|---|
+| [`a4_raw.json`](../../data/2026-10-01/ai_compile_a4/outputs/scored/a4_raw.json) | 64,369 | `4f20cd6f93169cc44f10cf454e64f134ae26389680e31174928319c94c3469bb` |
+| [`a4_run.txt`](../../data/2026-10-01/ai_compile_a4/outputs/scored/a4_run.txt) | 49,249 | `dfb74ac4abe5f9e7052fa56511de4f8ced70e11d0c0e5654cea797c3b27fe9bb` |
+| [`a4_score.txt`](../../data/2026-10-01/ai_compile_a4/outputs/scored/a4_score.txt) | 1,559 | `da00e00bb60bf2ee75270e014190b3d40a24344eaf386aa0bfd8ea675cf6eda1` |
+
+---
+
+<!-- ===== Addendum 288 (source: spare-qubit-cliff-addendum-288-2026-10-01.md) ===== -->
+
+> **Note added when merging:** Workplace pre-registration of a5 (cache keyed by value) and a 30,000-lap test. Locked at the workplace Project's save time, not by a git commit; it entered this repository after the run.
+
+## Addendum 288 -- Pre-registration: 30,000-lap test of psf_ai_compile 2026-10-01.a5 (cache keyed by value, not identity) (2026-10-01)
+
+**Status: pre-registration, locked at the Project save time of this document**, before the scored run.
+
+- **Environment:** workplace sandbox, Linux, 2 CPUs, Qiskit 2.5.2.
+- **Compiler and core:** psf_compile and psf_smart_layout 2026-10-01.c2; core 2026-09-29.1.
+- **Device:** FakeAuckland only; no IBM access.
+- **Timings:** sandbox only, compared within this run.
+
+## 1. Why
+
+**The owner's question:** does repeating the AI front end tens of thousands of times make a drift appear?
+
+**What can and cannot drift.**
+
+- The arithmetic cannot accumulate: every compile starts from scratch.
+- State kept between calls can go stale.
+
+**The defect found before this test.** a4 (and a3) cache per-gate error parameters under the key
+`id(target)`. Python reuses the id of a freed object, so after a Target was replaced, for example by a
+calibration update, a4 kept using the old numbers silently. In a check that replaced the Target every lap
+with alternating calibrations, 199 of 200 laps were served stale values.
+
+**The fix, a5.** Every cache entry is keyed by the values it was computed from: the gate error, the
+duration, and T1/T2 of the gate's qubits. Object identity is never used, and the caches' size is bounded.
+
+**Checks after the fix:** 0 stale laps of 200; identical outputs to a4 for a fixed Target on 10 circuits
+(seeds 10001-10010); median time 0.18 s against a4's 0.17 s.
+
+## 2. Design (`lt_eval.py`)
+
+**Pool:** 50 new random dense circuits, Python `random` seeds 10101-10150, 3-5 qubits, the same
+generator as before. Lap *i* compiles circuit *i* mod 50.
+
+**Calibrations.** The Target object is replaced every 1,000 laps, after the old object is freed. The two
+calibrations alternate:
+
+- **A:** FakeAuckland as shipped.
+- **B:** cx errors × 1.6 on every cx touching qubits 0-13, and T2 × 0.5 on qubits 14-26.
+
+**Recorded per lap:**
+
+- the output digest;
+- the wall time;
+- the cost a5 reports for its choice;
+- an independent reference cost of the returned circuit, from `stateaware.py`: the same estimate written
+  separately, without any cache. It matched a4's estimator to 6 decimals in development.
+
+**Also recorded:** RSS every 250 laps, and exactness (noiseless, component-wise) every 500 laps.
+
+**Runs.**
+
+- **a5:** two worker processes in parallel, laps 0-14,999 and 15,000-29,999. The calibration follows the
+  global lap index.
+- **Control:** a4, laps 0-2,999, run after the workers.
+
+## 3. Predictions
+
+**G0:** the versions loaded are a5 in the workers and a4 in the control.
+
+| ID | Prediction | Confirmed if | Refuted if |
+|---|---|---|---|
+| G1 | no drift in results | 0 digest mismatches for the same (calibration, circuit), within each worker and between the two workers | any |
+| G2 | calibration changes are followed immediately | the reported cost equals the independent reference (within 2e-6) on all 30,000 laps | any lap off |
+| G3 | the test can see the defect | the a4 control has >= 1 lap off | 0 laps off |
+| G4 | no slowdown | per worker: median of the last 1,000 laps / median of laps 101-1,100 <= 1.20 | > 1.50 |
+| G5 | no memory growth | per worker: RSS at the end - RSS at lap 2,000 <= 50 MB | > 200 MB |
+| G6 | outputs stay exact | every sampled output has F >= 1 - 1e-9 | any below |
+| G7 | the fix changes nothing else | for calibration A, a5's digests equal a4's on all 50 circuits (first time each is seen) | any differs |
+
+Between the bounds: ambiguous. No re-runs to improve a score.
+
+## 4. Files and run commands
+
+| File | Bytes | Normalized SHA-256 |
+|---|---|---|
+| `lt_eval.py` | 9,111 | `222fed923c5998eec3f38794c3c7eba461a4d58b8eedc8f04a5732d42a76ba44` |
+| `psf_ai_compile.py` 2026-10-01.a5 | 27,043 | `91fb1ea49bb99135a8bd6f37cff091e5abd31fd097aabf4744ac5d3e58e8c172` |
+| `stateaware.py` (reference) | 4,227 | `47d852b8f0bd45dbda360c0996fad907d2cbf6ea401b31aa7a0be1cc94d2caf7` |
+| `psf_ai_compile.py` 2026-10-01.a4 (control) | 25,676 | `06ac6750705ce5159753d283d043ac4fff936f4c3023bf7c0199143b38fa1a13` |
+| `core_fix_c2_eval.py` (helpers) | 27,244 | `9f4e124f996bbf83a15768148631279c5e1ce73541d929d0701dbe91da871bac` |
+
+```
+PYTHONPATH=<core> python -u lt_eval.py worker --wid 0 --start 0     --laps 15000 --ai psf_ai_compile.py --compile <c2> --layout <c2> --out w0.json &
+PYTHONPATH=<core> python -u lt_eval.py worker --wid 1 --start 15000 --laps 15000 --ai psf_ai_compile.py --compile <c2> --layout <c2> --out w1.json &
+# after both finish:
+PYTHONPATH=<core> python -u lt_eval.py worker --wid 9 --start 0 --laps 3000 --ai psf_ai_compile_a4.py --compile <c2> --layout <c2> --out control.json
+python lt_eval.py score --files w0.json w1.json --control control.json
+```
+
+## 5. Dry run before locking (disclosed)
+
+**Inputs:** a separate pool (seeds offset by 900,000) and 1 epoch per 20 laps. There were 60 laps each
+for two a5 workers and the a4 control.
+
+**Results:**
+
+| Run | Reference mismatches | Digest mismatches | Median time |
+|---|---|---|---|
+| a5 workers | 0 | 0 | 175-190 ms |
+| a4 control | 12 of 60 laps | 0 | 180 ms |
+
+The a4 control showed the defect, so the harness can see it.
+
+The scorer needs at least 2,000 laps per worker, so these short runs were inspected directly rather than
+scored. Nothing was changed after the dry run.
+
+**No scored lap was run before locking.**
+
+---
+
+<!-- ===== Addendum 289 (source: spare-qubit-cliff-addendum-289-2026-10-01.md) ===== -->
+
+> **Note added when merging:** 7 of 7 CONFIRMED; a5 is the latest AI front end ([`benchmarks/psf_ai_compile.py`](../../benchmarks/psf_ai_compile.py)). Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in `data/2026-10-01/long_loop_a5/as_run/`; the outputs are in `data/2026-10-01/long_loop_a5/`.
+
+## Addendum 289 -- Results: 30,000-lap test of psf_ai_compile 2026-10-01.a5 -- 7 of 7 CONFIRMED; the a4 control shows the defect; the scored a4 results are unaffected (2026-10-01)
+
+**Pre-registration:** `docs/findings/long-loop-a5-preregistration-2026-10-01.md`. It was locked at its
+Project save time before this run.
+
+- **Environment:** workplace sandbox, 2 CPUs, two worker processes in parallel, then the control.
+- **Compiler and core:** psf_compile and psf_smart_layout 2026-10-01.c2; core 2026-09-29.1.
+- **Device:** FakeAuckland.
+- **Run:** nothing was re-run.
+
+## 1. Verdict
+
+**G0:** OK. **Decision line:** ALL CONFIRMED.
+
+| ID | Result | Numbers |
+|---|---|---|
+| G1 | CONFIRMED | 0 digest mismatches within the workers, and 0 of 100 (calibration, circuit) keys differing between the two workers |
+| G2 | CONFIRMED | reported cost = independent reference on 30,000 of 30,000 laps |
+| G3 | CONFIRMED | the a4 control was off on 420 of 3,000 laps |
+| G4 | CONFIRMED | median lap time 201.7 → 208.2 ms (ratio 1.032) and 201.4 → 208.4 ms (1.035); max lap 0.58 s / 0.99 s |
+| G5 | CONFIRMED | RSS growth after lap 2,000: +1 MB and +0 MB (about 204-205 MB throughout) |
+| G6 | CONFIRMED | 60 of 60 sampled outputs exact |
+| G7 | CONFIRMED | a5 = a4 on calibration A for 50 of 50 circuits |
+
+## 2. The control, in detail
+
+- **When it went wrong.** In the a4 control, all 420 bad laps fall in laps 1,000-1,999. That is the first
+  epoch after the Target was replaced: calibration B, built after the calibration-A object had been freed.
+- **How badly.** The reported cost differed from the independent reference by up to 48 %. Not every lap
+  was affected: gates first seen after the switch were computed fresh.
+- **Why it stayed hidden.** The control's digests were self-consistent (0 mismatches). A determinism
+  check alone would not have caught it; the independent reference did.
+
+## 3. Were earlier results affected? (check added after the run, not pre-registered)
+
+- **The concern.** The scored a4 run (`ai-compile-a4-results-2026-10-01.md`) built the FakeAuckland,
+  FakeTorino and FakeKingston Targets one after another in one process, so an id could have been reused
+  across devices.
+- **The check.** The A4 arm was recomputed with a5 in a fresh process per device, and the noisy infidelity
+  compared circuit by circuit with the recorded A4 values.
+- **Result:** 40 of 40 identical on each device (120 of 120, |ΔF| = 0, the same 2-qubit counts). The
+  scored a4 results stand.
+- **Other runs:** a2 and earlier versions had no such cache. a3 was never scored.
+
+## 4. Reading
+
+- **On the owner's question: no drift appeared in 30,000 laps.** Results were identical every time for
+  the same input and calibration, in both processes. There was no slowdown (+3 %, within noise) and no
+  memory growth.
+- **Calibration changes are now followed on the next call.**
+- **The one drift mechanism that existed was found and fixed before this run:** a cache keyed by object
+  identity. This run confirms both the fix (a5) and that the test can see the defect (a4 control).
+- **Use a5 rather than a4 wherever Targets are replaced during a run.** Typical cases are long harness
+  runs and live devices with daily calibrations. For one fixed Target, a5's output is identical to a4's.
+
+## 5. Files
+
+| File | Bytes | SHA-256 (raw) |
+|---|---|---|
+| [`w0.json`](../../data/2026-10-01/long_loop_a5/outputs/scored/w0.json) | 315,340 | `115e464a5ec7292e0d138caa01a92e9909b73d822cd5e96afa592ed9d22ca705` |
+| [`w1.json`](../../data/2026-10-01/long_loop_a5/outputs/scored/w1.json) | 315,419 | `45f2bc420b4feda128c2067df6a18706070f39ca48387e18690313d3034234b6` |
+| [`control.json`](../../data/2026-10-01/long_loop_a5/outputs/scored/control.json) | 105,108 | `9df010249c753af5f300e2badf31ddcef056784c19036cd84ed3bf3eb94640f3` |
+| [`score.txt`](../../data/2026-10-01/long_loop_a5/outputs/scored/score.txt) | 1,087 | `d1afd69aae1c628265afe72e0d9627a4b2ad16daec7032f5feb2f04c0e8f3e77` |
+| `a4_validity_check.py` | (section 3) | |
+
 ---
 
 ---

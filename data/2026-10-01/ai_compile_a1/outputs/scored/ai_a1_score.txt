@@ -1,0 +1,110 @@
+C0 versions: OK 2026-10-01.c2 2026-10-01.c2 2026-10-01.a0 2026-10-01.a1 core 2026-09-29.1
+B1 A1 not equivalent: 0, not checkable: 0 of 336 -> CONFIRMED
+   FakeAuckland: R sums C2 799 A0 778 A1 770 L3 790 | A1/L3 0.975 A1>L3 0.0% | A1>A0 (R+T) 0.0% | A1 median 94 ms
+   FakeKingston: R sums C2 829 A0 804 A1 794 L3 816 | A1/L3 0.973 A1>L3 0.0% | A1>A0 (R+T) 0.0% | A1 median 208 ms
+   FakeTorino: R sums C2 821 A0 796 A1 788 L3 814 | A1/L3 0.968 A1>L3 0.0% | A1>A0 (R+T) 0.0% | A1 median 204 ms
+   FakeFez: R sums C2 829 A0 804 A1 794 L3 816 | A1/L3 0.973 A1>L3 0.0% | A1>A0 (R+T) 0.0% | A1 median 206 ms
+B2 A1 improves on A0 (R+T sum lower and <= 2 % of circuits worse, every device) -> CONFIRMED
+B3 A1 at or below L3 on R (sum <= 1.00 x L3 and <= 5 % above, every device) -> CONFIRMED
+B4 textbook compiles with A1 <= L3: 99.0% of 96 -> CONFIRMED
+   FakeAuckland  CCZchain4/gates          C2  18 A0  18 A1  17 L3  17     166 ms
+   FakeAuckland  CCZchain4/unitary        C2  16 A0  14 A1  12 L3  12     152 ms
+   FakeAuckland  CuccaroMajUma3/gates     C2  21 A0  21 A1  21 L3  21      83 ms
+   FakeAuckland  CuccaroMajUma3/unitary   C2  30 A0  27 A1  27 L3  27     206 ms
+   FakeAuckland  Grover4/gates            C2  49 A0  49 A1  35 L3  35     209 ms
+   FakeAuckland  Grover4/unitary          C2 159 A0 155 A1 140 L3 142     494 ms
+   FakeAuckland  QAOAring6/gates          C2  19 A0  19 A1  19 L3  19     128 ms
+   FakeAuckland  QAOAring6/unitary        C2  19 A0  19 A1  19 L3  19     193 ms
+   FakeAuckland  HEA5ring/gates           C2  26 A0  26 A1  26 L3  26      80 ms
+   FakeAuckland  HEA5ring/unitary         C2  26 A0  26 A1  26 L3  26     164 ms
+   FakeAuckland  IsingRing5/gates         C2  36 A0  36 A1  36 L3  36      82 ms
+   FakeAuckland  IsingRing5/unitary       C2  36 A0  34 A1  34 L3  36     240 ms
+   FakeAuckland  DJ4/gates                C2   3 A0   3 A1   3 L3   3      52 ms
+   FakeAuckland  DJ4/unitary              C2   3 A0   3 A1   3 L3   3      80 ms
+   FakeAuckland  DraperAdd2/gates         C2  13 A0  11 A1  11 L3  11      52 ms
+   FakeAuckland  DraperAdd2/unitary       C2  11 A0  11 A1  11 L3  11      76 ms
+   FakeAuckland  GHZstar6/gates           C2  11 A0   9 A1   9 L3  11      53 ms
+   FakeAuckland  GHZstar6/unitary         C2  11 A0   9 A1   9 L3  11     133 ms
+   FakeAuckland  W4tree/gates             C2  16 A0  16 A1  16 L3  14     136 ms
+   FakeAuckland  W4tree/unitary           C2  19 A0  17 A1  16 L3  18     167 ms
+   FakeAuckland  TeleportUnitary/gates    C2   7 A0   7 A1   5 L3   7      36 ms
+   FakeAuckland  TeleportUnitary/unitary  C2   7 A0   7 A1   5 L3   7      90 ms
+   FakeAuckland  Clifford4/gates          C2  16 A0  14 A1  14 L3  14     134 ms
+   FakeAuckland  Clifford4/unitary        C2  16 A0  14 A1  14 L3  14     191 ms
+   FakeKingston  CCZchain4/gates          C2  18 A0  18 A1  17 L3  17     329 ms
+   FakeKingston  CCZchain4/unitary        C2  16 A0  14 A1  12 L3  12     303 ms
+   FakeKingston  CuccaroMajUma3/gates     C2  21 A0  21 A1  21 L3  21     200 ms
+   FakeKingston  CuccaroMajUma3/unitary   C2  30 A0  27 A1  27 L3  27     212 ms
+   FakeKingston  Grover4/gates            C2  49 A0  49 A1  37 L3  37     469 ms
+   FakeKingston  Grover4/unitary          C2 159 A0 157 A1 140 L3 142     629 ms
+   FakeKingston  QAOAring6/gates          C2  24 A0  24 A1  22 L3  22     160 ms
+   FakeKingston  QAOAring6/unitary        C2  24 A0  24 A1  22 L3  22     273 ms
+   FakeKingston  HEA5ring/gates           C2  28 A0  28 A1  26 L3  26     200 ms
+   FakeKingston  HEA5ring/unitary         C2  28 A0  28 A1  26 L3  26     292 ms
+   FakeKingston  IsingRing5/gates         C2  38 A0  38 A1  36 L3  36     209 ms
+   FakeKingston  IsingRing5/unitary       C2  38 A0  38 A1  36 L3  36     290 ms
+   FakeKingston  DJ4/gates                C2   3 A0   3 A1   3 L3   3     125 ms
+   FakeKingston  DJ4/unitary              C2   3 A0   3 A1   3 L3   3     181 ms
+   FakeKingston  DraperAdd2/gates         C2  16 A0  11 A1  11 L3  11     176 ms
+   FakeKingston  DraperAdd2/unitary       C2  14 A0  11 A1  11 L3  11     210 ms
+   FakeKingston  GHZstar6/gates           C2   9 A0   9 A1   9 L3  11      73 ms
+   FakeKingston  GHZstar6/unitary         C2   9 A0   9 A1   9 L3  11     155 ms
+   FakeKingston  W4tree/gates             C2  15 A0  15 A1  15 L3  16     336 ms
+   FakeKingston  W4tree/unitary           C2  22 A0  20 A1  16 L3  16     340 ms
+   FakeKingston  TeleportUnitary/gates    C2   7 A0   7 A1   5 L3   7      85 ms
+   FakeKingston  TeleportUnitary/unitary  C2   7 A0   7 A1   5 L3   7     152 ms
+   FakeKingston  Clifford4/gates          C2  16 A0  16 A1  14 L3  16     186 ms
+   FakeKingston  Clifford4/unitary        C2  16 A0  16 A1  14 L3  16     263 ms
+   FakeTorino    CCZchain4/gates          C2  18 A0  18 A1  17 L3  17     318 ms
+   FakeTorino    CCZchain4/unitary        C2  16 A0  14 A1  12 L3  12     272 ms
+   FakeTorino    CuccaroMajUma3/gates     C2  21 A0  21 A1  21 L3  21     176 ms
+   FakeTorino    CuccaroMajUma3/unitary   C2  30 A0  27 A1  27 L3  27     205 ms
+   FakeTorino    Grover4/gates            C2  49 A0  49 A1  49 L3  49     425 ms
+   FakeTorino    Grover4/unitary          C2 159 A0 157 A1 152 L3 152     565 ms
+   FakeTorino    QAOAring6/gates          C2  23 A0  20 A1  20 L3  24     307 ms
+   FakeTorino    QAOAring6/unitary        C2  23 A0  20 A1  20 L3  24     331 ms
+   FakeTorino    HEA5ring/gates           C2  24 A0  24 A1  24 L3  24     303 ms
+   FakeTorino    HEA5ring/unitary         C2  24 A0  24 A1  24 L3  24     411 ms
+   FakeTorino    IsingRing5/gates         C2  34 A0  34 A1  34 L3  34     321 ms
+   FakeTorino    IsingRing5/unitary       C2  34 A0  34 A1  34 L3  34     414 ms
+   FakeTorino    DJ4/gates                C2   3 A0   3 A1   3 L3   3     122 ms
+   FakeTorino    DJ4/unitary              C2   3 A0   3 A1   3 L3   3     157 ms
+   FakeTorino    DraperAdd2/gates         C2  13 A0  11 A1  11 L3  11      93 ms
+   FakeTorino    DraperAdd2/unitary       C2  11 A0  11 A1  11 L3  11     117 ms
+   FakeTorino    GHZstar6/gates           C2   8 A0   8 A1   8 L3  11     130 ms
+   FakeTorino    GHZstar6/unitary         C2   8 A0   8 A1   8 L3  11     191 ms
+   FakeTorino    W4tree/gates             C2  14 A0  14 A1  14 L3  14     239 ms
+   FakeTorino    W4tree/unitary           C2  16 A0  14 A1  14 L3  16     252 ms
+   FakeTorino    TeleportUnitary/gates    C2   7 A0   7 A1   5 L3   7      77 ms
+   FakeTorino    TeleportUnitary/unitary  C2   7 A0   7 A1   5 L3   7     136 ms
+   FakeTorino    Clifford4/gates          C2  14 A0  14 A1  14 L3  14     255 ms
+   FakeTorino    Clifford4/unitary        C2  14 A0  14 A1  13 L3  14     352 ms
+   FakeFez       CCZchain4/gates          C2  18 A0  18 A1  17 L3  17     286 ms
+   FakeFez       CCZchain4/unitary        C2  16 A0  14 A1  12 L3  12     331 ms
+   FakeFez       CuccaroMajUma3/gates     C2  21 A0  21 A1  21 L3  21     165 ms
+   FakeFez       CuccaroMajUma3/unitary   C2  30 A0  27 A1  27 L3  27     228 ms
+   FakeFez       Grover4/gates            C2  49 A0  49 A1  37 L3  37     394 ms
+   FakeFez       Grover4/unitary          C2 159 A0 157 A1 140 L3 142     767 ms
+   FakeFez       QAOAring6/gates          C2  24 A0  24 A1  22 L3  22     186 ms
+   FakeFez       QAOAring6/unitary        C2  24 A0  24 A1  22 L3  22     257 ms
+   FakeFez       HEA5ring/gates           C2  28 A0  28 A1  26 L3  26     186 ms
+   FakeFez       HEA5ring/unitary         C2  28 A0  28 A1  26 L3  26     281 ms
+   FakeFez       IsingRing5/gates         C2  38 A0  38 A1  36 L3  36     174 ms
+   FakeFez       IsingRing5/unitary       C2  38 A0  38 A1  36 L3  36     249 ms
+   FakeFez       DJ4/gates                C2   3 A0   3 A1   3 L3   3     130 ms
+   FakeFez       DJ4/unitary              C2   3 A0   3 A1   3 L3   3     180 ms
+   FakeFez       DraperAdd2/gates         C2  16 A0  11 A1  11 L3  11     174 ms
+   FakeFez       DraperAdd2/unitary       C2  14 A0  11 A1  11 L3  11     208 ms
+   FakeFez       GHZstar6/gates           C2   9 A0   9 A1   9 L3  11     106 ms
+   FakeFez       GHZstar6/unitary         C2   9 A0   9 A1   9 L3  11     148 ms
+   FakeFez       W4tree/gates             C2  15 A0  15 A1  15 L3  16     329 ms
+   FakeFez       W4tree/unitary           C2  22 A0  20 A1  16 L3  16     312 ms
+   FakeFez       TeleportUnitary/gates    C2   7 A0   7 A1   5 L3   7      94 ms
+   FakeFez       TeleportUnitary/unitary  C2   7 A0   7 A1   5 L3   7     150 ms
+   FakeFez       Clifford4/gates          C2  16 A0  16 A1  14 L3  16     151 ms
+   FakeFez       Clifford4/unitary        C2  16 A0  16 A1  14 L3  16     251 ms
+B5 A1 time: medians FakeAuckland 94 ms, FakeKingston 208 ms, FakeTorino 204 ms, FakeFez 206 ms; max 0.77 s -> CONFIRMED
+B6 measured circuits with TVD > 0.03: 0 of 30 (max 0.0148) -> CONFIRMED
+B7 circuits above 8 qubits where A1 output != C2 output: 0 of 8 -> CONFIRMED
+SUMMARY {"B1": "CONFIRMED", "B2": "CONFIRMED", "B3": "CONFIRMED", "B4": "CONFIRMED", "B5": "CONFIRMED", "B6": "CONFIRMED", "B7": "CONFIRMED"}
+DECISION: ALL CONFIRMED

@@ -1,0 +1,2947 @@
+...........................................................FFFFFF....... [ 60%]
+................F..FFFFFF......................                          [100%]
+==================================== ERRORS ====================================
+________ ERROR collecting benchmarks/test_official_hamiltonians_war.py _________
+ImportError while importing test module '<sandbox>/trees/rel/benchmarks/test_official_hamiltonians_war.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/test_official_hamiltonians_war.py:121: in <module>
+    from pytket.extensions.qiskit import qiskit_to_tk, tk_to_qiskit
+E   ModuleNotFoundError: No module named 'pytket'
+_______________ ERROR collecting benchmarks/test_psf_compile.py ________________
+ImportError while importing test module '<sandbox>/trees/rel/benchmarks/test_psf_compile.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/test_psf_compile.py:6: in <module>
+    import psf_synthesis
+E   ModuleNotFoundError: No module named 'psf_synthesis'
+_______________ ERROR collecting benchmarks/test_psf_vs_tket.py ________________
+ImportError while importing test module '<sandbox>/trees/rel/benchmarks/test_psf_vs_tket.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/test_psf_vs_tket.py:123: in <module>
+    from pytket.extensions.qiskit import qiskit_to_tk, tk_to_qiskit
+E   ModuleNotFoundError: No module named 'pytket'
+__________ ERROR collecting benchmarks/test_real_hardware_fidelity.py __________
+ImportError while importing test module '<sandbox>/trees/rel/benchmarks/test_real_hardware_fidelity.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/test_real_hardware_fidelity.py:91: in <module>
+    from pytket.extensions.qiskit import qiskit_to_tk, tk_to_qiskit
+E   ModuleNotFoundError: No module named 'pytket'
+________ ERROR collecting benchmarks/test_real_hardware_fidelity_cx.py _________
+ImportError while importing test module '<sandbox>/trees/rel/benchmarks/test_real_hardware_fidelity_cx.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/test_real_hardware_fidelity_cx.py:81: in <module>
+    from pytket.extensions.qiskit import qiskit_to_tk, tk_to_qiskit
+E   ModuleNotFoundError: No module named 'pytket'
+___________ ERROR collecting benchmarks/test_scale_explosion_war.py ____________
+ImportError while importing test module '<sandbox>/trees/rel/benchmarks/test_scale_explosion_war.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/test_scale_explosion_war.py:173: in <module>
+    from pytket.extensions.qiskit import qiskit_to_tk, tk_to_qiskit
+E   ModuleNotFoundError: No module named 'pytket'
+___________ ERROR collecting benchmarks/test_scale_explosion_war2.py ___________
+ImportError while importing test module '<sandbox>/trees/rel/benchmarks/test_scale_explosion_war2.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/test_scale_explosion_war2.py:11: in <module>
+    from pytket.extensions.qiskit import qiskit_to_tk, tk_to_qiskit
+E   ModuleNotFoundError: No module named 'pytket'
+=================================== FAILURES ===================================
+_ TestFullChainWithRealGPU.test_full_chain_completes_with_real_gpu_verification _
+
+target_matrix = array([[ 0.01810941-0.13550229j, -0.0485279 -0.41040462j,
+        -0.71377091-0.05074369j, -0.01039216-0.54623478j],
+ ...,
+       [-0.25011202-0.03786698j, -0.09234869-0.7596188j ,
+        -0.00524117-0.03983286j,  0.02486304+0.59010911j]])
+synthesized_circuit = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fde70d4aed0>
+
+    def verify_on_gpu(target_matrix: np.ndarray, synthesized_circuit: QuantumCircuit) -> float:
+        """Runs `synthesized_circuit` on lightning.gpu and on default.qubit
+        (both driven by the SAME target unitary applied directly, for the
+        default.qubit side), across the three test-state preparations above,
+        and returns the worst (largest) expectation-value difference found.
+    
+        This is a REAL execution on REAL GPU hardware -- not a mock, not a
+        matrix-only check. Raises ConnectionContractError (this project's own
+        "no silent fallback" convention) if lightning.gpu is not actually
+        available, rather than silently falling back to CPU and reporting a
+        result that did not actually test the GPU.
+        """
+        try:
+>           dev_gpu = qml.device("lightning.gpu", wires=2)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+benchmarks/psf_pennylane_gpu_real.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'lightning.gpu', args = (), kwargs = {'wires': 2}
+
+    def device(name, *args, **kwargs):
+        r"""Load a device and return the instance.
+    
+        This function is used to load a particular quantum device,
+        which can then be used to construct QNodes.
+    
+        PennyLane comes with support for the following devices:
+    
+        * :mod:`'default.qubit' <pennylane.devices.default_qubit>`: a simple
+          state simulator of qubit-based quantum circuit architectures.
+    
+        * :mod:`'default.mixed' <pennylane.devices.default_mixed>`: a mixed-state
+          simulator of qubit-based quantum circuit architectures.
+    
+        * ``'lightning.qubit'``: a more performant state simulator of qubit-based
+          quantum circuit architectures written in C++.
+    
+        * :mod:`'default.qutrit' <pennylane.devices.default_qutrit>`: a simple
+          state simulator of qutrit-based quantum circuit architectures.
+    
+        * :mod:`'default.qutrit.mixed' <pennylane.devices.default_qutrit_mixed>`: a
+          mixed-state simulator of qutrit-based quantum circuit architectures.
+    
+        * :mod:`'default.gaussian' <pennylane.devices.default_gaussian>`: a simple simulator
+          of Gaussian states and operations on continuous-variable circuit architectures.
+    
+        * :mod:`'default.clifford' <pennylane.devices.default_clifford>`: an efficient
+          simulator of Clifford circuits.
+    
+        * :mod:`'default.tensor' <pennylane.devices.default_tensor>`: a simulator
+          of quantum circuits based on tensor networks.
+    
+        * :mod:`'null.qubit' <pennylane.devices.null_qubit>`: a simulator that performs no
+          operations associated with numerical computations.
+    
+        Additional devices are supported through plugins — see
+        the  `available plugins <https://pennylane.ai/plugins>`_ for more
+        details. To list all currently installed devices, run
+        :func:`qp.about <pennylane.about>`.
+    
+        Args:
+            name (str): the name of the device to load
+            wires (Wires): the wires (subsystems) to initialize the device with.
+                Note that this is optional for certain devices, such as ``default.qubit``
+    
+        Keyword Args:
+            config (pennylane.Configuration): a PennyLane configuration object
+                that contains global and/or device specific configurations.
+    
+        All devices must be loaded by specifying their **short-name** as listed above,
+        followed by the **wires** (subsystems) you wish to initialize. The ``wires``
+        argument can be an integer, in which case the wires of the device are addressed
+        by consecutive integers:
+    
+        .. code-block:: python
+    
+            import pennylane as qp
+    
+            dev = qp.device('default.qubit', wires=5)
+    
+            def circuit():
+                qp.Hadamard(wires=1)
+                qp.Hadamard(wires=[0])
+                qp.CNOT(wires=[3, 4])
+                ...
+    
+        The ``wires`` argument can also be a sequence of unique numbers or strings, specifying custom wire labels
+        that the user employs to address the wires:
+    
+        .. code-block:: python
+    
+            dev = qp.device('default.qubit', wires=['auxiliary', 'q11', 'q12', -1, 1])
+    
+            def circuit():
+                qp.Hadamard(wires='q11')
+                qp.Hadamard(wires=['auxiliary'])
+                qp.CNOT(wires=['q12', -1])
+                ...
+    
+        On some newer devices, such as ``default.qubit``, the ``wires`` argument can be omitted altogether,
+        and instead the wires will be computed when executing a circuit depending on its contents.
+    
+        >>> dev = qp.device("default.qubit")
+    
+        When executing quantum circuits on a device, we can specify the number of times the circuit must be executed
+        to estimate stochastic return values by using the :func:`~pennylane.set_shots` transform.
+        As an example, ``qp.sample()`` measurements will return as many samples as the number of shots specified.
+        Note that ``shots`` can be a single integer or a list of shot values.
+    
+        .. code-block:: python
+    
+            dev = qp.device('default.qubit', wires=1, seed=42)
+    
+            @qp.set_shots(10)
+            @qp.qnode(dev)
+            def circuit(a):
+                qp.RX(a, wires=0)
+                return qp.sample(qp.Z(0))
+    
+        >>> circuit(0.8)  # 10 samples are returned
+        array([ 1.,  1., -1.,  1.,  1., -1.,  1.,  1.,  1.,  1.])
+        >>> new_circuit = qp.set_shots(circuit, shots=[3, 4, 4])
+        >>> new_circuit(0.8)  # 3, 4, and 4 samples are returned respectively
+        (array([ 1., -1.,  1.]), array([1., 1., 1., 1.]), array([1., 1., 1., 1.]))
+        """
+        if name not in plugin_devices:
+            # Device does not exist in the loaded device list.
+            # Attempt to refresh the devices, in case the user
+            # installed the plugin during the current Python session.
+            refresh_devices()
+    
+        if name in plugin_devices:
+            options = {}
+    
+            # load global configuration settings if available
+            config = kwargs.get("config", default_config)
+    
+            if config:
+                # combine configuration options with keyword arguments.
+                # Keyword arguments take preference, followed by device options,
+                # followed by plugin options, followed by global options.
+                options.update(config["main"])
+                options.update(config[name.split(".")[0] + ".global"])
+                options.update(config[name])
+    
+            kwargs.pop("config", None)
+            options.update(kwargs)
+    
+            # loads the device class
+            plugin_device_class = plugin_devices[name].load()
+    
+            def _safe_specifier_set(version_str):
+                """Safely create a SpecifierSet from a version string."""
+                operators = ["<", ">", "==", "!=", "<=", ">=", "~=", "==="]
+                if any(version_str.startswith(op) for op in operators):
+                    # This is tested in the plugin-test-matrix
+                    return SpecifierSet(version_str, prereleases=True)  # pragma: no cover
+                return SpecifierSet(f"=={version_str}", prereleases=True)
+    
+            if hasattr(plugin_device_class, "pennylane_requires"):
+                required_versions = _safe_specifier_set(plugin_device_class.pennylane_requires)
+                current_version = Version(__version__)
+                if current_version not in required_versions:
+                    raise DeviceError(
+                        f"The {name} plugin requires PennyLane versions {required_versions}, "
+                        f"however PennyLane version {__version__} is installed."
+                    )
+    
+            # Construct the device
+            dev = plugin_device_class(*args, **options)
+    
+            if isinstance(dev, LegacyDevice):
+                dev = LegacyDeviceFacade(dev)
+    
+            return dev
+    
+>       raise DeviceError(f"Device {name} does not exist. Make sure the required plugin is installed.")
+E       pennylane.exceptions.DeviceError: Device lightning.gpu does not exist. Make sure the required plugin is installed.
+
+/usr/local/lib/python3.11/dist-packages/pennylane/devices/device_constructor.py:219: DeviceError
+
+During handling of the above exception, another exception occurred:
+
+self = <test_full_chain_gpu.TestFullChainWithRealGPU object at 0x7fde766f3490>
+backend = <qiskit.providers.fake_provider.generic_backend_v2.GenericBackendV2 object at 0x7fde70d64ad0>
+
+    def test_full_chain_completes_with_real_gpu_verification(self, backend):
+        """The complete chain, with every block genuinely verified on RTX
+        4070 before the (still-mocked) IBM submission stage. If this
+        passes, every synthesized block in this tape was actually run on
+        GPU hardware and matched its target unitary's own physics -- not
+        merely accepted because a call returned without raising."""
+        tape = make_two_block_tape()
+        mock_ibm = MagicMock(side_effect=mock_ibm_submit)
+    
+>       counts, qc_routed = full_chain_with_gpu_verification(
+            tape, mock_ibm, backend, shots=2000, block_gate_floor=BLOCK_GATE_FLOOR
+        )
+
+benchmarks/test_full_chain_gpu.py:61: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+benchmarks/psf_pennylane_gpu_full_chain.py:79: in full_chain_with_gpu_verification
+    return psf_pennylane_gpu_ibm_transform(
+benchmarks/psf_pennylane_gpu_ibm_prototype.py:306: in psf_pennylane_gpu_ibm_transform
+    tape_synth = psf_pennylane_gpu_transform(tape, gpu_batch_fn, block_gate_floor=block_gate_floor)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/psf_pennylane_gpu_prototype.py:311: in psf_pennylane_gpu_transform
+    synthesized = gpu_batch_fn(matrices)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/psf_pennylane_gpu_full_chain.py:51: in gpu_verified_batch_synthesize
+    check = verify_block_gpu_and_cpu(matrix, circ)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/psf_pennylane_gpu_real.py:169: in verify_block_gpu_and_cpu
+    gpu_expval_diff = verify_on_gpu(target_matrix, synthesized_circuit)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+target_matrix = array([[ 0.01810941-0.13550229j, -0.0485279 -0.41040462j,
+        -0.71377091-0.05074369j, -0.01039216-0.54623478j],
+ ...,
+       [-0.25011202-0.03786698j, -0.09234869-0.7596188j ,
+        -0.00524117-0.03983286j,  0.02486304+0.59010911j]])
+synthesized_circuit = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fde70d4aed0>
+
+    def verify_on_gpu(target_matrix: np.ndarray, synthesized_circuit: QuantumCircuit) -> float:
+        """Runs `synthesized_circuit` on lightning.gpu and on default.qubit
+        (both driven by the SAME target unitary applied directly, for the
+        default.qubit side), across the three test-state preparations above,
+        and returns the worst (largest) expectation-value difference found.
+    
+        This is a REAL execution on REAL GPU hardware -- not a mock, not a
+        matrix-only check. Raises ConnectionContractError (this project's own
+        "no silent fallback" convention) if lightning.gpu is not actually
+        available, rather than silently falling back to CPU and reporting a
+        result that did not actually test the GPU.
+        """
+        try:
+            dev_gpu = qml.device("lightning.gpu", wires=2)
+        except Exception as exc:
+>           raise ConnectionContractError(
+                "verify_on_gpu: lightning.gpu device could not be created "
+                f"({type(exc).__name__}: {exc}) -- refusing to silently fall "
+                "back to CPU for what is supposed to be a GPU verification "
+                "step. Install pennylane-lightning[gpu] and confirm CUDA is "
+                "available (see this session's own CUDA_VISIBLE_DEVICES=\"\" "
+                "check for how to confirm the device is genuinely GPU-backed, "
+                "not silently CPU)."
+            )
+E           psf_pennylane_gpu_prototype.ConnectionContractError: verify_on_gpu: lightning.gpu device could not be created (DeviceError: Device lightning.gpu does not exist. Make sure the required plugin is installed.) -- refusing to silently fall back to CPU for what is supposed to be a GPU verification step. Install pennylane-lightning[gpu] and confirm CUDA is available (see this session's own CUDA_VISIBLE_DEVICES="" check for how to confirm the device is genuinely GPU-backed, not silently CPU).
+
+benchmarks/psf_pennylane_gpu_real.py:117: ConnectionContractError
+________ TestFullChainWithRealGPU.test_physics_survives_the_full_chain _________
+
+target_matrix = array([[ 0.01810941-0.13550229j, -0.0485279 -0.41040462j,
+        -0.71377091-0.05074369j, -0.01039216-0.54623478j],
+ ...,
+       [-0.25011202-0.03786698j, -0.09234869-0.7596188j ,
+        -0.00524117-0.03983286j,  0.02486304+0.59010911j]])
+synthesized_circuit = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fde70d1c290>
+
+    def verify_on_gpu(target_matrix: np.ndarray, synthesized_circuit: QuantumCircuit) -> float:
+        """Runs `synthesized_circuit` on lightning.gpu and on default.qubit
+        (both driven by the SAME target unitary applied directly, for the
+        default.qubit side), across the three test-state preparations above,
+        and returns the worst (largest) expectation-value difference found.
+    
+        This is a REAL execution on REAL GPU hardware -- not a mock, not a
+        matrix-only check. Raises ConnectionContractError (this project's own
+        "no silent fallback" convention) if lightning.gpu is not actually
+        available, rather than silently falling back to CPU and reporting a
+        result that did not actually test the GPU.
+        """
+        try:
+>           dev_gpu = qml.device("lightning.gpu", wires=2)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+benchmarks/psf_pennylane_gpu_real.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'lightning.gpu', args = (), kwargs = {'wires': 2}
+
+    def device(name, *args, **kwargs):
+        r"""Load a device and return the instance.
+    
+        This function is used to load a particular quantum device,
+        which can then be used to construct QNodes.
+    
+        PennyLane comes with support for the following devices:
+    
+        * :mod:`'default.qubit' <pennylane.devices.default_qubit>`: a simple
+          state simulator of qubit-based quantum circuit architectures.
+    
+        * :mod:`'default.mixed' <pennylane.devices.default_mixed>`: a mixed-state
+          simulator of qubit-based quantum circuit architectures.
+    
+        * ``'lightning.qubit'``: a more performant state simulator of qubit-based
+          quantum circuit architectures written in C++.
+    
+        * :mod:`'default.qutrit' <pennylane.devices.default_qutrit>`: a simple
+          state simulator of qutrit-based quantum circuit architectures.
+    
+        * :mod:`'default.qutrit.mixed' <pennylane.devices.default_qutrit_mixed>`: a
+          mixed-state simulator of qutrit-based quantum circuit architectures.
+    
+        * :mod:`'default.gaussian' <pennylane.devices.default_gaussian>`: a simple simulator
+          of Gaussian states and operations on continuous-variable circuit architectures.
+    
+        * :mod:`'default.clifford' <pennylane.devices.default_clifford>`: an efficient
+          simulator of Clifford circuits.
+    
+        * :mod:`'default.tensor' <pennylane.devices.default_tensor>`: a simulator
+          of quantum circuits based on tensor networks.
+    
+        * :mod:`'null.qubit' <pennylane.devices.null_qubit>`: a simulator that performs no
+          operations associated with numerical computations.
+    
+        Additional devices are supported through plugins — see
+        the  `available plugins <https://pennylane.ai/plugins>`_ for more
+        details. To list all currently installed devices, run
+        :func:`qp.about <pennylane.about>`.
+    
+        Args:
+            name (str): the name of the device to load
+            wires (Wires): the wires (subsystems) to initialize the device with.
+                Note that this is optional for certain devices, such as ``default.qubit``
+    
+        Keyword Args:
+            config (pennylane.Configuration): a PennyLane configuration object
+                that contains global and/or device specific configurations.
+    
+        All devices must be loaded by specifying their **short-name** as listed above,
+        followed by the **wires** (subsystems) you wish to initialize. The ``wires``
+        argument can be an integer, in which case the wires of the device are addressed
+        by consecutive integers:
+    
+        .. code-block:: python
+    
+            import pennylane as qp
+    
+            dev = qp.device('default.qubit', wires=5)
+    
+            def circuit():
+                qp.Hadamard(wires=1)
+                qp.Hadamard(wires=[0])
+                qp.CNOT(wires=[3, 4])
+                ...
+    
+        The ``wires`` argument can also be a sequence of unique numbers or strings, specifying custom wire labels
+        that the user employs to address the wires:
+    
+        .. code-block:: python
+    
+            dev = qp.device('default.qubit', wires=['auxiliary', 'q11', 'q12', -1, 1])
+    
+            def circuit():
+                qp.Hadamard(wires='q11')
+                qp.Hadamard(wires=['auxiliary'])
+                qp.CNOT(wires=['q12', -1])
+                ...
+    
+        On some newer devices, such as ``default.qubit``, the ``wires`` argument can be omitted altogether,
+        and instead the wires will be computed when executing a circuit depending on its contents.
+    
+        >>> dev = qp.device("default.qubit")
+    
+        When executing quantum circuits on a device, we can specify the number of times the circuit must be executed
+        to estimate stochastic return values by using the :func:`~pennylane.set_shots` transform.
+        As an example, ``qp.sample()`` measurements will return as many samples as the number of shots specified.
+        Note that ``shots`` can be a single integer or a list of shot values.
+    
+        .. code-block:: python
+    
+            dev = qp.device('default.qubit', wires=1, seed=42)
+    
+            @qp.set_shots(10)
+            @qp.qnode(dev)
+            def circuit(a):
+                qp.RX(a, wires=0)
+                return qp.sample(qp.Z(0))
+    
+        >>> circuit(0.8)  # 10 samples are returned
+        array([ 1.,  1., -1.,  1.,  1., -1.,  1.,  1.,  1.,  1.])
+        >>> new_circuit = qp.set_shots(circuit, shots=[3, 4, 4])
+        >>> new_circuit(0.8)  # 3, 4, and 4 samples are returned respectively
+        (array([ 1., -1.,  1.]), array([1., 1., 1., 1.]), array([1., 1., 1., 1.]))
+        """
+        if name not in plugin_devices:
+            # Device does not exist in the loaded device list.
+            # Attempt to refresh the devices, in case the user
+            # installed the plugin during the current Python session.
+            refresh_devices()
+    
+        if name in plugin_devices:
+            options = {}
+    
+            # load global configuration settings if available
+            config = kwargs.get("config", default_config)
+    
+            if config:
+                # combine configuration options with keyword arguments.
+                # Keyword arguments take preference, followed by device options,
+                # followed by plugin options, followed by global options.
+                options.update(config["main"])
+                options.update(config[name.split(".")[0] + ".global"])
+                options.update(config[name])
+    
+            kwargs.pop("config", None)
+            options.update(kwargs)
+    
+            # loads the device class
+            plugin_device_class = plugin_devices[name].load()
+    
+            def _safe_specifier_set(version_str):
+                """Safely create a SpecifierSet from a version string."""
+                operators = ["<", ">", "==", "!=", "<=", ">=", "~=", "==="]
+                if any(version_str.startswith(op) for op in operators):
+                    # This is tested in the plugin-test-matrix
+                    return SpecifierSet(version_str, prereleases=True)  # pragma: no cover
+                return SpecifierSet(f"=={version_str}", prereleases=True)
+    
+            if hasattr(plugin_device_class, "pennylane_requires"):
+                required_versions = _safe_specifier_set(plugin_device_class.pennylane_requires)
+                current_version = Version(__version__)
+                if current_version not in required_versions:
+                    raise DeviceError(
+                        f"The {name} plugin requires PennyLane versions {required_versions}, "
+                        f"however PennyLane version {__version__} is installed."
+                    )
+    
+            # Construct the device
+            dev = plugin_device_class(*args, **options)
+    
+            if isinstance(dev, LegacyDevice):
+                dev = LegacyDeviceFacade(dev)
+    
+            return dev
+    
+>       raise DeviceError(f"Device {name} does not exist. Make sure the required plugin is installed.")
+E       pennylane.exceptions.DeviceError: Device lightning.gpu does not exist. Make sure the required plugin is installed.
+
+/usr/local/lib/python3.11/dist-packages/pennylane/devices/device_constructor.py:219: DeviceError
+
+During handling of the above exception, another exception occurred:
+
+self = <test_full_chain_gpu.TestFullChainWithRealGPU object at 0x7fde766df310>
+backend = <qiskit.providers.fake_provider.generic_backend_v2.GenericBackendV2 object at 0x7fde70b4be90>
+
+    def test_physics_survives_the_full_chain(self, backend):
+        """The exact (noiseless) probability distribution after the FULL
+        chain (CPU synthesis + real-GPU verification + routing) must match
+        the original tape's own distribution -- the same check
+        test_pennylane_gpu_ibm_pipeline_mock.py's own
+        test_physics_survives_gpu_mock_and_routing ran on the mocked chain,
+        now run on the chain with real GPU verification in it."""
+        tape = make_two_block_tape()
+        qc_before, _ = tape_to_qiskit(tape)
+        probs_before = Statevector(qc_before).probabilities_dict()
+    
+>       _counts, qc_routed = full_chain_with_gpu_verification(
+            tape, mock_ibm_submit, backend, shots=100, block_gate_floor=BLOCK_GATE_FLOOR
+        )
+
+benchmarks/test_full_chain_gpu.py:79: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+benchmarks/psf_pennylane_gpu_full_chain.py:79: in full_chain_with_gpu_verification
+    return psf_pennylane_gpu_ibm_transform(
+benchmarks/psf_pennylane_gpu_ibm_prototype.py:306: in psf_pennylane_gpu_ibm_transform
+    tape_synth = psf_pennylane_gpu_transform(tape, gpu_batch_fn, block_gate_floor=block_gate_floor)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/psf_pennylane_gpu_prototype.py:311: in psf_pennylane_gpu_transform
+    synthesized = gpu_batch_fn(matrices)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/psf_pennylane_gpu_full_chain.py:51: in gpu_verified_batch_synthesize
+    check = verify_block_gpu_and_cpu(matrix, circ)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/psf_pennylane_gpu_real.py:169: in verify_block_gpu_and_cpu
+    gpu_expval_diff = verify_on_gpu(target_matrix, synthesized_circuit)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+target_matrix = array([[ 0.01810941-0.13550229j, -0.0485279 -0.41040462j,
+        -0.71377091-0.05074369j, -0.01039216-0.54623478j],
+ ...,
+       [-0.25011202-0.03786698j, -0.09234869-0.7596188j ,
+        -0.00524117-0.03983286j,  0.02486304+0.59010911j]])
+synthesized_circuit = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fde70d1c290>
+
+    def verify_on_gpu(target_matrix: np.ndarray, synthesized_circuit: QuantumCircuit) -> float:
+        """Runs `synthesized_circuit` on lightning.gpu and on default.qubit
+        (both driven by the SAME target unitary applied directly, for the
+        default.qubit side), across the three test-state preparations above,
+        and returns the worst (largest) expectation-value difference found.
+    
+        This is a REAL execution on REAL GPU hardware -- not a mock, not a
+        matrix-only check. Raises ConnectionContractError (this project's own
+        "no silent fallback" convention) if lightning.gpu is not actually
+        available, rather than silently falling back to CPU and reporting a
+        result that did not actually test the GPU.
+        """
+        try:
+            dev_gpu = qml.device("lightning.gpu", wires=2)
+        except Exception as exc:
+>           raise ConnectionContractError(
+                "verify_on_gpu: lightning.gpu device could not be created "
+                f"({type(exc).__name__}: {exc}) -- refusing to silently fall "
+                "back to CPU for what is supposed to be a GPU verification "
+                "step. Install pennylane-lightning[gpu] and confirm CUDA is "
+                "available (see this session's own CUDA_VISIBLE_DEVICES=\"\" "
+                "check for how to confirm the device is genuinely GPU-backed, "
+                "not silently CPU)."
+            )
+E           psf_pennylane_gpu_prototype.ConnectionContractError: verify_on_gpu: lightning.gpu device could not be created (DeviceError: Device lightning.gpu does not exist. Make sure the required plugin is installed.) -- refusing to silently fall back to CPU for what is supposed to be a GPU verification step. Install pennylane-lightning[gpu] and confirm CUDA is available (see this session's own CUDA_VISIBLE_DEVICES="" check for how to confirm the device is genuinely GPU-backed, not silently CPU).
+
+benchmarks/psf_pennylane_gpu_real.py:117: ConnectionContractError
+_ TestFullChainWithRealGPU.test_ibm_submission_failure_still_propagates_through_full_chain _
+
+self = <test_full_chain_gpu.TestFullChainWithRealGPU object at 0x7fde766dea90>
+backend = <qiskit.providers.fake_provider.generic_backend_v2.GenericBackendV2 object at 0x7fde70b03250>
+
+    def test_ibm_submission_failure_still_propagates_through_full_chain(self, backend):
+        """Curveball, re-run through the full (real-GPU-verified) chain:
+        the mocked IBM stage raising must still propagate to the caller,
+        not be swallowed -- confirms adding the real-GPU verification step
+        did not accidentally introduce a try/except that hides downstream
+        failures."""
+        tape = make_two_block_tape()
+        failing_ibm = MagicMock(side_effect=RuntimeError("simulated IBM job failure"))
+    
+>       with pytest.raises(RuntimeError, match="simulated IBM job failure"):
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'simulated IBM job failure'
+E         Actual message: 'verify_on_gpu: lightning.gpu device could not be created (DeviceError: Device lightning.gpu does not exist. Make sure the required plugin is installed.) -- refusing to silently fall back to CPU for what is supposed to be a GPU verification step. Install pennylane-lightning[gpu] and confirm CUDA is available (see this session\'s own CUDA_VISIBLE_DEVICES="" check for how to confirm the device is genuinely GPU-backed, not silently CPU).'
+
+benchmarks/test_full_chain_gpu.py:104: AssertionError
+______ TestRealGPUVerification.test_cnot_synthesized_block_matches_on_gpu ______
+
+target_matrix = array([[1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j],
+       [0.+0.j, 1.+0.j, 0.+0.j, 0.+0.j],
+       [0.+0.j, 0.+0.j, 0.+0.j, 1.+0.j],
+       [0.+0.j, 0.+0.j, 1.+0.j, 0.+0.j]])
+synthesized_circuit = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fde70d4a7d0>
+
+    def verify_on_gpu(target_matrix: np.ndarray, synthesized_circuit: QuantumCircuit) -> float:
+        """Runs `synthesized_circuit` on lightning.gpu and on default.qubit
+        (both driven by the SAME target unitary applied directly, for the
+        default.qubit side), across the three test-state preparations above,
+        and returns the worst (largest) expectation-value difference found.
+    
+        This is a REAL execution on REAL GPU hardware -- not a mock, not a
+        matrix-only check. Raises ConnectionContractError (this project's own
+        "no silent fallback" convention) if lightning.gpu is not actually
+        available, rather than silently falling back to CPU and reporting a
+        result that did not actually test the GPU.
+        """
+        try:
+>           dev_gpu = qml.device("lightning.gpu", wires=2)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+benchmarks/psf_pennylane_gpu_real.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'lightning.gpu', args = (), kwargs = {'wires': 2}
+
+    def device(name, *args, **kwargs):
+        r"""Load a device and return the instance.
+    
+        This function is used to load a particular quantum device,
+        which can then be used to construct QNodes.
+    
+        PennyLane comes with support for the following devices:
+    
+        * :mod:`'default.qubit' <pennylane.devices.default_qubit>`: a simple
+          state simulator of qubit-based quantum circuit architectures.
+    
+        * :mod:`'default.mixed' <pennylane.devices.default_mixed>`: a mixed-state
+          simulator of qubit-based quantum circuit architectures.
+    
+        * ``'lightning.qubit'``: a more performant state simulator of qubit-based
+          quantum circuit architectures written in C++.
+    
+        * :mod:`'default.qutrit' <pennylane.devices.default_qutrit>`: a simple
+          state simulator of qutrit-based quantum circuit architectures.
+    
+        * :mod:`'default.qutrit.mixed' <pennylane.devices.default_qutrit_mixed>`: a
+          mixed-state simulator of qutrit-based quantum circuit architectures.
+    
+        * :mod:`'default.gaussian' <pennylane.devices.default_gaussian>`: a simple simulator
+          of Gaussian states and operations on continuous-variable circuit architectures.
+    
+        * :mod:`'default.clifford' <pennylane.devices.default_clifford>`: an efficient
+          simulator of Clifford circuits.
+    
+        * :mod:`'default.tensor' <pennylane.devices.default_tensor>`: a simulator
+          of quantum circuits based on tensor networks.
+    
+        * :mod:`'null.qubit' <pennylane.devices.null_qubit>`: a simulator that performs no
+          operations associated with numerical computations.
+    
+        Additional devices are supported through plugins — see
+        the  `available plugins <https://pennylane.ai/plugins>`_ for more
+        details. To list all currently installed devices, run
+        :func:`qp.about <pennylane.about>`.
+    
+        Args:
+            name (str): the name of the device to load
+            wires (Wires): the wires (subsystems) to initialize the device with.
+                Note that this is optional for certain devices, such as ``default.qubit``
+    
+        Keyword Args:
+            config (pennylane.Configuration): a PennyLane configuration object
+                that contains global and/or device specific configurations.
+    
+        All devices must be loaded by specifying their **short-name** as listed above,
+        followed by the **wires** (subsystems) you wish to initialize. The ``wires``
+        argument can be an integer, in which case the wires of the device are addressed
+        by consecutive integers:
+    
+        .. code-block:: python
+    
+            import pennylane as qp
+    
+            dev = qp.device('default.qubit', wires=5)
+    
+            def circuit():
+                qp.Hadamard(wires=1)
+                qp.Hadamard(wires=[0])
+                qp.CNOT(wires=[3, 4])
+                ...
+    
+        The ``wires`` argument can also be a sequence of unique numbers or strings, specifying custom wire labels
+        that the user employs to address the wires:
+    
+        .. code-block:: python
+    
+            dev = qp.device('default.qubit', wires=['auxiliary', 'q11', 'q12', -1, 1])
+    
+            def circuit():
+                qp.Hadamard(wires='q11')
+                qp.Hadamard(wires=['auxiliary'])
+                qp.CNOT(wires=['q12', -1])
+                ...
+    
+        On some newer devices, such as ``default.qubit``, the ``wires`` argument can be omitted altogether,
+        and instead the wires will be computed when executing a circuit depending on its contents.
+    
+        >>> dev = qp.device("default.qubit")
+    
+        When executing quantum circuits on a device, we can specify the number of times the circuit must be executed
+        to estimate stochastic return values by using the :func:`~pennylane.set_shots` transform.
+        As an example, ``qp.sample()`` measurements will return as many samples as the number of shots specified.
+        Note that ``shots`` can be a single integer or a list of shot values.
+    
+        .. code-block:: python
+    
+            dev = qp.device('default.qubit', wires=1, seed=42)
+    
+            @qp.set_shots(10)
+            @qp.qnode(dev)
+            def circuit(a):
+                qp.RX(a, wires=0)
+                return qp.sample(qp.Z(0))
+    
+        >>> circuit(0.8)  # 10 samples are returned
+        array([ 1.,  1., -1.,  1.,  1., -1.,  1.,  1.,  1.,  1.])
+        >>> new_circuit = qp.set_shots(circuit, shots=[3, 4, 4])
+        >>> new_circuit(0.8)  # 3, 4, and 4 samples are returned respectively
+        (array([ 1., -1.,  1.]), array([1., 1., 1., 1.]), array([1., 1., 1., 1.]))
+        """
+        if name not in plugin_devices:
+            # Device does not exist in the loaded device list.
+            # Attempt to refresh the devices, in case the user
+            # installed the plugin during the current Python session.
+            refresh_devices()
+    
+        if name in plugin_devices:
+            options = {}
+    
+            # load global configuration settings if available
+            config = kwargs.get("config", default_config)
+    
+            if config:
+                # combine configuration options with keyword arguments.
+                # Keyword arguments take preference, followed by device options,
+                # followed by plugin options, followed by global options.
+                options.update(config["main"])
+                options.update(config[name.split(".")[0] + ".global"])
+                options.update(config[name])
+    
+            kwargs.pop("config", None)
+            options.update(kwargs)
+    
+            # loads the device class
+            plugin_device_class = plugin_devices[name].load()
+    
+            def _safe_specifier_set(version_str):
+                """Safely create a SpecifierSet from a version string."""
+                operators = ["<", ">", "==", "!=", "<=", ">=", "~=", "==="]
+                if any(version_str.startswith(op) for op in operators):
+                    # This is tested in the plugin-test-matrix
+                    return SpecifierSet(version_str, prereleases=True)  # pragma: no cover
+                return SpecifierSet(f"=={version_str}", prereleases=True)
+    
+            if hasattr(plugin_device_class, "pennylane_requires"):
+                required_versions = _safe_specifier_set(plugin_device_class.pennylane_requires)
+                current_version = Version(__version__)
+                if current_version not in required_versions:
+                    raise DeviceError(
+                        f"The {name} plugin requires PennyLane versions {required_versions}, "
+                        f"however PennyLane version {__version__} is installed."
+                    )
+    
+            # Construct the device
+            dev = plugin_device_class(*args, **options)
+    
+            if isinstance(dev, LegacyDevice):
+                dev = LegacyDeviceFacade(dev)
+    
+            return dev
+    
+>       raise DeviceError(f"Device {name} does not exist. Make sure the required plugin is installed.")
+E       pennylane.exceptions.DeviceError: Device lightning.gpu does not exist. Make sure the required plugin is installed.
+
+/usr/local/lib/python3.11/dist-packages/pennylane/devices/device_constructor.py:219: DeviceError
+
+During handling of the above exception, another exception occurred:
+
+self = <test_gpu_real_verification.TestRealGPUVerification object at 0x7fde766dde90>
+
+    def test_cnot_synthesized_block_matches_on_gpu(self):
+        """A trivial, exactly-representable case: CNOT itself. If this
+        fails, something is wrong with the GPU verification plumbing
+        itself, not with synthesis (CNOT needs no synthesis at all -- the
+        decomposer should return it essentially unchanged)."""
+        cnot = np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 1], [0, 0, 1, 0]], dtype=complex)
+        circ = reference_cpu_synthesize(cnot)
+>       result = verify_block_gpu_and_cpu(cnot, circ)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+benchmarks/test_gpu_real_verification.py:31: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+benchmarks/psf_pennylane_gpu_real.py:169: in verify_block_gpu_and_cpu
+    gpu_expval_diff = verify_on_gpu(target_matrix, synthesized_circuit)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+target_matrix = array([[1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j],
+       [0.+0.j, 1.+0.j, 0.+0.j, 0.+0.j],
+       [0.+0.j, 0.+0.j, 0.+0.j, 1.+0.j],
+       [0.+0.j, 0.+0.j, 1.+0.j, 0.+0.j]])
+synthesized_circuit = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fde70d4a7d0>
+
+    def verify_on_gpu(target_matrix: np.ndarray, synthesized_circuit: QuantumCircuit) -> float:
+        """Runs `synthesized_circuit` on lightning.gpu and on default.qubit
+        (both driven by the SAME target unitary applied directly, for the
+        default.qubit side), across the three test-state preparations above,
+        and returns the worst (largest) expectation-value difference found.
+    
+        This is a REAL execution on REAL GPU hardware -- not a mock, not a
+        matrix-only check. Raises ConnectionContractError (this project's own
+        "no silent fallback" convention) if lightning.gpu is not actually
+        available, rather than silently falling back to CPU and reporting a
+        result that did not actually test the GPU.
+        """
+        try:
+            dev_gpu = qml.device("lightning.gpu", wires=2)
+        except Exception as exc:
+>           raise ConnectionContractError(
+                "verify_on_gpu: lightning.gpu device could not be created "
+                f"({type(exc).__name__}: {exc}) -- refusing to silently fall "
+                "back to CPU for what is supposed to be a GPU verification "
+                "step. Install pennylane-lightning[gpu] and confirm CUDA is "
+                "available (see this session's own CUDA_VISIBLE_DEVICES=\"\" "
+                "check for how to confirm the device is genuinely GPU-backed, "
+                "not silently CPU)."
+            )
+E           psf_pennylane_gpu_prototype.ConnectionContractError: verify_on_gpu: lightning.gpu device could not be created (DeviceError: Device lightning.gpu does not exist. Make sure the required plugin is installed.) -- refusing to silently fall back to CPU for what is supposed to be a GPU verification step. Install pennylane-lightning[gpu] and confirm CUDA is available (see this session's own CUDA_VISIBLE_DEVICES="" check for how to confirm the device is genuinely GPU-backed, not silently CPU).
+
+benchmarks/psf_pennylane_gpu_real.py:117: ConnectionContractError
+__________ TestRealGPUVerification.test_random_unitaries_match_on_gpu __________
+
+target_matrix = array([[ 0.04578135-0.19817758j, -0.0670271 -0.11887706j,
+         0.21649947+0.26349682j, -0.17076864+0.89137018j],
+ ...,
+       [-0.84659876-0.16666881j,  0.08502642+0.09913931j,
+        -0.44095103+0.19573532j, -0.02838949+0.06984177j]])
+synthesized_circuit = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fde70deef10>
+
+    def verify_on_gpu(target_matrix: np.ndarray, synthesized_circuit: QuantumCircuit) -> float:
+        """Runs `synthesized_circuit` on lightning.gpu and on default.qubit
+        (both driven by the SAME target unitary applied directly, for the
+        default.qubit side), across the three test-state preparations above,
+        and returns the worst (largest) expectation-value difference found.
+    
+        This is a REAL execution on REAL GPU hardware -- not a mock, not a
+        matrix-only check. Raises ConnectionContractError (this project's own
+        "no silent fallback" convention) if lightning.gpu is not actually
+        available, rather than silently falling back to CPU and reporting a
+        result that did not actually test the GPU.
+        """
+        try:
+>           dev_gpu = qml.device("lightning.gpu", wires=2)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+benchmarks/psf_pennylane_gpu_real.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'lightning.gpu', args = (), kwargs = {'wires': 2}
+
+    def device(name, *args, **kwargs):
+        r"""Load a device and return the instance.
+    
+        This function is used to load a particular quantum device,
+        which can then be used to construct QNodes.
+    
+        PennyLane comes with support for the following devices:
+    
+        * :mod:`'default.qubit' <pennylane.devices.default_qubit>`: a simple
+          state simulator of qubit-based quantum circuit architectures.
+    
+        * :mod:`'default.mixed' <pennylane.devices.default_mixed>`: a mixed-state
+          simulator of qubit-based quantum circuit architectures.
+    
+        * ``'lightning.qubit'``: a more performant state simulator of qubit-based
+          quantum circuit architectures written in C++.
+    
+        * :mod:`'default.qutrit' <pennylane.devices.default_qutrit>`: a simple
+          state simulator of qutrit-based quantum circuit architectures.
+    
+        * :mod:`'default.qutrit.mixed' <pennylane.devices.default_qutrit_mixed>`: a
+          mixed-state simulator of qutrit-based quantum circuit architectures.
+    
+        * :mod:`'default.gaussian' <pennylane.devices.default_gaussian>`: a simple simulator
+          of Gaussian states and operations on continuous-variable circuit architectures.
+    
+        * :mod:`'default.clifford' <pennylane.devices.default_clifford>`: an efficient
+          simulator of Clifford circuits.
+    
+        * :mod:`'default.tensor' <pennylane.devices.default_tensor>`: a simulator
+          of quantum circuits based on tensor networks.
+    
+        * :mod:`'null.qubit' <pennylane.devices.null_qubit>`: a simulator that performs no
+          operations associated with numerical computations.
+    
+        Additional devices are supported through plugins — see
+        the  `available plugins <https://pennylane.ai/plugins>`_ for more
+        details. To list all currently installed devices, run
+        :func:`qp.about <pennylane.about>`.
+    
+        Args:
+            name (str): the name of the device to load
+            wires (Wires): the wires (subsystems) to initialize the device with.
+                Note that this is optional for certain devices, such as ``default.qubit``
+    
+        Keyword Args:
+            config (pennylane.Configuration): a PennyLane configuration object
+                that contains global and/or device specific configurations.
+    
+        All devices must be loaded by specifying their **short-name** as listed above,
+        followed by the **wires** (subsystems) you wish to initialize. The ``wires``
+        argument can be an integer, in which case the wires of the device are addressed
+        by consecutive integers:
+    
+        .. code-block:: python
+    
+            import pennylane as qp
+    
+            dev = qp.device('default.qubit', wires=5)
+    
+            def circuit():
+                qp.Hadamard(wires=1)
+                qp.Hadamard(wires=[0])
+                qp.CNOT(wires=[3, 4])
+                ...
+    
+        The ``wires`` argument can also be a sequence of unique numbers or strings, specifying custom wire labels
+        that the user employs to address the wires:
+    
+        .. code-block:: python
+    
+            dev = qp.device('default.qubit', wires=['auxiliary', 'q11', 'q12', -1, 1])
+    
+            def circuit():
+                qp.Hadamard(wires='q11')
+                qp.Hadamard(wires=['auxiliary'])
+                qp.CNOT(wires=['q12', -1])
+                ...
+    
+        On some newer devices, such as ``default.qubit``, the ``wires`` argument can be omitted altogether,
+        and instead the wires will be computed when executing a circuit depending on its contents.
+    
+        >>> dev = qp.device("default.qubit")
+    
+        When executing quantum circuits on a device, we can specify the number of times the circuit must be executed
+        to estimate stochastic return values by using the :func:`~pennylane.set_shots` transform.
+        As an example, ``qp.sample()`` measurements will return as many samples as the number of shots specified.
+        Note that ``shots`` can be a single integer or a list of shot values.
+    
+        .. code-block:: python
+    
+            dev = qp.device('default.qubit', wires=1, seed=42)
+    
+            @qp.set_shots(10)
+            @qp.qnode(dev)
+            def circuit(a):
+                qp.RX(a, wires=0)
+                return qp.sample(qp.Z(0))
+    
+        >>> circuit(0.8)  # 10 samples are returned
+        array([ 1.,  1., -1.,  1.,  1., -1.,  1.,  1.,  1.,  1.])
+        >>> new_circuit = qp.set_shots(circuit, shots=[3, 4, 4])
+        >>> new_circuit(0.8)  # 3, 4, and 4 samples are returned respectively
+        (array([ 1., -1.,  1.]), array([1., 1., 1., 1.]), array([1., 1., 1., 1.]))
+        """
+        if name not in plugin_devices:
+            # Device does not exist in the loaded device list.
+            # Attempt to refresh the devices, in case the user
+            # installed the plugin during the current Python session.
+            refresh_devices()
+    
+        if name in plugin_devices:
+            options = {}
+    
+            # load global configuration settings if available
+            config = kwargs.get("config", default_config)
+    
+            if config:
+                # combine configuration options with keyword arguments.
+                # Keyword arguments take preference, followed by device options,
+                # followed by plugin options, followed by global options.
+                options.update(config["main"])
+                options.update(config[name.split(".")[0] + ".global"])
+                options.update(config[name])
+    
+            kwargs.pop("config", None)
+            options.update(kwargs)
+    
+            # loads the device class
+            plugin_device_class = plugin_devices[name].load()
+    
+            def _safe_specifier_set(version_str):
+                """Safely create a SpecifierSet from a version string."""
+                operators = ["<", ">", "==", "!=", "<=", ">=", "~=", "==="]
+                if any(version_str.startswith(op) for op in operators):
+                    # This is tested in the plugin-test-matrix
+                    return SpecifierSet(version_str, prereleases=True)  # pragma: no cover
+                return SpecifierSet(f"=={version_str}", prereleases=True)
+    
+            if hasattr(plugin_device_class, "pennylane_requires"):
+                required_versions = _safe_specifier_set(plugin_device_class.pennylane_requires)
+                current_version = Version(__version__)
+                if current_version not in required_versions:
+                    raise DeviceError(
+                        f"The {name} plugin requires PennyLane versions {required_versions}, "
+                        f"however PennyLane version {__version__} is installed."
+                    )
+    
+            # Construct the device
+            dev = plugin_device_class(*args, **options)
+    
+            if isinstance(dev, LegacyDevice):
+                dev = LegacyDeviceFacade(dev)
+    
+            return dev
+    
+>       raise DeviceError(f"Device {name} does not exist. Make sure the required plugin is installed.")
+E       pennylane.exceptions.DeviceError: Device lightning.gpu does not exist. Make sure the required plugin is installed.
+
+/usr/local/lib/python3.11/dist-packages/pennylane/devices/device_constructor.py:219: DeviceError
+
+During handling of the above exception, another exception occurred:
+
+self = <test_gpu_real_verification.TestRealGPUVerification object at 0x7fde766f30d0>
+
+    def test_random_unitaries_match_on_gpu(self):
+        """Several independent random 2-qubit unitaries, synthesized on CPU
+        (reference_cpu_synthesize, the same stand-in the mock prototype
+        uses), then verified via REAL execution on lightning.gpu against
+        the SAME target unitary run directly on default.qubit (CPU)."""
+        worst = 0.0
+        for seed in range(5):
+            u = random_unitary(4, seed=seed).data
+            circ = reference_cpu_synthesize(u)
+>           result = verify_block_gpu_and_cpu(u, circ)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+benchmarks/test_gpu_real_verification.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+benchmarks/psf_pennylane_gpu_real.py:169: in verify_block_gpu_and_cpu
+    gpu_expval_diff = verify_on_gpu(target_matrix, synthesized_circuit)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+target_matrix = array([[ 0.04578135-0.19817758j, -0.0670271 -0.11887706j,
+         0.21649947+0.26349682j, -0.17076864+0.89137018j],
+ ...,
+       [-0.84659876-0.16666881j,  0.08502642+0.09913931j,
+        -0.44095103+0.19573532j, -0.02838949+0.06984177j]])
+synthesized_circuit = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fde70deef10>
+
+    def verify_on_gpu(target_matrix: np.ndarray, synthesized_circuit: QuantumCircuit) -> float:
+        """Runs `synthesized_circuit` on lightning.gpu and on default.qubit
+        (both driven by the SAME target unitary applied directly, for the
+        default.qubit side), across the three test-state preparations above,
+        and returns the worst (largest) expectation-value difference found.
+    
+        This is a REAL execution on REAL GPU hardware -- not a mock, not a
+        matrix-only check. Raises ConnectionContractError (this project's own
+        "no silent fallback" convention) if lightning.gpu is not actually
+        available, rather than silently falling back to CPU and reporting a
+        result that did not actually test the GPU.
+        """
+        try:
+            dev_gpu = qml.device("lightning.gpu", wires=2)
+        except Exception as exc:
+>           raise ConnectionContractError(
+                "verify_on_gpu: lightning.gpu device could not be created "
+                f"({type(exc).__name__}: {exc}) -- refusing to silently fall "
+                "back to CPU for what is supposed to be a GPU verification "
+                "step. Install pennylane-lightning[gpu] and confirm CUDA is "
+                "available (see this session's own CUDA_VISIBLE_DEVICES=\"\" "
+                "check for how to confirm the device is genuinely GPU-backed, "
+                "not silently CPU)."
+            )
+E           psf_pennylane_gpu_prototype.ConnectionContractError: verify_on_gpu: lightning.gpu device could not be created (DeviceError: Device lightning.gpu does not exist. Make sure the required plugin is installed.) -- refusing to silently fall back to CPU for what is supposed to be a GPU verification step. Install pennylane-lightning[gpu] and confirm CUDA is available (see this session's own CUDA_VISIBLE_DEVICES="" check for how to confirm the device is genuinely GPU-backed, not silently CPU).
+
+benchmarks/psf_pennylane_gpu_real.py:117: ConnectionContractError
+____ TestRealGPUVerification.test_wrong_circuit_is_caught_by_gpu_check_too _____
+
+target_matrix = array([[ 0.14480819+0.1752384j , -0.51892816-0.52424259j,
+        -0.14955858+0.312755j  ,  0.16913481-0.50538631j],
+ ...,
+       [ 0.03137922+0.19613952j,  0.4980475 +0.08846049j,
+         0.34078865+0.750661j  ,  0.01464807-0.15755843j]])
+synthesized_circuit = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fde70eeddd0>
+
+    def verify_on_gpu(target_matrix: np.ndarray, synthesized_circuit: QuantumCircuit) -> float:
+        """Runs `synthesized_circuit` on lightning.gpu and on default.qubit
+        (both driven by the SAME target unitary applied directly, for the
+        default.qubit side), across the three test-state preparations above,
+        and returns the worst (largest) expectation-value difference found.
+    
+        This is a REAL execution on REAL GPU hardware -- not a mock, not a
+        matrix-only check. Raises ConnectionContractError (this project's own
+        "no silent fallback" convention) if lightning.gpu is not actually
+        available, rather than silently falling back to CPU and reporting a
+        result that did not actually test the GPU.
+        """
+        try:
+>           dev_gpu = qml.device("lightning.gpu", wires=2)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+benchmarks/psf_pennylane_gpu_real.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'lightning.gpu', args = (), kwargs = {'wires': 2}
+
+    def device(name, *args, **kwargs):
+        r"""Load a device and return the instance.
+    
+        This function is used to load a particular quantum device,
+        which can then be used to construct QNodes.
+    
+        PennyLane comes with support for the following devices:
+    
+        * :mod:`'default.qubit' <pennylane.devices.default_qubit>`: a simple
+          state simulator of qubit-based quantum circuit architectures.
+    
+        * :mod:`'default.mixed' <pennylane.devices.default_mixed>`: a mixed-state
+          simulator of qubit-based quantum circuit architectures.
+    
+        * ``'lightning.qubit'``: a more performant state simulator of qubit-based
+          quantum circuit architectures written in C++.
+    
+        * :mod:`'default.qutrit' <pennylane.devices.default_qutrit>`: a simple
+          state simulator of qutrit-based quantum circuit architectures.
+    
+        * :mod:`'default.qutrit.mixed' <pennylane.devices.default_qutrit_mixed>`: a
+          mixed-state simulator of qutrit-based quantum circuit architectures.
+    
+        * :mod:`'default.gaussian' <pennylane.devices.default_gaussian>`: a simple simulator
+          of Gaussian states and operations on continuous-variable circuit architectures.
+    
+        * :mod:`'default.clifford' <pennylane.devices.default_clifford>`: an efficient
+          simulator of Clifford circuits.
+    
+        * :mod:`'default.tensor' <pennylane.devices.default_tensor>`: a simulator
+          of quantum circuits based on tensor networks.
+    
+        * :mod:`'null.qubit' <pennylane.devices.null_qubit>`: a simulator that performs no
+          operations associated with numerical computations.
+    
+        Additional devices are supported through plugins — see
+        the  `available plugins <https://pennylane.ai/plugins>`_ for more
+        details. To list all currently installed devices, run
+        :func:`qp.about <pennylane.about>`.
+    
+        Args:
+            name (str): the name of the device to load
+            wires (Wires): the wires (subsystems) to initialize the device with.
+                Note that this is optional for certain devices, such as ``default.qubit``
+    
+        Keyword Args:
+            config (pennylane.Configuration): a PennyLane configuration object
+                that contains global and/or device specific configurations.
+    
+        All devices must be loaded by specifying their **short-name** as listed above,
+        followed by the **wires** (subsystems) you wish to initialize. The ``wires``
+        argument can be an integer, in which case the wires of the device are addressed
+        by consecutive integers:
+    
+        .. code-block:: python
+    
+            import pennylane as qp
+    
+            dev = qp.device('default.qubit', wires=5)
+    
+            def circuit():
+                qp.Hadamard(wires=1)
+                qp.Hadamard(wires=[0])
+                qp.CNOT(wires=[3, 4])
+                ...
+    
+        The ``wires`` argument can also be a sequence of unique numbers or strings, specifying custom wire labels
+        that the user employs to address the wires:
+    
+        .. code-block:: python
+    
+            dev = qp.device('default.qubit', wires=['auxiliary', 'q11', 'q12', -1, 1])
+    
+            def circuit():
+                qp.Hadamard(wires='q11')
+                qp.Hadamard(wires=['auxiliary'])
+                qp.CNOT(wires=['q12', -1])
+                ...
+    
+        On some newer devices, such as ``default.qubit``, the ``wires`` argument can be omitted altogether,
+        and instead the wires will be computed when executing a circuit depending on its contents.
+    
+        >>> dev = qp.device("default.qubit")
+    
+        When executing quantum circuits on a device, we can specify the number of times the circuit must be executed
+        to estimate stochastic return values by using the :func:`~pennylane.set_shots` transform.
+        As an example, ``qp.sample()`` measurements will return as many samples as the number of shots specified.
+        Note that ``shots`` can be a single integer or a list of shot values.
+    
+        .. code-block:: python
+    
+            dev = qp.device('default.qubit', wires=1, seed=42)
+    
+            @qp.set_shots(10)
+            @qp.qnode(dev)
+            def circuit(a):
+                qp.RX(a, wires=0)
+                return qp.sample(qp.Z(0))
+    
+        >>> circuit(0.8)  # 10 samples are returned
+        array([ 1.,  1., -1.,  1.,  1., -1.,  1.,  1.,  1.,  1.])
+        >>> new_circuit = qp.set_shots(circuit, shots=[3, 4, 4])
+        >>> new_circuit(0.8)  # 3, 4, and 4 samples are returned respectively
+        (array([ 1., -1.,  1.]), array([1., 1., 1., 1.]), array([1., 1., 1., 1.]))
+        """
+        if name not in plugin_devices:
+            # Device does not exist in the loaded device list.
+            # Attempt to refresh the devices, in case the user
+            # installed the plugin during the current Python session.
+            refresh_devices()
+    
+        if name in plugin_devices:
+            options = {}
+    
+            # load global configuration settings if available
+            config = kwargs.get("config", default_config)
+    
+            if config:
+                # combine configuration options with keyword arguments.
+                # Keyword arguments take preference, followed by device options,
+                # followed by plugin options, followed by global options.
+                options.update(config["main"])
+                options.update(config[name.split(".")[0] + ".global"])
+                options.update(config[name])
+    
+            kwargs.pop("config", None)
+            options.update(kwargs)
+    
+            # loads the device class
+            plugin_device_class = plugin_devices[name].load()
+    
+            def _safe_specifier_set(version_str):
+                """Safely create a SpecifierSet from a version string."""
+                operators = ["<", ">", "==", "!=", "<=", ">=", "~=", "==="]
+                if any(version_str.startswith(op) for op in operators):
+                    # This is tested in the plugin-test-matrix
+                    return SpecifierSet(version_str, prereleases=True)  # pragma: no cover
+                return SpecifierSet(f"=={version_str}", prereleases=True)
+    
+            if hasattr(plugin_device_class, "pennylane_requires"):
+                required_versions = _safe_specifier_set(plugin_device_class.pennylane_requires)
+                current_version = Version(__version__)
+                if current_version not in required_versions:
+                    raise DeviceError(
+                        f"The {name} plugin requires PennyLane versions {required_versions}, "
+                        f"however PennyLane version {__version__} is installed."
+                    )
+    
+            # Construct the device
+            dev = plugin_device_class(*args, **options)
+    
+            if isinstance(dev, LegacyDevice):
+                dev = LegacyDeviceFacade(dev)
+    
+            return dev
+    
+>       raise DeviceError(f"Device {name} does not exist. Make sure the required plugin is installed.")
+E       pennylane.exceptions.DeviceError: Device lightning.gpu does not exist. Make sure the required plugin is installed.
+
+/usr/local/lib/python3.11/dist-packages/pennylane/devices/device_constructor.py:219: DeviceError
+
+During handling of the above exception, another exception occurred:
+
+self = <test_gpu_real_verification.TestRealGPUVerification object at 0x7fde766dc910>
+
+    def test_wrong_circuit_is_caught_by_gpu_check_too(self):
+        """Sanity check on the check itself: an intentionally WRONG circuit
+        (identity, standing in for a buggy synthesizer) must fail the GPU
+        verification, not silently pass -- the GPU check should be at least
+        as sensitive as the existing CPU matrix check, not a weaker
+        substitute for it."""
+        from qiskit import QuantumCircuit
+    
+        u = random_unitary(4, seed=42).data
+        wrong_circ = QuantumCircuit(2)  # identity, not the target unitary
+    
+>       result = verify_block_gpu_and_cpu(u, wrong_circ)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+benchmarks/test_gpu_real_verification.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+benchmarks/psf_pennylane_gpu_real.py:169: in verify_block_gpu_and_cpu
+    gpu_expval_diff = verify_on_gpu(target_matrix, synthesized_circuit)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+target_matrix = array([[ 0.14480819+0.1752384j , -0.51892816-0.52424259j,
+        -0.14955858+0.312755j  ,  0.16913481-0.50538631j],
+ ...,
+       [ 0.03137922+0.19613952j,  0.4980475 +0.08846049j,
+         0.34078865+0.750661j  ,  0.01464807-0.15755843j]])
+synthesized_circuit = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fde70eeddd0>
+
+    def verify_on_gpu(target_matrix: np.ndarray, synthesized_circuit: QuantumCircuit) -> float:
+        """Runs `synthesized_circuit` on lightning.gpu and on default.qubit
+        (both driven by the SAME target unitary applied directly, for the
+        default.qubit side), across the three test-state preparations above,
+        and returns the worst (largest) expectation-value difference found.
+    
+        This is a REAL execution on REAL GPU hardware -- not a mock, not a
+        matrix-only check. Raises ConnectionContractError (this project's own
+        "no silent fallback" convention) if lightning.gpu is not actually
+        available, rather than silently falling back to CPU and reporting a
+        result that did not actually test the GPU.
+        """
+        try:
+            dev_gpu = qml.device("lightning.gpu", wires=2)
+        except Exception as exc:
+>           raise ConnectionContractError(
+                "verify_on_gpu: lightning.gpu device could not be created "
+                f"({type(exc).__name__}: {exc}) -- refusing to silently fall "
+                "back to CPU for what is supposed to be a GPU verification "
+                "step. Install pennylane-lightning[gpu] and confirm CUDA is "
+                "available (see this session's own CUDA_VISIBLE_DEVICES=\"\" "
+                "check for how to confirm the device is genuinely GPU-backed, "
+                "not silently CPU)."
+            )
+E           psf_pennylane_gpu_prototype.ConnectionContractError: verify_on_gpu: lightning.gpu device could not be created (DeviceError: Device lightning.gpu does not exist. Make sure the required plugin is installed.) -- refusing to silently fall back to CPU for what is supposed to be a GPU verification step. Install pennylane-lightning[gpu] and confirm CUDA is available (see this session's own CUDA_VISIBLE_DEVICES="" check for how to confirm the device is genuinely GPU-backed, not silently CPU).
+
+benchmarks/psf_pennylane_gpu_real.py:117: ConnectionContractError
+_________ TestRealSubmitLocalMode.test_called_once_and_shots_accounted _________
+
+target_matrix = array([[ 0.01810941-0.13550229j, -0.0485279 -0.41040462j,
+        -0.71377091-0.05074369j, -0.01039216-0.54623478j],
+ ...,
+       [-0.25011202-0.03786698j, -0.09234869-0.7596188j ,
+        -0.00524117-0.03983286j,  0.02486304+0.59010911j]])
+synthesized_circuit = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fde7067a450>
+
+    def verify_on_gpu(target_matrix: np.ndarray, synthesized_circuit: QuantumCircuit) -> float:
+        """Runs `synthesized_circuit` on lightning.gpu and on default.qubit
+        (both driven by the SAME target unitary applied directly, for the
+        default.qubit side), across the three test-state preparations above,
+        and returns the worst (largest) expectation-value difference found.
+    
+        This is a REAL execution on REAL GPU hardware -- not a mock, not a
+        matrix-only check. Raises ConnectionContractError (this project's own
+        "no silent fallback" convention) if lightning.gpu is not actually
+        available, rather than silently falling back to CPU and reporting a
+        result that did not actually test the GPU.
+        """
+        try:
+>           dev_gpu = qml.device("lightning.gpu", wires=2)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+benchmarks/psf_pennylane_gpu_real.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'lightning.gpu', args = (), kwargs = {'wires': 2}
+
+    def device(name, *args, **kwargs):
+        r"""Load a device and return the instance.
+    
+        This function is used to load a particular quantum device,
+        which can then be used to construct QNodes.
+    
+        PennyLane comes with support for the following devices:
+    
+        * :mod:`'default.qubit' <pennylane.devices.default_qubit>`: a simple
+          state simulator of qubit-based quantum circuit architectures.
+    
+        * :mod:`'default.mixed' <pennylane.devices.default_mixed>`: a mixed-state
+          simulator of qubit-based quantum circuit architectures.
+    
+        * ``'lightning.qubit'``: a more performant state simulator of qubit-based
+          quantum circuit architectures written in C++.
+    
+        * :mod:`'default.qutrit' <pennylane.devices.default_qutrit>`: a simple
+          state simulator of qutrit-based quantum circuit architectures.
+    
+        * :mod:`'default.qutrit.mixed' <pennylane.devices.default_qutrit_mixed>`: a
+          mixed-state simulator of qutrit-based quantum circuit architectures.
+    
+        * :mod:`'default.gaussian' <pennylane.devices.default_gaussian>`: a simple simulator
+          of Gaussian states and operations on continuous-variable circuit architectures.
+    
+        * :mod:`'default.clifford' <pennylane.devices.default_clifford>`: an efficient
+          simulator of Clifford circuits.
+    
+        * :mod:`'default.tensor' <pennylane.devices.default_tensor>`: a simulator
+          of quantum circuits based on tensor networks.
+    
+        * :mod:`'null.qubit' <pennylane.devices.null_qubit>`: a simulator that performs no
+          operations associated with numerical computations.
+    
+        Additional devices are supported through plugins — see
+        the  `available plugins <https://pennylane.ai/plugins>`_ for more
+        details. To list all currently installed devices, run
+        :func:`qp.about <pennylane.about>`.
+    
+        Args:
+            name (str): the name of the device to load
+            wires (Wires): the wires (subsystems) to initialize the device with.
+                Note that this is optional for certain devices, such as ``default.qubit``
+    
+        Keyword Args:
+            config (pennylane.Configuration): a PennyLane configuration object
+                that contains global and/or device specific configurations.
+    
+        All devices must be loaded by specifying their **short-name** as listed above,
+        followed by the **wires** (subsystems) you wish to initialize. The ``wires``
+        argument can be an integer, in which case the wires of the device are addressed
+        by consecutive integers:
+    
+        .. code-block:: python
+    
+            import pennylane as qp
+    
+            dev = qp.device('default.qubit', wires=5)
+    
+            def circuit():
+                qp.Hadamard(wires=1)
+                qp.Hadamard(wires=[0])
+                qp.CNOT(wires=[3, 4])
+                ...
+    
+        The ``wires`` argument can also be a sequence of unique numbers or strings, specifying custom wire labels
+        that the user employs to address the wires:
+    
+        .. code-block:: python
+    
+            dev = qp.device('default.qubit', wires=['auxiliary', 'q11', 'q12', -1, 1])
+    
+            def circuit():
+                qp.Hadamard(wires='q11')
+                qp.Hadamard(wires=['auxiliary'])
+                qp.CNOT(wires=['q12', -1])
+                ...
+    
+        On some newer devices, such as ``default.qubit``, the ``wires`` argument can be omitted altogether,
+        and instead the wires will be computed when executing a circuit depending on its contents.
+    
+        >>> dev = qp.device("default.qubit")
+    
+        When executing quantum circuits on a device, we can specify the number of times the circuit must be executed
+        to estimate stochastic return values by using the :func:`~pennylane.set_shots` transform.
+        As an example, ``qp.sample()`` measurements will return as many samples as the number of shots specified.
+        Note that ``shots`` can be a single integer or a list of shot values.
+    
+        .. code-block:: python
+    
+            dev = qp.device('default.qubit', wires=1, seed=42)
+    
+            @qp.set_shots(10)
+            @qp.qnode(dev)
+            def circuit(a):
+                qp.RX(a, wires=0)
+                return qp.sample(qp.Z(0))
+    
+        >>> circuit(0.8)  # 10 samples are returned
+        array([ 1.,  1., -1.,  1.,  1., -1.,  1.,  1.,  1.,  1.])
+        >>> new_circuit = qp.set_shots(circuit, shots=[3, 4, 4])
+        >>> new_circuit(0.8)  # 3, 4, and 4 samples are returned respectively
+        (array([ 1., -1.,  1.]), array([1., 1., 1., 1.]), array([1., 1., 1., 1.]))
+        """
+        if name not in plugin_devices:
+            # Device does not exist in the loaded device list.
+            # Attempt to refresh the devices, in case the user
+            # installed the plugin during the current Python session.
+            refresh_devices()
+    
+        if name in plugin_devices:
+            options = {}
+    
+            # load global configuration settings if available
+            config = kwargs.get("config", default_config)
+    
+            if config:
+                # combine configuration options with keyword arguments.
+                # Keyword arguments take preference, followed by device options,
+                # followed by plugin options, followed by global options.
+                options.update(config["main"])
+                options.update(config[name.split(".")[0] + ".global"])
+                options.update(config[name])
+    
+            kwargs.pop("config", None)
+            options.update(kwargs)
+    
+            # loads the device class
+            plugin_device_class = plugin_devices[name].load()
+    
+            def _safe_specifier_set(version_str):
+                """Safely create a SpecifierSet from a version string."""
+                operators = ["<", ">", "==", "!=", "<=", ">=", "~=", "==="]
+                if any(version_str.startswith(op) for op in operators):
+                    # This is tested in the plugin-test-matrix
+                    return SpecifierSet(version_str, prereleases=True)  # pragma: no cover
+                return SpecifierSet(f"=={version_str}", prereleases=True)
+    
+            if hasattr(plugin_device_class, "pennylane_requires"):
+                required_versions = _safe_specifier_set(plugin_device_class.pennylane_requires)
+                current_version = Version(__version__)
+                if current_version not in required_versions:
+                    raise DeviceError(
+                        f"The {name} plugin requires PennyLane versions {required_versions}, "
+                        f"however PennyLane version {__version__} is installed."
+                    )
+    
+            # Construct the device
+            dev = plugin_device_class(*args, **options)
+    
+            if isinstance(dev, LegacyDevice):
+                dev = LegacyDeviceFacade(dev)
+    
+            return dev
+    
+>       raise DeviceError(f"Device {name} does not exist. Make sure the required plugin is installed.")
+E       pennylane.exceptions.DeviceError: Device lightning.gpu does not exist. Make sure the required plugin is installed.
+
+/usr/local/lib/python3.11/dist-packages/pennylane/devices/device_constructor.py:219: DeviceError
+
+During handling of the above exception, another exception occurred:
+
+self = <test_real_submit_local_mode.TestRealSubmitLocalMode object at 0x7fde70e80cd0>
+backend = <qiskit_ibm_runtime.fake_provider.backends.manila.fake_manila.FakeManilaV2 object at 0x7fde70d89990>
+
+    def test_called_once_and_shots_accounted(self, backend):
+        submit = MagicMock(side_effect=make_sampler_submit_fn(backend, seed_simulator=SEED))
+>       counts, _ = full_chain_with_gpu_verification(
+            make_two_block_tape(), submit, backend, shots=SHOTS, block_gate_floor=BLOCK_GATE_FLOOR
+        )
+
+benchmarks/test_real_submit_local_mode.py:101: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+benchmarks/psf_pennylane_gpu_full_chain.py:79: in full_chain_with_gpu_verification
+    return psf_pennylane_gpu_ibm_transform(
+benchmarks/psf_pennylane_gpu_ibm_prototype.py:306: in psf_pennylane_gpu_ibm_transform
+    tape_synth = psf_pennylane_gpu_transform(tape, gpu_batch_fn, block_gate_floor=block_gate_floor)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/psf_pennylane_gpu_prototype.py:311: in psf_pennylane_gpu_transform
+    synthesized = gpu_batch_fn(matrices)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/psf_pennylane_gpu_full_chain.py:51: in gpu_verified_batch_synthesize
+    check = verify_block_gpu_and_cpu(matrix, circ)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/psf_pennylane_gpu_real.py:169: in verify_block_gpu_and_cpu
+    gpu_expval_diff = verify_on_gpu(target_matrix, synthesized_circuit)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+target_matrix = array([[ 0.01810941-0.13550229j, -0.0485279 -0.41040462j,
+        -0.71377091-0.05074369j, -0.01039216-0.54623478j],
+ ...,
+       [-0.25011202-0.03786698j, -0.09234869-0.7596188j ,
+        -0.00524117-0.03983286j,  0.02486304+0.59010911j]])
+synthesized_circuit = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fde7067a450>
+
+    def verify_on_gpu(target_matrix: np.ndarray, synthesized_circuit: QuantumCircuit) -> float:
+        """Runs `synthesized_circuit` on lightning.gpu and on default.qubit
+        (both driven by the SAME target unitary applied directly, for the
+        default.qubit side), across the three test-state preparations above,
+        and returns the worst (largest) expectation-value difference found.
+    
+        This is a REAL execution on REAL GPU hardware -- not a mock, not a
+        matrix-only check. Raises ConnectionContractError (this project's own
+        "no silent fallback" convention) if lightning.gpu is not actually
+        available, rather than silently falling back to CPU and reporting a
+        result that did not actually test the GPU.
+        """
+        try:
+            dev_gpu = qml.device("lightning.gpu", wires=2)
+        except Exception as exc:
+>           raise ConnectionContractError(
+                "verify_on_gpu: lightning.gpu device could not be created "
+                f"({type(exc).__name__}: {exc}) -- refusing to silently fall "
+                "back to CPU for what is supposed to be a GPU verification "
+                "step. Install pennylane-lightning[gpu] and confirm CUDA is "
+                "available (see this session's own CUDA_VISIBLE_DEVICES=\"\" "
+                "check for how to confirm the device is genuinely GPU-backed, "
+                "not silently CPU)."
+            )
+E           psf_pennylane_gpu_prototype.ConnectionContractError: verify_on_gpu: lightning.gpu device could not be created (DeviceError: Device lightning.gpu does not exist. Make sure the required plugin is installed.) -- refusing to silently fall back to CPU for what is supposed to be a GPU verification step. Install pennylane-lightning[gpu] and confirm CUDA is available (see this session's own CUDA_VISIBLE_DEVICES="" check for how to confirm the device is genuinely GPU-backed, not silently CPU).
+
+benchmarks/psf_pennylane_gpu_real.py:117: ConnectionContractError
+__________ TestRealSubmitLocalMode.test_submission_failure_propagates __________
+
+self = <test_real_submit_local_mode.TestRealSubmitLocalMode object at 0x7fde70e81bd0>
+backend = <qiskit_ibm_runtime.fake_provider.backends.manila.fake_manila.FakeManilaV2 object at 0x7fde70d89990>
+
+    def test_submission_failure_propagates(self, backend):
+        failing = MagicMock(side_effect=RuntimeError("simulated runtime failure"))
+>       with pytest.raises(RuntimeError, match="simulated runtime failure"):
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'simulated runtime failure'
+E         Actual message: 'verify_on_gpu: lightning.gpu device could not be created (DeviceError: Device lightning.gpu does not exist. Make sure the required plugin is installed.) -- refusing to silently fall back to CPU for what is supposed to be a GPU verification step. Install pennylane-lightning[gpu] and confirm CUDA is available (see this session\'s own CUDA_VISIBLE_DEVICES="" check for how to confirm the device is genuinely GPU-backed, not silently CPU).'
+
+benchmarks/test_real_submit_local_mode.py:125: AssertionError
+_________ TestRealSubmitLocalMode.test_noiseless_target_matches_exact __________
+
+target_matrix = array([[ 0.01810941-0.13550229j, -0.0485279 -0.41040462j,
+        -0.71377091-0.05074369j, -0.01039216-0.54623478j],
+ ...,
+       [-0.25011202-0.03786698j, -0.09234869-0.7596188j ,
+        -0.00524117-0.03983286j,  0.02486304+0.59010911j]])
+synthesized_circuit = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fde70679490>
+
+    def verify_on_gpu(target_matrix: np.ndarray, synthesized_circuit: QuantumCircuit) -> float:
+        """Runs `synthesized_circuit` on lightning.gpu and on default.qubit
+        (both driven by the SAME target unitary applied directly, for the
+        default.qubit side), across the three test-state preparations above,
+        and returns the worst (largest) expectation-value difference found.
+    
+        This is a REAL execution on REAL GPU hardware -- not a mock, not a
+        matrix-only check. Raises ConnectionContractError (this project's own
+        "no silent fallback" convention) if lightning.gpu is not actually
+        available, rather than silently falling back to CPU and reporting a
+        result that did not actually test the GPU.
+        """
+        try:
+>           dev_gpu = qml.device("lightning.gpu", wires=2)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+benchmarks/psf_pennylane_gpu_real.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'lightning.gpu', args = (), kwargs = {'wires': 2}
+
+    def device(name, *args, **kwargs):
+        r"""Load a device and return the instance.
+    
+        This function is used to load a particular quantum device,
+        which can then be used to construct QNodes.
+    
+        PennyLane comes with support for the following devices:
+    
+        * :mod:`'default.qubit' <pennylane.devices.default_qubit>`: a simple
+          state simulator of qubit-based quantum circuit architectures.
+    
+        * :mod:`'default.mixed' <pennylane.devices.default_mixed>`: a mixed-state
+          simulator of qubit-based quantum circuit architectures.
+    
+        * ``'lightning.qubit'``: a more performant state simulator of qubit-based
+          quantum circuit architectures written in C++.
+    
+        * :mod:`'default.qutrit' <pennylane.devices.default_qutrit>`: a simple
+          state simulator of qutrit-based quantum circuit architectures.
+    
+        * :mod:`'default.qutrit.mixed' <pennylane.devices.default_qutrit_mixed>`: a
+          mixed-state simulator of qutrit-based quantum circuit architectures.
+    
+        * :mod:`'default.gaussian' <pennylane.devices.default_gaussian>`: a simple simulator
+          of Gaussian states and operations on continuous-variable circuit architectures.
+    
+        * :mod:`'default.clifford' <pennylane.devices.default_clifford>`: an efficient
+          simulator of Clifford circuits.
+    
+        * :mod:`'default.tensor' <pennylane.devices.default_tensor>`: a simulator
+          of quantum circuits based on tensor networks.
+    
+        * :mod:`'null.qubit' <pennylane.devices.null_qubit>`: a simulator that performs no
+          operations associated with numerical computations.
+    
+        Additional devices are supported through plugins — see
+        the  `available plugins <https://pennylane.ai/plugins>`_ for more
+        details. To list all currently installed devices, run
+        :func:`qp.about <pennylane.about>`.
+    
+        Args:
+            name (str): the name of the device to load
+            wires (Wires): the wires (subsystems) to initialize the device with.
+                Note that this is optional for certain devices, such as ``default.qubit``
+    
+        Keyword Args:
+            config (pennylane.Configuration): a PennyLane configuration object
+                that contains global and/or device specific configurations.
+    
+        All devices must be loaded by specifying their **short-name** as listed above,
+        followed by the **wires** (subsystems) you wish to initialize. The ``wires``
+        argument can be an integer, in which case the wires of the device are addressed
+        by consecutive integers:
+    
+        .. code-block:: python
+    
+            import pennylane as qp
+    
+            dev = qp.device('default.qubit', wires=5)
+    
+            def circuit():
+                qp.Hadamard(wires=1)
+                qp.Hadamard(wires=[0])
+                qp.CNOT(wires=[3, 4])
+                ...
+    
+        The ``wires`` argument can also be a sequence of unique numbers or strings, specifying custom wire labels
+        that the user employs to address the wires:
+    
+        .. code-block:: python
+    
+            dev = qp.device('default.qubit', wires=['auxiliary', 'q11', 'q12', -1, 1])
+    
+            def circuit():
+                qp.Hadamard(wires='q11')
+                qp.Hadamard(wires=['auxiliary'])
+                qp.CNOT(wires=['q12', -1])
+                ...
+    
+        On some newer devices, such as ``default.qubit``, the ``wires`` argument can be omitted altogether,
+        and instead the wires will be computed when executing a circuit depending on its contents.
+    
+        >>> dev = qp.device("default.qubit")
+    
+        When executing quantum circuits on a device, we can specify the number of times the circuit must be executed
+        to estimate stochastic return values by using the :func:`~pennylane.set_shots` transform.
+        As an example, ``qp.sample()`` measurements will return as many samples as the number of shots specified.
+        Note that ``shots`` can be a single integer or a list of shot values.
+    
+        .. code-block:: python
+    
+            dev = qp.device('default.qubit', wires=1, seed=42)
+    
+            @qp.set_shots(10)
+            @qp.qnode(dev)
+            def circuit(a):
+                qp.RX(a, wires=0)
+                return qp.sample(qp.Z(0))
+    
+        >>> circuit(0.8)  # 10 samples are returned
+        array([ 1.,  1., -1.,  1.,  1., -1.,  1.,  1.,  1.,  1.])
+        >>> new_circuit = qp.set_shots(circuit, shots=[3, 4, 4])
+        >>> new_circuit(0.8)  # 3, 4, and 4 samples are returned respectively
+        (array([ 1., -1.,  1.]), array([1., 1., 1., 1.]), array([1., 1., 1., 1.]))
+        """
+        if name not in plugin_devices:
+            # Device does not exist in the loaded device list.
+            # Attempt to refresh the devices, in case the user
+            # installed the plugin during the current Python session.
+            refresh_devices()
+    
+        if name in plugin_devices:
+            options = {}
+    
+            # load global configuration settings if available
+            config = kwargs.get("config", default_config)
+    
+            if config:
+                # combine configuration options with keyword arguments.
+                # Keyword arguments take preference, followed by device options,
+                # followed by plugin options, followed by global options.
+                options.update(config["main"])
+                options.update(config[name.split(".")[0] + ".global"])
+                options.update(config[name])
+    
+            kwargs.pop("config", None)
+            options.update(kwargs)
+    
+            # loads the device class
+            plugin_device_class = plugin_devices[name].load()
+    
+            def _safe_specifier_set(version_str):
+                """Safely create a SpecifierSet from a version string."""
+                operators = ["<", ">", "==", "!=", "<=", ">=", "~=", "==="]
+                if any(version_str.startswith(op) for op in operators):
+                    # This is tested in the plugin-test-matrix
+                    return SpecifierSet(version_str, prereleases=True)  # pragma: no cover
+                return SpecifierSet(f"=={version_str}", prereleases=True)
+    
+            if hasattr(plugin_device_class, "pennylane_requires"):
+                required_versions = _safe_specifier_set(plugin_device_class.pennylane_requires)
+                current_version = Version(__version__)
+                if current_version not in required_versions:
+                    raise DeviceError(
+                        f"The {name} plugin requires PennyLane versions {required_versions}, "
+                        f"however PennyLane version {__version__} is installed."
+                    )
+    
+            # Construct the device
+            dev = plugin_device_class(*args, **options)
+    
+            if isinstance(dev, LegacyDevice):
+                dev = LegacyDeviceFacade(dev)
+    
+            return dev
+    
+>       raise DeviceError(f"Device {name} does not exist. Make sure the required plugin is installed.")
+E       pennylane.exceptions.DeviceError: Device lightning.gpu does not exist. Make sure the required plugin is installed.
+
+/usr/local/lib/python3.11/dist-packages/pennylane/devices/device_constructor.py:219: DeviceError
+
+During handling of the above exception, another exception occurred:
+
+self = <test_real_submit_local_mode.TestRealSubmitLocalMode object at 0x7fde70e81950>
+backend = <qiskit_ibm_runtime.fake_provider.backends.manila.fake_manila.FakeManilaV2 object at 0x7fde70d89990>
+
+    def test_noiseless_target_matches_exact(self, backend):
+        submit = make_sampler_submit_fn(AerSimulator(), seed_simulator=SEED)
+        tape = make_two_block_tape()
+>       counts, _ = full_chain_with_gpu_verification(
+            tape, submit, backend, shots=SHOTS, block_gate_floor=BLOCK_GATE_FLOOR
+        )
+
+benchmarks/test_real_submit_local_mode.py:134: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+benchmarks/psf_pennylane_gpu_full_chain.py:79: in full_chain_with_gpu_verification
+    return psf_pennylane_gpu_ibm_transform(
+benchmarks/psf_pennylane_gpu_ibm_prototype.py:306: in psf_pennylane_gpu_ibm_transform
+    tape_synth = psf_pennylane_gpu_transform(tape, gpu_batch_fn, block_gate_floor=block_gate_floor)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/psf_pennylane_gpu_prototype.py:311: in psf_pennylane_gpu_transform
+    synthesized = gpu_batch_fn(matrices)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/psf_pennylane_gpu_full_chain.py:51: in gpu_verified_batch_synthesize
+    check = verify_block_gpu_and_cpu(matrix, circ)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/psf_pennylane_gpu_real.py:169: in verify_block_gpu_and_cpu
+    gpu_expval_diff = verify_on_gpu(target_matrix, synthesized_circuit)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+target_matrix = array([[ 0.01810941-0.13550229j, -0.0485279 -0.41040462j,
+        -0.71377091-0.05074369j, -0.01039216-0.54623478j],
+ ...,
+       [-0.25011202-0.03786698j, -0.09234869-0.7596188j ,
+        -0.00524117-0.03983286j,  0.02486304+0.59010911j]])
+synthesized_circuit = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fde70679490>
+
+    def verify_on_gpu(target_matrix: np.ndarray, synthesized_circuit: QuantumCircuit) -> float:
+        """Runs `synthesized_circuit` on lightning.gpu and on default.qubit
+        (both driven by the SAME target unitary applied directly, for the
+        default.qubit side), across the three test-state preparations above,
+        and returns the worst (largest) expectation-value difference found.
+    
+        This is a REAL execution on REAL GPU hardware -- not a mock, not a
+        matrix-only check. Raises ConnectionContractError (this project's own
+        "no silent fallback" convention) if lightning.gpu is not actually
+        available, rather than silently falling back to CPU and reporting a
+        result that did not actually test the GPU.
+        """
+        try:
+            dev_gpu = qml.device("lightning.gpu", wires=2)
+        except Exception as exc:
+>           raise ConnectionContractError(
+                "verify_on_gpu: lightning.gpu device could not be created "
+                f"({type(exc).__name__}: {exc}) -- refusing to silently fall "
+                "back to CPU for what is supposed to be a GPU verification "
+                "step. Install pennylane-lightning[gpu] and confirm CUDA is "
+                "available (see this session's own CUDA_VISIBLE_DEVICES=\"\" "
+                "check for how to confirm the device is genuinely GPU-backed, "
+                "not silently CPU)."
+            )
+E           psf_pennylane_gpu_prototype.ConnectionContractError: verify_on_gpu: lightning.gpu device could not be created (DeviceError: Device lightning.gpu does not exist. Make sure the required plugin is installed.) -- refusing to silently fall back to CPU for what is supposed to be a GPU verification step. Install pennylane-lightning[gpu] and confirm CUDA is available (see this session's own CUDA_VISIBLE_DEVICES="" check for how to confirm the device is genuinely GPU-backed, not silently CPU).
+
+benchmarks/psf_pennylane_gpu_real.py:117: ConnectionContractError
+____ TestRealSubmitLocalMode.test_fake_device_noise_visible_not_destructive ____
+
+target_matrix = array([[ 0.01810941-0.13550229j, -0.0485279 -0.41040462j,
+        -0.71377091-0.05074369j, -0.01039216-0.54623478j],
+ ...,
+       [-0.25011202-0.03786698j, -0.09234869-0.7596188j ,
+        -0.00524117-0.03983286j,  0.02486304+0.59010911j]])
+synthesized_circuit = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fde705ef790>
+
+    def verify_on_gpu(target_matrix: np.ndarray, synthesized_circuit: QuantumCircuit) -> float:
+        """Runs `synthesized_circuit` on lightning.gpu and on default.qubit
+        (both driven by the SAME target unitary applied directly, for the
+        default.qubit side), across the three test-state preparations above,
+        and returns the worst (largest) expectation-value difference found.
+    
+        This is a REAL execution on REAL GPU hardware -- not a mock, not a
+        matrix-only check. Raises ConnectionContractError (this project's own
+        "no silent fallback" convention) if lightning.gpu is not actually
+        available, rather than silently falling back to CPU and reporting a
+        result that did not actually test the GPU.
+        """
+        try:
+>           dev_gpu = qml.device("lightning.gpu", wires=2)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+benchmarks/psf_pennylane_gpu_real.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'lightning.gpu', args = (), kwargs = {'wires': 2}
+
+    def device(name, *args, **kwargs):
+        r"""Load a device and return the instance.
+    
+        This function is used to load a particular quantum device,
+        which can then be used to construct QNodes.
+    
+        PennyLane comes with support for the following devices:
+    
+        * :mod:`'default.qubit' <pennylane.devices.default_qubit>`: a simple
+          state simulator of qubit-based quantum circuit architectures.
+    
+        * :mod:`'default.mixed' <pennylane.devices.default_mixed>`: a mixed-state
+          simulator of qubit-based quantum circuit architectures.
+    
+        * ``'lightning.qubit'``: a more performant state simulator of qubit-based
+          quantum circuit architectures written in C++.
+    
+        * :mod:`'default.qutrit' <pennylane.devices.default_qutrit>`: a simple
+          state simulator of qutrit-based quantum circuit architectures.
+    
+        * :mod:`'default.qutrit.mixed' <pennylane.devices.default_qutrit_mixed>`: a
+          mixed-state simulator of qutrit-based quantum circuit architectures.
+    
+        * :mod:`'default.gaussian' <pennylane.devices.default_gaussian>`: a simple simulator
+          of Gaussian states and operations on continuous-variable circuit architectures.
+    
+        * :mod:`'default.clifford' <pennylane.devices.default_clifford>`: an efficient
+          simulator of Clifford circuits.
+    
+        * :mod:`'default.tensor' <pennylane.devices.default_tensor>`: a simulator
+          of quantum circuits based on tensor networks.
+    
+        * :mod:`'null.qubit' <pennylane.devices.null_qubit>`: a simulator that performs no
+          operations associated with numerical computations.
+    
+        Additional devices are supported through plugins — see
+        the  `available plugins <https://pennylane.ai/plugins>`_ for more
+        details. To list all currently installed devices, run
+        :func:`qp.about <pennylane.about>`.
+    
+        Args:
+            name (str): the name of the device to load
+            wires (Wires): the wires (subsystems) to initialize the device with.
+                Note that this is optional for certain devices, such as ``default.qubit``
+    
+        Keyword Args:
+            config (pennylane.Configuration): a PennyLane configuration object
+                that contains global and/or device specific configurations.
+    
+        All devices must be loaded by specifying their **short-name** as listed above,
+        followed by the **wires** (subsystems) you wish to initialize. The ``wires``
+        argument can be an integer, in which case the wires of the device are addressed
+        by consecutive integers:
+    
+        .. code-block:: python
+    
+            import pennylane as qp
+    
+            dev = qp.device('default.qubit', wires=5)
+    
+            def circuit():
+                qp.Hadamard(wires=1)
+                qp.Hadamard(wires=[0])
+                qp.CNOT(wires=[3, 4])
+                ...
+    
+        The ``wires`` argument can also be a sequence of unique numbers or strings, specifying custom wire labels
+        that the user employs to address the wires:
+    
+        .. code-block:: python
+    
+            dev = qp.device('default.qubit', wires=['auxiliary', 'q11', 'q12', -1, 1])
+    
+            def circuit():
+                qp.Hadamard(wires='q11')
+                qp.Hadamard(wires=['auxiliary'])
+                qp.CNOT(wires=['q12', -1])
+                ...
+    
+        On some newer devices, such as ``default.qubit``, the ``wires`` argument can be omitted altogether,
+        and instead the wires will be computed when executing a circuit depending on its contents.
+    
+        >>> dev = qp.device("default.qubit")
+    
+        When executing quantum circuits on a device, we can specify the number of times the circuit must be executed
+        to estimate stochastic return values by using the :func:`~pennylane.set_shots` transform.
+        As an example, ``qp.sample()`` measurements will return as many samples as the number of shots specified.
+        Note that ``shots`` can be a single integer or a list of shot values.
+    
+        .. code-block:: python
+    
+            dev = qp.device('default.qubit', wires=1, seed=42)
+    
+            @qp.set_shots(10)
+            @qp.qnode(dev)
+            def circuit(a):
+                qp.RX(a, wires=0)
+                return qp.sample(qp.Z(0))
+    
+        >>> circuit(0.8)  # 10 samples are returned
+        array([ 1.,  1., -1.,  1.,  1., -1.,  1.,  1.,  1.,  1.])
+        >>> new_circuit = qp.set_shots(circuit, shots=[3, 4, 4])
+        >>> new_circuit(0.8)  # 3, 4, and 4 samples are returned respectively
+        (array([ 1., -1.,  1.]), array([1., 1., 1., 1.]), array([1., 1., 1., 1.]))
+        """
+        if name not in plugin_devices:
+            # Device does not exist in the loaded device list.
+            # Attempt to refresh the devices, in case the user
+            # installed the plugin during the current Python session.
+            refresh_devices()
+    
+        if name in plugin_devices:
+            options = {}
+    
+            # load global configuration settings if available
+            config = kwargs.get("config", default_config)
+    
+            if config:
+                # combine configuration options with keyword arguments.
+                # Keyword arguments take preference, followed by device options,
+                # followed by plugin options, followed by global options.
+                options.update(config["main"])
+                options.update(config[name.split(".")[0] + ".global"])
+                options.update(config[name])
+    
+            kwargs.pop("config", None)
+            options.update(kwargs)
+    
+            # loads the device class
+            plugin_device_class = plugin_devices[name].load()
+    
+            def _safe_specifier_set(version_str):
+                """Safely create a SpecifierSet from a version string."""
+                operators = ["<", ">", "==", "!=", "<=", ">=", "~=", "==="]
+                if any(version_str.startswith(op) for op in operators):
+                    # This is tested in the plugin-test-matrix
+                    return SpecifierSet(version_str, prereleases=True)  # pragma: no cover
+                return SpecifierSet(f"=={version_str}", prereleases=True)
+    
+            if hasattr(plugin_device_class, "pennylane_requires"):
+                required_versions = _safe_specifier_set(plugin_device_class.pennylane_requires)
+                current_version = Version(__version__)
+                if current_version not in required_versions:
+                    raise DeviceError(
+                        f"The {name} plugin requires PennyLane versions {required_versions}, "
+                        f"however PennyLane version {__version__} is installed."
+                    )
+    
+            # Construct the device
+            dev = plugin_device_class(*args, **options)
+    
+            if isinstance(dev, LegacyDevice):
+                dev = LegacyDeviceFacade(dev)
+    
+            return dev
+    
+>       raise DeviceError(f"Device {name} does not exist. Make sure the required plugin is installed.")
+E       pennylane.exceptions.DeviceError: Device lightning.gpu does not exist. Make sure the required plugin is installed.
+
+/usr/local/lib/python3.11/dist-packages/pennylane/devices/device_constructor.py:219: DeviceError
+
+During handling of the above exception, another exception occurred:
+
+self = <test_real_submit_local_mode.TestRealSubmitLocalMode object at 0x7fde70e818d0>
+backend = <qiskit_ibm_runtime.fake_provider.backends.manila.fake_manila.FakeManilaV2 object at 0x7fde70d89990>
+
+    def test_fake_device_noise_visible_not_destructive(self, backend):
+        submit = make_sampler_submit_fn(backend, seed_simulator=SEED)
+        tape = make_two_block_tape()
+>       counts, _ = full_chain_with_gpu_verification(
+            tape, submit, backend, shots=SHOTS, block_gate_floor=BLOCK_GATE_FLOOR
+        )
+
+benchmarks/test_real_submit_local_mode.py:145: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+benchmarks/psf_pennylane_gpu_full_chain.py:79: in full_chain_with_gpu_verification
+    return psf_pennylane_gpu_ibm_transform(
+benchmarks/psf_pennylane_gpu_ibm_prototype.py:306: in psf_pennylane_gpu_ibm_transform
+    tape_synth = psf_pennylane_gpu_transform(tape, gpu_batch_fn, block_gate_floor=block_gate_floor)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/psf_pennylane_gpu_prototype.py:311: in psf_pennylane_gpu_transform
+    synthesized = gpu_batch_fn(matrices)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/psf_pennylane_gpu_full_chain.py:51: in gpu_verified_batch_synthesize
+    check = verify_block_gpu_and_cpu(matrix, circ)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/psf_pennylane_gpu_real.py:169: in verify_block_gpu_and_cpu
+    gpu_expval_diff = verify_on_gpu(target_matrix, synthesized_circuit)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+target_matrix = array([[ 0.01810941-0.13550229j, -0.0485279 -0.41040462j,
+        -0.71377091-0.05074369j, -0.01039216-0.54623478j],
+ ...,
+       [-0.25011202-0.03786698j, -0.09234869-0.7596188j ,
+        -0.00524117-0.03983286j,  0.02486304+0.59010911j]])
+synthesized_circuit = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fde705ef790>
+
+    def verify_on_gpu(target_matrix: np.ndarray, synthesized_circuit: QuantumCircuit) -> float:
+        """Runs `synthesized_circuit` on lightning.gpu and on default.qubit
+        (both driven by the SAME target unitary applied directly, for the
+        default.qubit side), across the three test-state preparations above,
+        and returns the worst (largest) expectation-value difference found.
+    
+        This is a REAL execution on REAL GPU hardware -- not a mock, not a
+        matrix-only check. Raises ConnectionContractError (this project's own
+        "no silent fallback" convention) if lightning.gpu is not actually
+        available, rather than silently falling back to CPU and reporting a
+        result that did not actually test the GPU.
+        """
+        try:
+            dev_gpu = qml.device("lightning.gpu", wires=2)
+        except Exception as exc:
+>           raise ConnectionContractError(
+                "verify_on_gpu: lightning.gpu device could not be created "
+                f"({type(exc).__name__}: {exc}) -- refusing to silently fall "
+                "back to CPU for what is supposed to be a GPU verification "
+                "step. Install pennylane-lightning[gpu] and confirm CUDA is "
+                "available (see this session's own CUDA_VISIBLE_DEVICES=\"\" "
+                "check for how to confirm the device is genuinely GPU-backed, "
+                "not silently CPU)."
+            )
+E           psf_pennylane_gpu_prototype.ConnectionContractError: verify_on_gpu: lightning.gpu device could not be created (DeviceError: Device lightning.gpu does not exist. Make sure the required plugin is installed.) -- refusing to silently fall back to CPU for what is supposed to be a GPU verification step. Install pennylane-lightning[gpu] and confirm CUDA is available (see this session's own CUDA_VISIBLE_DEVICES="" check for how to confirm the device is genuinely GPU-backed, not silently CPU).
+
+benchmarks/psf_pennylane_gpu_real.py:117: ConnectionContractError
+______ TestRealSubmitLocalMode.test_bitstring_width_equals_logical_qubits ______
+
+target_matrix = array([[ 0.01810941-0.13550229j, -0.0485279 -0.41040462j,
+        -0.71377091-0.05074369j, -0.01039216-0.54623478j],
+ ...,
+       [-0.25011202-0.03786698j, -0.09234869-0.7596188j ,
+        -0.00524117-0.03983286j,  0.02486304+0.59010911j]])
+synthesized_circuit = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fde7059a510>
+
+    def verify_on_gpu(target_matrix: np.ndarray, synthesized_circuit: QuantumCircuit) -> float:
+        """Runs `synthesized_circuit` on lightning.gpu and on default.qubit
+        (both driven by the SAME target unitary applied directly, for the
+        default.qubit side), across the three test-state preparations above,
+        and returns the worst (largest) expectation-value difference found.
+    
+        This is a REAL execution on REAL GPU hardware -- not a mock, not a
+        matrix-only check. Raises ConnectionContractError (this project's own
+        "no silent fallback" convention) if lightning.gpu is not actually
+        available, rather than silently falling back to CPU and reporting a
+        result that did not actually test the GPU.
+        """
+        try:
+>           dev_gpu = qml.device("lightning.gpu", wires=2)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+benchmarks/psf_pennylane_gpu_real.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'lightning.gpu', args = (), kwargs = {'wires': 2}
+
+    def device(name, *args, **kwargs):
+        r"""Load a device and return the instance.
+    
+        This function is used to load a particular quantum device,
+        which can then be used to construct QNodes.
+    
+        PennyLane comes with support for the following devices:
+    
+        * :mod:`'default.qubit' <pennylane.devices.default_qubit>`: a simple
+          state simulator of qubit-based quantum circuit architectures.
+    
+        * :mod:`'default.mixed' <pennylane.devices.default_mixed>`: a mixed-state
+          simulator of qubit-based quantum circuit architectures.
+    
+        * ``'lightning.qubit'``: a more performant state simulator of qubit-based
+          quantum circuit architectures written in C++.
+    
+        * :mod:`'default.qutrit' <pennylane.devices.default_qutrit>`: a simple
+          state simulator of qutrit-based quantum circuit architectures.
+    
+        * :mod:`'default.qutrit.mixed' <pennylane.devices.default_qutrit_mixed>`: a
+          mixed-state simulator of qutrit-based quantum circuit architectures.
+    
+        * :mod:`'default.gaussian' <pennylane.devices.default_gaussian>`: a simple simulator
+          of Gaussian states and operations on continuous-variable circuit architectures.
+    
+        * :mod:`'default.clifford' <pennylane.devices.default_clifford>`: an efficient
+          simulator of Clifford circuits.
+    
+        * :mod:`'default.tensor' <pennylane.devices.default_tensor>`: a simulator
+          of quantum circuits based on tensor networks.
+    
+        * :mod:`'null.qubit' <pennylane.devices.null_qubit>`: a simulator that performs no
+          operations associated with numerical computations.
+    
+        Additional devices are supported through plugins — see
+        the  `available plugins <https://pennylane.ai/plugins>`_ for more
+        details. To list all currently installed devices, run
+        :func:`qp.about <pennylane.about>`.
+    
+        Args:
+            name (str): the name of the device to load
+            wires (Wires): the wires (subsystems) to initialize the device with.
+                Note that this is optional for certain devices, such as ``default.qubit``
+    
+        Keyword Args:
+            config (pennylane.Configuration): a PennyLane configuration object
+                that contains global and/or device specific configurations.
+    
+        All devices must be loaded by specifying their **short-name** as listed above,
+        followed by the **wires** (subsystems) you wish to initialize. The ``wires``
+        argument can be an integer, in which case the wires of the device are addressed
+        by consecutive integers:
+    
+        .. code-block:: python
+    
+            import pennylane as qp
+    
+            dev = qp.device('default.qubit', wires=5)
+    
+            def circuit():
+                qp.Hadamard(wires=1)
+                qp.Hadamard(wires=[0])
+                qp.CNOT(wires=[3, 4])
+                ...
+    
+        The ``wires`` argument can also be a sequence of unique numbers or strings, specifying custom wire labels
+        that the user employs to address the wires:
+    
+        .. code-block:: python
+    
+            dev = qp.device('default.qubit', wires=['auxiliary', 'q11', 'q12', -1, 1])
+    
+            def circuit():
+                qp.Hadamard(wires='q11')
+                qp.Hadamard(wires=['auxiliary'])
+                qp.CNOT(wires=['q12', -1])
+                ...
+    
+        On some newer devices, such as ``default.qubit``, the ``wires`` argument can be omitted altogether,
+        and instead the wires will be computed when executing a circuit depending on its contents.
+    
+        >>> dev = qp.device("default.qubit")
+    
+        When executing quantum circuits on a device, we can specify the number of times the circuit must be executed
+        to estimate stochastic return values by using the :func:`~pennylane.set_shots` transform.
+        As an example, ``qp.sample()`` measurements will return as many samples as the number of shots specified.
+        Note that ``shots`` can be a single integer or a list of shot values.
+    
+        .. code-block:: python
+    
+            dev = qp.device('default.qubit', wires=1, seed=42)
+    
+            @qp.set_shots(10)
+            @qp.qnode(dev)
+            def circuit(a):
+                qp.RX(a, wires=0)
+                return qp.sample(qp.Z(0))
+    
+        >>> circuit(0.8)  # 10 samples are returned
+        array([ 1.,  1., -1.,  1.,  1., -1.,  1.,  1.,  1.,  1.])
+        >>> new_circuit = qp.set_shots(circuit, shots=[3, 4, 4])
+        >>> new_circuit(0.8)  # 3, 4, and 4 samples are returned respectively
+        (array([ 1., -1.,  1.]), array([1., 1., 1., 1.]), array([1., 1., 1., 1.]))
+        """
+        if name not in plugin_devices:
+            # Device does not exist in the loaded device list.
+            # Attempt to refresh the devices, in case the user
+            # installed the plugin during the current Python session.
+            refresh_devices()
+    
+        if name in plugin_devices:
+            options = {}
+    
+            # load global configuration settings if available
+            config = kwargs.get("config", default_config)
+    
+            if config:
+                # combine configuration options with keyword arguments.
+                # Keyword arguments take preference, followed by device options,
+                # followed by plugin options, followed by global options.
+                options.update(config["main"])
+                options.update(config[name.split(".")[0] + ".global"])
+                options.update(config[name])
+    
+            kwargs.pop("config", None)
+            options.update(kwargs)
+    
+            # loads the device class
+            plugin_device_class = plugin_devices[name].load()
+    
+            def _safe_specifier_set(version_str):
+                """Safely create a SpecifierSet from a version string."""
+                operators = ["<", ">", "==", "!=", "<=", ">=", "~=", "==="]
+                if any(version_str.startswith(op) for op in operators):
+                    # This is tested in the plugin-test-matrix
+                    return SpecifierSet(version_str, prereleases=True)  # pragma: no cover
+                return SpecifierSet(f"=={version_str}", prereleases=True)
+    
+            if hasattr(plugin_device_class, "pennylane_requires"):
+                required_versions = _safe_specifier_set(plugin_device_class.pennylane_requires)
+                current_version = Version(__version__)
+                if current_version not in required_versions:
+                    raise DeviceError(
+                        f"The {name} plugin requires PennyLane versions {required_versions}, "
+                        f"however PennyLane version {__version__} is installed."
+                    )
+    
+            # Construct the device
+            dev = plugin_device_class(*args, **options)
+    
+            if isinstance(dev, LegacyDevice):
+                dev = LegacyDeviceFacade(dev)
+    
+            return dev
+    
+>       raise DeviceError(f"Device {name} does not exist. Make sure the required plugin is installed.")
+E       pennylane.exceptions.DeviceError: Device lightning.gpu does not exist. Make sure the required plugin is installed.
+
+/usr/local/lib/python3.11/dist-packages/pennylane/devices/device_constructor.py:219: DeviceError
+
+During handling of the above exception, another exception occurred:
+
+self = <test_real_submit_local_mode.TestRealSubmitLocalMode object at 0x7fde70e83bd0>
+backend = <qiskit_ibm_runtime.fake_provider.backends.manila.fake_manila.FakeManilaV2 object at 0x7fde70d89990>
+
+    def test_bitstring_width_equals_logical_qubits(self, backend):
+        submit = make_sampler_submit_fn(backend, seed_simulator=SEED)
+>       counts, _ = full_chain_with_gpu_verification(
+            make_two_block_tape(), submit, backend, shots=200, block_gate_floor=BLOCK_GATE_FLOOR
+        )
+
+benchmarks/test_real_submit_local_mode.py:155: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+benchmarks/psf_pennylane_gpu_full_chain.py:79: in full_chain_with_gpu_verification
+    return psf_pennylane_gpu_ibm_transform(
+benchmarks/psf_pennylane_gpu_ibm_prototype.py:306: in psf_pennylane_gpu_ibm_transform
+    tape_synth = psf_pennylane_gpu_transform(tape, gpu_batch_fn, block_gate_floor=block_gate_floor)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/psf_pennylane_gpu_prototype.py:311: in psf_pennylane_gpu_transform
+    synthesized = gpu_batch_fn(matrices)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/psf_pennylane_gpu_full_chain.py:51: in gpu_verified_batch_synthesize
+    check = verify_block_gpu_and_cpu(matrix, circ)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/psf_pennylane_gpu_real.py:169: in verify_block_gpu_and_cpu
+    gpu_expval_diff = verify_on_gpu(target_matrix, synthesized_circuit)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+target_matrix = array([[ 0.01810941-0.13550229j, -0.0485279 -0.41040462j,
+        -0.71377091-0.05074369j, -0.01039216-0.54623478j],
+ ...,
+       [-0.25011202-0.03786698j, -0.09234869-0.7596188j ,
+        -0.00524117-0.03983286j,  0.02486304+0.59010911j]])
+synthesized_circuit = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fde7059a510>
+
+    def verify_on_gpu(target_matrix: np.ndarray, synthesized_circuit: QuantumCircuit) -> float:
+        """Runs `synthesized_circuit` on lightning.gpu and on default.qubit
+        (both driven by the SAME target unitary applied directly, for the
+        default.qubit side), across the three test-state preparations above,
+        and returns the worst (largest) expectation-value difference found.
+    
+        This is a REAL execution on REAL GPU hardware -- not a mock, not a
+        matrix-only check. Raises ConnectionContractError (this project's own
+        "no silent fallback" convention) if lightning.gpu is not actually
+        available, rather than silently falling back to CPU and reporting a
+        result that did not actually test the GPU.
+        """
+        try:
+            dev_gpu = qml.device("lightning.gpu", wires=2)
+        except Exception as exc:
+>           raise ConnectionContractError(
+                "verify_on_gpu: lightning.gpu device could not be created "
+                f"({type(exc).__name__}: {exc}) -- refusing to silently fall "
+                "back to CPU for what is supposed to be a GPU verification "
+                "step. Install pennylane-lightning[gpu] and confirm CUDA is "
+                "available (see this session's own CUDA_VISIBLE_DEVICES=\"\" "
+                "check for how to confirm the device is genuinely GPU-backed, "
+                "not silently CPU)."
+            )
+E           psf_pennylane_gpu_prototype.ConnectionContractError: verify_on_gpu: lightning.gpu device could not be created (DeviceError: Device lightning.gpu does not exist. Make sure the required plugin is installed.) -- refusing to silently fall back to CPU for what is supposed to be a GPU verification step. Install pennylane-lightning[gpu] and confirm CUDA is available (see this session's own CUDA_VISIBLE_DEVICES="" check for how to confirm the device is genuinely GPU-backed, not silently CPU).
+
+benchmarks/psf_pennylane_gpu_real.py:117: ConnectionContractError
+____ TestRealSubmitLocalMode.test_wire_renumbering_keeps_logical_bit_order _____
+
+target_matrix = array([[ 0.8500078 +0.132443j  ,  0.08286994+0.02695132j,
+        -0.12732366+0.48204883j, -0.05554295-0.02616091j],
+ ...,
+       [-0.03828203-0.07755431j, -0.78959891-0.0799369j ,
+        -0.14215152+0.12000759j, -0.55656644-0.13523458j]])
+synthesized_circuit = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fde706d8090>
+
+    def verify_on_gpu(target_matrix: np.ndarray, synthesized_circuit: QuantumCircuit) -> float:
+        """Runs `synthesized_circuit` on lightning.gpu and on default.qubit
+        (both driven by the SAME target unitary applied directly, for the
+        default.qubit side), across the three test-state preparations above,
+        and returns the worst (largest) expectation-value difference found.
+    
+        This is a REAL execution on REAL GPU hardware -- not a mock, not a
+        matrix-only check. Raises ConnectionContractError (this project's own
+        "no silent fallback" convention) if lightning.gpu is not actually
+        available, rather than silently falling back to CPU and reporting a
+        result that did not actually test the GPU.
+        """
+        try:
+>           dev_gpu = qml.device("lightning.gpu", wires=2)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+benchmarks/psf_pennylane_gpu_real.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'lightning.gpu', args = (), kwargs = {'wires': 2}
+
+    def device(name, *args, **kwargs):
+        r"""Load a device and return the instance.
+    
+        This function is used to load a particular quantum device,
+        which can then be used to construct QNodes.
+    
+        PennyLane comes with support for the following devices:
+    
+        * :mod:`'default.qubit' <pennylane.devices.default_qubit>`: a simple
+          state simulator of qubit-based quantum circuit architectures.
+    
+        * :mod:`'default.mixed' <pennylane.devices.default_mixed>`: a mixed-state
+          simulator of qubit-based quantum circuit architectures.
+    
+        * ``'lightning.qubit'``: a more performant state simulator of qubit-based
+          quantum circuit architectures written in C++.
+    
+        * :mod:`'default.qutrit' <pennylane.devices.default_qutrit>`: a simple
+          state simulator of qutrit-based quantum circuit architectures.
+    
+        * :mod:`'default.qutrit.mixed' <pennylane.devices.default_qutrit_mixed>`: a
+          mixed-state simulator of qutrit-based quantum circuit architectures.
+    
+        * :mod:`'default.gaussian' <pennylane.devices.default_gaussian>`: a simple simulator
+          of Gaussian states and operations on continuous-variable circuit architectures.
+    
+        * :mod:`'default.clifford' <pennylane.devices.default_clifford>`: an efficient
+          simulator of Clifford circuits.
+    
+        * :mod:`'default.tensor' <pennylane.devices.default_tensor>`: a simulator
+          of quantum circuits based on tensor networks.
+    
+        * :mod:`'null.qubit' <pennylane.devices.null_qubit>`: a simulator that performs no
+          operations associated with numerical computations.
+    
+        Additional devices are supported through plugins — see
+        the  `available plugins <https://pennylane.ai/plugins>`_ for more
+        details. To list all currently installed devices, run
+        :func:`qp.about <pennylane.about>`.
+    
+        Args:
+            name (str): the name of the device to load
+            wires (Wires): the wires (subsystems) to initialize the device with.
+                Note that this is optional for certain devices, such as ``default.qubit``
+    
+        Keyword Args:
+            config (pennylane.Configuration): a PennyLane configuration object
+                that contains global and/or device specific configurations.
+    
+        All devices must be loaded by specifying their **short-name** as listed above,
+        followed by the **wires** (subsystems) you wish to initialize. The ``wires``
+        argument can be an integer, in which case the wires of the device are addressed
+        by consecutive integers:
+    
+        .. code-block:: python
+    
+            import pennylane as qp
+    
+            dev = qp.device('default.qubit', wires=5)
+    
+            def circuit():
+                qp.Hadamard(wires=1)
+                qp.Hadamard(wires=[0])
+                qp.CNOT(wires=[3, 4])
+                ...
+    
+        The ``wires`` argument can also be a sequence of unique numbers or strings, specifying custom wire labels
+        that the user employs to address the wires:
+    
+        .. code-block:: python
+    
+            dev = qp.device('default.qubit', wires=['auxiliary', 'q11', 'q12', -1, 1])
+    
+            def circuit():
+                qp.Hadamard(wires='q11')
+                qp.Hadamard(wires=['auxiliary'])
+                qp.CNOT(wires=['q12', -1])
+                ...
+    
+        On some newer devices, such as ``default.qubit``, the ``wires`` argument can be omitted altogether,
+        and instead the wires will be computed when executing a circuit depending on its contents.
+    
+        >>> dev = qp.device("default.qubit")
+    
+        When executing quantum circuits on a device, we can specify the number of times the circuit must be executed
+        to estimate stochastic return values by using the :func:`~pennylane.set_shots` transform.
+        As an example, ``qp.sample()`` measurements will return as many samples as the number of shots specified.
+        Note that ``shots`` can be a single integer or a list of shot values.
+    
+        .. code-block:: python
+    
+            dev = qp.device('default.qubit', wires=1, seed=42)
+    
+            @qp.set_shots(10)
+            @qp.qnode(dev)
+            def circuit(a):
+                qp.RX(a, wires=0)
+                return qp.sample(qp.Z(0))
+    
+        >>> circuit(0.8)  # 10 samples are returned
+        array([ 1.,  1., -1.,  1.,  1., -1.,  1.,  1.,  1.,  1.])
+        >>> new_circuit = qp.set_shots(circuit, shots=[3, 4, 4])
+        >>> new_circuit(0.8)  # 3, 4, and 4 samples are returned respectively
+        (array([ 1., -1.,  1.]), array([1., 1., 1., 1.]), array([1., 1., 1., 1.]))
+        """
+        if name not in plugin_devices:
+            # Device does not exist in the loaded device list.
+            # Attempt to refresh the devices, in case the user
+            # installed the plugin during the current Python session.
+            refresh_devices()
+    
+        if name in plugin_devices:
+            options = {}
+    
+            # load global configuration settings if available
+            config = kwargs.get("config", default_config)
+    
+            if config:
+                # combine configuration options with keyword arguments.
+                # Keyword arguments take preference, followed by device options,
+                # followed by plugin options, followed by global options.
+                options.update(config["main"])
+                options.update(config[name.split(".")[0] + ".global"])
+                options.update(config[name])
+    
+            kwargs.pop("config", None)
+            options.update(kwargs)
+    
+            # loads the device class
+            plugin_device_class = plugin_devices[name].load()
+    
+            def _safe_specifier_set(version_str):
+                """Safely create a SpecifierSet from a version string."""
+                operators = ["<", ">", "==", "!=", "<=", ">=", "~=", "==="]
+                if any(version_str.startswith(op) for op in operators):
+                    # This is tested in the plugin-test-matrix
+                    return SpecifierSet(version_str, prereleases=True)  # pragma: no cover
+                return SpecifierSet(f"=={version_str}", prereleases=True)
+    
+            if hasattr(plugin_device_class, "pennylane_requires"):
+                required_versions = _safe_specifier_set(plugin_device_class.pennylane_requires)
+                current_version = Version(__version__)
+                if current_version not in required_versions:
+                    raise DeviceError(
+                        f"The {name} plugin requires PennyLane versions {required_versions}, "
+                        f"however PennyLane version {__version__} is installed."
+                    )
+    
+            # Construct the device
+            dev = plugin_device_class(*args, **options)
+    
+            if isinstance(dev, LegacyDevice):
+                dev = LegacyDeviceFacade(dev)
+    
+            return dev
+    
+>       raise DeviceError(f"Device {name} does not exist. Make sure the required plugin is installed.")
+E       pennylane.exceptions.DeviceError: Device lightning.gpu does not exist. Make sure the required plugin is installed.
+
+/usr/local/lib/python3.11/dist-packages/pennylane/devices/device_constructor.py:219: DeviceError
+
+During handling of the above exception, another exception occurred:
+
+self = <test_real_submit_local_mode.TestRealSubmitLocalMode object at 0x7fde70e82410>
+backend = <qiskit_ibm_runtime.fake_provider.backends.manila.fake_manila.FakeManilaV2 object at 0x7fde70d89990>
+
+    def test_wire_renumbering_keeps_logical_bit_order(self, backend):
+        """Addendum 161: blocks on (0,2) and (1,3) after single-qubit ops on
+        every wire. Consolidation absorbs the single-qubit ops, the
+        synthesized tape's wires then first appear as 0,2,1,3, and
+        tape_to_qiskit renumbers them. Before the fix, classical bits came
+        back in that renumbered order (noiseless TVD 0.1598 with no SWAPs
+        inserted). Bit i must mean the ORIGINAL tape's wire i."""
+        submit = make_sampler_submit_fn(AerSimulator(), seed_simulator=SEED)
+        tape = make_swap_tape()
+>       counts, qc_routed = full_chain_with_gpu_verification(
+            tape, submit, backend, shots=SHOTS, block_gate_floor=BLOCK_GATE_FLOOR
+        )
+
+benchmarks/test_real_submit_local_mode.py:171: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+benchmarks/psf_pennylane_gpu_full_chain.py:79: in full_chain_with_gpu_verification
+    return psf_pennylane_gpu_ibm_transform(
+benchmarks/psf_pennylane_gpu_ibm_prototype.py:306: in psf_pennylane_gpu_ibm_transform
+    tape_synth = psf_pennylane_gpu_transform(tape, gpu_batch_fn, block_gate_floor=block_gate_floor)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/psf_pennylane_gpu_prototype.py:311: in psf_pennylane_gpu_transform
+    synthesized = gpu_batch_fn(matrices)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/psf_pennylane_gpu_full_chain.py:51: in gpu_verified_batch_synthesize
+    check = verify_block_gpu_and_cpu(matrix, circ)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/psf_pennylane_gpu_real.py:169: in verify_block_gpu_and_cpu
+    gpu_expval_diff = verify_on_gpu(target_matrix, synthesized_circuit)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+target_matrix = array([[ 0.8500078 +0.132443j  ,  0.08286994+0.02695132j,
+        -0.12732366+0.48204883j, -0.05554295-0.02616091j],
+ ...,
+       [-0.03828203-0.07755431j, -0.78959891-0.0799369j ,
+        -0.14215152+0.12000759j, -0.55656644-0.13523458j]])
+synthesized_circuit = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fde706d8090>
+
+    def verify_on_gpu(target_matrix: np.ndarray, synthesized_circuit: QuantumCircuit) -> float:
+        """Runs `synthesized_circuit` on lightning.gpu and on default.qubit
+        (both driven by the SAME target unitary applied directly, for the
+        default.qubit side), across the three test-state preparations above,
+        and returns the worst (largest) expectation-value difference found.
+    
+        This is a REAL execution on REAL GPU hardware -- not a mock, not a
+        matrix-only check. Raises ConnectionContractError (this project's own
+        "no silent fallback" convention) if lightning.gpu is not actually
+        available, rather than silently falling back to CPU and reporting a
+        result that did not actually test the GPU.
+        """
+        try:
+            dev_gpu = qml.device("lightning.gpu", wires=2)
+        except Exception as exc:
+>           raise ConnectionContractError(
+                "verify_on_gpu: lightning.gpu device could not be created "
+                f"({type(exc).__name__}: {exc}) -- refusing to silently fall "
+                "back to CPU for what is supposed to be a GPU verification "
+                "step. Install pennylane-lightning[gpu] and confirm CUDA is "
+                "available (see this session's own CUDA_VISIBLE_DEVICES=\"\" "
+                "check for how to confirm the device is genuinely GPU-backed, "
+                "not silently CPU)."
+            )
+E           psf_pennylane_gpu_prototype.ConnectionContractError: verify_on_gpu: lightning.gpu device could not be created (DeviceError: Device lightning.gpu does not exist. Make sure the required plugin is installed.) -- refusing to silently fall back to CPU for what is supposed to be a GPU verification step. Install pennylane-lightning[gpu] and confirm CUDA is available (see this session's own CUDA_VISIBLE_DEVICES="" check for how to confirm the device is genuinely GPU-backed, not silently CPU).
+
+benchmarks/psf_pennylane_gpu_real.py:117: ConnectionContractError
+_ TestRealSubmitLocalMode.test_swap_routed_circuit_maps_logical_qubits_correctly _
+
+target_matrix = array([[-0.15797776-0.40907365j, -0.21157592+0.08396138j,
+         0.03255099+0.07010365j,  0.3538584 +0.79037841j],
+ ...,
+       [ 0.13487383-0.06151943j,  0.42580525-0.30527182j,
+        -0.7534793 +0.29223489j,  0.21917437+0.04851517j]])
+synthesized_circuit = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fde705e1390>
+
+    def verify_on_gpu(target_matrix: np.ndarray, synthesized_circuit: QuantumCircuit) -> float:
+        """Runs `synthesized_circuit` on lightning.gpu and on default.qubit
+        (both driven by the SAME target unitary applied directly, for the
+        default.qubit side), across the three test-state preparations above,
+        and returns the worst (largest) expectation-value difference found.
+    
+        This is a REAL execution on REAL GPU hardware -- not a mock, not a
+        matrix-only check. Raises ConnectionContractError (this project's own
+        "no silent fallback" convention) if lightning.gpu is not actually
+        available, rather than silently falling back to CPU and reporting a
+        result that did not actually test the GPU.
+        """
+        try:
+>           dev_gpu = qml.device("lightning.gpu", wires=2)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+benchmarks/psf_pennylane_gpu_real.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'lightning.gpu', args = (), kwargs = {'wires': 2}
+
+    def device(name, *args, **kwargs):
+        r"""Load a device and return the instance.
+    
+        This function is used to load a particular quantum device,
+        which can then be used to construct QNodes.
+    
+        PennyLane comes with support for the following devices:
+    
+        * :mod:`'default.qubit' <pennylane.devices.default_qubit>`: a simple
+          state simulator of qubit-based quantum circuit architectures.
+    
+        * :mod:`'default.mixed' <pennylane.devices.default_mixed>`: a mixed-state
+          simulator of qubit-based quantum circuit architectures.
+    
+        * ``'lightning.qubit'``: a more performant state simulator of qubit-based
+          quantum circuit architectures written in C++.
+    
+        * :mod:`'default.qutrit' <pennylane.devices.default_qutrit>`: a simple
+          state simulator of qutrit-based quantum circuit architectures.
+    
+        * :mod:`'default.qutrit.mixed' <pennylane.devices.default_qutrit_mixed>`: a
+          mixed-state simulator of qutrit-based quantum circuit architectures.
+    
+        * :mod:`'default.gaussian' <pennylane.devices.default_gaussian>`: a simple simulator
+          of Gaussian states and operations on continuous-variable circuit architectures.
+    
+        * :mod:`'default.clifford' <pennylane.devices.default_clifford>`: an efficient
+          simulator of Clifford circuits.
+    
+        * :mod:`'default.tensor' <pennylane.devices.default_tensor>`: a simulator
+          of quantum circuits based on tensor networks.
+    
+        * :mod:`'null.qubit' <pennylane.devices.null_qubit>`: a simulator that performs no
+          operations associated with numerical computations.
+    
+        Additional devices are supported through plugins — see
+        the  `available plugins <https://pennylane.ai/plugins>`_ for more
+        details. To list all currently installed devices, run
+        :func:`qp.about <pennylane.about>`.
+    
+        Args:
+            name (str): the name of the device to load
+            wires (Wires): the wires (subsystems) to initialize the device with.
+                Note that this is optional for certain devices, such as ``default.qubit``
+    
+        Keyword Args:
+            config (pennylane.Configuration): a PennyLane configuration object
+                that contains global and/or device specific configurations.
+    
+        All devices must be loaded by specifying their **short-name** as listed above,
+        followed by the **wires** (subsystems) you wish to initialize. The ``wires``
+        argument can be an integer, in which case the wires of the device are addressed
+        by consecutive integers:
+    
+        .. code-block:: python
+    
+            import pennylane as qp
+    
+            dev = qp.device('default.qubit', wires=5)
+    
+            def circuit():
+                qp.Hadamard(wires=1)
+                qp.Hadamard(wires=[0])
+                qp.CNOT(wires=[3, 4])
+                ...
+    
+        The ``wires`` argument can also be a sequence of unique numbers or strings, specifying custom wire labels
+        that the user employs to address the wires:
+    
+        .. code-block:: python
+    
+            dev = qp.device('default.qubit', wires=['auxiliary', 'q11', 'q12', -1, 1])
+    
+            def circuit():
+                qp.Hadamard(wires='q11')
+                qp.Hadamard(wires=['auxiliary'])
+                qp.CNOT(wires=['q12', -1])
+                ...
+    
+        On some newer devices, such as ``default.qubit``, the ``wires`` argument can be omitted altogether,
+        and instead the wires will be computed when executing a circuit depending on its contents.
+    
+        >>> dev = qp.device("default.qubit")
+    
+        When executing quantum circuits on a device, we can specify the number of times the circuit must be executed
+        to estimate stochastic return values by using the :func:`~pennylane.set_shots` transform.
+        As an example, ``qp.sample()`` measurements will return as many samples as the number of shots specified.
+        Note that ``shots`` can be a single integer or a list of shot values.
+    
+        .. code-block:: python
+    
+            dev = qp.device('default.qubit', wires=1, seed=42)
+    
+            @qp.set_shots(10)
+            @qp.qnode(dev)
+            def circuit(a):
+                qp.RX(a, wires=0)
+                return qp.sample(qp.Z(0))
+    
+        >>> circuit(0.8)  # 10 samples are returned
+        array([ 1.,  1., -1.,  1.,  1., -1.,  1.,  1.,  1.,  1.])
+        >>> new_circuit = qp.set_shots(circuit, shots=[3, 4, 4])
+        >>> new_circuit(0.8)  # 3, 4, and 4 samples are returned respectively
+        (array([ 1., -1.,  1.]), array([1., 1., 1., 1.]), array([1., 1., 1., 1.]))
+        """
+        if name not in plugin_devices:
+            # Device does not exist in the loaded device list.
+            # Attempt to refresh the devices, in case the user
+            # installed the plugin during the current Python session.
+            refresh_devices()
+    
+        if name in plugin_devices:
+            options = {}
+    
+            # load global configuration settings if available
+            config = kwargs.get("config", default_config)
+    
+            if config:
+                # combine configuration options with keyword arguments.
+                # Keyword arguments take preference, followed by device options,
+                # followed by plugin options, followed by global options.
+                options.update(config["main"])
+                options.update(config[name.split(".")[0] + ".global"])
+                options.update(config[name])
+    
+            kwargs.pop("config", None)
+            options.update(kwargs)
+    
+            # loads the device class
+            plugin_device_class = plugin_devices[name].load()
+    
+            def _safe_specifier_set(version_str):
+                """Safely create a SpecifierSet from a version string."""
+                operators = ["<", ">", "==", "!=", "<=", ">=", "~=", "==="]
+                if any(version_str.startswith(op) for op in operators):
+                    # This is tested in the plugin-test-matrix
+                    return SpecifierSet(version_str, prereleases=True)  # pragma: no cover
+                return SpecifierSet(f"=={version_str}", prereleases=True)
+    
+            if hasattr(plugin_device_class, "pennylane_requires"):
+                required_versions = _safe_specifier_set(plugin_device_class.pennylane_requires)
+                current_version = Version(__version__)
+                if current_version not in required_versions:
+                    raise DeviceError(
+                        f"The {name} plugin requires PennyLane versions {required_versions}, "
+                        f"however PennyLane version {__version__} is installed."
+                    )
+    
+            # Construct the device
+            dev = plugin_device_class(*args, **options)
+    
+            if isinstance(dev, LegacyDevice):
+                dev = LegacyDeviceFacade(dev)
+    
+            return dev
+    
+>       raise DeviceError(f"Device {name} does not exist. Make sure the required plugin is installed.")
+E       pennylane.exceptions.DeviceError: Device lightning.gpu does not exist. Make sure the required plugin is installed.
+
+/usr/local/lib/python3.11/dist-packages/pennylane/devices/device_constructor.py:219: DeviceError
+
+During handling of the above exception, another exception occurred:
+
+self = <test_real_submit_local_mode.TestRealSubmitLocalMode object at 0x7fde70e82990>
+backend = <qiskit_ibm_runtime.fake_provider.backends.manila.fake_manila.FakeManilaV2 object at 0x7fde70d89990>
+
+    def test_swap_routed_circuit_maps_logical_qubits_correctly(self, backend):
+        """A triangle of blocks cannot be embedded in a linear chain, so
+        routing must insert SWAPs (checked: more than the 9 CX three generic
+        blocks need). Noiseless counts must still match the logical
+        circuit's exact distribution -- which fails if any logical qubit is
+        measured at its initial rather than final physical position."""
+        submit = make_sampler_submit_fn(AerSimulator(), seed_simulator=SEED)
+        tape = make_triangle_tape()
+>       counts, qc_routed = full_chain_with_gpu_verification(
+            tape, submit, backend, shots=SHOTS, block_gate_floor=BLOCK_GATE_FLOOR
+        )
+
+benchmarks/test_real_submit_local_mode.py:188: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+benchmarks/psf_pennylane_gpu_full_chain.py:79: in full_chain_with_gpu_verification
+    return psf_pennylane_gpu_ibm_transform(
+benchmarks/psf_pennylane_gpu_ibm_prototype.py:306: in psf_pennylane_gpu_ibm_transform
+    tape_synth = psf_pennylane_gpu_transform(tape, gpu_batch_fn, block_gate_floor=block_gate_floor)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/psf_pennylane_gpu_prototype.py:311: in psf_pennylane_gpu_transform
+    synthesized = gpu_batch_fn(matrices)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/psf_pennylane_gpu_full_chain.py:51: in gpu_verified_batch_synthesize
+    check = verify_block_gpu_and_cpu(matrix, circ)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+benchmarks/psf_pennylane_gpu_real.py:169: in verify_block_gpu_and_cpu
+    gpu_expval_diff = verify_on_gpu(target_matrix, synthesized_circuit)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+target_matrix = array([[-0.15797776-0.40907365j, -0.21157592+0.08396138j,
+         0.03255099+0.07010365j,  0.3538584 +0.79037841j],
+ ...,
+       [ 0.13487383-0.06151943j,  0.42580525-0.30527182j,
+        -0.7534793 +0.29223489j,  0.21917437+0.04851517j]])
+synthesized_circuit = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fde705e1390>
+
+    def verify_on_gpu(target_matrix: np.ndarray, synthesized_circuit: QuantumCircuit) -> float:
+        """Runs `synthesized_circuit` on lightning.gpu and on default.qubit
+        (both driven by the SAME target unitary applied directly, for the
+        default.qubit side), across the three test-state preparations above,
+        and returns the worst (largest) expectation-value difference found.
+    
+        This is a REAL execution on REAL GPU hardware -- not a mock, not a
+        matrix-only check. Raises ConnectionContractError (this project's own
+        "no silent fallback" convention) if lightning.gpu is not actually
+        available, rather than silently falling back to CPU and reporting a
+        result that did not actually test the GPU.
+        """
+        try:
+            dev_gpu = qml.device("lightning.gpu", wires=2)
+        except Exception as exc:
+>           raise ConnectionContractError(
+                "verify_on_gpu: lightning.gpu device could not be created "
+                f"({type(exc).__name__}: {exc}) -- refusing to silently fall "
+                "back to CPU for what is supposed to be a GPU verification "
+                "step. Install pennylane-lightning[gpu] and confirm CUDA is "
+                "available (see this session's own CUDA_VISIBLE_DEVICES=\"\" "
+                "check for how to confirm the device is genuinely GPU-backed, "
+                "not silently CPU)."
+            )
+E           psf_pennylane_gpu_prototype.ConnectionContractError: verify_on_gpu: lightning.gpu device could not be created (DeviceError: Device lightning.gpu does not exist. Make sure the required plugin is installed.) -- refusing to silently fall back to CPU for what is supposed to be a GPU verification step. Install pennylane-lightning[gpu] and confirm CUDA is available (see this session's own CUDA_VISIBLE_DEVICES="" check for how to confirm the device is genuinely GPU-backed, not silently CPU).
+
+benchmarks/psf_pennylane_gpu_real.py:117: ConnectionContractError
+=============================== warnings summary ===============================
+benchmarks/test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_called_once_and_shots_accounted
+benchmarks/test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_invalid_shots_rejected_before_submission
+benchmarks/test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_unmeasured_circuit_rejected
+benchmarks/test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_noiseless_target_matches_exact
+benchmarks/test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_fake_device_noise_visible_not_destructive
+benchmarks/test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_bitstring_width_equals_logical_qubits
+benchmarks/test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_wire_renumbering_keeps_logical_bit_order
+benchmarks/test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_swap_routed_circuit_maps_logical_qubits_correctly
+  <sandbox>/trees/rel/benchmarks/psf_ibm_real_submit.py:54: DeprecationWarning: The SamplerV2 class is deprecated as of qiskit-ibm-runtime 0.50.0 and will be removed no sooner than 3 months after the release date. `qiskit_ibm_runtime.executor_sampler.Sampler` provides a new Sampler implementation that runs all the pre- and post-processing in the client side. The top-level `qiskit_ibm_runtime.Sampler` import will be updated to point to the client-side sampler in an upcoming release, with the legacy Sampler being available until the deprecation is completed.
+    sampler = SamplerV2(mode=mode, options=options) if options else SamplerV2(mode=mode)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED benchmarks/test_full_chain_gpu.py::TestFullChainWithRealGPU::test_full_chain_completes_with_real_gpu_verification
+FAILED benchmarks/test_full_chain_gpu.py::TestFullChainWithRealGPU::test_physics_survives_the_full_chain
+FAILED benchmarks/test_full_chain_gpu.py::TestFullChainWithRealGPU::test_ibm_submission_failure_still_propagates_through_full_chain
+FAILED benchmarks/test_gpu_real_verification.py::TestRealGPUVerification::test_cnot_synthesized_block_matches_on_gpu
+FAILED benchmarks/test_gpu_real_verification.py::TestRealGPUVerification::test_random_unitaries_match_on_gpu
+FAILED benchmarks/test_gpu_real_verification.py::TestRealGPUVerification::test_wrong_circuit_is_caught_by_gpu_check_too
+FAILED benchmarks/test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_called_once_and_shots_accounted
+FAILED benchmarks/test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_submission_failure_propagates
+FAILED benchmarks/test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_noiseless_target_matches_exact
+FAILED benchmarks/test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_fake_device_noise_visible_not_destructive
+FAILED benchmarks/test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_bitstring_width_equals_logical_qubits
+FAILED benchmarks/test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_wire_renumbering_keeps_logical_bit_order
+FAILED benchmarks/test_real_submit_local_mode.py::TestRealSubmitLocalMode::test_swap_routed_circuit_maps_logical_qubits_correctly
+ERROR benchmarks/test_official_hamiltonians_war.py
+ERROR benchmarks/test_psf_compile.py
+ERROR benchmarks/test_psf_vs_tket.py
+ERROR benchmarks/test_real_hardware_fidelity.py
+ERROR benchmarks/test_real_hardware_fidelity_cx.py
+ERROR benchmarks/test_scale_explosion_war.py
+ERROR benchmarks/test_scale_explosion_war2.py
+13 failed, 106 passed, 8 warnings, 7 errors in 5.35s

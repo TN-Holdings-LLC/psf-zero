@@ -1,0 +1,12 @@
+G0 versions: OK ['2026-10-01.a5', '2026-10-01.a5'] 2026-10-01.a4 | laps 30000
+G1 determinism: within-worker mismatches 0, cross-worker mismatches 0 of 100 keys -> CONFIRMED
+G2 reported cost = independent reference on every lap: 0 laps off of 30000 -> CONFIRMED
+G3 control (a4) shows the defect: 420 laps off of 3000 -> CONFIRMED
+   worker 0: median laps 101-1100 201.7 ms, last 1000 208.2 ms (ratio 1.032); RSS at lap 2000 203 MB, end 204 MB (growth +1 MB); max lap 0.58 s
+   worker 1: median laps 101-1100 201.4 ms, last 1000 208.4 ms (ratio 1.035); RSS at lap 2000 205 MB, end 205 MB (growth -0 MB); max lap 0.99 s
+G4 no time drift (last-1000 / laps 101-1100 median <= 1.20 per worker) -> CONFIRMED
+G5 no memory growth (RSS growth after lap 2000 <= 50 MB per worker) -> CONFIRMED
+G6 sampled outputs exact: 60 of 60 -> CONFIRMED
+G7 a5 = a4 on calibration A (first sight of each circuit): 50 of 50 identical -> CONFIRMED
+SUMMARY {"G1": "CONFIRMED", "G2": "CONFIRMED", "G3": "CONFIRMED", "G4": "CONFIRMED", "G5": "CONFIRMED", "G6": "CONFIRMED", "G7": "CONFIRMED"}
+DECISION: ALL CONFIRMED

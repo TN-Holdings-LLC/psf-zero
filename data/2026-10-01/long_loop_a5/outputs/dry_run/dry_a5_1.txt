@@ -1,0 +1,2 @@
+META {"wid": 1, "start": 60, "laps": 60, "epoch": 20, "pool_offset": 900000, "ai": "2026-10-01.a5", "c2": "2026-10-01.c2", "layout": "2026-10-01.c2", "sha": {"ai": "91fb1ea49bb99135a8bd6f37cff091e5abd31fd097aabf4744ac5d3e58e8c172", "script": "222fed923c5998eec3f38794c3c7eba461a4d58b8eedc8f04a5732d42a76ba44", "stateaware": "47d852b8f0bd45dbda360c0996fad907d2cbf6ea401b31aa7a0be1cc94d2caf7", "helpers": "9f4e124f996bbf83a15768148631279c5e1ce73541d929d0701dbe91da871bac"}}
+wrote dry/dry_a5_1.json

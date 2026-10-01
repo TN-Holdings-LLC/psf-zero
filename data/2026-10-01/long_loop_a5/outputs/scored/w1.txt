@@ -1,0 +1,17 @@
+META {"wid": 1, "start": 15000, "laps": 15000, "epoch": 1000, "pool_offset": 0, "ai": "2026-10-01.a5", "c2": "2026-10-01.c2", "layout": "2026-10-01.c2", "sha": {"ai": "91fb1ea49bb99135a8bd6f37cff091e5abd31fd097aabf4744ac5d3e58e8c172", "script": "222fed923c5998eec3f38794c3c7eba461a4d58b8eedc8f04a5732d42a76ba44", "stateaware": "47d852b8f0bd45dbda360c0996fad907d2cbf6ea401b31aa7a0be1cc94d2caf7", "helpers": "9f4e124f996bbf83a15768148631279c5e1ce73541d929d0701dbe91da871bac"}}
+lap 16000 median(last 1000) 202 ms rss 206 MB mism 0 cost_bad 0
+lap 17000 median(last 1000) 203 ms rss 205 MB mism 0 cost_bad 0
+lap 18000 median(last 1000) 201 ms rss 205 MB mism 0 cost_bad 0
+lap 19000 median(last 1000) 202 ms rss 204 MB mism 0 cost_bad 0
+lap 20000 median(last 1000) 208 ms rss 204 MB mism 0 cost_bad 0
+lap 21000 median(last 1000) 207 ms rss 205 MB mism 0 cost_bad 0
+lap 22000 median(last 1000) 200 ms rss 205 MB mism 0 cost_bad 0
+lap 23000 median(last 1000) 206 ms rss 205 MB mism 0 cost_bad 0
+lap 24000 median(last 1000) 205 ms rss 204 MB mism 0 cost_bad 0
+lap 25000 median(last 1000) 203 ms rss 205 MB mism 0 cost_bad 0
+lap 26000 median(last 1000) 202 ms rss 205 MB mism 0 cost_bad 0
+lap 27000 median(last 1000) 199 ms rss 207 MB mism 0 cost_bad 0
+lap 28000 median(last 1000) 201 ms rss 205 MB mism 0 cost_bad 0
+lap 29000 median(last 1000) 205 ms rss 204 MB mism 0 cost_bad 0
+lap 30000 median(last 1000) 208 ms rss 205 MB mism 0 cost_bad 0
+wrote run/w1.json

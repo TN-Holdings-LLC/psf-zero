@@ -1,0 +1,13 @@
+C0 versions: OK 2026-10-01.c2 2026-10-01.c2 2026-10-01.a1 2026-10-01.a2 core 2026-09-29.1
+D1 all outputs exact without noise: 0 failures -> CONFIRMED
+   FakeAuckland: mean infidelity A1 0.0870 A2 0.0672 L3 0.0874 L3T 0.0672 | 2q A1 554 A2 554 L3 564 L3T 564 | A2/A1 0.772 A2/L3T 1.000 A2/L3 0.769 | A2 lower than L3T in 20/40 | A2 median 167 ms
+   FakeTorino: mean infidelity A1 0.0714 A2 0.0399 L3 0.0801 L3T 0.0410 | 2q A1 551 A2 552 L3 564 L3T 564 | A2/A1 0.559 A2/L3T 0.972 A2/L3 0.498 | A2 lower than L3T in 29/40 | A2 median 359 ms
+   FakeKingston: mean infidelity A1 0.0218 A2 0.0183 L3 0.0226 L3T 0.0188 | 2q A1 551 A2 551 L3 558 L3T 558 | A2/A1 0.842 A2/L3T 0.977 A2/L3 0.812 | A2 lower than L3T in 28/40 | A2 median 417 ms
+D2 A2 beats A1 under noise (mean infidelity <= 0.90 x A1, every device) -> CONFIRMED
+D3 A2 at error-aware Qiskit L3's level (<= 1.10 x L3T, every device) -> CONFIRMED
+D4 A2 beats Qiskit L3 without error information (<= 0.95 x L3, every device) -> CONFIRMED
+D5 A2 keeps the 2-qubit count (sum <= 1.03 x A1, every device) -> CONFIRMED
+D6 A2 time: medians FakeAuckland 167 ms, FakeTorino 359 ms, FakeKingston 417 ms, max 1.13 s -> CONFIRMED
+D7 A2 without a target identical to A1: 20/20 -> CONFIRMED
+SUMMARY {"D1": "CONFIRMED", "D2": "CONFIRMED", "D3": "CONFIRMED", "D4": "CONFIRMED", "D5": "CONFIRMED", "D6": "CONFIRMED", "D7": "CONFIRMED"}
+DECISION: ALL CONFIRMED

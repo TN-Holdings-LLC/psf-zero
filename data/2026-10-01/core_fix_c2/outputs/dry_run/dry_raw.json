@@ -1,0 +1,501 @@
+{
+ "meta": {
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v50-x86_64-with-glibc2.39",
+  "processor": "x86_64",
+  "cpu_count": 2,
+  "qiskit": "2.5.2",
+  "rel_version": "2026-09-28.1",
+  "cand_version": "2026-10-01.c2",
+  "layout_versions": {
+   "m1": "2026-09-26.m1",
+   "c1": "2026-09-29.c1",
+   "c2": "2026-10-01.c2"
+  },
+  "core_version": "2026-09-29.1",
+  "sha": {
+   "rel_compile": "3616efc8b8a7bea184d6170fb7379d509d0bfec9828f4eb2f703dd4d26d8c60b",
+   "cand_compile": "3a2876cd4a2341901b320a75c19844eb8911887ae0c9f684ee9f3be0452b3a3c",
+   "layout_m1": "a639efdef484379d23b4c0a52dffe557c47c30f639c41e4f8521ca608712d875",
+   "layout_c1": "e25952a33bacfbb8de7a439b53892e9bab88329d8c47c6de867c29fc660145fa",
+   "layout_c2": "f0d38519adad04864de42c456564a8321584ae3feadd744101a4cb719070fc14",
+   "script": "e5d291eba482c55b6d96d92f640bfd5018aeec9bd8b28ccf4214282851e40ce4"
+  },
+  "dry": true
+ },
+ "L": [
+  {
+   "backend": "FakeAuckland",
+   "k3": 7,
+   "k2": 3,
+   "n": 27,
+   "spare": 0,
+   "swapfree_2q": 17,
+   "ground_truth": "feasible",
+   "gt_s": 0.0,
+   "m1": {
+    "two_q": 32,
+    "s": 0.0218,
+    "digest": "c3501bd5cd9e95b9",
+    "fid": 0.9999999999999992
+   },
+   "c1": {
+    "two_q": 17,
+    "s": 0.0065,
+    "digest": "f73078705e06916b",
+    "fid": 0.9999999999999994
+   },
+   "c2": {
+    "two_q": 17,
+    "s": 0.0067,
+    "digest": "f73078705e06916b",
+    "fid": 0.9999999999999994
+   }
+  },
+  {
+   "backend": "FakeAuckland",
+   "k3": 9,
+   "k2": 0,
+   "n": 27,
+   "spare": 0,
+   "swapfree_2q": 18,
+   "ground_truth": "feasible",
+   "gt_s": 0.0,
+   "m1": {
+    "two_q": 30,
+    "s": 0.0232,
+    "digest": "0908ce53435607ef",
+    "fid": 0.9999999999999989
+   },
+   "c1": {
+    "two_q": 30,
+    "s": 1.1935,
+    "digest": "0908ce53435607ef",
+    "fid": 0.9999999999999989
+   },
+   "c2": {
+    "two_q": 18,
+    "s": 0.0082,
+    "digest": "fea4b8277fb45f32",
+    "fid": 0.999999999999999
+   }
+  },
+  {
+   "backend": "FakeKingston",
+   "k3": 39,
+   "k2": 17,
+   "n": 151,
+   "spare": 5,
+   "swapfree_2q": 95,
+   "ground_truth": "feasible",
+   "gt_s": 0.648,
+   "m1": {
+    "two_q": 260,
+    "s": 0.082,
+    "digest": "ea2eb2eaf160b101",
+    "fid": null
+   },
+   "c1": {
+    "two_q": 260,
+    "s": 2.0777,
+    "digest": "ea2eb2eaf160b101",
+    "fid": null
+   },
+   "c2": {
+    "two_q": 95,
+    "s": 0.7057,
+    "digest": "621da54d5d375c6c",
+    "fid": 0.9999999999999991
+   }
+  }
+ ],
+ "C": [
+  {
+   "backend": "FakeAuckland",
+   "seed": 901001,
+   "n": 3,
+   "rel": {
+    "two_q": 22,
+    "fid": 0.9999999999999993
+   },
+   "cand": {
+    "two_q": 8,
+    "fid": 0.9999999999999989
+   },
+   "L3": 8
+  },
+  {
+   "backend": "FakeAuckland",
+   "seed": 901002,
+   "n": 3,
+   "rel": {
+    "two_q": 35,
+    "fid": 0.9999999999999992
+   },
+   "cand": {
+    "two_q": 13,
+    "fid": 0.9999999999999991
+   },
+   "L3": 16
+  },
+  {
+   "backend": "FakeAuckland",
+   "seed": 901003,
+   "n": 3,
+   "rel": {
+    "two_q": 22,
+    "fid": 0.9999999999999994
+   },
+   "cand": {
+    "two_q": 13,
+    "fid": 0.9999999999999989
+   },
+   "L3": 13
+  },
+  {
+   "backend": "FakeAuckland",
+   "seed": 901004,
+   "n": 3,
+   "rel": {
+    "two_q": 10,
+    "fid": 1.0
+   },
+   "cand": {
+    "two_q": 7,
+    "fid": 0.9999999999999999
+   },
+   "L3": 9
+  },
+  {
+   "backend": "FakeAuckland",
+   "seed": 901005,
+   "n": 4,
+   "rel": {
+    "two_q": 28,
+    "fid": 0.9999999999999996
+   },
+   "cand": {
+    "two_q": 22,
+    "fid": 0.9999999999999998
+   },
+   "L3": 22
+  },
+  {
+   "backend": "FakeAuckland",
+   "seed": 901006,
+   "n": 4,
+   "rel": {
+    "two_q": 35,
+    "fid": 0.9999999999999983
+   },
+   "cand": {
+    "two_q": 21,
+    "fid": 0.9999999999999991
+   },
+   "L3": 19
+  },
+  {
+   "backend": "FakeKingston",
+   "seed": 901001,
+   "n": 3,
+   "rel": {
+    "two_q": 22,
+    "fid": 0.9999999999999991
+   },
+   "cand": {
+    "two_q": 8,
+    "fid": 0.9999999999999991
+   },
+   "L3": 8
+  },
+  {
+   "backend": "FakeKingston",
+   "seed": 901002,
+   "n": 3,
+   "rel": {
+    "two_q": 39,
+    "fid": 0.9999999999999988
+   },
+   "cand": {
+    "two_q": 13,
+    "fid": 0.9999999999999993
+   },
+   "L3": 16
+  },
+  {
+   "backend": "FakeKingston",
+   "seed": 901003,
+   "n": 3,
+   "rel": {
+    "two_q": 22,
+    "fid": 0.9999999999999978
+   },
+   "cand": {
+    "two_q": 13,
+    "fid": 0.999999999999999
+   },
+   "L3": 13
+  },
+  {
+   "backend": "FakeKingston",
+   "seed": 901004,
+   "n": 3,
+   "rel": {
+    "two_q": 10,
+    "fid": 0.9999999999999996
+   },
+   "cand": {
+    "two_q": 7,
+    "fid": 1.0
+   },
+   "L3": 9
+  },
+  {
+   "backend": "FakeKingston",
+   "seed": 901005,
+   "n": 4,
+   "rel": {
+    "two_q": 33,
+    "fid": 0.999999999999999
+   },
+   "cand": {
+    "two_q": 23,
+    "fid": 0.9999999999999984
+   },
+   "L3": 24
+  },
+  {
+   "backend": "FakeKingston",
+   "seed": 901006,
+   "n": 4,
+   "rel": {
+    "two_q": 41,
+    "fid": 0.9999999999999981
+   },
+   "cand": {
+    "two_q": 24,
+    "fid": 0.9999999999999989
+   },
+   "L3": 21
+  }
+ ],
+ "T": [
+  {
+   "backend": "FakeAuckland",
+   "name": "W3/gates",
+   "n": 3,
+   "rel": {
+    "two_q": 6,
+    "fid": 0.9999999999999998
+   },
+   "cand": {
+    "two_q": 4,
+    "fid": 0.9999999999999991
+   },
+   "L3": 4
+  },
+  {
+   "backend": "FakeAuckland",
+   "name": "W3/unitary",
+   "n": 3,
+   "rel": {
+    "two_q": 6,
+    "fid": 0.9999999999999994
+   },
+   "cand": {
+    "two_q": 4,
+    "fid": 0.9999999999999991
+   },
+   "L3": 4
+  },
+  {
+   "backend": "FakeAuckland",
+   "name": "W4/gates",
+   "n": 4,
+   "rel": {
+    "two_q": 9,
+    "fid": 0.9999999999999999
+   },
+   "cand": {
+    "two_q": 6,
+    "fid": 0.9999999999999991
+   },
+   "L3": 6
+  },
+  {
+   "backend": "FakeAuckland",
+   "name": "W4/unitary",
+   "n": 4,
+   "rel": {
+    "two_q": 9,
+    "fid": 0.9999999999999993
+   },
+   "cand": {
+    "two_q": 6,
+    "fid": 0.9999999999999991
+   },
+   "L3": 6
+  },
+  {
+   "backend": "FakeKingston",
+   "name": "W3/gates",
+   "n": 3,
+   "rel": {
+    "two_q": 6,
+    "fid": 0.9999999999999991
+   },
+   "cand": {
+    "two_q": 4,
+    "fid": 0.9999999999999991
+   },
+   "L3": 4
+  },
+  {
+   "backend": "FakeKingston",
+   "name": "W3/unitary",
+   "n": 3,
+   "rel": {
+    "two_q": 6,
+    "fid": 0.9999999999999997
+   },
+   "cand": {
+    "two_q": 4,
+    "fid": 0.9999999999999991
+   },
+   "L3": 4
+  },
+  {
+   "backend": "FakeKingston",
+   "name": "W4/gates",
+   "n": 4,
+   "rel": {
+    "two_q": 9,
+    "fid": 0.9999999999999989
+   },
+   "cand": {
+    "two_q": 6,
+    "fid": 0.9999999999999992
+   },
+   "L3": 6
+  },
+  {
+   "backend": "FakeKingston",
+   "name": "W4/unitary",
+   "n": 4,
+   "rel": {
+    "two_q": 9,
+    "fid": 0.9999999999999992
+   },
+   "cand": {
+    "two_q": 6,
+    "fid": 0.9999999999999992
+   },
+   "L3": 6
+  }
+ ],
+ "K": [
+  {
+   "seed": 901001,
+   "rel": "c61abd762a85c845",
+   "cand": "c61abd762a85c845"
+  },
+  {
+   "seed": 901002,
+   "rel": "0c50d9353d2c6ab4",
+   "cand": "0c50d9353d2c6ab4"
+  },
+  {
+   "seed": 901003,
+   "rel": "6e0b2b841e67cdc5",
+   "cand": "6e0b2b841e67cdc5"
+  },
+  {
+   "seed": 901004,
+   "rel": "be221acd5ac35374",
+   "cand": "be221acd5ac35374"
+  },
+  {
+   "seed": 901005,
+   "rel": "7dd31d71d5fe9aca",
+   "cand": "7dd31d71d5fe9aca"
+  },
+  {
+   "seed": 901006,
+   "rel": "afd8896e4412732d",
+   "cand": "afd8896e4412732d"
+  }
+ ],
+ "M": [
+  {
+   "seed": 901001,
+   "tvd": 0.00701
+  },
+  {
+   "seed": 901002,
+   "tvd": 0.0
+  },
+  {
+   "seed": 901003,
+   "tvd": 0.00237
+  },
+  {
+   "seed": 901004,
+   "tvd": 0.00173
+  },
+  {
+   "seed": 901005,
+   "tvd": 0.00454
+  },
+  {
+   "seed": 901006,
+   "tvd": 0.00222
+  }
+ ],
+ "R": [
+  {
+   "name": "random_circuit 16q d20 s902001",
+   "kind": "other",
+   "n": 16,
+   "rel": {
+    "two_q": 815,
+    "s": 0.0471,
+    "fid": null
+   },
+   "cand": {
+    "two_q": 798,
+    "s": 0.0606,
+    "fid": null
+   }
+  },
+  {
+   "name": "dense_pair_blocks 60q s900001",
+   "kind": "unchanged",
+   "n": 60,
+   "rel": {
+    "two_q": 90,
+    "s": 0.0277,
+    "fid": 0.9999999999999948
+   },
+   "cand": {
+    "two_q": 90,
+    "s": 0.0272,
+    "fid": 0.9999999999999948
+   }
+  },
+  {
+   "name": "ghz_star 80q s900001",
+   "kind": "other",
+   "n": 80,
+   "rel": {
+    "two_q": 468,
+    "s": 0.0994,
+    "fid": null
+   },
+   "cand": {
+    "two_q": 243,
+    "s": 0.1336,
+    "fid": null
+   }
+  }
+ ]
+}

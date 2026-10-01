@@ -1,0 +1,1194 @@
+[
+{
+"file": "gptoss120b/run1/bell3/best_circuit.json",
+"task": "bell3",
+"psf_2q": 3,
+"psf_ms": 17.7,
+"F_log": 0.9999999999999987,
+"F_cmp": 0.9999999999999987
+},
+{
+"file": "gptoss120b/run1/fill27/best_circuit.json",
+"task": "fill27",
+"psf_2q": 17,
+"psf_ms": 71.2,
+"F_log": 0.9999999999999956,
+"F_cmp": 0.9999999999999936
+},
+{
+"file": "gptoss120b/run1/ghz5/best_circuit.json",
+"task": "ghz5",
+"psf_2q": 4,
+"psf_ms": 9.4,
+"F_log": 0.9999999999999996,
+"F_cmp": 0.9999999999999989
+},
+{
+"file": "gptoss120b/run1/qft3/best_circuit.json",
+"task": "qft3",
+"psf_2q": 0,
+"psf_ms": 4.9,
+"F_log": 0.9999999999999991,
+"F_cmp": 0.9999999999999996
+},
+{
+"file": "gptoss120b/run2/bell3/best_circuit.json",
+"task": "bell3",
+"psf_2q": 3,
+"psf_ms": 6.7,
+"F_log": 0.9999999999999987,
+"F_cmp": 0.9999999999999987
+},
+{
+"file": "gptoss120b/run2/fill27/best_circuit.json",
+"task": "fill27",
+"psf_2q": 17,
+"psf_ms": 9.1,
+"F_log": 0.9999999999999956,
+"F_cmp": 0.9999999999999936
+},
+{
+"file": "gptoss120b/run2/ghz5/best_circuit.json",
+"task": "ghz5",
+"psf_2q": 4,
+"psf_ms": 7.0,
+"F_log": 0.9999999999999996,
+"F_cmp": 0.9999999999999989
+},
+{
+"file": "gptoss120b/run2/qft3/best_circuit.json",
+"task": "qft3",
+"psf_2q": 0,
+"psf_ms": 14.0,
+"F_log": 0.9999999999999991,
+"F_cmp": 0.9999999999999996
+},
+{
+"file": "gptoss120b/run3/bell3/best_circuit.json",
+"task": "bell3",
+"psf_2q": 3,
+"psf_ms": 7.6,
+"F_log": 0.9999999999999987,
+"F_cmp": 0.9999999999999987
+},
+{
+"file": "gptoss120b/run3/fill27/best_circuit.json",
+"task": "fill27",
+"psf_2q": 17,
+"psf_ms": 11.0,
+"F_log": 0.9999999999999956,
+"F_cmp": 0.9999999999999936
+},
+{
+"file": "gptoss120b/run3/ghz5/best_circuit.json",
+"task": "ghz5",
+"psf_2q": 4,
+"psf_ms": 8.7,
+"F_log": 0.9999999999999996,
+"F_cmp": 0.9999999999999989
+},
+{
+"file": "gptoss120b/run3/qft3/best_circuit.json",
+"task": "qft3",
+"psf_2q": 9,
+"psf_ms": 11.4,
+"F_log": 0.9999999999999991,
+"F_cmp": 0.9999999999999996
+},
+{
+"file": "qwen72b/run1/bell3/best_circuit.json",
+"task": "bell3",
+"psf_2q": 3,
+"psf_ms": 7.5,
+"F_log": 0.9999999999999987,
+"F_cmp": 0.9999999999999987
+},
+{
+"file": "qwen72b/run1/fill27/best_circuit.json",
+"task": "fill27",
+"psf_2q": 17,
+"psf_ms": 11.1,
+"F_log": 0.9999999999999956,
+"F_cmp": 0.9999999999999927
+},
+{
+"file": "qwen72b/run1/ghz5/best_circuit.json",
+"task": "ghz5",
+"psf_2q": 4,
+"psf_ms": 8.4,
+"F_log": 0.9999999999999996,
+"F_cmp": 0.9999999999999989
+},
+{
+"file": "qwen72b/run1/qft3/best_circuit.json",
+"task": "qft3",
+"psf_2q": 9,
+"psf_ms": 10.8,
+"F_log": 0.5676379155891785,
+"F_cmp": 0.567637915589178
+},
+{
+"file": "qwen72b/run1/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 4,
+"psf_ms": 11.7,
+"F_log": 0.03703706034115367,
+"F_cmp": 0.037037060341153775
+},
+{
+"file": "qwen72b/run2/bell3/best_circuit.json",
+"task": "bell3",
+"psf_2q": 3,
+"psf_ms": 6.9,
+"F_log": 0.9999999999999987,
+"F_cmp": 0.9999999999999987
+},
+{
+"file": "qwen72b/run2/fill27/best_circuit.json",
+"task": "fill27",
+"psf_2q": 17,
+"psf_ms": 9.4,
+"F_log": 0.9999999999999956,
+"F_cmp": 0.9999999999999936
+},
+{
+"file": "qwen72b/run2/ghz5/best_circuit.json",
+"task": "ghz5",
+"psf_2q": 4,
+"psf_ms": 7.3,
+"F_log": 0.9999999999999996,
+"F_cmp": 0.9999999999999989
+},
+{
+"file": "qwen72b/run2/qft3/best_circuit.json",
+"task": "qft3",
+"psf_2q": 9,
+"psf_ms": 9.9,
+"F_log": 0.31592922039047255,
+"F_cmp": 0.31592922039047194
+},
+{
+"file": "qwen72b/run2/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 8,
+"psf_ms": 11.7,
+"F_log": 0.09374995141560656,
+"F_cmp": 0.09374995141560646
+},
+{
+"file": "qwen72b/run3/bell3/best_circuit.json",
+"task": "bell3",
+"psf_2q": 3,
+"psf_ms": 8.2,
+"F_log": 0.9999999999999987,
+"F_cmp": 0.9999999999999987
+},
+{
+"file": "qwen72b/run3/fill27/best_circuit.json",
+"task": "fill27",
+"psf_2q": 17,
+"psf_ms": 10.9,
+"F_log": 0.9999999999999956,
+"F_cmp": 0.9999999999999936
+},
+{
+"file": "qwen72b/run3/ghz5/best_circuit.json",
+"task": "ghz5",
+"psf_2q": 4,
+"psf_ms": 9.4,
+"F_log": 0.9999999999999996,
+"F_cmp": 0.9999999999999989
+},
+{
+"file": "qwen72b/run3/qft3/best_circuit.json",
+"task": "qft3",
+"psf_2q": 9,
+"psf_ms": 10.9,
+"F_log": 0.5676379155891785,
+"F_cmp": 0.567637915589178
+},
+{
+"file": "qwen72b/run3/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 13,
+"psf_ms": 13.5,
+"F_log": 0.03703706034115367,
+"F_cmp": 0.03703706034115401
+},
+{
+"file": "qwen7b/run1/bell3/best_circuit.json",
+"task": "bell3",
+"psf_2q": 3,
+"psf_ms": 7.4,
+"F_log": 0.9999999999999987,
+"F_cmp": 0.9999999999999987
+},
+{
+"file": "qwen7b/run1/fill27/best_circuit.json",
+"task": "fill27",
+"psf_2q": 17,
+"psf_ms": 10.7,
+"F_log": 0.9999999999999956,
+"F_cmp": 0.9999999999999927
+},
+{
+"file": "qwen7b/run1/ghz5/best_circuit.json",
+"task": "ghz5",
+"psf_2q": 4,
+"psf_ms": 9.5,
+"F_log": 0.9999999999999996,
+"F_cmp": 0.9999999999999989
+},
+{
+"file": "qwen7b/run1/qft3/best_circuit.json",
+"task": "qft3",
+"psf_2q": 4,
+"psf_ms": 9.8,
+"F_log": 9.62964972193618e-32,
+"F_cmp": 1.1574838965767287e-31
+},
+{
+"file": "qwen7b/run1/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 3,
+"psf_ms": 7.4,
+"F_log": 0.3333333333333334,
+"F_cmp": 0.3333333333333334
+},
+{
+"file": "qwen7b/run2/bell3/best_circuit.json",
+"task": "bell3",
+"psf_2q": 3,
+"psf_ms": 6.0,
+"F_log": 0.9999999999999987,
+"F_cmp": 0.9999999999999987
+},
+{
+"file": "qwen7b/run2/fill27/best_circuit.json",
+"task": "fill27",
+"psf_2q": 15,
+"psf_ms": 8.8,
+"F_log": 0.4999999999999979,
+"F_cmp": 0.4999999999999972
+},
+{
+"file": "qwen7b/run2/ghz5/best_circuit.json",
+"task": "ghz5",
+"psf_2q": 4,
+"psf_ms": 8.4,
+"F_log": 0.9999999999999996,
+"F_cmp": 0.9999999999999989
+},
+{
+"file": "qwen7b/run2/qft3/best_circuit.json",
+"task": "qft3",
+"psf_2q": 7,
+"psf_ms": 8.9,
+"F_log": 0.07043640861081887,
+"F_cmp": 0.07043640861081896
+},
+{
+"file": "qwen7b/run2/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 3,
+"psf_ms": 9.6,
+"F_log": 0.3333333333333334,
+"F_cmp": 0.3333333333333333
+},
+{
+"file": "qwen7b/run3/bell3/best_circuit.json",
+"task": "bell3",
+"psf_2q": 3,
+"psf_ms": 6.0,
+"F_log": 0.01562499999999998,
+"F_cmp": 0.01562500000000002
+},
+{
+"file": "qwen7b/run3/fill27/best_circuit.json",
+"task": "fill27",
+"psf_2q": 17,
+"psf_ms": 11.9,
+"F_log": 0.9999999999999956,
+"F_cmp": 0.9999999999999927
+},
+{
+"file": "qwen7b/run3/ghz5/best_circuit.json",
+"task": "ghz5",
+"psf_2q": 7,
+"psf_ms": 12.2,
+"F_log": 0.9999999999999996,
+"F_cmp": 0.9999999999999991
+},
+{
+"file": "qwen7b/run3/qft3/best_circuit.json",
+"task": "qft3",
+"psf_2q": 4,
+"psf_ms": 10.7,
+"F_log": 0.02420072800869217,
+"F_cmp": 0.02420072800869217
+},
+{
+"file": "qwen7b/run3/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 3,
+"psf_ms": 10.8,
+"F_log": 0.3333333333333334,
+"F_cmp": 0.3333333333333333
+},
+{
+"file": "../gh_latest/data/2026-09-30/vllm_invest/sandbox_dryrun/fake1/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 0,
+"psf_ms": 5.8,
+"F_log": 0.3333333333333334,
+"F_cmp": 0.3333333333333334
+},
+{
+"file": "../gh_latest/data/2026-09-30/vllm_invest/sandbox_dryrun/fake2/fill27/best_circuit.json",
+"task": "fill27",
+"psf_2q": 17,
+"psf_ms": 12.2,
+"F_log": 0.9999999999999956,
+"F_cmp": 0.9999999999999936
+},
+{
+"file": "../gh_latest/data/2026-09-30/vllm_invest/sandbox_dryrun/mock1/bell3/best_circuit.json",
+"task": "bell3",
+"psf_2q": 3,
+"psf_ms": 8.7,
+"F_log": 0.9999999999999987,
+"F_cmp": 0.9999999999999987
+},
+{
+"file": "../gh_latest/data/2026-09-30/vllm_invest/sandbox_dryrun/mock1/fill27/best_circuit.json",
+"task": "fill27",
+"psf_2q": 17,
+"psf_ms": 11.8,
+"F_log": 0.9999999999999956,
+"F_cmp": 0.9999999999999936
+},
+{
+"file": "../gh_latest/data/2026-09-30/vllm_invest/sandbox_dryrun/mock1/ghz5/best_circuit.json",
+"task": "ghz5",
+"psf_2q": 4,
+"psf_ms": 9.7,
+"F_log": 0.9999999999999996,
+"F_cmp": 0.9999999999999989
+},
+{
+"file": "../gh_latest/data/2026-09-30/vllm_invest/sandbox_dryrun/mock1/qft3/best_circuit.json",
+"task": "qft3",
+"psf_2q": 9,
+"psf_ms": 18.1,
+"F_log": 0.9999999999999991,
+"F_cmp": 0.9999999999999996
+},
+{
+"file": "../gh_latest/data/2026-09-30/vllm_invest/sandbox_dryrun/mock1/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 5,
+"psf_ms": 14.1,
+"F_log": 0.8888888888888891,
+"F_cmp": 0.8888888888888888
+},
+{
+"file": "../gh_latest/data/2026-09-30/vllm_invest/smoke_run/qwen7b/run9/fill27/best_circuit.json",
+"task": "fill27",
+"psf_2q": 17,
+"psf_ms": 12.6,
+"F_log": 0.9999999999999956,
+"F_cmp": 0.9999999999999936
+},
+{
+"file": "../gh_latest/data/2026-09-30/vllm_invest/smoke_run/qwen7b/run9/ghz5/best_circuit.json",
+"task": "ghz5",
+"psf_2q": 8,
+"psf_ms": 8.8,
+"F_log": 0.26083828532550457,
+"F_cmp": 0.26083828532550435
+},
+{
+"file": "gptoss120b/run1/bell3/best_circuit.json",
+"task": "bell3",
+"psf_2q": 3,
+"psf_ms": 8.3,
+"F_log": 0.9999999999999987,
+"F_cmp": 0.9999999999999987
+},
+{
+"file": "gptoss120b/run1/fill27/best_circuit.json",
+"task": "fill27",
+"psf_2q": 17,
+"psf_ms": 11.6,
+"F_log": 0.9999999999999956,
+"F_cmp": 0.9999999999999936
+},
+{
+"file": "gptoss120b/run1/ghz5/best_circuit.json",
+"task": "ghz5",
+"psf_2q": 4,
+"psf_ms": 8.9,
+"F_log": 0.9999999999999996,
+"F_cmp": 0.9999999999999989
+},
+{
+"file": "gptoss120b/run1/qft3/best_circuit.json",
+"task": "qft3",
+"psf_2q": 0,
+"psf_ms": 5.9,
+"F_log": 0.9999999999999991,
+"F_cmp": 0.9999999999999996
+},
+{
+"file": "gptoss120b/run1/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 4,
+"psf_ms": 9.4,
+"F_log": 1.0000000000000004,
+"F_cmp": 1.0
+},
+{
+"file": "gptoss120b/run2/bell3/best_circuit.json",
+"task": "bell3",
+"psf_2q": 3,
+"psf_ms": 7.5,
+"F_log": 0.9999999999999987,
+"F_cmp": 0.9999999999999987
+},
+{
+"file": "gptoss120b/run2/fill27/best_circuit.json",
+"task": "fill27",
+"psf_2q": 17,
+"psf_ms": 11.2,
+"F_log": 0.9999999999999956,
+"F_cmp": 0.9999999999999936
+},
+{
+"file": "gptoss120b/run2/ghz5/best_circuit.json",
+"task": "ghz5",
+"psf_2q": 4,
+"psf_ms": 9.5,
+"F_log": 0.9999999999999996,
+"F_cmp": 0.9999999999999989
+},
+{
+"file": "gptoss120b/run2/qft3/best_circuit.json",
+"task": "qft3",
+"psf_2q": 0,
+"psf_ms": 6.1,
+"F_log": 0.9999999999999991,
+"F_cmp": 0.9999999999999996
+},
+{
+"file": "gptoss120b/run2/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 8,
+"psf_ms": 11.7,
+"F_log": 0.8698252360829097,
+"F_cmp": 0.8698252360829097
+},
+{
+"file": "gptoss120b/run3/bell3/best_circuit.json",
+"task": "bell3",
+"psf_2q": 3,
+"psf_ms": 9.4,
+"F_log": 0.9999999999999987,
+"F_cmp": 0.9999999999999987
+},
+{
+"file": "gptoss120b/run3/fill27/best_circuit.json",
+"task": "fill27",
+"psf_2q": 17,
+"psf_ms": 12.8,
+"F_log": 0.9999999999999956,
+"F_cmp": 0.9999999999999936
+},
+{
+"file": "gptoss120b/run3/ghz5/best_circuit.json",
+"task": "ghz5",
+"psf_2q": 4,
+"psf_ms": 11.8,
+"F_log": 0.9999999999999996,
+"F_cmp": 0.9999999999999989
+},
+{
+"file": "gptoss120b/run3/qft3/best_circuit.json",
+"task": "qft3",
+"psf_2q": 0,
+"psf_ms": 8.0,
+"F_log": 0.999999999999966,
+"F_cmp": 0.9999999999999662
+},
+{
+"file": "gptoss120b/run3/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 4,
+"psf_ms": 10.2,
+"F_log": 1.0,
+"F_cmp": 1.0
+},
+{
+"file": "qwen7b/run1/bell3/best_circuit.json",
+"task": "bell3",
+"psf_2q": 3,
+"psf_ms": 8.0,
+"F_log": 0.9999999999999987,
+"F_cmp": 0.9999999999999987
+},
+{
+"file": "qwen7b/run1/fill27/best_circuit.json",
+"task": "fill27",
+"psf_2q": 10,
+"psf_ms": 14.1,
+"F_log": 6.103515624999973e-05,
+"F_cmp": 6.103515624999973e-05
+},
+{
+"file": "qwen7b/run1/ghz5/best_circuit.json",
+"task": "ghz5",
+"psf_2q": 4,
+"psf_ms": 9.6,
+"F_log": 0.9999999999999996,
+"F_cmp": 0.9999999999999989
+},
+{
+"file": "qwen7b/run1/qft3/best_circuit.json",
+"task": "qft3",
+"psf_2q": 4,
+"psf_ms": 9.7,
+"F_log": 0.01798907421233087,
+"F_cmp": 0.017989074212330945
+},
+{
+"file": "qwen7b/run1/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 1,
+"psf_ms": 9.8,
+"F_log": 0.3333333333333333,
+"F_cmp": 0.3333333333333334
+},
+{
+"file": "qwen7b/run2/bell3/best_circuit.json",
+"task": "bell3",
+"psf_2q": 3,
+"psf_ms": 7.7,
+"F_log": 0.9999999999999987,
+"F_cmp": 0.9999999999999987
+},
+{
+"file": "qwen7b/run2/fill27/best_circuit.json",
+"task": "fill27",
+"psf_2q": 11,
+"psf_ms": 10.1,
+"F_log": 0.00024414062499999892,
+"F_cmp": 0.00024414062499999892
+},
+{
+"file": "qwen7b/run2/ghz5/best_circuit.json",
+"task": "ghz5",
+"psf_2q": 4,
+"psf_ms": 8.9,
+"F_log": 0.9999999999999996,
+"F_cmp": 0.9999999999999989
+},
+{
+"file": "qwen7b/run2/qft3/best_circuit.json",
+"task": "qft3",
+"psf_2q": 4,
+"psf_ms": 10.4,
+"F_log": 9.62964972193618e-32,
+"F_cmp": 1.1348542197301787e-31
+},
+{
+"file": "qwen7b/run2/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 2,
+"psf_ms": 8.9,
+"F_log": 0.16666666666666666,
+"F_cmp": 0.1666666666666667
+},
+{
+"file": "qwen7b/run3/bell3/best_circuit.json",
+"task": "bell3",
+"psf_2q": 3,
+"psf_ms": 8.4,
+"F_log": 0.9999999999999987,
+"F_cmp": 0.9999999999999987
+},
+{
+"file": "qwen7b/run3/fill27/best_circuit.json",
+"task": "fill27",
+"psf_2q": 17,
+"psf_ms": 11.4,
+"F_log": 0.9999999999999956,
+"F_cmp": 0.9999999999999936
+},
+{
+"file": "qwen7b/run3/ghz5/best_circuit.json",
+"task": "ghz5",
+"psf_2q": 4,
+"psf_ms": 9.6,
+"F_log": 0.9999999999999996,
+"F_cmp": 0.9999999999999989
+},
+{
+"file": "qwen7b/run3/qft3/best_circuit.json",
+"task": "qft3",
+"psf_2q": 9,
+"psf_ms": 14.7,
+"F_log": 2.343374660409152e-32,
+"F_cmp": 6.490122215915622e-31
+},
+{
+"file": "qwen7b/run3/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 2,
+"psf_ms": 10.7,
+"F_log": 0.16666666666666666,
+"F_cmp": 0.16666666666666657
+},
+{
+"file": "v10/run1/dicke42/best_circuit.json",
+"task": "dicke42",
+"psf_2q": 16,
+"psf_ms": 18.2,
+"F_log": 0.7424422794821625,
+"F_cmp": 0.742442279482164
+},
+{
+"file": "v10/run1/fill27g9/best_circuit.json",
+"task": "fill27g9",
+"psf_2q": 18,
+"psf_ms": 12.1,
+"F_log": 0.999999999999996,
+"F_cmp": 0.9999999999999947
+},
+{
+"file": "v10/run1/ghz3i/best_circuit.json",
+"task": "ghz3i",
+"psf_2q": 2,
+"psf_ms": 9.0,
+"F_log": 0.9999999999999996,
+"F_cmp": 0.9999999999999991
+},
+{
+"file": "v10/run1/singlet3/best_circuit.json",
+"task": "singlet3",
+"psf_2q": 3,
+"psf_ms": 8.2,
+"F_log": 0.9999999999999987,
+"F_cmp": 0.9999999999999993
+},
+{
+"file": "v10/run1/w4/best_circuit.json",
+"task": "w4",
+"psf_2q": 10,
+"psf_ms": 15.3,
+"F_log": 0.9999999999999998,
+"F_cmp": 0.9999999999999991
+},
+{
+"file": "v10/run2/dicke42/best_circuit.json",
+"task": "dicke42",
+"psf_2q": 13,
+"psf_ms": 11.7,
+"F_log": 1.0,
+"F_cmp": 0.9999999999999998
+},
+{
+"file": "v10/run2/fill27g9/best_circuit.json",
+"task": "fill27g9",
+"psf_2q": 18,
+"psf_ms": 11.5,
+"F_log": 0.999999999999996,
+"F_cmp": 0.9999999999999947
+},
+{
+"file": "v10/run2/ghz3i/best_circuit.json",
+"task": "ghz3i",
+"psf_2q": 2,
+"psf_ms": 8.5,
+"F_log": 0.9999999999999996,
+"F_cmp": 0.9999999999999991
+},
+{
+"file": "v10/run2/singlet3/best_circuit.json",
+"task": "singlet3",
+"psf_2q": 3,
+"psf_ms": 7.7,
+"F_log": 0.9999999999999987,
+"F_cmp": 0.9999999999999987
+},
+{
+"file": "v10/run2/w4/best_circuit.json",
+"task": "w4",
+"psf_2q": 6,
+"psf_ms": 11.4,
+"F_log": 1.0,
+"F_cmp": 0.9999999999999998
+},
+{
+"file": "v10/run3/dicke42/best_circuit.json",
+"task": "dicke42",
+"psf_2q": 11,
+"psf_ms": 11.8,
+"F_log": 0.9999999999999998,
+"F_cmp": 1.0000000000000004
+},
+{
+"file": "v10/run3/fill27g9/best_circuit.json",
+"task": "fill27g9",
+"psf_2q": 18,
+"psf_ms": 16.3,
+"F_log": 0.999999999999996,
+"F_cmp": 0.9999999999999947
+},
+{
+"file": "v10/run3/ghz3i/best_circuit.json",
+"task": "ghz3i",
+"psf_2q": 2,
+"psf_ms": 8.3,
+"F_log": 0.9999999999999729,
+"F_cmp": 0.9999999999999725
+},
+{
+"file": "v10/run3/singlet3/best_circuit.json",
+"task": "singlet3",
+"psf_2q": 3,
+"psf_ms": 7.2,
+"F_log": 0.9999999999999987,
+"F_cmp": 0.999999999999998
+},
+{
+"file": "v10/run3/w4/best_circuit.json",
+"task": "w4",
+"psf_2q": 6,
+"psf_ms": 10.1,
+"F_log": 1.0,
+"F_cmp": 0.9999999999999993
+},
+{
+"file": "v9/run1/dicke42/best_circuit.json",
+"task": "dicke42",
+"psf_2q": 12,
+"psf_ms": 12.1,
+"F_log": 1.0000000000000004,
+"F_cmp": 1.0
+},
+{
+"file": "v9/run1/fill27g9/best_circuit.json",
+"task": "fill27g9",
+"psf_2q": 18,
+"psf_ms": 12.1,
+"F_log": 0.999999999999996,
+"F_cmp": 0.9999999999999947
+},
+{
+"file": "v9/run1/ghz3i/best_circuit.json",
+"task": "ghz3i",
+"psf_2q": 2,
+"psf_ms": 8.6,
+"F_log": 0.9999999999999998,
+"F_cmp": 0.9999999999999991
+},
+{
+"file": "v9/run1/singlet3/best_circuit.json",
+"task": "singlet3",
+"psf_2q": 3,
+"psf_ms": 7.9,
+"F_log": 0.9999999999999987,
+"F_cmp": 0.999999999999998
+},
+{
+"file": "v9/run1/w4/best_circuit.json",
+"task": "w4",
+"psf_2q": 6,
+"psf_ms": 11.3,
+"F_log": 1.0,
+"F_cmp": 0.9999999999999993
+},
+{
+"file": "v9/run2/dicke42/best_circuit.json",
+"task": "dicke42",
+"psf_2q": 16,
+"psf_ms": 15.3,
+"F_log": 1.0,
+"F_cmp": 1.0000000000000009
+},
+{
+"file": "v9/run2/fill27g9/best_circuit.json",
+"task": "fill27g9",
+"psf_2q": 18,
+"psf_ms": 12.1,
+"F_log": 0.999999999999996,
+"F_cmp": 0.9999999999999947
+},
+{
+"file": "v9/run2/ghz3i/best_circuit.json",
+"task": "ghz3i",
+"psf_2q": 2,
+"psf_ms": 8.8,
+"F_log": 0.9999999999999729,
+"F_cmp": 0.9999999999999725
+},
+{
+"file": "v9/run2/singlet3/best_circuit.json",
+"task": "singlet3",
+"psf_2q": 3,
+"psf_ms": 7.8,
+"F_log": 0.9999999999999987,
+"F_cmp": 0.999999999999998
+},
+{
+"file": "v9/run2/w4/best_circuit.json",
+"task": "w4",
+"psf_2q": 6,
+"psf_ms": 10.8,
+"F_log": 0.9999999999999467,
+"F_cmp": 0.999999999999946
+},
+{
+"file": "v9/run3/dicke42/best_circuit.json",
+"task": "dicke42",
+"psf_2q": 15,
+"psf_ms": 15.9,
+"F_log": 1.0,
+"F_cmp": 0.9999999999999998
+},
+{
+"file": "v9/run3/fill27g9/best_circuit.json",
+"task": "fill27g9",
+"psf_2q": 18,
+"psf_ms": 13.1,
+"F_log": 0.999999999999996,
+"F_cmp": 0.9999999999999947
+},
+{
+"file": "v9/run3/ghz3i/best_circuit.json",
+"task": "ghz3i",
+"psf_2q": 2,
+"psf_ms": 8.7,
+"F_log": 0.9999999999999996,
+"F_cmp": 0.9999999999999993
+},
+{
+"file": "v9/run3/singlet3/best_circuit.json",
+"task": "singlet3",
+"psf_2q": 3,
+"psf_ms": 8.4,
+"F_log": 0.9999999999999987,
+"F_cmp": 0.9999999999999987
+},
+{
+"file": "v9/run3/w4/best_circuit.json",
+"task": "w4",
+"psf_2q": 6,
+"psf_ms": 9.7,
+"F_log": 0.9999999999999467,
+"F_cmp": 0.9999999999999456
+},
+{
+"file": "qft3_high/run4/qft3/best_circuit.json",
+"task": "qft3",
+"psf_2q": 0,
+"psf_ms": 6.8,
+"F_log": 0.9999999999999911,
+"F_cmp": 0.9999999999999913
+},
+{
+"file": "qft3_high/run5/qft3/best_circuit.json",
+"task": "qft3",
+"psf_2q": 0,
+"psf_ms": 5.8,
+"F_log": 0.9999999999999991,
+"F_cmp": 0.9999999999999996
+},
+{
+"file": "qft3_high/run6/qft3/best_circuit.json",
+"task": "qft3",
+"psf_2q": 0,
+"psf_ms": 6.4,
+"F_log": 0.9999999999999991,
+"F_cmp": 0.9999999999999996
+},
+{
+"file": "w3_high/run4/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 7,
+"psf_ms": 12.2,
+"F_log": 1.0,
+"F_cmp": 1.0
+},
+{
+"file": "w3_high/run5/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 5,
+"psf_ms": 14.5,
+"F_log": 1.0,
+"F_cmp": 1.0000000000000004
+},
+{
+"file": "w3_high/run6/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 3,
+"psf_ms": 9.4,
+"F_log": 1.0,
+"F_cmp": 0.9999999999999998
+},
+{
+"file": "w3_medium/run4/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 8,
+"psf_ms": 15.7,
+"F_log": 0.8698252360683932,
+"F_cmp": 0.8698252360683939
+},
+{
+"file": "w3_medium/run5/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 3,
+"psf_ms": 9.6,
+"F_log": 0.44444444455153964,
+"F_cmp": 0.44444444455153964
+},
+{
+"file": "w3_medium/run6/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 5,
+"psf_ms": 16.5,
+"F_log": 1.0,
+"F_cmp": 1.0000000000000004
+},
+{
+"file": "../gh_latest/data/2026-09-30/vllm_v8_pilot2/sandbox_dryrun/mock/bell3/best_circuit.json",
+"task": "bell3",
+"psf_2q": 3,
+"psf_ms": 10.2,
+"F_log": 0.9999999999999987,
+"F_cmp": 0.9999999999999987
+},
+{
+"file": "../gh_latest/data/2026-09-30/vllm_v8_pilot2/sandbox_dryrun/mock/fill27/best_circuit.json",
+"task": "fill27",
+"psf_2q": 17,
+"psf_ms": 11.6,
+"F_log": 0.9999999999999956,
+"F_cmp": 0.9999999999999936
+},
+{
+"file": "../gh_latest/data/2026-09-30/vllm_v8_pilot2/sandbox_dryrun/mock/ghz5/best_circuit.json",
+"task": "ghz5",
+"psf_2q": 4,
+"psf_ms": 9.2,
+"F_log": 0.9999999999999996,
+"F_cmp": 0.9999999999999989
+},
+{
+"file": "../gh_latest/data/2026-09-30/vllm_v8_pilot2/sandbox_dryrun/mock/qft3/best_circuit.json",
+"task": "qft3",
+"psf_2q": 9,
+"psf_ms": 12.0,
+"F_log": 0.9999999999999993,
+"F_cmp": 0.9999999999999998
+},
+{
+"file": "../gh_latest/data/2026-09-30/vllm_v8_pilot2/sandbox_dryrun/mock/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 5,
+"psf_ms": 13.7,
+"F_log": 1.0000000000000004,
+"F_cmp": 1.0000000000000004
+},
+{
+"file": "../gh_latest/data/2026-09-30/vllm_v8_pilot2/sandbox_dryrun/t2/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 5,
+"psf_ms": 13.5,
+"F_log": 1.0000000000000004,
+"F_cmp": 1.0000000000000004
+},
+{
+"file": "guard_tool/run7/bell3/best_circuit.json",
+"task": "bell3",
+"psf_2q": 3,
+"psf_ms": 7.8,
+"F_log": 0.9999999999999987,
+"F_cmp": 0.9999999999999987
+},
+{
+"file": "guard_tool/run7/fill27/best_circuit.json",
+"task": "fill27",
+"psf_2q": 17,
+"psf_ms": 14.6,
+"F_log": 0.9999999999999956,
+"F_cmp": 0.9999999999999936
+},
+{
+"file": "guard_tool/run7/ghz5/best_circuit.json",
+"task": "ghz5",
+"psf_2q": 4,
+"psf_ms": 9.9,
+"F_log": 0.9999999999999996,
+"F_cmp": 0.9999999999999989
+},
+{
+"file": "guard_tool/run7/qft3/best_circuit.json",
+"task": "qft3",
+"psf_2q": 9,
+"psf_ms": 15.2,
+"F_log": 0.9999999999999991,
+"F_cmp": 0.9999999999999996
+},
+{
+"file": "w3_notool/run7/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 7,
+"psf_ms": 13.3,
+"F_log": 1.0000000000000004,
+"F_cmp": 1.0
+},
+{
+"file": "w3_notool/run8/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 7,
+"psf_ms": 12.1,
+"F_log": 1.0,
+"F_cmp": 1.0000000000000004
+},
+{
+"file": "w3_notool/run9/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 5,
+"psf_ms": 14.5,
+"F_log": 1.0,
+"F_cmp": 1.0000000000000004
+},
+{
+"file": "w3_tool/run7/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 5,
+"psf_ms": 14.2,
+"F_log": 1.0000000000000004,
+"F_cmp": 1.0000000000000004
+},
+{
+"file": "w3_tool/run8/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 4,
+"psf_ms": 9.2,
+"F_log": 1.0,
+"F_cmp": 1.0
+},
+{
+"file": "w3_tool/run9/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 6,
+"psf_ms": 10.6,
+"F_log": 1.0,
+"F_cmp": 1.0
+},
+{
+"file": "../gh_latest/data/2026-09-30/vllm_v9_pilot3/sandbox_dryrun/mock/bell3/best_circuit.json",
+"task": "bell3",
+"psf_2q": 3,
+"psf_ms": 7.5,
+"F_log": 0.9999999999999987,
+"F_cmp": 0.9999999999999987
+},
+{
+"file": "../gh_latest/data/2026-09-30/vllm_v9_pilot3/sandbox_dryrun/mock/fill27/best_circuit.json",
+"task": "fill27",
+"psf_2q": 17,
+"psf_ms": 13.6,
+"F_log": 0.9999999999999956,
+"F_cmp": 0.9999999999999936
+},
+{
+"file": "../gh_latest/data/2026-09-30/vllm_v9_pilot3/sandbox_dryrun/mock/ghz5/best_circuit.json",
+"task": "ghz5",
+"psf_2q": 4,
+"psf_ms": 9.5,
+"F_log": 0.9999999999999996,
+"F_cmp": 0.9999999999999989
+},
+{
+"file": "../gh_latest/data/2026-09-30/vllm_v9_pilot3/sandbox_dryrun/mock/qft3/best_circuit.json",
+"task": "qft3",
+"psf_2q": 9,
+"psf_ms": 11.7,
+"F_log": 0.9999999999999993,
+"F_cmp": 0.9999999999999998
+},
+{
+"file": "../gh_latest/data/2026-09-30/vllm_v9_pilot3/sandbox_dryrun/mock/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 5,
+"psf_ms": 14.0,
+"F_log": 1.0000000000000004,
+"F_cmp": 1.0000000000000004
+},
+{
+"file": "../gh_latest/data/2026-09-30/vllm_v9_pilot3/sandbox_dryrun/t8771/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 5,
+"psf_ms": 13.6,
+"F_log": 1.0000000000000004,
+"F_cmp": 1.0000000000000004
+},
+{
+"file": "../gh_latest/data/2026-09-30/vllm_v9_pilot3/sandbox_dryrun/t8772/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 5,
+"psf_ms": 13.4,
+"F_log": 1.0000000000000004,
+"F_cmp": 1.0000000000000004
+},
+{
+"file": "high/run1/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 3,
+"psf_ms": 10.0,
+"F_log": 1.0000000000000004,
+"F_cmp": 1.0000000000000004
+},
+{
+"file": "high/run2/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 4,
+"psf_ms": 9.3,
+"F_log": 1.0,
+"F_cmp": 0.9999999999999996
+},
+{
+"file": "high/run3/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 7,
+"psf_ms": 11.1,
+"F_log": 1.0,
+"F_cmp": 1.0000000000000004
+},
+{
+"file": "medium/run1/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 5,
+"psf_ms": 13.2,
+"F_log": 1.0,
+"F_cmp": 1.0000000000000004
+},
+{
+"file": "medium/run2/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 7,
+"psf_ms": 14.9,
+"F_log": 0.7424422794821625,
+"F_cmp": 0.7424422794821623
+},
+{
+"file": "medium/run3/w3/best_circuit.json",
+"task": "w3",
+"psf_2q": 3,
+"psf_ms": 9.2,
+"F_log": 0.44444444455153964,
+"F_cmp": 0.44444444455153964
+}
+]

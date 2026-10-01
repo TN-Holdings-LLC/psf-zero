@@ -1,0 +1,5 @@
+META {"wid": 9, "start": 0, "laps": 3000, "epoch": 1000, "pool_offset": 0, "ai": "2026-10-01.a4", "c2": "2026-10-01.c2", "layout": "2026-10-01.c2", "sha": {"ai": "06ac6750705ce5159753d283d043ac4fff936f4c3023bf7c0199143b38fa1a13", "script": "222fed923c5998eec3f38794c3c7eba461a4d58b8eedc8f04a5732d42a76ba44", "stateaware": "47d852b8f0bd45dbda360c0996fad907d2cbf6ea401b31aa7a0be1cc94d2caf7", "helpers": "9f4e124f996bbf83a15768148631279c5e1ce73541d929d0701dbe91da871bac"}}
+lap 1000 median(last 1000) 205 ms rss 205 MB mism 0 cost_bad 0
+lap 2000 median(last 1000) 199 ms rss 204 MB mism 0 cost_bad 420
+lap 3000 median(last 1000) 194 ms rss 206 MB mism 0 cost_bad 420
+wrote run/control.json
