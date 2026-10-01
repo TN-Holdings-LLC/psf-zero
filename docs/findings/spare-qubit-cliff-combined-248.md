@@ -6773,6 +6773,176 @@ The owner asked whether this should be reported upstream like issue #17057 (Adde
 - A5's status: its advantage over error-aware Qiskit L3 in noisy simulation is favoured by construction, and is
   untested on hardware.
 
+
+---
+
+<!-- ===== Addendum 296 (source: spare-qubit-cliff-addendum-296-2026-10-02.md) ===== -->
+
+> **Note added when merging:** Home pre-registration (part 2 of the QML test of Addenda 290-291). Locked by the git commit that adds this Addendum and its two scripts, pushed before the scored run.
+
+## Addendum 296 -- Pre-registration: home QML test, part 2. Learning with 8 seeds on three devices, and keeping accuracy with a deeper classifier, a fragile test set, readout error and shots (2026-10-02)
+
+**Status: pre-registration, written at home before any scored run.**
+
+- **Lock:** the git commit that adds this document, `benchmarks/qml_home2_eval.py` and
+  `benchmarks/run_qml_home2_2026-10-02.sh`, pushed before the scored run.
+- **No hardware:** no IBM account, no QPU. Fake-provider devices and Qiskit Aer noise models only.
+
+## 1. Why: where Addendum 291 was weak
+
+Addendum 291 (the results of Addendum 290) confirmed all five predictions, but it had three weaknesses:
+
+1. **Learning (Q2) used only two training seeds, on two devices.** FakeKingston was not in Q2.
+2. **Accuracy could not tell the compilers apart.** Noise flipped no prediction, so the compilers differed only in
+   margin, by a few per cent.
+3. **There was an open item.** On the larger devices, the release (C2) used 20 two-qubit gates where error-aware
+   Qiskit L3 (L3T) and A5 used 17. C2 lost about twice as much margin to noise.
+
+Part 2 addresses each of them:
+
+- **Q2W** widens the learning test.
+- **Q1D** is built so that accuracy can register noise:
+  - a deeper model, so there are more two-qubit gates;
+  - a "fragile" test set of small-margin points;
+  - the measured qubit's readout error and finite shots, applied in the score.
+- **H3** tests the open item at greater depth.
+
+## 2. Design (`benchmarks/qml_home2_eval.py`, `benchmarks/run_qml_home2_2026-10-02.sh`)
+
+**Arms, devices and noise:** exactly as in Addendum 290.
+
+- Arms: REL from git 9131cee, hash-checked; C2 is release 2026-10-01.1; A5 is psf_ai_compile a5 with the Target;
+  L3T is Qiskit level 3 with the Target. All run on core 2026-09-29.1.
+- Devices: FakeAuckland, FakeTorino, FakeKingston.
+- Noise: `NoiseModel.from_backend` with Aer `density_matrix`. z is read exactly from the density matrix of the
+  final-layout qubits.
+
+One change: each loss evaluation's circuits are simulated in one Aer job instead of one job per circuit. This
+changes only the run time.
+
+**Q2W (learning, wide).**
+
+- Model and data: the Addendum 290 model (4 qubits, 2 layers), the same teacher rule (it selects teacher 23) and
+  the same data seeds (train 31, test 32).
+- Training: SPSA from scratch with the same constants, 40 steps.
+- Scope: seeds 41-48, all four arms, all three devices, 96 runs.
+- Recorded at the end of each run: per test point, the noisy z and the readout error of the measured physical
+  qubit.
+- IDEAL: the same SPSA without noise. Checked in numpy before this lock, test accuracy by seed:
+
+  | seed | 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 |
+  |---|---|---|---|---|---|---|---|---|
+  | accuracy | 1.000 | 0.625 | 1.000 | 1.000 | 0.781 | 0.906 | 0.688 | 1.000 |
+
+  Mean 0.875. Seeds 41 and 42 reproduce Addendum 291.
+
+**Q1D (keeping, deep).**
+
+- **Model:** the same family with 4 layers, 36 parameters.
+- **Teacher rule:** for teacher seeds 81, 82, …:
+  - training set: 32 + 32 points (seed 91), with |z_teacher| >= 0.25;
+  - θ* is trained without noise by Adam on central finite-difference gradients (seed 93, 400 iterations,
+    lr 0.05);
+  - the first teacher whose θ* reaches test accuracy >= 0.85 on test set A is used.
+- **Test set A:** 16 + 16 points (seed 92), with |z_teacher| >= 0.25, as before.
+- **Checked in numpy before this lock:** teachers 81-83 reach 0.812, 0.750 and 0.531. The rule selects teacher 84:
+  θ* test accuracy 0.875 (28 of 32), noiseless mean margin on A 0.447.
+- **Test set B ("fragile"):** 32 + 32 points (seed 94) with 0.01 <= |z_θ*| <= 0.10, labelled by the sign of θ*. A
+  "flip" is a noisy sign that differs from θ*'s noiseless sign.
+- All 96 circuits go through every arm on all three devices: 1,152 compiles.
+
+**Readout and shots (in the score).**
+
+- **Readout:** the measured qubit's readout error e (the Target's measure error of the physical qubit that carries
+  logical qubit 0) is applied as a symmetric flip: p0 → p0(1 - e) + (1 - p0)e.
+- **Shots:** z is estimated from 4,000 shots, repeated 20 times.
+- **Same random numbers in every arm:** the uniforms are seeded by device, set and point only. A difference between
+  arms therefore comes from the compiled circuit, not from sampling luck.
+
+## 3. Predictions (scored only by `qml_home2_eval.py score`)
+
+**P0, harness.** All of these must hold, or nothing below is scored:
+
+- numpy agrees with Qiskit's Statevector for both models (<= 1e-9);
+- every compiled Q1D circuit, simulated without noise, gives the logical z (<= 1e-6);
+- deep θ* >= 0.85 and Q2W θ* >= 0.9;
+- all 96 Q2W runs finish.
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| H1 | Q1D: C2 keeps at least REL's accuracy and margin | on every device: B shot-flip rate C2 <= REL + 0.01 and A mean margin C2 >= REL - 0.005 | on any device: C2 > REL + 0.03 in B shot flips, or C2 < REL - 0.02 in A margin |
+| H2 | Q1D: A5 keeps at least L3T's | the same two conditions, A5 vs L3T, on >= 2 of 3 devices | the REFUTED condition, A5 vs L3T, on >= 2 devices |
+| H3 | Q1D: the open item persists at depth: error-aware L3 keeps more margin than the release on the larger devices | A margin L3T >= C2 + 0.005 on FakeTorino and FakeKingston | L3T < C2 on either |
+| H4 | Q1D: the fragile set registers noise | exact B flip rate >= 0.05 for every arm on FakeAuckland | < 0.01 for every arm there |
+| H5 | Q2W: learning through the compiler and the noise works as well as without noise | every arm's mean noisy test accuracy over 8 seeds >= IDEAL mean - 0.05, on every device | any arm < IDEAL mean - 0.15, or a run missing |
+| H6 | Q2W: the better compilers train to a lower loss | mean final train loss C2 <= REL + 0.005 and A5 <= L3T + 0.005, on every device | C2 > REL + 0.02 on >= 2 devices, or A5 > L3T + 0.02 on >= 2 devices |
+
+**Reported without prediction:**
+
+- exact and shot-based accuracy on A;
+- the exact B flip rates on FakeTorino and FakeKingston;
+- Q2W shot-based test accuracy;
+- noiseless accuracy of each Q2W result;
+- two-qubit counts;
+- compile and wall times (home).
+
+**Expectations, stated now:**
+
+- **Where noise acts.** In Addendum 291's data, noise shrank z by 1-7% and pushed it towards +1 by about +0.015 on
+  FakeAuckland and about +0.003 on the larger devices, for the 2-layer circuit. Twice the depth should roughly
+  double both. B points with -0.03 < z < 0 on FakeAuckland should then flip without shots (H4).
+- **Why H1 and H3 can both hold.** H1 only asks that C2 is not worse than REL. H3 says that C2 still trails L3T
+  on Heron, which was the case in Addendum 291 (20 against 17 two-qubit gates for 2 layers).
+- **H2 and the A5 half of H6 favour A5 by construction.** A5's error estimate shares its physics with the
+  simulator, as noted in Addenda 286-291. Addendum 293 adds a detail: the floor binds on FakeAuckland, not at all on
+  FakeTorino, and on six short-T2 qubits of FakeKingston.
+
+## 4. What this will not establish
+
+- Anything about real hardware.
+- Other models or devices.
+- Readout is modelled as a symmetric flip of the one measured qubit, with no crosstalk, drift or idle noise.
+- Q2W depends on SPSA as configured. IDEAL shows how much of any shortfall is the optimizer's.
+
+## 5. Development (disclosed)
+
+- **Q1D configuration.** Chosen with numpy-only checks:
+  - 4-layer teachers trained by SPSA (120 steps, 16 training points) did not learn (test accuracy 0.38-0.81 over
+    teachers 51-70).
+  - 3-layer, and 2-layer-teacher / deeper-student, variants were also tried. Both learned poorly.
+  - The final choice is 4 layers with 64 training points and Adam on exact (finite-difference) gradients.
+- **Analysis of Addendum 291's published data, to set the expectations above:** a linear fit of noisy z on
+  noiseless z per device and arm.
+- **The shot model, the fragile band and the thresholds** were fixed before any Q1D or Q2W circuit was compiled.
+- **The scorer** was run on synthetic files to check the plumbing.
+- **Smoke run at home** (`SMOKE=1`: other data seeds, 1 + 1 deep points per set, 10 Adam iterations, Q2W seed 941
+  with 2 steps on all three devices). It checks the plumbing and the timing, and is not scored. Result:
+  - **Run 2026-10-02 at home.** It ran end to end: Q1D, 12 Q2W runs (2 steps each), then the score.
+    All 12 runs had finished after 101 s.
+  - **Wall time per smoke run (home):**
+    - REL, C2 and L3T: 5 s (FakeAuckland), 18-25 s (FakeTorino, FakeKingston);
+    - A5: 27 s, 62 s and 77 s.
+    Batching the simulation works: in Addendum 291 one FakeTorino loss evaluation took about 25 s.
+  - **Two-qubit counts of the 4-layer circuit (1 + 1 smoke points, reported only):**
+    - FakeAuckland: 37 in every arm;
+    - FakeTorino and FakeKingston: REL 58, C2 44, A5 37, L3T 37.
+  - **Its verdict lines are not results.** They come from 1 + 1 Q1D points, a 10-iteration θ* and 2 SPSA steps.
+  - **No change was made after the smoke run.** The design, the thresholds and both scripts are as they were
+    before it.
+
+## 6. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `benchmarks/qml_home2_eval.py` | `9e12f5bf34c29542ebe608a0c672519a52a0039d796dff5fc19ea600a2a6b95f` |
+| `benchmarks/run_qml_home2_2026-10-02.sh` | `47cc2275ca837fc970753074b6eb9a27f5b83e7fc9438de820de963b26bce106` |
+
+**Run** (from the repository checkout at the lock commit):
+
+```
+setsid nohup bash benchmarks/run_qml_home2_2026-10-02.sh <repo> <out> > <log> 2>&1 < /dev/null &
+```
+
 ---
 
 ---
