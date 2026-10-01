@@ -6603,6 +6603,176 @@ Without FakeNighthawk, the cz-class median is still 0.000 (10 devices).
 | `outputs/a0_raw.json.gz` | `9aadd7aa8f804f76c59ad951209e3e199154a89794942966e53556a3bccf314d` |
 | `outputs/a0_score.md` | `47ec9ec85ad4a338aaa096e0cbc6d7d1eb094f4cef4ff1b4404b37c48a5f0134` |
 
+
+---
+
+<!-- ===== Addendum 294 (source: spare-qubit-cliff-addendum-294-2026-10-01.md) ===== -->
+
+> **Note added when merging:** Not pre-registered: diagnosis of an upstream bug report (Qiskit issue #17057), run at home. The owner posted the findings to the issue in their own words.
+
+## Addendum 294 -- Qiskit issue #17057: the wrong ZSX/CX synthesis near the two-CX boundary predates the Rust port; cause located and a one-line fix candidate tested (2026-10-01)
+
+**Status: diagnosis and follow-up of an upstream bug report.** This was not pre-registered. It is an
+investigation of a bug, not a test of a prediction.
+
+- **Runs:** at home (WSL2), Qiskit 2.5.2 plus released Qiskit versions in throw-away venvs.
+- **Issue:** https://github.com/Qiskit/qiskit/issues/17057. It was filed by the owner and was labelled `bug`.
+- **Maintainer response (2026-09-30):** a maintainer replied that it is a real, serious compilation error and
+  suggested a typo made during the Python-to-Rust translation. A synthesis maintainer was asked to look at it after
+  a holiday.
+- **This Addendum:** the owner's follow-up comment (2026-10-01) reports the results below.
+
+## 1. The report (summary)
+
+- `TwoQubitBasisDecomposer(CXGate(), euler_basis="ZSX")` returns a circuit with 1 - F_avg = 6.987e-2.
+- The input is exp(i(0.6 XX + 0.3 YY + c ZZ)) with c of about 3e-8 to 3e-7. The output uses 3 cx.
+- The infidelity is the same at every c in the band.
+- The default Euler basis and the cz basis are not affected.
+
+## 2. Where the error is
+
+- **The affected path.** With euler_basis ZSX (or ZSXX), a CX gate and three CX uses, the decomposer takes the
+  "pulse-optimal" path `_get_sx_vz_3cx_efficient_euler` (Python up to 1.0) / `get_sx_vz_3cx_efficient_euler`
+  (Rust from 1.1, `crates/synthesis/src/two_qubit_decompose/basis_decomposer.rs`). The two versions were compared
+  line by line: Euler-angle index mapping, matrix order, branch conditions, `atol=1e-10`. The Rust code is a
+  faithful port.
+- **The angle that picks the branch.** The path splits the KAK pieces on qubit 0 into ZXZ angles, and on qubit 1
+  into XZX angles. Their sum x12 = euler_q0[1][2] + euler_q0[2][0] decides the branch. Normally x12 = 3π, and the
+  "π-multiple" branch emits rz(±θ1), with θ1 = euler_q0[1][1].
+- **What goes wrong near the boundary.** Near c = 0, the middle unitary on qubit 0 (`u1ra·rz(-2c)·u1rb`) has ZXZ
+  angle θ2 = 2c ≈ 0. Its split into λ and φ is then ill-conditioned:
+  - x12 = 3π + δ, with sin(x12) ≈ 3.9e-17 / c, as measured;
+  - for c below about 4e-7, δ exceeds `atol = 1e-10`, and x12 fails the π-multiple test;
+  - it then falls into the branch commented "non-optimal but doesn't seem to occur currently", which emits only
+    Rx(x12) and never emits rz(θ1).
+- **The numbers agree.** In the reported example θ1 = 0.6. A missing Rz(0.6) on one qubit of two gives
+  1 - F_avg = 1 - (16cos²(0.3)/4 + 1)/5 = 0.069866, i.e. exactly the reported 6.987e-2. This is also why the error
+  does not depend on c.
+
+## 3. When the error was introduced (released versions, reproducer at four values of c)
+
+| Qiskit | c = 1e-8 | c = 1e-7 | c = 2e-7 | c = 1e-5 | implementation |
+|---|---|---|---|---|---|
+| 0.45.3 | 2 cx, ok | 3 cx, **6.987e-2** | 3 cx, ok | ok | Python |
+| 1.0.2 | 2 cx, ok | 3 cx, **6.987e-2** | 3 cx, ok | ok | Python |
+| 1.1.2, 1.2.4, 1.4.6, 2.0.3, 2.2.3, 2.4.2, 2.5.2 | 2 cx, ok | 3 cx, **6.987e-2** | 3 cx, **6.987e-2** | ok | Rust |
+
+**The error predates the Rust port.** The port only widened the affected band slightly, through the numerical
+details of the Euler-angle extraction (c = 2e-7 is correct in 1.0.2 and wrong from 1.1.2 on).
+
+## 4. Fix candidate and its test
+
+**Candidate.** In that branch (x12 neither 0 nor a multiple of π), emit rz(θ1) on qubit 0 before the x12
+rotation:
+
+```rust
+if x12_is_non_zero && !x12_is_pi_mult {
+    gates.push((StandardGate::RZ.into(), smallvec![euler_q0[1][1]], smallvec![0]));
+}
+// then the existing `if x12_is_half_pi { ... } else if x12_is_non_zero && !x12_is_pi_mult { ... }`
+```
+
+**Test setup.** A Python port of the 0.45 function, fed with the KAK pieces from 2.5.2's
+`decomp3_supercontrolled`. It was run with and without the fix (`diag_17057_v2.py`):
+
+| set | shipped 2.5.2 | 0.45 port | 0.45 port with fix |
+|---|---|---|---|
+| reported family, c = 1e-9 … 0.1 | wrong for c in 2e-8 … 3e-7 | wrong for c <= 3e-7 | all <= 3.3e-16 |
+| 300 Haar-random targets | 0 wrong | 0 wrong | 0 wrong (worst 1.1e-15) |
+| 300 random near-boundary targets (random a, b; c log-uniform in 1e-9 … 1e-5; random local unitaries) | **122 wrong, worst 0.36** | 191 wrong | **0 wrong** (worst 8.6e-10) |
+
+- "Wrong" means 1 - F_avg > 1e-9.
+- The 0.45 port is forced to the 3-cx path for every target, which is why it counts more failures than the shipped
+  decomposer: the shipped one takes 2 cx for some of them.
+- The fix's worst value, 8.6e-10, is within the decomposer's default tolerance of 1 - 1e-9.
+- **The error is not always 0.07.** It is the infidelity of the missing rz(θ1), so it depends on θ1. The worst
+  case seen was 0.36.
+
+**Limits:**
+
+- the fix was tested on the Python port, not on a rebuilt Rust crate;
+- the x12 = π/2 branch was never reached in these tests;
+- the failure rate of 122 out of 300 depends on how the near-boundary set was drawn.
+
+The root cause is that the branch test uses an absolute tolerance on an angle that is ill-conditioned when θ2 ≈ 0.
+How to fix it is the maintainers' decision.
+
+**Workaround:** `pulse_optimize=False` gives the exact result at every c tested.
+
+## 5. What was posted
+
+The owner posted the findings of sections 2-4 to the issue in their own words on 2026-10-01. The post included the
+candidate fix, the limits above and the AI-assistance disclosure. The issue remains open.
+
+## 6. Files (`data/2026-10-01/qiskit_17057/`)
+
+| file | what | SHA-256 (raw) |
+|---|---|---|
+| `diag_17057.py` | v1: shipped vs the 0.45 port, branch variables | `1571af0e296b76bce4d0e3193ae5c6282f4033688cb9969eab4f6539b51f83cd` |
+| `diag_17057_v2.py` | v2: adds the fix candidate and the random checks | `baa37864ad937ce36182e540233dd9a55b4dada3001edb343184dde81d858ee1` |
+| `bisect_17057.sh` | released versions in throw-away venvs | `e084d9d702d261ccdc9bd0af496a970ed1935675c21b9f8edc84542edc6f381a` |
+| `diag_17057_v1_output.txt`, `bisect_output.txt` | outputs, as printed | |
+| `diag_17057_v2_output_tail.txt` | the last four lines of the v2 output (it was run with `tail -4`) | |
+
+
+---
+
+<!-- ===== Addendum 295 (source: spare-qubit-cliff-addendum-295-2026-10-01.md) ===== -->
+
+> **Note added when merging:** A decision record on the A0 finding of Addendum 293; no test.
+
+## Addendum 295 -- Decision: the A0 finding (reported gate errors below the T1/T2 floor) is not filed upstream for now; the route to A1 and to publication (2026-10-01)
+
+**Status: a decision record, not a test.** It concerns the result of Addendum 293.
+
+## 1. The question
+
+Addendum 293 found reported gate errors below the decoherence floor implied by the same snapshot's T1, T2 and gate
+duration:
+
+- on 18% of cx gates and 22% of ecr gates;
+- on 1% of cz gates, concentrated on a few short-T2 qubits.
+
+The owner asked whether this should be reported upstream like issue #17057 (Addendum 294).
+
+## 2. Decision: not now
+
+| possible place | why not, now |
+|---|---|
+| qiskit-aer | It is not a bug. `NoiseModel.from_backend` applies max(reported, floor) by design. Addenda 292-293 used this, and P0 verified it on all 13,545 usable gates. |
+| qiskit-ibm-runtime fake backends | It is not a code bug. The snapshots copy IBM's published calibration data, and the inconsistency is in that data. |
+| Qiskit error-aware layout (VF2PostLayout, Target-based scoring) | This could become a feature request: weigh T1/T2 and duration, not only the reported error. But snapshot data alone invites the obvious question "does this happen on live devices?", and it cannot be answered yet. |
+
+- **#17057 was a code defect.** It could be reproduced and fixed independently of any device.
+- **A0 is an observation about calibration data.** Its significance depends on live devices, and on which number
+  is wrong.
+
+## 3. The route
+
+1. **A1, pre-registered.** Read the live Targets of current devices, with the owner's go-ahead (no jobs are
+   needed). Count the same quantity with `a0_target_check.py`'s definitions.
+   - **Expectations from A0:** Eagle (ecr) devices, many violations; Heron (cz) devices, few, on short-T2 qubits.
+   - **Record:** the calibration timestamps, so that the gap in time between the T1/T2 and the gate-error
+     measurements can be examined.
+2. **If A1 confirms the pattern on live devices:**
+   - write it up as a short research note (data, method, the Aer max() behaviour, the effect on error-aware
+     placement);
+   - then, separately, propose to Qiskit an optional T1/T2-aware error score for layout, citing the note.
+3. **If A1 finds no violations on live devices:** record that. The A0 pattern is then a property of the snapshots,
+   and no upstream action follows.
+
+**Rules that carry over:**
+
+- the owner posts upstream personally, in their own words;
+- account names, instance names and CRN lines are redacted before anything is published.
+
+## 4. Not changed by this decision
+
+- The results of Addendum 293.
+- The caution that snapshots do not say whether the reported error or the T1/T2 is wrong.
+- A5's status: its advantage over error-aware Qiskit L3 in noisy simulation is favoured by construction, and is
+  untested on hardware.
+
 ---
 
 ---

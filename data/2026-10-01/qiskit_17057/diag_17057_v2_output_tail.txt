@@ -1,0 +1,4 @@
+c=1e-7 euler_q0[2] (lam, theta, phi): [np.float64(3.1415926531972698), np.float64(2.000000007842373e-07), np.float64(1.5707963271874195)]
+PY045+fix on the c sweep: 1e-09: 3.3e-16, 1e-08: 0.0e+00, 1e-07: 3.3e-16, 3e-07: 3.3e-16, 1e-06: 3.3e-16, 1e-03: 0.0e+00, 1e-01: 0.0e+00
+haar                         n=300  RUST: 0 bad, worst 1.1e-15  PY045: 0 bad, worst 1.1e-15  PY045+fix: 0 bad, worst 1.1e-15
+near c=0, c in 1e-9..1e-5    n=300  RUST: 122 bad, worst 3.6e-01  PY045: 191 bad, worst 3.6e-01  PY045+fix: 0 bad, worst 8.6e-10
