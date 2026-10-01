@@ -1,0 +1,16 @@
+rows 13982, devices 67; Kraus floor vs stored max diff 6.7e-16
+cx    devices 43 median 0.125 pooled 313/1731 = 0.181
+ecr   devices 10 median 0.178 pooled 281/1255 = 0.224
+cz    devices 11 median 0.000 pooled 38/3670 = 0.010
+mixed devices  1 median 0.160 pooled 4/25 = 0.160
+cz without nighthawk: median 0.000 (10 devices)
+H4: 0.928 of 636
+fake_auckland 16 of 56
+fake_torino 0 of 278
+fake_kingston 18 of 338
+ratio 27.49 fake_kawasaki ecr[112, 126] reported 8.51e-03 floor 2.34e-01
+ratio 25.06 fake_kawasaki ecr[126, 125] reported 9.32e-03 floor 2.34e-01
+ratio 13.69 fake_toronto cx[21, 23] reported 1.23e-02 floor 1.69e-01
+ratio 13.03 fake_toronto cx[23, 21] reported 1.23e-02 floor 1.61e-01
+ratio 11.28 fake_toronto cx[23, 24] reported 1.08e-02 floor 1.22e-01
+kingston below: min T2 us [15, 15, 15, 15, 15, 15, 17, 17, 17, 17, 23, 23, 23, 23, 26, 26, 26, 26] device median 144

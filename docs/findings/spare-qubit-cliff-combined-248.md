@@ -6487,6 +6487,122 @@ python benchmarks/a0_target_check.py run --out <dir> > <dir>/run.txt 2>&1
 python benchmarks/a0_target_check.py score --out <dir>
 ```
 
+
+---
+
+<!-- ===== Addendum 293 (source: spare-qubit-cliff-addendum-293-2026-10-01.md) ===== -->
+
+> **Note added when merging:** Results of the home pre-registration in Addendum 292 (lock commit 7c1993b). Scored by the locked script and re-checked by an independent script written after the run.
+
+## Addendum 293 -- Results: Phase A0 Target check (Addendum 292). Reported gate errors below the T1/T2 floor are common on cx and ecr devices and rare on cz (Heron) devices; Kingston is affected on a few short-T2 qubits. P0 pass; R1, R2 and H1-H4 confirmed; H5 ambiguous (2026-10-01)
+
+**Status: results of the pre-registered check in Addendum 292.**
+
+- Lock commit `7c1993b` was pushed before the scored run.
+- Scored by the locked `a0_target_check.py score`, and re-checked by an independent script written after the run
+  (section 6).
+- Snapshot data only: no IBM account, no QPU.
+
+## 1. Provenance
+
+- **Software:** Qiskit 2.5.2, qiskit-aer 0.17.2, qiskit-ibm-runtime 0.49.0, Python 3.12.13; at home (WSL2).
+- **Run:** started 2026-10-01 12:33 UTC and took 330 s.
+- **Population:** 67 fake-provider devices, none skipped, 13,982 gate rows. 437 rows were excluded from the
+  fractions: no error, error >= 0.5, no duration, or missing T1/T2. FakeKyoto has no usable ecr row.
+- **FakeNighthawk** prints a warning that its properties "are not intended to represent typical nighthawk error
+  values". It is kept, as pre-registered; removing it does not change any verdict (section 6).
+
+## 2. Verdicts
+
+| ID | Verdict | Numbers |
+|---|---|---|
+| P0 | **PASS** | closed form vs Aer-built channels 2.0e-15 on all 13,982 rows; the noise model's applied infidelity vs max(reported, floor) 3.4e-15 on all 13,545 usable rows, none missing; 67 devices |
+| R1 | **CONFIRMED** | FakeAuckland: 16 of 56 cx below floor; largest floor/reported 1.613 (cx), 2.096 (sx) -- Addendum 286 reproduced by independent code |
+| R2 | **CONFIRMED** | FakeTorino: 0 of 278 cz |
+| H1 | **CONFIRMED** | cz class: median device fraction 0.000 (11 devices) |
+| H2 | **CONFIRMED** | cx class: median device fraction 0.125 (43 devices) |
+| H3 | **CONFIRMED** | cx vs cz: median 0.125 vs 0.000; pooled 0.181 vs 0.010 |
+| H4 | **CONFIRMED** | 92.8% of the 636 below-floor two-qubit gates touch a qubit whose T2 is below its device median |
+| H5 | **AMBIGUOUS** | FakeKingston: 18 of 338 cz below floor (0.053), between the bounds (CONFIRMED <= 0.02, REFUTED > 0.10) |
+
+## 3. By device class
+
+| class | devices | devices with any 2q gate below floor | median device fraction | pooled fraction | pooled sx fraction | rise in summed 2q error under max(): median / max |
+|---|---|---|---|---|---|---|
+| cx (Falcon, Hummingbird and older) | 43 | 30 | 0.125 | 0.181 (313 / 1,731) | 0.230 | 2.1% / 284% |
+| ecr (Eagle) | 10 | 9 | 0.178 | 0.224 (281 / 1,255) | 0.261 | 8.4% / 36% |
+| cz (Heron and later) | 11 | 5 | 0.000 | 0.010 (38 / 3,670) | 0.069 | 0.0% / 0.3% |
+| mixed (FakeCairo, cx and ecr) | 1 | 1 | 0.160 | 0.160 | 0.185 | 8.0% |
+
+- Rank correlation of snapshot date with device fraction: 0.069 over 65 dated devices. **Snapshot age does not
+  explain the effect.**
+- Qubits whose T2 > 2·T1 (truncated, as Aer does): 58.
+
+## 4. Reading
+
+- **The effect is not specific to FakeAuckland, and not a matter of old snapshots.**
+  - 30 of 43 cx devices and 9 of 10 ecr devices have at least one two-qubit gate reported below its own
+    decoherence floor.
+  - The ecr (Eagle) class, which was not predicted, is the most affected. This includes snapshots dated April 2026:
+    FakeBrussels 51 of 138, FakeStrasbourg 50 of 142, FakeOsaka 52 of 137.
+  - The longer gate is the likely reason. Median gate durations in these snapshots are ecr 594 ns, cx 434 ns and
+    cz 68 ns.
+- **The current cz generation is mostly clean, but not entirely.**
+  - The median cz device has no violation, and the pooled fraction is 1%.
+  - 5 of 11 cz devices have some violations, and they sit on a few qubits.
+  - On FakeKingston, all 18 below-floor cz gates touch one of six qubits with T2 = 15-26 µs: qubits 10, 37, 88,
+    123, 137 and 139 (device median 144 µs).
+  - This is why H5 missed its CONFIRMED bound: the prediction that Kingston is unaffected was too strong.
+- **The mechanism is short T2 (H4).** Some violations are extreme, for example:
+  - FakeKawasaki ecr(112,126) is reported at 0.0085, but its floor is 0.234.
+  - FakeToronto cx(21,23) is reported at 0.0123, with floor 0.169.
+  - These are qubits whose T1/T2 say they are close to unusable, while their gate errors say they are fine. A
+    compiler that trusts the reported error will place work on them.
+- **For the a5 / L3T comparisons (Addenda 287-291).**
+  - FakeTorino has no below-floor cz gate; FakeKingston has 5% of its cz gates below floor, on short-T2 qubits.
+  - A5 and L3T tied on both in Addendum 291. A5's clear lead was on FakeAuckland (cx).
+  - This is consistent with A5's advantage coming from the floor. It is not a test of that.
+- **What it means for Phase A.**
+  - A Target checker is relevant to current hardware: to the Eagle (ecr) devices broadly, and to individual
+    short-T2 qubits on Heron.
+  - The earlier suggestion that Auckland might be an old-snapshot artefact is not supported.
+  - A1 (reading live Targets, with the owner's go-ahead) can now be pre-registered with concrete expectations:
+    - Eagle devices: many violations;
+    - Heron devices: few, on short-T2 qubits.
+
+## 5. What this does not establish
+
+As stated in Addendum 292:
+
+- **Snapshots contradict themselves; they do not say which number is wrong.** T1, T2 and gate errors are measured
+  at different times. T2 may be a Ramsey or an echo value. The reported duration may include padding.
+- **Nothing about live devices.**
+- **Not that max(reported, floor) is the right correction on hardware.** Short T2 from a single measurement can be
+  transient, for example two-level-system defects that move.
+
+## 6. Independent check (written after the run)
+
+`benchmarks/a0_verify.py` does not import the scored script. It recomputes every floor from explicit Kraus
+operators instead of the closed form (largest difference from the stored floors 6.7e-16). It then re-derives the
+below-floor sets, the class statistics and the deciding numbers. All of them match the locked score: the class
+medians and pooled fractions in section 3, H4 = 0.928 of 636, and Auckland, Torino and Kingston at 16/56, 0/278
+and 18/338.
+
+Without FakeNighthawk, the cz-class median is still 0.000 (10 devices).
+
+## 7. Data (`data/2026-10-01/a0/`)
+
+- `outputs/a0_raw.json.gz`: every gate row and device record.
+- `outputs/a0_score.md`: the locked score, including the per-device table.
+- `outputs/run.txt`: the run log. One local path in a library warning was replaced with `<venv>/`.
+- `outputs/verify.txt`: the output of the independent check.
+- `dev/a0_raw_smoke.json.gz`: the smoke run, FakeAuckland only.
+
+| file | SHA-256 (raw) |
+|---|---|
+| `outputs/a0_raw.json.gz` | `9aadd7aa8f804f76c59ad951209e3e199154a89794942966e53556a3bccf314d` |
+| `outputs/a0_score.md` | `47ec9ec85ad4a338aaa096e0cbc6d7d1eb094f4cef4ff1b4404b37c48a5f0134` |
+
 ---
 
 ---
