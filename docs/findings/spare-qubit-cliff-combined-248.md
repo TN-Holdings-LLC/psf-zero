@@ -6002,6 +6002,176 @@ Project save time before this run.
 | [`score.txt`](../../data/2026-10-01/long_loop_a5/outputs/scored/score.txt) | 1,087 | `d1afd69aae1c628265afe72e0d9627a4b2ad16daec7032f5feb2f04c0e8f3e77` |
 | `a4_validity_check.py` | (section 3) | |
 
+
+---
+
+<!-- ===== Addendum 290 (source: spare-qubit-cliff-addendum-290-2026-10-01.md) ===== -->
+
+> **Note added when merging:** Home pre-registration, independent of the workplace QML test of the same day. Locked by the git commit that adds this Addendum and its two scripts, pushed before the scored run.
+
+## Addendum 290 -- Pre-registration: does a small quantum classifier keep its accuracy, and can it learn, when every circuit goes through a given compiler onto a noisy fake device? Previous release, release 2026-10-01.1, AI front end a5 and error-aware Qiskit L3 (2026-10-01)
+
+**Status: pre-registration, written at home before any scored run.** It is locked by a git commit that
+contains this document and the two scripts, pushed before the scored run starts. The workplace ran a quantum
+machine-learning test on the same day. Its design and results were not seen here; this is an independent test
+of the same question, not a reproduction.
+
+No IBM account, no network access to IBM, no QPU. The devices are fake-provider snapshots and the noise is
+Qiskit Aer's noise model built from them.
+
+## 1. Question
+
+The owner asked whether "an AI gets smarter using these circuits". Here that means a variational quantum
+classifier, and two questions:
+
+- **Q1, keeping:** a classifier trained without noise is run on a noisy device, with every circuit compiled by a
+  given compiler. How much of its accuracy and margin does it keep?
+- **Q2, learning:** the classifier is trained from scratch with the compiler and the noisy device inside the
+  loss. Does it learn as well as the same training would without noise?
+
+The compiler changes only the physical implementation of each circuit (placement, routing, gate synthesis). The
+model and its parameters are the same in every arm, so every difference between arms comes from the compiled
+circuits under noise.
+
+## 2. Design (`benchmarks/qml_home_eval.py`, `benchmarks/run_qml_home_2026-10-01.sh`)
+
+**Model.**
+
+- 4 qubits, 2 layers, data re-uploading, 20 parameters.
+- Layer l: RY(pi x_q) on every qubit; then RY(a_lq) RZ(b_lq) on every qubit; then CZ on the ring (0,1), (1,2),
+  (2,3), (3,0).
+- After the layers: RY(c_q) on every qubit.
+- Output z = <Z> of logical qubit 0; prediction sign(z); loss mean (y - z)^2.
+- Heavy-hex devices have no 4-cycle, so the ring always needs routing.
+
+**Data (teacher-student).**
+
+- A teacher is the same model with parameters drawn uniformly in [-pi, pi] from a seed.
+- Labels are sign(z_teacher). Points with |z_teacher| < 0.25 are skipped, and the classes are balanced.
+- Train: 8 + 8 points (seed 31). Test: 16 + 16 points (seed 32). x is uniform in [-1, 1]^4.
+- **Teacher rule:** the first teacher seed from 21 upwards for which noiseless SPSA (seed 40, 80 steps) reaches
+  test accuracy >= 0.9. It uses numpy only, with no compiler and no noise. Checked before this lock, numpy only:
+  the rule selects **teacher 23** (theta* test accuracy 0.969).
+
+**Training.**
+
+- SPSA with a = 0.6, c = 0.2, A = 5, alpha = 0.602, gamma = 0.101.
+- The initial point is normal(0, 0.3) from the seed.
+- The perturbations come from the same seeded stream, so for a given seed every arm sees the same initial point
+  and the same perturbations (common random numbers).
+
+**Arms** (all with the installed core 2026-09-29.1):
+
+| tag | compiler |
+|---|---|
+| REL | psf_compile 2026-09-28.1 + psf_smart_layout 2026-09-26.m1 (taken from git `9131cee`, hash-checked), `compile_for_hardware(entangling_basis="cx", layout_search=True, seed_transpiler=0)` |
+| C2 | release psf_compile 2026-10-01.1 + psf_smart_layout 2026-10-01.1, same call |
+| A5 | `benchmarks/psf_ai_compile.py` 2026-10-01.a5, `compile_for_model_circuit(qc, coupling_map, basis_gates, target=<device Target>)` |
+| L3T | Qiskit `transpile(target=<device Target>, optimization_level=3, seed_transpiler=0)` |
+
+The REL arm runs on core 2026-09-29.1, not on its original core 2026-09-28.1. The two give identical output
+wherever the older core succeeds (Addendum 251).
+
+**Noise and readout.**
+
+- `qiskit_aer.noise.NoiseModel.from_backend(<fake device>)` with `AerSimulator(method="density_matrix")`.
+- z is read exactly from the density matrix of the final-layout qubits: no shot noise, no readout error, no idle
+  noise, no crosstalk.
+
+**Q1.**
+
+- theta* = noiseless SPSA (seed 40, 80 steps).
+- The 32 test circuits go through every arm on FakeAuckland, FakeTorino and FakeKingston: 384 compiles.
+- Recorded per circuit: noisy z, noiseless z of the compiled circuit, two-qubit count and compile time.
+
+**Q2.**
+
+- SPSA from scratch for 40 steps, seeds 41 and 42, on FakeAuckland and FakeTorino, for all four arms (16 runs).
+- Each loss evaluation compiles and simulates the 16 training circuits: 1,280 compiles per run, plus 48 at the
+  end.
+- **IDEAL:** the same SPSA (same seeds and steps) on the noiseless numpy model. Checked before this lock, numpy
+  only: test accuracy 1.000 (seed 41) and 0.625 (seed 42), mean 0.8125.
+
+**Runner.** Q1 and the 16 Q2 runs, 6 processes in parallel, each single-threaded, then `score`. It is run from
+the repository checkout at the lock commit. Times are home
+times (WSL2, Ryzen 5 5500) and are reported only.
+
+## 3. Predictions (scored only by `qml_home_eval.py score`)
+
+**P0, harness.** All of these must hold, or nothing below is scored:
+
+- the numpy model and Qiskit's Statevector agree on z for all 48 points (<= 1e-9);
+- every compiled Q1 circuit, simulated without noise, gives the logical z (<= 1e-6);
+- theta* reaches test accuracy >= 0.9;
+- all 16 Q2 runs finish.
+
+The margin is y·z.
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| H1 | Q1: release C2 keeps at least the previous release's margin | mean margin C2 >= REL - 0.005 on all 3 devices | C2 < REL - 0.02 on any device |
+| H2 | Q1: A5 keeps at least error-aware L3's margin | A5 >= L3T - 0.005 on >= 2 of 3 devices | A5 < L3T - 0.02 on >= 2 devices |
+| H3 | Q1: on the two lower-noise devices the classifier stays smart | noisy test accuracy >= theta* accuracy - 2/32 for every arm on FakeTorino and FakeKingston | any arm below theta* accuracy - 6/32 there |
+| H4 | Q2: learning through the compiler and the noise works | every arm's mean (over seeds) noisy test accuracy >= IDEAL mean - 0.10, on both devices | any arm below IDEAL mean - 0.25, or a run missing |
+| H5 | Q2: the better compilers train to a lower loss | mean final noisy training loss C2 <= REL + 0.01 and A5 <= L3T + 0.01, on both devices | C2 > REL + 0.05 on both devices, or A5 > L3T + 0.05 on both devices |
+
+**Reported without prediction:**
+
+- FakeAuckland accuracy in Q1;
+- two-qubit counts;
+- compile time per compile and per run (home);
+- training curves;
+- the noiseless accuracy of the parameters each Q2 run ends with.
+
+**Expectations, stated now:**
+
+- C2 should route the ring with fewer two-qubit gates than REL. This is what H1 and the C2 half of H5 test.
+  This line was written before the smoke run. On its two FakeAuckland points, REL and C2 gave the same
+  two-qubit count and the same margin (section 5). The predictions were not changed after it.
+- A5's estimate shares its physics with the simulator that scores it (Addenda 286-289), so H2 and the A5 half of
+  H5 favour A5 by construction. A pass there is weaker evidence than a pass in H1.
+- FakeAuckland has the qubits whose published errors are below their T1/T2 bound (Addendum 287). L3T may be
+  misled there.
+
+## 4. What this will not establish
+
+- Anything about real hardware.
+- Any model other than this one, or any device other than the three fake devices named here.
+- Reliability: there are 2 training seeds.
+- Q2 depends on SPSA as configured. The IDEAL arm shows how much of any shortfall is the optimizer's.
+
+## 5. Development and dry runs (disclosed)
+
+- **Design checks in numpy only (no compiler, no noise):**
+  - A first dataset, sign(x0 x1 + x2 x3), with one encoding layer, did not learn (test accuracy 0.28). It was
+    replaced by the teacher-student design.
+  - Teacher 7 with data seeds 11 and 12 and SPSA seeds 100-102 learned noiselessly (test accuracy 0.94-1.0).
+    These seeds are not used in the scored run.
+  - Scanning teachers 21-30 led to the teacher rule above, which selects 23.
+- **Smoke run at home** (`SMOKE=1`; data seeds 931 and 932, SPSA seed 941, 2 Q2 steps, FakeAuckland only, 2
+  Q1 test points):
+  - it checks the plumbing and the timing;
+  - it is not scored;
+  - its output is kept with the results.
+  - **Result, run 2026-10-01 at home:** it ran end to end.
+    - P0: numpy vs Statevector 8.9e-16; compiled noiseless vs logical 4.3e-15; theta* test accuracy 0.938.
+    - Q1, 2 points on FakeAuckland (noisy accuracy / mean margin / median two-qubit count): REL 1.000 / 0.4894 / 17,
+      C2 1.000 / 0.4894 / 17, A5 1.000 / 0.4930 / 17, L3T 1.000 / 0.4822 / 17.
+    - Q2, 2 steps on FakeAuckland: noisy test accuracy 0.781 in every arm (IDEAL 0.781); compile time per compile
+      about 0.03 s (REL, C2, L3T) and 0.17 s (A5), home.
+    - Its scoring counted the FakeTorino Q2 runs as missing, because the smoke run uses FakeAuckland only.
+    - **After the smoke run, `score` was changed to use the run's own device list** (`q2_devices` in the
+      configuration). Nothing in the run path changed. The scored run uses the files locked below.
+
+## 6. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `benchmarks/qml_home_eval.py` | `0a30fb22b709420418ed130a18531810616f405b42768a73157587e545b3ca32` |
+| `benchmarks/run_qml_home_2026-10-01.sh` | `3c734482bdaa14032d0d9e55f0111f730993b11d41c08d9a271027ff5df6ce72` |
+
+The runner expects `qml_home_eval.py` in its own folder, so both are in `benchmarks/`.
+
 ---
 
 ---
