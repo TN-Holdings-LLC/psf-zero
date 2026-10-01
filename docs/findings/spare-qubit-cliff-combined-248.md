@@ -6342,6 +6342,151 @@ SHA-256 (raw) of the main result files:
 | `outputs/q1.json` | `366ae3065fed4d8102abc791701d7580a17dfab3d3f74da2ea3d57e8a65fe98d` |
 | `outputs/score.md` | `65a1cc665e23c3a4d8ee7db72604b34db7eb295dc7489296d6b93bb4a52a3332` |
 
+
+---
+
+<!-- ===== Addendum 292 (source: spare-qubit-cliff-addendum-292-2026-10-01.md) ===== -->
+
+> **Note added when merging:** Home pre-registration of Phase A0 (snapshot data only, no IBM access). Locked by the git commit that adds this Addendum and benchmarks/a0_target_check.py, pushed before the scored run.
+
+## Addendum 292 -- Pre-registration: Phase A0 Target check. How often is a reported gate error below the decoherence floor implied by the same snapshot's T1, T2 and gate duration, across all fake-provider devices? (2026-10-01)
+
+**Status: pre-registration, written at home before any scored run.** It is locked by the git commit that adds this
+document and `benchmarks/a0_target_check.py`, pushed before the scored run. No IBM account, no network access to
+IBM, no QPU: the data are the device snapshots shipped with `qiskit-ibm-runtime`.
+
+## 1. Why
+
+- **Addendum 286 found the effect on one device.** On FakeAuckland, 16 of 56 cx gates are reported with an error
+  below the decoherence limit of their own T1, T2 and duration. Single-qubit gates are affected too. On FakeTorino,
+  no cz gate is affected.
+- **Aer already applies that limit.** qiskit-aer's `NoiseModel.from_backend` applies max(reported error, floor) per
+  gate: when the reported error is below the relaxation infidelity, it adds no depolarizing part.
+- **So a noisy-simulation test favours any compiler that knows the floor** (Addenda 286-291), and the a5 lead over
+  error-aware Qiskit L3 is real only where the floor binds.
+- **Before building a "Target checker" (Phase A), A0 asks where the floor binds:**
+  - on all device snapshots, not one;
+  - by device generation;
+  - and whether the current generation (Heron, cz) is affected at all.
+- **The real-device question (A1) is separate.** Reading a live Target needs IBM access and the owner's go-ahead.
+  A0 predicts what A1 is likely to find.
+
+## 2. Definitions (`benchmarks/a0_target_check.py`)
+
+- **Population:**
+  - Every class named `Fake*` in `qiskit_ibm_runtime.fake_provider` that is a `BackendV2`.
+  - Excluded: the fractional-gate test backend, generic backends and the base classes.
+  - Duplicates by backend name are dropped.
+  - Every exclusion or construction failure is listed in the output.
+- **Gates:** the native two-qubit gate (cx, ecr or cz) and the single-qubit gates sx and x, per qubit tuple as in
+  the Target.
+- **Floor:** 1 - average gate fidelity of zero-temperature thermal relaxation on each qubit of the gate for the
+  gate's duration, with T2 truncated to 2·T1.
+  - In closed form, per qubit the process fidelity is (1 + 2e^(-t/T2) + e^(-t/T1))/4. These multiply over the
+    qubits, and F_avg = (d·F_pro + 1)/(d + 1) with d = 2^n.
+  - This is the relaxation part of qiskit-aer 0.17.2's `NoiseModel.from_backend`, at its default temperature 0.
+- **Usable gate:** 0 < reported error < 0.5, a duration, and T1 and T2 known for its qubits. Errors >= 0.5 mark
+  disabled gates.
+- **Below floor:** a usable gate with reported error < floor.
+- **Device class:** the native two-qubit gate in its Target.
+  - cx: Falcon, Hummingbird and older.
+  - ecr: Eagle.
+  - cz: Heron.
+  - A device with more than one is "mixed": reported, but not in the class predictions.
+- **Device fraction:** below-floor two-qubit gates / usable two-qubit gates on that device.
+- **Pooled fraction:** the same, over all devices of a class.
+
+## 3. Predictions (scored only by `a0_target_check.py score`)
+
+**P0, harness.** All of these must hold, or nothing below is scored:
+
+- the floor recomputed from the raw data by the scorer equals the stored one (<= 1e-12);
+- the closed form equals qiskit's `average_gate_fidelity` of the `thermal_relaxation_error` channels built as Aer
+  builds them (<= 1e-9, every gate);
+- the infidelity of the error that `NoiseModel.from_backend` actually puts on each usable gate equals
+  max(reported, floor) (<= 1e-9, every usable gate, none missing);
+- at least 30 devices, including FakeAuckland, FakeTorino and FakeKingston.
+
+**Replication** of Addendum 286 (same snapshots, independent code):
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| R1 | FakeAuckland as in Addendum 286 | 16 cx below floor, max floor/reported 1.5-1.7 for cx and 2.0-2.2 for sx | cx count outside 14-18 |
+| R2 | FakeTorino has no cz below floor | 0 | > 0 |
+
+**Predictions** (the author has seen no below-floor statistic for any device other than the two in Addendum 286):
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| H1 | the current generation is rarely affected | cz class: median device fraction <= 0.02 | > 0.10 |
+| H2 | the cx generation is often affected | cx class: median device fraction >= 0.05 | < 0.01 |
+| H3 | the problem is a cx-era problem more than a cz-era one | cx > cz in both median device fraction and pooled fraction | cx <= cz in both |
+| H4 | short T2 is the mechanism | >= 80% of below-floor two-qubit gates have a qubit whose T2 is below its device's median T2 | < 50% |
+| H5 | FakeKingston, used in Addenda 287-291, is not affected | device fraction <= 0.02 | > 0.10 |
+
+**Reported without prediction:**
+
+- the ecr class;
+- single-qubit (sx) fractions by class;
+- every device's row (qubits, snapshot date, counts, largest floor/reported);
+- per device, how much max(reported, floor) raises the summed two-qubit error;
+- the rank correlation of snapshot date with the device fraction;
+- excluded rows;
+- T2 truncations.
+
+**Reasoning behind the predictions:**
+
+- The floor grows with gate duration over T2.
+- cx gates on Falcon-era devices take about 300-500 ns, with T2 of tens of µs on weak qubits.
+- Heron cz gates take under 100 ns, with T2 typically above 100 µs.
+- ecr gates (Eagle) take about 500-700 ns with longer T2, so no direction is predicted for them.
+
+## 4. What it means, stated now
+
+- **If H1 and H5 hold:**
+  - A1 (reading the live Targets of current Heron devices) is expected to find few or no violations.
+  - Phase A on current hardware reduces to flagging individual gates.
+  - The ties between a5 and L3T on FakeTorino and FakeKingston (Addendum 291) are what that predicts.
+- **If H1 fails:** the problem is not historical, and a Target checker is relevant to current devices.
+- **Either way, A0 shows only that snapshots contradict themselves.** Which side is wrong on hardware (the reported
+  error, or the T1/T2 used to compute the floor) cannot be told from snapshots. That needs A1, and then measurement.
+
+## 5. What this will not establish
+
+- **Anything about live devices** (A1).
+- **Which number in a snapshot is wrong.** T1, T2 and gate errors are measured at different times. T2 may be a
+  Ramsey or an echo value. The reported duration may include padding. Any of these makes a gate look below the
+  floor without the device being so.
+- **That max(reported, floor) is the right correction on hardware.**
+
+## 6. Development (disclosed)
+
+- **The closed form was checked in numpy, without qiskit,** against an explicit Kraus-operator computation of the
+  same channel: 2,000 random one- and two-qubit cases, maximum difference 4.4e-16.
+- **The script ran end to end on stub qiskit modules** (synthetic devices), to check the plumbing and the scorer.
+  No real snapshot was read.
+- **The smoke run at home** (`--smoke`: FakeAuckland only; it prints only the harness checks and row counts, no
+  below-floor statistic):
+  - Result, run 2026-10-01 at home (Qiskit 2.5.2, qiskit-aer 0.17.2, qiskit-ibm-runtime 0.49.0, Python 3.12.13):
+    - 110 rows (27 sx, 27 x, 56 cx), all usable.
+    - Closed form vs Aer-built channels: 2.0e-15. Applied noise-model infidelity vs max(reported, floor):
+      1.8e-15, 110 of 110 checked, none missing.
+  - No change was made after the smoke run.
+- **The scored run** reads every device once. Nothing is re-run to improve a score.
+
+## 7. Locked file (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `benchmarks/a0_target_check.py` | `f9747e4b46368d56338fdffb3a13e13e4fa5ebf6355951ff5765ae77c8debf6e` |
+
+**Run:**
+
+```
+python benchmarks/a0_target_check.py run --out <dir> > <dir>/run.txt 2>&1
+python benchmarks/a0_target_check.py score --out <dir>
+```
+
 ---
 
 ---
