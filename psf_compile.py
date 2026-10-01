@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-09-28.1 (previous revision: 2026-09-27.7)
+VERSION: 2026-10-01.1 -- release, adopted on 2026-10-01 from candidate 2026-10-01.c2 (previous release: 2026-09-28.1)
 
 Where to look for what
 ----------------------
@@ -426,6 +426,25 @@ Changes in the 2026-09-26.4 revision (spare-qubit-cliff Addenda 195-196)
 27. **`CORE_VERSION`** is exported: the loaded Rust core's own version string
     (`psf_zero_core.CORE_VERSION`), or None for cores built before
     2026-09-28, so that logs can show which core ran.
+
+2026-10-01.1 (release; candidate 2026-10-01.c2, adopted on 2026-10-01 after its pre-registered evaluation):
+
+28. **Cost-aware consolidation of short blocks** (`CONSOLIDATE_IF_CHEAPER`). A same-pair block at or below
+    `block_gate_floor` is still consolidated when it holds at least two 2-qubit gates and its optimal CX
+    count (Weyl) is below its CX cost as written (`_CX_COST`; SWAP 3, controlled rotations 2, CX/CZ 1).
+    Only with `entangling_basis="cx"`: with "canonical" the re-expanded RXX/RYY/RZZ cost more CX than the
+    gates as written (40-qubit random circuit 641 -> 648 CX with the rule on). The block's 4x4 unitary is
+    built with numpy (`_block_unitary_4x4`), about 10x cheaper than `Operator(QuantumCircuit)`.
+29. **`compile_for_hardware(elide_permutations="auto")`**: before compiling, ElidePermutations and
+    Split2QUnitaries(split_swap=True) remove SWAPs (also a SWAP written as a 2-qubit `unitary`, as PennyLane
+    tapes arrive) by relabelling later gates; the permutation is handed to the preset pipeline
+    (`_CarryPermutation`), so it appears in `out.layout.final_layout` exactly as at optimization levels
+    2 and 3. Read the output qubits through `final_index_layout()` (the e2e and IBM pipelines already do).
+30. **`compile_for_hardware(post_routing_resynthesis="auto")`**: in the preset pipeline's post_routing
+    stage, every 2-qubit block that holds a routing SWAP and costs more CX than its optimum is consolidated
+    and re-synthesised by the PSF-Zero core (`_AbsorbRoutingSwaps`). Blocks without a SWAP are untouched.
+    "auto" means on for `entangling_basis="cx"`, off for "canonical" (items 29 and 30), and the canonical
+    path is unchanged.
 """
 from __future__ import annotations
 
@@ -440,8 +459,12 @@ from qiskit import QuantumCircuit, transpile
 from qiskit.circuit.library import CXGate
 from qiskit.quantum_info import Operator
 from qiskit.synthesis import TwoQubitBasisDecomposer, TwoQubitWeylDecomposition
-from qiskit.transpiler import CouplingMap, PassManager
-from qiskit.transpiler.passes import Collect2qBlocks, ConsolidateBlocks
+from qiskit.circuit.equivalence_library import SessionEquivalenceLibrary
+from qiskit.transpiler import CouplingMap, PassManager, generate_preset_pass_manager
+from qiskit.converters import circuit_to_dag, dag_to_circuit
+from qiskit.transpiler.basepasses import AnalysisPass, TransformationPass
+from qiskit.transpiler.passes import (BasisTranslator, Collect2qBlocks, ConsolidateBlocks, ElidePermutations,
+                                      Optimize1qGatesDecomposition, Split2QUnitaries)
 
 try:
     import psf_zero_core
@@ -455,7 +478,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-09-28.1"
+VERSION = "2026-10-01.1"  # release (from candidate 2026-10-01.c2): c1 + permutation elision + post-routing re-synthesis
 __version__ = VERSION
 
 # Changelog item 27: the version string of the loaded Rust core, for logs.
@@ -493,6 +516,97 @@ logger = logging.getLogger(__name__)
 # Changelog items 21, 22 and 25: 8 in 2026-09-27.2, 12 in 2026-09-27.3 to .6,
 # 8 again from 2026-09-27.7.
 DEFAULT_BLOCK_GATE_FLOOR = 8
+
+# Candidate 2026-10-01.c1: a block at or below the floor is still consolidated when it holds at least two
+# 2-qubit gates and its optimal CX count (from the Weyl decomposition) is smaller than the CX cost of the
+# gates as written. Measured motivation (Addendum 271, section 3): on 4-qubit W and Dicke circuits written by
+# a language model, short (cry, cx) runs on one pair were left alone by the floor and cost 9 CX on the device
+# where 6 suffice. A block is only re-synthesised when that saves 2-qubit gates.
+# Applies only when entangling_basis="cx" (see worth_consolidating in compile()).
+CONSOLIDATE_IF_CHEAPER = True
+
+# CX cost of a 2-qubit gate as written (what the router's basis translation will emit for it).
+_CX_COST = {"cx": 1, "cz": 1, "cy": 1, "ecr": 1, "swap": 3, "iswap": 2, "dcx": 2,
+            "crx": 2, "cry": 2, "crz": 2, "cp": 2, "cu1": 2, "ch": 2, "cs": 2, "csdg": 2, "csx": 2,
+            "rxx": 2, "ryy": 2, "rzz": 2, "rzx": 2, "xx_plus_yy": 2, "xx_minus_yy": 2}
+_CX_DECOMPOSER = None
+
+
+def _cx_cost_as_written(block):
+    total = 0
+    for node in block:
+        if len(node.qargs) == 2:
+            total += _CX_COST.get(node.op.name, 3)
+    return total
+
+
+_SWAP_4 = np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]], dtype=complex)
+_EYE_2 = np.eye(2, dtype=complex)
+
+
+def _block_unitary_4x4(block, qubits):
+    """4x4 unitary of a 2-qubit block in Qiskit's little-endian order (qubits[0] is the low bit).
+    Built with numpy directly (`Operator(QuantumCircuit)` costs ~10x more per call), with runs of
+    single-qubit gates multiplied as 2x2 matrices first: routed blocks are mostly single-qubit gates."""
+    u = np.eye(4, dtype=complex)
+    pend = [None, None]  # pending 2x2 product on qubits[0] (low) and qubits[1] (high)
+
+    def flush():
+        nonlocal u
+        lo, hi = pend
+        if lo is None and hi is None:
+            return
+        t = u.reshape(2, 2, 4)  # [high, low, column]
+        if lo is not None:
+            t = np.einsum("ab,hbc->hac", lo, t)
+        if hi is not None:
+            t = np.einsum("ab,blc->alc", hi, t)
+        u = t.reshape(4, 4)
+        pend[0] = pend[1] = None
+
+    for node in block:
+        m = node.op.to_matrix()
+        if len(node.qargs) == 1:
+            k = 0 if node.qargs[0] == qubits[0] else 1
+            pend[k] = m if pend[k] is None else m @ pend[k]
+            continue
+        flush()
+        if node.qargs[0] != qubits[0]:
+            # op's own qubit 0 is qubits[1]: conjugate by SWAP to express it in the block's order
+            m = _SWAP_4 @ m @ _SWAP_4
+        u = m @ u
+    flush()
+    return u
+
+
+def _block_saves_cx(block):
+    """True when the block's optimal CX count is below its CX cost as written (candidate 2026-10-01.c1)."""
+    global _CX_DECOMPOSER
+    cost = 0
+    n_two = 0
+    qubits = []
+    for node in block:
+        if getattr(node.op, "condition", None) is not None or not hasattr(node.op, "to_matrix"):
+            return False
+        if len(node.qargs) == 2:
+            n_two += 1
+            cost += _CX_COST.get(node.op.name, 3)
+        elif len(node.qargs) != 1:
+            return False
+        for q in node.qargs:
+            if q not in qubits:
+                qubits.append(q)
+    if n_two < 2 or len(qubits) != 2:
+        return False
+    if cost > 3:
+        return True  # no 2-qubit unitary needs more than 3 CX
+    try:
+        u = _block_unitary_4x4(block, qubits)
+    except Exception:
+        return False
+    if _CX_DECOMPOSER is None:
+        _CX_DECOMPOSER = TwoQubitBasisDecomposer(CXGate())
+    return _CX_DECOMPOSER.num_basis_gates(u) < cost
 
 _VALID_ENTANGLING_BASES = ("canonical", "cx")
 _VALID_ON_UNSUPPORTED = ("keep", "raise")
@@ -1345,7 +1459,12 @@ def compile(
     verify = _validate_verify(verify)
 
     def worth_consolidating(dag, block):
-        return len(block) > block_gate_floor
+        if len(block) > block_gate_floor:
+            return True
+        # Only with entangling_basis="cx": the saving is counted in CX, and the canonical RXX/RYY/RZZ output
+        # re-expands to more CX than the gates as written (measured, sandbox, 2026-10-01: 40-qubit random
+        # circuit 641 -> 648 CX with the rule on under "canonical").
+        return CONSOLIDATE_IF_CHEAPER and entangling_basis == "cx" and _block_saves_cx(block)
 
     pm_consolidate = PassManager([
         Collect2qBlocks(filter_fn=worth_consolidating),
@@ -1499,6 +1618,66 @@ def _layout_map_to_list(layout_map: dict, num_logical: int, num_physical: int) -
     return out
 
 
+class _CarryPermutation(AnalysisPass):
+    """Re-inserts the `virtual_permutation_layout` found by an earlier ElidePermutations run, so the preset
+    pipeline folds it into the output's final layout exactly as it does at optimization levels 2 and 3."""
+
+    def __init__(self, layout):
+        super().__init__()
+        self._layout = layout
+
+    def run(self, dag):
+        self.property_set["virtual_permutation_layout"] = self._layout
+
+
+def _resolve_auto(value, entangling_basis, name):
+    if value == "auto":
+        return entangling_basis == "cx"
+    if isinstance(value, bool):
+        return value
+    raise ValueError(f"{name} must be True, False or 'auto', got {value!r}")
+
+
+class _AbsorbRoutingSwaps(TransformationPass):
+    """Candidate 2026-10-01.c2, run in the preset pipeline's post_routing stage (before translation).
+    Consolidates every 2-qubit block that holds a SWAP inserted by routing and whose optimal CX count is below
+    its cost as written (SWAP 3 CX, so SWAP + any 2-qubit gate on the same pair always qualifies), and
+    re-synthesises it with the PSF-Zero core. Blocks without a SWAP are left exactly as routed, which keeps
+    this pass cheap on circuits that routing did not touch."""
+
+    def __init__(self, verify, tol, on_unsupported):
+        super().__init__()
+        self._verify, self._tol, self._on_unsupported = verify, tol, on_unsupported
+
+    def run(self, dag):
+        if "swap" not in dag.count_ops():
+            return dag
+        qc = dag_to_circuit(dag)
+        pm = PassManager([
+            Collect2qBlocks(filter_fn=lambda d, block: (any(n.op.name == "swap" for n in block)
+                                                        and _block_saves_cx(block))),
+            ConsolidateBlocks(kak_basis_gate=None, force_consolidate=True),
+        ])
+        blocked = pm.run(qc)
+        idx = [i for i, inst in enumerate(blocked.data)
+               if len(inst.qubits) == 2 and inst.operation.name == "unitary"]
+        if not idx:
+            return dag
+        synth = SU4GeodesicPSFSynthesizer(
+            GeodesicPSFHyper(tol=self._tol, on_unsupported=self._on_unsupported, entangling_basis="cx"),
+            verify=self._verify)
+        done = dict(zip(idx, synth.synthesize_many([blocked.data[i].operation.to_matrix() for i in idx])))
+        out = blocked.copy_empty_like()
+        out.global_phase = blocked.global_phase
+        for i, inst in enumerate(blocked.data):
+            if i in done:
+                out.compose(done[i][0], inst.qubits, inplace=True)
+            else:
+                out.append(inst.operation, inst.qubits, inst.clbits)
+        new = circuit_to_dag(out)
+        return new
+
+
 def compile_for_hardware(
     qc: QuantumCircuit,
     coupling_map: CouplingMap,
@@ -1519,6 +1698,8 @@ def compile_for_hardware(
     layout_edge_errors: dict | None = None,
     layout_qubit_errors: dict | None = None,
     callback=None,
+    elide_permutations: Union[bool, str] = "auto",
+    post_routing_resynthesis: Union[bool, str] = "auto",
 ) -> QuantumCircuit:
     """Compress with PSF-Zero, then route (and, if `basis_gates` is given,
     translate) with Qiskit.
@@ -1635,6 +1816,10 @@ def compile_for_hardware(
     `layout_qubit_errors` (new, item 19): `{q: error}` of `sx`, added to the
     same weights; ignored unless `layout_edge_errors` is also given.
 
+    `elide_permutations` and `post_routing_resynthesis` (candidate 2026-10-01.c2, items 29-30): True,
+    False or "auto" (on for `entangling_basis="cx"` only). When either is active the routing call is
+    made through `generate_preset_pass_manager(...)` with the same arguments as the `transpile()` call
+    below, plus a `pre_init` pass (the permutation) and/or a `post_routing` pass (SWAP absorption).
     `callback` (new, item 13): forwarded verbatim to the internal
     `transpile()` call below, unchanged from what plain `transpile(callback=
     ...)` accepts. `None` by default -- passing nothing here changes nothing
@@ -1648,6 +1833,22 @@ def compile_for_hardware(
             "not both."
         )
 
+    # Candidate 2026-10-01.c2: both default to on only for entangling_basis="cx" (their saving is counted in
+    # CX); post-routing re-synthesis also needs basis_gates to translate its output.
+    elide_permutations = _resolve_auto(elide_permutations, entangling_basis, "elide_permutations")
+    post_routing_resynthesis = _resolve_auto(post_routing_resynthesis, entangling_basis, "post_routing_resynthesis")
+    permutation = None
+    if elide_permutations:
+        # Split2QUnitaries(split_swap=True) also catches a SWAP written as a 2-qubit `unitary` (how PennyLane
+        # tapes arrive), which ElidePermutations alone does not recognise.
+        epm = PassManager([ElidePermutations(), Split2QUnitaries(split_swap=True)])
+        seen = {}
+        qc_elided = epm.run(qc, callback=lambda **kw: seen.update(
+            vpl=kw["property_set"]["virtual_permutation_layout"]))
+        permutation = seen.get("vpl")
+        if permutation is not None:
+            qc_elided._layout = None
+            qc = qc_elided
     qc_compressed = compile(
         qc,
         block_gate_floor=block_gate_floor,
@@ -1697,12 +1898,32 @@ def compile_for_hardware(
         # exactly as if layout_search had been False. The search time already
         # spent is real and is not subtracted from this call's wall time.
 
-    return transpile(
-        qc_compressed,
+    if permutation is None and not post_routing_resynthesis:
+        return transpile(
+            qc_compressed,
+            coupling_map=coupling_map,
+            basis_gates=basis_gates,
+            optimization_level=routing_optimization_level,
+            seed_transpiler=seed_transpiler,
+            initial_layout=initial_layout,
+            callback=callback,
+        )
+    pm = generate_preset_pass_manager(
+        optimization_level=routing_optimization_level,
         coupling_map=coupling_map,
         basis_gates=basis_gates,
-        optimization_level=routing_optimization_level,
         seed_transpiler=seed_transpiler,
         initial_layout=initial_layout,
-        callback=callback,
     )
+    if permutation is not None:
+        if pm.pre_init is None:
+            pm.pre_init = PassManager([_CarryPermutation(permutation)])
+        else:
+            pm.pre_init.append(_CarryPermutation(permutation))
+    if post_routing_resynthesis:
+        absorb = _AbsorbRoutingSwaps(_validate_verify(verify), tol, on_unsupported)
+        if pm.post_routing is None:
+            pm.post_routing = PassManager([absorb])
+        else:
+            pm.post_routing.append(absorb)
+    return pm.run(qc_compressed, callback=callback)

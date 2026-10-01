@@ -121,7 +121,7 @@ from __future__ import annotations
 
 import time
 
-LAYOUT_VERSION = "2026-09-26.m1"
+LAYOUT_VERSION = "2026-10-01.1"  # release (from candidate 2026-10-01.c2): c1 + exact packing search for disjoint 2-/3-qubit paths
 
 # Do not start a new attempt if less than this much time remains (seconds).
 MIN_ATTEMPT_S = 0.005
@@ -133,6 +133,20 @@ MIN_ATTEMPT_S = 0.005
 # cannot pass the argument (compile_for_hardware) can still switch it off
 # for an A/B comparison.
 USE_MATCHING_SHORTCUT = True
+
+# Stage 0b (candidate 2026-09-29.c1): when every component of the interaction
+# graph is a path of 2 or 3 qubits (at least one of 3), build the layout from
+# a maximum matching of the coupling graph plus one free neighbour per 3-qubit
+# path, instead of running VF2. Used only without edge weights. Read at call
+# time, like USE_MATCHING_SHORTCUT.
+USE_PATH_SHORTCUT = True
+
+# Stage 0b, second step (candidate 2026-10-01.c2): when the matching construction of c1 cannot host every
+# 3-qubit path (for example nine GHZ-3 states tiling a 27-qubit heavy-hex device, which leaves no spare
+# qubit), run a small exact packing search (`packing_layout`) under this time budget (and at most half of
+# the call's time budget) before VF2. It is skipped when the coupling graph's maximum matching is smaller
+# than the number of paths, because then no layout exists.
+PACKING_TIME_BUDGET_S = 1.0
 
 
 def _interaction_is_matching(interaction_pairs):
@@ -215,6 +229,109 @@ def matching_layout(coupling_map, interaction_pairs, edge_weights=None):
         layout_map[la] = pa
         layout_map[lb] = pb
     return layout_map
+
+
+def _short_path_components(interaction_pairs):
+    """If every connected component of the interaction graph is a path of 2
+    or 3 qubits and at least one has 3, return (pairs, triples) with each
+    triple as (end, centre, end); otherwise None."""
+    adj = {}
+    for a, b in interaction_pairs:
+        if a == b:
+            return None
+        adj.setdefault(a, set()).add(b)
+        adj.setdefault(b, set()).add(a)
+    pairs, triples, seen = [], [], set()
+    for q in sorted(adj):
+        if q in seen:
+            continue
+        comp, stack = set(), [q]
+        while stack:
+            x = stack.pop()
+            if x not in comp:
+                comp.add(x)
+                stack.extend(adj[x] - comp)
+        seen |= comp
+        nedges = sum(len(adj[x]) for x in comp) // 2
+        if len(comp) == 2 and nedges == 1:
+            pairs.append(tuple(sorted(comp)))
+        elif len(comp) == 3 and nedges == 2:
+            centre = next(x for x in comp if len(adj[x]) == 2)
+            ends = sorted(comp - {centre})
+            triples.append((ends[0], centre, ends[1]))
+        else:
+            return None
+    if not triples:
+        return None
+    return pairs, triples
+
+
+def short_path_layout(coupling_map, pairs, triples):
+    """Place disjoint 2- and 3-qubit logical paths (candidate 2026-09-29.c1).
+
+    Takes a maximum matching of the coupling graph, then attaches one
+    unmatched physical qubit to a distinct matched edge for each 3-qubit path
+    (a bipartite matching between unmatched qubits and matched edges): an
+    unmatched qubit x next to v of the matched edge (v, w) gives the physical
+    path x - v - w. The remaining matched edges take the 2-qubit paths.
+
+    This is a sufficient construction, not a complete search: it returns None
+    when this particular matching cannot host every 3-qubit path, and the
+    caller then runs the ordinary VF2 stages.
+
+    Returns {logical: physical} or None.
+    """
+    import networkx as nx
+    g = nx.Graph()
+    g.add_nodes_from(range(coupling_map.size()))
+    g.add_edges_from(sorted({(min(a, b), max(a, b)) for a, b in coupling_map.get_edges()}))
+    m = sorted((min(u, v), max(u, v)) for u, v in nx.max_weight_matching(g, maxcardinality=True))
+    if len(m) < len(pairs) + len(triples):
+        return None
+    mate, pid = {}, {}
+    for k, (u, v) in enumerate(m):
+        mate[u], mate[v] = v, u
+        pid[u] = pid[v] = k
+    free = [x for x in range(coupling_map.size()) if x not in mate]
+    bg = nx.Graph()
+    tops = [("u", x) for x in free]
+    bg.add_nodes_from(tops)
+    for x in free:
+        for y in sorted(g.neighbors(x)):
+            bg.add_edge(("u", x), ("p", pid[y]))
+    mm = nx.bipartite.maximum_matching(bg, top_nodes=tops) if tops else {}
+    attach = sorted((x, mm[("u", x)][1]) for x in free if ("u", x) in mm)
+    if len(attach) < len(triples):
+        return None
+    layout_map, used = {}, set()
+    for (la, lc, lb), (x, k) in zip(triples, attach):
+        u, v = m[k]
+        centre = u if g.has_edge(x, u) else v
+        layout_map[la], layout_map[lc], layout_map[lb] = x, centre, mate[centre]
+        used.add(k)
+    rest = [e for k, e in enumerate(m) if k not in used]
+    if len(rest) < len(pairs):
+        return None
+    for (la, lb), (pa, pb) in zip(sorted(pairs), rest):
+        layout_map[la], layout_map[lb] = pa, pb
+    return layout_map
+
+
+def _interaction_matching_size(interaction_pairs):
+    """Size of a maximum matching of the logical interaction graph: the number
+    of disjoint physical edges any layout must provide, so a necessary
+    condition for a layout to exist.
+
+    Fix of 2026-09-29 (candidate c1): the check used to require a physical
+    matching as large as the number of interaction edges. That is right only
+    for a matching-shaped interaction graph, which Stage 0 already handles; for
+    any other graph it can wrongly declare a feasible layout impossible (a
+    3-qubit path has 2 edges but needs only 1 disjoint edge), so the search
+    returned None at once and the caller fell back to Qiskit's own layout."""
+    import networkx as nx
+    g = nx.Graph()
+    g.add_edges_from(interaction_pairs)
+    return len(nx.max_weight_matching(g, maxcardinality=True))
 
 
 def _has_feasible_matching(cmap, num_logical_pairs):
@@ -322,6 +439,107 @@ def _try_mapping(relabeled, im, order, idx_of_logical, id_order, call_limit):
     return layout_map, el
 
 
+def packing_layout(coupling_map, pairs, triples, time_budget_s=PACKING_TIME_BUDGET_S):
+    """Exact packing search for disjoint logical 2- and 3-qubit paths (candidate 2026-10-01.c2).
+
+    Places `triples` (end, centre, end) on physical paths x - c - y and `pairs` on physical edges, all
+    vertex-disjoint. Depth-first search over the physical qubits in breadth-first order from a
+    minimum-degree qubit: the first undecided qubit is either covered by a 3-qubit path (as an end or as
+    the centre), covered by a pair, or left unused (only while spare qubits remain). 3-qubit paths are
+    tried first. Complete within its budget: it returns a layout if one exists and the budget is not
+    exhausted, and None otherwise (the caller then runs the ordinary VF2 stages).
+
+    Returns {logical: physical} or None.
+    """
+    t0 = time.perf_counter()
+    n = coupling_map.size()
+    adj = [set() for _ in range(n)]
+    for a, b in coupling_map.get_edges():
+        if a != b:
+            adj[a].add(b)
+            adj[b].add(a)
+    t_need, p_need = len(triples), len(pairs)
+    spare = n - 3 * t_need - 2 * p_need
+    if spare < 0:
+        return None
+    start = min(range(n), key=lambda q: (len(adj[q]), q))
+    order, seen = [], set()
+    for root in [start] + list(range(n)):
+        if root in seen:
+            continue
+        queue = [root]
+        seen.add(root)
+        while queue:
+            x = queue.pop(0)
+            order.append(x)
+            for y in sorted(adj[x]):
+                if y not in seen:
+                    seen.add(y)
+                    queue.append(y)
+    used = [False] * n
+    chosen_t, chosen_p = [], []
+    state = {"nodes": 0, "timeout": False}
+
+    def dfs(pos, t_left, p_left, s_left):
+        state["nodes"] += 1
+        if state["nodes"] % 256 == 0 and time.perf_counter() - t0 > time_budget_s:
+            state["timeout"] = True
+            return False
+        if t_left == 0 and p_left == 0:
+            return True
+        while pos < n and used[order[pos]]:
+            pos += 1
+        if pos >= n:
+            return False
+        v = order[pos]
+        free_nb = [u for u in sorted(adj[v]) if not used[u]]
+        if t_left > 0:
+            cands = set()
+            for c in free_nb:  # v as an end: v - c - w
+                for w in adj[c]:
+                    if w != v and not used[w]:
+                        cands.add((v, c, w) if v < w else (w, c, v))
+            for i in range(len(free_nb)):  # v as the centre: a - v - b
+                for j in range(i + 1, len(free_nb)):
+                    cands.add((free_nb[i], v, free_nb[j]))
+            for tri in sorted(cands):
+                for q in tri:
+                    used[q] = True
+                chosen_t.append(tri)
+                if dfs(pos + 1, t_left - 1, p_left, s_left):
+                    return True
+                chosen_t.pop()
+                for q in tri:
+                    used[q] = False
+                if state["timeout"]:
+                    return False
+        if p_left > 0:
+            for u in free_nb:
+                used[v] = used[u] = True
+                chosen_p.append((v, u))
+                if dfs(pos + 1, t_left, p_left - 1, s_left):
+                    return True
+                chosen_p.pop()
+                used[v] = used[u] = False
+                if state["timeout"]:
+                    return False
+        if s_left > 0:
+            used[v] = True
+            if dfs(pos + 1, t_left, p_left, s_left - 1):
+                return True
+            used[v] = False
+        return False
+
+    if not dfs(0, t_need, p_need, spare):
+        return None
+    layout_map = {}
+    for (la, lc, lb), (x, c, y) in zip(triples, chosen_t):
+        layout_map[la], layout_map[lc], layout_map[lb] = x, c, y
+    for (la, lb), (pa, pb) in zip(sorted(pairs), chosen_p):
+        layout_map[la], layout_map[lb] = pa, pb
+    return layout_map
+
+
 def smart_vf2_layout(coupling_map, interaction_pairs, num_qubits,
                      per_attempt_call_limit=50_000, time_budget_s=2.0,
                      extra_seeds=(0, 1),
@@ -374,7 +592,26 @@ def smart_vf2_layout(coupling_map, interaction_pairs, num_qubits,
         info["elapsed_s"] = time.perf_counter() - t0
         return layout_map, info
 
-    if not _has_feasible_matching(coupling_map, len(interaction_pairs)):
+    # --- Stage 0b (candidate 2026-09-29.c1): disjoint 2- and 3-qubit paths ---
+    if USE_PATH_SHORTCUT and edge_weights is None and interaction_pairs:
+        comps = _short_path_components(interaction_pairs)
+        if comps is not None:
+            layout_map = short_path_layout(coupling_map, *comps)
+            if layout_map is not None:
+                info.update(feasible=True, found=True, order_name="path_direct", phase=0,
+                            elapsed_s=time.perf_counter() - t0)
+                return layout_map, info
+            # candidate 2026-10-01.c2: exact packing search before VF2, if a layout can exist at all
+            layout_map = None
+            if _has_feasible_matching(coupling_map, len(comps[0]) + len(comps[1])):
+                layout_map = packing_layout(coupling_map, *comps,
+                                            time_budget_s=min(PACKING_TIME_BUDGET_S, 0.5 * time_budget_s))
+            if layout_map is not None:
+                info.update(feasible=True, found=True, order_name="path_packing", phase=0,
+                            elapsed_s=time.perf_counter() - t0)
+                return layout_map, info
+
+    if not _has_feasible_matching(coupling_map, _interaction_matching_size(interaction_pairs)):
         info["feasible"] = False
         info["elapsed_s"] = time.perf_counter() - t0
         return None, info
