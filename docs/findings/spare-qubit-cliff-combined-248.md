@@ -6172,6 +6172,176 @@ The margin is y·z.
 
 The runner expects `qml_home_eval.py` in its own folder, so both are in `benchmarks/`.
 
+
+---
+
+<!-- ===== Addendum 291 (source: spare-qubit-cliff-addendum-291-2026-10-01.md) ===== -->
+
+> **Note added when merging:** Results of the home pre-registration in Addendum 290 (lock commit 680cf08). Scored by the locked script and re-scored by an independent script written after the lock.
+
+## Addendum 291 -- Results: the home QML test (Addendum 290). All five predictions confirmed; the classifier keeps its accuracy and learns through every compiler, and the test turned out to discriminate the compilers only through the margin (2026-10-01)
+
+**Status: results of the pre-registered test in Addendum 290.** Scored by the locked `qml_home_eval.py score`, and
+re-scored by an independent script written after the lock (section 7). No IBM account, no QPU: fake-provider
+devices with Qiskit Aer noise models, at home (WSL2, Ryzen 5 5500).
+
+## 1. Provenance
+
+- Lock commit `680cf08` (Addendum 290 with `benchmarks/qml_home_eval.py` and `benchmarks/run_qml_home_2026-10-01.sh`)
+  was pushed before the scored run; `origin/main` was at `680cf08` while the run was going.
+- All 17 result files (q1.json and 16 q2 files) carry `git_head 680cf08` and the locked normalized hash of the
+  script, `0a30fb22…`; one set of file hashes across all of them.
+- The raw SHA-256 of the two scripts that ran (`62b01461…`, `77c97a2b…`, in `env.txt`) is the raw hash of the files
+  that were locked.
+- Versions: REL psf_compile 2026-09-28.1 + layout 2026-09-26.m1 (from `9131cee`, hash-checked); C2 release
+  2026-10-01.1 + layout 2026-10-01.1; A5 2026-10-01.a5; core 2026-09-29.1; Qiskit 2.5.2, Aer 0.17.2, Python 3.12.13.
+- Run started 2026-10-01 10:53 UTC; Q1 and all 16 Q2 runs finished after 4,208 s (6 processes in parallel).
+
+## 2. Verdicts
+
+| ID | Prediction | Verdict | Deciding numbers |
+|---|---|---|---|
+| P0 | harness | **PASS** | numpy vs Statevector 6.7e-16; compiled noiseless vs logical 3.3e-15; theta* 0.969; 16 of 16 Q2 runs |
+| H1 | C2 margin >= REL - 0.005 on all 3 devices | **CONFIRMED** | C2 - REL: Auckland +0.0000, Torino +0.0045, Kingston +0.0018 |
+| H2 | A5 margin >= L3T - 0.005 on >= 2 of 3 | **CONFIRMED** (3 of 3) | A5 - L3T: Auckland +0.0124, Torino +0.0004, Kingston -0.0003 |
+| H3 | noisy accuracy >= theta* - 2/32 on Torino and Kingston, every arm | **CONFIRMED** | every arm 0.969 = theta* |
+| H4 | every arm's Q2 noisy test accuracy >= IDEAL mean - 0.10 | **CONFIRMED** | arms 0.812-0.828; IDEAL 0.8125 |
+| H5 | final train loss C2 <= REL + 0.01 and A5 <= L3T + 0.01, both devices | **CONFIRMED** | C2 - REL: +0.0000, -0.0029; A5 - L3T: -0.0174, -0.0012 |
+
+## 3. Q1: theta* through each compiler
+
+theta*: noiseless test accuracy 0.969 (31 of 32), noiseless mean margin 0.5449.
+
+| device | arm | noisy accuracy | noisy mean margin | margin kept | margin lost to noise | two-qubit gates | compile s (median, home) |
+|---|---|---|---|---|---|---|---|
+| FakeAuckland | REL | 0.969 | 0.5094 | 0.935 | 0.0355 | 17 | 0.008 |
+| FakeAuckland | C2 | 0.969 | 0.5094 | 0.935 | 0.0355 | 17 | 0.009 |
+| FakeAuckland | A5 | 0.969 | 0.5184 | 0.951 | 0.0265 | 17 | 0.186 |
+| FakeAuckland | L3T | 0.969 | 0.5061 | 0.929 | 0.0389 | 17 | 0.010 |
+| FakeTorino | REL | 0.969 | 0.5075 | 0.931 | 0.0374 | 26 | 0.026 |
+| FakeTorino | C2 | 0.969 | 0.5120 | 0.940 | 0.0329 | 20 | 0.031 |
+| FakeTorino | A5 | 0.969 | 0.5304 | 0.973 | 0.0145 | 17 | 0.498 |
+| FakeTorino | L3T | 0.969 | 0.5299 | 0.973 | 0.0150 | 17 | 0.017 |
+| FakeKingston | REL | 0.969 | 0.5306 | 0.974 | 0.0143 | 26 | 0.029 |
+| FakeKingston | C2 | 0.969 | 0.5323 | 0.977 | 0.0126 | 20 | 0.035 |
+| FakeKingston | A5 | 0.969 | 0.5384 | 0.988 | 0.0065 | 17 | 0.666 |
+| FakeKingston | L3T | 0.969 | 0.5387 | 0.989 | 0.0062 | 17 | 0.018 |
+
+- The two-qubit count was the same for all 32 test circuits within each device and arm.
+- **Accuracy did not discriminate anything.** The one misclassified test point (index 27) is misclassified by
+  theta* without noise as well, and it is the only error in every one of the 12 device/arm cells. Noise did not flip
+  a single prediction. The noise in these models mostly shrinks z towards 0 rather than changing its sign. The
+  correct point with the smallest noiseless margin (0.019) kept at least 0.012 in every cell; for it, noise removed
+  up to 39%.
+- **The margin did discriminate.** Noise removed 1-7% of the mean margin, and how much depended on the compiler:
+  - On FakeAuckland, REL and C2 produced the same 17-gate circuits and the same numbers; A5 lost the least (0.0265),
+    L3T the most (0.0389).
+  - On FakeTorino and FakeKingston, C2 cut the routed ring from 26 to 20 two-qubit gates, and its margin loss fell
+    by 12% on each (Torino 0.0374 -> 0.0329; Kingston 0.0143 -> 0.0126).
+  - A5 and L3T reached 17 gates there and lost about half as much margin as C2 (Torino 0.015 vs 0.033).
+
+## 4. Q2: learning with the compiler and the noise in the loop
+
+IDEAL (noiseless numpy, same SPSA seeds and steps): seed 41 accuracy 1.000, loss 0.212; seed 42 accuracy 0.625,
+loss 0.706; mean accuracy 0.8125.
+
+| device | arm | seed 41: noisy test acc / train loss | seed 42: noisy test acc / train loss | mean acc | mean loss | compile s per run | wall s per run |
+|---|---|---|---|---|---|---|---|
+| FakeAuckland | REL | 1.000 / 0.2399 | 0.656 / 0.7418 | 0.828 | 0.4908 | 15 | 265 |
+| FakeAuckland | C2 | 1.000 / 0.2399 | 0.656 / 0.7418 | 0.828 | 0.4908 | 16 | 266 |
+| FakeAuckland | A5 | 1.000 / 0.2276 | 0.625 / 0.7086 | 0.812 | 0.4681 | 268 | 524 |
+| FakeAuckland | L3T | 1.000 / 0.2401 | 0.656 / 0.7308 | 0.828 | 0.4854 | 17 | 268 |
+| FakeTorino | REL | 1.000 / 0.2364 | 0.625 / 0.7226 | 0.812 | 0.4795 | 38 | 2,089 |
+| FakeTorino | C2 | 1.000 / 0.2331 | 0.625 / 0.7202 | 0.812 | 0.4766 | 61 | 2,103 |
+| FakeTorino | A5 | 1.000 / 0.2218 | 0.656 / 0.7194 | 0.828 | 0.4706 | 631 | 2,669 |
+| FakeTorino | L3T | 1.000 / 0.2226 | 0.656 / 0.7211 | 0.828 | 0.4718 | 22 | 1,841 |
+
+- Every run made 1,328 compiles (40 SPSA steps x 2 evaluations x 16 training circuits, plus 48 at the end).
+- **Learning through the compiler and the noise worked as well as learning without noise.** Every arm's mean test
+  accuracy is within one test point (1/32) of IDEAL. The training curves track each other closely: mean of the two
+  evaluated losses, seed 41, step 1 / 10 / 20 / 40 = about 1.9 / 0.47-0.50 / 0.35-0.36 / 0.25-0.26 in every arm.
+- **Seed 42 is poor in every arm, and in IDEAL too** (accuracy 0.625-0.656 against IDEAL 0.625). That shortfall is
+  the optimizer's (40 SPSA steps from that start), not the compiler's or the noise's.
+- Final training loss ordered the arms the same way as the Q1 margin: A5 and L3T lowest on Torino, A5 lowest on
+  Auckland; C2 equal to REL on Auckland (identical circuits) and 0.003 lower on Torino.
+- Wall time on FakeTorino is dominated by simulation, not compilation: about 1,840-2,110 s per run for REL, C2
+  and L3T, of which 22-61 s is compiling. A5's compile time (268 s per run on Auckland, 631 s on Torino) is 10-40 times
+  the others and adds directly to the run time.
+
+## 5. What the results mean
+
+- **For the owner's question** ("does an AI get smarter through these circuits?"): for this small classifier on
+  these fake devices, yes in the sense tested. It keeps its accuracy exactly (31 of 32), and it learns as well with
+  the compiler and the device noise inside training as without. On these noise levels and a 17-26 two-qubit-gate
+  circuit, the compiler choice does not change a single prediction.
+- **What the compiler changes is the margin, by a few percent.** Fewer two-qubit gates and better placement keep
+  more of it. That matters when there are more qubits, deeper circuits or noisier hardware; here it is too small
+  to move the accuracy.
+- **H1 is "not worse", not "better".** The release C2 improves on REL where REL routes the ring poorly (26 -> 20
+  gates on FakeTorino and FakeKingston, margin +0.0045 and +0.0018) and is identical where REL already reaches 17
+  (FakeAuckland). The expectation in Addendum 290 that C2 needs fewer two-qubit gates than REL held on 2 of 3
+  devices.
+- **Reported without prediction: the release still leaves room against error-aware Qiskit L3 on the larger
+  devices.** For this circuit on FakeTorino and FakeKingston, C2 uses 20 two-qubit gates where L3T and A5 use 17.
+  C2 loses about twice as much margin to noise as L3T (Torino 0.033 vs 0.015; Kingston 0.013 vs 0.006). This is
+  one 4-qubit ring circuit, not a general comparison, but it is a concrete routing target: a 4-cycle on heavy-hex.
+- **H2 and the A5 half of H5 favour A5 by construction** (Addendum 290, section 3). A5's error estimate shares its
+  physics with the simulator that scores it. A5's clear lead is on FakeAuckland (+0.0124 margin over L3T, -0.017
+  training loss), the device where some published two-qubit errors are below their T1/T2 bound (Addendum 287). On
+  FakeTorino and FakeKingston, A5 and L3T are tied (within 0.0004 margin). A5 costs 10-40 times more compile time
+  than L3T.
+- **H3 was an easy test.** In this simulation, noise shrinks margins and did not flip any prediction. Separating
+  the arms by accuracy would need a model with many small-margin points, much deeper circuits, or readout and shot
+  noise.
+
+## 6. What this does not establish
+
+The limits in Addendum 290, section 4, all apply:
+
+- nothing about real hardware;
+- nothing about other models or other devices;
+- two training seeds;
+- z is read exactly from the density matrix, with no shots, no readout error, no idle noise and no crosstalk.
+
+On real hardware, shot noise alone (about 1/sqrt(shots) on z) is of the same size as the margin differences
+between compilers here.
+
+## 7. Deviations and checks (disclosed)
+
+- **Smoke scoring.** The smoke run used the pre-fix `score`, which counted the FakeTorino Q2 runs as missing (H4
+  REFUTED). This was disclosed in Addendum 290, section 5. Re-scored with the locked script, the smoke output gives
+  H4 and H5 CONFIRMED. It is still not a result (`dev/score_rescored_with_locked_script.md`).
+- **Independent re-scoring, written after the lock** (`benchmarks/qml_home_rescore.py`):
+  - It does not import the scored script. It re-implements the model with dense 16x16 matrices (agreement with the
+    scored model 5.6e-16 on random inputs).
+  - It rebuilds teacher 23, the data, theta* (difference 8.6e-15) and IDEAL from the pre-registered seeds.
+  - It checks provenance (commit, hashes, versions) in all 17 files, and the number of compiles and steps in every
+    Q2 run. It also checks that the noiseless accuracy of every Q2 result reproduces.
+  - It re-derives P0 and H1-H5 from the raw rows with the thresholds copied from Addendum 290.
+  - Result: P0 PASS, H1-H5 CONFIRMED, no flags; identical to the locked `score` (`outputs/rescore.txt`). It was run
+    once at home and once again on the copied data, with the same output.
+- **Redaction.** Local paths in `env.txt` and `run.log` were replaced with `<repo>/` and `<home folder>/` before
+  publishing. The result JSON files are unchanged, and the hashes in section 8 are of the published files.
+- The run log was renamed from `qml_home_1001_run.log` to `run.log`. The release-file copies that `q2` extracts
+  from `9131cee` (`rel_9131cee/`) are not included; they are in git.
+
+## 8. Data (`data/2026-10-01/qml_home/`)
+
+- `outputs/`: the scored run.
+  - `q1.json`: the 384 Q1 rows, theta*, IDEAL.
+  - `q2_<arm>_<device>_<seed>.json`: 16 files, each with the training log, the final parameters and the
+    statistics.
+  - `log_*.txt`, `env.txt`, `run.log`, `score.md` (locked score), `score_log.txt`, `rescore.txt`.
+- `dev/`: the smoke run, not a result. It contains its `score.md` from the pre-fix scorer, plus
+  `score_rescored_with_locked_script.md`.
+
+SHA-256 (raw) of the main result files:
+
+| file | SHA-256 |
+|---|---|
+| `outputs/q1.json` | `366ae3065fed4d8102abc791701d7580a17dfab3d3f74da2ea3d57e8a65fe98d` |
+| `outputs/score.md` | `65a1cc665e23c3a4d8ee7db72604b34db7eb295dc7489296d6b93bb4a52a3332` |
+
 ---
 
 ---
