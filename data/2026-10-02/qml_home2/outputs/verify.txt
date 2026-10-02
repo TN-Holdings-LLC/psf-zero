@@ -1,0 +1,9 @@
+provenance: 97 files, flags 0
+IDEAL rebuild: {41: 1.0, 42: 0.625, 43: 1.0, 44: 1.0, 45: 0.7812, 46: 0.9062, 47: 0.6875, 48: 1.0} mean 0.875
+deep: theta* acc on rebuilt A 0.8750 (file 0.8750); logical z vs rebuild 7.5e-16; labels 0.0; compiled noiseless vs logical 1.4e-13; rows 1152
+FakeAuckland REL: margin 0.3514 flip 0.203 shot-flip 0.205 ro 0.0075 C2: margin 0.3514 flip 0.203 shot-flip 0.205 ro 0.0075 A5: margin 0.3766 flip 0.172 shot-flip 0.145 ro 0.0067 L3T: margin 0.3710 flip 0.172 shot-flip 0.155 ro 0.0064
+FakeTorino REL: margin 0.3551 flip 0.109 shot-flip 0.123 ro 0.0481 C2: margin 0.3711 flip 0.078 shot-flip 0.094 ro 0.0481 A5: margin 0.4145 flip 0.047 shot-flip 0.062 ro 0.0111 L3T: margin 0.4139 flip 0.047 shot-flip 0.059 ro 0.0118
+FakeKingston REL: margin 0.4168 flip 0.000 shot-flip 0.052 ro 0.0062 C2: margin 0.4213 flip 0.000 shot-flip 0.045 ro 0.0062 A5: margin 0.4310 flip 0.000 shot-flip 0.040 ro 0.0114 L3T: margin 0.4317 flip 0.000 shot-flip 0.041 ro 0.0081
+Q2W loss C2-REL: {'FakeAuckland': np.float64(0.0), 'FakeTorino': np.float64(-0.0057), 'FakeKingston': np.float64(-0.0021)} A5-L3T: {'FakeAuckland': np.float64(-0.0136), 'FakeTorino': np.float64(-0.0006), 'FakeKingston': np.float64(-0.0005)}
+P0 PASS  H1 CONFIRMED  H2 CONFIRMED (3 of 3)  H3 CONFIRMED  H4 CONFIRMED  H5 CONFIRMED  H6 CONFIRMED
+flags: none

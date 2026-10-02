@@ -6943,6 +6943,291 @@ changes only the run time.
 setsid nohup bash benchmarks/run_qml_home2_2026-10-02.sh <repo> <out> > <log> 2>&1 < /dev/null &
 ```
 
+
+---
+
+<!-- ===== Addendum 297 (source: spare-qubit-cliff-addendum-297-2026-10-02.md) ===== -->
+
+> **Note added when merging:** Results of the home pre-registration in Addendum 296 (lock commit 4839966). Scored by the locked script and re-checked by an independent script written after the run.
+
+## Addendum 297 -- Results: home QML test, part 2 (Addendum 296). All six predictions confirmed. With a fragile test set, noise now flips predictions, and how many depends on the compiler: on FakeTorino the release halves its gap to error-aware Qiskit L3 but still flips twice as many points; learning over 8 seeds × 3 devices matches noiseless training (2026-10-02)
+
+**Status: results of the pre-registered test in Addendum 296.**
+
+- **Lock:** commit `4839966`, pushed before the scored run.
+- **Scoring:** by the locked `qml_home2_eval.py score`, and re-checked by an independent script written after the
+  run (section 6).
+- **Setting:** fake-provider devices with Aer noise models, at home (WSL2, Ryzen 5 5500, 6 processes in
+  parallel). The run started 2026-10-02 00:30 UTC; all 96 Q2W runs and Q1D finished after about 73 minutes.
+
+## 1. Verdicts
+
+| ID | Verdict | Deciding numbers |
+|---|---|---|
+| P0 | **PASS** | numpy vs Statevector 8.0e-16 / 6.7e-16; compiled noiseless vs logical 1.4e-13; deep θ* 0.875 (teacher 84), Q2W θ* 0.969 (teacher 23); 96 of 96 Q2W runs |
+| H1 | **CONFIRMED** | C2 vs REL, B shot flips: Auckland 0.205 vs 0.205, Torino 0.094 vs 0.123, Kingston 0.045 vs 0.052; A margin C2 >= REL on every device |
+| H2 | **CONFIRMED** (3 of 3) | A5 vs L3T, B shot flips: 0.145 vs 0.155, 0.062 vs 0.059, 0.040 vs 0.041; A margins within 0.006 |
+| H3 | **CONFIRMED** | A margin L3T - C2: Torino +0.043, Kingston +0.010 |
+| H4 | **CONFIRMED** | exact B flip rate on FakeAuckland: 0.203 (REL, C2), 0.172 (A5, L3T) |
+| H5 | **CONFIRMED** | every arm's mean noisy test accuracy 0.867-0.879, against IDEAL 0.875 |
+| H6 | **CONFIRMED** | final train loss C2 - REL: 0.000, -0.006, -0.002; A5 - L3T: -0.014, -0.001, -0.001 |
+
+## 2. Q1D: the deep classifier through each compiler
+
+- θ* (4 layers): noiseless test accuracy 0.875 on A, mean margin 0.447.
+- B: 64 points with 0.01 <= |z_θ*| <= 0.10.
+- "Shots" means 4,000 shots × 20 repetitions, with the measured qubit's readout error, using the same random
+  numbers in every arm.
+
+| device | arm | 2q gates | A acc (exact) | A margin | B flips (exact) | B flips (shots) | readout error of the measured qubit (mean) |
+|---|---|---|---|---|---|---|---|
+| FakeAuckland | REL | 37 | 0.875 | 0.351 | 0.203 | 0.205 | 0.0075 |
+| FakeAuckland | C2 | 37 | 0.875 | 0.351 | 0.203 | 0.205 | 0.0075 |
+| FakeAuckland | A5 | 37 | 0.875 | 0.377 | 0.172 | 0.145 | 0.0067 |
+| FakeAuckland | L3T | 37 | 0.875 | 0.371 | 0.172 | 0.155 | 0.0064 |
+| FakeTorino | REL | 58 | 0.875 | 0.355 | 0.109 | 0.123 | 0.0481 |
+| FakeTorino | C2 | 44 | 0.875 | 0.371 | 0.078 | 0.094 | 0.0481 |
+| FakeTorino | A5 | 37 | 0.875 | 0.415 | 0.047 | 0.062 | 0.0111 |
+| FakeTorino | L3T | 37 | 0.875 | 0.414 | 0.047 | 0.059 | 0.0118 |
+| FakeKingston | REL | 58 | 0.875 | 0.417 | 0.000 | 0.052 | 0.0062 |
+| FakeKingston | C2 | 44 | 0.875 | 0.421 | 0.000 | 0.045 | 0.0062 |
+| FakeKingston | A5 | 37 | 0.875 | 0.431 | 0.000 | 0.040 | 0.0114 |
+| FakeKingston | L3T | 37 | 0.875 | 0.432 | 0.000 | 0.041 | 0.0081 |
+
+**Reading.**
+
+- **The fragile set does what Addendum 291 lacked: noise now changes predictions, and how often depends on the
+  compiler.**
+  - On FakeAuckland, gate noise alone flips 17-20% of the small-margin points.
+  - On FakeTorino it flips 5-11%.
+  - On FakeKingston gate noise flips none; shot noise flips 4-5%.
+  - The well-separated set A is still not affected (0.875 everywhere): accuracy on clear-cut inputs survives this
+    noise.
+- **On FakeTorino, the release C2 sits between the previous release and error-aware L3.**
+  - It cuts the routed 4-layer ring from 58 to 44 two-qubit gates, and the exact flip rate from 0.109 to 0.078.
+  - L3T and A5 route it with 37 gates and flip 0.047.
+  - The open item of Addendum 291 therefore persists at depth, and the margin gap grows: L3T - C2 was +0.018 for
+    2 layers and is +0.043 for 4.
+- **Part of the FakeTorino shot gap is readout placement, not gates.**
+  - REL and C2 put logical qubit 0 on a qubit with readout error 0.048; L3T and A5 chose ones near 0.011.
+  - The exact flips (no readout, no shots) still differ (0.078 against 0.047), so the gates account for the rest.
+  - The PSF-Zero layout does not consider readout error. This is a concrete improvement target alongside the
+    routing.
+- **A5 and L3T are tied on the Heron devices; A5 is ahead on FakeAuckland** (margin +0.006, shot flips 0.145 against
+  0.155). As pre-registered, H2 favours A5 by construction.
+
+## 3. Q2W: learning with the compiler in the loop, 8 seeds × 3 devices
+
+IDEAL (noiseless SPSA, same seeds): 1.000, 0.625, 1.000, 1.000, 0.781, 0.906, 0.688, 1.000; mean 0.875.
+
+| device | arm | noisy test acc | shot test acc | noisy train loss | noiseless acc of result | wall s per run |
+|---|---|---|---|---|---|---|
+| FakeAuckland | REL | 0.871 | 0.868 | 0.410 | 0.875 | 36 |
+| FakeAuckland | C2 | 0.871 | 0.868 | 0.410 | 0.875 | 36 |
+| FakeAuckland | A5 | 0.871 | 0.873 | 0.386 | 0.875 | 288 |
+| FakeAuckland | L3T | 0.875 | 0.873 | 0.399 | 0.875 | 37 |
+| FakeTorino | REL | 0.867 | 0.868 | 0.398 | 0.875 | 170 |
+| FakeTorino | C2 | 0.871 | 0.869 | 0.393 | 0.875 | 176 |
+| FakeTorino | A5 | 0.875 | 0.874 | 0.377 | 0.875 | 736 |
+| FakeTorino | L3T | 0.875 | 0.874 | 0.378 | 0.875 | 156 |
+| FakeKingston | REL | 0.875 | 0.875 | 0.374 | 0.879 | 226 |
+| FakeKingston | C2 | 0.875 | 0.875 | 0.372 | 0.879 | 237 |
+| FakeKingston | A5 | 0.875 | 0.876 | 0.368 | 0.879 | 993 |
+| FakeKingston | L3T | 0.879 | 0.876 | 0.368 | 0.879 | 207 |
+
+**Reading.**
+
+- **Training through the compiler and the device noise reached the same accuracy as noiseless training, on every
+  device and in every arm.** The largest shortfall is 0.008, a quarter of one test point. Addendum 291's two-seed
+  result holds over eight seeds and on FakeKingston.
+- **The final training loss orders the arms as the Q1D margins do,** but the differences (<= 0.025) do not reach
+  test accuracy.
+- **Batching the simulation changed only the time.** Seeds 41 and 42 reproduce Addendum 291 exactly on FakeAuckland
+  and FakeTorino, in every arm: test accuracy and final training loss to four decimals. The FakeTorino runs were
+  about 12 times faster for REL, C2 and L3T (156-176 s against about 1,840-2,100 s).
+
+## 4. What this means
+
+- **For the owner's question** ("does an AI get smarter through these circuits?"):
+  - With these fake devices, a small classifier learns as well through any of the four compilers as without
+    noise, and it keeps its accuracy on clear-cut inputs.
+  - On borderline inputs, noise does flip predictions. Fewer two-qubit gates and better placement flip fewer.
+- **For PSF-Zero, two concrete targets, both measured:**
+  1. **Routing of a 4-cycle on heavy-hex:** 44 two-qubit gates against Qiskit L3's 37 for 4 layers. This is about
+     half of the remaining flip gap on FakeTorino.
+  2. **Readout-aware placement of the measured qubit:** 0.048 against 0.011 readout error on FakeTorino.
+
+## 5. What this does not establish
+
+As in Addendum 296, section 4:
+
+- nothing about real hardware;
+- one model family;
+- readout is modelled as a symmetric flip of one qubit;
+- A5's advantages are favoured by construction.
+
+## 6. Independent check (written after the run)
+
+`benchmarks/qml2_verify.py` does not import the scored script. It re-implements the model with dense 16×16
+matrices and checks the following:
+
+| check | result |
+|---|---|
+| provenance of all 97 files (commit `4839966`, script hash, versions) | no flags |
+| Q2W data and IDEAL, rebuilt | 1.000, 0.625, 1.000, 1.000, 0.781, 0.906, 0.688, 1.000 |
+| deep test sets A and B, rebuilt from teacher 84 and the stored θ* | logical z within 7.5e-16, labels identical, θ* accuracy 0.875 |
+| every Q2W run | 1,328 compiles and 40 steps; noiseless accuracy of its result reproduced |
+| P0 and H1-H6, from the raw rows | same verdicts as the locked score; output in `outputs/verify.txt` |
+
+## 7. Data (`data/2026-10-02/qml_home2/`)
+
+- **`outputs/`:**
+  - `q1.json`: 1,152 Q1D rows, IDEAL, θ*;
+  - `q2_<arm>_<device>_<seed>.json`: 96 files;
+  - logs, `env.txt`, `run.log`, `score.md`, `score_log.txt`, `verify.txt`.
+- **`dev/`:** the smoke run (not a result).
+- **Redaction:** local paths in `env.txt` and the run log were replaced with `<repo>/` and `<home folder>/`. The
+  release-file copies extracted from `9131cee` are not included; they are in git.
+
+
+---
+
+<!-- ===== Addendum 298 (source: spare-qubit-cliff-addendum-298-2026-10-02.md) ===== -->
+
+> **Note added when merging:** Home pre-registration of B17 (Qiskit #17057 in practice). Locked by the git commit that adds this Addendum and its two scripts, pushed before the scored run.
+
+## Addendum 298 -- Pre-registration: does Qiskit issue #17057 bite in practice through transpile(), and does the PSF-Zero release stay exact on the same workloads? (2026-10-02)
+
+**Status: pre-registration, written at home before any scored run.**
+
+- **Lock:** the git commit that adds this document, `benchmarks/b17_practice_eval.py` and
+  `benchmarks/run_b17_2026-10-02.sh`, pushed before the scored run.
+- **No hardware:** no IBM account, no QPU. Pure compilation and exact operator comparison.
+
+## 1. Why
+
+- **Addendum 294** located #17057 in the pulse-optimal 3-CX path that Qiskit's `TwoQubitBasisDecomposer` takes
+  with CX and the ZSX Euler basis. It showed the bug on isolated two-qubit unitaries. Near the two-CX boundary it
+  failed 122 of 300 times, with a worst 1 - F_avg of 0.36.
+- **A maintainer judged such inputs probably rare.** The open question is how often it happens through ordinary
+  `transpile()` to basis [cx, rz, sx, x], on workloads people actually compile.
+- **The PSF-Zero release guards its own use of that decomposer** (psf_compile changelog item 17, Addendum 195).
+  It has not been tested on such workloads end to end.
+
+## 2. Design (`benchmarks/b17_practice_eval.py`)
+
+**Workloads,** each at n = 4 and n = 6 qubits; every circuit depends only on its own seed:
+
+| ID | workload | circuits per n |
+|---|---|---|
+| W1 | XYZ-Heisenberg Trotter chain, 4 steps (see below) | 7 × 3 × 50 = 1,050 |
+| W2 | four near-boundary two-qubit unitaries on random qubit pairs, between layers of random single-qubit unitaries (see below) | 500 |
+| W3 | the same with Haar-random two-qubit unitaries | 500 |
+| W4 | hardware-efficient ansatz: 3 layers of ry(t) rz(t) and a cx ladder, t ~ N(0, s), s ∈ {1e-4, 1e-3, 1e-2} | 3 × 150 = 450 |
+
+- **W1, one Trotter step:**
+  - per bond, rxx(2 Jx dt) ryy(2 Jy dt) rzz(2 Jz dt), applied to even bonds, then odd bonds;
+  - then rz(2 h_i dt) on each qubit.
+- **W1 parameters:**
+  - Jx, Jy ~ U[0.5, 1.5]; h_i ~ U[-1, 1];
+  - Jz = r·Jx, with r ∈ {0, 1e-5, 1e-4, 1e-3, 1e-2, 0.1, 1};
+  - dt ∈ {1e-3, 1e-2, 0.1}.
+
+  Small dt or a small anisotropy r gives blocks with a small third Weyl coordinate.
+- **W2 blocks:** each is a canonical core with a, b ~ U[0, π/4] and c log-uniform in [1e-10, 1e-4], between random
+  local unitaries. This is Addendum 294's near-boundary set, now inside circuits.
+
+**Compilers.** The coupling map is a line of n qubits.
+
+| ID | compiler | role |
+|---|---|---|
+| QK1, QK2, QK3 | `transpile(basis_gates=[cx, rz, sx, x], optimization_level=1/2/3, seed_transpiler=0)` | under test |
+| QK3CZ | the same at level 3, basis [cz, rz, sx, x] | control |
+| QK3U | the same at level 3, basis [cx, u] | control |
+| PSF | release `compile_for_hardware(entangling_basis="cx", basis [cx, rz, sx, x], layout_search=True, seed_transpiler=0)` | under test |
+| PSFNG | the same module loaded separately, with `USE_CX_GUARD = False` | positive control |
+
+**Metric.**
+
+- 1 - F_avg between `Operator(original)` and `Operator.from_circuit(compiled)`, which undoes the layout.
+- A **failure** is 1 - F_avg > 1e-6, or a compile error.
+- Also recorded:
+  - the two-qubit count;
+  - the compile time;
+  - for PSF, how many times its guard rejected the ZSX decomposer.
+
+## 3. Predictions (scored only by `b17_practice_eval.py score`)
+
+**P0, harness.** All of these must hold, or nothing below is scored:
+
+- all 8 chunks are present, with the full number of circuits;
+- no compile errors;
+- the two controls (QK3CZ, QK3U) have 0 failures on every workload.
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| H1 | ordinary transpile reproduces the bug on near-boundary blocks | QK2 and QK3 fail on >= 10% of W2 | QK2 and QK3 have 0 W2 failures |
+| H2 | generic blocks are safe | QK1-QK3 have 0 failures on W3 | any failure on W3 |
+| H3 | the PSF-Zero release is exact on every workload | PSF: 0 failures in all four workloads | any failure |
+| H4 | the guard is what protects it | PSFNG fails on >= 1% of W2 | PSFNG has 0 W2 failures |
+| H5 | a realistic physics workload hits the bug | QK3 fails on >= 1 W1 circuit | 0 W1 failures |
+
+**Reported without prediction:**
+
+- QK1 on every workload; all compilers on W4;
+- the W1 failure map by (dt, r);
+- n = 4 against n = 6;
+- the number of guard rejections;
+- two-qubit counts and compile times.
+
+**Expectations, stated now:**
+
+- **H1.** Each W2 circuit has four near-boundary blocks. Addendum 294 found 122 of 300 isolated blocks failing,
+  so most W2 circuits should fail. Whether `transpile`'s consolidation and resynthesis takes the failing path for
+  every block is what H1 measures.
+- **H5 is a genuine open question.** The failing band is narrow: c of about 2e-8 to 3e-7 at the reported a, b. A
+  Trotter step has c = Jz·dt. With dt = 1e-3 and r = 1e-4, c is about 1e-7. Whether consolidation of several
+  steps keeps c in the band is not known in advance.
+- **QK1.** At level 1, `transpile` may not consolidate rxx/ryy/rzz into unitary blocks, but it must synthesize
+  W2/W3's explicit unitaries. No prediction is made.
+
+## 4. What this will not establish
+
+- How common these workloads are in practice.
+- Other bases. ecr and cz do not use the affected path; the cz control checks the latter.
+- Wider circuits.
+- That the guard catches every case. It catches every case in these workloads, if H3 holds.
+
+## 5. Development (disclosed)
+
+- **The scorer** was run on synthetic files to check the plumbing.
+- **The smoke run at home** (`SMOKE=1`: 1 seed per W1 cell, 3 / 3 / 2 circuits for W2-W4), 2026-10-02. It ran
+  end to end with no compile errors, and the controls (QK3CZ, QK3U) had 0 failures.
+  - **Failures / circuits:**
+
+    | workload | QK1 | QK2 | QK3 | PSF | PSFNG |
+    |---|---|---|---|---|---|
+    | W1 | 0/42 | 0/42 | 0/42 | 0/42 | **5/42** |
+    | W2 | 4/6 | 4/6 | 4/6 | 0/6 | 4/6 |
+    | W3, W4 | 0 | 0 | 0 | 0 | 0 |
+
+  - **Notes:**
+    - The largest exact-arm W1 deviation was 9.3e-8 (QK2, QK3, QK3CZ, QK3U alike), below the 1e-6 failure line.
+    - The PSF guard rejected the ZSX decomposer 25 times.
+    - PSF with the guard off failing on the physics workload while Qiskit does not was not anticipated. It is
+      reported here and not turned into a prediction.
+  - **Status:** its verdict lines (H5 REFUTED among them) come from 2 circuits per W1 cell and are not results.
+  - **Nothing was changed after the smoke run:** design, sizes, threshold and both scripts are as before it.
+- **No scored circuit was compiled before the lock.** Every scored circuit is drawn from seeds disjoint from the
+  smoke run's.
+
+## 6. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `benchmarks/b17_practice_eval.py` | `04c0a80121170041768569737c7331cb7acbb8672a04729a977333f02e3a736a` |
+| `benchmarks/run_b17_2026-10-02.sh` | `2d6b383321c1559cc8dc84d97c7cecda8403509cfce95558059c01c8b588492f` |
+
 ---
 
 ---

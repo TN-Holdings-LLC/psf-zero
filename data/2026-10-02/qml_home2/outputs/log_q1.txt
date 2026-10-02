@@ -1,0 +1,19 @@
+deep teacher 81: theta* test accuracy 0.812
+deep teacher 82: theta* test accuracy 0.750
+deep teacher 83: theta* test accuracy 0.531
+deep teacher 84: theta* test accuracy 0.875
+META {"rel": "2026-09-28.1", "rel_layout": "2026-09-26.m1", "c2": "2026-10-01.1", "layout": "2026-10-01.1", "a5": "2026-10-01.a5", "core": "2026-09-29.1", "qiskit": "2.5.2", "aer": "0.17.2", "python": "3.12.13", "git_head": "4839966", "sha": {"script": "9e12f5bf34c29542ebe608a0c672519a52a0039d796dff5fc19ea600a2a6b95f", "c2": "854de6cdc82c0edbb6a0e340a583add741688dc77e2ee6f94f256eabd5f72520", "layout": "624e8f8a00e1635a1ee3bc77b5b0f41bd69a94022e214d679b86cc66cc1cf241", "a5": "91fb1ea49bb99135a8bd6f37cff091e5abd31fd097aabf4744ac5d3e58e8c172"}, "part": "q1", "smoke": false, "cfg": {"q2": {"L": 2, "teacher_from": 21, "train": 31, "test": 32, "theta": 40, "steps_theta": 80, "min_acc": 0.9, "seeds": [41, 42, 43, 44, 45, 46, 47, 48], "steps": 40, "devices": ["FakeAuckland", "FakeTorino", "FakeKingston"]}, "deep": {"L": 4, "teacher_from": 81, "train": 91, "test": 92, "fragile": 94, "adam_seed": 93, "iters": 400, "min_acc": 0.85, "n_fragile": 32, "devices": ["FakeAuckland", "FakeTorino", "FakeKingston"]}}, "deep_teacher_seed": 84, "deep_theta_test_acc": 0.875, "q2_teacher_seed": 23, "q2_theta_test_acc": 0.96875, "problem_s": 313.80853056907654}
+P0a numpy vs Statevector 8.049116928532385e-16 6.661338147750939e-16
+Q1 FakeAuckland REL: 96 circuits, 4 s
+Q1 FakeAuckland C2: 96 circuits, 2 s
+Q1 FakeAuckland A5: 96 circuits, 30 s
+Q1 FakeAuckland L3T: 96 circuits, 2 s
+Q1 FakeTorino REL: 96 circuits, 11 s
+Q1 FakeTorino C2: 96 circuits, 7 s
+Q1 FakeTorino A5: 96 circuits, 71 s
+Q1 FakeTorino L3T: 96 circuits, 5 s
+Q1 FakeKingston REL: 96 circuits, 15 s
+Q1 FakeKingston C2: 96 circuits, 8 s
+Q1 FakeKingston A5: 96 circuits, 70 s
+Q1 FakeKingston L3T: 96 circuits, 6 s
+wrote q1.json

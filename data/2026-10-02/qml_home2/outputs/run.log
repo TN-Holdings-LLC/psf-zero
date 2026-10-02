@@ -1,0 +1,148 @@
+date_utc 2026-10-02T00:30:53Z
+CPU(s):                                  12
+Model name:                              AMD Ryzen 5 5500
+python 3.12.13
+63a933ab52f8cf5aa68792ed8412fb87106e5433e72c57b3580470461c4a7c1b  <repo>/benchmarks/qml_home2_eval.py
+c967520741265eca4dc310c684d770db1fa3f70eb3acdd506caad5a0ef43d2ba  benchmarks/run_qml_home2_2026-10-02.sh
+4839966 Addendum 296: pre-registration of the home QML test, part 2 (8 seeds x 3 devices; deep classifier with fragile set, readout and shots); locks qml_home2_eval.py and its runner
+PAR 6
+== Q1D 00:30:53
+== Q2W 00:30:53
+   done REL FakeAuckland 44 (39 s)
+   done REL FakeAuckland 42 (39 s)
+   done REL FakeAuckland 41 (39 s)
+   done REL FakeAuckland 43 (39 s)
+   done REL FakeAuckland 46 (39 s)
+   done REL FakeAuckland 45 (39 s)
+   done REL FakeAuckland 47 (76 s)
+   done REL FakeAuckland 48 (76 s)
+   done C2 FakeAuckland 41 (78 s)
+   done C2 FakeAuckland 43 (78 s)
+   done C2 FakeAuckland 44 (78 s)
+   done C2 FakeAuckland 42 (78 s)
+   done C2 FakeAuckland 46 (114 s)
+   done C2 FakeAuckland 45 (115 s)
+   done C2 FakeAuckland 48 (115 s)
+   done C2 FakeAuckland 47 (116 s)
+   done A5 FakeAuckland 41 (370 s)
+   done A5 FakeAuckland 42 (370 s)
+   done A5 FakeAuckland 45 (409 s)
+   done A5 FakeAuckland 46 (409 s)
+   done A5 FakeAuckland 44 (409 s)
+   done A5 FakeAuckland 43 (409 s)
+   done L3T FakeAuckland 41 (447 s)
+   done L3T FakeAuckland 42 (448 s)
+   done L3T FakeAuckland 43 (448 s)
+   done L3T FakeAuckland 44 (448 s)
+   done L3T FakeAuckland 46 (486 s)
+   done L3T FakeAuckland 45 (486 s)
+   done L3T FakeAuckland 47 (487 s)
+   done L3T FakeAuckland 48 (487 s)
+   done A5 FakeAuckland 47 (649 s)
+   done A5 FakeAuckland 48 (650 s)
+   done REL FakeTorino 42 (660 s)
+   done REL FakeTorino 41 (660 s)
+   done REL FakeTorino 44 (661 s)
+   done REL FakeTorino 43 (662 s)
+   done REL FakeTorino 46 (821 s)
+   done REL FakeTorino 45 (822 s)
+   done REL FakeTorino 47 (830 s)
+   done REL FakeTorino 48 (831 s)
+   done C2 FakeTorino 42 (839 s)
+   done C2 FakeTorino 41 (840 s)
+   done C2 FakeTorino 43 (1000 s)
+   done C2 FakeTorino 44 (1002 s)
+   done C2 FakeTorino 45 (1008 s)
+   done C2 FakeTorino 46 (1010 s)
+   done C2 FakeTorino 48 (1017 s)
+   done C2 FakeTorino 47 (1017 s)
+   done A5 FakeTorino 41 (1734 s)
+   done A5 FakeTorino 42 (1740 s)
+   done A5 FakeTorino 44 (1742 s)
+   done A5 FakeTorino 43 (1745 s)
+   done A5 FakeTorino 46 (1752 s)
+   done A5 FakeTorino 45 (1755 s)
+   done L3T FakeTorino 41 (1902 s)
+   done L3T FakeTorino 42 (1903 s)
+   done L3T FakeTorino 43 (1909 s)
+   done L3T FakeTorino 44 (1912 s)
+   done L3T FakeTorino 46 (2061 s)
+   done L3T FakeTorino 45 (2064 s)
+   done L3T FakeTorino 47 (2068 s)
+   done L3T FakeTorino 48 (2069 s)
+   done REL FakeKingston 42 (2291 s)
+   done REL FakeKingston 41 (2292 s)
+   done REL FakeKingston 44 (2294 s)
+   done REL FakeKingston 43 (2295 s)
+   done A5 FakeTorino 47 (2481 s)
+   done A5 FakeTorino 48 (2484 s)
+   done REL FakeKingston 46 (2520 s)
+   done REL FakeKingston 45 (2521 s)
+   done REL FakeKingston 47 (2522 s)
+   done REL FakeKingston 48 (2522 s)
+   done C2 FakeKingston 42 (2723 s)
+   done C2 FakeKingston 41 (2726 s)
+   done C2 FakeKingston 43 (2759 s)
+   done C2 FakeKingston 44 (2760 s)
+   done C2 FakeKingston 45 (2760 s)
+   done C2 FakeKingston 46 (2761 s)
+   done C2 FakeKingston 48 (2962 s)
+   done C2 FakeKingston 47 (2963 s)
+   done A5 FakeKingston 41 (3769 s)
+   done A5 FakeKingston 43 (3769 s)
+   done A5 FakeKingston 42 (3771 s)
+   done A5 FakeKingston 44 (3772 s)
+   done A5 FakeKingston 45 (3973 s)
+   done A5 FakeKingston 46 (3974 s)
+   done L3T FakeKingston 42 (3982 s)
+   done L3T FakeKingston 41 (3983 s)
+   done L3T FakeKingston 43 (4189 s)
+   done L3T FakeKingston 44 (4191 s)
+   done L3T FakeKingston 45 (4195 s)
+   done L3T FakeKingston 46 (4196 s)
+   done L3T FakeKingston 47 (4388 s)
+   done L3T FakeKingston 48 (4389 s)
+   done A5 FakeKingston 48 (4718 s)
+   done A5 FakeKingston 47 (4720 s)
+== all runs finished after 4720 s
+| FakeAuckland | REL | 0.875 | 0.3514 | 0.869 | 0.203 | 0.205 | 37 | 0.009 |
+| FakeAuckland | C2 | 0.875 | 0.3514 | 0.869 | 0.203 | 0.205 | 37 | 0.010 |
+| FakeAuckland | A5 | 0.875 | 0.3766 | 0.872 | 0.172 | 0.145 | 37 | 0.292 |
+| FakeAuckland | L3T | 0.875 | 0.3710 | 0.875 | 0.172 | 0.155 | 37 | 0.012 |
+| FakeTorino | REL | 0.875 | 0.3551 | 0.872 | 0.109 | 0.123 | 58 | 0.027 |
+| FakeTorino | C2 | 0.875 | 0.3711 | 0.875 | 0.078 | 0.094 | 44 | 0.032 |
+| FakeTorino | A5 | 0.875 | 0.4145 | 0.875 | 0.047 | 0.062 | 37 | 0.693 |
+| FakeTorino | L3T | 0.875 | 0.4139 | 0.875 | 0.047 | 0.059 | 37 | 0.017 |
+| FakeKingston | REL | 0.875 | 0.4168 | 0.873 | 0.000 | 0.052 | 58 | 0.031 |
+| FakeKingston | C2 | 0.875 | 0.4213 | 0.873 | 0.000 | 0.045 | 44 | 0.036 |
+| FakeKingston | A5 | 0.875 | 0.4310 | 0.873 | 0.000 | 0.040 | 37 | 0.676 |
+| FakeKingston | L3T | 0.875 | 0.4317 | 0.873 | 0.000 | 0.041 | 37 | 0.019 |
+
+- H1 (C2 vs REL: B shot flips <= REL + 0.01 and A margin >= REL - 0.005, all devices): **CONFIRMED**
+- H2 (A5 vs L3T, same test, >= 2 of 3 devices): **CONFIRMED** (3 of 3)
+- H3 (L3T keeps more A margin than C2 by >= 0.005 on Torino and Kingston): **CONFIRMED**
+- H4 (the fragile set sees noise: exact B flips >= 0.05 for every arm on Auckland): **CONFIRMED**
+
+## Q2W: learning with the compiler in the loop (mean over seeds)
+
+IDEAL (noiseless, same seeds): mean test accuracy 0.875; per seed 41: 1.000, 42: 0.625, 43: 1.000, 44: 1.000, 45: 0.781, 46: 0.906, 47: 0.688, 48: 1.000
+
+| device | arm | noisy test acc | shot test acc | noisy train loss | noiseless acc of result | runs | compile s per run | wall s per run | median 2q |
+|---|---|---|---|---|---|---|---|---|---|
+| FakeAuckland | REL | 0.871 | 0.868 | 0.4097 | 0.875 | 8 | 13 | 36 | 17 |
+| FakeAuckland | C2 | 0.871 | 0.868 | 0.4097 | 0.875 | 8 | 14 | 36 | 17 |
+| FakeAuckland | A5 | 0.871 | 0.873 | 0.3855 | 0.875 | 8 | 266 | 288 | 17 |
+| FakeAuckland | L3T | 0.875 | 0.873 | 0.3991 | 0.875 | 8 | 14 | 37 | 17 |
+| FakeTorino | REL | 0.867 | 0.868 | 0.3984 | 0.875 | 8 | 32 | 170 | 26 |
+| FakeTorino | C2 | 0.871 | 0.869 | 0.3927 | 0.875 | 8 | 37 | 176 | 20 |
+| FakeTorino | A5 | 0.875 | 0.874 | 0.3771 | 0.875 | 8 | 598 | 736 | 17 |
+| FakeTorino | L3T | 0.875 | 0.874 | 0.3777 | 0.875 | 8 | 21 | 156 | 17 |
+| FakeKingston | REL | 0.875 | 0.875 | 0.3741 | 0.879 | 8 | 35 | 226 | 26 |
+| FakeKingston | C2 | 0.875 | 0.875 | 0.3719 | 0.879 | 8 | 44 | 237 | 20 |
+| FakeKingston | A5 | 0.875 | 0.876 | 0.3678 | 0.879 | 8 | 802 | 993 | 17 |
+| FakeKingston | L3T | 0.879 | 0.876 | 0.3684 | 0.879 | 8 | 21 | 207 | 17 |
+
+- H5 (every arm's mean noisy test accuracy >= IDEAL - 0.05, every device): **CONFIRMED**
+- H6 (mean train loss C2 <= REL + 0.005 and A5 <= L3T + 0.005, every device): **CONFIRMED**
+
+QML HOME2 DONE

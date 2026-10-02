@@ -1,0 +1,50 @@
+# qml_home2_eval score (SMOKE -- not a result)
+
+deep teacher 81 (theta* test accuracy 1.000); Q2W teacher 21 (theta* 0.406); versions {"rel": "2026-09-28.1", "c2": "2026-10-01.1", "layout": "2026-10-01.1", "a5": "2026-10-01.a5", "core": "2026-09-29.1", "qiskit": "2.5.2", "aer": "0.17.2"}
+
+P0: PASS -- numpy vs Statevector 5.4e-16 / 7.8e-16; compiled noiseless vs logical 5.8e-15; Q2W runs 12, missing 0
+
+## Q1D: deep theta* through each compiler (noiseless mean margin on A 0.3133)
+
+| device | arm | A acc (exact) | A margin | A acc (shots) | B flips (exact) | B flips (shots) | median 2q | compile s |
+|---|---|---|---|---|---|---|---|---|
+| FakeAuckland | REL | 1.000 | 0.2160 | 1.000 | 0.000 | 0.225 | 37 | 0.010 |
+| FakeAuckland | C2 | 1.000 | 0.2160 | 1.000 | 0.000 | 0.225 | 37 | 0.009 |
+| FakeAuckland | A5 | 1.000 | 0.2459 | 1.000 | 0.000 | 0.025 | 37 | 0.272 |
+| FakeAuckland | L3T | 1.000 | 0.2393 | 0.975 | 0.000 | 0.025 | 37 | 0.012 |
+| FakeTorino | REL | 1.000 | 0.2321 | 0.975 | 0.000 | 0.000 | 58 | 0.026 |
+| FakeTorino | C2 | 1.000 | 0.2474 | 0.975 | 0.000 | 0.000 | 44 | 0.029 |
+| FakeTorino | A5 | 1.000 | 0.2810 | 1.000 | 0.000 | 0.000 | 37 | 0.630 |
+| FakeTorino | L3T | 1.000 | 0.2803 | 1.000 | 0.000 | 0.000 | 37 | 0.018 |
+| FakeKingston | REL | 1.000 | 0.2853 | 1.000 | 0.000 | 0.000 | 58 | 0.034 |
+| FakeKingston | C2 | 1.000 | 0.2902 | 1.000 | 0.000 | 0.000 | 44 | 0.037 |
+| FakeKingston | A5 | 1.000 | 0.2966 | 1.000 | 0.000 | 0.000 | 37 | 0.557 |
+| FakeKingston | L3T | 1.000 | 0.2967 | 1.000 | 0.000 | 0.000 | 37 | 0.015 |
+
+- H1 (C2 vs REL: B shot flips <= REL + 0.01 and A margin >= REL - 0.005, all devices): **CONFIRMED**
+- H2 (A5 vs L3T, same test, >= 2 of 3 devices): **CONFIRMED** (3 of 3)
+- H3 (L3T keeps more A margin than C2 by >= 0.005 on Torino and Kingston): **CONFIRMED**
+- H4 (the fragile set sees noise: exact B flips >= 0.05 for every arm on Auckland): **REFUTED**
+
+## Q2W: learning with the compiler in the loop (mean over seeds)
+
+IDEAL (noiseless, same seeds): mean test accuracy 0.469; per seed 941: 0.469
+
+| device | arm | noisy test acc | shot test acc | noisy train loss | noiseless acc of result | runs | compile s per run | wall s per run | median 2q |
+|---|---|---|---|---|---|---|---|---|---|
+| FakeAuckland | REL | 0.469 | 0.469 | 1.5504 | 0.469 | 1 | 1 | 5 | 17 |
+| FakeAuckland | C2 | 0.469 | 0.469 | 1.5504 | 0.469 | 1 | 2 | 5 | 17 |
+| FakeAuckland | A5 | 0.469 | 0.469 | 1.5508 | 0.469 | 1 | 23 | 27 | 17 |
+| FakeAuckland | L3T | 0.469 | 0.469 | 1.5321 | 0.469 | 1 | 1 | 5 | 17 |
+| FakeTorino | REL | 0.469 | 0.469 | 1.5262 | 0.469 | 1 | 3 | 20 | 26 |
+| FakeTorino | C2 | 0.469 | 0.469 | 1.5346 | 0.469 | 1 | 4 | 20 | 20 |
+| FakeTorino | A5 | 0.469 | 0.469 | 1.5717 | 0.469 | 1 | 47 | 62 | 17 |
+| FakeTorino | L3T | 0.469 | 0.469 | 1.5709 | 0.469 | 1 | 2 | 18 | 17 |
+| FakeKingston | REL | 0.469 | 0.469 | 1.5712 | 0.469 | 1 | 4 | 25 | 26 |
+| FakeKingston | C2 | 0.469 | 0.469 | 1.5732 | 0.469 | 1 | 4 | 23 | 20 |
+| FakeKingston | A5 | 0.469 | 0.469 | 1.5844 | 0.469 | 1 | 59 | 77 | 17 |
+| FakeKingston | L3T | 0.469 | 0.469 | 1.5857 | 0.469 | 1 | 2 | 21 | 17 |
+
+- H5 (every arm's mean noisy test accuracy >= IDEAL - 0.05, every device): **CONFIRMED**
+- H6 (mean train loss C2 <= REL + 0.005 and A5 <= L3T + 0.005, every device): **AMBIGUOUS**
+
