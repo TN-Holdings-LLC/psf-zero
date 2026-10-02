@@ -1,0 +1,20 @@
+files 54, flags 0; model circuits 153
+P0 PASS noiseless max 1.85e-08, too wide 0 of 7614
+H1 CONFIRMED {'o': np.float64(0.93246), 'p': np.float64(0.89532)}
+H2 CONFIRMED {'GAP/FakeAuckland': np.float64(0.927), 'GAP/FakeTorino': np.float64(0.99899), 'GAP/FakeKingston': np.float64(0.99926), 'MODEL/FakeAuckland': np.float64(0.97923), 'MODEL/FakeTorino': np.float64(0.98325), 'MODEL/FakeKingston': np.float64(0.98264)}
+H3 CONFIRMED 0.94886
+H4 CONFIRMED {'FakeAuckland': np.float64(0.9657), 'FakeTorino': np.float64(0.9693), 'FakeKingston': np.float64(0.9775)}
+H5 CONFIRMED {'A5': 0.608, 'A7': 0.6491, 'L3T': 0.0138}
+H6 CONFIRMED 0
+
+A7 chose L3T's output, and how those choices compare with A5 and with L3T (per device):
+  FakeAuckland: 282 chosen (output identical to L3T arm in 55); vs A5 better 253, worse 29; mean infidelity gain 0.0578
+    circuits where A7 is worse than A5: 29, worst ratio 1.465, median ratio 1.012
+  FakeTorino: 129 chosen (output identical to L3T arm in 82); vs A5 better 102, worse 26; mean infidelity gain 0.0013
+    circuits where A7 is worse than A5: 26, worst ratio 1.158, median ratio 1.007
+  FakeKingston: 106 chosen (output identical to L3T arm in 73); vs A5 better 86, worse 19; mean infidelity gain 0.0007
+    circuits where A7 is worse than A5: 19, worst ratio 1.177, median ratio 1.008
+
+A5 against the ai6 run's A5 (Addendum 313): identical 2538 of 2538
+off-target: {'A5': 0, 'A7': 0, 'L3T': 0}
+flags: none

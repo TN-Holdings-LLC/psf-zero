@@ -1,0 +1,40 @@
+# a7 score
+
+P0: PASS -- files 54 of 54 (missing []); noiseless infidelity max 1.9e-08 (<= 1e-6); too wide 0 of 7614; model circuits converted 153 (>= 150)
+
+| set | device | A7/A5 | A7/L3T | A5/L3T | A7 chose L3T's output |
+|---|---|---|---|---|---|
+| F1 | FakeAuckland | 1.000 | 0.989 | 0.988 | 29 of 216 |
+| F1 | FakeTorino | 1.000 | 0.991 | 0.991 | 22 of 216 |
+| F1 | FakeKingston | 1.000 | 0.989 | 0.989 | 17 of 216 |
+| F2 | FakeAuckland | 0.998 | 0.950 | 0.952 | 34 of 120 |
+| F2 | FakeTorino | 0.996 | 0.972 | 0.976 | 24 of 120 |
+| F2 | FakeKingston | 0.996 | 0.970 | 0.974 | 24 of 120 |
+| F3o | FakeAuckland | 0.840 | 0.932 | 1.111 | 75 of 75 |
+| F3o | FakeTorino | 0.999 | 0.994 | 0.995 | 24 of 75 |
+| F3o | FakeKingston | 1.000 | 0.981 | 0.981 | 15 of 75 |
+| F3p | FakeAuckland | 0.729 | 0.895 | 1.227 | 75 of 75 |
+| F3p | FakeTorino | 1.000 | 1.007 | 1.007 | 1 of 75 |
+| F3p | FakeKingston | 1.000 | 1.003 | 1.003 | 0 of 75 |
+| F4 | FakeAuckland | 0.999 | 0.934 | 0.935 | 11 of 135 |
+| F4 | FakeTorino | 1.000 | 0.947 | 0.947 | 2 of 135 |
+| F4 | FakeKingston | 1.000 | 0.955 | 0.955 | 2 of 135 |
+| F5 | FakeAuckland | 1.000 | 0.932 | 0.932 | 0 of 72 |
+| F5 | FakeTorino | 1.000 | 0.997 | 0.997 | 1 of 72 |
+| F5 | FakeKingston | 1.000 | 0.999 | 0.999 | 0 of 72 |
+| MODEL | FakeAuckland | 0.979 | 0.725 | 0.741 | 58 of 153 |
+| MODEL | FakeTorino | 0.983 | 0.917 | 0.933 | 55 of 153 |
+| MODEL | FakeKingston | 0.983 | 0.918 | 0.934 | 48 of 153 |
+
+## Predictions
+
+- H1 (FakeAuckland F3: A7/L3T <= 1.02 on open and periodic chains): **CONFIRMED** (o 0.9325, p 0.8953)
+- H2 (A7/A5 <= 1.00 on every device, GAP and MODEL): **CONFIRMED** (GAP/FakeAuckland 0.9270, GAP/FakeTorino 0.9990, GAP/FakeKingston 0.9993, MODEL/FakeAuckland 0.9792, MODEL/FakeTorino 0.9833, MODEL/FakeKingston 0.9826)
+- H3 (FakeAuckland GAP: A7/L3T <= 1.00): **CONFIRMED** (0.9489)
+- H4 (per circuit A7 <= A5 in >= 95% on every device): **CONFIRMED** (FakeAuckland 0.9657, FakeTorino 0.9693, FakeKingston 0.9775)
+- H5 (median compile time A7 <= 1.1 x A5): **CONFIRMED** (A5 0.608 s, A7 0.649 s)
+- H6 (A7 never uses a failed coupler or qubit): **CONFIRMED** (0 uses)
+
+Reported: median compile s A5 0.608, A7 0.649, L3T 0.014
+Reported: circuits with an off-target instruction, by arm: A5 0, A7 0, L3T 0
+

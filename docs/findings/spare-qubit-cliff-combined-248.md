@@ -9042,7 +9042,7 @@ or pooled ratio computed from the actual files, so none changes.
 - **Question:** it follows up Addendum 313. Over all GAP circuits on FakeAuckland, A5 trailed L3T (1.024), and the
   whole deficit sat in F3: A5/L3T was 1.111 on open chains and 1.227 on periodic ones, worse on 75 of 75 circuits
   each, with equal two-qubit counts. Every other cell favoured A5 (0.74-0.99).
-- **Scripts and outputs:** `data/2026-10-02/a7/diag/` (`a5_f3_diag.py`, `run_a5_f3_diag.sh`, `outputs/`).
+- **Scripts and outputs:** [`data/2026-10-02/a7/diag/`](../../data/2026-10-02/a7/diag/) (`a5_f3_diag.py`, `run_a5_f3_diag.sh`, `outputs/`).
 - **Where and when:** run at home at commit `1e3f54b`.
 
 ## 1. What was done
@@ -9118,7 +9118,7 @@ no simulation:
 **Status: pre-registration, written at home before any scored run.**
 
 - **Lock:** the git commit that adds this document, the candidate
-  (`patches/psf_ai_compile_a7_2026-10-02/psf_ai_compile.py`, with its tests) and `benchmarks/a7_eval.py` with its
+  ([`patches/psf_ai_compile_a7_2026-10-02/psf_ai_compile.py`](../../patches/psf_ai_compile_a7_2026-10-02/psf_ai_compile.py), with its tests) and [`benchmarks/a7_eval.py`](../../benchmarks/a7_eval.py) with its
   runner, pushed before the scored run.
 - **No hardware:** fake devices and Aer noise only.
 - **The predictions (section 3) were written before the smoke run** and were not changed after it.
@@ -9146,7 +9146,7 @@ offers that output itself as a candidate.
 
   | arm | what it is |
   |---|---|
-  | A5 | `benchmarks/psf_ai_compile.py` with the target |
+  | A5 | [`benchmarks/psf_ai_compile.py`](../../benchmarks/psf_ai_compile.py) with the target |
   | A7 | the candidate with the target |
   | L3T | Qiskit level 3 with the Target, `approximation_degree=1.0` |
 
@@ -9239,10 +9239,143 @@ The smoke run used 1 circuit per GAP sub-family and 3 mock model circuits, and t
 
 | file | normalized SHA-256 |
 |---|---|
-| `patches/psf_ai_compile_a7_2026-10-02/psf_ai_compile.py` | `e2132e3c99b19ad3661cd757e9f787b50d738ea0cc180f350b4791c3fbdfa512` |
-| `patches/psf_ai_compile_a7_2026-10-02/test_a7.py` | `6d82b85e3d2fc8bdc95584204f67efcb1a606f0b1cdb693f34f536ca5358c14f` |
-| `benchmarks/a7_eval.py` | `4d5359fe1e7e3af8ceed2a3051a9f3fa4fdcb99ed91d7d8ba5eff8d12779be74` |
-| `benchmarks/run_a7_2026-10-02.sh` | `abe60d4220c4cf47e59e51228bf65d55cd6b7a01ce45a1cfeae28ac5eb7b56fb` |
+| [`patches/psf_ai_compile_a7_2026-10-02/psf_ai_compile.py`](../../patches/psf_ai_compile_a7_2026-10-02/psf_ai_compile.py) | `e2132e3c99b19ad3661cd757e9f787b50d738ea0cc180f350b4791c3fbdfa512` |
+| [`patches/psf_ai_compile_a7_2026-10-02/test_a7.py`](../../patches/psf_ai_compile_a7_2026-10-02/test_a7.py) | `6d82b85e3d2fc8bdc95584204f67efcb1a606f0b1cdb693f34f536ca5358c14f` |
+| [`benchmarks/a7_eval.py`](../../benchmarks/a7_eval.py) | `4d5359fe1e7e3af8ceed2a3051a9f3fa4fdcb99ed91d7d8ba5eff8d12779be74` |
+| [`benchmarks/run_a7_2026-10-02.sh`](../../benchmarks/run_a7_2026-10-02.sh) | `abe60d4220c4cf47e59e51228bf65d55cd6b7a01ce45a1cfeae28ac5eb7b56fb` |
+
+
+---
+
+<!-- ===== Addendum 316 (source: spare-qubit-cliff-addendum-316-2026-10-02.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 315 (lock commit 3130e3e), scored by the locked script and re-checked by benchmarks/a7_verify.py, written after the locked score was seen and before the raw files were read.
+
+## Addendum 316 -- Results: psf_ai_compile a7 (Addendum 315). All six confirmed: offering Qiskit level 3's own output as a candidate removes a5's FakeAuckland F3 loss (A7/L3T 0.932 open, 0.895 periodic, against A5's 1.111 and 1.227), makes A7 better than L3T on FakeAuckland GAP overall (0.949), and costs nothing on average elsewhere (A7/A5 0.93-1.00) (2026-10-02)
+
+**Status: results of the pre-registered test in Addendum 315.**
+
+- **Lock:** commit `3130e3e` (20:34 JST), pushed before the scored run.
+- **Scoring:** by the locked `a7_eval.py score`, and re-checked by [`benchmarks/a7_verify.py`](../../benchmarks/a7_verify.py). That script was written
+  after the locked score was seen and before the raw files were read.
+- **Setting:** home (WSL2), 6 processes; 54 jobs, 7,614 circuit compilations; 153 model circuits converted.
+
+## 1. Verdicts
+
+| ID | Verdict | Numbers |
+|---|---|---|
+| P0 | **PASS** | 54 of 54 files; noiseless infidelity max 1.85e-8; 0 too wide; 153 model circuits |
+| H1 | **CONFIRMED** | FakeAuckland F3 A7/L3T: open 0.932, periodic 0.895 |
+| H2 | **CONFIRMED** | A7/A5: GAP 0.927 / 0.999 / 0.999, MODEL 0.979 / 0.983 / 0.983 (Auckland / Torino / Kingston) |
+| H3 | **CONFIRMED** | FakeAuckland GAP A7/L3T 0.949 (A5 1.024) |
+| H4 | **CONFIRMED** | per circuit A7 <= A5: 96.6% / 96.9% / 97.8% |
+| H5 | **CONFIRMED** | median compile time A5 0.608 s, A7 0.649 s |
+| H6 | **CONFIRMED** | 0 failed-element uses |
+
+## 2. Numbers
+
+**Cells** (A7/A5 | A7/L3T | A5/L3T; and how often A7 returned L3T's output):
+
+| set | FakeAuckland | FakeTorino | FakeKingston |
+|---|---|---|---|
+| F3 open | 0.840, 0.932, 1.111 (75 of 75) | 0.999, 0.994, 0.995 (24) | 1.000, 0.981, 0.981 (15) |
+| F3 periodic | 0.729, 0.895, 1.227 (75 of 75) | 1.000, 1.007, 1.007 (1) | 1.000, 1.003, 1.003 (0) |
+| F2 | 0.998, 0.950, 0.952 (34 of 120) | 0.996, 0.972, 0.976 (24) | 0.996, 0.970, 0.974 (24) |
+| F4 | 0.999, 0.934, 0.935 (11 of 135) | 1.000, 0.947, 0.947 (2) | 1.000, 0.955, 0.955 (2) |
+| F5 | 1.000, 0.932, 0.932 (0 of 72) | 1.000, 0.997, 0.997 (1) | 1.000, 0.999, 0.999 (0) |
+| MODEL | 0.979, 0.725, 0.741 (58 of 153) | 0.983, 0.917, 0.933 (55) | 0.983, 0.918, 0.934 (48) |
+
+**When A7 chose L3T's output:**
+
+| device | chosen | better than A5 | worse than A5 | worst single ratio A7/A5 |
+|---|---|---|---|---|
+| FakeAuckland | 282 | 253 | 29 | 1.465 |
+| FakeTorino | 129 | 102 | 26 | 1.158 |
+| FakeKingston | 106 | 86 | 19 | 1.177 |
+
+- L3T's output is usually re-placed by the state-aware search after it is chosen. A7's output equals the L3T arm's
+  in 55, 82 and 73 of those cases.
+- Mean infidelity gain over A5 on the chosen circuits: FakeAuckland 0.058, FakeTorino 0.0013, FakeKingston 0.0007.
+- Of the circuits where A7 is worse than A5, the median ratio is 1.007-1.012.
+
+**Reproducibility.** A5's outputs equal the ai6 run's A5 arm (Addendum 313), circuit by circuit: 2,538 of 2,538.
+
+## 3. Reading
+
+- **The fix works where it was aimed.**
+  - On FakeAuckland, A7 returns L3T's output, usually re-placed, for every F3 circuit.
+  - It then beats L3T itself by 7-10%: the state-aware re-placement improves on Qiskit's own placement.
+  - The device's GAP total moves from 2.4% behind L3T to 5.1% ahead.
+- **It helps model-written circuits too**, by about 2% on every device. That is where PSF-Zero's and level 3's
+  compilations most often differ.
+- **The cost.**
+  - Where the two candidates are within a few percent, the estimate sometimes picks the worse one. This is what
+    Addendum 314 found on the Heron F3 chains.
+  - About 3% of circuits get worse, typically by about 1% (worst 1.47× on one FakeAuckland circuit). On average the
+    gains outweigh this on every device and set.
+  - Compile time rises by 7% (median), with no extra compile, from scoring one more candidate.
+- **Adoption** is the owner's decision (Addendum 317). This test supports replacing a5 with a7 as the front end.
+
+## 4. Data (`data/2026-10-02/a7/outputs/`)
+
+- 54 job files and their logs, the prep log, the model circuits and index, `env.txt`, `run.log`, `score.md`,
+  `score_log.txt`, `verify.txt`.
+- Local paths were replaced.
+
+
+---
+
+<!-- ===== Addendum 317 (source: spare-qubit-cliff-addendum-317-2026-10-02.md) ===== -->
+
+> **Note added when merging:** Adoption record: psf_ai_compile 2026-10-02.a7 becomes the AI front end (owner's decision, 2026-10-02).
+
+## Addendum 317 -- Adoption: psf_ai_compile 2026-10-02.a7 becomes the AI front end (`benchmarks/psf_ai_compile.py`); a5 is kept as `benchmarks/psf_ai_compile_a5.py` (2026-10-02)
+
+**Status: adoption record.**
+
+- **Decision:** the owner adopted candidate a7 on 2026-10-02, after seeing the scored results of Addendum 316 (six of
+  six confirmed).
+- **Basis:** this Addendum records what changed; Addendum 316 is the basis.
+
+## 1. What changed
+
+- **[`benchmarks/psf_ai_compile.py`](../../benchmarks/psf_ai_compile.py) is now a7.**
+  - The code is the candidate's ([`patches/psf_ai_compile_a7_2026-10-02/psf_ai_compile.py`](../../patches/psf_ai_compile_a7_2026-10-02/psf_ai_compile.py), Addendum 315).
+  - Only the comment on the `AI_COMPILE_VERSION` line changed. The version string stays "2026-10-02.a7".
+- **[`benchmarks/psf_ai_compile_a5.py`](../../benchmarks/psf_ai_compile_a5.py) is new:** a byte-for-byte copy of the previous [`benchmarks/psf_ai_compile.py`](../../benchmarks/psf_ai_compile.py)
+  (a5, normalized SHA-256 as run in Addenda 290-316). This follows the frozen copies `_a0`, `_a1`, `_a2` and `_a4`.
+- **Effect on reruns.** Several locked evaluation scripts load [`benchmarks/psf_ai_compile.py`](../../benchmarks/psf_ai_compile.py) as their "A5" arm:
+  - `gap_eval.py`, `qml_home_eval.py`, `qml_home2_eval.py`, `ai6_eval.py`, `a7_eval.py` and the long-loop `lt_eval.py`.
+  - Rerunning them at the current HEAD now runs a7 in that arm.
+  - To reproduce their recorded results, check out their lock commits, or point them at `psf_ai_compile_a5.py`.
+  - Their verifiers read the recorded files and are unaffected.
+- **Interfaces:**
+  - **Without a target:** a7 behaves exactly as a5 (checked by test).
+  - **With a target:** `return_info=True` now also reports `chosen` ("PSF" or "L3T").
+  - **The vLLM harness v11** (`--compiler ai --ai-module psf_ai_compile.py`) picks it up unchanged.
+- **New test:** [`benchmarks/test_ai_compile_a7.py`](../../benchmarks/test_ai_compile_a7.py), adapted from the candidate's tests, with a5 taken from
+  `psf_ai_compile_a5.py`.
+- **`README.md`:**
+  - an "Update (2026-10-02) -- AI front end a7" block;
+  - the 2026-10-01 block now names `psf_ai_compile_a5.py` for a5.
+- **Data:** [`data/2026-10-02/a7/outputs/`](../../data/2026-10-02/a7/outputs/) (Addendum 316) and [`benchmarks/a7_verify.py`](../../benchmarks/a7_verify.py).
+- **Links:** code-formatted paths in Addenda 314-317 were turned into links in the same way as in Addendum 313,
+  section 5, with the same line-by-line check.
+
+## 2. Checks before the commit
+
+These tests were run at home on the applied files, and the commit command was chained on them passing:
+
+- [`benchmarks/test_ai_compile_a7.py`](../../benchmarks/test_ai_compile_a7.py);
+- [`patches/psf_ai_compile_a7_2026-10-02/test_a7.py`](../../patches/psf_ai_compile_a7_2026-10-02/test_a7.py);
+- [`patches/psf_ai_compile_a6_2026-10-02/test_ai6.py`](../../patches/psf_ai_compile_a6_2026-10-02/test_ai6.py).
+
+## 3. What remains
+
+- **Hardware:** a7 against L3T on a real device.
+- **The estimate's weakness between near-equal outputs** (Addendum 314). A margin, keeping PSF-Zero's candidate
+  unless L3T's is estimated better by more than some amount, could be tested.
+- **In the vLLM loop:** whether a7, with or without a fast mode, changes pass rates or cost.
 
 ---
 

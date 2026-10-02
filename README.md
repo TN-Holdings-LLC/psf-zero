@@ -122,14 +122,31 @@ repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see belo
 >   that core succeeded and no fallbacks in the 100,000-compile run. Every evaluation since
 >   2026-09-29 used it.
 
+> **Update (2026-10-02) -- AI front end a7** ([Part 9](docs/findings/spare-qubit-cliff-combined-248.md),
+> Addenda 312-317). `benchmarks/psf_ai_compile.py` is now a7 (a5 is kept as `benchmarks/psf_ai_compile_a5.py`).
+> Given a device Target, a7 also offers Qiskit level 3's own output as a candidate and keeps whichever its state-aware
+> estimate prefers; it costs no extra compile. Pre-registered test (fake devices, noisy simulation; 693 GAP circuits
+> and 153 model-written circuits per device):
+>
+> - **The one place a5 trailed Qiskit L3T is fixed:** FakeAuckland Heisenberg chains, from 1.11-1.23 times L3T's
+>   infidelity to 0.90-0.93.
+> - **Against L3T:**
+>   - FakeAuckland GAP circuits 0.95 overall;
+>   - model-written circuits 0.73 (FakeAuckland) and 0.92 (FakeTorino, FakeKingston);
+>   - Heron GAP circuits 0.98.
+> - **Against a5:** never worse on average (0.93-1.00). About 3% of circuits get slightly worse, typically by about
+>   1%. Median compile time 0.65 s, against 0.61 s.
+> - **Integrating release 2026-10-02.2 inside the front end (a6) changed nothing** (Addendum 313). The front end is
+>   clearly better than the release alone on model-written circuits (0.73-0.92).
+
 > **Update (2026-10-01) -- noise-model estimates and an AI front end (prototype)** (Addenda 275-289).
 > Noisy simulation with Qiskit Aer and the fake devices' published calibration; not real hardware.
 >
 > - **Fewer two-qubit gates did mean higher fidelity in this model:** in about 92% of same-circuit
 >   pairs the compile with fewer two-qubit gates had the higher fidelity, and infidelity fell by
 >   38-46% from the previous release to the front end below (Addendum 281).
-> - **A front end for model-written circuits** (`benchmarks/psf_ai_compile.py`, prototype
->   2026-10-01.a5, separate from `psf_compile.py`) tries several placements and decompositions and,
+> - **A front end for model-written circuits** (then `benchmarks/psf_ai_compile.py`, now kept as
+>   `benchmarks/psf_ai_compile_a5.py`; prototype 2026-10-01.a5, separate from `psf_compile.py`) tries several placements and decompositions and,
 >   given a device Target, keeps the candidate with the lowest estimated error, estimating each
 >   gate's error from the circuit's ideal state at that point. Mean infidelity on 40 held-out random
 >   circuits per device: 0.0601 against Qiskit L3 with error-aware layout 0.0707 (FakeAuckland),

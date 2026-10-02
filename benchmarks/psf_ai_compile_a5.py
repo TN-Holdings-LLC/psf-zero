@@ -57,15 +57,6 @@ could be served the old Target's numbers without any error (199 of 200 laps in a
 every lap). a5 keys every cache entry by the values it was computed from (gate error, duration, T1 and T2 of the
 gate's qubits), never by object identity, and bounds the caches' size. Results for one fixed Target are unchanged.
 
-a7 (2026-10-02, home) adds one candidate, only when a `target` is given:
-  12. Qiskit level 3's own output for the target (the transpile a2 already runs to borrow its layout) joins the
-      candidates that are re-placed and scored by the state-aware estimate, whenever its two-qubit count is within
-      REMAP_EXTRA_2Q of PSF-Zero's best (it does not count against REMAP_TOP). A diagnosis (Addendum 314) found a5 losing
-      to that output on every F3 Heisenberg-chain circuit on FakeAuckland, on the same six qubits and with the same
-      two-qubit count, while a5's own estimate ranked that output better in every case: a5's candidates never
-      included it. The output is used as Qiskit returns it (not polished). No extra compile is made. Without a target,
-      a7 behaves exactly as a5.
-
 Circuits above `SMALL_MAX_QUBITS` go straight to `compile_for_hardware()` unchanged.
 The layout of the routed circuit (initial and final) is preserved by every step.
 """
@@ -83,7 +74,7 @@ from qiskit.transpiler.passes import (BasisTranslator, Collect2qBlocks, Commutat
 
 import psf_compile as pc
 
-AI_COMPILE_VERSION = "2026-10-02.a7"  # adopted 2026-10-02 (Addenda 314-317): a5 + Qiskit level 3 output as a candidate (item 12); a5 is psf_ai_compile_a5.py
+AI_COMPILE_VERSION = "2026-10-01.a5"  # prototype (workplace)
 SMALL_MAX_QUBITS = 8
 DEFAULT_SEEDS = (0, 1, 2, 3)
 L3_LAYOUT_CANDIDATE = True
@@ -92,7 +83,6 @@ REMAP_TOP = 6            # a2: candidates (fewest 2-qubit gates first) that are 
 REMAP_EXTRA_2Q = 2       # a2: ... within this many 2-qubit gates of the best
 MAX_MAPPINGS = 5000      # a2: placements tried per candidate
 L3T_LAYOUT_CANDIDATE = True
-L3T_OUTPUT_CANDIDATE = True  # a7: level 3's own output (target given) is also a candidate
 DECOHERENCE_FLOOR = True  # a3: a gate cannot be better than T1/T2 allow during its duration
 STATE_AWARE = True  # a4: score placements and candidates by the state-aware first-order estimate  # a2: also route from Qiskit level 3's error-aware layout (target given)
 POLISH_ROUNDS = 3
@@ -518,7 +508,6 @@ def compile_for_model_circuit(qc, coupling_map, basis_gates, entangling_basis="c
         ex = PassManager([CommutativeCancellation()]).run(ex)
         starts.append(("expanded", ex))
     l3_layouts = []
-    l3t_out = None  # a7
     if L3_LAYOUT_CANDIDATE:
         from qiskit import transpile
         try:
@@ -531,7 +520,6 @@ def compile_for_model_circuit(qc, coupling_map, basis_gates, entangling_basis="c
             # a2: the layout Qiskit's level-3 search picks when it can see the error rates
             try:
                 t = transpile(qc, target=target, optimization_level=3, seed_transpiler=0)
-                l3t_out = t
                 lay_t = list(t.layout.initial_index_layout()[:qc.num_qubits])
                 if all(lay_t != l for _, l in l3_layouts):
                     l3_layouts.append(("L3Tlayout", lay_t))
@@ -575,25 +563,16 @@ def compile_for_model_circuit(qc, coupling_map, basis_gates, entangling_basis="c
     if target is not None:
         top = sorted(cands, key=lambda kc: kc[0])
         top = [kc for kc in top if kc[0][0] <= top[0][0][0] + REMAP_EXTRA_2Q][:REMAP_TOP]
-        if l3t_out is not None and L3T_OUTPUT_CANDIDATE:
-            # a7: always scored when within REMAP_EXTRA_2Q of PSF-Zero's best, not subject to the REMAP_TOP cut
-            key = (_two_q(l3t_out), _depth2q(l3t_out))
-            tried.append(("L3T", "output", key[0]))
-            if key[0] <= top[0][0][0] + REMAP_EXTRA_2Q:
-                top.append((key, l3t_out))
         scored = []
         for key, out in top:
             if STATE_AWARE:
                 placed, cost = best_placement_state_aware(out, target, coupling_map)
             else:
                 placed, cost = best_placement(out, target, coupling_map)
-            scored.append((cost, key, placed, "L3T" if out is l3t_out else "PSF"))
+            scored.append((cost, key, placed))
         scored.sort(key=lambda t: (t[0], t[1]))
         best = scored[0][2]
         best_key = scored[0][1]
-        chosen = scored[0][3]
         tried.append(("placement", "cost", round(scored[0][0], 6)))
-    else:
-        chosen = "PSF"
-    info = {"path": "small", "tried": tried, "best": best_key, "version": AI_COMPILE_VERSION, "chosen": chosen}
+    info = {"path": "small", "tried": tried, "best": best_key, "version": AI_COMPILE_VERSION}
     return (best, info) if return_info else best

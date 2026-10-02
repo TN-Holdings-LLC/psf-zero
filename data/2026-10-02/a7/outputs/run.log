@@ -1,0 +1,97 @@
+date_utc 2026-10-02T11:35:04Z
+CPU(s):                                  12
+Model name:                              AMD Ryzen 5 5500
+python 3.12.13 qiskit 2.5.2 aer 0.17.2 pennylane 0.45.1
+79f6c30b2cf84592b1db3bfadc421f5586ade0ae4c3c5639345907cbfbb9169c  <repo>/benchmarks/a7_eval.py
+a09961d56de5fb3c4967ad39916fec23ccb940f31266cb39c0d8f714b054b747  benchmarks/run_a7_2026-10-02.sh
+3130e3e Addenda 314-315: diagnosis of a5 on the FakeAuckland F3 chains (L3T's output never among a5's candidates); psf_ai_compile a7 pre-registration (level 3 output as a candidate); locks a7, its tests and a7_eval
+PAR 6
+prep: 153 collected, 153 converted, 0 skipped
+   done FakeAuckland A7 F4 (50 s)
+   done FakeAuckland A7 F1 (97 s)
+   done FakeTorino A7 F4 (127 s)
+   done FakeKingston A7 F4 (154 s)
+   done FakeTorino A7 F1 (178 s)
+   done FakeKingston A7 F1 (220 s)
+   done FakeAuckland A7 F3 (225 s)
+   done FakeAuckland A7 F2 (263 s)
+   done FakeKingston A7 F2 (277 s)
+   done FakeTorino A7 F2 (282 s)
+   done FakeAuckland A7 F5 (290 s)
+   done FakeKingston A7 F5 (330 s)
+   done FakeTorino A7 F5 (344 s)
+   done FakeAuckland A7 MODEL (358 s)
+   done FakeTorino A7 MODEL (370 s)
+   done FakeTorino A7 F3 (372 s)
+   done FakeKingston A7 MODEL (379 s)
+   done FakeKingston A7 F3 (385 s)
+   done FakeAuckland A5 F4 (432 s)
+   done FakeAuckland A5 F1 (461 s)
+   done FakeTorino A5 F4 (498 s)
+   done FakeKingston A5 F4 (515 s)
+   done FakeTorino A5 F1 (521 s)
+   done FakeKingston A5 F1 (544 s)
+   done FakeAuckland A5 F2 (585 s)
+   done FakeAuckland A5 F3 (588 s)
+   done FakeTorino A5 F2 (619 s)
+   done FakeKingston A5 F2 (630 s)
+   done FakeAuckland A5 F5 (632 s)
+   done FakeTorino A5 F5 (660 s)
+   done FakeKingston A5 F5 (681 s)
+   done FakeAuckland A5 MODEL (687 s)
+   done FakeKingston L3T F1 (702 s)
+   done FakeTorino L3T F1 (705 s)
+   done FakeTorino A5 MODEL (709 s)
+   done FakeTorino A5 F3 (712 s)
+   done FakeAuckland L3T F1 (713 s)
+   done FakeAuckland L3T F4 (719 s)
+   done FakeKingston A5 MODEL (720 s)
+   done FakeKingston L3T F4 (723 s)
+   done FakeTorino L3T F4 (724 s)
+   done FakeAuckland L3T F3 (730 s)
+   done FakeKingston A5 F3 (733 s)
+   done FakeAuckland L3T F2 (736 s)
+   done FakeKingston L3T F3 (737 s)
+   done FakeTorino L3T F2 (738 s)
+   done FakeKingston L3T F2 (739 s)
+   done FakeTorino L3T F3 (739 s)
+   done FakeAuckland L3T F5 (741 s)
+   done FakeAuckland L3T MODEL (743 s)
+   done FakeKingston L3T F5 (745 s)
+   done FakeTorino L3T F5 (745 s)
+   done FakeTorino L3T MODEL (749 s)
+   done FakeKingston L3T MODEL (750 s)
+== all jobs finished after 750 s
+| F1 | FakeKingston | 1.000 | 0.989 | 0.989 | 17 of 216 |
+| F2 | FakeAuckland | 0.998 | 0.950 | 0.952 | 34 of 120 |
+| F2 | FakeTorino | 0.996 | 0.972 | 0.976 | 24 of 120 |
+| F2 | FakeKingston | 0.996 | 0.970 | 0.974 | 24 of 120 |
+| F3o | FakeAuckland | 0.840 | 0.932 | 1.111 | 75 of 75 |
+| F3o | FakeTorino | 0.999 | 0.994 | 0.995 | 24 of 75 |
+| F3o | FakeKingston | 1.000 | 0.981 | 0.981 | 15 of 75 |
+| F3p | FakeAuckland | 0.729 | 0.895 | 1.227 | 75 of 75 |
+| F3p | FakeTorino | 1.000 | 1.007 | 1.007 | 1 of 75 |
+| F3p | FakeKingston | 1.000 | 1.003 | 1.003 | 0 of 75 |
+| F4 | FakeAuckland | 0.999 | 0.934 | 0.935 | 11 of 135 |
+| F4 | FakeTorino | 1.000 | 0.947 | 0.947 | 2 of 135 |
+| F4 | FakeKingston | 1.000 | 0.955 | 0.955 | 2 of 135 |
+| F5 | FakeAuckland | 1.000 | 0.932 | 0.932 | 0 of 72 |
+| F5 | FakeTorino | 1.000 | 0.997 | 0.997 | 1 of 72 |
+| F5 | FakeKingston | 1.000 | 0.999 | 0.999 | 0 of 72 |
+| MODEL | FakeAuckland | 0.979 | 0.725 | 0.741 | 58 of 153 |
+| MODEL | FakeTorino | 0.983 | 0.917 | 0.933 | 55 of 153 |
+| MODEL | FakeKingston | 0.983 | 0.918 | 0.934 | 48 of 153 |
+
+## Predictions
+
+- H1 (FakeAuckland F3: A7/L3T <= 1.02 on open and periodic chains): **CONFIRMED** (o 0.9325, p 0.8953)
+- H2 (A7/A5 <= 1.00 on every device, GAP and MODEL): **CONFIRMED** (GAP/FakeAuckland 0.9270, GAP/FakeTorino 0.9990, GAP/FakeKingston 0.9993, MODEL/FakeAuckland 0.9792, MODEL/FakeTorino 0.9833, MODEL/FakeKingston 0.9826)
+- H3 (FakeAuckland GAP: A7/L3T <= 1.00): **CONFIRMED** (0.9489)
+- H4 (per circuit A7 <= A5 in >= 95% on every device): **CONFIRMED** (FakeAuckland 0.9657, FakeTorino 0.9693, FakeKingston 0.9775)
+- H5 (median compile time A7 <= 1.1 x A5): **CONFIRMED** (A5 0.608 s, A7 0.649 s)
+- H6 (A7 never uses a failed coupler or qubit): **CONFIRMED** (0 uses)
+
+Reported: median compile s A5 0.608, A7 0.649, L3T 0.014
+Reported: circuits with an off-target instruction, by arm: A5 0, A7 0, L3T 0
+
+A7 DONE
