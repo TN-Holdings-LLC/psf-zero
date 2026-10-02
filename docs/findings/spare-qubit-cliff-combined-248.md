@@ -8385,6 +8385,164 @@ equal, so only placement differs.
   - logs and `env.txt`.
 - Local paths were replaced.
 
+
+---
+
+<!-- ===== Addendum 309 (source: spare-qubit-cliff-addendum-309-2026-10-02.md) ===== -->
+
+> **Note added when merging:** Home pre-registration of candidate psf_compile 2026-10-02.c5. Locked by the git commit that adds this Addendum, the candidate with its tests, and the evaluation scripts, pushed before the scored run. The predictions were written before the smoke run; the smoke run and one test fix are disclosed in section 5.
+
+## Addendum 309 -- Pre-registration: candidate psf_compile 2026-10-02.c5 (exact error-weighted re-placement after routing). Does Qiskit level 3's final re-placement, added to PSF-Zero's own compile, close the placement gap? (2026-10-02)
+
+**Status: pre-registration, written at home before any scored run.**
+
+- **Lock:** the git commit that adds this document, the candidate
+  (`patches/psf_compile_c5_2026-10-02/psf_compile.py`, with its tests) and `benchmarks/c5_eval.py` with its
+  runner, pushed before the scored run.
+- **No hardware:** fake devices and Aer noise only.
+- **The predictions (section 3) were written before the smoke run** and were not changed after it. The smoke run
+  and one test fix are disclosed in section 5.
+
+## 1. The candidate (changelog item 33)
+
+`compile_for_hardware(..., target=..., placement_refine=True)`:
+
+- **Same as the release up to routing:** PSF-Zero compresses, lays out and routes exactly as release 2026-10-02.1.
+- **Then one re-placement step:** the routing pass manager ends, after its optimization stage, with the step that
+  Qiskit level 3 runs at the end of its own optimization stage:
+  - `VF2PostLayout(target, strict_direction=True, seed=-1)`, with level 3's limits for it (call limit 300,000,
+    max trials 2,500);
+  - `ApplyLayout` when it finds a placement that scores better.
+- **What "scores better" means:** the score is the sum of -log(1 - error) of the gates as placed, using each
+  instruction's own reported error. Readout enters only through `measure` instructions, and the circuits here
+  have none.
+- **It relabels physical qubits only.** Gates, their number and the routing are unchanged. The routing permutation
+  and final layout are carried over by `ApplyLayout`'s own update.
+- **Safety:** item 31 stays as the backstop. A failed coupler or qubit (error 1.0) costs `f64::MAX` in the score,
+  so the re-placement never moves onto one.
+- **Defaults:** requires `target`. The default False is identical to the release, as checked by test.
+- **Motivation:** Addendum 308.
+  - Qiskit's level-1 layout stage (c4) ranks by an averaged per-qubit error that mixes in readout.
+  - Level 3's final exact re-placement is why L3T wins.
+  - The exact per-gate score (S_rep) ordered C3, C4 and L3T as the measured infidelity did in 93-100% of
+    circuits.
+
+## 2. Design (`benchmarks/c5_eval.py`)
+
+- **Circuits:** the five GAP families (Addendum 300), via the locked `gap_eval.family()`: 2,079 per device and
+  arm.
+- **Arms:**
+
+  | arm | what it is |
+  |---|---|
+  | C3 | release 2026-10-02.1 with `target` (as in Addenda 304 and 307) |
+  | C5 | the candidate with `target` and `placement_refine=True` |
+  | L3T | Qiskit level 3 with the Target and `approximation_degree=1.0` |
+
+- **Devices, noise and metric:** as in Addenda 303 and 306.
+- **Cells:** 6 families (F3 split into open and periodic) × 3 devices = 18 cells of paired mean infidelity
+  ratios.
+- **Also recorded per circuit:** whether the re-placement was applied, and whether the item-31 backstop
+  recompiled.
+
+## 3. Predictions (scored only by `c5_eval.py score`; written before the smoke run)
+
+**P0, harness.** All of these must hold, or nothing below is scored:
+
+- all 45 job files are present;
+- every simulated circuit's noiseless infidelity is <= 1e-6;
+- at most 5% of the circuits are too wide.
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| H1 | the placement gap on chains closes | chains (F3o + F5): C5/L3T <= 1.05 on every device | >= 1.15 on any device |
+| H2 | C5 improves on the release almost everywhere | C5/C3 <= 1.00 in >= 17 of 18 cells, and no cell > 1.02 | fewer than 14 cells <= 1.00, or any cell > 1.10 |
+| H3 | it rarely makes a circuit worse | per circuit, C5 infidelity <= C3's in >= 90% of circuits on every device | < 80% on any device |
+| H4 | it only relabels | on every circuit where neither arm used the item-31 backstop, C5 has the same two-qubit count and depth as C3 | any difference |
+| H5 | it never uses a failed element | 0 failed-edge or failed-qubit uses by C5 | any |
+| H6 | it is not slow | median compile time C5 <= 3 × C3 | > 10 × C3 |
+
+**Reported without prediction:**
+
+- the cell table (C3/L3T, C5/L3T, C5/C3, mean two-qubit counts, re-placements applied);
+- backstop recompiles of both arms;
+- compile times;
+- the C5/L3T range.
+
+**Expectations, stated after the smoke run (section 5); the predictions were not changed:**
+
+- **FakeAuckland is the risk for H1-H3.** Addendum 308 found that only there does the T1/T2 floor make the
+  simulated error differ from the reported one: S_rep's sign agreement was 0.93 there against 0.99-1.00 on the
+  Heron devices. C5 scores by the reported error.
+- **Off the chains, a gap to L3T should remain.** F1, F2 and F4 still differ from L3T in their two-qubit counts,
+  because of routing.
+
+## 4. What this will not establish
+
+- Real hardware, or measured circuits (readout is not in the metric).
+- Whether a floor-aware score would do better on FakeAuckland.
+- Routing.
+
+## 5. Development (disclosed)
+
+### 5.1 Tests
+
+`test_c5_placement.py`, 7 tests:
+
+- the version string;
+- the default identical to release 2026-10-02.1, with and without `target`;
+- `placement_refine` without `target` raises;
+- on each of FakeAuckland, FakeTorino and FakeKingston, refined outputs are:
+  - exact (checked on the touched qubits);
+  - free of failed elements;
+  - a relabelling of the unrefined compile: same gates, and a reported-error score no higher.
+
+**One test fix.** In the first version, the reference for "same gates" was the release with `target`. On
+FakeTorino the unrefined 6-qubit ring uses a failed coupler (Addendum 302), so item 31 recompiled it on the
+pruned map, with a different routing. The refined call had moved off the failed coupler and needed no
+recompile. The test therefore failed (1 failed, 5 passed), which was a fault of the test and not of the
+candidate.
+
+The reference is now the compile without `target`, which is the refined call's own first pass. Calls in which the
+backstop still recompiles are checked only for exactness and avoidance. The candidate and the evaluation scripts
+were not changed. The fixed test was run at home before the lock (section 5.4).
+
+### 5.2 Smoke run (1 circuit per sub-family, 53 s; not a result)
+
+- P0 passed.
+- Chains C5/L3T: FakeAuckland 1.102, FakeTorino 1.009, FakeKingston 1.005.
+- C5/C3 <= 1.00 in 17 of 18 cells; the maximum was 1.022 (FakeAuckland F4).
+- Per circuit, C5 <= C3: FakeAuckland 0.875, FakeTorino 1.000, FakeKingston 1.000.
+- The re-placement was applied in 16, 16 and 13 C5 circuits (FakeAuckland, FakeTorino, FakeKingston).
+- Backstop recompiles: C3 4, C5 0. The re-placement moved those circuits off the failed couplers before item 31
+  was needed.
+- Median compile time: C3 0.032 s, C5 0.037 s, L3T 0.018 s.
+- Its verdict lines:
+
+  | H1 | H2 | H3 | H4 | H5 | H6 |
+  |---|---|---|---|---|---|
+  | AMBIGUOUS | AMBIGUOUS | AMBIGUOUS | CONFIRMED | CONFIRMED | CONFIRMED |
+
+### 5.3 Other development
+
+- The scorer was run on the c4 run's files relabelled as C5. It reproduced Addendum 307's H1-H2 numbers.
+- Smoke and scored circuits use disjoint seeds.
+- No scored circuit was compiled before the lock.
+
+### 5.4 Test run at home before the lock
+
+The fixed test was run at home on the installed files and passed (7 passed) before this document was
+committed; the commit command was chained on that run.
+
+## 6. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `patches/psf_compile_c5_2026-10-02/psf_compile.py` | `daa3a44dd96ffed925bcc5b2edf8d627d480d54976f4affd7579263edcac8240` |
+| `patches/psf_compile_c5_2026-10-02/test_c5_placement.py` | `d46be65edf63778f4448b3d9d4500996b217e9f980aff68ad62df4791a89afdd` |
+| `benchmarks/c5_eval.py` | `44fe82dea70717478aad64be3fd0854cb95c92ef04f8f8ba7daac4a3155d52ce` |
+| `benchmarks/run_c5_2026-10-02.sh` | `ffdb04a5e9ec10fd031985bc25b79c9b983a6f06d71bbbf0cf322c78267414a0` |
+
 ---
 
 ---
