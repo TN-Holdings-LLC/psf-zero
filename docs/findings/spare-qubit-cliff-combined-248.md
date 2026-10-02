@@ -8109,6 +8109,147 @@ noiseless threshold stays at 1e-6.
 | `benchmarks/c4_eval.py` | `449789117b2fff27c48da21d4ff89f27f3e593239d210b110864ae4a6645058c` |
 | `benchmarks/run_c4_2026-10-02.sh` | `eb3f1f40d6646614be487c5e449ccc4495e665a4313b5dcf8f982ed6e0e9f4ab` |
 
+
+---
+
+<!-- ===== Addendum 307 (source: spare-qubit-cliff-addendum-307-2026-10-02.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 306 (lock commit 29dd762), scored by the locked script and re-checked by benchmarks/c4_verify.py, written after the lock and before the results were seen. Candidate c4 is not adopted.
+
+## Addendum 307 -- Results: candidate psf_compile 2026-10-02.c4 (Addendum 306). H1-H3 refuted, H4-H5 confirmed: handing placement to Qiskit's level-1 error-aware layout stage does not close the gap to Qiskit L3. It helps on FakeAuckland, is neutral on FakeTorino and hurts on FakeKingston, and its wins and losses are systematic by device and family. Not adopted (2026-10-02)
+
+**Status: results of the pre-registered test in Addendum 306.**
+
+- **Lock:** commit `29dd762`, pushed before the scored run.
+- **Scoring:** by the locked `c4_eval.py score`, and re-checked by an independent script written after the lock and
+  before the results were seen (section 5).
+- **Setting:** home (WSL2), 6 processes; 45 jobs, 6,237 circuit compilations, 117 s.
+- **As expected after the smoke run** (Addendum 306, section 5): the verdicts are the same as the smoke run's.
+
+## 1. Verdicts
+
+| ID | Verdict | Numbers |
+|---|---|---|
+| P0 | **PASS** | 45 of 45 files; noiseless infidelity max 1.85e-8 (<= 1e-6); 0 of 6,237 too wide |
+| H1 | **REFUTED** | chains (F3o + F5) C4/L3T: FakeAuckland 1.258, FakeTorino 1.320, FakeKingston 1.301 (REFUTED at >= 1.20) |
+| H2 | **REFUTED** | C4/C3 <= 1.00 in 7 of 18 cells (range 0.830-1.527) |
+| H3 | **REFUTED** | C4/L3T 1.039-1.634; 10 of 18 cells > 1.30 |
+| H4 | **CONFIRMED** | 0 failed-edge and 0 failed-qubit uses by C4; 0 backstop recompiles |
+| H5 | **CONFIRMED** | median compile time C3 0.028 s, C4 0.014 s (L3T 0.015 s) |
+
+## 2. Numbers
+
+**Cells** (paired mean infidelity ratios):
+
+| family | device | C3/L3T | C4/L3T | C4/C3 |
+|---|---|---|---|---|
+| F1 ring ansatz | FakeAuckland | 1.156 | 1.106 | 0.957 |
+| | FakeTorino | 1.511 | 1.291 | 0.855 |
+| | FakeKingston | 1.115 | 1.528 | 1.371 |
+| F2 QAOA | FakeAuckland | 1.147 | 1.045 | 0.911 |
+| | FakeTorino | 1.189 | 1.214 | 1.021 |
+| | FakeKingston | 1.148 | 1.488 | 1.296 |
+| F3o open chain | FakeAuckland | 1.377 | 1.288 | 0.936 |
+| | FakeTorino | 1.240 | 1.313 | 1.059 |
+| | FakeKingston | 1.459 | 1.269 | 0.870 |
+| F3p periodic chain | FakeAuckland | 1.252 | 1.381 | 1.103 |
+| | FakeTorino | 1.051 | 1.606 | 1.527 |
+| | FakeKingston | 1.233 | 1.634 | 1.326 |
+| F4 random SU(4) | FakeAuckland | 1.031 | 1.039 | 1.007 |
+| | FakeTorino | 1.696 | 1.407 | 0.830 |
+| | FakeKingston | 1.195 | 1.608 | 1.346 |
+| F5 GHZ chain | FakeAuckland | 1.244 | 1.048 | 0.842 |
+| | FakeTorino | 1.299 | 1.375 | 1.059 |
+| | FakeKingston | 1.538 | 1.578 | 1.026 |
+
+**Per circuit, C4 against C3** (descriptive, from the independent script):
+
+| device | pooled C4/C3 | C4 lower | same 2q count |
+|---|---|---|---|
+| FakeAuckland | 0.978 | 509 of 693 | 693 |
+| FakeTorino | 1.002 | 308 of 693 | 674 |
+| FakeKingston | 1.265 | 126 of 693 | 693 |
+| all | geometric mean 1.053 | 943 of 2,079 (C3 lower in 1,134; equal in 2) | 2,060 |
+
+**C4 lower than C3, by family:**
+
+| device | F1 | F2 | F3 | F4 | F5 |
+|---|---|---|---|---|---|
+| FakeAuckland | 199 / 216 | 106 / 120 | 75 / 150 | 57 / 135 | 72 / 72 |
+| FakeTorino | 180 / 216 | 43 / 120 | 0 / 150 | 85 / 135 | 0 / 72 |
+| FakeKingston | 0 / 216 | 3 / 120 | 75 / 150 | 0 / 135 | 48 / 72 |
+
+## 3. Reading
+
+- **C4 changes where the circuit is placed, not how it is routed.**
+  - The two-qubit counts equal C3's in 2,060 of 2,079 circuits (all 19 differences on FakeTorino, F2 and F4).
+  - Yet the infidelity differs in 2,077. The level-1 layout stage re-places the same routed circuit on other physical
+    qubits.
+- **The placement it chooses is not better under the noise model, on balance.**
+  - FakeAuckland: better (C4 lower in 509 of 693; every F5 chain).
+  - FakeTorino: neutral (pooled 1.002), but every chain (F3 and F5, 222 circuits) is worse.
+  - FakeKingston: worse (pooled 1.265; C4 lower in none of 216 F1 rings and none of 135 F4 circuits).
+- **The wins and losses are systematic, not noise.**
+  - Whole families go one way on a device: 0 of 216, 0 of 150, 72 of 72.
+  - This is what one expects if the layout stage ranks regions by a score that disagrees with the noise model in a
+    consistent way, so that it repeatedly picks the same regions.
+- **Why the score might disagree (not tested here).**
+  - Qiskit's layout stage ranks by the Target's reported errors.
+  - `NoiseModel.from_backend` applies, per gate, the larger of the reported error and the T1/T2 relaxation floor
+    (Addendum 293).
+  - Where a region's reported errors lie below its floor, it looks better to the layout stage than it is under the
+    noise model.
+  - This is the hypothesis that motivates the next candidate. It is stated here, not established.
+- **What did work.**
+  - C4 never touched a failed element (H4).
+  - It compiles in half the time of C3, because it skips PSF-Zero's layout search (H5).
+  - In the 7 cells where it won (four on FakeAuckland, two on FakeTorino, FakeKingston F3o) the gains were real:
+    C4/C3 0.83-0.96.
+- **Decision.** c4 is not adopted. `error_aware_layout` stays in the candidate patch only; release 2026-10-02.1 is
+  unchanged.
+
+## 4. Reproducibility
+
+The C3 and L3T arms of this run were compared, circuit by circuit, with the same arms of the c3 run (Addendum 304):
+
+- C3 (release 2026-10-02.1 here, candidate 2026-10-02.c3 there): 2,079 of 2,079 identical (two-qubit count and
+  infidelity to 1e-12).
+- L3T: 2,079 of 2,079 identical.
+
+This confirms both that the run is deterministic and that the release equals the adopted candidate.
+
+## 5. Independent check
+
+`benchmarks/c4_verify.py` (written after the lock, before the results were seen) reads the raw json only. It
+checks the following, and all of it matches the locked score:
+
+- the commit `29dd762`, the script and candidate hashes, the versions and the counts in all 45 files;
+- P0;
+- H1-H5;
+- the cell table;
+- the per-circuit comparison in section 2.
+
+Output in `outputs/verify.txt`.
+
+## 6. Next
+
+**Candidate c5 (design to follow):** keep PSF-Zero's routing, and choose the placement itself.
+
+- Enumerate VF2 embeddings of the routed circuit's interaction graph.
+- Score each by the errors of the edges and qubits it actually uses, weighted by use count.
+- Compare two scores: the reported errors, and the floor-aware errors (the larger of the reported error and the
+  T1/T2 floor).
+- If the floor-aware score fixes the FakeKingston and FakeTorino-chain losses, the hypothesis in section 3 is
+  supported.
+
+A short exploratory diagnosis (which regions C3, C4 and L3T choose, with reported and floor-aware scores) is to come
+first, in the style of Addendum 302.
+
+## 7. Data (`data/2026-10-02/c4/`)
+
+- `outputs/`: 45 job files, their logs, `env.txt`, `run.log`, `score.md`, `score_log.txt`, `verify.txt`.
+- Local paths were replaced.
+
 ---
 
 ---

@@ -1,0 +1,36 @@
+files 45, flags 0
+P0 PASS noiseless max 1.85e-08, too wide 0 of 6237
+H1 REFUTED {'FakeAuckland': np.float64(1.258), 'FakeTorino': np.float64(1.32), 'FakeKingston': np.float64(1.301)}
+H2 REFUTED 7 of 18 <= 1.0, range 0.830-1.527
+H3 REFUTED C4/L3T range 1.039-1.634
+H4 CONFIRMED 0
+H5 CONFIRMED {'C3': 0.0279, 'C4': 0.0145, 'L3T': 0.0153}
+
+| cell | device | C3/L3T | C4/L3T | C4/C3 |
+| F1 | FakeAuckland | 1.156 | 1.106 | 0.957 |
+| F1 | FakeTorino | 1.511 | 1.291 | 0.855 |
+| F1 | FakeKingston | 1.115 | 1.528 | 1.371 |
+| F2 | FakeAuckland | 1.147 | 1.045 | 0.911 |
+| F2 | FakeTorino | 1.189 | 1.214 | 1.021 |
+| F2 | FakeKingston | 1.148 | 1.488 | 1.296 |
+| F3o | FakeAuckland | 1.377 | 1.288 | 0.936 |
+| F3o | FakeTorino | 1.240 | 1.313 | 1.059 |
+| F3o | FakeKingston | 1.459 | 1.269 | 0.870 |
+| F3p | FakeAuckland | 1.252 | 1.381 | 1.103 |
+| F3p | FakeTorino | 1.051 | 1.606 | 1.527 |
+| F3p | FakeKingston | 1.233 | 1.634 | 1.326 |
+| F4 | FakeAuckland | 1.031 | 1.039 | 1.007 |
+| F4 | FakeTorino | 1.696 | 1.407 | 0.830 |
+| F4 | FakeKingston | 1.195 | 1.608 | 1.346 |
+| F5 | FakeAuckland | 1.244 | 1.048 | 0.842 |
+| F5 | FakeTorino | 1.299 | 1.375 | 1.059 |
+| F5 | FakeKingston | 1.538 | 1.578 | 1.026 |
+
+per circuit C4 vs C3: 2079 pairs; same 2q count 2060; same infidelity 2; C4 lower 943; C4 higher 1134
+log ratio C4/C3: median 0.032, geometric mean ratio 1.053
+  FakeAuckland: pooled C4/C3 0.978, C4 lower in 509 of 693, same 2q 693
+  FakeTorino: pooled C4/C3 1.002, C4 lower in 308 of 693, same 2q 674
+  FakeKingston: pooled C4/C3 1.265, C4 lower in 126 of 693, same 2q 693
+C4 backstop recompiles: 0
+C3/C4 failed uses by arm: {'C3': 0, 'C4': 0, 'L3T': 0}
+flags: none
