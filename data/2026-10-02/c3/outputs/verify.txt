@@ -1,0 +1,12 @@
+files 45, flags 0
+noiseless > 1e-9: 9 rows, arms/families [('L3T', 'F3')], max 1.85e-08
+P0 PASS
+H1 CONFIRMED 0
+H2 AMBIGUOUS {'F1': np.float64(1.511), 'F2': np.float64(1.189), 'F4': np.float64(1.696)}
+H3 CONFIRMED 1926 of 1926
+H4 CONFIRMED 153 of 153
+H5 CONFIRMED {'FakeAuckland': np.float64(1.36), 'FakeTorino': np.float64(1.246), 'FakeKingston': np.float64(1.467)}
+recompiles by device: {'FakeAuckland': 0, 'FakeTorino': 153, 'FakeKingston': 0}
+C2 failed-qubit uses by device: {'FakeAuckland': 0, 'FakeTorino': 0, 'FakeKingston': 0}
+recompiled circuits: mean infidelity C2 0.9561, C3 0.3747, L3T 0.2375
+flags: none

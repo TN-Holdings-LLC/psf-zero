@@ -7839,6 +7839,104 @@ run 2.
 | `benchmarks/c3_eval.py` | `a56aa67676142fe8d254c67d91f120e854ed0c64b673b5fe3e750b22941196f4` |
 | `benchmarks/run_c3_2026-10-02.sh` | `7c82f6126e66ad15c7e6c3171a7de7fb5c8b503240dfe01044367f8ed6ba990d` |
 
+
+---
+
+<!-- ===== Addendum 304 (source: spare-qubit-cliff-addendum-304-2026-10-02.md) ===== -->
+
+> **Note added when merging:** Results of the home pre-registration in Addendum 303 (lock commit 158967c). Scored by the locked script and re-checked by an independent script written after the run. Section 4 corrects the explanation given in Addendum 301 for its P0 failure.
+
+## Addendum 304 -- Results: candidate psf_compile 2026-10-02.c3 (Addendum 303). Four of five confirmed, H2 ambiguous: c3 never touches a failed element, leaves 1,926 of 1,926 unaffected circuits bit-for-bit unchanged, and improves all 153 affected ones (mean infidelity 0.956 → 0.375); the FakeTorino gap to Qiskit L3 halves but does not close. Correction to Addendum 301 (2026-10-02)
+
+**Status: results of the pre-registered test in Addendum 303.**
+
+- **Lock:** commit `158967c`, pushed before the scored run.
+- **Scoring:** by the locked `c3_eval.py score`, and re-checked by an independent script written after the run
+  (section 5).
+- **Setting:** home (WSL2), 6 processes; 45 jobs, 6,237 circuit compilations, 117 s.
+
+## 1. Verdicts
+
+| ID | Verdict | Numbers |
+|---|---|---|
+| P0 | **PASS** | 45 of 45 files; noiseless infidelity max 1.9e-8 (<= 1e-6); none too wide |
+| H1 | **CONFIRMED** | C3: 0 failed-edge and 0 failed-qubit uses (C2: 1,632 failed-edge uses on FakeTorino) |
+| H2 | **AMBIGUOUS** | FakeTorino C3/L3T: F1 1.511, F2 1.189, F4 1.696 (CONFIRMED needed <= 1.30 on all three; REFUTED needed any >= 1.80) |
+| H3 | **CONFIRMED** | 1,926 of 1,926 circuits where C2 used no failed element: C3 identical (2q count and infidelity to 1e-12) |
+| H4 | **CONFIRMED** | 153 of 153 circuits where C2 used a failed element: C3 lower infidelity |
+| H5 | **CONFIRMED** | chains C3/L3T: Auckland 1.360, Torino 1.246, Kingston 1.467 |
+
+## 2. Numbers
+
+**FakeTorino** is the only device where C2 used failed elements, and where C3 recompiled:
+
+| family | C2/L3T | C3/L3T | C3/C2 | C2 failed-edge uses |
+|---|---|---|---|---|
+| F1 ring ansatz | 3.252 | 1.511 | 0.465 | 1,188 |
+| F2 QAOA | 2.058 | 1.189 | 0.578 | 183 |
+| F4 random SU(4) | 1.872 | 1.696 | 0.906 | 261 |
+| F3o, F3p, F5 | unchanged | unchanged | 1.000 | 0 |
+
+**The 153 recompiled circuits** (all on FakeTorino): mean infidelity C2 0.956, C3 0.375, L3T 0.238.
+
+**FakeAuckland and FakeKingston:**
+
+- C3/C2 = 1.000 in every family.
+- C2 used none of FakeKingston's 7 failed couplers or 5 failed qubits on these circuits, so nothing was
+  recompiled there.
+
+## 3. Reading
+
+- **c3 does exactly what it was built for, and nothing else.**
+  - Failed couplers are never used.
+  - Every circuit that did not touch one is unchanged, bit for bit (1,926 of 1,926).
+  - Every circuit that did touch one improves (153 of 153). Their mean infidelity falls from 0.956, which is
+    essentially a fully depolarized output, to 0.375.
+- **It does not close the FakeTorino gap.**
+  - C3/L3T on FakeTorino is 1.19-1.70 against 1.86-3.25 before. That is about halved, not brought to the
+    1.30 that H2 required.
+  - On the recompiled circuits C3 is still 1.6 times L3T (0.375 against 0.238): the recompiled layout avoids the
+    failed coupler but is otherwise chosen without error information.
+  - This is the risk Addendum 303 stated before the run.
+- **The rest of the gap is the error-blind layout (H5).** On chains, where both use the same two-qubit gates,
+  C3 is 1.25-1.47 times L3T on every device, unchanged from Addendum 301.
+- **Adoption.** c3 is safe to adopt as an opt-in. It changes nothing without `target`, and nothing with `target`
+  unless a failed element would otherwise be used. Adoption is the owner's decision; this test supports it. It
+  is not the answer to the release's deficit. That needs error-weighted layout.
+
+## 4. Correction to Addendum 301
+
+Addendum 301 explained its P0 failure (9 L3T rows with noiseless infidelity up to 1.9e-8) as Qiskit approximating
+two-qubit synthesis from the Target's error rates. This run disproves that: L3T was called here with
+`approximation_degree=1.0`, which disables that approximation, and the same 9 rows (F3o seeds 13, 27, 45 on all
+three devices) still show the same values, up to 1.85e-8.
+
+The deviation therefore comes from somewhere inside Qiskit's exact path. The likely source is the default
+fidelity tolerance (1 - 1e-9 per block) with which two-qubit Weyl decompositions are specialized, accumulated over
+the 60 two-qubit gates of these circuits. This was not investigated further. The rest of Addendum 301 stands: the
+threshold of 1e-9 was too strict, and 1e-6 (used here) is adequate.
+
+## 5. Independent check
+
+`benchmarks/c3_verify.py` (written after the run) reads the raw json only. It checks the following, and all of it
+matches the locked score:
+
+- the commit `158967c`, the script and candidate hashes, the candidate version and the counts in all 45 files;
+- P0 and the 9 rows behind its maximum;
+- H1-H5;
+- the recompile counts per device (Auckland 0, Torino 153, Kingston 0);
+- the recompiled circuits' means.
+
+Output in `outputs/verify.txt`.
+
+## 6. Data (`data/2026-10-02/c3/`)
+
+- `outputs/`: 45 job files, logs, `env.txt`, `run.log`, `score.md`, `score_log.txt`, `verify.txt`.
+- `dev/smoke1/`: the first design's smoke run (Addendum 303, section 5.1).
+- `dev/smoke2/`: the locked design's smoke run.
+- `diag/`: from Addendum 302.
+- Local paths were replaced.
+
 ---
 
 ---

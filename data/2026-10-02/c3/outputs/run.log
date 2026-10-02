@@ -1,0 +1,85 @@
+date_utc 2026-10-02T05:49:59Z
+CPU(s):                                  12
+Model name:                              AMD Ryzen 5 5500
+python 3.12.13
+5f6bdf70660537a078c2d34e6c83f5617248c54d895e30961fa5f69c5fa617d7  <repo>/benchmarks/c3_eval.py
+f68b9e4637ad48d685907392d82e3df58fa4dfe417461583cd745af6928d18bc  benchmarks/run_c3_2026-10-02.sh
+158967c Addenda 302-303: FakeTorino diagnosis (release crosses a failed coupler); candidate c3 (avoid failed couplers and qubits) pre-registration, locks the candidate, its tests and c3_eval
+PAR 6
+   done FakeKingston C3 F5 (13 s)
+   done FakeKingston C3 F2 (18 s)
+   done FakeKingston C3 F4 (21 s)
+   done FakeKingston C3 F1 (26 s)
+   done FakeTorino C3 F1 (27 s)
+   done FakeKingston C3 F3 (28 s)
+   done FakeTorino C3 F2 (29 s)
+   done FakeAuckland C3 F2 (34 s)
+   done FakeTorino C3 F5 (37 s)
+   done FakeAuckland C3 F1 (38 s)
+   done FakeTorino C3 F4 (39 s)
+   done FakeAuckland C3 F3 (40 s)
+   done FakeAuckland C3 F5 (40 s)
+   done FakeAuckland C3 F4 (41 s)
+   done FakeTorino C3 F3 (42 s)
+   done FakeKingston C2 F5 (55 s)
+   done FakeKingston C2 F2 (57 s)
+   done FakeKingston C2 F4 (62 s)
+   done FakeKingston C2 F1 (65 s)
+   done FakeTorino C2 F1 (66 s)
+   done FakeKingston C2 F3 (67 s)
+   done FakeTorino C2 F2 (70 s)
+   done FakeAuckland C2 F2 (73 s)
+   done FakeTorino C2 F5 (76 s)
+   done FakeAuckland C2 F1 (77 s)
+   done FakeTorino C2 F4 (79 s)
+   done FakeAuckland C2 F5 (79 s)
+   done FakeTorino C2 F3 (81 s)
+   done FakeAuckland C2 F4 (81 s)
+   done FakeAuckland C2 F3 (81 s)
+   done FakeKingston L3T F5 (94 s)
+   done FakeKingston L3T F2 (95 s)
+   done FakeKingston L3T F4 (99 s)
+   done FakeKingston L3T F1 (99 s)
+   done FakeTorino L3T F1 (101 s)
+   done FakeKingston L3T F3 (103 s)
+   done FakeTorino L3T F2 (107 s)
+   done FakeTorino L3T F5 (108 s)
+   done FakeAuckland L3T F2 (109 s)
+   done FakeAuckland L3T F1 (112 s)
+   done FakeAuckland L3T F5 (113 s)
+   done FakeTorino L3T F4 (114 s)
+   done FakeTorino L3T F3 (115 s)
+   done FakeAuckland L3T F4 (116 s)
+   done FakeAuckland L3T F3 (117 s)
+== all jobs finished after 117 s
+| F1 | FakeTorino | 3.252 | 1.511 | 0.465 | 1188 / 0 / 0 |
+| F1 | FakeKingston | 1.115 | 1.115 | 1.000 | 0 / 0 / 0 |
+| F2 | FakeAuckland | 1.147 | 1.147 | 1.000 | 0 / 0 / 0 |
+| F2 | FakeTorino | 2.058 | 1.189 | 0.578 | 183 / 0 / 0 |
+| F2 | FakeKingston | 1.148 | 1.148 | 1.000 | 0 / 0 / 0 |
+| F3o | FakeAuckland | 1.377 | 1.377 | 1.000 | 0 / 0 / 0 |
+| F3o | FakeTorino | 1.240 | 1.240 | 1.000 | 0 / 0 / 0 |
+| F3o | FakeKingston | 1.459 | 1.459 | 1.000 | 0 / 0 / 0 |
+| F3p | FakeAuckland | 1.252 | 1.252 | 1.000 | 0 / 0 / 0 |
+| F3p | FakeTorino | 1.051 | 1.051 | 1.000 | 0 / 0 / 0 |
+| F3p | FakeKingston | 1.233 | 1.233 | 1.000 | 0 / 0 / 0 |
+| F4 | FakeAuckland | 1.031 | 1.031 | 1.000 | 0 / 0 / 0 |
+| F4 | FakeTorino | 1.872 | 1.696 | 0.906 | 261 / 0 / 0 |
+| F4 | FakeKingston | 1.195 | 1.195 | 1.000 | 0 / 0 / 0 |
+| F5 | FakeAuckland | 1.244 | 1.244 | 1.000 | 0 / 0 / 0 |
+| F5 | FakeTorino | 1.299 | 1.299 | 1.000 | 0 / 0 / 0 |
+| F5 | FakeKingston | 1.538 | 1.538 | 1.000 | 0 / 0 / 0 |
+
+C2 circuits using a failed element: 153 of 2079; C3 recompiled 153
+
+## Predictions
+
+- H1 (C3 never uses a failed coupler or qubit): **CONFIRMED** (0 uses)
+- H2 (the FakeTorino outlier is gone: C3/L3T <= 1.30 on F1, F2, F4): **AMBIGUOUS** (F1 1.511, F2 1.189, F4 1.696)
+- H3 (where C2 used no failed element, C3 is identical to C2): **CONFIRMED** (1926 of 1926)
+- H4 (where C2 used a failed element, C3 has lower infidelity in >= 90%): **CONFIRMED** (153 of 153 = 1.000)
+- H5 (the placement gap remains: chains C3/L3T >= 1.10 on every device): **CONFIRMED** (FakeAuckland 1.360, FakeTorino 1.246, FakeKingston 1.467)
+
+Reported: median compile s C2 0.026, C3 0.027, L3T 0.015
+
+C3 DONE

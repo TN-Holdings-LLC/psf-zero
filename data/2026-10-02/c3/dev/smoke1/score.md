@@ -1,0 +1,34 @@
+# c3 score (SMOKE -- not a result)
+
+P0: PASS -- files 45 of 45 (missing []); noiseless infidelity max 4.8e-15 (<= 1e-6); too wide 0 of 144
+
+| family | device | C2/L3T | C3/L3T | C3/C2 | failed-edge uses C2 / C3 / L3T |
+|---|---|---|---|---|---|
+| F1 | FakeAuckland | 1.170 | 1.170 | 1.000 | 0 / 0 / 0 |
+| F1 | FakeTorino | 3.267 | 2.475 | 0.757 | 33 / 0 / 0 |
+| F1 | FakeKingston | 1.114 | 6.297 | 5.655 | 0 / 0 / 0 |
+| F2 | FakeAuckland | 1.095 | 1.095 | 1.000 | 0 / 0 / 0 |
+| F2 | FakeTorino | 1.186 | 1.307 | 1.102 | 0 / 0 / 0 |
+| F2 | FakeKingston | 1.149 | 4.416 | 3.842 | 0 / 0 / 0 |
+| F3o | FakeAuckland | 1.422 | 1.422 | 1.000 | 0 / 0 / 0 |
+| F3o | FakeTorino | 1.236 | 1.236 | 1.000 | 0 / 0 / 0 |
+| F3o | FakeKingston | 1.475 | 1.475 | 1.000 | 0 / 0 / 0 |
+| F3p | FakeAuckland | 1.318 | 1.318 | 1.000 | 0 / 0 / 0 |
+| F3p | FakeTorino | 1.053 | 2.694 | 2.559 | 0 / 0 / 0 |
+| F3p | FakeKingston | 1.224 | 4.879 | 3.986 | 0 / 0 / 0 |
+| F4 | FakeAuckland | 0.931 | 0.931 | 1.000 | 0 / 0 / 0 |
+| F4 | FakeTorino | 2.924 | 3.403 | 1.164 | 15 / 0 / 0 |
+| F4 | FakeKingston | 1.227 | 3.626 | 2.955 | 0 / 0 / 0 |
+| F5 | FakeAuckland | 1.244 | 1.244 | 1.000 | 0 / 0 / 0 |
+| F5 | FakeTorino | 1.299 | 1.299 | 1.000 | 0 / 0 / 0 |
+| F5 | FakeKingston | 1.538 | 1.538 | 1.000 | 0 / 0 / 0 |
+
+## Predictions
+
+- H1 (C3 never places a 2q gate on a failed edge): **CONFIRMED** (0 uses)
+- H2 (the FakeTorino outlier is gone: C3/L3T <= 1.30 on F1, F2, F4): **REFUTED** (F1 2.475, F2 1.307, F4 3.403)
+- H3 (no harm: C3/C2 <= 1.02 in every family and device): **REFUTED** (max 5.655)
+- H4 (FakeAuckland has no failed edge: C3 identical to C2 on every circuit): **CONFIRMED** (16 of 16)
+- H5 (the placement gap remains: chains C3/L3T >= 1.10 on every device): **CONFIRMED** (FakeAuckland 1.365, FakeTorino 1.253, FakeKingston 1.492)
+
+Reported: median compile s C2 0.039, C3 0.034, L3T 0.017
