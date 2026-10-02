@@ -8733,6 +8733,165 @@ These tests were run at home on the applied files, and the commit command was ch
 - **Measured circuits:** readout charged once per measured qubit.
 - **Real hardware.**
 
+
+---
+
+<!-- ===== Addendum 312 (source: spare-qubit-cliff-addendum-312-2026-10-02.md) ===== -->
+
+> **Note added when merging:** Home pre-registration of psf_ai_compile 2026-10-02.a6 (the AI front end with release 2026-10-02.2 inside). Locked by the git commit that adds this Addendum, the candidate with its tests, and the evaluation scripts, pushed before the scored run. The predictions were written before the smoke run, which is disclosed in section 5.
+
+## Addendum 312 -- Pre-registration: the AI front end integrated with release 2026-10-02.2. Does psf_ai_compile a6 (a5 with the release's exact re-placement inside every compile) keep or improve a5, does the AI front end still add anything over the release alone, and is a fast mode enough? (2026-10-02)
+
+**Status: pre-registration, written at home before any scored run.**
+
+- **Lock:** the git commit that adds this document, the candidate
+  (`patches/psf_ai_compile_a6_2026-10-02/psf_ai_compile.py`, with its tests) and `benchmarks/ai6_eval.py` with its
+  runner, pushed before the scored run.
+- **No hardware:** fake devices and Aer noise only.
+- **The predictions (section 3) were written before the smoke run.**
+
+## 1. The candidate (psf_ai_compile 2026-10-02.a6)
+
+a5 is the AI front end for model-written circuits (Addenda 275-289). It does four things:
+
+- it generates several PSF-Zero compiles per circuit (starting points, seeds, Qiskit level-3 layouts);
+- it polishes them;
+- it re-places the best few by a state-aware error estimate that includes the T1/T2 floor, enumerating up to 5,000
+  embeddings and keeping the current placement unless one scores better;
+- it returns the best by that estimate.
+
+In GAP it was level with Qiskit L3T (0.98-1.02), at a median 0.66 s per circuit.
+
+**a6 changes two things, and only when a `target` is given:**
+
+1. **The release inside.** Every internal `compile_for_hardware()` call gets `target=` and `placement_refine=True`
+   (release 2026-10-02.2, items 31 and 33).
+   - Each candidate starts from the release's exact error-weighted placement and avoids failed couplers. a5's
+     internal compiles saw no target.
+   - The state-aware re-placement still runs. Where its 5,000-embedding search is cut off, the better starting
+     placement can survive.
+2. **A fast mode.** `state_aware_placement=False` skips the state-aware re-placement and returns the candidate with
+   the fewest two-qubit gates (then two-qubit depth), as placed by the release.
+
+Without a target, a6 is a5, as checked by test.
+
+## 2. Design (`benchmarks/ai6_eval.py`)
+
+**Circuit sets:**
+
+| set | what it is |
+|---|---|
+| GAP | the five GAP families (Addendum 300) via the locked `gap_eval.family()`, same seeds: 2,079 per device, all with at most 8 qubits |
+| MODEL | the 153-circuit replay set of Addendum 285: every circuit the models wrote in the 2026-09-30 pod runs that is not a best_circuit.json, unique per task, with at most 8 qubits, converted as the e2e harness does |
+
+Neither set is new. GAP was used in Addenda 301-310, and MODEL in Addenda 285 and, through a3/a4's development, in
+286-287. This test compares compilers on them; it does not tune anything on them.
+
+**Arms** (release 2026-10-02.2):
+
+| arm | what it is |
+|---|---|
+| C5 | the release alone: `compile_for_hardware(..., target, placement_refine=True)` |
+| A5 | psf_ai_compile a5 (`benchmarks/psf_ai_compile.py`) with the target |
+| A6 | the candidate with the target |
+| A6F | the candidate with the target and `state_aware_placement=False` |
+| L3T | Qiskit level 3 with the Target, `approximation_degree=1.0` |
+
+**Devices, noise and metric:**
+
+- FakeAuckland, FakeTorino, FakeKingston, with the metric of Addenda 303-310.
+- All ratios are pooled mean infidelities per device and set. GAP pools all five families.
+- Also recorded: instructions not in the Target ("off-target", reported only).
+
+## 3. Predictions (scored only by `ai6_eval.py score`; written before the smoke run)
+
+**P0, harness.** All of these must hold, or nothing below is scored:
+
+- all 90 job files are present;
+- every noiseless infidelity is <= 1e-6;
+- at most 5% of the circuits are too wide;
+- at least 150 model circuits were converted.
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| H1 | integration does no harm | A6/A5 <= 1.00 on every device, GAP and MODEL | any > 1.02 |
+| H2 | integration helps where a5's search is cut off | GAP: A6/A5 <= 0.98 on both Heron devices | >= 1.00 on both |
+| H3 | the AI front end still adds something over the release on model-written circuits | MODEL: A6/C5 <= 0.95 on every device | any >= 1.00 |
+| H4 | ... and does not lose to it on GAP | GAP: A6/C5 <= 1.00 on every device | any > 1.05 |
+| H5 | the fast mode is nearly as good on the Heron devices, at half the time or less | A6F/A6 <= 1.05 on both Heron devices, GAP and MODEL, and median compile time A6F <= 0.5 × A6 | any of those ratios > 1.15, or median A6F > A6 |
+| H6 | A6 is level with or better than L3T | A6/L3T <= 1.00 on every device, GAP and MODEL | any > 1.05 |
+| H7 | the release's placement never uses a failed element | 0 failed-edge or failed-qubit uses by C5, A6 and A6F | any |
+| H8 | integration costs little time | median compile time A6 <= 1.3 × A5 | > 2 × A5 |
+
+**Reported without prediction:**
+
+- the per-set and per-family tables;
+- mean two-qubit counts;
+- compile times;
+- off-target instructions by arm.
+
+## 4. What this will not establish
+
+- Hardware.
+- The vLLM loop itself (pass rates, or the model's behaviour with a6).
+- Circuits above 8 qubits: none are in either set, so a6's fast path for them is not tested.
+
+## 5. Development (disclosed)
+
+### 5.1 Tests
+
+`test_ai6.py`, 6 tests, all pass at home:
+
+- the version strings;
+- without a target, a6 equals a5 gate for gate;
+- on FakeAuckland, FakeTorino and FakeKingston, a6 outputs (both modes) are exact on the touched qubits and avoid
+  failed elements;
+- a6 refuses a psf_compile without `placement_refine`.
+
+### 5.2 Smoke run (not a result)
+
+The smoke run used 1 circuit per GAP sub-family and the first 6 sandbox dry-run (mock) circuits for MODEL, and took
+122 s. The lock command was chained on its P0 line reading PASS.
+
+- **A6/A5 was 1.000 in every family-device cell and in MODEL.** On these circuits a6 returned a5's result: a5's
+  state-aware re-placement reached the same placement whatever the starting placement.
+- **GAP pooled:**
+  - A6/C5: FakeAuckland 0.963, FakeTorino 0.955, FakeKingston 0.940;
+  - A6/L3T: 0.996, 0.989, 0.980.
+- **MODEL (mock circuits, mean 1.7 two-qubit gates):**
+  - A6/C5: 0.822, 0.990, 0.988;
+  - A6/L3T: 0.864, 0.930, 0.903.
+- **Fast mode:** A6F/A6 on the Heron devices was 1.002-1.012.
+- **Median compile time:** C5 0.035 s, A5 0.707 s, A6 0.669 s, A6F 0.312 s, L3T 0.017 s.
+- **Failed elements and off-target instructions:** none, in any arm.
+- **Its verdict lines:**
+
+  | H1 | H2 | H3 | H4 | H5 | H6 | H7 | H8 |
+  |---|---|---|---|---|---|---|---|
+  | CONFIRMED | REFUTED | AMBIGUOUS | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED |
+
+**Expectations, stated after the smoke run; the predictions were not changed:**
+
+- **H2 is likely to be refuted.** The integration does not change a5's choices when the state-aware search finds
+  the same optimum from any start.
+- **H3 depends on the real model circuits**, which are larger than the mock ones (Addendum 285: 2-qubit sums of
+  about 6 per circuit).
+
+### 5.3 Other development
+
+- The scorer was run on synthetic files built from the c5 run.
+- The smoke run's MODEL circuits are the sandbox mock circuits, never the scored set.
+- No scored circuit was compiled before the lock.
+
+## 6. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `patches/psf_ai_compile_a6_2026-10-02/psf_ai_compile.py` | `2b8d11fac91138af4352bd1d35c8383197dca9d43763811c4715319849f3e046` |
+| `patches/psf_ai_compile_a6_2026-10-02/test_ai6.py` | `1b4920cbc1a31b858409a0c555cda7b2d5306054c00f390997b9c5f396384b41` |
+| `benchmarks/ai6_eval.py` | `adef4385dbee523f38f8a9ff04f8cc9e90b9dc4bbfa084ae3bfdfa850adcd7f0` |
+| `benchmarks/run_ai6_2026-10-02.sh` | `7d3cb7e8b1b8e861d150321686a8b83a346d0aef3ac68a30c2ac3af5f37dd87e` |
+
 ---
 
 ---
