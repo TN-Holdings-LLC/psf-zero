@@ -1,0 +1,7 @@
+tables: rep 164, eff 137 (noise-model local entries 5), avg 83
+  FakeAuckland F1: 216 circuits, 8 s
+  FakeAuckland F2: 120 circuits, 11 s
+  FakeAuckland F3: 150 circuits, 18 s
+  FakeAuckland F4: 135 circuits, 24 s
+  FakeAuckland F5: 72 circuits, 25 s
+wrote diag_FakeAuckland.json: 693 circuits, 0 arm-rows not matching the c4 run

@@ -1,0 +1,16 @@
+date_utc 2026-10-02T09:38:49Z
+python 3.12.13 qiskit 2.5.2 aer 0.17.2
+aea5871 Addendum 307: candidate c4 results (H1-H3 refuted, H4-H5 confirmed; error-aware layout via Target helps on Auckland, hurts on Kingston; not adopted); c4_verify and data
+== runs finished after 67 s
+==> <out>/log_FakeAuckland.txt <==
+  FakeAuckland F5: 72 circuits, 25 s
+wrote diag_FakeAuckland.json: 693 circuits, 0 arm-rows not matching the c4 run
+
+==> <out>/log_FakeKingston.txt <==
+  FakeKingston F5: 72 circuits, 43 s
+wrote diag_FakeKingston.json: 693 circuits, 0 arm-rows not matching the c4 run
+
+==> <out>/log_FakeTorino.txt <==
+  FakeTorino F5: 72 circuits, 45 s
+wrote diag_FakeTorino.json: 693 circuits, 0 arm-rows not matching the c4 run
+DIAG DONE

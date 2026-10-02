@@ -1,0 +1,7 @@
+tables: rep 1132, eff 975 (noise-model local entries 6), avg 508
+  FakeKingston F1: 216 circuits, 15 s
+  FakeKingston F2: 120 circuits, 22 s
+  FakeKingston F3: 150 circuits, 32 s
+  FakeKingston F4: 135 circuits, 41 s
+  FakeKingston F5: 72 circuits, 43 s
+wrote diag_FakeKingston.json: 693 circuits, 0 arm-rows not matching the c4 run

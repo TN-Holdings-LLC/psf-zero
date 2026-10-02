@@ -1,0 +1,24 @@
+## FakeAuckland (693 circuits)
+C4 lower than C3 by: S_avg 575, S_rep 538, S_eff 493, measured infidelity 509
+lowest arm by S_avg  {'C3': 33, 'C4': 136, 'L3T': 524}
+lowest arm by S_rep  {'C3': 6, 'C4': 25, 'L3T': 662}
+lowest arm by S_eff  {'C3': 36, 'C4': 68, 'L3T': 589}
+lowest arm by infid  {'C3': 37, 'C4': 72, 'L3T': 584}
+mean S_avg / S_rep: {'C3': 1.26, 'C4': 1.27, 'L3T': 1.36}
+
+## FakeTorino (693 circuits)
+C4 lower than C3 by: S_avg 668, S_rep 312, S_eff 306, measured infidelity 308
+lowest arm by S_avg  {'C3': 0, 'C4': 584, 'L3T': 109}
+lowest arm by S_rep  {'C3': 9, 'C4': 3, 'L3T': 681}
+lowest arm by S_eff  {'C3': 9, 'C4': 2, 'L3T': 682}
+lowest arm by infid  {'C3': 6, 'C4': 2, 'L3T': 685}
+mean S_avg / S_rep: {'C3': 6.88, 'C4': 3.64, 'L3T': 7.55}
+
+## FakeKingston (693 circuits)
+C4 lower than C3 by: S_avg 545, S_rep 126, S_eff 126, measured infidelity 126
+lowest arm by S_avg  {'C3': 147, 'C4': 545, 'L3T': 1}
+lowest arm by S_rep  {'C3': 91, 'C4': 0, 'L3T': 602}
+lowest arm by S_eff  {'C3': 91, 'C4': 0, 'L3T': 602}
+lowest arm by infid  {'C3': 81, 'C4': 0, 'L3T': 612}
+mean S_avg / S_rep: {'C3': 12.53, 'C4': 6.79, 'L3T': 18.78}
+

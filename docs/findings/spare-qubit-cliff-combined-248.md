@@ -8250,6 +8250,141 @@ first, in the style of Addendum 302.
 - `outputs/`: 45 job files, their logs, `env.txt`, `run.log`, `score.md`, `score_log.txt`, `verify.txt`.
 - Local paths were replaced.
 
+
+---
+
+<!-- ===== Addendum 308 (source: spare-qubit-cliff-addendum-308-2026-10-02.md) ===== -->
+
+> **Note added when merging:** Exploratory diagnosis at home (commit aea5871), not a test. It reuses the measured infidelities of the c4 run (Addendum 307) and recompiles only; diag_extra.py was written after seeing the summary.
+
+## Addendum 308 -- Diagnosis: c4 lost on the Heron devices because Qiskit's level-1 layout stage ranks placements by an averaged per-qubit error that mixes in readout, not because of the T1/T2 floor. Level 3 adds a final re-placement on exact per-gate errors, which is why L3T wins (2026-10-02)
+
+**Status: exploratory diagnosis, not a test.**
+
+- **Question:** it follows up Addendum 307, where c4's wins and losses against C3 were systematic by device and
+  family.
+- **Scripts and outputs:** in `data/2026-10-02/c5/diag/`.
+  - `region_diag.py` and `run_region_diag.sh`.
+  - `diag_extra.py`, written after seeing the summary.
+- **Where and when:** run at home at commit `aea5871`; 3 devices in parallel, 67 s.
+
+## 1. What was done
+
+**Recompiling.** Every circuit of the c4 run (2,079 per device, same generator and seeds) was compiled again with
+C3, C4 and L3T. There was no simulation:
+
+- the measured infidelities were taken from the c4 run;
+- a row was used only if the recompiled two-qubit count matched the recorded one;
+- this held for all 6,237 arm-rows.
+
+**Scoring.** The placement each arm chose was scored three ways, summing -log(1 - e) over the gates actually
+placed:
+
+| score | e per gate |
+|---|---|
+| S_rep | the Target's reported error of that gate on those qubits |
+| S_eff | 1 - average gate fidelity of the QuantumError that `NoiseModel.from_backend` attaches to that gate, i.e. what the simulation applies, floor-aware |
+| S_avg | a replica of Qiskit's average error map, which takes per qargs the mean error over every instruction on them; for a single qubit that includes `measure`, i.e. readout |
+
+**Two hypotheses were in view:**
+
+- the T1/T2 floor (Addendum 307, section 3): S_eff should then order the arms as the measured infidelity does,
+  and S_rep should not;
+- readout mixed into the averaged map: S_avg should then follow C4's choices and not the measured infidelity.
+
+## 2. Findings
+
+**Which score orders the arms as the measured infidelity does** (sign agreement of the score difference with the
+infidelity difference, per circuit):
+
+| device | score | C4 vs C3 | C4 vs L3T | C3 vs L3T |
+|---|---|---|---|---|
+| FakeAuckland | S_rep | 0.935 | 0.874 | 0.929 |
+| | S_eff | 0.933 | 0.965 | 0.983 |
+| | S_avg | 0.899 | 0.833 | 0.908 |
+| FakeTorino | S_rep | 0.994 | 0.999 | 0.996 |
+| | S_eff | 0.997 | 1.000 | 0.996 |
+| | S_avg | 0.478 | 0.160 | 0.752 |
+| FakeKingston | S_rep | 1.000 | 1.000 | 0.968 |
+| | S_eff | 1.000 | 1.000 | 0.968 |
+| | S_avg | 0.040 | 0.085 | 0.372 |
+
+**Which arm has the lowest score** (circuits out of 693):
+
+| device | by S_avg (C3 / C4 / L3T) | by S_rep | by measured infidelity |
+|---|---|---|---|
+| FakeAuckland | 33 / 136 / 524 | 6 / 25 / 662 | 37 / 72 / 584 |
+| FakeTorino | 0 / 584 / 109 | 9 / 3 / 681 | 6 / 2 / 685 |
+| FakeKingston | 147 / 545 / 1 | 91 / 0 / 602 | 81 / 0 / 612 |
+
+**Mean S_avg / S_rep**, which shows how far the averaged map departs from the per-gate errors:
+
+| device | C3 | C4 | L3T |
+|---|---|---|---|
+| FakeAuckland | 1.3 | 1.3 | 1.4 |
+| FakeTorino | 6.9 | 3.6 | 7.6 |
+| FakeKingston | 12.5 | 6.8 | 18.8 |
+
+## 3. Reading
+
+- **The T1/T2 floor is not the cause.**
+  - On FakeTorino and FakeKingston, S_eff and S_rep agree with each other and with the measured infidelity almost
+    perfectly (0.97-1.00).
+  - The floor matters a little only on FakeAuckland. That is the cx device with longer gates, where S_eff orders
+    C4 against L3T better than S_rep does (0.965 against 0.874).
+  - The hypothesis of Addendum 307, section 3, is not supported as the main cause.
+- **The averaged map is the cause.**
+  - On FakeKingston, C4 has the lowest S_avg in 545 of 693 circuits, but the lowest S_rep and the lowest measured
+    infidelity in none.
+  - On FakeTorino, C4 has the lowest S_avg in 584 circuits and the lowest infidelity in 2.
+  - S_avg's agreement with the measured order falls to 0.04-0.48 for C4.
+  - C4 optimizes the averaged map well, and the averaged map is the wrong target for this metric.
+- **Why the averaged map misleads on Heron** (from the Qiskit 2.5.2 source):
+  - `build_average_error_map` (`crates/transpiler/src/passes/vf2/vf2_layout.rs`) averages, per qubit, the errors of
+    every instruction on it, `measure` included.
+  - Readout errors are typically one to two orders of magnitude larger than sx errors, so the qubit term is mostly
+    readout. Readout values were not extracted in this run; the ratio S_avg / S_rep is the evidence. On the Heron
+    devices it is 3.6-19. On FakeAuckland it is 1.3, which is where C4 helped.
+  - The metric here (the state before measurement) contains no readout at all.
+  - The replica differs from Qiskit in one detail: Qiskit also counts instructions with no recorded error, as 0, in
+    the denominator. Where every qubit has the same instruction set, this rescales the map rather than reordering
+    it. This was not checked against Qiskit's own map.
+- **Why L3T is not misled.**
+  - The level-1 routing stage that c4 uses runs `VF2PostLayout(strict_direction=False)`, which uses the averaged map
+    (`qiskit/transpiler/preset_passmanagers/common.py`).
+  - Level 3 additionally ends its optimization stage with `VF2PostLayout(strict_direction=True)`
+    (`builtin_plugins.py`, level 3), which scores the exact per-instruction errors of the gates in the circuit.
+  - L3T has the lowest S_rep in 602-681 of 693 circuits on every device.
+- **Caveat.**
+  - On hardware, readout does matter for circuits that are measured. "Readout mixed into the qubit term" is wrong
+    for this metric, but not wrong in every use.
+  - The right treatment is to charge gate errors per gate and readout once per measured qubit, not to average them
+    together.
+
+## 4. Consequence for c5
+
+The placement step should score the routed circuit by the exact per-gate errors, the way level 3's final pass does,
+not by the averaged map. Two designs are possible:
+
+1. After PSF-Zero's own routing, run `VF2PostLayout(target, strict_direction=True)` and `ApplyLayout`, and keep the
+   result only if it is valid and scores lower.
+2. Enumerate the VF2 embeddings with our own scorer: S_rep, optionally floor-aware (S_eff), plus readout charged
+   once per measured qubit when the circuit measures.
+
+Design 1 reuses Qiskit's tested pass; design 2 controls the score. Either needs a pre-registration. The c4 and
+this diagnosis suggest that whichever is chosen should be judged on chains first. There the two-qubit counts are
+equal, so only placement differs.
+
+## 5. Data (`data/2026-10-02/c5/diag/`)
+
+- Scripts: `region_diag.py`, `run_region_diag.sh`, `diag_extra.py`.
+- `outputs/`:
+  - `diag_<device>.json` (per circuit and arm: the three scores, the qubits and edges used, the measured
+    infidelity);
+  - `summary.md`, `extra.txt`;
+  - logs and `env.txt`.
+- Local paths were replaced.
+
 ---
 
 ---

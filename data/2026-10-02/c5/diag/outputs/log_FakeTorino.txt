@@ -1,0 +1,7 @@
+tables: rep 832, eff 699 (noise-model local entries 5), avg 433
+  FakeTorino F1: 216 circuits, 17 s
+  FakeTorino F2: 120 circuits, 24 s
+  FakeTorino F3: 150 circuits, 33 s
+  FakeTorino F4: 135 circuits, 42 s
+  FakeTorino F5: 72 circuits, 45 s
+wrote diag_FakeTorino.json: 693 circuits, 0 arm-rows not matching the c4 run
