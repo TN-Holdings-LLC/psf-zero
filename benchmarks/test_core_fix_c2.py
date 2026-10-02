@@ -62,7 +62,7 @@ def _routed_equiv(qc, out, seed=3):
 
 
 def test_versions():
-    assert pc.VERSION == "2026-10-02.1"  # current release (2026-10-01.1 was the release of candidate 2026-10-01.c2)
+    assert pc.VERSION == "2026-10-02.2"  # current release (2026-10-01.1 was the release of candidate 2026-10-01.c2)
     assert psl.LAYOUT_VERSION == "2026-10-01.1"
 
 

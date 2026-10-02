@@ -61,7 +61,29 @@ in place, so there is never a second, differently-named copy to pick between
 [`psf_smart_layout.py`](benchmarks/psf_smart_layout.py) — the layout-search prototype,
 repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see below).
 
-> **Current version (2026-10-02): `psf_compile.py` 2026-10-02.1, with `psf_smart_layout` 2026-10-01.1
+> **Current version (2026-10-02, second release): `psf_compile.py` 2026-10-02.2, with `psf_smart_layout`
+> 2026-10-01.1 and the Rust core `CORE_VERSION` 2026-09-29.1 (both unchanged)**
+> ([Part 9](docs/findings/spare-qubit-cliff-combined-248.md), Addenda 306-311). One opt-in addition to 2026-10-02.1:
+>
+> - **`compile_for_hardware(..., target=backend.target, placement_refine=True)` places the routed circuit by the
+>   device's gate errors.** After PSF-Zero's own layout and routing, the circuit is re-placed with the step Qiskit
+>   level 3 ends with (`VF2PostLayout` scored on the exact error of each gate as placed). Only physical qubits are
+>   relabelled: gate counts and depth are unchanged. Pre-registered test (Addenda 309-310, fake devices, noisy
+>   simulation, 2,079 circuits per device):
+>   - better than 2026-10-02.1 in all 18 family-device cells (mean infidelity 0.57-0.98 times);
+>   - on chains, equal to Qiskit level 3 with the Target on FakeTorino and FakeKingston (0.998, 1.000);
+>   - failed couplers never used, and no recompile around them needed;
+>   - about 1 ms extra per compile.
+> - **Known gaps:**
+>   - On FakeAuckland, whose simulated errors include a T1/T2 floor above the reported errors, a gap to level 3
+>     remains (chains 1.10; Addendum 308).
+>   - Where PSF-Zero's routing uses more two-qubit gates than level 3, that difference remains.
+>   - Readout is not part of the score: the circuits tested have no measurements.
+> - **Why not Qiskit's own layout stage:** handing placement to Qiskit's level-1 layout stage was tested and not
+>   adopted (Addendum 307). That stage ranks qubits by an average that mixes in readout error (Addendum 308).
+> - Without `placement_refine`, nothing changes.
+
+> **Previous release (2026-10-02.1): `psf_compile.py` 2026-10-02.1, with `psf_smart_layout` 2026-10-01.1
 > and the Rust core `CORE_VERSION` 2026-09-29.1 (both unchanged)** ([Part 9](docs/findings/spare-qubit-cliff-combined-248.md),
 > Addenda 302-305). One opt-in addition to 2026-10-01.1:
 >
@@ -73,9 +95,9 @@ repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see belo
 >   devices, noisy simulation): failed elements never used; 1,926 of 1,926 unaffected circuits bit-for-bit
 >   unchanged; all 153 affected circuits improved (mean infidelity 0.956 to 0.375). Without `target`, nothing
 >   changes.
-> - **Known gap, not addressed by this release:** the layout search ignores gate errors. In the same tests the
+> - **Known gap, addressed by 2026-10-02.2:** the layout search ignores gate errors. In the same tests the
 >   release's noisy infidelity is 1.03-1.70 times that of Qiskit level 3 with the device Target in every circuit
->   family and device tested (Addenda 301 and 304); error-weighted layout is the next step.
+>   family and device tested (Addenda 301 and 304).
 
 > **Previous release (2026-10-01): `psf_compile.py` 2026-10-01.1, `psf_smart_layout` 2026-10-01.1
 > and the Rust core `CORE_VERSION` 2026-09-29.1 -- rebuild the core (`maturin develop --release`)

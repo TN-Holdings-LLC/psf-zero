@@ -1,0 +1,39 @@
+# c5 score
+
+P0: PASS -- files 45 of 45 (missing []); noiseless infidelity max 1.9e-08 (<= 1e-6); too wide 0 of 6237
+
+| family | device | C3/L3T | C5/L3T | C5/C3 | mean 2q C3 / C5 / L3T | re-placed |
+|---|---|---|---|---|---|---|
+| F1 | FakeAuckland | 1.156 | 1.005 | 0.870 | 53.5 / 53.5 / 53.8 | 216 of 216 |
+| F1 | FakeTorino | 1.511 | 1.072 | 0.709 | 59.2 / 59.2 / 53.7 | 216 of 216 |
+| F1 | FakeKingston | 1.115 | 1.060 | 0.951 | 57.3 / 57.3 / 53.8 | 157 of 216 |
+| F2 | FakeAuckland | 1.147 | 1.040 | 0.907 | 47.2 / 47.2 / 45.4 | 120 of 120 |
+| F2 | FakeTorino | 1.189 | 1.015 | 0.853 | 48.1 / 48.4 / 46.4 | 120 of 120 |
+| F2 | FakeKingston | 1.148 | 1.036 | 0.902 | 48.1 / 48.1 / 45.8 | 109 of 120 |
+| F3o | FakeAuckland | 1.377 | 1.110 | 0.806 | 60.0 / 60.0 / 60.0 | 75 of 75 |
+| F3o | FakeTorino | 1.240 | 0.998 | 0.805 | 60.0 / 60.0 / 60.0 | 75 of 75 |
+| F3o | FakeKingston | 1.459 | 1.000 | 0.685 | 60.0 / 60.0 / 60.0 | 75 of 75 |
+| F3p | FakeAuckland | 1.252 | 1.229 | 0.981 | 114.0 / 114.0 / 114.0 | 75 of 75 |
+| F3p | FakeTorino | 1.051 | 1.011 | 0.961 | 114.0 / 114.0 / 114.0 | 75 of 75 |
+| F3p | FakeKingston | 1.233 | 1.086 | 0.881 | 114.0 / 114.0 / 114.0 | 75 of 75 |
+| F4 | FakeAuckland | 1.031 | 1.000 | 0.970 | 42.2 / 42.2 / 41.7 | 135 of 135 |
+| F4 | FakeTorino | 1.696 | 0.973 | 0.574 | 42.2 / 42.2 / 42.0 | 135 of 135 |
+| F4 | FakeKingston | 1.195 | 0.985 | 0.824 | 42.5 / 42.5 / 41.7 | 131 of 135 |
+| F5 | FakeAuckland | 1.244 | 1.000 | 0.804 | 5.0 / 5.0 / 5.0 | 72 of 72 |
+| F5 | FakeTorino | 1.299 | 1.000 | 0.770 | 5.0 / 5.0 / 5.0 | 72 of 72 |
+| F5 | FakeKingston | 1.538 | 1.000 | 0.650 | 5.0 / 5.0 / 5.0 | 72 of 72 |
+
+Backstop recompiles (item 31): C3 153, C5 0. Re-placement applied (C5): FakeAuckland 693, FakeTorino 693, FakeKingston 619
+
+## Predictions
+
+- H1 (chains: C5/L3T <= 1.05 on every device): **AMBIGUOUS** (FakeAuckland 1.096, FakeTorino 0.998, FakeKingston 1.000)
+- H2 (C5 <= C3 in >= 17 of 18 cells and no cell > 1.02): **CONFIRMED** (18 of 18 <= 1.0; max 0.981)
+- H3 (per circuit C5 <= C3 in >= 90% on every device): **CONFIRMED** (FakeAuckland 0.932, FakeTorino 0.994, FakeKingston 1.000)
+- H4 (re-placement only relabels: same 2q count and depth as C3 where neither used the backstop): **CONFIRMED** (1926 same, 0 different)
+- H5 (C5 never uses a failed coupler or qubit): **CONFIRMED** (0 uses)
+- H6 (median compile time C5 <= 3 x C3): **CONFIRMED** (C3 0.027 s, C5 0.028 s)
+
+Reported: median compile s C3 0.027, C5 0.028, L3T 0.015
+Reported: C5/L3T range over the 18 cells 0.973-1.229
+

@@ -8543,6 +8543,196 @@ committed; the commit command was chained on that run.
 | `benchmarks/c5_eval.py` | `44fe82dea70717478aad64be3fd0854cb95c92ef04f8f8ba7daac4a3155d52ce` |
 | `benchmarks/run_c5_2026-10-02.sh` | `ffdb04a5e9ec10fd031985bc25b79c9b983a6f06d71bbbf0cf322c78267414a0` |
 
+
+---
+
+<!-- ===== Addendum 310 (source: spare-qubit-cliff-addendum-310-2026-10-02.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 309 (lock commit ce574b0), scored by the locked script and re-checked by benchmarks/c5_verify.py, written after the locked score was seen and before the raw files were read.
+
+## Addendum 310 -- Results: candidate psf_compile 2026-10-02.c5 (Addendum 309). Five of six confirmed, H1 ambiguous: the exact re-placement improves on the release in all 18 cells, matches Qiskit L3 on chains on both Heron devices (0.998 and 1.000), never moves a gate count, and makes the failed-coupler backstop unnecessary. FakeAuckland, where the T1/T2 floor matters, keeps a gap (2026-10-02)
+
+**Status: results of the pre-registered test in Addendum 309.**
+
+- **Lock:** commit `ce574b0`, pushed before the scored run.
+- **Scoring:** by the locked `c5_eval.py score`, and re-checked by an independent script (section 5). That
+  script was written after the locked score was seen and before the raw files were read.
+- **Setting:** home (WSL2), 6 processes; 45 jobs, 6,237 circuit compilations, 116 s.
+
+## 1. Verdicts
+
+| ID | Verdict | Numbers |
+|---|---|---|
+| P0 | **PASS** | 45 of 45 files; noiseless infidelity max 1.85e-8 (<= 1e-6); 0 of 6,237 too wide |
+| H1 | **AMBIGUOUS** | chains (F3o + F5) C5/L3T: FakeAuckland 1.096, FakeTorino 0.998, FakeKingston 1.000 (CONFIRMED needed <= 1.05 on all three; REFUTED needed any >= 1.15) |
+| H2 | **CONFIRMED** | C5/C3 <= 1.00 in 18 of 18 cells (0.574-0.981) |
+| H3 | **CONFIRMED** | per circuit C5 <= C3: FakeAuckland 0.932, FakeTorino 0.994, FakeKingston 1.000 |
+| H4 | **CONFIRMED** | 1,926 of 1,926 circuits without a backstop recompile: same two-qubit count and depth as C3 |
+| H5 | **CONFIRMED** | 0 failed-edge and 0 failed-qubit uses by C5 |
+| H6 | **CONFIRMED** | median compile time C3 0.027 s, C5 0.028 s (L3T 0.015 s) |
+
+## 2. Numbers
+
+**Cells** (paired mean infidelity ratios):
+
+| family | device | C3/L3T | C5/L3T | C5/C3 |
+|---|---|---|---|---|
+| F1 ring ansatz | FakeAuckland | 1.156 | 1.005 | 0.870 |
+| | FakeTorino | 1.511 | 1.072 | 0.709 |
+| | FakeKingston | 1.115 | 1.060 | 0.951 |
+| F2 QAOA | FakeAuckland | 1.147 | 1.040 | 0.907 |
+| | FakeTorino | 1.189 | 1.015 | 0.853 |
+| | FakeKingston | 1.148 | 1.036 | 0.902 |
+| F3o open chain | FakeAuckland | 1.377 | 1.110 | 0.806 |
+| | FakeTorino | 1.240 | 0.998 | 0.805 |
+| | FakeKingston | 1.459 | 1.000 | 0.685 |
+| F3p periodic chain | FakeAuckland | 1.252 | 1.229 | 0.981 |
+| | FakeTorino | 1.051 | 1.011 | 0.961 |
+| | FakeKingston | 1.233 | 1.086 | 0.881 |
+| F4 random SU(4) | FakeAuckland | 1.031 | 1.000 | 0.970 |
+| | FakeTorino | 1.696 | 0.973 | 0.574 |
+| | FakeKingston | 1.195 | 0.985 | 0.824 |
+| F5 GHZ chain | FakeAuckland | 1.244 | 1.000 | 0.804 |
+| | FakeTorino | 1.299 | 1.000 | 0.770 |
+| | FakeKingston | 1.538 | 1.000 | 0.650 |
+
+**Per device** (independent script):
+
+| device | pooled C5/C3 | pooled C5/L3T | C5 <= L3T | re-placed | C5 worse than C3 |
+|---|---|---|---|---|---|
+| FakeAuckland | 0.902 | 1.059 | 280 of 693 | 693 | 47 (at most 1.168×) |
+| FakeTorino | 0.750 | 1.022 | 353 of 693 | 693 | 4 (at most 1.019×) |
+| FakeKingston | 0.861 | 1.040 | 299 of 693 | 619 | 0 |
+
+**The 153 circuits item 31 recompiled for C3** (all on FakeTorino):
+
+- C5 needed no recompile: the re-placement had already moved them off the failed couplers.
+- Mean infidelity: C3 0.375, C5 0.232, L3T 0.238.
+- C5 kept C3's first-pass two-qubit count in 134 of them.
+
+**Backstop recompiles:** C3 153, C5 0.
+
+## 3. Reading
+
+- **The placement gap is closed on the Heron devices.**
+  - On chains, where the two-qubit gates are the same, C5/L3T is 0.998 (FakeTorino) and 1.000 (FakeKingston),
+    against 1.24-1.54 for the release.
+  - Over all cells there, C5/L3T is 0.97-1.09. What remains is in families whose two-qubit counts still differ
+    from L3T's, i.e. routing.
+- **It is a strict improvement on the release.**
+  - All 18 cells are better (0.574-0.981).
+  - Per circuit it is never worse on FakeKingston, and worse in 4 of 693 on FakeTorino (by at most 1.9%).
+  - It only relabels qubits (H4): gate counts and depth are unchanged.
+  - It costs about 1 ms per compile.
+- **It also supersedes the backstop in practice.**
+  - The circuits that crossed a failed coupler are moved off it by the re-placement itself.
+  - They end slightly better than L3T (0.232 against 0.238).
+  - Item 31 stays as the safety net.
+- **FakeAuckland keeps a gap, as stated in advance.**
+  - Chains 1.096, F3p 1.229; C5 is worse than C3 on 47 of 693 circuits there.
+  - This matches Addendum 308: only on FakeAuckland does the simulated error differ from the reported one (the
+    T1/T2 floor), and the re-placement scores by the reported error.
+  - A floor-aware score is the obvious next refinement. It is not established here.
+- **Adoption** is the owner's decision. This test supports adopting c5 as an opt-in (`placement_refine=True` with
+  `target`).
+
+## 4. Reproducibility
+
+The C3 and L3T arms of this run were compared, circuit by circuit, with the same arms of the c4 run
+(Addendum 307):
+
+- C3: 2,079 of 2,079 identical (two-qubit count and infidelity to 1e-12);
+- L3T: 2,079 of 2,079 identical.
+
+## 5. Independent check
+
+`benchmarks/c5_verify.py` reads the raw json only. It checks the following, and all of it matches the locked
+score:
+
+- the commit `ce574b0`, the script and candidate hashes, the versions and the counts in all 45 files;
+- P0;
+- H1-H6;
+- the cell table;
+- the per-device figures and the backstop subset in section 2.
+
+Output in `outputs/verify.txt`.
+
+## 6. Data (`data/2026-10-02/c5/`)
+
+- `outputs/`: 45 job files, their logs, `env.txt`, `run.log`, `score.md`, `score_log.txt`, `verify.txt`.
+- `diag/`: from Addendum 308.
+- Local paths were replaced.
+
+
+---
+
+<!-- ===== Addendum 311 (source: spare-qubit-cliff-addendum-311-2026-10-02.md) ===== -->
+
+> **Note added when merging:** Adoption record: candidate 2026-10-02.c5 becomes release psf_compile 2026-10-02.2 (owner's decision, 2026-10-02).
+
+## Addendum 311 -- Release psf_compile 2026-10-02.2: candidate 2026-10-02.c5 adopted by the owner (opt-in exact error-weighted re-placement, `placement_refine=True`) (2026-10-02)
+
+**Status: adoption record.**
+
+- **Decision:** the owner adopted candidate 2026-10-02.c5 on 2026-10-02, after seeing the scored results of
+  Addendum 310 (five of six predictions confirmed, H1 ambiguous because of FakeAuckland).
+- **Basis:** this Addendum records what changed; Addendum 310 is the basis.
+
+## 1. What changed
+
+- **`psf_compile.py`** becomes release 2026-10-02.2.
+  - The code is the candidate's (`patches/psf_compile_c5_2026-10-02/psf_compile.py`, Addendum 309) with three
+    lines changed: the `VERSION:` header, the changelog heading of item 33, and the `VERSION` constant.
+  - Changelog item 33 is now part of the release.
+- **`placement_refine` stays opt-in (default False)**, as tested. Without it the release is identical to
+  2026-10-02.1, gate for gate (checked by test). Making it the default for calls with `target` would be a separate
+  decision.
+- **Tests pinned to the release version now expect "2026-10-02.2":**
+  - `benchmarks/test_core_fix_c2.py`;
+  - `benchmarks/test_release_2026_09_28.py`;
+  - `benchmarks/test_release_2026_10_02.py`;
+  - `patches/psf_compile_c4_2026-10-02/test_c4_layout.py`.
+- **About the last of these:** it belongs to the files locked by Addendum 306. Its `test_version` pinned the
+  release at the time, so it would otherwise fail from now on. Only that line was changed, with a comment.
+  - Normalized SHA-256 before: `2c820390ab4167635e4612a2b054df2937f96f6441dfbab1580887044224d139` (as locked).
+  - After: `a42b5ea9b6abdaab58ca578902cf9cd46f6d89aab356ebc1ceb721f752009cbe`.
+  - The c4 evaluation is complete (Addendum 307), and its job files record the hashes it actually ran with.
+- **New `benchmarks/test_release_2026_10_02_2.py`**, adapted from the candidate's tests.
+  - The previous release is represented by `patches/psf_compile_c3_2026-10-02/psf_compile.py`, which differs from
+    release 2026-10-02.1 only in its version lines.
+  - The tests: version; default identical to the previous release with and without `target`; `placement_refine`
+    without `target` raises; on FakeAuckland, FakeTorino and FakeKingston, refined outputs are exact, avoid failed
+    elements, and relabel the unrefined compile with a reported-error score no higher.
+- **`README.md`:**
+  - a new "Current version (2026-10-02, second release)" block;
+  - the 2026-10-02.1 block becomes "Previous release (2026-10-02.1)", and its known gap is marked as addressed.
+- **Data:** `data/2026-10-02/c5/outputs/` (Addendum 310) and `benchmarks/c5_verify.py`.
+
+## 2. Checks before the commit
+
+These tests were run at home on the applied files, and the commit command was chained on them passing:
+
+- `benchmarks/test_release_2026_10_02_2.py`;
+- `benchmarks/test_release_2026_10_02.py`;
+- `benchmarks/test_release_2026_09_28.py`;
+- `benchmarks/test_core_fix_c2.py`;
+- `patches/psf_compile_c4_2026-10-02/test_c4_layout.py`;
+- `patches/psf_compile_c5_2026-10-02/test_c5_placement.py`.
+
+## 3. Release file (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `psf_compile.py` (2026-10-02.2) | `2603bc2decea47b2047fe8ddf17896d79f39e74eda887f0b596f6a28f4daa08b` |
+| `benchmarks/test_release_2026_10_02_2.py` | `cab184e63b308d7f5de4dbe31f6309b1f83d801c978d4dd56943e9e556c2312a` |
+
+## 4. What remains
+
+- **FakeAuckland:** a floor-aware score is untested.
+- **Routing:** where PSF-Zero still uses more two-qubit gates than level 3.
+- **Measured circuits:** readout charged once per measured qubit.
+- **Real hardware.**
+
 ---
 
 ---

@@ -1,0 +1,85 @@
+date_utc 2026-10-02T10:03:20Z
+CPU(s):                                  12
+Model name:                              AMD Ryzen 5 5500
+python 3.12.13
+b2fd86ab617ff39a885334c280a4fe9c17ca3b42ece1881d1b278b05545e3646  <repo>/benchmarks/c5_eval.py
+1276c032752d02defd4caf3cbf5ae060bbe9a8d9b337da2c782ee0a43dc936ea  benchmarks/run_c5_2026-10-02.sh
+ce574b0 Addendum 309: candidate c5 pre-registration (exact error-weighted re-placement after routing, as Qiskit level 3's final VF2PostLayout); locks the candidate, its tests and c5_eval
+PAR 6
+   done FakeKingston C5 F5 (14 s)
+   done FakeKingston C5 F2 (18 s)
+   done FakeKingston C5 F4 (21 s)
+   done FakeTorino C5 F1 (24 s)
+   done FakeKingston C5 F1 (26 s)
+   done FakeKingston C5 F3 (28 s)
+   done FakeTorino C5 F2 (29 s)
+   done FakeAuckland C5 F2 (34 s)
+   done FakeTorino C5 F5 (34 s)
+   done FakeAuckland C5 F1 (37 s)
+   done FakeAuckland C5 F5 (38 s)
+   done FakeTorino C5 F4 (39 s)
+   done FakeAuckland C5 F3 (41 s)
+   done FakeAuckland C5 F4 (41 s)
+   done FakeTorino C5 F3 (43 s)
+   done FakeKingston C3 F5 (54 s)
+   done FakeKingston C3 F2 (56 s)
+   done FakeKingston C3 F4 (61 s)
+   done FakeKingston C3 F1 (63 s)
+   done FakeKingston C3 F3 (65 s)
+   done FakeTorino C3 F1 (70 s)
+   done FakeTorino C3 F2 (70 s)
+   done FakeTorino C3 F5 (74 s)
+   done FakeAuckland C3 F2 (76 s)
+   done FakeAuckland C3 F1 (76 s)
+   done FakeTorino C3 F4 (79 s)
+   done FakeAuckland C3 F5 (79 s)
+   done FakeTorino C3 F3 (80 s)
+   done FakeAuckland C3 F4 (81 s)
+   done FakeAuckland C3 F3 (81 s)
+   done FakeKingston L3T F5 (93 s)
+   done FakeKingston L3T F2 (95 s)
+   done FakeKingston L3T F1 (98 s)
+   done FakeKingston L3T F4 (98 s)
+   done FakeTorino L3T F1 (100 s)
+   done FakeKingston L3T F3 (103 s)
+   done FakeTorino L3T F2 (107 s)
+   done FakeTorino L3T F5 (107 s)
+   done FakeAuckland L3T F2 (109 s)
+   done FakeAuckland L3T F1 (111 s)
+   done FakeAuckland L3T F5 (112 s)
+   done FakeTorino L3T F4 (113 s)
+   done FakeAuckland L3T F4 (114 s)
+   done FakeTorino L3T F3 (115 s)
+   done FakeAuckland L3T F3 (116 s)
+== all jobs finished after 116 s
+| F2 | FakeAuckland | 1.147 | 1.040 | 0.907 | 47.2 / 47.2 / 45.4 | 120 of 120 |
+| F2 | FakeTorino | 1.189 | 1.015 | 0.853 | 48.1 / 48.4 / 46.4 | 120 of 120 |
+| F2 | FakeKingston | 1.148 | 1.036 | 0.902 | 48.1 / 48.1 / 45.8 | 109 of 120 |
+| F3o | FakeAuckland | 1.377 | 1.110 | 0.806 | 60.0 / 60.0 / 60.0 | 75 of 75 |
+| F3o | FakeTorino | 1.240 | 0.998 | 0.805 | 60.0 / 60.0 / 60.0 | 75 of 75 |
+| F3o | FakeKingston | 1.459 | 1.000 | 0.685 | 60.0 / 60.0 / 60.0 | 75 of 75 |
+| F3p | FakeAuckland | 1.252 | 1.229 | 0.981 | 114.0 / 114.0 / 114.0 | 75 of 75 |
+| F3p | FakeTorino | 1.051 | 1.011 | 0.961 | 114.0 / 114.0 / 114.0 | 75 of 75 |
+| F3p | FakeKingston | 1.233 | 1.086 | 0.881 | 114.0 / 114.0 / 114.0 | 75 of 75 |
+| F4 | FakeAuckland | 1.031 | 1.000 | 0.970 | 42.2 / 42.2 / 41.7 | 135 of 135 |
+| F4 | FakeTorino | 1.696 | 0.973 | 0.574 | 42.2 / 42.2 / 42.0 | 135 of 135 |
+| F4 | FakeKingston | 1.195 | 0.985 | 0.824 | 42.5 / 42.5 / 41.7 | 131 of 135 |
+| F5 | FakeAuckland | 1.244 | 1.000 | 0.804 | 5.0 / 5.0 / 5.0 | 72 of 72 |
+| F5 | FakeTorino | 1.299 | 1.000 | 0.770 | 5.0 / 5.0 / 5.0 | 72 of 72 |
+| F5 | FakeKingston | 1.538 | 1.000 | 0.650 | 5.0 / 5.0 / 5.0 | 72 of 72 |
+
+Backstop recompiles (item 31): C3 153, C5 0. Re-placement applied (C5): FakeAuckland 693, FakeTorino 693, FakeKingston 619
+
+## Predictions
+
+- H1 (chains: C5/L3T <= 1.05 on every device): **AMBIGUOUS** (FakeAuckland 1.096, FakeTorino 0.998, FakeKingston 1.000)
+- H2 (C5 <= C3 in >= 17 of 18 cells and no cell > 1.02): **CONFIRMED** (18 of 18 <= 1.0; max 0.981)
+- H3 (per circuit C5 <= C3 in >= 90% on every device): **CONFIRMED** (FakeAuckland 0.932, FakeTorino 0.994, FakeKingston 1.000)
+- H4 (re-placement only relabels: same 2q count and depth as C3 where neither used the backstop): **CONFIRMED** (1926 same, 0 different)
+- H5 (C5 never uses a failed coupler or qubit): **CONFIRMED** (0 uses)
+- H6 (median compile time C5 <= 3 x C3): **CONFIRMED** (C3 0.027 s, C5 0.028 s)
+
+Reported: median compile s C3 0.027, C5 0.028, L3T 0.015
+Reported: C5/L3T range over the 18 cells 0.973-1.229
+
+C5 DONE

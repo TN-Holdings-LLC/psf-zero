@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-10-02.1 -- release, adopted on 2026-10-02 from candidate 2026-10-02.c3 (previous release: 2026-10-01.1)
+VERSION: 2026-10-02.2 -- release, adopted on 2026-10-02 from candidate 2026-10-02.c5 (previous release: 2026-10-02.1)
 
 Where to look for what
 ----------------------
@@ -460,6 +460,20 @@ Changes in the 2026-09-26.4 revision (spare-qubit-cliff Addenda 195-196)
     pruning alone would move unaffected layouts too (Addendum 303, development). Qubit indices and
     `coupling_map.size()` are unchanged. Without `target` nothing changes. Counts in `PRUNE_STATS`. Gate and
     readout errors below the threshold are still ignored by the layout (a separate, later step).
+
+2026-10-02.2 (release; candidate 2026-10-02.c5, adopted on 2026-10-02 after its pre-registered evaluation, Addenda 309-310):
+
+33. **NEW, opt-in: `compile_for_hardware(target=..., placement_refine=True)`.** (Item 32, candidate c4, was
+    not adopted: Addendum 307.) Addendum 308 found why handing placement to Qiskit's level-1 layout stage
+    failed: it ranks placements by an averaged per-qubit error that mixes in readout, while Qiskit level 3
+    ends with a re-placement scored on the exact per-instruction errors of the gates actually placed. With
+    `placement_refine=True` and a `target`, the circuit is compressed, laid out and routed exactly as by the
+    release, and the routing pass manager then ends with that same exact re-placement:
+    `VF2PostLayout(target, strict_direction=True, seed=-1)` with Qiskit level 3's limits for it
+    (`placement_call_limit=300_000`, `placement_max_trials=2_500`), and `ApplyLayout` when it finds a
+    placement that scores better. It relabels physical qubits only: gates, their count and the routing are
+    unchanged. Item 31 stays the backstop. Requires `target`; default False, identical to the release.
+    Counts in `REFINE_STATS`.
 """
 from __future__ import annotations
 
@@ -480,6 +494,9 @@ from qiskit.converters import circuit_to_dag, dag_to_circuit
 from qiskit.transpiler.basepasses import AnalysisPass, TransformationPass
 from qiskit.transpiler.passes import (BasisTranslator, Collect2qBlocks, ConsolidateBlocks, ElidePermutations,
                                       Optimize1qGatesDecomposition, Split2QUnitaries)
+from qiskit.transpiler import ConditionalController
+from qiskit.transpiler.passes import ApplyLayout, VF2PostLayout
+from qiskit.transpiler.passes.layout.vf2_post_layout import VF2PostLayoutStopReason
 
 try:
     import psf_zero_core
@@ -493,7 +510,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-10-02.1"  # release (from candidate 2026-10-02.c3): 2026-10-01.1 + avoidance of failed couplers and qubits (item 31)
+VERSION = "2026-10-02.2"  # release (from candidate 2026-10-02.c5): 2026-10-02.1 + exact error-weighted re-placement (item 33)
 __version__ = VERSION
 
 # Changelog item 27: the version string of the loaded Rust core, for logs.
@@ -1574,6 +1591,20 @@ def qubit_errors_from_target(target, gate_name: str = "sx") -> dict:
 
 
 PRUNE_STATS = {"calls": 0, "edges_removed": 0, "qubits_isolated": 0, "checked": 0, "recompiled": 0}
+REFINE_STATS = {"calls": 0, "applied": 0}  # changelog item 33
+
+
+class _RecordRefine(AnalysisPass):
+    """Counts how often the exact re-placement (changelog item 33) found a better placement."""
+
+    def run(self, dag):
+        REFINE_STATS["calls"] += 1
+        if self.property_set["VF2PostLayout_stop_reason"] is VF2PostLayoutStopReason.SOLUTION_FOUND:
+            REFINE_STATS["applied"] += 1
+
+
+def _refine_found(property_set):
+    return property_set["VF2PostLayout_stop_reason"] is VF2PostLayoutStopReason.SOLUTION_FOUND
 
 
 def _failed_elements(target, max_error: float, gate_names=("cz", "ecr", "cx"), qubit_gate: str = "sx"):
@@ -1775,6 +1806,10 @@ def compile_for_hardware(
     post_routing_resynthesis: Union[bool, str] = "auto",
     target=None,
     prune_max_error: float = 0.5,
+    placement_refine: bool = False,
+    placement_call_limit: int = 300_000,
+    placement_max_trials: int = 2_500,
+    _refine_target=None,
 ) -> QuantumCircuit:
     """Compress with PSF-Zero, then route (and, if `basis_gates` is given,
     translate) with Qiskit.
@@ -1898,12 +1933,18 @@ def compile_for_hardware(
     `target` and `prune_max_error` (candidate 2026-10-02.c3, item 31): with a device `Target`, a result that
     uses a failed coupler or qubit (error >= `prune_max_error`) is recompiled on the coupling map without
     them; any other result is returned exactly as without `target`. `None` (default) changes nothing.
+    `placement_refine`, `placement_call_limit`, `placement_max_trials` (candidate 2026-10-02.c5, item 33):
+    with a `target`, end the routing with Qiskit level 3's exact re-placement (`VF2PostLayout` with
+    `strict_direction=True`), which relabels physical qubits when that lowers the summed -log(1 - error) of the
+    gates as placed. Requires `target`; False (default) changes nothing. `_refine_target` is internal.
     `callback` (new, item 13): forwarded verbatim to the internal
     `transpile()` call below, unchanged from what plain `transpile(callback=
     ...)` accepts. `None` by default -- passing nothing here changes nothing
     about this function's behavior or cost. See item 13 in this file's
     changelog for why this exists.
     """
+    if placement_refine and target is None:
+        raise ValueError("placement_refine=True needs the device `target` (changelog item 33)")
     if layout_search and initial_layout is not None:
         raise ValueError(
             "layout_search=True and an explicit initial_layout were both "
@@ -1923,7 +1964,9 @@ def compile_for_hardware(
                     layout_search_fallback_call_limit=layout_search_fallback_call_limit,
                     layout_search_use_fallback=layout_search_use_fallback, layout_edge_errors=layout_edge_errors,
                     layout_qubit_errors=layout_qubit_errors, callback=callback,
-                    elide_permutations=elide_permutations, post_routing_resynthesis=post_routing_resynthesis)
+                    elide_permutations=elide_permutations, post_routing_resynthesis=post_routing_resynthesis,
+                    placement_call_limit=placement_call_limit, placement_max_trials=placement_max_trials,
+                    _refine_target=target if placement_refine else None)
         out = compile_for_hardware(**args)
         edges, qubits = _failed_elements(target, prune_max_error)
         PRUNE_STATS["checked"] += 1
@@ -1998,7 +2041,7 @@ def compile_for_hardware(
         # exactly as if layout_search had been False. The search time already
         # spent is real and is not subtracted from this call's wall time.
 
-    if permutation is None and not post_routing_resynthesis:
+    if permutation is None and not post_routing_resynthesis and _refine_target is None:
         return transpile(
             qc_compressed,
             coupling_map=coupling_map,
@@ -2026,4 +2069,14 @@ def compile_for_hardware(
             pm.post_routing = PassManager([absorb])
         else:
             pm.post_routing.append(absorb)
+    if _refine_target is not None:
+        # Item 33: the exact re-placement that Qiskit level 3 runs at the end of its optimization stage.
+        refine = [VF2PostLayout(target=_refine_target, seed=-1, call_limit=placement_call_limit,
+                                max_trials=placement_max_trials, strict_direction=True),
+                  _RecordRefine(),
+                  ConditionalController(ApplyLayout(), condition=_refine_found)]
+        if pm.optimization is None:
+            pm.optimization = PassManager(refine)
+        else:
+            pm.optimization.append(refine)
     return pm.run(qc_compressed, callback=callback)

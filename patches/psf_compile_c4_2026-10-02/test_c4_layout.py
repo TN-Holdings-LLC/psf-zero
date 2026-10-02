@@ -72,7 +72,7 @@ def sig(c):
 
 def test_version(mods):
     assert mods[0].VERSION == "2026-10-02.c4"
-    assert mods[1].VERSION == "2026-10-02.1"
+    assert mods[1].VERSION == "2026-10-02.2"  # current release (2026-10-02.1 when this candidate was evaluated)
 
 
 def test_default_identical_to_release(mods):
