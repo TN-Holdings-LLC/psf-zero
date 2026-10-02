@@ -7599,6 +7599,246 @@ Output in `outputs/verify.txt`.
 - `dev/`: the smoke run.
 - Local paths in `env.txt` and the run log were replaced.
 
+
+---
+
+<!-- ===== Addendum 302 (source: spare-qubit-cliff-addendum-302-2026-10-02.md) ===== -->
+
+> **Note added when merging:** Exploratory diagnosis of the FakeTorino outlier of Addendum 301; not a test.
+
+## Addendum 302 -- Diagnosis: on FakeTorino the release places a 6-qubit ring across a failed coupler (reported error 1.0), 7-14 times per circuit (2026-10-02)
+
+**Status: exploratory diagnosis, not a test.** It explains the FakeTorino outlier of Addendum 301. The script
+(`data/2026-10-02/c3/diag/torino_diag.py`) and its output, run at home at commit `bc2c2f9`, are in the data folder.
+
+## 1. What was looked at
+
+For the first circuit of every (n, L) cell of GAP family F1 (same seeds as the scored run), the script lists the
+following for the release (C2) and for error-aware Qiskit L3 (L3T):
+
+- the physical qubits used;
+- the couplers used, with their reported CZ error;
+- the worst sx error, and the shortest T1 and T2;
+- the readout error of the final-layout qubits.
+
+## 2. Findings
+
+**FakeTorino's coupling map (from `Target.build_coupling_map()`) still contains failed couplers.**
+
+- 300 CZ entries; median error 0.0042; 26 with error >= 0.05.
+- 22 directed entries, on 11 couplers, report an error of exactly 1.0. These are the couplers around qubits 19, 58,
+  86 and 97, plus (21, 34).
+- From the A0 data (Addendum 293):
+  - FakeKingston has 7 such couplers, and 5 qubits whose sx error is 1.0;
+  - FakeAuckland has none.
+
+**For the 6-qubit ring, C2 uses one of them.** It chooses qubits 0, 1, 2, 3, 15, 19, and the ring crosses (15, 19),
+whose error is 1.0:
+
+| L | uses of (15, 19) | 2q gates (C2 / L3T) |
+|---|---|---|
+| 2 | 7 | 36 / 33 |
+| 4 | 12 | 74 / 70 |
+| 6 | 14 | 113 / 108 |
+
+- Each use applies a fully depolarizing two-qubit channel in the noise model.
+- The same region also has the readout errors 0.167 and 0.257, and a qubit with T2 = 36 µs.
+- L3T chooses regions whose worst coupler is 0.0037-0.0042 and whose shortest T2 is >= 126 µs.
+
+**For the 4-qubit ring, C2 does not touch a failed coupler.**
+
+- Its couplers (0.0037-0.0049) are a little worse than L3T's (0.0034-0.0035).
+- It routes the ring with more gates: 20 / 44 / 68 against 17 / 37 / 57. That is the routing gap of Addendum 297.
+
+**Why.**
+
+- `compile_for_hardware` sees only `coupling_map`. Its layout search (`smart_vf2_layout`) and the routing treat
+  every listed edge as usable.
+- The layout search returns an embedding without regard to errors. For the 6-qubit ring that is qubits 0-3, 15
+  and 19; for the 4-qubit ring it is 114-116 and 129, or 0-3.
+- `layout_edge_errors` (changelog item 16) would weight edges, but it is opt-in and applies only to matching
+  layouts. A ring is not a matching.
+
+## 3. Consequence
+
+- Through `compile_for_hardware`, the release can place gates on a coupler the device reports as failed. This is
+  not limited to fake snapshots: a live Target can list a failed coupler with error 1.0, and the coupling map built
+  from it includes that edge.
+- It explains why FakeTorino, with 11 failed couplers, was the outlier in Addendum 301 (C2/L3T 3.25 on F1).
+- FakeKingston (7 failed couplers, 5 failed qubits) was affected less in Addendum 301. FakeAuckland (none) was
+  not affected.
+
+## 4. Next
+
+**Candidate 2026-10-02.c3 (Addendum 303):**
+
+- **What it adds:** an opt-in `target=` argument to `compile_for_hardware`. It removes from the coupling map every
+  edge whose reported 2-qubit error is >= 0.5, and every edge touching a qubit whose sx error is >= 0.5, before the
+  layout search and the routing.
+- **What it does not do:** weight the remaining errors. That is the larger, separate step, and Addendum 301's chain
+  results say it is needed too.
+- **How it is tested:** with a pre-registration, on the GAP circuits.
+
+
+---
+
+<!-- ===== Addendum 303 (source: spare-qubit-cliff-addendum-303-2026-10-02.md) ===== -->
+
+> **Note added when merging:** Home pre-registration of candidate psf_compile 2026-10-02.c3. Locked by the git commit that adds this Addendum, the candidate with its tests, and the evaluation scripts, pushed before the scored run. The first design was changed after smoke run 1, before the lock; both are disclosed in section 5.
+
+## Addendum 303 -- Pre-registration: candidate psf_compile 2026-10-02.c3 (avoidance of failed couplers and qubits). Does it remove the FakeTorino outlier without changing anything else? (2026-10-02)
+
+**Status: pre-registration, written at home before any scored run.**
+
+- **Lock:** the git commit that adds this document, the candidate
+  (`patches/psf_compile_c3_2026-10-02/psf_compile.py`, with its tests) and `benchmarks/c3_eval.py` with its
+  runner, pushed before the scored run.
+- **No hardware:** fake-provider devices and Aer noise only.
+- **Not a release:** the candidate becomes one only by a separate adoption decision.
+
+## 1. The candidate (changelog item 31)
+
+- **The new argument:** `compile_for_hardware(..., target=None, prune_max_error=0.5)`.
+- **What it does with `target` given:**
+  1. The circuit is compiled exactly as without it.
+  2. If the result uses no failed element, it is returned unchanged. A failed element is a 2-qubit gate on a
+     directed edge whose native 2-qubit gate error is >= 0.5, or any gate on a qubit whose sx error is >= 0.5.
+  3. Otherwise it is compiled again on `prune_coupling_map(...)`: the coupling map without the failed edges and
+     without every edge that touches a failed qubit. Qubit indices and `size()` are unchanged.
+- **Without `target`, nothing changes.** A test checks this gate for gate against the release.
+- **Motivation:** Addendum 302. On FakeTorino the release crosses a coupler with error 1.0 up to 14 times per
+  circuit.
+- **What it is not:** error weighting.
+
+## 2. Design (`benchmarks/c3_eval.py`)
+
+**Circuits:** the five GAP families (Addendum 300), generated by the locked `benchmarks/gap_eval.py` with the same
+seeds and sizes: 2,079 circuits per device and arm.
+
+**Arms:**
+
+| arm | what it is |
+|---|---|
+| C2 | the release, called exactly as in GAP |
+| C3 | the candidate, the same call plus `target=<device Target>` |
+| L3T | Qiskit level 3 with the Target, now with `approximation_degree=1.0` so its noiseless output is exact |
+
+**Devices and metric:**
+
+- FakeAuckland, FakeTorino, FakeKingston.
+- Metric as in GAP: infidelity of the final-layout qubits' state under `NoiseModel.from_backend`.
+- Also recorded per circuit: 2-qubit gates on failed edges, gates on failed qubits, and whether C3 recompiled.
+
+**Known before the lock (published A0 data, Addendum 293):**
+
+| device | failed couplers (error 1.0) | failed qubits (sx error 1.0) |
+|---|---|---|
+| FakeAuckland | 0 | 0 |
+| FakeTorino | 11 | 0 |
+| FakeKingston | 7 | 5 |
+
+## 3. Predictions (scored only by `c3_eval.py score`)
+
+**P0, harness.** All of these must hold, or nothing below is scored:
+
+- all 45 job files are present;
+- every simulated circuit's noiseless infidelity is <= 1e-6;
+- at most 5% of the circuits are too wide.
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| H1 | C3 never uses a failed element | 0 failed-edge or failed-qubit uses by C3, over all circuits and devices | any use |
+| H2 | the FakeTorino outlier is gone | FakeTorino C3/L3T mean infidelity <= 1.30 on each of F1, F2, F4 (C2 had 3.25, 2.06, 1.87 in GAP) | any of them >= 1.80 |
+| H3 | nothing else changes | on every circuit where C2 used no failed element, C3 has the same 2q count and the same infidelity (to 1e-12) | any difference |
+| H4 | recompiling helps where it happens | on the circuits where C2 used a failed element, C3 has lower infidelity in >= 90% | < 70% |
+| H5 | the placement gap remains; this is not error weighting | chains (F3o + F5): C3/L3T >= 1.10 on every device | <= 1.0 on any device |
+
+**Reported without prediction:**
+
+- the family × device table;
+- failed-element uses of C2 and L3T;
+- the number of recompiles;
+- compile times.
+
+**Expectations, stated now (after the smoke runs below):**
+
+- **H1 and H3 test the plumbing.**
+- **H2 and H4 are at risk.**
+  - A recompile is an error-blind re-draw of the layout. It avoids the failed elements but can land on a region that
+    is merely poor.
+  - In smoke run 2 the FakeTorino F4 circuit, after recompiling, was still 2.61 times L3T.
+  - H2 was not changed after seeing that.
+
+## 4. What this will not establish
+
+- Real hardware.
+- That 0.5 is the best threshold.
+- Anything about error weighting.
+
+## 5. Development (disclosed)
+
+### 5.1 First design and smoke run 1: rejected
+
+The first design pruned the coupling map before every compile. In smoke run 1 (1 circuit per sub-family) it removed
+every failed-edge use, but it also changed circuits that had never touched a failed element:
+
+| family | device | C3/C2 infidelity (failed-edge uses by C2) |
+|---|---|---|
+| F1 | FakeKingston | 5.66 (0) |
+| F2 | FakeKingston | 3.84 (0) |
+| F3p | FakeKingston | 3.99 (0) |
+| F3p | FakeTorino | 2.56 (0) |
+| F4 | FakeKingston | 2.96 (0) |
+| F4 | FakeTorino | 1.16 (15) |
+| F1 | FakeTorino | 0.76 (33) |
+
+- **Cause:** removing edges changes the order in which the error-blind layout search meets candidates, so unaffected
+  circuits were placed elsewhere, sometimes on poor regions.
+- **Changes made before any scored circuit was compiled:**
+  - the design was changed to recompile only when the first result uses a failed element (section 1);
+  - H3 and H4 replaced the first draft's "C3/C2 <= 1.02" and "FakeAuckland identical" predictions;
+  - H1 now also counts failed qubits.
+
+### 5.2 Tests
+
+`test_c3_prune.py`, 5 tests, all pass at home:
+
+- the version string;
+- exact pruning on all three devices;
+- FakeTorino rings avoid failed edges and stay exact (checked on the touched qubits only);
+- unaffected outputs are identical with `target`;
+- without `target`, the output is identical to the release.
+
+The first version of the test built a full 133-qubit operator and failed for that reason. It was fixed before smoke
+run 2.
+
+### 5.3 Smoke run 2 (the locked design; not a result)
+
+- P0 passed.
+- Its verdict lines:
+
+  | H1 | H2 | H3 | H4 | H5 |
+  |---|---|---|---|---|
+  | CONFIRMED | REFUTED | CONFIRMED (44 of 44) | CONFIRMED (4 of 4) | CONFIRMED |
+
+  H2 read F1 1.51, F2 1.19, F4 2.61.
+- These come from 1 circuit per sub-family and are not results.
+
+### 5.4 Other development
+
+- The scorer was run on synthetic files.
+- Smoke and scored circuits use disjoint seeds.
+- No scored circuit was compiled before the lock.
+
+## 6. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `patches/psf_compile_c3_2026-10-02/psf_compile.py` | `8fd5e50087c1aa6abd382c8a6852d3a015d9e07fdb66ef22a7b5bd91360fd36d` |
+| `patches/psf_compile_c3_2026-10-02/test_c3_prune.py` | `55276d3e3f60137801e6f9c898224c35a23d5b5bd4613cbdda9ffb5e6670a450` |
+| `benchmarks/c3_eval.py` | `a56aa67676142fe8d254c67d91f120e854ed0c64b673b5fe3e750b22941196f4` |
+| `benchmarks/run_c3_2026-10-02.sh` | `7c82f6126e66ad15c7e6c3171a7de7fb5c8b503240dfe01044367f8ed6ba990d` |
+
 ---
 
 ---
