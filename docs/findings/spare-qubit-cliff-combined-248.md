@@ -7993,6 +7993,122 @@ From Addendum 304, on the five GAP families × 3 fake devices:
 Error-weighted layout for the general layout search, pre-registered against the same GAP circuits. The P0
 noiseless threshold stays at 1e-6.
 
+
+---
+
+<!-- ===== Addendum 306 (source: spare-qubit-cliff-addendum-306-2026-10-02.md) ===== -->
+
+> **Note added when merging:** Home pre-registration of candidate psf_compile 2026-10-02.c4. Locked by the git commit that adds this Addendum, the candidate with its tests, and the evaluation scripts, pushed before the scored run. The smoke run, unfavourable to the candidate, is disclosed in section 5; nothing was changed after it.
+
+## Addendum 306 -- Pre-registration: candidate psf_compile 2026-10-02.c4 (error-aware layout through the device Target). Does handing placement to Qiskit's error-aware layout stage close the placement gap? (2026-10-02)
+
+**Status: pre-registration, written at home before any scored run.**
+
+- **Lock:** the git commit that adds this document, the candidate
+  (`patches/psf_compile_c4_2026-10-02/psf_compile.py`, with its tests) and `benchmarks/c4_eval.py` with its
+  runner, pushed before the scored run.
+- **No hardware:** fake devices and Aer noise only.
+- **Smoke run:** it was run before the lock and did **not** look good for this candidate (section 5). The test is
+  run anyway, unchanged, because 1 circuit per cell is weak evidence and a pre-registered negative result is still
+  a result.
+
+## 1. The candidate (changelog item 32)
+
+`compile_for_hardware(..., target=..., error_aware_layout=True)`:
+
+- PSF-Zero compresses the circuit as before.
+- The routing call is given the device `target` instead of `coupling_map`/`basis_gates`, and `layout_search` is
+  skipped. Qiskit's layout stage at `routing_optimization_level` (default 1) then places the circuit, using the
+  Target's errors: VF2Layout, SabreLayout and VF2PostLayout.
+- Permutation elision and post-routing re-synthesis are kept.
+- Item 31 remains as a backstop.
+- Default False: identical to release 2026-10-02.1, as checked by test.
+
+## 2. Design (`benchmarks/c4_eval.py`)
+
+- **Circuits:** the same five GAP families (Addendum 300), via the locked `gap_eval.family()`: 2,079 per device and
+  arm.
+- **Arms:**
+
+  | arm | what it is |
+  |---|---|
+  | C3 | release 2026-10-02.1 with `target` (Addendum 304's C3) |
+  | C4 | the candidate with `target` and `error_aware_layout=True` |
+  | L3T | Qiskit level 3 with the Target and `approximation_degree=1.0` |
+
+- **Devices, noise and metric:** as in Addendum 303.
+- **Each family × device "cell" compares paired mean infidelities:** 6 families (F3 split into open and periodic) × 3
+  devices = 18 cells.
+
+## 3. Predictions (scored only by `c4_eval.py score`)
+
+**P0, harness.** All of these must hold, or nothing below is scored:
+
+- all 45 job files are present;
+- every simulated circuit's noiseless infidelity is <= 1e-6;
+- at most 5% of the circuits are too wide.
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| H1 | the placement gap on chains closes | chains (F3o + F5): C4/L3T <= 1.05 on every device | >= 1.20 on any device |
+| H2 | C4 improves on the release | C4/C3 <= 1.00 in >= 16 of 18 cells and no cell > 1.10 | fewer than 12 cells <= 1.00, or any cell > 1.20 |
+| H3 | C4 is close to L3T everywhere | C4/L3T <= 1.10 in every cell | any cell > 1.30 |
+| H4 | C4 never uses a failed element | 0 failed-edge or failed-qubit uses | any |
+| H5 | C4 is not slow | median compile time C4 <= 2 × C3 | > 3 × C3 |
+
+**Reported without prediction:**
+
+- the cell table (C3/L3T, C4/L3T, C4/C3, mean two-qubit counts);
+- backstop recompiles;
+- compile times.
+
+**Expectations, stated after the smoke run:**
+
+- H1-H3 are likely to be refuted (section 5).
+- The run's value is to measure, on 2,079 circuits per device, whether Qiskit's level-1 error-aware layout stage
+  helps PSF-Zero's compressed circuits or not.
+
+## 4. What this will not establish
+
+- Real hardware.
+- Other routing levels.
+- Why the layout stage chooses as it does.
+
+## 5. Development (disclosed)
+
+- **Tests** (`test_c4_layout.py`), 4 tests, all pass at home:
+  - the version strings;
+  - the default (`error_aware_layout=False`) identical to release 2026-10-02.1, with and without `target`;
+  - error-aware outputs on FakeTorino and FakeKingston are exact, use only Target instructions and avoid failed
+    elements;
+  - without `target` the flag has no effect.
+- **Smoke run at home (1 circuit per sub-family, 54 s):**
+  - P0 passed.
+  - C4/C3 was <= 1.00 in only 7 of 18 cells, ranging 0.54 (FakeTorino F4) to 1.53 (FakeTorino F3p).
+  - C4/L3T ranged 0.98-1.66; on chains it was 1.25 / 1.34 / 1.36.
+  - The mean two-qubit counts of C4 equalled C3's in every cell: the layout stage re-placed the same routed
+    circuit rather than routing differently.
+  - Its verdict lines:
+
+    | H1 | H2 | H3 | H4 | H5 |
+    |---|---|---|---|---|
+    | REFUTED | REFUTED | REFUTED | CONFIRMED | CONFIRMED |
+
+    C4's median compile time was 0.019 s against C3's 0.035 s.
+  - These are not results.
+- **No threshold or design element was changed after the smoke run.**
+- The scorer was run on synthetic files.
+- Scored and smoke circuits use disjoint seeds.
+
+## 6. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `patches/psf_compile_c4_2026-10-02/psf_compile.py` | `0a1502f9a6fddcea8cb01105e7053c3c5b5e61359e356330c66d2ca51bab445d` |
+| `patches/psf_compile_c4_2026-10-02/test_c4_layout.py` | `2c820390ab4167635e4612a2b054df2937f96f6441dfbab1580887044224d139` |
+| `benchmarks/c4_eval.py` | `449789117b2fff27c48da21d4ff89f27f3e593239d210b110864ae4a6645058c` |
+| `benchmarks/run_c4_2026-10-02.sh` | `eb3f1f40d6646614be487c5e449ccc4495e665a4313b5dcf8f982ed6e0e9f4ab` |
+
 ---
 
 ---
