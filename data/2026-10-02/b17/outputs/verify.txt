@@ -1,0 +1,16 @@
+files ok: True; compile errors 0; control failures 0; P0 PASS
+W1 QK1 0/2100  QK2 0/2100  QK3 0/2100  QK3CZ 0/2100  QK3U 0/2100  PSF 0/2100  PSFNG 248/2100
+W2 QK1 707/1000  QK2 707/1000  QK3 707/1000  QK3CZ 0/1000  QK3U 0/1000  PSF 0/1000  PSFNG 599/1000
+W3 QK1 0/1000  QK2 0/1000  QK3 0/1000  QK3CZ 0/1000  QK3U 0/1000  PSF 0/1000  PSFNG 0/1000
+W4 QK1 0/900  QK2 0/900  QK3 0/900  QK3CZ 0/900  QK3U 0/900  PSF 0/900  PSFNG 0/900
+  W2 n=4: QK1 357, QK3 357, PSFNG 285
+  W2 n=6: QK1 350, QK3 350, PSFNG 314
+H1 CONFIRMED H2 CONFIRMED H3 CONFIRMED H4 CONFIRMED H5 REFUTED
+PSFNG W1 failures by (dt, r):
+  dt=0.001: r=0 0/100  r=1e-05 48/100  r=0.0001 100/100  r=0.001 0/100  r=0.01 0/100  r=0.1 0/100  r=1 0/100
+  dt=0.01: r=0 0/100  r=1e-05 100/100  r=0.0001 0/100  r=0.001 0/100  r=0.01 0/100  r=0.1 0/100  r=1 0/100
+  dt=0.1: r=0 0/100  r=1e-05 0/100  r=0.0001 0/100  r=0.001 0/100  r=0.01 0/100  r=0.1 0/100  r=1 0/100
+PSFNG W1 failures by n: {4: 122, 6: 126}
+PSF guard rejections by workload: {'W1': 979, 'W2': 862, 'W3': 0, 'W4': 0} circuits with >=1 rejection: {'W1': 248, 'W2': 600, 'W3': 0, 'W4': 0}
+PSFNG failures where the guarded PSF rejected at least once: 847 of 847
+flags: none

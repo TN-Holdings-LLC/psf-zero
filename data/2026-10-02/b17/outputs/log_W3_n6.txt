@@ -1,0 +1,12 @@
+META {"psf": "2026-10-01.1", "layout": "2026-10-01.1", "core": "2026-09-29.1", "qiskit": "2.5.2", "python": "3.12.13", "git_head": "f0095e6", "sha": {"script": "04c0a80121170041768569737c7331cb7acbb8672a04729a977333f02e3a736a", "psf": "854de6cdc82c0edbb6a0e340a583add741688dc77e2ee6f94f256eabd5f72520"}, "n": 6, "workload": "W3", "smoke": false, "started": "2026-10-02T01:57:03Z"}
+50 circuits (8 s)
+100 circuits (15 s)
+150 circuits (22 s)
+200 circuits (29 s)
+250 circuits (35 s)
+300 circuits (43 s)
+350 circuits (50 s)
+400 circuits (57 s)
+450 circuits (64 s)
+500 circuits (71 s)
+wrote b17_W3_n6.jsonl: 500 circuits, 71 s

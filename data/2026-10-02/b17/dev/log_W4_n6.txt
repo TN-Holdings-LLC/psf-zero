@@ -1,0 +1,2 @@
+META {"psf": "2026-10-01.1", "layout": "2026-10-01.1", "core": "2026-09-29.1", "qiskit": "2.5.2", "python": "3.12.13", "git_head": "4839966", "sha": {"script": "04c0a80121170041768569737c7331cb7acbb8672a04729a977333f02e3a736a", "psf": "854de6cdc82c0edbb6a0e340a583add741688dc77e2ee6f94f256eabd5f72520"}, "n": 6, "workload": "W4", "smoke": true, "started": "2026-10-02T01:50:37Z"}
+wrote b17_W4_n6_smoke.jsonl: 6 circuits, 2 s

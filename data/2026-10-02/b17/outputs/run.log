@@ -1,0 +1,53 @@
+date_utc 2026-10-02T01:57:03Z
+CPU(s):                                  12
+Model name:                              AMD Ryzen 5 5500
+python 3.12.13
+46e3eb303202f8b35ee6c3cbbb4ceffa15ca91f96dda2ea6d02ca38ee743eb6d  <repo>/benchmarks/b17_practice_eval.py
+53c72c91617a350677b08b1ea79cda39514234248988d70b73778f2881c659eb  benchmarks/run_b17_2026-10-02.sh
+f0095e6 Addenda 297-298: results of the home QML test part 2 (all six confirmed; fragile set shows compiler-dependent flips); B17 pre-registration (#17057 in practice), locks b17_practice_eval.py and its runner
+PAR 6
+   done W3 n=4 (52 s)
+   done W2 n=4 (60 s)
+   done W3 n=6 (72 s)
+   done W2 n=6 (79 s)
+   done W4 n=4 (96 s)
+   done W4 n=6 (110 s)
+   done W1 n=4 (153 s)
+   done W1 n=6 (291 s)
+== all chunks finished after 291 s
+# b17 score
+
+versions {"psf": "2026-10-01.1", "layout": "2026-10-01.1", "core": "2026-09-29.1", "qiskit": "2.5.2", "python": "3.12.13", "git_head": "f0095e6"}
+P0: PASS -- files 8 of 8 (missing []), short [], compile errors 0, control failures 0
+
+## Failures (1 - F_avg > 1e-6) / circuits, worst 1 - F_avg
+
+| workload | QK1 | QK2 | QK3 | QK3CZ | QK3U | PSF | PSFNG |
+|---|---|---|---|---|---|---|---|
+| W1 | 0/2100 (1.4e-14) | 0/2100 (8.9e-08) | 0/2100 (8.9e-08) | 0/2100 (8.9e-08) | 0/2100 (8.9e-08) | 0/2100 (1.6e-14) | 248/2100 (1.6e-02) |
+| W2 | 707/1000 (6.8e-01) | 707/1000 (6.8e-01) | 707/1000 (6.8e-01) | 0/1000 (3.5e-09) | 0/1000 (6.6e-15) | 0/1000 (5.9e-15) | 599/1000 (6.6e-01) |
+| W3 | 0/1000 (5.2e-15) | 0/1000 (4.8e-15) | 0/1000 (4.8e-15) | 0/1000 (3.5e-09) | 0/1000 (5.2e-15) | 0/1000 (4.8e-15) | 0/1000 (4.8e-15) |
+| W4 | 0/900 (3.1e-15) | 0/900 (3.8e-09) | 0/900 (3.8e-09) | 0/900 (3.8e-09) | 0/900 (2.9e-09) | 0/900 (3.1e-15) | 0/900 (3.1e-15) |
+
+## W1 by cell: QK3 failures / circuits (rows dt, columns r = Jz/Jx)
+
+| dt | 0 | 1e-05 | 0.0001 | 0.001 | 0.01 | 0.1 | 1 |
+|---|---|---|---|---|---|---|---|
+| 0.001 | 0/100 | 0/100 | 0/100 | 0/100 | 0/100 | 0/100 | 0/100 |
+| 0.01 | 0/100 | 0/100 | 0/100 | 0/100 | 0/100 | 0/100 | 0/100 |
+| 0.1 | 0/100 | 0/100 | 0/100 | 0/100 | 0/100 | 0/100 | 0/100 |
+
+PSF guard rejections of the ZSX decomposer (all workloads): 1841
+
+## Predictions
+
+- H1 (QK2 and QK3 fail on >= 10% of W2): **CONFIRMED**
+- H2 (QK1-3 never fail on Haar blocks, W3): **CONFIRMED**
+- H3 (the PSF release never fails, any workload): **CONFIRMED**
+- H4 (PSF with the guard off fails on >= 1% of W2): **CONFIRMED**
+- H5 (a realistic physics workload hits the bug: QK3 fails on >= 1 W1 circuit): **REFUTED**
+
+Reported: median compile s QK1 0.005, QK2 0.007, QK3 0.008, QK3CZ 0.008, QK3U 0.007, PSF 0.010, PSFNG 0.009
+Reported: mean two-qubit count QK1 45.7, QK2 24.1, QK3 24.0, QK3CZ 24.3, QK3U 24.3, PSF 26.1, PSFNG 25.7
+
+B17 DONE

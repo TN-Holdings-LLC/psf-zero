@@ -7228,6 +7228,238 @@ matrices and checks the following:
 | `benchmarks/b17_practice_eval.py` | `04c0a80121170041768569737c7331cb7acbb8672a04729a977333f02e3a736a` |
 | `benchmarks/run_b17_2026-10-02.sh` | `2d6b383321c1559cc8dc84d97c7cecda8403509cfce95558059c01c8b588492f` |
 
+
+---
+
+<!-- ===== Addendum 299 (source: spare-qubit-cliff-addendum-299-2026-10-02.md) ===== -->
+
+> **Note added when merging:** Results of the home pre-registration in Addendum 298 (lock commit f0095e6). Scored by the locked script and re-counted by an independent script written after the run.
+
+## Addendum 299 -- Results: B17 (Addendum 298). Qiskit #17057 hits explicit near-boundary unitaries at every optimization level (707 of 1,000 circuits), but no physics Trotter circuit through plain transpile (0 of 2,100). The PSF-Zero release is exact everywhere, and its guard is what makes it so: without it, 248 of the Trotter circuits fail, exactly in the c ~ 1e-8 to 1e-7 band (2026-10-02)
+
+**Status: results of the pre-registered test in Addendum 298.**
+
+- **Lock:** commit `f0095e6`, pushed before the scored run.
+- **Scoring:** by the locked `b17_practice_eval.py score`, and re-counted by an independent script written after the
+  run (section 5).
+- **Setting:** home (WSL2), 6 processes; 5,000 circuits × 7 compilers, no compile errors.
+
+## 1. Verdicts
+
+| ID | Verdict | Numbers |
+|---|---|---|
+| P0 | **PASS** | 8 of 8 chunks complete; 0 compile errors; controls (QK3CZ, QK3U) 0 failures in 10,000 compiles |
+| H1 | **CONFIRMED** | W2 (near-boundary unitaries): QK2 and QK3 fail on 707 of 1,000; worst 1 - F_avg 0.68 |
+| H2 | **CONFIRMED** | W3 (Haar unitaries): QK1-QK3 0 of 1,000 |
+| H3 | **CONFIRMED** | PSF release: 0 failures on all 5,000 circuits |
+| H4 | **CONFIRMED** | PSF with the guard off: 599 of 1,000 W2 circuits fail |
+| H5 | **REFUTED** | W1 (Heisenberg Trotter): QK3 0 of 2,100 |
+
+## 2. Failures (1 - F_avg > 1e-6) / circuits
+
+| workload | QK1 | QK2 | QK3 | QK3CZ | QK3U | PSF | PSFNG |
+|---|---|---|---|---|---|---|---|
+| W1 Trotter | 0/2100 | 0/2100 | 0/2100 | 0/2100 | 0/2100 | 0/2100 | **248/2100** |
+| W2 near-boundary | **707/1000** | **707/1000** | **707/1000** | 0/1000 | 0/1000 | 0/1000 | **599/1000** |
+| W3 Haar | 0/1000 | 0/1000 | 0/1000 | 0/1000 | 0/1000 | 0/1000 | 0/1000 |
+| W4 small-angle ansatz | 0/900 | 0/900 | 0/900 | 0/900 | 0/900 | 0/900 | 0/900 |
+
+**Notes.**
+
+- QK1 fails exactly as often as QK2 and QK3 on W2: an explicit unitary is synthesised at every optimization level.
+- On W1 every exact arm deviates by up to 8.9e-8, the cz and u controls included. That is the synthesis's own
+  approximation tolerance, below the 1e-6 failure line.
+
+## 3. Reading
+
+- **Through plain `transpile`, the bug needs an explicit unitary near the boundary.**
+  - With such unitaries (W2), 70.7% of circuits came out wrong at every optimization level, with errors up to
+    0.68.
+  - With a physics workload whose blocks come from rxx/ryy/rzz gates (W1), none of 2,100 circuits failed. This
+    includes the cells whose per-step third coordinate lies in the failing band (below).
+  - The prediction that a realistic workload would hit it is refuted. This supports the maintainer's view that
+    such inputs are rare in typical use, with the caveat that explicit two-qubit unitaries near the boundary (from
+    numerical optimization, or from block consolidation in another tool) fail most of the time.
+- **PSF-Zero's own pipeline does reach the band on the physics workload, and the guard catches every case.**
+  - Without the guard (PSFNG), 248 W1 circuits fail. They sit exactly in the cells where one Trotter step's
+    third coordinate c = r·Jx·dt is about 1e-8 to 1e-7.
+
+    | dt | r = 1e-5 | r = 1e-4 | every other r |
+    |---|---|---|---|
+    | 1e-3 | 48 of 100 | 100 of 100 | 0 |
+    | 1e-2 | 100 of 100 | 0 | 0 |
+    | 0.1 | 0 | 0 | 0 |
+
+  - The guarded release rejected the ZSX decomposer 1,841 times: 979 in W1 and 862 in W2.
+  - In all 847 circuits where PSFNG failed, the guarded run had at least one rejection. With the guard, the output
+    was exact in every case.
+  - PSF-Zero emits each block's canonical core on its own, so it meets the narrow band whenever one step's
+    coordinate lies in it. Qiskit's consolidation evidently does not produce such blocks from these gates.
+- **For the Qiskit issue.** These are facts the owner may choose to add:
+  - explicit near-boundary unitaries fail at every optimization level, at 70.7% in this sample;
+  - a Heisenberg Trotter workload through `transpile` did not fail in 2,100 circuits;
+  - a pipeline that synthesizes per-step blocks does reach the band.
+
+  As with every upstream post, the owner decides whether and how.
+
+## 4. What this does not establish
+
+As in Addendum 298:
+
+- **How common such workloads are.**
+- **The guard's completeness beyond these workloads.**
+- **Why Qiskit's consolidation avoids the band on W1.** That was not investigated; the observation is only that it
+  did.
+
+## 5. Independent check
+
+`benchmarks/b17_verify.py` (written after the run) reads the raw jsonl files only. It checks the following, and all
+of it matches the locked score:
+
+- the commit `f0095e6`, the script hash, the release version and the circuit counts in all 8 files;
+- every count in section 2;
+- P0 and H1-H5;
+- the maps in section 3.
+
+Output in `outputs/verify.txt`.
+
+## 6. Data (`data/2026-10-02/b17/`)
+
+- `outputs/`: the 8 jsonl files (one row per circuit, all 7 compilers), the logs, `env.txt`, `run.log`,
+  `score.md`, `score_log.txt` and `verify.txt`.
+- `dev/`: the smoke run.
+- Local paths in `env.txt` and the run log were replaced with `<repo>/` and `<home folder>/`.
+
+
+---
+
+<!-- ===== Addendum 300 (source: spare-qubit-cliff-addendum-300-2026-10-02.md) ===== -->
+
+> **Note added when merging:** Home pre-registration of GAP. Locked by the git commit that adds this Addendum and its two scripts, pushed before the scored run. H6 was added after the smoke run and is marked as such.
+
+## Addendum 300 -- Pre-registration: the gap map. Where the PSF-Zero release trails, ties or beats error-aware Qiskit L3 and A5, by circuit family, on three noisy fake devices (2026-10-02)
+
+**Status: pre-registration, written at home before any scored run.**
+
+- **Lock:** the git commit that adds this document, `benchmarks/gap_eval.py` and `benchmarks/run_gap_2026-10-02.sh`,
+  pushed before the scored run.
+- **No hardware:** no IBM account, no QPU. Fake-provider devices and Aer noise models only.
+
+## 1. Why
+
+Addendum 297 found two concrete targets for the release (C2) on one circuit family, the QML ring ansatz:
+
+1. **Routing of a 4-cycle on heavy-hex.** C2 used 44 two-qubit gates against error-aware Qiskit L3's (L3T) 37 for
+   4 layers, and lost more margin to noise.
+2. **Readout-blind placement of the measured qubit.**
+
+Before working on them, this test measures how general the gap is. Does it appear on every circuit that needs a
+cycle? Does it disappear on chains? And how does C2 fare on dense random circuits, where its synthesis rather than
+its routing decides?
+
+## 2. Design (`benchmarks/gap_eval.py`)
+
+**Families.** Inputs are |0…0⟩, and every circuit depends only on its own seed.
+
+| ID | family | instances |
+|---|---|---|
+| F1 | ring ansatz (the QML family, CZ ring) | n = 4 and 6; L = 2, 4, 6; 36 per (n, L): 216 |
+| F2 | QAOA MaxCut on random 3-regular graphs, random angles | n = 6; p = 1, 2; 60 per p: 120 |
+| F3o | XYZ-Heisenberg Trotter chain, open boundary, dt = 0.1, 4 steps | n = 6: 75 |
+| F3p | the same with a periodic boundary (a 6-cycle) | n = 6: 75 |
+| F4 | quantum-volume-style layers of Haar SU(4) on random pairs, depth n | n = 4, 5, 6; 45 per n: 135 |
+| F5 | GHZ chain plus a random single-qubit layer | n = 4, 6, 8; 24 per n: 72 |
+
+**Arms, devices and noise.**
+
+- Arms: C2, A5 and L3T, as in Addenda 290-297. REL is dropped: Addendum 297 placed it below C2 throughout.
+- Devices: FakeAuckland, FakeTorino, FakeKingston.
+- Noise: `NoiseModel.from_backend` with Aer `density_matrix`. One Aer job per (device, arm, family).
+
+**Metric.**
+
+- Infidelity 1 - ⟨ψ|ρ|ψ⟩ of the final-layout qubits' noisy state against the ideal output ψ.
+- Also recorded:
+  - the two-qubit count and depth;
+  - the number of physical qubits touched;
+  - the mean readout error of the final-layout qubits;
+  - the compile time.
+- A compiled circuit that touches more than 11 physical qubits is not simulated (the density matrix would be too
+  large) and is counted as "too wide".
+
+**Comparisons are paired:** the same circuits in every arm.
+
+## 3. Predictions (scored only by `gap_eval.py score`)
+
+**P0, harness.** All of these must hold, or nothing below is scored:
+
+- all 45 job files are present;
+- every simulated circuit's noiseless infidelity is <= 1e-9;
+- at most 5% of the circuits are too wide.
+
+Two subsets are used: **cycles** = F1 + F3p, and **chains** = F3o + F5.
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| H1 | cycles cost C2 extra two-qubit gates on Heron | C2 uses more 2q gates than L3T in >= 80% of cycle circuits, on FakeTorino and FakeKingston | <= 50% on either |
+| H2 | chains do not | C2's 2q count <= L3T's in >= 90% of chain circuits, on every device | < 70% on any device |
+| H3 | the extra gates cost fidelity | cycles on Heron: mean infidelity C2 >= 1.10 × L3T, on both devices | C2 <= L3T on either |
+| H4 | on dense random circuits C2 is level with L3T | F4: mean infidelity C2 <= 1.05 × L3T, on every device | > 1.20 × on any device |
+| H5 | A5 at least matches L3T overall | mean infidelity over all families A5 <= L3T on >= 2 of 3 devices | A5 > 1.05 × L3T on >= 2 |
+| H6 | **added after the smoke run (section 5):** C2 trails L3T on chains too, where the 2q counts are equal, so placement rather than routing | chains: mean infidelity C2 >= 1.10 × L3T, on every device | C2 <= L3T on any device |
+
+**Reported without prediction:**
+
+- F2 (QAOA);
+- FakeAuckland for H1 and H3;
+- depths;
+- readout error of the final-layout qubits by arm;
+- compile times;
+- qubits touched.
+
+**Expectations, stated now:**
+
+- H1 and H3 generalise Addendum 297's single family.
+- H2 is the control: without cycles there should be no routing gap.
+- H4 is genuinely uncertain. C2's synthesis was competitive in earlier tests, but F4 also needs routing.
+- H5 favours A5 by construction, as in Addenda 286-297.
+
+## 4. What this will not establish
+
+- Real hardware.
+- Circuits wider than 8 logical qubits.
+- That the gaps found are the only ones.
+- Readout error does not enter the metric, because the state is read from the density matrix. It is reported
+  separately.
+
+## 5. Development (disclosed)
+
+- **The scorer** was run on synthetic files to check the plumbing.
+- **The smoke run at home** (`SMOKE=1`: 1 circuit per sub-family; 144 circuits per arm and device in all), 2026-10-02.
+  - It ran end to end. P0 PASS: 45 of 45 files, noiseless infidelity at most 4.8e-15, none too wide.
+  - Summed job time 122 s.
+- **Two changes after the smoke run, before any scored circuit was compiled:**
+  1. **The sizes were tripled** (from 12, 20, 25, 15, 8 to 36, 60, 75, 45, 24 per sub-family), because the run
+     proved light. This changes precision, not which circuits are drawn first. The smoke seeds stay disjoint from the
+     scored ones.
+  2. **H6 was added, informed by the smoke run.**
+     - In the smoke run, C2's infidelity was 1.2-1.5 times L3T's on the chain families (F3o, F5) at equal
+       two-qubit counts.
+     - That points at placement: C2's layout search, called as here without `layout_edge_errors`, ignores gate and
+       readout errors, while L3T's does not.
+     - The smoke run is 1 circuit per sub-family, so this is a hypothesis formed on 3-6 circuits per device. H6 is
+       marked as post-smoke and carries less weight than H1-H5.
+- **The smoke run's verdict lines are not results.** They read H1 REFUTED, H2 CONFIRMED, H3 CONFIRMED, H4 REFUTED
+  and H5 CONFIRMED. H1-H5 were not changed after seeing them.
+- **No scored circuit was compiled before the lock.** Scored and smoke circuits use disjoint seeds.
+
+## 6. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `benchmarks/gap_eval.py` | `6659bd0bd2054d4484374da393a1f84fa6138607babc019b8eb91effa2a2ff2a` |
+| `benchmarks/run_gap_2026-10-02.sh` | `4185e0c983a3cfaf99e24a66d32bbcebe403106db790fa62d53a145506fe5b67` |
+
 ---
 
 ---
