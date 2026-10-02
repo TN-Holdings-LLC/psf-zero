@@ -61,7 +61,23 @@ in place, so there is never a second, differently-named copy to pick between
 [`psf_smart_layout.py`](benchmarks/psf_smart_layout.py) — the layout-search prototype,
 repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see below).
 
-> **Current version (2026-10-01): `psf_compile.py` 2026-10-01.1, `psf_smart_layout` 2026-10-01.1
+> **Current version (2026-10-02): `psf_compile.py` 2026-10-02.1, with `psf_smart_layout` 2026-10-01.1
+> and the Rust core `CORE_VERSION` 2026-09-29.1 (both unchanged)** ([Part 9](docs/findings/spare-qubit-cliff-combined-248.md),
+> Addenda 302-305). One opt-in addition to 2026-10-01.1:
+>
+> - **`compile_for_hardware(..., target=backend.target)` avoids failed couplers and qubits.** A device can list a
+>   coupler whose reported error is 1.0; the layout search and routing see only the coupling map, so the previous
+>   release could route through it (7-14 times per circuit for a 6-qubit ring on FakeTorino, Addendum 302). With
+>   `target`, a compiled circuit that uses such an element is recompiled on the coupling map without failed
+>   couplers and qubits; every other result is returned unchanged. Pre-registered test (Addenda 303-304, fake
+>   devices, noisy simulation): failed elements never used; 1,926 of 1,926 unaffected circuits bit-for-bit
+>   unchanged; all 153 affected circuits improved (mean infidelity 0.956 to 0.375). Without `target`, nothing
+>   changes.
+> - **Known gap, not addressed by this release:** the layout search ignores gate errors. In the same tests the
+>   release's noisy infidelity is 1.03-1.70 times that of Qiskit level 3 with the device Target in every circuit
+>   family and device tested (Addenda 301 and 304); error-weighted layout is the next step.
+
+> **Previous release (2026-10-01): `psf_compile.py` 2026-10-01.1, `psf_smart_layout` 2026-10-01.1
 > and the Rust core `CORE_VERSION` 2026-09-29.1 -- rebuild the core (`maturin develop --release`)
 > when you update** ([Part 9](docs/findings/spare-qubit-cliff-combined-248.md), Addenda 272-274; core:
 > Addenda 250-251). Pre-registered on held-out inputs in the workplace sandbox (2 CPUs, fake backends;

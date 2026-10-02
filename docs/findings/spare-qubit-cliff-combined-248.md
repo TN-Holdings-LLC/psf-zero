@@ -7937,6 +7937,62 @@ Output in `outputs/verify.txt`.
 - `diag/`: from Addendum 302.
 - Local paths were replaced.
 
+
+---
+
+<!-- ===== Addendum 305 (source: spare-qubit-cliff-addendum-305-2026-10-02.md) ===== -->
+
+> **Note added when merging:** Adoption record: candidate 2026-10-02.c3 becomes release psf_compile 2026-10-02.1 (owner's decision, 2026-10-02).
+
+## Addendum 305 -- Adoption: candidate 2026-10-02.c3 becomes release psf_compile 2026-10-02.1 (2026-10-02)
+
+**Status: an adoption record.**
+
+- **Decision:** on 2026-10-02 the owner adopted candidate psf_compile 2026-10-02.c3 as the release, after its
+  pre-registered evaluation (Addenda 303-304).
+- **Verdicts at adoption:** four of five predictions confirmed; H2 ambiguous.
+
+## 1. What changes
+
+- **`psf_compile.py` becomes 2026-10-02.1.** It is the candidate with only the version strings changed:
+  - the `VERSION:` line;
+  - the `VERSION` constant;
+  - the changelog heading of item 31.
+- **The one functional change is opt-in** (changelog item 31): `compile_for_hardware(..., target=...,
+  prune_max_error=0.5)` recompiles on a pruned coupling map only when the first result uses a failed coupler or
+  qubit. Without `target`, output is identical to 2026-10-01.1, as checked by the candidate's test against that
+  release.
+- **Unchanged:** `psf_smart_layout` 2026-10-01.1 and the Rust core 2026-09-29.1.
+- **Tests:**
+  - `benchmarks/test_core_fix_c2.py` and `benchmarks/test_release_2026_09_28.py` now expect the new version
+    string;
+  - `benchmarks/test_release_2026_10_02.py` adds the candidate's tests, adapted to the release file.
+- **README:**
+  - a new "Current version (2026-10-02)" block, which states the known gap;
+  - the 2026-10-01 block is kept as "Previous release".
+
+## 2. Basis
+
+From Addendum 304, on the five GAP families × 3 fake devices:
+
+- failed elements are never used;
+- 1,926 of 1,926 unaffected circuits are unchanged bit for bit;
+- all 153 affected circuits improve (mean infidelity 0.956 → 0.375);
+- the FakeTorino gap to Qiskit L3 with the Target falls from 1.87-3.25 to 1.19-1.70.
+
+## 3. What adoption does not claim
+
+- **That the release matches Qiskit L3 with the Target.** It does not: its infidelity is 1.03-1.70 times L3T's on
+  every family and device tested, because its layout search ignores gate errors (Addenda 301, 304).
+- **Any real-hardware result.**
+- **That 0.5 is the right threshold for every device.**
+- **`target` is not used by default.** Callers must pass it.
+
+## 4. Next
+
+Error-weighted layout for the general layout search, pre-registered against the same GAP circuits. The P0
+noiseless threshold stays at 1e-6.
+
 ---
 
 ---

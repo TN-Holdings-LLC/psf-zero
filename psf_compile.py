@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-10-01.1 -- release, adopted on 2026-10-01 from candidate 2026-10-01.c2 (previous release: 2026-09-28.1)
+VERSION: 2026-10-02.1 -- release, adopted on 2026-10-02 from candidate 2026-10-02.c3 (previous release: 2026-10-01.1)
 
 Where to look for what
 ----------------------
@@ -445,6 +445,21 @@ Changes in the 2026-09-26.4 revision (spare-qubit-cliff Addenda 195-196)
     and re-synthesised by the PSF-Zero core (`_AbsorbRoutingSwaps`). Blocks without a SWAP are untouched.
     "auto" means on for `entangling_basis="cx"`, off for "canonical" (items 29 and 30), and the canonical
     path is unchanged.
+
+2026-10-02.1 (release; candidate 2026-10-02.c3, adopted on 2026-10-02 after its pre-registered evaluation, Addenda 303-304):
+
+31. **NEW, opt-in: `compile_for_hardware(target=...)` avoids failed couplers and qubits.** Addendum 302
+    found the release placing 7-14 CZ of a 6-qubit ring on FakeTorino's coupler (15, 19), whose reported
+    error is 1.0: the layout search and the routing see only `coupling_map`, which still lists edges the
+    device reports as failed. With `target` given, the circuit is first compiled exactly as without it; if
+    the result uses no failed element -- no 2-qubit gate on a directed edge whose native 2-qubit gate error
+    is >= `prune_max_error` (default 0.5), no gate on a qubit whose `sx` error is >= `prune_max_error` --
+    that result is returned unchanged. Otherwise the circuit is compiled again on `prune_coupling_map(...)`,
+    the coupling map without those edges and without every edge touching such a qubit. Recompiling only when
+    needed keeps every unaffected output identical to the release: the layout search is error-blind, so
+    pruning alone would move unaffected layouts too (Addendum 303, development). Qubit indices and
+    `coupling_map.size()` are unchanged. Without `target` nothing changes. Counts in `PRUNE_STATS`. Gate and
+    readout errors below the threshold are still ignored by the layout (a separate, later step).
 """
 from __future__ import annotations
 
@@ -478,7 +493,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-10-01.1"  # release (from candidate 2026-10-01.c2): c1 + permutation elision + post-routing re-synthesis
+VERSION = "2026-10-02.1"  # release (from candidate 2026-10-02.c3): 2026-10-01.1 + avoidance of failed couplers and qubits (item 31)
 __version__ = VERSION
 
 # Changelog item 27: the version string of the loaded Rust core, for logs.
@@ -1558,6 +1573,64 @@ def qubit_errors_from_target(target, gate_name: str = "sx") -> dict:
     return out
 
 
+PRUNE_STATS = {"calls": 0, "edges_removed": 0, "qubits_isolated": 0, "checked": 0, "recompiled": 0}
+
+
+def _failed_elements(target, max_error: float, gate_names=("cz", "ecr", "cx"), qubit_gate: str = "sx"):
+    """(set of directed failed edges, set of failed qubits) as reported by `target` (changelog item 31)."""
+    name = next((g for g in gate_names if g in target.operation_names), None)
+    edges = set()
+    if name is not None:
+        for qargs, props in target[name].items():
+            if qargs is not None and props is not None and props.error is not None and props.error >= max_error:
+                edges.add(tuple(qargs))
+    qubits = {q for q, e in qubit_errors_from_target(target, qubit_gate).items() if e >= max_error}
+    return edges, qubits
+
+
+def _uses_failed(circ, edges, qubits) -> bool:
+    for inst in circ.data:
+        idx = tuple(circ.find_bit(q).index for q in inst.qubits)
+        if any(i in qubits for i in idx):
+            return True
+        if len(idx) == 2 and (idx in edges or idx[::-1] in edges):
+            return True
+    return False
+
+
+def prune_coupling_map(coupling_map: CouplingMap, target, max_error: float = 0.5,
+                       gate_names=("cz", "ecr", "cx"), qubit_gate: str = "sx") -> CouplingMap:
+    """A copy of `coupling_map` without the edges the `target` reports as failed (changelog item 31).
+
+    A directed edge (a, b) is removed when the error of the target's native 2-qubit gate on (a, b) -- or on
+    (b, a) if (a, b) is not listed -- is >= `max_error`, or when either endpoint's `qubit_gate` error is
+    >= `max_error`. Edges without an error value are kept. Every physical qubit is kept, so indices and
+    `size()` do not change."""
+    name = next((g for g in gate_names if g in target.operation_names), None)
+    gate_err = {}
+    if name is not None:
+        for qargs, props in target[name].items():
+            if qargs is not None and props is not None and props.error is not None:
+                gate_err[tuple(qargs)] = props.error
+    bad_q = {q for q, e in qubit_errors_from_target(target, qubit_gate).items() if e >= max_error}
+    out = CouplingMap()
+    for q in range(coupling_map.size()):
+        out.add_physical_qubit(q)
+    removed = 0
+    for a, b in coupling_map.get_edges():
+        e = gate_err.get((a, b), gate_err.get((b, a)))
+        if (e is not None and e >= max_error) or a in bad_q or b in bad_q:
+            removed += 1
+            continue
+        out.add_edge(a, b)
+    PRUNE_STATS["calls"] += 1
+    PRUNE_STATS["edges_removed"] += removed
+    PRUNE_STATS["qubits_isolated"] += sum(1 for q in range(out.size())
+                                          if not out.graph.out_degree(q) and not out.graph.in_degree(q)
+                                          and coupling_map.graph.out_degree(q) + coupling_map.graph.in_degree(q))
+    return out
+
+
 def _edge_weights_from_errors(edge_errors: dict, qubit_errors: dict | None = None,
                               n2: float = 1.0, n1: float = 0.0) -> dict:
     """Integer matching weights, larger is better:
@@ -1700,6 +1773,8 @@ def compile_for_hardware(
     callback=None,
     elide_permutations: Union[bool, str] = "auto",
     post_routing_resynthesis: Union[bool, str] = "auto",
+    target=None,
+    prune_max_error: float = 0.5,
 ) -> QuantumCircuit:
     """Compress with PSF-Zero, then route (and, if `basis_gates` is given,
     translate) with Qiskit.
@@ -1820,6 +1895,9 @@ def compile_for_hardware(
     False or "auto" (on for `entangling_basis="cx"` only). When either is active the routing call is
     made through `generate_preset_pass_manager(...)` with the same arguments as the `transpile()` call
     below, plus a `pre_init` pass (the permutation) and/or a `post_routing` pass (SWAP absorption).
+    `target` and `prune_max_error` (candidate 2026-10-02.c3, item 31): with a device `Target`, a result that
+    uses a failed coupler or qubit (error >= `prune_max_error`) is recompiled on the coupling map without
+    them; any other result is returned exactly as without `target`. `None` (default) changes nothing.
     `callback` (new, item 13): forwarded verbatim to the internal
     `transpile()` call below, unchanged from what plain `transpile(callback=
     ...)` accepts. `None` by default -- passing nothing here changes nothing
@@ -1832,6 +1910,28 @@ def compile_for_hardware(
             "given -- ambiguous which should be used. Pass one or the other, "
             "not both."
         )
+
+    # Candidate 2026-10-02.c3 (item 31): compile as without a target; recompile on the pruned coupling map
+    # only if that result uses a failed coupler or qubit.
+    if target is not None:
+        args = dict(qc=qc, coupling_map=coupling_map, basis_gates=basis_gates, block_gate_floor=block_gate_floor,
+                    routing_optimization_level=routing_optimization_level, verify=verify,
+                    entangling_basis=entangling_basis, seed_transpiler=seed_transpiler,
+                    initial_layout=initial_layout, on_unsupported=on_unsupported, tol=tol,
+                    layout_search=layout_search, layout_search_time_budget_s=layout_search_time_budget_s,
+                    layout_search_call_limit=layout_search_call_limit,
+                    layout_search_fallback_call_limit=layout_search_fallback_call_limit,
+                    layout_search_use_fallback=layout_search_use_fallback, layout_edge_errors=layout_edge_errors,
+                    layout_qubit_errors=layout_qubit_errors, callback=callback,
+                    elide_permutations=elide_permutations, post_routing_resynthesis=post_routing_resynthesis)
+        out = compile_for_hardware(**args)
+        edges, qubits = _failed_elements(target, prune_max_error)
+        PRUNE_STATS["checked"] += 1
+        if not _uses_failed(out, edges, qubits):
+            return out
+        PRUNE_STATS["recompiled"] += 1
+        args["coupling_map"] = prune_coupling_map(coupling_map, target, prune_max_error)
+        return compile_for_hardware(**args)
 
     # Candidate 2026-10-01.c2: both default to on only for entangling_basis="cx" (their saving is counted in
     # CX); post-routing re-synthesis also needs basis_gates to translate its output.
