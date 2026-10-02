@@ -7460,6 +7460,145 @@ Two subsets are used: **cycles** = F1 + F3p, and **chains** = F3o + F5.
 | `benchmarks/gap_eval.py` | `6659bd0bd2054d4484374da393a1f84fa6138607babc019b8eb91effa2a2ff2a` |
 | `benchmarks/run_gap_2026-10-02.sh` | `4185e0c983a3cfaf99e24a66d32bbcebe403106db790fa62d53a145506fe5b67` |
 
+
+---
+
+<!-- ===== Addendum 301 (source: spare-qubit-cliff-addendum-301-2026-10-02.md) ===== -->
+
+> **Note added when merging:** Results of the home pre-registration in Addendum 300 (lock commit 4acca8c). P0 failed on a too-strict noiseless threshold (9 of 6,237 rows, all Qiskit L3T approximations below 1.9e-8), so nothing is scored; the results are reported descriptively and re-checked by an independent script.
+
+## Addendum 301 -- Results: GAP (Addendum 300). P0 FAILED on a too-strict harness threshold, so nothing is scored. Descriptively, the release trails error-aware Qiskit L3 almost everywhere: it has lower infidelity in only 0.3-12% of 2,079 circuits per device. On chains with identical two-qubit counts it is 1.25-1.47 times worse, which points at error-blind placement (2026-10-02)
+
+**Status: results of the pre-registered test in Addendum 300.**
+
+- **Lock:** commit `4acca8c`, pushed before the scored run.
+- **Setting:** home (WSL2), 6 processes; 45 jobs, 6,237 circuit compilations in 377 s; none too wide.
+
+## 1. P0 failed: no prediction is scored
+
+- **What failed.** P0 required every simulated circuit's noiseless infidelity to be <= 1e-9.
+  - 9 of 6,237 rows exceeded it, with values from 1.4e-9 to 1.9e-8.
+  - All 9 are L3T, on the same three open-chain Heisenberg circuits (F3o seeds 13, 27, 45), on all three devices.
+- **The cause is the threshold, not the harness.** Qiskit's level-3 transpile with a Target approximates two-qubit
+  synthesis when the Target's error rates make an approximation worthwhile. The 1e-9 threshold did not allow for
+  that, whereas B17 used 1e-6. This is a design error in Addendum 300.
+- **What follows from the pre-registration.** As pre-registered, nothing below P0 is scored. The verdict lines that
+  the locked score printed after its P0 FAIL line are not results:
+
+  | H1 | H2 | H3 | H4 | H5 | H6 |
+  |---|---|---|---|---|---|
+  | REFUTED | CONFIRMED | CONFIRMED | REFUTED | CONFIRMED | CONFIRMED |
+
+- **The quantities are reported descriptively (section 2).** These 9 rows change L3T's mean infidelity by less
+  than 1e-8 against values of 0.01-0.5, so the description is not affected. It is still not a scored test.
+- **Lesson for future harnesses.** A noiseless-equivalence check must use a tolerance that admits each arm's
+  intended approximation (1e-6, as in B17), or must pass `approximation_degree=1.0` to the arms that approximate.
+
+## 2. Descriptive results
+
+Mean noisy infidelity / mean two-qubit count, and C2/L3T paired infidelity ratio:
+
+| family | device | C2 | A5 | L3T | C2/L3T | share of circuits where C2 uses more 2q gates than L3T |
+|---|---|---|---|---|---|---|
+| F1 ring ansatz | Auckland | 0.392 / 53.5 | 0.335 / 53.5 | 0.339 / 53.8 | 1.16 | 0.17 |
+| | Torino | 0.581 / 59.2 | 0.177 / 53.7 | 0.179 / 53.7 | **3.25** | 1.00 |
+| | Kingston | 0.097 / 57.3 | 0.086 / 53.5 | 0.087 / 53.8 | 1.12 | 0.50 |
+| F2 QAOA | Auckland | 0.366 / 47.2 | 0.304 / 44.5 | 0.319 / 45.4 | 1.15 | 0.57 |
+| | Torino | 0.353 / 48.4 | 0.168 / 45.5 | 0.172 / 46.4 | **2.06** | 0.40 |
+| | Kingston | 0.088 / 48.1 | 0.074 / 45.1 | 0.076 / 45.8 | 1.15 | 0.55 |
+| F3o open chain | Auckland | 0.465 / 60.0 | 0.375 / 60.0 | 0.337 / 60.0 | 1.38 | 0.00 |
+| | Torino | 0.241 / 60.0 | 0.193 / 60.0 | 0.194 / 60.0 | 1.24 | 0.00 |
+| | Kingston | 0.142 / 60.0 | 0.096 / 60.0 | 0.098 / 60.0 | 1.46 | 0.00 |
+| F3p 6-cycle | Auckland | 0.583 / 114.0 | 0.571 / 114.0 | 0.465 / 114.0 | 1.25 | 0.00 |
+| | Torino | 0.337 / 114.0 | 0.323 / 114.0 | 0.321 / 114.0 | 1.05 | 0.00 |
+| | Kingston | 0.206 / 114.0 | 0.167 / 114.0 | 0.167 / 114.0 | 1.23 | 0.00 |
+| F4 random SU(4) | Auckland | 0.314 / 42.2 | 0.285 / 41.0 | 0.305 / 41.7 | 1.03 | 0.21 |
+| | Torino | 0.302 / 42.2 | 0.153 / 41.1 | 0.161 / 42.0 | **1.87** | 0.15 |
+| | Kingston | 0.095 / 42.5 | 0.076 / 41.1 | 0.079 / 41.7 | 1.20 | 0.21 |
+| F5 GHZ chain | Auckland | 0.063 / 5.0 | 0.047 / 5.0 | 0.051 / 5.0 | 1.24 | 0.00 |
+| | Torino | 0.030 / 5.0 | 0.023 / 5.0 | 0.023 / 5.0 | 1.30 | 0.00 |
+| | Kingston | 0.018 / 5.0 | 0.012 / 5.0 | 0.012 / 5.0 | 1.54 | 0.00 |
+
+**The quantities named in H1-H6, descriptive only:**
+
+| quantity | FakeAuckland | FakeTorino | FakeKingston |
+|---|---|---|---|
+| cycles: share of circuits where C2 uses more 2q gates than L3T (H1) | – | 0.74 | 0.37 |
+| chains: share where C2's 2q count <= L3T's (H2) | 1.00 | 1.00 | 1.00 |
+| cycles: C2/L3T infidelity (H3) | – | 2.41 | 1.16 |
+| F4: C2/L3T infidelity (H4) | 1.03 | 1.87 | 1.20 |
+| all families: A5/L3T infidelity (H5) | 1.02 | 0.98 | 0.98 |
+| chains: C2/L3T infidelity (H6) | 1.36 | 1.25 | 1.47 |
+
+**C2 has lower infidelity than L3T** in 7.8% (FakeAuckland), 0.3% (FakeTorino) and 11.7% (FakeKingston) of
+circuits.
+
+**Mean readout error of the final-layout qubits** (not part of the metric):
+
+| arm | FakeAuckland | FakeTorino | FakeKingston |
+|---|---|---|---|
+| C2 | 0.008 | 0.055 | 0.029 |
+| A5 | 0.008 | 0.038 | 0.039 |
+| L3T | 0.008 | 0.038 | 0.039 |
+
+**Median compile time:** C2 0.025 s, A5 0.66 s, L3T 0.015 s.
+
+## 3. Reading (exploratory)
+
+- **The release trails error-aware Qiskit L3 broadly, not just on cycles.**
+  - On every family and device, C2's mean infidelity is 1.03-3.25 times L3T's.
+  - It is lower than L3T's in under 12% of circuits.
+  - This is a sharper statement than Addendum 297, which saw the gap on one family.
+- **Placement, more than routing, is the main cause.**
+  - On the chain families, C2 and L3T use the same number of two-qubit gates (60 and 5 on every device), yet C2's
+    infidelity is 1.24-1.54 times L3T's.
+  - On cycles, C2 used more two-qubit gates than L3T in only 37% of circuits on FakeKingston and 74% on
+    FakeTorino. Its infidelity is still 1.16 and 2.41 times L3T's.
+  - What C2 and L3T differ in, beyond gate counts, is where they put the circuit. C2's layout search, called as here
+    without `layout_edge_errors`, uses no error information. L3T scores layouts by the Target's errors.
+  - Readout plays no part in this metric. So the gap comes from gate errors and decoherence on the qubits chosen,
+    not from readout.
+- **FakeTorino is the outlier.** C2 is 3.25 times worse on F1, 2.06 on F2 and 1.87 on F4. This suggests that
+  C2's error-blind layout lands on one or more very poor qubits or couplers of that snapshot. It has not been
+  examined which ones; it is the first thing to check (section 5).
+- **A5 is level with L3T** (0.98-1.02). A5 is the AI front end that chooses among candidate compilations by an
+  error estimate built from the Target. That is consistent with the reading that the release's deficit lies in using
+  no error information. A5's estimate shares its
+  physics with the simulator, so this support is limited, as noted in Addenda 286-297.
+- **Routing still matters on cycles.** Addendum 297's 44-against-37 count on the 4-layer ring reappears: on F1,
+  FakeTorino, C2 used more two-qubit gates in every circuit. But it is the smaller of the two effects.
+
+## 4. What this does not establish
+
+- Real hardware.
+- The cause of the FakeTorino outlier.
+- That error-aware placement would close the gap. That is a prediction for a next test.
+
+## 5. Next steps (proposed, not run)
+
+1. **Diagnose FakeTorino.** List the physical qubits and couplers C2 uses for F1 on FakeTorino, with their Target
+   errors, T1 and T2.
+2. **Error-aware layout for the release.** PSF-Zero already has an opt-in `layout_edge_errors` (changelog item 16,
+   matching layouts only). Extend error weighting to the general layout search, then re-run this map with the P0
+   threshold fixed at 1e-6, pre-registered.
+
+## 6. Independent check
+
+`benchmarks/gap_verify.py` (written after the run) reads the raw json only. It confirms:
+
+- the provenance and circuit counts of all 45 files (commit `4acca8c`, script hash `6659bd0b…`);
+- the 9 P0 rows above, all L3T F3o seeds 13, 27 and 45, maximum 1.85e-8, all below 1e-6;
+- every quantity in section 2.
+
+Output in `outputs/verify.txt`.
+
+## 7. Data (`data/2026-10-02/gap/`)
+
+- `outputs/`: 45 job files (one row per circuit), logs, `env.txt`, `run.log`, `score.md` (locked score, including
+  its P0 FAIL), `score_log.txt` and `verify.txt`.
+- `dev/`: the smoke run.
+- Local paths in `env.txt` and the run log were replaced.
+
 ---
 
 ---

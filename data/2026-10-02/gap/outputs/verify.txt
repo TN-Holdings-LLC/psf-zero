@@ -1,0 +1,11 @@
+files 45, provenance/count flags 0
+P0 noiseless > 1e-9: 9 rows; arms/families [('L3T', 'F3')]; max 1.85e-08; all <= 1e-6: True
+  circuits: [('FakeAuckland', '{"n": 6, "bc": "o", "seed": 13}'), ('FakeAuckland', '{"n": 6, "bc": "o", "seed": 27}'), ('FakeAuckland', '{"n": 6, "bc": "o", "seed": 45}'), ('FakeKingston', '{"n": 6, "bc": "o", "seed": 13}'), ('FakeKingston', '{"n": 6, "bc": "o", "seed": 27}'), ('FakeKingston', '{"n": 6, "bc": "o", "seed": 45}'), ('FakeTorino', '{"n": 6, "bc": "o", "seed": 13}'), ('FakeTorino', '{"n": 6, "bc": "o", "seed": 27}'), ('FakeTorino', '{"n": 6, "bc": "o", "seed": 45}')]
+H1 {'FakeTorino': 0.742, 'FakeKingston': 0.371}
+H2 {'FakeAuckland': 1.0, 'FakeTorino': 1.0, 'FakeKingston': 1.0}
+H3 {'FakeTorino': 2.407, 'FakeKingston': 1.162}
+H4 {'FakeAuckland': 1.031, 'FakeTorino': 1.872, 'FakeKingston': 1.195}
+H5 {'FakeAuckland': 1.024, 'FakeTorino': 0.984, 'FakeKingston': 0.983}
+H6 {'FakeAuckland': 1.36, 'FakeTorino': 1.246, 'FakeKingston': 1.467}
+share of all circuits where C2 beats L3T: {'FakeAuckland': 0.078, 'FakeTorino': 0.003, 'FakeKingston': 0.117}
+flags: none

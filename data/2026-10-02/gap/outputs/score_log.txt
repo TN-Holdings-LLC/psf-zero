@@ -1,0 +1,39 @@
+# gap score
+
+P0: FAIL -- files 45 of 45 (missing []); noiseless infidelity max 1.9e-08; too wide 0 of 6237
+
+## Mean infidelity / mean two-qubit count by family and device
+
+| family | device | C2 | A5 | L3T | C2/L3T infidelity | C2 2q > L3T 2q |
+|---|---|---|---|---|---|---|
+| F1 | FakeAuckland | 0.3917 / 53.5 | 0.3350 / 53.5 | 0.3389 / 53.8 | 1.156 | 0.17 |
+| F1 | FakeTorino | 0.5814 / 59.2 | 0.1772 / 53.7 | 0.1788 / 53.7 | 3.252 | 1.00 |
+| F1 | FakeKingston | 0.0967 / 57.3 | 0.0859 / 53.5 | 0.0868 / 53.8 | 1.115 | 0.50 |
+| F2 | FakeAuckland | 0.3663 / 47.2 | 0.3039 / 44.5 | 0.3194 / 45.4 | 1.147 | 0.57 |
+| F2 | FakeTorino | 0.3533 / 48.4 | 0.1675 / 45.5 | 0.1716 / 46.4 | 2.058 | 0.40 |
+| F2 | FakeKingston | 0.0876 / 48.1 | 0.0744 / 45.1 | 0.0763 / 45.8 | 1.148 | 0.55 |
+| F3o | FakeAuckland | 0.4645 / 60.0 | 0.3747 / 60.0 | 0.3374 / 60.0 | 1.377 | 0.00 |
+| F3o | FakeTorino | 0.2408 / 60.0 | 0.1933 / 60.0 | 0.1942 / 60.0 | 1.240 | 0.00 |
+| F3o | FakeKingston | 0.1424 / 60.0 | 0.0958 / 60.0 | 0.0976 / 60.0 | 1.459 | 0.00 |
+| F3p | FakeAuckland | 0.5825 / 114.0 | 0.5709 / 114.0 | 0.4651 / 114.0 | 1.252 | 0.00 |
+| F3p | FakeTorino | 0.3374 / 114.0 | 0.3231 / 114.0 | 0.3209 / 114.0 | 1.051 | 0.00 |
+| F3p | FakeKingston | 0.2055 / 114.0 | 0.1671 / 114.0 | 0.1667 / 114.0 | 1.233 | 0.00 |
+| F4 | FakeAuckland | 0.3144 / 42.2 | 0.2851 / 41.0 | 0.3049 / 41.7 | 1.031 | 0.21 |
+| F4 | FakeTorino | 0.3020 / 42.2 | 0.1528 / 41.1 | 0.1613 / 42.0 | 1.872 | 0.15 |
+| F4 | FakeKingston | 0.0945 / 42.5 | 0.0756 / 41.1 | 0.0791 / 41.7 | 1.195 | 0.21 |
+| F5 | FakeAuckland | 0.0628 / 5.0 | 0.0470 / 5.0 | 0.0505 / 5.0 | 1.244 | 0.00 |
+| F5 | FakeTorino | 0.0300 / 5.0 | 0.0230 / 5.0 | 0.0231 / 5.0 | 1.299 | 0.00 |
+| F5 | FakeKingston | 0.0178 / 5.0 | 0.0116 / 5.0 | 0.0116 / 5.0 | 1.538 | 0.00 |
+
+## Predictions
+
+- H1 (cycles on Heron: C2 uses more 2q gates than L3T in >= 80% of F1 + F3p circuits): **REFUTED** (FakeTorino 0.74, FakeKingston 0.37)
+- H2 (chains: C2 2q <= L3T 2q in >= 90% of F3o + F5 circuits, every device): **CONFIRMED** (FakeAuckland 1.00, FakeTorino 1.00, FakeKingston 1.00)
+- H3 (cycles on Heron: mean infidelity C2 >= 1.10 x L3T): **CONFIRMED** (FakeTorino 2.407, FakeKingston 1.162)
+- H4 (dense random F4: C2 <= 1.05 x L3T mean infidelity, every device): **REFUTED** (FakeAuckland 1.031, FakeTorino 1.872, FakeKingston 1.195)
+- H5 (A5 <= L3T mean infidelity over all families on >= 2 of 3 devices): **CONFIRMED** (FakeAuckland 1.024, FakeTorino 0.984, FakeKingston 0.983)
+- H6 (added after the smoke run; chains, where 2q counts are equal: mean infidelity C2 >= 1.10 x L3T on every device): **CONFIRMED** (FakeAuckland 1.360, FakeTorino 1.246, FakeKingston 1.467)
+
+Reported: mean readout error of the final-layout qubits FakeAuckland C2 0.0080, A5 0.0084, L3T 0.0084; FakeTorino C2 0.0551, A5 0.0377, L3T 0.0379; FakeKingston C2 0.0293, A5 0.0386, L3T 0.0386
+Reported: median compile s C2 0.025, A5 0.659, L3T 0.015
+
