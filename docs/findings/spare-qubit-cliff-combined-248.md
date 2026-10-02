@@ -9028,6 +9028,222 @@ or pooled ratio computed from the actual files, so none changes.
   `run.log`, `score.md`, `score_log.txt`, `verify.txt`.
 - Local paths were replaced.
 
+
+---
+
+<!-- ===== Addendum 314 (source: spare-qubit-cliff-addendum-314-2026-10-02.md) ===== -->
+
+> **Note added when merging:** Exploratory diagnosis at home (commit 1e3f54b), not a test. It recompiles the scored F3 circuits with A5 and L3T only and reuses the measured infidelities of the ai6 run (Addendum 313).
+
+## Addendum 314 -- Diagnosis: on FakeAuckland, a5 loses to Qiskit L3T on every F3 chain circuit on the same six qubits and with the same two-qubit count, and its own estimate knew: L3T's output was never among a5's candidates (2026-10-02)
+
+**Status: exploratory diagnosis, not a test.**
+
+- **Question:** it follows up Addendum 313. Over all GAP circuits on FakeAuckland, A5 trailed L3T (1.024), and the
+  whole deficit sat in F3: A5/L3T was 1.111 on open chains and 1.227 on periodic ones, worse on 75 of 75 circuits
+  each, with equal two-qubit counts. Every other cell favoured A5 (0.74-0.99).
+- **Scripts and outputs:** `data/2026-10-02/a7/diag/` (`a5_f3_diag.py`, `run_a5_f3_diag.sh`, `outputs/`).
+- **Where and when:** run at home at commit `1e3f54b`.
+
+## 1. What was done
+
+**Recompiling.** All 150 F3 circuits of the ai6 run were compiled again with A5 and L3T on each device. There was
+no simulation:
+
+- the measured infidelities were taken from the ai6 run;
+- every recompiled two-qubit count matched the recorded one (0 mismatches on all three devices).
+
+**Scoring.** Each output was scored three ways:
+
+| score | what it is |
+|---|---|
+| est_sa | a5's own state-aware estimate (`state_aware_cost`), the score a5 selects with |
+| S_eff | the summed -log(1 - e) of the errors Aer actually applies |
+| S_rep | the same with the reported errors |
+
+## 2. Findings
+
+| device | chain | A5/L3T measured | est_sa: A5 better | S_eff: A5 better | measured: A5 better | est_sa agrees with measured | same qubit set |
+|---|---|---|---|---|---|---|---|
+| FakeAuckland | open | 1.111 | 0 of 75 | 3 | 0 | 75 of 75 | 75 of 75 |
+| FakeAuckland | periodic | 1.227 | 0 of 75 | 27 | 0 | 75 of 75 | 75 of 75 |
+| FakeTorino | open | 0.995 | 74 | 13 | 45 | 46 | 75 |
+| FakeTorino | periodic | 1.007 | 74 | 75 | 14 | 15 | 75 |
+| FakeKingston | open | 0.981 | 75 | 31 | 56 | 56 | 75 |
+| FakeKingston | periodic | 1.003 | 75 | 75 | 28 | 28 | 75 |
+
+**Means on FakeAuckland:**
+
+| chain | est_sa A5 / L3T | S_eff A5 / L3T | measured infidelity A5 / L3T |
+|---|---|---|---|
+| open | 0.471 / 0.450 | 0.463 / 0.460 | 0.375 / 0.337 |
+| periodic | 0.869 / 0.808 | 0.856 / 0.856 | 0.571 / 0.465 |
+
+## 3. Reading
+
+- **On FakeAuckland, a5's candidates never included what L3T produced.**
+  - Both use the same six qubits ([2, 3, 5, 8, 11, 14]) in every circuit, and the same number of two-qubit gates.
+  - a5's own estimate ranks L3T's output better in 150 of 150 circuits, in agreement with the measurement in 150 of
+    150.
+  - So a5 did not misjudge; it simply had no such candidate. Its re-placement can only relabel qubits, and the
+    difference is not in which qubits are used.
+- **What differs is the gate structure on those qubits** (cx direction, single-qubit gates, order), not the summed
+  gate error.
+  - S_eff is nearly equal for both (0.463 against 0.460; 0.856 against 0.856), yet the measured infidelity differs by
+    11-23%.
+  - On this cx device the effect depends on the state the circuit passes through, which is what a4's state-aware
+    estimate models. This was not investigated further.
+- **On the Heron devices the picture is different and the stakes small.**
+  - A5/L3T is 0.98-1.01, and the qubit sets are again identical.
+  - Here est_sa prefers A5 in 74-75 of 75 circuits but agrees with the measurement in only 15-56 of 75, so the
+    estimate is weak at this level of difference. Any change that lets the estimate choose between near-equal outputs
+    could therefore cost a little on these devices.
+- **Consequence:** candidate a7 (Addendum 315) adds L3T's own output to a5's candidates. a5 already computes it to
+  borrow its layout, so this costs nothing extra.
+
+## 4. Data (`data/2026-10-02/a7/diag/outputs/`)
+
+- Per device: the three scores, the qubits used and the measured infidelity, per circuit and arm (`diag_<device>.json`).
+- `summary.md`, logs and `env.txt`.
+
+
+---
+
+<!-- ===== Addendum 315 (source: spare-qubit-cliff-addendum-315-2026-10-02.md) ===== -->
+
+> **Note added when merging:** Home pre-registration of psf_ai_compile 2026-10-02.a7. Locked by the git commit that adds this Addendum, the candidate with its tests, and the evaluation scripts, pushed before the scored run. The predictions were written before the smoke run, which is disclosed in section 5.
+
+## Addendum 315 -- Pre-registration: psf_ai_compile 2026-10-02.a7 (a5 plus Qiskit level 3's own output as a candidate). Does it remove a5's loss on the FakeAuckland F3 chains without costing anything elsewhere? (2026-10-02)
+
+**Status: pre-registration, written at home before any scored run.**
+
+- **Lock:** the git commit that adds this document, the candidate
+  (`patches/psf_ai_compile_a7_2026-10-02/psf_ai_compile.py`, with its tests) and `benchmarks/a7_eval.py` with its
+  runner, pushed before the scored run.
+- **No hardware:** fake devices and Aer noise only.
+- **The predictions (section 3) were written before the smoke run** and were not changed after it.
+
+## 1. The candidate (psf_ai_compile 2026-10-02.a7, item 12)
+
+a5 already transpiles each circuit with Qiskit level 3 and the target, to borrow the layout it picks (a2). a7 also
+offers that output itself as a candidate.
+
+- **How it competes:** it is re-placed and scored by a5's state-aware estimate, like PSF-Zero's best candidates.
+- **When it is scored:** whenever its two-qubit count is within REMAP_EXTRA_2Q (2) of PSF-Zero's best. It does not
+  count against REMAP_TOP.
+- **As returned:** it is used as Qiskit returns it, not polished.
+- **Cost:** no extra compile.
+- **Reporting:** `return_info` reports which kind of candidate won (`chosen`: "PSF" or "L3T").
+- **Without a target:** a7 is a5, as checked by test.
+- **Why:** Addendum 314.
+
+## 2. Design (`benchmarks/a7_eval.py`)
+
+- **Sets:** as in Addendum 312.
+  - GAP: 693 circuits per device.
+  - MODEL: the 153 model-written circuits. The smoke run uses mock circuits instead.
+- **Arms:**
+
+  | arm | what it is |
+  |---|---|
+  | A5 | `benchmarks/psf_ai_compile.py` with the target |
+  | A7 | the candidate with the target |
+  | L3T | Qiskit level 3 with the Target, `approximation_degree=1.0` |
+
+  Release 2026-10-02.2 is underneath, without its opt-in arguments.
+- **Devices and metric:** as in Addendum 312.
+- **Sets seen before:** both sets were seen before (Addenda 285, 301-313). The F3 result that motivates a7 comes
+  from the GAP set itself, so H1 and H3 test the fix on the circuits that revealed the problem. H2 and H4 test that
+  nothing else gets worse.
+
+## 3. Predictions (scored only by `a7_eval.py score`; written before the smoke run)
+
+**P0, harness.** All of these must hold, or nothing below is scored:
+
+- 54 job files;
+- every noiseless infidelity <= 1e-6;
+- at most 5% too wide;
+- at least 150 model circuits converted.
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| H1 | the FakeAuckland F3 loss goes away | A7/L3T <= 1.02 on open and on periodic chains | either >= 1.10 |
+| H2 | nothing gets worse on average | A7/A5 <= 1.00 on every device, GAP and MODEL | any > 1.02 |
+| H3 | A7 is level with L3T on FakeAuckland GAP | A7/L3T <= 1.00 | > 1.02 |
+| H4 | few circuits get worse | per circuit, A7 <= A5 in >= 95% of circuits on every device | < 90% on any device |
+| H5 | no extra time | median compile time A7 <= 1.1 × A5 | > 1.5 × A5 |
+| H6 | no failed element | 0 failed-edge or failed-qubit uses by A7 | any |
+
+**Reported without prediction:**
+
+- the cell table;
+- how often A7 chose L3T's output, by set and device;
+- compile times;
+- off-target instructions.
+
+## 4. What this will not establish
+
+- Hardware.
+- Held-out circuits.
+- Why the gate structure matters on FakeAuckland (Addendum 314, section 3).
+
+## 5. Development (disclosed)
+
+### 5.1 Tests
+
+`test_a7.py`, 5 tests, all pass at home:
+
+- the version;
+- without a target, a7 equals a5 gate for gate;
+- on FakeAuckland, FakeTorino and FakeKingston, for the smoke F3 chains:
+  - the output is exact and avoids failed elements;
+  - `chosen` is reported;
+  - a7's estimate is no worse than a5's or than L3T's output.
+
+### 5.2 Smoke run (not a result)
+
+The smoke run used 1 circuit per GAP sub-family and 3 mock model circuits, and took 78 s.
+
+- **FakeAuckland F3:**
+  - A7 chose L3T's output on both chains;
+  - A7/L3T 0.887 (open) and 0.881 (periodic);
+  - A5/L3T 1.150 and 1.297.
+- **A7/A5 pooled:**
+  - GAP: FakeAuckland 0.942, FakeTorino 0.999, FakeKingston 1.0003;
+  - MODEL: 0.978, 1.000, 1.000.
+- **Per circuit A7 <= A5:** FakeAuckland 0.842, FakeTorino 1.000, FakeKingston 0.947 (19 circuits per device).
+  - FakeAuckland had 3 circuits worse and FakeKingston 1.
+  - These include choices of L3T's output that the estimate preferred but the measurement did not.
+- **Median compile time:** A5 0.682 s, A7 0.713 s.
+- **Failed elements and off-target instructions:** none.
+- **Its verdict lines:**
+
+  | H1 | H2 | H3 | H4 | H5 | H6 |
+  |---|---|---|---|---|---|
+  | CONFIRMED | AMBIGUOUS | CONFIRMED | REFUTED | CONFIRMED | CONFIRMED |
+
+**Expectations, stated after the smoke run; the predictions were not changed:**
+
+- **H4 is at risk.** Addendum 314 found the estimate weak when two outputs are within a few percent (Heron F3).
+  Letting it choose between PSF-Zero's and L3T's outputs will sometimes pick the slightly worse one.
+- **H2 may be decided by small differences on the Heron devices.**
+
+### 5.3 Other development
+
+- The scorer was run on synthetic files built from the ai6 run.
+- No scored circuit was compiled with a7 before the lock.
+- The diagnosis of Addendum 314 recompiled the scored F3 circuits with a5 and L3T only. It motivated a7 and is
+  disclosed there.
+
+## 6. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `patches/psf_ai_compile_a7_2026-10-02/psf_ai_compile.py` | `e2132e3c99b19ad3661cd757e9f787b50d738ea0cc180f350b4791c3fbdfa512` |
+| `patches/psf_ai_compile_a7_2026-10-02/test_a7.py` | `6d82b85e3d2fc8bdc95584204f67efcb1a606f0b1cdb693f34f536ca5358c14f` |
+| `benchmarks/a7_eval.py` | `4d5359fe1e7e3af8ceed2a3051a9f3fa4fdcb99ed91d7d8ba5eff8d12779be74` |
+| `benchmarks/run_a7_2026-10-02.sh` | `abe60d4220c4cf47e59e51228bf65d55cd6b7a01ce45a1cfeae28ac5eb7b56fb` |
+
 ---
 
 ---

@@ -1,0 +1,1 @@
+wrote diag_FakeTorino.json: 150 circuits, 0 arm-rows not matching the ai6 run, 218 s

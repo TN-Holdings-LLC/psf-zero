@@ -1,0 +1,1 @@
+wrote diag_FakeAuckland.json: 150 circuits, 0 arm-rows not matching the ai6 run, 85 s
