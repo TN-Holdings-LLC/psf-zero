@@ -1,0 +1,56 @@
+files 90, flags 0; model circuits collected 153, converted 153, skipped 0
+P0 PASS noiseless max 1.85e-08, too wide 0 of 12690
+H1 AMBIGUOUS {'GAP/FakeAuckland': '1.00004', 'GAP/FakeTorino': '0.99999', 'GAP/FakeKingston': '1.00002', 'MODEL/FakeAuckland': '0.99988', 'MODEL/FakeTorino': '0.99941', 'MODEL/FakeKingston': '0.99998'}
+H2 AMBIGUOUS {'FakeTorino': '0.99999', 'FakeKingston': '1.00002'}
+H3 CONFIRMED {'FakeAuckland': '0.73099', 'FakeTorino': '0.92150', 'FakeKingston': '0.91408'}
+H4 CONFIRMED {'FakeAuckland': '0.96699', 'FakeTorino': '0.96282', 'FakeKingston': '0.94491'}
+H5 CONFIRMED {'GAP/FakeTorino': '1.0020', 'GAP/FakeKingston': '1.0055', 'MODEL/FakeTorino': '1.0198', 'MODEL/FakeKingston': '1.0209'} median A6F 0.2970 A6 0.6115
+H6 AMBIGUOUS {'GAP/FakeAuckland': '1.02362', 'GAP/FakeTorino': '0.98435', 'GAP/FakeKingston': '0.98267', 'MODEL/FakeAuckland': '0.74041', 'MODEL/FakeTorino': '0.93247', 'MODEL/FakeKingston': '0.93420'}
+H7 CONFIRMED {'C5': 0, 'A5': 0, 'A6': 0, 'A6F': 0, 'L3T': 0}
+H8 CONFIRMED {'C5': 0.0277, 'A5': 0.6125, 'A6': 0.6115, 'A6F': 0.297, 'L3T': 0.0145}
+
+| set | device | A6/A5 | A6/C5 | A6F/A6 | A6F/C5 | A6/L3T | A6F/L3T | A5/L3T | C5/L3T |
+| GAP | FakeAuckland | 1.000 | 0.967 | 1.018 | 0.985 | 1.024 | 1.042 | 1.024 | 1.059 |
+| GAP | FakeTorino | 1.000 | 0.963 | 1.002 | 0.965 | 0.984 | 0.986 | 0.984 | 1.022 |
+| GAP | FakeKingston | 1.000 | 0.945 | 1.006 | 0.950 | 0.983 | 0.988 | 0.983 | 1.040 |
+| MODEL | FakeAuckland | 1.000 | 0.731 | 1.284 | 0.939 | 0.740 | 0.951 | 0.741 | 1.013 |
+| MODEL | FakeTorino | 0.999 | 0.921 | 1.020 | 0.940 | 0.932 | 0.951 | 0.933 | 1.012 |
+| MODEL | FakeKingston | 1.000 | 0.914 | 1.021 | 0.933 | 0.934 | 0.954 | 0.934 | 1.022 |
+
+A6 vs A5 FakeAuckland F4: identical 133 of 135, A6 lower 0, higher 2
+A6 vs A5 FakeAuckland MODEL: identical 150 of 153, A6 lower 1, higher 2
+A6 vs A5 FakeTorino F4: identical 132 of 135, A6 lower 3, higher 0
+A6 vs A5 FakeTorino MODEL: identical 150 of 153, A6 lower 2, higher 1
+A6 vs A5 FakeKingston F4: identical 131 of 135, A6 lower 1, higher 3
+A6 vs A5 FakeKingston MODEL: identical 149 of 153, A6 lower 2, higher 2
+A6 vs A5: all other device-set pairs identical circuit by circuit
+
+MODEL per task (mean infidelity C5 / A6 / A6F / L3T; mean 2q C5 / A6 / L3T):
+  FakeAuckland bell3     n=  1  0.0098 / 0.0098 / 0.0098 / 0.0163   3.0 / 3.0 / 3.0
+  FakeAuckland dicke42   n= 16  0.1244 / 0.0954 / 0.1097 / 0.1233   13.5 / 11.9 / 13.6
+  FakeAuckland ghz3i     n=  4  0.0331 / 0.0243 / 0.0331 / 0.0314   3.5 / 3.5 / 3.5
+  FakeAuckland ghz5      n=  7  0.0519 / 0.0443 / 0.0495 / 0.0504   6.1 / 5.9 / 6.4
+  FakeAuckland qft3      n= 28  0.0409 / 0.0269 / 0.0370 / 0.0408   4.9 / 4.1 / 4.9
+  FakeAuckland singlet3  n=  2  0.0294 / 0.0258 / 0.0294 / 0.0280   3.0 / 3.0 / 3.0
+  FakeAuckland w3        n= 83  0.0511 / 0.0360 / 0.0490 / 0.0502   5.4 / 5.1 / 5.4
+  FakeAuckland w4        n= 12  0.0713 / 0.0581 / 0.0713 / 0.0711   7.7 / 7.7 / 7.7
+  FakeTorino bell3     n=  1  0.0061 / 0.0051 / 0.0061 / 0.0054   3.0 / 3.0 / 3.0
+  FakeTorino dicke42   n= 16  0.0474 / 0.0447 / 0.0450 / 0.0477   13.3 / 12.4 / 13.6
+  FakeTorino ghz3i     n=  4  0.0110 / 0.0103 / 0.0110 / 0.0112   3.5 / 3.5 / 3.5
+  FakeTorino ghz5      n=  7  0.0252 / 0.0212 / 0.0215 / 0.0236   6.9 / 5.6 / 6.4
+  FakeTorino qft3      n= 28  0.0156 / 0.0131 / 0.0134 / 0.0161   4.9 / 4.2 / 4.9
+  FakeTorino singlet3  n=  2  0.0071 / 0.0071 / 0.0071 / 0.0080   3.0 / 3.0 / 3.0
+  FakeTorino w3        n= 83  0.0176 / 0.0163 / 0.0168 / 0.0170   5.4 / 5.1 / 5.4
+  FakeTorino w4        n= 12  0.0276 / 0.0275 / 0.0276 / 0.0277   7.7 / 7.7 / 7.7
+  FakeKingston bell3     n=  1  0.0031 / 0.0029 / 0.0031 / 0.0024   3.0 / 3.0 / 3.0
+  FakeKingston dicke42   n= 16  0.0244 / 0.0218 / 0.0220 / 0.0237   14.5 / 12.8 / 13.8
+  FakeKingston ghz3i     n=  4  0.0054 / 0.0052 / 0.0054 / 0.0058   3.5 / 3.5 / 3.5
+  FakeKingston ghz5      n=  7  0.0112 / 0.0095 / 0.0102 / 0.0102   7.1 / 6.1 / 6.4
+  FakeKingston qft3      n= 28  0.0077 / 0.0066 / 0.0066 / 0.0079   4.9 / 4.2 / 4.9
+  FakeKingston singlet3  n=  2  0.0046 / 0.0046 / 0.0046 / 0.0050   3.0 / 3.0 / 3.0
+  FakeKingston w3        n= 83  0.0090 / 0.0084 / 0.0086 / 0.0087   5.4 / 5.1 / 5.4
+  FakeKingston w4        n= 12  0.0131 / 0.0130 / 0.0130 / 0.0130   7.7 / 7.5 / 7.7
+
+A5 against the GAP run's A5 (Addendum 301): identical 2079 of 2079
+off-target: {'C5': 0, 'A5': 0, 'A6': 0, 'A6F': 0, 'L3T': 0}
+flags: none

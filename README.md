@@ -69,7 +69,7 @@ repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see belo
 >   device's gate errors.** After PSF-Zero's own layout and routing, the circuit is re-placed with the step Qiskit
 >   level 3 ends with (`VF2PostLayout` scored on the exact error of each gate as placed). Only physical qubits are
 >   relabelled: gate counts and depth are unchanged. Pre-registered test (Addenda 309-310, fake devices, noisy
->   simulation, 2,079 circuits per device):
+>   simulation, 693 circuits per device, 2,079 in all):
 >   - better than 2026-10-02.1 in all 18 family-device cells (mean infidelity 0.57-0.98 times);
 >   - on chains, equal to Qiskit level 3 with the Target on FakeTorino and FakeKingston (0.998, 1.000);
 >   - failed couplers never used, and no recompile around them needed;

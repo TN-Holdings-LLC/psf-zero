@@ -4043,7 +4043,7 @@ Times are sandbox times. They are not compared with home or the pod.
 | candidate [`benchmarks/test_core_fix_c2.py`](../../benchmarks/test_core_fix_c2.py) | 6,857 | `d2a188d694585588f6950176daf6d9ff256956f44c4a24e0f51d795a0d06e8fb` |
 | release `psf_compile.py` (2026-09-28.1, base) | 84,542 | `3616efc8b8a7bea184d6170fb7379d509d0bfec9828f4eb2f703dd4d26d8c60b` |
 | release [`benchmarks/psf_smart_layout.py`](../../benchmarks/psf_smart_layout.py) (2026-09-26.m1) | 22,450 | `a639efdef484379d23b4c0a52dffe557c47c30f639c41e4f8521ca608712d875` |
-| candidate layout 2026-09-29.c1 (`patches/psf_smart_layout_c1_2026-09-29/`) | 27,664 | `e25952a33bacfbb8de7a439b53892e9bab88329d8c47c6de867c29fc660145fa` |
+| candidate layout 2026-09-29.c1 ([`patches/psf_smart_layout_c1_2026-09-29/`](../../patches/psf_smart_layout_c1_2026-09-29/)) | 27,664 | `e25952a33bacfbb8de7a439b53892e9bab88329d8c47c6de867c29fc660145fa` |
 | `core_fix_c2_2026-10-01.patch` (git diff against `9131cee`, 4 files) | 62,762 | raw SHA-256 `46223e8c3fb1f2d70edbfbd37a7e868568c407668dada4d135ce876c819b5dd3` |
 
 The patch reproduces the four candidate files byte for byte on a clean
@@ -4095,11 +4095,11 @@ against release tree, same core):
 
 <!-- ===== Addendum 273 (source: spare-qubit-cliff-addendum-273-2026-10-01.md) ===== -->
 
-> **Note added when merging:** 13 of 14 CONFIRMED, L2 AMBIGUOUS, none refuted; the pre-registered automatic adoption rule did not fire. Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in `data/2026-10-01/core_fix_c2/as_run/`; the outputs are in `data/2026-10-01/core_fix_c2/`.
+> **Note added when merging:** 13 of 14 CONFIRMED, L2 AMBIGUOUS, none refuted; the pre-registered automatic adoption rule did not fire. Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in [`data/2026-10-01/core_fix_c2/as_run/`](../../data/2026-10-01/core_fix_c2/as_run/); the outputs are in [`data/2026-10-01/core_fix_c2/`](../../data/2026-10-01/core_fix_c2/).
 
 ## Addendum 273 -- Results: PSF-Zero core fixes of 2026-10-01 (psf_compile 2026-10-01.c2, psf_smart_layout 2026-10-01.c2) on held-out inputs -- 13 of 14 CONFIRMED, L2 AMBIGUOUS (2026-10-01)
 
-**Pre-registration:** `docs/findings/core-fix-c2-preregistration-2026-10-01.md`.
+**Pre-registration:** `docs/findings/core-fix-c2-preregistration-2026-10-01.md` (a workplace document, not in the repository; its text is Addendum 272 of this Part).
 It was locked at its Project save time before this run. This run compiled
 the scored inputs for the first time. **Environment:** workplace sandbox,
 Linux, 2 CPUs, Python 3.11.15, Qiskit 2.5.2. Core 2026-09-29.1 (sandbox
@@ -4299,7 +4299,7 @@ META line records them.
 
 <!-- ===== Addendum 274 (source: spare-qubit-cliff-addendum-274-2026-10-01.md) ===== -->
 
-> **Note added when merging:** The owner adopted c2 on the evidence (2026-10-01). At home the same evening the owner also adopted the Rust core 2026-09-29.1, on which every evaluation since 2026-09-29 ran, so that the tested combination is the release: commit `d358e87` makes psf_compile and psf_smart_layout 2026-10-01.1 and the core 2026-09-29.1 ([`patches/core_fix_c2_2026-10-01/release_2026-10-01.py`](../../patches/core_fix_c2_2026-10-01/release_2026-10-01.py)). Checks there: cargo test 9 of 9; 103 of 103 in the core, synthesis, layout, release and c2 test files run together. Run as one session, the whole `benchmarks/` suite has collection errors that predate this release (one test module leaves a stand-in `psf_zero_core` behind; 9 such errors before, the same plus the new c2 test file after).
+> **Note added when merging:** The owner adopted c2 on the evidence (2026-10-01). At home the same evening the owner also adopted the Rust core 2026-09-29.1, on which every evaluation since 2026-09-29 ran, so that the tested combination is the release: commit `d358e87` makes psf_compile and psf_smart_layout 2026-10-01.1 and the core 2026-09-29.1 ([`patches/core_fix_c2_2026-10-01/release_2026-10-01.py`](../../patches/core_fix_c2_2026-10-01/release_2026-10-01.py)). Checks there: cargo test 9 of 9; 103 of 103 in the core, synthesis, layout, release and c2 test files run together. Run as one session, the whole [`benchmarks/`](../../benchmarks/) suite has collection errors that predate this release (one test module leaves a stand-in `psf_zero_core` behind; 9 such errors before, the same plus the new c2 test file after).
 
 ## Addendum 274 -- Adoption decision: psf_compile 2026-10-01.c2 and psf_smart_layout 2026-10-01.c2 (2026-10-01, workplace)
 
@@ -4353,7 +4353,7 @@ c1 and c2, with feasibility unknown:
 
 <!-- ===== Addendum 275 (source: spare-qubit-cliff-addendum-275-2026-10-01.md) ===== -->
 
-> **Note added when merging:** Exploratory, not pre-registered: the first AI front end a0 ([`benchmarks/psf_ai_compile_a0.py`](../../benchmarks/psf_ai_compile_a0.py)), developed before Addendum 276. Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in `data/2026-10-01/ai_compile_a0/as_run/`; the outputs are in `data/2026-10-01/ai_compile_a0/`.
+> **Note added when merging:** Exploratory, not pre-registered: the first AI front end a0 ([`benchmarks/psf_ai_compile_a0.py`](../../benchmarks/psf_ai_compile_a0.py)), developed before Addendum 276. Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in [`data/2026-10-01/ai_compile_a0/as_run/`](../../data/2026-10-01/ai_compile_a0/as_run/); the outputs are in [`data/2026-10-01/ai_compile_a0/`](../../data/2026-10-01/ai_compile_a0/).
 
 ## Addendum 275 -- Exploratory (not pre-registered): psf_ai_compile 2026-10-01.a0, a PSF-Zero front end for model-written circuits (2026-10-01, workplace)
 
@@ -4608,11 +4608,11 @@ was cleaned.
 
 <!-- ===== Addendum 277 (source: spare-qubit-cliff-addendum-277-2026-10-01.md) ===== -->
 
-> **Note added when merging:** 7 of 8 CONFIRMED, A5 AMBIGUOUS (3-qubit gates and ring-shaped circuits). Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in `data/2026-10-01/ai_compile_a0/as_run/`; the outputs are in `data/2026-10-01/ai_compile_a0/`.
+> **Note added when merging:** 7 of 8 CONFIRMED, A5 AMBIGUOUS (3-qubit gates and ring-shaped circuits). Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in [`data/2026-10-01/ai_compile_a0/as_run/`](../../data/2026-10-01/ai_compile_a0/as_run/); the outputs are in [`data/2026-10-01/ai_compile_a0/`](../../data/2026-10-01/ai_compile_a0/).
 
 ## Addendum 277 -- Results: psf_ai_compile 2026-10-01.a0 on held-out inputs -- 7 of 8 CONFIRMED, A5 (textbook circuits) AMBIGUOUS (2026-10-01)
 
-**Pre-registration:** `docs/findings/ai-compile-a0-preregistration-2026-10-01.md`. It was locked at its
+**Pre-registration:** `docs/findings/ai-compile-a0-preregistration-2026-10-01.md` (a workplace document, not in the repository; its text is Addendum 276 of this Part). It was locked at its
 Project save time before this run.
 
 - **Environment:** workplace sandbox, Linux, 2 CPUs, Qiskit 2.5.2.
@@ -4864,11 +4864,11 @@ device of which 4 have 3-qubit gates). Item 4 (one seed on the extra starting po
 
 <!-- ===== Addendum 279 (source: spare-qubit-cliff-addendum-279-2026-10-01.md) ===== -->
 
-> **Note added when merging:** 7 of 7 CONFIRMED. Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in `data/2026-10-01/ai_compile_a1/as_run/`; the outputs are in `data/2026-10-01/ai_compile_a1/`.
+> **Note added when merging:** 7 of 7 CONFIRMED. Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in [`data/2026-10-01/ai_compile_a1/as_run/`](../../data/2026-10-01/ai_compile_a1/as_run/); the outputs are in [`data/2026-10-01/ai_compile_a1/`](../../data/2026-10-01/ai_compile_a1/).
 
 ## Addendum 279 -- Results: psf_ai_compile 2026-10-01.a1 on held-out inputs -- 7 of 7 CONFIRMED (2026-10-01)
 
-**Pre-registration:** `docs/findings/ai-compile-a1-preregistration-2026-10-01.md`. It was locked at its
+**Pre-registration:** `docs/findings/ai-compile-a1-preregistration-2026-10-01.md` (a workplace document, not in the repository; its text is Addendum 278 of this Part). It was locked at its
 Project save time before this run.
 
 - **Environment:** workplace sandbox, Linux, 2 CPUs, Qiskit 2.5.2.
@@ -5098,11 +5098,11 @@ The model-circuit loading path was smoke-tested on one file (loading only, no co
 
 <!-- ===== Addendum 281 (source: spare-qubit-cliff-addendum-281-2026-10-01.md) ===== -->
 
-> **Note added when merging:** N0, N1, N3 CONFIRMED; N2 and N4 AMBIGUOUS. Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in `data/2026-10-01/noisy_fidelity/as_run/`; the outputs are in `data/2026-10-01/noisy_fidelity/`.
+> **Note added when merging:** N0, N1, N3 CONFIRMED; N2 and N4 AMBIGUOUS. Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in [`data/2026-10-01/noisy_fidelity/as_run/`](../../data/2026-10-01/noisy_fidelity/as_run/); the outputs are in [`data/2026-10-01/noisy_fidelity/`](../../data/2026-10-01/noisy_fidelity/).
 
 ## Addendum 281 -- Results: noisy-simulation fidelity, released stack vs c2 vs a1 vs Qiskit L3 -- N0, N1, N3 CONFIRMED; N2, N4 AMBIGUOUS (2026-10-01)
 
-**Pre-registration:** `docs/findings/noisy-fidelity-preregistration-2026-10-01.md`. It was locked at its
+**Pre-registration:** `docs/findings/noisy-fidelity-preregistration-2026-10-01.md` (a workplace document, not in the repository; its text is Addendum 280 of this Part). It was locked at its
 Project save time before this run.
 
 - **Environment:** workplace sandbox, Qiskit 2.5.2, qiskit-aer 0.17.2, core 2026-09-29.1.
@@ -5314,11 +5314,11 @@ python a2_eval.py score --out a2_raw.json > a2_score.txt
 
 <!-- ===== Addendum 283 (source: spare-qubit-cliff-addendum-283-2026-10-01.md) ===== -->
 
-> **Note added when merging:** 7 of 7 CONFIRMED. Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in `data/2026-10-01/ai_compile_a2/as_run/`; the outputs are in `data/2026-10-01/ai_compile_a2/`.
+> **Note added when merging:** 7 of 7 CONFIRMED. Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in [`data/2026-10-01/ai_compile_a2/as_run/`](../../data/2026-10-01/ai_compile_a2/as_run/); the outputs are in [`data/2026-10-01/ai_compile_a2/`](../../data/2026-10-01/ai_compile_a2/).
 
 ## Addendum 283 -- Results: psf_ai_compile 2026-10-01.a2 (error-aware) under noisy simulation -- 7 of 7 CONFIRMED (2026-10-01)
 
-**Pre-registration:** `docs/findings/ai-compile-a2-preregistration-2026-10-01.md`. It was locked at its
+**Pre-registration:** `docs/findings/ai-compile-a2-preregistration-2026-10-01.md` (a workplace document, not in the repository; its text is Addendum 282 of this Part). It was locked at its
 Project save time before this run.
 
 - **Environment:** workplace sandbox, Qiskit 2.5.2, qiskit-aer 0.17.2.
@@ -5512,11 +5512,11 @@ locking.
 
 <!-- ===== Addendum 285 (source: spare-qubit-cliff-addendum-285-2026-10-01.md) ===== -->
 
-> **Note added when merging:** E1, E3, E4, E5 CONFIRMED; E2 (FakeAuckland) AMBIGUOUS. Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in `data/2026-10-01/vllm_a2_replay/as_run/`; the outputs are in `data/2026-10-01/vllm_a2_replay/`.
+> **Note added when merging:** E1, E3, E4, E5 CONFIRMED; E2 (FakeAuckland) AMBIGUOUS. Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in [`data/2026-10-01/vllm_a2_replay/as_run/`](../../data/2026-10-01/vllm_a2_replay/as_run/); the outputs are in [`data/2026-10-01/vllm_a2_replay/`](../../data/2026-10-01/vllm_a2_replay/).
 
 ## Addendum 285 -- Results: a2 on 153 unused model-written circuits (noisy simulation) -- E1, E3, E4, E5 CONFIRMED; E2 AMBIGUOUS (FakeAuckland) (2026-10-01)
 
-**Pre-registration:** `docs/findings/vllm-a2-replay-preregistration-2026-10-01.md`. It was locked at its
+**Pre-registration:** `docs/findings/vllm-a2-replay-preregistration-2026-10-01.md` (a workplace document, not in the repository; its text is Addendum 284 of this Part). It was locked at its
 Project save time before this run.
 
 - **Environment:** workplace sandbox, Qiskit 2.5.2, qiskit-aer 0.17.2.
@@ -5746,11 +5746,11 @@ python a4_eval.py score --out a4_raw.json > a4_score.txt
 
 <!-- ===== Addendum 287 (source: spare-qubit-cliff-addendum-287-2026-10-01.md) ===== -->
 
-> **Note added when merging:** 9 of 9 CONFIRMED. The estimate shares its physics with the simulator that scores it, so these results favour it by construction; a real-device check is needed. Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in `data/2026-10-01/ai_compile_a4/as_run/`; the outputs are in `data/2026-10-01/ai_compile_a4/`.
+> **Note added when merging:** 9 of 9 CONFIRMED. The estimate shares its physics with the simulator that scores it, so these results favour it by construction; a real-device check is needed. Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in [`data/2026-10-01/ai_compile_a4/as_run/`](../../data/2026-10-01/ai_compile_a4/as_run/); the outputs are in [`data/2026-10-01/ai_compile_a4/`](../../data/2026-10-01/ai_compile_a4/).
 
 ## Addendum 287 -- Results: psf_ai_compile 2026-10-01.a4 (state-aware error estimate) under noisy simulation -- 9 of 9 CONFIRMED (2026-10-01)
 
-**Pre-registration:** `docs/findings/ai-compile-a4-preregistration-2026-10-01.md`. It was locked at its
+**Pre-registration:** `docs/findings/ai-compile-a4-preregistration-2026-10-01.md` (a workplace document, not in the repository; its text is Addendum 286 of this Part). It was locked at its
 Project save time before this run.
 
 - **Environment:** workplace sandbox, Qiskit 2.5.2, qiskit-aer 0.17.2.
@@ -5935,11 +5935,11 @@ scored. Nothing was changed after the dry run.
 
 <!-- ===== Addendum 289 (source: spare-qubit-cliff-addendum-289-2026-10-01.md) ===== -->
 
-> **Note added when merging:** 7 of 7 CONFIRMED; a5 is the latest AI front end ([`benchmarks/psf_ai_compile.py`](../../benchmarks/psf_ai_compile.py)). Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in `data/2026-10-01/long_loop_a5/as_run/`; the outputs are in `data/2026-10-01/long_loop_a5/`.
+> **Note added when merging:** 7 of 7 CONFIRMED; a5 is the latest AI front end ([`benchmarks/psf_ai_compile.py`](../../benchmarks/psf_ai_compile.py)). Workplace sandbox (2 CPUs), fake-provider devices, no IBM access; times are sandbox times. The files exactly as run are in [`data/2026-10-01/long_loop_a5/as_run/`](../../data/2026-10-01/long_loop_a5/as_run/); the outputs are in [`data/2026-10-01/long_loop_a5/`](../../data/2026-10-01/long_loop_a5/).
 
 ## Addendum 289 -- Results: 30,000-lap test of psf_ai_compile 2026-10-01.a5 -- 7 of 7 CONFIRMED; the a4 control shows the defect; the scored a4 results are unaffected (2026-10-01)
 
-**Pre-registration:** `docs/findings/long-loop-a5-preregistration-2026-10-01.md`. It was locked at its
+**Pre-registration:** `docs/findings/long-loop-a5-preregistration-2026-10-01.md` (a workplace document, not in the repository; its text is Addendum 288 of this Part). It was locked at its
 Project save time before this run.
 
 - **Environment:** workplace sandbox, 2 CPUs, two worker processes in parallel, then the control.
@@ -6066,7 +6066,7 @@ circuits under noise.
 |---|---|
 | REL | psf_compile 2026-09-28.1 + psf_smart_layout 2026-09-26.m1 (taken from git `9131cee`, hash-checked), `compile_for_hardware(entangling_basis="cx", layout_search=True, seed_transpiler=0)` |
 | C2 | release psf_compile 2026-10-01.1 + psf_smart_layout 2026-10-01.1, same call |
-| A5 | `benchmarks/psf_ai_compile.py` 2026-10-01.a5, `compile_for_model_circuit(qc, coupling_map, basis_gates, target=<device Target>)` |
+| A5 | [`benchmarks/psf_ai_compile.py`](../../benchmarks/psf_ai_compile.py) 2026-10-01.a5, `compile_for_model_circuit(qc, coupling_map, basis_gates, target=<device Target>)` |
 | L3T | Qiskit `transpile(target=<device Target>, optimization_level=3, seed_transpiler=0)` |
 
 The REL arm runs on core 2026-09-29.1, not on its original core 2026-09-28.1. The two give identical output
@@ -6167,10 +6167,10 @@ The margin is y·z.
 
 | file | normalized SHA-256 |
 |---|---|
-| `benchmarks/qml_home_eval.py` | `0a30fb22b709420418ed130a18531810616f405b42768a73157587e545b3ca32` |
-| `benchmarks/run_qml_home_2026-10-01.sh` | `3c734482bdaa14032d0d9e55f0111f730993b11d41c08d9a271027ff5df6ce72` |
+| [`benchmarks/qml_home_eval.py`](../../benchmarks/qml_home_eval.py) | `0a30fb22b709420418ed130a18531810616f405b42768a73157587e545b3ca32` |
+| [`benchmarks/run_qml_home_2026-10-01.sh`](../../benchmarks/run_qml_home_2026-10-01.sh) | `3c734482bdaa14032d0d9e55f0111f730993b11d41c08d9a271027ff5df6ce72` |
 
-The runner expects `qml_home_eval.py` in its own folder, so both are in `benchmarks/`.
+The runner expects `qml_home_eval.py` in its own folder, so both are in [`benchmarks/`](../../benchmarks/).
 
 
 ---
@@ -6187,7 +6187,7 @@ devices with Qiskit Aer noise models, at home (WSL2, Ryzen 5 5500).
 
 ## 1. Provenance
 
-- Lock commit `680cf08` (Addendum 290 with `benchmarks/qml_home_eval.py` and `benchmarks/run_qml_home_2026-10-01.sh`)
+- Lock commit `680cf08` (Addendum 290 with [`benchmarks/qml_home_eval.py`](../../benchmarks/qml_home_eval.py) and [`benchmarks/run_qml_home_2026-10-01.sh`](../../benchmarks/run_qml_home_2026-10-01.sh))
   was pushed before the scored run; `origin/main` was at `680cf08` while the run was going.
 - All 17 result files (q1.json and 16 q2 files) carry `git_head 680cf08` and the locked normalized hash of the
   script, `0a30fb22…`; one set of file hashes across all of them.
@@ -6311,7 +6311,7 @@ between compilers here.
 - **Smoke scoring.** The smoke run used the pre-fix `score`, which counted the FakeTorino Q2 runs as missing (H4
   REFUTED). This was disclosed in Addendum 290, section 5. Re-scored with the locked script, the smoke output gives
   H4 and H5 CONFIRMED. It is still not a result (`dev/score_rescored_with_locked_script.md`).
-- **Independent re-scoring, written after the lock** (`benchmarks/qml_home_rescore.py`):
+- **Independent re-scoring, written after the lock** ([`benchmarks/qml_home_rescore.py`](../../benchmarks/qml_home_rescore.py)):
   - It does not import the scored script. It re-implements the model with dense 16x16 matrices (agreement with the
     scored model 5.6e-16 on random inputs).
   - It rebuilds teacher 23, the data, theta* (difference 8.6e-15) and IDEAL from the pre-registered seeds.
@@ -6352,7 +6352,7 @@ SHA-256 (raw) of the main result files:
 ## Addendum 292 -- Pre-registration: Phase A0 Target check. How often is a reported gate error below the decoherence floor implied by the same snapshot's T1, T2 and gate duration, across all fake-provider devices? (2026-10-01)
 
 **Status: pre-registration, written at home before any scored run.** It is locked by the git commit that adds this
-document and `benchmarks/a0_target_check.py`, pushed before the scored run. No IBM account, no network access to
+document and [`benchmarks/a0_target_check.py`](../../benchmarks/a0_target_check.py), pushed before the scored run. No IBM account, no network access to
 IBM, no QPU: the data are the device snapshots shipped with `qiskit-ibm-runtime`.
 
 ## 1. Why
@@ -6478,7 +6478,7 @@ IBM, no QPU: the data are the device snapshots shipped with `qiskit-ibm-runtime`
 
 | file | normalized SHA-256 |
 |---|---|
-| `benchmarks/a0_target_check.py` | `f9747e4b46368d56338fdffb3a13e13e4fa5ebf6355951ff5765ae77c8debf6e` |
+| [`benchmarks/a0_target_check.py`](../../benchmarks/a0_target_check.py) | `f9747e4b46368d56338fdffb3a13e13e4fa5ebf6355951ff5765ae77c8debf6e` |
 
 **Run:**
 
@@ -6582,7 +6582,7 @@ As stated in Addendum 292:
 
 ## 6. Independent check (written after the run)
 
-`benchmarks/a0_verify.py` does not import the scored script. It recomputes every floor from explicit Kraus
+[`benchmarks/a0_verify.py`](../../benchmarks/a0_verify.py) does not import the scored script. It recomputes every floor from explicit Kraus
 operators instead of the closed form (largest difference from the stored floors 6.7e-16). It then re-derives the
 below-floor sets, the class statistics and the deciding numbers. All of them match the locked score: the class
 medians and pooled fractions in section 3, H4 = 0.928 of 636, and Auckland, Torino and Kingston at 16/56, 0/278
@@ -6784,8 +6784,8 @@ The owner asked whether this should be reported upstream like issue #17057 (Adde
 
 **Status: pre-registration, written at home before any scored run.**
 
-- **Lock:** the git commit that adds this document, `benchmarks/qml_home2_eval.py` and
-  `benchmarks/run_qml_home2_2026-10-02.sh`, pushed before the scored run.
+- **Lock:** the git commit that adds this document, [`benchmarks/qml_home2_eval.py`](../../benchmarks/qml_home2_eval.py) and
+  [`benchmarks/run_qml_home2_2026-10-02.sh`](../../benchmarks/run_qml_home2_2026-10-02.sh), pushed before the scored run.
 - **No hardware:** no IBM account, no QPU. Fake-provider devices and Qiskit Aer noise models only.
 
 ## 1. Why: where Addendum 291 was weak
@@ -6934,8 +6934,8 @@ changes only the run time.
 
 | file | normalized SHA-256 |
 |---|---|
-| `benchmarks/qml_home2_eval.py` | `9e12f5bf34c29542ebe608a0c672519a52a0039d796dff5fc19ea600a2a6b95f` |
-| `benchmarks/run_qml_home2_2026-10-02.sh` | `47cc2275ca837fc970753074b6eb9a27f5b83e7fc9438de820de963b26bce106` |
+| [`benchmarks/qml_home2_eval.py`](../../benchmarks/qml_home2_eval.py) | `9e12f5bf34c29542ebe608a0c672519a52a0039d796dff5fc19ea600a2a6b95f` |
+| [`benchmarks/run_qml_home2_2026-10-02.sh`](../../benchmarks/run_qml_home2_2026-10-02.sh) | `47cc2275ca837fc970753074b6eb9a27f5b83e7fc9438de820de963b26bce106` |
 
 **Run** (from the repository checkout at the lock commit):
 
@@ -7068,7 +7068,7 @@ As in Addendum 296, section 4:
 
 ## 6. Independent check (written after the run)
 
-`benchmarks/qml2_verify.py` does not import the scored script. It re-implements the model with dense 16×16
+[`benchmarks/qml2_verify.py`](../../benchmarks/qml2_verify.py) does not import the scored script. It re-implements the model with dense 16×16
 matrices and checks the following:
 
 | check | result |
@@ -7100,8 +7100,8 @@ matrices and checks the following:
 
 **Status: pre-registration, written at home before any scored run.**
 
-- **Lock:** the git commit that adds this document, `benchmarks/b17_practice_eval.py` and
-  `benchmarks/run_b17_2026-10-02.sh`, pushed before the scored run.
+- **Lock:** the git commit that adds this document, [`benchmarks/b17_practice_eval.py`](../../benchmarks/b17_practice_eval.py) and
+  [`benchmarks/run_b17_2026-10-02.sh`](../../benchmarks/run_b17_2026-10-02.sh), pushed before the scored run.
 - **No hardware:** no IBM account, no QPU. Pure compilation and exact operator comparison.
 
 ## 1. Why
@@ -7225,8 +7225,8 @@ matrices and checks the following:
 
 | file | normalized SHA-256 |
 |---|---|
-| `benchmarks/b17_practice_eval.py` | `04c0a80121170041768569737c7331cb7acbb8672a04729a977333f02e3a736a` |
-| `benchmarks/run_b17_2026-10-02.sh` | `2d6b383321c1559cc8dc84d97c7cecda8403509cfce95558059c01c8b588492f` |
+| [`benchmarks/b17_practice_eval.py`](../../benchmarks/b17_practice_eval.py) | `04c0a80121170041768569737c7331cb7acbb8672a04729a977333f02e3a736a` |
+| [`benchmarks/run_b17_2026-10-02.sh`](../../benchmarks/run_b17_2026-10-02.sh) | `2d6b383321c1559cc8dc84d97c7cecda8403509cfce95558059c01c8b588492f` |
 
 
 ---
@@ -7313,7 +7313,7 @@ As in Addendum 298:
 
 ## 5. Independent check
 
-`benchmarks/b17_verify.py` (written after the run) reads the raw jsonl files only. It checks the following, and all
+[`benchmarks/b17_verify.py`](../../benchmarks/b17_verify.py) (written after the run) reads the raw jsonl files only. It checks the following, and all
 of it matches the locked score:
 
 - the commit `f0095e6`, the script hash, the release version and the circuit counts in all 8 files;
@@ -7341,7 +7341,7 @@ Output in `outputs/verify.txt`.
 
 **Status: pre-registration, written at home before any scored run.**
 
-- **Lock:** the git commit that adds this document, `benchmarks/gap_eval.py` and `benchmarks/run_gap_2026-10-02.sh`,
+- **Lock:** the git commit that adds this document, [`benchmarks/gap_eval.py`](../../benchmarks/gap_eval.py) and [`benchmarks/run_gap_2026-10-02.sh`](../../benchmarks/run_gap_2026-10-02.sh),
   pushed before the scored run.
 - **No hardware:** no IBM account, no QPU. Fake-provider devices and Aer noise models only.
 
@@ -7457,8 +7457,8 @@ Two subsets are used: **cycles** = F1 + F3p, and **chains** = F3o + F5.
 
 | file | normalized SHA-256 |
 |---|---|
-| `benchmarks/gap_eval.py` | `6659bd0bd2054d4484374da393a1f84fa6138607babc019b8eb91effa2a2ff2a` |
-| `benchmarks/run_gap_2026-10-02.sh` | `4185e0c983a3cfaf99e24a66d32bbcebe403106db790fa62d53a145506fe5b67` |
+| [`benchmarks/gap_eval.py`](../../benchmarks/gap_eval.py) | `6659bd0bd2054d4484374da393a1f84fa6138607babc019b8eb91effa2a2ff2a` |
+| [`benchmarks/run_gap_2026-10-02.sh`](../../benchmarks/run_gap_2026-10-02.sh) | `4185e0c983a3cfaf99e24a66d32bbcebe403106db790fa62d53a145506fe5b67` |
 
 
 ---
@@ -7584,7 +7584,7 @@ circuits.
 
 ## 6. Independent check
 
-`benchmarks/gap_verify.py` (written after the run) reads the raw json only. It confirms:
+[`benchmarks/gap_verify.py`](../../benchmarks/gap_verify.py) (written after the run) reads the raw json only. It confirms:
 
 - the provenance and circuit counts of all 45 files (commit `4acca8c`, script hash `6659bd0b…`);
 - the 9 P0 rows above, all L3T F3o seeds 13, 27 and 45, maximum 1.85e-8, all below 1e-6;
@@ -7609,7 +7609,7 @@ Output in `outputs/verify.txt`.
 ## Addendum 302 -- Diagnosis: on FakeTorino the release places a 6-qubit ring across a failed coupler (reported error 1.0), 7-14 times per circuit (2026-10-02)
 
 **Status: exploratory diagnosis, not a test.** It explains the FakeTorino outlier of Addendum 301. The script
-(`data/2026-10-02/c3/diag/torino_diag.py`) and its output, run at home at commit `bc2c2f9`, are in the data folder.
+([`data/2026-10-02/c3/diag/torino_diag.py`](../../data/2026-10-02/c3/diag/torino_diag.py)) and its output, run at home at commit `bc2c2f9`, are in the data folder.
 
 ## 1. What was looked at
 
@@ -7691,7 +7691,7 @@ whose error is 1.0:
 **Status: pre-registration, written at home before any scored run.**
 
 - **Lock:** the git commit that adds this document, the candidate
-  (`patches/psf_compile_c3_2026-10-02/psf_compile.py`, with its tests) and `benchmarks/c3_eval.py` with its
+  ([`patches/psf_compile_c3_2026-10-02/psf_compile.py`](../../patches/psf_compile_c3_2026-10-02/psf_compile.py), with its tests) and [`benchmarks/c3_eval.py`](../../benchmarks/c3_eval.py) with its
   runner, pushed before the scored run.
 - **No hardware:** fake-provider devices and Aer noise only.
 - **Not a release:** the candidate becomes one only by a separate adoption decision.
@@ -7712,7 +7712,7 @@ whose error is 1.0:
 
 ## 2. Design (`benchmarks/c3_eval.py`)
 
-**Circuits:** the five GAP families (Addendum 300), generated by the locked `benchmarks/gap_eval.py` with the same
+**Circuits:** the five GAP families (Addendum 300), generated by the locked [`benchmarks/gap_eval.py`](../../benchmarks/gap_eval.py) with the same
 seeds and sizes: 2,079 circuits per device and arm.
 
 **Arms:**
@@ -7834,10 +7834,10 @@ run 2.
 
 | file | normalized SHA-256 |
 |---|---|
-| `patches/psf_compile_c3_2026-10-02/psf_compile.py` | `8fd5e50087c1aa6abd382c8a6852d3a015d9e07fdb66ef22a7b5bd91360fd36d` |
-| `patches/psf_compile_c3_2026-10-02/test_c3_prune.py` | `55276d3e3f60137801e6f9c898224c35a23d5b5bd4613cbdda9ffb5e6670a450` |
-| `benchmarks/c3_eval.py` | `a56aa67676142fe8d254c67d91f120e854ed0c64b673b5fe3e750b22941196f4` |
-| `benchmarks/run_c3_2026-10-02.sh` | `7c82f6126e66ad15c7e6c3171a7de7fb5c8b503240dfe01044367f8ed6ba990d` |
+| [`patches/psf_compile_c3_2026-10-02/psf_compile.py`](../../patches/psf_compile_c3_2026-10-02/psf_compile.py) | `8fd5e50087c1aa6abd382c8a6852d3a015d9e07fdb66ef22a7b5bd91360fd36d` |
+| [`patches/psf_compile_c3_2026-10-02/test_c3_prune.py`](../../patches/psf_compile_c3_2026-10-02/test_c3_prune.py) | `55276d3e3f60137801e6f9c898224c35a23d5b5bd4613cbdda9ffb5e6670a450` |
+| [`benchmarks/c3_eval.py`](../../benchmarks/c3_eval.py) | `a56aa67676142fe8d254c67d91f120e854ed0c64b673b5fe3e750b22941196f4` |
+| [`benchmarks/run_c3_2026-10-02.sh`](../../benchmarks/run_c3_2026-10-02.sh) | `7c82f6126e66ad15c7e6c3171a7de7fb5c8b503240dfe01044367f8ed6ba990d` |
 
 
 ---
@@ -7918,7 +7918,7 @@ threshold of 1e-9 was too strict, and 1e-6 (used here) is adequate.
 
 ## 5. Independent check
 
-`benchmarks/c3_verify.py` (written after the run) reads the raw json only. It checks the following, and all of it
+[`benchmarks/c3_verify.py`](../../benchmarks/c3_verify.py) (written after the run) reads the raw json only. It checks the following, and all of it
 matches the locked score:
 
 - the commit `158967c`, the script and candidate hashes, the candidate version and the counts in all 45 files;
@@ -7964,9 +7964,9 @@ Output in `outputs/verify.txt`.
   release.
 - **Unchanged:** `psf_smart_layout` 2026-10-01.1 and the Rust core 2026-09-29.1.
 - **Tests:**
-  - `benchmarks/test_core_fix_c2.py` and `benchmarks/test_release_2026_09_28.py` now expect the new version
+  - [`benchmarks/test_core_fix_c2.py`](../../benchmarks/test_core_fix_c2.py) and [`benchmarks/test_release_2026_09_28.py`](../../benchmarks/test_release_2026_09_28.py) now expect the new version
     string;
-  - `benchmarks/test_release_2026_10_02.py` adds the candidate's tests, adapted to the release file.
+  - [`benchmarks/test_release_2026_10_02.py`](../../benchmarks/test_release_2026_10_02.py) adds the candidate's tests, adapted to the release file.
 - **README:**
   - a new "Current version (2026-10-02)" block, which states the known gap;
   - the 2026-10-01 block is kept as "Previous release".
@@ -8005,7 +8005,7 @@ noiseless threshold stays at 1e-6.
 **Status: pre-registration, written at home before any scored run.**
 
 - **Lock:** the git commit that adds this document, the candidate
-  (`patches/psf_compile_c4_2026-10-02/psf_compile.py`, with its tests) and `benchmarks/c4_eval.py` with its
+  ([`patches/psf_compile_c4_2026-10-02/psf_compile.py`](../../patches/psf_compile_c4_2026-10-02/psf_compile.py), with its tests) and [`benchmarks/c4_eval.py`](../../benchmarks/c4_eval.py) with its
   runner, pushed before the scored run.
 - **No hardware:** fake devices and Aer noise only.
 - **Smoke run:** it was run before the lock and did **not** look good for this candidate (section 5). The test is
@@ -8104,10 +8104,10 @@ noiseless threshold stays at 1e-6.
 
 | file | normalized SHA-256 |
 |---|---|
-| `patches/psf_compile_c4_2026-10-02/psf_compile.py` | `0a1502f9a6fddcea8cb01105e7053c3c5b5e61359e356330c66d2ca51bab445d` |
-| `patches/psf_compile_c4_2026-10-02/test_c4_layout.py` | `2c820390ab4167635e4612a2b054df2937f96f6441dfbab1580887044224d139` |
-| `benchmarks/c4_eval.py` | `449789117b2fff27c48da21d4ff89f27f3e593239d210b110864ae4a6645058c` |
-| `benchmarks/run_c4_2026-10-02.sh` | `eb3f1f40d6646614be487c5e449ccc4495e665a4313b5dcf8f982ed6e0e9f4ab` |
+| [`patches/psf_compile_c4_2026-10-02/psf_compile.py`](../../patches/psf_compile_c4_2026-10-02/psf_compile.py) | `0a1502f9a6fddcea8cb01105e7053c3c5b5e61359e356330c66d2ca51bab445d` |
+| [`patches/psf_compile_c4_2026-10-02/test_c4_layout.py`](../../patches/psf_compile_c4_2026-10-02/test_c4_layout.py) | `2c820390ab4167635e4612a2b054df2937f96f6441dfbab1580887044224d139` |
+| [`benchmarks/c4_eval.py`](../../benchmarks/c4_eval.py) | `449789117b2fff27c48da21d4ff89f27f3e593239d210b110864ae4a6645058c` |
+| [`benchmarks/run_c4_2026-10-02.sh`](../../benchmarks/run_c4_2026-10-02.sh) | `eb3f1f40d6646614be487c5e449ccc4495e665a4313b5dcf8f982ed6e0e9f4ab` |
 
 
 ---
@@ -8220,7 +8220,7 @@ This confirms both that the run is deterministic and that the release equals the
 
 ## 5. Independent check
 
-`benchmarks/c4_verify.py` (written after the lock, before the results were seen) reads the raw json only. It
+[`benchmarks/c4_verify.py`](../../benchmarks/c4_verify.py) (written after the lock, before the results were seen) reads the raw json only. It
 checks the following, and all of it matches the locked score:
 
 - the commit `29dd762`, the script and candidate hashes, the versions and the counts in all 45 files;
@@ -8263,7 +8263,7 @@ first, in the style of Addendum 302.
 
 - **Question:** it follows up Addendum 307, where c4's wins and losses against C3 were systematic by device and
   family.
-- **Scripts and outputs:** in `data/2026-10-02/c5/diag/`.
+- **Scripts and outputs:** in [`data/2026-10-02/c5/diag/`](../../data/2026-10-02/c5/diag/).
   - `region_diag.py` and `run_region_diag.sh`.
   - `diag_extra.py`, written after seeing the summary.
 - **Where and when:** run at home at commit `aea5871`; 3 devices in parallel, 67 s.
@@ -8397,7 +8397,7 @@ equal, so only placement differs.
 **Status: pre-registration, written at home before any scored run.**
 
 - **Lock:** the git commit that adds this document, the candidate
-  (`patches/psf_compile_c5_2026-10-02/psf_compile.py`, with its tests) and `benchmarks/c5_eval.py` with its
+  ([`patches/psf_compile_c5_2026-10-02/psf_compile.py`](../../patches/psf_compile_c5_2026-10-02/psf_compile.py), with its tests) and [`benchmarks/c5_eval.py`](../../benchmarks/c5_eval.py) with its
   runner, pushed before the scored run.
 - **No hardware:** fake devices and Aer noise only.
 - **The predictions (section 3) were written before the smoke run** and were not changed after it. The smoke run
@@ -8538,10 +8538,10 @@ committed; the commit command was chained on that run.
 
 | file | normalized SHA-256 |
 |---|---|
-| `patches/psf_compile_c5_2026-10-02/psf_compile.py` | `daa3a44dd96ffed925bcc5b2edf8d627d480d54976f4affd7579263edcac8240` |
-| `patches/psf_compile_c5_2026-10-02/test_c5_placement.py` | `d46be65edf63778f4448b3d9d4500996b217e9f980aff68ad62df4791a89afdd` |
-| `benchmarks/c5_eval.py` | `44fe82dea70717478aad64be3fd0854cb95c92ef04f8f8ba7daac4a3155d52ce` |
-| `benchmarks/run_c5_2026-10-02.sh` | `ffdb04a5e9ec10fd031985bc25b79c9b983a6f06d71bbbf0cf322c78267414a0` |
+| [`patches/psf_compile_c5_2026-10-02/psf_compile.py`](../../patches/psf_compile_c5_2026-10-02/psf_compile.py) | `daa3a44dd96ffed925bcc5b2edf8d627d480d54976f4affd7579263edcac8240` |
+| [`patches/psf_compile_c5_2026-10-02/test_c5_placement.py`](../../patches/psf_compile_c5_2026-10-02/test_c5_placement.py) | `d46be65edf63778f4448b3d9d4500996b217e9f980aff68ad62df4791a89afdd` |
+| [`benchmarks/c5_eval.py`](../../benchmarks/c5_eval.py) | `44fe82dea70717478aad64be3fd0854cb95c92ef04f8f8ba7daac4a3155d52ce` |
+| [`benchmarks/run_c5_2026-10-02.sh`](../../benchmarks/run_c5_2026-10-02.sh) | `ffdb04a5e9ec10fd031985bc25b79c9b983a6f06d71bbbf0cf322c78267414a0` |
 
 
 ---
@@ -8646,7 +8646,7 @@ The C3 and L3T arms of this run were compared, circuit by circuit, with the same
 
 ## 5. Independent check
 
-`benchmarks/c5_verify.py` reads the raw json only. It checks the following, and all of it matches the locked
+[`benchmarks/c5_verify.py`](../../benchmarks/c5_verify.py) reads the raw json only. It checks the following, and all of it matches the locked
 score:
 
 - the commit `ce574b0`, the script and candidate hashes, the versions and the counts in all 45 files;
@@ -8681,24 +8681,24 @@ Output in `outputs/verify.txt`.
 ## 1. What changed
 
 - **`psf_compile.py`** becomes release 2026-10-02.2.
-  - The code is the candidate's (`patches/psf_compile_c5_2026-10-02/psf_compile.py`, Addendum 309) with three
+  - The code is the candidate's ([`patches/psf_compile_c5_2026-10-02/psf_compile.py`](../../patches/psf_compile_c5_2026-10-02/psf_compile.py), Addendum 309) with three
     lines changed: the `VERSION:` header, the changelog heading of item 33, and the `VERSION` constant.
   - Changelog item 33 is now part of the release.
 - **`placement_refine` stays opt-in (default False)**, as tested. Without it the release is identical to
   2026-10-02.1, gate for gate (checked by test). Making it the default for calls with `target` would be a separate
   decision.
 - **Tests pinned to the release version now expect "2026-10-02.2":**
-  - `benchmarks/test_core_fix_c2.py`;
-  - `benchmarks/test_release_2026_09_28.py`;
-  - `benchmarks/test_release_2026_10_02.py`;
-  - `patches/psf_compile_c4_2026-10-02/test_c4_layout.py`.
+  - [`benchmarks/test_core_fix_c2.py`](../../benchmarks/test_core_fix_c2.py);
+  - [`benchmarks/test_release_2026_09_28.py`](../../benchmarks/test_release_2026_09_28.py);
+  - [`benchmarks/test_release_2026_10_02.py`](../../benchmarks/test_release_2026_10_02.py);
+  - [`patches/psf_compile_c4_2026-10-02/test_c4_layout.py`](../../patches/psf_compile_c4_2026-10-02/test_c4_layout.py).
 - **About the last of these:** it belongs to the files locked by Addendum 306. Its `test_version` pinned the
   release at the time, so it would otherwise fail from now on. Only that line was changed, with a comment.
   - Normalized SHA-256 before: `2c820390ab4167635e4612a2b054df2937f96f6441dfbab1580887044224d139` (as locked).
   - After: `a42b5ea9b6abdaab58ca578902cf9cd46f6d89aab356ebc1ceb721f752009cbe`.
   - The c4 evaluation is complete (Addendum 307), and its job files record the hashes it actually ran with.
-- **New `benchmarks/test_release_2026_10_02_2.py`**, adapted from the candidate's tests.
-  - The previous release is represented by `patches/psf_compile_c3_2026-10-02/psf_compile.py`, which differs from
+- **New [`benchmarks/test_release_2026_10_02_2.py`](../../benchmarks/test_release_2026_10_02_2.py)**, adapted from the candidate's tests.
+  - The previous release is represented by [`patches/psf_compile_c3_2026-10-02/psf_compile.py`](../../patches/psf_compile_c3_2026-10-02/psf_compile.py), which differs from
     release 2026-10-02.1 only in its version lines.
   - The tests: version; default identical to the previous release with and without `target`; `placement_refine`
     without `target` raises; on FakeAuckland, FakeTorino and FakeKingston, refined outputs are exact, avoid failed
@@ -8706,25 +8706,25 @@ Output in `outputs/verify.txt`.
 - **`README.md`:**
   - a new "Current version (2026-10-02, second release)" block;
   - the 2026-10-02.1 block becomes "Previous release (2026-10-02.1)", and its known gap is marked as addressed.
-- **Data:** `data/2026-10-02/c5/outputs/` (Addendum 310) and `benchmarks/c5_verify.py`.
+- **Data:** [`data/2026-10-02/c5/outputs/`](../../data/2026-10-02/c5/outputs/) (Addendum 310) and [`benchmarks/c5_verify.py`](../../benchmarks/c5_verify.py).
 
 ## 2. Checks before the commit
 
 These tests were run at home on the applied files, and the commit command was chained on them passing:
 
-- `benchmarks/test_release_2026_10_02_2.py`;
-- `benchmarks/test_release_2026_10_02.py`;
-- `benchmarks/test_release_2026_09_28.py`;
-- `benchmarks/test_core_fix_c2.py`;
-- `patches/psf_compile_c4_2026-10-02/test_c4_layout.py`;
-- `patches/psf_compile_c5_2026-10-02/test_c5_placement.py`.
+- [`benchmarks/test_release_2026_10_02_2.py`](../../benchmarks/test_release_2026_10_02_2.py);
+- [`benchmarks/test_release_2026_10_02.py`](../../benchmarks/test_release_2026_10_02.py);
+- [`benchmarks/test_release_2026_09_28.py`](../../benchmarks/test_release_2026_09_28.py);
+- [`benchmarks/test_core_fix_c2.py`](../../benchmarks/test_core_fix_c2.py);
+- [`patches/psf_compile_c4_2026-10-02/test_c4_layout.py`](../../patches/psf_compile_c4_2026-10-02/test_c4_layout.py);
+- [`patches/psf_compile_c5_2026-10-02/test_c5_placement.py`](../../patches/psf_compile_c5_2026-10-02/test_c5_placement.py).
 
 ## 3. Release file (normalized SHA-256)
 
 | file | normalized SHA-256 |
 |---|---|
 | `psf_compile.py` (2026-10-02.2) | `2603bc2decea47b2047fe8ddf17896d79f39e74eda887f0b596f6a28f4daa08b` |
-| `benchmarks/test_release_2026_10_02_2.py` | `cab184e63b308d7f5de4dbe31f6309b1f83d801c978d4dd56943e9e556c2312a` |
+| [`benchmarks/test_release_2026_10_02_2.py`](../../benchmarks/test_release_2026_10_02_2.py) | `cab184e63b308d7f5de4dbe31f6309b1f83d801c978d4dd56943e9e556c2312a` |
 
 ## 4. What remains
 
@@ -8745,7 +8745,7 @@ These tests were run at home on the applied files, and the commit command was ch
 **Status: pre-registration, written at home before any scored run.**
 
 - **Lock:** the git commit that adds this document, the candidate
-  (`patches/psf_ai_compile_a6_2026-10-02/psf_ai_compile.py`, with its tests) and `benchmarks/ai6_eval.py` with its
+  ([`patches/psf_ai_compile_a6_2026-10-02/psf_ai_compile.py`](../../patches/psf_ai_compile_a6_2026-10-02/psf_ai_compile.py), with its tests) and [`benchmarks/ai6_eval.py`](../../benchmarks/ai6_eval.py) with its
   runner, pushed before the scored run.
 - **No hardware:** fake devices and Aer noise only.
 - **The predictions (section 3) were written before the smoke run.**
@@ -8792,7 +8792,7 @@ Neither set is new. GAP was used in Addenda 301-310, and MODEL in Addenda 285 an
 | arm | what it is |
 |---|---|
 | C5 | the release alone: `compile_for_hardware(..., target, placement_refine=True)` |
-| A5 | psf_ai_compile a5 (`benchmarks/psf_ai_compile.py`) with the target |
+| A5 | psf_ai_compile a5 ([`benchmarks/psf_ai_compile.py`](../../benchmarks/psf_ai_compile.py)) with the target |
 | A6 | the candidate with the target |
 | A6F | the candidate with the target and `state_aware_placement=False` |
 | L3T | Qiskit level 3 with the Target, `approximation_degree=1.0` |
@@ -8887,10 +8887,146 @@ The smoke run used 1 circuit per GAP sub-family and the first 6 sandbox dry-run 
 
 | file | normalized SHA-256 |
 |---|---|
-| `patches/psf_ai_compile_a6_2026-10-02/psf_ai_compile.py` | `2b8d11fac91138af4352bd1d35c8383197dca9d43763811c4715319849f3e046` |
-| `patches/psf_ai_compile_a6_2026-10-02/test_ai6.py` | `1b4920cbc1a31b858409a0c555cda7b2d5306054c00f390997b9c5f396384b41` |
-| `benchmarks/ai6_eval.py` | `adef4385dbee523f38f8a9ff04f8cc9e90b9dc4bbfa084ae3bfdfa850adcd7f0` |
-| `benchmarks/run_ai6_2026-10-02.sh` | `7d3cb7e8b1b8e861d150321686a8b83a346d0aef3ac68a30c2ac3af5f37dd87e` |
+| [`patches/psf_ai_compile_a6_2026-10-02/psf_ai_compile.py`](../../patches/psf_ai_compile_a6_2026-10-02/psf_ai_compile.py) | `2b8d11fac91138af4352bd1d35c8383197dca9d43763811c4715319849f3e046` |
+| [`patches/psf_ai_compile_a6_2026-10-02/test_ai6.py`](../../patches/psf_ai_compile_a6_2026-10-02/test_ai6.py) | `1b4920cbc1a31b858409a0c555cda7b2d5306054c00f390997b9c5f396384b41` |
+| [`benchmarks/ai6_eval.py`](../../benchmarks/ai6_eval.py) | `adef4385dbee523f38f8a9ff04f8cc9e90b9dc4bbfa084ae3bfdfa850adcd7f0` |
+| [`benchmarks/run_ai6_2026-10-02.sh`](../../benchmarks/run_ai6_2026-10-02.sh) | `7d3cb7e8b1b8e861d150321686a8b83a346d0aef3ac68a30c2ac3af5f37dd87e` |
+
+
+---
+
+<!-- ===== Addendum 313 (source: spare-qubit-cliff-addendum-313-2026-10-02.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 312 (lock commit c8dc903), scored by the locked script and re-checked by benchmarks/ai6_verify.py, written after the locked score was seen and before the raw files were read. Section 4 corrects a circuit count stated in earlier Addenda; section 5 describes the link update made to this Part at the same time.
+
+## Addendum 313 -- Results: the AI front end with release 2026-10-02.2 inside (Addendum 312). Four of eight confirmed, four ambiguous, none refuted. a6 returns a5's result (identical on 2,070 of 2,079 GAP and 449 of 459 model-written circuits): a5's state-aware re-placement already finds what the release's placement offers. The AI front end clearly adds to the release on model-written circuits (A6/C5 0.73-0.92), and its fast mode keeps most of that at half the time on the Heron devices. Also: corrections (circuit counts) and links in Part 9 (2026-10-02)
+
+**Status: results of the pre-registered test in Addendum 312.**
+
+- **Lock:** commit `c8dc903`, pushed before the scored run.
+- **Scoring:** by the locked `ai6_eval.py score`, and re-checked by [`benchmarks/ai6_verify.py`](../../benchmarks/ai6_verify.py). That script was
+  written after the locked score was seen and before the raw files were read.
+- **Setting:** home (WSL2), 6 processes, PennyLane 0.45.1; 90 jobs, 12,690 circuit compilations.
+- **Model circuits:** 153 collected, 153 converted, 0 skipped.
+
+## 1. Verdicts
+
+| ID | Verdict | Numbers (unrounded where it matters) |
+|---|---|---|
+| P0 | **PASS** | 90 of 90 files; noiseless infidelity max 1.85e-8; 0 too wide; 153 model circuits |
+| H1 | **AMBIGUOUS** | A6/A5: GAP 1.00004 / 0.99999 / 1.00002, MODEL 0.99988 / 0.99941 / 0.99998 (Auckland / Torino / Kingston). Two exceed 1.00 by less than 1e-4; none exceeds 1.02 |
+| H2 | **AMBIGUOUS** | GAP A6/A5: FakeTorino 0.99999, FakeKingston 1.00002 (CONFIRMED needed <= 0.98 on both; REFUTED needed >= 1.00 on both) |
+| H3 | **CONFIRMED** | MODEL A6/C5: 0.731 / 0.922 / 0.914 |
+| H4 | **CONFIRMED** | GAP A6/C5: 0.967 / 0.963 / 0.945 |
+| H5 | **CONFIRMED** | A6F/A6 on the Heron devices: GAP 1.002 / 1.006, MODEL 1.020 / 1.021; median compile time A6F 0.297 s, A6 0.612 s |
+| H6 | **AMBIGUOUS** | A6/L3T: GAP 1.024 / 0.984 / 0.983, MODEL 0.740 / 0.932 / 0.934 (FakeAuckland GAP above 1.00, below 1.05) |
+| H7 | **CONFIRMED** | 0 failed-element uses by C5, A6 and A6F (also 0 by A5 and L3T) |
+| H8 | **CONFIRMED** | median compile time A5 0.613 s, A6 0.612 s |
+
+## 2. Numbers
+
+**Pooled infidelity ratios:**
+
+| set | device | A6/A5 | A6/C5 | A6F/A6 | A6F/C5 | A6/L3T | A6F/L3T | C5/L3T |
+|---|---|---|---|---|---|---|---|---|
+| GAP | FakeAuckland | 1.000 | 0.967 | 1.018 | 0.985 | 1.024 | 1.042 | 1.059 |
+| GAP | FakeTorino | 1.000 | 0.963 | 1.002 | 0.965 | 0.984 | 0.986 | 1.022 |
+| GAP | FakeKingston | 1.000 | 0.945 | 1.006 | 0.950 | 0.983 | 0.988 | 1.040 |
+| MODEL | FakeAuckland | 1.000 | 0.731 | 1.284 | 0.939 | 0.740 | 0.951 | 1.013 |
+| MODEL | FakeTorino | 0.999 | 0.921 | 1.020 | 0.940 | 0.932 | 0.951 | 1.012 |
+| MODEL | FakeKingston | 1.000 | 0.914 | 1.021 | 0.933 | 0.934 | 0.954 | 1.022 |
+
+**Where A6 differs from A5 at all:**
+
+- GAP F4 only: 2, 3 and 4 circuits of 135 (Auckland, Torino, Kingston).
+- MODEL: 3, 3 and 4 circuits of 153.
+- Every other circuit is identical.
+
+**MODEL per task** (FakeAuckland; mean infidelity C5 → A6, mean two-qubit gates C5 → A6):
+
+| task | n | infidelity C5 → A6 | 2q C5 → A6 |
+|---|---|---|---|
+| w3 | 83 | 0.0511 → 0.0360 | 5.4 → 5.1 |
+| qft3 | 28 | 0.0409 → 0.0269 | 4.9 → 4.1 |
+| dicke42 | 16 | 0.1244 → 0.0954 | 13.5 → 11.9 |
+| w4 | 12 | 0.0713 → 0.0581 | 7.7 → 7.7 |
+| ghz5 | 7 | 0.0519 → 0.0443 | 6.1 → 5.9 |
+
+On the Heron devices the same tasks gain less (A6/C5 0.91-0.92 pooled). There the release's placement is already
+good, so the remaining gain is mostly the fewer two-qubit gates (qft3 4.9 → 4.2, dicke42 13.3-14.5 → 12.4-12.8).
+
+## 3. Reading
+
+- **Integrating the release into a5 changes nothing that matters.**
+  - a5 re-places its best candidates by a state-aware estimate, keeping the starting placement only if nothing
+    better is found. In practice it finds the same placement from the error-blind start as from the release's
+    exact one.
+  - The pre-registered reason for H2 (the 5,000-embedding cap) does not bite on these circuits.
+  - H1 and H2 are ambiguous only because the ratios sit at 1.0000 ± 0.0006.
+- **The AI front end adds clearly to the release, most on model-written circuits.**
+  - A6/C5 is 0.73-0.92 on MODEL and 0.95-0.97 on GAP.
+  - Two sources:
+    - fewer two-qubit gates on model-written circuits (commutation clean-up, several starting points, polish);
+    - on FakeAuckland, a placement score that includes the T1/T2 floor and the circuit's state, which the release's
+      reported-error score lacks (Addendum 308).
+- **The fast mode.**
+  - **On the Heron devices** it keeps almost all of a6's quality (within 2.1%) at 0.49 times the time.
+  - **On FakeAuckland** it loses most of the MODEL gain (A6F/A6 1.284), because there the state-aware placement is
+    what matters.
+  - **Against the release alone**, A6F is better everywhere (A6F/C5 0.93-0.99).
+- **Against Qiskit L3T:**
+  - A6 is better on MODEL on every device (0.74-0.93) and on GAP on the Heron devices (0.98).
+  - On FakeAuckland GAP it trails by 2.4%, as A5 did in Addendum 301.
+- **Reproducibility.** A5's outputs equal the GAP run's A5 arm (Addendum 301), circuit by circuit: 2,079 of 2,079
+  (two-qubit count and infidelity to 1e-12). That run used release 2026-10-01.1 underneath, and release 2026-10-02.2
+  without its opt-in arguments is identical to it.
+- **Decision (owner):** whether a6 replaces a5 as [`benchmarks/psf_ai_compile.py`](../../benchmarks/psf_ai_compile.py). What a6 adds over a5 is the fast
+  mode; its default mode equals a5 in practice. For the vLLM loop:
+  - A6F suits Heron targets;
+  - A6 / A5 suits devices with below-floor reported errors (cx/ecr devices, Addendum 293).
+
+## 4. Corrections to earlier Addenda (circuit counts)
+
+The GAP generator yields **693 circuits per device**: F1 216, F2 120, F3 150, F4 135, F5 72. That is **2,079 over
+the three devices**. Several earlier texts say "2,079 per device":
+
+- Addendum 301 (title);
+- Addendum 303 (section 2);
+- Addendum 306 (section 2 and its expectations);
+- Addendum 308 (section 1);
+- Addendum 309 (section 2);
+- Addendum 312 (section 2);
+- the README block for release 2026-10-02.2.
+
+The correct reading is "693 per device, 2,079 in all". Every prediction and verdict in those tests is a per-device
+or pooled ratio computed from the actual files, so none changes.
+
+- **The locked pre-registrations** (303, 306, 309, 312) are left as they are; this Addendum is the correction.
+- **The README** is corrected in this update.
+- **The 2,079 counts in Addenda 307 and 310** (for example "C3: 2,079 of 2,079 identical") are totals over the three
+  devices and are correct.
+
+## 5. Links in Part 9 (presentation only)
+
+**Code-formatted paths became links.**
+
+- From Addendum 272 on, every code-formatted path to a file or folder that exists in the repository is now a
+  relative link: `` [`path`](../../path) ``, as Addendum 270 already did.
+- No other character of those Addenda changed. The update script checks this by removing the link syntax again and
+  comparing with the previous text.
+
+**Eight references point to files that are not in the repository.**
+
+- They are the workplace pre-registration documents of 2026-10-01 (`docs/findings/*-preregistration-2026-10-01.md`).
+- Their text is in this Part as Addenda 272, 276, 278, 280, 282, 284, 286 and 288. The one original found at home
+  (core-fix-c2) matches Addendum 272 apart from editing at merge time.
+- Each of the eight references now carries a note saying so.
+
+## 6. Data (`data/2026-10-02/ai6/`)
+
+- `outputs/`: 90 job files and their logs, the prep log, `model_circuits.qpy`, `model_index.json`, `env.txt`,
+  `run.log`, `score.md`, `score_log.txt`, `verify.txt`.
+- Local paths were replaced.
 
 ---
 
