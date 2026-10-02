@@ -9377,6 +9377,142 @@ These tests were run at home on the applied files, and the commit command was ch
   unless L3T's is estimated better by more than some amount, could be tested.
 - **In the vLLM loop:** whether a7, with or without a fast mode, changes pass rates or cost.
 
+
+---
+
+<!-- ===== Addendum 318 (source: spare-qubit-cliff-addendum-318-2026-10-03.md) ===== -->
+
+> **Note added when merging:** Home pre-registration of HOLD (held-out circuits and devices for release 2026-10-02.2 and a7). Locked by the git commit that adds this Addendum and the evaluation scripts, pushed before the scored run. The predictions were written on the evening of 2026-10-02, before the smoke run, which is disclosed in section 5.
+
+## Addendum 318 -- Pre-registration: HOLD. Do the two adoptions of 2026-10-02 (release 2026-10-02.2's placement_refine, AI front end a7) hold on new circuits and on six devices no compiler test has used? (2026-10-03)
+
+**Status: pre-registration, written at home before any scored run.**
+
+- **Lock:** the git commit that adds this document and `benchmarks/hold_eval.py` with its runner, pushed before the
+  scored run.
+- **No hardware:** fake devices and Aer noise only.
+- **The predictions (section 3) were written on the evening of 2026-10-02, before the smoke run**, and were not
+  changed after it.
+
+## 1. Why
+
+Both adoptions of 2026-10-02 were developed and judged on the same material:
+
+- **c5 → release .2:** the GAP circuits, on FakeAuckland, FakeTorino and FakeKingston (Addenda 309-311).
+- **a7:** the GAP and model-written circuits on the same three devices (Addenda 314-317).
+
+Every claim made for them is therefore in-sample. This test asks whether those claims hold on held-out circuits and
+on held-out devices.
+
+## 2. Design (`benchmarks/hold_eval.py`)
+
+**Circuits (held out):**
+
+- **F1-F5:** the five GAP families, with the generator code copied verbatim from `gap_eval.family` (checked
+  textually).
+  - New seed base: 20,000,000 + ...; GAP used 1,000,000-5,500,000.
+  - Twice GAP's per-cell sizes.
+- **F6 (new):** the quantum Fourier transform (h, cp, final swaps) on a random product state, n = 4, 5, 6.
+- **Size:** 1,506 circuits per device, 13,554 per arm.
+
+**Arms** (release 2026-10-02.2 and AI front end 2026-10-02.a7, both as adopted):
+
+| arm | what it is |
+|---|---|
+| C3 | `compile_for_hardware(..., target)`, placement_refine off |
+| C5 | the same call with `placement_refine=True` |
+| A7 | `benchmarks/psf_ai_compile.py` (a7) with the target |
+| L3T | Qiskit level 3 with the Target, `approximation_degree=1.0` |
+
+**Devices:**
+
+| group | devices |
+|---|---|
+| seen | FakeAuckland (cx), FakeTorino, FakeKingston (cz) |
+| new, cx | FakeHanoiV2, FakeAlgiers, FakeGeneva (27 qubits) |
+| new, cz | FakeFez, FakeMarrakesh, FakeAachen (156 qubits) |
+
+**Metric:** as in GAP. Ratios are pooled mean infidelities per device, or per cell (family, with F3 split into open
+and periodic) and device.
+
+## 3. Predictions (scored only by `hold_eval.py score`)
+
+**P0, harness.** All of these must hold, or nothing below is scored:
+
+- 216 job files;
+- every noiseless infidelity <= 1e-6;
+- at most 5% of the circuits too wide.
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| H1 | placement_refine helps on every device | C5/C3 <= 1.00 on all 9 devices | any > 1.02 |
+| H2 | ... and almost everywhere | C5/C3 <= 1.00 in >= 90% of the 63 cell-device pairs | < 75% |
+| H3 | on cz devices it matches L3T on chains | chains (F3o + F5) C5/L3T <= 1.05 on all 5 cz devices | any >= 1.15 |
+| H4 | a7 is level with or better than L3T | A7/L3T <= 1.00 on all 9 devices | any > 1.05 |
+| H5 | a7 is at least as good as the release alone | A7/C5 <= 1.00 on all 9 devices | any > 1.03 |
+| H6 | neither uses a failed element | 0 failed-edge or failed-qubit uses by C5 and A7 | any |
+| H7 | a7 holds on the new family | F6: A7/L3T <= 1.05 on all 9 devices | any > 1.20 |
+
+**Expectations, stated with the predictions:**
+
+- **H1-H3:** placement_refine scores by reported errors. On cx devices those can fall below the T1/T2 floor (Addendum
+  293), so the new cx devices are where it is most likely to fall short, as FakeAuckland did in Addendum 310.
+- **H4 and H7:** a7's state-aware estimate includes the floor, so it should hold on the cx devices too.
+- **H7 is the least certain.** QFT needs much routing, and level 3 may route it better than PSF-Zero.
+
+**Reported without prediction:**
+
+- the device and cell tables;
+- how often A7 chose L3T's output;
+- compile times;
+- off-target instructions.
+
+## 4. What this will not establish
+
+- Hardware.
+- ecr devices (the harness supports cx and cz only).
+- The model-written circuits (none are held out).
+
+## 5. Development (disclosed)
+
+### 5.1 Smoke run (not a result)
+
+The smoke run used 1 circuit per cell and its own seed base: 684 compilations, 216 jobs, 257 s, on the morning of
+2026-10-03. Nothing was changed after it.
+
+- **P0** passed (noiseless infidelity max 8.2e-15).
+- **Its verdict lines:** all seven CONFIRMED.
+
+  | H1 | H2 | H3 | H4 | H5 | H6 | H7 |
+  |---|---|---|---|---|---|---|
+  | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED |
+
+- **Device level:**
+  - C5/C3 0.60-0.90;
+  - A7/L3T 0.91-0.99;
+  - A7/C5 0.89-0.97;
+  - chains C5/L3T on cz devices 0.999-1.039.
+- **On the new cx devices**, chains C5/L3T were 1.07-1.17, as expected for reported-error placement on cx devices.
+- **One observation outside the predictions:** the C3 arm (release with `target`, placement_refine off) used a
+  failed element 33 times. Item 31 is meant to prevent that, and it did so on the three seen devices in Addenda 304,
+  307 and 310. The smoke output does not say on which device it happened.
+  - It does not bear on H6, which concerns C5 and A7 (both 0).
+  - The scored data will be examined for it, and the result reported with this test's results.
+- **Median compile time:** C3 0.036 s, C5 0.039 s, A7 0.706 s, L3T 0.018 s.
+
+### 5.2 Other development
+
+- The scorer was run on synthetic files built from the c5 and a7 runs.
+- The F1-F5 generator code was checked textually against `gap_eval.family`: identical.
+- No scored circuit was compiled before the lock.
+
+## 6. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `benchmarks/hold_eval.py` | `bd087fa5c922653baa2b3311792d91ce0405a9ceea9a4829870fe5a2253afaf8` |
+| `benchmarks/run_hold_2026-10-03.sh` | `45a2af760aa003bf81fd37fa5e77422fea03f7b0b8b3e6090e88004925019786` |
+
 ---
 
 ---
