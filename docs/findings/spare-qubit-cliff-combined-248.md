@@ -9800,6 +9800,135 @@ morning of 2026-10-03. Nothing was changed after it.
 Normalization: CRLF to LF, trailing whitespace stripped from each line, trailing blank lines dropped, lines joined
 with "\n" and no final newline.
 
+
+---
+
+<!-- ===== Addendum 321 (source: spare-qubit-cliff-addendum-321-2026-10-03.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 320 (lock commit 2cf5ca8), scored by the locked script and re-checked by benchmarks/hold2_verify.py, written after the run finished and before any of its output was seen.
+
+## Addendum 321 -- Results: HOLD2 (Addendum 320). The floor-aware re-placement score (candidate c6) is safe and helps on the cx devices, but less than predicted, and it does not close the chain gap to Qiskit L3T: four confirmed (H3, H5, H6, H7), three ambiguous (H1, H2, H4), none refuted. The chain gap on the cx devices lies in the open-boundary F3 cell, where the floor score changes nothing on three of four devices; on the GHZ-type F5 cell, where the release and L3T give identical circuits, the floor score alone improves FakeGeneva by 28% (2026-10-03)
+
+**Status: results of the pre-registered test in Addendum 320.**
+
+- **Lock:** commit `2cf5ca8` (11:30 JST), pushed before the scored run.
+- **Scoring:** by the locked `hold2_eval.py score`, and re-checked by `benchmarks/hold2_verify.py`. That script was
+  written after the run finished and before any of its output was seen.
+- **Setting:** home (WSL2), 6 processes; 216 jobs, 54,216 circuit compilations, about 40 minutes (job times sum to
+  14,358 s).
+
+## 1. Verdicts
+
+| ID | Verdict | Numbers |
+|---|---|---|
+| P0 | **PASS** | 216 of 216 files; noiseless infidelity max 2.1e-9; 0 too wide |
+| H1 | **AMBIGUOUS** | C6/C5 <= 1.00 on 8 of 9 devices; FakeTorino 1.0000145 (none > 1.02) |
+| H2 | **AMBIGUOUS** | C6/C5 on the cx devices: Auckland 0.984, HanoiV2 0.996, Algiers 0.970, Geneva 0.994 (one <= 0.98; none > 1.00) |
+| H3 | **CONFIRMED** | C6/C5 on the cz devices: Torino 1.000, Kingston 0.998, Fez 0.999, Marrakesh 0.992, Aachen 1.000 |
+| H4 | **AMBIGUOUS** | chains C6/L3T on the cx devices: Auckland 1.089, HanoiV2 1.138, Algiers 1.101, Geneva 1.036 (one <= 1.05; not all >= 1.10) |
+| H5 | **CONFIRMED** | 0 failed-direction or failed-qubit uses by C6 (0 by every arm, counted either way) |
+| H6 | **CONFIRMED** | median compile time C5 0.026 s, C6 0.050 s (1.9 ×) |
+| H7 | **CONFIRMED** | C6/C5 <= 1.00 in 26 of the 28 cx cell-device pairs (92.9%; the exceptions are FakeHanoiV2 F5 1.0008 and F6 1.0044) |
+
+**On H1.** FakeTorino's ratio is 1.0000145: C6 differs from C5 in 21 of 1,506 circuits there (15 worse, 6 better).
+The prediction's bound was "<= 1.00", so the locked scorer reports AMBIGUOUS. That verdict stands. In substance the
+floor score cost nothing measurable on any device.
+
+## 2. Numbers
+
+**By device:**
+
+| device | C6/C5 | C6/L3T | C5/L3T | chains C6/L3T | chains C5/L3T | A7/C6 | A7/L3T |
+|---|---|---|---|---|---|---|---|
+| FakeAuckland (cx) | 0.984 | 1.039 | 1.056 | 1.089 | 1.097 | 0.909 | 0.944 |
+| FakeTorino | 1.000 | 1.025 | 1.025 | 0.996 | 0.996 | 0.961 | 0.985 |
+| FakeKingston | 0.998 | 1.037 | 1.039 | 0.982 | 0.998 | 0.945 | 0.981 |
+| FakeHanoiV2 (cx) | 0.996 | 1.059 | 1.064 | 1.138 | 1.140 | 0.924 | 0.979 |
+| FakeAlgiers (cx) | 0.970 | 1.077 | 1.111 | 1.101 | 1.194 | 0.908 | 0.978 |
+| FakeGeneva (cx) | 0.994 | 1.006 | 1.011 | 1.036 | 1.077 | 0.940 | 0.945 |
+| FakeFez | 0.999 | 1.040 | 1.040 | 0.991 | 0.991 | 0.948 | 0.986 |
+| FakeMarrakesh | 0.992 | 1.017 | 1.026 | 0.963 | 1.022 | 0.943 | 0.960 |
+| FakeAachen | 1.000 | 1.055 | 1.055 | 0.992 | 0.992 | 0.930 | 0.981 |
+
+**Per circuit, C6 against C5:**
+
+| device | same result | C6 better | C6 worse |
+|---|---|---|---|
+| FakeAuckland | 48.1% | 42.0% | 9.8% |
+| FakeHanoiV2 | 61.2% | 25.0% | 13.9% |
+| FakeAlgiers | 49.6% | 48.1% | 2.3% |
+| FakeGeneva | 96.7% | 3.3% | 0.0% |
+| FakeTorino | 98.6% | 0.4% | 1.0% |
+| FakeKingston | 89.7% | 9.9% | 0.4% |
+| FakeFez | 95.7% | 3.1% | 1.2% |
+| FakeMarrakesh | 78.1% | 20.8% | 1.1% |
+| FakeAachen | 100% | 0% | 0% |
+
+**Chain cells on the cx devices:**
+
+| device | F3 open: C6/C5 | F3 open: C6/L3T | F5: C6/C5 | F5: C5/L3T |
+|---|---|---|---|---|
+| FakeAuckland | 1.000 | 1.111 | 0.934 | 1.000 |
+| FakeHanoiV2 | 0.999 | 1.158 | 1.001 | 1.000 |
+| FakeAlgiers | 0.921 | 1.126 | 0.931 | 1.000 |
+| FakeGeneva | 1.000 | 1.091 | 0.721 | 1.000 |
+
+The full cell table is in `outputs/score.md`; the re-computation is in `outputs/verify.txt`.
+
+## 3. Reading
+
+**What c6 does well:**
+
+- **It is safe.**
+  - No device got measurably worse.
+  - On the cz devices it changes 0-22% of circuits and the pooled ratio by at most 0.8%.
+  - It uses no failed element.
+  - It roughly doubles a 26 ms compile.
+- **It helps on all four cx devices** (1.6% on FakeAuckland, 3.0% on FakeAlgiers), and in 26 of 28 cx cells.
+- **F5 isolates the effect of the score.**
+  - On the cx devices the release (C5) and L3T give identical results on every F5 circuit (C5/L3T exactly 1.000; the
+    same holds in the HOLD data). Both end with an exact VF2PostLayout on reported errors, and the GHZ-type circuit
+    needs no routing.
+  - Scoring the same placement step by the floor instead improves F5 by 6.6% on FakeAuckland, 6.9% on FakeAlgiers and
+    28% on FakeGeneva.
+  - On these devices, where reported errors lie below the T1/T2 floor, the reported-error score is the wrong
+    objective for Aer's noise model. This is a direct demonstration of that.
+
+**What c6 does not do:**
+
+- **H2's 2% gain was too optimistic** for three of the four cx devices.
+- **It does not close the chain gap.**
+  - The gap to L3T on the cx devices sits mainly in the open-boundary F3 cell (1.09-1.16).
+  - There the floor score changes nothing on FakeAuckland, FakeGeneva and FakeHanoiV2 (C6/C5 0.999-1.000).
+  - So that gap is not a placement-scoring problem. The likely suspects are routing or synthesis on F3's
+    random-unitary chains; this is to be diagnosed, not assumed.
+- **FakeHanoiV2 is the exception.**
+  - The floor score helps there in a quarter of circuits but loses in 14%.
+  - On F5 and F6 it is slightly worse (1.0008, 1.0044).
+  - Why is not known. FakeHanoiV2 is the device with two one-way failed couplers (Addendum 319, section 4).
+
+**Where this leaves the AI front end:** a7 is still ahead of C6 by 4-9% on every device (A7/C6 0.908-0.961).
+
+## 4. Consequences
+
+**Adoption.** Whether to adopt the candidate is the owner's decision. The data support:
+
+- `placement_score="floor"` is safe to offer;
+- it is worth using on cx devices, and neutral on cz devices.
+
+The data do not support:
+
+- the claim that it closes the chain gap;
+- making it the default on the strength of H2 or H4.
+
+**Next diagnosis.** The F3 open-boundary gap on the cx devices: compare C6 and L3T on the same circuits for
+placement, routing (swap count) and synthesis (two-qubit gate count).
+
+## 5. Data (`data/2026-10-03/hold2/outputs/`)
+
+- 216 job files and their logs, `env.txt`, `score.md`, `score_log.txt`, `verify.txt`.
+- Local paths were replaced.
+
 ---
 
 ---

@@ -1,0 +1,44 @@
+files 216, rows 54216, git_head ['2cf5ca8'], versions [('2026-10-02.2', '2026-10-03.c6', '2026-10-02.a7', '2603bc2decea', '0064e8cf7efe')]
+P0 PASS noiseless max 2.08e-09, too wide 0
+H1 AMBIGUOUS {'Auckland': 0.984, 'Torino': 1.0, 'Kingston': 0.9978, 'HanoiV2': 0.9957, 'Algiers': 0.9696, 'Geneva': 0.9944, 'Fez': 0.9995, 'Marrakesh': 0.992, 'Aachen': 1.0}
+H2 AMBIGUOUS {'Auckland': 0.984, 'HanoiV2': 0.9957, 'Algiers': 0.9696, 'Geneva': 0.9944}
+H3 CONFIRMED {'Torino': 1.0, 'Kingston': 0.9978, 'Fez': 0.9995, 'Marrakesh': 0.992, 'Aachen': 1.0}
+H4 AMBIGUOUS {'Auckland': 1.0888, 'HanoiV2': 1.1384, 'Algiers': 1.101, 'Geneva': 1.0359}
+H5 CONFIRMED (by coupler, by direction): {'C5': (0, 0), 'C6': (0, 0), 'A7': (0, 0), 'L3T': (0, 0)}
+H6 CONFIRMED {'C5': 0.0256, 'C6': 0.0499, 'A7': 0.6893, 'L3T': 0.0144}
+H7 CONFIRMED 0.9286 of 28
+  cx cells with C6/C5 > 1: {'HanoiV2 F5': 1.0008, 'HanoiV2 F6': 1.0044}
+
+by device: C6/C5, C6/L3T, C5/L3T, chains C6/L3T, chains C5/L3T, A7/C6, A7/L3T
+  FakeAuckland   0.9840 1.0386 1.0555 1.0888 1.0971 0.9088 0.9439
+  FakeTorino     1.0000 1.0246 1.0246 0.9962 0.9962 0.9610 0.9847
+  FakeKingston   0.9978 1.0371 1.0394 0.9817 0.9984 0.9455 0.9806
+  FakeHanoiV2    0.9957 1.0594 1.0640 1.1384 1.1396 0.9244 0.9794
+  FakeAlgiers    0.9696 1.0771 1.1108 1.1010 1.1940 0.9077 0.9777
+  FakeGeneva     0.9944 1.0057 1.0114 1.0359 1.0774 0.9396 0.9449
+  FakeFez        0.9995 1.0398 1.0403 0.9911 0.9911 0.9480 0.9857
+  FakeMarrakesh  0.9920 1.0174 1.0256 0.9625 1.0225 0.9433 0.9597
+  FakeAachen     1.0000 1.0553 1.0553 0.9917 0.9917 0.9300 0.9814
+
+per circuit, C6 vs C5: same result / C6 better / C6 worse; and A7 <= L3T
+  FakeAuckland   same 0.481  better 0.420  worse 0.098  A7<=L3T 0.909  A7 chose L3T 447
+  FakeTorino     same 0.986  better 0.004  worse 0.010  A7<=L3T 0.836  A7 chose L3T 157
+  FakeKingston   same 0.897  better 0.099  worse 0.004  A7<=L3T 0.867  A7 chose L3T 126
+  FakeHanoiV2    same 0.612  better 0.250  worse 0.139  A7<=L3T 0.812  A7 chose L3T 593
+  FakeAlgiers    same 0.496  better 0.481  worse 0.023  A7<=L3T 0.758  A7 chose L3T 500
+  FakeGeneva     same 0.967  better 0.033  worse 0.000  A7<=L3T 0.895  A7 chose L3T 504
+  FakeFez        same 0.957  better 0.031  worse 0.012  A7<=L3T 0.804  A7 chose L3T 108
+  FakeMarrakesh  same 0.781  better 0.208  worse 0.011  A7<=L3T 0.906  A7 chose L3T 122
+  FakeAachen     same 1.000  better 0.000  worse 0.000  A7<=L3T 0.811  A7 chose L3T 134
+
+chain cells on the cx devices (C6/C5, C6/L3T, C5/L3T):
+  FakeAuckland   F3o 1.0000 1.1111 1.1111
+  FakeAuckland   F5 0.9339 0.9339 1.0000
+  FakeHanoiV2    F3o 0.9987 1.1578 1.1593
+  FakeHanoiV2    F5 1.0008 1.0008 1.0000
+  FakeAlgiers    F3o 0.9210 1.1262 1.2227
+  FakeAlgiers    F5 0.9309 0.9309 1.0000
+  FakeGeneva     F3o 1.0000 1.0908 1.0908
+  FakeGeneva     F5 0.7207 0.7207 1.0000
+off-target: {'C5': 0, 'C6': 0, 'A7': 0, 'L3T': 0}
+flags: 0 []
