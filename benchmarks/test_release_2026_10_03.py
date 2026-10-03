@@ -1,8 +1,9 @@
-"""Tests for candidate psf_compile 2026-10-03.c8 (changelog item 35: final two-qubit re-synthesis by Qiskit, always or
-selected by an excitation-aware estimate). Helpers
-are copied from patches/psf_compile_c6_2026-10-03/test_c6_floor.py (themselves from test_release_2026_10_02_2.py).
+"""Tests for release psf_compile 2026-10-03.1 (changelog item 35: final two-qubit re-synthesis by Qiskit, always or
+selected by an excitation-aware estimate), adapted from the candidate's tests
+(patches/psf_compile_c8_2026-10-03/test_c8_resynth.py). The previous release, 2026-10-02.2, is represented by its
+candidate's file (patches/psf_compile_c5_2026-10-02/psf_compile.py), which differs from it only in the version lines.
 
-Run from the repository root:  python -m pytest patches/psf_compile_c8_2026-10-03/test_c8_resynth.py -q
+Run from the repository root:  python -m pytest benchmarks/test_release_2026_10_03.py -q
 """
 import math
 import os
@@ -11,7 +12,7 @@ import sys
 import pytest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
+REPO = os.path.abspath(os.path.join(HERE, ".."))
 sys.path.insert(0, os.path.join(REPO, "benchmarks"))
 sys.path.insert(0, REPO)
 
@@ -19,10 +20,11 @@ sys.path.insert(0, REPO)
 @pytest.fixture(scope="module")
 def mods():
     import core_fix_c2_eval as H
-    lay = H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psl_c8_test")
+    lay = H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psl_rel1003_test")
     sys.modules["psf_smart_layout"] = lay
-    return (H.load_module(os.path.join(HERE, "psf_compile.py"), "psf_compile_c8_test"),
-            H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile_rel_c8_test"))
+    return (H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile_rel1003_test"),
+            H.load_module(os.path.join(REPO, "patches", "psf_compile_c5_2026-10-02", "psf_compile.py"),
+                          "psf_compile_prev1003_test"))
 
 
 def backend(name):
@@ -122,18 +124,18 @@ def xxz_chain(n=6, steps=2, seed=0):
 
 
 def test_version(mods):
-    assert mods[0].VERSION == "2026-10-03.c8"
-    assert mods[1].VERSION == "2026-10-03.1"  # current release (2026-10-02.2 when this candidate was evaluated)
+    assert mods[0].VERSION == "2026-10-03.1"
+    assert mods[1].VERSION == "2026-10-02.c5"  # the code of release 2026-10-02.2
 
 
 def test_default_identical_to_release(mods):
-    c8, rel = mods
+    new, prev = mods
     for name in ("FakeTorino", "FakeAuckland"):
         tgt = backend(name).target
         for qc in (ring(4, seed=4), ring(6, seed=6), chain(5, seed=5)):
             kw = kw_for(tgt)
             for extra in ({}, {"target": tgt}, {"target": tgt, "placement_refine": True}):
-                assert sig(c8.compile_for_hardware(qc, **kw, **extra)) == sig(rel.compile_for_hardware(qc, **kw, **extra)), \
+                assert sig(new.compile_for_hardware(qc, **kw, **extra)) == sig(prev.compile_for_hardware(qc, **kw, **extra)), \
                     (name, extra.keys())
 
 
@@ -148,13 +150,13 @@ def test_needs_target(mods):
 def test_resynthesis_exact_on_target_same_layout(mods, name):
     """Exact, every instruction on the target, no failed qubit or failed direction (direction-aware, Addendum 319
     s. 4), the same final layout and no more two-qubit gates than the release."""
-    c8, rel = mods
+    new, prev = mods
     tgt = backend(name).target
-    edges, qubits = c8._failed_elements(tgt, 0.5)
+    edges, qubits = new._failed_elements(tgt, 0.5)
     for qc in (ring(4, seed=1), ring(6, seed=2), chain(5, seed=3), xxz_chain(seed=4)):
         kw = kw_for(tgt)
-        a = rel.compile_for_hardware(qc, target=tgt, placement_refine=True, **kw)
-        b = c8.compile_for_hardware(qc, target=tgt, placement_refine=True, final_resynthesis=True, **kw)
+        a = prev.compile_for_hardware(qc, target=tgt, placement_refine=True, **kw)
+        b = new.compile_for_hardware(qc, target=tgt, placement_refine=True, final_resynthesis=True, **kw)
         assert compact_fidelity(qc, b) > 1 - 1e-6, name
         n = qc.num_qubits
         assert list(a.layout.final_index_layout(filter_ancillas=True)[:n]) == \
@@ -170,14 +172,14 @@ def test_resynthesis_exact_on_target_same_layout(mods, name):
 
 def test_resynthesis_reduces_x_on_xxz_chain(mods):
     """Addendum 322's mechanism on one cx device: fewer x gates than the release on open XXZ chains, and exact."""
-    c8, rel = mods
+    new, prev = mods
     tgt = backend("FakeAuckland").target
     kw = kw_for(tgt)
     xa = xb = 0
     for s in range(3):
         qc = xxz_chain(seed=10 + s)
-        a = rel.compile_for_hardware(qc, target=tgt, placement_refine=True, **kw)
-        b = c8.compile_for_hardware(qc, target=tgt, placement_refine=True, final_resynthesis=True, **kw)
+        a = prev.compile_for_hardware(qc, target=tgt, placement_refine=True, **kw)
+        b = new.compile_for_hardware(qc, target=tgt, placement_refine=True, final_resynthesis=True, **kw)
         assert compact_fidelity(qc, b) > 1 - 1e-6
         xa += sum(i.operation.name == "x" for i in a.data)
         xb += sum(i.operation.name == "x" for i in b.data)
@@ -186,13 +188,13 @@ def test_resynthesis_reduces_x_on_xxz_chain(mods):
 
 def test_kept_original_when_result_uses_failed_direction(mods):
     """The backstop: if re-synthesis yields an off-target or failed-direction gate, the original is returned."""
-    c8 = mods[0]
+    new = mods[0]
     tgt = backend("FakeAuckland").target
     kw = kw_for(tgt)
     qc = chain(4, seed=7)
-    a = c8.compile_for_hardware(qc, target=tgt, placement_refine=True, **kw)
+    a = new.compile_for_hardware(qc, target=tgt, placement_refine=True, **kw)
     # an impossible bound: every gate counts as failed, so re-synthesis must be refused
-    out = c8._final_resynthesis(a, tgt, -1.0)
+    out = new._final_resynthesis(a, tgt, -1.0)
     assert out is a
 
 
@@ -205,9 +207,9 @@ def test_bad_mode_raises(mods):
 def test_excitation_cost_matches_statevector(mods):
     """The numpy state in excitation_cost against Qiskit's Statevector, on a compiled circuit of a cx device."""
     from qiskit.quantum_info import Statevector
-    c8 = mods[0]
+    new = mods[0]
     tgt = backend("FakeAuckland").target
-    out = c8.compile_for_hardware(xxz_chain(seed=3), target=tgt, placement_refine=True, **kw_for(tgt))
+    out = new.compile_for_hardware(xxz_chain(seed=3), target=tgt, placement_refine=True, **kw_for(tgt))
     ops = [(i.operation, tuple(out.find_bit(b).index for b in i.qubits)) for i in out.data
            if i.operation.name not in ("barrier", "measure", "delay")]
     active = sorted({i for _, q in ops for i in q})
@@ -222,21 +224,21 @@ def test_excitation_cost_matches_statevector(mods):
             for i in q:
                 ref += props.duration / tgt.qubit_properties[i].t1 * float(sv.probabilities([pos[i]])[1])
         sv = sv.evolve(op, qargs=[pos[i] for i in q])
-    assert abs(c8.excitation_cost(out, tgt) - ref) <= 1e-9 * max(1.0, ref)
+    assert abs(new.excitation_cost(out, tgt) - ref) <= 1e-9 * max(1.0, ref)
 
 
 @pytest.mark.parametrize("name", ["FakeAuckland", "FakeHanoiV2", "FakeTorino"])
 def test_select_exact_and_minimal(mods, name):
     """"select" returns the release's circuit or the re-synthesised one, whichever has the lower estimate; exact and
     on the target either way."""
-    c8 = mods[0]
+    new = mods[0]
     tgt = backend(name).target
     kw = kw_for(tgt)
     for qc in (chain(5, seed=3), xxz_chain(seed=5), ring(6, seed=6)):
-        a = c8.compile_for_hardware(qc, target=tgt, placement_refine=True, **kw)
-        b = c8.compile_for_hardware(qc, target=tgt, placement_refine=True, final_resynthesis=True, **kw)
-        s = c8.compile_for_hardware(qc, target=tgt, placement_refine=True, final_resynthesis="select", **kw)
+        a = new.compile_for_hardware(qc, target=tgt, placement_refine=True, **kw)
+        b = new.compile_for_hardware(qc, target=tgt, placement_refine=True, final_resynthesis=True, **kw)
+        s = new.compile_for_hardware(qc, target=tgt, placement_refine=True, final_resynthesis="select", **kw)
         assert compact_fidelity(qc, s) > 1 - 1e-6
-        ca, cb, cs = (c8.excitation_cost(x, tgt) for x in (a, b, s))
+        ca, cb, cs = (new.excitation_cost(x, tgt) for x in (a, b, s))
         assert cs == min(ca, cb), (name, ca, cb, cs)
         assert sig(s) in (sig(a), sig(b))

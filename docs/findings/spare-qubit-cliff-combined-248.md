@@ -9388,7 +9388,7 @@ These tests were run at home on the applied files, and the commit command was ch
 
 **Status: pre-registration, written at home before any scored run.**
 
-- **Lock:** the git commit that adds this document and `benchmarks/hold_eval.py` with its runner, pushed before the
+- **Lock:** the git commit that adds this document and [`benchmarks/hold_eval.py`](../../benchmarks/hold_eval.py) with its runner, pushed before the
   scored run.
 - **No hardware:** fake devices and Aer noise only.
 - **The predictions (section 3) were written on the evening of 2026-10-02, before the smoke run**, and were not
@@ -9421,7 +9421,7 @@ on held-out devices.
 |---|---|
 | C3 | `compile_for_hardware(..., target)`, placement_refine off |
 | C5 | the same call with `placement_refine=True` |
-| A7 | `benchmarks/psf_ai_compile.py` (a7) with the target |
+| A7 | [`benchmarks/psf_ai_compile.py`](../../benchmarks/psf_ai_compile.py) (a7) with the target |
 | L3T | Qiskit level 3 with the Target, `approximation_degree=1.0` |
 
 **Devices:**
@@ -9510,8 +9510,8 @@ The smoke run used 1 circuit per cell and its own seed base: 684 compilations, 2
 
 | file | normalized SHA-256 |
 |---|---|
-| `benchmarks/hold_eval.py` | `bd087fa5c922653baa2b3311792d91ce0405a9ceea9a4829870fe5a2253afaf8` |
-| `benchmarks/run_hold_2026-10-03.sh` | `45a2af760aa003bf81fd37fa5e77422fea03f7b0b8b3e6090e88004925019786` |
+| [`benchmarks/hold_eval.py`](../../benchmarks/hold_eval.py) | `bd087fa5c922653baa2b3311792d91ce0405a9ceea9a4829870fe5a2253afaf8` |
+| [`benchmarks/run_hold_2026-10-03.sh`](../../benchmarks/run_hold_2026-10-03.sh) | `45a2af760aa003bf81fd37fa5e77422fea03f7b0b8b3e6090e88004925019786` |
 
 
 ---
@@ -9525,7 +9525,7 @@ The smoke run used 1 circuit per cell and its own seed base: 684 compilations, 2
 **Status: results of the pre-registered test in Addendum 318.**
 
 - **Lock:** commit `35637f9` (07:53 JST), pushed before the scored run.
-- **Scoring:** by the locked `hold_eval.py score`, and re-checked by `benchmarks/hold_verify.py`. That script was
+- **Scoring:** by the locked `hold_eval.py score`, and re-checked by [`benchmarks/hold_verify.py`](../../benchmarks/hold_verify.py). That script was
   written after the locked score was seen.
 - **Setting:** home (WSL2), 6 processes; 216 jobs, 54,216 circuit compilations, 2,502 s.
 
@@ -9643,7 +9643,7 @@ The data do not say which of FakeHanoiV2's two couplers each circuit touched.
 **Status: pre-registration, written at home before any scored run.**
 
 - **Lock:** the git commit that adds this document, the candidate
-  (`patches/psf_compile_c6_2026-10-03/psf_compile.py`, with its tests) and `benchmarks/hold2_eval.py` with its
+  ([`patches/psf_compile_c6_2026-10-03/psf_compile.py`](../../patches/psf_compile_c6_2026-10-03/psf_compile.py), with its tests) and [`benchmarks/hold2_eval.py`](../../benchmarks/hold2_eval.py) with its
   runner, pushed before the scored run.
 - **No hardware:** fake devices and Aer noise only.
 - **The predictions (section 3) were written before the smoke run.**
@@ -9785,17 +9785,17 @@ morning of 2026-10-03. Nothing was changed after it.
 ### 5.4 Other
 
 - No scored circuit was compiled before the lock.
-- The candidate is a patch (`patches/psf_compile_c6_2026-10-03/`). The released `psf_compile.py` is not changed by
+- The candidate is a patch ([`patches/psf_compile_c6_2026-10-03/`](../../patches/psf_compile_c6_2026-10-03/)). The released `psf_compile.py` is not changed by
   this commit.
 
 ## 6. Locked files (normalized SHA-256)
 
 | file | normalized SHA-256 |
 |---|---|
-| `patches/psf_compile_c6_2026-10-03/psf_compile.py` | `c40e1bf133e0d3e152e775bd7db68bf92161265b4ad77ba5ccd5344f4492f0bb` |
-| `patches/psf_compile_c6_2026-10-03/test_c6_floor.py` | `bdada060f30e3c195d5c011de172d434d26ce822748c51faf378468022c17a78` |
-| `benchmarks/hold2_eval.py` | `2802a86512bf72421cf1b7001fc7441415ff0f8b38fc883de13ac4598c22b062` |
-| `benchmarks/run_hold2_2026-10-03.sh` | `a9584adb1abf8bcda548265d899d4bc35c3d1018bbe2c7ea80ba6f41d733eba7` |
+| [`patches/psf_compile_c6_2026-10-03/psf_compile.py`](../../patches/psf_compile_c6_2026-10-03/psf_compile.py) | `c40e1bf133e0d3e152e775bd7db68bf92161265b4ad77ba5ccd5344f4492f0bb` |
+| [`patches/psf_compile_c6_2026-10-03/test_c6_floor.py`](../../patches/psf_compile_c6_2026-10-03/test_c6_floor.py) | `bdada060f30e3c195d5c011de172d434d26ce822748c51faf378468022c17a78` |
+| [`benchmarks/hold2_eval.py`](../../benchmarks/hold2_eval.py) | `2802a86512bf72421cf1b7001fc7441415ff0f8b38fc883de13ac4598c22b062` |
+| [`benchmarks/run_hold2_2026-10-03.sh`](../../benchmarks/run_hold2_2026-10-03.sh) | `a9584adb1abf8bcda548265d899d4bc35c3d1018bbe2c7ea80ba6f41d733eba7` |
 
 Normalization: CRLF to LF, trailing whitespace stripped from each line, trailing blank lines dropped, lines joined
 with "\n" and no final newline.
@@ -9812,7 +9812,7 @@ with "\n" and no final newline.
 **Status: results of the pre-registered test in Addendum 320.**
 
 - **Lock:** commit `2cf5ca8` (11:30 JST), pushed before the scored run.
-- **Scoring:** by the locked `hold2_eval.py score`, and re-checked by `benchmarks/hold2_verify.py`. That script was
+- **Scoring:** by the locked `hold2_eval.py score`, and re-checked by [`benchmarks/hold2_verify.py`](../../benchmarks/hold2_verify.py). That script was
   written after the run finished and before any of its output was seen.
 - **Setting:** home (WSL2), 6 processes; 216 jobs, 54,216 circuit compilations, about 40 minutes (job times sum to
   14,358 s).
@@ -10104,7 +10104,7 @@ circuits. On FakeTorino it is mixed (50% open, 81% periodic).
 **Status: pre-registration, written at home before any scored run.**
 
 - **Lock:** the git commit that adds this document, the candidate
-  (`patches/psf_compile_c8_2026-10-03/psf_compile.py`, with its tests) and `benchmarks/hold3_eval.py` with its
+  ([`patches/psf_compile_c8_2026-10-03/psf_compile.py`](../../patches/psf_compile_c8_2026-10-03/psf_compile.py), with its tests) and [`benchmarks/hold3_eval.py`](../../benchmarks/hold3_eval.py) with its
   runner, pushed before the scored run.
 - **No hardware:** fake devices and Aer noise only.
 - **The predictions (section 3) were written before c8's smoke run.** They were written after the smoke run of an
@@ -10321,10 +10321,10 @@ Nothing else in the release was changed.
 
 | file | normalized SHA-256 |
 |---|---|
-| `patches/psf_compile_c8_2026-10-03/psf_compile.py` | `ae48dd7a9ea59aa5da5b7a3f2b42e3b97eefcda28af6f31368b746d2b065ab1a` |
-| `patches/psf_compile_c8_2026-10-03/test_c8_resynth.py` | `af22032dfbdde7d96226dfc6f91b9782cd186e99e3a054ec8626a284d6e3fdac` |
-| `benchmarks/hold3_eval.py` | `95d0fc5fb60f7077d0147b6b66ccfe5ea709e8e1d4e16b534bf539a185c57da6` |
-| `benchmarks/run_hold3_2026-10-03.sh` | `0527a5a9a305fb375042e5a2ee4bbfff3db050cac95dca3e1274c6ce6c48d750` |
+| [`patches/psf_compile_c8_2026-10-03/psf_compile.py`](../../patches/psf_compile_c8_2026-10-03/psf_compile.py) | `ae48dd7a9ea59aa5da5b7a3f2b42e3b97eefcda28af6f31368b746d2b065ab1a` |
+| [`patches/psf_compile_c8_2026-10-03/test_c8_resynth.py`](../../patches/psf_compile_c8_2026-10-03/test_c8_resynth.py) | `af22032dfbdde7d96226dfc6f91b9782cd186e99e3a054ec8626a284d6e3fdac` |
+| [`benchmarks/hold3_eval.py`](../../benchmarks/hold3_eval.py) | `95d0fc5fb60f7077d0147b6b66ccfe5ea709e8e1d4e16b534bf539a185c57da6` |
+| [`benchmarks/run_hold3_2026-10-03.sh`](../../benchmarks/run_hold3_2026-10-03.sh) | `0527a5a9a305fb375042e5a2ee4bbfff3db050cac95dca3e1274c6ce6c48d750` |
 
 Normalization: CRLF to LF, trailing whitespace stripped from each line, trailing blank lines dropped, lines joined
 with "\n" and no final newline.
@@ -10341,7 +10341,7 @@ with "\n" and no final newline.
 **Status: results of the pre-registered test in Addendum 323.**
 
 - **Lock:** commit `c480953`, pushed before the scored run (which started at 15:08 JST).
-- **Scoring:** by the locked `hold3_eval.py score`, and re-checked by `benchmarks/hold3_verify.py`. That script was
+- **Scoring:** by the locked `hold3_eval.py score`, and re-checked by [`benchmarks/hold3_verify.py`](../../benchmarks/hold3_verify.py). That script was
   written after the run finished and before any of its output was seen. It agrees on every verdict.
 - **Setting:** home (WSL2), 6 processes; 270 jobs, 67,770 circuit compilations, 2,794 s.
 
@@ -10453,6 +10453,95 @@ The data do not support making it the default without a target, where it is not 
 
 - 270 job files and their logs, `env.txt`, `score.md`, `score_log.txt`, `verify.txt`.
 - Local paths were replaced.
+
+
+---
+
+<!-- ===== Addendum 325 (source: spare-qubit-cliff-addendum-325-2026-10-03.md) ===== -->
+
+> **Note added when merging:** Adoption record: psf_compile 2026-10-03.c8 becomes release 2026-10-03.1 (owner's decision, 2026-10-03).
+
+## Addendum 325 -- Adoption record: candidate psf_compile 2026-10-03.c8 becomes release 2026-10-03.1 (opt-in `final_resynthesis="select"`, changelog item 35) (2026-10-03)
+
+**Status: adoption record.**
+
+- **Decision:** the owner's, on 2026-10-03, after the results in Addendum 324 (eight of nine predictions confirmed,
+  one ambiguous, none refuted).
+- **Scope:** fake devices and Aer noise only. Nothing here was run on hardware.
+
+## 1. What the release is
+
+`psf_compile.py` 2026-10-03.1 is the candidate file
+[`patches/psf_compile_c8_2026-10-03/psf_compile.py`](../../patches/psf_compile_c8_2026-10-03/psf_compile.py) with
+three lines changed:
+
+- the `VERSION:` header line;
+- the changelog heading of item 35;
+- the `VERSION` constant.
+
+The previous release, 2026-10-02.2, is unchanged as code except for item 35.
+
+**What it adds:** `compile_for_hardware(..., target=..., final_resynthesis=False | True | "select")`.
+
+| value | behaviour | recommended |
+|---|---|---|
+| `False` (default) | identical to 2026-10-02.2 | -- |
+| `True` | always re-synthesise every two-qubit block with Qiskit, exactly, on the target | no: it cost 1-2% on the cz devices (Addendum 324) |
+| `"select"` | do so, and keep whichever circuit has the lower `excitation_cost` | yes, with `placement_refine=True` |
+
+**What it does not contain:** the held candidate c6 (item 34, Addendum 321).
+
+`psf_smart_layout` (2026-10-01.1), the Rust core (`CORE_VERSION` 2026-09-29.1) and the AI front end
+([`benchmarks/psf_ai_compile.py`](../../benchmarks/psf_ai_compile.py), 2026-10-02.a7) are unchanged.
+
+## 2. Files
+
+**Added:**
+
+- [`benchmarks/test_release_2026_10_03.py`](../../benchmarks/test_release_2026_10_03.py). It is the candidate's 15 tests, adapted:
+  - the release is compared with the previous release's code, represented by
+    [`patches/psf_compile_c5_2026-10-02/psf_compile.py`](../../patches/psf_compile_c5_2026-10-02/psf_compile.py), which differs from 2026-10-02.2 only in the version lines.
+
+**Changed:**
+
+- `psf_compile.py`: the three version lines above.
+- `README.md`:
+  - a new block for the current version, with the known gaps;
+  - the 2026-10-02.2 block retitled "Previous release";
+  - its first known gap marked as largely closed.
+- **Version assertions** in eight tests, which check that the root file is the current release.
+  - Four of them are tests of earlier candidates (c4, c6, c8, a6) whose files were locked by pre-registrations. In
+    each, only the assertion of the current release's version string changed. Their normalized SHA-256 before and
+    after:
+
+| file | before | after |
+|---|---|---|
+| [`benchmarks/test_release_2026_10_02.py`](../../benchmarks/test_release_2026_10_02.py) | `5f296067e33b417c…` | `1c6bfee806408340…` |
+| [`benchmarks/test_release_2026_10_02_2.py`](../../benchmarks/test_release_2026_10_02_2.py) | `cab184e63b308d7f…` | `af9ed2c682ed3d6c…` |
+| [`benchmarks/test_core_fix_c2.py`](../../benchmarks/test_core_fix_c2.py) | `71c145210b5de2c5…` | `f71ca8fc783f75f2…` |
+| [`benchmarks/test_release_2026_09_28.py`](../../benchmarks/test_release_2026_09_28.py) | `03ababfa56d670f0…` | `778e6407246ba076…` |
+| [`patches/psf_compile_c4_2026-10-02/test_c4_layout.py`](../../patches/psf_compile_c4_2026-10-02/test_c4_layout.py) (locked, Addendum 306) | `a42b5ea9b6abdaab…` | `3be3e6f6ca122233…` |
+| [`patches/psf_compile_c6_2026-10-03/test_c6_floor.py`](../../patches/psf_compile_c6_2026-10-03/test_c6_floor.py) (locked, Addendum 320) | `bdada060f30e3c19…` | `1f968cde2486c478…` |
+| [`patches/psf_compile_c8_2026-10-03/test_c8_resynth.py`](../../patches/psf_compile_c8_2026-10-03/test_c8_resynth.py) (locked, Addendum 323) | `af22032dfbdde7d9…` | `7cef8fe327b67d6c…` |
+| [`patches/psf_ai_compile_a6_2026-10-02/test_ai6.py`](../../patches/psf_ai_compile_a6_2026-10-02/test_ai6.py) (locked, Addendum 312) | `1b4920cbc1a31b85…` | `f2f34751379e0ae4…` |
+
+**Part 9:** from Addendum 318 on, code-formatted paths that exist in the repository were turned into relative links,
+as was done from Addendum 314 on in Addendum 317. A line-by-line check confirmed that only link syntax changed.
+
+## 3. How to use it
+
+```python
+out = compile_for_hardware(qc, coupling_map=cm, basis_gates=basis, entangling_basis="cx", layout_search=True,
+                           target=backend.target, placement_refine=True, final_resynthesis="select")
+```
+
+## 4. Known gaps (Addendum 324)
+
+- **Periodic chains on cx devices** remain 12-40% behind Qiskit level 3. The cause is routing.
+- **F1-type rings on cz devices** remain 6-8% behind level 3.
+- **The AI front end a7** is still 4-9% ahead of the release with "select".
+- **Above 16 touched qubits**, "select" keeps the release's circuit, because its estimate needs a statevector.
+- **Hardware has not been tested.** The effect "select" exploits is in Aer's thermal-relaxation model.
 
 ---
 

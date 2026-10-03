@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-10-02.2 -- release, adopted on 2026-10-02 from candidate 2026-10-02.c5 (previous release: 2026-10-02.1)
+VERSION: 2026-10-03.1 -- release, adopted on 2026-10-03 from candidate 2026-10-03.c8 (previous release: 2026-10-02.2)
 
 Where to look for what
 ----------------------
@@ -474,6 +474,32 @@ Changes in the 2026-09-26.4 revision (spare-qubit-cliff Addenda 195-196)
     placement that scores better. It relabels physical qubits only: gates, their count and the routing are
     unchanged. Item 31 stays the backstop. Requires `target`; default False, identical to the release.
     Counts in `REFINE_STATS`.
+
+2026-10-03.1 (release; candidate 2026-10-03.c8, adopted on 2026-10-03 after its pre-registered evaluation, Addenda
+323-324). Item 34 is the held candidate c6 (floor-aware re-placement score, Addendum 321), which this release does not
+contain:
+
+35. **NEW, opt-in: `final_resynthesis` re-synthesises every two-qubit block with Qiskit at the end, always (True) or
+    when an excitation-aware estimate says it helps ("select").** On cx
+    devices the release trailed Qiskit level 3 on chains by 9-22% with the same qubits and the same cx gates
+    (Addendum 322). Under depolarizing noise alone the two were level; the whole gap was thermal relaxation:
+    the local frames PSF-Zero's two-qubit synthesis chooses around each cx (about 11 x gates per 60-cx chain,
+    against about 2 for Qiskit) leave qubits excited for longer during the long cx gates. Re-synthesising every
+    block with Qiskit removed 72-87% of that gap on open chains and changed nothing on a cz device. With
+    `final_resynthesis=True` the finished circuit (after item 31's backstop) is passed through
+    `ConsolidateBlocks(force_consolidate=True)`, `UnitarySynthesis` and `Optimize1qGatesDecomposition`, all with
+    the target and exact (approximation_degree=1.0). The layout is carried over unchanged: these passes move no
+    qubit. If the result has an instruction the target does not provide, or a two-qubit gate in a direction the
+    target reports failed (error >= prune_max_error), the circuit before re-synthesis is returned instead.
+    "select" builds both circuits and keeps the one with the lower excitation-aware estimate
+    (`excitation_cost`): the summed -log(1 - reported error) of the gates as placed, plus, for every gate, its
+    duration / T1 times P(1) on each of its qubits, with P(1) from the noiseless state just before the gate (the
+    population that amplitude damping acts on). The estimate needs a statevector of the touched qubits; above
+    `RESYNTH_MAX_QUBITS` (16) touched qubits, or with a non-unitary instruction, "select" keeps the release's
+    circuit. Why "select": an unconditional re-synthesis (candidate c7, never locked) won 3-15% on the F3 chains
+    in its smoke run but lost 1-13% on F1, F2, F5 and F6 on all nine devices, cz devices included, with the same
+    two-qubit count and a much deeper circuit (Addendum 323, section 5).
+    Requires `target`; default False, identical to the release. Counts in `RESYNTH_STATS`.
 """
 from __future__ import annotations
 
@@ -493,7 +519,7 @@ from qiskit.transpiler import CouplingMap, PassManager, generate_preset_pass_man
 from qiskit.converters import circuit_to_dag, dag_to_circuit
 from qiskit.transpiler.basepasses import AnalysisPass, TransformationPass
 from qiskit.transpiler.passes import (BasisTranslator, Collect2qBlocks, ConsolidateBlocks, ElidePermutations,
-                                      Optimize1qGatesDecomposition, Split2QUnitaries)
+                                      Optimize1qGatesDecomposition, Split2QUnitaries, UnitarySynthesis)
 from qiskit.transpiler import ConditionalController
 from qiskit.transpiler.passes import ApplyLayout, VF2PostLayout
 from qiskit.transpiler.passes.layout.vf2_post_layout import VF2PostLayoutStopReason
@@ -510,7 +536,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-10-02.2"  # release (from candidate 2026-10-02.c5): 2026-10-02.1 + exact error-weighted re-placement (item 33)
+VERSION = "2026-10-03.1"  # release (from candidate 2026-10-03.c8): 2026-10-02.2 + final two-qubit re-synthesis by Qiskit, always or selected (item 35)
 __version__ = VERSION
 
 # Changelog item 27: the version string of the loaded Rust core, for logs.
@@ -1603,6 +1629,89 @@ class _RecordRefine(AnalysisPass):
             REFINE_STATS["applied"] += 1
 
 
+RESYNTH_STATS = {"applied": 0, "kept_original": 0, "selected_resynthesised": 0, "selected_original": 0,
+                 "not_estimable": 0}
+RESYNTH_MAX_QUBITS = 16
+
+
+def excitation_cost(circ, target):
+    """Item 35's estimate for "select": sum over gates of -log(1 - reported error), plus duration / T1 x P(1) on each
+    of the gate's qubits, P(1) from the noiseless state (from |0...0>) just before the gate. None if more than
+    RESYNTH_MAX_QUBITS qubits are touched or an instruction has no matrix (other than barrier, measure, delay).
+    The state is a plain numpy tensor (axis j = j-th touched qubit); gate matrices are Qiskit's (little-endian)."""
+    import math
+    ops = [(ins.operation, tuple(circ.find_bit(b).index for b in ins.qubits)) for ins in circ.data
+           if ins.operation.name not in ("barrier", "measure", "delay")]
+    active = sorted({i for _, q in ops for i in q})
+    if len(active) > RESYNTH_MAX_QUBITS:
+        return None
+    k = max(len(active), 1)
+    pos = {p: j for j, p in enumerate(active)}
+    qp = getattr(target, "qubit_properties", None) or []
+    psi = np.zeros((2,) * k, dtype=complex)
+    psi[(0,) * k] = 1.0
+    cost = 0.0
+    for op, q in ops:
+        props = target[op.name].get(q, None) if op.name in target.operation_names else None
+        if props is not None and props.error is not None:
+            cost += -math.log(max(1.0 - props.error, 1e-300))
+        dur = props.duration if props is not None and props.duration else 0.0
+        axes = [pos[i] for i in q]
+        if dur:
+            for i, ax in zip(q, axes):
+                t1 = getattr(qp[i], "t1", None) if i < len(qp) and qp[i] is not None else None
+                if t1:
+                    cost += dur / t1 * float(np.sum(np.abs(np.take(psi, 1, axis=ax)) ** 2))
+        try:
+            mat = np.asarray(op.to_matrix(), dtype=complex)
+        except Exception:
+            return None
+        m = len(axes)
+        rev = axes[::-1]  # Qiskit's matrix index is little-endian: the first qarg is the least significant bit
+        psi = np.tensordot(mat.reshape((2,) * (2 * m)), psi, axes=(list(range(m, 2 * m)), rev))
+        psi = np.moveaxis(psi, list(range(m)), rev)
+    return cost
+
+
+def _final_resynthesis(out, target, max_error):
+    """Item 35: re-synthesise every two-qubit block of a finished circuit with Qiskit, on the target, exactly.
+    Returns the original circuit if the result has an instruction the target does not provide or a two-qubit
+    gate in a direction the target reports failed."""
+    pm = PassManager([ConsolidateBlocks(force_consolidate=True, approximation_degree=1.0, target=target),
+                      UnitarySynthesis(approximation_degree=1.0, target=target),
+                      Optimize1qGatesDecomposition(target=target)])
+    new = pm.run(out)
+    new._layout = out._layout
+    for ins in new.data:
+        name = ins.operation.name
+        if name in ("barrier", "measure", "delay"):
+            continue
+        q = tuple(new.find_bit(b).index for b in ins.qubits)
+        props = target[name].get(q, None) if name in target.operation_names else None
+        if (name not in target.operation_names or q not in target[name]
+                or (len(q) == 2 and props is not None and props.error is not None and props.error >= max_error)):
+            RESYNTH_STATS["kept_original"] += 1
+            return out
+    RESYNTH_STATS["applied"] += 1
+    return new
+
+
+def _select_resynthesis(out, target, max_error):
+    """Item 35, "select": the re-synthesised circuit if its excitation_cost is lower, else the original."""
+    new = _final_resynthesis(out, target, max_error)
+    if new is out:
+        return out
+    a, b = excitation_cost(out, target), excitation_cost(new, target)
+    if a is None or b is None:
+        RESYNTH_STATS["not_estimable"] += 1
+        return out
+    if b < a:
+        RESYNTH_STATS["selected_resynthesised"] += 1
+        return new
+    RESYNTH_STATS["selected_original"] += 1
+    return out
+
+
 def _refine_found(property_set):
     return property_set["VF2PostLayout_stop_reason"] is VF2PostLayoutStopReason.SOLUTION_FOUND
 
@@ -1809,6 +1918,7 @@ def compile_for_hardware(
     placement_refine: bool = False,
     placement_call_limit: int = 300_000,
     placement_max_trials: int = 2_500,
+    final_resynthesis: Union[bool, str] = False,
     _refine_target=None,
 ) -> QuantumCircuit:
     """Compress with PSF-Zero, then route (and, if `basis_gates` is given,
@@ -1937,6 +2047,9 @@ def compile_for_hardware(
     with a `target`, end the routing with Qiskit level 3's exact re-placement (`VF2PostLayout` with
     `strict_direction=True`), which relabels physical qubits when that lowers the summed -log(1 - error) of the
     gates as placed. Requires `target`; False (default) changes nothing. `_refine_target` is internal.
+    `final_resynthesis` (candidate 2026-10-03.c8, item 35): True re-synthesises every two-qubit block of the
+    finished circuit with Qiskit (exact, on the target); "select" does so only when `excitation_cost` says the
+    result is better. Requires `target`; False (default) changes nothing.
     `callback` (new, item 13): forwarded verbatim to the internal
     `transpile()` call below, unchanged from what plain `transpile(callback=
     ...)` accepts. `None` by default -- passing nothing here changes nothing
@@ -1945,6 +2058,10 @@ def compile_for_hardware(
     """
     if placement_refine and target is None:
         raise ValueError("placement_refine=True needs the device `target` (changelog item 33)")
+    if final_resynthesis not in (False, True, "select"):
+        raise ValueError('final_resynthesis must be False, True or "select" (changelog item 35)')
+    if final_resynthesis and target is None:
+        raise ValueError("final_resynthesis needs the device `target` (changelog item 35)")
     if layout_search and initial_layout is not None:
         raise ValueError(
             "layout_search=True and an explicit initial_layout were both "
@@ -1970,11 +2087,13 @@ def compile_for_hardware(
         out = compile_for_hardware(**args)
         edges, qubits = _failed_elements(target, prune_max_error)
         PRUNE_STATS["checked"] += 1
-        if not _uses_failed(out, edges, qubits):
-            return out
-        PRUNE_STATS["recompiled"] += 1
-        args["coupling_map"] = prune_coupling_map(coupling_map, target, prune_max_error)
-        return compile_for_hardware(**args)
+        if _uses_failed(out, edges, qubits):
+            PRUNE_STATS["recompiled"] += 1
+            args["coupling_map"] = prune_coupling_map(coupling_map, target, prune_max_error)
+            out = compile_for_hardware(**args)
+        if final_resynthesis == "select":
+            return _select_resynthesis(out, target, prune_max_error)
+        return _final_resynthesis(out, target, prune_max_error) if final_resynthesis else out
 
     # Candidate 2026-10-01.c2: both default to on only for entangling_basis="cx" (their saving is counted in
     # CX); post-routing re-synthesis also needs basis_gates to translate its output.
