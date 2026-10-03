@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-10-03.1 -- release, adopted on 2026-10-03 from candidate 2026-10-03.c8 (previous release: 2026-10-02.2)
+VERSION: 2026-10-03.2 -- release, adopted on 2026-10-03 from candidate 2026-10-03.c9 (previous release: 2026-10-03.1)
 
 Where to look for what
 ----------------------
@@ -500,6 +500,24 @@ contain:
     in its smoke run but lost 1-13% on F1, F2, F5 and F6 on all nine devices, cz devices included, with the same
     two-qubit count and a much deeper circuit (Addendum 323, section 5).
     Requires `target`; default False, identical to the release. Counts in `RESYNTH_STATS`.
+
+2026-10-03.2 (release; candidate 2026-10-03.c9, adopted on 2026-10-03 after its pre-registered evaluation, Addenda 327-328):
+
+36. **NEW, opt-in: `compare_level3=True` also compiles the input with Qiskit's level-3 preset on the target and keeps
+    whichever circuit has the lower `excitation_cost`.** After release 2026-10-03.1 the remaining gaps to Qiskit
+    level 3 with the Target were periodic chains on cx devices (12-40%), F1-type rings on cz devices (6-8%) and
+    QFT circuits (about 5%) (Addendum 324). A diagnosis on those circuits (Addendum 326) found three causes:
+    on periodic chains on cx devices the same qubits and the same cx count, with PSF-Zero's routed circuit carrying
+    about 50% more sx gates even after item 35's re-synthesis; on the cz rings a placement that needs more SWAPs
+    (59 against 54 two-qubit gates); on QFT one or two more two-qubit gates after routing. In all three, choosing
+    per circuit between the release's circuit and level 3's by `excitation_cost` matched the better of the two
+    (measured) closely: 1.000 of level 3 on the periodic chains, 0.984-0.998 on the rings, 0.996-1.003 on QFT.
+    With `compare_level3=True`, `transpile(qc, target=target, optimization_level=3, seed_transpiler=...,
+    approximation_degree=1.0)` is run on the input and kept if (a) it has no instruction the target does not
+    provide, no failed qubit and no two-qubit gate in a direction the target reports failed, and (b) its
+    `excitation_cost` is lower than that of the circuit the release would return. If either estimate cannot be made
+    (above `RESYNTH_MAX_QUBITS` touched qubits), the release's circuit is kept. Requires `target`; default False,
+    identical to release 2026-10-03.1. Counts in `COMPARE_STATS`.
 """
 from __future__ import annotations
 
@@ -536,7 +554,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-10-03.1"  # release (from candidate 2026-10-03.c8): 2026-10-02.2 + final two-qubit re-synthesis by Qiskit, always or selected (item 35)
+VERSION = "2026-10-03.2"  # release (from candidate 2026-10-03.c9): 2026-10-03.1 + choice against Qiskit level 3 by excitation_cost (item 36)
 __version__ = VERSION
 
 # Changelog item 27: the version string of the loaded Rust core, for logs.
@@ -1696,6 +1714,41 @@ def _final_resynthesis(out, target, max_error):
     return new
 
 
+COMPARE_STATS = {"psf": 0, "level3": 0, "level3_refused": 0, "not_estimable": 0}
+
+
+def _acceptable(circ, target, max_error) -> bool:
+    """Item 36: every instruction on the target, no failed qubit, no two-qubit gate in a failed direction."""
+    edges, qubits = _failed_elements(target, max_error)
+    for ins in circ.data:
+        name = ins.operation.name
+        if name in ("barrier", "measure", "delay"):
+            continue
+        q = tuple(circ.find_bit(b).index for b in ins.qubits)
+        if name not in target.operation_names or q not in target[name]:
+            return False
+        if any(i in qubits for i in q) or (len(q) == 2 and q in edges):
+            return False
+    return True
+
+
+def _compare_level3(qc, out, target, max_error, seed_transpiler):
+    """Item 36: the release's circuit `out` or Qiskit level 3's, whichever has the lower excitation_cost."""
+    l3 = transpile(qc, target=target, optimization_level=3, seed_transpiler=seed_transpiler, approximation_degree=1.0)
+    if not _acceptable(l3, target, max_error):
+        COMPARE_STATS["level3_refused"] += 1
+        return out
+    a, b = excitation_cost(out, target), excitation_cost(l3, target)
+    if a is None or b is None:
+        COMPARE_STATS["not_estimable"] += 1
+        return out
+    if b < a:
+        COMPARE_STATS["level3"] += 1
+        return l3
+    COMPARE_STATS["psf"] += 1
+    return out
+
+
 def _select_resynthesis(out, target, max_error):
     """Item 35, "select": the re-synthesised circuit if its excitation_cost is lower, else the original."""
     new = _final_resynthesis(out, target, max_error)
@@ -1919,6 +1972,7 @@ def compile_for_hardware(
     placement_call_limit: int = 300_000,
     placement_max_trials: int = 2_500,
     final_resynthesis: Union[bool, str] = False,
+    compare_level3: bool = False,
     _refine_target=None,
 ) -> QuantumCircuit:
     """Compress with PSF-Zero, then route (and, if `basis_gates` is given,
@@ -2050,6 +2104,9 @@ def compile_for_hardware(
     `final_resynthesis` (candidate 2026-10-03.c8, item 35): True re-synthesises every two-qubit block of the
     finished circuit with Qiskit (exact, on the target); "select" does so only when `excitation_cost` says the
     result is better. Requires `target`; False (default) changes nothing.
+    `compare_level3` (candidate 2026-10-03.c9, item 36): True also compiles the input with Qiskit's level 3 on the
+    target and returns that circuit instead when its `excitation_cost` is lower and it uses no failed element.
+    Requires `target`; False (default) changes nothing.
     `callback` (new, item 13): forwarded verbatim to the internal
     `transpile()` call below, unchanged from what plain `transpile(callback=
     ...)` accepts. `None` by default -- passing nothing here changes nothing
@@ -2062,6 +2119,8 @@ def compile_for_hardware(
         raise ValueError('final_resynthesis must be False, True or "select" (changelog item 35)')
     if final_resynthesis and target is None:
         raise ValueError("final_resynthesis needs the device `target` (changelog item 35)")
+    if compare_level3 and target is None:
+        raise ValueError("compare_level3=True needs the device `target` (changelog item 36)")
     if layout_search and initial_layout is not None:
         raise ValueError(
             "layout_search=True and an explicit initial_layout were both "
@@ -2092,8 +2151,12 @@ def compile_for_hardware(
             args["coupling_map"] = prune_coupling_map(coupling_map, target, prune_max_error)
             out = compile_for_hardware(**args)
         if final_resynthesis == "select":
-            return _select_resynthesis(out, target, prune_max_error)
-        return _final_resynthesis(out, target, prune_max_error) if final_resynthesis else out
+            out = _select_resynthesis(out, target, prune_max_error)
+        elif final_resynthesis:
+            out = _final_resynthesis(out, target, prune_max_error)
+        if compare_level3:
+            out = _compare_level3(qc, out, target, prune_max_error, seed_transpiler)
+        return out
 
     # Candidate 2026-10-01.c2: both default to on only for entangling_basis="cx" (their saving is counted in
     # CX); post-routing re-synthesis also needs basis_gates to translate its output.

@@ -101,7 +101,7 @@ def compact_fidelity(qc, out):
 
 def test_version(mods):
     assert mods[0].VERSION == "2026-10-03.c6"
-    assert mods[1].VERSION == "2026-10-03.1"  # current release (2026-10-02.2 when this candidate was evaluated)
+    assert mods[1].VERSION == "2026-10-03.2"  # current release (2026-10-02.2 when this candidate was evaluated)
 
 
 def test_default_identical_to_release(mods):

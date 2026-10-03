@@ -10676,7 +10676,7 @@ PSF-Zero, rather than sidestepping them, remain open:
 **Status: pre-registration, written at home before any scored run.**
 
 - **Lock:** the git commit that adds this document, the candidate
-  (`patches/psf_compile_c9_2026-10-03/psf_compile.py`, with its tests) and `benchmarks/hold4_eval.py` with its
+  ([`patches/psf_compile_c9_2026-10-03/psf_compile.py`](../../patches/psf_compile_c9_2026-10-03/psf_compile.py), with its tests) and [`benchmarks/hold4_eval.py`](../../benchmarks/hold4_eval.py) with its
   runner, pushed before the scored run.
 - **No hardware:** fake devices and Aer noise only.
 - **The predictions (section 3) were written before c9's smoke run.**
@@ -10846,10 +10846,10 @@ The smoke run used 1 circuit per cell and its own seeds: 684 compilations, 216 j
 
 | file | normalized SHA-256 |
 |---|---|
-| `patches/psf_compile_c9_2026-10-03/psf_compile.py` | `e27d241776e8f16f407b5a478084eea977d9493c9352ebbb3c13d432bcbc0e9d` |
-| `patches/psf_compile_c9_2026-10-03/test_c9_compare.py` | `897bc5965ea5973fb72596babca5f90def92b412645ef629a8ea0791babeb965` |
-| `benchmarks/hold4_eval.py` | `a834164831ee51a9cc0093933356f059a425158b67b56591cd51736bf63a4c42` |
-| `benchmarks/run_hold4_2026-10-03.sh` | `488ccf2c0d26bb147ee534bdf903ecaae9d7b810b61394975cb94de299f2fa59` |
+| [`patches/psf_compile_c9_2026-10-03/psf_compile.py`](../../patches/psf_compile_c9_2026-10-03/psf_compile.py) | `e27d241776e8f16f407b5a478084eea977d9493c9352ebbb3c13d432bcbc0e9d` |
+| [`patches/psf_compile_c9_2026-10-03/test_c9_compare.py`](../../patches/psf_compile_c9_2026-10-03/test_c9_compare.py) | `897bc5965ea5973fb72596babca5f90def92b412645ef629a8ea0791babeb965` |
+| [`benchmarks/hold4_eval.py`](../../benchmarks/hold4_eval.py) | `a834164831ee51a9cc0093933356f059a425158b67b56591cd51736bf63a4c42` |
+| [`benchmarks/run_hold4_2026-10-03.sh`](../../benchmarks/run_hold4_2026-10-03.sh) | `488ccf2c0d26bb147ee534bdf903ecaae9d7b810b61394975cb94de299f2fa59` |
 
 Normalization: CRLF to LF, trailing whitespace stripped from each line, trailing blank lines dropped, lines joined
 with "\n" and no final newline.
@@ -10866,7 +10866,7 @@ with "\n" and no final newline.
 **Status: results of the pre-registered test in Addendum 327.**
 
 - **Lock:** commit `9c65231`, pushed before the scored run (which started at 18:20 JST).
-- **Scoring:** by the locked `hold4_eval.py score`, and re-checked by `benchmarks/hold4_verify.py`. That script was
+- **Scoring:** by the locked `hold4_eval.py score`, and re-checked by [`benchmarks/hold4_verify.py`](../../benchmarks/hold4_verify.py). That script was
   written after the run finished and before any of its output was seen. It agrees on every verdict.
 - **Setting:** home (WSL2), 6 processes; 216 jobs, 54,216 circuit compilations, about 2,730 s.
 
@@ -10981,6 +10981,98 @@ The full tables are in `outputs/score.md`; the re-computation is in `outputs/ver
 
 - 216 job files and their logs, `env.txt`, `score.md`, `score_log.txt`, `verify.txt`.
 - Local paths were replaced.
+
+
+---
+
+<!-- ===== Addendum 329 (source: spare-qubit-cliff-addendum-329-2026-10-03.md) ===== -->
+
+> **Note added when merging:** Adoption record: psf_compile 2026-10-03.c9 becomes release 2026-10-03.2 (owner's decision, 2026-10-03).
+
+## Addendum 329 -- Adoption record: candidate psf_compile 2026-10-03.c9 becomes release 2026-10-03.2 (opt-in `compare_level3=True`, changelog item 36) (2026-10-03)
+
+**Status: adoption record.**
+
+- **Decision:** the owner's, on 2026-10-03, after the results in Addendum 328 (nine of nine predictions confirmed).
+- **Scope:** fake devices and Aer noise only. Nothing here was run on hardware.
+
+## 1. What the release is
+
+`psf_compile.py` 2026-10-03.2 is the candidate file
+[`patches/psf_compile_c9_2026-10-03/psf_compile.py`](../../patches/psf_compile_c9_2026-10-03/psf_compile.py) with
+three lines changed: the `VERSION:` header line, the changelog heading of item 36, and the `VERSION` constant.
+
+**What it adds:** `compile_for_hardware(..., target=..., compare_level3=True)`.
+
+- The input is also compiled with Qiskit's level 3 on the target.
+- Level 3's circuit is kept when two conditions hold:
+  - it uses no failed qubit, no failed gate direction and nothing off the target;
+  - its `excitation_cost` (item 35's estimate) is lower.
+- `compare_level3=False` (the default) is identical to 2026-10-03.1.
+
+**Recommended call with a target:**
+
+```python
+out = compile_for_hardware(qc, coupling_map=cm, basis_gates=basis, entangling_basis="cx", layout_search=True,
+                           target=backend.target, placement_refine=True, final_resynthesis="select",
+                           compare_level3=True)
+```
+
+**Unchanged:**
+
+- `psf_smart_layout` (2026-10-01.1);
+- the Rust core (`CORE_VERSION` 2026-09-29.1);
+- the AI front end ([`benchmarks/psf_ai_compile.py`](../../benchmarks/psf_ai_compile.py), 2026-10-02.a7);
+- the held candidate c6 (item 34), which is still not included.
+
+## 2. Files
+
+**Added:**
+
+- [`benchmarks/test_release_2026_10_03_2.py`](../../benchmarks/test_release_2026_10_03_2.py). It is the candidate's 10 tests, adapted.
+  - The release is compared with the previous release's code, represented by
+    [`patches/psf_compile_c8_2026-10-03/psf_compile.py`](../../patches/psf_compile_c8_2026-10-03/psf_compile.py).
+  - That file differs from 2026-10-03.1 only in the version lines.
+
+**Changed:**
+
+- `psf_compile.py`: the three version lines above.
+- `README.md`:
+  - a new block for the current version, with the recommended call and the known limits;
+  - the 2026-10-03.1 block retitled "Previous release";
+  - its gaps marked as closed by `compare_level3`.
+- **Current-release assertions** in ten tests. In each, only the expected version string changed.
+  - Five of them are tests of earlier candidates whose files were locked by pre-registrations: c4, c6, c8, c9 and a6.
+
+**Normalized SHA-256, before and after:**
+
+| file | before | after |
+|---|---|---|
+| [`benchmarks/test_release_2026_10_02.py`](../../benchmarks/test_release_2026_10_02.py) | `1c6bfee806408340…` | `a7262eb199a2049c…` |
+| [`benchmarks/test_release_2026_10_02_2.py`](../../benchmarks/test_release_2026_10_02_2.py) | `af9ed2c682ed3d6c…` | `e44b5ec8b97d7a3c…` |
+| [`benchmarks/test_core_fix_c2.py`](../../benchmarks/test_core_fix_c2.py) | `f71ca8fc783f75f2…` | `0140dacaa0259015…` |
+| [`benchmarks/test_release_2026_09_28.py`](../../benchmarks/test_release_2026_09_28.py) | `778e6407246ba076…` | `2194f1f6d2aa6e76…` |
+| [`benchmarks/test_release_2026_10_03.py`](../../benchmarks/test_release_2026_10_03.py) | `3c92b2551f88edf2…` | `5fb3507b6568ff81…` |
+| [`patches/psf_compile_c4_2026-10-02/test_c4_layout.py`](../../patches/psf_compile_c4_2026-10-02/test_c4_layout.py) (locked, Addendum 306) | `3be3e6f6ca122233…` | `b93a6d4ddb8e3a72…` |
+| [`patches/psf_compile_c6_2026-10-03/test_c6_floor.py`](../../patches/psf_compile_c6_2026-10-03/test_c6_floor.py) (locked, Addendum 320) | `1f968cde2486c478…` | `f37add9647f59609…` |
+| [`patches/psf_compile_c8_2026-10-03/test_c8_resynth.py`](../../patches/psf_compile_c8_2026-10-03/test_c8_resynth.py) (locked, Addendum 323) | `7cef8fe327b67d6c…` | `0b18a266d039702d…` |
+| [`patches/psf_compile_c9_2026-10-03/test_c9_compare.py`](../../patches/psf_compile_c9_2026-10-03/test_c9_compare.py) (locked, Addendum 327) | `897bc5965ea5973f…` | `fdc4f0b34716f5aa…` |
+| [`patches/psf_ai_compile_a6_2026-10-02/test_ai6.py`](../../patches/psf_ai_compile_a6_2026-10-02/test_ai6.py) (locked, Addendum 312) | `f2f34751379e0ae4…` | `c450acae90fb3649…` |
+
+The "before" hashes of c4, c6, c8 and a6 are those recorded as "after" in Addendum 325.
+
+**Part 9:** from Addendum 326 on, code-formatted paths that exist in the repository were turned into relative links.
+A line-by-line check confirmed that only link syntax changed.
+
+## 3. Known limits (Addendum 328)
+
+- **It selects; it does not repair.** The causes found in Addendum 326 remain inside PSF-Zero:
+  - synthesis of routed chains;
+  - ring placement;
+  - QFT routing.
+- **The AI front end a7 is still 0.3-4.8% ahead**, most on FakeAuckland and FakeGeneva (F5, F6).
+- **Above 16 touched qubits** the estimate is not made, and the release's own circuit is kept.
+- **Hardware has not been tested.**
 
 ---
 

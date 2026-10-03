@@ -61,7 +61,39 @@ in place, so there is never a second, differently-named copy to pick between
 [`psf_smart_layout.py`](benchmarks/psf_smart_layout.py) — the layout-search prototype,
 repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see below).
 
-> **Current version (2026-10-03): `psf_compile.py` 2026-10-03.1, with `psf_smart_layout` 2026-10-01.1 and the Rust
+> **Current version (2026-10-03, second release): `psf_compile.py` 2026-10-03.2, with `psf_smart_layout` 2026-10-01.1
+> and the Rust core `CORE_VERSION` 2026-09-29.1 (both unchanged)** ([Part 9](docs/findings/spare-qubit-cliff-combined-248.md),
+> Addenda 326-329). One opt-in addition to 2026-10-03.1:
+>
+> - **Recommended call with a device target:**
+>
+>   ```python
+>   compile_for_hardware(qc, coupling_map=cm, basis_gates=basis, entangling_basis="cx", layout_search=True,
+>                        target=backend.target, placement_refine=True, final_resynthesis="select",
+>                        compare_level3=True)
+>   ```
+>
+> - **`compare_level3=True` also compiles the input with Qiskit's level 3 on the target and keeps whichever circuit
+>   has the lower `excitation_cost`** (the estimate of 2026-10-03.1). It never keeps a circuit that touches a failed
+>   qubit or a failed gate direction, or one that is off the target.
+>   - Why: the release's remaining gaps to level 3 had three different causes (Addendum 326): synthesis of routed
+>     periodic chains on cx devices, placement of rings on cz devices, and routing of QFT.
+>   - Pre-registered test (Addenda 327-328; fake devices, noisy simulation, 1,506 new circuits on each of 9 devices):
+>     - at or ahead of Qiskit level 3 with the Target on all nine devices (mean infidelity 0.967-0.993 times);
+>     - in all 63 family-device cells, at most 1.003 times level 3;
+>     - better than 2026-10-03.1 on every device (0.920-0.987 times);
+>     - the choice picks the better circuit in 88% of circuits, within 0.5% of the best possible on eight devices;
+>     - failed elements never used;
+>     - about 28 ms extra per compile.
+> - **Known limits:**
+>   - It selects; it does not repair. The causes above remain inside PSF-Zero.
+>   - The AI front end (`benchmarks/psf_ai_compile.py`, a7) is still 0.3-4.8% ahead, most on FakeAuckland and
+>     FakeGeneva.
+>   - Above 16 touched qubits the estimate is not made and the release's own circuit is kept.
+>   - Not tested on hardware.
+> - Without `compare_level3`, nothing changes.
+
+> **Previous release (2026-10-03): `psf_compile.py` 2026-10-03.1, with `psf_smart_layout` 2026-10-01.1 and the Rust
 > core `CORE_VERSION` 2026-09-29.1 (both unchanged)** ([Part 9](docs/findings/spare-qubit-cliff-combined-248.md),
 > Addenda 318-325). One opt-in addition to 2026-10-02.2:
 >
@@ -81,7 +113,7 @@ repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see belo
 >     - about 16 ms extra per compile.
 >   - `final_resynthesis=True` always re-synthesises. It is not recommended: in the same test it cost 1-2% on the cz
 >     devices.
-> - **Known gaps:**
+> - **Known gaps** (closed by `compare_level3=True` in 2026-10-03.2, Addendum 328):
 >   - Periodic chains on cx devices remain 12-40% behind level 3 (routing).
 >   - F1-type rings on cz devices remain 6-8% behind.
 >   - The AI front end (`benchmarks/psf_ai_compile.py`, a7) is still 4-9% ahead.

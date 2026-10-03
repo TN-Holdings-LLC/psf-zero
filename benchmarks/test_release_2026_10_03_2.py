@@ -1,8 +1,9 @@
-"""Tests for candidate psf_compile 2026-10-03.c9 (changelog item 36: choice against Qiskit level 3 by excitation_cost).
-Helpers
-are copied from patches/psf_compile_c8_2026-10-03/test_c8_resynth.py.
+"""Tests for release psf_compile 2026-10-03.2 (changelog item 36: choice against Qiskit level 3 by excitation_cost),
+adapted from the candidate's tests (patches/psf_compile_c9_2026-10-03/test_c9_compare.py). The previous release,
+2026-10-03.1, is represented by its candidate's file (patches/psf_compile_c8_2026-10-03/psf_compile.py), which differs
+from it only in the version lines.
 
-Run from the repository root:  python -m pytest patches/psf_compile_c9_2026-10-03/test_c9_compare.py -q
+Run from the repository root:  python -m pytest benchmarks/test_release_2026_10_03_2.py -q
 """
 import math
 import os
@@ -11,7 +12,7 @@ import sys
 import pytest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
+REPO = os.path.abspath(os.path.join(HERE, ".."))
 sys.path.insert(0, os.path.join(REPO, "benchmarks"))
 sys.path.insert(0, REPO)
 
@@ -19,10 +20,11 @@ sys.path.insert(0, REPO)
 @pytest.fixture(scope="module")
 def mods():
     import core_fix_c2_eval as H
-    lay = H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psl_c9_test")
+    lay = H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psl_rel10032_test")
     sys.modules["psf_smart_layout"] = lay
-    return (H.load_module(os.path.join(HERE, "psf_compile.py"), "psf_compile_c9_test"),
-            H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile_rel_c9_test"))
+    return (H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile_rel10032_test"),
+            H.load_module(os.path.join(REPO, "patches", "psf_compile_c8_2026-10-03", "psf_compile.py"),
+                          "psf_compile_prev10032_test"))
 
 
 def backend(name):
@@ -144,19 +146,19 @@ def l3(qc, tgt):
 
 
 def test_version(mods):
-    assert mods[0].VERSION == "2026-10-03.c9"
-    assert mods[1].VERSION == "2026-10-03.2"  # current release (2026-10-03.1 when this candidate was evaluated)
+    assert mods[0].VERSION == "2026-10-03.2"
+    assert mods[1].VERSION == "2026-10-03.c8"  # the code of release 2026-10-03.1
 
 
 def test_default_identical_to_release(mods):
-    c9, rel = mods
+    new, prev = mods
     for name in ("FakeTorino", "FakeAuckland"):
         tgt = backend(name).target
         for qc in (ring(4, seed=4), ring(6, seed=6), chain(5, seed=5)):
             kw = kw_for(tgt)
             for extra in ({}, {"target": tgt}, {"target": tgt, "placement_refine": True},
                           {"target": tgt, "placement_refine": True, "final_resynthesis": "select"}):
-                assert sig(c9.compile_for_hardware(qc, **kw, **extra)) == sig(rel.compile_for_hardware(qc, **kw, **extra)), \
+                assert sig(new.compile_for_hardware(qc, **kw, **extra)) == sig(prev.compile_for_hardware(qc, **kw, **extra)), \
                     (name, extra.keys())
 
 
@@ -170,18 +172,18 @@ def test_needs_target(mods):
 def test_compare_returns_lower_estimate_exact_and_safe(mods, name):
     """The result is the release's circuit or level 3's, whichever has the lower excitation_cost; exact; on the
     target; no failed qubit or failed direction (direction-aware)."""
-    c9, rel = mods
+    new, prev = mods
     tgt = backend(name).target
-    edges, qubits = c9._failed_elements(tgt, 0.5)
+    edges, qubits = new._failed_elements(tgt, 0.5)
     kw = kw_for(tgt)
     for qc in (ring(4, seed=1), ring(6, seed=2), chain(5, seed=3), xxz_ring(seed=4)):
-        a = rel.compile_for_hardware(qc, target=tgt, placement_refine=True, final_resynthesis="select", **kw)
+        a = prev.compile_for_hardware(qc, target=tgt, placement_refine=True, final_resynthesis="select", **kw)
         b = l3(qc, tgt)
-        c = c9.compile_for_hardware(qc, target=tgt, placement_refine=True, final_resynthesis="select",
+        c = new.compile_for_hardware(qc, target=tgt, placement_refine=True, final_resynthesis="select",
                                     compare_level3=True, **kw)
         assert compact_fidelity(qc, c) > 1 - 1e-6, name
-        ea, eb = c9.excitation_cost(a, tgt), c9.excitation_cost(b, tgt)
-        if c9._acceptable(b, tgt, 0.5) and eb < ea:
+        ea, eb = new.excitation_cost(a, tgt), new.excitation_cost(b, tgt)
+        if new._acceptable(b, tgt, 0.5) and eb < ea:
             assert sig(c) == sig(b), name
         else:
             assert sig(c) == sig(a), name
@@ -195,13 +197,13 @@ def test_compare_returns_lower_estimate_exact_and_safe(mods, name):
 
 def test_level3_chosen_on_periodic_ring_cx(mods):
     """Addendum 326's main case: on a cx device the estimate prefers level 3 on periodic XXZ rings."""
-    c9 = mods[0]
+    new = mods[0]
     tgt = backend("FakeAuckland").target
     kw = kw_for(tgt)
     chosen = 0
     for s in range(3):
         qc = xxz_ring(seed=20 + s)
-        c = c9.compile_for_hardware(qc, target=tgt, placement_refine=True, final_resynthesis="select",
+        c = new.compile_for_hardware(qc, target=tgt, placement_refine=True, final_resynthesis="select",
                                     compare_level3=True, **kw)
         chosen += sig(c) == sig(l3(qc, tgt))
     assert chosen >= 2, chosen
@@ -210,12 +212,12 @@ def test_level3_chosen_on_periodic_ring_cx(mods):
 def test_acceptable_is_direction_aware(mods):
     """FakeHanoiV2 reports cx(5, 8) failed and cx(8, 5) healthy (Addendum 319, section 4)."""
     from qiskit import QuantumCircuit
-    c9 = mods[0]
+    new = mods[0]
     tgt = backend("FakeHanoiV2").target
     if not (tgt["cx"][(5, 8)].error >= 0.5 and tgt["cx"][(8, 5)].error < 0.5):
         pytest.skip("this snapshot no longer has the one-way failure")
     bad, good = QuantumCircuit(tgt.num_qubits), QuantumCircuit(tgt.num_qubits)
     bad.cx(5, 8)
     good.cx(8, 5)
-    assert not c9._acceptable(bad, tgt, 0.5)
-    assert c9._acceptable(good, tgt, 0.5)
+    assert not new._acceptable(bad, tgt, 0.5)
+    assert new._acceptable(good, tgt, 0.5)
