@@ -10092,6 +10092,243 @@ circuits. On FakeTorino it is mixed (50% open, 81% periodic).
 - **Outputs:** `outputs1/`, `outputs2/`, `outputs3/`, each with the per-device json, logs, `env.txt` and
   `summary.md`.
 
+
+---
+
+<!-- ===== Addendum 323 (source: spare-qubit-cliff-addendum-323-2026-10-03.md) ===== -->
+
+> **Note added when merging:** Home pre-registration of HOLD3: candidate psf_compile 2026-10-03.c8 (final two-qubit re-synthesis by Qiskit, kept per circuit by an excitation-aware estimate) on fresh held-out circuits and HOLD's nine devices. Locked by the git commit that adds this Addendum, the candidate patch with its tests and the evaluation scripts, pushed before the scored run. The predictions were written before c8's smoke run and after the smoke run of an earlier, never-locked candidate c7; both are disclosed in section 5.
+
+## Addendum 323 -- Pre-registration: candidate psf_compile 2026-10-03.c8 (final two-qubit re-synthesis by Qiskit, kept only when an excitation-aware estimate says it helps) on fresh held-out circuits (HOLD3). Can the release keep the chain gain found in Addendum 322 without the losses that unconditional re-synthesis brought on other families? (2026-10-03)
+
+**Status: pre-registration, written at home before any scored run.**
+
+- **Lock:** the git commit that adds this document, the candidate
+  (`patches/psf_compile_c8_2026-10-03/psf_compile.py`, with its tests) and `benchmarks/hold3_eval.py` with its
+  runner, pushed before the scored run.
+- **No hardware:** fake devices and Aer noise only.
+- **The predictions (section 3) were written before c8's smoke run.** They were written after the smoke run of an
+  earlier candidate, c7, which is disclosed in section 5.1 and is the reason c8 exists.
+
+## 1. The candidate (changelog item 35)
+
+`compile_for_hardware(..., target=..., placement_refine=True, final_resynthesis="select")`:
+
+- **Re-synthesis.** The finished circuit (after item 31's backstop) is passed through:
+  - `ConsolidateBlocks(force_consolidate=True)`;
+  - `UnitarySynthesis`;
+  - `Optimize1qGatesDecomposition`.
+
+  All three use the target and are exact (approximation_degree 1.0). Every two-qubit block is therefore
+  re-synthesised by Qiskit.
+- **The layout** is carried over unchanged.
+- **Backstop:** a result with an off-target instruction, or a two-qubit gate in a failed direction, is refused.
+- **Selection (`"select"`).** Both circuits are scored by `excitation_cost`, and the lower one is kept. The score is:
+  - the summed -log(1 - reported error) of the gates as placed;
+  - plus, for every gate, duration / T1 times P(1) on each of its qubits. P(1) is taken from the noiseless state just
+    before the gate: the population that amplitude damping acts on.
+- **When the estimate cannot be made.** Above 16 touched qubits, or with an instruction that has no matrix, the
+  release's circuit is kept.
+- **Modes:**
+
+  | value | behaviour |
+  |---|---|
+  | `True` | always re-synthesise (c7's behaviour) |
+  | `False` (default) | identical to release 2026-10-02.2, as checked by test |
+
+- **Base:** release 2026-10-02.2. It does not contain the held candidate c6 (item 34).
+
+**Why.** Addendum 322 traced the release's chain gap on cx devices to thermal relaxation. With the same qubits and
+the same cx gates, PSF-Zero's synthesis leaves qubits excited for longer during the long cx gates. Qiskit's
+re-synthesis removed most of that gap on F3. Section 5.1 shows why "always" is not enough.
+
+## 2. Design (`benchmarks/hold3_eval.py`)
+
+**Circuits (held out again):**
+
+- `hold_eval`'s families F1-F6 with the same per-cell sizes: 1,506 per device. The generator code is HOLD2's,
+  unchanged (checked textually).
+- New seed base 40,000,000 + ... (HOLD2 used 30,000,000, HOLD 20,000,000, GAP 1,000,000-5,500,000).
+
+**Arms:**
+
+| arm | what it is |
+|---|---|
+| C5 | release 2026-10-02.2, `target`, `placement_refine=True` |
+| C7F | the candidate with `final_resynthesis=True`: c7's behaviour, kept as the counterfactual for the selection |
+| C8 | the candidate with `final_resynthesis="select"`: the candidate as proposed |
+| A7 | the adopted AI front end |
+| L3T | Qiskit level 3 with the Target, `approximation_degree=1.0` |
+
+**Size:** 270 jobs.
+
+**Devices:** HOLD's nine.
+
+| type | devices |
+|---|---|
+| cx | FakeAuckland, FakeHanoiV2, FakeAlgiers, FakeGeneva |
+| cz | FakeTorino, FakeKingston, FakeFez, FakeMarrakesh, FakeAachen |
+
+**Metric:** as in GAP.
+
+**Failed-element uses** are counted by coupler and by direction.
+
+## 3. Predictions (scored only by `hold3_eval.py score`; written before c8's smoke run)
+
+**P0, harness.** All of these must hold, or nothing below is scored:
+
+- 270 job files;
+- every noiseless infidelity <= 1e-6;
+- at most 5% of the circuits too wide.
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| H1 | selection never costs on average | C8/C5 <= 1.00 on all 9 devices | any > 1.02 |
+| H2 | it helps on cx devices | C8/C5 <= 0.99 on at least 3 of the 4 cx devices | > 1.00 on 2 or more cx devices |
+| H3 | it is neutral on cz devices | C8/C5 within 0.98-1.02 on all 5 cz devices | any outside 0.95-1.05 |
+| H4 | it closes the open-chain gap | F3 open C8/L3T <= 1.05 on at least 3 of 4 cx devices | >= 1.10 on 2 or more |
+| H5 | ... and the chain gap HOLD2 could not | chains (F3 open + F5) C8/L3T <= 1.05 on at least 3 of 4 cx devices | >= 1.10 on all 4 |
+| H6 | it stays on the target | 0 failed-direction or failed-qubit uses and 0 off-target instructions by C8 | any |
+| H7 | it stays cheap | median compile time C8 <= 3 × C5 | > 10 × C5 |
+| H8 | the cx gain is broad | on the cx devices, C8/C5 <= 1.00 in >= 80% of the 28 cell-device pairs | < 50% |
+| H9 | the estimate chooses well | where C7F and C5 differ in measured infidelity, C8 has the lower of the two in >= 75% of circuits | < 50% |
+
+**Expectations, stated with the predictions:**
+
+- **The bound for H2 comes from c7's smoke run.** A perfect selector, choosing per circuit the better of C5 and c7,
+  would have given C8/C5 of 0.983, 0.976, 0.977 and 0.986 on the four cx devices. 0.99 on three of four is therefore
+  reachable only if the estimate selects well. H2 and H9 rise and fall together.
+- **H9 is the least certain.**
+  - In Addendum 322 the excitation exposure ordered C5 against L3T correctly in 143-150 of 150 open-chain circuits on
+    the cx devices.
+  - On F1, F2 and F6 the estimate has not been tried. There, c7's losses came with a much deeper circuit, which the
+    estimate sees only through the extra gates' reported errors and their exposure.
+- **H1** may fail by a small margin on a cz device, where the gains are small and a few wrong choices weigh as much.
+
+**Reported without prediction:**
+
+- the device table and both cell tables (C8/C5, C8/L3T), including A7 against C8;
+- C7F/C5 by device;
+- how often C8 chose each circuit;
+- compile times;
+- failed uses counted both ways;
+- off-target instructions for every arm.
+
+## 4. What this will not establish
+
+- Hardware. The effect is in Aer's thermal-relaxation model.
+- ecr devices.
+- Circuits wider than 16 touched qubits, where "select" keeps the release's circuit.
+- Whether choosing local frames for low excitation inside PSF-Zero's own synthesis would do better.
+
+## 5. Development (disclosed)
+
+### 5.1 The earlier candidate c7, and its smoke run (not a result)
+
+**c7** was `final_resynthesis=True` alone: always re-synthesise. A pre-registration for it was drafted (HOLD3 with
+arms C5, C7, A7, L3T and predictions H1-H8) but never locked. Its tests (10 of 10) passed.
+
+**Its smoke run** (1 circuit per cell, 216 jobs, 261 s, early afternoon of 2026-10-03):
+
+- **Unchanged:** the two-qubit count, in every circuit.
+- **Gains:** C7/C5 was 0.85-0.98 on F3 open and 0.94-0.99 on F3 periodic, on all nine devices.
+- **Losses:** 1.00-1.04 on F1, 1.03-1.09 on F2 and 1.03-1.13 on F6, on all nine devices (cz devices included), and
+  1.08 on F5 on three cx devices.
+- **Depth:** much greater wherever c7 lost. For example, F5 depth went from 14 to 39 with the same 7 cx, and F1 from
+  255 to 412.
+- **Its verdict lines** (H1 and H8 refuted, H2 and H3 ambiguous):
+
+  | H1 | H2 | H3 | H4 | H5 | H6 | H7 | H8 |
+  |---|---|---|---|---|---|---|---|
+  | REFUTED | AMBIGUOUS | AMBIGUOUS | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | REFUTED |
+
+**Decision.** At this point c7 was not locked. The owner chose to rebuild the candidate as c8, with a per-circuit
+selection.
+
+**What c7's smoke data informed:**
+
+- the design of c8 ("select");
+- keeping c7's behaviour as the counterfactual arm C7F;
+- the thresholds of H2 (the oracle bound above) and H9.
+
+**What was kept:**
+
+- c7's smoke circuits used HOLD3's smoke seeds: each family's scored base + 500,000. c8's smoke run uses the same
+  seeds.
+- The scored circuits have not been compiled by anything.
+
+### 5.2 c8's tests and smoke run
+
+**How the candidate was built.** `psf_compile.py` was generated from release 2026-10-02.2 by a script. It inserts:
+
+- the import of `UnitarySynthesis`;
+- `excitation_cost`, `_final_resynthesis` and `_select_resynthesis`, with `RESYNTH_STATS`;
+- the `final_resynthesis` parameter, its checks and its use at the end of the target path;
+- changelog item 35.
+
+Nothing else in the release was changed.
+
+**Tests** (`test_c8_resynth.py`, 15 cases). All passed at home in 5.9 s, before c8's smoke run. They check:
+
+- the version strings;
+- that the default gives the same output as the release (with and without `target` and `placement_refine`, on
+  FakeTorino and FakeAuckland);
+- that `final_resynthesis` without a target, or with an unknown value, raises `ValueError`;
+- on FakeAuckland, FakeHanoiV2, FakeGeneva, FakeTorino and FakeKingston, that re-synthesis:
+  - is exact;
+  - is on the target;
+  - keeps the final layout;
+  - adds no two-qubit gate;
+  - uses no failed qubit or failed direction;
+- that on open XXZ chains on FakeAuckland it uses fewer x gates than the release;
+- that the backstop returns the original circuit;
+- that `excitation_cost`'s numpy state matches Qiskit's `Statevector` (to 1e-9 relative);
+- that "select" returns whichever circuit has the lower estimate, exactly, on FakeAuckland, FakeHanoiV2 and
+  FakeTorino.
+
+**Smoke run (not a result).** 1 circuit per cell, on the same smoke seeds as c7's: 855 compilations, 270 jobs, about
+315 s, on the afternoon of 2026-10-03. Nothing was changed after it.
+
+- **P0** passed (noiseless infidelity max 6.6e-15; 0 too wide).
+- **Its verdict lines:** all nine CONFIRMED.
+
+  | H1 | H2 | H3 | H4 | H5 | H6 | H7 | H8 | H9 |
+  |---|---|---|---|---|---|---|---|---|
+  | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED |
+
+- **C8/C5 by device:** 0.979-0.988 on the cx devices, 0.988-0.996 on the cz devices.
+- **H8 and H9:** H8's share was 0.821; H9's selection accuracy was 145 of 171 circuits (0.848).
+- **By cell, c7's losses are gone:** F1, F2 and F6 within 0.991-1.009, F5 1.000. F3 keeps its gain (open 0.85-0.98,
+  periodic 0.94-0.99).
+- **Choices of C8 by family:**
+
+  | family | kept the release's circuit | chose the re-synthesis |
+  |---|---|---|
+  | F1 | 41 | 13 |
+  | F2 | 16 | 2 |
+  | F3 | 0 | 18 |
+  | F4 | 13 | 14 |
+  | F5 | 24 | 3 |
+  | F6 | 24 | 3 |
+
+- **Median compile time:** C5 0.038 s, C7F 0.040 s, C8 0.060 s, A7 0.738 s, L3T 0.018 s.
+- **Failed uses and off-target instructions:** 0 by every arm.
+
+**Caveat.** This smoke run is not independent of c8's design: it used the circuits whose c7 results motivated
+"select". The scored run on new seeds is the test.
+
+## 6. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `patches/psf_compile_c8_2026-10-03/psf_compile.py` | `ae48dd7a9ea59aa5da5b7a3f2b42e3b97eefcda28af6f31368b746d2b065ab1a` |
+| `patches/psf_compile_c8_2026-10-03/test_c8_resynth.py` | `af22032dfbdde7d96226dfc6f91b9782cd186e99e3a054ec8626a284d6e3fdac` |
+| `benchmarks/hold3_eval.py` | `95d0fc5fb60f7077d0147b6b66ccfe5ea709e8e1d4e16b534bf539a185c57da6` |
+| `benchmarks/run_hold3_2026-10-03.sh` | `0527a5a9a305fb375042e5a2ee4bbfff3db050cac95dca3e1274c6ce6c48d750` |
+
+Normalization: CRLF to LF, trailing whitespace stripped from each line, trailing blank lines dropped, lines joined
+with "\n" and no final newline.
+
 ---
 
 ---
