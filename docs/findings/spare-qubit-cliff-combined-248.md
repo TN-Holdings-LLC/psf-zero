@@ -10854,6 +10854,134 @@ The smoke run used 1 circuit per cell and its own seeds: 684 compilations, 216 j
 Normalization: CRLF to LF, trailing whitespace stripped from each line, trailing blank lines dropped, lines joined
 with "\n" and no final newline.
 
+
+---
+
+<!-- ===== Addendum 328 (source: spare-qubit-cliff-addendum-328-2026-10-03.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 327 (lock commit 9c65231), scored by the locked script and re-checked by benchmarks/hold4_verify.py, written after the run finished and before any of its output was seen.
+
+## Addendum 328 -- Results: HOLD4 (Addendum 327). With `compare_level3=True`, candidate c9 is at or ahead of Qiskit L3T on every device (C9/L3T 0.967-0.993) and in every one of the 63 cells (none above 1.003), within 0.02-1.7% of the oracle bound. It is ahead of release 2026-10-03.1 by 1.3-8.0%, and within 0.3-4.8% of the AI front end a7. All nine predictions confirmed (2026-10-03)
+
+**Status: results of the pre-registered test in Addendum 327.**
+
+- **Lock:** commit `9c65231`, pushed before the scored run (which started at 18:20 JST).
+- **Scoring:** by the locked `hold4_eval.py score`, and re-checked by `benchmarks/hold4_verify.py`. That script was
+  written after the run finished and before any of its output was seen. It agrees on every verdict.
+- **Setting:** home (WSL2), 6 processes; 216 jobs, 54,216 circuit compilations, about 2,730 s.
+
+## 1. Verdicts
+
+| ID | Verdict | Numbers |
+|---|---|---|
+| P0 | **PASS** | 216 of 216 files; noiseless infidelity max 9.5e-8 (an A7 circuit); 0 too wide |
+| H1 | **CONFIRMED** | C9/R3 on all 9 devices: 0.920-0.987 |
+| H2 | **CONFIRMED** | C9/L3T <= 1.00 on all 9 devices: 0.967-0.993 |
+| H3 | **CONFIRMED** | C9/L3T <= 1.02 in 63 of 63 cell-device pairs (highest 1.003) |
+| H4 | **CONFIRMED** | F3 periodic C9/L3T on the cx devices: Auckland 1.000, HanoiV2 1.001, Algiers 1.000, Geneva 1.000 |
+| H5 | **CONFIRMED** | F1 C9/L3T on the cz devices: Torino 0.984, Kingston 0.996, Fez 0.997, Marrakesh 0.947, Aachen 0.992 |
+| H6 | **CONFIRMED** | 0 failed-direction or failed-qubit uses and 0 off-target instructions by C9 (0 by every arm) |
+| H7 | **CONFIRMED** | median compile time R3 0.042 s, C9 0.070 s (1.7 ×) |
+| H8 | **CONFIRMED** | A7/C9 >= 0.96 on 7 of 9 devices: 0.987-0.997 on seven, Auckland 0.952, Geneva 0.959 |
+| H9 | **CONFIRMED** | C9 has the lower measured infidelity of R3 and L3T in 11,318 of 12,876 circuits (87.9%) |
+
+## 2. Numbers
+
+**By device:**
+
+| device | C9/R3 | C9/L3T | oracle/L3T | R3/L3T | A7/C9 | A7/L3T |
+|---|---|---|---|---|---|---|
+| FakeAuckland (cx) | 0.954 | 0.992 | 0.990 | 1.039 | 0.952 | 0.945 |
+| FakeHanoiV2 (cx) | 0.954 | 0.987 | 0.983 | 1.034 | 0.994 | 0.981 |
+| FakeAlgiers (cx) | 0.920 | 0.991 | 0.987 | 1.077 | 0.987 | 0.978 |
+| FakeGeneva (cx) | 0.987 | 0.983 | 0.966 | 0.996 | 0.959 | 0.942 |
+| FakeTorino | 0.967 | 0.986 | 0.986 | 1.020 | 0.997 | 0.984 |
+| FakeKingston | 0.966 | 0.991 | 0.990 | 1.025 | 0.990 | 0.981 |
+| FakeFez | 0.959 | 0.993 | 0.992 | 1.035 | 0.993 | 0.986 |
+| FakeMarrakesh | 0.954 | 0.967 | 0.967 | 1.014 | 0.993 | 0.960 |
+| FakeAachen | 0.942 | 0.986 | 0.986 | 1.047 | 0.995 | 0.981 |
+
+"oracle" takes, per circuit, the measured better of R3 and L3T. It is a bound, not a compiler.
+
+**By cell, C9/L3T:**
+
+| cell | Auckland | Torino | Kingston | HanoiV2 | Algiers | Geneva | Fez | Marrakesh | Aachen |
+|---|---|---|---|---|---|---|---|---|---|
+| F1 | 0.992 | 0.984 | 0.996 | 0.983 | 0.997 | 0.987 | 0.997 | 0.947 | 0.992 |
+| F2 | 0.992 | 0.992 | 0.990 | 0.987 | 0.982 | 0.974 | 0.994 | 0.980 | 0.989 |
+| F3 open | 0.988 | 0.991 | 0.988 | 0.982 | 0.999 | 0.992 | 0.984 | 0.989 | 0.986 |
+| F3 periodic | 1.000 | 0.999 | 1.000 | 1.001 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| F4 | 0.984 | 0.965 | 0.970 | 0.979 | 0.974 | 0.982 | 0.980 | 0.930 | 0.954 |
+| F5 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| F6 | 1.003 | 0.996 | 0.997 | 0.997 | 0.998 | 0.928 | 0.999 | 0.994 | 0.993 |
+
+**Per circuit:**
+
+- C9 <= L3T in 90.0-95.5% of circuits, by device.
+- C9 is better than R3 in 30-50% of circuits, and worse in 2-8%.
+
+**C9's choices** (all nine devices):
+
+| family | level 3's circuit | the release's |
+|---|---|---|
+| F1 | 1,890 | 1,998 |
+| F2 | 1,301 | 859 |
+| F3 | 1,887 | 813 |
+| F4 | 662 | 1,768 |
+| F5 | 17 | 1,279 |
+| F6 | 608 | 472 |
+
+The full tables are in `outputs/score.md`; the re-computation is in `outputs/verify.txt`.
+
+## 3. Reading
+
+**What c9 achieves:**
+
+- **The release with `compare_level3=True` is at or ahead of Qiskit L3T everywhere tested.**
+  - On every device it is ahead, by 0.7-3.3%.
+  - In no cell is it more than 0.3% behind.
+  - The three gaps that Addendum 324 left are closed:
+    - periodic chains on cx devices: 1.08-1.42 → 1.000;
+    - rings on cz devices: up to 1.08 → 0.947-0.997;
+    - QFT: up to 1.06 → 0.93-1.003.
+- **The choice is close to the best possible.**
+  - It is within 0.02-1.7% of the oracle on every device, and within 0.5% on eight of nine.
+  - It picks the better of the two compilers in 88% of circuits where they differ.
+- **It keeps PSF-Zero's own advantage.**
+  - Where PSF-Zero's circuit is better, it is kept: F4 (C9/L3T 0.930-0.984) and F2.
+  - The release's circuit is kept in 53% of all circuits.
+- **The gap to the AI front end a7 shrinks** from 3.6-9.0% (release 2026-10-03.1, Addendum 324) to 0.3-4.8%.
+  - On seven devices it is within 1.3%.
+  - In several cells, F3 periodic in particular, C9 is ahead of a7.
+- **It is safe and cheap:** no failed element is used, and it costs 28 ms more per compile.
+
+**What c9 does not do:**
+
+- **It selects; it does not repair.** The causes found in Addendum 326 remain inside PSF-Zero:
+  - synthesis of routed chains;
+  - ring placement;
+  - QFT routing.
+- **a7 is still ahead**, notably on FakeAuckland and FakeGeneva (F5, F6). It weighs more candidates with its own
+  state-aware estimate.
+- **Hardware is untested.** The estimate relies on Aer's thermal-relaxation model.
+
+## 4. Consequences
+
+**Adoption** is the owner's decision. The data support:
+
+- offering `compare_level3=True` together with `final_resynthesis="select"`;
+- recommending it as the release's best setting with a target.
+
+**Next:**
+
+- the remaining a7 lead on F5 and F6 on two cx devices;
+- removing the causes inside PSF-Zero (synthesis before routing, a ring-aware layout).
+
+## 5. Data (`data/2026-10-03/hold4/outputs/`)
+
+- 216 job files and their logs, `env.txt`, `score.md`, `score_log.txt`, `verify.txt`.
+- Local paths were replaced.
+
 ---
 
 ---

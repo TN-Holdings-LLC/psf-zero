@@ -1,0 +1,38 @@
+files 216, rows 54216, git_head ['9c65231'], versions [('2026-10-03.1', '2026-10-03.c9', '2026-10-02.a7', 'a7c0cf832501', '0064e8cf7efe')]
+P0 PASS noiseless max 9.52e-08, too wide 0
+H1 CONFIRMED {'Auckland': 0.9544, 'Torino': 0.9672, 'Kingston': 0.9661, 'HanoiV2': 0.9539, 'Algiers': 0.9197, 'Geneva': 0.9865, 'Fez': 0.9592, 'Marrakesh': 0.9544, 'Aachen': 0.9416}
+H2 CONFIRMED {'Auckland': 0.9919, 'Torino': 0.9864, 'Kingston': 0.9906, 'HanoiV2': 0.9866, 'Algiers': 0.9908, 'Geneva': 0.9826, 'Fez': 0.9929, 'Marrakesh': 0.9672, 'Aachen': 0.986}
+H3 CONFIRMED 1.0000 of 63; cells > 1.02: {}
+H4 CONFIRMED {'Auckland': 1.0, 'HanoiV2': 1.0006, 'Algiers': 1.0, 'Geneva': 1.0}
+H5 CONFIRMED {'Torino': 0.9836, 'Kingston': 0.996, 'Fez': 0.9972, 'Marrakesh': 0.9472, 'Aachen': 0.992}
+H6 CONFIRMED failed uses 0, off-target circuits 0
+H7 CONFIRMED {'R3': 0.0423, 'C9': 0.0703, 'A7': 0.7045, 'L3T': 0.0148}
+H8 CONFIRMED {'Auckland': 0.9524, 'Torino': 0.9972, 'Kingston': 0.99, 'HanoiV2': 0.9943, 'Algiers': 0.9867, 'Geneva': 0.959, 'Fez': 0.9931, 'Marrakesh': 0.9927, 'Aachen': 0.9951}
+H9 CONFIRMED 11318 of 12876 (0.8790)
+
+by device: C9/R3, C9/L3T, oracle/L3T, R3/L3T, A7/C9, A7/L3T, A7/oracle
+  FakeAuckland   0.9544 0.9919 0.9898 1.0393 0.9524 0.9447 0.9544
+  FakeTorino     0.9672 0.9864 0.9858 1.0199 0.9972 0.9837 0.9978
+  FakeKingston   0.9661 0.9906 0.9901 1.0253 0.9900 0.9807 0.9904
+  FakeHanoiV2    0.9539 0.9866 0.9828 1.0343 0.9943 0.9810 0.9983
+  FakeAlgiers    0.9197 0.9908 0.9873 1.0773 0.9867 0.9775 0.9901
+  FakeGeneva     0.9865 0.9826 0.9661 0.9961 0.9590 0.9423 0.9754
+  FakeFez        0.9592 0.9929 0.9922 1.0351 0.9931 0.9860 0.9938
+  FakeMarrakesh  0.9544 0.9672 0.9665 1.0135 0.9927 0.9602 0.9935
+  FakeAachen     0.9416 0.9860 0.9858 1.0471 0.9951 0.9811 0.9952
+
+per circuit: C9 < R3, C9 > R3, C9 <= L3T, A7 <= C9
+  FakeAuckland   0.470 0.058 0.924 0.851
+  FakeTorino     0.380 0.033 0.925 0.689
+  FakeKingston   0.459 0.026 0.934 0.822
+  FakeHanoiV2    0.398 0.078 0.926 0.691
+  FakeAlgiers    0.485 0.055 0.900 0.728
+  FakeGeneva     0.363 0.078 0.936 0.833
+  FakeFez        0.504 0.028 0.927 0.765
+  FakeMarrakesh  0.303 0.022 0.935 0.748
+  FakeAachen     0.456 0.019 0.955 0.743
+
+C9 choices by family: {('F1', 'level3'): 1890, ('F1', 'psf'): 1998, ('F2', 'level3'): 1301, ('F2', 'psf'): 859, ('F3', 'level3'): 1887, ('F3', 'psf'): 813, ('F4', 'level3'): 662, ('F4', 'psf'): 1768, ('F5', 'level3'): 17, ('F5', 'psf'): 1279, ('F6', 'level3'): 608, ('F6', 'psf'): 472}
+off-target by arm: {'R3': 0, 'C9': 0, 'A7': 0, 'L3T': 0}
+failed uses (coupler, direction) by arm: {'R3': (0, 0), 'C9': (0, 0), 'A7': (0, 0), 'L3T': (0, 0)}
+flags: 0 []
