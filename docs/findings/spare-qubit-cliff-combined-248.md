@@ -11074,6 +11074,319 @@ A line-by-line check confirmed that only link syntax changed.
 - **Above 16 touched qubits** the estimate is not made, and the release's own circuit is kept.
 - **Hardware has not been tested.**
 
+
+---
+
+<!-- ===== Addendum 330 (source: spare-qubit-cliff-addendum-330-2026-10-03.md) ===== -->
+
+> **Note added when merging:** Exploratory diagnosis (not a test, nothing pre-registered) of the remaining gap between release 2026-10-03.2 and the AI front end a7, run at home at commit 27a9769. Scripts and outputs are in data/2026-10-03/a7gap/diag/.
+
+## Addendum 330 -- Diagnosis (exploratory, not a test): what is left between release 2026-10-03.2 and the AI front end a7. On GHZ-type chains (F5) on the cx devices it is placement: the floor-aware re-placement of the held candidate c6 matches a7 there. The release's `excitation_cost` cannot tell such placements apart; a state-aware Pauli estimate with dephasing can. Choosing among three candidates by that estimate comes within 0.1-0.5% of the measured best (2026-10-03)
+
+**Status: exploratory diagnosis.**
+
+- **Nothing was pre-registered**, and nothing here is a verdict.
+- **Setting:** run at home on 2026-10-03 at commit `27a9769` (release 2026-10-03.2).
+- **Circuits:** HOLD4's scored circuits (in-sample, since Addendum 328 scored them), 524 per device:
+  - F5 and F6 all;
+  - F2 every second;
+  - F4 every third;
+  - F3 open every third.
+- **Devices:** FakeAuckland, FakeGeneva, FakeAlgiers, FakeHanoiV2 (cx); FakeTorino, FakeMarrakesh (cz).
+- **Reproduction:** every C9 row reproduced HOLD4's exactly (0 differences on every device).
+- **Script:** [`data/2026-10-03/a7gap/diag/a7gap_diag.py`](../../data/2026-10-03/a7gap/diag/a7gap_diag.py).
+
+## 1. Starting point (HOLD4)
+
+- **F5 (GHZ chains):** a7 led C9 by 7-29% on three cx devices (A7/C9 0.71-0.93). a7 used the same gates and the same
+  depth, and chose its own PSF-Zero candidate, not level 3's. The difference is placement.
+- **HOLD2 (Addendum 321) had already measured this.** The held candidate c6 (item 34: the re-placement of item 33
+  scored on max(reported error, T1/T2 floor)) had improved F5 by the same amounts: FakeGeneva 0.721, FakeAuckland
+  0.934, FakeAlgiers 0.931.
+- **F2, F4 and F6:** a7's circuits had about one two-qubit gate fewer. That comes from its several seeds and its
+  polish.
+
+## 2. Arms
+
+| arm | what it is |
+|---|---|
+| R3 | release 2026-10-03.2 with `final_resynthesis="select"`, no level-3 comparison |
+| R3F | the same pipeline re-placed on c6's floor-aware Target, then "select" |
+| L3T | Qiskit level 3 with the Target |
+| C9 | the release as recommended (`compare_level3=True`) |
+
+**Choices among {R3, R3F, L3T}:**
+
+- by the release's `excitation_cost` (PICKe);
+- by `pauli_cost` (PICKp), a simplified form of a4's state-aware estimate:
+  - for each gate's qubits, Pauli-twirled thermal relaxation p_P costs p_P (1 - <P>^2) on the noiseless state;
+  - plus the rest of the reported error, state-independent.
+
+## 3. Results (infidelity relative to L3T, all 524 circuits per device)
+
+| device | C9 | A7 | R3 | R3F | PICKe | PICKp | oracle | best of three ranked by exc / pauli |
+|---|---|---|---|---|---|---|---|---|
+| FakeAuckland (cx) | 0.993 | 0.933 | 1.024 | 0.988 | 0.983 | 0.970 | 0.966 | 316 / 457 |
+| FakeGeneva (cx) | 0.965 | 0.858 | 0.921 | 0.900 | 0.943 | 0.886 | 0.884 | 435 / 474 |
+| FakeAlgiers (cx) | 0.988 | 0.954 | 1.030 | 1.006 | 0.978 | 0.971 | 0.967 | 454 / 460 |
+| FakeHanoiV2 (cx) | 0.991 | 0.964 | 1.023 | 1.025 | 0.991 | 0.989 | 0.984 | 434 / 404 |
+| FakeTorino | 0.988 | 0.972 | 0.998 | 0.998 | 0.988 | 0.989 | 0.988 | 371 / 313 |
+| FakeMarrakesh | 0.974 | 0.935 | 0.986 | 0.978 | 0.974 | 0.971 | 0.966 | 307 / 377 |
+
+**F5 alone:**
+
+| device | C9 | A7 | R3F | PICKp |
+|---|---|---|---|---|
+| FakeAuckland | 1.000 | 0.932 | 0.934 | 0.934 |
+| FakeGeneva | 1.000 | 0.712 | 0.721 | 0.721 |
+| FakeAlgiers | 1.000 | 0.931 | 0.931 | 0.931 |
+| FakeMarrakesh | 1.000 | 0.940 | 0.950 | 0.950 |
+
+**F6 on FakeGeneva:**
+
+- R3 0.712 against C9 0.928.
+- `excitation_cost` chose level 3's circuit wrongly in about half the circuits (it ranked 58 of 120 correctly);
+  `pauli_cost` ranked 114 of 120 correctly.
+
+The full table is in `outputs/summary.md`.
+
+## 4. Reading
+
+- **The F5 gap to a7 is placement, and c6's floor-aware score finds the placement a7 finds.**
+  - PICKp reaches a7 on F5 on FakeAuckland and FakeAlgiers, and is within 1% of it on FakeGeneva and FakeMarrakesh.
+- **`excitation_cost` cannot rank the placements of a GHZ chain, because those circuits differ in dephasing.**
+  - Each qubit of a GHZ state is maximally mixed, so a Z error always costs.
+  - Amplitude damping on P(1) = 1/2 looks the same on any qubit with similar T1.
+  - `pauli_cost` includes the Z component and ranks the best of three correctly in 77-90% of circuits on the cx
+    devices, against 60-87% for `excitation_cost`.
+- **On the cz devices the two estimates choose about equally well.** `pauli_cost` ranks fewer circuits correctly on
+  FakeTorino, but the circuits there differ little, so the outcome is the same (0.989 against 0.988).
+- **The choice by `pauli_cost` among {R3, R3F, L3T} is within 0.1-0.5% of the measured best** on every device.
+  - It improves on C9 by 0.2-8.2% on five devices and is level on FakeTorino.
+- **What it does not reach:** a7's remaining lead on F2, F4 and F6. That comes from a7's extra seeds and polish: one
+  two-qubit gate fewer.
+
+## 5. Consequences
+
+Candidate c10 (changelog item 37) does two things:
+
+- it adds the floor-placed circuit as a candidate (`compare_floor=True`);
+- it chooses among the candidates by `pauli_cost` (`candidate_score="pauli"`).
+
+It is pre-registered in Addendum 331.
+
+## 6. Data (`data/2026-10-03/a7gap/diag/`)
+
+- `a7gap_diag.py`, `run_a7gap_diag.sh`;
+- `outputs/`, with the per-device json, logs, `env.txt` and `summary.md`.
+
+
+---
+
+<!-- ===== Addendum 331 (source: spare-qubit-cliff-addendum-331-2026-10-03.md) ===== -->
+
+> **Note added when merging:** Home pre-registration of HOLD5: candidate psf_compile 2026-10-03.c10 (floor-placed candidate and choice by a state-aware Pauli estimate) on fresh held-out circuits and HOLD's nine devices. Locked by the git commit that adds this Addendum, the candidate patch with its tests and the evaluation scripts, pushed before the scored run. The predictions were written before the smoke run; the smoke run and one test corrected after it are disclosed in section 5.
+
+## Addendum 331 -- Pre-registration: candidate psf_compile 2026-10-03.c10 (floor-placed candidate and choice by a state-aware Pauli estimate) on fresh held-out circuits (HOLD5). Does it close the GHZ-chain gap to the AI front end a7 on cx devices without costing anything elsewhere? (2026-10-03)
+
+**Status: pre-registration, written at home before any scored run.**
+
+- **Lock:** the git commit that adds this document, the candidate
+  (`patches/psf_compile_c10_2026-10-03/psf_compile.py`, with its tests) and `benchmarks/hold5_eval.py` with its
+  runner, pushed before the scored run.
+- **No hardware:** fake devices and Aer noise only.
+- **The predictions (section 3) were written before c10's smoke run.**
+
+## 1. The candidate (changelog item 37)
+
+The release's recommended call, plus `compare_floor=True` and `candidate_score="pauli"`:
+
+```python
+compile_for_hardware(..., target=..., placement_refine=True, final_resynthesis="select", compare_level3=True,
+                     compare_floor=True, candidate_score="pauli")
+```
+
+**Candidates:**
+
+- the release's circuit;
+- the same pipeline re-placed on `floor_aware_target(target)` (c6's functions, unchanged), with item 31's backstop
+  and item 35's "select";
+- Qiskit level 3's circuit.
+
+The floor-placed and level-3 circuits are used only if `_acceptable`.
+
+**Choice:** the candidate with the lowest `pauli_cost`.
+
+- `pauli_cost` is a state-aware first-order estimate with Pauli-twirled thermal relaxation, including dephasing,
+  plus the remaining reported error.
+- Ties and any estimate that cannot be made keep the release's circuit.
+
+**Defaults:** with the defaults, the result is identical to release 2026-10-03.2, as checked by test.
+
+**Why** (Addendum 330, in-sample on HOLD4's circuits):
+
+- On GHZ chains on cx devices the remaining gap to a7 is placement, and c6's floor-aware placement finds a7's.
+- `excitation_cost` cannot rank those placements; `pauli_cost` can.
+- The choice among the three by `pauli_cost` came within 0.1-0.5% of the measured best on six devices.
+
+## 2. Design (`benchmarks/hold5_eval.py`)
+
+**Circuits:**
+
+- `hold_eval`'s families F1-F6 with the same per-cell sizes: 1,506 per device. The generator code is HOLD4's,
+  unchanged (checked textually).
+- New seed base 60,000,000 + ....
+
+**Arms:**
+
+| arm | what it is |
+|---|---|
+| C9 | release 2026-10-03.2 as recommended |
+| C10 | the candidate as above |
+| A7 | the adopted AI front end |
+| L3T | Qiskit level 3 with the Target |
+
+**Size:** 216 jobs.
+
+**Devices:** HOLD's nine (cx: FakeAuckland, FakeHanoiV2, FakeAlgiers, FakeGeneva; cz: FakeTorino, FakeKingston,
+FakeFez, FakeMarrakesh, FakeAachen).
+
+**Metric:** as in GAP.
+
+## 3. Predictions (scored only by `hold5_eval.py score`; written before c10's smoke run)
+
+**P0, harness.** All of these must hold, or nothing below is scored:
+
+- 216 job files;
+- every noiseless infidelity <= 1e-6;
+- at most 5% of the circuits too wide.
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| H1 | it never costs on average | C10/C9 <= 1.00 on all 9 devices | any > 1.02 |
+| H2 | it helps on cx devices | C10/C9 <= 0.99 on at least 3 of the 4 cx devices | > 1.00 on 2 or more cx devices |
+| H3 | it is neutral or better on cz devices | C10/C9 <= 1.01 on all 5 cz devices | any > 1.03 |
+| H4 | it closes the GHZ-chain gap | F5 C10/C9 <= 0.97 on at least 3 of 4 cx devices | > 1.00 on 2 or more |
+| H5 | it brings the release within 4% of a7 everywhere | A7/C10 >= 0.96 on all 9 devices | < 0.94 on 2 or more |
+| H6 | it stays on the target | 0 failed-direction or failed-qubit uses and 0 off-target instructions by C10 | any |
+| H7 | it stays cheap | median compile time C10 <= 3 × C9 | > 10 × C9 |
+| H8 | it keeps the release ahead of level 3 | C10/L3T <= 1.00 on all 9 devices | any > 1.02 |
+
+**How the thresholds were set** (disclosed):
+
+- **In-sample figures.** Addendum 330's in-sample figures were known when these predictions were written. On a
+  subsample weighted towards F5 and F6, PICKp/C9 was:
+  - 0.977, 0.918, 0.983 and 0.998 on the four cx devices;
+  - 1.001 and 0.997 on the two cz devices.
+- **H2, H3 and H4** are set inside those figures, with room for new seeds.
+- **The scorer** was run on HOLD4's data, with C10 set equal to C9, as a plumbing check.
+
+**Expectations, stated with the predictions:**
+
+- **H5 is the least certain.** In HOLD4, A7/C9 was 0.952 on FakeAuckland and 0.959 on FakeGeneva. The diagnosis
+  closes F5 there, but a7's one-gate advantage on F2, F4 and F6 remains.
+- **H2 depends on FakeHanoiV2**, where the diagnosis showed almost no gain (0.998). The other three cx devices carry
+  it.
+
+**Reported without prediction:**
+
+- the device table, with F5 and F6;
+- three cell tables;
+- how often C10 chose each candidate;
+- compile times;
+- failed uses counted both ways;
+- off-target instructions.
+
+## 4. What this will not establish
+
+- **Hardware.** `pauli_cost` relies on the same thermal model as Aer.
+- **ecr devices.**
+- **Circuits wider than 16 touched qubits.**
+- **a7's remaining advantage**, which comes from its extra seeds and polish.
+
+## 5. Development (disclosed)
+
+### 5.1 How the candidate was built
+
+`psf_compile.py` was generated from release 2026-10-03.2 by a script. It inserts:
+
+- `decoherence_floor` and `floor_aware_target`, copied from candidate c6;
+- `pauli_cost` and `_choose`, with two new counters in `COMPARE_STATS`;
+- the parameters `compare_floor` and `candidate_score`, with their checks;
+- the item-37 branch at the end of the target path, taken only when either parameter is not at its default;
+- changelog item 37.
+
+Nothing else in the release was changed.
+
+### 5.2 Tests (`test_c10_floor_pauli.py`, 11 cases), and one test corrected after the smoke run
+
+**First run** (at home, together with the smoke run): 10 passed, 1 failed. The failure was
+`test_floor_candidate_used_on_ghz_geneva`, which expected the floor-placed circuit to be chosen for at least 2 of 3
+six-qubit GHZ chains on FakeGeneva. It was chosen for none.
+
+**The test was wrong, not the candidate:**
+
+- In Addendum 330's data the floor placement on FakeGeneva differs from the release's only for 8-qubit chains (48 of
+  48). For 4 and 6 qubits it is the same placement (96 of 96).
+- A tie keeps the release's circuit, so the counter cannot move.
+- The smoke run itself shows the floor candidate chosen 20 times, and F5 on FakeGeneva at C10/C9 0.721.
+
+**The correction:** the test was changed to 8-qubit chains (`ghz(n=8, ...)`), with a note explaining why.
+
+- The candidate (`psf_compile.py`) was not changed. Its normalized SHA-256 is the one the smoke run recorded.
+- Before the lock commit, the tests are run again on the corrected file. The lock is committed only if all 11 pass.
+
+**The 11 cases check:**
+
+- the version strings;
+- that the defaults give the same output as release 2026-10-03.2, with and without the recommended options;
+- that bad arguments raise `ValueError`;
+- that `pauli_cost` matches a reference computed with Qiskit's `Statevector` and `Pauli` expectation values;
+- on FakeAuckland, FakeHanoiV2, FakeGeneva, FakeTorino and FakeKingston, that the full choice:
+  - is exact;
+  - is on the target;
+  - uses no failed qubit or failed direction;
+  - has no higher `pauli_cost` than the release's own circuit or level 3's;
+- that the floor candidate is chosen on GHZ chains on FakeGeneva;
+- that `floor_aware_target` gives max(reported, floor) for every instruction.
+
+### 5.3 Smoke run (not a result)
+
+The smoke run used 1 circuit per cell and its own seeds: 684 compilations, 216 jobs, about 260 s, on the evening of
+2026-10-03. Nothing in the candidate or the evaluation scripts was changed after it.
+
+- **P0** passed (noiseless infidelity max 5.2e-15; 0 too wide).
+- **Its verdict lines:**
+
+  | H1 | H2 | H3 | H4 | H5 | H6 | H7 | H8 |
+  |---|---|---|---|---|---|---|---|
+  | AMBIGUOUS | AMBIGUOUS | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED |
+
+- **H1** was ambiguous because of FakeTorino 1.004, FakeFez 1.001 and FakeAachen 1.001.
+- **H2** was ambiguous because only 2 of the 4 cx devices were <= 0.99 (FakeAuckland 0.980, FakeGeneva 0.966;
+  FakeAlgiers 0.992, FakeHanoiV2 0.998).
+- **C10/C9 by device:** 0.966-1.004.
+- **F5 on the cx devices:** 0.934, 1.001, 0.931 and 0.721.
+- **A7/C10:** 0.973-0.996 (A7/C9 0.951-0.996).
+- **C10/L3T:** 0.936-0.991.
+- **Choices:** level 3 66, the release's circuit 85, the floor candidate 20.
+- **Median compile time:** C9 0.095 s, C10 0.179 s (1.9 ×).
+- **Failed uses and off-target instructions:** 0 by every arm.
+
+## 6. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `patches/psf_compile_c10_2026-10-03/psf_compile.py` | `ae24779cb2703a15e2ab970b942f780a2dcf16cc0142cc26563d4b7b88eff1c5` |
+| `patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py` (corrected, section 5.2) | `b628a0eec7a13d708cae1029e66e1cd1a42d3ff8c456e8d8d83ac9ba3d06cc3c` |
+| `benchmarks/hold5_eval.py` | `39d1527f52dc61d1fce1b7a1f382fd158e181be2cfb7194e0b4321b927fd1a02` |
+| `benchmarks/run_hold5_2026-10-03.sh` | `e55bb9d1247ff8b3c2f95a06ba6221328bf3de25a532badb28b21a27636ec343` |
+
+The test file as first run had `d3e1ff9400aac3173ceda9513e49c200c7abccb7b2eb3afe00e802567c51a013`.
+
+Normalization: CRLF to LF, trailing whitespace stripped from each line, trailing blank lines dropped, lines joined
+with "\n" and no final newline.
+
 ---
 
 ---
