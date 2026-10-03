@@ -1,0 +1,1 @@
+wrote ring_FakeAlgiers.json: 486 circuits, HOLD3 mismatches {'R3': 0, 'L3T': 0}, 138 s

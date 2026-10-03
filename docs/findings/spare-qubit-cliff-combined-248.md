@@ -10543,6 +10543,317 @@ out = compile_for_hardware(qc, coupling_map=cm, basis_gates=basis, entangling_ba
 - **Above 16 touched qubits**, "select" keeps the release's circuit, because its estimate needs a statevector.
 - **Hardware has not been tested.** The effect "select" exploits is in Aer's thermal-relaxation model.
 
+
+---
+
+<!-- ===== Addendum 326 (source: spare-qubit-cliff-addendum-326-2026-10-03.md) ===== -->
+
+> **Note added when merging:** Exploratory diagnosis (not a test, nothing pre-registered) of release 2026-10-03.1's remaining gaps to Qiskit level 3, run at home at commit 6d251c1. Scripts and outputs are in data/2026-10-03/ring/diag/.
+
+## Addendum 326 -- Diagnosis (exploratory, not a test): release 2026-10-03.1's remaining gaps to Qiskit L3T have three different causes. Periodic chains on cx devices: synthesis of the routed circuit (same qubits, same cx count, about 50% more sx gates). F1 rings on cz devices: placement (59 against 54 two-qubit gates). QFT: one or two more two-qubit gates after routing. Choosing per circuit between the release's circuit and level 3's by the release's own excitation_cost comes within 0.000-0.005 of the measured better of the two (2026-10-03)
+
+**Status: exploratory diagnosis.**
+
+- **Nothing was pre-registered**, and nothing here is a verdict.
+- **Setting:** run at home on 2026-10-03 at commit `6d251c1` (release 2026-10-03.1).
+- **Circuits:** HOLD3's scored circuits (in-sample for the release, since Addendum 324 scored them):
+  - all 150 F3 periodic circuits;
+  - every second F1 circuit (216);
+  - all 120 F6 circuits.
+- **Devices:** FakeAuckland and FakeAlgiers (cx; the largest periodic-chain gaps); FakeTorino, FakeKingston and
+  FakeAachen (cz; the largest F1 gaps).
+- **Reproduction:** every R3 and L3T row reproduced HOLD3's C8 and L3T rows exactly (two-qubit count and noisy
+  infidelity; 0 differences on every device).
+- **Script:** [`data/2026-10-03/ring/diag/ring_diag.py`](../../data/2026-10-03/ring/diag/ring_diag.py).
+
+## 1. Arms
+
+| arm | what it is |
+|---|---|
+| R3 | release 2026-10-03.1 as recommended (`layout_search`, `target`, `placement_refine`, `final_resynthesis="select"`) |
+| L3T | Qiskit level 3 with the Target |
+| R3r3 | R3 with `routing_optimization_level=3` |
+| L3onR3 | level 3 pinned to R3's initial layout |
+| R3onL3 | the release pinned to L3T's initial layout |
+| PICK | per circuit, whichever of R3 and L3T has the lower `excitation_cost`. No new compile. |
+
+## 2. Results (infidelity relative to L3T; full table in `outputs/summary.md`)
+
+**F3 periodic:**
+
+| device | R3 | R3r3 | L3onR3 | R3onL3 | PICK | estimate agrees | same qubits R3/L3T | two-qubit R3/L3T | sx R3/L3T |
+|---|---|---|---|---|---|---|---|---|---|
+| FakeAuckland (cx) | 1.192 | 1.172 | 1.020 | 1.184 | 1.000 | 150 of 150 | 150 | 114/114 | 143/96 |
+| FakeAlgiers (cx) | 1.402 | 1.417 | 1.063 | 1.415 | 1.000 | 150 of 150 | 150 | 114/114 | 144/96 |
+| FakeTorino | 1.008 | 1.050 | 1.000 | 1.005 | 1.001 | 91 of 150 | 150 | 114/114 | 266/281 |
+| FakeKingston | 1.032 | 1.018 | 1.052 | 1.011 | 1.000 | 140 of 150 | 0 | 114/114 | 269/281 |
+| FakeAachen | 1.142 | 1.047 | 1.150 | 1.015 | 1.000 | 150 of 150 | 0 | 114/114 | 266/281 |
+
+**F1 (rings of cz):**
+
+| device | R3 | R3r3 | L3onR3 | R3onL3 | PICK | estimate agrees | same qubits R3/L3T | two-qubit R3/L3T |
+|---|---|---|---|---|---|---|---|---|
+| FakeAuckland (cx) | 1.002 | 0.994 | 1.001 | 0.991 | 0.992 | 173 of 216 | 180 | 53.5/53.8 |
+| FakeAlgiers (cx) | 1.030 | 1.007 | 1.029 | 1.003 | 0.998 | 151 of 216 | 180 | 53.5/53.8 |
+| FakeTorino | 1.071 | 1.001 | 1.057 | 0.992 | 0.984 | 212 of 216 | 0 | 59.2/53.7 |
+| FakeKingston | 1.059 | 1.006 | 1.061 | 0.991 | 0.996 | 207 of 216 | 108 | 57.3/53.8 |
+| FakeAachen | 1.077 | 1.003 | 1.075 | 0.988 | 0.992 | 209 of 216 | 108 | 57.3/53.8 |
+
+**F6 (QFT):**
+
+| device | R3 | R3r3 | L3onR3 | R3onL3 | PICK | estimate agrees | two-qubit R3/L3T |
+|---|---|---|---|---|---|---|---|
+| FakeAuckland (cx) | 1.054 | 0.972 | 1.004 | 1.046 | 1.003 | 88 of 120 | 31.7/29.7 |
+| FakeAlgiers (cx) | 1.060 | 1.004 | 0.995 | 1.031 | 0.998 | 112 of 120 | 31.7/29.7 |
+| FakeTorino | 1.001 | 0.999 | 0.983 | 0.984 | 0.998 | 94 of 120 | 31.3/31.3 |
+| FakeKingston | 1.047 | 1.002 | 1.018 | 0.987 | 0.999 | 99 of 120 | 33.0/31.7 |
+| FakeAachen | 1.003 | 0.993 | 0.970 | 0.980 | 0.996 | 102 of 120 | 33.0/31.7 |
+
+"Estimate agrees" counts the circuits where the lower `excitation_cost` is also the lower measured infidelity.
+PICK's distance from the measured better of R3 and L3T (the oracle) is 0.000-0.005.
+
+## 3. Reading
+
+**Periodic chains on the cx devices: synthesis of the routed circuit.**
+
+- R3 and L3T use the same qubits and the same 114 cx in every circuit.
+- R3 carries about 50% more sx gates and 30 more layers.
+- Neither re-placement (R3onL3) nor routing at level 3 (R3r3) helps.
+- Qiskit's own pipeline on R3's placement (L3onR3) comes within 2-6% of L3T.
+- Item 35's re-synthesis is applied after PSF-Zero has routed and absorbed SWAPs. It does not reach what level 3
+  obtains by synthesising before routing and optimising after.
+- The excitation estimate orders R3 against L3T correctly in every circuit on both devices.
+
+**F1 rings on the cz devices: placement.**
+
+- R3 uses 3.5-5.5 more two-qubit gates (SWAPs) than L3T, on a different qubit set.
+- Given L3T's placement, the release is slightly ahead of L3T (R3onL3 0.988-0.992).
+- Routing at level 3 (R3r3) also closes the gap (1.001-1.006), through its own layout stage.
+- The release's layout search (`psf_smart_layout`) finds no exact embedding for a ring. Its fallback places the ring
+  worse than level 3's layout stage does.
+
+**F6 (QFT): routing.**
+
+- R3 has 0-2 more two-qubit gates.
+- R3r3 and L3onR3 close most of the gap.
+
+**On FakeKingston and FakeAachen**, part of the periodic-chain gap is placement as well (different qubit sets;
+R3onL3 1.01-1.02).
+
+## 4. Consequences
+
+**One mechanism covers all three causes:** let the release compare its circuit with level 3's, by the estimate it
+already uses for item 35.
+
+- **On these circuits PICK** is:
+  - 1.000-1.001 of L3T on the periodic chains;
+  - 0.984-0.998 on F1;
+  - 0.996-1.003 on F6.
+- **The cost** is one level-3 compile, about 15 ms on these circuits.
+
+This is candidate c9 (changelog item 36, `compare_level3=True`), pre-registered in Addendum 327.
+
+**What PICK cannot do** is beat the better of its two inputs. The fixes that would remove the causes inside
+PSF-Zero, rather than sidestepping them, remain open:
+
+- synthesis before routing for routed chains;
+- a ring-aware layout search.
+
+## 5. Data (`data/2026-10-03/ring/diag/`)
+
+- `ring_diag.py`, `run_ring_diag.sh`;
+- `outputs/`, with the per-device json, logs, `env.txt` and `summary.md`.
+
+
+---
+
+<!-- ===== Addendum 327 (source: spare-qubit-cliff-addendum-327-2026-10-03.md) ===== -->
+
+> **Note added when merging:** Home pre-registration of HOLD4: candidate psf_compile 2026-10-03.c9 (choice against Qiskit level 3 by excitation_cost) on fresh held-out circuits and HOLD's nine devices. Locked by the git commit that adds this Addendum, the candidate patch with its tests and the evaluation scripts, pushed before the scored run. The predictions were written before the smoke run, which is disclosed in section 5.
+
+## Addendum 327 -- Pre-registration: candidate psf_compile 2026-10-03.c9 (choice against Qiskit level 3 by excitation_cost) on fresh held-out circuits (HOLD4). Does the release, comparing its circuit with level 3's, reach or pass level 3 on every family and close most of the distance to the AI front end? (2026-10-03)
+
+**Status: pre-registration, written at home before any scored run.**
+
+- **Lock:** the git commit that adds this document, the candidate
+  (`patches/psf_compile_c9_2026-10-03/psf_compile.py`, with its tests) and `benchmarks/hold4_eval.py` with its
+  runner, pushed before the scored run.
+- **No hardware:** fake devices and Aer noise only.
+- **The predictions (section 3) were written before c9's smoke run.**
+
+## 1. The candidate (changelog item 36)
+
+`compile_for_hardware(..., target=..., placement_refine=True, final_resynthesis="select", compare_level3=True)`:
+
+- **What it does.** After the release's circuit is finished (items 31, 33 and 35), the input is also compiled with
+  `transpile(qc, target=target, optimization_level=3, seed_transpiler=..., approximation_degree=1.0)`.
+- **When level 3's circuit is kept.** Two conditions:
+  - it has no instruction the target does not provide, no failed qubit, and no two-qubit gate in a direction the
+    target reports failed;
+  - its `excitation_cost` (item 35's estimate) is lower.
+- **Otherwise** the release's circuit is returned. That includes the case where either estimate cannot be made
+  (above 16 touched qubits).
+- **Default:** `compare_level3=False` is identical to release 2026-10-03.1, as checked by test.
+- **Base:** release 2026-10-03.1.
+
+**Why:**
+
+- Addendum 326 found three different causes behind the release's remaining gaps to level 3:
+  - synthesis of routed periodic chains on cx devices;
+  - placement of rings on cz devices;
+  - routing of QFT.
+- On those circuits a per-circuit choice by the release's own estimate came within 0.000-0.005 of the measured
+  better of the two compilers.
+- That was in-sample (HOLD3's circuits). This test asks whether it holds on new seeds, on all six families and on
+  nine devices.
+
+## 2. Design (`benchmarks/hold4_eval.py`)
+
+**Circuits (held out again):**
+
+- `hold_eval`'s families F1-F6 with the same per-cell sizes: 1,506 per device. The generator code is HOLD3's,
+  unchanged (checked textually).
+- New seed base 50,000,000 + ... (HOLD3 used 40,000,000, HOLD2 30,000,000, HOLD 20,000,000).
+
+**Arms:**
+
+| arm | what it is |
+|---|---|
+| R3 | release 2026-10-03.1 as its README recommends (`target`, `placement_refine=True`, `final_resynthesis="select"`) |
+| C9 | the candidate, the same call plus `compare_level3=True` |
+| A7 | the adopted AI front end |
+| L3T | Qiskit level 3 with the Target, `approximation_degree=1.0` |
+
+**Size:** 216 jobs.
+
+**Devices:** HOLD's nine.
+
+| type | devices |
+|---|---|
+| cx | FakeAuckland, FakeHanoiV2, FakeAlgiers, FakeGeneva |
+| cz | FakeTorino, FakeKingston, FakeFez, FakeMarrakesh, FakeAachen |
+
+**Metric:** as in GAP.
+
+## 3. Predictions (scored only by `hold4_eval.py score`; written before c9's smoke run)
+
+**P0, harness.** All of these must hold, or nothing below is scored:
+
+- 216 job files;
+- every noiseless infidelity <= 1e-6;
+- at most 5% of the circuits too wide.
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| H1 | the comparison never costs on average | C9/R3 <= 1.00 on all 9 devices | any > 1.02 |
+| H2 | the release reaches level 3 overall | C9/L3T <= 1.00 on at least 7 of 9 devices | > 1.03 on 3 or more |
+| H3 | ... and almost everywhere | C9/L3T <= 1.02 in >= 90% of the 63 cell-device pairs | < 70% |
+| H4 | periodic chains on cx devices are closed | F3 periodic C9/L3T <= 1.03 on all 4 cx devices | any >= 1.10 |
+| H5 | rings on cz devices are closed | F1 C9/L3T <= 1.02 on all 5 cz devices | any >= 1.05 |
+| H6 | it stays on the target | 0 failed-direction or failed-qubit uses and 0 off-target instructions by C9 | any |
+| H7 | it stays cheap | median compile time C9 <= 4 × R3 | > 10 × R3 |
+| H8 | it closes most of the distance to the AI front end | A7/C9 >= 0.96 on at least 7 of 9 devices | < 0.93 on 3 or more |
+| H9 | the estimate chooses well | where R3 and L3T differ, C9 has the lower measured infidelity of the two in >= 75% of circuits | < 55% |
+
+**How the thresholds were set** (disclosed):
+
+- **Bounds.** Before writing these predictions, the scorer was run on HOLD3's data with an oracle C9 (per circuit, the
+  measured better of R3 and L3T) as a plumbing check. On those circuits that bound gave:
+  - C9/R3 0.918-0.970;
+  - C9/L3T 0.962-0.992;
+  - A7/C9 0.957-0.999.
+
+  A real estimate can only do worse than the oracle. The thresholds of H2, H3 and H8 therefore leave room below
+  that bound.
+- **H9:** the estimate's agreement with measurement in Addendum 326 was 61-100% by device and family. 75% is a
+  moderate expectation.
+
+**Expectations, stated with the predictions:**
+
+- **H8 is the least certain.** a7 also compares several candidates including level 3's, with a state-aware estimate
+  of its own. C9 has only two candidates.
+- **H2 and H3 rest on the estimate** choosing well where the two compilers differ by little (F2, F4, F5).
+
+**Reported without prediction:**
+
+- the device table;
+- three cell tables (C9/R3, C9/L3T, A7/C9);
+- how often C9 chose level 3;
+- compile times;
+- failed uses counted both ways;
+- off-target instructions for every arm.
+
+## 4. What this will not establish
+
+- **Hardware.** The estimate relies on Aer's noise model, and real devices may differ.
+- **ecr devices.**
+- **Circuits wider than 16 touched qubits**, where C9 keeps the release's circuit.
+- **Whether fixes inside PSF-Zero would do better.** C9 selects between two compilers. It does not remove the causes
+  Addendum 326 found (synthesis before routing for routed chains; a ring-aware layout).
+
+## 5. Development (disclosed)
+
+### 5.1 How the candidate was built
+
+`psf_compile.py` was generated from release 2026-10-03.1 by a script. It inserts:
+
+- `COMPARE_STATS`, `_acceptable` and `_compare_level3`;
+- the `compare_level3` parameter, its check and its use at the end of the target path;
+- changelog item 36.
+
+The return at the end of the target path was rewritten so that item 35's result is assigned before item 36 runs.
+Nothing else in the release was changed.
+
+### 5.2 Tests (`test_c9_compare.py`, 10 cases)
+
+All 10 passed at home in 6.7 s, before the smoke run. They check:
+
+- the version strings;
+- that the default gives the same output as the release, with and without `target`, `placement_refine` and
+  `final_resynthesis="select"`, on FakeTorino and FakeAuckland;
+- that `compare_level3` without a target raises `ValueError`;
+- on FakeAuckland, FakeHanoiV2, FakeGeneva, FakeTorino and FakeKingston:
+  - the result is the release's circuit or level 3's, whichever has the lower estimate and is acceptable;
+  - it is exact;
+  - it is on the target;
+  - it uses no failed qubit or failed direction;
+- that level 3 is chosen on periodic XXZ rings on FakeAuckland (at least 2 of 3);
+- that `_acceptable` is direction-aware: it rejects FakeHanoiV2's failed cx(5, 8) and accepts cx(8, 5).
+
+### 5.3 Smoke run (not a result)
+
+The smoke run used 1 circuit per cell and its own seeds: 684 compilations, 216 jobs, about 255 s, on the evening of
+2026-10-03. Nothing was changed after it.
+
+- **P0** passed (noiseless infidelity max 6.0e-15; 0 too wide).
+- **Its verdict lines:**
+
+  | H1 | H2 | H3 | H4 | H5 | H6 | H7 | H8 | H9 |
+  |---|---|---|---|---|---|---|---|---|
+  | AMBIGUOUS | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED |
+
+- **H1** was ambiguous because of FakeGeneva (C9/R3 1.011). The other eight devices were 0.926-0.966.
+- **C9/L3T by device:** 0.931-0.999.
+- **F3 periodic on the cx devices:** 1.000 on all four (R3 1.108-1.415).
+- **F1 on the cz devices:** 0.937-0.995.
+- **A7/C9:** 0.942-1.019.
+- **H9:** 134 of 154 (0.870).
+- **C9 chose level 3** in 75 of 171 circuits.
+- **Median compile time:** R3 0.066 s, C9 0.086 s, A7 0.698 s, L3T 0.018 s.
+- **Failed uses and off-target instructions:** 0 by every arm.
+
+## 6. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `patches/psf_compile_c9_2026-10-03/psf_compile.py` | `e27d241776e8f16f407b5a478084eea977d9493c9352ebbb3c13d432bcbc0e9d` |
+| `patches/psf_compile_c9_2026-10-03/test_c9_compare.py` | `897bc5965ea5973fb72596babca5f90def92b412645ef629a8ea0791babeb965` |
+| `benchmarks/hold4_eval.py` | `a834164831ee51a9cc0093933356f059a425158b67b56591cd51736bf63a4c42` |
+| `benchmarks/run_hold4_2026-10-03.sh` | `488ccf2c0d26bb147ee534bdf903ecaae9d7b810b61394975cb94de299f2fa59` |
+
+Normalization: CRLF to LF, trailing whitespace stripped from each line, trailing blank lines dropped, lines joined
+with "\n" and no final newline.
+
 ---
 
 ---
