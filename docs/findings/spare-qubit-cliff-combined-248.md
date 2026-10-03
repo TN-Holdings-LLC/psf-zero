@@ -11387,6 +11387,142 @@ The test file as first run had `d3e1ff9400aac3173ceda9513e49c200c7abccb7b2eb3afe
 Normalization: CRLF to LF, trailing whitespace stripped from each line, trailing blank lines dropped, lines joined
 with "\n" and no final newline.
 
+
+---
+
+<!-- ===== Addendum 332 (source: spare-qubit-cliff-addendum-332-2026-10-03.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 331 (lock commit fb06c95), scored by the locked script and re-checked by benchmarks/hold5_verify.py, written after the run started and before any of its output was seen.
+
+## Addendum 332 -- Results: HOLD5 (Addendum 331). Candidate c10 (floor-placed candidate, choice by `pauli_cost`) closes the GHZ-chain gap to the AI front end a7 (F5 C10/C9 0.721-0.934 on three cx devices; a7 now 0.963-0.998 of C10 on every device) and keeps the release ahead of Qiskit L3T everywhere. It does not help on cz devices, where it costs 0.1-0.2%, and it slightly loses on F3 chains, where `pauli_cost` (Pauli-twirled) ranks amplitude-damping effects worse than `excitation_cost`. Six confirmed, two ambiguous (H1, H2), none refuted (2026-10-03)
+
+**Status: results of the pre-registered test in Addendum 331.**
+
+- **Lock:** commit `fb06c95`, pushed before the scored run (which started at 20:22 JST). Before the lock, all 11 tests
+  passed on the corrected test file (Addendum 331, section 5.2).
+- **Scoring:** by the locked `hold5_eval.py score`, and re-checked by `benchmarks/hold5_verify.py`. That script was
+  written after the run started and before any of its output was seen. It agrees on every verdict.
+- **Setting:** home (WSL2), 6 processes; 216 jobs, 54,216 circuit compilations, about 3,020 s.
+
+## 1. Verdicts
+
+| ID | Verdict | Numbers |
+|---|---|---|
+| P0 | **PASS** | 216 of 216 files; noiseless infidelity max 1.1e-7; 0 too wide |
+| H1 | **AMBIGUOUS** | C10/C9 <= 1.00 on 6 of 9 devices; FakeTorino 1.0016, FakeFez 1.0009, FakeAachen 1.0011 (none > 1.02) |
+| H2 | **AMBIGUOUS** | C10/C9 on the cx devices: Auckland 0.989, HanoiV2 0.998, Algiers 0.990 (0.9901), Geneva 0.980. Two are <= 0.99; none is > 1.00 |
+| H3 | **CONFIRMED** | C10/C9 on the cz devices: Torino 1.002, Kingston 0.999, Fez 1.001, Marrakesh 0.999, Aachen 1.001 |
+| H4 | **CONFIRMED** | F5 C10/C9 on the cx devices: Auckland 0.934, HanoiV2 1.001, Algiers 0.931, Geneva 0.721 |
+| H5 | **CONFIRMED** | A7/C10 on all 9 devices: 0.963-0.998 |
+| H6 | **CONFIRMED** | 0 failed-direction or failed-qubit uses and 0 off-target instructions by C10 (0 by every arm) |
+| H7 | **CONFIRMED** | median compile time C9 0.071 s, C10 0.149 s (2.1 ×) |
+| H8 | **CONFIRMED** | C10/L3T on all 9 devices: 0.963-0.993 |
+
+## 2. Numbers
+
+**By device:**
+
+| device | C10/C9 | C10/L3T | C9/L3T | A7/C10 | A7/C9 | F5 C10/C9 | F6 C10/C9 |
+|---|---|---|---|---|---|---|---|
+| FakeAuckland (cx) | 0.989 | 0.980 | 0.991 | 0.963 | 0.953 | 0.934 | 0.985 |
+| FakeHanoiV2 (cx) | 0.998 | 0.986 | 0.988 | 0.994 | 0.992 | 1.001 | 0.996 |
+| FakeAlgiers (cx) | 0.990 | 0.980 | 0.990 | 0.998 | 0.988 | 0.931 | 1.001 |
+| FakeGeneva (cx) | 0.980 | 0.963 | 0.983 | 0.981 | 0.961 | 0.721 | 0.782 |
+| FakeTorino | 1.002 | 0.989 | 0.988 | 0.995 | 0.997 | 1.000 | 1.003 |
+| FakeKingston | 0.999 | 0.989 | 0.990 | 0.992 | 0.991 | 1.000 | 1.002 |
+| FakeFez | 1.001 | 0.993 | 0.992 | 0.993 | 0.994 | 1.000 | 1.000 |
+| FakeMarrakesh | 0.999 | 0.967 | 0.968 | 0.994 | 0.993 | 0.950 | 1.005 |
+| FakeAachen | 1.001 | 0.987 | 0.986 | 0.994 | 0.996 | 1.000 | 1.006 |
+
+**By cell, C10/C9:**
+
+| cell | Auckland | Torino | Kingston | HanoiV2 | Algiers | Geneva | Fez | Marrakesh | Aachen |
+|---|---|---|---|---|---|---|---|---|---|
+| F1 | 0.998 | 1.000 | 1.001 | 0.992 | 0.999 | 0.999 | 1.001 | 1.001 | 1.001 |
+| F2 | 0.980 | 0.999 | 1.000 | 0.995 | 0.994 | 0.993 | 0.999 | 0.998 | 1.000 |
+| F3 open | 1.013 | 1.004 | 0.990 | 1.018 | 0.997 | 1.007 | 1.008 | 1.001 | 1.006 |
+| F3 periodic | 1.000 | 1.007 | 0.999 | 1.010 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| F4 | 0.962 | 0.999 | 1.000 | 0.992 | 0.962 | 1.000 | 0.999 | 0.997 | 1.000 |
+| F5 | 0.934 | 1.000 | 1.000 | 1.001 | 0.931 | 0.721 | 1.000 | 0.950 | 1.000 |
+| F6 | 0.985 | 1.003 | 1.002 | 0.996 | 1.001 | 0.782 | 1.000 | 1.005 | 1.006 |
+
+**Per circuit, C10 against C9:**
+
+| | better | worse |
+|---|---|---|
+| cx devices | 15-34% | 9-17% |
+| cz devices | 2-14% | 8-14% |
+
+**C10's choices** (all nine devices):
+
+| family | the release's circuit | level 3's | the floor-placed |
+|---|---|---|---|
+| F1 | 1,926 | 1,788 | 174 |
+| F2 | 892 | 1,109 | 159 |
+| F3 | 601 | 1,985 | 114 |
+| F4 | 1,409 | 689 | 332 |
+| F5 | 856 | 8 | 432 |
+| F6 | 534 | 504 | 42 |
+
+The full tables are in `outputs/score.md`; the re-computation is in `outputs/verify.txt`.
+
+## 3. Reading
+
+**What worked:**
+
+- **The GHZ-chain gap to a7 is closed.**
+  - F5 on FakeAuckland, FakeAlgiers and FakeGeneva improves by 7-28%.
+  - It now matches a7 within 0.0-1.2% (F5 A7/C10 0.988-1.000).
+  - On FakeGeneva the floor candidate also improves F6 by 22%.
+- **The distance to a7 shrinks on the cx devices:**
+
+  | device | A7/C9 | A7/C10 |
+  |---|---|---|
+  | FakeAuckland | 0.953 | 0.963 |
+  | FakeAlgiers | 0.988 | 0.998 |
+  | FakeGeneva | 0.961 | 0.981 |
+
+  On every device a7 is now within 3.7% of C10.
+- **Ahead of level 3, safe, affordable:**
+  - It stays ahead of level 3 on every device (0.963-0.993).
+  - It never uses a failed element.
+  - The compile time doubles but stays at about 0.15 s, a fifth of a7's.
+
+**What did not work:**
+
+- **No gain on the cz devices.** It loses 0.1-0.2% on three of them.
+- **It loses on F3 (XXZ chains)** by up to 1.8% (FakeHanoiV2 F3 open 1.018).
+- **Why this is so.** F3 is where Addendum 322 found amplitude damping to dominate, and where `excitation_cost`
+  ranked R3 against L3T correctly in 143-150 of 150 circuits.
+  - `pauli_cost` twirls relaxation into symmetric Pauli errors. It therefore loses the non-unital part, the decay of
+    |1> to |0>, that `excitation_cost` sees.
+  - `pauli_cost` is better where dephasing decides (GHZ states). `excitation_cost` is better where amplitude damping
+    decides (excited populations during long cx gates).
+- **H2 missed by a hair.** FakeAlgiers came in at 0.9901 against a threshold of 0.99.
+
+## 4. Consequences
+
+**Adoption** is the owner's decision. The data support:
+
+- `compare_floor=True` with `candidate_score="pauli"` on cx devices, where it gains up to 2% overall and up to 28% on
+  GHZ-type circuits;
+- no change on cz devices.
+
+The data do not support recommending it for every device.
+
+**Next:** an estimate that keeps both effects.
+
+- Amplitude damping as `excitation_cost` counts it: the excited population times duration / T1.
+- Pure dephasing as `pauli_cost` counts it: the Z component from T2 beyond T1, times (1 - <Z>^2).
+- Plus the reported error above the thermal floor.
+
+Addendum 330's and this test's data would show, in-sample, whether such a combined score ranks better than either.
+
+## 5. Data (`data/2026-10-03/hold5/outputs/`)
+
+- 216 job files and their logs, `env.txt`, `score.md`, `score_log.txt`, `verify.txt`.
+- Local paths were replaced.
+
 ---
 
 ---
