@@ -9513,6 +9513,124 @@ The smoke run used 1 circuit per cell and its own seed base: 684 compilations, 2
 | `benchmarks/hold_eval.py` | `bd087fa5c922653baa2b3311792d91ce0405a9ceea9a4829870fe5a2253afaf8` |
 | `benchmarks/run_hold_2026-10-03.sh` | `45a2af760aa003bf81fd37fa5e77422fea03f7b0b8b3e6090e88004925019786` |
 
+
+---
+
+<!-- ===== Addendum 319 (source: spare-qubit-cliff-addendum-319-2026-10-03.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 318 (lock commit 35637f9), scored by the locked script and re-checked by benchmarks/hold_verify.py, written after the locked score was seen.
+
+## Addendum 319 -- Results: HOLD (Addendum 318). All seven confirmed on held-out circuits and six new devices: release 2026-10-02.2's placement_refine improves on every device (C5/C3 0.62-0.90, stronger on the new devices than on the seen ones), matches Qiskit L3T on chains on all five cz devices, and the AI front end a7 beats L3T on all nine devices (0.94-0.99) and on the new QFT family. The C3 arm's 4,039 "failed" uses are one-way coupler failures on FakeHanoiV2, routed in the healthy direction (2026-10-03)
+
+**Status: results of the pre-registered test in Addendum 318.**
+
+- **Lock:** commit `35637f9` (07:53 JST), pushed before the scored run.
+- **Scoring:** by the locked `hold_eval.py score`, and re-checked by `benchmarks/hold_verify.py`. That script was
+  written after the locked score was seen.
+- **Setting:** home (WSL2), 6 processes; 216 jobs, 54,216 circuit compilations, 2,502 s.
+
+## 1. Verdicts
+
+| ID | Verdict | Numbers |
+|---|---|---|
+| P0 | **PASS** | 216 of 216 files; noiseless infidelity max 2.9e-9; 0 too wide |
+| H1 | **CONFIRMED** | C5/C3 on all 9 devices: 0.617-0.901 |
+| H2 | **CONFIRMED** | C5/C3 <= 1.00 in 62 of 63 cell-device pairs (98.4%; the exception is FakeAlgiers F3 periodic, 1.041) |
+| H3 | **CONFIRMED** | chains C5/L3T on the cz devices: Torino 0.997, Kingston 1.000, Fez 0.993, Marrakesh 1.022, Aachen 0.995 |
+| H4 | **CONFIRMED** | A7/L3T on all 9 devices: 0.943-0.987 |
+| H5 | **CONFIRMED** | A7/C5 on all 9 devices: 0.880-0.962 |
+| H6 | **CONFIRMED** | 0 failed-element uses by C5 and by A7 |
+| H7 | **CONFIRMED** | F6 (QFT) A7/L3T on all 9 devices: 0.653-0.982 |
+
+## 2. Numbers
+
+**By device:**
+
+| device | C5/C3 | C5/L3T | A7/L3T | A7/C5 | C3/L3T | chains C5/L3T | A7 chose L3T |
+|---|---|---|---|---|---|---|---|
+| FakeAuckland | 0.901 | 1.056 | 0.945 | 0.894 | 1.172 | 1.097 | 470 |
+| FakeTorino | 0.761 | 1.024 | 0.985 | 0.962 | 1.347 | 0.997 | 155 |
+| FakeKingston | 0.866 | 1.041 | 0.982 | 0.943 | 1.202 | 1.000 | 114 |
+| FakeHanoiV2 (new) | 0.853 | 1.065 | 0.981 | 0.921 | 1.249 | 1.141 | 587 |
+| FakeAlgiers (new) | 0.811 | 1.109 | 0.976 | 0.880 | 1.367 | 1.196 | 513 |
+| FakeGeneva (new) | 0.721 | 1.010 | 0.943 | 0.934 | 1.402 | 1.078 | 515 |
+| FakeFez (new) | 0.667 | 1.041 | 0.987 | 0.948 | 1.561 | 0.993 | 102 |
+| FakeMarrakesh (new) | 0.617 | 1.026 | 0.963 | 0.939 | 1.663 | 1.022 | 112 |
+| FakeAachen (new) | 0.689 | 1.056 | 0.983 | 0.931 | 1.533 | 0.995 | 130 |
+
+**Seen against new devices** (pooled):
+
+| group | C5/C3 | C5/L3T | A7/L3T | A7/C5 |
+|---|---|---|---|---|
+| seen (3 devices) | 0.849 | 1.044 | 0.963 | 0.922 |
+| new (6 devices) | 0.747 | 1.056 | 0.970 | 0.919 |
+
+**Per circuit:**
+
+- A7 <= L3T in 77.5-92.4% of circuits, by device.
+- C5 <= C3 in 94.3-100% of circuits, except FakeAlgiers (74.2%).
+
+The full cell table is in `outputs/score.md`.
+
+## 3. Reading
+
+- **The claims made in-sample on 2026-10-02 hold out of sample.**
+  - New seeds, a new family and six devices that no compiler test had used change none of the seven verdicts.
+- **placement_refine helps more on the new devices than on the seen ones** (0.747 against 0.849).
+  - On every cz device it brings chains to L3T's level (0.99-1.02).
+  - On the cx devices a chain gap to L3T remains (1.08-1.20), as on FakeAuckland (Addendum 310). The release scores
+    by reported errors, which on cx devices can lie below the T1/T2 floor (Addendum 293).
+- **The AI front end a7 is ahead of L3T on every device**, by 1.3-5.7%, and ahead of the release alone by 3.8-12%.
+  - The new QFT family is where it leads most, up to 0.65 × L3T on FakeGeneva.
+  - It chose L3T's own output in 102-587 circuits per device, most often on the cx devices.
+- **Where to look next:**
+  - Per circuit, A7 still loses to L3T in 8-22% of circuits. On average those losses are outweighed.
+  - FakeAlgiers is the one device where placement_refine makes a quarter of circuits slightly worse (C5 <= C3 in
+    74.2%), although it helps there on average (0.811).
+
+## 4. The C3 arm's flagged uses (not a prediction)
+
+The smoke run showed the C3 arm (release with `target`, placement_refine off) touching a failed element 33 times
+(Addendum 318, section 5.1); the scored run shows 4,039 gates in 191 circuits.
+
+**Where.** All are on FakeHanoiV2, in F2 (2), F3 periodic (150) and F4 (39).
+
+**What those couplers are.** FakeHanoiV2's snapshot reports two one-way failures (read from the A0 data, Addendum
+293):
+
+- **cx(5, 8) error 1.0, but cx(8, 5) 0.009;**
+- **cx(19, 20) error 1.0, but cx(20, 19) 0.004.**
+
+FakeGeneva has two more such one-way entries, (16, 14) and (20, 19). FakeAlgiers has a two-way failure on (15, 18).
+The data do not say which of FakeHanoiV2's two couplers each circuit touched.
+
+**Why C3 touched it:**
+
+- Item 31's `prune_coupling_map` removes a directed edge only when that direction is reported failed. This is
+  documented: "the error ... on (a, b) -- or on (b, a) if (a, b) is not listed".
+- So each such coupler stays usable in its healthy direction.
+- This harness counts a coupler as failed if either direction is reported failed, so it flagged those uses.
+- The release's own check (`_uses_failed`) is also direction-agnostic. It therefore triggers a recompile that
+  still uses the healthy direction: wasted work, not a wrong result.
+
+**Evidence that only the healthy direction was used.**
+
+- The flagged C3 circuits have infidelity in the normal range: F3 periodic mean 0.577, against 0.487 for C5 and 0.381
+  for L3T on the same circuits.
+- 24 uses of a gate with error 1.0 would leave the six qubits nearly fully mixed (infidelity about 0.98).
+
+**Consequence.**
+
+- No physically failed gate was used by any arm.
+- Whether a one-way failure should retire the whole coupler is a policy question for a later candidate. Making
+  `_uses_failed` direction-aware would remove the wasted recompile.
+- C5 and A7 avoid the coupler entirely (0 uses under the stricter count).
+
+## 5. Data (`data/2026-10-03/hold/outputs/`)
+
+- 216 job files and their logs, `env.txt`, `run.log`, `score.md`, `score_log.txt`, `verify.txt`.
+- Local paths were replaced.
+
 ---
 
 ---

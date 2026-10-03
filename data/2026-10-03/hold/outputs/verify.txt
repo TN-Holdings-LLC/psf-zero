@@ -1,0 +1,35 @@
+files 216, flags 0, rows 54216
+P0 PASS noiseless max 2.90e-09, too wide 0
+H1 CONFIRMED {'Auckland': 0.9008, 'Torino': 0.7605, 'Kingston': 0.8659, 'HanoiV2': 0.8526, 'Algiers': 0.8114, 'Geneva': 0.7206, 'Fez': 0.6667, 'Marrakesh': 0.6169, 'Aachen': 0.6886}
+H2 CONFIRMED 0.9841 of 63; worst cell 1.041
+H3 CONFIRMED {'Torino': 0.997, 'Kingston': 0.9995, 'Fez': 0.9927, 'Marrakesh': 1.022, 'Aachen': 0.9947}
+H4 CONFIRMED {'Auckland': 0.9446, 'Torino': 0.9852, 'Kingston': 0.9818, 'HanoiV2': 0.9808, 'Algiers': 0.9762, 'Geneva': 0.943, 'Fez': 0.9867, 'Marrakesh': 0.9632, 'Aachen': 0.9832}
+H5 CONFIRMED {'Auckland': 0.8943, 'Torino': 0.9617, 'Kingston': 0.9433, 'HanoiV2': 0.9213, 'Algiers': 0.8802, 'Geneva': 0.9335, 'Fez': 0.9478, 'Marrakesh': 0.9391, 'Aachen': 0.9313}
+H6 CONFIRMED {'C3': 4039, 'C5': 0, 'A7': 0, 'L3T': 0}
+H7 CONFIRMED {'Auckland': 0.9227, 'Torino': 0.9822, 'Kingston': 0.9588, 'HanoiV2': 0.9395, 'Algiers': 0.966, 'Geneva': 0.6526, 'Fez': 0.9522, 'Marrakesh': 0.8852, 'Aachen': 0.9348}
+
+seen vs new (pooled over devices in the group):
+  seen C5/C3 0.8489 (n=4518)
+  seen A7/L3T 0.9625 (n=4518)
+  seen A7/C5 0.9218 (n=4518)
+  seen C5/L3T 1.0442 (n=4518)
+  new  C5/C3 0.7465 (n=9036)
+  new  A7/L3T 0.9704 (n=9036)
+  new  A7/C5 0.9190 (n=9036)
+  new  C5/L3T 1.0559 (n=9036)
+
+per circuit, A7 <= L3T and C5 <= C3, by device:
+  FakeAuckland   A7<=L3T 0.924  C5<=C3 0.943  A7 chose L3T 470
+  FakeTorino     A7<=L3T 0.821  C5<=C3 0.999  A7 chose L3T 155
+  FakeKingston   A7<=L3T 0.859  C5<=C3 0.991  A7 chose L3T 114
+  FakeHanoiV2    A7<=L3T 0.811  C5<=C3 0.971  A7 chose L3T 587
+  FakeAlgiers    A7<=L3T 0.775  C5<=C3 0.742  A7 chose L3T 513
+  FakeGeneva     A7<=L3T 0.890  C5<=C3 0.999  A7 chose L3T 515
+  FakeFez        A7<=L3T 0.792  C5<=C3 1.000  A7 chose L3T 102
+  FakeMarrakesh  A7<=L3T 0.899  C5<=C3 0.999  A7 chose L3T 112
+  FakeAachen     A7<=L3T 0.807  C5<=C3 0.995  A7 chose L3T 130
+
+C3 circuits touching a flagged element, by (device, family): {('FakeHanoiV2', 'F3'): 150, ('FakeHanoiV2', 'F4'): 39, ('FakeHanoiV2', 'F2'): 2}
+median compile s: {'C3': 0.0255, 'C5': 0.0258, 'A7': 0.676, 'L3T': 0.0147}
+off-target: {'C3': 0, 'C5': 0, 'A7': 0, 'L3T': 0}
+flags: none
