@@ -10329,6 +10329,131 @@ Nothing else in the release was changed.
 Normalization: CRLF to LF, trailing whitespace stripped from each line, trailing blank lines dropped, lines joined
 with "\n" and no final newline.
 
+
+---
+
+<!-- ===== Addendum 324 (source: spare-qubit-cliff-addendum-324-2026-10-03.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 323 (lock commit c480953), scored by the locked script and re-checked by benchmarks/hold3_verify.py, written after the run finished and before any of its output was seen.
+
+## Addendum 324 -- Results: HOLD3 (Addendum 323). Candidate c8 (final two-qubit re-synthesis by Qiskit, kept per circuit by an excitation-aware estimate) improves on the release on all nine devices (C8/C5 0.969-0.998) and closes the cx open-chain gap to Qiskit L3T from 1.09-1.21 to 1.01-1.05. Eight predictions confirmed, one ambiguous (H8), none refuted. The estimate picks the better circuit in 88% of circuits and captures 87-92% of the oracle's gain on the cx devices (2026-10-03)
+
+**Status: results of the pre-registered test in Addendum 323.**
+
+- **Lock:** commit `c480953`, pushed before the scored run (which started at 15:08 JST).
+- **Scoring:** by the locked `hold3_eval.py score`, and re-checked by `benchmarks/hold3_verify.py`. That script was
+  written after the run finished and before any of its output was seen. It agrees on every verdict.
+- **Setting:** home (WSL2), 6 processes; 270 jobs, 67,770 circuit compilations, 2,794 s.
+
+## 1. Verdicts
+
+| ID | Verdict | Numbers |
+|---|---|---|
+| P0 | **PASS** | 270 of 270 files; noiseless infidelity max 3.7e-9; 0 too wide |
+| H1 | **CONFIRMED** | C8/C5 <= 1.00 on all 9 devices: 0.969-0.998 |
+| H2 | **CONFIRMED** | C8/C5 on the cx devices: Auckland 0.983, HanoiV2 0.971, Algiers 0.969, Geneva 0.986 (all four <= 0.99) |
+| H3 | **CONFIRMED** | C8/C5 on the cz devices: Torino 0.998, Kingston 0.987, Fez 0.995, Marrakesh 0.989, Aachen 0.993 |
+| H4 | **CONFIRMED** | F3 open C8/L3T on the cx devices: Auckland 1.014, HanoiV2 1.042, Algiers 1.051, Geneva 1.011 (three <= 1.05) |
+| H5 | **CONFIRMED** | chains (F3 open + F5) C8/L3T: Auckland 1.012, HanoiV2 1.037, Algiers 1.045, Geneva 1.009 |
+| H6 | **CONFIRMED** | 0 failed-direction or failed-qubit uses and 0 off-target instructions by C8 (0 by every arm) |
+| H7 | **CONFIRMED** | median compile time C5 0.026 s, C8 0.042 s (1.6 ×) |
+| H8 | **AMBIGUOUS** | C8/C5 <= 1.00 in 20 of the 28 cx cell-device pairs (71.4%; threshold 80%) |
+| H9 | **CONFIRMED** | C8 has the lower measured infidelity of C5 and C7F in 11,977 of 13,554 circuits (88.4%) |
+
+**On H8.** Every one of the eight cx cells above 1.00 is within 1.0005-1.0048. Four of them are F2 (QAOA). The
+selection's errors there are many and small: it keeps the release's circuit in 94% of F2 circuits, and the cells are
+close to 1.000 either way.
+
+## 2. Numbers
+
+**By device:**
+
+| device | C8/C5 | C7F/C5 | oracle/C5 | C8/L3T | C5/L3T | F3 open C8/L3T | F3 open C5/L3T | A7/C8 | A7/L3T |
+|---|---|---|---|---|---|---|---|---|---|
+| FakeAuckland (cx) | 0.983 | 0.999 | 0.981 | 1.037 | 1.055 | 1.014 | 1.107 | 0.913 | 0.947 |
+| FakeHanoiV2 (cx) | 0.971 | 0.987 | 0.968 | 1.034 | 1.065 | 1.042 | 1.156 | 0.949 | 0.981 |
+| FakeAlgiers (cx) | 0.969 | 0.985 | 0.967 | 1.075 | 1.109 | 1.051 | 1.214 | 0.910 | 0.978 |
+| FakeGeneva (cx) | 0.986 | 1.013 | 0.984 | 0.992 | 1.006 | 1.011 | 1.089 | 0.949 | 0.941 |
+| FakeTorino | 0.998 | 1.013 | 0.997 | 1.021 | 1.023 | 0.992 | 0.997 | 0.964 | 0.985 |
+| FakeKingston | 0.987 | 1.012 | 0.985 | 1.026 | 1.039 | 0.987 | 0.999 | 0.956 | 0.981 |
+| FakeFez | 0.995 | 1.015 | 0.994 | 1.034 | 1.040 | 0.987 | 0.993 | 0.953 | 0.985 |
+| FakeMarrakesh | 0.989 | 1.013 | 0.988 | 1.015 | 1.026 | 0.989 | 1.017 | 0.946 | 0.960 |
+| FakeAachen | 0.993 | 1.023 | 0.993 | 1.048 | 1.055 | 0.989 | 0.994 | 0.937 | 0.981 |
+
+"oracle" takes, per circuit, the better of C5 and C7F as measured. It is a bound, not a compiler.
+
+**Share of the oracle's gain over C5 that C8 captures:** 87-92% on the cx devices, 60% on FakeTorino.
+
+**By cell, C8/C5:**
+
+| cell | Auckland | Torino | Kingston | HanoiV2 | Algiers | Geneva | Fez | Marrakesh | Aachen |
+|---|---|---|---|---|---|---|---|---|---|
+| F1 | 0.997 | 1.000 | 0.999 | 0.990 | 1.001 | 1.001 | 0.999 | 0.999 | 0.999 |
+| F2 | 1.002 | 1.000 | 1.000 | 1.005 | 1.004 | 1.001 | 1.000 | 1.000 | 1.000 |
+| F3 open | 0.916 | 0.995 | 0.988 | 0.901 | 0.866 | 0.928 | 0.994 | 0.972 | 0.995 |
+| F3 periodic | 0.967 | 0.995 | 0.947 | 0.931 | 0.925 | 0.967 | 0.981 | 0.969 | 0.974 |
+| F4 | 0.997 | 0.998 | 0.999 | 0.988 | 0.993 | 1.000 | 0.997 | 0.997 | 0.997 |
+| F5 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| F6 | 0.993 | 1.000 | 1.001 | 0.993 | 1.003 | 1.000 | 0.999 | 1.000 | 0.999 |
+
+**C8's choices** (all nine devices):
+
+| family | chose the re-synthesis | kept the release's circuit |
+|---|---|---|
+| F1 | 856 | 3,032 |
+| F2 | 125 | 2,035 |
+| F3 | 1,994 | 706 |
+| F4 | 907 | 1,523 |
+| F5 | 44 | 1,252 |
+| F6 | 200 | 880 |
+
+The full cell tables are in `outputs/score.md`; the re-computation is in `outputs/verify.txt`.
+
+## 3. Reading
+
+**What c8 does:**
+
+- **Unconditional re-synthesis (C7F) is a mixed bag on new seeds, as in c7's smoke run.**
+  - It helps on three cx devices (0.985-0.999).
+  - It costs 1.2-2.3% on all five cz devices and on FakeGeneva.
+- **The excitation-aware estimate turns that into a gain everywhere.**
+  - It picks the measured-better circuit in 88% of circuits.
+  - It gets within 0.0003-0.003 of the oracle on every device.
+- **It removes most of the open-chain gap on the cx devices** that Addenda 310, 319 and 321 left open and that
+  Addendum 322 traced to thermal relaxation: from 1.09-1.21 down to 1.01-1.05.
+- **It is safe and cheap:**
+  - It never uses a failed element, and nothing goes off the target.
+  - It costs 16 ms more per compile.
+
+**What is left:**
+
+- **F3 periodic on the cx devices is still 12-40% behind L3T.** The re-synthesis helps there (0.93-0.97) but does not
+  close the gap. Addendum 322 already showed that routing is involved.
+- **F1 on the cz devices** (1.06-1.08 against L3T on four of five) is untouched. It is not a thermal-relaxation effect.
+- **The AI front end a7 is still ahead of C8** by 3.6-9.0% on every device.
+- **The smoke run was optimistic for F3 open.** It put C8/L3T below 1.00 on all four cx devices, against 1.01-1.05
+  here, which is the reason for Addendum 323's caveat.
+
+## 4. Consequences
+
+**Adoption.** Whether to adopt c8 is the owner's decision. The data support:
+
+- offering `final_resynthesis="select"` with a target;
+- recommending it on every device type tested.
+
+The data do not support making it the default without a target, where it is not defined.
+
+**Next:**
+
+- F3 periodic (routing) on cx devices;
+- F1 on cz devices;
+- exposure-aware choice of frames inside PSF-Zero's own synthesis, which might beat Qiskit's re-synthesis.
+
+## 5. Data (`data/2026-10-03/hold3/outputs/`)
+
+- 270 job files and their logs, `env.txt`, `score.md`, `score_log.txt`, `verify.txt`.
+- Local paths were replaced.
+
 ---
 
 ---

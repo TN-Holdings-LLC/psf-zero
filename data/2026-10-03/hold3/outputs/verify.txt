@@ -1,0 +1,39 @@
+files 270, rows 67770, git_head ['c480953'], versions [('2026-10-02.2', '2026-10-03.c8', '2026-10-02.a7', '2603bc2decea', '0064e8cf7efe')]
+P0 PASS noiseless max 3.68e-09, too wide 0
+H1 CONFIRMED {'Auckland': 0.9828, 'Torino': 0.998, 'Kingston': 0.9871, 'HanoiV2': 0.9712, 'Algiers': 0.9693, 'Geneva': 0.986, 'Fez': 0.9947, 'Marrakesh': 0.9892, 'Aachen': 0.993}
+H2 CONFIRMED {'Auckland': 0.9828, 'HanoiV2': 0.9712, 'Algiers': 0.9693, 'Geneva': 0.986}
+H3 CONFIRMED {'Torino': 0.998, 'Kingston': 0.9871, 'Fez': 0.9947, 'Marrakesh': 0.9892, 'Aachen': 0.993}
+H4 CONFIRMED {'Auckland': 1.0138, 'HanoiV2': 1.0417, 'Algiers': 1.0511, 'Geneva': 1.0106}
+H5 CONFIRMED {'Auckland': 1.012, 'HanoiV2': 1.0365, 'Algiers': 1.0446, 'Geneva': 1.0091}
+H6 CONFIRMED failed uses 0, off-target circuits 0
+H7 CONFIRMED {'C5': 0.026, 'C7F': 0.0286, 'C8': 0.0416, 'A7': 0.6928, 'L3T': 0.0145}
+H8 AMBIGUOUS 0.7143 of 28; cells > 1: {'Auckland F2': 1.0015, 'HanoiV2 F2': 1.0048, 'Algiers F1': 1.0005, 'Algiers F2': 1.0042, 'Algiers F6': 1.0035, 'Geneva F1': 1.0006, 'Geneva F2': 1.0006, 'Geneva F4': 1.0001}
+H9 CONFIRMED 11977 of 13554 (0.8837)
+  C8 equals C5 in 9428 circuits, equals C7F in 4126 (of 13554)
+
+by device: C8/C5, C7F/C5, oracle/C5, C8/L3T, C5/L3T, F3o C8/L3T, chains C8/L3T, A7/C8, A7/L3T
+  FakeAuckland   0.9828 0.9990 0.9809 1.0370 1.0551 1.0138 1.0120 0.9129 0.9466
+  FakeTorino     0.9980 1.0128 0.9967 1.0210 1.0231 0.9915 0.9924 0.9642 0.9845
+  FakeKingston   0.9871 1.0124 0.9852 1.0257 1.0391 0.9872 0.9885 0.9561 0.9807
+  FakeHanoiV2    0.9712 0.9867 0.9684 1.0339 1.0645 1.0417 1.0365 0.9491 0.9813
+  FakeAlgiers    0.9693 0.9850 0.9666 1.0746 1.1086 1.0511 1.0446 0.9099 0.9778
+  FakeGeneva     0.9860 1.0128 0.9839 0.9918 1.0059 1.0106 1.0091 0.9489 0.9412
+  FakeFez        0.9947 1.0146 0.9944 1.0343 1.0398 0.9869 0.9883 0.9526 0.9853
+  FakeMarrakesh  0.9892 1.0130 0.9884 1.0149 1.0260 0.9885 0.9897 0.9462 0.9603
+  FakeAachen     0.9930 1.0229 0.9927 1.0478 1.0552 0.9894 0.9904 0.9367 0.9815
+
+per circuit: C8 < C5, C8 > C5, A7 <= L3T, C8 <= L3T
+  FakeAuckland   0.327 0.095 0.898 0.469
+  FakeTorino     0.116 0.015 0.833 0.521
+  FakeKingston   0.175 0.026 0.855 0.477
+  FakeHanoiV2    0.424 0.104 0.797 0.536
+  FakeAlgiers    0.328 0.158 0.762 0.434
+  FakeGeneva     0.226 0.052 0.881 0.578
+  FakeFez        0.192 0.030 0.801 0.426
+  FakeMarrakesh  0.232 0.027 0.896 0.645
+  FakeAachen     0.186 0.028 0.813 0.482
+
+C8 choices by family: {('F1', 'applied,selected_original'): 3032, ('F1', 'applied,selected_resynthesised'): 856, ('F2', 'applied,selected_original'): 2035, ('F2', 'applied,selected_resynthesised'): 125, ('F3', 'applied,selected_original'): 706, ('F3', 'applied,selected_resynthesised'): 1994, ('F4', 'applied,selected_original'): 1523, ('F4', 'applied,selected_resynthesised'): 907, ('F5', 'applied,selected_original'): 1252, ('F5', 'applied,selected_resynthesised'): 44, ('F6', 'applied,selected_original'): 880, ('F6', 'applied,selected_resynthesised'): 200}
+off-target by arm: {'C5': 0, 'C7F': 0, 'C8': 0, 'A7': 0, 'L3T': 0}
+failed uses (coupler, direction) by arm: {'C5': (0, 0), 'C7F': (0, 0), 'C8': (0, 0), 'A7': (0, 0), 'L3T': (0, 0)}
+flags: 0 []
