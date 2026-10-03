@@ -9631,6 +9631,175 @@ The data do not say which of FakeHanoiV2's two couplers each circuit touched.
 - 216 job files and their logs, `env.txt`, `run.log`, `score.md`, `score_log.txt`, `verify.txt`.
 - Local paths were replaced.
 
+
+---
+
+<!-- ===== Addendum 320 (source: spare-qubit-cliff-addendum-320-2026-10-03.md) ===== -->
+
+> **Note added when merging:** Home pre-registration of HOLD2: candidate psf_compile 2026-10-03.c6 (re-placement scored by max(reported error, T1/T2 floor)) on fresh held-out circuits and HOLD's nine devices. Locked by the git commit that adds this Addendum, the candidate patch with its tests and the evaluation scripts, pushed before the scored run. The predictions were written before the smoke run, which is disclosed in section 5.
+
+## Addendum 320 -- Pre-registration: candidate psf_compile 2026-10-03.c6 (floor-aware re-placement score) on fresh held-out circuits (HOLD2). Does scoring by max(reported error, T1/T2 floor) close the release's chain gap on cx devices without costing anything on cz devices? (2026-10-03)
+
+**Status: pre-registration, written at home before any scored run.**
+
+- **Lock:** the git commit that adds this document, the candidate
+  (`patches/psf_compile_c6_2026-10-03/psf_compile.py`, with its tests) and `benchmarks/hold2_eval.py` with its
+  runner, pushed before the scored run.
+- **No hardware:** fake devices and Aer noise only.
+- **The predictions (section 3) were written before the smoke run.**
+
+## 1. The candidate (changelog item 34)
+
+`compile_for_hardware(..., target=..., placement_refine=True, placement_score="floor")`:
+
+- **What changes.** The re-placement of item 33 is scored on a copy of the Target in which every instruction's error
+  is max(reported error, decoherence floor).
+- **The floor:** the average gate infidelity of thermal relaxation on the gate's qubits for its duration, with T2
+  capped at 2 T1. It is the closed form the AI front end has used since a3.
+- **What does not change:** the compile, the routing and item 31's backstop all use the original Target.
+- **The copy** is built per call and never cached.
+- **Default:** `placement_score="reported"` is identical to release 2026-10-02.2, as checked by test.
+
+**Why:**
+
+- On the cx devices the release still trails Qiskit L3T on chains (FakeAuckland 1.10 in Addendum 310; 1.08-1.20 on
+  four cx devices in Addendum 319).
+- On those devices reported errors often lie below the T1/T2 floor (Addendum 293).
+- Addendum 308 found the floor-aware score ordering arms better than the reported one only on FakeAuckland.
+
+## 2. Design (`benchmarks/hold2_eval.py`)
+
+**Circuits (held out again):**
+
+- `hold_eval`'s families F1-F6 with the same per-cell sizes: 1,506 per device. The generator code was checked
+  textually against `hold_eval.py`.
+- New seed base 30,000,000 + ... (HOLD used 20,000,000 + ..., GAP 1,000,000-5,500,000).
+
+**Arms:**
+
+| arm | what it is |
+|---|---|
+| C5 | release 2026-10-02.2, `target`, `placement_refine=True` |
+| C6 | the candidate, the same call plus `placement_score="floor"` |
+| A7 | the adopted AI front end |
+| L3T | Qiskit level 3 with the Target, `approximation_degree=1.0` |
+
+**Devices:** HOLD's nine.
+
+| type | devices |
+|---|---|
+| cx | FakeAuckland, FakeHanoiV2, FakeAlgiers, FakeGeneva |
+| cz | FakeTorino, FakeKingston, FakeFez, FakeMarrakesh, FakeAachen |
+
+**Metric:** as in GAP.
+
+**Failed-element uses** are counted two ways:
+
+- by coupler: either direction reported failed, as in HOLD;
+- by direction: the gate's own direction reported failed, which is what matters physically (Addendum 319, section 4).
+
+## 3. Predictions (scored only by `hold2_eval.py score`; written before the smoke run)
+
+**P0, harness.** All of these must hold, or nothing below is scored:
+
+- 216 job files;
+- every noiseless infidelity <= 1e-6;
+- at most 5% of the circuits too wide.
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| H1 | the floor score never costs on average | C6/C5 <= 1.00 on all 9 devices | any > 1.02 |
+| H2 | it helps on cx devices | C6/C5 <= 0.98 on at least 3 of the 4 cx devices | > 1.00 on 2 or more cx devices |
+| H3 | it is neutral on cz devices | C6/C5 within 0.98-1.02 on all 5 cz devices | any outside 0.95-1.05 |
+| H4 | it closes most of the cx chain gap | chains (F3o + F5) C6/L3T <= 1.05 on at least 3 of 4 cx devices | >= 1.10 on all 4 |
+| H5 | it never uses a failed direction | 0 failed-direction or failed-qubit uses by C6 | any |
+| H6 | it stays cheap | median compile time C6 <= 3 × C5 | > 10 × C5 |
+| H7 | the cx gain is broad | on the cx devices, C6/C5 <= 1.00 in >= 80% of the 28 cell-device pairs | < 50% |
+
+**Reported without prediction:**
+
+- the device and cell tables, including A7 against C6 (how much of the AI front end's lead the release closes);
+- compile times;
+- failed uses counted both ways;
+- off-target instructions.
+
+**H7 restriction.** H7 was restricted to the cx devices before the smoke run. The scorer had been run on synthetic
+files, where cz cells, expected to be near 1.00, would have made an all-device threshold depend on ties.
+
+## 4. What this will not establish
+
+- Hardware.
+- ecr devices.
+- Whether the floor is the right model for real devices. It is the model Aer uses, so this simulation favours it by
+  construction, as for a4 (Addendum 287).
+
+## 5. Development (disclosed)
+
+### 5.1 How the candidate was built
+
+- `psf_compile.py` was generated from release 2026-10-02.2 by a script that inserts the two new functions
+  (`decoherence_floor`, `floor_aware_target`), the `placement_score` parameter and its check, and changelog item 34.
+  Nothing else in the release was changed.
+- The scorer was run on synthetic files before the smoke run. That is why H7 was restricted to the cx devices
+  (section 3).
+
+### 5.2 Tests (`test_c6_floor.py`, 10 cases)
+
+All 10 passed at home in 4.8 s, before the smoke run. They check:
+
+- the version strings;
+- that the default (`placement_score="reported"`) gives the same output as the release, with and without `target`
+  and `placement_refine`, on FakeTorino and FakeAuckland;
+- that an unknown `placement_score` raises `ValueError`;
+- that `floor_aware_target` sets each error to max(reported, floor), leaves measure/delay/reset/barrier alone, does
+  not modify the original Target, and raises at least one error on FakeAuckland and FakeHanoiV2;
+- that the floor re-placement is exact, keeps the same gate multiset, and places no gate on a failed qubit or in a
+  direction reported failed, on FakeAuckland, FakeHanoiV2, FakeTorino and FakeKingston.
+
+### 5.3 Smoke run (not a result)
+
+The smoke run used 1 circuit per cell and its own seed base: 684 compilations, 216 jobs, 259 s, at home on the
+morning of 2026-10-03. Nothing was changed after it.
+
+- **P0** passed (noiseless infidelity max 6.8e-15; 0 too wide).
+- **Its verdict lines:**
+
+  | H1 | H2 | H3 | H4 | H5 | H6 | H7 |
+  |---|---|---|---|---|---|---|
+  | CONFIRMED | AMBIGUOUS | CONFIRMED | AMBIGUOUS | CONFIRMED | CONFIRMED | CONFIRMED |
+
+- **Device level:**
+  - C6/C5: 0.975-0.990 on the cx devices, 0.997-1.000 on the cz devices.
+  - Chains C6/L3T on the cx devices: Auckland 1.057, HanoiV2 1.142, Algiers 1.033, Geneva 0.958 (C5/L3T: 1.077,
+    1.141, 1.119, 1.055).
+  - A7/C6 0.930-0.965.
+- **What the smoke run suggests, with one circuit per cell:**
+  - the gain on the cx devices is real but smaller than H2's 0.98 threshold on three of them;
+  - on FakeHanoiV2 the floor score does not move the chain gap at all (1.142 against 1.141).
+  - The predictions were not changed.
+- **Median compile time:** C5 0.036 s, C6 0.063 s, A7 0.724 s, L3T 0.018 s.
+  - The extra time is the per-call copy of the Target.
+- **Failed uses:** 0 by every arm, counted by coupler and by direction.
+- **Off-target instructions:** 0 by every arm.
+
+### 5.4 Other
+
+- No scored circuit was compiled before the lock.
+- The candidate is a patch (`patches/psf_compile_c6_2026-10-03/`). The released `psf_compile.py` is not changed by
+  this commit.
+
+## 6. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `patches/psf_compile_c6_2026-10-03/psf_compile.py` | `c40e1bf133e0d3e152e775bd7db68bf92161265b4ad77ba5ccd5344f4492f0bb` |
+| `patches/psf_compile_c6_2026-10-03/test_c6_floor.py` | `bdada060f30e3c195d5c011de172d434d26ce822748c51faf378468022c17a78` |
+| `benchmarks/hold2_eval.py` | `2802a86512bf72421cf1b7001fc7441415ff0f8b38fc883de13ac4598c22b062` |
+| `benchmarks/run_hold2_2026-10-03.sh` | `a9584adb1abf8bcda548265d899d4bc35c3d1018bbe2c7ea80ba6f41d733eba7` |
+
+Normalization: CRLF to LF, trailing whitespace stripped from each line, trailing blank lines dropped, lines joined
+with "\n" and no final newline.
+
 ---
 
 ---
