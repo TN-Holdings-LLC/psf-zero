@@ -1,0 +1,1 @@
+wrote f3o3_FakeHanoiV2.json: 300 circuits, 150 s

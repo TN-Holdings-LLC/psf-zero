@@ -1,0 +1,1 @@
+wrote f3o3_FakeAlgiers.json: 300 circuits, 149 s

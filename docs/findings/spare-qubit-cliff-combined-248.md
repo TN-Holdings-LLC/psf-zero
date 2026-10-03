@@ -9929,6 +9929,169 @@ placement, routing (swap count) and synthesis (two-qubit gate count).
 - 216 job files and their logs, `env.txt`, `score.md`, `score_log.txt`, `verify.txt`.
 - Local paths were replaced.
 
+
+---
+
+<!-- ===== Addendum 322 (source: spare-qubit-cliff-addendum-322-2026-10-03.md) ===== -->
+
+> **Note added when merging:** Exploratory diagnosis (not a test, nothing pre-registered) of the chain gap left by Addendum 321, run at home at commit ebc9280. Scripts and outputs are in data/2026-10-03/f3o/diag/.
+
+## Addendum 322 -- Diagnosis (exploratory, not a test): the release's chain gap to Qiskit L3T on the cx devices is a thermal-relaxation effect of PSF-Zero's own two-qubit synthesis. On the F3 open-boundary circuits the release and L3T use the same qubits and the same 60 cx gates with the same errors; the release leaves qubits excited for longer during the long cx gates. Re-synthesising every block with Qiskit removes 70-90% of that gap (2026-10-03)
+
+**Status: exploratory diagnosis.**
+
+- **Nothing was pre-registered**, and nothing here is a verdict.
+- **The scripts** were written after HOLD2's results (Addendum 321) had been seen. Each part's design followed from the
+  previous part's output.
+- **Setting:** run at home on 2026-10-03 at commit `ebc9280` (Addendum 321), fake devices and Aer only.
+- **Circuits:** HOLD2's F3 circuits (same generator and seeds):
+  - parts 1-2: the 150 open-boundary circuits per device;
+  - part 3: all 300.
+- **Devices:** FakeAuckland, FakeHanoiV2, FakeAlgiers and FakeGeneva (cx), with FakeTorino (cz) as a control.
+- **Reproduction:** in parts 1 and 2, every C5, C6 and L3T row reproduced HOLD2's two-qubit count and noisy infidelity
+  exactly (0 differences on every device).
+
+## 1. Part 1: it is not placement (`f3o_diag.py`)
+
+**Arms:** C5, C6 and L3T, plus two swaps of placement:
+
+- **L3onC6:** Qiskit level 3 pinned to C6's layout.
+- **RELonL3:** the release pinned to L3T's layout.
+
+**Ratio to L3T on F3 open:**
+
+| device | C5 | C6 | L3onC6 | RELonL3 |
+|---|---|---|---|---|
+| FakeAuckland | 1.111 | 1.111 | 1.001 | 1.114 |
+| FakeHanoiV2 | 1.159 | 1.158 | 1.018 | 1.158 |
+| FakeAlgiers | 1.223 | 1.126 | 1.046 | 1.226 |
+| FakeGeneva | 1.091 | 1.091 | 1.001 | 1.092 |
+| FakeTorino | 0.996 | 0.996 | 0.996 | 0.993 |
+
+**Same qubits, same cx gates.**
+
+- On FakeAuckland, FakeHanoiV2 and FakeGeneva, C5 and L3T use the same six qubits in all 150 circuits.
+- On those three devices the 60 two-qubit gates have the same mean applied error on FakeAuckland and FakeGeneva,
+  and nearly the same on FakeHanoiV2 (0.00558 against 0.00550).
+
+**FakeAlgiers is the exception.** There C6 chooses another qubit set (150 of 150 circuits), which is why the floor
+score helped there in HOLD2 (1.223 to 1.126).
+
+**The gap follows the synthesis, not the placement.**
+
+- With L3T's layout, the release is as far behind as before.
+- With C6's layout, Qiskit is level with L3T, or within 5%.
+
+**Where the outputs differ.** Only in one-qubit gates:
+
+- sx + x: 99.3 against about 82;
+- depth: 91.9 against about 73;
+- the summed average gate infidelity: by only 0.003-0.006, against measured differences of 0.025-0.070.
+
+## 2. Part 2: it is thermal relaxation (`f3o_diag2.py`)
+
+**Method:**
+
+- Each output was simulated under the full noise model, under its depolarizing part alone
+  (`thermal_relaxation=False`), and under its thermal-relaxation part alone (`gate_error=False`).
+- Each output was also scored by its excitation exposure: the sum over two-qubit gates of the gate's duration times
+  P(1) on each of its qubits, with P(1) taken from the noiseless state just before the gate.
+
+**Results, F3 open, ratio C5/L3T:**
+
+| device | full | depolarizing only | thermal only | x gates C5 / L3T | 2q exposure C5 / L3T | correlation* |
+|---|---|---|---|---|---|---|
+| FakeAuckland | 1.111 | 1.004 | 1.346 | 11.3 / 1.8 | 1.49 | 0.719 |
+| FakeHanoiV2 | 1.159 | 1.009 | 1.193 | 11.3 / 2.0 | 1.38 | 0.630 |
+| FakeAlgiers | 1.223 | 1.009 | 1.281 | 11.3 / 1.7 | 1.42 | 0.821 |
+| FakeGeneva | 1.091 | 1.003 | 1.406 | 11.3 / 2.1 | 1.47 | 0.775 |
+| FakeTorino | 0.996 | 1.000 | 0.978 | 1.4 / 1.4 | 0.97 | 0.955 |
+
+\* Per-circuit correlation of the exposure difference with the infidelity difference (C5 minus L3T).
+
+**What this shows:**
+
+- **Under the depolarizing part alone** the two compilers are level to within 1%.
+- **The whole gap is thermal relaxation.** The release's circuits keep qubits in |1> for longer during the cx gates,
+  which last hundreds of ns on these devices. During that time amplitude damping acts on the excited population.
+- **An average-infidelity sum cannot see this** by construction. On the cz device (short cz gates) the effect is absent.
+- **Neither of these changes anything** (ratios within 0.002):
+  - a one-qubit clean-up after the release (`Optimize1qGatesDecomposition`);
+  - re-synthesis of blocks only where it saves gates.
+
+  The extra one-qubit gates are not redundant. They are the local frames the release's synthesis chose around each
+  cx.
+
+## 3. Part 3: which stage, and does Qiskit's synthesis remove it? (`f3o_diag3.py`)
+
+**Arms on all 300 F3 circuits:**
+
+- **C5force:** C5's output with every two-qubit block re-synthesised by Qiskit (`ConsolidateBlocks(force_consolidate=True)`,
+  `UnitarySynthesis`, `Optimize1qGatesDecomposition`, all with the target).
+- **C5noc2:** the release with items 29-30 off.
+- **C5can:** the release with `entangling_basis="canonical"`.
+
+**Ratio to L3T, full noise:**
+
+| device | open: C5 | open: C5force | open: C5noc2 | open: C5can | periodic: C5 | periodic: C5force |
+|---|---|---|---|---|---|---|
+| FakeAuckland | 1.111 | 1.018 | 1.111 | 1.533 | 1.237 | 1.194 |
+| FakeHanoiV2 | 1.159 | 1.041 | 1.159 | 1.460 | 1.268 | 1.174 |
+| FakeAlgiers | 1.223 | 1.063 | 1.223 | 1.486 | 1.530 | 1.408 |
+| FakeGeneva | 1.091 | 1.012 | 1.091 | 1.639 | 1.161 | 1.120 |
+| FakeTorino | 0.996 | 0.996 | 0.996 | 1.554 | 1.012 | 1.002 |
+
+**Per circuit:** C5force is better than C5 on the cx devices in 96-100% of the open and 97-100% of the periodic
+circuits. On FakeTorino it is mixed (50% open, 81% periodic).
+
+**Reading:**
+
+- **Items 29-30 are not the cause.**
+  - C5noc2 is identical to C5 on every open circuit.
+  - On the periodic circuits it is slightly worse (117 against 114 two-qubit gates), so those items help there.
+- **The canonical route is no fix.** It doubles the two-qubit count (120 and 186). Direct cx synthesis is right.
+- **The excitation comes from PSF-Zero's own two-qubit synthesis**, through the local frames it chooses.
+- **On open chains, re-synthesis by Qiskit removes 70-90% of the gap** (72-87%).
+  - x gates fall from 11.3 to about 3.
+  - The thermal-only ratio falls to 1.01-1.06.
+  - FakeTorino is unchanged.
+- **On periodic chains it removes only a fifth to a third of the gap** (18-35%).
+  - Routing is involved there.
+  - C5force has far more sx gates than L3T (144 against 96-122).
+  - Something else in the routed circuits also matters.
+
+## 4. Consequences
+
+**For the open chains, the cause is found:**
+
+- PSF-Zero's two-qubit synthesis on cx devices chooses local frames that leave qubits excited during long cx gates.
+- Reported errors cannot penalize this; average gate infidelity hides it.
+- The AI front end a7 often chooses L3T's output on the cx devices (447-593 circuits per device in HOLD2). Its
+  state-aware estimate may already capture this effect. That reading is not verified.
+
+**Candidate.** A candidate that re-synthesises every two-qubit block with Qiskit after the release on cx devices
+(here, C5force) is worth a pre-registered test. That test needs:
+
+- held-out circuits beyond F3;
+- a check that it costs nothing on the families where PSF-Zero's synthesis is ahead.
+
+**What would go further:**
+
+- **Exposure-aware synthesis:** choosing among equivalent local frames to minimise excitation exposure.
+- **Re-placing with an exposure-aware score.**
+
+**Not established:**
+
+- hardware (whether the effect matters as much as Aer's model says);
+- ecr devices;
+- circuits other than F3.
+
+## 5. Data (`data/2026-10-03/f3o/diag/`)
+
+- **Scripts:** `f3o_diag.py`, `f3o_diag2.py`, `f3o_diag3.py` and their runners.
+- **Outputs:** `outputs1/`, `outputs2/`, `outputs3/`, each with the per-device json, logs, `env.txt` and
+  `summary.md`.
+
 ---
 
 ---
