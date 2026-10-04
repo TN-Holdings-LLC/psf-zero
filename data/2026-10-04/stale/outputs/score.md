@@ -1,0 +1,50 @@
+# stale score
+
+P0: PASS -- files 216 of 216 (missing []); noiseless infidelity max 2.0e-08 (<= 1e-6); too wide 0 of 27108
+
+| device | R2/L3T | R3/L3T | R3/R2 | A7/R2 | A7/L3T | rec/L3T |
+|---|---|---|---|---|---|---|
+| FakeAuckland (cx) | 0.992 | 0.956 | 0.963 | 0.959 | 0.951 | 0.956 |
+| FakeTorino | 0.997 | 0.998 | 1.001 | 0.989 | 0.986 | 0.997 |
+| FakeKingston | 0.999 | 0.990 | 0.991 | 0.972 | 0.972 | 0.999 |
+| FakeHanoiV2 (cx) | 0.996 | 0.978 | 0.982 | 0.968 | 0.964 | 0.978 |
+| FakeAlgiers (cx) | 0.986 | 0.984 | 0.997 | 0.992 | 0.978 | 0.984 |
+| FakeGeneva (cx) | 0.982 | 0.976 | 0.994 | 0.975 | 0.958 | 0.976 |
+| FakeFez | 0.992 | 0.991 | 0.999 | 0.982 | 0.974 | 0.992 |
+| FakeMarrakesh | 0.985 | 0.950 | 0.964 | 0.970 | 0.956 | 0.985 |
+| FakeAachen | 0.995 | 0.996 | 1.001 | 0.992 | 0.987 | 0.995 |
+
+| cell R2/L3T | Auckland | Torino | Kingston | HanoiV2 | Algiers | Geneva | Fez | Marrakesh | Aachen |
+|---|---|---|---|---|---|---|---|---|---|
+| F1 | 0.991 | 1.006 | 1.015 | 0.999 | 1.000 | 0.987 | 0.996 | 0.995 | 0.997 |
+| F2 | 1.002 | 1.017 | 0.991 | 1.000 | 0.995 | 0.947 | 0.988 | 0.980 | 0.992 |
+| F3o | 0.970 | 0.968 | 0.998 | 1.000 | 0.986 | 1.002 | 0.939 | 0.988 | 1.000 |
+| F3p | 1.001 | 1.006 | 0.997 | 1.000 | 1.000 | 1.000 | 1.038 | 1.000 | 1.000 |
+| F4 | 0.987 | 0.978 | 0.975 | 0.978 | 0.941 | 0.975 | 0.971 | 0.949 | 0.985 |
+| F5 | 1.000 | 1.000 | 1.000 | 1.011 | 0.971 | 1.000 | 1.000 | 1.000 | 1.000 |
+| F6 | 0.997 | 0.976 | 1.024 | 0.997 | 0.999 | 1.000 | 1.005 | 0.996 | 0.997 |
+
+| cell R3/R2 | Auckland | Torino | Kingston | HanoiV2 | Algiers | Geneva | Fez | Marrakesh | Aachen |
+|---|---|---|---|---|---|---|---|---|---|
+| F1 | 0.950 | 1.003 | 1.000 | 0.990 | 1.000 | 0.995 | 1.001 | 0.899 | 1.001 |
+| F2 | 0.952 | 0.999 | 1.000 | 0.991 | 0.993 | 0.978 | 0.998 | 0.999 | 1.001 |
+| F3o | 1.030 | 1.000 | 0.930 | 1.000 | 1.015 | 0.998 | 1.065 | 1.007 | 1.000 |
+| F3p | 1.003 | 1.000 | 1.008 | 1.000 | 1.000 | 1.000 | 0.964 | 1.000 | 1.000 |
+| F4 | 0.930 | 1.002 | 0.993 | 0.931 | 0.989 | 0.995 | 0.997 | 0.981 | 0.999 |
+| F5 | 0.920 | 1.000 | 1.000 | 0.957 | 0.936 | 1.000 | 0.979 | 0.938 | 1.000 |
+| F6 | 0.958 | 0.995 | 0.984 | 0.990 | 1.001 | 1.000 | 0.994 | 1.000 | 1.002 |
+
+## Predictions
+
+- H1 (stale calibration: R2/L3T <= 1.00 on at least 7 of 9 devices): **CONFIRMED** (Auckland 0.992, Torino 0.997, Kingston 0.999, HanoiV2 0.996, Algiers 0.986, Geneva 0.982, Fez 0.992, Marrakesh 0.985, Aachen 0.995)
+- H2 (stale calibration, cx devices: R3/R2 <= 1.00 on at least 3 of 4): **CONFIRMED** (Auckland 0.963, HanoiV2 0.982, Algiers 0.997, Geneva 0.994)
+- H3 (stale calibration: R2/L3T <= 1.02 in >= 85% of the 63 cell-device pairs): **CONFIRMED** (0.968)
+- H4 (R2 and R3 never use a failed direction or qubit, nor an off-target instruction): **CONFIRMED** (0 failed uses, 0 circuits off target)
+- H5 (stale calibration: A7/L3T <= 1.00 on at least 7 of 9 devices): **CONFIRMED** (Auckland 0.951, Torino 0.986, Kingston 0.972, HanoiV2 0.964, Algiers 0.978, Geneva 0.958, Fez 0.974, Marrakesh 0.956, Aachen 0.987)
+
+Reported: R3 choices (COMPARE_STATS counters that moved): {'level3': 3534, 'psf': 2164, 'floor': 1079}
+Reported: qubits whose T1 the stale Target changed, by device: {'FakeAachen': 156, 'FakeAlgiers': 27, 'FakeAuckland': 27, 'FakeFez': 156, 'FakeGeneva': 27, 'FakeHanoiV2': 27, 'FakeKingston': 155, 'FakeMarrakesh': 156, 'FakeTorino': 133}
+
+Reported: median compile s R2 0.068, R3 0.144, A7 0.687, L3T 0.014
+Reported: failed uses by coupler {'R2': 6, 'R3': 48, 'A7': 24, 'L3T': 51}; by direction {'R2': 0, 'R3': 0, 'A7': 0, 'L3T': 0}
+Reported: circuits with an off-target instruction, by arm: R2 0, R3 0, A7 0, L3T 0

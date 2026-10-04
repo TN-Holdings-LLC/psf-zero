@@ -1,0 +1,7 @@
+  FakeHanoiV2 F1: 432 circuits so far, 100 s
+  FakeHanoiV2 F2: 672 circuits so far, 136 s
+  FakeHanoiV2 F3: 972 circuits so far, 236 s
+  FakeHanoiV2 F4: 1242 circuits so far, 290 s
+  FakeHanoiV2 F5: 1386 circuits so far, 298 s
+  FakeHanoiV2 F6: 1506 circuits so far, 311 s
+wrote hybrid_FakeHanoiV2.json: 1506 circuits, 311 s

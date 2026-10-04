@@ -1,0 +1,7 @@
+  FakeGeneva F1: 432 circuits so far, 86 s
+  FakeGeneva F2: 672 circuits so far, 122 s
+  FakeGeneva F3: 972 circuits so far, 200 s
+  FakeGeneva F4: 1242 circuits so far, 245 s
+  FakeGeneva F5: 1386 circuits so far, 253 s
+  FakeGeneva F6: 1506 circuits so far, 265 s
+wrote hybrid_FakeGeneva.json: 1506 circuits, 265 s

@@ -1,0 +1,7 @@
+  FakeAlgiers F1: 432 circuits so far, 92 s
+  FakeAlgiers F2: 672 circuits so far, 127 s
+  FakeAlgiers F3: 972 circuits so far, 216 s
+  FakeAlgiers F4: 1242 circuits so far, 265 s
+  FakeAlgiers F5: 1386 circuits so far, 273 s
+  FakeAlgiers F6: 1506 circuits so far, 285 s
+wrote hybrid_FakeAlgiers.json: 1506 circuits, 285 s

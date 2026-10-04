@@ -1,0 +1,7 @@
+  FakeMarrakesh F1: 432 circuits so far, 159 s
+  FakeMarrakesh F2: 672 circuits so far, 239 s
+  FakeMarrakesh F3: 972 circuits so far, 414 s
+  FakeMarrakesh F4: 1242 circuits so far, 519 s
+  FakeMarrakesh F5: 1386 circuits so far, 547 s
+  FakeMarrakesh F6: 1506 circuits so far, 582 s
+wrote hybrid_FakeMarrakesh.json: 1506 circuits, 582 s

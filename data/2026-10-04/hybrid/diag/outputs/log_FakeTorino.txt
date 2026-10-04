@@ -1,0 +1,7 @@
+  FakeTorino F1: 432 circuits so far, 152 s
+  FakeTorino F2: 672 circuits so far, 226 s
+  FakeTorino F3: 972 circuits so far, 382 s
+  FakeTorino F4: 1242 circuits so far, 478 s
+  FakeTorino F5: 1386 circuits so far, 503 s
+  FakeTorino F6: 1506 circuits so far, 535 s
+wrote hybrid_FakeTorino.json: 1506 circuits, 535 s

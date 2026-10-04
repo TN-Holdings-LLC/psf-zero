@@ -1,0 +1,7 @@
+  FakeAachen F1: 432 circuits so far, 156 s
+  FakeAachen F2: 672 circuits so far, 234 s
+  FakeAachen F3: 972 circuits so far, 400 s
+  FakeAachen F4: 1242 circuits so far, 501 s
+  FakeAachen F5: 1386 circuits so far, 527 s
+  FakeAachen F6: 1506 circuits so far, 561 s
+wrote hybrid_FakeAachen.json: 1506 circuits, 561 s

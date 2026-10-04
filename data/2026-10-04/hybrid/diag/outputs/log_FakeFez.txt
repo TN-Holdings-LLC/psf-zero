@@ -1,0 +1,7 @@
+  FakeFez F1: 432 circuits so far, 163 s
+  FakeFez F2: 672 circuits so far, 247 s
+  FakeFez F3: 972 circuits so far, 418 s
+  FakeFez F4: 1242 circuits so far, 524 s
+  FakeFez F5: 1386 circuits so far, 553 s
+  FakeFez F6: 1506 circuits so far, 589 s
+wrote hybrid_FakeFez.json: 1506 circuits, 590 s

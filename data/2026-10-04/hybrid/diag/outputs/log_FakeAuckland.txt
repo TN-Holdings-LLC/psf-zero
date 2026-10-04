@@ -1,0 +1,7 @@
+  FakeAuckland F1: 432 circuits so far, 99 s
+  FakeAuckland F2: 672 circuits so far, 136 s
+  FakeAuckland F3: 972 circuits so far, 228 s
+  FakeAuckland F4: 1242 circuits so far, 284 s
+  FakeAuckland F5: 1386 circuits so far, 293 s
+  FakeAuckland F6: 1506 circuits so far, 308 s
+wrote hybrid_FakeAuckland.json: 1506 circuits, 308 s

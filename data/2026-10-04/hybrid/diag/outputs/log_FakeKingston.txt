@@ -1,0 +1,7 @@
+  FakeKingston F1: 432 circuits so far, 164 s
+  FakeKingston F2: 672 circuits so far, 247 s
+  FakeKingston F3: 972 circuits so far, 425 s
+  FakeKingston F4: 1242 circuits so far, 532 s
+  FakeKingston F5: 1386 circuits so far, 562 s
+  FakeKingston F6: 1506 circuits so far, 597 s
+wrote hybrid_FakeKingston.json: 1506 circuits, 597 s

@@ -11842,6 +11842,197 @@ each estimate picks the measured best.
 Normalization: CRLF to LF, trailing whitespace stripped from each line, trailing blank lines dropped, lines joined
 with "\n" and no final newline.
 
+
+---
+
+<!-- ===== Addendum 335 (source: spare-qubit-cliff-addendum-335-2026-10-04.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered tests in Addendum 334 (lock commit a88df77), scored by the locked scripts and re-checked by benchmarks/suite_verify_2026-10-04.py, written after the suite finished and before its output files were read.
+
+## Addendum 335 -- Results: the 2026-10-04 home suite (Addendum 334). Release 2026-10-03.3 keeps its lead over Qiskit L3T with a stale calibration (STALE, 5 of 5 confirmed) and at 8-10 qubits (WIDE, 5 of 5 confirmed). Two findings outside the predictions: the AI front end a7 is 1.1-2.8 times worse than the release above 8 qubits, and there it uses failed couplers; and, in-sample, the combined estimate `hyb` chooses better than both of the release's estimates on all nine devices (HYBRID, exploratory) (2026-10-04)
+
+**Status: results of the pre-registered tests in Addendum 334, and of its exploratory diagnosis.**
+
+- **Lock:** commit `a88df77`, pushed before the suite started (10:03 JST).
+- **Same bytes:** the suite ran the locked files. The SHA-256 values in `env.txt` are those of the files in the lock,
+  and every job file records the normalized SHA-256 of its script.
+- **Scoring:** by each locked script's `score`, and re-checked by `benchmarks/suite_verify_2026-10-04.py`, which agrees
+  on every verdict.
+  - **When the verify script was written:** after the suite finished, before its output files were read. Its
+    normalized SHA-256 is `09d4da6cea9be5dcc4f0ded41aa6a9bf60853452db00f9dbaf292d240864e934`.
+  - **What had been seen by then:** the last five lines of the suite log, which show WIDE's H3-H5 verdicts.
+- **Setting:** home (WSL2, Ryzen 5 5500), PAR 6. Total 159 min.
+
+  | step | time |
+  |---|---|
+  | STALE smoke | 263 s |
+  | STALE scored | 1,546 s |
+  | HYBRID | 835 s |
+  | WIDE smoke | 730 s |
+  | WIDE scored | 6,199 s |
+
+## 1. STALE (compilers given a perturbed Target; simulation with the true noise)
+
+**P0: PASS.** 216 of 216 files, 27,108 rows, noiseless max 2.0e-8, none too wide.
+
+The stale Target changed T1 on every qubit that has one: 27 on the 27-qubit devices, 133-156 on the Heron devices.
+
+| ID | Verdict | Numbers |
+|---|---|---|
+| H1 | **CONFIRMED** | R2/L3T <= 1.00 on 9 of 9 devices: 0.982-0.999 |
+| H2 | **CONFIRMED** | cx devices, R3/R2: Auckland 0.963, HanoiV2 0.982, Algiers 0.997, Geneva 0.994 |
+| H3 | **CONFIRMED** | R2/L3T <= 1.02 in 61 of 63 cell-device pairs (0.968). The two above: Kingston F6 1.024, Fez F3 periodic 1.038 |
+| H4 | **CONFIRMED** | 0 failed-direction or failed-qubit uses and 0 off-target instructions by R2 and R3 |
+| H5 | **CONFIRMED** | A7/L3T <= 1.00 on 9 of 9 devices: 0.951-0.987 |
+
+**By device:**
+
+| device | R2/L3T | R3/L3T | R3/R2 | A7/L3T | F5 R3/R2 | F3 open R3/R2 |
+|---|---|---|---|---|---|---|
+| FakeAuckland (cx) | 0.992 | 0.956 | 0.963 | 0.951 | 0.920 | 1.030 |
+| FakeTorino | 0.997 | 0.998 | 1.001 | 0.986 | 1.000 | 1.000 |
+| FakeKingston | 0.999 | 0.990 | 0.991 | 0.972 | 1.000 | 0.930 |
+| FakeHanoiV2 (cx) | 0.996 | 0.978 | 0.982 | 0.964 | 0.957 | 1.000 |
+| FakeAlgiers (cx) | 0.986 | 0.984 | 0.997 | 0.978 | 0.936 | 1.015 |
+| FakeGeneva (cx) | 0.982 | 0.976 | 0.994 | 0.958 | 1.000 | 0.998 |
+| FakeFez | 0.992 | 0.991 | 0.999 | 0.974 | 0.979 | 1.065 |
+| FakeMarrakesh | 0.985 | 0.950 | 0.964 | 0.956 | 0.938 | 1.007 |
+| FakeAachen | 0.995 | 0.996 | 1.001 | 0.987 | 1.000 | 1.000 |
+
+**Reading:**
+
+- **The release does not overfit to the calibration it sees.** With 30% errors on the reported errors and 20% on
+  T1/T2, R2 stays ahead of L3T on every device (0.1-1.8%), and so does a7 (1.3-4.9%).
+- **The lead is smaller than with the true calibration on most cz devices.** C9/L3T in HOLD5 was:
+  - FakeTorino 0.988, FakeKingston 0.990, FakeMarrakesh 0.968, FakeAachen 0.986;
+  - here R2/L3T is 0.997, 0.999, 0.985 and 0.995.
+
+  These are different circuits (new seeds), so this is not a paired comparison.
+- **The floor candidate is robust to stale T1/T2.** R3 gains 0.3-3.7% on the cx devices and 0.9-3.6% on FakeKingston
+  and FakeMarrakesh.
+- **It still loses on F3 open chains**, as in Addendum 332: up to 6.5% on FakeFez and 3.0% on FakeAuckland.
+- **Failed couplers** (direction ignored): R2 6, R3 48, A7 24, L3T 51 uses. All are on FakeHanoiV2, in the allowed
+  direction of a coupler that has failed one way only. No arm used a failed direction.
+
+## 2. WIDE (8-10 logical qubits)
+
+**P0: PASS, but only just.** 216 of 216 files, 8,208 rows, noiseless max 8.8e-10.
+
+- **Too wide: 788 of 8,208 (9.6%) against a limit of 10%.**
+  - They are almost all n = 10 circuits: R2 160, R3 161, L3T 172, A7 277.
+  - Most are on the Heron devices: FakeAachen 144, FakeFez 140, FakeMarrakesh 140, FakeKingston 138. FakeTorino has
+    25; each cx device about 50.
+- **The ratios below use only circuits simulated in both arms compared.** So at n = 10 on the Heron devices they rest on
+  about two thirds of the circuits. This is a selection that the pre-registration did not discuss.
+
+| ID | Verdict | Numbers |
+|---|---|---|
+| H1 | **CONFIRMED** | R2/L3T <= 1.00 on 9 of 9 devices: 0.951-0.998 |
+| H2 | **CONFIRMED** | cx devices, R3/R2: Auckland 1.0001, HanoiV2 0.9998, Algiers 0.991, Geneva 0.994 (three of four <= 1.00) |
+| H3 | **CONFIRMED** | R2/L3T <= 1.02 in 63 of 63 cell-device pairs |
+| H4 | **CONFIRMED** | 0 failed-direction or failed-qubit uses and 0 off-target instructions by R2 and R3 |
+| H5 | **CONFIRMED** | median compile time R3 0.237 s (R2 0.122 s, L3T 0.021 s) |
+
+**By device:**
+
+| device | R2/L3T | R3/L3T | R3/R2 | A7/R2 at n = 8 | A7/R2 at n = 9 | A7/R2 at n = 10 |
+|---|---|---|---|---|---|---|
+| FakeAuckland (cx) | 0.998 | 0.998 | 1.000 | 0.968 | 1.157 | 1.141 |
+| FakeTorino | 0.985 | 0.985 | 1.000 | 0.991 | 1.266 | 2.115 |
+| FakeKingston | 0.978 | 0.977 | 1.000 | 0.993 | 1.218 | 1.294 |
+| FakeHanoiV2 (cx) | 0.990 | 0.989 | 1.000 | 0.966 | 1.160 | 1.328 |
+| FakeAlgiers (cx) | 0.974 | 0.965 | 0.991 | 0.965 | 1.769 | 1.526 |
+| FakeGeneva (cx) | 0.970 | 0.964 | 0.994 | 0.937 | 1.206 | 1.281 |
+| FakeFez | 0.988 | 0.987 | 0.999 | 0.987 | 1.470 | 1.469 |
+| FakeMarrakesh | 0.951 | 0.951 | 1.000 | 0.987 | 2.844 | 2.665 |
+| FakeAachen | 0.960 | 0.962 | 1.001 | 0.993 | 1.583 | 2.264 |
+
+**Reading:**
+
+- **The release keeps its lead at this width**, 0.2-4.9% ahead of L3T, with no cell above 1.02.
+- **The cx-device option gains less here.** It gains 0.6-0.9% on FakeAlgiers and FakeGeneva and nothing on
+  FakeAuckland and FakeHanoiV2.
+  - The GHZ-chain gain of HOLD5 (n 4-8) does not carry over to n 9-10, except on FakeHanoiV2 (F5 0.953).
+  - The floor candidate was chosen less often (162 of 2,052 circuits).
+  - F3 open loses again, by up to 2.1%.
+  - Couplers failed one way only were used in their allowed direction, on FakeHanoiV2 and FakeGeneva, by R2 (366),
+    R3 (378) and L3T (409) alike.
+- **a7 above 8 qubits** (a finding outside the predictions):
+  - a7 takes its fast path above 8 qubits (`SMALL_MAX_QUBITS` = 8; 1,188 circuits here).
+  - There it is 1.14-2.84 times worse than R2.
+  - In 302 of those circuits it used failed elements: 10,057 uses of a failed direction or a failed qubit, on seven of
+    the nine devices.
+  - At n = 8 (its full path) it is still 0.7-6.3% ahead of R2.
+  - None of this touches a prediction, because H4 concerns R2 and R3 only. It does mean that a7 must not be used above
+    8 qubits as it stands.
+
+## 3. HYBRID (exploratory diagnosis, in-sample on HOLD5's circuits)
+
+**Checks:**
+
+- 1,506 circuits per device; 0 mismatches against HOLD5's C9 and C10 rows on every device;
+- noiseless max <= 1e-6.
+
+**Ratios** (mean infidelity relative to HOLD5's L3T):
+
+| device | C9 (exc, 2 cand.) | C10 (pauli, 3 cand.) | PICK_hyb | ORC | best of the candidates picked: exc / pauli / hyb / excz | hyb vs C10 per circuit: better / worse |
+|---|---|---|---|---|---|---|
+| FakeAuckland (cx) | 0.991 | 0.980 | 0.977 | 0.977 | 1040 / 1219 / 1365 / 1290 | 185 / 39 |
+| FakeTorino | 0.988 | 0.989 | 0.987 | 0.987 | 1317 / 1190 / 1399 / 1264 | 240 / 31 |
+| FakeKingston | 0.990 | 0.989 | 0.988 | 0.988 | 1288 / 1294 / 1399 / 1384 | 136 / 29 |
+| FakeHanoiV2 (cx) | 0.988 | 0.986 | 0.981 | 0.980 | 1109 / 1188 / 1353 / 1273 | 259 / 92 |
+| FakeAlgiers (cx) | 0.990 | 0.980 | 0.978 | 0.977 | 1154 / 1283 / 1331 / 1090 | 143 / 87 |
+| FakeGeneva (cx) | 0.983 | 0.963 | 0.962 | 0.962 | 1311 / 1321 / 1433 / 1365 | 129 / 17 |
+| FakeFez | 0.992 | 0.993 | 0.991 | 0.991 | 1344 / 1226 / 1425 / 1105 | 215 / 14 |
+| FakeMarrakesh | 0.968 | 0.967 | 0.965 | 0.963 | 1151 / 1187 / 1341 / 1374 | 198 / 14 |
+| FakeAachen | 0.986 | 0.987 | 0.986 | 0.986 | 1402 / 1262 / 1422 / 1395 | 173 / 13 |
+
+**Reading:**
+
+- **`hyb` beats both of the release's estimates on all nine devices.** Its choice is:
+  - better than C10's by 0.06-0.51%;
+  - better than C9's by 0.02-2.2%;
+  - within 0.0-0.2% of the measured best.
+
+  It picks the measured best in 88-95% of circuits, more than any other estimate on eight devices. On FakeMarrakesh
+  `excz` picks it more often (1,374 against 1,341).
+- **It repairs F3.** `pauli`'s loss on F3 open is mostly recovered (PICK_hyb / PICK_pauli 0.979-0.998).
+- **It keeps the GHZ gains.** On F5 and F6 it matches `pauli`, with one exception: FakeAlgiers F5, 1.012.
+- **`excz`, the cruder combination, is worse.** It loses up to 8.3% on FakeAlgiers F3 and 6.1% on FakeFez F1, because
+  it probably counts the thermal part twice.
+- **On cz devices the floor candidate is rarely distinct** (0-317 circuits per device). There `hyb` among the release's
+  circuit and level 3's alone still improves on C9, by 0.02-0.07%.
+- **This is in-sample:** the same circuits from which Addendum 332 drew the idea. Two combinations were examined, and
+  both are reported.
+
+## 4. Consequences
+
+**Adoption decisions** are the owner's.
+
+- **Release 2026-10-03.3:** these results support keeping the recommendation as it is. That is .2's call everywhere,
+  plus `compare_floor=True, candidate_score="pauli"` on cx devices.
+- **a7 above 8 qubits:** the documentation should say that a7 is for at most 8 logical qubits.
+  - A fix (candidate a8): above `SMALL_MAX_QUBITS`, hand the circuit to the release's recommended call with the target.
+    That call never used a failed element in any test so far.
+- **Next candidate, c11:** `candidate_score="hybrid"` with `hyb` as defined in Addendum 334, to be pre-registered on
+  fresh circuits. On this evidence it might be recommended on every device.
+
+## 5. Data (`data/2026-10-04/`)
+
+| folder | contents |
+|---|---|
+| `stale/outputs/` | 216 job files and their logs, `score.md`, `score_log.txt`, `verify.txt` |
+| `wide/outputs/` | 216 job files and their logs, `score.md`, `score_log.txt`, `verify.txt` |
+| `hybrid/diag/outputs/` | per-device json, logs, `summary.md` |
+| `suite/` | `env.txt`, `suite_log.txt` |
+
+**Not included:**
+
+- The smoke outputs. They were plumbing checks: P0 passed, and their verdicts are not results.
+- The untracked-file lines (`git status`) in `env.txt` and `suite_log.txt`, which were removed.
+
+Local paths were replaced.
+
 ---
 
 ---

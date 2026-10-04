@@ -1,0 +1,41 @@
+stale: files 216, rows 27108, git_head ['a88df77'], versions [('2026-10-03.3', '2026-10-02.a7', '6b2b211ecd48', '0064e8cf7efe')]
+P0 PASS noiseless max 1.99e-08, too wide 0 of 27108
+stale T1 changed per device (one value per device expected): {'Kingston': [155], 'Algiers': [27], 'Geneva': [27], 'Torino': [133], 'Fez': [156], 'Marrakesh': [156], 'HanoiV2': [27], 'Aachen': [156], 'Auckland': [27]}
+H1 CONFIRMED {'Auckland': 0.9919, 'Torino': 0.9971, 'Kingston': 0.9991, 'HanoiV2': 0.9959, 'Algiers': 0.9861, 'Geneva': 0.9824, 'Fez': 0.992, 'Marrakesh': 0.9853, 'Aachen': 0.9952}
+H2 CONFIRMED {'Auckland': 0.9634, 'HanoiV2': 0.9824, 'Algiers': 0.9973, 'Geneva': 0.9938}
+H3 CONFIRMED 0.9683 of 63 pairs
+H4 CONFIRMED failed uses 0, off-target circuits 0
+H5 CONFIRMED {'Auckland': 0.9511, 'Torino': 0.9857, 'Kingston': 0.9716, 'HanoiV2': 0.9641, 'Algiers': 0.9778, 'Geneva': 0.9583, 'Fez': 0.9739, 'Marrakesh': 0.9559, 'Aachen': 0.9868}
+median compile s {'R2': 0.0676, 'R3': 0.144, 'A7': 0.6873, 'L3T': 0.0142}
+
+by device: R2/L3T, R3/L3T, R3/R2, A7/R2, A7/L3T, rec/L3T, F5 R3/R2, F3o R3/R2
+  FakeAuckland   0.9919 0.9556 0.9634 0.9589 0.9511 0.9556 0.9196 1.0304
+  FakeTorino     0.9971 0.9980 1.0010 0.9886 0.9857 0.9971 1.0000 1.0000
+  FakeKingston   0.9991 0.9900 0.9909 0.9724 0.9716 0.9991 1.0000 0.9302
+  FakeHanoiV2    0.9959 0.9784 0.9824 0.9681 0.9641 0.9784 0.9567 1.0000
+  FakeAlgiers    0.9861 0.9835 0.9973 0.9916 0.9778 0.9835 0.9363 1.0145
+  FakeGeneva     0.9824 0.9763 0.9938 0.9755 0.9583 0.9763 1.0000 0.9980
+  FakeFez        0.9920 0.9911 0.9991 0.9817 0.9739 0.9920 0.9790 1.0651
+  FakeMarrakesh  0.9853 0.9503 0.9644 0.9701 0.9559 0.9853 0.9383 1.0065
+  FakeAachen     0.9952 0.9957 1.0005 0.9916 0.9868 0.9952 1.0000 1.0000
+
+cells R2/L3T > 1.02: {'Kingston F6': 1.0238, 'Fez F3p': 1.0376}
+cells R3/R2 > 1.01: {'Auckland F3o': 1.0304, 'Algiers F3o': 1.0145, 'Fez F3o': 1.0651}
+cells R3/R2 < 0.97: {'Auckland F1': 0.95, 'Auckland F2': 0.9522, 'Auckland F4': 0.9299, 'Auckland F5': 0.9196, 'Auckland F6': 0.958, 'Kingston F3o': 0.9302, 'HanoiV2 F4': 0.9314, 'HanoiV2 F5': 0.9567, 'Algiers F5': 0.9363, 'Fez F3p': 0.9637, 'Marrakesh F1': 0.8992, 'Marrakesh F5': 0.9383}
+per circuit: R2 <= L3T, R3 < R2, R3 > R2, A7 <= R2
+  FakeAuckland   0.954 0.595 0.100 0.810
+  FakeTorino     0.776 0.033 0.048 0.734
+  FakeKingston   0.766 0.191 0.090 0.900
+  FakeHanoiV2    0.936 0.262 0.039 0.906
+  FakeAlgiers    0.972 0.118 0.035 0.891
+  FakeGeneva     0.936 0.166 0.058 0.892
+  FakeFez        0.833 0.178 0.155 0.799
+  FakeMarrakesh  0.915 0.258 0.061 0.777
+  FakeAachen     0.890 0.031 0.062 0.834
+
+R3 choices by family: {('F1', 'floor'): 398, ('F1', 'level3'): 1146, ('F1', 'psf'): 400, ('F2', 'floor'): 113, ('F2', 'level3'): 605, ('F2', 'psf'): 362, ('F3', 'floor'): 77, ('F3', 'level3'): 1017, ('F3', 'psf'): 256, ('F4', 'floor'): 247, ('F4', 'level3'): 357, ('F4', 'psf'): 611, ('F5', 'floor'): 216, ('F5', 'level3'): 48, ('F5', 'psf'): 384, ('F6', 'floor'): 28, ('F6', 'level3'): 361, ('F6', 'psf'): 151}
+off-target by arm: {'R2': 0, 'R3': 0, 'A7': 0, 'L3T': 0}
+failed uses (coupler, direction) by arm: {'R2': (6, 0), 'R3': (48, 0), 'A7': (24, 0), 'L3T': (51, 0)}
+too wide by arm: {'R2': 0, 'R3': 0, 'A7': 0, 'L3T': 0}
+pairs dropped for width: 0
+flags: 0 []

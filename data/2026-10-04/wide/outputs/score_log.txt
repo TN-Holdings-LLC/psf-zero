@@ -1,0 +1,50 @@
+# wide score
+
+P0: PASS -- files 216 of 216 (missing []); noiseless infidelity max 8.8e-10 (<= 1e-6); too wide 788 of 8208 (<= 10%)
+
+| device | R2/L3T | R3/L3T | R3/R2 | A7/R2 | rec/L3T |
+|---|---|---|---|---|---|
+| FakeAuckland (cx) | 0.998 | 0.998 | 1.000 | 1.063 | 0.998 |
+| FakeTorino | 0.985 | 0.985 | 1.000 | 1.515 | 0.985 |
+| FakeKingston | 0.978 | 0.977 | 1.000 | 1.137 | 0.978 |
+| FakeHanoiV2 (cx) | 0.989 | 0.989 | 1.000 | 1.130 | 0.989 |
+| FakeAlgiers (cx) | 0.974 | 0.965 | 0.991 | 1.312 | 0.965 |
+| FakeGeneva (cx) | 0.970 | 0.964 | 0.994 | 1.110 | 0.964 |
+| FakeFez | 0.988 | 0.987 | 0.999 | 1.233 | 0.988 |
+| FakeMarrakesh | 0.951 | 0.951 | 1.000 | 1.923 | 0.951 |
+| FakeAachen | 0.960 | 0.962 | 1.001 | 1.542 | 0.960 |
+
+| cell R2/L3T | Auckland | Torino | Kingston | HanoiV2 | Algiers | Geneva | Fez | Marrakesh | Aachen |
+|---|---|---|---|---|---|---|---|---|---|
+| F1 | 1.000 | 0.994 | 0.965 | 0.999 | 0.930 | 1.000 | 0.978 | 0.950 | 0.972 |
+| F2 | 0.998 | 0.988 | 0.987 | 0.982 | 0.975 | 0.908 | 0.990 | 0.948 | 0.982 |
+| F3o | 0.997 | 0.992 | 0.988 | 0.979 | 0.991 | 0.990 | 0.993 | 0.988 | 0.985 |
+| F3p | 1.000 | 0.997 | 0.946 | 1.000 | 1.000 | 1.000 | 0.978 | 0.913 | 0.869 |
+| F4 | 0.993 | 0.983 | 0.980 | 0.982 | 0.979 | 0.954 | 0.987 | 0.944 | 0.969 |
+| F5 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+| F6 | 1.000 | 0.954 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+
+| cell R3/R2 | Auckland | Torino | Kingston | HanoiV2 | Algiers | Geneva | Fez | Marrakesh | Aachen |
+|---|---|---|---|---|---|---|---|---|---|
+| F1 | 1.001 | 0.999 | 0.998 | 0.997 | 0.967 | 0.969 | 0.995 | 0.997 | 1.000 |
+| F2 | 0.996 | 0.998 | 1.000 | 0.994 | 0.981 | 0.997 | 1.000 | 0.997 | 1.000 |
+| F3o | 1.010 | 1.004 | 1.000 | 1.021 | 1.010 | 1.006 | 1.003 | 1.007 | 1.012 |
+| F3p | 1.000 | 1.001 | 1.000 | 1.000 | 1.000 | 1.003 | 1.000 | 1.000 | 1.000 |
+| F4 | 0.999 | 0.999 | 1.000 | 1.000 | 0.999 | 0.997 | 0.999 | 0.999 | 0.999 |
+| F5 | 1.000 | 1.000 | 1.000 | 0.953 | 1.000 | 1.000 | 0.978 | 1.000 | 1.000 |
+| F6 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+
+## Predictions
+
+- H1 (R2/L3T <= 1.00 on at least 7 of 9 devices): **CONFIRMED** (Auckland 0.998, Torino 0.985, Kingston 0.978, HanoiV2 0.989, Algiers 0.974, Geneva 0.970, Fez 0.988, Marrakesh 0.951, Aachen 0.960)
+- H2 (cx devices: R3/R2 <= 1.00 on at least 3 of 4): **CONFIRMED** (Auckland 1.000, HanoiV2 1.000, Algiers 0.991, Geneva 0.994)
+- H3 (R2/L3T <= 1.02 in >= 85% of the 63 cell-device pairs): **CONFIRMED** (1.000)
+- H4 (R2 and R3 never use a failed direction or qubit, nor an off-target instruction): **CONFIRMED** (0 failed uses, 0 circuits off target)
+- H5 (median compile time R3 <= 1.0 s at this width): **CONFIRMED** (0.236 s)
+
+Reported: R3 choices (COMPARE_STATS counters that moved): {'psf': 831, 'level3': 1059, 'floor': 162}
+
+Reported: median compile s R2 0.122, R3 0.236, A7 0.057, L3T 0.021
+Reported: failed uses by coupler {'R2': 366, 'R3': 378, 'A7': 10478, 'L3T': 409}; by direction {'R2': 0, 'R3': 0, 'A7': 10057, 'L3T': 0}
+Reported: circuits with an off-target instruction, by arm: R2 0, R3 0, A7 0, L3T 0
+
