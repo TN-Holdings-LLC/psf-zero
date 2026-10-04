@@ -12033,6 +12033,253 @@ The stale Target changed T1 on every qubit that has one: 27 on the 27-qubit devi
 
 Local paths were replaced.
 
+
+---
+
+<!-- ===== Addendum 336 (source: spare-qubit-cliff-addendum-336-2026-10-04.md) ===== -->
+
+> **Note added when merging:** Pre-registration of HOLD6 (candidates psf_compile 2026-10-04.c11 and psf_ai_compile 2026-10-04.a8); the predictions were written before the smoke run; the lock is the commit that adds it.
+
+## Addendum 336 -- Pre-registration: candidate psf_compile 2026-10-04.c11 (choice by an estimate with both amplitude damping and pure dephasing) and candidate front end psf_ai_compile 2026-10-04.a8 (target-aware path above 8 qubits), on fresh circuits (HOLD6) (2026-10-04)
+
+**Status: pre-registration, written at home before any scored run.**
+
+- **Lock:** the git commit that adds this document, with:
+  - `patches/psf_compile_c11_2026-10-04/` (the candidate and its tests);
+  - `patches/psf_ai_compile_a8_2026-10-04/` (the candidate and its tests);
+  - `benchmarks/hold6_eval.py` and its runner.
+
+  The commit is pushed before the scored run.
+- **No hardware:** fake devices and Aer noise only.
+- **The predictions (section 4) were written before the smoke run.**
+
+## 1. Candidate c11 (changelog item 38)
+
+**What it adds:** `candidate_score="hybrid"`, which chooses among the candidates of items 36-37 by `hybrid_cost`.
+
+**`hybrid_cost`, per gate with a reported duration and for each of its qubits:**
+
+- **amplitude damping:** duration / T1 × P(1) on the noiseless state just before the gate, as `excitation_cost`
+  counts it;
+- **pure dephasing:** p_phi (1 - <Z>^2) just after the gate, with p_phi = (1 - exp(-t / T_phi)) / 2 and
+  1 / T_phi = 1 / T2 - 1 / (2 T1);
+- **the rest:** the reported error above the thermal floor × (d + 1) / d, as `pauli_cost` counts it.
+
+It is the estimate `hyb` of Addendum 334's diagnosis. A test checks that the two agree to 1e-12.
+
+**Call tested:**
+
+```python
+compile_for_hardware(..., target=..., placement_refine=True, final_resynthesis="select", compare_level3=True,
+                     compare_floor=True, candidate_score="hybrid")
+```
+
+It is tested on every device.
+
+**Unchanged:** any call without `candidate_score="hybrid"` gives release 2026-10-03.3's circuit (checked by test).
+
+**Why** (Addendum 335, exploratory, in-sample on HOLD5's circuits):
+
+- On all nine devices, the choice by `hybrid_cost` among the release's candidates was better than by `pauli_cost`
+  (0.06-0.51%) and better than release 2026-10-03.2's choice (0.02-2.2%).
+- It came within 0.2% of the measured best.
+
+## 2. Candidate a8 (front end, its item 13)
+
+**The defect.** Above `SMALL_MAX_QUBITS` (8), a7 compiled without the target: the `target` argument was consumed and
+never forwarded.
+
+**What it cost** (WIDE, Addendum 335):
+
+- 1.14-2.84 times the release's infidelity;
+- failed elements used in 302 of 1,188 circuits.
+
+**The change.** With a target, a8 hands such circuits to the release's recommended call:
+
+- `target`, `placement_refine=True`, `final_resynthesis="select"`, `compare_level3=True`;
+- caller kwargs override these.
+
+Without a target, and at or below 8 qubits, a8 is a7 (checked by test).
+
+## 3. Design (`benchmarks/hold6_eval.py`)
+
+**Circuits** (new seeds):
+
+| set | what it is | per device | seeds | simulated if touched qubits <= |
+|---|---|---|---|---|
+| F1-F6 | HOLD5's generator code and per-cell sizes | 1,506 | base 90,000,000 + ... | 11 |
+| W1-W6 | WIDE's generator code at 9-10 logical qubits | 72 | base 95,000,000 + ... | 12 |
+
+**The W families:**
+
+| family | sizes |
+|---|---|
+| W1 rings | n 10, L 2 and 4 |
+| W2 QAOA | n 10, p 1 and 2 |
+| W3 XXZ | n 10, open and periodic |
+| W4 brickwork | n 9 and 10 |
+| W5 GHZ | n 9 and 10 |
+| W6 QFT | n 9 |
+
+**Arms:**
+
+| arm | what it is |
+|---|---|
+| R3 | release 2026-10-03.3 as recommended: on cx devices 2026-10-03.2's call + `compare_floor=True, candidate_score="pauli"`; on cz devices 2026-10-03.2's call |
+| C11 | the candidate with the call above, on every device |
+| A7 | the adopted front end with the target |
+| A8 | the candidate front end with the target (W families only) |
+| L3T | Qiskit level 3 with the Target |
+
+**Size:** 486 jobs (216 F, 270 W).
+
+**Devices:** HOLD's nine.
+
+**Metric:** as in GAP. The noiseless P0 check uses Aer's statevector method.
+
+## 4. Predictions (scored only by `hold6_eval.py score`; written before the smoke run)
+
+**P0, harness.** All of these must hold, or nothing below is scored:
+
+- 486 job files;
+- every noiseless infidelity <= 1e-6;
+- at most 5% of the F circuits and 30% of the W circuits too wide.
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| H1 | c11 never costs on average (F) | C11/R3 <= 1.00 on at least 8 of 9 devices | > 1.01 on any |
+| H2 | it gains on cx devices (F) | C11/R3 < 1.00 on all 4 cx devices | > 1.003 on 2 or more |
+| H3 | it repairs F3 open chains (cx) | F3 open C11/R3 <= 1.00 on at least 3 of 4 cx devices | > 1.01 on 2 or more |
+| H4 | it keeps the GHZ gains (cx) | F5 C11/R3 <= 1.01 on all 4 cx devices | > 1.03 on any |
+| H5 | it does not cost on cz devices (F) | C11/R3 <= 1.00 on at least 4 of 5 cz devices | > 1.005 on 2 or more |
+| H6 | it stays on the target | 0 failed-direction or failed-qubit uses and 0 off-target instructions by C11 (F and W) and A8 (W) | any |
+| H7 | it stays cheap (F) | median compile time C11 <= 3 × R3 | > 10 × R3 |
+| H8 | it keeps the lead over level 3 (F) | C11/L3T <= 1.00 on all 9 devices | > 1.02 on any |
+| H9 | a8 repairs the large-circuit path (W) | A8/A7 <= 0.95 on at least 7 of 9 devices | > 1.00 on 2 or more |
+| H10 | a8 is ahead of level 3 there (W) | A8/L3T <= 1.00 on at least 7 of 9 devices | > 1.03 on 3 or more |
+| H11 | c11 does not cost at width (W) | C11/R3 <= 1.00 on at least 7 of 9 devices | > 1.02 on 2 or more |
+
+**How the thresholds were set** (disclosed):
+
+- **c11's in-sample figures** (Addendum 335, HOLD5's circuits):
+  - against C10, which is R3 on the cx devices: 0.9949-0.9989 on the cx devices;
+  - against C9, which is R3 on the cz devices: 0.9971-0.9998 on the cz devices;
+  - PICK_hyb / PICK_pauli on F3 open: 0.979-0.993 on the cx devices;
+  - on F5: within 1.2%, the exception being FakeAlgiers at 1.012.
+- **H1, H2 and H5 allow for new seeds.** The in-sample gains are small: 0.02-0.5%.
+- **H4's threshold** (1.01) is set at FakeAlgiers' in-sample value. So H4 may well come out ambiguous.
+- **a8's figures** (WIDE, Addendum 335): above 8 qubits, A7/R2 was 1.14-2.84, and R2/L3T was 0.951-0.998. a8's call
+  is R2's.
+- **The scorer** was run on HOLD5 and WIDE data, renamed, as a plumbing check: C9 and R2 as R3 and A8; C10 as C11.
+  Those verdicts are not results.
+
+**Expectations, stated with the predictions:**
+
+- **H5 is the least certain.** On cz devices c11 adds the floor candidate and the new estimate, against R3 = .2's call.
+  The in-sample gain there was only 0.02-0.3%.
+- **H11:** at 9-10 qubits the floor candidate was rarely distinct in WIDE, and F3-type losses are small.
+- **On cz devices, A8 and R3 make the same call**, so their rows should be identical. This is reported as a check.
+
+**Reported without prediction:**
+
+- the device and cell tables for both sets;
+- the choices;
+- compile times;
+- failed uses counted both ways;
+- off-target instructions;
+- too-wide circuits by arm.
+
+## 5. Development (disclosed)
+
+### 5.1 How the candidates were built
+
+Both files were generated by scripts.
+
+**c11**, from release 2026-10-03.3. The script inserts:
+
+- `hybrid_cost`;
+- the "hybrid" value in `_choose` and in the argument check;
+- changelog item 38;
+- the version lines.
+
+**a8**, from `benchmarks/psf_ai_compile.py` (a7). The script inserts:
+
+- item 13 in the docstring;
+- two constants;
+- the target-aware branch in the large-circuit path;
+- the version line.
+
+Nothing else was changed.
+
+### 5.2 Checks run before the stage (no qiskit in this environment)
+
+- **`hybrid_cost` against the diagnosis's estimate.** It was checked on 200 random mock circuits with random
+  unitaries, errors, durations and T1/T2. The largest relative difference was 7.7e-16.
+- **The scorer** was run on renamed HOLD5 and WIDE data (section 4).
+- **The runner** was run with a stub.
+
+### 5.3 Tests and smoke run (not a result)
+
+**Tests** (at home, 2026-10-04 afternoon, on the staged files): `test_c11_hybrid.py` (10 cases) and `test_a8.py`
+(7 cases), 17 of 17 passed in 16 s.
+
+**The 17 cases check:**
+
+- the version strings;
+- that any call without "hybrid" gives the release's circuit;
+- that bad arguments raise `ValueError`;
+- that `hybrid_cost` matches a reference computed with Qiskit's `Statevector` (P(1) before each gate, <Z> after it);
+- that `hybrid_cost` equals the diagnosis's estimate (to 1e-12);
+- on five devices, that the full choice:
+  - is exact;
+  - is on the target;
+  - uses no failed qubit or failed direction;
+  - has no higher `hybrid_cost` than the release's own circuit or level 3's;
+- that a8 is a7 below 9 qubits and without a target;
+- that above 8 qubits with a target, a8 gives exactly the release's recommended call, exact and free of failed
+  elements, on FakeHanoiV2, FakeAlgiers, FakeTorino and FakeAachen.
+
+**Smoke run:** 1 circuit per cell and its own seeds; 486 jobs, 848 s.
+
+- No job failed. The runner's check for a Traceback or STOP found none.
+- Nothing in the candidates or the evaluation scripts was changed after it.
+- The predictions above were written before it, and were not changed.
+- **Its verdict lines:**
+
+  | H1 | H2 | H3 | H4 | H5 | H6 | H7 | H8 | H9 | H10 | H11 |
+  |---|---|---|---|---|---|---|---|---|---|---|
+  | CONFIRMED | AMBIGUOUS | CONFIRMED | AMBIGUOUS | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED |
+
+- **H2** was ambiguous because FakeGeneva came out at 1.0000.
+- **H4** was ambiguous because FakeAlgiers F5 came out at 1.0125, as in-sample.
+- **C11/R3 (F):** 0.9922-1.0007.
+- **A8/A7 (W):** 0.36-0.89.
+- **A8/L3T (W):** 0.970-1.000.
+- **Median compile time:** F R3 0.124 s, C11 0.187 s; W A7 0.114 s, A8 0.255 s.
+- **Failed directions or qubits:** 0 by C11 and A8, 629 by A7.
+- **Too wide (W):** 12-20 of 99 per arm.
+
+## 6. What this will not establish
+
+- **Hardware.**
+- **ecr devices.**
+- **Circuits wider than 10 logical qubits.**
+- **c11 at width beyond W's 72 circuits per device.**
+
+## 7. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `patches/psf_compile_c11_2026-10-04/psf_compile.py` | `726defb75c0e911c38565da0c1e7b7ca20079c7c54a5be1a72cb9b78004c0463` |
+| `patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py` | `33bebe2da77d0b870e34d2bc29d57397e39050c0208f8f0f753ca95c51f54318` |
+| `patches/psf_ai_compile_a8_2026-10-04/psf_ai_compile.py` | `3f17afbf0aafbbeede6fe6e9c0a91c41db0f56b2d57b6b69dbc1d6f654df719c` |
+| `patches/psf_ai_compile_a8_2026-10-04/test_a8.py` | `b28239c46b310bd97fc7ca69e0543e60163a3a2a2e80c861ec00027b99fefd20` |
+| `benchmarks/hold6_eval.py` | `8740a33225f24da12f1d07c235695950f03643d4160283eb1623ad9d7f05108a` |
+| `benchmarks/run_hold6_2026-10-04.sh` | `a1e5ff74eafc29bff3f3614d96a75af00d55297f4a41fe5f1bd3dfead1dbf6c7` |
+
+Normalization: CRLF to LF, trailing whitespace stripped from each line, trailing blank lines dropped, lines joined
+with "\n" and no final newline.
+
 ---
 
 ---
