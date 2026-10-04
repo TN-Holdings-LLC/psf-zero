@@ -1,8 +1,9 @@
-"""Tests for candidate psf_compile 2026-10-04.c11 (changelog item 38: choice among the candidates of items 36-37 by
-`hybrid_cost`, an estimate with amplitude damping and pure dephasing). Helpers are copied from
-patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py.
+"""Tests for release psf_compile 2026-10-04.1 (changelog item 38: choice among the candidates of items 36-37 by
+`hybrid_cost`), adapted from the candidate's tests (patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py). The previous
+release, 2026-10-03.3, is represented by its candidate's file (patches/psf_compile_c10_2026-10-03/psf_compile.py),
+which differs from it only in the version lines.
 
-Run from the repository root:  python -m pytest patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py -q
+Run from the repository root:  python -m pytest benchmarks/test_release_2026_10_04_1.py -q
 """
 import math
 import os
@@ -11,7 +12,7 @@ import sys
 import pytest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
+REPO = os.path.abspath(os.path.join(HERE, ".."))
 sys.path.insert(0, os.path.join(REPO, "benchmarks"))
 sys.path.insert(0, REPO)
 
@@ -19,10 +20,11 @@ sys.path.insert(0, REPO)
 @pytest.fixture(scope="module")
 def mods():
     import core_fix_c2_eval as H
-    lay = H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psl_c11_test")
+    lay = H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psl_rel10041_test")
     sys.modules["psf_smart_layout"] = lay
-    return (H.load_module(os.path.join(HERE, "psf_compile.py"), "psf_compile_c11_test"),
-            H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile_rel_c11_test"))
+    return (H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile_rel10041_test"),
+            H.load_module(os.path.join(REPO, "patches", "psf_compile_c10_2026-10-03", "psf_compile.py"),
+                          "psf_compile_prev10041_test"))
 
 
 def backend(name):
@@ -165,8 +167,8 @@ FULL = dict(REC, compare_floor=True, candidate_score="hybrid")
 
 
 def test_version(mods):
-    assert mods[0].VERSION == "2026-10-04.c11"
-    assert mods[1].VERSION == "2026-10-04.1"  # current release (2026-10-03.3 when this candidate was evaluated)
+    assert mods[0].VERSION == "2026-10-04.1"
+    assert mods[1].VERSION == "2026-10-03.c10"  # the code of release 2026-10-03.3
 
 
 def test_other_options_identical_to_release(mods):
@@ -229,7 +231,7 @@ def test_hybrid_cost_is_the_diagnosis_estimate(mods):
     """The candidate's hybrid_cost is the estimate the HYBRID diagnosis (Addendum 335) measured."""
     import core_fix_c2_eval as H
     c11 = mods[0]
-    diag = H.load_module(os.path.join(REPO, "data", "2026-10-04", "hybrid", "diag", "hybrid_diag.py"), "hybrid_diag_c11_test")
+    diag = H.load_module(os.path.join(REPO, "data", "2026-10-04", "hybrid", "diag", "hybrid_diag.py"), "hybrid_diag_rel10041_test")
     for name in ("FakeAuckland", "FakeKingston"):
         tgt = backend(name).target
         for qc in (ghz(seed=3), xxz_ring(seed=4), ring(6, seed=5)):

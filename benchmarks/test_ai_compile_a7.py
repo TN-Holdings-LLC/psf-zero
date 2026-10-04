@@ -1,4 +1,5 @@
-"""Tests for the adopted AI front end psf_ai_compile 2026-10-02.a7 (benchmarks/psf_ai_compile.py), adapted from the
+"""Tests for the AI front end psf_ai_compile 2026-10-02.a7 (adopted 2026-10-02; kept as benchmarks/psf_ai_compile_a7.py
+since a8 was adopted on 2026-10-04), adapted from the
 candidate's tests (patches/psf_ai_compile_a7_2026-10-02/test_a7.py); a5 is benchmarks/psf_ai_compile_a5.py.
 
 Run from the repository root:  python -m pytest benchmarks/test_ai_compile_a7.py -q
@@ -22,7 +23,7 @@ def mods():
     lay = H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psl_a7_release_test")
     sys.modules["psf_smart_layout"] = lay
     a5 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile_a5.py"), "psf_ai_compile_a5_frozen_test")
-    a7 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile.py"), "psf_ai_compile")
+    a7 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile_a7.py"), "psf_ai_compile")
     import gap_eval as G
     return dict(rel=rel, a5=a5, a7=a7, G=G)
 

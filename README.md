@@ -61,7 +61,38 @@ in place, so there is never a second, differently-named copy to pick between
 [`psf_smart_layout.py`](benchmarks/psf_smart_layout.py) — the layout-search prototype,
 repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see below).
 
-> **Current version (2026-10-03, third release): `psf_compile.py` 2026-10-03.3, with `psf_smart_layout` 2026-10-01.1
+> **Current version (2026-10-04): `psf_compile.py` 2026-10-04.1, with `psf_smart_layout` 2026-10-01.1 and the Rust
+> core `CORE_VERSION` 2026-09-29.1 (both unchanged)** ([Part 9](docs/findings/spare-qubit-cliff-combined-248.md),
+> Addenda 334-338). One opt-in addition to 2026-10-03.3, and one recommended call on every device:
+>
+> - **Recommended call with a device target (cx and cz devices alike):**
+>
+>   ```python
+>   compile_for_hardware(qc, coupling_map=cm, basis_gates=basis, entangling_basis="cx", layout_search=True,
+>                        target=backend.target, placement_refine=True, final_resynthesis="select",
+>                        compare_level3=True, compare_floor=True, candidate_score="hybrid")
+>   ```
+>
+> - **`candidate_score="hybrid"`** chooses among the candidates (the release's circuit, the floor-placed one, level
+>   3's) by `hybrid_cost`. It counts amplitude damping as `excitation_cost` does, pure dephasing as the Z part of
+>   `pauli_cost`, and the reported error above the T1/T2 floor.
+>   - Why: `pauli_cost` lost on XXZ chains (amplitude damping) and `excitation_cost` on GHZ chains (dephasing); an
+>     exploratory diagnosis found the combination choosing better than either on all nine devices (Addendum 335).
+>   - Pre-registered test (Addenda 336-337; 1,506 new circuits on each of 9 devices, plus 72 at 9-10 qubits):
+>     - better than 2026-10-03.3's recommended calls on all nine devices (0.02-0.7%);
+>     - the XXZ-chain loss of `pauli_cost` repaired on the cx devices (0.8-2.3%);
+>     - on cz devices the floor-placed candidate now helps too (FakeMarrakesh GHZ chains 5%);
+>     - ahead of Qiskit level 3 on all nine devices (0.959-0.991);
+>     - failed elements never used; about 0.16 s per compile (median; 1.8 times 2026-10-03.3's recommended calls).
+> - **Known limits:**
+>   - On FakeAlgiers, 4-qubit GHZ chains are 6.7% worse than with `candidate_score="pauli"` (all 48 such circuits;
+>     6- and 8-qubit chains equal). A fixed ranking error of `hybrid_cost` on one placement; under investigation.
+>   - Not tested on hardware, on ecr devices, or above 16 touched qubits.
+>   - With a stale calibration (errors off by 30%, T1/T2 by 20%; Addendum 335) 2026-10-03.3's calls stayed ahead of
+>     level 3; this release was not tested that way.
+> - With the defaults, nothing changes.
+
+> **Previous release (2026-10-03, third release): `psf_compile.py` 2026-10-03.3, with `psf_smart_layout` 2026-10-01.1
 > and the Rust core `CORE_VERSION` 2026-09-29.1 (both unchanged)** ([Part 9](docs/findings/spare-qubit-cliff-combined-248.md),
 > Addenda 330-333). One opt-in addition to 2026-10-03.2, recommended on cx devices only:
 >
@@ -87,7 +118,7 @@ repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see belo
 > - **Known limits:**
 >   - On cz devices no gain (0.1-0.2% loss on three of five), hence the cx-only recommendation.
 >   - On XXZ-type chains (F3) up to 1.8% worse: `pauli_cost` averages relaxation into symmetric Pauli errors and
->     misses the decay of |1> that `excitation_cost` sees. A combined estimate is the next step.
+>     misses the decay of |1> that `excitation_cost` sees. A combined estimate is the next step (2026-10-04.1).
 >   - Not tested on hardware, on ecr devices, or above 16 touched qubits.
 > - With the defaults, nothing changes.
 
@@ -210,6 +241,16 @@ repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see belo
 > - **Core 2026-09-29.1:** an eigen-route fallback, with output identical to 2026-09-28.1 wherever
 >   that core succeeded and no fallbacks in the 100,000-compile run. Every evaluation since
 >   2026-09-29 used it.
+
+> **Update (2026-10-04) -- AI front end a8** ([Part 9](docs/findings/spare-qubit-cliff-combined-248.md),
+> Addenda 335-338). `benchmarks/psf_ai_compile.py` is now a8 (a7 is kept as `benchmarks/psf_ai_compile_a7.py`).
+>
+> - **The defect it fixes:** above 8 qubits a7 compiled WITHOUT the device target (the `target` argument was never
+>   forwarded). At 9-10 qubits that gave 1.1-2.8 times the release's infidelity, and failed couplers or qubits were
+>   used (WIDE, Addendum 335).
+> - **a8** hands such circuits to the release's recommended call with the target. Pre-registered test (Addenda
+>   336-337): 13-63% better than a7 there, ahead of Qiskit level 3 on all nine devices, no failed element.
+> - At or below 8 qubits, and without a target, a8 is a7.
 
 > **Update (2026-10-02) -- AI front end a7** ([Part 9](docs/findings/spare-qubit-cliff-combined-248.md),
 > Addenda 312-317). `benchmarks/psf_ai_compile.py` is now a7 (a5 is kept as `benchmarks/psf_ai_compile_a5.py`).

@@ -1,8 +1,7 @@
-"""Tests for candidate psf_ai_compile 2026-10-04.a8 (item 13: above SMALL_MAX_QUBITS with a target, the release's
-recommended call instead of a target-blind compile). Helpers are copied from
-patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py.
+"""Tests for the adopted AI front end psf_ai_compile 2026-10-04.a8 (benchmarks/psf_ai_compile.py), adapted from the
+candidate's tests (patches/psf_ai_compile_a8_2026-10-04/test_a8.py); a7 is benchmarks/psf_ai_compile_a7.py.
 
-Run from the repository root:  python -m pytest patches/psf_ai_compile_a8_2026-10-04/test_a8.py -q
+Run from the repository root:  python -m pytest benchmarks/test_ai_compile_a8.py -q
 """
 import math
 import os
@@ -11,7 +10,7 @@ import sys
 import pytest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
+REPO = os.path.abspath(os.path.join(HERE, ".."))
 sys.path.insert(0, os.path.join(REPO, "benchmarks"))
 sys.path.insert(0, REPO)
 
@@ -20,10 +19,10 @@ sys.path.insert(0, REPO)
 def mods():
     import core_fix_c2_eval as H
     rel = H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile")
-    lay = H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psl_a8_test")
+    lay = H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psl_a8_release_test")
     sys.modules["psf_smart_layout"] = lay
-    a7 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile_a7.py"), "psf_ai_compile")  # a7 (frozen at a8's adoption)
-    a8 = H.load_module(os.path.join(HERE, "psf_ai_compile.py"), "psf_ai_compile_a8_test")
+    a7 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile_a7.py"), "psf_ai_compile_a7_frozen_test")
+    a8 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile.py"), "psf_ai_compile")
     return dict(rel=rel, a7=a7, a8=a8)
 
 
@@ -113,7 +112,7 @@ REC = dict(placement_refine=True, final_resynthesis="select", compare_level3=Tru
 def test_version(mods):
     assert mods["a8"].AI_COMPILE_VERSION == "2026-10-04.a8"
     assert mods["a7"].AI_COMPILE_VERSION == "2026-10-02.a7"
-    assert mods["rel"].VERSION == "2026-10-04.1"  # current release (2026-10-03.3 when this candidate was evaluated)
+    assert mods["rel"].VERSION == "2026-10-04.1"
 
 
 def test_small_circuits_identical_to_a7(mods):

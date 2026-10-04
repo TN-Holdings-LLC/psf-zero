@@ -164,7 +164,7 @@ REC = dict(placement_refine=True, final_resynthesis="select", compare_level3=Tru
 
 
 def test_version(mods):
-    assert mods[0].VERSION == "2026-10-03.3"
+    assert mods[0].VERSION == "2026-10-04.1"  # current release (this file was written for 2026-10-03.3)
     assert mods[1].VERSION == "2026-10-03.c9"  # the code of release 2026-10-03.2
 
 

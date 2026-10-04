@@ -66,17 +66,7 @@ a7 (2026-10-02, home) adds one candidate, only when a `target` is given:
       included it. The output is used as Qiskit returns it (not polished). No extra compile is made. Without a target,
       a7 behaves exactly as a5.
 
-a8 (2026-10-04, home; adopted 2026-10-04, Addenda 336-338) changes only what happens above `SMALL_MAX_QUBITS` when a `target` is given:
-  13. Until a7, such circuits went straight to `compile_for_hardware()` WITHOUT the target (the `target` argument
-      was consumed by this function and never forwarded), so the compile saw neither error rates nor failed
-      elements. WIDE (Addendum 335) measured the result at 9-10 logical qubits: 1.14-2.84 times the infidelity of
-      the release's recommended call, and failed directions or qubits used in 302 of 1,188 circuits. a8 hands such
-      circuits to the release's recommended call with the target (`target`, `placement_refine=True`,
-      `final_resynthesis="select"`, `compare_level3=True`; caller kwargs override), which used no failed element in
-      any test. Without a target, and at or below `SMALL_MAX_QUBITS`, a8 behaves exactly as a7.
-
-Circuits above `SMALL_MAX_QUBITS` go to `compile_for_hardware()`: without a target unchanged (a7), with a target by
-the release's recommended call (a8, item 13).
+Circuits above `SMALL_MAX_QUBITS` go straight to `compile_for_hardware()` unchanged.
 The layout of the routed circuit (initial and final) is preserved by every step.
 """
 import contextlib
@@ -93,7 +83,7 @@ from qiskit.transpiler.passes import (BasisTranslator, Collect2qBlocks, Commutat
 
 import psf_compile as pc
 
-AI_COMPILE_VERSION = "2026-10-04.a8"  # adopted 2026-10-04 (Addenda 336-338): a7 + target-aware large-circuit path (item 13); a7 is psf_ai_compile_a7.py
+AI_COMPILE_VERSION = "2026-10-02.a7"  # adopted 2026-10-02 (Addenda 314-317): a5 + Qiskit level 3 output as a candidate (item 12); a5 is psf_ai_compile_a5.py
 SMALL_MAX_QUBITS = 8
 DEFAULT_SEEDS = (0, 1, 2, 3)
 L3_LAYOUT_CANDIDATE = True
@@ -106,8 +96,6 @@ L3T_OUTPUT_CANDIDATE = True  # a7: level 3's own output (target given) is also a
 DECOHERENCE_FLOOR = True  # a3: a gate cannot be better than T1/T2 allow during its duration
 STATE_AWARE = True  # a4: score placements and candidates by the state-aware first-order estimate  # a2: also route from Qiskit level 3's error-aware layout (target given)
 POLISH_ROUNDS = 3
-FAST_PATH_TARGET = True  # a8: above SMALL_MAX_QUBITS with a target, use the release's recommended call (item 13)
-FAST_PATH_RECOMMENDED = dict(placement_refine=True, final_resynthesis="select", compare_level3=True)
 
 
 def _two_q(c):
@@ -508,16 +496,6 @@ def compile_for_model_circuit(qc, coupling_map, basis_gates, entangling_basis="c
                                            seed_transpiler=seed, **kwargs)
 
     if qc.num_qubits > SMALL_MAX_QUBITS or basis_gates is None:
-        if target is not None and basis_gates is not None and qc.num_qubits > SMALL_MAX_QUBITS and FAST_PATH_TARGET:
-            # a8 (item 13): the release's recommended call with the target; caller kwargs override
-            fk = dict(FAST_PATH_RECOMMENDED, target=target)
-            fk.update(kwargs)
-            with contextlib.redirect_stdout(io.StringIO()), warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                out = pc.compile_for_hardware(qc, coupling_map=coupling_map, basis_gates=basis_gates,
-                                              entangling_basis=entangling_basis, layout_search=layout_search,
-                                              seed_transpiler=seeds[0] if seeds else None, **fk)
-            return (out, {"path": "fast-target", "version": AI_COMPILE_VERSION}) if return_info else out
         out = cfh(qc, seeds[0] if seeds else None)
         return (out, {"path": "fast"}) if return_info else out
 

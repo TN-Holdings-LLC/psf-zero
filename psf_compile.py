@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-10-03.3 -- release, adopted on 2026-10-03 from candidate 2026-10-03.c10 (previous release: 2026-10-03.2)
+VERSION: 2026-10-04.1 -- release, adopted on 2026-10-04 from candidate 2026-10-04.c11 (previous release: 2026-10-03.3)
 
 Where to look for what
 ----------------------
@@ -545,6 +545,28 @@ recommended on cx devices only):
       the thermal floor times (d + 1) / d (state-independent). None above RESYNTH_MAX_QUBITS touched qubits.
     With `compare_floor=False` and `candidate_score="excitation"` (the defaults) nothing changes. Counts in
     `COMPARE_STATS`.
+
+2026-10-04.1 (release; candidate 2026-10-04.c11, adopted on 2026-10-04 after its pre-registered evaluation, Addenda 336-337;
+recommended on every device):
+
+38. **NEW, opt-in: `candidate_score="hybrid"` chooses among the candidates of items 36-37 with an estimate that keeps
+    both amplitude damping and pure dephasing.** HOLD5 (Addendum 332) found `pauli_cost` choosing well where
+    dephasing decides (GHZ chains) and losing up to 1.8% on XXZ chains, where amplitude damping decides and
+    `excitation_cost` had ranked correctly: twirling relaxation into symmetric Pauli errors loses its non-unital
+    part. In the exploratory diagnosis of Addendum 335 (in-sample, HOLD5's circuits, nine devices) the choice by
+    `hybrid_cost` among the release's candidates was better than the choice by `pauli_cost` on every device
+    (0.06-0.51%), better than release 2026-10-03.2's choice by `excitation_cost` on every device (0.02-2.2%), and
+    within 0.2% of the measured best.
+    - `hybrid_cost(circ, target)`: per gate with a reported duration, for each of the gate's qubits,
+      duration / T1 x P(1) on the noiseless state just before the gate (amplitude damping, as `excitation_cost`),
+      plus p_phi (1 - <Z>^2) on the noiseless state just after it (pure dephasing), with
+      p_phi = (1 - exp(-t / T_phi)) / 2, 1 / T_phi = 1 / T2 - 1 / (2 T1), T2 capped at 2 T1; plus, per gate, the
+      reported error above the thermal floor times (d + 1) / d (as `pauli_cost`). None above RESYNTH_MAX_QUBITS
+      touched qubits or when an instruction has no matrix.
+    - `candidate_score="hybrid"` uses it in `_choose`; everything else is as in item 37 (ties and any estimate that
+      cannot be made keep the release's circuit; item 35's "select" still uses `excitation_cost`).
+    Intended call on every device: `compare_level3=True, compare_floor=True, candidate_score="hybrid"` with
+    item 35's `final_resynthesis="select"` and item 33's `placement_refine=True`. Other values change nothing.
 """
 from __future__ import annotations
 
@@ -581,7 +603,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-10-03.3"  # release (from candidate 2026-10-03.c10): 2026-10-03.2 + floor-placed candidate and Pauli-estimate choice (item 37)
+VERSION = "2026-10-04.1"  # release (from candidate 2026-10-04.c11): 2026-10-03.3 + choice by an estimate with amplitude damping and pure dephasing (item 38)
 __version__ = VERSION
 
 # Changelog item 27: the version string of the loaded Rust core, for logs.
@@ -1834,10 +1856,74 @@ def pauli_cost(circ, target):
     return cost
 
 
+def hybrid_cost(circ, target):
+    """Item 38's estimate: amplitude damping as `excitation_cost` counts it, pure dephasing as the Z part of
+    `pauli_cost`, and the reported error above the thermal floor (see the changelog). None if more than
+    RESYNTH_MAX_QUBITS qubits are touched or an instruction has no matrix (other than barrier, measure, delay)."""
+    import math
+    ops = [(ins.operation, tuple(circ.find_bit(b).index for b in ins.qubits)) for ins in circ.data
+           if ins.operation.name not in ("barrier", "measure", "delay")]
+    active = sorted({i for _, q in ops for i in q})
+    if len(active) > RESYNTH_MAX_QUBITS:
+        return None
+    k = max(len(active), 1)
+    pos = {p: j for j, p in enumerate(active)}
+    qp = getattr(target, "qubit_properties", None) or []
+    psi = np.zeros((2,) * k, dtype=complex)
+    psi[(0,) * k] = 1.0
+
+    def thermal(i, t):
+        p = qp[i] if i < len(qp) else None
+        t1 = getattr(p, "t1", None) if p is not None else None
+        if not t or not t1:
+            return None
+        t2 = getattr(p, "t2", None)
+        return t1, (min(t2, 2 * t1) if t2 else 2 * t1)
+
+    def rho1(ax):
+        mm = np.moveaxis(psi, ax, 0).reshape(2, -1)
+        return mm @ mm.conj().T
+
+    cost = 0.0
+    for op, q in ops:
+        try:
+            mat = np.asarray(op.to_matrix(), dtype=complex)
+        except Exception:
+            return None
+        props = target[op.name].get(q, None) if op.name in target.operation_names else None
+        axes = [pos[i] for i in q]
+        m = len(axes)
+        t = (props.duration or 0.0) if props is not None else 0.0
+        if props is not None:
+            for i, ax in zip(q, axes):
+                th = thermal(i, t)
+                if th:
+                    cost += t / th[0] * float(rho1(ax)[1, 1].real)
+        rev = axes[::-1]  # Qiskit's matrix index is little-endian: the first qarg is the least significant bit
+        psi = np.tensordot(mat.reshape((2,) * (2 * m)), psi, axes=(list(range(m, 2 * m)), rev))
+        psi = np.moveaxis(psi, list(range(m)), rev)
+        if props is None:
+            continue
+        thermal_f = 1.0
+        for i, ax in zip(q, axes):
+            th = thermal(i, t)
+            if not th:
+                continue
+            t1, t2 = th
+            rate = max(1.0 / t2 - 1.0 / (2.0 * t1), 0.0)
+            r = rho1(ax)
+            ez = float((r[0, 0] - r[1, 1]).real)
+            cost += (1.0 - math.exp(-t * rate)) / 2.0 * (1.0 - ez * ez)
+            thermal_f *= (1.0 + 2.0 * math.exp(-t / t2) + math.exp(-t / t1)) / 4.0
+        d = 2 ** m
+        cost += max((props.error or 0.0) - (1.0 - (d * thermal_f + 1.0) / (d + 1.0)), 0.0) * (d + 1) / d
+    return cost
+
+
 def _choose(cands, target, score):
-    """Item 37: the (name, circuit) with the lowest estimate; the first (the release's circuit) on ties or when any
-    estimate cannot be made."""
-    f = pauli_cost if score == "pauli" else excitation_cost
+    """Items 37-38: the (name, circuit) with the lowest estimate; the first (the release's circuit) on ties or when
+    any estimate cannot be made."""
+    f = {"pauli": pauli_cost, "hybrid": hybrid_cost}.get(score, excitation_cost)
     costs = [f(c, target) for _, c in cands]
     if any(c is None for c in costs):
         COMPARE_STATS["not_estimable"] += 1
@@ -2242,7 +2328,7 @@ def compile_for_hardware(
     `compare_floor`, `candidate_score` (candidate 2026-10-03.c10, item 37): `compare_floor=True` adds the
     release's pipeline re-placed on `floor_aware_target(target)` as a candidate; `candidate_score="pauli"` chooses
     among the candidates by `pauli_cost` instead of `excitation_cost`. Require `target`; the defaults change
-    nothing.
+    nothing. `candidate_score="hybrid"` (candidate 2026-10-04.c11, item 38) chooses by `hybrid_cost`.
     `callback` (new, item 13): forwarded verbatim to the internal
     `transpile()` call below, unchanged from what plain `transpile(callback=
     ...)` accepts. `None` by default -- passing nothing here changes nothing
@@ -2259,8 +2345,8 @@ def compile_for_hardware(
         raise ValueError("compare_level3=True needs the device `target` (changelog item 36)")
     if compare_floor and target is None:
         raise ValueError("compare_floor=True needs the device `target` (changelog item 37)")
-    if candidate_score not in ("excitation", "pauli"):
-        raise ValueError('candidate_score must be "excitation" or "pauli" (changelog item 37)')
+    if candidate_score not in ("excitation", "pauli", "hybrid"):
+        raise ValueError('candidate_score must be "excitation", "pauli" or "hybrid" (changelog items 37-38)')
     if layout_search and initial_layout is not None:
         raise ValueError(
             "layout_search=True and an explicit initial_layout were both "
