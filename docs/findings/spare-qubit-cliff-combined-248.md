@@ -11609,6 +11609,239 @@ A line-by-line check confirmed that only link syntax changed.
 - **The AI front end a7** is still up to 3.7% ahead.
 - **Not tested:** hardware, ecr devices, and more than 16 touched qubits.
 
+
+---
+
+<!-- ===== Addendum 334 (source: spare-qubit-cliff-addendum-334-2026-10-04.md) ===== -->
+
+> **Note added when merging:** Pre-registration of the unattended home suite of 2026-10-04 (STALE and WIDE, with the exploratory HYBRID diagnosis), written before any run of its scripts; the lock is the commit that adds it.
+
+## Addendum 334 -- Pre-registration: release psf_compile 2026-10-03.3 on wider circuits (WIDE, 8-10 qubits) and with a stale calibration (STALE); plus an exploratory diagnosis (HYBRID) of an estimate that keeps both amplitude damping and dephasing. One unattended home suite (2026-10-04)
+
+**Status: pre-registration, written at home on the evening of 2026-10-03, before any run of these scripts.**
+
+- **Lock:** the git commit that adds this document, `benchmarks/stale_eval.py`, `benchmarks/wide_eval.py`,
+  `data/2026-10-04/hybrid/diag/hybrid_diag.py` and the suite runner `benchmarks/run_suite_2026-10-04.sh`, pushed
+  before the suite is started.
+- **No hardware:** fake devices and Aer noise only.
+- **Release under test:** 2026-10-03.3 (Addendum 333), unchanged. Nothing in the release is changed by this addendum.
+- **Smoke runs come after the lock** (section 5). They are plumbing checks only and are not results.
+
+## 1. Why
+
+Addendum 332 tested the release on the HOLD families at 4-8 logical qubits, with the compiler given the same
+calibration that the simulator uses. Two questions are left open by every test so far:
+
+- **Width.** Do the recommended calls keep their lead over Qiskit level 3 at 8-10 qubits, where routing is longer,
+  a7 takes its fast path (above 8 qubits) and the estimates (`excitation_cost`, `pauli_cost`) work on larger states?
+- **Calibration mismatch.** Items 35-37 choose by estimates computed from the Target's errors and T1/T2. On hardware
+  the calibration the compiler sees is hours old. Do these choices keep their advantage when the Target is not the
+  truth, or do they overfit to it?
+
+And one development question (exploratory, section 4): Addendum 332 found that `pauli_cost` chooses well where
+dephasing decides (GHZ chains) and loses where amplitude damping decides (F3), and the reverse for `excitation_cost`.
+
+## 2. STALE (`benchmarks/stale_eval.py`)
+
+**The stale Target.** For each device, a deep copy of the Target in which:
+
+- every instruction error is multiplied by exp(N(0, 0.3)), capped at 0.49; failed entries (error >= 0.5) are not
+  changed, so the failed set is the true one;
+- every qubit's T1 and T2 are multiplied by independent exp(N(0, 0.2)) factors, with T2 capped at 2 T1 (new
+  `QubitProperties` objects; the script asserts that the true Target is unchanged);
+- the random numbers come from a fixed seed per device (80,000,000 + CRC32 of the device name).
+
+The widths (30% on errors, 20% on T1/T2) were chosen before any run, as a plausible size for calibration drift within
+a day. They were not tuned.
+
+**Every arm compiles against the stale Target.** The noisy simulation uses the device's true noise model. Failed-element
+uses are counted on the true Target.
+
+**Circuits:** the six HOLD families, with HOLD5's generator code unchanged (checked textually) and half its per-cell
+sizes: 753 per device. Seed base 80,000,000 + ....
+
+**Arms:**
+
+| arm | what it is |
+|---|---|
+| R2 | release 2026-10-03.3 with 2026-10-03.2's recommended call (`target`, `placement_refine=True`, `final_resynthesis="select"`, `compare_level3=True`) |
+| R3 | the same plus `compare_floor=True, candidate_score="pauli"` (the cx-device option of 2026-10-03.3), on every device |
+| A7 | the AI front end 2026-10-02.a7 with the (stale) Target |
+| L3T | Qiskit level 3 with the (stale) Target |
+
+**Size:** 216 jobs (9 devices × 4 arms × 6 families). **Devices:** HOLD's nine. **Metric:** as in GAP.
+
+## 3. WIDE (`benchmarks/wide_eval.py`)
+
+**Circuits:** the six HOLD families, with the same generator code and wider sizes. Only the loops over n (and F1's
+depths) differ from HOLD5's (checked textually):
+
+| family | sizes |
+|---|---|
+| F1 rings of cz | n 8 and 10, L 2 and 4 |
+| F2 QAOA, 3-regular | n 8 and 10, p 1 and 2 |
+| F3 XXZ chains | n 8 and 10, open and periodic |
+| F4 random brickwork | n 8, 9 and 10 |
+| F5 GHZ chains | n 9 and 10 |
+| F6 QFT | n 8 and 9 |
+
+12 circuits per (family, n, variant): 228 per device. Seed base 70,000,000 + ....
+
+- Circuits whose compiled form touches more than 12 qubits are not simulated (too wide).
+- The noisy simulation is GAP's density-matrix simulation.
+- The noiseless P0 check uses Aer's statevector method (the reduced density matrix of the same qubits), to save time.
+
+**Arms:** R2, R3, A7 and L3T as in section 2, with the true Target.
+
+**Size:** 216 jobs.
+
+## 4. Predictions (scored only by each script's `score`)
+
+**P0, harness, for each test.** All of these must hold, or nothing of that test is scored:
+
+- 216 job files;
+- every noiseless infidelity <= 1e-6;
+- at most 5% (STALE) or 10% (WIDE) of the circuits too wide.
+
+### STALE
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| H1 | the release keeps its lead over level 3 | R2/L3T <= 1.00 on at least 7 of 9 devices | > 1.03 on 3 or more |
+| H2 | the cx-device option keeps its gain | R3/R2 <= 1.00 on at least 3 of the 4 cx devices | > 1.01 on 2 or more |
+| H3 | no family breaks | R2/L3T <= 1.02 in at least 85% of the 63 cell-device pairs | in fewer than 65% |
+| H4 | it stays on the target | 0 failed-direction or failed-qubit uses and 0 off-target instructions by R2 and R3 | any |
+| H5 | a7 keeps its lead over level 3 | A7/L3T <= 1.00 on at least 7 of 9 devices | > 1.03 on 3 or more |
+
+### WIDE
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| H1 | the release keeps its lead over level 3 | R2/L3T <= 1.00 on at least 7 of 9 devices | > 1.03 on 3 or more |
+| H2 | the cx-device option keeps its gain | R3/R2 <= 1.00 on at least 3 of the 4 cx devices | > 1.01 on 2 or more |
+| H3 | no family breaks | R2/L3T <= 1.02 in at least 85% of the 63 cell-device pairs | in fewer than 65% |
+| H4 | it stays on the target | 0 failed-direction or failed-qubit uses and 0 off-target instructions by R2 and R3 | any |
+| H5 | it stays cheap at this width | median compile time of R3 <= 1.0 s | > 5 s |
+
+The cells are F1, F2, F3 open, F3 periodic, F4, F5 and F6.
+
+**How the thresholds were set** (disclosed):
+
+- **In-sample figures.** On HOLD5 (true calibration, 4-8 qubits):
+  - C9/L3T, which is R2/L3T, was 0.968-0.992 on the nine devices;
+  - C10/C9, which is R3/R2 on the cx devices, was 0.980-0.998;
+  - A7/L3T was 0.944-0.986.
+- **The thresholds are looser than those figures**, because both tests move away from the conditions under which
+  the release was developed. "At least 7 of 9" allows two devices to fall behind without a refutation.
+- **The scorers were run on HOLD5's data, renamed** (C9 as R2, C10 as R3) as a plumbing check. They reproduce
+  Addendum 332's ratios.
+
+**Expectations, stated with the predictions:**
+
+- **STALE H2 is the least certain.** The floor candidate's gain on GHZ chains comes from T1/T2-aware placement. With
+  T1/T2 off by 20%, it may pick worse qubits.
+- **WIDE H5:** at 10 qubits R3 compiles the circuit three times and the estimates work on 2^10 states. The median
+  should stay well under a second, but the tail will be longer.
+
+**Reported without prediction:**
+
+- the device tables (R2/L3T, R3/L3T, R3/R2, A7/R2, A7/L3T for STALE, and the recommended call against L3T: R3 on cx
+  devices, R2 on cz devices);
+- the cell tables for R2/L3T and R3/R2;
+- R3's choices;
+- compile times;
+- failed uses counted both ways and off-target instructions for every arm;
+- for STALE, the number of qubits whose T1 the stale Target changed.
+
+## 5. HYBRID (exploratory diagnosis, not a test) (`data/2026-10-04/hybrid/diag/hybrid_diag.py`)
+
+**Circuits:** every HOLD5 circuit on all nine devices (in-sample, since Addendum 332 scored them).
+
+**Candidates:** for each circuit, the candidate set that release 2026-10-03.3 builds with `compare_floor=True,
+compare_level3=True, candidate_score="pauli"`:
+
+- the release's own circuit;
+- the floor-placed one, if `_acceptable`;
+- level 3's, if `_acceptable`.
+
+The set is captured by wrapping `_choose`, so it is exactly the release's. Each distinct candidate is simulated as in
+HOLD5.
+
+**Estimates.** Each candidate is scored with four:
+
+| estimate | what it is |
+|---|---|
+| `exc` | the release's `excitation_cost` |
+| `pauli` | the release's `pauli_cost` |
+| `hyb` | amplitude damping as `exc` counts it, plus pure dephasing as `pauli`'s Z part counts it, plus the reported error above the thermal floor (see below) |
+| `excz` | `exc` plus the same pure-dephasing term |
+
+`hyb` in detail, per gate and qubit:
+
+- **amplitude damping:** duration / T1 × P(1) on the noiseless state just before the gate;
+- **pure dephasing:** p_phi (1 - <Z>^2) just after the gate, with p_phi = (1 - exp(-t / T_phi)) / 2 and
+  1 / T_phi = 1 / T2 - 1 / (2 T1);
+- **the rest:** the reported error above the thermal floor, × (d + 1) / d.
+
+**Choices** are made as `_choose` makes them.
+
+**Checks:**
+
+- the choice by `pauli` must reproduce HOLD5's C10 rows;
+- the choice by `exc` between the release's circuit and level 3's must reproduce HOLD5's C9 rows.
+
+**Reported:** per device and family, the choice by each estimate relative to L3T, the measured best, and how often
+each estimate picks the measured best.
+
+**Status of any finding:**
+
+- The two combinations were defined before any run. Both are reported, whatever they show.
+- Any candidate built on them (c11) would need its own pre-registered test on fresh circuits.
+
+## 6. How the suite runs (`benchmarks/run_suite_2026-10-04.sh`)
+
+**Order:**
+
+1. STALE: smoke run, scored run, score.
+2. HYBRID: smoke run on one device, then the nine devices, then the summary.
+3. WIDE: smoke run, scored run, score.
+
+**Smoke runs** use 1 circuit per cell (2 per family for HYBRID) and their own seeds.
+
+- A part whose smoke run shows a Traceback or STOP, or lacks an output file, is skipped. The next part still runs.
+- If a part is skipped, its scripts are not changed silently. A correction would be disclosed in a new addendum
+  before any rerun.
+- Nothing in the scripts is changed after the lock.
+
+**Settings:** PAR 6, as in HOLD5. Nothing is committed during the run.
+
+**Expected wall time:**
+
+| part | expected |
+|---|---|
+| STALE | about 30 min |
+| HYBRID | about 15-20 min |
+| WIDE | not measured. The density-matrix simulation at 10 qubits costs about 2^8 times more per gate than at 6, so WIDE is expected to take 1-4 h |
+
+## 7. What this will not establish
+
+- **Hardware.** The stale Target imitates calibration drift with independent log-normal factors. Real drift is
+  correlated, can come in jumps (TLS defects), and includes errors the Target does not report.
+- **ecr devices.**
+- **Circuits wider than 10 logical qubits.**
+
+## 8. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `benchmarks/stale_eval.py` | `f2dd16caf17d25232f2452b08a5654f83a8ae10459c773dfa3acfc74005a1cc0` |
+| `benchmarks/wide_eval.py` | `47a32ac09648e8437970722e852520300a4d01ec435c79bffe0cc7ccfb0f9d47` |
+| `data/2026-10-04/hybrid/diag/hybrid_diag.py` | `ba584d0cd64bea0661f42441d33d952a9b294e08d49c2ee4f35767982f592541` |
+| `benchmarks/run_suite_2026-10-04.sh` | `d76b95890b4a120fd1c25f00ae0c9c2fbd01ac9dff2909cc42f9024fc710b7ef` |
+
+Normalization: CRLF to LF, trailing whitespace stripped from each line, trailing blank lines dropped, lines joined
+with "\n" and no final newline.
+
 ---
 
 ---
