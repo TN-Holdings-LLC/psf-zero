@@ -12280,6 +12280,156 @@ Nothing else was changed.
 Normalization: CRLF to LF, trailing whitespace stripped from each line, trailing blank lines dropped, lines joined
 with "\n" and no final newline.
 
+
+---
+
+<!-- ===== Addendum 337 (source: spare-qubit-cliff-addendum-337-2026-10-04.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 336 (lock commit ad737a6), scored by the locked script and re-checked by benchmarks/hold6_verify.py, written after the run finished and before its output files were read.
+
+## Addendum 337 -- Results: HOLD6 (Addendum 336). Candidate c11 (choice by `hybrid_cost`) improves on release 2026-10-03.3's recommended call on all nine devices (0.02-0.70%), repairs the F3 open-chain loss on the cx devices (0.8-2.3%) and keeps the lead over Qiskit L3T; candidate front end a8 repairs the large-circuit path (A8/A7 0.375-0.871, no failed element, ahead of L3T on all nine devices). Ten confirmed, one ambiguous (H4: FakeAlgiers F5 1.0125, from 4-qubit GHZ chains only), none refuted (2026-10-04)
+
+**Status: results of the pre-registered test in Addendum 336.**
+
+- **Lock:** commit `ad737a6`, pushed before the scored run (started 15:04 JST).
+- **Same bytes:** the run used the locked files. The SHA-256 values in `env.txt` are those checked against the stage
+  before the lock, and every job file records the normalized SHA-256 of the script and of both candidates.
+- **Scoring:** by the locked `hold6_eval.py score`, and re-checked by `benchmarks/hold6_verify.py`, which agrees on
+  every verdict.
+  - **When the verify script was written:** after the run finished, before its output files were read. Its
+    normalized SHA-256 is `62f6efaf4deedb8d40481e2e6cd6038cda8eb6d53556fdee50786bc29de1813a`.
+  - **What had been seen by then:** the last three lines of the run log, which hold the too-wide counts by arm.
+  - **One fix, before any read:** the first version of the script stopped on the renamed plumbing data, which lacks the
+    new meta fields. It was changed to read them with `.get`.
+- **Setting:** home (WSL2), PAR 6; 486 jobs, 5,605 s.
+
+## 1. Verdicts
+
+| ID | Verdict | Numbers |
+|---|---|---|
+| P0 | **PASS** | 486 of 486 files; noiseless max 9.3e-10; too wide 0 of 54,216 (F), 447 of 3,240 (W, 13.8%) |
+| H1 | **CONFIRMED** | F, C11/R3 <= 1.00 on 9 of 9 devices: 0.9930-0.9998 |
+| H2 | **CONFIRMED** | F, cx devices, C11/R3 < 1.00 on all 4: Auckland 0.9973, HanoiV2 0.9930, Algiers 0.9971, Geneva 0.9988 |
+| H3 | **CONFIRMED** | F3 open, cx devices, C11/R3: Auckland 0.984, HanoiV2 0.978, Algiers 0.980, Geneva 0.992 |
+| H4 | **AMBIGUOUS** | F5, cx devices, C11/R3: Auckland 1.000, HanoiV2 0.999, Algiers 1.0125, Geneva 1.000 (threshold 1.01; none > 1.03) |
+| H5 | **CONFIRMED** | F, cz devices, C11/R3 <= 1.00 on 5 of 5: 0.9971-0.9998 |
+| H6 | **CONFIRMED** | 0 failed-direction or failed-qubit uses and 0 off-target instructions by C11 and A8 |
+| H7 | **CONFIRMED** | F, median compile time C11 0.155 s, R3 0.086 s (1.8 ×) |
+| H8 | **CONFIRMED** | F, C11/L3T <= 1.00 on 9 of 9 devices: 0.959-0.991 |
+| H9 | **CONFIRMED** | W, A8/A7 <= 0.95 on 9 of 9 devices: 0.375-0.871 |
+| H10 | **CONFIRMED** | W, A8/L3T <= 1.00 on 9 of 9 devices: 0.975-0.997 |
+| H11 | **CONFIRMED** | W, C11/R3 <= 1.00 on 8 of 9 devices: 0.9978-1.0001 (FakeAachen 1.0001) |
+
+## 2. Numbers
+
+**F (HOLD sizes):**
+
+| device | C11/R3 | C11/L3T | R3/L3T | F3 open C11/R3 | F5 C11/R3 | per circuit C11 better / worse |
+|---|---|---|---|---|---|---|
+| FakeAuckland (cx) | 0.9973 | 0.978 | 0.980 | 0.984 | 1.000 | 11.4% / 3.1% |
+| FakeTorino | 0.9995 | 0.986 | 0.986 | 1.000 | 1.000 | 5.3% / 1.3% |
+| FakeKingston | 0.9984 | 0.989 | 0.990 | 0.989 | 1.000 | 10.0% / 1.3% |
+| FakeHanoiV2 (cx) | 0.9930 | 0.980 | 0.987 | 0.978 | 0.999 | 19.2% / 4.8% |
+| FakeAlgiers (cx) | 0.9971 | 0.976 | 0.979 | 0.980 | 1.0125 | 11.2% / 5.2% |
+| FakeGeneva (cx) | 0.9988 | 0.959 | 0.960 | 0.992 | 1.000 | 8.2% / 1.7% |
+| FakeFez | 0.9992 | 0.991 | 0.992 | 1.000 | 1.000 | 7.4% / 1.3% |
+| FakeMarrakesh | 0.9971 | 0.963 | 0.966 | 0.990 | 0.950 | 14.3% / 0.5% |
+| FakeAachen | 0.9998 | 0.986 | 0.986 | 1.000 | 1.000 | 3.4% / 0.9% |
+
+**W (9-10 qubits):**
+
+| device | A8/A7 | A8/L3T | A7/L3T | C11/R3 | A8/R3 |
+|---|---|---|---|---|---|
+| FakeAuckland (cx) | 0.871 | 0.997 | 1.149 | 0.998 | 0.999 |
+| FakeTorino | 0.545 | 0.992 | 1.819 | 0.999 | 1.000 |
+| FakeKingston | 0.809 | 0.993 | 1.225 | 0.999 | 1.000 |
+| FakeHanoiV2 (cx) | 0.791 | 0.990 | 1.242 | 0.999 | 1.002 |
+| FakeAlgiers (cx) | 0.648 | 0.993 | 1.546 | 0.998 | 1.002 |
+| FakeGeneva (cx) | 0.829 | 0.975 | 1.184 | 0.999 | 1.010 |
+| FakeFez | 0.665 | 0.995 | 1.497 | 0.999 | 1.000 |
+| FakeMarrakesh | 0.375 | 0.979 | 2.660 | 1.000 | 1.000 |
+| FakeAachen | 0.495 | 0.993 | 1.823 | 1.000 | 1.000 |
+
+**Identity check.** On the cz devices A8 and R3 make the same call. Their rows are identical in 297 of 297 simulated
+pairs.
+
+**Failed elements by arm** (direction ignored; by direction):
+
+| arm | direction ignored | by direction |
+|---|---|---|
+| R3 | 159 | 0 |
+| C11 | 159 | 0 |
+| A8 | 140 | 0 |
+| L3T | 188 | 0 |
+| A7 | 4,623 | 4,509 |
+
+All of A7's are in W, its target-blind path.
+
+**Too wide in W:**
+
+| arm | too wide |
+|---|---|
+| R3 | 78 |
+| C11 | 78 |
+| A8 | 82 |
+| L3T | 93 |
+| A7 | 116 |
+
+The W ratios use only circuits simulated in both arms compared.
+
+The full tables are in `outputs/score.md`; the re-computation is in `outputs/verify.txt`.
+
+## 3. Reading
+
+**c11:**
+
+- **It does what the diagnosis said it would, on fresh circuits.**
+  - It is better than the release's recommended call on all nine devices: 0.1-0.7% on the cx devices, 0.02-0.3% on the
+    cz devices.
+  - Per circuit, it is better 2-29 times as often as worse.
+- **The F3 loss of `pauli_cost` is repaired** on the cx devices (0.8-2.3%).
+- **It brings the floor candidate to the cz devices**, where R3 has none. On FakeMarrakesh F5 that gains 5% (4-qubit
+  chains 18%, 6-qubit chains 5%).
+- **The one miss is narrow and systematic** (H4).
+  - On FakeAlgiers, for 4-qubit GHZ chains, `hybrid_cost` keeps the release's circuit in all 48 cases, where
+    `pauli_cost` takes the floor-placed one. That is 6.7% worse for those circuits; 6- and 8-qubit chains are equal.
+  - The same cell was 1.012 in-sample and 1.0125 in the smoke run, so it is a fixed ranking error on one placement,
+    not noise.
+  - `hybrid_cost` counts damping from P(1) at 1/2 on every qubit of a GHZ chain. A plausible cause is that this
+    damping term outweighs a dephasing difference that `pauli_cost` weights more. That has not been checked.
+- **Cost:** 1.8 × the compile time of R3 (0.155 s median), because every device now compiles the floor candidate.
+- **At 9-10 qubits it changes little** (0.998-1.000), as expected: the floor candidate is rarely distinct there.
+
+**a8:**
+
+- **The large-circuit path is repaired.**
+  - A8 is 13-63% better than a7 and 0.3-2.5% ahead of L3T on every device.
+  - It uses no failed element. a7 used failed directions or qubits 4,509 times.
+- **It equals the release's call, as designed.** On cz devices this is exact (297 of 297). On cx devices A8 is .2's
+  call, so it lacks the floor/pauli option of R3 (A8/R3 0.999-1.010).
+
+## 4. Consequences
+
+**Adoption** is the owner's decision. The data support:
+
+- **c11 as release 2026-10-04.1**, with a single recommended call on every device:
+
+  ```python
+  compile_for_hardware(..., target=..., placement_refine=True, final_resynthesis="select", compare_level3=True,
+                       compare_floor=True, candidate_score="hybrid")
+  ```
+
+  - This replaces the per-device recommendation of 2026-10-03.3.
+  - The FakeAlgiers 4-qubit GHZ case should be listed as a known limit.
+- **a8 as the adopted front end.**
+  - When c11 is adopted, a8's large-circuit call could also take c11's call (`FAST_PATH_RECOMMENDED`). That would be
+    a later change, with its own test.
+
+## 5. Data (`data/2026-10-04/hold6/outputs/`)
+
+- 486 job files and their logs;
+- `env.txt` (local paths replaced), `progress.txt`, `score.md`, `score_log.txt`, `verify.txt`.
+
 ---
 
 ---
