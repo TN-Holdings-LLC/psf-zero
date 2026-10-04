@@ -12544,6 +12544,174 @@ A line-by-line check confirmed that only link syntax changed.
 - **The locked evaluation scripts of Addenda 334 and 336** stop unless the release is 2026-10-03.3. They reproduce
   their results only at their lock commits (`a88df77`, `ad737a6`).
 
+
+---
+
+<!-- ===== Addendum 339 (source: spare-qubit-cliff-addendum-339-2026-10-04.md) ===== -->
+
+> **Note added when merging:** Exploratory diagnosis of HOLD6's H4 (not a test); the hypothesis was written into the script before it was run.
+
+## Addendum 339 -- Diagnosis (exploratory, not a test): why `hybrid_cost` misses FakeAlgiers' 4-qubit GHZ chains (HOLD6's H4). Two approximations add up against one placement: amplitude damping counted on the state before each gate, and the depolarizing remainder counted as if the gate's qubits were maximally mixed. An estimate that is exact to first order for the simulator's noise model removes both and chooses the measured-best candidate, in-sample, on all nine devices (2026-10-04)
+
+**Status: exploratory diagnosis.**
+
+- **Nothing was pre-registered**, and nothing here is a verdict.
+- **The hypothesis** (section 1) was written into the script's docstring before it was run.
+- **Setting:** run at home on 2026-10-04 at commit `ff1c538` (release 2026-10-04.1); PAR 6, 904 s.
+- **Script:** [`data/2026-10-04/h4/diag/h4_diag.py`](../../data/2026-10-04/h4/diag/h4_diag.py) with its runner.
+  The SHA-256 values in `env.txt` match the staged files.
+
+## 1. The case and the hypothesis
+
+**The case.** On FakeAlgiers, for every 4-qubit GHZ chain (48 of 48 in HOLD6):
+
+- `hybrid_cost` keeps the release's own circuit;
+- `pauli_cost` takes the floor-placed one, which is 6.7% better.
+
+**The hypothesis.**
+
+- `hybrid_cost` counts amplitude damping with P(1) on the noiseless state just *before* each gate.
+- Aer applies thermal relaxation *after* the gate. On the device it acts during the gate.
+- The target of each CX in a GHZ chain is |0> before the gate and half excited after it, so its damping is not counted.
+
+## 2. Detail (HOLD6's FakeAlgiers 4-qubit chains, 6 circuits; controls: FakeAlgiers 6-qubit, FakeMarrakesh 4-qubit)
+
+**The candidates and their simulated infidelity.** All six circuits give the same numbers to 4 decimals. "Thermal
+only" is Aer with `gate_error=False`.
+
+| FakeAlgiers n = 4 | full | thermal only | full - thermal |
+|---|---|---|---|
+| the release's circuit (chosen by hyb) | 0.02663 | 0.02415 | 0.00248 |
+| the floor-placed circuit (chosen by pauli) | 0.02496 | 0.01234 | 0.01262 |
+| difference (floor - release) | **-0.00167** | -0.01181 | +0.01014 |
+
+**What the estimates make of the same two candidates:**
+
+| estimate | release's circuit | floor-placed | difference | chooses |
+|---|---|---|---|---|
+| thermal part: hyb (damping before + dephasing) | 0.01945 | 0.00895 | -0.01050 | |
+| thermal part: damping after + dephasing | 0.02462 | 0.01248 | -0.01214 | |
+| thermal part: `kraus_th` (exact, first order, after the gate) | 0.02451 | 0.01242 | -0.01209 | |
+| remainder: hyb's (e - floor)(d + 1)/d | 0.00270 | 0.01457 | +0.01187 | |
+| remainder at the gate qubits' reduced purity | 0.00253 | 0.01283 | +0.01030 | |
+| **hyb** (total) | 0.02216 | 0.02351 | +0.00135 | the release's (wrong) |
+| **pauli** (total) | 0.02721 | 0.02698 | -0.00023 | floor (right, narrowly) |
+| **kraus_pur** (total) | 0.02704 | 0.02525 | **-0.00179** | floor (right) |
+
+**Reading:**
+
+- **Damping counted before the gate.** It under-counts the release's placement by 0.0047 and the floor placement by
+  0.0034. The release's placement puts the chain on qubits with short T1 and T2.
+- **The remainder at full mixing.** Counting it as if the gate's qubits were maximally mixed, (e - floor)(d + 1)/d,
+  over-counts the floor placement by about 0.002, where the reported errors are well above the T1/T2 floor. It
+  over-counts the release's placement by only 0.0002. On a GHZ chain the two qubits of a CX are not maximally mixed: right after
+  the first CX they are in a pure Bell state.
+- **Together** the two errors shift `hybrid_cost` by about 0.003 towards the release's circuit. The true margin is
+  0.0017 the other way.
+- **The thermal-only simulation confirms the thermal part.** It gives 0.02415 and 0.01234; `kraus_th` gives 0.02451
+  and 0.01242. "Damping after + dephasing" is almost the same (0.02462, 0.01248).
+- **The hypothesis is confirmed, but it is only half of the cause.** The remainder is the other half.
+- **The controls.**
+  - On FakeAlgiers 6-qubit chains the floor placement is better by 0.0073. That margin is large enough for `hyb` to
+    choose correctly despite the same biases.
+  - On FakeMarrakesh 4-qubit chains (a cz device) `hyb` also chooses correctly.
+
+## 3. Rescore (every HOLD5 circuit on nine devices, in-sample; HYBRID's measured infidelities)
+
+**The match with HYBRID.**
+
+- 1,506 rows on every device and 0 mismatches against HYBRID's candidates: same names, two-qubit counts and `hyb`
+  values.
+- The re-computed `hyb` and `pauli` agree with the release's functions to 4e-15.
+
+**The estimates compared:**
+
+| estimate | what it counts |
+|---|---|
+| `hyb_after` | hyb with damping on P(1) after the gate |
+| `hyb_mid` | hyb with damping on the mean of P(1) before and after |
+| `kraus` | thermal relaxation exact to first order on the post-gate state: per qubit, 1 - sum_k \|<psi\|K_k\|psi>\|^2 with the amplitude- and phase-damping Kraus operators; plus hyb's remainder |
+| `kraus_pur` | `kraus`, with the remainder as a depolarizing channel at the gate qubits' reduced purity: lambda (1 - Tr rho_S^2 / d), lambda = (e - floor) d / (d - 1) |
+
+**Results.** Each choice is given as its mean infidelity relative to the choice by `hyb` (the release). "rank" counts
+the circuits, of 1,506, where the estimate's choice is the measured best.
+
+| device | pauli | hyb_after | hyb_mid | kraus | kraus_pur | measured best | rank hyb | rank kraus_pur |
+|---|---|---|---|---|---|---|---|---|
+| FakeAuckland (cx) | 1.0028 | 0.9995 | 0.9997 | 0.9998 | **0.9991** | 0.9991 | 1365 | 1493 |
+| FakeTorino | 1.0024 | 1.0000 | 1.0000 | 1.0000 | **0.9998** | 0.9998 | 1398 | 1417 |
+| FakeKingston | 1.0006 | 1.0000 | 1.0000 | 1.0000 | **0.9999** | 0.9999 | 1402 | 1422 |
+| FakeHanoiV2 (cx) | 1.0051 | 0.9995 | 0.9996 | 0.9989 | **0.9988** | 0.9988 | 1353 | 1494 |
+| FakeAlgiers (cx) | 1.0020 | 0.9993 | 0.9996 | 0.9995 | **0.9987** | 0.9987 | 1331 | 1495 |
+| FakeGeneva (cx) | 1.0011 | 1.0000 | 1.0000 | 0.9999 | **0.9998** | 0.9998 | 1433 | 1502 |
+| FakeFez | 1.0018 | 1.0000 | 1.0000 | 1.0002 | **0.9999** | 0.9999 | 1420 | 1425 |
+| FakeMarrakesh | 1.0027 | 1.0000 | 1.0000 | 1.0000 | **0.9980** | 0.9980 | 1345 | 1469 |
+| FakeAachen | 1.0013 | 1.0000 | 1.0000 | 1.0000 | **0.9999** | 0.9999 | 1427 | 1418 |
+
+**FakeAlgiers 4-qubit GHZ chains** (PICK / PICK_hyb):
+
+| pauli | hyb_after | hyb_mid | kraus | kraus_pur |
+|---|---|---|---|---|
+| 0.937 | 0.937 | 1.000 | 0.937 | 0.937 |
+
+`hyb_after` and `kraus` repair it, but `hyb_after` and `kraus` also cost on FakeHanoiV2's 4-qubit chains (1.005).
+`kraus_pur` does not.
+
+**Where the choice changes, `kraus_pur` is better** than the choice by `hyb`:
+
+| device | choices changed | better |
+|---|---|---|
+| FakeAuckland | 162 | 138 |
+| FakeHanoiV2 | 183 | 149 |
+| FakeAlgiers | 192 | 173 |
+| FakeGeneva | 97 | 71 |
+| FakeMarrakesh | 196 | 160 |
+
+## 4. Reading
+
+**The cause of H4** is two approximations in `hybrid_cost`, both inherited from its parents:
+
+- the timing of damping, from `excitation_cost`;
+- the remainder at full mixing, from `pauli_cost`.
+
+Neither matters much on average. On FakeAlgiers' 4-qubit GHZ chains they add up against the placement that is truly
+better.
+
+**What fixes it.** Counting each gate's noise on the post-gate state as the simulator applies it, exactly to first
+order:
+
+- thermal relaxation by its Kraus operators;
+- the depolarizing remainder at the reduced purity of the gate's qubits.
+
+On these in-sample circuits this choice equals the measured best on all nine devices, to four decimals. It is better
+than the release's choice by 0.01-0.20% overall and by 6.3% on the H4 case.
+
+**The limit of this result, stated plainly.**
+
+- `kraus_pur` is exact to first order for Aer's noise model: thermal relaxation after the gate plus depolarizing
+  error. It has no fitted parameters, but it reproduces the simulator's model.
+- On hardware, relaxation acts during the gate, and there are errors that model lacks: coherent errors, crosstalk,
+  leakage.
+- The further it is tuned to the simulator, the less a noisy-simulation test can say about hardware.
+
+## 5. Consequences
+
+**Candidate c12:** `candidate_score="kraus"`, the estimate `kraus_pur` of this diagnosis.
+
+- **The gain to expect on fresh circuits is small**: 0.01-0.2%, with H4's case repaired.
+- **It should be pre-registered on fresh circuits**, like c11.
+- **It is worth having two things in hand first:**
+  - a hardware check of whether any of these estimates ranks real-device results (owner's go-ahead needed);
+  - a version that applies relaxation during the gate (midpoint) as a robustness arm.
+
+## 6. Data (`data/2026-10-04/h4/diag/`)
+
+- `h4_diag.py`, `run_h4_diag.sh`;
+- `outputs/`:
+  - `h4_detail.md` and `h4_detail.json` (per-gate terms of every candidate);
+  - the nine `h4_rescore_<device>.json`;
+  - `summary.md`, logs, and `env.txt` (local paths replaced).
+
 ---
 
 ---

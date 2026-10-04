@@ -1,0 +1,7 @@
+  FakeFez F1: 432 rows, 0 mismatches, 165 s
+  FakeFez F2: 672 rows, 0 mismatches, 246 s
+  FakeFez F3: 972 rows, 0 mismatches, 426 s
+  FakeFez F4: 1242 rows, 0 mismatches, 533 s
+  FakeFez F5: 1386 rows, 0 mismatches, 554 s
+  FakeFez F6: 1506 rows, 0 mismatches, 590 s
+wrote h4_rescore_FakeFez.json: 1506 rows, 0 mismatches

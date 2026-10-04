@@ -1,0 +1,7 @@
+  FakeMarrakesh F1: 432 rows, 0 mismatches, 164 s
+  FakeMarrakesh F2: 672 rows, 0 mismatches, 243 s
+  FakeMarrakesh F3: 972 rows, 0 mismatches, 428 s
+  FakeMarrakesh F4: 1242 rows, 0 mismatches, 537 s
+  FakeMarrakesh F5: 1386 rows, 0 mismatches, 559 s
+  FakeMarrakesh F6: 1506 rows, 0 mismatches, 594 s
+wrote h4_rescore_FakeMarrakesh.json: 1506 rows, 0 mismatches

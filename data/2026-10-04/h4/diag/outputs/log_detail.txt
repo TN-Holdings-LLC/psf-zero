@@ -1,0 +1,4 @@
+detail FakeAlgiers n=4: 6 circuits
+detail FakeAlgiers n=6: 3 circuits
+detail FakeMarrakesh n=4: 3 circuits
+wrote h4_detail.md

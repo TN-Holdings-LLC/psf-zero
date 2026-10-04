@@ -1,0 +1,7 @@
+  FakeAuckland F1: 432 rows, 0 mismatches, 119 s
+  FakeAuckland F2: 672 rows, 0 mismatches, 160 s
+  FakeAuckland F3: 972 rows, 0 mismatches, 272 s
+  FakeAuckland F4: 1242 rows, 0 mismatches, 337 s
+  FakeAuckland F5: 1386 rows, 0 mismatches, 346 s
+  FakeAuckland F6: 1506 rows, 0 mismatches, 363 s
+wrote h4_rescore_FakeAuckland.json: 1506 rows, 0 mismatches
