@@ -11192,7 +11192,7 @@ It is pre-registered in Addendum 331.
 **Status: pre-registration, written at home before any scored run.**
 
 - **Lock:** the git commit that adds this document, the candidate
-  (`patches/psf_compile_c10_2026-10-03/psf_compile.py`, with its tests) and `benchmarks/hold5_eval.py` with its
+  ([`patches/psf_compile_c10_2026-10-03/psf_compile.py`](../../patches/psf_compile_c10_2026-10-03/psf_compile.py), with its tests) and [`benchmarks/hold5_eval.py`](../../benchmarks/hold5_eval.py) with its
   runner, pushed before the scored run.
 - **No hardware:** fake devices and Aer noise only.
 - **The predictions (section 3) were written before c10's smoke run.**
@@ -11377,10 +11377,10 @@ The smoke run used 1 circuit per cell and its own seeds: 684 compilations, 216 j
 
 | file | normalized SHA-256 |
 |---|---|
-| `patches/psf_compile_c10_2026-10-03/psf_compile.py` | `ae24779cb2703a15e2ab970b942f780a2dcf16cc0142cc26563d4b7b88eff1c5` |
-| `patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py` (corrected, section 5.2) | `b628a0eec7a13d708cae1029e66e1cd1a42d3ff8c456e8d8d83ac9ba3d06cc3c` |
-| `benchmarks/hold5_eval.py` | `39d1527f52dc61d1fce1b7a1f382fd158e181be2cfb7194e0b4321b927fd1a02` |
-| `benchmarks/run_hold5_2026-10-03.sh` | `e55bb9d1247ff8b3c2f95a06ba6221328bf3de25a532badb28b21a27636ec343` |
+| [`patches/psf_compile_c10_2026-10-03/psf_compile.py`](../../patches/psf_compile_c10_2026-10-03/psf_compile.py) | `ae24779cb2703a15e2ab970b942f780a2dcf16cc0142cc26563d4b7b88eff1c5` |
+| [`patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py`](../../patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py) (corrected, section 5.2) | `b628a0eec7a13d708cae1029e66e1cd1a42d3ff8c456e8d8d83ac9ba3d06cc3c` |
+| [`benchmarks/hold5_eval.py`](../../benchmarks/hold5_eval.py) | `39d1527f52dc61d1fce1b7a1f382fd158e181be2cfb7194e0b4321b927fd1a02` |
+| [`benchmarks/run_hold5_2026-10-03.sh`](../../benchmarks/run_hold5_2026-10-03.sh) | `e55bb9d1247ff8b3c2f95a06ba6221328bf3de25a532badb28b21a27636ec343` |
 
 The test file as first run had `d3e1ff9400aac3173ceda9513e49c200c7abccb7b2eb3afe00e802567c51a013`.
 
@@ -11400,7 +11400,7 @@ with "\n" and no final newline.
 
 - **Lock:** commit `fb06c95`, pushed before the scored run (which started at 20:22 JST). Before the lock, all 11 tests
   passed on the corrected test file (Addendum 331, section 5.2).
-- **Scoring:** by the locked `hold5_eval.py score`, and re-checked by `benchmarks/hold5_verify.py`. That script was
+- **Scoring:** by the locked `hold5_eval.py score`, and re-checked by [`benchmarks/hold5_verify.py`](../../benchmarks/hold5_verify.py). That script was
   written after the run started and before any of its output was seen. It agrees on every verdict.
 - **Setting:** home (WSL2), 6 processes; 216 jobs, 54,216 circuit compilations, about 3,020 s.
 
@@ -11522,6 +11522,92 @@ Addendum 330's and this test's data would show, in-sample, whether such a combin
 
 - 216 job files and their logs, `env.txt`, `score.md`, `score_log.txt`, `verify.txt`.
 - Local paths were replaced.
+
+
+---
+
+<!-- ===== Addendum 333 (source: spare-qubit-cliff-addendum-333-2026-10-03.md) ===== -->
+
+> **Note added when merging:** Adoption record: psf_compile 2026-10-03.c10 becomes release 2026-10-03.3, recommended on cx devices only (owner's decision, 2026-10-03).
+
+## Addendum 333 -- Adoption record: candidate psf_compile 2026-10-03.c10 becomes release 2026-10-03.3 (opt-in `compare_floor=True`, `candidate_score="pauli"`, changelog item 37), recommended on cx devices only (2026-10-03)
+
+**Status: adoption record.**
+
+- **Decision:** the owner's, on 2026-10-03, after the results in Addendum 332 (six predictions confirmed, two
+  ambiguous, none refuted).
+- **Scope:** fake devices and Aer noise only. Nothing here was run on hardware.
+
+## 1. What the release is
+
+`psf_compile.py` 2026-10-03.3 is the candidate file
+[`patches/psf_compile_c10_2026-10-03/psf_compile.py`](../../patches/psf_compile_c10_2026-10-03/psf_compile.py) with
+three lines changed: the `VERSION:` header line, the changelog heading of item 37 (which now says that the options are
+recommended on cx devices only), and the `VERSION` constant.
+
+**What it adds:**
+
+- `compare_floor=True`: the floor-placed candidate.
+- `candidate_score="pauli"`: the choice by `pauli_cost`.
+- With the defaults it is identical to 2026-10-03.2.
+
+**Recommended calls:**
+
+| device type | call |
+|---|---|
+| cx devices | 2026-10-03.2's recommended call plus `compare_floor=True, candidate_score="pauli"` |
+| cz devices | 2026-10-03.2's recommended call, unchanged |
+
+**Why only cx devices** (Addendum 332):
+
+- On the cx devices the options gained 0.2-2.0% overall and 7-28% on GHZ chains on three of four.
+- On the cz devices they gained nothing and cost 0.1-0.2% on three of five.
+- On XXZ chains (F3) they cost up to 1.8%.
+
+## 2. Files
+
+**Added:**
+
+- [`benchmarks/test_release_2026_10_03_3.py`](../../benchmarks/test_release_2026_10_03_3.py). It is the candidate's 11 tests, adapted.
+  - The release is compared with the previous release's code, represented by
+    [`patches/psf_compile_c9_2026-10-03/psf_compile.py`](../../patches/psf_compile_c9_2026-10-03/psf_compile.py).
+  - That file differs from 2026-10-03.2 only in the version lines.
+
+**Changed:**
+
+- `psf_compile.py`: the three version lines above.
+- `README.md`:
+  - a new block for the current version, with the cx-only recommendation and the known limits;
+  - the 2026-10-03.2 block retitled "Previous release".
+- **Current-release assertions** in twelve tests. In each, only the expected version string changed.
+  - Six of them are tests of earlier candidates whose files were locked by pre-registrations.
+
+**Normalized SHA-256, before and after:**
+
+| file | before | after |
+|---|---|---|
+| [`benchmarks/test_release_2026_10_02.py`](../../benchmarks/test_release_2026_10_02.py) | `a7262eb199a2049c…` | `a01a54a9f820d50f…` |
+| [`benchmarks/test_release_2026_10_02_2.py`](../../benchmarks/test_release_2026_10_02_2.py) | `e44b5ec8b97d7a3c…` | `8799a6f7e75b5ac7…` |
+| [`benchmarks/test_core_fix_c2.py`](../../benchmarks/test_core_fix_c2.py) | `0140dacaa0259015…` | `a7636d31e2d89473…` |
+| [`benchmarks/test_release_2026_09_28.py`](../../benchmarks/test_release_2026_09_28.py) | `2194f1f6d2aa6e76…` | `61b315174b2787eb…` |
+| [`benchmarks/test_release_2026_10_03.py`](../../benchmarks/test_release_2026_10_03.py) | `5fb3507b6568ff81…` | `2bc57d69eb9419f3…` |
+| [`benchmarks/test_release_2026_10_03_2.py`](../../benchmarks/test_release_2026_10_03_2.py) | `40af92a7d44c05eb…` | `a89fa11e39460963…` |
+| [`patches/psf_compile_c4_2026-10-02/test_c4_layout.py`](../../patches/psf_compile_c4_2026-10-02/test_c4_layout.py) (locked, Addendum 306) | `b93a6d4ddb8e3a72…` | `9d74bfe499d3709a…` |
+| [`patches/psf_compile_c6_2026-10-03/test_c6_floor.py`](../../patches/psf_compile_c6_2026-10-03/test_c6_floor.py) (locked, Addendum 320) | `f37add9647f59609…` | `8017ec31ff4437e1…` |
+| [`patches/psf_compile_c8_2026-10-03/test_c8_resynth.py`](../../patches/psf_compile_c8_2026-10-03/test_c8_resynth.py) (locked, Addendum 323) | `0b18a266d039702d…` | `03cc3b33b906ee66…` |
+| [`patches/psf_compile_c9_2026-10-03/test_c9_compare.py`](../../patches/psf_compile_c9_2026-10-03/test_c9_compare.py) (locked, Addendum 327) | `fdc4f0b34716f5aa…` | `113291666a59677f…` |
+| [`patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py`](../../patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py) (locked, Addendum 331) | `b628a0eec7a13d70…` | `67f160551a7f99a0…` |
+| [`patches/psf_ai_compile_a6_2026-10-02/test_ai6.py`](../../patches/psf_ai_compile_a6_2026-10-02/test_ai6.py) (locked, Addendum 312) | `c450acae90fb3649…` | `88e38220498e073a…` |
+
+**Part 9:** from Addendum 330 on, code-formatted paths that exist in the repository were turned into relative links.
+A line-by-line check confirmed that only link syntax changed.
+
+## 3. Known limits (Addendum 332)
+
+- **cz devices:** no gain.
+- **XXZ-type chains:** small losses. `pauli_cost` misses amplitude damping, which `excitation_cost` sees.
+- **The AI front end a7** is still up to 3.7% ahead.
+- **Not tested:** hardware, ecr devices, and more than 16 touched qubits.
 
 ---
 

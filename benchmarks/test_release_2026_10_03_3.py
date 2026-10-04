@@ -1,7 +1,9 @@
-"""Tests for candidate psf_compile 2026-10-03.c10 (changelog item 37: floor-placed candidate and choice by a state-aware
-Pauli estimate). Helpers are copied from patches/psf_compile_c9_2026-10-03/test_c9_compare.py.
+"""Tests for release psf_compile 2026-10-03.3 (changelog item 37: floor-placed candidate and choice by a state-aware
+Pauli estimate), adapted from the candidate's tests (patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py). The
+previous release, 2026-10-03.2, is represented by its candidate's file (patches/psf_compile_c9_2026-10-03/psf_compile.py),
+which differs from it only in the version lines.
 
-Run from the repository root:  python -m pytest patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py -q
+Run from the repository root:  python -m pytest benchmarks/test_release_2026_10_03_3.py -q
 """
 import math
 import os
@@ -10,7 +12,7 @@ import sys
 import pytest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
+REPO = os.path.abspath(os.path.join(HERE, ".."))
 sys.path.insert(0, os.path.join(REPO, "benchmarks"))
 sys.path.insert(0, REPO)
 
@@ -18,10 +20,11 @@ sys.path.insert(0, REPO)
 @pytest.fixture(scope="module")
 def mods():
     import core_fix_c2_eval as H
-    lay = H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psl_c10_test")
+    lay = H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psl_rel10033_test")
     sys.modules["psf_smart_layout"] = lay
-    return (H.load_module(os.path.join(HERE, "psf_compile.py"), "psf_compile_c10_test"),
-            H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile_rel_c10_test"))
+    return (H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile_rel10033_test"),
+            H.load_module(os.path.join(REPO, "patches", "psf_compile_c9_2026-10-03", "psf_compile.py"),
+                          "psf_compile_prev10033_test"))
 
 
 def backend(name):
@@ -161,18 +164,18 @@ REC = dict(placement_refine=True, final_resynthesis="select", compare_level3=Tru
 
 
 def test_version(mods):
-    assert mods[0].VERSION == "2026-10-03.c10"
-    assert mods[1].VERSION == "2026-10-03.3"  # current release (2026-10-03.2 when this candidate was evaluated)
+    assert mods[0].VERSION == "2026-10-03.3"
+    assert mods[1].VERSION == "2026-10-03.c9"  # the code of release 2026-10-03.2
 
 
 def test_default_identical_to_release(mods):
-    c10, rel = mods
+    new, prev = mods
     for name in ("FakeTorino", "FakeAuckland"):
         tgt = backend(name).target
         for qc in (ring(4, seed=4), ring(6, seed=6), chain(5, seed=5)):
             kw = kw_for(tgt)
             for extra in ({}, {"target": tgt}, {"target": tgt, "placement_refine": True}, dict(REC, target=tgt)):
-                assert sig(c10.compile_for_hardware(qc, **kw, **extra)) == sig(rel.compile_for_hardware(qc, **kw, **extra)), \
+                assert sig(new.compile_for_hardware(qc, **kw, **extra)) == sig(prev.compile_for_hardware(qc, **kw, **extra)), \
                     (name, extra.keys())
 
 
@@ -188,9 +191,9 @@ def test_bad_arguments_raise(mods):
 def test_pauli_cost_matches_statevector(mods):
     """pauli_cost's numpy state and Pauli expectations against Qiskit's Statevector, on a compiled GHZ chain."""
     from qiskit.quantum_info import Pauli, Statevector
-    c10 = mods[0]
+    new = mods[0]
     tgt = backend("FakeGeneva").target
-    out = c10.compile_for_hardware(ghz(seed=1), target=tgt, placement_refine=True, **kw_for(tgt))
+    out = new.compile_for_hardware(ghz(seed=1), target=tgt, placement_refine=True, **kw_for(tgt))
     ops = [(i.operation, tuple(out.find_bit(b).index for b in i.qubits)) for i in out.data
            if i.operation.name not in ("barrier", "measure", "delay")]
     active = sorted({i for _, q in ops for i in q})
@@ -214,26 +217,26 @@ def test_pauli_cost_matches_statevector(mods):
             f *= (1 + 2 * math.exp(-t / t2) + math.exp(-t / t1)) / 4
         d = 2 ** len(q)
         ref += max(e - (1 - (d * f + 1) / (d + 1)), 0.0) * (d + 1) / d
-    assert abs(c10.pauli_cost(out, tgt) - ref) <= 1e-9 * max(1.0, ref)
+    assert abs(new.pauli_cost(out, tgt) - ref) <= 1e-9 * max(1.0, ref)
 
 
 @pytest.mark.parametrize("name", ["FakeAuckland", "FakeHanoiV2", "FakeGeneva", "FakeTorino", "FakeKingston"])
 def test_full_choice_exact_safe_and_not_worse_by_estimate(mods, name):
     """With compare_floor and candidate_score="pauli": exact, on the target, no failed qubit or direction, and no
     higher pauli_cost than the release's own circuit or level 3's."""
-    c10, rel = mods
+    new, prev = mods
     tgt = backend(name).target
-    edges, qubits = c10._failed_elements(tgt, 0.5)
+    edges, qubits = new._failed_elements(tgt, 0.5)
     kw = kw_for(tgt)
     for qc in (ghz(seed=1), ring(6, seed=2), chain(5, seed=3), xxz_ring(seed=4)):
-        c = c10.compile_for_hardware(qc, target=tgt, compare_floor=True, candidate_score="pauli", **REC, **kw)
+        c = new.compile_for_hardware(qc, target=tgt, compare_floor=True, candidate_score="pauli", **REC, **kw)
         assert compact_fidelity(qc, c) > 1 - 1e-6, name
-        a = rel.compile_for_hardware(qc, target=tgt, placement_refine=True, final_resynthesis="select", **kw)
-        pc = c10.pauli_cost(c, tgt)
-        assert pc <= c10.pauli_cost(a, tgt) + 1e-12
+        a = prev.compile_for_hardware(qc, target=tgt, placement_refine=True, final_resynthesis="select", **kw)
+        pc = new.pauli_cost(c, tgt)
+        assert pc <= new.pauli_cost(a, tgt) + 1e-12
         b = l3(qc, tgt)
-        if c10._acceptable(b, tgt, 0.5):
-            assert pc <= c10.pauli_cost(b, tgt) + 1e-12
+        if new._acceptable(b, tgt, 0.5):
+            assert pc <= new.pauli_cost(b, tgt) + 1e-12
         for ins in c.data:
             q = tuple(c.find_bit(x).index for x in ins.qubits)
             assert ins.operation.name in tgt.operation_names and q in tgt[ins.operation.name], (name, ins.operation.name, q)
@@ -246,24 +249,24 @@ def test_floor_candidate_used_on_ghz_geneva(mods):
     """Addendum 330's main case: on FakeGeneva the floor-placed circuit is chosen for 8-qubit GHZ chains (in Addendum
     330 the floor placement differed from the release's on FakeGeneva only for n = 8; for n = 4 and 6 it was the same
     placement, and a tie keeps the release's circuit)."""
-    c10 = mods[0]
+    new = mods[0]
     tgt = backend("FakeGeneva").target
     kw = kw_for(tgt)
-    before = c10.COMPARE_STATS["floor"]
+    before = new.COMPARE_STATS["floor"]
     for s in range(3):
-        c10.compile_for_hardware(ghz(n=8, seed=30 + s), target=tgt, compare_floor=True, candidate_score="pauli", **REC,
+        new.compile_for_hardware(ghz(n=8, seed=30 + s), target=tgt, compare_floor=True, candidate_score="pauli", **REC,
                                  **kw)
-    assert c10.COMPARE_STATS["floor"] - before >= 2
+    assert new.COMPARE_STATS["floor"] - before >= 2
 
 
 def test_floor_target_bounds(mods):
-    c10 = mods[0]
+    new = mods[0]
     tgt = backend("FakeAuckland").target
-    ft = c10.floor_aware_target(tgt)
+    ft = new.floor_aware_target(tgt)
     for n in tgt.operation_names:
         if n in ("measure", "delay", "reset", "barrier"):
             continue
         for q, p in tgt[n].items():
             if q is None or p is None or p.error is None:
                 continue
-            assert ft[n][q].error == max(p.error, c10.decoherence_floor(tgt, list(q), p.duration))
+            assert ft[n][q].error == max(p.error, new.decoherence_floor(tgt, list(q), p.duration))

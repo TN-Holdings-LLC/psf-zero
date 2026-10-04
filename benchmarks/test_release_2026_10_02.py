@@ -49,7 +49,7 @@ def ring(n, layers=2, seed=0):
 
 
 def test_version(mods):
-    assert mods[0].VERSION == "2026-10-03.2"  # current release (this file was written for 2026-10-02.1)
+    assert mods[0].VERSION == "2026-10-03.3"  # current release (this file was written for 2026-10-02.1)
 
 
 def test_prune_keeps_size_and_removes_exactly_failed(mods):

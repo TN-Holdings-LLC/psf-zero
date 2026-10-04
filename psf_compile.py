@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-10-03.2 -- release, adopted on 2026-10-03 from candidate 2026-10-03.c9 (previous release: 2026-10-03.1)
+VERSION: 2026-10-03.3 -- release, adopted on 2026-10-03 from candidate 2026-10-03.c10 (previous release: 2026-10-03.2)
 
 Where to look for what
 ----------------------
@@ -518,6 +518,33 @@ contain:
     `excitation_cost` is lower than that of the circuit the release would return. If either estimate cannot be made
     (above `RESYNTH_MAX_QUBITS` touched qubits), the release's circuit is kept. Requires `target`; default False,
     identical to release 2026-10-03.1. Counts in `COMPARE_STATS`.
+
+2026-10-03.3 (release; candidate 2026-10-03.c10, adopted on 2026-10-03 after its pre-registered evaluation, Addenda 331-332;
+recommended on cx devices only):
+
+37. **NEW, opt-in: `compare_floor=True` adds a third candidate, and `candidate_score="pauli"` chooses among the
+    candidates with a state-aware Pauli estimate that includes dephasing.** After release 2026-10-03.2 the AI front
+    end a7 was still ahead, most on GHZ-type chains (F5) on the cx devices, with the same gates and depth: a
+    placement effect (Addendum 330). The held candidate c6 (item 34; its functions `decoherence_floor` and
+    `floor_aware_target` are carried over unchanged) re-places on a Target whose errors are max(reported error,
+    T1/T2 floor), and that placement alone matched a7 on those chains. `excitation_cost` sees amplitude damping
+    only, so it cannot tell the two placements of a GHZ chain apart (it ranked the best of three candidates in
+    60% of circuits on FakeAuckland); `pauli_cost` (the first-order estimate of the AI front end a4, simplified)
+    ranked 87%. In that diagnosis the choice among the three by `pauli_cost` came within 0.1-0.5% of the measured
+    best on every device.
+    - `compare_floor=True`: the release's pipeline is run a second time with the re-placement of item 33 scored on
+      `floor_aware_target(target)` (the backstop of item 31 and item 35's `final_resynthesis` applied as in the
+      first run), and the result is a candidate if `_acceptable`.
+    - `candidate_score`: "excitation" (default) or "pauli". The candidates (the release's circuit, the floor
+      candidate if `compare_floor`, level 3's circuit if `compare_level3` and `_acceptable`) are scored and the
+      lowest kept; ties and any estimate that cannot be made keep the release's circuit. Item 35's "select" is
+      unchanged (it still uses `excitation_cost`).
+    - `pauli_cost(circ, target)`: per gate, on the noiseless state right after the gate, for each of the gate's
+      qubits the Pauli-twirled thermal relaxation for the gate's duration (p_X = p_Y = (1 - exp(-t/T1)) / 4,
+      p_Z = (1 - exp(-t/T2)) / 2 - p_X, T2 capped at 2 T1) costs p_P (1 - <P>^2), plus the reported error above
+      the thermal floor times (d + 1) / d (state-independent). None above RESYNTH_MAX_QUBITS touched qubits.
+    With `compare_floor=False` and `candidate_score="excitation"` (the defaults) nothing changes. Counts in
+    `COMPARE_STATS`.
 """
 from __future__ import annotations
 
@@ -554,7 +581,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-10-03.2"  # release (from candidate 2026-10-03.c9): 2026-10-03.1 + choice against Qiskit level 3 by excitation_cost (item 36)
+VERSION = "2026-10-03.3"  # release (from candidate 2026-10-03.c10): 2026-10-03.2 + floor-placed candidate and Pauli-estimate choice (item 37)
 __version__ = VERSION
 
 # Changelog item 27: the version string of the loaded Rust core, for logs.
@@ -1714,7 +1741,110 @@ def _final_resynthesis(out, target, max_error):
     return new
 
 
-COMPARE_STATS = {"psf": 0, "level3": 0, "level3_refused": 0, "not_estimable": 0}
+COMPARE_STATS = {"psf": 0, "level3": 0, "level3_refused": 0, "not_estimable": 0, "floor": 0, "floor_refused": 0}
+
+
+def decoherence_floor(target, qubits, duration) -> float:
+    """Average gate infidelity of thermal relaxation on `qubits` for `duration` (item 34, carried over by item 37):
+    per qubit the process fidelity is (1 + 2 exp(-t/T2) + exp(-t/T1)) / 4 with T2 capped at 2 T1, the product over
+    qubits is F, and F_avg = (d F + 1) / (d + 1). 0 when the duration or T1 is unknown."""
+    import math
+    if not duration:
+        return 0.0
+    qp = getattr(target, "qubit_properties", None)
+    if not qp:
+        return 0.0
+    f = 1.0
+    for q in qubits:
+        p = qp[q] if q < len(qp) else None
+        t1 = getattr(p, "t1", None) if p is not None else None
+        t2 = getattr(p, "t2", None) if p is not None else None
+        if not t1:
+            return 0.0
+        t2 = min(t2, 2 * t1) if t2 else 2 * t1
+        f *= (1.0 + 2.0 * math.exp(-duration / t2) + math.exp(-duration / t1)) / 4.0
+    d = 2 ** len(qubits)
+    return 1.0 - (d * f + 1.0) / (d + 1.0)
+
+
+def floor_aware_target(target):
+    """A copy of `target` in which every instruction's error is max(reported error, decoherence floor) (item 34,
+    carried over by item 37). The original is not modified."""
+    import copy
+    from qiskit.transpiler import InstructionProperties
+    out = copy.deepcopy(target)
+    for name in list(out.operation_names):
+        if name in ("measure", "delay", "reset", "barrier"):
+            continue
+        for qargs, props in list(out[name].items()):
+            if qargs is None or props is None or props.error is None:
+                continue
+            fl = decoherence_floor(out, list(qargs), props.duration)
+            if fl > props.error:
+                out.update_instruction_properties(name, qargs, InstructionProperties(duration=props.duration, error=fl))
+    return out
+
+
+def pauli_cost(circ, target):
+    """Item 37's state-aware first-order Pauli estimate (see the changelog). None if more than RESYNTH_MAX_QUBITS
+    qubits are touched or an instruction has no matrix (other than barrier, measure, delay)."""
+    import math
+    ops = [(ins.operation, tuple(circ.find_bit(b).index for b in ins.qubits)) for ins in circ.data
+           if ins.operation.name not in ("barrier", "measure", "delay")]
+    active = sorted({i for _, q in ops for i in q})
+    if len(active) > RESYNTH_MAX_QUBITS:
+        return None
+    k = max(len(active), 1)
+    pos = {p: j for j, p in enumerate(active)}
+    qp = getattr(target, "qubit_properties", None) or []
+    psi = np.zeros((2,) * k, dtype=complex)
+    psi[(0,) * k] = 1.0
+    cost = 0.0
+    for op, q in ops:
+        try:
+            mat = np.asarray(op.to_matrix(), dtype=complex)
+        except Exception:
+            return None
+        axes = [pos[i] for i in q]
+        m = len(axes)
+        rev = axes[::-1]  # Qiskit's matrix index is little-endian: the first qarg is the least significant bit
+        psi = np.tensordot(mat.reshape((2,) * (2 * m)), psi, axes=(list(range(m, 2 * m)), rev))
+        psi = np.moveaxis(psi, list(range(m)), rev)
+        props = target[op.name].get(q, None) if op.name in target.operation_names else None
+        if props is None:
+            continue
+        e = props.error or 0.0
+        t = props.duration or 0.0
+        thermal_f = 1.0
+        for i, ax in zip(q, axes):
+            t1 = getattr(qp[i], "t1", None) if i < len(qp) and qp[i] is not None else None
+            t2 = getattr(qp[i], "t2", None) if i < len(qp) and qp[i] is not None else None
+            if not t or not t1:
+                continue
+            t2 = min(t2, 2 * t1) if t2 else 2 * t1
+            px = (1.0 - math.exp(-t / t1)) / 4.0
+            pz = max((1.0 - math.exp(-t / t2)) / 2.0 - px, 0.0)
+            mm = np.moveaxis(psi, ax, 0).reshape(2, -1)
+            rho = mm @ mm.conj().T
+            ex, ey, ez = 2 * rho[0, 1].real, -2 * rho[0, 1].imag, (rho[0, 0] - rho[1, 1]).real
+            cost += px * (1 - ex * ex) + px * (1 - ey * ey) + pz * (1 - ez * ez)
+            thermal_f *= (1.0 + 2.0 * math.exp(-t / t2) + math.exp(-t / t1)) / 4.0
+        d = 2 ** m
+        cost += max(e - (1.0 - (d * thermal_f + 1.0) / (d + 1.0)), 0.0) * (d + 1) / d
+    return cost
+
+
+def _choose(cands, target, score):
+    """Item 37: the (name, circuit) with the lowest estimate; the first (the release's circuit) on ties or when any
+    estimate cannot be made."""
+    f = pauli_cost if score == "pauli" else excitation_cost
+    costs = [f(c, target) for _, c in cands]
+    if any(c is None for c in costs):
+        COMPARE_STATS["not_estimable"] += 1
+        return cands[0][1]
+    best = min(range(len(cands)), key=lambda j: (costs[j], j))
+    COMPARE_STATS[cands[best][0]] += 1
+    return cands[best][1]
 
 
 def _acceptable(circ, target, max_error) -> bool:
@@ -1973,6 +2103,8 @@ def compile_for_hardware(
     placement_max_trials: int = 2_500,
     final_resynthesis: Union[bool, str] = False,
     compare_level3: bool = False,
+    compare_floor: bool = False,
+    candidate_score: str = "excitation",
     _refine_target=None,
 ) -> QuantumCircuit:
     """Compress with PSF-Zero, then route (and, if `basis_gates` is given,
@@ -2107,6 +2239,10 @@ def compile_for_hardware(
     `compare_level3` (candidate 2026-10-03.c9, item 36): True also compiles the input with Qiskit's level 3 on the
     target and returns that circuit instead when its `excitation_cost` is lower and it uses no failed element.
     Requires `target`; False (default) changes nothing.
+    `compare_floor`, `candidate_score` (candidate 2026-10-03.c10, item 37): `compare_floor=True` adds the
+    release's pipeline re-placed on `floor_aware_target(target)` as a candidate; `candidate_score="pauli"` chooses
+    among the candidates by `pauli_cost` instead of `excitation_cost`. Require `target`; the defaults change
+    nothing.
     `callback` (new, item 13): forwarded verbatim to the internal
     `transpile()` call below, unchanged from what plain `transpile(callback=
     ...)` accepts. `None` by default -- passing nothing here changes nothing
@@ -2121,6 +2257,10 @@ def compile_for_hardware(
         raise ValueError("final_resynthesis needs the device `target` (changelog item 35)")
     if compare_level3 and target is None:
         raise ValueError("compare_level3=True needs the device `target` (changelog item 36)")
+    if compare_floor and target is None:
+        raise ValueError("compare_floor=True needs the device `target` (changelog item 37)")
+    if candidate_score not in ("excitation", "pauli"):
+        raise ValueError('candidate_score must be "excitation" or "pauli" (changelog item 37)')
     if layout_search and initial_layout is not None:
         raise ValueError(
             "layout_search=True and an explicit initial_layout were both "
@@ -2154,9 +2294,34 @@ def compile_for_hardware(
             out = _select_resynthesis(out, target, prune_max_error)
         elif final_resynthesis:
             out = _final_resynthesis(out, target, prune_max_error)
+        if not compare_floor and candidate_score == "excitation":
+            if compare_level3:
+                out = _compare_level3(qc, out, target, prune_max_error, seed_transpiler)
+            return out
+        # Item 37: up to three candidates, chosen by candidate_score.
+        cands = [("psf", out)]
+        if compare_floor:
+            fargs = dict(args, coupling_map=coupling_map, _refine_target=floor_aware_target(target))
+            fo = compile_for_hardware(**fargs)
+            if _uses_failed(fo, edges, qubits):
+                fargs["coupling_map"] = prune_coupling_map(coupling_map, target, prune_max_error)
+                fo = compile_for_hardware(**fargs)
+            if final_resynthesis == "select":
+                fo = _select_resynthesis(fo, target, prune_max_error)
+            elif final_resynthesis:
+                fo = _final_resynthesis(fo, target, prune_max_error)
+            if _acceptable(fo, target, prune_max_error):
+                cands.append(("floor", fo))
+            else:
+                COMPARE_STATS["floor_refused"] += 1
         if compare_level3:
-            out = _compare_level3(qc, out, target, prune_max_error, seed_transpiler)
-        return out
+            l3 = transpile(qc, target=target, optimization_level=3, seed_transpiler=seed_transpiler,
+                           approximation_degree=1.0)
+            if _acceptable(l3, target, prune_max_error):
+                cands.append(("level3", l3))
+            else:
+                COMPARE_STATS["level3_refused"] += 1
+        return _choose(cands, target, candidate_score) if len(cands) > 1 else out
 
     # Candidate 2026-10-01.c2: both default to on only for entangling_basis="cx" (their saving is counted in
     # CX); post-routing re-synthesis also needs basis_gates to translate its output.

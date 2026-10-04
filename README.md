@@ -61,7 +61,37 @@ in place, so there is never a second, differently-named copy to pick between
 [`psf_smart_layout.py`](benchmarks/psf_smart_layout.py) — the layout-search prototype,
 repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see below).
 
-> **Current version (2026-10-03, second release): `psf_compile.py` 2026-10-03.2, with `psf_smart_layout` 2026-10-01.1
+> **Current version (2026-10-03, third release): `psf_compile.py` 2026-10-03.3, with `psf_smart_layout` 2026-10-01.1
+> and the Rust core `CORE_VERSION` 2026-09-29.1 (both unchanged)** ([Part 9](docs/findings/spare-qubit-cliff-combined-248.md),
+> Addenda 330-333). One opt-in addition to 2026-10-03.2, recommended on cx devices only:
+>
+> - **Recommended call on cx devices** (e.g. FakeAuckland, FakeGeneva, FakeAlgiers, FakeHanoiV2):
+>
+>   ```python
+>   compile_for_hardware(qc, coupling_map=cm, basis_gates=basis, entangling_basis="cx", layout_search=True,
+>                        target=backend.target, placement_refine=True, final_resynthesis="select",
+>                        compare_level3=True, compare_floor=True, candidate_score="pauli")
+>   ```
+>
+>   On cz devices keep 2026-10-03.2's recommended call (without the last two options).
+> - **`compare_floor=True`** adds a third candidate: the release's pipeline re-placed on a Target whose errors are
+>   max(reported error, T1/T2 floor). **`candidate_score="pauli"`** chooses among the candidates by `pauli_cost`, a
+>   state-aware Pauli estimate that includes dephasing.
+>   - Why: on GHZ-type circuits on cx devices the remaining gap to the AI front end a7 was placement, which the
+>     release's `excitation_cost` cannot see (Addendum 330).
+>   - Pre-registered test (Addenda 331-332; 1,506 new circuits on each of 9 devices):
+>     - on the cx devices 0.2-2.0% better than 2026-10-03.2 overall, and 7-28% better on GHZ chains on three of four;
+>     - the AI front end a7 within 3.7% on every device;
+>     - still ahead of Qiskit level 3 everywhere (0.963-0.993);
+>     - about 0.15 s per compile (twice 2026-10-03.2).
+> - **Known limits:**
+>   - On cz devices no gain (0.1-0.2% loss on three of five), hence the cx-only recommendation.
+>   - On XXZ-type chains (F3) up to 1.8% worse: `pauli_cost` averages relaxation into symmetric Pauli errors and
+>     misses the decay of |1> that `excitation_cost` sees. A combined estimate is the next step.
+>   - Not tested on hardware, on ecr devices, or above 16 touched qubits.
+> - With the defaults, nothing changes.
+
+> **Previous release (2026-10-03, second release): `psf_compile.py` 2026-10-03.2, with `psf_smart_layout` 2026-10-01.1
 > and the Rust core `CORE_VERSION` 2026-09-29.1 (both unchanged)** ([Part 9](docs/findings/spare-qubit-cliff-combined-248.md),
 > Addenda 326-329). One opt-in addition to 2026-10-03.1:
 >
