@@ -1,0 +1,3 @@
+DEPLOY {"L": 1, "acc": 1.0, "margin": 0.6268352421878812, "shot_acc": 1.0, "n2q": 7.0}
+DEPLOY {"L": 4, "acc": 1.0, "margin": 0.6677156312517031, "shot_acc": 1.0, "n2q": 37.0}
+DEPLOY {"L": 12, "acc": 1.0, "margin": 0.3041564609586514, "shot_acc": 1.0, "n2q": 117.0}

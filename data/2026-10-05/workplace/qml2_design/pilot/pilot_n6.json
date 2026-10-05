@@ -1,0 +1,191 @@
+{
+ "meta": {
+  "n": 6,
+  "Ls": [
+   1,
+   2,
+   4,
+   8
+  ],
+  "devices": [
+   "FakeAuckland",
+   "FakeTorino"
+  ],
+  "arms": [
+   "RPSF",
+   "C12",
+   "L3T"
+  ],
+  "ntest": 114
+ },
+ "cells": [
+  {
+   "L": 1,
+   "arm": "IDEAL",
+   "device": null,
+   "acc": 0.868421052631579,
+   "margin": 0.3992153966351912
+  },
+  {
+   "L": 2,
+   "arm": "IDEAL",
+   "device": null,
+   "acc": 0.8859649122807017,
+   "margin": 0.5705252193480672
+  },
+  {
+   "L": 4,
+   "arm": "IDEAL",
+   "device": null,
+   "acc": 0.9210526315789473,
+   "margin": 0.6320306381641253
+  },
+  {
+   "L": 8,
+   "arm": "IDEAL",
+   "device": null,
+   "acc": 0.9298245614035088,
+   "margin": 0.6347872056353971
+  },
+  {
+   "L": 1,
+   "arm": "RPSF",
+   "device": "FakeAuckland",
+   "acc": 0.8596491228070176,
+   "margin": 0.3887666458478683,
+   "n2q": 13.0,
+   "touched": 6.0,
+   "s": 53.9
+  },
+  {
+   "L": 1,
+   "arm": "C12",
+   "device": "FakeAuckland",
+   "acc": 0.8596491228070176,
+   "margin": 0.3881624581589174,
+   "n2q": 13.0,
+   "touched": 6.0,
+   "s": 72.0
+  },
+  {
+   "L": 1,
+   "arm": "L3T",
+   "device": "FakeAuckland",
+   "acc": 0.8596491228070176,
+   "margin": 0.38855164223013955,
+   "n2q": 13.0,
+   "touched": 6.0,
+   "s": 52.5
+  },
+  {
+   "L": 2,
+   "arm": "RPSF",
+   "device": "FakeAuckland",
+   "acc": 0.8859649122807017,
+   "margin": 0.5035891912067667,
+   "n2q": 33.0,
+   "touched": 6.0,
+   "s": 55.3
+  },
+  {
+   "L": 2,
+   "arm": "C12",
+   "device": "FakeAuckland",
+   "acc": 0.8859649122807017,
+   "margin": 0.5138314670116328,
+   "n2q": 33.98245614035088,
+   "touched": 6.0,
+   "s": 79.3
+  },
+  {
+   "L": 2,
+   "arm": "L3T",
+   "device": "FakeAuckland",
+   "acc": 0.8859649122807017,
+   "margin": 0.5140845725304991,
+   "n2q": 34.0,
+   "touched": 6.0,
+   "s": 59.1
+  },
+  {
+   "L": 4,
+   "arm": "RPSF",
+   "device": "FakeAuckland",
+   "acc": 0.9122807017543859,
+   "margin": 0.4830524645496866,
+   "n2q": 71.0,
+   "touched": 6.0,
+   "s": 61.5
+  },
+  {
+   "L": 4,
+   "arm": "C12",
+   "device": "FakeAuckland",
+   "acc": 0.9210526315789473,
+   "margin": 0.49281695995798935,
+   "n2q": 70.42105263157895,
+   "touched": 6.0,
+   "s": 100.1
+  },
+  {
+   "L": 4,
+   "arm": "L3T",
+   "device": "FakeAuckland",
+   "acc": 0.9210526315789473,
+   "margin": 0.4997965727232731,
+   "n2q": 70.0,
+   "touched": 6.0,
+   "s": 60.0
+  },
+  {
+   "L": 8,
+   "arm": "RPSF",
+   "device": "FakeAuckland",
+   "acc": 0.9298245614035088,
+   "margin": 0.33560986983237584,
+   "n2q": 144.0,
+   "touched": 6.0,
+   "s": 64.9
+  },
+  {
+   "L": 8,
+   "arm": "C12",
+   "device": "FakeAuckland",
+   "acc": 0.9298245614035088,
+   "margin": 0.33557913918058163,
+   "n2q": 144.0,
+   "touched": 6.0,
+   "s": 137.7
+  },
+  {
+   "L": 8,
+   "arm": "L3T",
+   "device": "FakeAuckland",
+   "acc": 0.9298245614035088,
+   "margin": 0.3329528724976684,
+   "n2q": 144.0,
+   "touched": 6.0,
+   "s": 65.1
+  },
+  {
+   "L": 1,
+   "arm": "RPSF",
+   "device": "FakeTorino",
+   "acc": 0.868421052631579,
+   "margin": 0.3884692962532556,
+   "n2q": 17.0,
+   "touched": 6.0,
+   "s": 431.0
+  },
+  {
+   "L": 1,
+   "arm": "C12",
+   "device": "FakeTorino",
+   "acc": 0.868421052631579,
+   "margin": 0.3884692962532556,
+   "n2q": 17.0,
+   "touched": 6.0,
+   "s": 435.3
+  }
+ ]
+}

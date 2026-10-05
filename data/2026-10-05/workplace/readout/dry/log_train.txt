@@ -1,0 +1,8 @@
+TRAIN BC 4 4 ideal acc 0.912 margin 0.604
+TRAIN BC 4 12 ideal acc 0.939 margin 0.601
+TRAIN BC 6 4 ideal acc 0.930 margin 0.560
+TRAIN BC 6 12 ideal acc 0.939 margin 0.519
+TRAIN D38 4 4 ideal acc 0.944 margin 0.665
+TRAIN D38 4 12 ideal acc 0.944 margin 0.465
+TRAIN D38 6 4 ideal acc 0.958 margin 0.673
+TRAIN D38 6 12 ideal acc 0.889 margin 0.412

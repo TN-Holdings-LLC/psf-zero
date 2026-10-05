@@ -1,0 +1,8 @@
+RUN BC 4 4 done
+RUN BC 4 12 done
+RUN BC 6 4 done
+RUN BC 6 12 done
+RUN D38 4 4 done
+RUN D38 4 12 done
+RUN D38 6 4 done
+RUN D38 6 12 done

@@ -1,0 +1,2 @@
+FakeGeneva base circuits 302 recompiles c13 0 c14 0 | outputs differ 0 | failed-direction uses c14 0 | max state infid c14 8.7e-15 | time c13 7.97s c14 6.86s 
+FakeGeneva full circuits 302 recompiles c13 0 c14 0 | outputs differ 0 | failed-direction uses c14 0 | max state infid c14 1.0e-14 | time c13 85.35s c14 85.84s 

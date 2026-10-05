@@ -1,0 +1,15 @@
+C0 versions: OK | deploy files 2 | train files 8
+Q1 compiled model circuits exact (one per teacher, arm, device): 32/32 -> CONFIRMED
+   FakeAuckland: ideal acc 0.875 | noisy acc REL 0.871 C2 0.871 A5 0.871 L3T 0.879 | median retention REL 0.719 C2 0.719 A5 0.814 L3T 0.820
+   FakeTorino: ideal acc 0.875 | noisy acc REL 0.896 C2 0.883 A5 0.875 L3T 0.871 | median retention REL 0.772 C2 0.811 A5 0.900 L3T 0.900
+Q2 A5 keeps more of the model's signal than the released compiler (retention +0.05 on every device) -> CONFIRMED
+Q3 deployed accuracy A5 - REL (pooled over teachers and devices): -0.010 (confirm >= +0.02) -> AMBIGUOUS
+Q4 A5 level with error-aware Qiskit (retention within 0.05 on every device) -> CONFIRMED
+   training REL: final test loss t911 0.773, t912 0.784 | final test acc t911 0.733, t912 0.783
+   training C2: final test loss t911 0.773, t912 0.784 | final test acc t911 0.733, t912 0.783
+   training A5: final test loss t911 0.631, t912 0.717 | final test acc t911 0.900, t912 0.767
+   training L3T: final test loss t911 0.725, t912 0.695 | final test acc t911 0.767, t912 0.817
+Q5 training under noise: final test loss A5 0.674 < REL 0.778 -> CONFIRMED
+Q6 training under noise: final test acc A5 0.833 not below REL 0.758 - 0.05 -> CONFIRMED
+SUMMARY {"Q1": "CONFIRMED", "Q2": "CONFIRMED", "Q3": "AMBIGUOUS", "Q4": "CONFIRMED", "Q5": "CONFIRMED", "Q6": "CONFIRMED"}
+DECISION: NOT ALL CONFIRMED

@@ -1,0 +1,3 @@
+FakeAuckland 200 A9 inf 0.00585 ro 0.03546 A10 inf 0.00571 ro 0.03364 L3TM inf 0.00656 ro 0.03173 A10<=A9 0.940 max state infid {'A9': '3.0e-15', 'A10': '3.0e-15', 'L3TM': '3.0e-15'}
+FakeKingston 200 A9 inf 0.01558 ro 0.14737 A10 inf 0.00168 ro 0.02656 L3TM inf 0.00174 ro 0.02457 A10<=A9 0.975 max state infid {'A9': '3.3e-15', 'A10': '3.3e-15', 'L3TM': '3.3e-15'}
+FakeTorino 200 A9 inf 0.01335 ro 0.12794 A10 inf 0.00466 ro 0.04956 L3TM inf 0.00477 ro 0.05004 A10<=A9 0.935 max state infid {'A9': '2.9e-15', 'A10': '2.9e-15', 'L3TM': '4.0e-15'}

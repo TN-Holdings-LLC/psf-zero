@@ -1,0 +1,36 @@
+FakeBrussels 56
+  RPSF  infid 0.01793  meas_err 0.0749  2q 16.84  max state_infid 1.4e-15  off 0  failed 0  med s 0.041
+  C13   infid 0.01595  meas_err 0.0703  2q 16.70  max state_infid 1.4e-15  off 0  failed 0  med s 0.227
+  A11   infid 0.01570  meas_err 0.0703  2q 16.59  max state_infid 1.1e-15  off 0  failed 0  med s 0.744
+  L3TM  infid 0.01618  meas_err 0.0703  2q 16.70  max state_infid 1.1e-15  off 0  failed 0  med s 0.021
+  C13/L3TM 0.986  C13/RPSF 0.890  per-circuit C13<=L3TM 0.86
+  A11/L3TM 0.970  A11/RPSF 0.876  per-circuit A11<=L3TM 0.82
+  by family A-front/L3TM: {'W': np.float64(0.997), 'GHZ': np.float64(1.0), 'DICKE': np.float64(0.926), 'QFT': np.float64(0.988), 'RSP': np.float64(0.954), 'ENT': np.float64(0.945), 'CLS': np.float64(0.964)}
+  by family C13/L3TM: {'W': np.float64(0.995), 'GHZ': np.float64(1.021), 'DICKE': np.float64(0.968), 'QFT': np.float64(0.991), 'RSP': np.float64(1.022), 'ENT': np.float64(0.997), 'CLS': np.float64(0.972)}
+FakeOsaka 56
+  RPSF  infid 0.02093  meas_err 0.0612  2q 16.84  max state_infid 2.1e-15  off 0  failed 0  med s 0.041
+  C13   infid 0.01393  meas_err 0.0578  2q 16.77  max state_infid 1.8e-15  off 0  failed 0  med s 0.222
+  A11   infid 0.01367  meas_err 0.0579  2q 16.62  max state_infid 1.1e-15  off 0  failed 0  med s 0.735
+  L3TM  infid 0.02092  meas_err 0.0399  2q 16.70  max state_infid 1.6e-15  off 0  failed 0  med s 0.019
+  C13/L3TM 0.666  C13/RPSF 0.666  per-circuit C13<=L3TM 0.88
+  A11/L3TM 0.653  A11/RPSF 0.653  per-circuit A11<=L3TM 0.88
+  by family A-front/L3TM: {'W': np.float64(0.635), 'GHZ': np.float64(0.916), 'DICKE': np.float64(0.31), 'QFT': np.float64(0.86), 'RSP': np.float64(0.463), 'ENT': np.float64(0.506), 'CLS': np.float64(0.67)}
+  by family C13/L3TM: {'W': np.float64(0.812), 'GHZ': np.float64(0.963), 'DICKE': np.float64(0.333), 'QFT': np.float64(0.863), 'RSP': np.float64(0.485), 'ENT': np.float64(0.581), 'CLS': np.float64(0.659)}
+FakeSherbrooke 56
+  RPSF  infid 0.01679  meas_err 0.0591  2q 16.84  max state_infid 1.1e-15  off 0  failed 0  med s 0.042
+  C13   infid 0.01398  meas_err 0.0439  2q 16.73  max state_infid 1.0e-15  off 0  failed 0  med s 0.218
+  A11   infid 0.01330  meas_err 0.0436  2q 16.68  max state_infid 1.3e-15  off 0  failed 0  med s 0.750
+  L3TM  infid 0.01451  meas_err 0.0430  2q 16.70  max state_infid 1.0e-15  off 0  failed 0  med s 0.021
+  C13/L3TM 0.964  C13/RPSF 0.833  per-circuit C13<=L3TM 0.96
+  A11/L3TM 0.917  A11/RPSF 0.792  per-circuit A11<=L3TM 0.86
+  by family A-front/L3TM: {'W': np.float64(0.997), 'GHZ': np.float64(0.882), 'DICKE': np.float64(0.943), 'QFT': np.float64(0.913), 'RSP': np.float64(0.987), 'ENT': np.float64(0.941), 'CLS': np.float64(0.908)}
+  by family C13/L3TM: {'W': np.float64(1.0), 'GHZ': np.float64(1.0), 'DICKE': np.float64(1.0), 'QFT': np.float64(0.949), 'RSP': np.float64(1.045), 'ENT': np.float64(1.0), 'CLS': np.float64(0.952)}
+FakeStrasbourg 56
+  RPSF  infid 0.02693  meas_err 0.0984  2q 16.84  max state_infid 1.3e-15  off 0  failed 0  med s 0.043
+  C13   infid 0.01590  meas_err 0.0762  2q 16.70  max state_infid 1.3e-15  off 0  failed 0  med s 0.231
+  A11   infid 0.01578  meas_err 0.0771  2q 16.62  max state_infid 1.0e-15  off 0  failed 0  med s 0.801
+  L3TM  infid 0.01590  meas_err 0.0758  2q 16.70  max state_infid 1.1e-15  off 0  failed 0  med s 0.020
+  C13/L3TM 1.000  C13/RPSF 0.591  per-circuit C13<=L3TM 0.91
+  A11/L3TM 0.993  A11/RPSF 0.586  per-circuit A11<=L3TM 0.75
+  by family A-front/L3TM: {'W': np.float64(1.001), 'GHZ': np.float64(0.983), 'DICKE': np.float64(0.941), 'QFT': np.float64(0.999), 'RSP': np.float64(1.059), 'ENT': np.float64(1.009), 'CLS': np.float64(0.981)}
+  by family C13/L3TM: {'W': np.float64(0.997), 'GHZ': np.float64(0.993), 'DICKE': np.float64(1.0), 'QFT': np.float64(1.0), 'RSP': np.float64(1.0), 'ENT': np.float64(1.014), 'CLS': np.float64(1.0)}

@@ -1,0 +1,10 @@
+shas {'script_sha': {'9d83426dd28ecddff67c555656d2ef3c5e0b9b43ee5a2d4eb5bc7204e8c6f1d0'}, 'c12_sha': {'1dc9b9b1d5b08118c33cad81bfc4be4905b5e593a3c60abab6caa56835685ab1'}, 'c13_sha': {'edaafc2c927496238fd5d81e45e2da3d46cc874c49209bdadfd640d41bb87cb2'}, 'depth_eval_sha': {'82488d96144bb1c88f69676a0e6a642c22d4756a47d8a1ad8b07be5327c796ac'}}
+rows {'FakeAuckland': 320, 'FakeKingston': 320, 'FakeTorino': 320}
+P0 PASS 1.12e-09 True
+R1 ratio 0.1728
+R2 {'FakeAuckland': -2.4e-05, 'FakeKingston': -0.001696, 'FakeTorino': 0.0}
+R3 +0.0344
+R4 {'FakeAuckland': 0.0094, 'FakeKingston': 0.0005, 'FakeTorino': 0.0066}
+R5 1.0000
+R6 max 0.998
+R7 +0.0096

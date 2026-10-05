@@ -1,0 +1,7 @@
+script sha {'82488d96144bb1c88f69676a0e6a642c22d4756a47d8a1ad8b07be5327c796ac'} c12 sha {'1dc9b9b1d5b08118c33cad81bfc4be4905b5e593a3c60abab6caa56835685ab1'}
+P0: files 24/24, finetune 4/4, exact 1.03e-05, reduced-vs-whole 0.00e+00 -> FAIL
+H1 CONFIRMED
+H2 CONFIRMED
+FakeAuckland C12-RPSF margin +0.0049 C12-L3T +0.0062 flip C12 0.0043 RPSF 0.0043
+FakeTorino C12-RPSF margin +0.0187 C12-L3T +0.0016 flip C12 0.0039 RPSF 0.0036
+H6 FTN-DEP -0.0022 FT0-DEP -0.0370

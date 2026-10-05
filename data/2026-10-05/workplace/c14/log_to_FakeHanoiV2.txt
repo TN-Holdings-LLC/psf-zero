@@ -1,0 +1,2 @@
+FakeHanoiV2 base circuits 302 recompiles c13 40 c14 40 | outputs differ 0 | failed-direction uses c14 0 | max state infid c14 8.7e-15 | time c13 8.52s c14 8.53s 
+FakeHanoiV2 full circuits 302 recompiles c13 40 c14 40 | outputs differ 0 | failed-direction uses c14 0 | max state infid c14 8.7e-15 | time c13 8.75s c14 7.77s 

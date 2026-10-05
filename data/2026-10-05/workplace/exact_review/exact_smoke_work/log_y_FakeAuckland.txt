@@ -1,0 +1,7 @@
+  FakeAuckland F1: 6 rows, 4 s
+  FakeAuckland F2: 8 rows, 5 s
+  FakeAuckland F3: 10 rows, 6 s
+  FakeAuckland F4: 13 rows, 9 s
+  FakeAuckland F5: 16 rows, 10 s
+  FakeAuckland F6: 19 rows, 11 s
+wrote exact_y_FakeAuckland_smoke.json: 19 circuits, 0 differ, 11 s

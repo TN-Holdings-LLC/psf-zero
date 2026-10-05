@@ -1,0 +1,33 @@
+FakeAuckland done {'checked': 200, 'refused_resynthesis': 75, 'refused_floor': 0, 'refused_level3': 8, 'not_checkable': 0} {'psf': 4, 'level3': 24, 'level3_refused': 8, 'not_estimable': 0, 'floor': 12, 'floor_refused': 0} {'applied': 45, 'kept_original': 75, 'selected_resynthesised': 25, 'selected_original': 5, 'not_estimable': 0}
+FakeAuckland  W1 n4 dt0.001 r0.0001    L3T               wrong 0/5  max 8.32e-13
+FakeAuckland  W1 n4 dt0.001 r0.0001    R_102_2           wrong 0/5  max 4.44e-15
+FakeAuckland  W1 n4 dt0.001 r0.0001    R_recommended     wrong 0/5  max 8.32e-13
+FakeAuckland  W1 n4 dt0.001 r0.0001    R_resynth_always  wrong 0/5  max 4.44e-15
+FakeAuckland  W1 n4 dt0.01 r1e-05      L3T               wrong 0/5  max 8.12e-13
+FakeAuckland  W1 n4 dt0.01 r1e-05      R_102_2           wrong 0/5  max 5.22e-15
+FakeAuckland  W1 n4 dt0.01 r1e-05      R_recommended     wrong 0/5  max 8.12e-13
+FakeAuckland  W1 n4 dt0.01 r1e-05      R_resynth_always  wrong 0/5  max 5.22e-15
+FakeAuckland  W1 n4 dt0.1 r1.0         L3T               wrong 0/5  max 4.66e-15
+FakeAuckland  W1 n4 dt0.1 r1.0         R_102_2           wrong 0/5  max 2.00e-15
+FakeAuckland  W1 n4 dt0.1 r1.0         R_recommended     wrong 0/5  max 4.77e-15
+FakeAuckland  W1 n4 dt0.1 r1.0         R_resynth_always  wrong 0/5  max 4.77e-15
+FakeAuckland  W1 n6 dt0.001 r0.0001    L3T               wrong 0/5  max 1.38e-12
+FakeAuckland  W1 n6 dt0.001 r0.0001    R_102_2           wrong 0/5  max 7.77e-15
+FakeAuckland  W1 n6 dt0.001 r0.0001    R_recommended     wrong 0/5  max 1.38e-12
+FakeAuckland  W1 n6 dt0.001 r0.0001    R_resynth_always  wrong 0/5  max 7.77e-15
+FakeAuckland  W1 n6 dt0.01 r1e-05      L3T               wrong 0/5  max 1.78e-12
+FakeAuckland  W1 n6 dt0.01 r1e-05      R_102_2           wrong 0/5  max 1.04e-14
+FakeAuckland  W1 n6 dt0.01 r1e-05      R_recommended     wrong 0/5  max 1.78e-12
+FakeAuckland  W1 n6 dt0.01 r1e-05      R_resynth_always  wrong 0/5  max 1.04e-14
+FakeAuckland  W1 n6 dt0.1 r1.0         L3T               wrong 0/5  max 2.55e-15
+FakeAuckland  W1 n6 dt0.1 r1.0         R_102_2           wrong 0/5  max 2.22e-15
+FakeAuckland  W1 n6 dt0.1 r1.0         R_recommended     wrong 0/5  max 2.55e-15
+FakeAuckland  W1 n6 dt0.1 r1.0         R_resynth_always  wrong 0/5  max 2.22e-15
+FakeAuckland  W2 n4                    L3T               wrong 4/5  max 1.37e-01
+FakeAuckland  W2 n4                    R_102_2           wrong 0/5  max 1.89e-15
+FakeAuckland  W2 n4                    R_recommended     wrong 0/5  max 1.78e-15
+FakeAuckland  W2 n4                    R_resynth_always  wrong 0/5  max 1.89e-15
+FakeAuckland  W2 n6                    L3T               wrong 4/5  max 1.90e-01
+FakeAuckland  W2 n6                    R_102_2           wrong 0/5  max 2.66e-15
+FakeAuckland  W2 n6                    R_recommended     wrong 0/5  max 2.66e-15
+FakeAuckland  W2 n6                    R_resynth_always  wrong 0/5  max 2.66e-15

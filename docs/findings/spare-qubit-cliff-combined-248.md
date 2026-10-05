@@ -13394,6 +13394,1406 @@ workplace exploration, 2026-10-05). The README keeps a warning until a fix is te
   `psf_compile.py` is that release. They reproduce their results at the commits that ran them (Addendum 342's at
   `ae1e946`).
 
+
+---
+
+<!-- ===== Addendum 345 (source: spare-qubit-cliff-addendum-345-2026-10-05.md) ===== -->
+
+> **Note added when merging:** Workplace pre-registration (QML-2 DEPTH, stage 1), locked in the workplace Project before its scored run; recorded as written.
+
+## Addendum 345 -- Workplace pre-registration: QML-2 "DEPTH", stage 1. How does a quantum classifier trained on real data behave on a noisy fake device as it is made deeper, how much do compilers move that, and does fine-tuning through the noise help? (2026-10-05)
+
+**Status: pre-registration, locked at the Project save time of this document**, before the scored run.
+
+- **Setting:** workplace sandbox (2 CPUs), Python 3.11.15, Qiskit 2.5.2, qiskit-aer 0.17.2, scikit-learn 1.8.0,
+  Rust core 2026-09-29.1. Fake devices and Aer noise only: no IBM, no hardware, no GPU.
+- **Owner's go-ahead:** 2026-10-05 ("始めてください"), after the design `qml2-design-2026-10-05.md`.
+- **Times** are sandbox times and are not compared across machines.
+
+## 1. Why
+
+Earlier quantum-classifier tests found the same thing at 4 qubits and shallow depth (Addenda 291 and 297; workplace
+`qml-results-2026-10-05.md`): compilers change the margin by a few per cent, but not the accuracy. Accuracy moved
+only on borderline inputs.
+
+This stage asks the question at the scale where noise starts to bind:
+
+- whether depth stops paying under noise;
+- whether better compilation moves that limit;
+- whether fine-tuning through the compiler and the noise recovers anything.
+
+It uses real data and the current compilers.
+
+## 2. Design (`depth_eval.py`, `run_depth.sh`)
+
+**Data.** Bundled with scikit-learn, so nothing is downloaded.
+
+- **BC:** breast_cancer, 569 samples.
+- **D38:** digits, classes 3 against 8, 357 samples.
+- **Preparation:** an 80/20 stratified split with **split seed 1**. Features are standardised, reduced by PCA to n
+  components and scaled to [-1, 1] on the training set.
+- **Test sets:** 114 points (BC) and 72 points (D38).
+
+**Model.** n qubits, L layers.
+
+- **Each layer:** RY(π/2 · x_q) on every qubit, then RY(a) RZ(b) on every qubit, then a CZ ring
+  (0,1), (1,2), ..., (n-1,0).
+- **After the layers:** RY(c) on every qubit.
+- **Output:** z = <Z_0>. The prediction is sign(z) and the loss is MSE(y, z).
+- **Routing:** heavy-hex has no 4-cycle or 6-cycle, so the ring always needs routing.
+
+**Sizes:** n ∈ {4, 6}; L ∈ {1, 2, 4, 8, 12, 16}.
+
+**Training (noiseless).** Adam with learning rate 0.05, batch 64 and 300 steps, on exact gradients. The gradients
+come from an adjoint method in a numpy statevector. They were checked against parameter shift (3.9e-16) and the
+forward pass against Qiskit's Statevector (3.3e-16). The init seed is 1 + 1000·L.
+
+**Arms:**
+
+| arm | what it is |
+|---|---|
+| RPSF | psf_compile with `target` and `placement_refine=True`: 2026-10-02.2's call, guarded paths only. The file is the c12 candidate; c12 is identical to 2026-10-04.1 on this call |
+| C12 | candidate psf_compile 2026-10-05.c12 (home, Addendum 342 pending) with the recommended call: + `final_resynthesis="select"`, `compare_level3`, `compare_floor`, `candidate_score="hybrid"`. If c12 is not adopted, this arm reads as 2026-10-04.1's call made exact |
+| L3T | Qiskit level 3 with the Target, `approximation_degree=1.0` |
+
+**Devices:** FakeAuckland (cx) and FakeTorino (cz).
+
+**Deployment (every test point × L × arm × device):**
+
+- Every circuit is compiled and checked noiselessly: its z must equal the logical z.
+- It is then simulated with `NoiseModel.from_backend` restricted to its touched qubits (the same QuantumError
+  objects, renumbered), with Aer's density matrix. z is read exactly.
+- **Score adjustments:** the readout error of the physical qubit that carries logical qubit 0 (Aer's asymmetric
+  probabilities), and 4,000 shots × 20 repetitions. The random numbers depend on (dataset, n, device, L, point)
+  only, so they are the same in every arm.
+
+**Fine-tuning (BC, n = 6, FakeAuckland, arm C12, L ∈ {4, 12}, seeds 1 and 2):**
+
+- **Start:** the noiselessly trained θ*.
+- **Two variants, 40 SPSA steps each** (batch 16; a = 0.3, c = 0.1, A = 5; α = 0.602, γ = 0.101; the same random
+  numbers in both):
+  - FTN: the loss is computed through the compiler and the noisy device (exact z);
+  - FT0: the noiseless loss (a control for "more optimisation").
+- **Evaluation:** DEP (θ* as is), FT0 and FTN are each deployed on the test set as above.
+
+**Size:** 4 training jobs, 24 deployment jobs and 4 fine-tuning jobs, run in parallel as 2 processes.
+
+## 3. Predictions (scored only by `depth_eval.py score`)
+
+**P0, harness.** All of these must hold, or nothing below is scored:
+
+- 24 of 24 deployment files and 4 fine-tuning files;
+- every compiled circuit's noiseless z within 1e-6 of the logical z;
+- the reduced simulation equals the whole-device simulation (Aer's own noise model, `save_density_matrix`) within
+  1e-9 on the first two points of every (L, file).
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| H1 | depth stops paying in margin (FakeAuckland, n = 6) | for both datasets and every arm, the deployed margin at L = 16 is below 0.8 × the best margin over L | for any dataset and arm, L = 16 has the largest margin |
+| H2 | ... and in accuracy (FakeAuckland, n = 6, shot-based with readout) | for at least one dataset, in every arm, the shot accuracy at L = 16 is at least 2 test points below the best over L | for every dataset and arm, L = 16 is the best (or tied best) |
+| H3 | the recommended compiler keeps more margin than the guarded call | pooled over datasets, n and L, C12 - RPSF mean margin >= +0.005 on both devices | < 0 on either device |
+| H4 | C12 is level with error-aware Qiskit | pooled \|C12 - L3T\| margin <= 0.01 on both devices | C12 < L3T - 0.02 on either device |
+| H5 | C12 flips no more predictions than RPSF | pooled exact flip rate (noisy sign ≠ noiseless sign) C12 <= RPSF on both devices | C12 > RPSF + 0.01 on either device |
+| H6 | fine-tuning through the noise helps where noise binds | at L = 12, mean over seeds of FTN - DEP deployed margin >= +0.02, and larger than FT0 - DEP | FTN - DEP < -0.01 |
+
+**Gate for stage 2 (GPU), computed by the scorer.**
+
+- **GO** if (H1 or H2 is CONFIRMED) **and** (H3 is CONFIRMED, or some cell has |shot accuracy C12 - RPSF| of at least
+  2 test points).
+- **NO-GO** otherwise. Then no GPU stage is proposed on this evidence.
+
+**Reported without prediction:**
+
+- the full table (accuracy, shot accuracy, margin, flip rate and two-qubit count, per dataset, n, L, arm and
+  device);
+- FakeTorino for H1 and H2;
+- n = 4;
+- the fine-tuning results at L = 4;
+- compile times.
+
+**Expectations, and what was known when writing them** (disclosed):
+
+- **H1 is expected.** The workplace pilot (BC, split seed 0, n = 6, L up to 8; FakeAuckland) and the dry run (split
+  seed 2) both showed the deployed margin peaking at L = 2-4 and falling at L = 8-12. It is the least informative
+  item.
+- **H2 is the open question.** In the pilot the accuracy still rose up to L = 8 although the margin halved. Whether the
+  margin's fall at L = 12-16, together with shots and readout, turns into lost test points is not known.
+- **H3-H5:**
+  - The pilot showed C12 and L3T about 0.01 above RPSF in margin at L = 2-4, and level at L = 1 and 8.
+  - In the dry run (12 points, L ∈ {1, 4, 12}) C12 - RPSF was +0.007 (FakeAuckland) and +0.015 (FakeTorino), and
+    C12 - L3T was +0.006 on both.
+  - So H3's bound of +0.005 may well come out AMBIGUOUS on FakeAuckland.
+- **H6 is the most uncertain.** In the dry run (3 steps, a = 0.1) nothing moved (FTN - DEP -0.0003).
+- **A5/C12 and the simulator.** The estimate inside C12 shares the simulator's physics, so H3 and H4 favour C12 by
+  construction (Addenda 286-339).
+
+## 4. What this will not establish
+
+- **Hardware.**
+- **More than 6 logical qubits, or touched-qubit counts above about 8.** That is stage 2.
+- **Other models, data encodings or optimisers.**
+- **Reliability over training seeds.** There is one noiseless training per (dataset, n, L) and two fine-tuning seeds.
+
+## 5. Development (disclosed)
+
+**Pilot** (`pilot_depth.py`; BC, split seed 0, init seed 0, n = 6, L ∈ {1, 2, 4, 8}; arms RPSF, C12, L3T):
+
+- **FakeAuckland**, all 12 cells:
+
+  | L | ideal acc / margin | RPSF | C12 | L3T |
+  |---|---|---|---|---|
+  | 1 | 0.868 / 0.399 | 0.860 / 0.389 | 0.860 / 0.388 | 0.860 / 0.389 |
+  | 2 | 0.886 / 0.571 | 0.886 / 0.504 | 0.886 / 0.514 | 0.886 / 0.514 |
+  | 4 | 0.921 / 0.632 | 0.912 / 0.483 | 0.921 / 0.493 | 0.921 / 0.500 |
+  | 8 | 0.930 / 0.635 | 0.930 / 0.336 | 0.930 / 0.336 | 0.930 / 0.333 |
+
+- **FakeTorino:** only L = 1 for RPSF and C12 (both 0.868 / 0.388). The rest was stopped: whole-device noise models
+  made it about 7 times slower, which led to the restricted noise model used here.
+- **An Aer behaviour found while developing:** `save_expectation_value` on a whole-device compiled circuit gave a
+  wrong value (-0.014 against -0.277). The pilot and this harness use `save_density_matrix`, which agrees with the
+  exact value. P0 checks the restricted simulation against the whole-device one.
+
+**Dry run** (`--dry`: split seed 2, init seed 2, 12 test points, L ∈ {1, 4, 12}, 60 training steps, 3 fine-tuning
+steps; 664 s): the harness ran end to end.
+
+- **P0 passed:** compiled noiseless against logical 1.7e-14; reduced against whole-device 0 on 144 circuits.
+- **Its verdict lines (not results):** H1 CONFIRMED, H2 AMBIGUOUS, H3-H5 CONFIRMED, H6 AMBIGUOUS, GATE GO.
+
+**Changed after the dry run, before the lock:** the fine-tuning step size a, from 0.1 to 0.3, because 0.1 left θ
+essentially unchanged in 3 steps.
+
+**Not seen:** no scored data (split seed 1) was compiled, simulated or trained on before the lock.
+
+## 6. Locked files (normalized SHA-256)
+
+| file | bytes | normalized SHA-256 |
+|---|---|---|
+| `depth_eval.py` | 27,934 | `82488d96144bb1c88f69676a0e6a642c22d4756a47d8a1ad8b07be5327c796ac` |
+| `run_depth.sh` | 1,960 | `b7422bc96c8001d902fc7d476692e8ce4d79f927ab4ed710624df89115bec2d7` |
+| `psf_compile.py` (candidate 2026-10-05.c12, from `exact_stage_v1`) | | `1dc9b9b1d5b08118c33cad81bfc4be4905b5e593a3c60abab6caa56835685ab1` |
+| `psf_smart_layout.py` (2026-10-01.1, from `main`) | | `624e8f8a00e1635a1ee3bc77b5b0f41bd69a94022e214d679b86cc66cc1cf241` |
+
+**Normalization:** CRLF to LF, trailing whitespace stripped from each line, trailing blank lines dropped, lines
+joined with "\n", no final newline.
+
+**Run:**
+
+```
+PAR=2 bash run_depth.sh <out> <dir>/psf_compile.py     (PYTHONPATH must contain the Rust core)
+```
+
+**Note added at home (2026-10-05):** the workplace files of this document (scripts, outputs, logs, the candidate code
+where there is one) are kept in [`data/2026-10-05/workplace/depth1/`](../../data/2026-10-05/workplace/depth1/) as received (the
+workplace handoff `handoff_2026-10-05_v8.zip`, all 442 files checked against its manifest). The candidates are built on the
+home candidates c12 and a9 (Addendum 342; adopted as release 2026-10-05.1 and front end a9, Addendum 344); the
+workplace candidates themselves are not part of any release.
+
+
+---
+
+<!-- ===== Addendum 346 (source: spare-qubit-cliff-addendum-346-2026-10-05.md) ===== -->
+
+> **Note added when merging:** Workplace results of DEPTH stage 1 (P0 failed; nothing scored); recorded as written.
+
+## Addendum 346 -- Workplace results: QML-2 "DEPTH", stage 1 (pre-registration `depth1-preregistration-2026-10-05.md`). P0 FAILED on a too-strict exactness threshold, so nothing is scored. Described: depth stops paying in margin at L = 2-4 under noise, but accuracy hardly moves (noise costs at most 2 test points up to 286 two-qubit gates); compilers change margin, and on FakeTorino 4-qubit rings by up to 21%, but never accuracy by 2 test points. The scorer's gate reads NO-GO, so no GPU stage is proposed on this evidence (2026-10-05)
+
+**Status: results of the workplace pre-registration of 2026-10-05.**
+
+- **Lock:** Project save time of the pre-registration, before the run (started 02:27 UTC).
+- **Scoring:** by the locked `depth_eval.py score`, and re-checked by `depth_verify.py`.
+  - `depth_verify.py` was written after the lock, during the run. When it was written, only the fine-tuning log
+    lines of DEP and FT0 had been seen, and no deployment output.
+  - It agrees on P0 and on every number below.
+- **Setting:** workplace sandbox, 2 processes; 4 + 24 + 4 jobs, 106 minutes (02:27-04:13 UTC); 13,392 deployed
+  circuits.
+- **Provenance:** every file records `depth_eval.py` normalized SHA-256 `82488d96…` and c12 `1dc9b9b1…`, as locked.
+
+## 1. P0 failed: no prediction is scored
+
+**What failed.** Every compiled circuit's noiseless z was required to be within 1e-6 of the logical z.
+
+- **How many rows exceeded it:** 2 of 13,392, by 1.03e-5 and 8.7e-6.
+- **Which rows:** both are L3T (Qiskit level 3 with the Target and `approximation_degree=1.0`), on FakeTorino, D38,
+  n = 6, L = 16 (286-289 two-qubit gates).
+- **The other arms:** RPSF max 2.4e-13; C12 max 2.3e-11.
+- **Also checked:** the reduced simulation equalled the whole-device one exactly on all 288 checked circuits.
+
+**The cause is the threshold, not the harness.**
+
+- Qiskit's exact path specialises each two-qubit block to an average gate fidelity of 1 - 1e-9. Amplitude errors of
+  about 3e-5 per block are therefore allowed.
+- Over about 300 blocks, a z deviation of 1e-5 is within that budget. As a state infidelity it is of order 1e-10, far
+  below B17's 1e-6 line.
+- A threshold of 1e-6 on z was too strict for deep L3T circuits. This is a design error of the pre-registration, as
+  in Addendum 301.
+- **The lesson:** state the exactness check as a state infidelity (1e-6), not as an absolute z difference.
+
+**What follows from the pre-registration.** Nothing below P0 is scored. The verdict lines the locked score printed
+are not results:
+
+| H1 | H2 | H3 | H4 | H5 | H6 | Gate |
+|---|---|---|---|---|---|---|
+| CONFIRMED | CONFIRMED | AMBIGUOUS | CONFIRMED | AMBIGUOUS | AMBIGUOUS | NO-GO |
+
+The 2 rows change L3T's cell means by less than 1e-6. The description below is therefore not affected, but it is not
+a scored test.
+
+## 2. Descriptive results
+
+The full table (accuracy, shot accuracy, margin, flip rate and two-qubit count per dataset, n, L, arm and device) is
+in `score.md`.
+
+**Margin under noise peaks early.** On FakeAuckland, n = 6:
+
+| dataset | best margin (L) | margin at L = 16 | ideal margin at L = 16 |
+|---|---|---|---|
+| BC | 0.564-0.568 (L = 2) | 0.153-0.155 | 0.644 |
+| D38 | 0.604-0.614 (L = 2) | 0.130-0.135 | 0.674 |
+
+Noise removes about 77-80% of the margin at L = 16, against 9-11% at L = 2.
+
+**Accuracy hardly moves.**
+
+- **What noise costs:** shot-based accuracy (4,000 shots, readout) minus ideal accuracy, on FakeAuckland, n = 6, is
+  at most 1.8 test points (2 without shots) in any cell, at L = 2 as at L = 16. In D38, L = 16, the noisy
+  accuracy is even above the ideal.
+- **Prediction flips** (noisy sign different from the noiseless sign): at most 2.8% in any cell. Pooled: FakeAuckland
+  0.43%, FakeTorino 0.36-0.39%.
+- **H2's "CONFIRMED" line is confounded.** On BC, n = 6, shot accuracy is 0.914-0.917 at L = 16 against 0.947 at
+  L = 12. But the noiseless model itself drops from 0.956 to 0.930 between those depths, which is one training run's
+  variation. The noise accounts for only about 1.5-1.8 of the 3-4 points. As a statement about noise, H2 would not
+  have held.
+
+**Compilers change the margin, not the accuracy.**
+
+| device | C12 - RPSF pooled margin | C12 - L3T pooled margin |
+|---|---|---|
+| FakeAuckland | +0.0049 | +0.0062 |
+| FakeTorino | +0.0187 | +0.0016 |
+
+- **Where the gain comes from:** almost all of FakeTorino's gain is the 4-qubit ring. There the guarded call routes
+  with 20% more two-qubit gates (188 against 157 at L = 16), which the recommended call and L3T avoid. Margin at
+  L = 16: RPSF 0.368 / 0.357 against C12 0.447 / 0.431 (BC / D38), that is +21%.
+- **6-qubit rings on FakeTorino:** C12 kept the guarded call's circuit, so the two arms are identical.
+- **Accuracy:** in no cell does the shot accuracy differ between C12 and RPSF by 2 test points. This is why the gate
+  reads NO-GO.
+
+**Fine-tuning (BC, n = 6, FakeAuckland, C12; two seeds)** — change in deployed margin from DEP:
+
+| L | FTN (through the noise) | FT0 (noiseless control) |
+|---|---|---|
+| 4 | +0.006 | -0.011 |
+| 12 | -0.002 | -0.037 |
+
+- With 40 SPSA steps at a = 0.3, noiseless fine-tuning lowered the deployed margin. Fine-tuning through the noise
+  did not: relative to the control, +0.035 at L = 12.
+- But FTN did not raise the margin over θ*. Accuracy changed by at most 1 test point either way.
+
+## 3. Exploratory (not pre-registered; written after the run): fewer shots
+
+The recorded noisy z values were re-sampled at fewer shots (200 repetitions, each point's readout error, the same
+random numbers in every arm). Script: `depth_shots_explore.py`.
+
+Pooled shot accuracy over datasets, n and L >= 8:
+
+| device, n | 32 shots: RPSF / C12 / L3T | 100 shots | 4,000 shots |
+|---|---|---|---|
+| FakeAuckland, 4 | 0.889 / 0.893 / 0.887 | 0.935 / 0.936 / 0.935 | 0.946 / 0.948 / 0.947 |
+| FakeAuckland, 6 | 0.840 / 0.841 / 0.841 | 0.913 / 0.914 / 0.913 | 0.948 / 0.947 / 0.948 |
+| FakeTorino, 4 | **0.922 / 0.934 / 0.934** | 0.945 / 0.947 / 0.947 | 0.952 / 0.952 / 0.952 |
+| FakeTorino, 6 | 0.899 / 0.899 / **0.914** | 0.939 / 0.939 / 0.942 | 0.953 / 0.953 / 0.953 |
+
+**Reading:**
+
+- The extra margin turns into accuracy only when shots are scarce: up to 1.2-1.5 points at 32 shots.
+- The shot budget itself matters far more than the compiler: 5-11 points between 32 and 4,000 shots.
+
+## 4. Reading
+
+- **For the owner's question** ("does the AI get smarter through these circuits?"):
+  - Up to 6 qubits and 286 two-qubit gates on these fake devices, the classifier's accuracy is robust to noise.
+    Making it deeper keeps paying in noiseless accuracy roughly up to L = 8-12.
+  - Noise eats its confidence (margin) from L = 4 on, and by L = 16 most of it.
+- **What compilers buy here:** confidence, not correctness.
+  - The gain is large where routing differs (Heron 4-rings: +21% margin).
+  - It is small elsewhere.
+  - It becomes accuracy only in a shot-starved regime.
+- **Against L3T:** C12 is level (+0.002 to +0.006 pooled margin).
+- **Fine-tuning through the noise** avoided the damage that the same amount of noiseless fine-tuning did. It did not
+  improve on θ*.
+- **Stage 2 (GPU):** the scorer's gate reads NO-GO, and it is unscored only because of the threshold error. The data
+  support not renting a GPU for more of the same question.
+
+## 5. What would be worth doing next (proposals, not run)
+
+1. **A shot-budget test, pre-registered:** fixed total shots per prediction (32-256). The compiler's margin should then
+   show in accuracy. Cheap on CPU, and it reuses this design.
+2. **Noise-aware training from scratch** (not fine-tuning), with a loss that rewards margin under noise. FTN's
+   damage-free behaviour hints at something, but 40 steps did not show a gain.
+3. **For stage 2 to be worth a GPU:** a circuit regime where noise flips predictions at full shots. On this evidence
+   that needs either noisier devices (ecr, Addendum 293) or several hundred two-qubit gates beyond L = 16. A cheap CPU
+   check first: n = 4-6 at L = 24-32.
+
+## 6. What this does not establish
+
+- Hardware.
+- More than 6 logical qubits.
+- Other models.
+- One noiseless training per cell, two fine-tuning seeds.
+
+## 7. Files
+
+| folder | contents |
+|---|---|
+| `scored/` | `env.txt`, `progress.txt`, logs, 4 train, 24 deploy and 4 fine-tune JSON files, `score.md`, `score_log.txt` |
+| scripts | `depth_verify.py` (output in `verify.txt`), `depth_shots_explore.py` (output in `shots_explore.txt`) |
+
+**Note added at home (2026-10-05):** the workplace files of this document (scripts, outputs, logs, the candidate code
+where there is one) are kept in [`data/2026-10-05/workplace/depth1/`](../../data/2026-10-05/workplace/depth1/) as received (the
+workplace handoff `handoff_2026-10-05_v8.zip`, all 442 files checked against its manifest). The candidates are built on the
+home candidates c12 and a9 (Addendum 342; adopted as release 2026-10-05.1 and front end a9, Addendum 344); the
+workplace candidates themselves are not part of any release.
+
+
+---
+
+<!-- ===== Addendum 347 (source: spare-qubit-cliff-addendum-347-2026-10-05.md) ===== -->
+
+> **Note added when merging:** Workplace pre-registration (READOUT, candidate c13), locked in the workplace Project before its scored run; recorded as written.
+
+## Addendum 347 -- Workplace pre-registration: READOUT. Does compiling a quantum classifier with its final measurement, and candidate psf_compile 2026-10-05.c13 (readout of measured qubits in hybrid_cost, item 40), put its output on a better-readout qubit and buy margin and few-shot accuracy? (2026-10-05)
+
+**Status: pre-registration, locked at the Project save time of this document**, before the scored run.
+
+- **Setting:** workplace sandbox (2 CPUs), Qiskit 2.5.2, Aer 0.17.2, core 2026-09-29.1. Fake devices and Aer noise
+  only.
+- **Owner's instruction (2026-10-05 afternoon):** improvements, code and tests based on the day's results.
+
+## 1. Why
+
+DEPTH stage 1 (`depth1-results-2026-10-05.md`) recorded the readout error of the qubit that carries the classifier's
+output. On FakeTorino it was a mean of:
+
+| arm | readout error |
+|---|---|
+| guarded call (RPSF) | 0.034 (max 0.146) |
+| recommended call (C12) | 0.025 |
+| Qiskit level 3 (L3T) | 0.011 |
+
+Home's Addendum 297 had found the same ("the PSF-Zero layout does not consider readout error").
+
+Two causes were seen in the code and on development data:
+
+1. **The circuits were compiled without measurements**, so item 33's re-placement (`VF2PostLayout`, which scores
+   `measure` errors when they are present) had nothing to see. On development data (split seed 2, BC, FakeTorino,
+   n = 6, L = 12), compiling the same circuits with the measurement moved the output qubit's readout error from
+   0.146 to 0.006.
+2. **`hybrid_cost` (items 37-38) skips `measure`**, so the choice among the release's, the floor-placed and level 3's
+   circuits never sees readout. On development data (FakeKingston, n = 6, L = 4) adding it moved the choice from
+   0.0149 to 0.0079.
+
+## 2. The candidate (c13, changelog item 40)
+
+- **Base:** candidate c12 (`exact_stage_v1`).
+- **What it adds:** `readout_cost(circ, target)`, the sum of the Target's measure error over the measured qubits
+  (each qubit once). `hybrid_cost` adds it to its estimate.
+- **Circuits without measurements:** they get c12's estimate unchanged, so their output is identical (tested).
+
+**Tests:** `test_c13_readout.py`, 11 cases, all passed in the sandbox in 17.5 s. They check:
+
+- the versions;
+- `readout_cost`, including that each qubit is counted once and that it is 0 without measurements;
+- that `hybrid_cost` changes by exactly `readout_cost`;
+- that c13 equals c12 instruction by instruction without measurements, on 3 devices × 3 circuits;
+- that measured outputs are exact (state infidelity) and measure the qubit where logical 0 ends, on 3 devices;
+- that on FakeKingston 6-qubit rings c13 is never worse than c12 in output readout and better on at least one.
+
+## 3. Design (`readout_eval.py`, `run_readout.sh`)
+
+**Classifier, data and training:** those of `depth_eval.py` (DEPTH, unchanged and imported). New split seed 3 and
+init seed 3 + 1000·L.
+
+| item | values |
+|---|---|
+| datasets | BC, D38 |
+| n | 4, 6 |
+| L | 4, 12 |
+| test points | the first 40 per dataset |
+
+**Arms** (the recommended call: `placement_refine`, `final_resynthesis="select"`, `compare_level3`,
+`compare_floor`, `candidate_score="hybrid"`):
+
+| arm | what it is |
+|---|---|
+| C12 | c12, circuit without measurement (as in DEPTH) |
+| C13 | c13, circuit without measurement. Compared with C12 instruction by instruction, not simulated |
+| C12M | c12, circuit with `measure(0 -> c0)` |
+| C13M | c13, the same |
+| L3TM | Qiskit level 3 with the Target and `approximation_degree=1.0`, with the measurement |
+
+**Devices:** FakeTorino, FakeKingston (Heron, uneven readout) and FakeAuckland (cx, control).
+
+**Metrics:**
+
+- the Target's measure error of the output qubit;
+- the effective margin y·(z (1 - e01 - e10) - (e01 - e10)), with z from the restricted-noise density-matrix
+  simulation of DEPTH and Aer's assignment probabilities;
+- the shot accuracy at 32 shots (200 repetitions) and at 4,000 shots (20 repetitions), with the same random numbers in
+  every arm.
+
+## 4. Predictions (scored only by `readout_eval.py score`)
+
+**P0.** All of these must hold, or nothing below is scored:
+
+- 3 of 3 device files;
+- every output of every simulated arm exact as a **state infidelity <= 1e-6** (DEPTH's lesson: not an absolute z
+  difference);
+- in every measured arm, the measured qubit is the final position of logical 0.
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| R1 | compiling with the measurement moves the output to a better-readout qubit | FakeTorino mean measure error C12M / C12 <= 0.70 | >= 1.00 |
+| R2 | c13's readout term never makes it worse, and somewhere makes it better | C13M - C12M mean measure error <= 0 on every device and < 0 on at least one | > +0.001 on any device |
+| R3 | together they buy margin where readout is uneven | FakeTorino effective margin C13M - C12 >= +0.01 | < 0 |
+| R4 | C13M is level with error-aware Qiskit | effective margin C13M - L3TM >= -0.01 on every device | < -0.02 on any device |
+| R5 | without measurements nothing changes | C13 identical to C12 in 100% of circuits | < 99.9% |
+| R6 | it stays cheap | median compile time C13M <= 1.2 × C12M on every device | > 2 × on any device |
+| R7 | it shows in few-shot accuracy | FakeTorino 32-shot accuracy C13M - C12 >= 0 | < -0.01 |
+
+**Expectations** (development data and the dry run were seen; disclosed):
+
+- **R1 and R3 are expected** from the development data.
+- **R2 may be AMBIGUOUS:** c13 changes the choice only where the floor-placed or level 3's circuit has better readout
+  and a nearly equal noise estimate.
+- **R7:** 40 test points per dataset is a small set, and the 32-shot difference may be within its noise.
+
+## 5. Development (disclosed)
+
+**Exploration** (`explore_readout.py`, development split seed 2, 12 points; arms C12, C12M, C13M, L3TM; FakeTorino and
+FakeKingston, n 4 and 6, L 4 and 12): the figures quoted in section 1.
+
+**Dry run** (`DRY=1`: split seed 2, 6 points, 40 training steps; 6 minutes):
+
+- **P0 passed:** state infidelity max 7.9e-15; measured qubit = final logical 0 everywhere.
+- **Verdict lines R1-R7 (not results):** all CONFIRMED.
+  - FakeTorino measure error: C12 0.048, C12M 0.0084, C13M 0.0084, L3TM 0.0085.
+  - FakeKingston: C12M 0.0101, C13M 0.0093.
+
+**Changed after the dry run, before the lock:** test points from 60 to 40 per dataset, for time only.
+
+**Not seen:** no circuit of split seed 3 was compiled or trained on before the lock.
+
+## 6. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `readout_eval.py` | `9d83426dd28ecddff67c555656d2ef3c5e0b9b43ee5a2d4eb5bc7204e8c6f1d0` |
+| `run_readout.sh` | `836624e344dc8ae3567f9f7c2ef71c033a67209a84dcdf7853f21066c4dc89d7` |
+| `depth_eval.py` (DEPTH, unchanged) | `82488d96144bb1c88f69676a0e6a642c22d4756a47d8a1ad8b07be5327c796ac` |
+| `psf_compile.py` (candidate c13) | `edaafc2c927496238fd5d81e45e2da3d46cc874c49209bdadfd640d41bb87cb2` |
+| `test_c13_readout.py` | `e6313b79b3687dd0e32ae72ce04a1cc4b15defc6d22dd52082d26875559f23f9` |
+| c12 `psf_compile.py` (`exact_stage_v1`) | `1dc9b9b1d5b08118c33cad81bfc4be4905b5e593a3c60abab6caa56835685ab1` |
+| `psf_smart_layout.py` (2026-10-01.1) | `624e8f8a00e1635a1ee3bc77b5b0f41bd69a94022e214d679b86cc66cc1cf241` |
+
+**Note added at home (2026-10-05):** the workplace files of this document (scripts, outputs, logs, the candidate code
+where there is one) are kept in [`data/2026-10-05/workplace/readout/`](../../data/2026-10-05/workplace/readout/) as received (the
+workplace handoff `handoff_2026-10-05_v8.zip`, all 442 files checked against its manifest). The candidates are built on the
+home candidates c12 and a9 (Addendum 342; adopted as release 2026-10-05.1 and front end a9, Addendum 344); the
+workplace candidates themselves are not part of any release.
+
+
+---
+
+<!-- ===== Addendum 348 (source: spare-qubit-cliff-addendum-348-2026-10-05.md) ===== -->
+
+> **Note added when merging:** Workplace results of READOUT; recorded as written.
+
+## Addendum 348 -- Workplace results: READOUT (pre-registration `readout-preregistration-2026-10-05.md`). All seven confirmed: compiling the classifier with its measurement moves its output off a bad-readout qubit (FakeTorino: measure error 0.048 → 0.0084), c13's readout term helps where the measurement alone does not (FakeKingston 0.0101 → 0.0084), and together they raise the effective margin by 0.034 on FakeTorino, level with Qiskit level 3, at no extra compile time (2026-10-05)
+
+**Status: results of the workplace pre-registration of 2026-10-05.**
+
+- **Lock:** Project save time, before the run (started 04:32 UTC).
+- **Scoring:** by the locked `readout_eval.py score`, and re-checked by `readout_verify.py`. That script was written
+  after the lock and before any scored output was read. It agrees on every number.
+- **Setting:** workplace sandbox, 2 processes; 960 rows (320 per device), 5 compiles each; 38 minutes.
+- **Provenance:** every file records the locked hashes (`readout_eval.py` `9d83426d…`, c12 `1dc9b9b1…`, c13
+  `edaafc2c…`, `depth_eval.py` `82488d96…`).
+
+## 1. Verdicts
+
+| ID | Verdict | Numbers |
+|---|---|---|
+| P0 | **PASS** | 3/3 devices; max state infidelity 1.1e-9 (<= 1e-6); measured qubit = final logical 0 in every measured arm |
+| R1 | **CONFIRMED** | FakeTorino measure error of the output qubit, C12M / C12 = 0.0084 / 0.0484 = 0.173 |
+| R2 | **CONFIRMED** | C13M - C12M: FakeTorino 0.0000, FakeKingston -0.0017, FakeAuckland -0.00002 |
+| R3 | **CONFIRMED** | FakeTorino effective margin C13M - C12 = +0.0344 |
+| R4 | **CONFIRMED** | C13M - L3TM effective margin: FakeTorino +0.0066, FakeKingston +0.0005, FakeAuckland +0.0094 |
+| R5 | **CONFIRMED** | without measurements C13 = C12 in 960 of 960 circuits |
+| R6 | **CONFIRMED** | median compile time C13M / C12M at most 0.998 |
+| R7 | **CONFIRMED** | FakeTorino 32-shot accuracy C13M - C12 = +0.0096 |
+
+## 2. Numbers
+
+| device | arm | measure error of the output qubit | effective margin | acc 32 shots | acc 4,000 shots | 2q | median compile s |
+|---|---|---|---|---|---|---|---|
+| FakeTorino | C12 | 0.0484 | 0.4908 | 0.9325 | 0.9623 | 114.0 | 0.640 |
+| FakeTorino | C12M | 0.0084 | 0.5252 | 0.9421 | 0.9625 | 114.0 | 0.639 |
+| FakeTorino | C13M | 0.0084 | 0.5252 | 0.9421 | 0.9625 | 114.0 | 0.638 |
+| FakeTorino | L3TM | 0.0086 | 0.5186 | 0.9414 | 0.9625 | 109.2 | 0.029 |
+| FakeKingston | C12 | 0.0117 | 0.5992 | 0.9483 | 0.9625 | 109.5 | 0.675 |
+| FakeKingston | C12M | 0.0101 | 0.6021 | 0.9485 | 0.9625 | 109.5 | 0.676 |
+| FakeKingston | C13M | 0.0084 | 0.6039 | 0.9487 | 0.9625 | 109.5 | 0.662 |
+| FakeKingston | L3TM | 0.0083 | 0.6034 | 0.9486 | 0.9625 | 109.5 | 0.031 |
+| FakeAuckland | C12 | 0.0075 | 0.4254 | 0.9137 | 0.9625 | 109.4 | 0.427 |
+| FakeAuckland | C12M | 0.0066 | 0.4270 | 0.9141 | 0.9625 | 109.5 | 0.423 |
+| FakeAuckland | C13M | 0.0066 | 0.4270 | 0.9141 | 0.9625 | 109.5 | 0.422 |
+| FakeAuckland | L3TM | 0.0070 | 0.4176 | 0.9120 | 0.9625 | 109.5 | 0.024 |
+
+**Which qubit carries the output.** The choice depends on the circuit's structure (n, L), not on the data, so each
+device has only 4 structural cases. On FakeTorino, n = 6, L = 12:
+
+- C12 puts the output on qubit 12 (measure error 0.146);
+- C12M and C13M put it on qubit 37 (0.006);
+- L3TM puts it on qubit 11 (0.008).
+
+That one case carries most of FakeTorino's effect. On FakeKingston, n = 6, L = 4, c13 moves part of the circuits
+from qubit 4 (0.0149) to qubit 2 (0.0079); c12 does not, even with the measurement.
+
+## 3. Reading
+
+- **The larger fix is in how the compiler is called: compile with the final measurement.**
+  - Without it, PSF-Zero's placement steps never see readout.
+  - With it, item 33's re-placement scores the `measure` error, as Qiskit's VF2PostLayout does.
+  - FakeTorino's output qubit went from a mean 0.048 to 0.0084 with c12 itself.
+- **c13's readout term covers the case the re-placement does not reach:** the choice among the release's, the
+  floor-placed and level 3's circuits (FakeKingston, -17%).
+  - Without measurements, nothing changes (960/960 identical). The compile time is the same.
+- **What it buys:**
+  - +0.034 effective margin on FakeTorino (+7%);
+  - +1 point of 32-shot accuracy;
+  - nothing at 4,000 shots, where accuracy is saturated (as in DEPTH).
+- **Level with Qiskit level 3**, which counts readout through its averaged error map (Addendum 308).
+- **Limits:**
+  - fake devices only;
+  - 4 structural cases per device;
+  - the effect depends on how uneven a device's readout is (FakeTorino p90 0.11, FakeAuckland 0.0125).
+
+## 4. Consequences (proposals; adoption is the owner's)
+
+1. **Documentation and harnesses:** compile circuits with their final measurements when outcomes will be sampled. The
+   DEPTH harness did not, and neither do the QML harnesses at home (they read z from the density matrix). For vLLM's
+   model-written circuits, MODEL-RO tests the AI front end.
+2. **c13 (item 40) as a candidate on top of c12:** it changes nothing without measurements, and helps on uneven-readout
+   devices.
+
+## 5. Files (`readout/` in the handoff)
+
+`env.txt`, `progress.txt`, logs, the three `readout_<device>.json`, `score.md`, `score_log.txt`, `verify.txt`; the dry
+run in `dry/`.
+
+**Note added at home (2026-10-05):** the workplace files of this document (scripts, outputs, logs, the candidate code
+where there is one) are kept in [`data/2026-10-05/workplace/readout/`](../../data/2026-10-05/workplace/readout/) as received (the
+workplace handoff `handoff_2026-10-05_v8.zip`, all 442 files checked against its manifest). The candidates are built on the
+home candidates c12 and a9 (Addendum 342; adopted as release 2026-10-05.1 and front end a9, Addendum 344); the
+workplace candidates themselves are not part of any release.
+
+
+---
+
+<!-- ===== Addendum 349 (source: spare-qubit-cliff-addendum-349-2026-10-05.md) ===== -->
+
+> **Note added when merging:** Workplace pre-registration (MODEL-RO, candidate AI front end a10), locked in the workplace Project before its scored run; recorded as written.
+
+## Addendum 349 -- Workplace pre-registration: MODEL-RO. Does candidate AI front end psf_ai_compile 2026-10-05.a10 (readout of measured qubits in the state-aware estimate, item 15) make sampled model-written circuits more faithful than a9? (2026-10-05)
+
+**Status: pre-registration, locked at the Project save time of this document**, before the scored run.
+
+- **Setting:** workplace sandbox (2 CPUs), Qiskit 2.5.2, Aer 0.17.2, core 2026-09-29.1. Fake devices and Aer noise
+  only.
+- **Companion test:** READOUT (`readout-preregistration-2026-10-05.md`) tests the same blind spot in the release (c13,
+  item 40).
+
+## 1. Why, and the candidate
+
+**The blind spot.** a9's state-aware estimate (`_state_weights` and `_score_weights`, from a4) skips `measure`. As a
+result:
+
+- neither the choice among candidates nor the state-aware re-placement sees readout error;
+- yet model-written circuits are sampled, so their measured qubits' readout enters every result.
+
+**a10, item 15:**
+
+- Each measured circuit qubit is recorded once, with weight 1.
+- It is charged the Target's measure error of the physical qubit it is mapped to.
+- Without measurements, the estimate and the output are exactly a9's (tested).
+
+**Tests** (`test_a10_readout.py`, 9 cases, all passed in the sandbox, 14 s). They check:
+
+- the versions;
+- that a10 equals a9 instruction by instruction on unmeasured circuits (synthetic GHZ and W, FakeTorino and
+  FakeAuckland);
+- that the estimate changes by exactly the summed measure error;
+- that measured outputs are exact (noiseless total variation 1e-6) and that clbit j measures logical j's final
+  qubit, on 3 devices;
+- that on FakeTorino a10 is never worse in summed readout and better on at least one of 4 synthetic circuits.
+
+## 2. Design (`ai10_eval.py`, `run_ai10.sh`)
+
+**Set:** the 153 model-written circuits of Addendum 285 (`data/2026-10-02/ai6/outputs/model_circuits.qpy`, raw
+SHA-256 `3c012e4c…`; 3-6 qubits; no measurements of their own), each with `measure_all()`. The set was used in
+Addenda 285 and 312-316.
+
+**Arms:**
+
+| arm | what it is |
+|---|---|
+| A9 | a9 (`exact_stage_v1`) |
+| A10 | the candidate |
+| L3TM | Qiskit level 3 with the Target, `approximation_degree=1.0` |
+
+A9 and A10 both have candidate psf_compile c13 underneath and get the device Target.
+
+**Devices:** FakeTorino, FakeKingston, FakeAuckland.
+
+**Metric:** the classical infidelity 1 - (Σ_x √(p_x q_x))² between:
+
+- p, the ideal distribution of the measured logical qubits;
+- q, the noisy distribution, computed as follows:
+  - Aer density matrix of the compiled circuit without its measurements;
+  - the noise model restricted to the touched qubits (DEPTH's `Noisy`);
+  - the marginal on the measured physical qubits, in clbit order;
+  - each qubit's readout assignment probabilities (Aer's, asymmetric).
+
+**Also recorded:** the summed measure error, the two-qubit count and the compile time.
+
+## 3. Predictions (scored only by `ai10_eval.py score`)
+
+**P0.** All of these must hold, or nothing below is scored:
+
+- 3 device files with 153 circuits each;
+- the noiseless distribution of every arm's output within total variation 1e-6 of the ideal;
+- clbit j measures logical j's final qubit in every output.
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| M1 | a10 puts the measured qubits on better readout | A10/A9 mean summed measure error <= 0.80 on both Heron devices and <= 1 everywhere | > 1 on any device |
+| M2 | the sampled distribution is more faithful | A10/A9 mean classical infidelity <= 1.00 everywhere and <= 0.95 on both Heron devices | > 1.01 on any device |
+| M3 | a10 is at or ahead of error-aware Qiskit | A10/L3TM <= 1.00 on every device | > 1.05 on any device |
+| M4 | broadly, not by a few circuits | per circuit A10 <= A9 in >= 80% of circuits on both Heron devices | < 60% on either |
+| M5 | no extra time | median compile time A10 <= 1.2 × A9 on every device | > 2 × on any device |
+
+**Expectations, and what was seen** (disclosed):
+
+- **Smoke check before the tests were written:** circuits 0, 40 and 120 of this set, with `measure_all()`, were
+  compiled by a9 and a10 on FakeTorino and FakeKingston. Only the summed measure error and the two-qubit count were
+  looked at:
+  - a10 lowered the summed measure error in all six (for example 0.223 → 0.061, 0.239 → 0.030);
+  - the two-qubit count rose by 1 in one of them.
+  - No distribution was simulated.
+- **Dry run** (6 synthetic GHZ circuits, not from this set):
+  - P0 passed;
+  - M1, M2, M4 and M5 CONFIRMED; M3 AMBIGUOUS (A10/L3TM 0.976 / 1.005 / 1.036).
+- **M3 is the open one.** Level 3 counts readout through its averaged error map (Addendum 308), so on these small
+  circuits it may already find the same qubits.
+- **A10's estimate and the simulator share their physics** (as in Addenda 286-339). M2 favours A10 by construction to
+  that extent. The readout model (asymmetric assignment errors) is the simulator's own.
+
+## 4. What this will not establish
+
+- Hardware.
+- Circuits wider than 8 qubits: there a10 calls the release, so c13's item 40 applies instead.
+- The vLLM loop itself: pass rates, and cost.
+
+## 5. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `ai10_eval.py` | `9e04390ed477a9e4d03f67bbe1c6e50712ed669d92bad299fe83a3fdc8536477` |
+| `run_ai10.sh` | `240b06b2a813776c226df158f418e1931b2c4be9013819e36329dd528e81a4df` |
+| `psf_ai_compile.py` (candidate a10) | `1af633d5f91a639a4894a092b5d4603c738cb51584d69d8068bfce9a0303e480` |
+| `psf_ai_compile_a9.py` (a9, `exact_stage_v1`) | `f6df9f7a28c8fac8e72116cf138cbc30781b1d48b5557d445e53484c19674b54` |
+| `psf_compile.py` (candidate c13) | `edaafc2c927496238fd5d81e45e2da3d46cc874c49209bdadfd640d41bb87cb2` |
+| `depth_eval.py` (DEPTH, for `Noisy`) | `82488d96144bb1c88f69676a0e6a642c22d4756a47d8a1ad8b07be5327c796ac` |
+| `test_a10_readout.py` | `28704cede24a162a79c3fb212b9a71d3612380d57080542c4552064f735fceb4` |
+
+**Note added at home (2026-10-05):** the workplace files of this document (scripts, outputs, logs, the candidate code
+where there is one) are kept in [`data/2026-10-05/workplace/model_ro/`](../../data/2026-10-05/workplace/model_ro/) as received (the
+workplace handoff `handoff_2026-10-05_v8.zip`, all 442 files checked against its manifest). The candidates are built on the
+home candidates c12 and a9 (Addendum 342; adopted as release 2026-10-05.1 and front end a9, Addendum 344); the
+workplace candidates themselves are not part of any release.
+
+
+---
+
+<!-- ===== Addendum 350 (source: spare-qubit-cliff-addendum-350-2026-10-05.md) ===== -->
+
+> **Note added when merging:** Workplace results of MODEL-RO (P0 failed; nothing scored); recorded as written.
+
+## Addendum 350 -- Workplace results: MODEL-RO (pre-registration `model-ro-preregistration-2026-10-05.md`). P0 FAILED on a threshold set on the wrong scale (one A10 output with noiseless total variation 4.8e-6 against 1e-6; its state infidelity is 3e-11), so nothing is scored. Described: a10 halves the classical infidelity of sampled model-written circuits on FakeTorino (0.062 → 0.032) and cuts it by 70% on FakeKingston (0.058 → 0.017), by moving the measured qubits to better readout, level with or slightly ahead of Qiskit level 3 (2026-10-05)
+
+**Status: results of the workplace pre-registration of 2026-10-05.**
+
+- **Lock:** Project save time, before the run (started 05:15 UTC).
+- **Scoring:** by the locked `ai10_eval.py score`.
+- **Arithmetic re-check:** `ai10_verify.py`, which recomputes the table from the raw JSON. It was written after the
+  locked score had been seen, so it is not a blind check.
+- **Setting:** workplace sandbox, 2 processes; 153 circuits × 3 devices × 3 arms; 7 minutes.
+
+## 1. P0 failed: no prediction is scored
+
+**What failed.** Every output's noiseless distribution was required to be within total variation 1e-6 of the ideal.
+One output exceeded it: A10, FakeKingston, circuit 141 (3 qubits), with 4.8e-6. All other outputs of all arms were at
+most 6.1e-8.
+
+**The cause is the threshold's scale, not the output.**
+
+- Total variation is first order in the amplitude error; a state infidelity is second order. The same output has a
+  state infidelity of 3.0e-11 (computed after the run with the READOUT check).
+- The deviation comes from the AI front end's polish, which re-synthesises blocks with the PSF core at its declared
+  tolerance (`tol=1e-5`, since a1). a10 merely chose a different candidate there than a9 did (a9's output: total
+  variation 6.1e-8, state infidelity 4e-15).
+- This is the same design error as DEPTH's P0 (a z difference) and Addendum 301 (a threshold that did not admit an
+  arm's own tolerance).
+- **The lesson, now stated for all workplace harnesses:** exactness checks are state infidelities, with a bound that
+  admits every arm's declared tolerance (1e-6 does). Linear quantities (z, total variation) are never compared with
+  the same 1e-6.
+
+**What follows from the pre-registration.** The verdict lines the locked score printed are not results:
+
+| M1 | M2 | M3 | M4 | M5 |
+|---|---|---|---|---|
+| CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED |
+
+## 2. Descriptive results
+
+| device | arm | classical infidelity | summed measure error | 2q | median compile s |
+|---|---|---|---|---|---|
+| FakeTorino | A9 | 0.0625 | 0.0843 | 5.82 | 0.639 |
+| FakeTorino | A10 | **0.0320** | 0.0316 | 5.82 | 0.622 |
+| FakeTorino | L3TM | 0.0324 | 0.0315 | 6.28 | 0.020 |
+| FakeKingston | A9 | 0.0576 | 0.0888 | 5.88 | 0.773 |
+| FakeKingston | A10 | **0.0172** | 0.0179 | 5.89 | 0.760 |
+| FakeKingston | L3TM | 0.0177 | 0.0176 | 6.30 | 0.021 |
+| FakeAuckland | A9 | 0.0341 | 0.0289 | 5.80 | 0.215 |
+| FakeAuckland | A10 | 0.0333 | 0.0265 | 5.80 | 0.218 |
+| FakeAuckland | L3TM | 0.0356 | 0.0239 | 6.29 | 0.013 |
+
+**Ratios:**
+
+| ratio | FakeTorino | FakeKingston | FakeAuckland |
+|---|---|---|---|
+| A10/A9 classical infidelity | 0.512 | 0.299 | 0.975 |
+| A10/L3TM | 0.987 | 0.974 | 0.936 |
+
+**Per circuit:** A10 is at or below A9 in 87.6% (FakeTorino), 83.7% (FakeKingston) and 94.1% (FakeAuckland) of
+circuits.
+
+**Compile time:** unchanged (A10/A9 1.00).
+
+## 3. Reading
+
+- **For model-written circuits that are sampled, readout dominates on uneven-readout devices.**
+  - a9's estimate did not see it, and placed the measured qubits where the summed measure error was 0.084-0.089.
+  - a10 places them at 0.018-0.032, as level 3 does through its averaged error map.
+  - The output distribution's infidelity halves on FakeTorino and falls by 70% on FakeKingston.
+  - On FakeAuckland, where readout is even (p90 0.0125), the change is small (-2.5%).
+- **a10 keeps a9's gate advantage over level 3** (5.8 against 6.3 two-qubit gates). It is level with level 3 or ahead
+  of it on all three devices.
+- **This is the same blind spot as the release's (READOUT, c13).** Both fixes change nothing for circuits without
+  measurements (tested).
+- **Caution:**
+  - A10's estimate and the readout model are the simulator's own (Aer's asymmetric assignment errors from the same
+    snapshot).
+  - On hardware, readout errors drift and are correlated across qubits.
+
+## 4. Consequences (proposals; adoption is the owner's)
+
+1. **a10 (item 15) as a candidate AI front end** on top of a9, with c13 underneath.
+2. **A re-test with the threshold corrected**, on fresh circuits. There is no other model-written set, so use the
+   synthetic GHZ/W/Dicke/QFT families, or new pod output. **It should be pre-registered at home.**
+3. **In the vLLM loop (harness v11):** the model's circuits are scored by sampling, so a10's gain should show directly
+   in the scored fidelity there. Not tested.
+
+## 5. Files (`model_ro/` in the handoff)
+
+`env.txt`, `progress.txt`, logs, the three `ai10_<device>.json`, `score.md`, `score_log.txt`, `verify.txt`; `dry/`;
+`diag141.py` and `diag141b.py` (the P0 diagnosis).
+
+**Note added at home (2026-10-05):** the workplace files of this document (scripts, outputs, logs, the candidate code
+where there is one) are kept in [`data/2026-10-05/workplace/model_ro/`](../../data/2026-10-05/workplace/model_ro/) as received (the
+workplace handoff `handoff_2026-10-05_v8.zip`, all 442 files checked against its manifest). The candidates are built on the
+home candidates c12 and a9 (Addendum 342; adopted as release 2026-10-05.1 and front end a9, Addendum 344); the
+workplace candidates themselves are not part of any release.
+
+
+---
+
+<!-- ===== Addendum 351 (source: spare-qubit-cliff-addendum-351-2026-10-05.md) ===== -->
+
+> **Note added when merging:** Workplace pre-registration (MODEL-RO2, re-test of a10), locked in the workplace Project before its scored run; recorded as written.
+
+## Addendum 351 -- Workplace pre-registration: MODEL-RO2. Re-test of candidate AI front end psf_ai_compile 2026-10-05.a10 (readout of measured qubits in the state-aware estimate) on fresh circuits, with the exactness check corrected (2026-10-05)
+
+**Status: pre-registration, locked at the Project save time of this document**, before the scored run.
+
+- **Setting:** workplace sandbox (2 CPUs), Qiskit 2.5.2, Aer 0.17.2, core 2026-09-29.1. Fake devices and Aer noise
+  only.
+- **Owner's go-ahead:** 2026-10-05 ("a10 の再試験").
+
+## 1. Why a re-test
+
+**What went wrong in MODEL-RO** (`model-ro-results-2026-10-05.md`). Its P0 compared the noiseless total variation with
+1e-6. Total variation is first order in the amplitude error, so one A10 output failed at 4.8e-6, although its state
+infidelity was 3e-11 (the polish tolerance of the front end). Nothing was scored. The descriptive results favoured a10
+strongly on the Heron devices.
+
+**What this test changes, and only this:**
+
+1. **P0's exactness check is a state infidelity <= 1e-6**, using READOUT's locked `readout_eval.state_infid` on the
+   compiled circuit with its measurements removed. Total variation is still recorded, but only reported.
+2. **Fresh circuits**, because the model-written set has been seen.
+
+**Unchanged:** the candidate, the arms, the devices, the metric, M1-M5 with their thresholds, and the scorer's logic.
+
+## 2. Circuits (`ai10_eval2.circuits`)
+
+**Families:** synthetic, in the style of the model-written set. They use its tasks' states, written with explicit
+gates, with 2-qubit `unitary` blocks as PennyLane tapes arrive.
+
+| family | what it is | n |
+|---|---|---|
+| W | cascade construction | 3, 4, 5 |
+| GHZ | | 3, 4, 5, 6 |
+| DICKE | all weight-2 strings, StatePreparation | 4 |
+| QFT | of a random basis state | 3, 4, 5 |
+| RSP | random real state, StatePreparation | 3, 4 |
+| ENT | a depth-2 brick of Haar 2-qubit unitaries | 3, 4, 5 |
+
+**Construction of each circuit:**
+
+1. Transpile to [cx, u] at level 1.
+2. Consolidate a seeded random half of its 2-qubit blocks into `unitary` gates.
+3. Add a seeded random single-qubit layer at the end.
+4. Add `measure_all()`.
+
+**Size:** 200 circuits, spread evenly over the 16 (family, n) cells (13 or 12 each), with seed base 71,000,000.
+They have 3-6 qubits and about 7 two-qubit operations each.
+
+**The dry run** used seed base 71,500,000 (12 circuits). No scored circuit was generated or compiled before the
+lock.
+
+## 3. Arms, devices, metric (as in MODEL-RO)
+
+**Arms:**
+
+| arm | what it is |
+|---|---|
+| A9 | a9 |
+| A10 | the candidate |
+| L3TM | Qiskit level 3 with the Target, `approximation_degree=1.0` |
+
+A9 and A10 both have candidate psf_compile c13 underneath, with the device Target.
+
+**Devices:** FakeTorino, FakeKingston, FakeAuckland.
+
+**Metric:** the classical infidelity 1 - (Σ √(p q))² between:
+
+- p, the ideal distribution;
+- q, the noisy distribution: Aer density matrix with the restricted noise model, then each measured qubit's readout
+  assignment probabilities.
+
+## 4. Predictions (scored only by `ai10_eval2.py score`; identical to MODEL-RO's)
+
+**P0.** All of these must hold, or nothing below is scored:
+
+- 3 device files with 200 circuits each;
+- every output's state infidelity (measurements removed) <= 1e-6;
+- clbit j measures logical j's final qubit in every output.
+
+| ID | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|
+| M1 | A10/A9 mean summed measure error <= 0.80 on both Heron devices and <= 1 everywhere | > 1 on any device |
+| M2 | A10/A9 mean classical infidelity <= 1.00 everywhere and <= 0.95 on both Heron devices | > 1.01 on any device |
+| M3 | A10/L3TM classical infidelity <= 1.00 on every device | > 1.05 on any device |
+| M4 | per circuit A10 <= A9 in >= 80% of circuits on both Heron devices | < 60% on either |
+| M5 | median compile time A10 <= 1.2 × A9 on every device | > 2 × on any device |
+
+**Expectations, and what was seen** (disclosed):
+
+- MODEL-RO's descriptive results on the model-written set: A10/A9 0.51 / 0.30 / 0.98; A10/L3TM 0.99 / 0.97 / 0.94;
+  per circuit 88% / 84%.
+- This test's dry run (12 synthetic circuits): P0 passed (state infidelity max 3.8e-15). M1-M5 printed CONFIRMED.
+- **M3 is the least certain:** on the model-written set, A10 was within 1.3-2.6% of level 3 on the Heron devices.
+
+## 5. What this will not establish
+
+- Hardware.
+- More than 8 qubits.
+- The vLLM loop itself.
+
+## 6. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `ai10_eval2.py` | `12bba73653b607c1cd6bfad99c7b184e10af2ca6262a8e5531e9b5d665a8e299` |
+| `run_ai10b.sh` | `2e0c4681d1d4480c8b90276ae47834751fc20ca54ea9ff3122a324e830f0c52f` |
+| `psf_ai_compile.py` (candidate a10) | `1af633d5f91a639a4894a092b5d4603c738cb51584d69d8068bfce9a0303e480` |
+| `psf_ai_compile_a9.py` (a9) | `f6df9f7a28c8fac8e72116cf138cbc30781b1d48b5557d445e53484c19674b54` |
+| `psf_compile.py` (candidate c13) | `edaafc2c927496238fd5d81e45e2da3d46cc874c49209bdadfd640d41bb87cb2` |
+| `depth_eval.py` (for `Noisy`) | `82488d96144bb1c88f69676a0e6a642c22d4756a47d8a1ad8b07be5327c796ac` |
+| `readout_eval.py` (for `state_infid`; READOUT, locked) | `9d83426dd28ecddff67c555656d2ef3c5e0b9b43ee5a2d4eb5bc7204e8c6f1d0` |
+
+**Note added at home (2026-10-05):** the workplace files of this document (scripts, outputs, logs, the candidate code
+where there is one) are kept in [`data/2026-10-05/workplace/model_ro2/`](../../data/2026-10-05/workplace/model_ro2/) as received (the
+workplace handoff `handoff_2026-10-05_v8.zip`, all 442 files checked against its manifest). The candidates are built on the
+home candidates c12 and a9 (Addendum 342; adopted as release 2026-10-05.1 and front end a9, Addendum 344); the
+workplace candidates themselves are not part of any release.
+
+
+---
+
+<!-- ===== Addendum 352 (source: spare-qubit-cliff-addendum-352-2026-10-05.md) ===== -->
+
+> **Note added when merging:** Workplace results of MODEL-RO2; recorded as written.
+
+## Addendum 352 -- Workplace results: MODEL-RO2 (pre-registration `model-ro2-preregistration-2026-10-05.md`). P0 passed; all five confirmed. On 200 fresh model-style circuits, candidate AI front end a10 cuts the classical infidelity of the sampled distribution to 0.35× of a9's on FakeTorino and 0.11× on FakeKingston (FakeAuckland 0.98×), level with or ahead of Qiskit level 3 on every device, at no extra compile time (2026-10-05)
+
+**Status: results of the workplace pre-registration of 2026-10-05**, a re-test of MODEL-RO with the exactness check
+corrected.
+
+- **Lock:** Project save time, before the run (started 05:32 UTC).
+- **Scoring:** by the locked `ai10_eval2.py score`.
+- **Arithmetic re-check:** `ai10b_verify.py`, adapted from MODEL-RO's checker. It agrees on every number. It is not
+  blind: the adaptation was made after the locked score was seen.
+- **Setting:** workplace sandbox, 2 processes; 200 circuits × 3 devices × 3 arms; 11 minutes.
+
+## 1. Verdicts
+
+| ID | Verdict | Numbers |
+|---|---|---|
+| P0 | **PASS** | 3 × 200 circuits; max state infidelity 4.0e-15 (<= 1e-6); clbit j measures logical j's final qubit in every output |
+| M1 | **CONFIRMED** | A10/A9 summed measure error: FakeTorino 0.387, FakeKingston 0.180, FakeAuckland 0.949 |
+| M2 | **CONFIRMED** | A10/A9 classical infidelity: 0.349, 0.108, 0.977 |
+| M3 | **CONFIRMED** | A10/L3TM: 0.975, 0.966, 0.870 |
+| M4 | **CONFIRMED** | per circuit A10 <= A9: 93.5% (FakeTorino), 97.5% (FakeKingston); FakeAuckland 94.0% (reported) |
+| M5 | **CONFIRMED** | median compile time A10/A9 at most 1.002 |
+
+## 2. Numbers
+
+| device | arm | classical infidelity | summed measure error | 2q | median compile s |
+|---|---|---|---|---|---|
+| FakeTorino | A9 | 0.01335 | 0.1279 | 9.69 | 0.856 |
+| FakeTorino | A10 | **0.00466** | 0.0496 | 9.70 | 0.827 |
+| FakeTorino | L3TM | 0.00477 | 0.0500 | 9.73 | 0.020 |
+| FakeKingston | A9 | 0.01558 | 0.1474 | 10.04 | 1.116 |
+| FakeKingston | A10 | **0.00168** | 0.0266 | 10.04 | 1.118 |
+| FakeKingston | L3TM | 0.00174 | 0.0246 | 10.21 | 0.020 |
+| FakeAuckland | A9 | 0.00585 | 0.0355 | 9.54 | 0.318 |
+| FakeAuckland | A10 | **0.00571** | 0.0336 | 9.54 | 0.314 |
+| FakeAuckland | L3TM | 0.00656 | 0.0317 | 9.74 | 0.013 |
+
+## 3. Reading
+
+- **Confirmed on fresh circuits:** the blind spot found in the morning, and a10's fix, carry over.
+  - On the Heron devices, whose readout is uneven, most of a sampled circuit's error was readout. a9 placed the
+    measured qubits where the summed measure error was 0.13-0.15; a10 places them at 0.03-0.05.
+  - The output distribution's infidelity falls by 65% (FakeTorino) and 89% (FakeKingston).
+- **Per circuit the gain is broad** (a10 better or equal in 94-98% of circuits), and it costs nothing in compile time.
+- **Against Qiskit level 3:**
+  - a10 is level or ahead on all three devices: 0.97-0.98 on Heron, 0.87 on FakeAuckland.
+  - It keeps its slightly lower two-qubit count.
+  - Level 3 already counts readout through its averaged error map (Addendum 308); a10 now does too, with its
+    state-aware gate estimate on top.
+- **MODEL-RO's descriptive picture holds,** with a larger effect here. The synthetic set measures more qubits per
+  circuit than the model-written set (whose infidelities, 0.017-0.062, included more gate error).
+- **Limits:**
+  - Fake devices, and Aer's own readout model (asymmetric assignment errors from the same snapshot). The estimate and
+    the simulator share that model.
+  - On hardware, readout drifts and is correlated across qubits.
+  - Synthetic circuits, not new model output.
+
+## 4. Consequences (adoption is the owner's)
+
+- **a10 (item 15)** is supported as the AI front end's next candidate. It sits on top of a9, with c13 underneath.
+  Without measurements it is a9 exactly (tested).
+- **For the vLLM loop:** model-written circuits are sampled, so this is the setting a10 targets. The next check would
+  be the harness v11 with a10, on a pod run (owner's decision).
+
+## 5. Files (`improve/model_ro2/` in the handoff)
+
+`env.txt`, `progress.txt`, logs, the three `ai10b_<device>.json`, `score.md`, `score_log.txt`, `verify.txt`; `dry/`.
+
+**Note added at home (2026-10-05):** the workplace files of this document (scripts, outputs, logs, the candidate code
+where there is one) are kept in [`data/2026-10-05/workplace/model_ro2/`](../../data/2026-10-05/workplace/model_ro2/) as received (the
+workplace handoff `handoff_2026-10-05_v8.zip`, all 442 files checked against its manifest). The candidates are built on the
+home candidates c12 and a9 (Addendum 342; adopted as release 2026-10-05.1 and front end a9, Addendum 344); the
+workplace candidates themselves are not part of any release.
+
+
+---
+
+<!-- ===== Addendum 353 (source: spare-qubit-cliff-addendum-353-2026-10-05.md) ===== -->
+
+> **Note added when merging:** Workplace exploration (not pre-registered) on ecr devices, with candidate AI front end a11; recorded as written.
+
+## Addendum 353 -- Workplace exploration (not pre-registered, not a test): the candidates on ecr (Eagle) devices. The release candidate c13 works there and is level with or ahead of Qiskit level 3 (0.67-1.00). The AI front end a9/a10 returned ecr gates in the unsupported direction (224-346 per 56 circuits), which Aer's noise model leaves noiseless, so a10 looked 0.48-0.76 of level 3 when it was not. Candidate a11 fixes the direction (0 off-target, tests 7/7); the honest figure is 0.65-0.99 of level 3 (2026-10-05)
+
+**Status: exploratory.** No predictions, nothing locked.
+
+- **Setting:** workplace sandbox, Qiskit 2.5.2, Aer 0.17.2, core 2026-09-29.1.
+- **Why:** Addendum 293 found reported gate errors below the T1/T2 floor most often on ecr devices (22% pooled), but
+  no compiler test had used one.
+- **Scripts:** `ecr_explore.py`, `summarize.py`, `probe1.py`, `offt.py`, `quick_a11.py`.
+
+## 1. Design
+
+**Devices:** FakeBrussels, FakeStrasbourg, FakeOsaka, FakeSherbrooke (127 qubits; ecr, one direction per coupler).
+
+| device | ecr gates below the T1/T2 floor |
+|---|---|
+| FakeBrussels | 51 of 138 |
+| FakeStrasbourg | 50 of 142 |
+| FakeOsaka | 52 of 137 |
+| FakeSherbrooke | 26 of 135 |
+
+**Circuits:** 56 per device, all measured.
+
+- 48 from MODEL-RO2's generator, with new seeds (72,000,000 +): 3 per (family, n).
+- 8 classifier circuits (n = 4 and 6, L = 4).
+
+**Arms:**
+
+| arm | what it is |
+|---|---|
+| RPSF | c13, `target` + `placement_refine` |
+| C13 | c13, the recommended call |
+| A10 | first pass (`out_a10/`) |
+| A11 | second pass |
+| L3TM | Qiskit level 3 with the Target |
+
+**Recorded:** exactness (state infidelity), off-target instructions, failed-direction uses, the summed measure error,
+the classical infidelity of the sampled distribution (MODEL-RO2's metric), the two-qubit count and the compile time.
+
+## 2. What was found
+
+**1. The release candidate c13 works on ecr devices.**
+
+- Exact (max state infidelity 2e-15), 0 off-target, 0 failed-direction uses.
+- Classical infidelity C13 / L3TM:
+
+  | device | C13 / L3TM |
+  |---|---|
+  | FakeBrussels | 0.986 |
+  | FakeStrasbourg | 1.000 |
+  | FakeOsaka | **0.666** |
+  | FakeSherbrooke | 0.964 |
+
+- **FakeOsaka:** L3TM is worse than C13 in 68% of circuits (family ratios down to 0.33 on Dicke states). L3TM places on
+  the lowest *reported* errors. On FakeOsaka those are often below the T1/T2 floor, and Aer applies the floor. This is
+  Addendum 293's pattern acting on placement, on the device class where it is most frequent.
+
+**2. A defect in the AI front end (a9, a10; inherited from the state-aware re-placement of a4/a5).**
+
+- It returned ecr gates in the direction the device does not provide: 224 (FakeBrussels), 346 (FakeStrasbourg) and
+  345 (FakeOsaka) per 56 circuits.
+- **The causes:**
+  - the re-placement relabels qubits on an undirected coupling graph;
+  - the estimate looks a gate up in either direction.
+- **The consequences:**
+  - such a circuit cannot run on the device as compiled;
+  - Aer's noise model has no entry for the reversed ecr, so the simulation treats it as error-free;
+  - a10 therefore looked 0.48-0.76 of level 3 on these devices, which is an artefact.
+- cz devices and the cx devices tested so far are bidirectional in their Targets, which is why no earlier test
+  (HOLD-HOLD6, MODEL-RO, MODEL-RO2) saw it.
+
+**3. The fix, candidate a11 (item 16):**
+
+- the estimate charges an unsupported direction as infinite;
+- a final backstop: Qiskit's GateDirection with the target, kept only if it acts as the original (release item 39's
+  `_same_action`) and is on target; otherwise the release's recommended call.
+
+Tests (`test_a11_direction.py`, 7 cases, all passed in 17 s) check:
+
+- the version;
+- that the estimate rejects the reversed direction and is unchanged for the supported one;
+- that outputs on FakeBrussels and FakeOsaka are on target and exact, with and without measurements;
+- that on FakeTorino and FakeAuckland a11 equals a10 instruction by instruction;
+- that the backstop fixes a reversed gate exactly without calling the release.
+
+On 14 circuits per device, a11's backstop was never needed: the estimate alone avoided every reversed gate.
+
+**4. The honest comparison, a11 against level 3:**
+
+| device | A11 / L3TM | per circuit A11 <= L3TM | A11 / C13 |
+|---|---|---|---|
+| FakeBrussels | 0.970 | 82% | 0.984 |
+| FakeStrasbourg | 0.993 | 75% | 0.992 |
+| FakeOsaka | 0.653 | 88% | 0.981 |
+| FakeSherbrooke | 0.917 | 86% | 0.951 |
+
+- 0 off-target and exact on all four devices.
+- The compile time is a median 0.74-0.80 s, against c13's 0.22 s and level 3's 0.02 s.
+
+## 3. Reading
+
+- **On ecr devices, the floor-aware choices pay** where reported errors are least trustworthy (FakeOsaka: a third less
+  infidelity than level 3). Elsewhere they are level or a few per cent ahead. This is the first measurement of
+  Addendum 293's prediction in a compiler comparison. It is in simulation, where Aer applies the floor by construction.
+- **The AI front end must not be used on ecr devices before a11 or an equivalent fix:** a9/a10 outputs there are not
+  executable as compiled.
+- **Simulation alone can hide an off-target instruction,** because the noise model has no error for it. Every
+  harness should count off-target instructions (HOLD-HOLD6 do; MODEL-RO/RO2 did not).
+
+## 4. Proposals (adoption is the owner's)
+
+1. **a11 as the AI front end candidate**, replacing a10 in the line a9 → a10 → a11. It is identical to a10 on
+   bidirectional devices (tested).
+2. **A pre-registered test on ecr devices** (c13, a11, level 3; fresh circuits; off-target counted; exactness as a state
+   infidelity). This exploration is its pilot.
+3. **The off-target count in MODEL-RO-type harnesses.**
+
+## 5. Files (`improve/ecr/` in the handoff)
+
+- the scripts;
+- `out/` (a11 pass) and `out_a10/` (a10 pass), with one JSON per device;
+- `summary_a11.txt`, `summary_a10.txt`;
+- candidate a11 (`psf_ai_compile.py`) and `test_a11_direction.py`.
+
+**Note added at home (2026-10-05):** the workplace files of this document (scripts, outputs, logs, the candidate code
+where there is one) are kept in [`data/2026-10-05/workplace/ecr/`](../../data/2026-10-05/workplace/ecr/) as received (the
+workplace handoff `handoff_2026-10-05_v8.zip`, all 442 files checked against its manifest). The candidates are built on the
+home candidates c12 and a9 (Addendum 342; adopted as release 2026-10-05.1 and front end a9, Addendum 344); the
+workplace candidates themselves are not part of any release.
+
+
+---
+
+<!-- ===== Addendum 354 (source: spare-qubit-cliff-addendum-354-2026-10-05.md) ===== -->
+
+> **Note added when merging:** Workplace exploration (not pre-registered), candidate c14; recorded as written.
+
+## Addendum 354 -- Workplace exploration (not pre-registered): direction-aware failed-element check (candidate psf_compile 2026-10-05.c14, item 41). The fix is correct and tested, but the "wasted recompile" that Addendum 319 section 4 inferred does not occur: on 604 circuits on the two devices with one-way failed couplers, every recompile was needed, so c14 changes no output and no time (2026-10-05)
+
+**Status: exploratory.** No predictions, nothing locked.
+
+- **Setting:** workplace sandbox, Qiskit 2.5.2, core 2026-09-29.1.
+- **Scripts:** `c14_check.py`; tests in `test_c14_direction.py`.
+
+## 1. The open item
+
+Addendum 319, section 4: item 31's `_uses_failed` treats a coupler as failed if either direction is. Its pruning
+(`prune_coupling_map`) and item 36's `_acceptable`, by contrast, act on the failed direction only. 319 inferred that
+on couplers failed one way only, circuits using only the healthy direction were recompiled for nothing ("wasted work,
+not a wrong result").
+
+## 2. The candidate (c14, item 41; base c13)
+
+- **What changes:** `_uses_failed` flags a two-qubit gate if its own direction is reported failed. A symmetric gate
+  (cz, swap, rzz, ...) is flagged if either direction is failed. A gate on a failed qubit is flagged as before.
+- **Tests** (`test_c14_direction.py`, 7 cases, all passed in 7 s):
+  - the versions;
+  - on FakeHanoiV2's one-way failed cx: the healthy direction is not flagged (c13 flagged it), the failed direction is
+    flagged, and a symmetric cz is flagged;
+  - failed qubits and couplers are still flagged on FakeTorino;
+  - outputs identical to c13 on FakeTorino and FakeAuckland, with both calls;
+  - outputs exact and free of failed directions on FakeHanoiV2 and FakeGeneva.
+
+## 3. Check: c13 against c14
+
+**Circuits:** HOLD6's F circuits (seen at home; used here only to compare two candidates), every 5th: 302 per device.
+
+**Devices:** FakeHanoiV2 (cx(5, 8) and cx(19, 20) failed one way) and FakeGeneva ((16, 14) and (20, 19)).
+
+| call | device | recompiles c13 / c14 | outputs differ | failed-direction uses (c14) | max state infidelity (c14) |
+|---|---|---|---|---|---|
+| target + `placement_refine` | HanoiV2 | 0 / 0 | 0 | 0 | 8.7e-15 |
+| target + `placement_refine` | Geneva | 0 / 0 | 0 | 0 | 8.7e-15 |
+| recommended call | HanoiV2 | 0 / 0 | 0 | 0 | 9.1e-15 |
+| recommended call | Geneva | 0 / 0 | 0 | 0 | 1.0e-14 |
+| target only (319's C3 call) | HanoiV2 | 40 / 40 | 0 | 0 | 8.7e-15 |
+| target only | Geneva | 0 / 0 | 0 | 0 | 8.7e-15 |
+
+Compile times were the same within noise.
+
+## 4. Reading
+
+**The recompiles were needed.** In the only setting where recompiles happen (target without `placement_refine`, on
+FakeHanoiV2), c14 recompiles the same 40 circuits as c13. Since c14 flags only a used failed direction, each of those
+40 first passes did use the failed direction.
+
+**So the wasted recompile that Addendum 319 inferred did not occur here.** Its flagged uses were final outputs using
+the healthy direction, which the harness counted by coupler. They were not first passes recompiled for nothing.
+
+**With `placement_refine=True`, no recompile happens at all.** The exact re-placement moves circuits off failed couplers
+first (as Addendum 310 found).
+
+**Consequence:** c14 makes the three checks consistent and is correct, but it changes no output or time on this
+evidence.
+
+- It is a code-hygiene change, not one worth its own adoption test.
+- It could be folded into a later candidate, or dropped.
+- The open item in Addendum 319, section 4, can be closed as "not observed".
+
+**Note added at home (2026-10-05):** the workplace files of this document (scripts, outputs, logs, the candidate code
+where there is one) are kept in [`data/2026-10-05/workplace/c14/`](../../data/2026-10-05/workplace/c14/) as received (the
+workplace handoff `handoff_2026-10-05_v8.zip`, all 442 files checked against its manifest). The candidates are built on the
+home candidates c12 and a9 (Addendum 342; adopted as release 2026-10-05.1 and front end a9, Addendum 344); the
+workplace candidates themselves are not part of any release.
+
+
+---
+
+<!-- ===== Addendum 355 (source: spare-qubit-cliff-addendum-355-2026-10-05.md) ===== -->
+
+> **Note added when merging:** Workplace audit of the harnesses (compiling without the measurements they are scored with); recorded as written.
+
+## Addendum 355 -- Workplace audit: which harnesses compile circuits without the measurements they are scored with? A helper (`measured_compile.py`, tests 3/3) and the proposed wording for the README (2026-10-05)
+
+**Status: audit of the repository at `5cfa7c3` (read only), plus a helper with tests.** Nothing in the repository was
+changed, and locked scripts are left as they are.
+
+## 1. Why
+
+**READOUT** (`readout-results-2026-10-05.md`): compiling a classifier with its final measurement moved its output on
+FakeTorino from a qubit with readout error 0.048 to one with 0.008. With the helper below, on the n = 6, L = 12 case,
+it moved from 0.146 to 0.006.
+
+**MODEL-RO2** (`model-ro2-results-2026-10-05.md`): the AI front end needs the measurements too (a10, item 15).
+
+PSF-Zero's re-placement (release item 33), Qiskit's VF2PostLayout and the candidate estimates (c13 item 40, a10 item
+15) all see readout only through `measure` instructions in the circuit.
+
+## 2. The harnesses (repository `5cfa7c3`)
+
+| harness | circuits compiled with measurements? | readout in the score? | consequence |
+|---|---|---|---|
+| `qml_home_eval.py` (Addenda 290-291) | no (`build()` has none) | no (exact z from the density matrix) | none for its metric |
+| `qml_home2_eval.py` (Addenda 296-297) | no | **yes**: the output qubit's readout error and shots | **readout-blind placement entered the shot results.** 297's "readout placement" finding (0.048 against 0.011 on FakeTorino) is this effect. The L3T arm was not blind because its layout stage averages in readout (Addendum 308) |
+| `gap_eval.py`, `hold*_eval.py` | no | no (state fidelity of the final-layout qubits) | none for their metric |
+| `e2e_vllm_psf_v11.py` | no | no (state fidelity of the model's tape, `qml.state()`) | none for its metric, but **any sampled scoring or hardware run** of the loop should compile with measurements |
+| workplace `depth_eval.py` (DEPTH, 2026-10-05) | no | **yes** (readout + shots) | the same as `qml_home2_eval`; fixed in `readout_eval.py` |
+
+`qml_home*`, `gap` and `hold*` already call `remove_final_measurements` before reading the density matrix, so
+compiling with measurements would not disturb their reading.
+
+## 3. The helper (`measured_compile.py`)
+
+| function | what it does |
+|---|---|
+| `with_measurements(qc, measured=None)` | adds the measurements, one classical bit per measured logical qubit (default: all). A circuit that already measures is returned as is |
+| `compile_measured(compile_fn, qc, measured)` | compiles the circuit with them |
+| `measured_physical_qubits(out)` | the physical qubit behind each classical bit, in clbit order |
+| `without_final_measurements(out)` | removes them again for exact reading, keeping the layout |
+
+**Tests** (`test_measured_compile.py`, 3 cases, all passed in 7 s):
+
+- the order of the measurements, and that adding them twice changes nothing;
+- that the measured qubit is logical 0's final position and that the layout survives removing the measurements;
+- that on FakeTorino the output qubit's readout error is no higher with measurements (0.0063 against 0.1458 without).
+
+## 4. Proposed changes (for home; adoption is the owner's)
+
+1. **README and the usage notes:**
+
+   > When a circuit's outcomes will be sampled (or read out with readout error), compile it **with** its final
+   > measurements. PSF-Zero's placement steps and its candidate estimates see readout error only through `measure`
+   > instructions. Without them, the measured qubits are placed readout-blind.
+
+2. **New harnesses** that score shots or readout should compile `with_measurements(qc, measured)`. They should then read
+   z or probabilities from `without_final_measurements(out)`, at `measured_physical_qubits(out)`.
+3. **The locked harnesses stay as they are.** A re-run of a `qml_home2`-type test with measurements would need its own
+   pre-registration.
+4. **The vLLM loop (v11):** no change for its present metric (state fidelity). Before any sampled or hardware scoring,
+   compile with `measure_all()` (a11 then also places readout-aware).
+
+**Note added at home (2026-10-05):** the workplace files of this document (scripts, outputs, logs, the candidate code
+where there is one) are kept in [`data/2026-10-05/workplace/measurement/`](../../data/2026-10-05/workplace/measurement/) as received (the
+workplace handoff `handoff_2026-10-05_v8.zip`, all 442 files checked against its manifest). The candidates are built on the
+home candidates c12 and a9 (Addendum 342; adopted as release 2026-10-05.1 and front end a9, Addendum 344); the
+workplace candidates themselves are not part of any release.
+
+
+---
+
+<!-- ===== Addendum 356 (source: spare-qubit-cliff-addendum-356-2026-10-05.md) ===== -->
+
+> **Note added when merging:** Workplace diagnosis (not pre-registered) of a qiskit-aer defect; recorded as written.
+
+## Addendum 356 -- Workplace diagnosis (not pre-registered): qiskit-aer returns a wrong `save_expectation_value` when the operator acts on a subset of qubits and qubit truncation is on. Reproduced in Aer 0.16.4, 0.17.0, 0.17.1 and 0.17.2 (silent wrong value); in 0.15.1 the same case raises an error instead. No PSF-Zero harness uses this call (2026-10-05)
+
+**Status: diagnosis of the discrepancy noticed during the DEPTH pilot (handoff 2026-10-05, section 4).**
+
+- **Setting:** workplace sandbox. Python 3.11; Qiskit 2.5.2 with Aer 0.17.2 (installed), plus Aer 0.17.1, 0.17.0 and
+  0.16.4 (Qiskit 2.5.2) and 0.15.1 (Qiskit 1.4.3) in throw-away venvs.
+
+## 1. Minimal reproducer (`repro_aer_expval_truncation.py`)
+
+```python
+c = QuantumCircuit(3); c.x(2); c.cx(2, 1)                 # |110>: <Z_1> = -1
+s = c.copy(); s.save_expectation_value(SparsePauliOp("Z"), [1], label="e")
+AerSimulator().run(s).result().data()["e"]               # 1.0  (wrong)
+AerSimulator(enable_truncation=False).run(s)...           # -1.0 (right)
+```
+
+| Aer | truncation on (default) | truncation off |
+|---|---|---|
+| 0.17.2, 0.17.1, 0.17.0, 0.16.4 | **+1.0 (wrong, silent)**; statevector and density_matrix alike | -1.0 |
+| 0.15.1 (Qiskit 1.4.3) | error: `Invalid Pauli "0"` | -1.0 |
+
+## 2. When it happens, and when it does not
+
+**It happens when all of these hold:**
+
+- the operator is given on a subset of the qubits (`save_expectation_value(op, qubits)` with fewer qubits than the
+  circuit has);
+- truncation is on;
+- the active qubits are not 0..k-1;
+- there are at least two active qubits, linked by a two-qubit gate.
+
+**It does not happen:**
+
+- with a full-width operator (`IZI` on [0, 1, 2]);
+- with `enable_truncation=False`;
+- with `save_density_matrix(qubits=...)`;
+- with one active qubit;
+- with active qubits {0, 1};
+- with single-qubit gates only (x on 14, h on 13);
+- in Aer's `EstimatorV2` and V1 `Estimator`, which pass full-width observables.
+
+**Fusion is not involved** (`fusion_enable=False` gives the same wrong value).
+
+**How it was first seen:** the DEPTH pilot's whole-device circuit (FakeAuckland, 27 qubits). Gate-by-gate reduction
+brought it down to 9 gates on qubits 13, 14 and 16, and then to the 2-gate case above.
+
+**Likely origin** (not verified in the C++ source): the truncation of `save_expval` ("Truncate save_expval",
+qiskit-aer PR #2216). The operator's qubits do not appear to be remapped together with the circuit's when unused qubits
+are dropped. Before that change (0.15.1), the same call failed loudly.
+
+## 3. Impact on PSF-Zero
+
+- **None on recorded results.** No script in the repository (`5cfa7c3`) calls `save_expectation_value`. All harnesses
+  read `save_density_matrix(qubits=...)`, which is correct. The workplace pilot switched to `save_density_matrix`
+  before any run (Addendum to come, DEPTH section 5).
+- **For new code:** do not use `save_expectation_value` with a subset of qubits on Aer 0.16-0.17. Use a full-width
+  operator, `enable_truncation=False` or `save_density_matrix`.
+
+## 4. Upstream
+
+- This looks like a qiskit-aer bug: a silent wrong result for documented usage.
+- Whether and how to report it is the owner's decision. As with #17057, the owner posts in their own words.
+- Material for a report:
+  - the reproducer;
+  - the version table;
+  - the conditions in section 2;
+  - the observation that 0.15.1 raised an error for the same case.
+- **Before posting:** search the qiskit-aer issues for an existing report (only the PR title was found here).
+
+**Note added at home (2026-10-05):** the workplace files of this document (scripts, outputs, logs, the candidate code
+where there is one) are kept in [`data/2026-10-05/workplace/aer/`](../../data/2026-10-05/workplace/aer/) as received (the
+workplace handoff `handoff_2026-10-05_v8.zip`, all 442 files checked against its manifest). The candidates are built on the
+home candidates c12 and a9 (Addendum 342; adopted as release 2026-10-05.1 and front end a9, Addendum 344); the
+workplace candidates themselves are not part of any release.
+
 ---
 
 ---

@@ -1,0 +1,1 @@
+wrote exact_x_FakeKingston_C12_smoke.json: 16 circuits, 0 wrong, 7 s

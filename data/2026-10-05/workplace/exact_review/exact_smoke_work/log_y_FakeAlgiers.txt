@@ -1,0 +1,7 @@
+  FakeAlgiers F1: 6 rows, 4 s
+  FakeAlgiers F2: 8 rows, 5 s
+  FakeAlgiers F3: 10 rows, 6 s
+  FakeAlgiers F4: 13 rows, 10 s
+  FakeAlgiers F5: 16 rows, 11 s
+  FakeAlgiers F6: 19 rows, 12 s
+wrote exact_y_FakeAlgiers_smoke.json: 19 circuits, 0 differ, 12 s

@@ -1,0 +1,4 @@
+train done (157 s)
+   done FakeKingston 1317 s
+   done FakeTorino 1321 s
+   done FakeAuckland 2244 s

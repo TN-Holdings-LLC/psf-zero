@@ -1,0 +1,34 @@
+date_utc 2026-10-05T00:31:53Z
+CPU(s):                                  2
+Model name:                              Intel(R) Xeon(R) Processor @ 2.80GHz
+python 3.11.15 qiskit 2.5.2 aer 0.17.2
+7fee5e2fb18ec2d27b3d1008d8d30cf3623593475e4838e65e380d04befeede8  <repo>/benchmarks/exact_eval.py
+2d77dad1b84635188b302f3002b90ad0ce18357b4dcc6c294ae3871288dc1bb7  benchmarks/run_exact_2026-10-05.sh
+7fd9eefc2fea86aa2083fbc95c1e3bc802e71f8da2b6fdaa765b858f6cda16c1  <repo>/patches/psf_compile_c12_2026-10-05/psf_compile.py
+9829e6b63889b1ff6aef267fb6609f23768797c45d895d060d0ce7eb52212c66  <repo>/patches/psf_ai_compile_a9_2026-10-05/psf_ai_compile.py
+5cfa7c3 Addendum 339: diagnosis of HOLD6's H4 (exploratory): hybrid_cost counts damping on the pre-gate state and the depolarizing remainder at full mixing; an estimate exact to first order for the simulator's model picks the measured best on all nine devices, in-sample; h4_diag and data
+PAR 2 SMOKE 1
+== all jobs finished after 295 s (45 done)
+| FakeKingston | X4 | 0/2 | 0/2 | 0/2 | 0/2 | 0/2 | 0/2 |
+| FakeKingston | X5 | 0/4 | 0/4 | 0/4 | 0/4 | 0/4 | 0/4 |
+
+## Predictions
+
+- E1 (C12 never wrong, part X): **CONFIRMED** (0 wrong)
+- E2 (A9 never wrong, part X): **CONFIRMED** (0 wrong)
+- E3 (the defect reproduces: R41 wrong on W2 on at least 3 of 4 cx devices): **REFUTED** ({'FakeAuckland': 0, 'FakeHanoiV2': 0, 'FakeAlgiers': 0, 'FakeGeneva': 0})
+- E4 (cz devices unaffected: R41 never wrong on FakeTorino, FakeKingston): **CONFIRMED** (0 wrong)
+- E5 (the guarded call RPSF never wrong): **CONFIRMED** (0 wrong)
+- E6 (C12 identical to R41 on >= 99.5% of HOLD6's F circuits on every device): **CONFIRMED** (Auckland 1.0000, Torino 1.0000, Kingston 1.0000, HanoiV2 1.0000, Algiers 1.0000, Geneva 1.0000, Fez 1.0000, Marrakesh 1.0000, Aachen 1.0000)
+- E7 (A9 identical to A8 on >= 99% of the sampled F circuits on every device): **CONFIRMED** (Auckland 1.0000, Torino 1.0000, Kingston 1.0000, HanoiV2 1.0000, Algiers 1.0000, Geneva 1.0000, Fez 1.0000, Marrakesh 1.0000, Aachen 1.0000)
+- E8 (C12 exact on every HOLD6 F circuit): **CONFIRMED** (0 wrong)
+- E9 (median compile time C12 <= 1.2 x R41 on the F circuits): **AMBIGUOUS** (0.313 s vs 0.260 s)
+
+Reported: A8 wrong by device {'FakeAuckland': (0, 16), 'FakeHanoiV2': (0, 16), 'FakeAlgiers': (0, 16), 'FakeGeneva': (0, 16), 'FakeTorino': (0, 16), 'FakeKingston': (0, 16)}
+Reported: L3T wrong by device {'FakeAuckland': (0, 16), 'FakeHanoiV2': (0, 16), 'FakeAlgiers': (0, 16), 'FakeGeneva': (0, 16), 'FakeTorino': (0, 16), 'FakeKingston': (0, 16)}
+Reported: C12 EXACT_STATS by device (part X) {'FakeAuckland': {'checked': 64, 'refused_resynthesis': 8, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}, 'FakeHanoiV2': {'checked': 64, 'refused_resynthesis': 8, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}, 'FakeAlgiers': {'checked': 64, 'refused_resynthesis': 8, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}, 'FakeGeneva': {'checked': 64, 'refused_resynthesis': 8, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}, 'FakeTorino': {'checked': 64, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}, 'FakeKingston': {'checked': 64, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}}
+Reported: A9 L3T_CHECK_STATS by device (part X) {'FakeAuckland': {'accepted': 16, 'refused': 0, 'unavailable': 0}, 'FakeHanoiV2': {'accepted': 16, 'refused': 0, 'unavailable': 0}, 'FakeAlgiers': {'accepted': 16, 'refused': 0, 'unavailable': 0}, 'FakeGeneva': {'accepted': 16, 'refused': 0, 'unavailable': 0}, 'FakeTorino': {'accepted': 16, 'refused': 0, 'unavailable': 0}, 'FakeKingston': {'accepted': 16, 'refused': 0, 'unavailable': 0}}
+Reported: C12 EXACT_STATS by device (part Y) {'FakeAachen': {'checked': 78, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}, 'FakeAlgiers': {'checked': 78, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}, 'FakeAuckland': {'checked': 78, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}, 'FakeFez': {'checked': 78, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}, 'FakeGeneva': {'checked': 78, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}, 'FakeHanoiV2': {'checked': 78, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}, 'FakeKingston': {'checked': 78, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}, 'FakeMarrakesh': {'checked': 78, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}, 'FakeTorino': {'checked': 78, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}}
+Reported: A9 exact on the sampled F circuits: 0 wrong
+
+EXACT DONE

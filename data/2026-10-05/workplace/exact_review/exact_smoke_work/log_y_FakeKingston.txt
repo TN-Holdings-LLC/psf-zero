@@ -1,0 +1,7 @@
+  FakeKingston F1: 6 rows, 7 s
+  FakeKingston F2: 8 rows, 9 s
+  FakeKingston F3: 10 rows, 11 s
+  FakeKingston F4: 13 rows, 17 s
+  FakeKingston F5: 16 rows, 18 s
+  FakeKingston F6: 19 rows, 20 s
+wrote exact_y_FakeKingston_smoke.json: 19 circuits, 0 differ, 20 s

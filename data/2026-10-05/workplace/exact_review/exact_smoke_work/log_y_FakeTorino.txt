@@ -1,0 +1,7 @@
+  FakeTorino F1: 6 rows, 7 s
+  FakeTorino F2: 8 rows, 9 s
+  FakeTorino F3: 10 rows, 11 s
+  FakeTorino F4: 13 rows, 16 s
+  FakeTorino F5: 16 rows, 17 s
+  FakeTorino F6: 19 rows, 19 s
+wrote exact_y_FakeTorino_smoke.json: 19 circuits, 0 differ, 19 s
