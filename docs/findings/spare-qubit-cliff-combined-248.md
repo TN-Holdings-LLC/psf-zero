@@ -13103,6 +13103,297 @@ Its verdict lines (not a result):
 Normalization: CRLF to LF, trailing whitespace stripped from each line, trailing blank lines dropped, lines joined
 with "\n" and no final newline.
 
+
+---
+
+<!-- ===== Addendum 343 (source: spare-qubit-cliff-addendum-343-2026-10-05.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 342 (lock commit ae1e946), scored by the locked script and re-checked by benchmarks/exact_verify.py, written after the run started and before any of its output was seen; section 3 is an exploratory check written after the output was seen.
+
+## Addendum 343 -- Results: EXACT (Addendum 342). Candidates psf_compile 2026-10-05.c12 and psf_ai_compile 2026-10-05.a9 are exact on every near-boundary circuit where release 2026-10-04.1 (23-27 of 40 per cx device), a8 and Qiskit level 3 are not, and return exactly the release's circuits on all 13,554 ordinary circuits. Eight confirmed, one ambiguous (E9: compile time 1.26 ×), none refuted (2026-10-05)
+
+**Status: results of the pre-registered test in Addendum 342.**
+
+- **Lock:** commit `ae1e946`, pushed before the scored run (started 20:06 JST).
+- **Same bytes:** the run used the locked files. The SHA-256 values in `env.txt` are the raw values of the staged
+  files given in Addendum 342 section 5.2, and every job file records the normalized SHA-256 of the script and of both
+  candidates.
+- **One change to the repository during the run:** the owner restructured the README on GitHub (commit `e5a8098`:
+  `README.md`, `docs/RELEASES.md`, `docs/README_2026-10-05_before_restructure.md`; no code). The local checkout that
+  ran the test was not pulled until after "EXACT DONE": all 45 job files record `git_head` `ae1e946`.
+- **Scoring:** by the locked `exact_eval.py score`, and re-checked by
+  [`benchmarks/exact_verify.py`](../../benchmarks/exact_verify.py), which agrees on every verdict and count.
+  - **When the verify script was written:** after the run started and before any of its output was seen (file time
+    20:07 JST). Its normalized SHA-256 is `530eb7920f5cd88b596d83db7b5dbf8893ce9b760e83b0e046f69d158f9bc7c0`.
+  - It also checks what the scorer does not: the SHA prefixes and version strings in every file, a single git head,
+    the circuit count of every cell, and that no file is a smoke file.
+- **Setting:** home (WSL2, 12 CPUs), PAR 6; 45 jobs; the last ended 1,612 s after the start.
+
+## 1. Verdicts
+
+| ID | Verdict | Numbers |
+|---|---|---|
+| P0 | **PASS** | 45 of 45 files (36 X, 9 Y); no compile error; one git head (`ae1e946`); no flagged file |
+| E1 | **CONFIRMED** | C12 wrong on 0 of 768 part-X circuits; max state infidelity 5.8e-8 |
+| E2 | **CONFIRMED** | A9 wrong on 0 of 768; max 5.8e-8 |
+| E3 | **CONFIRMED** | R41 wrong on X3 on 4 of 4 cx devices: FakeAuckland 23, FakeHanoiV2 25, FakeAlgiers 26, FakeGeneva 27 of 40 |
+| E4 | **CONFIRMED** | R41 wrong on 0 circuits on FakeTorino and FakeKingston |
+| E5 | **CONFIRMED** | RPSF wrong on 0 circuits; max 1.6e-14 |
+| E6 | **CONFIRMED** | C12 identical to R41 on 1,506 of 1,506 F circuits on each of the 9 devices (100.0%) |
+| E7 | **CONFIRMED** | A9 identical to A8 on 151 of 151 sampled F circuits on each of the 9 devices (100.0%) |
+| E8 | **CONFIRMED** | C12 wrong on 0 of 13,554 F circuits; max 9.3e-10 |
+| E9 | **AMBIGUOUS** | median compile time on F, pooled: C12 0.194 s, R41 0.154 s (1.26 ×; confirm <= 1.2 ×, refute > 2 ×) |
+
+## 2. Numbers
+
+**Part X, wrong circuits (state infidelity > 1e-6) by arm and cell, summed over the four cx devices** (the cz devices:
+0 in every arm and cell):
+
+| cell | circuits per device | RPSF | R41 | C12 | L3T | A8 | A9 |
+|---|---|---|---|---|---|---|---|
+| X1 near-boundary Trotter | 48 | 0 | 0 | 0 | 0 | 0 | 0 |
+| X2 control Trotter | 8 | 0 | 0 | 0 | 0 | 0 | 0 |
+| X3 near-boundary unitaries | 40 | 0 | **101** | 0 | **112** | **108** | 0 |
+| X4 Haar unitaries | 16 | 0 | 0 | 0 | 0 | 0 | 0 |
+| X5 small-angle ansatz | 16 | 0 | 0 | 0 | 0 | 0 | 0 |
+
+- **By device (X3):** R41 23 / 25 / 26 / 27 (FakeAuckland, FakeHanoiV2, FakeAlgiers, FakeGeneva); L3T 28 on each; A8
+  27 on each. Largest infidelity 0.34 in all three arms.
+- **Largest infidelity of the exact arms:** RPSF 1.6e-14. Every arm that takes a circuit from Qiskit reaches 5.8e-8 on
+  X1, on the cz devices too (C12, A9, R41, L3T, A8). On FakeGeneva X5 they reach 1.7e-10, on FakeTorino X5 7.1e-10.
+
+**Check counters (part X):**
+
+| device | c12 checks | refused re-synthesis | refused floor | refused level 3 | not checkable | a9: level 3 accepted / refused |
+|---|---|---|---|---|---|---|
+| each cx device | 512 | 128 | 0 | 28 | 0 | 100 / 28 |
+| FakeTorino, FakeKingston | 512 | 0 | 0 | 0 | 0 | 128 / 0 |
+
+- a9 refused level 3's output 28 times on each cx device; level 3 alone was wrong on 28 circuits there.
+- Part Y: 6,175 checks per device, no refusal, nothing not checkable, on all nine devices.
+
+**Compile time, median per device on F (Y; R41 / C12):**
+
+| device | R41 | C12 | ratio |
+|---|---|---|---|
+| FakeAuckland (cx) | 0.093 s | 0.130 s | 1.40 |
+| FakeHanoiV2 (cx) | 0.093 s | 0.130 s | 1.40 |
+| FakeAlgiers (cx) | 0.090 s | 0.128 s | 1.42 |
+| FakeGeneva (cx) | 0.090 s | 0.127 s | 1.41 |
+| FakeTorino | 0.179 s | 0.233 s | 1.30 |
+| FakeKingston | 0.201 s | 0.256 s | 1.27 |
+| FakeFez | 0.197 s | 0.252 s | 1.28 |
+| FakeMarrakesh | 0.199 s | 0.253 s | 1.27 |
+| FakeAachen | 0.198 s | 0.252 s | 1.27 |
+
+Part X medians, pooled over the six devices: RPSF 0.026 s, R41 0.110 s, C12 0.130 s, L3T 0.010 s, A8 0.572 s,
+A9 0.583 s. Six jobs ran at once on 12 CPUs; the times are comparable within this run only.
+
+## 3. An exploratory check after the run (not pre-registered)
+
+**What prompted it:** c12 refused item 35's re-synthesis exactly 128 times on each cx device and never on the cz
+devices or on F. Were these refusals of wrong circuits, or of exact ones?
+
+**The check:** [`benchmarks/diag_resynth_1005.py`](../../benchmarks/diag_resynth_1005.py) (written after the output
+above was seen; normalized SHA-256 `66418a1bd4dc0f1f4c74d3a3c03623583349e8e718c14cf8fd6d15af5bdc6ce3`).
+
+- It recompiles part X's circuits with c12, through the locked harness's loader, generator and call, on FakeAuckland
+  and FakeTorino.
+- For every item-39 check inside the re-synthesis, it records the verdict and an independent measure: the process
+  infidelity between the two circuits, from Qiskit's `Operator` on the touched qubits.
+- Run by the owner at home, at commit `e5a8098` (the code of `ae1e946`).
+
+**Result:**
+
+| device | checks | refused | refused, process infidelity <= 1e-10 (false alarm) | refused, > 1e-6 (wrong circuit) |
+|---|---|---|---|---|
+| FakeAuckland | 256 | 128 (X1 78, X3 50) | 0 | 128 |
+| FakeTorino | 256 | 0 | 0 | 0 |
+
+- Every refusal was of a wrong circuit: process infidelity 1.2e-5 to 0.34.
+- The 384 accepted re-syntheses are at most 5.9e-8 from the release's circuit.
+- **On X1, 78 of 96 re-syntheses (81%) were wrong.** R41 was nevertheless never wrong on X1: its "select" step kept
+  the release's own circuit in those cases, by its estimate. The defect was there, and nothing guaranteed it would
+  stay hidden.
+
+The output is in `data/2026-10-05/exact/diag_resynth_output.txt`.
+
+## 4. Reading
+
+**c12:**
+
+- **It closes the defect of Addenda 340-341, on fresh circuits.**
+  - Release 2026-10-04.1's recommended call was wrong on 58-68% of the explicit near-boundary unitary circuits on
+    every cx device, with infidelity up to 0.34. c12 was wrong on none.
+  - It needs no change of call.
+- **It changes nothing where Qiskit is exact.** On HOLD6's 13,554 F circuits its circuits are identical to the
+  release's, instruction by instruction, and all checks passed. The improvements of Addenda 324-337 therefore carry
+  over unchanged.
+- **Its refusals are of wrong circuits.** In the one device examined, none of 128 refused re-syntheses was exact. On
+  every cx device the 28 level-3 refusals equal level 3's 28 wrong outputs.
+- **What it costs:** 35-55 ms per compile (1.27-1.42 × by device, 1.26 × pooled), above E9's 1.2 × and far below 2 ×.
+  The cost is larger on the cx devices, where the re-synthesis is checked more often.
+- **What the tolerance admits:** Qiskit-made circuits up to a state infidelity of 1e-6. Here they reached 5.8e-8 on
+  near-boundary Trotter circuits, on cz devices as well, where the guarded path is exact to 1e-14. This matches
+  Qiskit's small-angle cutoff (Addenda 248-259). It is far from the failure line of B17 (1e-6), and it is a known limit
+  rather than a defect.
+
+**a9:**
+
+- **The front end is exact again.** a8 was wrong on 27 of 128 circuits on each cx device; a9 on none.
+- **It is a8 wherever level 3 is exact** (151 of 151 sampled F circuits on each device, all exact).
+- **Not covered:** the ECR-direction issue of a workplace exploration on ecr devices (2026-10-05). It is a separate
+  defect, and no ecr device was in this test.
+
+## 5. Consequences
+
+**Adoption** is the owner's decision. The data support:
+
+- **c12 as release 2026-10-05.1**, with the same recommended call:
+  - a correctness fix for every release from 2026-10-03.1 on;
+  - known limits: the tolerance above; circuits that cannot be checked (resets, conditionals, more than 16 touched
+    qubits) keep the release's own circuit; not tested on ecr devices or hardware.
+- **a9 as the AI front end**, with the ecr warning kept until a fix is tested.
+
+## 6. Data (`data/2026-10-05/exact/`)
+
+- `outputs/`:
+  - 45 job files and their logs;
+  - `env.txt` (local paths replaced), `progress.txt`, `score.md`, `score_log.txt`, `verify.txt`.
+- `diag_resynth_output.txt`.
+
+**Reproducing:** `exact_eval.py` and `diag_resynth_1005.py` stop unless `psf_compile.py` is release 2026-10-04.1.
+They reproduce at the lock commit `ae1e946` (or at `e5a8098`).
+
+
+---
+
+<!-- ===== Addendum 344 (source: spare-qubit-cliff-addendum-344-2026-10-05.md) ===== -->
+
+> **Note added when merging:** Adoption record: psf_compile 2026-10-05.c12 becomes release 2026-10-05.1 (a correctness fix), and psf_ai_compile 2026-10-05.a9 becomes the AI front end (owner's decision, 2026-10-05).
+
+## Addendum 344 -- Adoption record: candidate psf_compile 2026-10-05.c12 becomes release 2026-10-05.1 (a correctness fix: every circuit Qiskit makes as a whole is checked for equivalence, changelog item 39), and candidate psf_ai_compile 2026-10-05.a9 becomes the AI front end (2026-10-05)
+
+**Status: adoption record.**
+
+- **Decision:** the owner's, on 2026-10-05, after the results in Addendum 343 (eight of nine predictions confirmed,
+  one ambiguous, none refuted) and the exploratory check in its section 3 (no refusal of an exact circuit).
+- **Scope:** fake devices only. Nothing here was run on hardware.
+
+## 1. What the release is
+
+`psf_compile.py` 2026-10-05.1 is the candidate file
+[`patches/psf_compile_c12_2026-10-05/psf_compile.py`](../../patches/psf_compile_c12_2026-10-05/psf_compile.py) with
+only its version lines changed: the `VERSION:` header line, the changelog heading of item 39, and the `VERSION` constant.
+
+**The recommended call is unchanged** (since 2026-10-04.1, the same on cx and cz devices):
+
+```python
+out = compile_for_hardware(qc, coupling_map=cm, basis_gates=basis, entangling_basis="cx", layout_search=True,
+                           target=backend.target, placement_refine=True, final_resynthesis="select",
+                           compare_level3=True, compare_floor=True, candidate_score="hybrid")
+```
+
+**What changes for users:** with `final_resynthesis`, `compare_level3` or `compare_floor`, a circuit made by Qiskit
+is returned only if it passes item 39's check. Otherwise the release's own, guarded circuit is returned. Calls without
+those options give exactly 2026-10-04.1's circuit.
+
+**It replaces 2026-10-03.1 to 2026-10-04.1 for anyone using those options.** Those releases are affected by the
+defect of Addenda 340 and 343.
+
+**Unchanged:**
+
+- `psf_smart_layout` (2026-10-01.1);
+- the Rust core (`CORE_VERSION` 2026-09-29.1).
+
+## 2. What the front end is
+
+**`benchmarks/psf_ai_compile.py` is now a9.** It is the candidate file
+[`patches/psf_ai_compile_a9_2026-10-05/psf_ai_compile.py`](../../patches/psf_ai_compile_a9_2026-10-05/psf_ai_compile.py)
+with two changes, and nothing else:
+
+- its item-14 heading marked as adopted;
+- its version comment.
+
+**a8 is kept as `benchmarks/psf_ai_compile_a8.py`.** That file is byte-identical to the a8 that was adopted on
+2026-10-04.
+
+**Not fixed by a9:** on ecr devices the front end can return ECR gates in a direction the device does not provide (a
+workplace exploration, 2026-10-05). The README keeps a warning until a fix is tested.
+
+## 3. Files
+
+**Added:**
+
+| file | what it is |
+|---|---|
+| `benchmarks/test_release_2026_10_05_1.py` | the candidate's 7 tests, adapted. The previous release is represented by `patches/psf_compile_c11_2026-10-04/psf_compile.py`, which differs from 2026-10-04.1 only in its version lines |
+| `benchmarks/test_ai_compile_a9.py` | the candidate's 4 tests, adapted: the release instead of the candidate file, a8 from the frozen copy |
+| `benchmarks/psf_ai_compile_a8.py` | the frozen copy of a8 |
+| `benchmarks/exact_verify.py` | the independent re-check of Addendum 343 |
+| `benchmarks/diag_resynth_1005.py` | the exploratory check of Addendum 343, section 3 |
+| `data/2026-10-05/exact/` | the run's output, its re-check and the exploratory output (Addendum 343, section 6) |
+
+**Changed:**
+
+- `psf_compile.py` and `benchmarks/psf_ai_compile.py`: as described above.
+- `benchmarks/test_ai_compile_a8.py`: it now loads the frozen a8; its release assertion expects 2026-10-05.1.
+- **`patches/psf_ai_compile_a9_2026-10-05/test_a9.py`** (locked, Addendum 342): it now loads a8 from the frozen file,
+  so that it still compares a9 with a8.
+- **Current-release assertions in seventeen tests.** Only the expected version string changed (to "2026-10-05.1").
+  - Nine of these are tests of earlier candidates whose files were locked by pre-registrations: c4, c6, c8, c9, c10,
+    c11, c12, a6 and a8.
+  - c12's test and `test_release_2026_10_04_1.py` also had their comments reworded.
+- **`README.md`:** the "Current version" section now names 2026-10-05.1 and a9, with a correctness notice for
+  2026-10-03.1 to 2026-10-04.1 and the open ecr warning. Smaller updates: the compile time of the recommended call, a
+  sentence each in "Results in brief" and "Correctness checks", and a known limit on the check's tolerance.
+- **`docs/RELEASES.md`:** blocks for 2026-10-05.1 and a9 on top; the 2026-10-04.1 block retitled "Previous release";
+  the known-defect notice kept as it stood, marked as fixed. From now on each release is added there, and the README
+  keeps only the current one.
+
+**Normalized SHA-256, before and after:**
+
+| file | before | after |
+|---|---|---|
+| `psf_compile.py` | `7230adf00f152592…` | `33853989e0bf02fe…` |
+| `benchmarks/psf_ai_compile.py` | `5dd7f3a4b2d0b2aa…` | `8bc0f78a8964be5e…` |
+| `benchmarks/test_ai_compile_a8.py` | `8bcdf1596a85b53c…` | `65b175b76a89e704…` |
+| `patches/psf_ai_compile_a9_2026-10-05/test_a9.py` | `e81f704fd880d7b8…` | `ff69fb714d60a73d…` |
+| `benchmarks/test_release_2026_10_02.py` | `511e21b85fe0a7b9…` | `47667a69113baaf5…` |
+| `benchmarks/test_release_2026_10_02_2.py` | `8864758981e60b9f…` | `4aa1175df94bc17d…` |
+| `benchmarks/test_core_fix_c2.py` | `138fd4f759b9a9a9…` | `90b44c82daa7003c…` |
+| `benchmarks/test_release_2026_09_28.py` | `5dfd12f99480a31c…` | `a9db7fa4b39566d7…` |
+| `benchmarks/test_release_2026_10_03.py` | `dc5ebfac5aa91ad3…` | `f4c46371ed7e4fe5…` |
+| `benchmarks/test_release_2026_10_03_2.py` | `7ab1bb5da6ab5b28…` | `2a4e2e467c9d01b2…` |
+| `benchmarks/test_release_2026_10_03_3.py` | `0a1afebd230bdd4b…` | `ccc81a31e020d3a2…` |
+| `benchmarks/test_release_2026_10_04_1.py` | `ed0f27333eb06dd1…` | `ba48b60b2eb4d0dc…` |
+| `patches/psf_compile_c4_2026-10-02/test_c4_layout.py` | `e508c6c45a4026b5…` | `38c3ff18bf96c135…` |
+| `patches/psf_compile_c6_2026-10-03/test_c6_floor.py` | `980723c9168768d8…` | `510d4d9a87347635…` |
+| `patches/psf_compile_c8_2026-10-03/test_c8_resynth.py` | `9dd1da5f6aa9e37d…` | `67246f4426e91d62…` |
+| `patches/psf_compile_c9_2026-10-03/test_c9_compare.py` | `c5b6c74b94f1e0be…` | `25023f2357839dd2…` |
+| `patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py` | `5152354e9d67cc1e…` | `5105334faeb7797e…` |
+| `patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py` | `00648dc337d1c285…` | `f23da86ba5e686e3…` |
+| `patches/psf_compile_c12_2026-10-05/test_c12_exact.py` | `e8e70aed811b855e…` | `4313a8fbc3eef127…` |
+| `patches/psf_ai_compile_a6_2026-10-02/test_ai6.py` | `69372876c421da9c…` | `36ce6752197f1c62…` |
+| `patches/psf_ai_compile_a8_2026-10-04/test_a8.py` | `91ed5c69f89e6025…` | `635fddeb81d4ce3a…` |
+| `README.md` | `78876b7f7f9cf1f8…` | `a707b1d051e2d81e…` |
+| `docs/RELEASES.md` | `67597e2aced98657…` | `75214ca3e81c1159…` |
+| `benchmarks/psf_ai_compile_a8.py` (new) | — | `5dd7f3a4b2d0b2aa…` |
+| `benchmarks/test_ai_compile_a9.py` (new) | — | `1038f9c5933ef516…` |
+| `benchmarks/test_release_2026_10_05_1.py` (new) | — | `b369ca331c368fbc…` |
+
+## 4. Known limits (Addendum 343)
+
+- **Tolerance:** a Qiskit-made circuit is accepted up to a state infidelity of 1e-6. In the EXACT test accepted ones
+  reached 5.8e-8 (near-boundary Trotter circuits, cz devices too), where the guarded path is exact to 1e-14.
+- **Circuits that cannot be checked** keep the release's own circuit: resets, conditionals, more than 16 touched
+  qubits. Only `final_resynthesis=True` behaves differently from 2026-10-04.1 there.
+- **Compile time:** 1.27-1.42 times 2026-10-04.1 (35-55 ms more per compile, F circuits, home).
+- **Tested on fake devices only:** not on hardware, not on ecr devices.
+- **Evaluation scripts written for an earlier release** (for example those of Addenda 335, 336 and 342) stop unless
+  `psf_compile.py` is that release. They reproduce their results at the commits that ran them (Addendum 342's at
+  `ae1e946`).
+
 ---
 
 ---

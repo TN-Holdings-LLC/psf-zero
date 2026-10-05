@@ -1,13 +1,51 @@
 # PSF-Zero releases and dated notices
 
 Every release block, update and correctness notice that the README carried until 2026-10-05, newest first and
-unchanged in wording. They were moved here from the README on 2026-10-05; only links were adjusted so that they work
+unchanged in wording, followed by those since (from 2026-10-05.1 on, each release is added here and the README
+keeps only the current one). They were moved here from the README on 2026-10-05; only links were adjusted so that they work
 from this folder. The full record behind each entry is in Part 9 of the findings
 ([`findings/spare-qubit-cliff-combined-248.md`](findings/spare-qubit-cliff-combined-248.md)) and the earlier parts it
 links to. The README itself, as it was before the move, is kept as
 [`README_2026-10-05_before_restructure.md`](README_2026-10-05_before_restructure.md).
 
-> **Known defect, found 2026-10-05 (fix under test: Addenda 340-342).** On cx devices, the recommended call of
+> **Current version (2026-10-05): `psf_compile.py` 2026-10-05.1, with `psf_smart_layout` 2026-10-01.1 and the Rust
+> core `CORE_VERSION` 2026-09-29.1 (both unchanged)** ([Part 9](findings/spare-qubit-cliff-combined-248.md),
+> Addenda 340-344). A correctness fix for 2026-10-03.1 to 2026-10-04.1 (the known defect below); the recommended call
+> is unchanged:
+>
+> - **Item 39:** every circuit that Qiskit makes as a whole is checked for equivalence before it can be returned:
+>   item 35's re-synthesis against the release's own circuit, and items 36-37's floor-placed and level-3 candidates
+>   against the input (two seeded random product states, state infidelity <= 1e-6, global phase ignored). A circuit
+>   that fails, or cannot be checked, is refused and the release's own, guarded circuit is kept.
+> - **Pre-registered test (EXACT, Addenda 342-343):**
+>   - near-boundary and control circuits (128 per device on 4 cx and 2 cz devices): 2026-10-04.1 wrong on 23-27 of 40
+>     explicit near-boundary unitary circuits on each cx device (infidelity up to 0.34), 2026-10-05.1 on none;
+>   - HOLD6's 1,506 F circuits on each of 9 devices: the same circuits as 2026-10-04.1, all exact;
+>   - 8 of 9 predictions confirmed; the time prediction (median <= 1.2 times) ambiguous at 1.26 (1.27-1.42 by device,
+>     35-55 ms more per compile);
+>   - an exploratory check after the run: all 128 refusals of item 35's re-synthesis on FakeAuckland were of wrong
+>     circuits (process infidelity 1.2e-5 to 0.34), none of exact ones. On near-boundary Trotter circuits 81% of the
+>     re-syntheses were wrong; 2026-10-04.1 happened not to select them there.
+> - **Known limits:**
+>   - Accepted Qiskit-made circuits can be off by up to 1e-6 in state infidelity (5.8e-8 seen, where the guarded path
+>     is exact to 1e-14).
+>   - Circuits with resets or conditionals, and above 16 touched qubits, cannot be checked: the release's own circuit
+>     is kept.
+>   - Not tested on hardware or on ecr devices.
+
+> **Update (2026-10-05) -- AI front end a9** ([Part 9](findings/spare-qubit-cliff-combined-248.md), Addenda 342-344).
+> `benchmarks/psf_ai_compile.py` is now a9 (a8 is kept as `benchmarks/psf_ai_compile_a8.py`).
+>
+> - **The defect it fixes:** with a target, a7 and a8 offered Qiskit level 3's output as a candidate without checking
+>   it; a8 was wrong on 27 of the 128 circuits of the EXACT test on each cx device.
+> - **a9** uses level 3's output only if the release's item-39 check confirms it. In the EXACT test: wrong on none;
+>   it refused level 3's output 28 times per cx device, exactly level 3's 28 wrong outputs; identical to a8 on every
+>   sampled ordinary circuit.
+> - **Not fixed:** on ecr devices it can return ECR gates in a direction the device does not provide (a workplace
+>   exploration, 2026-10-05). Do not give it a target on ecr devices.
+
+> **Known defect, found 2026-10-05 (fix under test: Addenda 340-342).** *(Fixed in 2026-10-05.1 and a9, Addenda
+> 343-344; this is the notice as it stood before the fix.)* On cx devices, the recommended call of
 > 2026-10-04.1 can return a circuit that is NOT equivalent to the input. The same holds for every call with
 > `final_resynthesis` or `compare_level3` since 2026-10-03.1.
 >
@@ -21,7 +59,7 @@ links to. The README itself, as it was before the move, is kept as
 >   Until fixed, do not give it a target on cx or ecr devices.
 > - cz devices are not affected by the #17057 path.
 
-> **Current version (2026-10-04): `psf_compile.py` 2026-10-04.1, with `psf_smart_layout` 2026-10-01.1 and the Rust
+> **Previous release (2026-10-04): `psf_compile.py` 2026-10-04.1, with `psf_smart_layout` 2026-10-01.1 and the Rust
 > core `CORE_VERSION` 2026-09-29.1 (both unchanged)** ([Part 9](../docs/findings/spare-qubit-cliff-combined-248.md),
 > Addenda 334-338). One opt-in addition to 2026-10-03.3, and one recommended call on every device:
 >

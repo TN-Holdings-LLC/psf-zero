@@ -1,0 +1,30 @@
+# Output of benchmarks/diag_resynth_1005.py (exploratory; Addendum 343, section 3), as printed in the owner's WSL
+# terminal on 2026-10-05 after `git pull` to e5a8098 (the code of ae1e946); run from the repository root as
+# `python ~/diag_resynth_1005.py` (the same file as benchmarks/diag_resynth_1005.py).
+calls of the item-39 check inside _final_resynthesis, by device and cell:
+  device        cell  n  calls  refused  refused&proc<=1e-10 (false)  refused&proc>1e-6 (real)
+  FakeAuckland  X1    4     48       40                            0                        40
+  FakeAuckland  X1    6     48       38                            0                        38
+  FakeAuckland  X2    4      8        0                            0                         0
+  FakeAuckland  X2    6      8        0                            0                         0
+  FakeAuckland  X3    4     40       24                            0                        24
+  FakeAuckland  X3    6     40       26                            0                        26
+  FakeAuckland  X4    4     16        0                            0                         0
+  FakeAuckland  X4    6     16        0                            0                         0
+  FakeAuckland  X5    4     16        0                            0                         0
+  FakeAuckland  X5    6     16        0                            0                         0
+  FakeTorino    X1    4     48        0                            0                         0
+  FakeTorino    X1    6     48        0                            0                         0
+  FakeTorino    X2    4      8        0                            0                         0
+  FakeTorino    X2    6      8        0                            0                         0
+  FakeTorino    X3    4     40        0                            0                         0
+  FakeTorino    X3    6     40        0                            0                         0
+  FakeTorino    X4    4     16        0                            0                         0
+  FakeTorino    X4    6     16        0                            0                         0
+  FakeTorino    X5    4     16        0                            0                         0
+  FakeTorino    X5    6     16        0                            0                         0
+accepted: 384, max process infidelity 5.9e-08
+first refusal: {'device': 'FakeAuckland', 'cell': 'X1', 'n': 4, 'sa': np.float64(5.849499992738316e-05), 'proc': 5.0421791622845546e-05, 'nact': 4, 'gp': (3.8876334814030167, 3.102235318009778)}
+  ops before: {'rz': 213, 'sx': 148, 'cx': 36}
+  ops after:  {'rz': 127, 'sx': 91, 'cx': 36, 'x': 1}
+refusals: _same_action value min 9.7e-06 median 5.2e-03 max 4.2e-01; process infidelity min 1.2e-05 max 3.4e-01

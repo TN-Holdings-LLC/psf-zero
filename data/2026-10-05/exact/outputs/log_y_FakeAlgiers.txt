@@ -1,0 +1,7 @@
+  FakeAlgiers F1: 432 rows, 161 s
+  FakeAlgiers F2: 672 rows, 223 s
+  FakeAlgiers F3: 972 rows, 370 s
+  FakeAlgiers F4: 1242 rows, 455 s
+  FakeAlgiers F5: 1386 rows, 474 s
+  FakeAlgiers F6: 1506 rows, 499 s
+wrote exact_y_FakeAlgiers.json: 1506 circuits, 0 differ, 499 s

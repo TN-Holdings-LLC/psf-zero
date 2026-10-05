@@ -1,0 +1,7 @@
+  FakeHanoiV2 F1: 432 rows, 165 s
+  FakeHanoiV2 F2: 672 rows, 230 s
+  FakeHanoiV2 F3: 972 rows, 381 s
+  FakeHanoiV2 F4: 1242 rows, 471 s
+  FakeHanoiV2 F5: 1386 rows, 488 s
+  FakeHanoiV2 F6: 1506 rows, 514 s
+wrote exact_y_FakeHanoiV2.json: 1506 circuits, 0 differ, 514 s

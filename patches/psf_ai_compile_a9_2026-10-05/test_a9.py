@@ -23,7 +23,7 @@ def mods():
     lay = H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psl_a9_test")
     sys.modules["psf_smart_layout"] = lay
     c12 = H.load_module(os.path.join(REPO, "patches", "psf_compile_c12_2026-10-05", "psf_compile.py"), "psf_compile")
-    a8 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile.py"), "psf_ai_compile_a8_for_a9_test")
+    a8 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile_a8.py"), "psf_ai_compile_a8_for_a9_test")  # a8 (frozen at a9's adoption)
     a9 = H.load_module(os.path.join(HERE, "psf_ai_compile.py"), "psf_ai_compile_a9_test")
     return dict(c12=c12, a8=a8, a9=a9)
 

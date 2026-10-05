@@ -1,0 +1,7 @@
+  FakeFez F1: 432 rows, 299 s
+  FakeFez F2: 672 rows, 449 s
+  FakeFez F3: 972 rows, 785 s
+  FakeFez F4: 1242 rows, 978 s
+  FakeFez F5: 1386 rows, 1053 s
+  FakeFez F6: 1506 rows, 1124 s
+wrote exact_y_FakeFez.json: 1506 circuits, 0 differ, 1124 s

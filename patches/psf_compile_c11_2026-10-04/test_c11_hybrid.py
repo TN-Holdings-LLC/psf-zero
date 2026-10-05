@@ -166,7 +166,7 @@ FULL = dict(REC, compare_floor=True, candidate_score="hybrid")
 
 def test_version(mods):
     assert mods[0].VERSION == "2026-10-04.c11"
-    assert mods[1].VERSION == "2026-10-04.1"  # current release (2026-10-03.3 when this candidate was evaluated)
+    assert mods[1].VERSION == "2026-10-05.1"  # current release (2026-10-03.3 when this candidate was evaluated)
 
 
 def test_other_options_identical_to_release(mods):

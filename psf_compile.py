@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-10-04.1 -- release, adopted on 2026-10-04 from candidate 2026-10-04.c11 (previous release: 2026-10-03.3)
+VERSION: 2026-10-05.1 -- release, adopted on 2026-10-05 from candidate 2026-10-05.c12 (previous release: 2026-10-04.1)
 
 Where to look for what
 ----------------------
@@ -567,6 +567,29 @@ recommended on every device):
       cannot be made keep the release's circuit; item 35's "select" still uses `excitation_cost`).
     Intended call on every device: `compare_level3=True, compare_floor=True, candidate_score="hybrid"` with
     item 35's `final_resynthesis="select"` and item 33's `placement_refine=True`. Other values change nothing.
+
+2026-10-05.1 (release; candidate 2026-10-05.c12, adopted on 2026-10-05 after its pre-registered evaluation, Addenda 342-344;
+a correctness fix for releases 2026-10-03.1 to 2026-10-04.1):
+
+39. **FIX (correctness): circuits made by Qiskit are now checked for equivalence before they can be returned.**
+    Item 17's guard checks every block this file leaves to Qiskit's CX decomposer, but items 35-37 brought in
+    circuits that Qiskit synthesised as a whole and that nothing checked: item 35's re-synthesis
+    (`UnitarySynthesis`) and items 36-37's level-3 output. On cx devices both are exposed to Qiskit issue #17057
+    (Addendum 294; near-boundary two-qubit unitaries). A workplace probe (2026-10-05, Addendum 340) found the
+    recommended call of release 2026-10-04.1 returning a non-equivalent circuit for 6 of 10 explicit near-boundary
+    unitary circuits on FakeAuckland (infidelity up to 0.19), and item 35's re-synthesis wrong on 20 of 20 near-boundary
+    Trotter circuits; 2026-10-02.2's call was exact on all of them.
+    - `_same_action(ref, new)`: two circuits on the same physical qubits and layout (item 35) act alike on two seeded
+      random product states of every touched qubit (state infidelity <= `EXACT_TOL`, global phase ignored).
+    - `_implements(qc, out)`: a compiled circuit maps two seeded random product states of `qc`'s qubits, placed by
+      its initial layout with every other touched qubit in |0>, to `qc`'s output states at its final layout, with
+      the other touched qubits back in |0>.
+    - Item 35's re-synthesis is kept only if `_same_action`; the floor and level-3 candidates of items 36-37 are
+      used only if `_implements`. A check that cannot be made (more than RESYNTH_MAX_QUBITS touched qubits, an
+      instruction without a matrix such as a reset or a conditional) refuses the candidate: the release's own,
+      guarded circuit is kept. Counts in `EXACT_STATS`.
+    The checks are statevector simulations of at most RESYNTH_MAX_QUBITS qubits, like the estimates of items 35-38.
+    With every Qiskit-made circuit exact (all HOLD tests), the result is the same as 2026-10-04.1.
 """
 from __future__ import annotations
 
@@ -603,7 +626,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-10-04.1"  # release (from candidate 2026-10-04.c11): 2026-10-03.3 + choice by an estimate with amplitude damping and pure dephasing (item 38)
+VERSION = "2026-10-05.1"  # release (from candidate 2026-10-05.c12): 2026-10-04.1 + equivalence check of Qiskit-made circuits (item 39)
 __version__ = VERSION
 
 # Changelog item 27: the version string of the loaded Rust core, for logs.
@@ -1740,6 +1763,117 @@ def excitation_cost(circ, target):
     return cost
 
 
+EXACT_TOL = 1e-6  # item 39: largest state infidelity accepted (B17's failure line; exact paths stay below 1e-7)
+EXACT_SEEDS = (39_001, 39_002)
+EXACT_STATS = {"checked": 0, "refused_resynthesis": 0, "refused_floor": 0, "refused_level3": 0, "not_checkable": 0}
+_EXACT_SKIP = ("barrier", "measure", "delay")
+
+
+def _product_state(rng):
+    """A random single-qubit pure state (Haar), as a length-2 complex vector."""
+    v = rng.normal(size=2) + 1j * rng.normal(size=2)
+    return v / np.linalg.norm(v)
+
+
+def _apply_ops(psi, ops, pos):
+    """Applies [(matrix, physical qubits)] to the tensor `psi` (axis pos[q] = qubit q); Qiskit's little-endian
+    matrices, as in excitation_cost."""
+    for mat, q in ops:
+        axes = [pos[i] for i in q]
+        m = len(axes)
+        rev = axes[::-1]
+        psi = np.tensordot(mat.reshape((2,) * (2 * m)), psi, axes=(list(range(m, 2 * m)), rev))
+        psi = np.moveaxis(psi, list(range(m)), rev)
+    return psi
+
+
+def _ops_of(circ):
+    """[(matrix, qubit indices)] for every instruction except barrier, measure and delay; None if one has no
+    matrix."""
+    out = []
+    for ins in circ.data:
+        name = ins.operation.name
+        if name in _EXACT_SKIP:
+            continue
+        try:
+            mat = np.asarray(ins.operation.to_matrix(), dtype=complex)
+        except Exception:
+            return None
+        out.append((mat, tuple(circ.find_bit(b).index for b in ins.qubits)))
+    return out
+
+
+def _same_action(ref, new, tol=EXACT_TOL):
+    """Item 39: True if `new` and `ref` (same physical qubits and layout) map two seeded random product states of
+    every touched qubit to the same state, up to global phase. False otherwise or if the check cannot be made."""
+    EXACT_STATS["checked"] += 1
+    a, b = _ops_of(ref), _ops_of(new)
+    if a is None or b is None:
+        EXACT_STATS["not_checkable"] += 1
+        return False
+    touched = sorted({i for _, q in a + b for i in q})
+    if len(touched) > RESYNTH_MAX_QUBITS:
+        EXACT_STATS["not_checkable"] += 1
+        return False
+    if not touched:
+        return True
+    pos = {p: j for j, p in enumerate(touched)}
+    for seed in EXACT_SEEDS:
+        rng = np.random.default_rng(seed)
+        psi = np.array(1.0 + 0j)
+        for _ in touched:
+            psi = np.multiply.outer(psi, _product_state(rng))
+        x, y = _apply_ops(psi, a, pos), _apply_ops(psi, b, pos)
+        if 1.0 - abs(np.vdot(x.ravel(), y.ravel())) ** 2 > tol:
+            return False
+    return True
+
+
+def _implements(qc, out, tol=EXACT_TOL):
+    """Item 39: True if the compiled circuit `out` implements the logical circuit `qc`: two seeded random product
+    states of qc's qubits, placed at out's initial layout (other touched qubits in |0>), are mapped to qc's output
+    states at out's final layout, with the other touched qubits back in |0> (state infidelity <= tol, global phase
+    ignored). False otherwise or if the check cannot be made."""
+    EXACT_STATS["checked"] += 1
+    n = qc.num_qubits
+    a, b = _ops_of(qc), _ops_of(out)
+    if a is None or b is None:
+        EXACT_STATS["not_checkable"] += 1
+        return False
+    lay = getattr(out, "layout", None)
+    if lay is not None:
+        init = list(lay.initial_index_layout(filter_ancillas=True)[:n])
+        fin = list(lay.final_index_layout(filter_ancillas=True)[:n])
+    else:
+        init = fin = list(range(n))
+    touched = sorted({i for _, q in b for i in q} | set(init) | set(fin))
+    if len(touched) > RESYNTH_MAX_QUBITS or n > RESYNTH_MAX_QUBITS:
+        EXACT_STATS["not_checkable"] += 1
+        return False
+    pos = {p: j for j, p in enumerate(touched)}
+    zero = np.array([1.0 + 0j, 0.0])
+    rest = [pos[p] for p in touched if p not in set(fin)]
+    for seed in EXACT_SEEDS:
+        rng = np.random.default_rng(seed)
+        states = [_product_state(rng) for _ in range(n)]
+        ideal = np.array(1.0 + 0j)
+        for s in states:
+            ideal = np.multiply.outer(ideal, s)
+        ideal = _apply_ops(ideal, a, {v: v for v in range(n)})
+        at = {p: v for v, p in enumerate(init)}
+        psi = np.array(1.0 + 0j)
+        for p in touched:
+            psi = np.multiply.outer(psi, states[at[p]] if p in at else zero)
+        psi = _apply_ops(psi, b, pos)
+        idx = tuple(0 if j in rest else slice(None) for j in range(len(touched)))
+        red = psi[idx]                                   # axes: final positions, in touched order
+        kept = [p for p in touched if p in set(fin)]
+        red = np.moveaxis(red, [kept.index(fin[v]) for v in range(n)], list(range(n)))
+        if 1.0 - abs(np.vdot(ideal.ravel(), red.ravel())) ** 2 > tol:
+            return False
+    return True
+
+
 def _final_resynthesis(out, target, max_error):
     """Item 35: re-synthesise every two-qubit block of a finished circuit with Qiskit, on the target, exactly.
     Returns the original circuit if the result has an instruction the target does not provide or a two-qubit
@@ -1759,6 +1893,10 @@ def _final_resynthesis(out, target, max_error):
                 or (len(q) == 2 and props is not None and props.error is not None and props.error >= max_error)):
             RESYNTH_STATS["kept_original"] += 1
             return out
+    if not _same_action(out, new):  # item 39
+        EXACT_STATS["refused_resynthesis"] += 1
+        RESYNTH_STATS["kept_original"] += 1
+        return out
     RESYNTH_STATS["applied"] += 1
     return new
 
@@ -1952,6 +2090,10 @@ def _compare_level3(qc, out, target, max_error, seed_transpiler):
     """Item 36: the release's circuit `out` or Qiskit level 3's, whichever has the lower excitation_cost."""
     l3 = transpile(qc, target=target, optimization_level=3, seed_transpiler=seed_transpiler, approximation_degree=1.0)
     if not _acceptable(l3, target, max_error):
+        COMPARE_STATS["level3_refused"] += 1
+        return out
+    if not _implements(qc, l3):  # item 39
+        EXACT_STATS["refused_level3"] += 1
         COMPARE_STATS["level3_refused"] += 1
         return out
     a, b = excitation_cost(out, target), excitation_cost(l3, target)
@@ -2396,17 +2538,23 @@ def compile_for_hardware(
                 fo = _select_resynthesis(fo, target, prune_max_error)
             elif final_resynthesis:
                 fo = _final_resynthesis(fo, target, prune_max_error)
-            if _acceptable(fo, target, prune_max_error):
-                cands.append(("floor", fo))
-            else:
+            if not _acceptable(fo, target, prune_max_error):
                 COMPARE_STATS["floor_refused"] += 1
+            elif not _implements(qc, fo):  # item 39
+                EXACT_STATS["refused_floor"] += 1
+                COMPARE_STATS["floor_refused"] += 1
+            else:
+                cands.append(("floor", fo))
         if compare_level3:
             l3 = transpile(qc, target=target, optimization_level=3, seed_transpiler=seed_transpiler,
                            approximation_degree=1.0)
-            if _acceptable(l3, target, prune_max_error):
-                cands.append(("level3", l3))
-            else:
+            if not _acceptable(l3, target, prune_max_error):
                 COMPARE_STATS["level3_refused"] += 1
+            elif not _implements(qc, l3):  # item 39
+                EXACT_STATS["refused_level3"] += 1
+                COMPARE_STATS["level3_refused"] += 1
+            else:
+                cands.append(("level3", l3))
         return _choose(cands, target, candidate_score) if len(cands) > 1 else out
 
     # Candidate 2026-10-01.c2: both default to on only for entangling_basis="cx" (their saving is counted in

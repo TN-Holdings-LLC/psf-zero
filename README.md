@@ -21,24 +21,33 @@ PSF-Zero is a Qiskit-compatible compiler with two layers.
 Everything is pre-registered and self-audited: predictions are locked in git before a scored run, and results,
 including the failures, are recorded in [`docs/findings/`](docs/findings/).
 
-## Current version and known defect
+## Current version
 
-> **Known defect, found 2026-10-05 (fix under test: Addenda 340-342).** On cx devices, the recommended call of
-> 2026-10-04.1 can return a circuit that is NOT equivalent to the input. The same holds for every call with
-> `final_resynthesis` or `compare_level3` since 2026-10-03.1.
+**`psf_compile.py` 2026-10-05.1** and the AI front end **a9**, with `psf_smart_layout` 2026-10-01.1 and the Rust core
+`CORE_VERSION` 2026-09-29.1 (Part 9, Addenda 340-344). Every release and dated notice:
+[`docs/RELEASES.md`](docs/RELEASES.md).
+
+> **Correctness fix: if you use 2026-10-03.1, .2, .3 or 2026-10-04.1, update.** On cx devices those releases could
+> return a circuit that is NOT equivalent to the input, when called with `final_resynthesis` or `compare_level3`. The
+> same held for the AI front end (a7, a8) given a target.
 >
 > - **When:** the input contains two-qubit unitaries near the boundary of Qiskit issue #17057, for example explicit
->   `unitary` gates from numerical optimisation or written by a language model. The cause is that circuits made by
->   Qiskit were used without an equivalence check.
-> - **Until the fix is released:** for such circuits on cx devices, use `target=..., placement_refine=True` without
->   `final_resynthesis` and `compare_level3`, or check the result's equivalence yourself.
-> - **The AI front end** (`benchmarks/psf_ai_compile.py`) is affected the same way when given a target. A workplace
->   exploration also found that on ecr devices it can return ECR gates in a direction the device does not provide.
->   Until fixed, do not give it a target on cx or ecr devices.
-> - cz devices are not affected by the #17057 path.
+>   `unitary` gates from numerical optimisation or written by a language model, or Trotter steps with very small
+>   angles.
+> - **Fix:** 2026-10-05.1 and a9 check every circuit that Qiskit makes as a whole before they return it. A circuit
+>   that fails the check, or cannot be checked, is replaced by PSF-Zero's own, guarded circuit.
+> - **Pre-registered test** (Addenda 342-343; 6 devices, 768 near-boundary and control circuits, plus 1,506 ordinary
+>   circuits on each of 9 devices):
+>   - 2026-10-04.1 was wrong on 101 circuits on the cx devices (infidelity up to 0.34), a8 on 108, Qiskit level 3
+>     alone on 112;
+>   - 2026-10-05.1 and a9 were wrong on none;
+>   - on the ordinary circuits they returned exactly the circuits of 2026-10-04.1 and a8;
+>   - every refusal checked was of a wrong circuit (an exploratory check after the run, on FakeAuckland);
+>   - cost: median compile time 1.27-1.42 times 2026-10-04.1 on the nine devices (35-55 ms more).
+> - cz devices were not affected.
 
-**`psf_compile.py` 2026-10-04.1**, with `psf_smart_layout` 2026-10-01.1 and the Rust core `CORE_VERSION` 2026-09-29.1
-(Part 9, Addenda 334-338). Every release and dated notice: [`docs/RELEASES.md`](docs/RELEASES.md).
+> **Still open:** on ecr devices the AI front end can return ECR gates in a direction the device does not provide (a
+> workplace exploration, 2026-10-05). Until that is fixed, do not give it a target on ecr devices.
 
 ## Quick start
 
@@ -55,7 +64,7 @@ qc.append(UnitaryGate(random_unitary(4)), [0, 1])
 optimized = psf_compile(qc)          # add verify=False for the fastest path
 ```
 
-**For a device** (the recommended call of 2026-10-04.1, the same on cx and cz devices; see the known defect above):
+**For a device** (the recommended call since 2026-10-04.1, the same on cx and cz devices):
 
 ```python
 from qiskit_ibm_runtime.fake_provider import FakeTorino
@@ -95,7 +104,7 @@ model-written circuits.
 
 | | `compile()` | `compile_for_hardware()`, recommended call | Qiskit `optimization_level=3` |
 | :--- | :--- | :--- | :--- |
-| Compile time | 2.5-5x faster than Qiskit L3 on two-qubit-block circuits (15-1000 qubits) | median 0.16 s on 4-8-qubit circuits, about 10x Qiskit L3 with the Target | reference |
+| Compile time | 2.5-5x faster than Qiskit L3 on two-qubit-block circuits (15-1000 qubits) | median about 0.2 s on 4-8-qubit circuits, about 13x Qiskit L3 with the Target | reference |
 | Output | same two-qubit count as Qiskit L3 at 156 qubits; deterministic | simulated infidelity 0.959-0.991 of Qiskit L3 with the Target, on 9 fake devices | reference |
 | Against TKET | 150-270x faster; depth 9 against TKET's 7 | not compared | |
 
@@ -124,7 +133,8 @@ model-written circuits.
 
 **For a device** (pre-registered tests on 1,506 new circuits per device, 9 fake devices: four cx, five cz):
 
-- Release 2026-10-04.1 against Qiskit level 3 with the Target: 0.959-0.991 (Addendum 337).
+- Release 2026-10-04.1 against Qiskit level 3 with the Target: 0.959-0.991 (Addendum 337). Release 2026-10-05.1
+  returns the same circuits on those circuits, on all nine devices (Addendum 343).
 - With a stale calibration (errors off by 30%, T1/T2 by 20%) the previous release stayed ahead of level 3
   (Addendum 335).
 - At 8-10 logical qubits it stayed ahead too (0.951-0.998).
@@ -139,7 +149,8 @@ fallbacks. Repeated recompilation drifts linearly (6.1e-11 after 1,000 laps). Se
 
 **Correctness checks.** Qiskit's CX-basis synthesis returns wrong circuits for two-qubit unitaries near a boundary
 (reported as [Qiskit issue #17057](https://github.com/Qiskit/qiskit/issues/17057)). PSF-Zero checks every block it
-takes from that decomposer (since 2026-09-26.4). The known defect above is the case where that check was not applied.
+takes from that decomposer (since 2026-09-26.4), and since 2026-10-05.1 every circuit Qiskit makes as a whole. The
+fix above is for releases 2026-10-03.1 to 2026-10-04.1, which used such circuits unchecked.
 
 The full tables, figures and caveats are in [`docs/findings/`](docs/findings/) and the README snapshot
 [`docs/README_2026-10-05_before_restructure.md`](docs/README_2026-10-05_before_restructure.md).
@@ -183,7 +194,11 @@ Full account: [`spare-qubit-cliff.md`](docs/findings/spare-qubit-cliff.md) (summ
   noisy simulation.
 - **ecr devices:** the release has not been tested on them in a pre-registered test. A workplace exploration found it
   working there. It also found the AI front end defect noted above.
-- **Above 16 touched qubits** the noise estimates are not made, and the release keeps its own circuit.
+- **Above 16 touched qubits** the noise estimates and the equivalence checks are not made, and the release keeps its
+  own circuit.
+- **Tolerance of the equivalence check:** a Qiskit-made circuit is accepted up to a state infidelity of 1e-6. On
+  near-boundary Trotter circuits the accepted ones were off by up to 5.8e-8, where PSF-Zero's own path is exact to
+  1e-14 (Addendum 343).
 - **Benchpress** integration is not done.
 - **Two upstream findings:**
   - Qiskit #17057 (CX-basis synthesis) is open.

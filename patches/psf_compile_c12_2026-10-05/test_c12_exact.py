@@ -201,7 +201,7 @@ FULL = dict(REC, compare_floor=True, candidate_score="hybrid")
 
 def test_version(mods):
     assert mods[0].VERSION == "2026-10-05.c12"
-    assert mods[1].VERSION == "2026-10-04.1"  # current release when this candidate was built
+    assert mods[1].VERSION == "2026-10-05.1"  # current release (2026-10-04.1 when this candidate was evaluated)
 
 
 @pytest.mark.parametrize("name", ["FakeAuckland", "FakeTorino"])

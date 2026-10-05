@@ -1,0 +1,54 @@
+files X 36 Y 9, git_head ['ae1e946'], flags 0 []
+P0 PASS compile errors / missing infid 0
+
+cell table (wrong/n, max infidelity):
+  FakeAuckland  X1  RPSF 0/48 1.6e-14  R41 0/48 5.8e-08  C12 0/48 5.8e-08  L3T 0/48 5.8e-08  A8 0/48 5.8e-08  A9 0/48 5.8e-08
+  FakeAuckland  X2  RPSF 0/8 5.2e-15  R41 0/8 5.2e-15  C12 0/8 5.2e-15  L3T 0/8 6.4e-15  A8 0/8 6.4e-15  A9 0/8 6.4e-15
+  FakeAuckland  X3  RPSF 0/40 8.1e-15  R41 23/40 3.4e-01  C12 0/40 6.7e-13  L3T 28/40 3.4e-01  A8 27/40 3.4e-01  A9 0/40 7.8e-13
+  FakeAuckland  X4  RPSF 0/16 3.0e-15  R41 0/16 4.0e-15  C12 0/16 4.0e-15  L3T 0/16 3.8e-15  A8 0/16 3.1e-15  A9 0/16 3.1e-15
+  FakeAuckland  X5  RPSF 0/16 1.8e-15  R41 0/16 1.9e-15  C12 0/16 1.9e-15  L3T 0/16 1.0e-12  A8 0/16 3.7e-13  A9 0/16 3.7e-13
+  FakeHanoiV2   X1  RPSF 0/48 1.6e-14  R41 0/48 5.8e-08  C12 0/48 5.8e-08  L3T 0/48 5.8e-08  A8 0/48 5.8e-08  A9 0/48 5.8e-08
+  FakeHanoiV2   X2  RPSF 0/8 4.9e-15  R41 0/8 7.8e-15  C12 0/8 7.8e-15  L3T 0/8 7.1e-15  A8 0/8 7.1e-15  A9 0/8 7.1e-15
+  FakeHanoiV2   X3  RPSF 0/40 7.8e-15  R41 25/40 3.4e-01  C12 0/40 6.7e-13  L3T 28/40 3.4e-01  A8 27/40 3.4e-01  A9 0/40 7.8e-13
+  FakeHanoiV2   X4  RPSF 0/16 3.0e-15  R41 0/16 4.0e-15  C12 0/16 4.0e-15  L3T 0/16 4.0e-15  A8 0/16 3.0e-15  A9 0/16 3.0e-15
+  FakeHanoiV2   X5  RPSF 0/16 1.8e-15  R41 0/16 1.9e-15  C12 0/16 1.9e-15  L3T 0/16 1.0e-12  A8 0/16 2.2e-15  A9 0/16 2.2e-15
+  FakeAlgiers   X1  RPSF 0/48 1.6e-14  R41 0/48 5.8e-08  C12 0/48 5.8e-08  L3T 0/48 5.8e-08  A8 0/48 5.8e-08  A9 0/48 5.8e-08
+  FakeAlgiers   X2  RPSF 0/8 5.8e-15  R41 0/8 6.9e-15  C12 0/8 6.9e-15  L3T 0/8 7.4e-15  A8 0/8 4.9e-15  A9 0/8 4.9e-15
+  FakeAlgiers   X3  RPSF 0/40 8.1e-15  R41 26/40 3.4e-01  C12 0/40 7.8e-13  L3T 28/40 3.4e-01  A8 27/40 3.4e-01  A9 0/40 7.8e-13
+  FakeAlgiers   X4  RPSF 0/16 3.0e-15  R41 0/16 3.3e-15  C12 0/16 3.3e-15  L3T 0/16 3.3e-15  A8 0/16 3.1e-15  A9 0/16 3.1e-15
+  FakeAlgiers   X5  RPSF 0/16 1.1e-15  R41 0/16 2.2e-15  C12 0/16 2.2e-15  L3T 0/16 1.7e-10  A8 0/16 3.7e-13  A9 0/16 3.7e-13
+  FakeGeneva    X1  RPSF 0/48 1.6e-14  R41 0/48 5.8e-08  C12 0/48 5.8e-08  L3T 0/48 5.8e-08  A8 0/48 5.8e-08  A9 0/48 5.8e-08
+  FakeGeneva    X2  RPSF 0/8 5.2e-15  R41 0/8 6.2e-15  C12 0/8 6.2e-15  L3T 0/8 6.2e-15  A8 0/8 6.2e-15  A9 0/8 6.2e-15
+  FakeGeneva    X3  RPSF 0/40 8.1e-15  R41 27/40 3.4e-01  C12 0/40 7.8e-13  L3T 28/40 3.4e-01  A8 27/40 3.4e-01  A9 0/40 7.8e-13
+  FakeGeneva    X4  RPSF 0/16 3.0e-15  R41 0/16 3.0e-15  C12 0/16 3.0e-15  L3T 0/16 3.8e-15  A8 0/16 3.1e-15  A9 0/16 3.1e-15
+  FakeGeneva    X5  RPSF 0/16 1.8e-15  R41 0/16 1.7e-10  C12 0/16 1.7e-10  L3T 0/16 1.7e-10  A8 0/16 1.7e-10  A9 0/16 1.7e-10
+  FakeTorino    X1  RPSF 0/48 9.9e-15  R41 0/48 5.8e-08  C12 0/48 5.8e-08  L3T 0/48 5.8e-08  A8 0/48 5.8e-08  A9 0/48 5.8e-08
+  FakeTorino    X2  RPSF 0/8 8.2e-15  R41 0/8 8.2e-15  C12 0/8 8.2e-15  L3T 0/8 6.2e-15  A8 0/8 6.7e-15  A9 0/8 6.7e-15
+  FakeTorino    X3  RPSF 0/40 7.2e-15  R41 0/40 2.5e-11  C12 0/40 2.5e-11  L3T 0/40 2.5e-11  A8 0/40 2.5e-11  A9 0/40 2.5e-11
+  FakeTorino    X4  RPSF 0/16 3.8e-15  R41 0/16 4.1e-15  C12 0/16 4.1e-15  L3T 0/16 3.2e-15  A8 0/16 3.8e-15  A9 0/16 3.8e-15
+  FakeTorino    X5  RPSF 0/16 3.1e-15  R41 0/16 7.1e-10  C12 0/16 7.1e-10  L3T 0/16 7.1e-10  A8 0/16 7.1e-10  A9 0/16 7.1e-10
+  FakeKingston  X1  RPSF 0/48 9.9e-15  R41 0/48 5.8e-08  C12 0/48 5.8e-08  L3T 0/48 5.8e-08  A8 0/48 5.8e-08  A9 0/48 5.8e-08
+  FakeKingston  X2  RPSF 0/8 8.2e-15  R41 0/8 8.2e-15  C12 0/8 8.2e-15  L3T 0/8 7.1e-15  A8 0/8 7.7e-15  A9 0/8 7.7e-15
+  FakeKingston  X3  RPSF 0/40 7.2e-15  R41 0/40 2.5e-11  C12 0/40 2.5e-11  L3T 0/40 2.5e-11  A8 0/40 5.6e-12  A9 0/40 5.6e-12
+  FakeKingston  X4  RPSF 0/16 3.1e-15  R41 0/16 3.1e-15  C12 0/16 3.1e-15  L3T 0/16 3.3e-15  A8 0/16 3.6e-15  A9 0/16 3.6e-15
+  FakeKingston  X5  RPSF 0/16 3.1e-15  R41 0/16 1.0e-12  C12 0/16 1.0e-12  L3T 0/16 7.1e-10  A8 0/16 7.1e-10  A9 0/16 7.1e-10
+
+E1 CONFIRMED 0 | max C12 infid 5.8e-08
+E2 CONFIRMED 0 | max A9 infid 5.8e-08
+E3 CONFIRMED {'FakeAuckland': 23, 'FakeHanoiV2': 25, 'FakeAlgiers': 26, 'FakeGeneva': 27}
+E4 CONFIRMED 0
+E5 CONFIRMED 0 | max RPSF infid 1.6e-14
+E6 CONFIRMED {'Auckland': 1.0, 'Torino': 1.0, 'Kingston': 1.0, 'HanoiV2': 1.0, 'Algiers': 1.0, 'Geneva': 1.0, 'Fez': 1.0, 'Marrakesh': 1.0, 'Aachen': 1.0}
+E7 CONFIRMED {'Auckland': 1.0, 'Torino': 1.0, 'Kingston': 1.0, 'HanoiV2': 1.0, 'Algiers': 1.0, 'Geneva': 1.0, 'Fez': 1.0, 'Marrakesh': 1.0, 'Aachen': 1.0} n per device [151]
+E8 CONFIRMED 0 | max C12 infid on F 9.3e-10
+E9 AMBIGUOUS C12 0.1936 s, R41 0.1539 s, ratio 1.258
+
+wrong by arm (all X): {'RPSF': 0, 'R41': 101, 'C12': 0, 'L3T': 112, 'A8': 108, 'A9': 0}
+X3 wrong by arm and device: {'RPSF': {'Auckland': 0, 'HanoiV2': 0, 'Algiers': 0, 'Geneva': 0, 'Torino': 0, 'Kingston': 0}, 'R41': {'Auckland': 23, 'HanoiV2': 25, 'Algiers': 26, 'Geneva': 27, 'Torino': 0, 'Kingston': 0}, 'C12': {'Auckland': 0, 'HanoiV2': 0, 'Algiers': 0, 'Geneva': 0, 'Torino': 0, 'Kingston': 0}, 'L3T': {'Auckland': 28, 'HanoiV2': 28, 'Algiers': 28, 'Geneva': 28, 'Torino': 0, 'Kingston': 0}, 'A8': {'Auckland': 27, 'HanoiV2': 27, 'Algiers': 27, 'Geneva': 27, 'Torino': 0, 'Kingston': 0}, 'A9': {'Auckland': 0, 'HanoiV2': 0, 'Algiers': 0, 'Geneva': 0, 'Torino': 0, 'Kingston': 0}}
+X1 wrong by arm and device: {'RPSF': {'Auckland': 0, 'HanoiV2': 0, 'Algiers': 0, 'Geneva': 0, 'Torino': 0, 'Kingston': 0}, 'R41': {'Auckland': 0, 'HanoiV2': 0, 'Algiers': 0, 'Geneva': 0, 'Torino': 0, 'Kingston': 0}, 'C12': {'Auckland': 0, 'HanoiV2': 0, 'Algiers': 0, 'Geneva': 0, 'Torino': 0, 'Kingston': 0}, 'L3T': {'Auckland': 0, 'HanoiV2': 0, 'Algiers': 0, 'Geneva': 0, 'Torino': 0, 'Kingston': 0}, 'A8': {'Auckland': 0, 'HanoiV2': 0, 'Algiers': 0, 'Geneva': 0, 'Torino': 0, 'Kingston': 0}, 'A9': {'Auckland': 0, 'HanoiV2': 0, 'Algiers': 0, 'Geneva': 0, 'Torino': 0, 'Kingston': 0}}
+C12 EXACT_STATS (X): {'Auckland': {'checked': 512, 'refused_resynthesis': 128, 'refused_floor': 0, 'refused_level3': 28, 'not_checkable': 0}, 'HanoiV2': {'checked': 512, 'refused_resynthesis': 128, 'refused_floor': 0, 'refused_level3': 28, 'not_checkable': 0}, 'Algiers': {'checked': 512, 'refused_resynthesis': 128, 'refused_floor': 0, 'refused_level3': 28, 'not_checkable': 0}, 'Geneva': {'checked': 512, 'refused_resynthesis': 128, 'refused_floor': 0, 'refused_level3': 28, 'not_checkable': 0}, 'Torino': {'checked': 512, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}, 'Kingston': {'checked': 512, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}}
+A9 L3T_CHECK_STATS (X): {'Auckland': {'accepted': 100, 'refused': 28, 'unavailable': 0}, 'HanoiV2': {'accepted': 100, 'refused': 28, 'unavailable': 0}, 'Algiers': {'accepted': 100, 'refused': 28, 'unavailable': 0}, 'Geneva': {'accepted': 100, 'refused': 28, 'unavailable': 0}, 'Torino': {'accepted': 128, 'refused': 0, 'unavailable': 0}, 'Kingston': {'accepted': 128, 'refused': 0, 'unavailable': 0}}
+C12 EXACT_STATS (Y): {'Auckland': {'checked': 6175, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}, 'Torino': {'checked': 6175, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}, 'Kingston': {'checked': 6175, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}, 'HanoiV2': {'checked': 6175, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}, 'Algiers': {'checked': 6175, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}, 'Geneva': {'checked': 6175, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}, 'Fez': {'checked': 6175, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}, 'Marrakesh': {'checked': 6175, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}, 'Aachen': {'checked': 6175, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}}
+A9 wrong on sampled F: 0 max 8.5e-15
+Y rows differing (C12 vs R41): {'Auckland': 0, 'Torino': 0, 'Kingston': 0, 'HanoiV2': 0, 'Algiers': 0, 'Geneva': 0, 'Fez': 0, 'Marrakesh': 0, 'Aachen': 0}
+median compile s by X arm: {'RPSF': 0.0258, 'R41': 0.1104, 'C12': 0.13, 'L3T': 0.01, 'A8': 0.5722, 'A9': 0.5828}

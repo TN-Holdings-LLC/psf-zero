@@ -75,6 +75,14 @@ a8 (2026-10-04, home; adopted 2026-10-04, Addenda 336-338) changes only what hap
       `final_resynthesis="select"`, `compare_level3=True`; caller kwargs override), which used no failed element in
       any test. Without a target, and at or below `SMALL_MAX_QUBITS`, a8 behaves exactly as a7.
 
+a9 (2026-10-05, home; adopted 2026-10-05, Addenda 342-344) checks the one circuit it takes from Qiskit whole:
+  14. Item 12 added Qiskit level 3's output for the target as a candidate without checking that it is equivalent to
+      the input. On cx devices that output is exposed to Qiskit issue #17057 (Addendum 294): a workplace probe
+      (Addendum 340) found level 3 wrong on 8 of 10 explicit near-boundary unitary circuits on FakeAuckland, the kind
+      of `unitary` gate a model writes. a9 uses that output only if the release's `_implements` (psf_compile item
+      39) confirms it; if the release has no such check, the output is not used. Everything else is a8's (its large-
+      circuit path calls the release, which checks its own Qiskit-made circuits from item 39 on).
+
 Circuits above `SMALL_MAX_QUBITS` go to `compile_for_hardware()`: without a target unchanged (a7), with a target by
 the release's recommended call (a8, item 13).
 The layout of the routed circuit (initial and final) is preserved by every step.
@@ -93,7 +101,7 @@ from qiskit.transpiler.passes import (BasisTranslator, Collect2qBlocks, Commutat
 
 import psf_compile as pc
 
-AI_COMPILE_VERSION = "2026-10-04.a8"  # adopted 2026-10-04 (Addenda 336-338): a7 + target-aware large-circuit path (item 13); a7 is psf_ai_compile_a7.py
+AI_COMPILE_VERSION = "2026-10-05.a9"  # adopted 2026-10-05 (Addenda 342-344): a8 + equivalence check of level 3's output (item 14); a8 is psf_ai_compile_a8.py
 SMALL_MAX_QUBITS = 8
 DEFAULT_SEEDS = (0, 1, 2, 3)
 L3_LAYOUT_CANDIDATE = True
@@ -108,6 +116,7 @@ STATE_AWARE = True  # a4: score placements and candidates by the state-aware fir
 POLISH_ROUNDS = 3
 FAST_PATH_TARGET = True  # a8: above SMALL_MAX_QUBITS with a target, use the release's recommended call (item 13)
 FAST_PATH_RECOMMENDED = dict(placement_refine=True, final_resynthesis="select", compare_level3=True)
+L3T_CHECK_STATS = {"accepted": 0, "refused": 0, "unavailable": 0}  # a9 (item 14)
 
 
 def _two_q(c):
@@ -597,6 +606,17 @@ def compile_for_model_circuit(qc, coupling_map, basis_gates, entangling_basis="c
     if target is not None:
         top = sorted(cands, key=lambda kc: kc[0])
         top = [kc for kc in top if kc[0][0] <= top[0][0][0] + REMAP_EXTRA_2Q][:REMAP_TOP]
+        if l3t_out is not None and L3T_OUTPUT_CANDIDATE:
+            # a9 (item 14): only if the release confirms that level 3's output implements the input
+            check = getattr(pc, "_implements", None)
+            if check is None:
+                L3T_CHECK_STATS["unavailable"] += 1
+                l3t_out = None
+            elif not check(qc, l3t_out):
+                L3T_CHECK_STATS["refused"] += 1
+                l3t_out = None
+            else:
+                L3T_CHECK_STATS["accepted"] += 1
         if l3t_out is not None and L3T_OUTPUT_CANDIDATE:
             # a7: always scored when within REMAP_EXTRA_2Q of PSF-Zero's best, not subject to the REMAP_TOP cut
             key = (_two_q(l3t_out), _depth2q(l3t_out))

@@ -1,0 +1,7 @@
+  FakeKingston F1: 432 rows, 301 s
+  FakeKingston F2: 672 rows, 453 s
+  FakeKingston F3: 972 rows, 790 s
+  FakeKingston F4: 1242 rows, 985 s
+  FakeKingston F5: 1386 rows, 1062 s
+  FakeKingston F6: 1506 rows, 1134 s
+wrote exact_y_FakeKingston.json: 1506 circuits, 0 differ, 1134 s

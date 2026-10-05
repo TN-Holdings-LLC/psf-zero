@@ -1,7 +1,9 @@
-"""Tests for the adopted AI front end psf_ai_compile 2026-10-04.a8 (benchmarks/psf_ai_compile.py), adapted from the
+"""Tests for the AI front end psf_ai_compile 2026-10-04.a8 (adopted 2026-10-04; kept as benchmarks/psf_ai_compile_a8.py
+since a9 was adopted on 2026-10-05), adapted from the
 candidate's tests (patches/psf_ai_compile_a8_2026-10-04/test_a8.py); a7 is benchmarks/psf_ai_compile_a7.py.
 
 Run from the repository root:  python -m pytest benchmarks/test_ai_compile_a8.py -q
+The release it runs with is the current one (2026-10-04.1 when a8 was adopted).
 """
 import math
 import os
@@ -22,7 +24,7 @@ def mods():
     lay = H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psl_a8_release_test")
     sys.modules["psf_smart_layout"] = lay
     a7 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile_a7.py"), "psf_ai_compile_a7_frozen_test")
-    a8 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile.py"), "psf_ai_compile")
+    a8 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile_a8.py"), "psf_ai_compile_a8_frozen_test")
     return dict(rel=rel, a7=a7, a8=a8)
 
 
@@ -112,7 +114,7 @@ REC = dict(placement_refine=True, final_resynthesis="select", compare_level3=Tru
 def test_version(mods):
     assert mods["a8"].AI_COMPILE_VERSION == "2026-10-04.a8"
     assert mods["a7"].AI_COMPILE_VERSION == "2026-10-02.a7"
-    assert mods["rel"].VERSION == "2026-10-04.1"
+    assert mods["rel"].VERSION == "2026-10-05.1"  # current release
 
 
 def test_small_circuits_identical_to_a7(mods):
