@@ -61,6 +61,20 @@ in place, so there is never a second, differently-named copy to pick between
 [`psf_smart_layout.py`](benchmarks/psf_smart_layout.py) — the layout-search prototype,
 repaired 2026-09-20 (four defects found and fixed, verified end-to-end; see below).
 
+> **Known defect, found 2026-10-05 (fix under test: Addenda 340-342).** On cx devices, the recommended call of
+> 2026-10-04.1 can return a circuit that is NOT equivalent to the input. The same holds for every call with
+> `final_resynthesis` or `compare_level3` since 2026-10-03.1.
+>
+> - **When:** the input contains two-qubit unitaries near the boundary of Qiskit issue #17057, for example explicit
+>   `unitary` gates from numerical optimisation or written by a language model. The cause is that circuits made by
+>   Qiskit were used without an equivalence check.
+> - **Until the fix is released:** for such circuits on cx devices, use `target=..., placement_refine=True` without
+>   `final_resynthesis` and `compare_level3`, or check the result's equivalence yourself.
+> - **The AI front end** (`benchmarks/psf_ai_compile.py`) is affected the same way when given a target. A workplace
+>   exploration also found that on ecr devices it can return ECR gates in a direction the device does not provide.
+>   Until fixed, do not give it a target on cx or ecr devices.
+> - cz devices are not affected by the #17057 path.
+
 > **Current version (2026-10-04): `psf_compile.py` 2026-10-04.1, with `psf_smart_layout` 2026-10-01.1 and the Rust
 > core `CORE_VERSION` 2026-09-29.1 (both unchanged)** ([Part 9](docs/findings/spare-qubit-cliff-combined-248.md),
 > Addenda 334-338). One opt-in addition to 2026-10-03.3, and one recommended call on every device:

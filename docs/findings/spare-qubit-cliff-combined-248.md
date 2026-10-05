@@ -12712,6 +12712,397 @@ than the release's choice by 0.01-0.20% overall and by 6.3% on the H4 case.
   - the nine `h4_rescore_<device>.json`;
   - `summary.md`, logs, and `env.txt` (local paths replaced).
 
+
+---
+
+<!-- ===== Addendum 340 (source: spare-qubit-cliff-addendum-340-2026-10-05.md) ===== -->
+
+> **Note added when merging:** Workplace exploratory probe (not pre-registered), received on 2026-10-05; recorded as written, with a note added at home.
+
+## Addendum 340 -- Workplace exploratory probe (not pre-registered, not a test): release psf_compile 2026-10-04.1's recommended call is exposed to Qiskit #17057 on cx devices. On explicit near-boundary two-qubit unitaries it returned a non-equivalent circuit in 6 of 10 circuits (infidelity up to 0.19), where the 2026-10-02.2 call was exact in 10 of 10 (2026-10-05)
+
+**Status: exploratory probe at the workplace, written up for home. Not pre-registered; nothing here is a verdict.**
+
+- **Why it was run:** reading Part 9 (Addenda 294, 298-299 next to 323-338). Item 17's guard protects PSF-Zero's own
+  use of Qiskit's CX-basis decomposer. Items 35 (`final_resynthesis`) and 36 (`compare_level3`) add circuits
+  synthesised by Qiskit itself (`UnitarySynthesis`, and level 3's whole output), and neither path checks that the
+  result is equivalent to the input:
+  - `_final_resynthesis` refuses off-target instructions and failed directions only;
+  - `_acceptable` does the same;
+  - the choice (`excitation_cost`, `hybrid_cost`) ranks estimated noise, not correctness.
+- **Setting:** workplace sandbox (2 CPUs), Qiskit 2.5.2, qiskit-aer 0.17.2, core 2026-09-29.1; fake devices only.
+- **Files:** `psf_compile.py` and `benchmarks/psf_smart_layout.py` taken from `main` (release 2026-10-04.1, layout
+  2026-10-01.1), and `benchmarks/b17_practice_eval.py` for its circuit generators.
+
+## 1. Design
+
+**Circuits** (generators of `b17_practice_eval.circuits`, unchanged; first 5 seeds per cell; n = 4 and 6):
+
+| set | what it is | circuits per device |
+|---|---|---|
+| W1 near | Heisenberg Trotter cells where B17's PSFNG failed: (dt 1e-3, r 1e-4) and (dt 1e-2, r 1e-5) | 20 |
+| W1 control | (dt 0.1, r 1) | 10 |
+| W2 | four explicit near-boundary unitaries between random single-qubit layers | 10 |
+
+Each circuit gets a seeded random single-qubit layer prepended, so that a missing rotation shows in the output state.
+
+**Arms** (device Target, `entangling_basis="cx"`, `layout_search=True`, `seed_transpiler=0`):
+
+| arm | call |
+|---|---|
+| R_102_2 | `target`, `placement_refine=True` (2026-10-02.2's recommended call) |
+| R_resynth_always | the same + `final_resynthesis=True` |
+| R_recommended | 2026-10-04.1's recommended call (+ `final_resynthesis="select"`, `compare_level3=True`, `compare_floor=True`, `candidate_score="hybrid"`) |
+| L3T | Qiskit level 3 with the Target, `approximation_degree=1.0` |
+
+**Devices:** FakeAuckland (cx) and FakeTorino (cz, control: #17057 is in the CX/ZSX path only).
+
+**Check:** noiseless output-state infidelity of the compiled circuit on its touched qubits, after undoing the final
+layout, against the logical circuit's statevector. "Wrong" = infidelity > 1e-6 (B17's line).
+
+## 2. Results (wrong / circuits; largest infidelity)
+
+| device | set | R_102_2 | R_resynth_always | R_recommended | L3T |
+|---|---|---|---|---|---|
+| FakeAuckland (cx) | W1 near | 0/20 | **20/20** (up to 1.1e-2) | 0/20 | 0/20 |
+| FakeAuckland (cx) | W1 control | 0/10 | 0/10 | 0/10 | 0/10 |
+| FakeAuckland (cx) | W2 | 0/10 | **5/10** (0.19) | **6/10** (0.19) | **8/10** (0.19) |
+| FakeTorino (cz) | all | 0/40 | 0/40 | 0/40 | 0/40 |
+
+All exact rows are below 2e-12, so the check itself is sound.
+
+## 3. Reading
+
+- **2026-10-04.1's recommended call can return a wrong circuit on a cx device.** In this sample that happened on
+  explicit near-boundary unitaries (W2), by choosing either the item-35 re-synthesis or level 3's output. The
+  2026-10-02.2 call, which goes through item 17's guard only, was exact everywhere.
+- **Item 35's re-synthesis is wrong on every near-boundary Trotter circuit (W1 near, 20 of 20).** "select" did not
+  pick it in these 20, but nothing in the selection prevents it: the estimate scores noise, and a circuit with a
+  missing rz has about the same estimate.
+- **cz devices are not affected**, as expected from Addendum 294.
+- **Why the HOLD tests did not see it.** Their families (F1-F6, W1-W6) contain no near-boundary blocks, and their P0
+  checks would have caught it if they had.
+
+## 4. Suggested fix (for a candidate; not implemented here)
+
+- An exactness backstop in `_final_resynthesis` and `_acceptable`: compare the candidate with the release's own
+  circuit on the touched qubits (statevector-sized, as `excitation_cost` already is), and refuse it above a tolerance
+  such as 1e-9 per block or 1e-6 per circuit.
+- Or, at least for item 35, `UnitarySynthesis(..., pulse_optimize=False)`, the workaround of Addendum 294. That does
+  not cover level 3's output (item 36), which needs the backstop.
+- A test with B17's W1-near and W2 cells on FakeAuckland belongs in the candidate's tests.
+
+## 5. Limits
+
+- 5 seeds per cell, two devices, n = 4 and 6. How often this occurs in practice is not measured. B17 found such
+  inputs rare in plain physics workloads, but common whenever explicit near-boundary unitaries appear (numerical
+  optimisation, block consolidation by another tool, model-written `unitary` gates).
+- Not checked: ecr devices (the CX/ZSX path is the affected one), wider circuits, the AI front end a8.
+
+## 6. Files (workplace sandbox; raw SHA-256)
+
+| file | SHA-256 |
+|---|---|
+| [`data/2026-10-05/nearboundary/nb_probe.py`](../../data/2026-10-05/nearboundary/nb_probe.py) (as saved; the run used `878be625…`, which differed only in a hard-coded local `sys.path` line) | `e18c390794727df78ccc5595c47eeac5c383decb325518a06a46887e3598037b` |
+| `psf_compile.py` (main, 2026-10-04.1) | `ea281f1e8a90ca933b27de37510e2467417823688382aff3a5f018b13678e37b` |
+| `benchmarks/b17_practice_eval.py` (main) | `46e3eb303202f8b35ee6c3cbbb4ceffa15ca91f96dda2ea6d02ca38ee743eb6d` |
+| `benchmarks/psf_smart_layout.py` (main) | `19207cea59745f37ce4df8fc1fd26d5d4ec27402454d20b1e8a7af6b552f6470` |
+
+**Note added at home (2026-10-05):** the script is kept in the repository as `data/2026-10-05/nearboundary/nb_probe.py`
+(SHA-256 of the file as received, LF line endings: the value in the table). The probe's numbers were not re-run at
+home; the pre-registered test EXACT (Addendum 342) includes the same comparison on fresh circuits.
+
+
+---
+
+<!-- ===== Addendum 341 (source: spare-qubit-cliff-addendum-341-2026-10-05.md) ===== -->
+
+> **Note added when merging:** Results of the workplace QML pre-registration of 2026-10-01, received on 2026-10-05; recorded as written, with a note added at home.
+
+## Addendum 341 -- Workplace results: the QML test (pre-registration `qml-preregistration-2026-10-01.md`, Amendment 1 `qml-amendment1-2026-10-04.md`). Five of six confirmed, Q3 ambiguous: a better compiler keeps more of the classifier's signal and trains it to a lower loss, but the deployed accuracy does not move (2026-10-05)
+
+**Status: results of the workplace pre-registration of 2026-10-01, scored by the locked `qml_eval.py score`.**
+
+- **Setting:** workplace sandbox (2 CPUs), Qiskit 2.5.2, qiskit-aer 0.17.2, core 2026-09-29.1; fake devices and Aer
+  noise only.
+- **Re-runs:** only the two A5 training runs stopped by the infrastructure interruption of 2026-10-01, re-run
+  identically under Amendment 1. Every logged value of the interrupted runs was reproduced exactly (A5-911 at
+  iterations 0 and 20: test accuracy 0.8167, loss 0.75055; A5-912 at iteration 0).
+- **Relation to home:** home ran an independent test of the same question the same day (Addenda 290-291, 296-297).
+  This test reaches the same picture and adds little beyond it. It is recorded for completeness.
+
+## 1. Verdicts
+
+| ID | Verdict | Numbers |
+|---|---|---|
+| C0 | OK | versions 2026-09-28.1, 2026-10-01.c2, 2026-10-01.a5 in all 10 files |
+| Q1 | **CONFIRMED** | 32 of 32 compiled model circuits exact |
+| Q2 | **CONFIRMED** | median retention A5 vs REL: Auckland 0.814 vs 0.719, Torino 0.900 vs 0.772 |
+| Q3 | **AMBIGUOUS** | pooled deployed accuracy A5 - REL = -0.010 (confirm >= +0.02, refute < -0.02) |
+| Q4 | **CONFIRMED** | retention A5 vs L3T: 0.814 vs 0.820, 0.900 vs 0.900 |
+| Q5 | **CONFIRMED** | mean final test loss under noisy training: A5 0.674, REL 0.778 (L3T 0.710) |
+| Q6 | **CONFIRMED** | mean final test accuracy: A5 0.833, REL 0.758 (L3T 0.792) |
+
+## 2. Numbers
+
+**Deployment** (teachers 911-914; ideal test accuracy 0.875 on both devices):
+
+| device | noisy acc REL / C2 / A5 / L3T | median retention REL / C2 / A5 / L3T |
+|---|---|---|
+| FakeAuckland | 0.871 / 0.871 / 0.871 / 0.879 | 0.719 / 0.719 / 0.814 / 0.820 |
+| FakeTorino | 0.896 / 0.883 / 0.875 / 0.871 | 0.772 / 0.811 / 0.900 / 0.900 |
+
+**Training under noise** (SPSA, 80 iterations, FakeAuckland; final test loss / accuracy):
+
+| arm | teacher 911 | teacher 912 |
+|---|---|---|
+| REL | 0.773 / 0.733 | 0.784 / 0.783 |
+| C2 | 0.773 / 0.733 | 0.784 / 0.783 |
+| A5 | 0.631 / 0.900 | 0.717 / 0.767 |
+| L3T | 0.725 / 0.767 | 0.695 / 0.817 |
+
+## 3. Reading
+
+- **Signal, not accuracy.** A5 and L3T keep 9-13 points more of the model's output than the released compiler, but
+  on this well-separated test set noise rarely flips a sign, so deployed accuracy is level (Q3). Home's Addendum 291
+  found the same, and Addendum 297 showed that a fragile test set is needed to see accuracy move.
+- **Training.** With the noisy device inside the loss, A5 reached the lowest test loss on both teachers. With two
+  teachers and one SPSA run each, the accuracy difference (Q6) is within run-to-run noise. The loss difference (Q5)
+  is the more reliable of the two.
+- **C2 equals REL on FakeAuckland** (identical circuits), and improves retention on FakeTorino (0.772 → 0.811), as in
+  Addendum 291.
+- **By construction.** A5's estimate shares the simulator's physics, so Q2, Q4 and Q5 favour it (Addenda 286-297).
+
+## 4. Files (workplace sandbox `qml/run/`)
+
+`d_auck.json`, `d_tor.json`, `t_{REL,C2,A5,L3T}_{911,912}.json`, their logs, `score.txt`, and `interrupted/` (the logs of
+the two interrupted runs).
+
+**Note added at home (2026-10-05):**
+
+- The run files are in the workplace sandbox only. They are not in this repository.
+- The pre-registration and its Amendment 1 are in the workplace Project.
+- **One point to keep in view.** Q1 checked exactness on model circuits compiled by the release of that day
+  (2026-09-28.1) and by a5. Addendum 340 found that the level-3 output a7 and a8 accept (item 12, added after this
+  test) is not checked for equivalence. Q1 does not cover that path.
+
+
+---
+
+<!-- ===== Addendum 342 (source: spare-qubit-cliff-addendum-342-2026-10-05.md) ===== -->
+
+> **Note added when merging:** Pre-registration of EXACT (candidates psf_compile 2026-10-05.c12 and psf_ai_compile 2026-10-05.a9); the predictions were written before the smoke run, which was run and seen at the workplace (section 5.2); the lock is the commit that adds it.
+
+## Addendum 342 -- Pre-registration: candidates psf_compile 2026-10-05.c12 and psf_ai_compile 2026-10-05.a9, which check every circuit Qiskit makes for equivalence before it can be returned; are the recommended calls exact again on near-boundary workloads, with nothing changed where Qiskit is exact (EXACT) (2026-10-05)
+
+**Status: pre-registration, written at home before any run of the candidates.**
+
+- **Lock:** the git commit that adds this document, with:
+  - `patches/psf_compile_c12_2026-10-05/` (the candidate and its tests);
+  - `patches/psf_ai_compile_a9_2026-10-05/` (the candidate and its tests);
+  - `benchmarks/exact_eval.py` and its runner.
+
+  The commit is pushed before the scored run.
+- **No hardware:** fake devices only. Noiseless checks.
+- **The predictions (section 4) were written before the smoke run.**
+
+## 1. The defect (Addenda 340, 294, 298-299)
+
+**Item 17's guard** checks every block that PSF-Zero leaves to Qiskit's CX decomposer.
+
+**Unchecked paths.** Three later items brought in circuits that Qiskit synthesised as a whole, and nothing checked
+them:
+
+| item | what Qiskit made |
+|---|---|
+| 35 (2026-10-03.1) | the re-synthesis (`UnitarySynthesis`) |
+| 36-37 (2026-10-03.2, .3) | level 3's output |
+| 12 of the AI front end (a7, 2026-10-02) | level 3's output |
+
+**On cx devices** all of them are exposed to Qiskit issue #17057.
+
+**The workplace probe (Addendum 340, FakeAuckland):**
+
+- release 2026-10-04.1's recommended call: wrong on 6 of 10 explicit near-boundary unitary circuits, infidelity up to
+  0.19;
+- the re-synthesis: wrong on 20 of 20 near-boundary Trotter circuits;
+- 2026-10-02.2's call (the guard only): exact on all of them.
+
+**Which releases are affected:** every release from 2026-10-03.1 on, when called with `final_resynthesis` or
+`compare_level3`, and the front end since a7. No HOLD test had near-boundary blocks, and their P0 checks would have
+caught one.
+
+## 2. The candidates
+
+**c12 (item 39)** adds two checks. Both are statevector simulations of at most 16 qubits, as the estimates already
+are.
+
+| check | what it tests |
+|---|---|
+| `_same_action` | item 35's re-synthesis acts like the release's own circuit on two seeded random product states of every touched qubit |
+| `_implements` | the floor and level-3 candidates map two seeded random product states of the input's qubits, placed by the initial layout, to the input's output states at the final layout, with every other touched qubit back in \|0> |
+
+- **Tolerance:** state infidelity 1e-6, global phase ignored.
+- **A failed check, or one that cannot be made, refuses the candidate.** The release's own, guarded circuit is kept.
+- **Checked on mock circuits:** routing with a final permutation (accepted); a wrong final layout, an extra rz(0.1),
+  an rz(3e-3) and an ancilla left in |1> (all refused); a global phase (accepted).
+
+**a9 (front-end item 14)** uses level 3's output only if the release's `_implements` confirms it, and not at all if
+the release has no such check. Its large-circuit path calls the release, which checks its own Qiskit-made circuits
+from item 39 on.
+
+## 3. Design (`benchmarks/exact_eval.py`)
+
+### Part X: exactness
+
+**Devices:** FakeAuckland, FakeHanoiV2, FakeAlgiers, FakeGeneva (cx) and FakeTorino, FakeKingston (cz).
+
+**Circuits:** B17's generator code, copied unchanged except the seed base (B17's + 2,000,000), at n = 4 and 6. Each
+circuit gets a seeded random single-qubit layer prepended, as in Addendum 340. 128 per device:
+
+| cell | what it is | circuits |
+|---|---|---|
+| X1 | near-boundary Trotter, (dt, r) = (1e-3, 1e-4), (1e-3, 1e-5), (1e-2, 1e-5) | 8 per cell and n |
+| X2 | control Trotter, (0.1, 1.0) | 4 per n |
+| X3 | explicit near-boundary unitaries (W2) | 20 per n |
+| X4 | Haar unitaries (W3) | 8 per n |
+| X5 | small-angle ansatz (W4), s = 1e-4 and 1e-3 | 4 each, per n |
+
+**Arms:**
+
+| arm | what it is |
+|---|---|
+| RPSF | target + `placement_refine` (2026-10-02.2's call) |
+| R41 | release 2026-10-04.1's recommended call |
+| C12 | the candidate with the same call |
+| L3T | Qiskit level 3 with the Target |
+| A8 | the adopted front end |
+| A9 | the candidate front end, with c12 as its release |
+
+**Metric:** the workplace probe's `state_infid`. It is the noiseless output-state infidelity on the touched qubits,
+after undoing the final layout, computed with Qiskit's `Statevector` and `partial_trace`, independently of item 39's
+code. A circuit is wrong if its infidelity is > 1e-6.
+
+### Part Y: no change where Qiskit is exact
+
+**Circuits:** all of HOLD6's F circuits, 1,506 per device, on nine devices.
+
+**What is compared:**
+
+- R41 and C12 with the recommended call, instruction by instruction;
+- C12's output, checked for exactness as in part X;
+- A8 (with the release) and A9 (with c12), on every tenth circuit.
+
+**Size:** 45 jobs (36 X, 9 Y).
+
+## 4. Predictions (scored only by `exact_eval.py score`; written before the smoke run)
+
+**P0, harness.** Both must hold, or nothing below is scored:
+
+- 45 files;
+- no compile error.
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| E1 | c12 is exact | C12 wrong on 0 of part X's circuits | any wrong |
+| E2 | a9 is exact | A9 wrong on 0 of part X's circuits | any wrong |
+| E3 | the defect reproduces | R41 wrong on at least one X3 circuit on at least 3 of the 4 cx devices | R41 never wrong on X3 on any cx device |
+| E4 | cz devices are not affected | R41 wrong on 0 circuits on FakeTorino and FakeKingston | any wrong |
+| E5 | the guarded call is exact | RPSF wrong on 0 circuits | any wrong |
+| E6 | nothing changes where Qiskit is exact | C12 identical to R41 on >= 99.5% of the F circuits on every device | < 98% on any device |
+| E7 | the same for the front end | A9 identical to A8 on >= 99% of the sampled F circuits on every device | < 95% on any device |
+| E8 | c12 is exact on ordinary circuits | C12 wrong on 0 F circuits | any wrong |
+| E9 | the check is cheap | median compile time C12 <= 1.2 × R41 (F circuits) | > 2 × R41 |
+
+**How the thresholds were set** (disclosed):
+
+- **E3** rests on the workplace probe (6 of 10 on FakeAuckland) and on B17 (Qiskit wrong on 70.7% of explicit
+  near-boundary unitaries).
+- **E6 and E8** rest on HOLD6, whose noiseless check found every R41 output exact. Where every Qiskit-made candidate
+  is exact, c12 must make the same choice. Differences can only come from a check that cannot be made, or from one
+  that refuses an exact circuit.
+- **The scorer** was run on synthetic files, as a plumbing check.
+
+**Reported without prediction:**
+
+- the cell table;
+- how often A8 and L3T are wrong;
+- c12's check counters and a9's (`EXACT_STATS`, `L3T_CHECK_STATS`);
+- a9's exactness on the sampled F circuits.
+
+## 5. Development (disclosed)
+
+### 5.1 How the candidates were built
+
+Both were generated by scripts from the adopted files:
+
+- **c12**, from release 2026-10-04.1;
+- **a9**, from a8.
+
+Only the items described in section 2 and the version lines were changed.
+
+### 5.2 Tests and smoke run, at the workplace (disclosed)
+
+**The staged files were checked at the workplace before the lock**
+(`exact-stage-review-2026-10-05.md`, workplace sandbox, 2 CPUs).
+
+- The four files it ran have the SHA-256 values of the staged ones: `exact_eval.py` `7fee5e2f…`, the runner
+  `2d77dad1…`, c12 `7fd9eefc…`, a9 `9829e6b6…`.
+- Nothing was changed after these checks. The predictions in section 4 were written before them and are unchanged.
+
+**Tests:**
+
+- `test_c12_exact.py` and `test_a9.py`: 11 of 11 passed.
+- The release's current test set (82 tests): all passed.
+
+**The probe of Addendum 340 re-run on c12** (FakeAuckland):
+
+- c12 was wrong on 0 of 10 W2 circuits, where release 2026-10-04.1 was wrong on 6 of 10.
+- c12 refused level 3's output 8 times. That is exactly the 8 wrong outputs of level 3 alone.
+
+**The smoke run was run at the workplace, and its output was seen before the lock.** 45 jobs, 295 s, no Traceback.
+Its verdict lines (not a result):
+
+| E1 | E2 | E3 | E4 | E5 | E6 | E7 | E8 | E9 |
+|---|---|---|---|---|---|---|---|---|
+| CONFIRMED | CONFIRMED | **REFUTED** | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | **AMBIGUOUS** |
+
+- **E3** came out refuted because the smoke run's X3 has only 2 circuits (one per n), the same 2 on every device.
+  Neither was wrong even for level 3 alone (0 of 16).
+- **E9** came out ambiguous at 1.20 × (Y) and 1.24 × (X), on the workplace's 2 CPUs.
+
+**Disclosed, not changed:**
+
+- **The X circuits are the same on every device.** The "3 of 4 cx devices" of E3 are therefore not four independent
+  draws.
+- **E9's threshold (1.2 ×) is tight.** It was set before the smoke run and is kept.
+
+**At home before the lock:** the two candidate test files are run again; `test_c12_exact.py` 7 of 7 passed (8.8 s) and `test_a9.py` 4 of 4 (15.7 s), at home on 2026-10-05 at 20:05 JST at commit `5cfa7c3`. No other change was made.
+
+## 6. What this will not establish
+
+- **How often near-boundary inputs occur in real use.**
+- **ecr devices.** They are on the affected CX path, but no ecr device has been tested yet. Addendum 293 found the
+  T1/T2 floor problem largest there.
+- **Circuits above 16 touched qubits.** There the candidates refuse every Qiskit-made circuit. On the recommended
+  call nothing is lost: without an estimate, items 35-38 already kept the release's own circuit. Only
+  `final_resynthesis=True` changes.
+- **Hardware.**
+
+## 7. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `patches/psf_compile_c12_2026-10-05/psf_compile.py` | `1dc9b9b1d5b08118c33cad81bfc4be4905b5e593a3c60abab6caa56835685ab1` |
+| `patches/psf_compile_c12_2026-10-05/test_c12_exact.py` | `e8e70aed811b855e5a0686483aab993ec815830f345849a7d9b637f334380132` |
+| `patches/psf_ai_compile_a9_2026-10-05/psf_ai_compile.py` | `f6df9f7a28c8fac8e72116cf138cbc30781b1d48b5557d445e53484c19674b54` |
+| `patches/psf_ai_compile_a9_2026-10-05/test_a9.py` | `e81f704fd880d7b84b96f3b8f55d8cb72fe6f397cdf26d46f0f7166a7bed266b` |
+| `benchmarks/exact_eval.py` | `f99cb9ee57ee21546623a818989cf2356d6f022696618313386e98b6b0193812` |
+| `benchmarks/run_exact_2026-10-05.sh` | `cddf12dff2b0d0333b12c1f350a4f5652aec24a1b8f5f1146cd3317beddf36ce` |
+
+Normalization: CRLF to LF, trailing whitespace stripped from each line, trailing blank lines dropped, lines joined
+with "\n" and no final newline.
+
 ---
 
 ---
