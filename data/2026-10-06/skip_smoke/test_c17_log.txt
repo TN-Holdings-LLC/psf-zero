@@ -1,0 +1,5 @@
+$ python -m pytest patches/psf_compile_c17_2026-10-06/test_c17.py -q -s -p no:cacheprovider 2>&1 | tail -15
+........auckland0: 27 qubits on FakeAuckland; release 6.33 s, c17 0.06 s; skipped {'resynthesis': 1, 'floor': 1, 'level3': 1}
+.ham48: 48 qubits on FakeTorino; release 0.36 s, c17 0.07 s; skipped {'resynthesis': 1, 'floor': 1, 'level3': 1}
+.
+10 passed in 39.64s

@@ -1,0 +1,17 @@
+  0 ring10m rel 0.161 s c17 0.195 s identical True skipped {'resynthesis': 0, 'floor': 0, 'level3': 0}
+  1 ring16m rel 1.509 s c17 1.683 s identical True skipped {'resynthesis': 0, 'floor': 0, 'level3': 0}
+  2 ring17m rel 0.124 s c17 0.030 s identical True skipped {'resynthesis': 1, 'floor': 1, 'level3': 1}
+  3 ring48m rel 0.815 s c17 0.243 s identical True skipped {'resynthesis': 1, 'floor': 1, 'level3': 1}
+  4 brick10m rel 0.478 s c17 0.458 s identical True skipped {'resynthesis': 0, 'floor': 0, 'level3': 0}
+  5 brick16m rel 4.928 s c17 5.996 s identical True skipped {'resynthesis': 0, 'floor': 0, 'level3': 0}
+  6 brick17m rel 0.163 s c17 0.044 s identical True skipped {'resynthesis': 1, 'floor': 1, 'level3': 1}
+  7 brick48m rel 1.071 s c17 0.324 s identical True skipped {'resynthesis': 1, 'floor': 1, 'level3': 1}
+  8 pauli10m rel 1.338 s c17 1.568 s identical True skipped {'resynthesis': 0, 'floor': 0, 'level3': 0}
+  9 pauli16m rel 45.332 s c17 59.119 s identical True skipped {'resynthesis': 0, 'floor': 0, 'level3': 0}
+ 10 pauli17m rel 0.339 s c17 0.061 s identical True skipped {'resynthesis': 1, 'floor': 1, 'level3': 1}
+ 11 pauli48m rel 1.221 s c17 0.132 s identical True skipped {'resynthesis': 1, 'floor': 1, 'level3': 1}
+ 12 qft10m rel 0.677 s c17 0.707 s identical True skipped {'resynthesis': 0, 'floor': 0, 'level3': 0}
+ 13 qft16m rel 15.690 s c17 17.516 s identical True skipped {'resynthesis': 0, 'floor': 0, 'level3': 0}
+ 14 qft17m rel 0.272 s c17 0.059 s identical True skipped {'resynthesis': 1, 'floor': 1, 'level3': 1}
+ 15 qft48m rel 1.672 s c17 0.351 s identical True skipped {'resynthesis': 1, 'floor': 1, 'level3': 1}
+wrote skip_FakeKingston_smoke.json: 16 circuits, 252.7 s

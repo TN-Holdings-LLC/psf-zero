@@ -17273,6 +17273,155 @@ one pytest session per file (WSL2; Python 3.12.13, Qiskit 2.5.2, NumPy 2.5.3, `p
 - For a `PauliEvolutionGate`, item 39 now checks against its product formula, not the exact exponential: a compiler
   output is accepted if it implements the same product formula.
 
+
+---
+
+<!-- ===== Addendum 379 (source: spare-qubit-cliff-addendum-379-2026-10-06.md) ===== -->
+
+> **Note added when merging:** Pre-registration of SKIP; the predictions were written before the smoke run of section 5, which was seen; the lock is the commit that adds it, pushed before the scored run.
+
+## Addendum 379 -- Pre-registration: candidate psf_compile 2026-10-06.c17 (changelog item 45: alternatives that item 39 cannot check are not built) against release 2026-10-06.3, with the recommended call (SKIP) (2026-10-06)
+
+**Status: pre-registration.**
+
+- **Lock:** the git commit that adds this document, **pushed to GitHub before the scored run**. It locks the candidate
+  [`patches/psf_compile_c17_2026-10-06/psf_compile.py`](../../patches/psf_compile_c17_2026-10-06/psf_compile.py), its
+  test [`test_c17.py`](../../patches/psf_compile_c17_2026-10-06/test_c17.py),
+  [`benchmarks/skip_eval.py`](../../benchmarks/skip_eval.py) (run and score), the runner
+  [`benchmarks/run_skip_2026-10-06.py`](../../benchmarks/run_skip_2026-10-06.py) and
+  [`benchmarks/skip_verify.py`](../../benchmarks/skip_verify.py), an independent re-computation of every verdict
+  written before any scored output exists (it does not import `skip_eval.py`).
+- **No hardware:** fake devices only, at home (WSL2, 12 CPUs).
+- **The predictions (section 4) are in `skip_eval.py score`. They were written before the smoke run** (section 5) and
+  are not changed.
+
+## 1. Why
+
+Item 39 (2026-10-05) refuses a Qiskit-made candidate whose equivalence check cannot be made, and `_implements` cannot
+be made for a logical circuit of more than `RESYNTH_MAX_QUBITS` (16) qubits, nor `_same_action` for a circuit touching
+more than 16. Above 16 qubits the recommended call therefore built the floor candidate (a second full compile) and
+Qiskit level 3 only to refuse them, and item 35's re-synthesis likewise. Addendum 377 (section 5) found this from the
+code and one run's counters; it explains G9 of PL-GPU-REDO (Addendum 376), where at full occupancy of FakeAuckland
+the recommended call took 6.4 s and returned the default call's circuit on 30 of 30 laps.
+
+## 2. The candidate (changelog item 45)
+
+[`psf_compile.py`](../../patches/psf_compile_c17_2026-10-06/psf_compile.py) is release 2026-10-06.3 with:
+
+- with more than 16 logical qubits, neither the floor candidate (item 37) nor level 3 (item 36, both paths) is built;
+- item 35's re-synthesis (`final_resynthesis`, "select" or always) is not built for a circuit touching more than 16
+  qubits;
+- each skip counted in `SKIP_STATS`.
+
+What is skipped is exactly what 2026-10-06.3 refuses, so the returned circuit should be 2026-10-06.3's. Only counters
+(`COMPARE_STATS`, `EXACT_STATS`, `RESYNTH_STATS`, `PRUNE_STATS` of the floor's compile) and the calls of a `callback`
+during the floor's compile differ. The name c17 is the one Addendum 376 gave this idea; item 45 is unused.
+
+**Test** ([`test_c17.py`](../../patches/psf_compile_c17_2026-10-06/test_c17.py), home WSL2, 13:0x UTC;
+[`test_c17_log.txt`](../../data/2026-10-06/skip_smoke/test_c17_log.txt)): **10 passed.** Outputs identical to
+2026-10-06.3 up to 16 qubits on four devices (nothing skipped) and above 16 under three option sets; at full
+occupancy of FakeAuckland 6.33 s (release) against 0.06 s (c17), on a 48-qubit Hamiltonian on FakeTorino 0.36 s
+against 0.07 s, the same circuit.
+
+## 3. Design ([`benchmarks/skip_eval.py`](../../benchmarks/skip_eval.py))
+
+**Circuits** per device, at seeds 81,000,000 + k (smoke: 81,500,000 + k, 1 per cell), none used before:
+
+| family | what it is |
+|---|---|
+| ring | two layers of random RY on every qubit and CZ along a line |
+| brick | four brickwork layers of Haar-random two-qubit unitaries on a line |
+| pauli | one `PauliEvolutionGate` (time 1) of 3n random Pauli strings of weight 2-4, as Benchpress builds HamLib tests |
+| qft | random single-qubit unitaries, then `QFTGate(n)` |
+| fullT | PL-GPU-REDO's family T at spare 0 (the full device), on FakeAuckland and FakeHanoiV2 only |
+
+- Sizes n = 10 and 16 (c17 skips nothing) and 17 and L (c17 skips level 3 and the floor); L = 26 on the 27-qubit
+  devices, 48 on the others. 3 circuits per (family, n): the first two with `measure_all()`, the third without.
+- 48 circuits per device; 51 on FakeAuckland and FakeHanoiV2 (3 fullT).
+
+**Devices:** FakeTorino, FakeKingston (cz); FakeAuckland, FakeHanoiV2 (cx); FakeBrussels, FakeOsaka (ecr).
+
+**Per circuit,** with the README's recommended call:
+
+1. a warm-up call of the release, discarded;
+2. the release and c17 in alternating order, each timed;
+3. the two outputs compared instruction by instruction, with clbits, parameters, global phase and where the logical
+   qubits start and end;
+4. c17's `SKIP_STATS` before and after its call;
+5. c17's output checked for instructions or couplings the target lacks, and, for ring, brick and qft circuits of 10
+   qubits, for exactness (the workplace probe's state infidelity, measurements removed; pauli circuits are left out
+   because the probe's reference is the exact exponential, Addendum 377).
+
+**Size:** 6 jobs, one per device, in parallel ([`run_skip_2026-10-06.py`](../../benchmarks/run_skip_2026-10-06.py));
+then `skip_eval.py score` and `skip_verify.py`.
+
+## 4. Predictions (scored only by `skip_eval.py score`; written before the smoke run)
+
+**P0:** all of these must hold, or nothing below is scored:
+
+- 6 files with 48 circuits (51 on the 27-qubit devices); not smoke; one `git_head`; no uncommitted change to a tracked
+  file; versions 2026-10-06.3 and 2026-10-06.c17;
+- no error; no c17 output off the target;
+- every exactness check made (54) and at most 1e-6.
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| K1 | c17 returns the release's circuit | identical on every circuit of every device | any circuit differs |
+| K2 | level 3 and the floor are skipped once per circuit above 16 qubits, never up to 16 | every circuit | any circuit |
+| K3 | faster above 16 qubits | median per-circuit time ratio c17 / release <= 0.5 on every device | > 0.9 on any |
+| K4 | no slower up to 16 qubits | median per-circuit time ratio <= 1.10 on every device | > 1.25 on any |
+
+**How the thresholds were set (disclosed):** K1 and K2 from the construction (section 2). K3 from `test_c17.py`
+(0.01 and 0.19 on two cases) with room for circuits where the default compile itself dominates. K4: up to 16 qubits
+c17 only adds a count of touched qubits, so any difference is timing noise; the band allows for it.
+
+**Reported without prediction:** the ratios per family; total compile time; on how many circuits re-synthesis was
+skipped; the compile times themselves.
+
+## 5. The smoke run (seen after the predictions were written)
+
+1 circuit per (family, n) and device (16, or 17 with fullT), 13:05:41-13:09:55 UTC, at `fcf9f6d` with the files above
+untracked; [`data/2026-10-06/skip_smoke/`](../../data/2026-10-06/skip_smoke/):
+
+| device | identical | skips as predicted | exact (3 checked) | above 16: median ratio | up to 16: median ratio |
+|---|---|---|---|---|---|
+| FakeTorino | 16/16 | yes | all <= 1e-12 | 0.220 | 1.067 |
+| FakeKingston | 16/16 | yes | all <= 1e-12 | 0.230 | 1.144 |
+| FakeAuckland | 17/17 | yes | all <= 1e-12 | 0.205 | 0.963 |
+| FakeHanoiV2 | 17/17 | yes | all <= 1e-12 | 0.268 | 0.984 |
+| FakeBrussels | 16/16 | yes | all <= 1e-12 | 0.206 | 1.056 |
+| FakeOsaka | 16/16 | yes | all <= 1e-12 | 0.275 | 1.128 |
+
+- No error and no output off the target. fullT: 7.78 s against 0.06 s (FakeAuckland), 8.09 s against 0.11 s
+  (FakeHanoiV2).
+- **Up to 16 qubits two smoke medians (1.144, 1.128) are above K4's 1.10.** Each rests on 8 circuits; the scored
+  run has 24 per device. K4 is not changed.
+- **Seen, not predicted:** at 16 qubits the recommended call itself is slow on some families, in both arms:
+  pauli 7.7-49.5 s, qft 15.7-36.5 s, brick about 5 s (release times). At 17 qubits the same families take 0.3-0.6 s
+  with the release (c17: 0.05-0.16 s). The cost at 16 is what the release builds and checks up to its 16-qubit limit
+  (level 3, the floor, the state-vector checks); it is reported in Addendum 380 and is a separate question from c17.
+
+## 6. Files and normalized SHA-256
+
+| file | normalized SHA-256 |
+|---|---|
+| [`patches/psf_compile_c17_2026-10-06/psf_compile.py`](../../patches/psf_compile_c17_2026-10-06/psf_compile.py) | `3547c79b6a672d8d17148b16fa1b480ae0de7c2ed72c65569add57a59add5f3a` |
+| [`patches/psf_compile_c17_2026-10-06/test_c17.py`](../../patches/psf_compile_c17_2026-10-06/test_c17.py) | `d5ec7fdb9a2a41b09ae0335fc5c7e1d3c9ce1d4c20f391eac39cc80be0c494ef` |
+| [`benchmarks/skip_eval.py`](../../benchmarks/skip_eval.py) | `9559c9aafd0b3b45a4e9321a1ba43adadb37da4699ee7920af8fca0b48d3f65d` |
+| [`benchmarks/skip_verify.py`](../../benchmarks/skip_verify.py) | `98ab89d0a83fefdce175df73a1de68286cf6828f4a5e9a329bdff547cb1783b7` |
+| [`benchmarks/run_skip_2026-10-06.py`](../../benchmarks/run_skip_2026-10-06.py) | `98fe5661eaa2b54831f981d1f67a2944806f903e3d97e8feacf7fb4f66d5698e` |
+| [`psf_compile.py`](../../psf_compile.py) (release 2026-10-06.3, unchanged) | `2a49f611fa99b6849afc4aef287aa4c03803aac2d2d1bf32840b4dc9dc80acb5` |
+
+**Command** (home WSL2, repository root, at the lock commit): `python benchmarks/run_skip_2026-10-06.py skip <out>`.
+
+## 7. Disclosures
+
+- **The predictions were written before the smoke run;** the smoke run was seen before this document. The two smoke
+  medians above K4's line (section 5) did not change K4.
+- **c17 and its test were written after Addendum 377's runs,** which motivated them; `test_c17.py` was run before the
+  predictions were written, and its two timings informed K3.
+- **Times are wall-clock times of one process per device, six in parallel,** on one machine.
+
 ---
 
 ---
