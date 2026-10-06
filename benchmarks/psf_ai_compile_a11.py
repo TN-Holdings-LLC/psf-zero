@@ -102,14 +102,6 @@ a11 (2026-10-05, workplace; adopted 2026-10-06, Addenda 358-362) keeps two-qubit
       and is fully on target; otherwise the release's recommended call is returned. On devices whose couplers work in
       both directions (cx with both entries, cz) nothing changes.
 
-a12 (2026-10-06; adopted 2026-10-06, Addenda 364-367) makes the state-aware re-placement faster without changing its result:
-  17. The re-placement (a4, `best_placement_state_aware`) scores up to MAX_MAPPINGS placements of each of up to
-      REMAP_TOP + 1 candidates, and every score looked up each gate's error parameters in the target again: on cz
-      devices it was 53-62% of a11's time (exploratory profile, 2026-10-06). a12 (a) keeps, within one call, the
-      parameters of each (gate, device qubits) once computed, and (b) re-places a candidate only once when the same
-      circuit was produced from more than one starting point or seed. The scores are the same numbers, added in the
-      same order, so every comparison and the returned circuit are unchanged.
-
 Circuits above `SMALL_MAX_QUBITS` go to `compile_for_hardware()`: without a target unchanged (a7), with a target by
 the release's recommended call (a8, item 13).
 The layout of the routed circuit (initial and final) is preserved by every step.
@@ -128,7 +120,7 @@ from qiskit.transpiler.passes import (BasisTranslator, Collect2qBlocks, Commutat
 
 import psf_compile as pc
 
-AI_COMPILE_VERSION = "2026-10-06.a12"  # adopted 2026-10-06 (Addenda 364-367): a11 + faster re-placement with the same result (item 17); a11 is psf_ai_compile_a11.py
+AI_COMPILE_VERSION = "2026-10-05.a11"  # adopted 2026-10-06 (Addenda 358-362): a9 + readout in the estimate (item 15) + gate direction kept (item 16); a9 is psf_ai_compile_a9.py
 SMALL_MAX_QUBITS = 8
 DEFAULT_SEEDS = (0, 1, 2, 3)
 L3_LAYOUT_CANDIDATE = True
@@ -465,45 +457,6 @@ def _state_weights(circ):
     return acc
 
 
-_MISSING = object()
-_INF = object()
-
-
-def _score_weights_cached(weights, target, mapping, cache):
-    """a12 (item 17): `_score_weights` with the per-(gate, device qubits) terms kept in `cache` (one call's lifetime).
-    The same values are added in the same order, so the result is the same float."""
-    total = 0.0
-    for (name, qs), (wdep, wq) in weights.items():
-        if name == "measure":
-            p = mapping[qs[0]]
-            e = cache.get(("measure", p), _MISSING)
-            if e is _MISSING:
-                props = _props_of(target, "measure", [p])
-                e = float(props.error) if props is not None and getattr(props, "error", None) is not None else None
-                cache[("measure", p)] = e
-            if e is not None:
-                total += e * wdep
-            continue
-        mq = tuple(mapping[q] for q in qs)
-        key = (name, mq)
-        prm = cache.get(key, _MISSING)
-        if prm is _MISSING:
-            if len(mq) == 2 and name in target.operation_names and mq not in target[name]:
-                prm = _INF
-            else:
-                prm = _gate_params(target, name, list(mq))
-            cache[key] = prm
-        if prm is _INF:
-            return float("inf")
-        if prm is None:
-            continue
-        pdep, th = prm
-        total += pdep * wdep
-        for (pxy, pz), (wxy, wz) in zip(th, wq):
-            total += pxy * wxy + pz * wz
-    return total
-
-
 def _score_weights(weights, target, mapping):
     total = 0.0
     for (name, qs), (wdep, wq) in weights.items():
@@ -531,12 +484,9 @@ def state_aware_cost(circ, target):
     return _score_weights(_state_weights(circ), target, {q: q for q in used})
 
 
-def best_placement_state_aware(out, target, coupling_map, max_mappings=MAX_MAPPINGS, cache=None):
-    """Like best_placement, scored by the state-aware estimate (weights computed once, placements from sums).
-    a12 (item 17): `cache` keeps the scoring terms across placements and candidates of one call."""
+def best_placement_state_aware(out, target, coupling_map, max_mappings=MAX_MAPPINGS):
+    """Like best_placement, scored by the state-aware estimate (weights computed once, placements from sums)."""
     import rustworkx as rx
-    if cache is None:
-        cache = {}
     weights = _state_weights(out)
     used = sorted({out.find_bit(q).index for inst in out.data for q in inst.qubits})
     edges = {tuple(sorted(qs)) for (name, qs) in weights if len(qs) == 2}
@@ -564,7 +514,7 @@ def best_placement_state_aware(out, target, coupling_map, max_mappings=MAX_MAPPI
         if len(inv) != len(U):
             continue
         mp = {U[i]: inv[i] for i in range(len(U))}
-        c = _score_weights_cached(weights, target, mp, cache)
+        c = _score_weights(weights, target, mp)
         if c < best_cost - 1e-15:
             best_cost, best_map = c, mp
         count += 1
@@ -738,27 +688,11 @@ def compile_for_model_circuit(qc, coupling_map, basis_gates, entangling_basis="c
             if key[0] <= top[0][0][0] + REMAP_EXTRA_2Q:
                 top.append((key, l3t_out))
         scored = []
-        cache, done = {}, {}  # a12 (item 17): scoring terms of this call; re-placements of identical circuits
         for key, out in top:
-            sg = None
-            if out is not l3t_out:
-                try:
-                    sg = tuple((i.operation.name, tuple(out.find_bit(q).index for q in i.qubits),
-                                tuple(out.find_bit(c).index for c in i.clbits),
-                                tuple(float(p) for p in i.operation.params)) for i in out.data)
-                    sg = (sg, out.global_phase, tuple(out.layout.initial_index_layout()),
-                          tuple(out.layout.final_index_layout()))
-                    hash(sg)
-                except Exception:  # an instruction whose parameters are not numbers: re-place it on its own
-                    sg = None
-            if sg is not None and sg in done:
-                placed, cost = done[sg]
-            elif STATE_AWARE:
-                placed, cost = best_placement_state_aware(out, target, coupling_map, cache=cache)
+            if STATE_AWARE:
+                placed, cost = best_placement_state_aware(out, target, coupling_map)
             else:
                 placed, cost = best_placement(out, target, coupling_map)
-            if sg is not None:
-                done[sg] = (placed, cost)
             scored.append((cost, key, placed, "L3T" if out is l3t_out else "PSF"))
         scored.sort(key=lambda t: (t[0], t[1]))
         best = scored[0][2]

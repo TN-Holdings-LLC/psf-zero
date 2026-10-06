@@ -1,0 +1,21 @@
+# SPEED score
+
+P0: PASS -- files 6 of 6; errors 0; inexact a12 outputs 0; off-target a12 outputs 0; counts ok True
+
+| device | identical | median a11 s | median a12 s | ratio of medians | median of ratios |
+|---|---|---|---|---|---|
+| FakeTorino | 128/128 | 0.669 | 0.401 | 0.600 | 0.611 |
+| FakeKingston | 128/128 | 0.852 | 0.464 | 0.544 | 0.555 |
+| FakeAuckland | 128/128 | 0.301 | 0.260 | 0.864 | 0.872 |
+| FakeHanoiV2 | 128/128 | 0.298 | 0.266 | 0.890 | 0.871 |
+| FakeBrussels | 128/128 | 0.541 | 0.401 | 0.741 | 0.743 |
+| FakeOsaka | 128/128 | 0.563 | 0.421 | 0.747 | 0.741 |
+
+## Predictions
+
+- S1 (a12 returns a11's circuit (identical on every circuit of every device; refuted if any differs)): **CONFIRMED** -- {"FakeTorino": 1.0, "FakeKingston": 1.0, "FakeAuckland": 1.0, "FakeHanoiV2": 1.0, "FakeBrussels": 1.0, "FakeOsaka": 1.0}
+- S2 (faster on the cz devices (median a12 / median a11 <= 0.75 on both; refuted > 1.00 on either)): **CONFIRMED** -- {"FakeTorino": 0.599575193705687, "FakeKingston": 0.5442867119324417}
+- S3 (not slower elsewhere (median ratio <= 0.90 on the cx and ecr devices; refuted > 1.05 on any)): **CONFIRMED** -- {"FakeAuckland": 0.8639141699329039, "FakeHanoiV2": 0.8902682146387225, "FakeBrussels": 0.7407937504616976, "FakeOsaka": 0.7474575217387442}
+
+Reported: median of per-circuit ratios a12 / a11: {"FakeTorino": 0.611, "FakeKingston": 0.555, "FakeAuckland": 0.872, "FakeHanoiV2": 0.871, "FakeBrussels": 0.743, "FakeOsaka": 0.741}
+

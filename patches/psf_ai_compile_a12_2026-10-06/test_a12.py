@@ -1,5 +1,5 @@
 """Tests for candidate psf_ai_compile 2026-10-06.a12 (changelog item 17: faster re-placement, same result) against the
-adopted front end a11 (benchmarks/psf_ai_compile.py), on the current release.
+adopted front end a11 (benchmarks/psf_ai_compile_a11.py since a12's adoption), on the current release.
 
 Run from the repository root:  python -m pytest patches/psf_ai_compile_a12_2026-10-06/test_a12.py -q
 """
@@ -25,7 +25,7 @@ def mods():
     import core_fix_c2_eval as H
     H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psf_smart_layout")
     rel = H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile")
-    a11 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile.py"), "psf_ai_compile_a11_for_a12_test")
+    a11 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile_a11.py"), "psf_ai_compile_a11_for_a12_test")  # a11 (frozen at a12's adoption)
     a12 = H.load_module(os.path.join(HERE, "psf_ai_compile.py"), "psf_ai_compile_a12_test")
     return dict(rel=rel, a11=a11, a12=a12)
 

@@ -1,0 +1,1 @@
+wrote a12_FakeAuckland.json: 128 circuits, 125.8 s

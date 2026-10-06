@@ -23,16 +23,18 @@ including the failures, are recorded in [`docs/findings/`](docs/findings/).
 
 ## Current version
 
-**`psf_compile.py` 2026-10-06.1** and the AI front end **a11**, with `psf_smart_layout` 2026-10-01.1 and the Rust core
-`CORE_VERSION` 2026-09-29.1 (Part 9, Addenda 357-362). Every release and dated notice:
+**`psf_compile.py` 2026-10-06.1** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 and the Rust core
+`CORE_VERSION` 2026-09-29.1 (Part 9, Addenda 357-367). Every release and dated notice:
 [`docs/RELEASES.md`](docs/RELEASES.md).
 
-> **New in 2026-10-06.1 and a11: readout is counted, and ecr devices are fixed.**
+> **New in 2026-10-06.1 and a11/a12: readout is counted, ecr devices are fixed, and the AI front end is faster.**
 >
 > - **Readout:** compile a circuit that will be sampled **with** its final measurements. The choice among candidates
 >   and the AI front end's estimate now include each measured qubit's readout error; without measurements nothing
 >   changes.
 > - **ecr devices:** a9 could return ECR gates in a direction the device does not provide; a11 never does.
+> - **Faster AI front end:** a12 returns a11's circuits in 0.54-0.89 times the time (0.54-0.60 on cz devices); a
+>   pre-registered test found them identical on 768 of 768 circuits (SPEED, Addenda 364-365).
 > - **Opt-in `candidate_score="kraus"`:** an estimate exact to first order for the simulator's noise model. It has no
 >   readout term, so the recommended call stays `"hybrid"`.
 > - **Pre-registered tests** (fake devices; Addenda 358-361):

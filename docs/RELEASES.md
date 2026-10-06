@@ -8,6 +8,16 @@ from this folder. The full record behind each entry is in Part 9 of the findings
 links to. The README itself, as it was before the move, is kept as
 [`README_2026-10-05_before_restructure.md`](README_2026-10-05_before_restructure.md).
 
+> **Update (2026-10-06) -- AI front end a12** ([Part 9](findings/spare-qubit-cliff-combined-248.md), Addenda 364-367).
+> `benchmarks/psf_ai_compile.py` is now a12 (a11 is kept as `benchmarks/psf_ai_compile_a11.py`). The release is
+> unchanged.
+>
+> - **Item 17:** the state-aware re-placement keeps each gate's scoring terms within a call, and re-places identical
+>   candidates only once. The scores are the same numbers added in the same order, so the result is a11's.
+> - **Pre-registered test SPEED (Addenda 364-365;** 128 model-style circuits on each of 6 fake devices): identical to
+>   a11 on 768 of 768; median time 0.60 and 0.54 times a11's on the cz devices, 0.74-0.75 on the ecr devices,
+>   0.86-0.89 on the cx devices; 3 of 3 predictions confirmed.
+
 > **Current version (2026-10-06): `psf_compile.py` 2026-10-06.1 and the AI front end a11, with `psf_smart_layout`
 > 2026-10-01.1 and the Rust core `CORE_VERSION` 2026-09-29.1 (both unchanged)**
 > ([Part 9](findings/spare-qubit-cliff-combined-248.md), Addenda 357-362). The recommended call is unchanged; compile a

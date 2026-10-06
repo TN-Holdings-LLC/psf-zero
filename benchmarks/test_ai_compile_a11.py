@@ -1,4 +1,5 @@
-"""Tests for the AI front end psf_ai_compile 2026-10-05.a11 (adopted 2026-10-06; benchmarks/psf_ai_compile.py; items
+"""Tests for the AI front end psf_ai_compile 2026-10-05.a11 (adopted 2026-10-06; kept as benchmarks/psf_ai_compile_a11.py
+since a12's adoption on 2026-10-06; items
 15-16: readout in the state-aware estimate, gate direction kept on directional devices), on the current release. The
 candidate's own tests are patches/psf_ai_compile_a11_2026-10-05/test_a11.py; a9 is benchmarks/psf_ai_compile_a9.py.
 
@@ -28,7 +29,7 @@ def mods():
     sys.modules["psf_smart_layout"] = lay
     rel = H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile")
     a9 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile_a9.py"), "psf_ai_compile_a9_frozen_a11_test")
-    a11 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile.py"), "psf_ai_compile")
+    a11 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile_a11.py"), "psf_ai_compile")  # a11, frozen at a12's adoption
     cand = H.load_module(os.path.join(REPO, "patches", "psf_ai_compile_a11_2026-10-05", "psf_ai_compile.py"),
                          "psf_ai_compile_a11_candidate_release_test")
     import readout_eval as RE
@@ -78,7 +79,7 @@ def test_versions(mods):
 
 
 def test_adopted_file_is_the_candidate(mods):
-    assert code(os.path.join(REPO, "benchmarks", "psf_ai_compile.py")) == \
+    assert code(os.path.join(REPO, "benchmarks", "psf_ai_compile_a11.py")) == \
         code(os.path.join(REPO, "patches", "psf_ai_compile_a11_2026-10-05", "psf_ai_compile.py"))
 
 

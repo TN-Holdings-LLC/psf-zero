@@ -15711,7 +15711,7 @@ same change item 40 made to `hybrid_cost`. Without measurements, c16 gives the r
   - O7: ahead of level 3;
   - O8: time <= 1.15.
 
-## 2. The smoke run (workplace PC, 2026-10-06, 14:08 JST; 19 circuits per device)
+## 2. The smoke run (workplace PC, 2026-10-06, 07:08 CEST (05:08 UTC); 19 circuits per device)
 
 **`test_c16.py`:** 8 of 9 passed. The failing case was the test's own assumption: on 12 measured 4-qubit rings on
 FakeTorino, the readout term changed no choice of `kraus`.
@@ -15942,6 +15942,162 @@ That gives 128 per device, at seeds 76,000,000 + k, none used before. Smoke: 76,
 | `benchmarks/a12_verify.py` | `1a7bb430da207b32f6a25829830ecf8dfff227abd074fd045820900f6482c560` |
 | the adopted front end: `benchmarks/psf_ai_compile.py` (a11), unchanged | `b619dcd5775cb1ba59fef3346349c436a9b5bf210cfb7be71171890e92c1ace9` |
 | the release: `psf_compile.py` (2026-10-06.1), unchanged | `bf4630d6356d8e288902fc1cf5460a0929b7fe6b385fa0f1d6faf8a8971d9246` |
+
+
+---
+
+<!-- ===== Addendum 365 (source: spare-qubit-cliff-addendum-365-2026-10-06.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 364, scored by the locked script and re-checked by benchmarks/a12_verify.py; written after the output was seen.
+
+## Addendum 365 -- Results of SPEED (Addendum 364): candidate psf_ai_compile 2026-10-06.a12 returned the adopted front end a11's circuit on all 768 circuits and took 0.54-0.89 × its time; 3 of 3 predictions confirmed (2026-10-06)
+
+**Status: results of a pre-registered test.**
+
+- **Lock:** the commit that adds Addendum 364, made at the workplace before the run (`54bfac6` when made; `e12da54`
+  after the re-dating recorded in Addendum 366, same tree).
+- **Run:** the workplace PC (Windows, build 26100, 14 logical CPUs; Python 3.11.9, numpy 2.4.6, qiskit 2.5.2, Aer
+  0.17.2), with `run_a12_2026-10-06.py` (6 parallel jobs). It started 2026-10-06 05:47:39 UTC (07:47 CEST) and took
+  294 s. Every output file records `git_head` `54bfac6`.
+- **Scored** by the locked `a12_eval.py score`; **re-computed** by the locked `a12_verify.py`, with identical verdicts.
+- Raw output: `data/2026-10-06/speed/`.
+
+## 1. P0
+
+| check | result |
+|---|---|
+| files | 6 of 6, 128 circuits each (96 measured, 32 not), script, candidate, a11 and release hashes as locked |
+| errors | 0 |
+| a12 outputs inexact (state infidelity > 1e-6) | 0 |
+| a12 outputs with an off-target two-qubit gate | 0 |
+
+**P0 passed.**
+
+## 2. Results
+
+| device | identical to a11 | median a11 | median a12 | a12 / a11 | measured / unmeasured |
+|---|---|---|---|---|---|
+| FakeTorino (cz) | 128/128 | 0.669 s | 0.401 s | 0.600 | 0.623 / 0.536 |
+| FakeKingston (cz) | 128/128 | 0.852 s | 0.464 s | 0.544 | 0.537 / 0.541 |
+| FakeAuckland (cx) | 128/128 | 0.301 s | 0.260 s | 0.864 | 0.840 / 0.909 |
+| FakeHanoiV2 (cx) | 128/128 | 0.298 s | 0.266 s | 0.890 | 0.875 / 0.893 |
+| FakeBrussels (ecr) | 128/128 | 0.541 s | 0.401 s | 0.741 | 0.750 / 0.702 |
+| FakeOsaka (ecr) | 128/128 | 0.563 s | 0.421 s | 0.747 | 0.750 / 0.742 |
+
+| ID | Prediction | Verdict | Value |
+|---|---|---|---|
+| S1 | identical to a11 on every circuit of every device | **CONFIRMED** | 768 of 768 |
+| S2 | median a12 / a11 <= 0.75 on both cz devices | **CONFIRMED** | 0.600, 0.544 |
+| S3 | <= 0.90 on the cx and ecr devices | **CONFIRMED** | 0.741-0.890 |
+
+**Reported:** the median of per-circuit ratios was 0.555-0.872, close to the ratio of medians.
+
+## 3. Reading
+
+**The result is the same and the time is lower.**
+
+- Every one of the 768 circuits was identical to a11's: the instructions, clbits, parameters and global phase, and
+  the logical qubits' start and end positions. This is what the construction says (Addendum 364, section 2).
+- The gain is largest where the re-placement was largest: about half the time on cz devices, a quarter less on ecr
+  devices, 11-14% less on cx devices.
+
+**The smoke run's AMBIGUOUS S3 (0.905, 0.911 on 32 circuits) became 0.864 and 0.890 on 128.** Both runs were
+under 0.95, and the thresholds were not changed.
+
+**The rest of a12's time:** re-placement is now a smaller share. The release's calls (start points × seeds, 7-15 per
+circuit) are what remains to look at next.
+
+## 4. What this does not establish
+
+The same as section 6 of Addendum 364:
+
+- times on other machines;
+- circuits above `SMALL_MAX_QUBITS`, where a12 changes nothing;
+- fidelity: a12 returns a11's circuits.
+
+
+---
+
+<!-- ===== Addendum 366 (source: spare-qubit-cliff-addendum-366-2026-10-06.md) ===== -->
+
+> **Note added when merging:** Record of the re-dating of the commits of Addenda 357-364 before they were pushed (owner's decision); the local time in Addendum 363's section 2 was re-expressed in the same way when this was merged.
+
+## Addendum 366 -- Record: the commits of Addenda 357-364 re-dated to Central European time before they were pushed; contents unchanged (2026-10-06)
+
+**Status: record (owner's decision, 2026-10-06).**
+
+## 1. What was done
+
+The project records times in UTC and, where a local time is given, in Central European time (CEST, UTC+2 on this
+date), the time zone of the home PC.
+
+- **The commits.** The six commits made at the workplace PC on 2026-10-06, before this one, carried that PC's
+  local time zone. Before they were pushed they were re-dated with `git filter-branch --env-filter`:
+  - each author and committer date was kept as the same instant and re-expressed at +0200;
+  - nothing else changed. Every commit's tree (its full content) is the same, so each commit's hash changed and
+    nothing in the repository did.
+- **Addendum 363.** One local time in its text was re-expressed in the same way: the smoke run at "07:08 CEST
+  (05:08 UTC)".
+
+## 2. The old and new hashes
+
+| Addendum | hash when made (cited in Addenda 358-365 and in `git_head` of the run outputs) | hash as pushed | tree (unchanged) |
+|---|---|---|---|
+| 357 | `d7b20f3` | `3d889ad` | `dc126abc0d8eb2f66058a786a3fbea3c7b41042c` |
+| 358 (RECR lock) | `1af7302` | `29f8f1f` | `db608bf5d2190d2ead28c0a387e3941575bee198` |
+| 359 (KRAUS lock) | `9b3c577` | `94f4286` | `aec04241ae5b099c5290d748edeb51e13a59c0b1` |
+| 360-362 | `14b383c` | `b01a01c` | `b8ef194ff96a0c2527419adf16c504c92776cafe` |
+| 363 | `99f5b2a` | `54be13c` | `811c81c030e44184b202003610a78aa6b02a4ca5` |
+| 364 (SPEED lock) | `54bfac6` | `e12da54` | `d74f464198d78bf81662d2d4e7c9168d8518d379` |
+
+**To check:** `git rev-parse <hash as pushed>^{tree}` gives the tree in the last column.
+
+**What the hashes are used for:**
+
+- **The old hashes** are the ones recorded before each scored run in the conversation that prepared it, and the ones
+  the run outputs carry.
+- **The trees** link them to the pushed history.
+
+**What this does to the locks.** Addenda 358, 359 and 364 already say that their locks were committed before the
+runs and pushed afterwards. The re-dating does not change that order. It does mean that the hashes recorded before
+the runs are no longer in the pushed history; the trees above are the link.
+
+
+---
+
+<!-- ===== Addendum 367 (source: spare-qubit-cliff-addendum-367-2026-10-06.md) ===== -->
+
+> **Note added when merging:** Adoption record: psf_ai_compile 2026-10-06.a12 becomes the AI front end (owner's decision, 2026-10-06).
+
+## Addendum 367 -- Adoption: psf_ai_compile 2026-10-06.a12 becomes the AI front end (2026-10-06)
+
+**Status: adoption record (owner's decision, 2026-10-06, after the results of Addendum 365).**
+
+- **`benchmarks/psf_ai_compile.py` is now a12.** It is the candidate's file with only its changelog line and version
+  comment changed.
+- **a11 is kept as `benchmarks/psf_ai_compile_a11.py`.**
+- **The release is unchanged:** `psf_compile.py` 2026-10-06.1.
+
+**What users get:**
+
+- the same circuits as a11 (SPEED: 768 of 768 identical);
+- in about 0.54-0.60 × the time on cz devices, 0.74-0.75 × on ecr devices and 0.86-0.89 × on cx devices.
+
+**Tests:**
+
+- **New: `benchmarks/test_ai_compile_a12.py`.**
+  - The versions.
+  - The adopted file is the candidate's code.
+  - a12 returns the frozen a11's circuit on 6 circuits, measured and not, on FakeKingston, FakeOsaka and FakeHanoiV2.
+- **Now loading the frozen a11:**
+  - `benchmarks/test_ai_compile_a11.py`, which checks a11 against its candidate file;
+  - a12's own test (`patches/psf_ai_compile_a12_2026-10-06/test_a12.py`).
+- **Unchanged:**
+  - the tests of a6 and a7, which load the current front end as their base; they test behaviour a12 does not change;
+  - `a12_eval.py` and its verifier, which check for a11 at `benchmarks/psf_ai_compile.py` and stop now, as earlier test
+    scripts do. They are records of SPEED.
+
+**Not established:** see section 4 of Addendum 365.
 
 ---
 
