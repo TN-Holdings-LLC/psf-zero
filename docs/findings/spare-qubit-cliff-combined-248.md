@@ -16794,6 +16794,121 @@ The 27 test files this commit adds or changes were run at home before the commit
 - An output kept by item 43 uses an element the target reports as failed; the warning says so, and
   `PRUNE_STATS["unavoidable"]` counts it.
 
+
+---
+
+<!-- ===== Addendum 375 (source: spare-qubit-cliff-addendum-375-2026-10-06.md) ===== -->
+
+> **Note added when merging:** Pre-registration of PL-GPU-REDO; the predictions were written after the smoke run of section 3, which was seen; the lock is the commit that adds it, pushed before the scored run.
+
+## Addendum 375 -- Pre-registration: the GPU whole-circuit check of the PennyLane loop (Addenda 256-257) repeated with release 2026-10-06.2 on the owner's own GPU (PL-GPU-REDO), with the release's recommended call and the AI front end (2026-10-06)
+
+**Status: pre-registration.**
+
+- **Lock:** the git commit that adds this document, **pushed to GitHub before the scored run**. It locks
+  [`benchmarks/pl_gpu_redo.py`](../../benchmarks/pl_gpu_redo.py) (run and score), its runner
+  [`benchmarks/run_pl_gpu_redo.sh`](../../benchmarks/run_pl_gpu_redo.sh) and
+  [`benchmarks/pl_gpu_redo_verify.py`](../../benchmarks/pl_gpu_redo_verify.py), an independent re-computation of every
+  verdict written before any scored output exists (it does not import `pl_gpu_redo.py`).
+- **Where:** at home, WSL2 with the owner's NVIDIA GeForce RTX 4070 (12,282 MiB, driver 616.92), PennyLane 0.45.1
+  with `lightning.gpu`, Qiskit 2.5.2, core `CORE_VERSION` 2026-09-29.1.
+- **No hardware, no pod:** fake devices only, on the owner's own GPU.
+- **The predictions (section 4) were written after the smoke run** (section 3), which was seen. They are the
+  thresholds in `pl_gpu_redo.py score` and are not changed.
+
+## 1. Why
+
+**Addenda 256-257 (2026-09-29, RunPod RTX 4090)** ran the PennyLane loop on a fully occupied FakeAuckland (27 qubits)
+and checked every lap's compiled circuit as a whole on `lightning.gpu`, including outputs with SWAPs, which the CPU
+loop cannot map back. All outputs agreed with the logical tape to <= 4.9e-14. That run used the stack of that day
+(release 2026-09-28.1 and candidate 2026-09-29.1).
+
+**Since then:** the release is 2026-10-06.2, the README's recommended call goes through the target, and the AI front
+end a12 sends circuits above 8 qubits to that call. PL-REDO (Addenda 372-373) ran the CPU loop with them on FakeKingston,
+where only swap-free outputs can be checked, block by block. This repeats the GPU check with the current release and
+the two target-aware calls, so that every output, SWAP or not, is checked as a whole circuit.
+
+## 2. Design ([`benchmarks/pl_gpu_redo.py`](../../benchmarks/pl_gpu_redo.py))
+
+**Unchanged from Addendum 256** (the helpers are imported from the locked
+[`benchmarks/pl_heavyhex_gpu.py`](../../benchmarks/pl_heavyhex_gpu.py), normalized SHA-256 `a0081c29...`):
+FakeAuckland; circuit family T at spares 0 and 4 (27 and 23 logical qubits); initial tape seed 1000 × spare; 30 laps;
+1 s per compile; C0 (a 3-block sub-circuit on `lightning.gpu` against `lightning.qubit`, <= 1e-12) and C1 (an extra
+RX(1e-6) must change the values by >= 1e-9); the whole-circuit check (<Z>, <X> of every logical qubit and <ZZ> of every
+block edge at each logical qubit's final physical position, against the lap-0 tape); mapping back and the block check
+when swap-free.
+
+**Arms** (one process each, one after another):
+
+| arm | what it is |
+|---|---|
+| R | release 2026-10-06.2, the call of Addendum 256's arms P and PN (no target) |
+| RR | release 2026-10-06.2, the README's recommended call (target, placement_refine, select, compare_level3, compare_floor, hybrid) |
+| A12 | the adopted AI front end `compile_for_model_circuit(qc, cmap, basis, target=target)` |
+| Q3 | Qiskit level 3 with the target |
+
+**Per lap:** compile time, GPU-check time, status (OK, swap, or error), two-qubit count, whole-circuit maximum
+difference, block distance when mapped back, an output digest, and whether the output uses an element of item 31's
+failed set. **Per arm:** versions, normalized SHA-256 of the script, the GPU helpers, the compiler, the layout and the
+front end, `git_head`, uncommitted changes to tracked files, the GPU (`nvidia-smi`), C0 and C1 per spare.
+
+## 3. The smoke run (seen before the predictions were written)
+
+2 laps per spare and arm, 11:0x UTC, home:
+
+| arm | spare 0: compile, 2q, whole-circuit | spare 4: compile, 2q, whole-circuit |
+|---|---|---|
+| R | 0.016-0.019 s, 51, 9.1e-15 / 1.1e-14 | 0.014 s, 45 |
+| RR | 6.2-6.3 s, 51, the same values as R | 0.25 s, 45 |
+| A12 | 6.3 s, 51, the same values as R | 0.16 s, 45 |
+| Q3 | 6.0-6.2 s, 54 with SWAPs, 4.9e-14 | 0.08 s, 45 |
+
+C0 1.05e-15 to 1.17e-15; C1 5.1e-7 (spare 0) and 2.9e-7 (spare 4). No output used a failed element. The GPU check took
+4.0-5.2 s per lap.
+
+## 4. Predictions (scored only by `pl_gpu_redo.py score`)
+
+**P0, validity:** 4 arms × 2 spares × 30 laps; release 2026-10-06.2, core 2026-09-29.1, layout 2026-10-01.1, a12
+2026-10-06.a12; `lightning.gpu`; not smoke; no uncommitted change to a tracked file; one `git_head`; C0 <= 1e-12 and
+C1 >= 1e-9 for every arm and spare. If P0 fails nothing is scored.
+
+| | prediction | confirmed | refuted |
+|---|---|---|---|
+| G1 | R meets 1 s at spare 0 on every lap | 30/30 | <= 15 |
+| G2 | R swap-free and mapped back on every lap, both spares | 60/60 | <= 30 |
+| G3 | R correct as a whole circuit on every lap | every lap checked, max <= 1e-12 | any > 1e-10 |
+| G4 | no arm raises | 0 of 240 laps | >= 1 |
+| G5 | RR, A12 and Q3 correct as whole circuits on every lap, SWAP outputs included | every lap checked, max <= 1e-10 | any > 1e-6 |
+| G6 | Q3 misses 1 s at spare 0 | 0/30 within | >= 15 within |
+| G7 | RR and A12 miss 1 s at spare 0 (level 3 inside) | both <= 2 within | either >= 15 within |
+| G8 | at spare 4, RR, A12 and Q3 meet 1 s | all >= 28/30 | any <= 15 |
+| G9 | at spare 0, RR's and A12's outputs are R's own circuit (the post-run finding of Addendum 373, on another device) | both >= 28/30 | either <= 15 |
+
+**Reported without prediction:** which outputs use a failed element; whether RR's and A12's outputs are R's at spare
+4; GPU-check times; comparison with Addendum 257.
+
+## 5. Files and normalized SHA-256
+
+| file | normalized SHA-256 |
+|---|---|
+| [`benchmarks/pl_gpu_redo.py`](../../benchmarks/pl_gpu_redo.py) | `132739b23ca439b769f8bf31b305ff5484ea4bf6df7514e1542abf2eab124b8b` |
+| [`benchmarks/run_pl_gpu_redo.sh`](../../benchmarks/run_pl_gpu_redo.sh) | `23ed711c292228ef0608a1bfee50eb9a41311840090f2492467ad986f8780cb2` |
+| [`benchmarks/pl_gpu_redo_verify.py`](../../benchmarks/pl_gpu_redo_verify.py) | `ec00de4e251351d7bb1c7b569daf0497509868b2cefec0eccf0bf482e221d7ab` |
+| [`benchmarks/pl_heavyhex_gpu.py`](../../benchmarks/pl_heavyhex_gpu.py) (Addendum 256, unchanged) | `a0081c2917591de57a2e3a9d4914441c47f030282c5128b3f18642b7dd8402ea` |
+| [`psf_compile.py`](../../psf_compile.py) (release 2026-10-06.2, unchanged) | `1c3dfb0853c2fcd28eacbcdd14abc4c328cf5f40ac8a0a771fbfd70a183dfb84` |
+| [`benchmarks/psf_smart_layout.py`](../../benchmarks/psf_smart_layout.py) (unchanged) | `624e8f8a00e1635a1ee3bc77b5b0f41bd69a94022e214d679b86cc66cc1cf241` |
+| [`benchmarks/psf_ai_compile.py`](../../benchmarks/psf_ai_compile.py) (a12, unchanged) | `2227cca2b0675f8ca21c999b071fa30278d616d27536c5376b47ed9faf7236ad` |
+
+**Command** (home WSL2, repository root, at the lock commit): `bash benchmarks/run_pl_gpu_redo.sh <out>` (the four
+arms one after another, then score and verify).
+
+## 6. Disclosures
+
+- **The predictions follow the smoke run** (section 3): G7-G9 rest on two laps each. G9 tests on another device a
+  finding that Addendum 373 reported after its run, without prediction.
+- **The home machine differs from the pod** of Addendum 257 (RTX 4070 against RTX 4090; WSL2 against a pod); times
+  are not a like-for-like comparison.
+
 ---
 
 ---
