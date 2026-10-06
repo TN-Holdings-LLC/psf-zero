@@ -1,0 +1,25 @@
+# BIG score (SMOKE)
+
+P0: PASS -- files 54 of 54; errors 0; inexact outputs 0; wrong measurement mapping 0
+
+| device | sim / all | A12 | A13 | L3TM | A13/A12 | A13/L3TM | meas err A12 / A13 | med time A12 / A13 s |
+|---|---|---|---|---|---|---|---|---|
+| FakeAuckland | 6/11 | 0.15215 | 0.15212 | 0.15859 | 0.9998 | 0.9592 | 0.0785 / 0.0791 | 0.576 / 0.505 |
+| FakeTorino | 8/11 | 0.11244 | 0.11244 | 0.11246 | 1.0000 | 0.9998 | 0.2003 / 0.2003 | 0.602 / 1.216 |
+| FakeKingston | 7/11 | 0.06870 | 0.06758 | 0.06870 | 0.9837 | 0.9837 | 0.1090 / 0.1154 | 0.936 / 1.154 |
+| FakeHanoiV2 | 6/11 | 0.14587 | 0.14587 | 0.14514 | 1.0000 | 1.0050 | 0.1434 / 0.1434 | 0.499 / 0.417 |
+| FakeAlgiers | 6/11 | 0.16500 | 0.16500 | 0.16979 | 1.0000 | 0.9717 | 0.1080 / 0.1086 | 0.522 / 0.573 |
+| FakeGeneva | 6/11 | 0.18544 | 0.18059 | 0.18584 | 0.9739 | 0.9718 | 0.2980 / 0.3000 | 0.596 / 0.655 |
+| FakeFez | 6/11 | 0.08850 | 0.08789 | 0.08851 | 0.9930 | 0.9930 | 0.0688 / 0.0688 | 1.232 / 1.159 |
+| FakeMarrakesh | 6/11 | 0.06286 | 0.06286 | 0.06286 | 1.0000 | 1.0000 | 0.0647 / 0.0647 | 1.061 / 1.135 |
+| FakeAachen | 6/11 | 0.04655 | 0.04633 | 0.04633 | 0.9955 | 1.0000 | 0.0622 / 0.0614 | 0.940 / 1.332 |
+
+## Predictions
+
+- B1 (a13 samples better than a12 on wide circuits (mean classical infidelity A13/A12 <= 1.000 on >= 8 of 9 devices; refuted > 1.005 on any)): **CONFIRMED** -- {"FakeAuckland": 0.9998101817486322, "FakeTorino": 1.0, "FakeKingston": 0.9837274385374838, "FakeHanoiV2": 1.0, "FakeAlgiers": 0.9999999999999998, "FakeGeneva": 0.9738560742285, "FakeFez": 0.9930209571268745, "FakeMarrakesh": 0.9999974894663346, "FakeAachen": 0.9954510059417495}
+- B2 (a13 measures on better readout (mean summed measure error A13 - A12 <= 0 on >= 8 of 9 devices; refuted > 0 on >= 3)): **REFUTED** -- {"FakeAuckland": 0.0006000000000000172, "FakeTorino": 0.0, "FakeKingston": 0.006403142755681809, "FakeHanoiV2": 0.0, "FakeAlgiers": 0.0006181818181817955, "FakeGeneva": 0.002009090909090905, "FakeFez": 0.0, "FakeMarrakesh": 2.2194602272720965e-05, "FakeAachen": -0.0007657137784090953}
+- B3 (a13 is level with or ahead of Qiskit level 3 (A13/L3TM <= 1.00 on >= 7 of 9 devices; refuted > 1.02 on any)): **CONFIRMED** -- {"FakeAuckland": 0.9592260738162027, "FakeTorino": 0.9997878788750386, "FakeKingston": 0.9837261452768542, "FakeHanoiV2": 1.0050296173032802, "FakeAlgiers": 0.9717464301435766, "FakeGeneva": 0.9717593467348177, "FakeFez": 0.9930120604955205, "FakeMarrakesh": 0.9999974894663346, "FakeAachen": 1.0000032637589173}
+- B4 (the cost is moderate (median compile time A13/A12 <= 2.0 on every device; refuted > 3.0 on any)): **AMBIGUOUS** -- {"FakeAuckland": 0.8767147074144818, "FakeTorino": 2.0187645300564596, "FakeKingston": 1.2330698568681906, "FakeHanoiV2": 0.8350020024028834, "FakeAlgiers": 1.097052067381317, "FakeGeneva": 1.0991943605236658, "FakeFez": 0.9401168451801364, "FakeMarrakesh": 1.070519468275667, "FakeAachen": 1.4175180928054492}
+
+Reported: circuits too wide to simulate for at least one arm are excluded from the means: {"FakeAuckland": 5, "FakeTorino": 3, "FakeKingston": 4, "FakeHanoiV2": 5, "FakeAlgiers": 5, "FakeGeneva": 5, "FakeFez": 5, "FakeMarrakesh": 5, "FakeAachen": 5}
+

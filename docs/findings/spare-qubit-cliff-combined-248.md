@@ -16212,6 +16212,157 @@ and of the level-1 transpile. In the Windows environment both are exact, so the 
 The lock lines of Addenda 360 and 361 cite the commits by their hashes when made. Each now also gives the hash as
 pushed, with a pointer to Addendum 366's table. Addendum 365 already gave both.
 
+
+---
+
+<!-- ===== Addendum 370 (source: spare-qubit-cliff-addendum-370-2026-10-06.md) ===== -->
+
+> **Note added when merging:** Pre-registration of BIG (candidate psf_ai_compile 2026-10-06.a13); the predictions were written before the smoke run, which was run and seen at the workplace (section 5); the lock is the commit that adds it, made at the workplace and pushed from home before the scored run.
+
+## Addendum 370 -- Pre-registration: candidate psf_ai_compile 2026-10-06.a13 (changelog item 18: the release's whole recommended call for circuits above SMALL_MAX_QUBITS) against the adopted front end a12, on sampled 9-10-qubit circuits (BIG) (2026-10-06)
+
+**Status: pre-registration.**
+
+- **Lock:** the git commit that adds this document. It locks:
+  - `patches/psf_ai_compile_a13_2026-10-06/` (the candidate and its test);
+  - `benchmarks/big_eval.py` and its runner `benchmarks/run_big_2026-10-06.py`;
+  - `benchmarks/big_verify.py`, an independent re-computation of every verdict, written before the lock and before any
+    scored output exists. It does not import `big_eval.py`.
+- **Order:** the commit is made at the workplace and **pushed from home before the scored run**, which is made at home.
+- **No hardware:** fake devices only.
+- **The predictions (section 4) are in `big_eval.py score`.** They were written before the smoke run and are not
+  changed.
+
+## 1. Why
+
+**Item 13 (a8, 2026-10-04)** sends circuits above `SMALL_MAX_QUBITS` (8), with a target, to "the release's
+recommended call". a11's direction backstop falls back to the same call. Its arguments, `FAST_PATH_RECOMMENDED`, were
+written at a8's time:
+
+- placement_refine;
+- final_resynthesis "select";
+- compare_level3.
+
+They were not updated when the recommended call gained `compare_floor=True` and `candidate_score="hybrid"` (release
+items 37-38, 2026-10-04.1). So the front end's large circuits get:
+
+- no floor-placed candidate;
+- no hybrid choice;
+- with measurements, no readout term (item 40, 2026-10-06.1).
+
+HOLD6 (Addendum 337) had found the hybrid call at 0.998-1.000 × the older call on unmeasured 9-10-qubit circuits.
+
+## 2. The candidate
+
+**a13** is a12 plus item 18 (`AI_COMPILE_VERSION = "2026-10-06.a13"`). It changes one constant,
+`FAST_PATH_RECOMMENDED`, which now adds `compare_floor=True` and `candidate_score="hybrid"`. It also has a changelog
+entry and a version line.
+
+**Its test** (`test_a13.py`, 5 cases):
+
+- the versions;
+- circuits at or below 8 qubits are a12's, on FakeTorino and FakeAuckland;
+- 9- and 10-qubit circuits, measured and not, are the release's recommended call exactly, and exact, on FakeTorino
+  and FakeKingston.
+
+## 3. Design (`benchmarks/big_eval.py`)
+
+**Circuits:**
+
+- HOLD6's wide families W1-W6 (`hold6_eval.family_w`, unchanged) at its sizes, 72 per device, each with
+  `measure_all()`;
+- `W_BASE` 130,000,000: seeds between 131 and 137 million, none used before;
+- smoke: HOLD6's smoke sizes, 11 per device.
+
+**Devices:** HOLD6's nine.
+
+**Arms** (in alternating order, all with measurements):
+
+| arm | what it is |
+|---|---|
+| A12 | the adopted front end |
+| A13 | the candidate |
+| L3TM | Qiskit level 3 with the Target, `approximation_degree=1.0` |
+
+**Per arm:**
+
+- compile time;
+- exactness (the workplace probe's state infidelity, measurements removed, <= 1e-6);
+- whether clbit j measures logical j's final qubit;
+- the summed Target measure error of the measured qubits;
+- if the circuit touches at most 11 qubits: MODEL-RO2's classical infidelity of the sampled distribution, from an Aer
+  density matrix with the device's noise restricted to the touched qubits, then Aer's readout.
+
+A circuit enters the means only if all three arms could be simulated. The helpers are `kro_eval.py`'s, copied.
+
+**Size:** 54 jobs (`run_big_2026-10-06.py`, 6 in parallel).
+
+## 4. Predictions (scored only by `big_eval.py score`; written before the smoke run)
+
+**P0:** all of these must hold, or nothing below is scored:
+
+- 54 files;
+- no error;
+- every output exact;
+- every measurement mapped to its logical qubit.
+
+`big_verify.py` also requires equal counts per family on every device.
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| B1 | a13 samples better than a12 | mean classical infidelity A13/A12 <= 1.000 on >= 8 of 9 devices | > 1.005 on any |
+| B2 | a13 measures on better readout | mean summed measure error A13 - A12 <= 0 on >= 8 of 9 | > 0 on >= 3 |
+| B3 | a13 level with or ahead of Qiskit level 3 | A13/L3TM <= 1.00 on >= 7 of 9 | > 1.02 on any |
+| B4 | the cost is moderate | median compile time A13/A12 <= 2.0 on every device | > 3.0 on any |
+
+**How the thresholds were set:**
+
+- **B1:** from HOLD6 (0.998-1.000 without measurements) and RECR's Q2 (0.96-1.00 with them).
+- **B2:** from RECR's Q2, where item 40 lowered the measure error on every device.
+- **B3:** from HOLD6's A8/L3T (0.975-0.997).
+- **B4:** from HOLD6's W times, C11 0.313 s against R3 0.186 s.
+
+## 5. Smoke run (disclosed; workplace PC, 2026-10-06, 06:32 UTC / 08:32 CEST; Windows, as for Addendum 364)
+
+- **`test_a13.py`:** 5 of 5 passed.
+- **The smoke run:** 54 jobs, 194 s.
+- **Not simulable:** 3-5 of each device's 11 circuits touched more than 11 qubits and were left out of the means.
+- **P0:** passed.
+- **The verdicts** (not results):
+
+| B1 | B2 | B3 | B4 |
+|---|---|---|---|
+| CONFIRMED (0.974-1.000) | **REFUTED** | CONFIRMED | AMBIGUOUS (FakeTorino 2.02) |
+
+**B2's smoke reading.** On 5 of 9 devices a13's measured qubits had slightly more readout error (+0.00002 to +0.0064)
+while its classical infidelity was equal or lower. The hybrid score trades readout against gate error; B2 assumed
+it would not need to. The prediction is not changed.
+
+**Disclosed, not changed:**
+
+- the predictions, after these lines;
+- `MAX_ACTIVE` 11 (HOLD6 used 12).
+
+## 6. What this will not establish
+
+- hardware;
+- circuits wider than 11 touched qubits in the simulation (they are compiled and checked for exactness, but not
+  simulated);
+- unmeasured large circuits. HOLD6 covered those for the release.
+
+## 7. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `patches/psf_ai_compile_a13_2026-10-06/psf_ai_compile.py` | `6f67f950a9360493e65744086b56159ca494ae3b37b900547374b08028cb82fe` |
+| `patches/psf_ai_compile_a13_2026-10-06/test_a13.py` | `c0e47b45370180fae30552f86331fa322cc45d59e870f5d0958310a1b38c38e2` |
+| `benchmarks/big_eval.py` | `e29e4e49f11d7d319eb7b8cd20792e8444d7a2e03857f8c2736492182bdd6b8d` |
+| `benchmarks/run_big_2026-10-06.py` | `935985854ec768532bad9421475221c73c48c23efd492127bd27b7ab19fbecbf` |
+| `benchmarks/big_verify.py` | `0c2585120d4e339a0e69cf7e6b5eb6af446338a44b34fb1ef3e9472e378ec5c5` |
+| the adopted front end: `benchmarks/psf_ai_compile.py` (a12), unchanged | `2227cca2b0675f8ca21c999b071fa30278d616d27536c5376b47ed9faf7236ad` |
+| the release: `psf_compile.py` (2026-10-06.1), unchanged | `bf4630d6356d8e288902fc1cf5460a0929b7fe6b385fa0f1d6faf8a8971d9246` |
+| imported, unchanged: `benchmarks/hold6_eval.py` | `8740a33225f24da12f1d07c235695950f03643d4160283eb1623ad9d7f05108a` |
+
 ---
 
 ---
