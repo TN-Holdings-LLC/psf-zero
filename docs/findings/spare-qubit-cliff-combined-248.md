@@ -16099,6 +16099,76 @@ the runs are no longer in the pushed history; the trees above are the link.
 
 **Not established:** see section 4 of Addendum 365.
 
+
+---
+
+<!-- ===== Addendum 368 (source: spare-qubit-cliff-addendum-368-2026-10-06.md) ===== -->
+
+> **Note added when merging:** Exploratory record of three timing scripts run at the workplace on 2026-10-06; nothing in it is a scored result.
+
+## Addendum 368 -- Exploratory (not pre-registered): where the AI front end's time goes after a12; no further gain that keeps the result, and fewer routing seeds trade 15-17% of the time for a changed circuit on 6 of 96 (2026-10-06)
+
+**Status: exploratory record.** Nothing here is a scored result. Three scripts were run at the workplace on
+2026-10-06, each on 32 model-style circuits (MODEL-RO2's generator, with measurements) per device, on FakeTorino,
+FakeKingston and FakeAuckland, at exploratory seeds. The scripts and their output are in
+`data/2026-10-06/explore_speed/`.
+
+## 1. Where the time went
+
+**`a11_profile.py`** (a11, seeds 75,000,000 + k) times a11's phases by wrapping them; it does not change the code.
+It motivated item 17 (SPEED, Addenda 364-365):
+
+| device | median per circuit | state-aware re-placement | release calls | level 3 | polish |
+|---|---|---|---|---|---|
+| FakeTorino | 0.41 s | 53% | 33% | 6% | 5% |
+| FakeKingston | 0.59 s | 62% | 28% | 4% | 4% |
+| FakeAuckland | 0.16 s | 29% | 46% | 10% | 11% |
+
+**`a12_dups.py`** (a12, seeds 77,000,000 + k) adds a count of calls repeated with exactly the same input:
+
+| | result |
+|---|---|
+| a12's split | release calls 49-56%, re-placement 19-26%, polish 9-12%, level 3 8-10% |
+| release calls repeated with the same input | 0 of about 310 per device |
+| polish calls repeated with the same input | 119-124 of 309-316, but 3-4% of the time |
+
+**The reading:**
+
+- Item 17 moved the re-placement from 53-62% to 19-26% of the time on these devices.
+- What remains to gain without changing the result is the repeated polish: 3-4%. That is too little for a
+  candidate.
+
+## 2. Fewer routing seeds
+
+**`a12_seeds.py`** (a12, seeds 78,000,000 + k) compiles each circuit with a12's default routing seeds (0, 1, 2, 3)
+and with (0, 1) and (0,). It records, against the default:
+
+- the time;
+- whether the circuit is the same;
+- a12's own state-aware estimate of the result.
+
+| device | (0, 1): time | same circuit | (0,): time | same circuit | estimate worse / better | worst estimate ratio |
+|---|---|---|---|---|---|---|
+| FakeTorino | 0.98 × | 32/32 | 0.84 × | 32/32 | 0 / 0 | 1.000 |
+| FakeKingston | 0.98 × | 31/32 | 0.83 × | 28/32 | 1 / 2 | 1.001 |
+| FakeAuckland | 1.02 × | 31/32 | 0.85 × | 30/32 | 2 / 0 | 1.183 |
+
+**The reading:**
+
+- **Two seeds save almost nothing.** a12 already stops a start point's seed loop when two seeds in a row give the
+  same circuit.
+- **One seed saves 15-17%.**
+  - It changes 6 of 96 circuits.
+  - It is worse by a12's own estimate on 3 of them; on FakeAuckland, one circuit is 18% worse.
+  - It is better on 2.
+- Whether this trade is worth having would need a pre-registered test with simulated fidelity, on more circuits.
+  It is not proposed now: the front end is already 1.1-1.8 × faster than a11 (Addendum 365) at the same result.
+
+## 3. What this does not establish
+
+- Anything about fidelity: only a12's estimate was compared, on 96 circuits.
+- Other devices or machines.
+
 ---
 
 ---
