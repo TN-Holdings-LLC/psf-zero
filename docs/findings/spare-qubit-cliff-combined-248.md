@@ -15347,6 +15347,333 @@ That is weaker than a push, which GitHub timestamps.
 | imported, unchanged: `benchmarks/hold6_eval.py` (HOLD6's lock) | `8740a33225f24da12f1d07c235695950f03643d4160283eb1623ad9d7f05108a` |
 | used by the test, unchanged: `data/2026-10-04/h4/diag/h4_diag.py` (Addendum 339) | `5de3f263696e95b9adbd4fcbf61346d58e823a9304b9de9ebea4d1f30e9bee2c` |
 
+
+---
+
+<!-- ===== Addendum 360 (source: spare-qubit-cliff-addendum-360-2026-10-06.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 358 (lock commit 1af7302, run on commit 9b3c577), scored by the locked script and re-checked by benchmarks/recr_verify.py; written after the output was seen.
+
+## Addendum 360 -- Results of RECR (Addendum 358): compiling with the measurements moves the measured qubits to better readout; c14's readout term adds a small gain on top and never a loss beyond 0.05%; a11 removes a9's off-target ecr gates; 10 of 10 predictions confirmed (2026-10-06)
+
+**Status: results of a pre-registered test.**
+
+- **Lock:** commit `1af7302` (Addendum 358), made at the workplace before the run. The run itself was on `9b3c577`
+  (Addendum 359's lock, which adds only KRAUS's files and the Python runner). Both commits were pushed from home
+  afterwards with the same hashes (Addendum 358, section 5).
+- **Run:** the workplace PC (Windows, build 26100, 14 logical CPUs; Python 3.11.9, numpy 2.4.6, qiskit 2.5.2, Aer
+  0.17.2), with `run_parallel_2026-10-06.py recr` (6 parallel jobs), started 2026-10-06 03:38 UTC; 719 s.
+- **Scored** by the locked `recr_eval.py score`; **re-computed** by the locked `recr_verify.py`, written before the
+  run, with identical verdicts.
+- Raw output: `data/2026-10-06/recr/`.
+
+## 1. P0
+
+| check | result |
+|---|---|
+| files | 6 of 6, 104 circuits each, not smoke, script and candidate hashes as locked, one `git_head` |
+| compile errors | 0 |
+| inexact outputs (state infidelity > 1e-6) | 0 |
+| wrong measurement mapping | 0 |
+
+**P0 passed.**
+
+## 2. Results
+
+Means over 104 circuits. "infid" is the classical infidelity of the sampled distribution, "meas_err" the summed
+Target measure error of the measured qubits, "off" the off-target instructions, "med_s" the median compile time.
+
+| device | arm | infid | meas_err | off | 2q | med_s |
+|---|---|---|---|---|---|---|
+| FakeAuckland | R51 | 0.00832 | 0.0361 | 0 | 13.22 | 0.099 |
+| | R51M | 0.00817 | 0.0343 | 0 | 13.24 | 0.101 |
+| | C14M | 0.00806 | 0.0338 | 0 | 13.22 | 0.098 |
+| | A9M | 0.00801 | 0.0357 | 0 | 12.96 | 0.297 |
+| | A11M | 0.00801 | 0.0341 | 0 | 12.96 | 0.308 |
+| | L3TM | 0.00862 | 0.0322 | 0 | 13.23 | 0.012 |
+| FakeHanoiV2 | R51 | 0.00984 | 0.0836 | 0 | 13.21 | 0.102 |
+| | R51M | 0.00671 | 0.0353 | 0 | 13.19 | 0.101 |
+| | C14M | 0.00671 | 0.0352 | 0 | 13.19 | 0.099 |
+| | A9M | 0.00940 | 0.0838 | 0 | 12.98 | 0.277 |
+| | A11M | 0.00658 | 0.0346 | 0 | 13.01 | 0.283 |
+| | L3TM | 0.00702 | 0.0349 | 0 | 13.23 | 0.011 |
+| FakeTorino | R51 | 0.01339 | 0.1347 | 0 | 13.47 | 0.234 |
+| | R51M | 0.00645 | 0.0540 | 0 | 13.46 | 0.234 |
+| | C14M | 0.00630 | 0.0525 | 0 | 13.36 | 0.214 |
+| | A9M | 0.01334 | 0.1328 | 0 | 13.22 | 0.894 |
+| | A11M | 0.00615 | 0.0521 | 0 | 13.24 | 0.872 |
+| | L3TM | 0.00626 | 0.0527 | 0 | 13.32 | 0.019 |
+| FakeKingston | R51 | 0.01523 | 0.1491 | 0 | 13.63 | 0.275 |
+| | R51M | 0.00225 | 0.0266 | 0 | 13.85 | 0.251 |
+| | C14M | 0.00220 | 0.0261 | 0 | 13.62 | 0.275 |
+| | A9M | 0.01360 | 0.1503 | 0 | 13.46 | 1.193 |
+| | A11M | 0.00219 | 0.0276 | 0 | 13.48 | 1.230 |
+| | L3TM | 0.00223 | 0.0258 | 0 | 13.62 | 0.023 |
+| FakeBrussels | R51 | 0.01530 | 0.1270 | 0 | 13.82 | 0.202 |
+| | R51M | 0.01000 | 0.0711 | 0 | 13.82 | 0.196 |
+| | C14M | 0.00990 | 0.0678 | 0 | 13.80 | 0.186 |
+| | A9M | (0.00972) | 0.1115 | **622** | 13.67 | 0.867 |
+| | A11M | 0.00962 | 0.0678 | 0 | 13.62 | 0.690 |
+| | L3TM | 0.01008 | 0.0683 | 0 | 13.77 | 0.018 |
+| FakeOsaka | R51 | 0.01296 | 0.0993 | 0 | 13.96 | 0.203 |
+| | R51M | 0.00902 | 0.0599 | 0 | 13.89 | 0.192 |
+| | C14M | 0.00864 | 0.0556 | 0 | 13.88 | 0.197 |
+| | A9M | (0.00829) | 0.1016 | **860** | 13.68 | 0.857 |
+| | A11M | 0.00832 | 0.0566 | 0 | 13.67 | 0.684 |
+| | L3TM | 0.01319 | 0.0376 | 0 | 13.77 | 0.018 |
+
+A9M's infidelity on the ecr devices is in parentheses: its off-target gates are simulated as error-free, so it is not
+comparable (Addendum 358, section 3). No arm used a failed coupler or qubit.
+
+| ID | Prediction | Verdict | Value |
+|---|---|---|---|
+| Q1 | measure error R51M / R51 <= 0.85 on both cz devices | **CONFIRMED** | FakeTorino 0.401, FakeKingston 0.179 |
+| Q2 | C14M / R51M infid <= 1.005 and measure error difference <= +0.0005, every device | **CONFIRMED** | infid 0.957-1.0005; measure error lower on all six (-0.0001 to -0.0043) |
+| Q3 | C14 = R51 in >= 99.9% | **CONFIRMED** | 100% on all six |
+| Q4 | A11 and A11M off-target 0 | **CONFIRMED** | 0 on all six |
+| Q5 | A9M off-target >= 1 on both ecr devices | **CONFIRMED** | 622 and 860 |
+| Q6 | A11 = A9 in >= 99.9% on cx and cz devices | **CONFIRMED** | 100% on all four |
+| Q7 | A11M / A9M infid <= 0.80 on both cz devices | **CONFIRMED** | FakeTorino 0.461, FakeKingston 0.161 |
+| Q8 | A11M / L3TM <= 1.00 on >= 5 of 6 | **CONFIRMED** | 0.631-0.984, all six |
+| Q9 | C14M / L3TM <= 1.00 on >= 5 of 6 | **CONFIRMED** | 0.655-0.985 on five; FakeTorino 1.006 |
+| Q10 | median time C14M / R51M, and A11M / A9M on cx and cz, <= 1.15 | **CONFIRMED** | 0.91-1.10 and 0.98-1.04 |
+
+**Reported without prediction:**
+
+- **Per circuit, C14M against R51M (worse, better):**
+
+  | device | worse | better |
+  |---|---|---|
+  | FakeAuckland | 5 | 9 |
+  | FakeHanoiV2 | 3 | 4 |
+  | FakeTorino | 5 | 4 |
+  | FakeKingston | 0 | 7 |
+  | FakeBrussels | 3 | 8 |
+  | FakeOsaka | 0 | 8 |
+
+  The other 90-97 circuits per device were the same.
+- **The check counters:**
+  - item 39's equivalence checks: 1,040 per device, none refused;
+  - a11's direction backstop: never used;
+  - a11's check of level 3's output: 208 accepted per device, none refused.
+
+## 3. Reading
+
+**Most of the gain comes from compiling with the measurements.** That is R51 → R51M, and release 2026-10-05.1 could
+already do it; until now it was not documented for users.
+
+- On the cz devices, the measured qubits' readout error fell to 0.40 and 0.18 ×. Classical infidelity fell to 0.48
+  and 0.15 ×.
+- On the cx and ecr devices the falls were smaller: 0.98 (FakeAuckland) to 0.65 (FakeBrussels) ×.
+
+**c14's own increment (C14M against R51M) is small.**
+
+- Infidelity: 0.957-1.000.
+- Measure error: lower on every device.
+- Choices changed in 7-14 of 104 circuits per device.
+- The one ratio above 1 is FakeHanoiV2's 1.0005 (3 circuits worse, 4 better). The smoke run's 1.023 on that device
+  (10 circuits) was within this spread.
+
+**a11 matters most for the front end.**
+
+- a9 does not count readout even when the measurements are given. Its measured qubits stay on poor readout: on the cz
+  devices it is at R51's level, not R51M's.
+- a11 fixes that: 0.46 and 0.16 × a9 on the cz devices.
+- On the ecr devices, a9 put 622 and 860 gates in an unsupported direction (6.0 and 8.3 per circuit); a11 put none.
+- a11 has the lowest infidelity of the comparable arms on every device; on FakeAuckland it ties with a9.
+- On FakeKingston its measured qubits have slightly more readout error than c14's (0.0276, against 0.0261), with fewer
+  two-qubit gates (13.48, against 13.62) and a lower infidelity (0.00219, against 0.00220).
+
+**Qiskit level 3 with measurements:**
+
+- It had the lowest readout error on 3 of 6 devices, and was within 0.0008 of the lowest on the other three.
+- It does not trade readout against gate error. On FakeOsaka it had the lowest readout error (0.0376) and the highest
+  infidelity (0.01319, 1.5 × c14's).
+- On FakeTorino it was ahead of c14 by 0.6% (Q9's one device above 1). a11 was ahead of it there.
+
+**Time:** c14 costs nothing measurable (0.91-1.10 ×); a11 is a9's time on cx and cz devices (0.98-1.04 ×).
+
+## 4. What this does not establish
+
+The same as section 6 of Addendum 358:
+
+- hardware, where readout drifts and is correlated across qubits;
+- model-written circuits from the vLLM loop;
+- the noise model's floor on ecr devices.
+
+
+---
+
+<!-- ===== Addendum 361 (source: spare-qubit-cliff-addendum-361-2026-10-06.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 359 (lock commit 9b3c577), scored by the locked script and re-checked by benchmarks/kr_verify.py; written after the output was seen.
+
+## Addendum 361 -- Results of KRAUS (Addendum 359): candidate psf_compile 2026-10-06.c15's `candidate_score="kraus"` chose at least as well as release 2026-10-05.1's `hybrid_cost` on all nine devices and repaired HOLD6's H4 case; 7 of 7 predictions confirmed (2026-10-06)
+
+**Status: results of a pre-registered test.**
+
+- **Lock:** commit `9b3c577` (Addendum 359), made at the workplace before the run; pushed from home afterwards with the
+  same hash (Addendum 359, section 5).
+- **Run:** the workplace PC (Windows, build 26100, 14 logical CPUs; Python 3.11.9, numpy 2.4.6, qiskit 2.5.2, Aer 0.17.2), with
+  `run_parallel_2026-10-06.py kr` (6 parallel jobs), started 2026-10-06 03:50 UTC, right after RECR; 2,836 s.
+  Every output file records `git_head` `9b3c577`.
+- **Scored** by the locked `kr_eval.py score`; **re-computed** by the locked `kr_verify.py`, written before the run.
+  Its verdicts are identical to the scorer's, and its additional P0 condition (every recorded choice re-derived from
+  the recorded estimates) holds.
+- Raw output: `data/2026-10-06/kraus/`.
+
+## 1. P0
+
+| check | result |
+|---|---|
+| files | 54 of 54, the pre-registered counts (1,506 per device) |
+| compile errors | 0 |
+| inexact candidates (noiseless infidelity > 1e-6) | 0 |
+| R = HYB, K = KRA, c15-hybrid = R (1,368 checks) | all hold |
+| choices re-derived from the estimates (`kr_verify.py`) | all hold |
+| candidates too wide to simulate | 0 |
+
+**P0 passed.**
+
+## 2. Results
+
+Mean infidelity of the chosen candidate, on all 1,506 circuits of each device:
+
+| device | HYB | KRA | PAU | BEST | KRA/HYB | KRA/L3 | changed | KRA better | K/R time |
+|---|---|---|---|---|---|---|---|---|---|
+| FakeAuckland | 0.29871 | 0.29848 | 0.29944 | 0.29848 | 0.9992 | 0.9760 | 145 | 131 | 1.037 |
+| FakeTorino | 0.16770 | 0.16767 | 0.16812 | 0.16767 | 0.9998 | 0.9841 | 181 | 121 | 1.028 |
+| FakeKingston | 0.08225 | 0.08224 | 0.08229 | 0.08224 | 0.9999 | 0.9869 | 151 | 97 | 1.027 |
+| FakeHanoiV2 | 0.24272 | 0.24241 | 0.24420 | 0.24241 | 0.9988 | 0.9790 | 152 | 145 | 1.037 |
+| FakeAlgiers | 0.27498 | 0.27468 | 0.27551 | 0.27468 | 0.9989 | 0.9754 | 168 | 158 | 1.040 |
+| FakeGeneva | 0.24276 | 0.24270 | 0.24302 | 0.24270 | 0.9997 | 0.9610 | 94 | 84 | 1.050 |
+| FakeFez | 0.15527 | 0.15524 | 0.15551 | 0.15524 | 0.9999 | 0.9899 | 119 | 94 | 1.034 |
+| FakeMarrakesh | 0.10089 | 0.10067 | 0.10111 | 0.10067 | 0.9979 | 0.9593 | 198 | 186 | 1.028 |
+| FakeAachen | 0.07262 | 0.07261 | 0.07270 | 0.07261 | 0.9999 | 0.9837 | 168 | 135 | 1.030 |
+
+- "changed": circuits where KRA's and HYB's candidates differ in simulated infidelity.
+- "KRA better": how many of those KRA's is lower.
+- "K/R time": K7's estimate (section 3 of Addendum 359).
+
+| ID | Prediction | Verdict | Value |
+|---|---|---|---|
+| K1 | KRA/HYB <= 1.000 on >= 8 of 9 | **CONFIRMED** | 0.9979-0.9999, all nine |
+| K2 | FakeAlgiers F5 n = 4: KRA/HYB <= 0.96 | **CONFIRMED** | 0.937 (48 circuits) |
+| K3 | gap to BEST: KRA <= 0.5 × HYB's on >= 7 of 9 | **CONFIRMED** | all nine; KRA's gap 0 to 2.4e-5, HYB's 8.9e-5 to 2.1e-3 |
+| K4 | >= 60% of changed choices better, on every device with >= 20 | **CONFIRMED** | 64.2% (FakeKingston) to 95.4% (FakeHanoiV2) |
+| K5 | KRA/HYB <= 1.01 in every family-device cell | **CONFIRMED** | none above 1.000 (lowest 0.9877, FakeAlgiers F5) |
+| K6 | KRA/L3 <= 1.00 on 9 of 9 | **CONFIRMED** | 0.959-0.990 |
+| K7 | median K time / R <= 1.15 on every device | **CONFIRMED** | 1.027-1.050 |
+
+**Reported without prediction:**
+
+- **Measured K / R median compile time:** 1.026-1.048. With six jobs in parallel the warm-second-call effect seen in
+  the smoke runs did not show, and the measured ratio agrees with K7's estimate.
+- **Per circuit, KRA worse than HYB:** 7 (FakeHanoiV2) to 60 (FakeTorino) circuits per device, against 84-186
+  better.
+- **PAU** (`pauli_cost`, item 37) was worse than HYB on every device.
+
+## 3. Reading
+
+- **The estimate does what the diagnosis said.** KRA's mean equals BEST's to five decimals on every device. The
+  largest remaining gap is 2.4e-5 (FakeHanoiV2). Addendum 339 had found this in-sample; here it holds on 13,554
+  fresh circuits run through the compiler.
+- **H4 is repaired.** FakeAlgiers 4-qubit GHZ chains: 0.937 × hybrid's infidelity.
+- **The gain elsewhere is small:** 0.01-0.2% of the mean. `hybrid_cost` was already close; the difference is
+  concentrated in a few circuits per device.
+- **The cz devices FakeTorino and FakeKingston are the weakest:** KRA better in 67% and 64% of changed choices, the
+  margin to K4's 60% small. On these devices the candidates differ by little, so the per-circuit noise is larger.
+- **The caveat of Addendum 359 stands.** `kraus_cost` is the first-order form of the noise model Aer simulates, so
+  agreement with Aer is expected. That this test confirms it says the implementation is right and the effect is real
+  for that model. It does not say that hardware will follow.
+
+## 4. What this does not establish
+
+- Hardware (section 6 of Addendum 359).
+- Circuits compiled with measurements: `kraus_cost` has no readout term (item 40 is in `hybrid_cost` only).
+- Wider circuits: none of these touched more than 11 qubits.
+
+
+---
+
+<!-- ===== Addendum 362 (source: spare-qubit-cliff-addendum-362-2026-10-06.md) ===== -->
+
+> **Note added when merging:** Adoption record: release psf_compile 2026-10-06.1 (c14 plus c15's item 42, opt-in) and the AI front end a11 (owner's decision, 2026-10-06).
+
+## Addendum 362 -- Adoption: release psf_compile 2026-10-06.1 (candidate 2026-10-05.c14 plus candidate 2026-10-06.c15's item 42, opt-in) and the AI front end 2026-10-05.a11 (2026-10-06)
+
+**Status: adoption record (owner's decision, 2026-10-06, after the results of Addenda 360 and 361).**
+
+## 1. What was decided
+
+The owner chose, out of three forms offered:
+
+| form | taken |
+|---|---|
+| c14 and a11 as the release; c15's `kraus` as an opt-in score | **yes** |
+| c14 and a11 only; c15 recorded but not included | no |
+| c15 only; c14 and a11 later | no |
+
+c14 and c15 are separate changes to release 2026-10-05.1. Neither test ran their combination, so the combination is
+built to change nothing that either test measured:
+
+- the recommended call (`candidate_score="hybrid"`) is c14's;
+- `candidate_score="kraus"` is c15's code, unchanged.
+
+## 2. The release: `psf_compile.py` 2026-10-06.1
+
+It is c14's file (items 40-41) plus c15's item 42, built mechanically:
+
+- the changelog entry and `kraus_cost` copied verbatim from c15;
+- the `_choose` mapping, the accepted values of `candidate_score` and one docstring line, as in c15;
+- the version lines, and the changelog headers of items 39-42 rewritten as release headers;
+- one line added to item 40 (RECR's result) and two to item 42 (KRAUS's result, and that it has no readout term).
+
+Against c14 the code differs only by item 42. Against c15 the code differs only by items 40-41.
+
+**What follows for users:**
+
+- **Unchanged without measurements:** a circuit compiled without measurements gets 2026-10-05.1's circuit (RECR's Q3:
+  identical on every circuit).
+- **Readout counted when measurements are included:** a circuit compiled with its measurements is placed and chosen
+  with readout error counted.
+- **`kraus` ignores readout:** `candidate_score="kraus"` gives the same choice as c15. It has no readout term, so with
+  measurements it does not see readout. **The recommended call therefore stays `hybrid`.** Making `kraus` the
+  recommended call needs a readout term and a test of its own.
+
+## 3. The front end: `benchmarks/psf_ai_compile.py` = a11
+
+- a11 is the candidate's file with only its docstring dates and version comment changed.
+- a9 is kept as `benchmarks/psf_ai_compile_a9.py`.
+- a10 (item 15, readout) was never adopted on its own; it is part of a11.
+- The notice "do not give the front end a target on ecr devices" (2026-10-05) is withdrawn: a11 had no off-target
+  gate on either ecr device in RECR (Q4).
+
+## 4. Tests
+
+- **New: `benchmarks/test_release_2026_10_06_1.py`.**
+  - With `hybrid` the release equals c14, with and without measurements, on FakeTorino, FakeKingston and FakeHanoiV2.
+  - Without measurements it equals 2026-10-05.1.
+  - With `kraus` it equals c15, and `kraus_cost` is c15's exactly.
+  - `kraus_cost` ignores measurements.
+  - An unknown score is rejected.
+- **New: `benchmarks/test_ai_compile_a11.py`.**
+  - The adopted file is the candidate's code.
+  - Its outputs on ecr devices are on target and exact.
+  - Without measurements it is a9.
+  - Its outputs with measurements are exact.
+- **The current-release assertion in twenty tests** now reads 2026-10-06.1.
+- **Candidates' tests, as at a9's adoption:**
+  - c14's and c15's tests compare with the previous release through c12's file, which differs from 2026-10-05.1 only
+    in its version lines;
+  - a11's test and the a9 release test load the frozen a9.
+- `recr_eval.py`, `kr_eval.py` and their verifiers are records of their tests. They check for release 2026-10-05.1 and
+  stop with the new one, as earlier test scripts do.
+
+## 5. Not established
+
+Everything in section 6 of Addenda 358 and 359: hardware, and readout and `kraus` together.
+
 ---
 
 ---

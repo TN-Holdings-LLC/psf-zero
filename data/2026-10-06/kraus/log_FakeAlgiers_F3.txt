@@ -1,0 +1,1 @@
+wrote kr_FakeAlgiers_F3.json: 300 circuits, 900 simulations, 431.9 s

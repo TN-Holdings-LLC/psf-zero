@@ -27,7 +27,7 @@ def mods():
     import core_fix_c2_eval as H
     lay = H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psl_c15_test")
     sys.modules["psf_smart_layout"] = lay
-    rel = H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile_rel_c15_test")
+    rel = H.load_module(os.path.join(REPO, "patches", "psf_compile_c12_2026-10-05", "psf_compile.py"), "psf_compile_rel_c15_test")  # 2026-10-05.1 (c12's file differs from it only in the version lines); psf_compile.py is 2026-10-06.1 since this candidate's adoption
     c15 = H.load_module(os.path.join(HERE, "psf_compile.py"), "psf_compile_c15_test")
     diag = H.load_module(os.path.join(REPO, "data", "2026-10-04", "h4", "diag", "h4_diag.py"), "h4_diag_c15_test")
     hold6 = H.load_module(os.path.join(REPO, "benchmarks", "hold6_eval.py"), "hold6_eval_c15_test")
@@ -101,7 +101,7 @@ def ring(n, seed):
 
 def test_versions(mods):
     assert mods["c15"].VERSION == "2026-10-06.c15"
-    assert mods["rel"].VERSION == "2026-10-05.1"
+    assert mods["rel"].VERSION == "2026-10-05.c12"  # the previous release, 2026-10-05.1, as its candidate's file
 
 
 @pytest.mark.parametrize("dev", ["FakeAlgiers", "FakeTorino"])

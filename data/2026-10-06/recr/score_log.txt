@@ -1,0 +1,59 @@
+# RECR score
+
+P0: PASS -- files 6 of 6; compile errors 0; inexact outputs 0; measurement mapping wrong 0; circuit counts ok True
+
+| device | arm | infid (mean) | summed measure error | off-target | failed uses | 2q | median compile s |
+|---|---|---|---|---|---|---|---|
+| FakeAuckland | R51 | 0.00832 | 0.0361 | 0 | 0 | 13.22 | 0.099 |
+| FakeAuckland | R51M | 0.00817 | 0.0343 | 0 | 0 | 13.24 | 0.101 |
+| FakeAuckland | C14M | 0.00806 | 0.0338 | 0 | 0 | 13.22 | 0.098 |
+| FakeAuckland | A9M | 0.00801 | 0.0357 | 0 | 0 | 12.96 | 0.297 |
+| FakeAuckland | A11M | 0.00801 | 0.0341 | 0 | 0 | 12.96 | 0.308 |
+| FakeAuckland | L3TM | 0.00862 | 0.0322 | 0 | 0 | 13.23 | 0.012 |
+| FakeHanoiV2 | R51 | 0.00984 | 0.0836 | 0 | 0 | 13.21 | 0.102 |
+| FakeHanoiV2 | R51M | 0.00671 | 0.0353 | 0 | 0 | 13.19 | 0.101 |
+| FakeHanoiV2 | C14M | 0.00671 | 0.0352 | 0 | 0 | 13.19 | 0.099 |
+| FakeHanoiV2 | A9M | 0.00940 | 0.0838 | 0 | 0 | 12.98 | 0.277 |
+| FakeHanoiV2 | A11M | 0.00658 | 0.0346 | 0 | 0 | 13.01 | 0.283 |
+| FakeHanoiV2 | L3TM | 0.00702 | 0.0349 | 0 | 0 | 13.23 | 0.011 |
+| FakeTorino | R51 | 0.01339 | 0.1347 | 0 | 0 | 13.47 | 0.234 |
+| FakeTorino | R51M | 0.00645 | 0.0540 | 0 | 0 | 13.46 | 0.234 |
+| FakeTorino | C14M | 0.00630 | 0.0525 | 0 | 0 | 13.36 | 0.214 |
+| FakeTorino | A9M | 0.01334 | 0.1328 | 0 | 0 | 13.22 | 0.894 |
+| FakeTorino | A11M | 0.00615 | 0.0521 | 0 | 0 | 13.24 | 0.872 |
+| FakeTorino | L3TM | 0.00626 | 0.0527 | 0 | 0 | 13.32 | 0.019 |
+| FakeKingston | R51 | 0.01523 | 0.1491 | 0 | 0 | 13.63 | 0.275 |
+| FakeKingston | R51M | 0.00225 | 0.0266 | 0 | 0 | 13.85 | 0.251 |
+| FakeKingston | C14M | 0.00220 | 0.0261 | 0 | 0 | 13.62 | 0.275 |
+| FakeKingston | A9M | 0.01360 | 0.1503 | 0 | 0 | 13.46 | 1.193 |
+| FakeKingston | A11M | 0.00219 | 0.0276 | 0 | 0 | 13.48 | 1.230 |
+| FakeKingston | L3TM | 0.00223 | 0.0258 | 0 | 0 | 13.62 | 0.023 |
+| FakeBrussels | R51 | 0.01530 | 0.1270 | 0 | 0 | 13.82 | 0.202 |
+| FakeBrussels | R51M | 0.01000 | 0.0711 | 0 | 0 | 13.82 | 0.196 |
+| FakeBrussels | C14M | 0.00990 | 0.0678 | 0 | 0 | 13.80 | 0.186 |
+| FakeBrussels | A9M | 0.00972 | 0.1115 | 622 | 0 | 13.67 | 0.867 |
+| FakeBrussels | A11M | 0.00962 | 0.0678 | 0 | 0 | 13.62 | 0.690 |
+| FakeBrussels | L3TM | 0.01008 | 0.0683 | 0 | 0 | 13.77 | 0.018 |
+| FakeOsaka | R51 | 0.01296 | 0.0993 | 0 | 0 | 13.96 | 0.203 |
+| FakeOsaka | R51M | 0.00902 | 0.0599 | 0 | 0 | 13.89 | 0.192 |
+| FakeOsaka | C14M | 0.00864 | 0.0556 | 0 | 0 | 13.88 | 0.197 |
+| FakeOsaka | A9M | 0.00829 | 0.1016 | 860 | 0 | 13.68 | 0.857 |
+| FakeOsaka | A11M | 0.00832 | 0.0566 | 0 | 0 | 13.67 | 0.684 |
+| FakeOsaka | L3TM | 0.01319 | 0.0376 | 0 | 0 | 13.77 | 0.018 |
+
+## Predictions
+
+- Q1 (compiling with the measurements moves the release's measured qubits to better readout (mean summed measure error R51M / R51 <= 0.85 on both cz devices; refuted >= 1.00 on either)): **CONFIRMED** -- {"FakeTorino": 0.40095515312080593, "FakeKingston": 0.1785528698527675}
+- Q2 (c14's readout term never hurts (C14M / R51M infid <= 1.005 and measure error difference <= +0.0005 on every device; refuted infid ratio > 1.02 on any)): **CONFIRMED** -- {"infid": {"FakeAuckland": 0.9862317473612551, "FakeHanoiV2": 1.000451858933662, "FakeTorino": 0.9761223760316149, "FakeKingston": 0.9743358937704837, "FakeBrussels": 0.9903265619650392, "FakeOsaka": 0.957465776460048}, "meas_err": {"FakeAuckland": -0.0004057692307692373, "FakeHanoiV2": -0.00014134615384615162, "FakeTorino": -0.0015164888822115363, "FakeKingston": -0.0005176250751201955, "FakeBrussels": -0.0033170259915865363, "FakeOsaka": -0.004265064102564088}}
+- Q3 (without measurements c14 is the release (identical in >= 99.9% on every device; refuted < 99% on any)): **CONFIRMED** -- {"FakeAuckland": 1.0, "FakeHanoiV2": 1.0, "FakeTorino": 1.0, "FakeKingston": 1.0, "FakeBrussels": 1.0, "FakeOsaka": 1.0}
+- Q4 (a11 keeps every instruction on the target (A11 and A11M off-target 0 on every device; refuted any)): **CONFIRMED** -- {"FakeAuckland": 0, "FakeHanoiV2": 0, "FakeTorino": 0, "FakeKingston": 0, "FakeBrussels": 0, "FakeOsaka": 0}
+- Q5 (the a9 defect reproduces on ecr devices (A9M off-target >= 1 on both ecr devices; refuted 0 on both)): **CONFIRMED** -- {"FakeBrussels": 622, "FakeOsaka": 860}
+- Q6 (without measurements a11 is a9 on the cx and cz devices (identical in >= 99.9% on each; refuted < 99% on any)): **CONFIRMED** -- {"FakeAuckland": 1.0, "FakeHanoiV2": 1.0, "FakeTorino": 1.0, "FakeKingston": 1.0}
+- Q7 (a11 counts readout (A11M / A9M infid <= 0.80 on both cz devices; refuted >= 1.00 on either)): **CONFIRMED** -- {"FakeTorino": 0.4610814618373606, "FakeKingston": 0.16129304452275262}
+- Q8 (a11 is level with or ahead of Qiskit level 3 (A11M / L3TM <= 1.00 on >= 5 of 6 devices; refuted > 1.05 on any)): **CONFIRMED** -- {"FakeAuckland": 0.9289105515837844, "FakeHanoiV2": 0.9379425401233147, "FakeTorino": 0.9828226545746487, "FakeKingston": 0.9840645552325702, "FakeBrussels": 0.9544176055365585, "FakeOsaka": 0.6305715721427141}
+- Q9 (the release candidate with measurements is level with or ahead of Qiskit level 3 (C14M / L3TM <= 1.00 on >= 5 of 6 devices; refuted > 1.05 on any)): **CONFIRMED** -- {"FakeAuckland": 0.9343838806765271, "FakeHanoiV2": 0.956507689473987, "FakeTorino": 1.0061343241587546, "FakeKingston": 0.9850560507428251, "FakeBrussels": 0.9822795478763695, "FakeOsaka": 0.6550969998513407}
+- Q10 (both cost nothing (median compile time C14M / R51M on every device and A11M / A9M on the cx and cz devices <= 1.15; refuted > 1.50 on any)): **CONFIRMED** -- {"FakeAuckland": 0.972636815920398, "FakeHanoiV2": 0.982178217821782, "FakeTorino": 0.9120222079863335, "FakeKingston": 1.095484384324647, "FakeBrussels": 0.9462830957230143, "FakeOsaka": 1.0263295099061522, "FakeAuckland (A11M/A9M)": 1.0363452801615343, "FakeHanoiV2 (A11M/A9M)": 1.0232978147011016, "FakeTorino (A11M/A9M)": 0.9750656901660424, "FakeKingston (A11M/A9M)": 1.0311871227364184}
+
+Reported: A9M on the ecr devices is simulated with its off-target gates error-free; its infid there is not comparable.
+Reported: check counters by device: {"FakeAuckland": {"exact": {"checked": 1040, "refused_resynthesis": 0, "refused_floor": 0, "refused_level3": 0, "not_checkable": 0}, "direction": {"fixed": 0, "fallback": 0}, "l3t_check_a11": {"accepted": 208, "refused": 0, "unavailable": 0}}, "FakeHanoiV2": {"exact": {"checked": 1040, "refused_resynthesis": 0, "refused_floor": 0, "refused_level3": 0, "not_checkable": 0}, "direction": {"fixed": 0, "fallback": 0}, "l3t_check_a11": {"accepted": 208, "refused": 0, "unavailable": 0}}, "FakeTorino": {"exact": {"checked": 1040, "refused_resynthesis": 0, "refused_floor": 0, "refused_level3": 0, "not_checkable": 0}, "direction": {"fixed": 0, "fallback": 0}, "l3t_check_a11": {"accepted": 208, "refused": 0, "unavailable": 0}}, "FakeKingston": {"exact": {"checked": 1040, "refused_resynthesis": 0, "refused_floor": 0, "refused_level3": 0, "not_checkable": 0}, "direction": {"fixed": 0, "fallback": 0}, "l3t_check_a11": {"accepted": 208, "refused": 0, "unavailable": 0}}, "FakeBrussels": {"exact": {"checked": 1040, "refused_resynthesis": 0, "refused_floor": 0, "refused_level3": 0, "not_checkable": 0}, "direction": {"fixed": 0, "fallback": 0}, "l3t_check_a11": {"accepted": 208, "refused": 0, "unavailable": 0}}, "FakeOsaka": {"exact": {"checked": 1040, "refused_resynthesis": 0, "refused_floor": 0, "refused_level3": 0, "not_checkable": 0}, "direction": {"fixed": 0, "fallback": 0}, "l3t_check_a11": {"accepted": 208, "refused": 0, "unavailable": 0}}}
+

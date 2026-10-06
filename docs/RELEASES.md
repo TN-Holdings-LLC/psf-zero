@@ -8,7 +8,39 @@ from this folder. The full record behind each entry is in Part 9 of the findings
 links to. The README itself, as it was before the move, is kept as
 [`README_2026-10-05_before_restructure.md`](README_2026-10-05_before_restructure.md).
 
-> **Current version (2026-10-05): `psf_compile.py` 2026-10-05.1, with `psf_smart_layout` 2026-10-01.1 and the Rust
+> **Current version (2026-10-06): `psf_compile.py` 2026-10-06.1 and the AI front end a11, with `psf_smart_layout`
+> 2026-10-01.1 and the Rust core `CORE_VERSION` 2026-09-29.1 (both unchanged)**
+> ([Part 9](findings/spare-qubit-cliff-combined-248.md), Addenda 357-362). The recommended call is unchanged; compile a
+> circuit that will be sampled with its final measurements.
+>
+> - **Item 40 (release) and item 15 (a11): readout is counted.** The choice among candidates and the front end's
+>   estimate now include the readout error of each measured qubit. A circuit without measurements gets the same
+>   result as before.
+> - **Item 16 (a11): gate direction kept on ecr devices.** a9 could return ECR gates in a direction the device does
+>   not provide; a11 never does, and checks any fix-up it makes.
+> - **Item 41 (release):** the failed-element check is direction-aware, like the pruning. It changed no output in the
+>   test.
+> - **Item 42 (release), opt-in:** `candidate_score="kraus"` chooses by an estimate exact to first order for the
+>   simulator's noise model. It has no readout term, so the recommended call stays `candidate_score="hybrid"`.
+> - **Pre-registered test RECR (Addenda 358, 360;** 104 sampled circuits on each of 6 fake devices, cx, cz and ecr):
+>   - compiled with measurements, the summed readout error of the measured qubits was 0.40 and 0.18 times that of
+>     compiling without them, on the two cz devices (2026-10-05.1 could already do this; it was not documented);
+>   - the release's classical infidelity with measurements was 0.96-1.00 times 2026-10-05.1's, with lower readout
+>     error on every device; without measurements its output was 2026-10-05.1's on every circuit;
+>   - a11's classical infidelity was 0.46 and 0.16 times a9's on the two cz devices, and 0.63-0.98 times Qiskit level
+>     3's on the six devices;
+>   - a9 returned 622 and 860 gates in an unsupported direction on FakeBrussels and FakeOsaka; a11 none;
+>   - 10 of 10 predictions confirmed; compile time 0.91-1.10 times.
+> - **Pre-registered test KRAUS (Addenda 359, 361;** 1,506 circuits on each of 9 fake devices): `kraus` chose at
+>   least as well as `hybrid` on every device (0.998-1.000 times its infidelity), 0.937 times on HOLD6's H4 case;
+>   ahead of Qiskit level 3 (0.959-0.990); 3-5% more compile time; 7 of 7 predictions confirmed.
+> - **Known limits:**
+>   - Fake devices only. Readout on hardware drifts and is correlated across qubits; Aer's model is neither.
+>   - `kraus_cost` reproduces Aer's own noise model, so a simulation test favours it by construction.
+>   - Both scored runs were made on Windows, where Qiskit issue #17057 does not appear (Addendum 357); the locks were
+>     committed before the runs and pushed afterwards (the workplace PC has no GitHub login).
+
+> **Previous release (2026-10-05): `psf_compile.py` 2026-10-05.1, with `psf_smart_layout` 2026-10-01.1 and the Rust
 > core `CORE_VERSION` 2026-09-29.1 (both unchanged)** ([Part 9](findings/spare-qubit-cliff-combined-248.md),
 > Addenda 340-344). A correctness fix for 2026-10-03.1 to 2026-10-04.1 (the known defect below); the recommended call
 > is unchanged:
@@ -42,7 +74,7 @@ links to. The README itself, as it was before the move, is kept as
 >   it refused level 3's output 28 times per cx device, exactly level 3's 28 wrong outputs; identical to a8 on every
 >   sampled ordinary circuit.
 > - **Not fixed:** on ecr devices it can return ECR gates in a direction the device does not provide (a workplace
->   exploration, 2026-10-05). Do not give it a target on ecr devices.
+>   exploration, 2026-10-05). Do not give it a target on ecr devices. *(Fixed in a11, 2026-10-06, Addenda 358-362.)*
 
 > **Known defect, found 2026-10-05 (fix under test: Addenda 340-342).** *(Fixed in 2026-10-05.1 and a9, Addenda
 > 343-344; this is the notice as it stood before the fix.)* On cx devices, the recommended call of

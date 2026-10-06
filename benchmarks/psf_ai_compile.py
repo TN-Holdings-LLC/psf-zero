@@ -83,6 +83,25 @@ a9 (2026-10-05, home; adopted 2026-10-05, Addenda 342-344) checks the one circui
       39) confirms it; if the release has no such check, the output is not used. Everything else is a8's (its large-
       circuit path calls the release, which checks its own Qiskit-made circuits from item 39 on).
 
+a10 (2026-10-05, workplace; adopted with a11 on 2026-10-06, Addenda 358-362) counts readout in the state-aware estimate:
+  15. The state-aware estimate (a4, `_state_weights` / `_score_weights`) skipped `measure`, so neither the choice among
+      candidates nor the state-aware re-placement saw readout error; model-written circuits are sampled, so their
+      measured qubits' readout enters every result. a10 records each measured circuit qubit once (weight 1) and charges
+      the Target's measure error of the physical qubit it is mapped to. A circuit without measurements gets exactly
+      a9's estimate (and output). The same blind spot in the release's item 38 is item 40 of candidate psf_compile
+      2026-10-05.c13 (workplace READOUT test, 2026-10-05).
+
+a11 (2026-10-05, workplace; adopted 2026-10-06, Addenda 358-362) keeps two-qubit gates in a direction the target provides:
+  16. On ecr (Eagle) devices each coupler supports one direction only. The state-aware re-placement relabels qubits on
+      an undirected graph, and the estimate looked a gate up in either direction, so a9/a10 returned ecr gates in the
+      unsupported direction (workplace ecr exploration, 2026-10-05: 224 and 346 such gates on FakeBrussels and
+      FakeStrasbourg over 56 circuits; Aer's noise model has no error for them, so they also looked better than they
+      are). a11: (a) the estimate charges an unsupported direction as infinite, so no placement or candidate that
+      needs one is chosen; (b) a final backstop: if the result still has an off-target two-qubit gate, Qiskit's
+      GateDirection with the target fixes it, kept only if it acts as the original (`_same_action`, release item 39)
+      and is fully on target; otherwise the release's recommended call is returned. On devices whose couplers work in
+      both directions (cx with both entries, cz) nothing changes.
+
 Circuits above `SMALL_MAX_QUBITS` go to `compile_for_hardware()`: without a target unchanged (a7), with a target by
 the release's recommended call (a8, item 13).
 The layout of the routed circuit (initial and final) is preserved by every step.
@@ -101,7 +120,7 @@ from qiskit.transpiler.passes import (BasisTranslator, Collect2qBlocks, Commutat
 
 import psf_compile as pc
 
-AI_COMPILE_VERSION = "2026-10-05.a9"  # adopted 2026-10-05 (Addenda 342-344): a8 + equivalence check of level 3's output (item 14); a8 is psf_ai_compile_a8.py
+AI_COMPILE_VERSION = "2026-10-05.a11"  # adopted 2026-10-06 (Addenda 358-362): a9 + readout in the estimate (item 15) + gate direction kept (item 16); a9 is psf_ai_compile_a9.py
 SMALL_MAX_QUBITS = 8
 DEFAULT_SEEDS = (0, 1, 2, 3)
 L3_LAYOUT_CANDIDATE = True
@@ -403,7 +422,10 @@ def _state_weights(circ):
     acc = {}
     for inst in circ.data:
         name = inst.operation.name
-        if name in ("barrier", "measure", "delay", "reset"):
+        if name == "measure":  # a10 (item 15): each measured qubit once, weight 1
+            acc.setdefault(("measure", (circ.find_bit(inst.qubits[0]).index,)), [1.0, [[0.0, 0.0]]])
+            continue
+        if name in ("barrier", "delay", "reset"):
             continue
         qs = [circ.find_bit(q).index for q in inst.qubits]
         k = len(qs)
@@ -438,7 +460,15 @@ def _state_weights(circ):
 def _score_weights(weights, target, mapping):
     total = 0.0
     for (name, qs), (wdep, wq) in weights.items():
-        prm = _gate_params(target, name, [mapping[q] for q in qs])
+        if name == "measure":  # a10 (item 15): the Target's measure error of the mapped qubit
+            props = _props_of(target, "measure", [mapping[qs[0]]])
+            if props is not None and getattr(props, "error", None) is not None:
+                total += float(props.error) * wdep
+            continue
+        mq = tuple(mapping[q] for q in qs)
+        if len(mq) == 2 and name in target.operation_names and mq not in target[name]:
+            return float("inf")  # a11 (item 16): a direction the target does not provide
+        prm = _gate_params(target, name, list(mq))
         if prm is None:
             continue
         pdep, th = prm
@@ -501,6 +531,40 @@ def best_placement_state_aware(out, target, coupling_map, max_mappings=MAX_MAPPI
         if perm[q] is None:
             perm[q] = next(it)
     return _remap(out, perm), best_cost
+
+
+def _off_target_2q(circ, target):
+    """a11: two-qubit instructions whose (name, qubits) the target does not provide."""
+    bad = 0
+    for ins in circ.data:
+        if len(ins.qubits) != 2 or ins.operation.name in ("barrier",):
+            continue
+        q = tuple(circ.find_bit(b).index for b in ins.qubits)
+        if ins.operation.name not in target.operation_names or q not in target[ins.operation.name]:
+            bad += 1
+    return bad
+
+
+DIRECTION_STATS = {"fixed": 0, "fallback": 0}
+
+
+def _keep_direction(out, target, release_call):
+    """a11 (item 16): return `out` if every two-qubit gate is on the target; else a GateDirection-fixed copy if it is
+    exact and on target; else the release's recommended call."""
+    if target is None or _off_target_2q(out, target) == 0:
+        return out
+    from qiskit.transpiler.passes import GateDirection, Optimize1qGatesDecomposition
+    try:
+        fixed = PassManager([GateDirection(None, target=target), Optimize1qGatesDecomposition(target=target)]).run(out)
+        fixed._layout = out._layout
+        same = getattr(pc, "_same_action", None)
+        if _off_target_2q(fixed, target) == 0 and same is not None and same(out, fixed):
+            DIRECTION_STATS["fixed"] += 1
+            return fixed
+    except Exception:
+        pass
+    DIRECTION_STATS["fallback"] += 1
+    return release_call()
 
 
 def compile_for_model_circuit(qc, coupling_map, basis_gates, entangling_basis="cx", seeds=DEFAULT_SEEDS,
@@ -638,4 +702,17 @@ def compile_for_model_circuit(qc, coupling_map, basis_gates, entangling_basis="c
     else:
         chosen = "PSF"
     info = {"path": "small", "tried": tried, "best": best_key, "version": AI_COMPILE_VERSION, "chosen": chosen}
+    if target is not None and basis_gates is not None:  # a11 (item 16)
+        def _release():
+            fk = dict(FAST_PATH_RECOMMENDED, target=target)
+            fk.update(kwargs)
+            with contextlib.redirect_stdout(io.StringIO()), warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                return pc.compile_for_hardware(qc, coupling_map=coupling_map, basis_gates=basis_gates,
+                                               entangling_basis=entangling_basis, layout_search=layout_search,
+                                               seed_transpiler=seeds[0] if seeds else None, **fk)
+        kept = _keep_direction(best, target, _release)
+        if kept is not best and return_info:
+            info = dict(info, direction_fix=True)
+        best = kept
     return (best, info) if return_info else best

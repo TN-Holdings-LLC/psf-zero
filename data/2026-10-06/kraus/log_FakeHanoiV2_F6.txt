@@ -1,0 +1,1 @@
+wrote kr_FakeHanoiV2_F6.json: 120 circuits, 280 simulations, 56.8 s

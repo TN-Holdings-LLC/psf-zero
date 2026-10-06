@@ -28,7 +28,7 @@ def mods():
     import core_fix_c2_eval as H
     lay = H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psl_c14_test")
     sys.modules["psf_smart_layout"] = lay
-    rel = H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile_rel_c14_test")
+    rel = H.load_module(os.path.join(REPO, "patches", "psf_compile_c12_2026-10-05", "psf_compile.py"), "psf_compile_rel_c14_test")  # 2026-10-05.1 (c12's file differs from it only in the version lines); psf_compile.py is 2026-10-06.1 since this candidate's adoption
     c14 = H.load_module(os.path.join(HERE, "psf_compile.py"), "psf_compile_c14_test")
     import depth_eval as DE
     import readout_eval as RE
@@ -81,7 +81,7 @@ def one_way(t):
 
 def test_versions(mods):
     assert mods["c14"].VERSION == "2026-10-05.c14"
-    assert mods["rel"].VERSION == "2026-10-05.1"
+    assert mods["rel"].VERSION == "2026-10-05.c12"  # the previous release, 2026-10-05.1, as its candidate's file
 
 
 def test_readout_cost_sums_measured_qubits_once(mods):

@@ -1,0 +1,1 @@
+wrote kr_FakeMarrakesh_F6.json: 120 circuits, 240 simulations, 132.0 s

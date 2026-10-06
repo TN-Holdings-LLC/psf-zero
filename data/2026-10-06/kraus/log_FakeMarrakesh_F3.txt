@@ -1,0 +1,1 @@
+wrote kr_FakeMarrakesh_F3.json: 300 circuits, 755 simulations, 703.7 s

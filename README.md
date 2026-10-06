@@ -23,9 +23,27 @@ including the failures, are recorded in [`docs/findings/`](docs/findings/).
 
 ## Current version
 
-**`psf_compile.py` 2026-10-05.1** and the AI front end **a9**, with `psf_smart_layout` 2026-10-01.1 and the Rust core
-`CORE_VERSION` 2026-09-29.1 (Part 9, Addenda 340-344). Every release and dated notice:
+**`psf_compile.py` 2026-10-06.1** and the AI front end **a11**, with `psf_smart_layout` 2026-10-01.1 and the Rust core
+`CORE_VERSION` 2026-09-29.1 (Part 9, Addenda 357-362). Every release and dated notice:
 [`docs/RELEASES.md`](docs/RELEASES.md).
+
+> **New in 2026-10-06.1 and a11: readout is counted, and ecr devices are fixed.**
+>
+> - **Readout:** compile a circuit that will be sampled **with** its final measurements. The choice among candidates
+>   and the AI front end's estimate now include each measured qubit's readout error; without measurements nothing
+>   changes.
+> - **ecr devices:** a9 could return ECR gates in a direction the device does not provide; a11 never does.
+> - **Opt-in `candidate_score="kraus"`:** an estimate exact to first order for the simulator's noise model. It has no
+>   readout term, so the recommended call stays `"hybrid"`.
+> - **Pre-registered tests** (fake devices; Addenda 358-361):
+>   - RECR (104 sampled circuits on each of 6 devices): compiling with the measurements cut the measured qubits'
+>     readout error to 0.40 and 0.18 times on the cz devices (2026-10-05.1 could already do this); the release's
+>     readout term adds a small gain on top (0.96-1.00 times); a11's classical infidelity was 0.46 and 0.16 times
+>     a9's there; a9 returned 622 and 860 gates in an unsupported direction on two ecr devices, a11 none; 10 of 10
+>     predictions confirmed.
+>   - KRAUS (1,506 circuits on each of 9 devices): `kraus` at least as good as `hybrid` on every device, 6.3% better on
+>     the one known weak case; 3-5% more compile time; 7 of 7 confirmed. It reproduces the simulator's own noise
+>     model, so this test favours it by construction.
 
 > **Correctness fix: if you use 2026-10-03.1, .2, .3 or 2026-10-04.1, update.** On cx devices those releases could
 > return a circuit that is NOT equivalent to the input, when called with `final_resynthesis` or `compare_level3`. The
@@ -34,8 +52,8 @@ including the failures, are recorded in [`docs/findings/`](docs/findings/).
 > - **When:** the input contains two-qubit unitaries near the boundary of Qiskit issue #17057, for example explicit
 >   `unitary` gates from numerical optimisation or written by a language model, or Trotter steps with very small
 >   angles.
-> - **Fix:** 2026-10-05.1 and a9 check every circuit that Qiskit makes as a whole before they return it. A circuit
->   that fails the check, or cannot be checked, is replaced by PSF-Zero's own, guarded circuit.
+> - **Fix:** since 2026-10-05.1 and a9, every circuit that Qiskit makes as a whole is checked before it is returned.
+>   A circuit that fails the check, or cannot be checked, is replaced by PSF-Zero's own, guarded circuit.
 > - **Pre-registered test** (Addenda 342-343; 6 devices, 768 near-boundary and control circuits, plus 1,506 ordinary
 >   circuits on each of 9 devices):
 >   - 2026-10-04.1 was wrong on 101 circuits on the cx devices (infidelity up to 0.34), a8 on 108, Qiskit level 3
@@ -48,9 +66,6 @@ including the failures, are recorded in [`docs/findings/`](docs/findings/).
 > - Whether Qiskit's failure appears depends on floating-point rounding: it appeared in Linux environments
 >   (WSL2 and a Linux sandbox), and not in a Windows environment tested on 2026-10-06 (Addendum 357). The fix
 >   protects either way.
-
-> **Still open:** on ecr devices the AI front end can return ECR gates in a direction the device does not provide (a
-> workplace exploration, 2026-10-05). Until that is fixed, do not give it a target on ecr devices.
 
 ## Quick start
 
@@ -81,8 +96,8 @@ out = compile_for_hardware(qc, coupling_map=cm, basis_gates=basis, entangling_ba
                            compare_level3=True, compare_floor=True, candidate_score="hybrid")
 ```
 
-If the circuit will be sampled, compile it **with** its final measurements, so that placement can see readout error
-(workplace audit of 2026-10-05; a helper is in preparation).
+If the circuit will be sampled, compile it **with** its final measurements: since 2026-10-06.1 the placement and the
+choice among candidates then count readout error (Addenda 358, 360).
 
 ## Install
 
@@ -137,7 +152,10 @@ model-written circuits.
 **For a device** (pre-registered tests on 1,506 new circuits per device, 9 fake devices: four cx, five cz):
 
 - Release 2026-10-04.1 against Qiskit level 3 with the Target: 0.959-0.991 (Addendum 337). Release 2026-10-05.1
-  returns the same circuits on those circuits, on all nine devices (Addendum 343).
+  returns the same circuits on those circuits, on all nine devices (Addendum 343), and so does 2026-10-06.1 (it differs
+  only on circuits compiled with measurements).
+- Sampled circuits compiled with their measurements (6 devices): release 2026-10-06.1 at 0.66-1.01 times Qiskit level 3's
+  classical infidelity, a11 at 0.63-0.98 (Addendum 360).
 - With a stale calibration (errors off by 30%, T1/T2 by 20%) the previous release stayed ahead of level 3
   (Addendum 335).
 - At 8-10 logical qubits it stayed ahead too (0.951-0.998).

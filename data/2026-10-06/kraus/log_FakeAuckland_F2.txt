@@ -1,0 +1,1 @@
+wrote kr_FakeAuckland_F2.json: 240 circuits, 656 simulations, 137.6 s

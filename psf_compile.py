@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-10-05.1 -- release, adopted on 2026-10-05 from candidate 2026-10-05.c12 (previous release: 2026-10-04.1)
+VERSION: 2026-10-06.1 -- release, adopted on 2026-10-06 from candidates 2026-10-05.c14 and 2026-10-06.c15 (previous release: 2026-10-05.1)
 
 Where to look for what
 ----------------------
@@ -590,6 +590,52 @@ a correctness fix for releases 2026-10-03.1 to 2026-10-04.1):
       guarded circuit is kept. Counts in `EXACT_STATS`.
     The checks are statevector simulations of at most RESYNTH_MAX_QUBITS qubits, like the estimates of items 35-38.
     With every Qiskit-made circuit exact (all HOLD tests), the result is the same as 2026-10-04.1.
+
+2026-10-06.1 (release; candidates 2026-10-05.c14 (items 40-41, written at the workplace) and 2026-10-06.c15 (item 42),
+adopted on 2026-10-06 after their pre-registered evaluations RECR and KRAUS, Addenda 358-362):
+
+40. **Readout of measured qubits in item 38's estimate.** `hybrid_cost` skipped `measure`, so no candidate choice
+    (items 36-38) ever saw readout error, and circuits compiled without measurements gave the placement step
+    (item 33) nothing to see either. On FakeTorino the qubit that carried a classifier's output had a mean readout
+    error of 0.034 under the guarded call and 0.025 under the recommended call, against 0.011 for Qiskit level 3
+    (workplace DEPTH stage 1, 2026-10-05; Addendum 297 found the same at home).
+    - `readout_cost(circ, target)`: the sum, over the circuit's `measure` instructions, of the Target's measure error
+      on that qubit (each measured qubit counted once; 0 if the Target reports none).
+    - `hybrid_cost` adds it. A circuit without measurements gets exactly c12's estimate, so its choice is unchanged.
+    Callers who want readout taken into account compile the circuit with its final measurements (item 33's
+    re-placement then scores them too, as Qiskit's VF2PostLayout does).
+    RECR (Addenda 358, 360): compiled with their measurements, sampled circuits on six fake devices had 0.96-1.00 x
+    the classical infidelity of 2026-10-05.1's call with measurements, and lower summed readout error on every
+    device; without measurements the output was 2026-10-05.1's on every circuit.
+
+41. **Item 31's check is direction-aware, like its pruning.** `_uses_failed` flagged a two-qubit gate whenever either
+    direction of its coupler was reported failed, while `prune_coupling_map` and item 36's `_acceptable` remove or
+    refuse only the failed direction. On a coupler that has failed one way only (FakeHanoiV2's cx(5, 8) and
+    cx(19, 20), FakeGeneva's (16, 14) and (20, 19); Addendum 319, section 4), a circuit using only the healthy direction
+    was recompiled on the pruned map for nothing. Now a gate is flagged if its own direction is reported failed, or,
+    for a symmetric gate (cz, swap, rzz, ...), either direction; a gate on a failed qubit is flagged as before.
+
+42. **NEW, opt-in: `candidate_score="kraus"` chooses among the candidates of items 36-37 by `kraus_cost`, an estimate
+    that is exact to first order for a noise model of thermal relaxation after each gate plus a depolarizing remainder.**
+    The exploratory diagnosis of Addendum 339 found two approximations in `hybrid_cost` (item 38) that add up against
+    one placement (HOLD6's H4: FakeAlgiers 4-qubit GHZ chains, 6.7% worse than the floor-placed candidate):
+    amplitude damping counted on the state before each gate, and the remainder counted as if the gate's qubits were
+    maximally mixed. Rescoring HOLD5's circuits in-sample, the choice by this estimate equalled the measured best
+    on all nine devices, to four decimals.
+    - `kraus_cost(circ, target)`: on the noiseless state just after each gate with a reported duration, for each of
+      its qubits with T1 (T2 capped at 2 T1), 1 - sum_k |Tr(rho K_k)|^2 over the Kraus operators of amplitude
+      damping (gamma = 1 - exp(-t / T1)) followed by pure dephasing (p_phi = (1 - exp(-t / T_phi)) / 2,
+      1 / T_phi = 1 / T2 - 1 / (2 T1)); plus, per gate, the reported error above the thermal floor as a depolarizing
+      channel at the gate qubits' reduced purity: lambda (1 - Tr rho_S^2 / d), lambda = excess d / (d - 1). The same
+      terms as `kraus_pur` in Addendum 339's `h4_diag.py`. None above RESYNTH_MAX_QUBITS touched qubits or when an
+      instruction has no matrix.
+    - `candidate_score="kraus"` uses it in `_choose`; everything else is as in items 37-39. Other values change
+      nothing.
+    It does not include item 40's readout term, so the recommended call stays `candidate_score="hybrid"`.
+    KRAUS (Addenda 359, 361): on 13,554 fresh circuits on nine fake devices it chose at least as well as `hybrid_cost`
+    on every device and repaired HOLD6's H4 case (6.3% lower infidelity), for 3-5% more compile time.
+    Its limit: it reproduces the simulator's own noise model (Aer), so a noisy-simulation test favours it by
+    construction; on hardware relaxation acts during the gate and there are errors that model lacks.
 """
 from __future__ import annotations
 
@@ -626,7 +672,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-10-05.1"  # release (from candidate 2026-10-05.c12): 2026-10-04.1 + equivalence check of Qiskit-made circuits (item 39)
+VERSION = "2026-10-06.1"  # release (from candidates 2026-10-05.c14 and 2026-10-06.c15): 2026-10-05.1 + readout in the choice (item 40), direction-aware failed check (item 41), opt-in kraus_cost (item 42)
 __version__ = VERSION
 
 # Changelog item 27: the version string of the loaded Rust core, for logs.
@@ -1994,6 +2040,24 @@ def pauli_cost(circ, target):
     return cost
 
 
+def readout_cost(circ, target) -> float:
+    """Item 40: sum of the Target's measure error over the qubits the circuit measures (each qubit once)."""
+    if "measure" not in target.operation_names:
+        return 0.0
+    seen, cost = set(), 0.0
+    for ins in circ.data:
+        if ins.operation.name != "measure":
+            continue
+        q = circ.find_bit(ins.qubits[0]).index
+        if q in seen:
+            continue
+        seen.add(q)
+        props = target["measure"].get((q,), None)
+        if props is not None and props.error is not None:
+            cost += float(props.error)
+    return cost
+
+
 def hybrid_cost(circ, target):
     """Item 38's estimate: amplitude damping as `excitation_cost` counts it, pure dephasing as the Z part of
     `pauli_cost`, and the reported error above the thermal floor (see the changelog). None if more than
@@ -2055,13 +2119,78 @@ def hybrid_cost(circ, target):
             thermal_f *= (1.0 + 2.0 * math.exp(-t / t2) + math.exp(-t / t1)) / 4.0
         d = 2 ** m
         cost += max((props.error or 0.0) - (1.0 - (d * thermal_f + 1.0) / (d + 1.0)), 0.0) * (d + 1) / d
+    return cost + readout_cost(circ, target)  # item 40
+
+
+def kraus_cost(circ, target):
+    """Item 42's estimate (see the changelog; Addendum 339's `kraus_pur`). None if more than RESYNTH_MAX_QUBITS qubits
+    are touched or an instruction has no matrix (other than barrier, measure, delay)."""
+    import math
+    ops = [(ins.operation, tuple(circ.find_bit(b).index for b in ins.qubits)) for ins in circ.data
+           if ins.operation.name not in ("barrier", "measure", "delay")]
+    active = sorted({i for _, q in ops for i in q})
+    if len(active) > RESYNTH_MAX_QUBITS:
+        return None
+    k = max(len(active), 1)
+    pos = {p: j for j, p in enumerate(active)}
+    qp = getattr(target, "qubit_properties", None) or []
+    psi = np.zeros((2,) * k, dtype=complex)
+    psi[(0,) * k] = 1.0
+
+    def thermal(i, t):
+        p = qp[i] if i < len(qp) else None
+        t1 = getattr(p, "t1", None) if p is not None else None
+        if not t or not t1:
+            return None
+        t2 = getattr(p, "t2", None)
+        return t1, (min(t2, 2 * t1) if t2 else 2 * t1)
+
+    def rho(axes):
+        mm = np.moveaxis(psi, list(axes), list(range(len(axes)))).reshape(2 ** len(axes), -1)
+        return mm @ mm.conj().T
+
+    cost = 0.0
+    for op, q in ops:
+        try:
+            mat = np.asarray(op.to_matrix(), dtype=complex)
+        except Exception:
+            return None
+        props = target[op.name].get(q, None) if op.name in target.operation_names else None
+        axes = [pos[i] for i in q]
+        m = len(axes)
+        t = (props.duration or 0.0) if props is not None else 0.0
+        rev = axes[::-1]  # Qiskit's matrix index is little-endian: the first qarg is the least significant bit
+        psi = np.tensordot(mat.reshape((2,) * (2 * m)), psi, axes=(list(range(m, 2 * m)), rev))
+        psi = np.moveaxis(psi, list(range(m)), rev)
+        if props is None:
+            continue
+        thermal_f = 1.0
+        for i, ax in zip(q, axes):
+            th = thermal(i, t)
+            if not th:
+                continue
+            t1, t2 = th
+            g = 1.0 - math.exp(-t / t1)
+            rate = max(1.0 / t2 - 1.0 / (2.0 * t1), 0.0)
+            pphi = (1.0 - math.exp(-t * rate)) / 2.0
+            r = rho([ax])
+            # Tr(rho K) for K0 = diag(1, sqrt(1 - g)), K1 = sqrt(g)|0><1|, and the same after Z (closed form)
+            s = math.sqrt(1.0 - g)
+            off = g * abs(r[1, 0]) ** 2
+            f = (1.0 - pphi) * (abs(r[0, 0] + s * r[1, 1]) ** 2 + off) + pphi * (abs(r[0, 0] - s * r[1, 1]) ** 2 + off)
+            cost += 1.0 - f
+            thermal_f *= (1.0 + 2.0 * math.exp(-t / t2) + math.exp(-t / t1)) / 4.0
+        d = 2 ** m
+        excess = max((props.error or 0.0) - (1.0 - (d * thermal_f + 1.0) / (d + 1.0)), 0.0)
+        purity = float(np.sum(np.abs(rho(axes)) ** 2))  # Tr(rho^2) for a Hermitian rho
+        cost += excess * d / (d - 1) * (1.0 - purity / d)
     return cost
 
 
 def _choose(cands, target, score):
     """Items 37-38: the (name, circuit) with the lowest estimate; the first (the release's circuit) on ties or when
     any estimate cannot be made."""
-    f = {"pauli": pauli_cost, "hybrid": hybrid_cost}.get(score, excitation_cost)
+    f = {"pauli": pauli_cost, "hybrid": hybrid_cost, "kraus": kraus_cost}.get(score, excitation_cost)
     costs = [f(c, target) for _, c in cands]
     if any(c is None for c in costs):
         COMPARE_STATS["not_estimable"] += 1
@@ -2139,12 +2268,17 @@ def _failed_elements(target, max_error: float, gate_names=("cz", "ecr", "cx"), q
     return edges, qubits
 
 
+_SYMMETRIC_2Q = frozenset(("cz", "swap", "iswap", "rzz", "rxx", "ryy", "cp", "xx_plus_yy"))
+
+
 def _uses_failed(circ, edges, qubits) -> bool:
+    """Item 31 (direction-aware from item 41): a gate on a failed qubit, a two-qubit gate in a direction reported
+    failed, or a symmetric two-qubit gate on a coupler failed in either direction."""
     for inst in circ.data:
         idx = tuple(circ.find_bit(q).index for q in inst.qubits)
         if any(i in qubits for i in idx):
             return True
-        if len(idx) == 2 and (idx in edges or idx[::-1] in edges):
+        if len(idx) == 2 and (idx in edges or (inst.operation.name in _SYMMETRIC_2Q and idx[::-1] in edges)):
             return True
     return False
 
@@ -2470,7 +2604,8 @@ def compile_for_hardware(
     `compare_floor`, `candidate_score` (candidate 2026-10-03.c10, item 37): `compare_floor=True` adds the
     release's pipeline re-placed on `floor_aware_target(target)` as a candidate; `candidate_score="pauli"` chooses
     among the candidates by `pauli_cost` instead of `excitation_cost`. Require `target`; the defaults change
-    nothing. `candidate_score="hybrid"` (candidate 2026-10-04.c11, item 38) chooses by `hybrid_cost`.
+    nothing. `candidate_score="hybrid"` (candidate 2026-10-04.c11, item 38) chooses by `hybrid_cost`;
+    `candidate_score="kraus"` (candidate 2026-10-06.c15, item 42) by `kraus_cost`.
     `callback` (new, item 13): forwarded verbatim to the internal
     `transpile()` call below, unchanged from what plain `transpile(callback=
     ...)` accepts. `None` by default -- passing nothing here changes nothing
@@ -2487,8 +2622,8 @@ def compile_for_hardware(
         raise ValueError("compare_level3=True needs the device `target` (changelog item 36)")
     if compare_floor and target is None:
         raise ValueError("compare_floor=True needs the device `target` (changelog item 37)")
-    if candidate_score not in ("excitation", "pauli", "hybrid"):
-        raise ValueError('candidate_score must be "excitation", "pauli" or "hybrid" (changelog items 37-38)')
+    if candidate_score not in ("excitation", "pauli", "hybrid", "kraus"):
+        raise ValueError('candidate_score must be "excitation", "pauli", "hybrid" or "kraus" (changelog items 37-38, 42)')
     if layout_search and initial_layout is not None:
         raise ValueError(
             "layout_search=True and an explicit initial_layout were both "

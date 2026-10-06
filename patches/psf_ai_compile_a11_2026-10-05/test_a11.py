@@ -28,7 +28,7 @@ def mods():
     lay = H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psl_a11_test")
     sys.modules["psf_smart_layout"] = lay
     c14 = H.load_module(os.path.join(REPO, "patches", "psf_compile_c14_2026-10-05", "psf_compile.py"), "psf_compile")
-    a9 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile.py"), "psf_ai_compile_a9_for_a11_test")
+    a9 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile_a9.py"), "psf_ai_compile_a9_for_a11_test")  # a9 (frozen at a11's adoption)
     a10 = H.load_module(os.path.join(WORK, "model_ro2", "a10", "psf_ai_compile.py"), "psf_ai_compile_a10_for_a11_test")
     a11 = H.load_module(os.path.join(HERE, "psf_ai_compile.py"), "psf_ai_compile_a11_test")
     import readout_eval as RE

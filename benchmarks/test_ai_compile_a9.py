@@ -1,4 +1,4 @@
-"""Tests for the adopted AI front end psf_ai_compile 2026-10-05.a9 (benchmarks/psf_ai_compile.py; item 14: level 3's
+"""Tests for the AI front end psf_ai_compile 2026-10-05.a9 (adopted 2026-10-05; kept as benchmarks/psf_ai_compile_a9.py since a11's adoption on 2026-10-06; item 14: level 3's
 output used only if the release confirms it), adapted from the candidate's tests
 (patches/psf_ai_compile_a9_2026-10-05/test_a9.py). The release used is the current one, registered as `psf_compile`
 before the front ends are loaded; a8 is benchmarks/psf_ai_compile_a8.py. `with_prep` and `state_infid` are the workplace probe's
@@ -25,7 +25,7 @@ def mods():
     sys.modules["psf_smart_layout"] = lay
     c12 = H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile")  # the release (item 39 from 2026-10-05.1)
     a8 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile_a8.py"), "psf_ai_compile_a8_frozen_a9_test")
-    a9 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile.py"), "psf_ai_compile")
+    a9 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile_a9.py"), "psf_ai_compile")  # a9, frozen at a11's adoption
     return dict(c12=c12, a8=a8, a9=a9)
 
 
@@ -157,7 +157,7 @@ def nat(tgt):
 def test_version(mods):
     assert mods["a9"].AI_COMPILE_VERSION == "2026-10-05.a9"
     assert mods["a8"].AI_COMPILE_VERSION == "2026-10-04.a8"
-    assert mods["c12"].VERSION == "2026-10-05.1"
+    assert mods["c12"].VERSION == "2026-10-06.1"  # current release (2026-10-05.1 when this file was written)
     assert mods["a9"].pc is mods["c12"] and mods["a8"].pc is mods["c12"]
 
 

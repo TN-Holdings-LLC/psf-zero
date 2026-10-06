@@ -1,0 +1,1 @@
+wrote kr_FakeMarrakesh_F1.json: 432 circuits, 864 simulations, 626.5 s

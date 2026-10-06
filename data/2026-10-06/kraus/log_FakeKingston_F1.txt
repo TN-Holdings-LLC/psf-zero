@@ -1,0 +1,1 @@
+wrote kr_FakeKingston_F1.json: 432 circuits, 864 simulations, 631.6 s
