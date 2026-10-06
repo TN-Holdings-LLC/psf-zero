@@ -17422,6 +17422,92 @@ untracked; [`data/2026-10-06/skip_smoke/`](../../data/2026-10-06/skip_smoke/):
   predictions were written, and its two timings informed K3.
 - **Times are wall-clock times of one process per device, six in parallel,** on one machine.
 
+
+---
+
+<!-- ===== Addendum 380 (source: spare-qubit-cliff-addendum-380-2026-10-06.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 379 (lock commit 2420fa7, pushed before the run), scored by the locked script and re-checked by benchmarks/skip_verify.py; written after the output was seen.
+
+## Addendum 380 -- Results of SKIP (Addendum 379): candidate c17 returns release 2026-10-06.3's circuit on all 294 circuits on six devices, skips level 3 and the floor exactly where predicted, and takes 0.21-0.28 of the release's time above 16 qubits (0.013 at full occupancy) and the same time up to 16; K1-K4 all CONFIRMED (2026-10-06)
+
+**Status: results of the pre-registered test in Addendum 379, scored by the locked script and re-checked by the
+independent [`benchmarks/skip_verify.py`](../../benchmarks/skip_verify.py).** Written after the output was seen.
+
+## 1. The run
+
+- **Lock:** commit `2420fa7` (Addendum 379), **pushed to GitHub before the run**; every job's `git_head` is
+  `2420fa7`, with no uncommitted change to a tracked file.
+- **Machine:** home, WSL2 (Linux 6.18.33.2-microsoft-standard-WSL2, 12 CPUs); Python 3.12.13, Qiskit 2.5.2, NumPy
+  2.5.3, core `CORE_VERSION` 2026-09-29.1; six jobs in parallel (`PAR 6`).
+- **Times (UTC):** start 13:14:06; the last job finished after 791 s (13:27:17); scored and verified at once.
+- **Output:** [`data/2026-10-06/skip/`](../../data/2026-10-06/skip/): one json per device (metadata and every
+  circuit), the logs, `env.txt`, `progress.txt`, `score.md`, `score_log.txt`, `verify_log.txt`.
+
+## 2. Results (`score.md`)
+
+**P0: PASS.** Six files (48 circuits, 51 on the 27-qubit devices: 294); no error; no c17 output off the target; all
+54 exactness checks made, the largest state infidelity 3.4e-15.
+
+| device | circuits | identical | above 16: median c17 / release | up to 16: median c17 / release |
+|---|---|---|---|---|
+| FakeTorino | 48 | 48 | 0.242 | 1.017 |
+| FakeKingston | 48 | 48 | 0.238 | 1.028 |
+| FakeAuckland | 51 | 51 | 0.212 | 1.006 |
+| FakeHanoiV2 | 51 | 51 | 0.233 | 1.018 |
+| FakeBrussels | 48 | 48 | 0.213 | 1.003 |
+| FakeOsaka | 48 | 48 | 0.277 | 0.996 |
+
+| | prediction | result | verdict |
+|---|---|---|---|
+| K1 | c17 returns the release's circuit | 294 of 294 identical | **CONFIRMED** |
+| K2 | level 3 and the floor skipped once per circuit above 16 qubits, never up to 16 | every circuit | **CONFIRMED** |
+| K3 | above 16: median per-circuit time ratio <= 0.5 on every device | 0.212-0.277 | **CONFIRMED** |
+| K4 | up to 16: median per-circuit time ratio <= 1.10 on every device | 0.996-1.028 | **CONFIRMED** |
+
+`skip_verify.py`: P0 PASS, the same four verdicts, "verdicts identical to score.md: True".
+
+**Reported without prediction:**
+
+- **Per family** (median ratio above 16 | up to 16): ring 0.267 | 1.025, brick 0.313 | 1.009, pauli 0.174 | 1.016,
+  qft 0.217 | 0.998, fullT 0.013 | -.
+- **Full occupancy (fullT, 27 qubits):** 8.6-9.5 s with the release, 0.064-0.159 s with c17, the same circuit.
+- **Compile time above 16 qubits:** 130.2 s (release) against 18.1 s (c17), 0.14. Medians at the largest size
+  (26 or 48 qubits): ring 0.22 s against 0.06 s, brick 0.38 against 0.14, pauli 1.07 against 0.17, qft 1.43
+  against 0.42.
+- **Total compile time:** 1,339.3 s against 1,274.5 s (0.952). Up to 16 qubits (1,209 s against 1,257 s, the same
+  work) dominates the total, because of the next point.
+- **The 16-qubit cost, in both arms** (release, median and largest over six devices):
+
+| family | n = 10 | n = 16 | n = 17 |
+|---|---|---|---|
+| ring | 0.16 s | 1.97 s (3.88) | 0.11 s |
+| brick | 0.37 s | 5.00 s (6.77) | 0.15 s |
+| pauli | 1.32 s | **31.5 s (61.4)** | 0.35 s |
+| qft | 0.89 s | **20.2 s (24.6)** | 0.33 s |
+
+  At 16 qubits the recommended call builds level 3 and the floor and checks them, and the re-synthesis, by state
+  vector on up to 16 qubits; at 17 it does not. Its time therefore drops by a factor of 18-90 from 16 to 17 qubits.
+  This is not changed by c17 and was not predicted (it was first seen in the smoke run, Addendum 379, section 5).
+- **Re-synthesis** was skipped on 150 circuits (all those touching more than 16 qubits).
+
+## 3. What this shows
+
+1. **c17 is a pure speed-up of the recommended call above 16 qubits:** the same circuit on 294 of 294, in about a
+   quarter of the time (median per device 0.21-0.28), and about 1/75 at full occupancy of a 27-qubit device, where
+   the release spent 9 s building alternatives it then refused.
+2. **Up to 16 qubits nothing changes,** in output or in time (0.996-1.028).
+3. **The next cost is at and just below 16 qubits:** 20-60 s per compile for 16-qubit Hamiltonian and QFT circuits.
+   Where that time goes (the level-3 transpile, the floor's compile, or item 39's state-vector checks of long
+   circuits) is not measured here; it is the subject of the next exploratory profile.
+
+## 4. Disclosures
+
+- **The predictions were written before the smoke run** (Addendum 379); none was changed.
+- **Times are wall-clock times of one process per device, six in parallel,** on one machine; the release and c17
+  alternated per circuit after a warm-up.
+- **The 16-qubit cost** is reported here because it was seen; it was not part of the predictions.
+
 ---
 
 ---

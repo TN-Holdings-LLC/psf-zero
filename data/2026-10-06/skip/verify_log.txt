@@ -1,0 +1,15 @@
+files 6, git_head ['2420fa7'], flags []
+P0 PASS: errors 0, off-target 0, inexact 0 of 54 checked (expected 54)
+
+device         n   identical  above16  upto16
+FakeTorino     48  48/48     0.242    1.017
+FakeKingston   48  48/48     0.238    1.028
+FakeAuckland   51  51/51     0.212    1.006
+FakeHanoiV2    51  51/51     0.233    1.018
+FakeBrussels   48  48/48     0.213    1.003
+FakeOsaka      48  48/48     0.277    0.996
+K1 CONFIRMED
+K2 CONFIRMED
+K3 CONFIRMED
+K4 CONFIRMED
+verdicts identical to score.md: True
