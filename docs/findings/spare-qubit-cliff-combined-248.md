@@ -15674,6 +15674,103 @@ Against c14 the code differs only by item 42. Against c15 the code differs only 
 
 Everything in section 6 of Addenda 358 and 359: hardware, and readout and `kraus` together.
 
+
+---
+
+<!-- ===== Addendum 363 (source: spare-qubit-cliff-addendum-363-2026-10-06.md) ===== -->
+
+> **Note added when merging:** Exploratory record: test KRO was designed and smoke-run at the workplace on 2026-10-06, then not locked and not run (owner's decision); nothing in it is a scored result.
+
+## Addendum 363 -- KRO, stopped after its smoke run (exploratory, not scored): with readout added to it (candidate psf_compile 2026-10-06.c16), `kraus_cost` did not choose better than `hybrid_cost` on circuits compiled with their measurements; the recommended call stays `hybrid` (2026-10-06)
+
+**Status: exploratory record of a test that was designed and smoke-run, then not locked and not run, by the owner's
+decision.** Nothing here is a scored result.
+
+## 1. What was planned
+
+**Why.** After the adoption of 2026-10-06.1 (Addendum 362), `candidate_score="kraus"` chose better than `hybrid` on
+unmeasured circuits (KRAUS, Addendum 361). It has no readout term, so it could not become the recommended call,
+which must be used with the measurements included (RECR, Addendum 360).
+
+**Candidate c16:** release 2026-10-06.1 plus item 43, which adds item 40's `readout_cost` to `kraus_cost`. It is the
+same change item 40 made to `hybrid_cost`. Without measurements, c16 gives the release's output.
+
+**Test KRO (`kro_eval.py`):**
+
+- **Circuits:** HOLD6's families F1-F6 with `measure_all()`, 1,506 per device on HOLD6's nine devices, at fresh
+  seeds (121-127 million).
+- **Arms:** R (the release's recommended call) and K (c16 with `kraus`), with the candidates captured.
+- **Metric:** MODEL-RO2's classical infidelity of the sampled distribution, with Aer's readout.
+- **Predictions O1-O8,** fixed in the script before the smoke run:
+  - O1: KRA/HYB <= 1.000 on >= 8 of 9 devices;
+  - O2: the readout term helps `kraus`;
+  - O3: H4 stays repaired (<= 0.98);
+  - O4: closer to the measured best;
+  - O5: >= 60% of changed choices better;
+  - O6: no family-device cell above 1.01;
+  - O7: ahead of level 3;
+  - O8: time <= 1.15.
+
+## 2. The smoke run (workplace PC, 2026-10-06, 14:08 JST; 19 circuits per device)
+
+**`test_c16.py`:** 8 of 9 passed. The failing case was the test's own assumption: on 12 measured 4-qubit rings on
+FakeTorino, the readout term changed no choice of `kraus`.
+
+**Smoke verdicts** (1 circuit per family-n cell, so 19 per device; not results):
+
+| ID | smoke verdict | values |
+|---|---|---|
+| O1 | REFUTED | KRA/HYB 0.994-1.003; above 1.002 on FakeAuckland (1.0025) and FakeHanoiV2 (1.0032) |
+| O2 | CONFIRMED | KRA/KRA0 0.990-1.0004 |
+| O3 | REFUTED | H4's one circuit: 1.000. `kraus` and `hybrid` chose the same candidate. |
+| O4 | REFUTED | `kraus`'s gap to the best was larger than `hybrid`'s on 4 of 9 devices |
+| O5 | AMBIGUOUS | no device had 20 changed choices |
+| O6 | REFUTED | FakeMarrakesh F5 1.36 and FakeAuckland F6 1.04 (1 circuit each) |
+| O7 | CONFIRMED | KRA/L3 0.966-0.997 |
+| O8 | CONFIRMED | 1.00-1.06 |
+
+## 3. Why it was stopped
+
+**The smoke run's sample is small, but three things point the same way:**
+
+1. **H4 disappeared.**
+   - H4 was a difference in state infidelity: the GHZ chain's coherence between |0000> and |1111>, which dephasing
+     destroys.
+   - A sampled distribution in the computational basis does not see dephasing that acts after the last gate on a
+     qubit. With the measurements included, the two candidates were equal for this metric.
+2. **`kraus_cost` is first-order exact for state infidelity, not for a sampled distribution.**
+   - Its refinements over `hybrid_cost` were damping on the state after the gate, and the remainder at the qubits'
+     purity. Both are about the state.
+   - Part of what they add is invisible in the measured outcome. So the better estimate for the state need not be the
+     better one for samples.
+   - **This is a hypothesis from the smoke run and the error model, not a tested finding.**
+3. **The readout term rarely changed a choice** (O2's ratios are near 1; the test's 12 circuits showed none). Probably
+   the candidates of one call usually share their measured qubits; this was not checked.
+
+**Decision.** The owner chose not to lock and run KRO. Its main purpose was to make `kraus` the recommended call, and
+the smoke run shows no sign of support for that. The recommended call stays `candidate_score="hybrid"`, and
+`kraus` stays opt-in, for circuits whose state (not samples) matters.
+
+## 4. What it suggests next (not pre-registered)
+
+An estimate for sampled outputs would count only errors that change the computational-basis distribution:
+
+- bit flips and amplitude damping;
+- dephasing only where later gates turn it into population changes;
+- readout.
+
+Whether this is worth a candidate is open. The smoke run's differences between `hybrid` and `kraus` were within
+0.6% per device.
+
+## 5. Files
+
+`data/2026-10-06/kro/` holds:
+
+- the candidate (`psf_compile.py`, `test_c16.py`), the harness `kro_eval.py` and its runner, as smoke-run;
+- the smoke output (`kro_smoke/`).
+
+None of them is a lock.
+
 ---
 
 ---
