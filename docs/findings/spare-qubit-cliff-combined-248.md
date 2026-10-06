@@ -16454,6 +16454,176 @@ compile large circuits can call `psf_compile.compile_for_hardware` with the full
 - hardware;
 - unmeasured large circuits (HOLD6 covered those).
 
+
+---
+
+<!-- ===== Addendum 372 (source: spare-qubit-cliff-addendum-372-2026-10-06.md) ===== -->
+
+> **Note added when merging:** Pre-registration of PL-REDO and candidate psf_compile 2026-10-06.c16; the predictions were written after the two smoke runs of section 4, which were seen; the lock is the commit that adds it, made at the workplace and carried into the WSL clone before the scored run.
+
+## Addendum 372 -- Pre-registration: the PennyLane compounding loop of Addenda 254-255 repeated with the current release on the owner's Linux machine (PL-REDO), with the release's recommended call and the AI front end, and candidate psf_compile 2026-10-06.c16 (changelog item 43: item 31's recompile keeps the first output when no placement avoids the failed elements) (2026-10-06)
+
+**Status: pre-registration.**
+
+- **Lock:** the git commit that adds this document. It locks:
+  - `patches/psf_compile_c16_2026-10-06/` (the candidate and its test);
+  - `benchmarks/pl_redo.py` (run and score), its runner `benchmarks/run_pl_redo.sh`;
+  - `benchmarks/pl_redo_verify.py`, an independent re-computation of every verdict, written before the lock and
+    before any scored output exists. It does not import `pl_redo.py`.
+- **Where and in what order:** everything is done at the workplace on 2026-10-06, the scored run in WSL2 (Ubuntu) on
+  the workplace PC. The lock commit is made in the Windows repository and carried into the WSL clone by a git bundle
+  **before** the scored run; it is pushed from home in the evening, after the run. As for Addenda 358, 359, 364 and
+  370, the evidence that the lock came first is the commit's own time and the run's `git_head`, not the push.
+- **No hardware:** fake devices only.
+- **The predictions (section 5) were written after two smoke runs** (section 4), which were seen. They are the
+  thresholds in `pl_redo.py score` and are not changed.
+
+## 1. Why
+
+**Addenda 254-255 (2026-09-29)** ran a PennyLane loop on a fully occupied FakeKingston (156 qubits): each lap a
+PennyLane tape goes to Qiskit, is compiled, mapped back to logical qubits and becomes the next lap's tape. The
+candidate stack of that day (core 2026-09-29.1, psf_smart_layout 2026-09-29.c1) met a 1 s budget on 20 of 20 laps
+(median 0.071 s), stayed swap-free (276 two-qubit gates) and kept PennyLane's block matrices to 1.4e-13 after 20
+compounded laps; Qiskit level 3 needed 26.6 s per lap. That run was made in Claude's sandbox.
+
+**Since then** the release has gone from 2026-09-28.1 to 2026-10-06.1 (psf_smart_layout 2026-10-01.1, core
+2026-09-29.1), the README names a recommended call with the target (items 33-40), and the AI front end a12 sends
+circuits above 8 qubits to that call. None of this had been run in the PennyLane loop, and the loop had never been
+run on the owner's own machine. The machine is now available: the workplace PC's WSL2 Ubuntu, where Qiskit #17057
+appears (`qiskit_17057_present()` True), with the release's core rebuilt from the repository at `af66fa1`
+(`CORE_VERSION` 2026-09-29.1, `check_core_build.py` RESULT: OK) and 243 of 243 tests of Addenda 357-371 passing
+(07:23-07:27 UTC; see section 7 for an earlier run with a stale core that is not counted).
+
+## 2. What the first smoke run found, and the candidate
+
+**The first smoke run** (`pl_redo_kit_v1`, four arms, 2 laps per spare, 07:3x UTC) stopped with the same exception in
+both new arms, at spare 0, lap 1:
+
+    qiskit.transpiler.exceptions.TranspilerError: 'A connected component of the DAGCircuit is too large for any of
+    the connected components in the coupling map'
+
+The traceback ends in `psf_compile.py` line 2655, item 31's recompile: with a `target`, an output that uses a failed
+element (a native two-qubit gate error or an `sx` error >= 0.5) is compiled again on `prune_coupling_map(...)`. A
+circuit on all 156 qubits does not fit the pruned map, the layout search finds nothing, Qiskit's SabreLayout raises,
+and 2026-10-06.1 passes the exception to the caller. The default call (no target) never reaches that code and was
+unaffected. This is a defect of the release, found by this test; it is not a property of PennyLane.
+
+**Candidate c16** is the release plus changelog item 43 (`VERSION = "2026-10-06.c16"`): item 31's recompile, and
+compare_floor's, now catch `TranspilerError`, keep the first output, count it in `PRUNE_STATS["unavoidable"]` and
+warn (`RuntimeWarning`, "changelog item 43"). Nothing else changes.
+
+**Its test** (`test_c16.py`, 6 cases; 6 passed on Windows, 49.9 s, before this document):
+
+- the versions;
+- with the recommended call, three ring circuits (5, 7 and 12 qubits, two measured) give the release's output
+  exactly on FakeTorino, FakeHanoiV2, FakeGeneva and FakeKingston;
+- PL-REDO's spare-0 circuit, built without PennyLane: the release raises `TranspilerError`; c16 returns, warns,
+  counts it, and its output is swap-free (276 two-qubit gates) and implements every block within 1e-10.
+
+**What keeping the first output means.** That output uses at least one element the target reports as failed. On a
+circuit that needs every qubit there is no placement that avoids it; the choice is between an exception and a
+circuit on the whole device. c16 returns the circuit and says so. Each lap's `uses_failed` is recorded (section 3).
+
+## 3. Design (`benchmarks/pl_redo.py`)
+
+**Unchanged from Addendum 254** (the helpers are imported from the locked `pl_heavyhex_chain.py`, normalized SHA-256
+`84aafa1f...`): FakeKingston; circuit family T at spares 0 and 16 (156 and 140 logical qubits); the initial tape
+(20 Haar-random `QubitUnitary` per pair block, 10 + 10 per triple block, seed 1000 × spare); 20 laps; the
+conversion, the mapping back and the block-by-block check against PennyLane's own matrices of the lap-0 tape; 1 s
+per compile.
+
+**Arms** (one process each, run one after another on an otherwise idle machine, never in parallel):
+
+| arm | what it is |
+|---|---|
+| R | the release, the call of Addendum 254's arms P and PN (no target) |
+| RR | the release's recommended call as written in the README (target, placement_refine, select, compare_level3, compare_floor, hybrid) |
+| A12 | the adopted AI front end `compile_for_model_circuit(qc, cmap, basis, target=target)` |
+| RRC | RR with candidate c16 loaded as `psf_compile` |
+| A12C | A12 with candidate c16 underneath |
+| Q3 | Qiskit level 3 with the target, as in Addendum 254 |
+
+**Per lap:** compile time; status (OK, swap = cannot be mapped back block by block, or error = the compile raised;
+after a swap or an error the next lap reuses the same tape); two-qubit count; the worst block distance to lap 0; a
+digest of the output (gates, qubits, parameters, layouts); whether the output uses an element of item 31's failed set
+(`_failed_elements(target, 0.5)`, also recorded in the metadata).
+
+**Metadata per arm:** `git_head`, uncommitted changes to tracked files, the versions (release or c16, core, layout,
+a12, Qiskit, PennyLane, NumPy, Python), the normalized SHA-256 of the script, the chain helpers, the compiler loaded,
+the layout and the front end, platform, CPUs, `qiskit_17057_present()`.
+
+## 4. The smoke runs (seen before the predictions were written)
+
+| arm | spare 0: compile, status | spare 16: compile, status |
+|---|---|---|
+| R | 0.050-0.056 s, OK, 276, 1.2e-14 / 1.8e-14 | 0.041-0.046 s, OK, 252 |
+| RR | 0.24 s, **error** (both laps) | 0.62-0.63 s, OK, 252 |
+| A12 | 0.23-0.24 s, **error** (both laps) | 0.38-0.39 s, OK, 252 |
+| RRC | 15.9-16.2 s, OK, 276, 1.2e-14 / 1.8e-14 | 0.61-0.69 s, OK, 252 |
+| A12C | 15.6-15.9 s, OK, 276 | 0.38-0.39 s, OK, 252 |
+| Q3 | 15.5-15.6 s, swap (321 two-qubit gates) | 0.17-0.19 s, OK, 252 |
+
+(`pl_redo_kit_v2`, 2 laps per spare, 07:4x UTC, WSL2.) At spare 16 the release's and c16's block distances were the
+same to the printed digits.
+
+## 5. Predictions (scored only by `pl_redo.py score`)
+
+**P0, validity:** six arms × two spares × 20 laps; release 2026-10-06.1 (c16 arms: 2026-10-06.c16), core
+2026-09-29.1, layout 2026-10-01.1, a12 2026-10-06.a12; not smoke; no uncommitted change to a tracked file; #17057
+present; one `git_head` for all arms. If P0 fails nothing is scored.
+
+| | prediction | confirmed | refuted |
+|---|---|---|---|
+| D1 | R meets 1 s at spare 0 on every lap (as PN did) | 20/20 | <= 10 |
+| D2 | R swap-free and mapped back on every lap, both spares | 40/40 | <= 20 |
+| D3 | R keeps the meaning over 20 compounded laps | every lap checked, worst <= 1e-12 | any > 1e-10 |
+| D4 | Qiskit level 3 misses 1 s at spare 0 on every lap | 0/20 within | >= 10 within |
+| D5 | the release's RR and A12 raise at spare 0 on every lap | both 20/20 | either <= 10 |
+| D6 | c16's RRC and A12C never raise (both spares) | 0 of 80 | >= 1 |
+| D7 | RRC and A12C miss 1 s at spare 0 (level 3 inside) | both <= 2 within | either >= 10 |
+| D8 | RRC and A12C swap-free and mapped back at spare 0 | both 20/20 | either <= 10 |
+| D9 | RRC and A12C keep the meaning | worst <= 1e-12 | > 1e-10 |
+| D10 | c16 = the release wherever the release returns (same digest, laps with the same input: up to the release's first error in each spare) | all, and at least 20 laps | any differs |
+| D11 | RRC and A12C meet 1 s at spare 16 | both >= 18/20 | either <= 10 |
+
+**Reported without prediction:** which outputs use a failed element; spare-16 times; median compile time of RRC,
+A12C and Q3 against R; Q3's worst block distance; R against Addendum 255's PN.
+
+**Adoption is the owner's decision.** A confirmed D6 and D10 would show that c16 removes the exception and changes
+nothing else in this loop; together with `test_c16.py` that is the evidence for item 43.
+
+## 6. Files and normalized SHA-256 (CRLF to LF, lines right-stripped, trailing blank lines dropped)
+
+| file | normalized SHA-256 |
+|---|---|
+| `patches/psf_compile_c16_2026-10-06/psf_compile.py` | `8864c546a420ba20e06e4fef81dafd872055768edc64333f40d6baa0429af606` |
+| `patches/psf_compile_c16_2026-10-06/test_c16.py` | `16ec95e8f121e3ca8d5187a3965698f438abdbcf95a42111e5c7e6a194a7a1cb` |
+| `benchmarks/pl_redo.py` | `4150e16e903ceafe76ecdc907424f3317556369c5be7c94995a7083d3859e97e` |
+| `benchmarks/run_pl_redo.sh` | `9672ca7774567a37748e4081d77e4cc81f382285baf0a9d4a04bfb7ad85b8e2c` |
+| `benchmarks/pl_redo_verify.py` | `4a72adebb96f6be3793c07ffd0aa9a1ef35aee59e2667c8b50cc1de403b7f722` |
+| `psf_compile.py` (release 2026-10-06.1, unchanged) | `bf4630d6356d8e288902fc1cf5460a0929b7fe6b385fa0f1d6faf8a8971d9246` |
+| `benchmarks/psf_smart_layout.py` (unchanged) | `624e8f8a00e1635a1ee3bc77b5b0f41bd69a94022e214d679b86cc66cc1cf241` |
+| `benchmarks/psf_ai_compile.py` (a12, unchanged) | `2227cca2b0675f8ca21c999b071fa30278d616d27536c5376b47ed9faf7236ad` |
+| `benchmarks/pl_heavyhex_chain.py` (Addendum 254, unchanged) | `84aafa1f56680e4e77be2e6261b2d45e669c5fa48a3db25f88e8180ccf8e005f` |
+
+**Commands** (WSL2, from the clone at the lock commit, in the venv with PennyLane 0.45.1, Qiskit 2.5.2, Aer 0.17.2,
+NumPy 2.4.6):
+
+    python -m pytest patches/psf_compile_c16_2026-10-06/test_c16.py -q
+    bash benchmarks/run_pl_redo.sh <out>        # runs the six arms, then score and verify
+
+## 7. Disclosures
+
+- **A stale core, caught before this test.** The first Linux check of the day (07:09 UTC, 243 passed) ran with a
+  Rust core left in the WSL venv from 2026-09-23 (`CORE_VERSION` None; the release accepts such cores and takes
+  slower equivalent paths). It is not counted. A rebuild script then removed that core before it had found the Rust
+  toolchain (a non-login shell does not read `~/.cargo/env`); the corrected script built the release's core and the
+  check was repeated (07:23-07:27 UTC, 243 passed). Only the WSL venv was affected.
+- **The predictions follow two smoke runs** (section 4): D5 restates what the first smoke run found, and D7-D9 and D11
+  rest on two laps each. The 20-lap compounding, D10's identity over 20 laps and the timing of every lap are not
+  known in advance.
+- **The scored run is not pushed before it runs** (see the lock above).
+
 ---
 
 ---
