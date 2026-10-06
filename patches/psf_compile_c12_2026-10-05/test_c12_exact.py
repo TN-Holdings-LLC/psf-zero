@@ -32,13 +32,19 @@ def qiskit_17057_present():
     not appear, Qiskit makes no wrong circuit for the checks to refuse, so the refusal counts are asserted only where
     it does; exactness is asserted everywhere."""
     from qiskit import QuantumCircuit, transpile
+    from qiskit.circuit.library import CXGate
     from qiskit.quantum_info import Operator, average_gate_fidelity
+    from qiskit.synthesis import TwoQubitBasisDecomposer
     core = QuantumCircuit(2)
     core.rxx(-1.2, 0, 1)
     core.ryy(-0.6, 0, 1)
     core.rzz(-2e-7, 0, 1)
-    out = transpile(core, basis_gates=["cx", "rz", "sx", "x"], optimization_level=1)
-    return 1 - average_gate_fidelity(Operator(out), Operator(core)) > 1e-6
+    u = Operator(core)
+    # The decomposer itself (data/2026-10-06/windows/check17057.py): in a Linux environment where it fails (7.0e-2),
+    # transpile at level 1 was found exact (2.2e-16), so transpile alone does not show the failure (Addendum 369).
+    dec = Operator(TwoQubitBasisDecomposer(CXGate(), euler_basis="ZSX")(u.data))
+    out = Operator(transpile(core, basis_gates=["cx", "rz", "sx", "x"], optimization_level=1))
+    return max(1 - average_gate_fidelity(dec, u), 1 - average_gate_fidelity(out, u)) > 1e-6
 
 
 def backend(name):

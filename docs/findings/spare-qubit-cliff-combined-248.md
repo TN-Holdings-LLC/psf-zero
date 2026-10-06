@@ -15352,13 +15352,13 @@ That is weaker than a push, which GitHub timestamps.
 
 <!-- ===== Addendum 360 (source: spare-qubit-cliff-addendum-360-2026-10-06.md) ===== -->
 
-> **Note added when merging:** Results of the pre-registered test in Addendum 358 (lock commit 1af7302, run on commit 9b3c577), scored by the locked script and re-checked by benchmarks/recr_verify.py; written after the output was seen.
+> **Note added when merging:** Results of the pre-registered test in Addendum 358 (lock commit 1af7302, run on commit 9b3c577; 29f8f1f and 94f4286 as pushed, Addendum 366), scored by the locked script and re-checked by benchmarks/recr_verify.py; written after the output was seen.
 
 ## Addendum 360 -- Results of RECR (Addendum 358): compiling with the measurements moves the measured qubits to better readout; c14's readout term adds a small gain on top and never a loss beyond 0.05%; a11 removes a9's off-target ecr gates; 10 of 10 predictions confirmed (2026-10-06)
 
 **Status: results of a pre-registered test.**
 
-- **Lock:** commit `1af7302` (Addendum 358), made at the workplace before the run. The run itself was on `9b3c577`
+- **Lock:** commit `1af7302` (Addendum 358; `29f8f1f` as pushed, and the run's `9b3c577` is `94f4286`; Addendum 366), made at the workplace before the run. The run itself was on `9b3c577`
   (Addendum 359's lock, which adds only KRAUS's files and the Python runner). Both commits were pushed from home
   afterwards with the same hashes (Addendum 358, section 5).
 - **Run:** the workplace PC (Windows, build 26100, 14 logical CPUs; Python 3.11.9, numpy 2.4.6, qiskit 2.5.2, Aer
@@ -15506,13 +15506,13 @@ The same as section 6 of Addendum 358:
 
 <!-- ===== Addendum 361 (source: spare-qubit-cliff-addendum-361-2026-10-06.md) ===== -->
 
-> **Note added when merging:** Results of the pre-registered test in Addendum 359 (lock commit 9b3c577), scored by the locked script and re-checked by benchmarks/kr_verify.py; written after the output was seen.
+> **Note added when merging:** Results of the pre-registered test in Addendum 359 (lock commit 9b3c577; 94f4286 as pushed, Addendum 366), scored by the locked script and re-checked by benchmarks/kr_verify.py; written after the output was seen.
 
 ## Addendum 361 -- Results of KRAUS (Addendum 359): candidate psf_compile 2026-10-06.c15's `candidate_score="kraus"` chose at least as well as release 2026-10-05.1's `hybrid_cost` on all nine devices and repaired HOLD6's H4 case; 7 of 7 predictions confirmed (2026-10-06)
 
 **Status: results of a pre-registered test.**
 
-- **Lock:** commit `9b3c577` (Addendum 359), made at the workplace before the run; pushed from home afterwards with the
+- **Lock:** commit `9b3c577` (Addendum 359; `94f4286` as pushed, Addendum 366), made at the workplace before the run; pushed from home afterwards with the
   same hash (Addendum 359, section 5).
 - **Run:** the workplace PC (Windows, build 26100, 14 logical CPUs; Python 3.11.9, numpy 2.4.6, qiskit 2.5.2, Aer 0.17.2), with
   `run_parallel_2026-10-06.py kr` (6 parallel jobs), started 2026-10-06 03:50 UTC, right after RECR; 2,836 s.
@@ -16168,6 +16168,49 @@ and with (0, 1) and (0,). It records, against the default:
 
 - Anything about fidelity: only a12's estimate was compared, on 96 circuits.
 - Other devices or machines.
+
+
+---
+
+<!-- ===== Addendum 369 (source: spare-qubit-cliff-addendum-369-2026-10-06.md) ===== -->
+
+> **Note added when merging:** Correction found by the workplace review on 2026-10-06; it changes four tests' check and no result.
+
+## Addendum 369 -- Correction: the tests' check for Qiskit issue #17057 (Addendum 357) looked at the wrong path and reported "absent" in Linux environments too; the hashes as pushed added next to the old ones in Addenda 360-361 (2026-10-06)
+
+**Status: correction (found by the workplace review of 2026-10-06, after Addenda 357-368 were committed).**
+
+## 1. The check
+
+**What Addendum 357 introduced.** `qiskit_17057_present()`, in four tests, so that their refusal counts are asserted
+only where Qiskit's failure appears:
+
+- `benchmarks/test_release_2026_10_05_1.py`;
+- `benchmarks/test_ai_compile_a9.py`;
+- `patches/psf_compile_c12_2026-10-05/test_c12_exact.py`;
+- `patches/psf_ai_compile_a9_2026-10-05/test_a9.py`.
+
+**How it decided.** It transpiled the issue's input at optimization level 1.
+
+**What was wrong.** In a Linux environment where `TwoQubitBasisDecomposer(CXGate(), euler_basis="ZSX")` fails on
+that input (error 7.0e-2), the level-1 transpile was found exact (2.2e-16). The release's refusals come from the
+decomposer path, so the check said "absent" where the failure is present. The refusal counts were then skipped in
+Linux as well as in Windows.
+
+**What it did not affect:**
+
+- every exactness assertion (infidelity <= 1e-6), which runs everywhere;
+- any scored result.
+
+It did mean that a broken refusal path would have gone unnoticed by these four tests.
+
+**The fix.** The check now takes the larger error of the decomposer (as in `data/2026-10-06/windows/check17057.py`)
+and of the level-1 transpile. In the Windows environment both are exact, so the result there is unchanged.
+
+## 2. Hashes as pushed
+
+The lock lines of Addenda 360 and 361 cite the commits by their hashes when made. Each now also gives the hash as
+pushed, with a pointer to Addendum 366's table. Addendum 365 already gave both.
 
 ---
 
