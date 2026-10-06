@@ -8,7 +8,24 @@ from this folder. The full record behind each entry is in Part 9 of the findings
 links to. The README itself, as it was before the move, is kept as
 [`README_2026-10-05_before_restructure.md`](README_2026-10-05_before_restructure.md).
 
-> **Current version (2026-10-06, second release): `psf_compile.py` 2026-10-06.2 and the AI front end a12, with
+> **Current version (2026-10-06, third release): `psf_compile.py` 2026-10-06.3 and the AI front end a12, with
+> `psf_smart_layout` 2026-10-01.1 and the Rust core `CORE_VERSION` 2026-09-29.1 (both unchanged)**
+> ([Part 9](findings/spare-qubit-cliff-combined-248.md), Addenda 377-378). The recommended call is unchanged.
+>
+> - **Item 44:** item 39's checks (`compare_floor`, `compare_level3`, `final_resynthesis="select"`) built the
+>   logical circuit's action from `to_matrix()` of every instruction, before their 16-qubit limit. On Benchpress's
+>   HamLib inputs (one `PauliEvolutionGate` on all qubits, FakeTorino) 2026-10-06.2's recommended call aborted the
+>   process at 48 qubits (Rust allocation failure, no exception) and ran past 600 s at 14 qubits; so would the AI
+>   front end. 2026-10-06.3 applies the limits first and expands an instruction on more than 6 qubits through its
+>   definition. For a `PauliEvolutionGate` that is the product formula every compiler builds, not the exact
+>   exponential. On circuits whose instructions act on at most 6 qubits the output is 2026-10-06.2's.
+> - **BP-PROBE (Addendum 377, exploratory;** 12 Benchpress tests against Qiskit level 2, Benchpress's call): every
+>   output valid; the default call used more two-qubit gates on 10 of 12 (geometric mean 1.53x) and more time on
+>   11; it was level on Quantum Volume. With 2026-10-06.3 the recommended call finished the 14-qubit HamLib test
+>   with 3,616 two-qubit gates (Qiskit level 2: 3,689) in 38.8 s; above 16 qubits it returns the default call's
+>   circuit, because item 39 cannot check the alternatives.
+
+> **Previous release (2026-10-06, second release): `psf_compile.py` 2026-10-06.2 and the AI front end a12, with
 > `psf_smart_layout` 2026-10-01.1 and the Rust core `CORE_VERSION` 2026-09-29.1 (both unchanged)**
 > ([Part 9](findings/spare-qubit-cliff-combined-248.md), Addenda 372-374). The recommended call is unchanged.
 >

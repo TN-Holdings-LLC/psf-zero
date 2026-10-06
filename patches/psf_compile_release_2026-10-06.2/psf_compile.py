@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-10-06.3 -- release, adopted on 2026-10-06 from candidate 2026-10-06.c18 of Addendum 377 (previous release: 2026-10-06.2)
+VERSION: 2026-10-06.2 -- release, adopted on 2026-10-06 from candidate 2026-10-06.c16 of Addendum 372 (previous release: 2026-10-06.1)
 
 Where to look for what
 ----------------------
@@ -587,8 +587,7 @@ a correctness fix for releases 2026-10-03.1 to 2026-10-04.1):
       the other touched qubits back in |0>.
     - Item 35's re-synthesis is kept only if `_same_action`; the floor and level-3 candidates of items 36-37 are
       used only if `_implements`. A check that cannot be made (more than RESYNTH_MAX_QUBITS touched qubits, an
-      instruction without a matrix such as a reset or a conditional; from item 44 an instruction on more than
-      EXACT_MAX_GATE_QUBITS qubits is expanded through its definition) refuses the candidate: the release's own,
+      instruction without a matrix such as a reset or a conditional) refuses the candidate: the release's own,
       guarded circuit is kept. Counts in `EXACT_STATS`.
     The checks are statevector simulations of at most RESYNTH_MAX_QUBITS qubits, like the estimates of items 35-38.
     With every Qiskit-made circuit exact (all HOLD tests), the result is the same as 2026-10-04.1.
@@ -648,25 +647,6 @@ adopted on 2026-10-06 after their pre-registered evaluations RECR and KRAUS, Add
     succeeds (PL-REDO smoke, 2026-10-06). Now that recompile (and compare_floor's) catches `TranspilerError`, keeps
     the first output, counts it in `PRUNE_STATS["unavoidable"]` and warns. Nothing else changes: where the
     recompile succeeds, or is not needed, the output is 2026-10-06.1's.
-
-2026-10-06.c18 (candidate, Addendum 377):
-
-44. **FIX (crash): item 39's checks no longer turn a wide instruction into a matrix.** `_ops_of` called
-    `to_matrix()` on every instruction of the logical circuit, and `_implements` did so before its 16-qubit limit
-    was applied. Benchpress's HamLib tests hand the compiler one `PauliEvolutionGate` on all qubits. With the
-    recommended call (`compare_floor` or `compare_level3`), and so through the AI front end, 2026-10-06.2:
-    - aborted the Python process on a 48-qubit Hamiltonian on FakeTorino: Qiskit asked for (2^48 + 1) x 8 bytes,
-      the row index of a 2^48-row sparse matrix, and Rust's allocator aborted (no exception reaches the caller);
-    - ran past 600 s on a 14-qubit one (a dense 2^14 x 2^14 matrix), where the default call took 0.3 s
-      (BP-PROBE, 2026-10-06). The default call never runs these checks and was not affected.
-    Now the qubit limits are applied first (the logical circuit's width in `_implements`, the touched qubits in
-    `_same_action`), and an instruction on more than `EXACT_MAX_GATE_QUBITS` (6) qubits is expanded through its
-    `definition`, recursively, instead of being made a matrix. No definition, or an expansion longer than
-    `EXACT_MAX_OPS` instructions, makes the check one that cannot be made, which refuses the candidate as before.
-    For a `PauliEvolutionGate` the definition is its synthesis (a product formula), the circuit every compiler
-    builds from it, whereas `to_matrix()` is the exact exponential; the two agree when the terms commute.
-    Nothing else changes: on circuits whose instructions act on at most 6 qubits every matrix, every check and
-    every output is 2026-10-06.2's.
 """
 from __future__ import annotations
 
@@ -704,7 +684,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-10-06.3"  # release (from candidate 2026-10-06.c18 of Addendum 377): 2026-10-06.2 + item 44 (item 39's checks never turn a wide instruction into a matrix)
+VERSION = "2026-10-06.2"  # release (from candidate 2026-10-06.c16 of Addendum 372): 2026-10-06.1 + item 43 (keep the output when no placement avoids the failed elements)
 __version__ = VERSION
 
 # Changelog item 27: the version string of the loaded Rust core, for logs.
@@ -1877,46 +1857,19 @@ def _apply_ops(psi, ops, pos):
     return psi
 
 
-EXACT_MAX_GATE_QUBITS = 6  # item 44: wider instructions are expanded through their definition, never made a matrix
-EXACT_MAX_OPS = 200_000  # item 44: a longer expansion makes the check one that cannot be made
-
-
-def _touched_qubits(circ):
-    """Item 44: indices of the qubits acted on by instructions other than barrier, measure and delay."""
-    return {circ.find_bit(b).index for ins in circ.data if ins.operation.name not in _EXACT_SKIP for b in ins.qubits}
-
-
 def _ops_of(circ):
     """[(matrix, qubit indices)] for every instruction except barrier, measure and delay; None if one has no
-    matrix. Item 44: an instruction on more than EXACT_MAX_GATE_QUBITS qubits is expanded through its `definition`
-    (recursively) instead of being made a matrix; None if it has none or the expansion exceeds EXACT_MAX_OPS.
-    Global phases of definitions are dropped: every check ignores the global phase."""
+    matrix."""
     out = []
-
-    def add(op, qubits, depth):
-        if op.name in _EXACT_SKIP:
-            return True
-        if op.num_qubits > EXACT_MAX_GATE_QUBITS:
-            try:
-                d = op.definition
-            except Exception:  # noqa: BLE001 - a definition that cannot be built means "not checkable"
-                return False
-            if d is None or depth >= 32:
-                return False
-            return all(add(sub.operation, tuple(qubits[d.find_bit(b).index] for b in sub.qubits), depth + 1)
-                       for sub in d.data)
-        if len(out) >= EXACT_MAX_OPS:
-            return False
-        try:
-            mat = np.asarray(op.to_matrix(), dtype=complex)
-        except Exception:
-            return False
-        out.append((mat, qubits))
-        return True
-
     for ins in circ.data:
-        if not add(ins.operation, tuple(circ.find_bit(b).index for b in ins.qubits), 0):
+        name = ins.operation.name
+        if name in _EXACT_SKIP:
+            continue
+        try:
+            mat = np.asarray(ins.operation.to_matrix(), dtype=complex)
+        except Exception:
             return None
+        out.append((mat, tuple(circ.find_bit(b).index for b in ins.qubits)))
     return out
 
 
@@ -1924,9 +1877,6 @@ def _same_action(ref, new, tol=EXACT_TOL):
     """Item 39: True if `new` and `ref` (same physical qubits and layout) map two seeded random product states of
     every touched qubit to the same state, up to global phase. False otherwise or if the check cannot be made."""
     EXACT_STATS["checked"] += 1
-    if len(_touched_qubits(ref) | _touched_qubits(new)) > RESYNTH_MAX_QUBITS:  # item 44: before any matrix
-        EXACT_STATS["not_checkable"] += 1
-        return False
     a, b = _ops_of(ref), _ops_of(new)
     if a is None or b is None:
         EXACT_STATS["not_checkable"] += 1
@@ -1956,9 +1906,6 @@ def _implements(qc, out, tol=EXACT_TOL):
     ignored). False otherwise or if the check cannot be made."""
     EXACT_STATS["checked"] += 1
     n = qc.num_qubits
-    if n > RESYNTH_MAX_QUBITS:  # item 44: before any matrix
-        EXACT_STATS["not_checkable"] += 1
-        return False
     a, b = _ops_of(qc), _ops_of(out)
     if a is None or b is None:
         EXACT_STATS["not_checkable"] += 1

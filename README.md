@@ -23,13 +23,19 @@ including the failures, are recorded in [`docs/findings/`](docs/findings/).
 
 ## Current version
 
-**`psf_compile.py` 2026-10-06.2** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 and the Rust core
-`CORE_VERSION` 2026-09-29.1 (Part 9, Addenda 357-374). Every release and dated notice:
+**`psf_compile.py` 2026-10-06.3** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 and the Rust core
+`CORE_VERSION` 2026-09-29.1 (Part 9, Addenda 357-378). Every release and dated notice:
 [`docs/RELEASES.md`](docs/RELEASES.md).
 
-> **New in 2026-10-06.1/.2 and a11/a12: readout is counted, ecr devices are fixed, the AI front end is faster, and
-> full-device circuits no longer fail with the target.**
+> **New in 2026-10-06.1/.2/.3 and a11/a12: readout is counted, ecr devices are fixed, the AI front end is faster,
+> and the target-aware calls no longer fail on full-device circuits or on wide instructions.**
 >
+> - **2026-10-06.3 (item 44):** the recommended call and the AI front end could abort the Python process (a Rust
+>   allocation failure) or run for minutes on a circuit holding one wide instruction, such as Benchpress's HamLib
+>   inputs (one `PauliEvolutionGate` on all qubits): item 39's equivalence check turned it into a matrix. It is now
+>   expanded through its definition. Nothing else changes. Found by a probe on 12 Benchpress tests (Addendum 377),
+>   in which the default call also used more two-qubit gates than Qiskit level 2 on 10 of 12 (geometric mean
+>   1.53x; level only on Quantum Volume); closing that gap is open work.
 > - **2026-10-06.2 (item 43):** on a circuit that needs the whole device, the recommended call and the AI front end
 >   raised an exception when the device reports failed elements; now they return the circuit and warn that it uses
 >   them. Nothing else changes. Found and tested in a PennyLane loop on FakeKingston (PL-REDO, Addenda 372-373): the

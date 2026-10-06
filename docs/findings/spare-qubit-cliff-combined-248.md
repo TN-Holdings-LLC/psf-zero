@@ -17200,6 +17200,79 @@ home WSL2, [`test_c18_log.txt`](../../data/2026-10-06/bp_probe/test_c18_log.txt)
   Benchpress check.
 - **Local paths** in the logs were replaced by `<project-folder>` and `<wsl-home>`; the json files had none.
 
+
+---
+
+<!-- ===== Addendum 378 (source: spare-qubit-cliff-addendum-378-2026-10-06.md) ===== -->
+
+> **Note added when merging:** The owner's decision to adopt candidate c18 as release 2026-10-06.3, on the evidence of Addendum 377.
+
+## Addendum 378 -- Adoption: psf_compile 2026-10-06.3 = candidate 2026-10-06.c18 of Addendum 377 (changelog item 44: item 39's checks never turn a wide instruction into a matrix); the AI front end stays a12 (2026-10-06)
+
+**Status: the owner's decision, on the evidence of Addendum 377.**
+
+## 1. The decision
+
+The owner adopted BP-PROBE's candidate c18 as the release **2026-10-06.3** (2026-10-06, home). The evidence
+(Addendum 377, section 4):
+
+- [`test_c18.py`](../../patches/psf_compile_c18_2026-10-06/test_c18.py), 14 of 14 on Linux: 2026-10-06.2 aborts the
+  process on a 48-qubit `PauliEvolutionGate` (reproduced in a subprocess); c18 does not; its expansion agrees with
+  Qiskit's `Operator` where the definition is exact; on circuits whose instructions act on at most 6 qubits its
+  matrices and its recommended-call outputs on four devices are 2026-10-06.2's;
+- BP-PROBE's run 3: on Benchpress's two HamLib device tests the recommended call finishes (14 qubits: 3,616 two-qubit
+  gates in 38.8 s; 48 qubits: 1.5 s), and the default call's output is unchanged.
+
+The AI front end is unchanged (a12). It calls `psf_compile`, so with 2026-10-06.3 underneath it no longer aborts on
+wide instructions.
+
+## 2. What changes in the repository
+
+- **[`psf_compile.py`](../../psf_compile.py)** is c18's file with the two version lines changed
+  (`VERSION: 2026-10-06.3 -- release ...` and `VERSION = "2026-10-06.3"`). Nothing else differs;
+  [`benchmarks/test_release_2026_10_06_3.py`](../../benchmarks/test_release_2026_10_06_3.py) checks this.
+- **The outgoing release 2026-10-06.2** is kept unchanged as
+  [`patches/psf_compile_release_2026-10-06.2/psf_compile.py`](../../patches/psf_compile_release_2026-10-06.2/psf_compile.py)
+  (normalized SHA-256 `1c3dfb08...`), as 2026-10-06.1 was (Addendum 374).
+- **Tests:**
+  - [`benchmarks/test_release_2026_10_06_3.py`](../../benchmarks/test_release_2026_10_06_3.py) (new): the version;
+    the file equals c18's except the version lines; the kept 2026-10-06.2 is the old file; on four devices the
+    release gives 2026-10-06.2's output with the recommended call; a 48-qubit `PauliEvolutionGate` on FakeTorino
+    compiles to a valid circuit.
+  - [`benchmarks/test_release_2026_10_06_2.py`](../../benchmarks/test_release_2026_10_06_2.py) and
+    [`patches/psf_compile_c18_2026-10-06/test_c18.py`](../../patches/psf_compile_c18_2026-10-06/test_c18.py) now
+    load 2026-10-06.2 from the kept copy, because they compare against it (`test_c18.py` expects 2026-10-06.2 to
+    abort).
+  - Every other test that asserted the current release's version (`== "2026-10-06.2"`, 24 lines in `benchmarks/`
+    and `patches/`) now asserts `"2026-10-06.3"`.
+- **README:** "Current version" names 2026-10-06.3, with a short note on item 44 and on BP-PROBE's finding that the
+  default call trails Qiskit level 2 on Benchpress's circuits.
+- **docs/RELEASES.md:** a new "Current version" block; the 2026-10-06.2 block becomes "Previous release".
+
+## 3. Checks before the commit
+
+The 27 test files this commit adds or changes were run at home after the files were changed and before the commit,
+one pytest session per file (WSL2; Python 3.12.13, Qiskit 2.5.2, NumPy 2.5.3, `psf_compile` 2026-10-06.3, core
+2026-09-29.1; 12:53:52-12:58:00 UTC): **227 passed**, none failed or errored. Among them
+[`test_release_2026_10_06_3.py`](../../benchmarks/test_release_2026_10_06_3.py) 8 of 8 and
+[`test_c18.py`](../../patches/psf_compile_c18_2026-10-06/test_c18.py) 14 of 14 (against the kept 2026-10-06.2).
+
+| file | normalized SHA-256 |
+|---|---|
+| [`psf_compile.py`](../../psf_compile.py) (release 2026-10-06.3) | `2a49f611fa99b6849afc4aef287aa4c03803aac2d2d1bf32840b4dc9dc80acb5` |
+| [`benchmarks/test_release_2026_10_06_3.py`](../../benchmarks/test_release_2026_10_06_3.py) (new) | `33ff933a0962c5cc801c6f8d7beb19e03852d240c32721626fa4397ea6d7803a` |
+| [`patches/psf_compile_release_2026-10-06.2/psf_compile.py`](../../patches/psf_compile_release_2026-10-06.2/psf_compile.py) (kept) | `1c3dfb0853c2fcd28eacbcdd14abc4c328cf5f40ac8a0a771fbfd70a183dfb84` |
+| [`patches/psf_compile_c18_2026-10-06/psf_compile.py`](../../patches/psf_compile_c18_2026-10-06/psf_compile.py) (candidate, unchanged) | `e852fcbdb5f022a00b9acf04341be3f73ed62050e3aee70d5ed227766e219c4c` |
+
+## 4. What item 44 does not change
+
+- It does not make the default call better on Benchpress's circuits (Addendum 377, sections 3 and 5): it does not
+  touch the default call at all.
+- Above 16 logical qubits the recommended call still cannot check level 3 or the floor and returns the default
+  call's circuit, after building both (the next candidate, c17, addresses the time this costs).
+- For a `PauliEvolutionGate`, item 39 now checks against its product formula, not the exact exponential: a compiler
+  output is accepted if it implements the same product formula.
+
 ---
 
 ---

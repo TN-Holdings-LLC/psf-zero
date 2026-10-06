@@ -1,5 +1,6 @@
 """Tests for candidate psf_compile 2026-10-06.c18 (changelog item 44: item 39's checks never turn a wide instruction
-into a matrix) against the release 2026-10-06.2 (psf_compile.py).
+into a matrix) against the release 2026-10-06.2 (since 2026-10-06.3, Addendum 378, loaded from its kept copy
+patches/psf_compile_release_2026-10-06.2/psf_compile.py).
 
 Run from the repository root:  python -m pytest patches/psf_compile_c18_2026-10-06/test_c18.py -q
 """
@@ -29,7 +30,8 @@ RECOMMENDED = dict(placement_refine=True, final_resynthesis="select", compare_le
 def mods():
     import core_fix_c2_eval as H
     H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psf_smart_layout")
-    rel = H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile_rel_c18_test")
+    rel = H.load_module(os.path.join(REPO, "patches", "psf_compile_release_2026-10-06.2", "psf_compile.py"),
+                        "psf_compile_rel_c18_test")  # kept copy since 2026-10-06.3 (Addendum 378)
     c18 = H.load_module(os.path.join(HERE, "psf_compile.py"), "psf_compile_c18_test")
     return dict(rel=rel, c18=c18)
 
@@ -126,7 +128,9 @@ def test_release_defect_reproduced():
         warnings.simplefilter("ignore")
         sys.path[:0] = [{os.path.join(REPO, 'benchmarks')!r}, {REPO!r}, {HERE!r}]
         import test_c18 as T
-        import psf_compile as rel
+        import core_fix_c2_eval as H
+        rel = H.load_module({os.path.join(REPO, 'patches', 'psf_compile_release_2026-10-06.2', 'psf_compile.py')!r},
+                            'psf_compile_rel_c18_sub')  # kept copy since 2026-10-06.3 (Addendum 378)
         assert rel.VERSION == "2026-10-06.2"
         qc = T.hamiltonian(48, "ising")
         print("returned", rel._implements(qc, qc), flush=True)

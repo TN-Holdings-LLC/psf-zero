@@ -3,6 +3,9 @@ recompile keeps the first output when no placement avoids the failed elements). 
 patches/psf_compile_c16_2026-10-06/test_c16.py; PL-REDO (Addenda 372-373) tested it in the PennyLane loop. The previous
 release, 2026-10-06.1, is kept unchanged in patches/psf_compile_release_2026-10-06.1/psf_compile.py.
 
+Since 2026-10-06.3 (Addendum 378) 2026-10-06.2 is loaded from its kept copy,
+patches/psf_compile_release_2026-10-06.2/psf_compile.py.
+
 Run from the repository root:  python -m pytest benchmarks/test_release_2026_10_06_2.py -q
 """
 import contextlib
@@ -21,7 +24,8 @@ REPO = os.path.abspath(os.path.join(HERE, ".."))
 for p in (os.path.join(REPO, "benchmarks"), REPO):
     sys.path.insert(0, p)
 
-REL = os.path.join(REPO, "psf_compile.py")
+# kept copy since 2026-10-06.3 (Addendum 378)
+REL = os.path.join(REPO, "patches", "psf_compile_release_2026-10-06.2", "psf_compile.py")
 C16 = os.path.join(REPO, "patches", "psf_compile_c16_2026-10-06", "psf_compile.py")
 PREV = os.path.join(REPO, "patches", "psf_compile_release_2026-10-06.1", "psf_compile.py")
 RECOMMENDED = dict(placement_refine=True, final_resynthesis="select", compare_level3=True, compare_floor=True,

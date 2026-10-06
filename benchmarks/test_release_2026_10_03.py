@@ -124,7 +124,7 @@ def xxz_chain(n=6, steps=2, seed=0):
 
 
 def test_version(mods):
-    assert mods[0].VERSION == "2026-10-06.2"  # current release (this file was written for 2026-10-03.1)
+    assert mods[0].VERSION == "2026-10-06.3"  # current release (this file was written for 2026-10-03.1)
     assert mods[1].VERSION == "2026-10-02.c5"  # the code of release 2026-10-02.2
 
 
