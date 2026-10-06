@@ -12731,8 +12731,8 @@ than the release's choice by 0.01-0.20% overall and by 6.3% on the H4 case.
   - `_acceptable` does the same;
   - the choice (`excitation_cost`, `hybrid_cost`) ranks estimated noise, not correctness.
 - **Setting:** workplace sandbox (2 CPUs), Qiskit 2.5.2, qiskit-aer 0.17.2, core 2026-09-29.1; fake devices only.
-- **Files:** `psf_compile.py` and `benchmarks/psf_smart_layout.py` taken from `main` (release 2026-10-04.1, layout
-  2026-10-01.1), and `benchmarks/b17_practice_eval.py` for its circuit generators.
+- **Files:** `psf_compile.py` and [`benchmarks/psf_smart_layout.py`](../../benchmarks/psf_smart_layout.py) taken from `main` (release 2026-10-04.1, layout
+  2026-10-01.1), and [`benchmarks/b17_practice_eval.py`](../../benchmarks/b17_practice_eval.py) for its circuit generators.
 
 ## 1. Design
 
@@ -12805,10 +12805,10 @@ All exact rows are below 2e-12, so the check itself is sound.
 |---|---|
 | [`data/2026-10-05/nearboundary/nb_probe.py`](../../data/2026-10-05/nearboundary/nb_probe.py) (as saved; the run used `878be625…`, which differed only in a hard-coded local `sys.path` line) | `e18c390794727df78ccc5595c47eeac5c383decb325518a06a46887e3598037b` |
 | `psf_compile.py` (main, 2026-10-04.1) | `ea281f1e8a90ca933b27de37510e2467417823688382aff3a5f018b13678e37b` |
-| `benchmarks/b17_practice_eval.py` (main) | `46e3eb303202f8b35ee6c3cbbb4ceffa15ca91f96dda2ea6d02ca38ee743eb6d` |
-| `benchmarks/psf_smart_layout.py` (main) | `19207cea59745f37ce4df8fc1fd26d5d4ec27402454d20b1e8a7af6b552f6470` |
+| [`benchmarks/b17_practice_eval.py`](../../benchmarks/b17_practice_eval.py) (main) | `46e3eb303202f8b35ee6c3cbbb4ceffa15ca91f96dda2ea6d02ca38ee743eb6d` |
+| [`benchmarks/psf_smart_layout.py`](../../benchmarks/psf_smart_layout.py) (main) | `19207cea59745f37ce4df8fc1fd26d5d4ec27402454d20b1e8a7af6b552f6470` |
 
-**Note added at home (2026-10-05):** the script is kept in the repository as `data/2026-10-05/nearboundary/nb_probe.py`
+**Note added at home (2026-10-05):** the script is kept in the repository as [`data/2026-10-05/nearboundary/nb_probe.py`](../../data/2026-10-05/nearboundary/nb_probe.py)
 (SHA-256 of the file as received, LF line endings: the value in the table). The probe's numbers were not re-run at
 home; the pre-registered test EXACT (Addendum 342) includes the same comparison on fresh circuits.
 
@@ -12898,9 +12898,9 @@ the two interrupted runs).
 **Status: pre-registration, written at home before any run of the candidates.**
 
 - **Lock:** the git commit that adds this document, with:
-  - `patches/psf_compile_c12_2026-10-05/` (the candidate and its tests);
-  - `patches/psf_ai_compile_a9_2026-10-05/` (the candidate and its tests);
-  - `benchmarks/exact_eval.py` and its runner.
+  - [`patches/psf_compile_c12_2026-10-05/`](../../patches/psf_compile_c12_2026-10-05/) (the candidate and its tests);
+  - [`patches/psf_ai_compile_a9_2026-10-05/`](../../patches/psf_ai_compile_a9_2026-10-05/) (the candidate and its tests);
+  - [`benchmarks/exact_eval.py`](../../benchmarks/exact_eval.py) and its runner.
 
   The commit is pushed before the scored run.
 - **No hardware:** fake devices only. Noiseless checks.
@@ -12951,7 +12951,7 @@ are.
 the release has no such check. Its large-circuit path calls the release, which checks its own Qiskit-made circuits
 from item 39 on.
 
-## 3. Design (`benchmarks/exact_eval.py`)
+## 3. Design ([`benchmarks/exact_eval.py`](../../benchmarks/exact_eval.py))
 
 ### Part X: exactness
 
@@ -13093,12 +13093,12 @@ Its verdict lines (not a result):
 
 | file | normalized SHA-256 |
 |---|---|
-| `patches/psf_compile_c12_2026-10-05/psf_compile.py` | `1dc9b9b1d5b08118c33cad81bfc4be4905b5e593a3c60abab6caa56835685ab1` |
-| `patches/psf_compile_c12_2026-10-05/test_c12_exact.py` | `e8e70aed811b855e5a0686483aab993ec815830f345849a7d9b637f334380132` |
-| `patches/psf_ai_compile_a9_2026-10-05/psf_ai_compile.py` | `f6df9f7a28c8fac8e72116cf138cbc30781b1d48b5557d445e53484c19674b54` |
-| `patches/psf_ai_compile_a9_2026-10-05/test_a9.py` | `e81f704fd880d7b84b96f3b8f55d8cb72fe6f397cdf26d46f0f7166a7bed266b` |
-| `benchmarks/exact_eval.py` | `f99cb9ee57ee21546623a818989cf2356d6f022696618313386e98b6b0193812` |
-| `benchmarks/run_exact_2026-10-05.sh` | `cddf12dff2b0d0333b12c1f350a4f5652aec24a1b8f5f1146cd3317beddf36ce` |
+| [`patches/psf_compile_c12_2026-10-05/psf_compile.py`](../../patches/psf_compile_c12_2026-10-05/psf_compile.py) | `1dc9b9b1d5b08118c33cad81bfc4be4905b5e593a3c60abab6caa56835685ab1` |
+| [`patches/psf_compile_c12_2026-10-05/test_c12_exact.py`](../../patches/psf_compile_c12_2026-10-05/test_c12_exact.py) | `e8e70aed811b855e5a0686483aab993ec815830f345849a7d9b637f334380132` |
+| [`patches/psf_ai_compile_a9_2026-10-05/psf_ai_compile.py`](../../patches/psf_ai_compile_a9_2026-10-05/psf_ai_compile.py) | `f6df9f7a28c8fac8e72116cf138cbc30781b1d48b5557d445e53484c19674b54` |
+| [`patches/psf_ai_compile_a9_2026-10-05/test_a9.py`](../../patches/psf_ai_compile_a9_2026-10-05/test_a9.py) | `e81f704fd880d7b84b96f3b8f55d8cb72fe6f397cdf26d46f0f7166a7bed266b` |
+| [`benchmarks/exact_eval.py`](../../benchmarks/exact_eval.py) | `f99cb9ee57ee21546623a818989cf2356d6f022696618313386e98b6b0193812` |
+| [`benchmarks/run_exact_2026-10-05.sh`](../../benchmarks/run_exact_2026-10-05.sh) | `cddf12dff2b0d0333b12c1f350a4f5652aec24a1b8f5f1146cd3317beddf36ce` |
 
 Normalization: CRLF to LF, trailing whitespace stripped from each line, trailing blank lines dropped, lines joined
 with "\n" and no final newline.
@@ -13119,7 +13119,7 @@ with "\n" and no final newline.
   files given in Addendum 342 section 5.2, and every job file records the normalized SHA-256 of the script and of both
   candidates.
 - **One change to the repository during the run:** the owner restructured the README on GitHub (commit `e5a8098`:
-  `README.md`, `docs/RELEASES.md`, `docs/README_2026-10-05_before_restructure.md`; no code). The local checkout that
+  `README.md`, [`docs/RELEASES.md`](../../docs/RELEASES.md), [`docs/README_2026-10-05_before_restructure.md`](../../docs/README_2026-10-05_before_restructure.md); no code). The local checkout that
   ran the test was not pulled until after "EXACT DONE": all 45 job files record `git_head` `ae1e946`.
 - **Scoring:** by the locked `exact_eval.py score`, and re-checked by
   [`benchmarks/exact_verify.py`](../../benchmarks/exact_verify.py), which agrees on every verdict and count.
@@ -13216,7 +13216,7 @@ above was seen; normalized SHA-256 `66418a1bd4dc0f1f4c74d3a3c03623583349e8e718c1
   the release's own circuit in those cases, by its estimate. The defect was there, and nothing guaranteed it would
   stay hidden.
 
-The output is in `data/2026-10-05/exact/diag_resynth_output.txt`.
+The output is in [`data/2026-10-05/exact/diag_resynth_output.txt`](../../data/2026-10-05/exact/diag_resynth_output.txt).
 
 ## 4. Reading
 
@@ -13255,7 +13255,7 @@ The output is in `data/2026-10-05/exact/diag_resynth_output.txt`.
     qubits) keep the release's own circuit; not tested on ecr devices or hardware.
 - **a9 as the AI front end**, with the ecr warning kept until a fix is tested.
 
-## 6. Data (`data/2026-10-05/exact/`)
+## 6. Data ([`data/2026-10-05/exact/`](../../data/2026-10-05/exact/))
 
 - `outputs/`:
   - 45 job files and their logs;
@@ -13308,14 +13308,14 @@ defect of Addenda 340 and 343.
 
 ## 2. What the front end is
 
-**`benchmarks/psf_ai_compile.py` is now a9.** It is the candidate file
+**[`benchmarks/psf_ai_compile.py`](../../benchmarks/psf_ai_compile.py) is now a9.** It is the candidate file
 [`patches/psf_ai_compile_a9_2026-10-05/psf_ai_compile.py`](../../patches/psf_ai_compile_a9_2026-10-05/psf_ai_compile.py)
 with two changes, and nothing else:
 
 - its item-14 heading marked as adopted;
 - its version comment.
 
-**a8 is kept as `benchmarks/psf_ai_compile_a8.py`.** That file is byte-identical to the a8 that was adopted on
+**a8 is kept as [`benchmarks/psf_ai_compile_a8.py`](../../benchmarks/psf_ai_compile_a8.py).** That file is byte-identical to the a8 that was adopted on
 2026-10-04.
 
 **Not fixed by a9:** on ecr devices the front end can return ECR gates in a direction the device does not provide (a
@@ -13327,18 +13327,18 @@ workplace exploration, 2026-10-05). The README keeps a warning until a fix is te
 
 | file | what it is |
 |---|---|
-| `benchmarks/test_release_2026_10_05_1.py` | the candidate's 7 tests, adapted. The previous release is represented by `patches/psf_compile_c11_2026-10-04/psf_compile.py`, which differs from 2026-10-04.1 only in its version lines |
-| `benchmarks/test_ai_compile_a9.py` | the candidate's 4 tests, adapted: the release instead of the candidate file, a8 from the frozen copy |
-| `benchmarks/psf_ai_compile_a8.py` | the frozen copy of a8 |
-| `benchmarks/exact_verify.py` | the independent re-check of Addendum 343 |
-| `benchmarks/diag_resynth_1005.py` | the exploratory check of Addendum 343, section 3 |
-| `data/2026-10-05/exact/` | the run's output, its re-check and the exploratory output (Addendum 343, section 6) |
+| [`benchmarks/test_release_2026_10_05_1.py`](../../benchmarks/test_release_2026_10_05_1.py) | the candidate's 7 tests, adapted. The previous release is represented by [`patches/psf_compile_c11_2026-10-04/psf_compile.py`](../../patches/psf_compile_c11_2026-10-04/psf_compile.py), which differs from 2026-10-04.1 only in its version lines |
+| [`benchmarks/test_ai_compile_a9.py`](../../benchmarks/test_ai_compile_a9.py) | the candidate's 4 tests, adapted: the release instead of the candidate file, a8 from the frozen copy |
+| [`benchmarks/psf_ai_compile_a8.py`](../../benchmarks/psf_ai_compile_a8.py) | the frozen copy of a8 |
+| [`benchmarks/exact_verify.py`](../../benchmarks/exact_verify.py) | the independent re-check of Addendum 343 |
+| [`benchmarks/diag_resynth_1005.py`](../../benchmarks/diag_resynth_1005.py) | the exploratory check of Addendum 343, section 3 |
+| [`data/2026-10-05/exact/`](../../data/2026-10-05/exact/) | the run's output, its re-check and the exploratory output (Addendum 343, section 6) |
 
 **Changed:**
 
-- `psf_compile.py` and `benchmarks/psf_ai_compile.py`: as described above.
-- `benchmarks/test_ai_compile_a8.py`: it now loads the frozen a8; its release assertion expects 2026-10-05.1.
-- **`patches/psf_ai_compile_a9_2026-10-05/test_a9.py`** (locked, Addendum 342): it now loads a8 from the frozen file,
+- `psf_compile.py` and [`benchmarks/psf_ai_compile.py`](../../benchmarks/psf_ai_compile.py): as described above.
+- [`benchmarks/test_ai_compile_a8.py`](../../benchmarks/test_ai_compile_a8.py): it now loads the frozen a8; its release assertion expects 2026-10-05.1.
+- **[`patches/psf_ai_compile_a9_2026-10-05/test_a9.py`](../../patches/psf_ai_compile_a9_2026-10-05/test_a9.py)** (locked, Addendum 342): it now loads a8 from the frozen file,
   so that it still compares a9 with a8.
 - **Current-release assertions in seventeen tests.** Only the expected version string changed (to "2026-10-05.1").
   - Nine of these are tests of earlier candidates whose files were locked by pre-registrations: c4, c6, c8, c9, c10,
@@ -13347,7 +13347,7 @@ workplace exploration, 2026-10-05). The README keeps a warning until a fix is te
 - **`README.md`:** the "Current version" section now names 2026-10-05.1 and a9, with a correctness notice for
   2026-10-03.1 to 2026-10-04.1 and the open ecr warning. Smaller updates: the compile time of the recommended call, a
   sentence each in "Results in brief" and "Correctness checks", and a known limit on the check's tolerance.
-- **`docs/RELEASES.md`:** blocks for 2026-10-05.1 and a9 on top; the 2026-10-04.1 block retitled "Previous release";
+- **[`docs/RELEASES.md`](../../docs/RELEASES.md):** blocks for 2026-10-05.1 and a9 on top; the 2026-10-04.1 block retitled "Previous release";
   the known-defect notice kept as it stood, marked as fixed. From now on each release is added there, and the README
   keeps only the current one.
 
@@ -13356,31 +13356,31 @@ workplace exploration, 2026-10-05). The README keeps a warning until a fix is te
 | file | before | after |
 |---|---|---|
 | `psf_compile.py` | `7230adf00f152592…` | `33853989e0bf02fe…` |
-| `benchmarks/psf_ai_compile.py` | `5dd7f3a4b2d0b2aa…` | `8bc0f78a8964be5e…` |
-| `benchmarks/test_ai_compile_a8.py` | `8bcdf1596a85b53c…` | `65b175b76a89e704…` |
-| `patches/psf_ai_compile_a9_2026-10-05/test_a9.py` | `e81f704fd880d7b8…` | `ff69fb714d60a73d…` |
-| `benchmarks/test_release_2026_10_02.py` | `511e21b85fe0a7b9…` | `47667a69113baaf5…` |
-| `benchmarks/test_release_2026_10_02_2.py` | `8864758981e60b9f…` | `4aa1175df94bc17d…` |
-| `benchmarks/test_core_fix_c2.py` | `138fd4f759b9a9a9…` | `90b44c82daa7003c…` |
-| `benchmarks/test_release_2026_09_28.py` | `5dfd12f99480a31c…` | `a9db7fa4b39566d7…` |
-| `benchmarks/test_release_2026_10_03.py` | `dc5ebfac5aa91ad3…` | `f4c46371ed7e4fe5…` |
-| `benchmarks/test_release_2026_10_03_2.py` | `7ab1bb5da6ab5b28…` | `2a4e2e467c9d01b2…` |
-| `benchmarks/test_release_2026_10_03_3.py` | `0a1afebd230bdd4b…` | `ccc81a31e020d3a2…` |
-| `benchmarks/test_release_2026_10_04_1.py` | `ed0f27333eb06dd1…` | `ba48b60b2eb4d0dc…` |
-| `patches/psf_compile_c4_2026-10-02/test_c4_layout.py` | `e508c6c45a4026b5…` | `38c3ff18bf96c135…` |
-| `patches/psf_compile_c6_2026-10-03/test_c6_floor.py` | `980723c9168768d8…` | `510d4d9a87347635…` |
-| `patches/psf_compile_c8_2026-10-03/test_c8_resynth.py` | `9dd1da5f6aa9e37d…` | `67246f4426e91d62…` |
-| `patches/psf_compile_c9_2026-10-03/test_c9_compare.py` | `c5b6c74b94f1e0be…` | `25023f2357839dd2…` |
-| `patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py` | `5152354e9d67cc1e…` | `5105334faeb7797e…` |
-| `patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py` | `00648dc337d1c285…` | `f23da86ba5e686e3…` |
-| `patches/psf_compile_c12_2026-10-05/test_c12_exact.py` | `e8e70aed811b855e…` | `4313a8fbc3eef127…` |
-| `patches/psf_ai_compile_a6_2026-10-02/test_ai6.py` | `69372876c421da9c…` | `36ce6752197f1c62…` |
-| `patches/psf_ai_compile_a8_2026-10-04/test_a8.py` | `91ed5c69f89e6025…` | `635fddeb81d4ce3a…` |
+| [`benchmarks/psf_ai_compile.py`](../../benchmarks/psf_ai_compile.py) | `5dd7f3a4b2d0b2aa…` | `8bc0f78a8964be5e…` |
+| [`benchmarks/test_ai_compile_a8.py`](../../benchmarks/test_ai_compile_a8.py) | `8bcdf1596a85b53c…` | `65b175b76a89e704…` |
+| [`patches/psf_ai_compile_a9_2026-10-05/test_a9.py`](../../patches/psf_ai_compile_a9_2026-10-05/test_a9.py) | `e81f704fd880d7b8…` | `ff69fb714d60a73d…` |
+| [`benchmarks/test_release_2026_10_02.py`](../../benchmarks/test_release_2026_10_02.py) | `511e21b85fe0a7b9…` | `47667a69113baaf5…` |
+| [`benchmarks/test_release_2026_10_02_2.py`](../../benchmarks/test_release_2026_10_02_2.py) | `8864758981e60b9f…` | `4aa1175df94bc17d…` |
+| [`benchmarks/test_core_fix_c2.py`](../../benchmarks/test_core_fix_c2.py) | `138fd4f759b9a9a9…` | `90b44c82daa7003c…` |
+| [`benchmarks/test_release_2026_09_28.py`](../../benchmarks/test_release_2026_09_28.py) | `5dfd12f99480a31c…` | `a9db7fa4b39566d7…` |
+| [`benchmarks/test_release_2026_10_03.py`](../../benchmarks/test_release_2026_10_03.py) | `dc5ebfac5aa91ad3…` | `f4c46371ed7e4fe5…` |
+| [`benchmarks/test_release_2026_10_03_2.py`](../../benchmarks/test_release_2026_10_03_2.py) | `7ab1bb5da6ab5b28…` | `2a4e2e467c9d01b2…` |
+| [`benchmarks/test_release_2026_10_03_3.py`](../../benchmarks/test_release_2026_10_03_3.py) | `0a1afebd230bdd4b…` | `ccc81a31e020d3a2…` |
+| [`benchmarks/test_release_2026_10_04_1.py`](../../benchmarks/test_release_2026_10_04_1.py) | `ed0f27333eb06dd1…` | `ba48b60b2eb4d0dc…` |
+| [`patches/psf_compile_c4_2026-10-02/test_c4_layout.py`](../../patches/psf_compile_c4_2026-10-02/test_c4_layout.py) | `e508c6c45a4026b5…` | `38c3ff18bf96c135…` |
+| [`patches/psf_compile_c6_2026-10-03/test_c6_floor.py`](../../patches/psf_compile_c6_2026-10-03/test_c6_floor.py) | `980723c9168768d8…` | `510d4d9a87347635…` |
+| [`patches/psf_compile_c8_2026-10-03/test_c8_resynth.py`](../../patches/psf_compile_c8_2026-10-03/test_c8_resynth.py) | `9dd1da5f6aa9e37d…` | `67246f4426e91d62…` |
+| [`patches/psf_compile_c9_2026-10-03/test_c9_compare.py`](../../patches/psf_compile_c9_2026-10-03/test_c9_compare.py) | `c5b6c74b94f1e0be…` | `25023f2357839dd2…` |
+| [`patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py`](../../patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py) | `5152354e9d67cc1e…` | `5105334faeb7797e…` |
+| [`patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py`](../../patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py) | `00648dc337d1c285…` | `f23da86ba5e686e3…` |
+| [`patches/psf_compile_c12_2026-10-05/test_c12_exact.py`](../../patches/psf_compile_c12_2026-10-05/test_c12_exact.py) | `e8e70aed811b855e…` | `4313a8fbc3eef127…` |
+| [`patches/psf_ai_compile_a6_2026-10-02/test_ai6.py`](../../patches/psf_ai_compile_a6_2026-10-02/test_ai6.py) | `69372876c421da9c…` | `36ce6752197f1c62…` |
+| [`patches/psf_ai_compile_a8_2026-10-04/test_a8.py`](../../patches/psf_ai_compile_a8_2026-10-04/test_a8.py) | `91ed5c69f89e6025…` | `635fddeb81d4ce3a…` |
 | `README.md` | `78876b7f7f9cf1f8…` | `a707b1d051e2d81e…` |
-| `docs/RELEASES.md` | `67597e2aced98657…` | `75214ca3e81c1159…` |
-| `benchmarks/psf_ai_compile_a8.py` (new) | — | `5dd7f3a4b2d0b2aa…` |
-| `benchmarks/test_ai_compile_a9.py` (new) | — | `1038f9c5933ef516…` |
-| `benchmarks/test_release_2026_10_05_1.py` (new) | — | `b369ca331c368fbc…` |
+| [`docs/RELEASES.md`](../../docs/RELEASES.md) | `67597e2aced98657…` | `75214ca3e81c1159…` |
+| [`benchmarks/psf_ai_compile_a8.py`](../../benchmarks/psf_ai_compile_a8.py) (new) | — | `5dd7f3a4b2d0b2aa…` |
+| [`benchmarks/test_ai_compile_a9.py`](../../benchmarks/test_ai_compile_a9.py) (new) | — | `1038f9c5933ef516…` |
+| [`benchmarks/test_release_2026_10_05_1.py`](../../benchmarks/test_release_2026_10_05_1.py) (new) | — | `b369ca331c368fbc…` |
 
 ## 4. Known limits (Addendum 343)
 
@@ -14039,7 +14039,7 @@ result:
 
 ## 2. Design (`ai10_eval.py`, `run_ai10.sh`)
 
-**Set:** the 153 model-written circuits of Addendum 285 (`data/2026-10-02/ai6/outputs/model_circuits.qpy`, raw
+**Set:** the 153 model-written circuits of Addendum 285 ([`data/2026-10-02/ai6/outputs/model_circuits.qpy`](../../data/2026-10-02/ai6/outputs/model_circuits.qpy), raw
 SHA-256 `3c012e4c…`; 3-6 qubits; no measurements of their own), each with `measure_all()`. The set was used in
 Addenda 285 and 312-316.
 
@@ -14816,7 +14816,7 @@ environment at commit `a789db9`:
 
 **Two findings.**
 
-1. **`networkx` was not installed.** `benchmarks/psf_smart_layout.py` imports it, and every call with
+1. **`networkx` was not installed.** [`benchmarks/psf_smart_layout.py`](../../benchmarks/psf_smart_layout.py) imports it, and every call with
    `layout_search=True` needs it, but `pyproject.toml` did not declare it. The home environments had it for other
    reasons, so no earlier run noticed. After `pip install networkx`, the tests ran.
 2. **3 of the 11 tests failed, all on the same assertion:**
@@ -14830,7 +14830,7 @@ environment at commit `a789db9`:
 
 ## 2. Why: #17057 depends on rounding
 
-`data/2026-10-06/windows/check17057.py` feeds the issue's own input, `exp(i(0.6 XX + 0.3 YY + c ZZ))`, to:
+[`data/2026-10-06/windows/check17057.py`](../../data/2026-10-06/windows/check17057.py) feeds the issue's own input, `exp(i(0.6 XX + 0.3 YY + c ZZ))`, to:
 
 - `TwoQubitBasisDecomposer(CXGate(), euler_basis="ZSX")`;
 - `transpile(basis_gates=[cx, rz, sx, x], optimization_level=1)`.
@@ -14858,9 +14858,9 @@ The numpy version of the home environment has not yet been recorded for comparis
 counts are asserted only where it returns True. Exactness is still asserted everywhere. The change was made in four
 files:
 
-- the two release tests: `benchmarks/test_release_2026_10_05_1.py`, `benchmarks/test_ai_compile_a9.py`;
-- the two locked candidate tests they were adapted from (Addendum 342): `patches/psf_compile_c12_2026-10-05/test_c12_exact.py`,
-  `patches/psf_ai_compile_a9_2026-10-05/test_a9.py`.
+- the two release tests: [`benchmarks/test_release_2026_10_05_1.py`](../../benchmarks/test_release_2026_10_05_1.py), [`benchmarks/test_ai_compile_a9.py`](../../benchmarks/test_ai_compile_a9.py);
+- the two locked candidate tests they were adapted from (Addendum 342): [`patches/psf_compile_c12_2026-10-05/test_c12_exact.py`](../../patches/psf_compile_c12_2026-10-05/test_c12_exact.py),
+  [`patches/psf_ai_compile_a9_2026-10-05/test_a9.py`](../../patches/psf_ai_compile_a9_2026-10-05/test_a9.py).
 
 **Unchanged:** what these tests check in the Linux environments, where the scored runs were made. EXACT's results
 (Addenda 342-343) stand as measured there.
@@ -14883,10 +14883,10 @@ and that the fix protects either way.
 
 | file | before | after |
 |---|---|---|
-| `benchmarks/test_release_2026_10_05_1.py` | `b369ca331c368fbc…` | `9ac2762c8b344874…` |
-| `patches/psf_compile_c12_2026-10-05/test_c12_exact.py` | `4313a8fbc3eef127…` | `d7d99c7ca66161fb…` |
-| `benchmarks/test_ai_compile_a9.py` | `1038f9c5933ef516…` | `2a36a47b1951bfcd…` |
-| `patches/psf_ai_compile_a9_2026-10-05/test_a9.py` | `ff69fb714d60a73d…` | `3ba72b87c7869b63…` |
+| [`benchmarks/test_release_2026_10_05_1.py`](../../benchmarks/test_release_2026_10_05_1.py) | `b369ca331c368fbc…` | `9ac2762c8b344874…` |
+| [`patches/psf_compile_c12_2026-10-05/test_c12_exact.py`](../../patches/psf_compile_c12_2026-10-05/test_c12_exact.py) | `4313a8fbc3eef127…` | `d7d99c7ca66161fb…` |
+| [`benchmarks/test_ai_compile_a9.py`](../../benchmarks/test_ai_compile_a9.py) | `1038f9c5933ef516…` | `2a36a47b1951bfcd…` |
+| [`patches/psf_ai_compile_a9_2026-10-05/test_a9.py`](../../patches/psf_ai_compile_a9_2026-10-05/test_a9.py) | `ff69fb714d60a73d…` | `3ba72b87c7869b63…` |
 | `pyproject.toml` | `a2e4f0068796329d…` | `79b5b7e942eeea43…` |
 | `README.md` | `a707b1d051e2d81e…` | `e62803f4ff851424…` |
 
@@ -14904,10 +14904,10 @@ and that the fix protects either way.
 - **Written at home, on 2026-10-06, from the workplace candidates** (Addenda 345-356), with the smoke run made at the
   workplace (section 5).
 - **Lock:** the git commit that adds this document, with:
-  - `patches/psf_compile_c14_2026-10-05/` (the candidate and its test);
-  - `patches/psf_ai_compile_a11_2026-10-05/` (the candidate and its test);
-  - `benchmarks/recr_eval.py` and its runner;
-  - `benchmarks/recr_verify.py`, an independent re-computation of every verdict from the raw output. It was
+  - [`patches/psf_compile_c14_2026-10-05/`](../../patches/psf_compile_c14_2026-10-05/) (the candidate and its test);
+  - [`patches/psf_ai_compile_a11_2026-10-05/`](../../patches/psf_ai_compile_a11_2026-10-05/) (the candidate and its test);
+  - [`benchmarks/recr_eval.py`](../../benchmarks/recr_eval.py) and its runner;
+  - [`benchmarks/recr_verify.py`](../../benchmarks/recr_verify.py), an independent re-computation of every verdict from the raw output. It was
     written before the lock and before any scored output exists, and does not import `recr_eval.py`.
 
   **The commit is made before the scored run, at the workplace, and pushed from home afterwards with the same hash**
@@ -14963,7 +14963,7 @@ at the workplace.
 - Comparisons that the workplace made with c12 or c13 are made with the release.
 - One case is new: a9's direction defect reproduces on FakeBrussels.
 
-## 3. Design (`benchmarks/recr_eval.py`)
+## 3. Design ([`benchmarks/recr_eval.py`](../../benchmarks/recr_eval.py))
 
 **Devices:**
 
@@ -15075,7 +15075,7 @@ run at home, because no Qiskit was available in the home build environment.
 - the predictions, after these lines;
 - **the platform.** The scored run is made on the same workplace PC as the smoke run (Windows), where Qiskit issue
   #17057 does not appear (Addendum 357). These circuits are not built near that boundary. It is run by
-  `benchmarks/run_parallel_2026-10-06.py`, a Python runner with the same jobs as `run_recr_2026-10-06.sh`, because
+  [`benchmarks/run_parallel_2026-10-06.py`](../../benchmarks/run_parallel_2026-10-06.py), a Python runner with the same jobs as `run_recr_2026-10-06.sh`, because
   the PC has no bash. That runner is locked by Addendum 359's commit, which is also made before the scored run.
 
 **How the lock was kept (disclosed).** Addenda 357, 358 and 359 were committed on the workplace PC, in that order,
@@ -15093,17 +15093,17 @@ was given in the conversation with Claude that prepared it. That is weaker than 
 
 | file | normalized SHA-256 |
 |---|---|
-| `patches/psf_compile_c14_2026-10-05/psf_compile.py` (raw `aad584bf…`) | `8cdeaa30c8ae597c4125b67d39ed4aec0a40b3cdf26e0e2671411fe678217e5a` |
-| `patches/psf_compile_c14_2026-10-05/test_c14.py` | `6f3f94e16a111ababf14f06c3ea3880068ae8566e9604d365e30be8006cb64c9` |
-| `patches/psf_ai_compile_a11_2026-10-05/psf_ai_compile.py` (raw `55d622da…`) | `380102b2856fe034f317041825fe9bc98b4a268dda768177dba443420a17ab2e` |
-| `patches/psf_ai_compile_a11_2026-10-05/test_a11.py` | `8f2c19575c6124aba443d47ce7869f28d92309c09706156244774a69e228ef2f` |
-| `benchmarks/recr_eval.py` | `ed9f5dbe8e95300ace5f1dec6efa48db3f3215bf8090cd6e5b3c8797dcc00408` |
-| `benchmarks/run_recr_2026-10-06.sh` | `a19a604c4e28c4ae1af4bf133e1ec30181fbb4bd2e5b92a56925f14520a76864` |
-| `benchmarks/recr_verify.py` | `f4f5aeb7b8a3cbb97b44eb66e1fa63815019d683729f3f3a3bbf62bd3d4a658c` |
-| imported, unchanged: `data/2026-10-05/workplace/model_ro2/ai10_eval2.py` | `12bba73653b607c1cd6bfad99c7b184e10af2ca6262a8e5531e9b5d665a8e299` |
-| imported, unchanged: `data/2026-10-05/workplace/readout/readout_eval.py` (READOUT's lock) | `9d83426dd28ecddff67c555656d2ef3c5e0b9b43ee5a2d4eb5bc7204e8c6f1d0` |
-| imported, unchanged: `data/2026-10-05/workplace/depth1/depth_eval.py` (DEPTH's lock) | `82488d96144bb1c88f69676a0e6a642c22d4756a47d8a1ad8b07be5327c796ac` |
-| used by the a11 test: `data/2026-10-05/workplace/model_ro2/a10/psf_ai_compile.py` | `1af633d5f91a639a4894a092b5d4603c738cb51584d69d8068bfce9a0303e480` |
+| [`patches/psf_compile_c14_2026-10-05/psf_compile.py`](../../patches/psf_compile_c14_2026-10-05/psf_compile.py) (raw `aad584bf…`) | `8cdeaa30c8ae597c4125b67d39ed4aec0a40b3cdf26e0e2671411fe678217e5a` |
+| [`patches/psf_compile_c14_2026-10-05/test_c14.py`](../../patches/psf_compile_c14_2026-10-05/test_c14.py) | `6f3f94e16a111ababf14f06c3ea3880068ae8566e9604d365e30be8006cb64c9` |
+| [`patches/psf_ai_compile_a11_2026-10-05/psf_ai_compile.py`](../../patches/psf_ai_compile_a11_2026-10-05/psf_ai_compile.py) (raw `55d622da…`) | `380102b2856fe034f317041825fe9bc98b4a268dda768177dba443420a17ab2e` |
+| [`patches/psf_ai_compile_a11_2026-10-05/test_a11.py`](../../patches/psf_ai_compile_a11_2026-10-05/test_a11.py) | `8f2c19575c6124aba443d47ce7869f28d92309c09706156244774a69e228ef2f` |
+| [`benchmarks/recr_eval.py`](../../benchmarks/recr_eval.py) | `ed9f5dbe8e95300ace5f1dec6efa48db3f3215bf8090cd6e5b3c8797dcc00408` |
+| [`benchmarks/run_recr_2026-10-06.sh`](../../benchmarks/run_recr_2026-10-06.sh) | `a19a604c4e28c4ae1af4bf133e1ec30181fbb4bd2e5b92a56925f14520a76864` |
+| [`benchmarks/recr_verify.py`](../../benchmarks/recr_verify.py) | `f4f5aeb7b8a3cbb97b44eb66e1fa63815019d683729f3f3a3bbf62bd3d4a658c` |
+| imported, unchanged: [`data/2026-10-05/workplace/model_ro2/ai10_eval2.py`](../../data/2026-10-05/workplace/model_ro2/ai10_eval2.py) | `12bba73653b607c1cd6bfad99c7b184e10af2ca6262a8e5531e9b5d665a8e299` |
+| imported, unchanged: [`data/2026-10-05/workplace/readout/readout_eval.py`](../../data/2026-10-05/workplace/readout/readout_eval.py) (READOUT's lock) | `9d83426dd28ecddff67c555656d2ef3c5e0b9b43ee5a2d4eb5bc7204e8c6f1d0` |
+| imported, unchanged: [`data/2026-10-05/workplace/depth1/depth_eval.py`](../../data/2026-10-05/workplace/depth1/depth_eval.py) (DEPTH's lock) | `82488d96144bb1c88f69676a0e6a642c22d4756a47d8a1ad8b07be5327c796ac` |
+| used by the a11 test: [`data/2026-10-05/workplace/model_ro2/a10/psf_ai_compile.py`](../../data/2026-10-05/workplace/model_ro2/a10/psf_ai_compile.py) | `1af633d5f91a639a4894a092b5d4603c738cb51584d69d8068bfce9a0303e480` |
 
 
 ---
@@ -15118,10 +15118,10 @@ was given in the conversation with Claude that prepared it. That is weaker than 
 
 - **Written on 2026-10-06,** during the day, with tests and smoke runs made on the workplace PC (section 5).
 - **Lock:** the git commit that adds this document, with:
-  - `patches/psf_compile_c15_2026-10-06/` (the candidate and its test);
-  - `benchmarks/kr_eval.py` and its runners: `benchmarks/run_kr_2026-10-06.sh` (bash), and
-    `benchmarks/run_parallel_2026-10-06.py` (Python, the same jobs; it also runs RECR, Addendum 358);
-  - `benchmarks/kr_verify.py`, an independent re-computation of every verdict from the raw output. It was written
+  - [`patches/psf_compile_c15_2026-10-06/`](../../patches/psf_compile_c15_2026-10-06/) (the candidate and its test);
+  - [`benchmarks/kr_eval.py`](../../benchmarks/kr_eval.py) and its runners: [`benchmarks/run_kr_2026-10-06.sh`](../../benchmarks/run_kr_2026-10-06.sh) (bash), and
+    [`benchmarks/run_parallel_2026-10-06.py`](../../benchmarks/run_parallel_2026-10-06.py) (Python, the same jobs; it also runs RECR, Addendum 358);
+  - [`benchmarks/kr_verify.py`](../../benchmarks/kr_verify.py), an independent re-computation of every verdict from the raw output. It was written
     before the lock and before any scored output exists, and does not import `kr_eval.py`.
 
   **The commit is made before the scored run, at the workplace, and pushed from home afterwards with the same hash**
@@ -15179,7 +15179,7 @@ On 200 random circuits with random device data (mock objects, up to 7 qubits), t
 - on three H4 circuits, hybrid keeps the release's circuit and kraus takes the floor-placed one;
 - an unknown score is rejected.
 
-## 3. Design (`benchmarks/kr_eval.py`)
+## 3. Design ([`benchmarks/kr_eval.py`](../../benchmarks/kr_eval.py))
 
 **Devices:** HOLD6's nine:
 
@@ -15301,7 +15301,7 @@ circuit per cell). Their output was seen before the lock.
    - KRA/HYB was 0.995-1.000 and KRA/L3 0.939-0.992.
    - K7 was 1.008-1.079.
    - The measured K / R was 0.59-0.85.
-   - Its output is in `data/2026-10-06/kr_smoke/`.
+   - Its output is in [`data/2026-10-06/kr_smoke/`](../../data/2026-10-06/kr_smoke/).
 
 **Changed before the lock (disclosed):**
 
@@ -15337,15 +15337,15 @@ That is weaker than a push, which GitHub timestamps.
 
 | file | normalized SHA-256 |
 |---|---|
-| `patches/psf_compile_c15_2026-10-06/psf_compile.py` | `24affde8f5d6f218319b4ff2d7e98317a37b5fdb816381d64e91cfc6a9ef97f0` |
-| `patches/psf_compile_c15_2026-10-06/test_c15.py` | `df3c611dc0e59eba194f297b35db00d5e59dfa74155cf0de4de7db0d3facf984` |
-| `benchmarks/kr_eval.py` | `dc55a9db28a2c42d24cee6d01c097e491056870d0bff1ed0e5335d2689d2200d` |
-| `benchmarks/run_kr_2026-10-06.sh` | `1a74d85b508ba43c4034d54f93a349b6d348f423f7762a142fbe80485f490ddb` |
-| `benchmarks/run_parallel_2026-10-06.py` | `1e490057b248c5b61e47169899d3efe9772389187573594ec2c2e896470a18cb` |
-| `benchmarks/kr_verify.py` | `6703d98ee823d719b4ba1e94e3ae3d014e6bbbcfb2fc0c55bd14cb732b79dcb8` |
+| [`patches/psf_compile_c15_2026-10-06/psf_compile.py`](../../patches/psf_compile_c15_2026-10-06/psf_compile.py) | `24affde8f5d6f218319b4ff2d7e98317a37b5fdb816381d64e91cfc6a9ef97f0` |
+| [`patches/psf_compile_c15_2026-10-06/test_c15.py`](../../patches/psf_compile_c15_2026-10-06/test_c15.py) | `df3c611dc0e59eba194f297b35db00d5e59dfa74155cf0de4de7db0d3facf984` |
+| [`benchmarks/kr_eval.py`](../../benchmarks/kr_eval.py) | `dc55a9db28a2c42d24cee6d01c097e491056870d0bff1ed0e5335d2689d2200d` |
+| [`benchmarks/run_kr_2026-10-06.sh`](../../benchmarks/run_kr_2026-10-06.sh) | `1a74d85b508ba43c4034d54f93a349b6d348f423f7762a142fbe80485f490ddb` |
+| [`benchmarks/run_parallel_2026-10-06.py`](../../benchmarks/run_parallel_2026-10-06.py) | `1e490057b248c5b61e47169899d3efe9772389187573594ec2c2e896470a18cb` |
+| [`benchmarks/kr_verify.py`](../../benchmarks/kr_verify.py) | `6703d98ee823d719b4ba1e94e3ae3d014e6bbbcfb2fc0c55bd14cb732b79dcb8` |
 | the release: `psf_compile.py` (2026-10-05.1), unchanged | `33853989e0bf02fedeabda7edbc9e84c6b1a630e9af490751025ca2c8f176b67` |
-| imported, unchanged: `benchmarks/hold6_eval.py` (HOLD6's lock) | `8740a33225f24da12f1d07c235695950f03643d4160283eb1623ad9d7f05108a` |
-| used by the test, unchanged: `data/2026-10-04/h4/diag/h4_diag.py` (Addendum 339) | `5de3f263696e95b9adbd4fcbf61346d58e823a9304b9de9ebea4d1f30e9bee2c` |
+| imported, unchanged: [`benchmarks/hold6_eval.py`](../../benchmarks/hold6_eval.py) (HOLD6's lock) | `8740a33225f24da12f1d07c235695950f03643d4160283eb1623ad9d7f05108a` |
+| used by the test, unchanged: [`data/2026-10-04/h4/diag/h4_diag.py`](../../data/2026-10-04/h4/diag/h4_diag.py) (Addendum 339) | `5de3f263696e95b9adbd4fcbf61346d58e823a9304b9de9ebea4d1f30e9bee2c` |
 
 
 ---
@@ -15365,7 +15365,7 @@ That is weaker than a push, which GitHub timestamps.
   0.17.2), with `run_parallel_2026-10-06.py recr` (6 parallel jobs), started 2026-10-06 03:38 UTC; 719 s.
 - **Scored** by the locked `recr_eval.py score`; **re-computed** by the locked `recr_verify.py`, written before the
   run, with identical verdicts.
-- Raw output: `data/2026-10-06/recr/`.
+- Raw output: [`data/2026-10-06/recr/`](../../data/2026-10-06/recr/).
 
 ## 1. P0
 
@@ -15520,7 +15520,7 @@ The same as section 6 of Addendum 358:
 - **Scored** by the locked `kr_eval.py score`; **re-computed** by the locked `kr_verify.py`, written before the run.
   Its verdicts are identical to the scorer's, and its additional P0 condition (every recorded choice re-derived from
   the recorded estimates) holds.
-- Raw output: `data/2026-10-06/kraus/`.
+- Raw output: [`data/2026-10-06/kraus/`](../../data/2026-10-06/kraus/).
 
 ## 1. P0
 
@@ -15641,23 +15641,23 @@ Against c14 the code differs only by item 42. Against c15 the code differs only 
   measurements it does not see readout. **The recommended call therefore stays `hybrid`.** Making `kraus` the
   recommended call needs a readout term and a test of its own.
 
-## 3. The front end: `benchmarks/psf_ai_compile.py` = a11
+## 3. The front end: [`benchmarks/psf_ai_compile.py`](../../benchmarks/psf_ai_compile.py) = a11
 
 - a11 is the candidate's file with only its docstring dates and version comment changed.
-- a9 is kept as `benchmarks/psf_ai_compile_a9.py`.
+- a9 is kept as [`benchmarks/psf_ai_compile_a9.py`](../../benchmarks/psf_ai_compile_a9.py).
 - a10 (item 15, readout) was never adopted on its own; it is part of a11.
 - The notice "do not give the front end a target on ecr devices" (2026-10-05) is withdrawn: a11 had no off-target
   gate on either ecr device in RECR (Q4).
 
 ## 4. Tests
 
-- **New: `benchmarks/test_release_2026_10_06_1.py`.**
+- **New: [`benchmarks/test_release_2026_10_06_1.py`](../../benchmarks/test_release_2026_10_06_1.py).**
   - With `hybrid` the release equals c14, with and without measurements, on FakeTorino, FakeKingston and FakeHanoiV2.
   - Without measurements it equals 2026-10-05.1.
   - With `kraus` it equals c15, and `kraus_cost` is c15's exactly.
   - `kraus_cost` ignores measurements.
   - An unknown score is rejected.
-- **New: `benchmarks/test_ai_compile_a11.py`.**
+- **New: [`benchmarks/test_ai_compile_a11.py`](../../benchmarks/test_ai_compile_a11.py).**
   - The adopted file is the candidate's code.
   - Its outputs on ecr devices are on target and exact.
   - Without measurements it is a9.
@@ -15764,7 +15764,7 @@ Whether this is worth a candidate is open. The smoke run's differences between `
 
 ## 5. Files
 
-`data/2026-10-06/kro/` holds:
+[`data/2026-10-06/kro/`](../../data/2026-10-06/kro/) holds:
 
 - the candidate (`psf_compile.py`, `test_c16.py`), the harness `kro_eval.py` and its runner, as smoke-run;
 - the smoke output (`kro_smoke/`).
@@ -15784,9 +15784,9 @@ None of them is a lock.
 
 - **Lock:** the git commit that adds this document, made at the workplace before the scored run and pushed from home
   afterwards with the same hash, as for Addenda 358-359. It locks:
-  - `patches/psf_ai_compile_a12_2026-10-06/` (the candidate and its test);
-  - `benchmarks/a12_eval.py` and its runner `benchmarks/run_a12_2026-10-06.py`;
-  - `benchmarks/a12_verify.py`, an independent re-computation of every verdict from the raw output, written before the
+  - [`patches/psf_ai_compile_a12_2026-10-06/`](../../patches/psf_ai_compile_a12_2026-10-06/) (the candidate and its test);
+  - [`benchmarks/a12_eval.py`](../../benchmarks/a12_eval.py) and its runner [`benchmarks/run_a12_2026-10-06.py`](../../benchmarks/run_a12_2026-10-06.py);
+  - [`benchmarks/a12_verify.py`](../../benchmarks/a12_verify.py), an independent re-computation of every verdict from the raw output, written before the
     lock and before any scored output exists. It does not import `a12_eval.py`.
 - **No hardware:** fake devices only.
 - **The predictions (section 4) are in `a12_eval.py score`.** They were written before the first smoke run and are not
@@ -15839,7 +15839,7 @@ The returned circuit should therefore be exactly a11's.
 - a12 returns a11's circuit on 8 circuits, measured and not, on FakeTorino, FakeKingston, FakeAuckland and
   FakeBrussels.
 
-## 3. Design (`benchmarks/a12_eval.py`)
+## 3. Design ([`benchmarks/a12_eval.py`](../../benchmarks/a12_eval.py))
 
 **Circuits:**
 
@@ -15935,12 +15935,12 @@ That gives 128 per device, at seeds 76,000,000 + k, none used before. Smoke: 76,
 
 | file | normalized SHA-256 |
 |---|---|
-| `patches/psf_ai_compile_a12_2026-10-06/psf_ai_compile.py` | `828c0c9d053c103ea98b267033bfff2108fbfcf648c5353067eedee0f9e6864a` |
-| `patches/psf_ai_compile_a12_2026-10-06/test_a12.py` | `b3f3f441de753386d60a271fbb2264bbafb1c60d1874abd14b49c096dc86b5a0` |
-| `benchmarks/a12_eval.py` | `7c5cc1bd47a48e2a3aca1ca0d4e1702c47b2288b1f527bd9c0f8e331351f1b6f` |
-| `benchmarks/run_a12_2026-10-06.py` | `bdeda965dcda4f059794da2dc10ed87351358d9d95c8204aefc1fe6d8cf00833` |
-| `benchmarks/a12_verify.py` | `1a7bb430da207b32f6a25829830ecf8dfff227abd074fd045820900f6482c560` |
-| the adopted front end: `benchmarks/psf_ai_compile.py` (a11), unchanged | `b619dcd5775cb1ba59fef3346349c436a9b5bf210cfb7be71171890e92c1ace9` |
+| [`patches/psf_ai_compile_a12_2026-10-06/psf_ai_compile.py`](../../patches/psf_ai_compile_a12_2026-10-06/psf_ai_compile.py) | `828c0c9d053c103ea98b267033bfff2108fbfcf648c5353067eedee0f9e6864a` |
+| [`patches/psf_ai_compile_a12_2026-10-06/test_a12.py`](../../patches/psf_ai_compile_a12_2026-10-06/test_a12.py) | `b3f3f441de753386d60a271fbb2264bbafb1c60d1874abd14b49c096dc86b5a0` |
+| [`benchmarks/a12_eval.py`](../../benchmarks/a12_eval.py) | `7c5cc1bd47a48e2a3aca1ca0d4e1702c47b2288b1f527bd9c0f8e331351f1b6f` |
+| [`benchmarks/run_a12_2026-10-06.py`](../../benchmarks/run_a12_2026-10-06.py) | `bdeda965dcda4f059794da2dc10ed87351358d9d95c8204aefc1fe6d8cf00833` |
+| [`benchmarks/a12_verify.py`](../../benchmarks/a12_verify.py) | `1a7bb430da207b32f6a25829830ecf8dfff227abd074fd045820900f6482c560` |
+| the adopted front end: [`benchmarks/psf_ai_compile.py`](../../benchmarks/psf_ai_compile.py) (a11), unchanged | `b619dcd5775cb1ba59fef3346349c436a9b5bf210cfb7be71171890e92c1ace9` |
 | the release: `psf_compile.py` (2026-10-06.1), unchanged | `bf4630d6356d8e288902fc1cf5460a0929b7fe6b385fa0f1d6faf8a8971d9246` |
 
 
@@ -15960,7 +15960,7 @@ That gives 128 per device, at seeds 76,000,000 + k, none used before. Smoke: 76,
   0.17.2), with `run_a12_2026-10-06.py` (6 parallel jobs). It started 2026-10-06 05:47:39 UTC (07:47 CEST) and took
   294 s. Every output file records `git_head` `54bfac6`.
 - **Scored** by the locked `a12_eval.py score`; **re-computed** by the locked `a12_verify.py`, with identical verdicts.
-- Raw output: `data/2026-10-06/speed/`.
+- Raw output: [`data/2026-10-06/speed/`](../../data/2026-10-06/speed/).
 
 ## 1. P0
 
@@ -16073,9 +16073,9 @@ the runs are no longer in the pushed history; the trees above are the link.
 
 **Status: adoption record (owner's decision, 2026-10-06, after the results of Addendum 365).**
 
-- **`benchmarks/psf_ai_compile.py` is now a12.** It is the candidate's file with only its changelog line and version
+- **[`benchmarks/psf_ai_compile.py`](../../benchmarks/psf_ai_compile.py) is now a12.** It is the candidate's file with only its changelog line and version
   comment changed.
-- **a11 is kept as `benchmarks/psf_ai_compile_a11.py`.**
+- **a11 is kept as [`benchmarks/psf_ai_compile_a11.py`](../../benchmarks/psf_ai_compile_a11.py).**
 - **The release is unchanged:** `psf_compile.py` 2026-10-06.1.
 
 **What users get:**
@@ -16085,16 +16085,16 @@ the runs are no longer in the pushed history; the trees above are the link.
 
 **Tests:**
 
-- **New: `benchmarks/test_ai_compile_a12.py`.**
+- **New: [`benchmarks/test_ai_compile_a12.py`](../../benchmarks/test_ai_compile_a12.py).**
   - The versions.
   - The adopted file is the candidate's code.
   - a12 returns the frozen a11's circuit on 6 circuits, measured and not, on FakeKingston, FakeOsaka and FakeHanoiV2.
 - **Now loading the frozen a11:**
-  - `benchmarks/test_ai_compile_a11.py`, which checks a11 against its candidate file;
-  - a12's own test (`patches/psf_ai_compile_a12_2026-10-06/test_a12.py`).
+  - [`benchmarks/test_ai_compile_a11.py`](../../benchmarks/test_ai_compile_a11.py), which checks a11 against its candidate file;
+  - a12's own test ([`patches/psf_ai_compile_a12_2026-10-06/test_a12.py`](../../patches/psf_ai_compile_a12_2026-10-06/test_a12.py)).
 - **Unchanged:**
   - the tests of a6 and a7, which load the current front end as their base; they test behaviour a12 does not change;
-  - `a12_eval.py` and its verifier, which check for a11 at `benchmarks/psf_ai_compile.py` and stop now, as earlier test
+  - `a12_eval.py` and its verifier, which check for a11 at [`benchmarks/psf_ai_compile.py`](../../benchmarks/psf_ai_compile.py) and stop now, as earlier test
     scripts do. They are records of SPEED.
 
 **Not established:** see section 4 of Addendum 365.
@@ -16111,7 +16111,7 @@ the runs are no longer in the pushed history; the trees above are the link.
 **Status: exploratory record.** Nothing here is a scored result. Three scripts were run at the workplace on
 2026-10-06, each on 32 model-style circuits (MODEL-RO2's generator, with measurements) per device, on FakeTorino,
 FakeKingston and FakeAuckland, at exploratory seeds. The scripts and their output are in
-`data/2026-10-06/explore_speed/`.
+[`data/2026-10-06/explore_speed/`](../../data/2026-10-06/explore_speed/).
 
 ## 1. Where the time went
 
@@ -16185,10 +16185,10 @@ and with (0, 1) and (0,). It records, against the default:
 **What Addendum 357 introduced.** `qiskit_17057_present()`, in four tests, so that their refusal counts are asserted
 only where Qiskit's failure appears:
 
-- `benchmarks/test_release_2026_10_05_1.py`;
-- `benchmarks/test_ai_compile_a9.py`;
-- `patches/psf_compile_c12_2026-10-05/test_c12_exact.py`;
-- `patches/psf_ai_compile_a9_2026-10-05/test_a9.py`.
+- [`benchmarks/test_release_2026_10_05_1.py`](../../benchmarks/test_release_2026_10_05_1.py);
+- [`benchmarks/test_ai_compile_a9.py`](../../benchmarks/test_ai_compile_a9.py);
+- [`patches/psf_compile_c12_2026-10-05/test_c12_exact.py`](../../patches/psf_compile_c12_2026-10-05/test_c12_exact.py);
+- [`patches/psf_ai_compile_a9_2026-10-05/test_a9.py`](../../patches/psf_ai_compile_a9_2026-10-05/test_a9.py).
 
 **How it decided.** It transpiled the issue's input at optimization level 1.
 
@@ -16204,7 +16204,7 @@ Linux as well as in Windows.
 
 It did mean that a broken refusal path would have gone unnoticed by these four tests.
 
-**The fix.** The check now takes the larger error of the decomposer (as in `data/2026-10-06/windows/check17057.py`)
+**The fix.** The check now takes the larger error of the decomposer (as in [`data/2026-10-06/windows/check17057.py`](../../data/2026-10-06/windows/check17057.py))
 and of the level-1 transpile. In the Windows environment both are exact, so the result there is unchanged.
 
 ## 2. Hashes as pushed
@@ -16224,9 +16224,9 @@ pushed, with a pointer to Addendum 366's table. Addendum 365 already gave both.
 **Status: pre-registration.**
 
 - **Lock:** the git commit that adds this document. It locks:
-  - `patches/psf_ai_compile_a13_2026-10-06/` (the candidate and its test);
-  - `benchmarks/big_eval.py` and its runner `benchmarks/run_big_2026-10-06.py`;
-  - `benchmarks/big_verify.py`, an independent re-computation of every verdict, written before the lock and before any
+  - [`patches/psf_ai_compile_a13_2026-10-06/`](../../patches/psf_ai_compile_a13_2026-10-06/) (the candidate and its test);
+  - [`benchmarks/big_eval.py`](../../benchmarks/big_eval.py) and its runner [`benchmarks/run_big_2026-10-06.py`](../../benchmarks/run_big_2026-10-06.py);
+  - [`benchmarks/big_verify.py`](../../benchmarks/big_verify.py), an independent re-computation of every verdict, written before the lock and before any
     scored output exists. It does not import `big_eval.py`.
 - **Order:** the commit is made at the workplace and **pushed from home before the scored run**, which is made at home.
 - **No hardware:** fake devices only.
@@ -16265,7 +16265,7 @@ entry and a version line.
 - 9- and 10-qubit circuits, measured and not, are the release's recommended call exactly, and exact, on FakeTorino
   and FakeKingston.
 
-## 3. Design (`benchmarks/big_eval.py`)
+## 3. Design ([`benchmarks/big_eval.py`](../../benchmarks/big_eval.py))
 
 **Circuits:**
 
@@ -16354,14 +16354,14 @@ it would not need to. The prediction is not changed.
 
 | file | normalized SHA-256 |
 |---|---|
-| `patches/psf_ai_compile_a13_2026-10-06/psf_ai_compile.py` | `6f67f950a9360493e65744086b56159ca494ae3b37b900547374b08028cb82fe` |
-| `patches/psf_ai_compile_a13_2026-10-06/test_a13.py` | `c0e47b45370180fae30552f86331fa322cc45d59e870f5d0958310a1b38c38e2` |
-| `benchmarks/big_eval.py` | `e29e4e49f11d7d319eb7b8cd20792e8444d7a2e03857f8c2736492182bdd6b8d` |
-| `benchmarks/run_big_2026-10-06.py` | `935985854ec768532bad9421475221c73c48c23efd492127bd27b7ab19fbecbf` |
-| `benchmarks/big_verify.py` | `0c2585120d4e339a0e69cf7e6b5eb6af446338a44b34fb1ef3e9472e378ec5c5` |
-| the adopted front end: `benchmarks/psf_ai_compile.py` (a12), unchanged | `2227cca2b0675f8ca21c999b071fa30278d616d27536c5376b47ed9faf7236ad` |
+| [`patches/psf_ai_compile_a13_2026-10-06/psf_ai_compile.py`](../../patches/psf_ai_compile_a13_2026-10-06/psf_ai_compile.py) | `6f67f950a9360493e65744086b56159ca494ae3b37b900547374b08028cb82fe` |
+| [`patches/psf_ai_compile_a13_2026-10-06/test_a13.py`](../../patches/psf_ai_compile_a13_2026-10-06/test_a13.py) | `c0e47b45370180fae30552f86331fa322cc45d59e870f5d0958310a1b38c38e2` |
+| [`benchmarks/big_eval.py`](../../benchmarks/big_eval.py) | `e29e4e49f11d7d319eb7b8cd20792e8444d7a2e03857f8c2736492182bdd6b8d` |
+| [`benchmarks/run_big_2026-10-06.py`](../../benchmarks/run_big_2026-10-06.py) | `935985854ec768532bad9421475221c73c48c23efd492127bd27b7ab19fbecbf` |
+| [`benchmarks/big_verify.py`](../../benchmarks/big_verify.py) | `0c2585120d4e339a0e69cf7e6b5eb6af446338a44b34fb1ef3e9472e378ec5c5` |
+| the adopted front end: [`benchmarks/psf_ai_compile.py`](../../benchmarks/psf_ai_compile.py) (a12), unchanged | `2227cca2b0675f8ca21c999b071fa30278d616d27536c5376b47ed9faf7236ad` |
 | the release: `psf_compile.py` (2026-10-06.1), unchanged | `bf4630d6356d8e288902fc1cf5460a0929b7fe6b385fa0f1d6faf8a8971d9246` |
-| imported, unchanged: `benchmarks/hold6_eval.py` | `8740a33225f24da12f1d07c235695950f03643d4160283eb1623ad9d7f05108a` |
+| imported, unchanged: [`benchmarks/hold6_eval.py`](../../benchmarks/hold6_eval.py) | `8740a33225f24da12f1d07c235695950f03643d4160283eb1623ad9d7f05108a` |
 
 
 ---
@@ -16381,7 +16381,7 @@ it would not need to. The prediction is not changed.
 - **Run:** the workplace PC (Windows, build 26100, 14 logical CPUs; Python 3.11.9, numpy 2.4.6, qiskit 2.5.2, Aer
   0.17.2), with `run_big_2026-10-06.py` (6 parallel jobs). Every output file records `git_head` `36cb158`.
 - **Scored** by the locked `big_eval.py score`; **re-computed** by the locked `big_verify.py`, with identical verdicts.
-- Raw output: `data/2026-10-06/big/`.
+- Raw output: [`data/2026-10-06/big/`](../../data/2026-10-06/big/).
 
 ## 1. P0
 
@@ -16466,10 +16466,10 @@ compile large circuits can call `psf_compile.compile_for_hardware` with the full
 **Status: pre-registration.**
 
 - **Lock:** the git commit that adds this document. It locks:
-  - `patches/psf_compile_c16_2026-10-06/` (the candidate and its test);
-  - `benchmarks/pl_redo.py` (run and score), its runner `benchmarks/run_pl_redo.sh`;
-  - `benchmarks/pl_redo_verify.py`, an independent re-computation of every verdict, written before the lock and
-    before any scored output exists. It does not import `pl_redo.py`.
+  - [`patches/psf_compile_c16_2026-10-06/`](../../patches/psf_compile_c16_2026-10-06/) (the candidate and its test);
+  - [`benchmarks/pl_redo.py`](../../benchmarks/pl_redo.py) (run and score), its runner [`benchmarks/run_pl_redo.sh`](../../benchmarks/run_pl_redo.sh);
+  - [`benchmarks/pl_redo_verify.py`](../../benchmarks/pl_redo_verify.py), an independent re-computation of every verdict, written before the lock and
+    before any scored output exists. It does not import [`pl_redo.py`](../../benchmarks/pl_redo.py).
 - **Where and in what order:** everything is done at the workplace on 2026-10-06, the scored run in WSL2 (Ubuntu) on
   the workplace PC. The lock commit is made in the Windows repository and carried into the WSL clone by a git bundle
   **before** the scored run; it is pushed from home in the evening, after the run. As for Addenda 358, 359, 364 and
@@ -16491,7 +16491,7 @@ compounded laps; Qiskit level 3 needed 26.6 s per lap. That run was made in Clau
 circuits above 8 qubits to that call. None of this had been run in the PennyLane loop, and the loop had never been
 run on the owner's own machine. The machine is now available: the workplace PC's WSL2 Ubuntu, where Qiskit #17057
 appears (`qiskit_17057_present()` True), with the release's core rebuilt from the repository at `af66fa1`
-(`CORE_VERSION` 2026-09-29.1, `check_core_build.py` RESULT: OK) and 243 of 243 tests of Addenda 357-371 passing
+(`CORE_VERSION` 2026-09-29.1, [`check_core_build.py`](../../benchmarks/check_core_build.py) RESULT: OK) and 243 of 243 tests of Addenda 357-371 passing
 (07:23-07:27 UTC; see section 7 for an earlier run with a stale core that is not counted).
 
 ## 2. What the first smoke run found, and the candidate
@@ -16512,7 +16512,7 @@ unaffected. This is a defect of the release, found by this test; it is not a pro
 compare_floor's, now catch `TranspilerError`, keep the first output, count it in `PRUNE_STATS["unavoidable"]` and
 warn (`RuntimeWarning`, "changelog item 43"). Nothing else changes.
 
-**Its test** (`test_c16.py`, 6 cases; 6 passed on Windows, 49.9 s, before this document):
+**Its test** ([`test_c16.py`](../../patches/psf_compile_c16_2026-10-06/test_c16.py), 6 cases; 6 passed on Windows, 49.9 s, before this document):
 
 - the versions;
 - with the recommended call, three ring circuits (5, 7 and 12 qubits, two measured) give the release's output
@@ -16524,9 +16524,9 @@ warn (`RuntimeWarning`, "changelog item 43"). Nothing else changes.
 circuit that needs every qubit there is no placement that avoids it; the choice is between an exception and a
 circuit on the whole device. c16 returns the circuit and says so. Each lap's `uses_failed` is recorded (section 3).
 
-## 3. Design (`benchmarks/pl_redo.py`)
+## 3. Design ([`benchmarks/pl_redo.py`](../../benchmarks/pl_redo.py))
 
-**Unchanged from Addendum 254** (the helpers are imported from the locked `pl_heavyhex_chain.py`, normalized SHA-256
+**Unchanged from Addendum 254** (the helpers are imported from the locked [`pl_heavyhex_chain.py`](../../benchmarks/pl_heavyhex_chain.py), normalized SHA-256
 `84aafa1f...`): FakeKingston; circuit family T at spares 0 and 16 (156 and 140 logical qubits); the initial tape
 (20 Haar-random `QubitUnitary` per pair block, 10 + 10 per triple block, seed 1000 × spare); 20 laps; the
 conversion, the mapping back and the block-by-block check against PennyLane's own matrices of the lap-0 tape; 1 s
@@ -16590,21 +16590,21 @@ present; one `git_head` for all arms. If P0 fails nothing is scored.
 A12C and Q3 against R; Q3's worst block distance; R against Addendum 255's PN.
 
 **Adoption is the owner's decision.** A confirmed D6 and D10 would show that c16 removes the exception and changes
-nothing else in this loop; together with `test_c16.py` that is the evidence for item 43.
+nothing else in this loop; together with [`test_c16.py`](../../patches/psf_compile_c16_2026-10-06/test_c16.py) that is the evidence for item 43.
 
 ## 6. Files and normalized SHA-256 (CRLF to LF, lines right-stripped, trailing blank lines dropped)
 
 | file | normalized SHA-256 |
 |---|---|
-| `patches/psf_compile_c16_2026-10-06/psf_compile.py` | `8864c546a420ba20e06e4fef81dafd872055768edc64333f40d6baa0429af606` |
-| `patches/psf_compile_c16_2026-10-06/test_c16.py` | `16ec95e8f121e3ca8d5187a3965698f438abdbcf95a42111e5c7e6a194a7a1cb` |
-| `benchmarks/pl_redo.py` | `4150e16e903ceafe76ecdc907424f3317556369c5be7c94995a7083d3859e97e` |
-| `benchmarks/run_pl_redo.sh` | `9672ca7774567a37748e4081d77e4cc81f382285baf0a9d4a04bfb7ad85b8e2c` |
-| `benchmarks/pl_redo_verify.py` | `4a72adebb96f6be3793c07ffd0aa9a1ef35aee59e2667c8b50cc1de403b7f722` |
-| `psf_compile.py` (release 2026-10-06.1, unchanged) | `bf4630d6356d8e288902fc1cf5460a0929b7fe6b385fa0f1d6faf8a8971d9246` |
-| `benchmarks/psf_smart_layout.py` (unchanged) | `624e8f8a00e1635a1ee3bc77b5b0f41bd69a94022e214d679b86cc66cc1cf241` |
-| `benchmarks/psf_ai_compile.py` (a12, unchanged) | `2227cca2b0675f8ca21c999b071fa30278d616d27536c5376b47ed9faf7236ad` |
-| `benchmarks/pl_heavyhex_chain.py` (Addendum 254, unchanged) | `84aafa1f56680e4e77be2e6261b2d45e669c5fa48a3db25f88e8180ccf8e005f` |
+| [`patches/psf_compile_c16_2026-10-06/psf_compile.py`](../../patches/psf_compile_c16_2026-10-06/psf_compile.py) | `8864c546a420ba20e06e4fef81dafd872055768edc64333f40d6baa0429af606` |
+| [`patches/psf_compile_c16_2026-10-06/test_c16.py`](../../patches/psf_compile_c16_2026-10-06/test_c16.py) | `16ec95e8f121e3ca8d5187a3965698f438abdbcf95a42111e5c7e6a194a7a1cb` |
+| [`benchmarks/pl_redo.py`](../../benchmarks/pl_redo.py) | `4150e16e903ceafe76ecdc907424f3317556369c5be7c94995a7083d3859e97e` |
+| [`benchmarks/run_pl_redo.sh`](../../benchmarks/run_pl_redo.sh) | `9672ca7774567a37748e4081d77e4cc81f382285baf0a9d4a04bfb7ad85b8e2c` |
+| [`benchmarks/pl_redo_verify.py`](../../benchmarks/pl_redo_verify.py) | `4a72adebb96f6be3793c07ffd0aa9a1ef35aee59e2667c8b50cc1de403b7f722` |
+| [`psf_compile.py`](../../patches/psf_compile_release_2026-10-06.1/psf_compile.py) (release 2026-10-06.1, unchanged) | `bf4630d6356d8e288902fc1cf5460a0929b7fe6b385fa0f1d6faf8a8971d9246` |
+| [`benchmarks/psf_smart_layout.py`](../../benchmarks/psf_smart_layout.py) (unchanged) | `624e8f8a00e1635a1ee3bc77b5b0f41bd69a94022e214d679b86cc66cc1cf241` |
+| [`benchmarks/psf_ai_compile.py`](../../benchmarks/psf_ai_compile.py) (a12, unchanged) | `2227cca2b0675f8ca21c999b071fa30278d616d27536c5376b47ed9faf7236ad` |
+| [`benchmarks/pl_heavyhex_chain.py`](../../benchmarks/pl_heavyhex_chain.py) (Addendum 254, unchanged) | `84aafa1f56680e4e77be2e6261b2d45e669c5fa48a3db25f88e8180ccf8e005f` |
 
 **Commands** (WSL2, from the clone at the lock commit, in the venv with PennyLane 0.45.1, Qiskit 2.5.2, Aer 0.17.2,
 NumPy 2.4.6):
@@ -16634,14 +16634,14 @@ NumPy 2.4.6):
 ## Addendum 373 -- Results of PL-REDO (Addendum 372): in the PennyLane loop on a fully occupied FakeKingston the release's default call is as fast as on 2026-09-29 (0.048 s per compile, swap-free, meaning kept to 1.3e-13 over 20 laps) on the owner's Linux machine; the release's recommended call and the AI front end raise on every lap, candidate c16 removes the exception and changes no other output; at full occupancy the target-aware calls take level 3's time (16 s); D1-D11 all CONFIRMED (2026-10-06)
 
 **Status: results of the pre-registered test in Addendum 372, scored by the locked script and re-checked by the
-independent `pl_redo_verify.py`.** Written after the output was seen.
+independent [`pl_redo_verify.py`](../../benchmarks/pl_redo_verify.py).** Written after the output was seen.
 
 ## 1. The run
 
 - **Lock:** commit `7ec1e7a` (Addendum 372), made in the Windows repository, carried into the WSL clone by the git
   bundle and checked out there before the run; every arm's `git_head` is `7ec1e7a`, with no uncommitted change to a
   tracked file.
-- **Before the run, in the same clone:** `test_c16.py` 6 passed (23.0 s, Linux).
+- **Before the run, in the same clone:** [`test_c16.py`](../../patches/psf_compile_c16_2026-10-06/test_c16.py) 6 passed (23.0 s, Linux).
 - **Machine:** the workplace PC, WSL2 Ubuntu (Linux 6.18.33.2-microsoft-standard-WSL2), Python 3.11.16, Qiskit
   2.5.2, Aer 0.17.2, PennyLane 0.45.1, NumPy 2.4.6, core `CORE_VERSION` 2026-09-29.1; `qiskit_17057_present()` True
   (`env.txt`).
@@ -16685,7 +16685,7 @@ returned.)
 | D10 | c16 = the release where the release returns | 40/40 identical digests | **CONFIRMED** |
 | D11 | RRC and A12C within 1 s at spare 16 | 20/20 and 20/20 | **CONFIRMED** |
 
-`pl_redo_verify.py`: P0 PASS, the same eleven verdicts, "verdicts identical to score.md: True".
+[`pl_redo_verify.py`](../../benchmarks/pl_redo_verify.py): P0 PASS, the same eleven verdicts, "verdicts identical to score.md: True".
 
 **Reported without prediction:**
 
@@ -16727,14 +16727,14 @@ returned.)
   KRO's candidate (readout in `kraus_cost`; Addendum 363, files in [`data/2026-10-06/kro/`](../../data/2026-10-06/kro/)),
   which was stopped after its smoke run and never entered a release. Addendum 372 reused both names for an unrelated
   change. This was noticed after the run, while preparing the adoption. The two are told apart by their files and
-  hashes: PL-REDO's c16 is `patches/psf_compile_c16_2026-10-06/psf_compile.py`, normalized SHA-256 `8864c546...`;
-  KRO's is `data/2026-10-06/kro/psf_compile.py`. Since KRO's item 43 never reached the release changelog, the
+  hashes: PL-REDO's c16 is [`patches/psf_compile_c16_2026-10-06/psf_compile.py`](../../patches/psf_compile_c16_2026-10-06/psf_compile.py), normalized SHA-256 `8864c546...`;
+  KRO's is [`data/2026-10-06/kro/psf_compile.py`](../../data/2026-10-06/kro/psf_compile.py). Since KRO's item 43 never reached the release changelog, the
   release's item 43 is PL-REDO's (Addendum 374).
 - **The predictions followed two smoke runs** (Addendum 372, section 4), as disclosed there.
 - **The lap time includes PennyLane's conversions;** only the compile time is scored.
 - **Local paths removed.** When the output was copied into the repository, the WSL home directory in the logs and
   metadata (`env.txt`, the `script_path` field, the tracebacks of RR and A12) was replaced by `<wsl-home>`. Nothing
-  else was changed; `pl_redo_verify.py` and `pl_redo.py score`, re-run on the copied files, give the same verdicts and
+  else was changed; [`pl_redo_verify.py`](../../benchmarks/pl_redo_verify.py) and `pl_redo.py score`, re-run on the copied files, give the same verdicts and
   the same `score.md`.
 
 
@@ -16752,7 +16752,7 @@ returned.)
 
 The owner adopted PL-REDO's candidate c16 as the release **2026-10-06.2** (2026-10-06, workplace). The evidence:
 
-- `test_c16.py`, 6 of 6 on Windows and on Linux: unchanged output where the release succeeds (four devices, the
+- [`test_c16.py`](../../patches/psf_compile_c16_2026-10-06/test_c16.py), 6 of 6 on Windows and on Linux: unchanged output where the release succeeds (four devices, the
   recommended call); on the full-device circuit the release raises and c16 returns a swap-free circuit that
   implements every block;
 - PL-REDO (Addendum 373): D6 and D10 confirmed, no exception in 80 laps, and the release's own output on every one
@@ -16763,23 +16763,23 @@ full-device circuits (PL-REDO's arm A12C).
 
 ## 2. What changes in the repository
 
-- **`psf_compile.py`** is c16's file with the two version lines changed (`VERSION: 2026-10-06.2 -- release ...` and
-  `VERSION = "2026-10-06.2"`). Nothing else differs; `benchmarks/test_release_2026_10_06_2.py` checks this.
+- **[`psf_compile.py`](../../psf_compile.py)** is c16's file with the two version lines changed (`VERSION: 2026-10-06.2 -- release ...` and
+  `VERSION = "2026-10-06.2"`). Nothing else differs; [`benchmarks/test_release_2026_10_06_2.py`](../../benchmarks/test_release_2026_10_06_2.py) checks this.
 - **The outgoing release 2026-10-06.1** is kept unchanged as
-  `patches/psf_compile_release_2026-10-06.1/psf_compile.py` (normalized SHA-256 `bf4630d6...`), because no single
+  [`patches/psf_compile_release_2026-10-06.1/psf_compile.py`](../../patches/psf_compile_release_2026-10-06.1/psf_compile.py) (normalized SHA-256 `bf4630d6...`), because no single
   candidate file equals it (it was c14 plus c15's item 42).
 - **Tests:**
-  - `benchmarks/test_release_2026_10_06_2.py` (new): the version; the file equals c16's except the version lines;
+  - [`benchmarks/test_release_2026_10_06_2.py`](../../benchmarks/test_release_2026_10_06_2.py) (new): the version; the file equals c16's except the version lines;
     the kept 2026-10-06.1 is the old file; on four devices the release gives 2026-10-06.1's output with the
     recommended call.
-  - `benchmarks/test_release_2026_10_06_1.py` and `patches/psf_compile_c16_2026-10-06/test_c16.py` now load
-    2026-10-06.1 from the kept copy, because they compare against it (`test_c16.py` expects 2026-10-06.1 to raise).
+  - [`benchmarks/test_release_2026_10_06_1.py`](../../benchmarks/test_release_2026_10_06_1.py) and [`patches/psf_compile_c16_2026-10-06/test_c16.py`](../../patches/psf_compile_c16_2026-10-06/test_c16.py) now load
+    2026-10-06.1 from the kept copy, because they compare against it ([`test_c16.py`](../../patches/psf_compile_c16_2026-10-06/test_c16.py) expects 2026-10-06.1 to raise).
   - Every other test that asserted the current release's version (`== "2026-10-06.1"`, 24 lines in
-    `benchmarks/` and `patches/`) now asserts `"2026-10-06.2"`. The as-run copy in `data/2026-10-06/kro/` is a record
+    `benchmarks/` and `patches/`) now asserts `"2026-10-06.2"`. The as-run copy in [`data/2026-10-06/kro/`](../../data/2026-10-06/kro/) is a record
     and is not changed.
 - **README:** "Current version" names 2026-10-06.2, with a short note on item 43 and PL-REDO.
 - **docs/RELEASES.md:** a new "Current version" block; the 2026-10-06.1 block becomes "Previous release".
-- **Data:** PL-REDO's output in `data/2026-10-06/pl_redo/` (Addendum 373).
+- **Data:** PL-REDO's output in [`data/2026-10-06/pl_redo/`](../../data/2026-10-06/pl_redo/) (Addendum 373).
 
 ## 3. Checks before the commit
 
