@@ -1,0 +1,44 @@
+{"arm": "Q3", "smoke": false, "laps": 20, "spares": [0, 16], "fake": "FakeKingston", "start_utc": "2026-10-06T08:00:18+00:00", "git_head": "7ec1e7a", "git_dirty": "", "versions": {"release": "2026-10-06.1", "core": "2026-09-29.1", "layout": "2026-10-01.1", "a12": "2026-10-06.a12", "qiskit": "2.5.2", "pennylane": "0.45.1", "numpy": "2.4.6", "python": "3.11.16"}, "sha": {"script": "4150e16e903ceafe76ecdc907424f3317556369c5be7c94995a7083d3859e97e", "chain": "84aafa1f56680e4e77be2e6261b2d45e669c5fa48a3db25f88e8180ccf8e005f", "release": "bf4630d6356d8e288902fc1cf5460a0929b7fe6b385fa0f1d6faf8a8971d9246", "layout": "624e8f8a00e1635a1ee3bc77b5b0f41bd69a94022e214d679b86cc66cc1cf241", "a12": "2227cca2b0675f8ca21c999b071fa30278d616d27536c5376b47ed9faf7236ad"}, "script_path": "<wsl-home>/psf_check/benchmarks/pl_redo.py", "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43", "cpus": 14, "qiskit_17057_present": true}
+failed elements {"edges": [[83, 96], [96, 83], [96, 103], [103, 96], [112, 113], [113, 112], [120, 121], [121, 120], [130, 131], [131, 130], [145, 146], [146, 145], [146, 147], [147, 146]], "qubits": [96, 112, 113, 131, 146]}
+Q3  spare= 0 lap   1 compile   15.780s lap   15.83s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3  spare= 0 lap   2 compile   15.670s lap   15.71s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3  spare= 0 lap   3 compile   15.845s lap   15.89s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3  spare= 0 lap   4 compile   15.836s lap   15.88s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3  spare= 0 lap   5 compile   15.549s lap   15.59s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3  spare= 0 lap   6 compile   15.832s lap   15.88s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3  spare= 0 lap   7 compile   15.585s lap   15.63s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3  spare= 0 lap   8 compile   15.449s lap   15.49s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3  spare= 0 lap   9 compile   15.458s lap   15.50s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3  spare= 0 lap  10 compile   15.434s lap   15.48s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3  spare= 0 lap  11 compile   15.519s lap   15.57s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3  spare= 0 lap  12 compile   15.516s lap   15.56s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3  spare= 0 lap  13 compile   15.466s lap   15.51s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3  spare= 0 lap  14 compile   15.570s lap   15.61s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3  spare= 0 lap  15 compile   15.548s lap   15.59s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3  spare= 0 lap  16 compile   15.382s lap   15.42s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3  spare= 0 lap  17 compile   15.546s lap   15.59s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3  spare= 0 lap  18 compile   15.456s lap   15.50s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3  spare= 0 lap  19 compile   15.511s lap   15.56s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3  spare= 0 lap  20 compile   15.624s lap   15.67s 2q=321 (swap-free 276) max_block_dist=- layout_changed=False swap: routing permuted qubits
+Q3  spare=16 lap   1 compile    0.184s lap    0.43s 2q=252 (swap-free 252) max_block_dist=1.560e-13 layout_changed=False OK
+Q3  spare=16 lap   2 compile    0.188s lap    0.54s 2q=252 (swap-free 252) max_block_dist=1.528e-13 layout_changed=True OK
+Q3  spare=16 lap   3 compile    0.180s lap    0.44s 2q=252 (swap-free 252) max_block_dist=1.613e-13 layout_changed=False OK
+Q3  spare=16 lap   4 compile    0.176s lap    0.43s 2q=252 (swap-free 252) max_block_dist=1.491e-13 layout_changed=False OK
+Q3  spare=16 lap   5 compile    0.184s lap    0.44s 2q=252 (swap-free 252) max_block_dist=1.694e-13 layout_changed=False OK
+Q3  spare=16 lap   6 compile    0.175s lap    0.43s 2q=252 (swap-free 252) max_block_dist=1.486e-13 layout_changed=False OK
+Q3  spare=16 lap   7 compile    0.181s lap    0.44s 2q=252 (swap-free 252) max_block_dist=1.779e-13 layout_changed=False OK
+Q3  spare=16 lap   8 compile    0.174s lap    0.52s 2q=252 (swap-free 252) max_block_dist=1.834e-13 layout_changed=False OK
+Q3  spare=16 lap   9 compile    0.180s lap    0.48s 2q=252 (swap-free 252) max_block_dist=2.280e-13 layout_changed=False OK
+Q3  spare=16 lap  10 compile    0.179s lap    0.44s 2q=252 (swap-free 252) max_block_dist=2.909e-13 layout_changed=False OK
+Q3  spare=16 lap  11 compile    0.174s lap    0.43s 2q=252 (swap-free 252) max_block_dist=2.410e-13 layout_changed=False OK
+Q3  spare=16 lap  12 compile    0.177s lap    0.43s 2q=252 (swap-free 252) max_block_dist=2.682e-13 layout_changed=False OK
+Q3  spare=16 lap  13 compile    0.176s lap    0.43s 2q=252 (swap-free 252) max_block_dist=3.393e-13 layout_changed=False OK
+Q3  spare=16 lap  14 compile    0.173s lap    0.51s 2q=252 (swap-free 252) max_block_dist=3.471e-13 layout_changed=False OK
+Q3  spare=16 lap  15 compile    0.177s lap    0.44s 2q=252 (swap-free 252) max_block_dist=3.669e-13 layout_changed=False OK
+Q3  spare=16 lap  16 compile    0.173s lap    0.43s 2q=252 (swap-free 252) max_block_dist=3.479e-13 layout_changed=False OK
+Q3  spare=16 lap  17 compile    0.178s lap    0.43s 2q=252 (swap-free 252) max_block_dist=2.948e-13 layout_changed=False OK
+Q3  spare=16 lap  18 compile    0.179s lap    0.44s 2q=252 (swap-free 252) max_block_dist=3.148e-13 layout_changed=False OK
+Q3  spare=16 lap  19 compile    0.174s lap    0.43s 2q=252 (swap-free 252) max_block_dist=3.062e-13 layout_changed=False OK
+Q3  spare=16 lap  20 compile    0.177s lap    0.43s 2q=252 (swap-free 252) max_block_dist=3.196e-13 layout_changed=False OK
+Wrote <wsl-home>/pl_redo_run/pl_redo_Q3.json (40 rows)
+DONE

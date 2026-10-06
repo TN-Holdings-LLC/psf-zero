@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-10-06.2 -- release, adopted on 2026-10-06 from candidate 2026-10-06.c16 of Addendum 372 (previous release: 2026-10-06.1)
+VERSION: 2026-10-06.1 -- release, adopted on 2026-10-06 from candidates 2026-10-05.c14 and 2026-10-06.c15 (previous release: 2026-10-05.1)
 
 Where to look for what
 ----------------------
@@ -458,8 +458,7 @@ Changes in the 2026-09-26.4 revision (spare-qubit-cliff Addenda 195-196)
     the coupling map without those edges and without every edge touching such a qubit. Recompiling only when
     needed keeps every unaffected output identical to the release: the layout search is error-blind, so
     pruning alone would move unaffected layouts too (Addendum 303, development). Qubit indices and
-    `coupling_map.size()` are unchanged. Without `target` nothing changes. Counts in `PRUNE_STATS`. If no
-    placement on the pruned map exists, the first output is kept, with a warning (item 43). Gate and
+    `coupling_map.size()` are unchanged. Without `target` nothing changes. Counts in `PRUNE_STATS`. Gate and
     readout errors below the threshold are still ignored by the layout (a separate, later step).
 
 2026-10-02.2 (release; candidate 2026-10-02.c5, adopted on 2026-10-02 after its pre-registered evaluation, Addenda 309-310):
@@ -637,16 +636,6 @@ adopted on 2026-10-06 after their pre-registered evaluations RECR and KRAUS, Add
     on every device and repaired HOLD6's H4 case (6.3% lower infidelity), for 3-5% more compile time.
     Its limit: it reproduces the simulator's own noise model (Aer), so a noisy-simulation test favours it by
     construction; on hardware relaxation acts during the gate and there are errors that model lacks.
-
-43. **Item 31's recompile no longer raises when no placement avoids the failed elements.** With a `target`, an output
-    that uses a failed element is compiled again on the pruned coupling map. When the circuit needs more of the
-    device than the pruned map offers -- a circuit on every qubit of FakeKingston, as in the PennyLane loop of
-    Addendum 254 -- the layout search finds nothing, Qiskit's SabreLayout raises "A connected component of the
-    DAGCircuit is too large for any of the connected components in the coupling map", and 2026-10-06.1 passed
-    that exception to the caller, so the recommended call and the AI front end failed where the default call
-    succeeds (PL-REDO smoke, 2026-10-06). Now that recompile (and compare_floor's) catches `TranspilerError`, keeps
-    the first output, counts it in `PRUNE_STATS["unavoidable"]` and warns. Nothing else changes: where the
-    recompile succeeds, or is not needed, the output is 2026-10-06.1's.
 """
 from __future__ import annotations
 
@@ -663,7 +652,6 @@ from qiskit.quantum_info import Operator
 from qiskit.synthesis import TwoQubitBasisDecomposer, TwoQubitWeylDecomposition
 from qiskit.circuit.equivalence_library import SessionEquivalenceLibrary
 from qiskit.transpiler import CouplingMap, PassManager, generate_preset_pass_manager
-from qiskit.transpiler.exceptions import TranspilerError
 from qiskit.converters import circuit_to_dag, dag_to_circuit
 from qiskit.transpiler.basepasses import AnalysisPass, TransformationPass
 from qiskit.transpiler.passes import (BasisTranslator, Collect2qBlocks, ConsolidateBlocks, ElidePermutations,
@@ -684,7 +672,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-10-06.2"  # release (from candidate 2026-10-06.c16 of Addendum 372): 2026-10-06.1 + item 43 (keep the output when no placement avoids the failed elements)
+VERSION = "2026-10-06.1"  # release (from candidates 2026-10-05.c14 and 2026-10-06.c15): 2026-10-05.1 + readout in the choice (item 40), direction-aware failed check (item 41), opt-in kraus_cost (item 42)
 __version__ = VERSION
 
 # Changelog item 27: the version string of the loaded Rust core, for logs.
@@ -1764,19 +1752,7 @@ def qubit_errors_from_target(target, gate_name: str = "sx") -> dict:
     return out
 
 
-PRUNE_STATS = {"calls": 0, "edges_removed": 0, "qubits_isolated": 0, "checked": 0, "recompiled": 0,
-               "unavoidable": 0}
-
-
-def _recompile_pruned(args, first):
-    """Item 43: item 31's recompile on the pruned map, or `first` (with a warning) when no placement exists."""
-    try:
-        return compile_for_hardware(**args)
-    except TranspilerError as exc:
-        PRUNE_STATS["unavoidable"] += 1
-        warnings.warn(f"no placement on the coupling map without the failed elements ({exc}); keeping the output "
-                      f"that uses them (changelog item 43)", RuntimeWarning, stacklevel=3)
-        return first
+PRUNE_STATS = {"calls": 0, "edges_removed": 0, "qubits_isolated": 0, "checked": 0, "recompiled": 0}
 REFINE_STATS = {"calls": 0, "applied": 0}  # changelog item 33
 
 
@@ -2676,7 +2652,7 @@ def compile_for_hardware(
         if _uses_failed(out, edges, qubits):
             PRUNE_STATS["recompiled"] += 1
             args["coupling_map"] = prune_coupling_map(coupling_map, target, prune_max_error)
-            out = _recompile_pruned(args, out)
+            out = compile_for_hardware(**args)
         if final_resynthesis == "select":
             out = _select_resynthesis(out, target, prune_max_error)
         elif final_resynthesis:
@@ -2692,7 +2668,7 @@ def compile_for_hardware(
             fo = compile_for_hardware(**fargs)
             if _uses_failed(fo, edges, qubits):
                 fargs["coupling_map"] = prune_coupling_map(coupling_map, target, prune_max_error)
-                fo = _recompile_pruned(fargs, fo)
+                fo = compile_for_hardware(**fargs)
             if final_resynthesis == "select":
                 fo = _select_resynthesis(fo, target, prune_max_error)
             elif final_resynthesis:

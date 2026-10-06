@@ -1,0 +1,44 @@
+{"arm": "A12C", "smoke": false, "laps": 20, "spares": [0, 16], "fake": "FakeKingston", "start_utc": "2026-10-06T07:54:40+00:00", "git_head": "7ec1e7a", "git_dirty": "", "versions": {"release": "2026-10-06.c16", "core": "2026-09-29.1", "layout": "2026-10-01.1", "a12": "2026-10-06.a12", "qiskit": "2.5.2", "pennylane": "0.45.1", "numpy": "2.4.6", "python": "3.11.16"}, "sha": {"script": "4150e16e903ceafe76ecdc907424f3317556369c5be7c94995a7083d3859e97e", "chain": "84aafa1f56680e4e77be2e6261b2d45e669c5fa48a3db25f88e8180ccf8e005f", "release": "8864c546a420ba20e06e4fef81dafd872055768edc64333f40d6baa0429af606", "layout": "624e8f8a00e1635a1ee3bc77b5b0f41bd69a94022e214d679b86cc66cc1cf241", "a12": "2227cca2b0675f8ca21c999b071fa30278d616d27536c5376b47ed9faf7236ad"}, "script_path": "<wsl-home>/psf_check/benchmarks/pl_redo.py", "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43", "cpus": 14, "qiskit_17057_present": true}
+failed elements {"edges": [[83, 96], [96, 83], [96, 103], [103, 96], [112, 113], [113, 112], [120, 121], [121, 120], [130, 131], [131, 130], [145, 146], [146, 145], [146, 147], [147, 146]], "qubits": [96, 112, 113, 131, 146]}
+A12C spare= 0 lap   1 compile   17.920s lap   18.30s 2q=276 (swap-free 276) max_block_dist=1.158e-14 layout_changed=False OK
+A12C spare= 0 lap   2 compile   15.843s lap   16.18s 2q=276 (swap-free 276) max_block_dist=1.769e-14 layout_changed=False OK
+A12C spare= 0 lap   3 compile   15.731s lap   16.05s 2q=276 (swap-free 276) max_block_dist=1.794e-14 layout_changed=False OK
+A12C spare= 0 lap   4 compile   15.794s lap   16.21s 2q=276 (swap-free 276) max_block_dist=2.388e-14 layout_changed=False OK
+A12C spare= 0 lap   5 compile   15.634s lap   15.96s 2q=276 (swap-free 276) max_block_dist=3.320e-14 layout_changed=False OK
+A12C spare= 0 lap   6 compile   15.512s lap   15.84s 2q=276 (swap-free 276) max_block_dist=3.532e-14 layout_changed=False OK
+A12C spare= 0 lap   7 compile   15.603s lap   15.94s 2q=276 (swap-free 276) max_block_dist=4.195e-14 layout_changed=False OK
+A12C spare= 0 lap   8 compile   15.672s lap   16.01s 2q=276 (swap-free 276) max_block_dist=5.287e-14 layout_changed=False OK
+A12C spare= 0 lap   9 compile   15.823s lap   16.25s 2q=276 (swap-free 276) max_block_dist=6.329e-14 layout_changed=False OK
+A12C spare= 0 lap  10 compile   15.642s lap   15.97s 2q=276 (swap-free 276) max_block_dist=6.437e-14 layout_changed=False OK
+A12C spare= 0 lap  11 compile   15.730s lap   16.05s 2q=276 (swap-free 276) max_block_dist=6.521e-14 layout_changed=False OK
+A12C spare= 0 lap  12 compile   15.490s lap   15.81s 2q=276 (swap-free 276) max_block_dist=7.612e-14 layout_changed=False OK
+A12C spare= 0 lap  13 compile   15.787s lap   16.11s 2q=276 (swap-free 276) max_block_dist=7.793e-14 layout_changed=False OK
+A12C spare= 0 lap  14 compile   15.808s lap   16.14s 2q=276 (swap-free 276) max_block_dist=8.995e-14 layout_changed=False OK
+A12C spare= 0 lap  15 compile   15.468s lap   15.79s 2q=276 (swap-free 276) max_block_dist=1.018e-13 layout_changed=False OK
+A12C spare= 0 lap  16 compile   15.385s lap   15.71s 2q=276 (swap-free 276) max_block_dist=1.147e-13 layout_changed=False OK
+A12C spare= 0 lap  17 compile   15.697s lap   16.02s 2q=276 (swap-free 276) max_block_dist=1.146e-13 layout_changed=False OK
+A12C spare= 0 lap  18 compile   15.555s lap   15.96s 2q=276 (swap-free 276) max_block_dist=1.153e-13 layout_changed=False OK
+A12C spare= 0 lap  19 compile   15.420s lap   15.74s 2q=276 (swap-free 276) max_block_dist=1.178e-13 layout_changed=False OK
+A12C spare= 0 lap  20 compile   15.863s lap   16.18s 2q=276 (swap-free 276) max_block_dist=1.227e-13 layout_changed=False OK
+A12C spare=16 lap   1 compile    0.396s lap    0.68s 2q=252 (swap-free 252) max_block_dist=1.514e-14 layout_changed=False OK
+A12C spare=16 lap   2 compile    0.369s lap    0.67s 2q=252 (swap-free 252) max_block_dist=2.556e-14 layout_changed=False OK
+A12C spare=16 lap   3 compile    0.472s lap    0.77s 2q=252 (swap-free 252) max_block_dist=2.543e-14 layout_changed=False OK
+A12C spare=16 lap   4 compile    0.372s lap    0.71s 2q=252 (swap-free 252) max_block_dist=3.192e-14 layout_changed=False OK
+A12C spare=16 lap   5 compile    0.380s lap    0.68s 2q=252 (swap-free 252) max_block_dist=4.023e-14 layout_changed=False OK
+A12C spare=16 lap   6 compile    0.368s lap    0.67s 2q=252 (swap-free 252) max_block_dist=4.224e-14 layout_changed=False OK
+A12C spare=16 lap   7 compile    0.375s lap    0.76s 2q=252 (swap-free 252) max_block_dist=5.197e-14 layout_changed=False OK
+A12C spare=16 lap   8 compile    0.376s lap    0.67s 2q=252 (swap-free 252) max_block_dist=5.668e-14 layout_changed=False OK
+A12C spare=16 lap   9 compile    0.400s lap    0.71s 2q=252 (swap-free 252) max_block_dist=6.159e-14 layout_changed=False OK
+A12C spare=16 lap  10 compile    0.380s lap    0.69s 2q=252 (swap-free 252) max_block_dist=6.715e-14 layout_changed=False OK
+A12C spare=16 lap  11 compile    0.378s lap    0.68s 2q=252 (swap-free 252) max_block_dist=7.250e-14 layout_changed=False OK
+A12C spare=16 lap  12 compile    0.372s lap    0.75s 2q=252 (swap-free 252) max_block_dist=8.194e-14 layout_changed=False OK
+A12C spare=16 lap  13 compile    0.379s lap    0.71s 2q=252 (swap-free 252) max_block_dist=8.614e-14 layout_changed=False OK
+A12C spare=16 lap  14 compile    0.384s lap    0.68s 2q=252 (swap-free 252) max_block_dist=9.267e-14 layout_changed=False OK
+A12C spare=16 lap  15 compile    0.376s lap    0.67s 2q=252 (swap-free 252) max_block_dist=9.835e-14 layout_changed=False OK
+A12C spare=16 lap  16 compile    0.388s lap    0.68s 2q=252 (swap-free 252) max_block_dist=1.090e-13 layout_changed=False OK
+A12C spare=16 lap  17 compile    0.462s lap    0.76s 2q=252 (swap-free 252) max_block_dist=1.113e-13 layout_changed=False OK
+A12C spare=16 lap  18 compile    0.381s lap    0.68s 2q=252 (swap-free 252) max_block_dist=1.204e-13 layout_changed=False OK
+A12C spare=16 lap  19 compile    0.377s lap    0.68s 2q=252 (swap-free 252) max_block_dist=1.272e-13 layout_changed=False OK
+A12C spare=16 lap  20 compile    0.378s lap    0.68s 2q=252 (swap-free 252) max_block_dist=1.310e-13 layout_changed=False OK
+Wrote <wsl-home>/pl_redo_run/pl_redo_A12C.json (40 rows)
+DONE

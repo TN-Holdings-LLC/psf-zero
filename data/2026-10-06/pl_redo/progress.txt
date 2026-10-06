@@ -1,0 +1,13 @@
+07:47:40 start R
+07:47:57 end R rc 0
+07:47:57 start RR
+07:48:23 end RR rc 0
+07:48:23 start A12
+07:48:45 end A12 rc 0
+07:48:45 start RRC
+07:54:38 end RRC rc 0
+07:54:38 start A12C
+08:00:17 end A12C rc 0
+08:00:17 start Q3
+08:05:40 end Q3 rc 0
+08:05:41 scored and verified

@@ -26,7 +26,8 @@ RECOMMENDED = dict(placement_refine=True, final_resynthesis="select", compare_le
 def mods():
     import core_fix_c2_eval as H
     H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psf_smart_layout")
-    rel = H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile_rel_c16_test")
+    rel = H.load_module(os.path.join(REPO, "patches", "psf_compile_release_2026-10-06.1", "psf_compile.py"),
+                         "psf_compile_rel_c16_test")  # kept copy since 2026-10-06.2 (Addendum 374)
     c16 = H.load_module(os.path.join(HERE, "psf_compile.py"), "psf_compile_c16_test")
     return dict(rel=rel, c16=c16)
 

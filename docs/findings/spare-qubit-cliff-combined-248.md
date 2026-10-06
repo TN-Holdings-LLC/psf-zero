@@ -16624,6 +16624,176 @@ NumPy 2.4.6):
   known in advance.
 - **The scored run is not pushed before it runs** (see the lock above).
 
+
+---
+
+<!-- ===== Addendum 373 (source: spare-qubit-cliff-addendum-373-2026-10-06.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 372 (lock commit 7ec1e7a), scored by the locked script and re-checked by benchmarks/pl_redo_verify.py; written after the output was seen.
+
+## Addendum 373 -- Results of PL-REDO (Addendum 372): in the PennyLane loop on a fully occupied FakeKingston the release's default call is as fast as on 2026-09-29 (0.048 s per compile, swap-free, meaning kept to 1.3e-13 over 20 laps) on the owner's Linux machine; the release's recommended call and the AI front end raise on every lap, candidate c16 removes the exception and changes no other output; at full occupancy the target-aware calls take level 3's time (16 s); D1-D11 all CONFIRMED (2026-10-06)
+
+**Status: results of the pre-registered test in Addendum 372, scored by the locked script and re-checked by the
+independent `pl_redo_verify.py`.** Written after the output was seen.
+
+## 1. The run
+
+- **Lock:** commit `7ec1e7a` (Addendum 372), made in the Windows repository, carried into the WSL clone by the git
+  bundle and checked out there before the run; every arm's `git_head` is `7ec1e7a`, with no uncommitted change to a
+  tracked file.
+- **Before the run, in the same clone:** `test_c16.py` 6 passed (23.0 s, Linux).
+- **Machine:** the workplace PC, WSL2 Ubuntu (Linux 6.18.33.2-microsoft-standard-WSL2), Python 3.11.16, Qiskit
+  2.5.2, Aer 0.17.2, PennyLane 0.45.1, NumPy 2.4.6, core `CORE_VERSION` 2026-09-29.1; `qiskit_17057_present()` True
+  (`env.txt`).
+- **Times (UTC):** R 07:47:40, RR 07:47:57, A12 07:48:23, RRC 07:48:45, A12C 07:54:38, Q3 08:00:17-08:05:40, scored
+  and verified 08:05:41 (`progress.txt`), one arm at a time.
+- **Output:** [`data/2026-10-06/pl_redo/`](../../data/2026-10-06/pl_redo/): one json per arm (metadata and every
+  lap), the logs, `score.md`, `score_log.txt`, `verify_log.txt`.
+
+## 2. Results (`score.md`)
+
+| spare | arm | compile median s | max s | within 1 s | errors | swap-free and mapped back | 2q | uses a failed element | block distance lap 1 / worst |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 | R | 0.048 | 0.055 | 20/20 | 0 | 20/20 | 276 | 20 | 1.16e-14 / 1.23e-13 |
+| 0 | RR | 0.239 | 0.304 | 0/20 | 20 | 0/20 | - | 0 | - |
+| 0 | A12 | 0.236 | 0.306 | 0/20 | 20 | 0/20 | - | 0 | - |
+| 0 | RRC | 16.062 | 18.467 | 0/20 | 0 | 20/20 | 276 | 20 | 1.16e-14 / 1.23e-13 |
+| 0 | A12C | 15.684 | 17.920 | 0/20 | 0 | 20/20 | 276 | 20 | 1.16e-14 / 1.23e-13 |
+| 0 | Q3 | 15.547 | 15.845 | 0/20 | 0 | 0/20 | 321 | 20 | - |
+| 16 | R | 0.045 | 0.049 | 20/20 | 0 | 20/20 | 252 | 20 | 1.53e-14 / 1.31e-13 |
+| 16 | RR | 0.611 | 0.698 | 20/20 | 0 | 20/20 | 252 | 0 | 1.51e-14 / 1.31e-13 |
+| 16 | A12 | 0.377 | 0.471 | 20/20 | 0 | 20/20 | 252 | 0 | 1.51e-14 / 1.31e-13 |
+| 16 | RRC | 0.614 | 0.705 | 20/20 | 0 | 20/20 | 252 | 0 | 1.51e-14 / 1.31e-13 |
+| 16 | A12C | 0.379 | 0.472 | 20/20 | 0 | 20/20 | 252 | 0 | 1.51e-14 / 1.31e-13 |
+| 16 | Q3 | 0.177 | 0.188 | 20/20 | 0 | 20/20 | 252 | 0 | 1.56e-13 / 3.67e-13 |
+
+(An erroring lap's time is the time until the exception; "uses a failed element" is counted over the outputs
+returned.)
+
+| | prediction | result | verdict |
+|---|---|---|---|
+| P0 | validity | 6 × 2 × 20 laps, versions, clean tree, #17057 present, one `git_head` | PASS |
+| D1 | R within 1 s at spare 0 | 20/20 | **CONFIRMED** |
+| D2 | R swap-free and mapped back | 40/40 | **CONFIRMED** |
+| D3 | R meaning kept | worst 1.31e-13 | **CONFIRMED** |
+| D4 | Q3 misses 1 s at spare 0 | 0/20 within | **CONFIRMED** |
+| D5 | the release's RR and A12 raise at spare 0 | 20/20 and 20/20 | **CONFIRMED** |
+| D6 | c16's RRC and A12C never raise | 0 of 80 | **CONFIRMED** |
+| D7 | RRC and A12C miss 1 s at spare 0 | 0/20 and 0/20 within | **CONFIRMED** |
+| D8 | RRC and A12C swap-free and mapped back at spare 0 | 20/20 and 20/20 | **CONFIRMED** |
+| D9 | RRC and A12C meaning kept | worst 1.31e-13 | **CONFIRMED** |
+| D10 | c16 = the release where the release returns | 40/40 identical digests | **CONFIRMED** |
+| D11 | RRC and A12C within 1 s at spare 16 | 20/20 and 20/20 | **CONFIRMED** |
+
+`pl_redo_verify.py`: P0 PASS, the same eleven verdicts, "verdicts identical to score.md: True".
+
+**Reported without prediction:**
+
+- **Failed elements of FakeKingston** (item 31's set at 0.5, in the metadata): 7 couplers in both directions,
+  (83, 96), (96, 103), (112, 113), (120, 121), (130, 131), (145, 146), (146, 147), and 5 qubits, 96, 112, 113, 131,
+  146.
+- **Which outputs use them.** At spare 0 every returned output of every arm does: the circuit occupies all 156 qubits,
+  the 5 failed qubits included, so no placement avoids them. At spare 16 the default call R used a failed element on
+  20 of 20 laps, and every target-aware arm (RR, A12, RRC, A12C, Q3) on none.
+- **Times against R:** spare 0, RRC 333.8 ×, A12C 325.9 ×, Q3 323.1 ×; spare 16, RRC 13.5 ×, A12C 8.3 ×, Q3 3.9 ×.
+- **Q3's worst block distance** 3.67e-13 over its 20 checked laps (spare 16).
+- **Against Addendum 255's arm PN** (2026-09-29, Claude's sandbox, 2 CPUs): R's median 0.048 s against 0.071 s,
+  the same two-qubit counts (276, 252), worst block distance 1.31e-13 against 1.45e-13. Different machines; the
+  times are not a like-for-like comparison.
+
+## 3. What this shows
+
+1. **The default call still does what Addendum 255 found, with the current release and on the owner's own Linux
+   machine:** 0.048 s per compile on a 156-qubit device filled by a PennyLane circuit, swap-free, the meaning kept to
+   1.3e-13 after 20 compounded laps, about 320 times faster than Qiskit level 3, which needed SWAPs on every lap.
+2. **The release had a defect on exactly this workload.** The recommended call (the README's) and the AI front end
+   raised `TranspilerError` on every lap at spare 0 (item 31's recompile on the pruned map). Nobody had run a
+   target-aware call on a full-device circuit before. Candidate c16 (item 43) removes the exception, and wherever the
+   release returned a circuit, c16 returned the same one (40 of 40 laps).
+3. **The recommended call has a cost on full-device circuits, and here it bought nothing.** It runs Qiskit level 3
+   as one of its candidates, so at spare 0 it takes level 3's 16 s per compile. Checked after the run (not
+   predicted; the output digests in the json): at spare 0 RRC's and A12C's outputs were R's own circuit on 20 of 20
+   laps each. At spare 16 they differed from R's on every lap (they avoid the failed elements, item 4).
+4. **The default call does not look at the device's failed elements, and here that matters.** At spare 16 there is
+   room to avoid them; the target-aware calls did so on every lap at 0.38-0.61 s, within the 1 s budget, while the
+   default call placed the circuit on failed elements on every lap. At spare 0 no call can avoid them.
+5. **For a PennyLane user, then:** with spare qubits, the target-aware call (or the AI front end) is the better
+   choice and fits a 1 s loop on this device; on a completely full device only the default call fits 1 s, and every
+   call has to use the failed elements.
+
+## 4. Disclosures
+
+- **A name used twice.** "Candidate psf_compile 2026-10-06.c16" and "changelog item 43" had already been used for
+  KRO's candidate (readout in `kraus_cost`; Addendum 363, files in [`data/2026-10-06/kro/`](../../data/2026-10-06/kro/)),
+  which was stopped after its smoke run and never entered a release. Addendum 372 reused both names for an unrelated
+  change. This was noticed after the run, while preparing the adoption. The two are told apart by their files and
+  hashes: PL-REDO's c16 is `patches/psf_compile_c16_2026-10-06/psf_compile.py`, normalized SHA-256 `8864c546...`;
+  KRO's is `data/2026-10-06/kro/psf_compile.py`. Since KRO's item 43 never reached the release changelog, the
+  release's item 43 is PL-REDO's (Addendum 374).
+- **The predictions followed two smoke runs** (Addendum 372, section 4), as disclosed there.
+- **The lap time includes PennyLane's conversions;** only the compile time is scored.
+- **Local paths removed.** When the output was copied into the repository, the WSL home directory in the logs and
+  metadata (`env.txt`, the `script_path` field, the tracebacks of RR and A12) was replaced by `<wsl-home>`. Nothing
+  else was changed; `pl_redo_verify.py` and `pl_redo.py score`, re-run on the copied files, give the same verdicts and
+  the same `score.md`.
+
+
+---
+
+<!-- ===== Addendum 374 (source: spare-qubit-cliff-addendum-374-2026-10-06.md) ===== -->
+
+> **Note added when merging:** The owner's decision to adopt candidate c16 as release 2026-10-06.2, on the evidence of Addendum 373.
+
+## Addendum 374 -- Adoption: psf_compile 2026-10-06.2 = candidate 2026-10-06.c16 of Addendum 372 (changelog item 43: item 31's recompile keeps the first output when no placement avoids the failed elements); the AI front end stays a12 (2026-10-06)
+
+**Status: the owner's decision, on the evidence of Addendum 373.**
+
+## 1. The decision
+
+The owner adopted PL-REDO's candidate c16 as the release **2026-10-06.2** (2026-10-06, workplace). The evidence:
+
+- `test_c16.py`, 6 of 6 on Windows and on Linux: unchanged output where the release succeeds (four devices, the
+  recommended call); on the full-device circuit the release raises and c16 returns a swap-free circuit that
+  implements every block;
+- PL-REDO (Addendum 373): D6 and D10 confirmed, no exception in 80 laps, and the release's own output on every one
+  of the 40 laps where the release returned one.
+
+The AI front end is unchanged (a12). It calls `psf_compile`, so with 2026-10-06.2 underneath it no longer raises on
+full-device circuits (PL-REDO's arm A12C).
+
+## 2. What changes in the repository
+
+- **`psf_compile.py`** is c16's file with the two version lines changed (`VERSION: 2026-10-06.2 -- release ...` and
+  `VERSION = "2026-10-06.2"`). Nothing else differs; `benchmarks/test_release_2026_10_06_2.py` checks this.
+- **The outgoing release 2026-10-06.1** is kept unchanged as
+  `patches/psf_compile_release_2026-10-06.1/psf_compile.py` (normalized SHA-256 `bf4630d6...`), because no single
+  candidate file equals it (it was c14 plus c15's item 42).
+- **Tests:**
+  - `benchmarks/test_release_2026_10_06_2.py` (new): the version; the file equals c16's except the version lines;
+    the kept 2026-10-06.1 is the old file; on four devices the release gives 2026-10-06.1's output with the
+    recommended call.
+  - `benchmarks/test_release_2026_10_06_1.py` and `patches/psf_compile_c16_2026-10-06/test_c16.py` now load
+    2026-10-06.1 from the kept copy, because they compare against it (`test_c16.py` expects 2026-10-06.1 to raise).
+  - Every other test that asserted the current release's version (`== "2026-10-06.1"`, 24 lines in
+    `benchmarks/` and `patches/`) now asserts `"2026-10-06.2"`. The as-run copy in `data/2026-10-06/kro/` is a record
+    and is not changed.
+- **README:** "Current version" names 2026-10-06.2, with a short note on item 43 and PL-REDO.
+- **docs/RELEASES.md:** a new "Current version" block; the 2026-10-06.1 block becomes "Previous release".
+- **Data:** PL-REDO's output in `data/2026-10-06/pl_redo/` (Addendum 373).
+
+## 3. Checks before the commit
+
+The 27 test files this commit adds or changes were run at home before the commit, one pytest session per file
+(WSL2; Python 3.11, Qiskit 2.5.2, Aer 0.17.2, NumPy 2.5.3, core 2026-09-29.1): 221 passed, none failed or errored.
+
+## 4. What item 43 does not change
+
+- It does not make the default call target-aware. In PL-REDO the default call used a failed element on every lap at
+  spare 16, where the target-aware calls avoided them (Addendum 373, section 3).
+- It does not make the recommended call fast on a full device: there it runs Qiskit level 3 and takes its time.
+- An output kept by item 43 uses an element the target reports as failed; the warning says so, and
+  `PRUNE_STATS["unavoidable"]` counts it.
+
 ---
 
 ---

@@ -8,6 +8,23 @@ from this folder. The full record behind each entry is in Part 9 of the findings
 links to. The README itself, as it was before the move, is kept as
 [`README_2026-10-05_before_restructure.md`](README_2026-10-05_before_restructure.md).
 
+> **Current version (2026-10-06, second release): `psf_compile.py` 2026-10-06.2 and the AI front end a12, with
+> `psf_smart_layout` 2026-10-01.1 and the Rust core `CORE_VERSION` 2026-09-29.1 (both unchanged)**
+> ([Part 9](findings/spare-qubit-cliff-combined-248.md), Addenda 372-374). The recommended call is unchanged.
+>
+> - **Item 43:** with a `target`, an output that uses a failed element is compiled again on the pruned coupling
+>   map (item 31). When the circuit needs the whole device, no placement on that map exists and 2026-10-06.1 raised
+>   `TranspilerError` ("A connected component of the DAGCircuit is too large ...") -- in the recommended call and
+>   in the AI front end. 2026-10-06.2 keeps the first output, warns, and counts it in
+>   `PRUNE_STATS["unavoidable"]`. Everywhere else the output is 2026-10-06.1's.
+> - **Pre-registered test PL-REDO (Addenda 372-373;** the PennyLane loop of Addenda 254-255 on FakeKingston, 156
+>   qubits, 20 laps, on the owner's Linux machine): 2026-10-06.1's recommended call and a12 raised on 20 of 20 laps
+>   at full occupancy, the candidate on none, and it returned 2026-10-06.1's circuit on all 40 laps where
+>   2026-10-06.1 returned one; the default call took 0.048 s per compile, swap-free, meaning kept to 1.3e-13; at
+>   full occupancy the target-aware calls take Qiskit level 3's time (16 s); 11 of 11 predictions confirmed.
+> - **Not changed:** the default call (no target) does not look at failed elements. With 16 spare qubits it used
+>   one on every lap, while the target-aware calls avoided them in 0.4-0.6 s.
+
 > **Update (2026-10-06) -- AI front end a12** ([Part 9](findings/spare-qubit-cliff-combined-248.md), Addenda 364-367).
 > `benchmarks/psf_ai_compile.py` is now a12 (a11 is kept as `benchmarks/psf_ai_compile_a11.py`). The release is
 > unchanged.
@@ -18,7 +35,7 @@ links to. The README itself, as it was before the move, is kept as
 >   a11 on 768 of 768; median time 0.60 and 0.54 times a11's on the cz devices, 0.74-0.75 on the ecr devices,
 >   0.86-0.89 on the cx devices; 3 of 3 predictions confirmed.
 
-> **Current version (2026-10-06): `psf_compile.py` 2026-10-06.1 and the AI front end a11, with `psf_smart_layout`
+> **Previous release (2026-10-06): `psf_compile.py` 2026-10-06.1 and the AI front end a11, with `psf_smart_layout`
 > 2026-10-01.1 and the Rust core `CORE_VERSION` 2026-09-29.1 (both unchanged)**
 > ([Part 9](findings/spare-qubit-cliff-combined-248.md), Addenda 357-362). The recommended call is unchanged; compile a
 > circuit that will be sampled with its final measurements.

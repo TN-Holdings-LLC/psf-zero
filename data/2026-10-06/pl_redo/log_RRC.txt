@@ -1,0 +1,44 @@
+{"arm": "RRC", "smoke": false, "laps": 20, "spares": [0, 16], "fake": "FakeKingston", "start_utc": "2026-10-06T07:48:46+00:00", "git_head": "7ec1e7a", "git_dirty": "", "versions": {"release": "2026-10-06.c16", "core": "2026-09-29.1", "layout": "2026-10-01.1", "a12": "2026-10-06.a12", "qiskit": "2.5.2", "pennylane": "0.45.1", "numpy": "2.4.6", "python": "3.11.16"}, "sha": {"script": "4150e16e903ceafe76ecdc907424f3317556369c5be7c94995a7083d3859e97e", "chain": "84aafa1f56680e4e77be2e6261b2d45e669c5fa48a3db25f88e8180ccf8e005f", "release": "8864c546a420ba20e06e4fef81dafd872055768edc64333f40d6baa0429af606", "layout": "624e8f8a00e1635a1ee3bc77b5b0f41bd69a94022e214d679b86cc66cc1cf241", "a12": "2227cca2b0675f8ca21c999b071fa30278d616d27536c5376b47ed9faf7236ad"}, "script_path": "<wsl-home>/psf_check/benchmarks/pl_redo.py", "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43", "cpus": 14, "qiskit_17057_present": true}
+failed elements {"edges": [[83, 96], [96, 83], [96, 103], [103, 96], [112, 113], [113, 112], [120, 121], [121, 120], [130, 131], [131, 130], [145, 146], [146, 145], [146, 147], [147, 146]], "qubits": [96, 112, 113, 131, 146]}
+RRC spare= 0 lap   1 compile   16.134s lap   16.45s 2q=276 (swap-free 276) max_block_dist=1.158e-14 layout_changed=False OK
+RRC spare= 0 lap   2 compile   16.054s lap   16.38s 2q=276 (swap-free 276) max_block_dist=1.769e-14 layout_changed=False OK
+RRC spare= 0 lap   3 compile   15.958s lap   16.30s 2q=276 (swap-free 276) max_block_dist=1.794e-14 layout_changed=False OK
+RRC spare= 0 lap   4 compile   16.178s lap   16.52s 2q=276 (swap-free 276) max_block_dist=2.388e-14 layout_changed=False OK
+RRC spare= 0 lap   5 compile   16.099s lap   16.43s 2q=276 (swap-free 276) max_block_dist=3.320e-14 layout_changed=False OK
+RRC spare= 0 lap   6 compile   18.467s lap   18.83s 2q=276 (swap-free 276) max_block_dist=3.532e-14 layout_changed=False OK
+RRC spare= 0 lap   7 compile   17.764s lap   18.21s 2q=276 (swap-free 276) max_block_dist=4.195e-14 layout_changed=False OK
+RRC spare= 0 lap   8 compile   15.879s lap   16.22s 2q=276 (swap-free 276) max_block_dist=5.287e-14 layout_changed=False OK
+RRC spare= 0 lap   9 compile   15.970s lap   16.31s 2q=276 (swap-free 276) max_block_dist=6.329e-14 layout_changed=False OK
+RRC spare= 0 lap  10 compile   15.992s lap   16.32s 2q=276 (swap-free 276) max_block_dist=6.437e-14 layout_changed=False OK
+RRC spare= 0 lap  11 compile   15.849s lap   16.26s 2q=276 (swap-free 276) max_block_dist=6.521e-14 layout_changed=False OK
+RRC spare= 0 lap  12 compile   16.174s lap   16.51s 2q=276 (swap-free 276) max_block_dist=7.612e-14 layout_changed=False OK
+RRC spare= 0 lap  13 compile   15.759s lap   16.08s 2q=276 (swap-free 276) max_block_dist=7.793e-14 layout_changed=False OK
+RRC spare= 0 lap  14 compile   16.381s lap   16.73s 2q=276 (swap-free 276) max_block_dist=8.995e-14 layout_changed=False OK
+RRC spare= 0 lap  15 compile   16.409s lap   16.83s 2q=276 (swap-free 276) max_block_dist=1.018e-13 layout_changed=False OK
+RRC spare= 0 lap  16 compile   15.992s lap   16.33s 2q=276 (swap-free 276) max_block_dist=1.147e-13 layout_changed=False OK
+RRC spare= 0 lap  17 compile   15.871s lap   16.20s 2q=276 (swap-free 276) max_block_dist=1.146e-13 layout_changed=False OK
+RRC spare= 0 lap  18 compile   16.100s lap   16.43s 2q=276 (swap-free 276) max_block_dist=1.153e-13 layout_changed=False OK
+RRC spare= 0 lap  19 compile   16.070s lap   16.48s 2q=276 (swap-free 276) max_block_dist=1.178e-13 layout_changed=False OK
+RRC spare= 0 lap  20 compile   15.887s lap   16.25s 2q=276 (swap-free 276) max_block_dist=1.227e-13 layout_changed=False OK
+RRC spare=16 lap   1 compile    0.675s lap    0.99s 2q=252 (swap-free 252) max_block_dist=1.514e-14 layout_changed=False OK
+RRC spare=16 lap   2 compile    0.598s lap    0.90s 2q=252 (swap-free 252) max_block_dist=2.556e-14 layout_changed=False OK
+RRC spare=16 lap   3 compile    0.618s lap    1.01s 2q=252 (swap-free 252) max_block_dist=2.543e-14 layout_changed=False OK
+RRC spare=16 lap   4 compile    0.608s lap    0.92s 2q=252 (swap-free 252) max_block_dist=3.192e-14 layout_changed=False OK
+RRC spare=16 lap   5 compile    0.594s lap    0.90s 2q=252 (swap-free 252) max_block_dist=4.023e-14 layout_changed=False OK
+RRC spare=16 lap   6 compile    0.597s lap    0.90s 2q=252 (swap-free 252) max_block_dist=4.224e-14 layout_changed=False OK
+RRC spare=16 lap   7 compile    0.705s lap    1.01s 2q=252 (swap-free 252) max_block_dist=5.197e-14 layout_changed=False OK
+RRC spare=16 lap   8 compile    0.619s lap    0.92s 2q=252 (swap-free 252) max_block_dist=5.668e-14 layout_changed=False OK
+RRC spare=16 lap   9 compile    0.613s lap    0.93s 2q=252 (swap-free 252) max_block_dist=6.159e-14 layout_changed=False OK
+RRC spare=16 lap  10 compile    0.687s lap    1.08s 2q=252 (swap-free 252) max_block_dist=6.715e-14 layout_changed=False OK
+RRC spare=16 lap  11 compile    0.618s lap    0.92s 2q=252 (swap-free 252) max_block_dist=7.250e-14 layout_changed=False OK
+RRC spare=16 lap  12 compile    0.609s lap    0.91s 2q=252 (swap-free 252) max_block_dist=8.194e-14 layout_changed=False OK
+RRC spare=16 lap  13 compile    0.594s lap    0.89s 2q=252 (swap-free 252) max_block_dist=8.614e-14 layout_changed=False OK
+RRC spare=16 lap  14 compile    0.688s lap    0.99s 2q=252 (swap-free 252) max_block_dist=9.267e-14 layout_changed=False OK
+RRC spare=16 lap  15 compile    0.618s lap    0.92s 2q=252 (swap-free 252) max_block_dist=9.835e-14 layout_changed=False OK
+RRC spare=16 lap  16 compile    0.603s lap    0.91s 2q=252 (swap-free 252) max_block_dist=1.090e-13 layout_changed=False OK
+RRC spare=16 lap  17 compile    0.614s lap    0.99s 2q=252 (swap-free 252) max_block_dist=1.113e-13 layout_changed=False OK
+RRC spare=16 lap  18 compile    0.610s lap    0.91s 2q=252 (swap-free 252) max_block_dist=1.204e-13 layout_changed=False OK
+RRC spare=16 lap  19 compile    0.609s lap    0.91s 2q=252 (swap-free 252) max_block_dist=1.272e-13 layout_changed=False OK
+RRC spare=16 lap  20 compile    0.670s lap    1.12s 2q=252 (swap-free 252) max_block_dist=1.310e-13 layout_changed=False OK
+Wrote <wsl-home>/pl_redo_run/pl_redo_RRC.json (40 rows)
+DONE

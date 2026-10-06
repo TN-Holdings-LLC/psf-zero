@@ -92,7 +92,7 @@ def nat(tgt):
 
 def test_version(mods):
     assert mods["a6"].AI_COMPILE_VERSION == "2026-10-02.a6"
-    assert mods["rel"].VERSION == "2026-10-06.1"  # current release (2026-10-02.2 when this candidate was evaluated)
+    assert mods["rel"].VERSION == "2026-10-06.2"  # current release (2026-10-02.2 when this candidate was evaluated)
 
 
 def test_without_target_identical_to_a5(mods):

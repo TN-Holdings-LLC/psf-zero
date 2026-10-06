@@ -1,0 +1,36 @@
+# PL-REDO score (thresholds as pre-registered in Addendum 372)
+
+- P0 (validity): PASS -- 6 arms x 2 spares x 20 laps True, versions True, not smoke and clean tree True, #17057 present True, git_head ['7ec1e7a']
+
+| spare | arm | compile median s | max s | within 1 s | errors | swap-free and mapped back | 2q | uses a failed element | block distance lap 1 / worst |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 | R | 0.048 | 0.055 | 20/20 | 0 | 20/20 | [276] | 20 | 1.16e-14 / 1.23e-13 |
+| 0 | RR | 0.239 | 0.304 | 0/20 | 20 | 0/20 | [] | 0 | - |
+| 0 | A12 | 0.236 | 0.306 | 0/20 | 20 | 0/20 | [] | 0 | - |
+| 0 | RRC | 16.062 | 18.467 | 0/20 | 0 | 20/20 | [276] | 20 | 1.16e-14 / 1.23e-13 |
+| 0 | A12C | 15.684 | 17.920 | 0/20 | 0 | 20/20 | [276] | 20 | 1.16e-14 / 1.23e-13 |
+| 0 | Q3 | 15.547 | 15.845 | 0/20 | 0 | 0/20 | [321] | 20 | - |
+| 16 | R | 0.045 | 0.049 | 20/20 | 0 | 20/20 | [252] | 20 | 1.53e-14 / 1.31e-13 |
+| 16 | RR | 0.611 | 0.698 | 20/20 | 0 | 20/20 | [252] | 0 | 1.51e-14 / 1.31e-13 |
+| 16 | A12 | 0.377 | 0.471 | 20/20 | 0 | 20/20 | [252] | 0 | 1.51e-14 / 1.31e-13 |
+| 16 | RRC | 0.614 | 0.705 | 20/20 | 0 | 20/20 | [252] | 0 | 1.51e-14 / 1.31e-13 |
+| 16 | A12C | 0.379 | 0.472 | 20/20 | 0 | 20/20 | [252] | 0 | 1.51e-14 / 1.31e-13 |
+| 16 | Q3 | 0.177 | 0.188 | 20/20 | 0 | 20/20 | [252] | 0 | 1.56e-13 / 3.67e-13 |
+
+- D1 (R, spare 0, within 1 s in 20/20; confirmed 20/20, refuted <= 10): **CONFIRMED**
+- D2 (R, swap-free and mapped back in 40/40 laps; confirmed 40/40, refuted <= 20): **CONFIRMED**
+- D3 (R, worst block distance 1.3065768369026833e-13; confirmed <= 1e-12 with every lap checked, refuted > 1e-10): **CONFIRMED**
+- D4 (Q3, spare 0, within 1 s in 0/20; confirmed 0, refuted >= 10): **CONFIRMED**
+- D5 (release: RR and A12 raise at spare 0 in 20/20 and 20/20 laps; confirmed both 20/20, refuted either <= 10): **CONFIRMED**
+- D6 (c16: RRC and A12C raise in 0/80 laps; confirmed 0, refuted >= 1): **CONFIRMED**
+- D7 (RRC and A12C, spare 0, within 1 s in 0/20 and 0/20; confirmed both <= 2, refuted either >= 10): **CONFIRMED**
+- D8 (RRC and A12C, spare 0, swap-free and mapped back in 20/20 and 20/20; confirmed both 20/20, refuted either <= 10): **CONFIRMED**
+- D9 (RRC and A12C, worst block distance over checked laps 1.3098060033120577e-13; confirmed <= 1e-12, refuted > 1e-10): **CONFIRMED**
+- D10 (c16 = release wherever the release returns: identical outputs in 40/40 laps with the same input; confirmed all and at least 20, refuted any differs): **CONFIRMED**
+- D11 (RRC and A12C, spare 16, within 1 s in 20/20 and 20/20; confirmed both >= 18, refuted either <= 10): **CONFIRMED**
+
+Reported without prediction: which outputs use a failed element (table); spare 16 times of RRC and A12C; median compile time against R; Q3's worst block distance; R against Addendum 255's arm PN (0.071 s, 276 two-qubit gates at spare 0).
+- spare 0: RRC/R 333.8x, A12C/R 325.9x, Q3/R 323.1x
+- spare 16: RRC/R 13.5x, A12C/R 8.3x, Q3/R 3.9x
+- Q3 worst block distance 3.668534965015793e-13 over 20 checked laps
+

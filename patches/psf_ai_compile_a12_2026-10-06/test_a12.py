@@ -72,7 +72,7 @@ def circs(measured):
 def test_versions(mods):
     assert mods["a12"].AI_COMPILE_VERSION == "2026-10-06.a12"
     assert mods["a11"].AI_COMPILE_VERSION == "2026-10-05.a11"
-    assert mods["rel"].VERSION == "2026-10-06.1"
+    assert mods["rel"].VERSION == "2026-10-06.2"
 
 
 @pytest.mark.parametrize("dev", ["FakeTorino", "FakeBrussels"])

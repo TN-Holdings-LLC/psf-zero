@@ -4,6 +4,8 @@ qubits in the choice, direction-aware failed-element check) plus candidate 2026-
 patches/psf_compile_c15_2026-10-06/test_c15.py. The previous release, 2026-10-05.1, is represented by its candidate's
 file (patches/psf_compile_c12_2026-10-05/psf_compile.py), which differs from it only in the version lines.
 
+Since 2026-10-06.2 (Addendum 374) 2026-10-06.1 is loaded from its kept copy, patches/psf_compile_release_2026-10-06.1/psf_compile.py.
+
 Run from the repository root:  python -m pytest benchmarks/test_release_2026_10_06_1.py -q
 """
 import contextlib
@@ -30,7 +32,7 @@ def mods():
     lay = H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psl_rel10061_test")
     sys.modules["psf_smart_layout"] = lay
     load = lambda *p: H.load_module(os.path.join(REPO, *p[:-1]), p[-1])
-    return dict(rel=load("psf_compile.py", "psf_compile_rel10061_test"),
+    return dict(rel=load("patches", "psf_compile_release_2026-10-06.1", "psf_compile.py", "psf_compile_rel10061_test"),
                 prev=load("patches", "psf_compile_c12_2026-10-05", "psf_compile.py", "psf_compile_prev10061_test"),
                 c14=load("patches", "psf_compile_c14_2026-10-05", "psf_compile.py", "psf_compile_c14_rel10061_test"),
                 c15=load("patches", "psf_compile_c15_2026-10-06", "psf_compile.py", "psf_compile_c15_rel10061_test"))

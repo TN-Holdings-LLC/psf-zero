@@ -23,12 +23,19 @@ including the failures, are recorded in [`docs/findings/`](docs/findings/).
 
 ## Current version
 
-**`psf_compile.py` 2026-10-06.1** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 and the Rust core
-`CORE_VERSION` 2026-09-29.1 (Part 9, Addenda 357-367). Every release and dated notice:
+**`psf_compile.py` 2026-10-06.2** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 and the Rust core
+`CORE_VERSION` 2026-09-29.1 (Part 9, Addenda 357-374). Every release and dated notice:
 [`docs/RELEASES.md`](docs/RELEASES.md).
 
-> **New in 2026-10-06.1 and a11/a12: readout is counted, ecr devices are fixed, and the AI front end is faster.**
+> **New in 2026-10-06.1/.2 and a11/a12: readout is counted, ecr devices are fixed, the AI front end is faster, and
+> full-device circuits no longer fail with the target.**
 >
+> - **2026-10-06.2 (item 43):** on a circuit that needs the whole device, the recommended call and the AI front end
+>   raised an exception when the device reports failed elements; now they return the circuit and warn that it uses
+>   them. Nothing else changes. Found and tested in a PennyLane loop on FakeKingston (PL-REDO, Addenda 372-373): the
+>   default call took 0.048 s per compile on the full 156 qubits, swap-free, about 320 times faster than Qiskit
+>   level 3; it does not look at the device's failed elements, which the target-aware calls avoid when there is room
+>   (0.4-0.6 s with 16 spare qubits).
 > - **Readout:** compile a circuit that will be sampled **with** its final measurements. The choice among candidates
 >   and the AI front end's estimate now include each measured qubit's readout error; without measurements nothing
 >   changes.
