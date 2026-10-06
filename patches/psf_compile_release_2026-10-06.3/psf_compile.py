@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-10-06.4 -- release, adopted on 2026-10-06 from candidate 2026-10-06.c17 of Addendum 379 (previous release: 2026-10-06.3)
+VERSION: 2026-10-06.3 -- release, adopted on 2026-10-06 from candidate 2026-10-06.c18 of Addendum 377 (previous release: 2026-10-06.2)
 
 Where to look for what
 ----------------------
@@ -667,21 +667,6 @@ adopted on 2026-10-06 after their pre-registered evaluations RECR and KRAUS, Add
     builds from it, whereas `to_matrix()` is the exact exponential; the two agree when the terms commute.
     Nothing else changes: on circuits whose instructions act on at most 6 qubits every matrix, every check and
     every output is 2026-10-06.2's.
-
-2026-10-06.c17 (candidate, Addendum 379):
-
-45. **SPEED: alternatives that item 39 cannot check are no longer built.** A check that cannot be made refuses
-    the candidate (item 39), and `_implements` cannot be made for a logical circuit of more than
-    `RESYNTH_MAX_QUBITS` (16) qubits, nor `_same_action` for a circuit touching more than 16. Yet the floor
-    candidate (item 37: a second full compile) and Qiskit level 3 (item 36) were still built for such circuits,
-    and item 35's re-synthesis for such outputs, only to be refused. On FakeAuckland at full occupancy (27 qubits)
-    the recommended call took 6.4 s and returned the default call's circuit on 30 of 30 laps (Addendum 376, G9);
-    on a 48-qubit Hamiltonian it built level 3 and the floor and refused both (Addendum 377). Now:
-    - with more than 16 logical qubits, neither the floor candidate nor level 3 is built;
-    - item 35's re-synthesis is not built for a circuit touching more than 16 qubits.
-    Each skip is counted in `SKIP_STATS`. The output is the one 2026-10-06.3 returns, because what is skipped is
-    exactly what it refused; only counters (`COMPARE_STATS`, `EXACT_STATS`, `RESYNTH_STATS`, `PRUNE_STATS` of the
-    floor's compile) and a `callback`'s calls during the floor's compile differ.
 """
 from __future__ import annotations
 
@@ -719,7 +704,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-10-06.4"  # release (from candidate 2026-10-06.c17 of Addendum 379): 2026-10-06.3 + item 45 (alternatives item 39 cannot check are not built)
+VERSION = "2026-10-06.3"  # release (from candidate 2026-10-06.c18 of Addendum 377): 2026-10-06.2 + item 44 (item 39's checks never turn a wide instruction into a matrix)
 __version__ = VERSION
 
 # Changelog item 27: the version string of the loaded Rust core, for logs.
@@ -2328,28 +2313,6 @@ def _compare_level3(qc, out, target, max_error, seed_transpiler):
     return out
 
 
-SKIP_STATS = {"resynthesis": 0, "floor": 0, "level3": 0}  # item 45
-
-
-def _checkable_logical(qc):
-    """Item 45: True if item 39's `_implements` can be made for `qc` (at most RESYNTH_MAX_QUBITS logical qubits)."""
-    return qc.num_qubits <= RESYNTH_MAX_QUBITS
-
-
-def _resynthesise(circ, mode, target, max_error):
-    """Item 35 by `mode` ("select", or any other true value for always); unchanged circuit if `mode` is false.
-    Item 45: not built when the circuit touches more than RESYNTH_MAX_QUBITS qubits, where item 39's
-    `_same_action` cannot be made and would refuse it."""
-    if not mode:
-        return circ
-    if len(_touched_qubits(circ)) > RESYNTH_MAX_QUBITS:
-        SKIP_STATS["resynthesis"] += 1
-        return circ
-    if mode == "select":
-        return _select_resynthesis(circ, target, max_error)
-    return _final_resynthesis(circ, target, max_error)
-
-
 def _select_resynthesis(out, target, max_error):
     """Item 35, "select": the re-synthesised circuit if its excitation_cost is lower, else the original."""
     new = _final_resynthesis(out, target, max_error)
@@ -2767,24 +2730,26 @@ def compile_for_hardware(
             PRUNE_STATS["recompiled"] += 1
             args["coupling_map"] = prune_coupling_map(coupling_map, target, prune_max_error)
             out = _recompile_pruned(args, out)
-        out = _resynthesise(out, final_resynthesis, target, prune_max_error)
+        if final_resynthesis == "select":
+            out = _select_resynthesis(out, target, prune_max_error)
+        elif final_resynthesis:
+            out = _final_resynthesis(out, target, prune_max_error)
         if not compare_floor and candidate_score == "excitation":
-            if compare_level3 and not _checkable_logical(qc):  # item 45
-                SKIP_STATS["level3"] += 1
-            elif compare_level3:
+            if compare_level3:
                 out = _compare_level3(qc, out, target, prune_max_error, seed_transpiler)
             return out
         # Item 37: up to three candidates, chosen by candidate_score.
         cands = [("psf", out)]
-        if compare_floor and not _checkable_logical(qc):  # item 45
-            SKIP_STATS["floor"] += 1
-        elif compare_floor:
+        if compare_floor:
             fargs = dict(args, coupling_map=coupling_map, _refine_target=floor_aware_target(target))
             fo = compile_for_hardware(**fargs)
             if _uses_failed(fo, edges, qubits):
                 fargs["coupling_map"] = prune_coupling_map(coupling_map, target, prune_max_error)
                 fo = _recompile_pruned(fargs, fo)
-            fo = _resynthesise(fo, final_resynthesis, target, prune_max_error)
+            if final_resynthesis == "select":
+                fo = _select_resynthesis(fo, target, prune_max_error)
+            elif final_resynthesis:
+                fo = _final_resynthesis(fo, target, prune_max_error)
             if not _acceptable(fo, target, prune_max_error):
                 COMPARE_STATS["floor_refused"] += 1
             elif not _implements(qc, fo):  # item 39
@@ -2792,9 +2757,7 @@ def compile_for_hardware(
                 COMPARE_STATS["floor_refused"] += 1
             else:
                 cands.append(("floor", fo))
-        if compare_level3 and not _checkable_logical(qc):  # item 45
-            SKIP_STATS["level3"] += 1
-        elif compare_level3:
+        if compare_level3:
             l3 = transpile(qc, target=target, optimization_level=3, seed_transpiler=seed_transpiler,
                            approximation_degree=1.0)
             if not _acceptable(l3, target, prune_max_error):

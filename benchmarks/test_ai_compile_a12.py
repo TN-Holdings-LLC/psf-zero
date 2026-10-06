@@ -78,7 +78,7 @@ def circs():
 def test_versions(mods):
     assert mods["a12"].AI_COMPILE_VERSION == "2026-10-06.a12"
     assert mods["a11"].AI_COMPILE_VERSION == "2026-10-05.a11"
-    assert mods["rel"].VERSION == "2026-10-06.3"
+    assert mods["rel"].VERSION == "2026-10-06.4"
     assert mods["a12"].pc is mods["rel"] and mods["a11"].pc is mods["rel"]
 
 

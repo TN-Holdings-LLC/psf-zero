@@ -114,7 +114,7 @@ REC = dict(placement_refine=True, final_resynthesis="select", compare_level3=Tru
 def test_version(mods):
     assert mods["a8"].AI_COMPILE_VERSION == "2026-10-04.a8"
     assert mods["a7"].AI_COMPILE_VERSION == "2026-10-02.a7"
-    assert mods["rel"].VERSION == "2026-10-06.3"  # current release
+    assert mods["rel"].VERSION == "2026-10-06.4"  # current release
 
 
 def test_small_circuits_identical_to_a7(mods):

@@ -17508,6 +17508,74 @@ independent [`benchmarks/skip_verify.py`](../../benchmarks/skip_verify.py).** Wr
   alternated per circuit after a warm-up.
 - **The 16-qubit cost** is reported here because it was seen; it was not part of the predictions.
 
+
+---
+
+<!-- ===== Addendum 381 (source: spare-qubit-cliff-addendum-381-2026-10-06.md) ===== -->
+
+> **Note added when merging:** The owner's decision to adopt candidate c17 as release 2026-10-06.4, on the evidence of Addendum 380.
+
+## Addendum 381 -- Adoption: psf_compile 2026-10-06.4 = candidate 2026-10-06.c17 of Addendum 379 (changelog item 45: alternatives that item 39 cannot check are not built); the AI front end stays a12 (2026-10-06)
+
+**Status: the owner's decision, on the evidence of Addendum 380.**
+
+## 1. The decision
+
+The owner adopted SKIP's candidate c17 as the release **2026-10-06.4** (2026-10-06, home). The evidence:
+
+- [`test_c17.py`](../../patches/psf_compile_c17_2026-10-06/test_c17.py), 10 of 10 (Addendum 379);
+- SKIP (Addendum 380), pre-registered, K1-K4 all confirmed: the release's circuit on 294 of 294 circuits on six
+  devices; level 3 and the floor skipped exactly above 16 logical qubits; above 16 qubits the median time ratio per
+  device 0.21-0.28 (0.013 at full occupancy of a 27-qubit device); up to 16 qubits 1.00-1.03.
+
+The AI front end is unchanged (a12). It calls `psf_compile`, so above 16 qubits it gets the same speed-up.
+
+## 2. What changes in the repository
+
+- **[`psf_compile.py`](../../psf_compile.py)** is c17's file with the two version lines changed
+  (`VERSION: 2026-10-06.4 -- release ...` and `VERSION = "2026-10-06.4"`). Nothing else differs;
+  [`benchmarks/test_release_2026_10_06_4.py`](../../benchmarks/test_release_2026_10_06_4.py) checks this.
+- **The outgoing release 2026-10-06.3** is kept unchanged as
+  [`patches/psf_compile_release_2026-10-06.3/psf_compile.py`](../../patches/psf_compile_release_2026-10-06.3/psf_compile.py)
+  (normalized SHA-256 `2a49f611...`).
+- **Tests:**
+  - [`benchmarks/test_release_2026_10_06_4.py`](../../benchmarks/test_release_2026_10_06_4.py) (new): the version
+    and `SKIP_STATS`; the file equals c17's except the version lines; the kept 2026-10-06.3 is the old file; on four
+    devices the release gives 2026-10-06.3's output with the recommended call (6, 9 and 20 qubits); a 48-qubit
+    `PauliEvolutionGate` on FakeTorino compiles to a valid circuit with level 3 and the floor skipped.
+  - [`benchmarks/test_release_2026_10_06_3.py`](../../benchmarks/test_release_2026_10_06_3.py) and
+    [`patches/psf_compile_c17_2026-10-06/test_c17.py`](../../patches/psf_compile_c17_2026-10-06/test_c17.py) now
+    load 2026-10-06.3 from the kept copy, because they compare against it.
+  - Every other test that asserted the current release's version (`== "2026-10-06.3"`, 24 lines in `benchmarks/`
+    and `patches/`) now asserts `"2026-10-06.4"`. The locked SKIP script
+    [`benchmarks/skip_eval.py`](../../benchmarks/skip_eval.py) is a record and is not changed; it requires
+    2026-10-06.3 as the repository's release and stops otherwise.
+- **README:** "Current version" names 2026-10-06.4, with a short note on item 45 and SKIP.
+- **docs/RELEASES.md:** a new "Current version" block; the 2026-10-06.3 block becomes "Previous release".
+
+## 3. Checks before the commit
+
+The 27 test files this commit adds or changes were run at home after the files were changed and before the commit,
+one pytest session per file (WSL2; Python 3.12.13, Qiskit 2.5.2, NumPy 2.5.3, `psf_compile` 2026-10-06.4, core
+2026-09-29.1; 14:03:36-14:07:58 UTC): **224 passed**, none failed or errored. Among them
+[`test_release_2026_10_06_4.py`](../../benchmarks/test_release_2026_10_06_4.py) 8 of 8 and
+[`test_c17.py`](../../patches/psf_compile_c17_2026-10-06/test_c17.py) 10 of 10 (against the kept 2026-10-06.3).
+
+| file | normalized SHA-256 |
+|---|---|
+| [`psf_compile.py`](../../psf_compile.py) (release 2026-10-06.4) | `69fe51d2d503638ceb4d067a0d86a5b27c38586694ec84996dea5e7ab6dab7aa` |
+| [`benchmarks/test_release_2026_10_06_4.py`](../../benchmarks/test_release_2026_10_06_4.py) (new) | `fab7d50ef9ea76522515e591c1886549f4ce2dbdcc8c9b933ad96c7ac5182e4c` |
+| [`patches/psf_compile_release_2026-10-06.3/psf_compile.py`](../../patches/psf_compile_release_2026-10-06.3/psf_compile.py) (kept) | `2a49f611fa99b6849afc4aef287aa4c03803aac2d2d1bf32840b4dc9dc80acb5` |
+| [`patches/psf_compile_c17_2026-10-06/psf_compile.py`](../../patches/psf_compile_c17_2026-10-06/psf_compile.py) (candidate, unchanged) | `3547c79b6a672d8d17148b16fa1b480ae0de7c2ed72c65569add57a59add5f3a` |
+
+## 4. What item 45 does not change
+
+- Up to 16 logical qubits the recommended call still builds level 3 and the floor and checks them by state vector;
+  at 16 qubits that takes 20-60 s for Hamiltonian and QFT circuits (Addendum 380). That is the next question.
+- Above 16 qubits the recommended call returns the default call's circuit (refined by the target-aware placement
+  where it applies), as 2026-10-06.3 did; it is only faster.
+- The default call (no target) is not touched.
+
 ---
 
 ---

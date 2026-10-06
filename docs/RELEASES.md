@@ -8,7 +8,23 @@ from this folder. The full record behind each entry is in Part 9 of the findings
 links to. The README itself, as it was before the move, is kept as
 [`README_2026-10-05_before_restructure.md`](README_2026-10-05_before_restructure.md).
 
-> **Current version (2026-10-06, third release): `psf_compile.py` 2026-10-06.3 and the AI front end a12, with
+> **Current version (2026-10-06, fourth release): `psf_compile.py` 2026-10-06.4 and the AI front end a12, with
+> `psf_smart_layout` 2026-10-01.1 and the Rust core `CORE_VERSION` 2026-09-29.1 (both unchanged)**
+> ([Part 9](findings/spare-qubit-cliff-combined-248.md), Addenda 379-381). The recommended call is unchanged.
+>
+> - **Item 45:** item 39 refuses a Qiskit-made candidate whose check cannot be made, and it cannot be made for a
+>   logical circuit of more than 16 qubits (`_implements`) or a circuit touching more than 16 (`_same_action`).
+>   2026-10-06.3 still built the floor candidate and Qiskit level 3 there, and item 35's re-synthesis, only to
+>   refuse them. 2026-10-06.4 does not build them and counts the skips in `SKIP_STATS`. The output is
+>   2026-10-06.3's; only counters and a `callback`'s calls during the floor's compile differ.
+> - **Pre-registered test SKIP (Addenda 379-380;** 294 circuits on FakeTorino, FakeKingston, FakeAuckland,
+>   FakeHanoiV2, FakeBrussels, FakeOsaka): the same circuit on 294 of 294; above 16 qubits the median time ratio
+>   per device 0.21-0.28 (130 s to 18 s in total), at full occupancy of FakeAuckland and FakeHanoiV2 0.013; up to
+>   16 qubits 1.00-1.03; 4 of 4 predictions confirmed.
+> - **Not changed:** up to 16 qubits the recommended call still builds and checks every candidate; at 16 qubits
+>   that takes 20-60 s for Hamiltonian and QFT circuits (Addendum 380).
+
+> **Previous release (2026-10-06, third release): `psf_compile.py` 2026-10-06.3 and the AI front end a12, with
 > `psf_smart_layout` 2026-10-01.1 and the Rust core `CORE_VERSION` 2026-09-29.1 (both unchanged)**
 > ([Part 9](findings/spare-qubit-cliff-combined-248.md), Addenda 377-378). The recommended call is unchanged.
 >

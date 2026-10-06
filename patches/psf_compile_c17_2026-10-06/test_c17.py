@@ -1,5 +1,6 @@
 """Tests for candidate psf_compile 2026-10-06.c17 (changelog item 45: alternatives that item 39 cannot check are not
-built) against the release 2026-10-06.3 (psf_compile.py).
+built) against the release 2026-10-06.3 (since 2026-10-06.4, Addendum 381, loaded from its kept copy
+patches/psf_compile_release_2026-10-06.3/psf_compile.py).
 
 Run from the repository root:  python -m pytest patches/psf_compile_c17_2026-10-06/test_c17.py -q -s
 """
@@ -27,7 +28,8 @@ RECOMMENDED = dict(placement_refine=True, final_resynthesis="select", compare_le
 def mods():
     import core_fix_c2_eval as H
     H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psf_smart_layout")
-    rel = H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile_rel_c17_test")
+    rel = H.load_module(os.path.join(REPO, "patches", "psf_compile_release_2026-10-06.3", "psf_compile.py"),
+                        "psf_compile_rel_c17_test")  # kept copy since 2026-10-06.4 (Addendum 381)
     c17 = H.load_module(os.path.join(HERE, "psf_compile.py"), "psf_compile_c17_test")
     return dict(rel=rel, c17=c17)
 

@@ -23,13 +23,18 @@ including the failures, are recorded in [`docs/findings/`](docs/findings/).
 
 ## Current version
 
-**`psf_compile.py` 2026-10-06.3** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 and the Rust core
-`CORE_VERSION` 2026-09-29.1 (Part 9, Addenda 357-378). Every release and dated notice:
+**`psf_compile.py` 2026-10-06.4** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 and the Rust core
+`CORE_VERSION` 2026-09-29.1 (Part 9, Addenda 357-381). Every release and dated notice:
 [`docs/RELEASES.md`](docs/RELEASES.md).
 
-> **New in 2026-10-06.1/.2/.3 and a11/a12: readout is counted, ecr devices are fixed, the AI front end is faster,
-> and the target-aware calls no longer fail on full-device circuits or on wide instructions.**
+> **New in 2026-10-06.1-.4 and a11/a12: readout is counted, ecr devices are fixed, the AI front end is faster,
+> the target-aware calls no longer fail on full-device circuits or on wide instructions, and they are about four
+> times faster above 16 qubits.**
 >
+> - **2026-10-06.4 (item 45):** above 16 logical qubits the recommended call no longer builds Qiskit level 3 and
+>   the floor candidate, which its equivalence check (item 39) cannot check and always refused. Same circuit,
+>   about a quarter of the time; at full occupancy of a 27-qubit device 0.06-0.16 s instead of 8.6-9.5 s.
+>   Pre-registered test SKIP (Addenda 379-380): identical on 294 of 294 circuits on six devices.
 > - **2026-10-06.3 (item 44):** the recommended call and the AI front end could abort the Python process (a Rust
 >   allocation failure) or run for minutes on a circuit holding one wide instruction, such as Benchpress's HamLib
 >   inputs (one `PauliEvolutionGate` on all qubits): item 39's equivalence check turned it into a matrix. It is now
