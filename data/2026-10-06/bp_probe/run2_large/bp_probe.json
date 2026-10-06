@@ -1,0 +1,343 @@
+[
+ {
+  "test": "test_QASMBench_large[32-linear]",
+  "kind": "qasmbench",
+  "arm": "QK",
+  "input_qubits": 32,
+  "input_ops": {
+   "u3": 4096,
+   "cx": 1536,
+   "measure": 32,
+   "barrier": 1
+  },
+  "compile_s": 0.2601406180001504,
+  "psf_stdout_tail": [],
+  "output_qubits": 32,
+  "q2": 10101,
+  "d2": 1485,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 2.3506190990001414,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 1377,
+    "q2": 9693,
+    "t": 0.10137586109995027
+   },
+   "tket_2.18.0": {
+    "d2": 1563,
+    "q2": 10908,
+    "t": 17.63241315295454
+   }
+  }
+ },
+ {
+  "test": "test_QASMBench_large[32-linear]",
+  "kind": "qasmbench",
+  "arm": "PSF",
+  "input_qubits": 32,
+  "input_ops": {
+   "u3": 4096,
+   "cx": 1536,
+   "measure": 32,
+   "barrier": 1
+  },
+  "release": "2026-10-06.2",
+  "compile_s": 0.4322397000005367,
+  "psf_stdout_tail": [],
+  "output_qubits": 32,
+  "q2": 9957,
+  "d2": 1599,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 2.2915570939994723,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 1377,
+    "q2": 9693,
+    "t": 0.10137586109995027
+   },
+   "tket_2.18.0": {
+    "d2": 1563,
+    "q2": 10908,
+    "t": 17.63241315295454
+   }
+  }
+ },
+ {
+  "test": "test_QV_100_transpile",
+  "kind": "device100",
+  "arm": "QK",
+  "input_qubits": 100,
+  "input_ops": {
+   "quantum_volume_[100,100,12345]": 1
+  },
+  "compile_s": 2.9873533280006086,
+  "psf_stdout_tail": [],
+  "output_qubits": 133,
+  "q2": 96483,
+  "d2": 10530,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 6.308887745999527,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 10218,
+    "q2": 96612,
+    "t": 1.480899739999586
+   },
+   "tket_2.18.0": {
+    "d2": 8925,
+    "q2": 105015,
+    "t": 202.92370616800326
+   }
+  }
+ },
+ {
+  "test": "test_QV_100_transpile",
+  "kind": "device100",
+  "arm": "PSF",
+  "input_qubits": 100,
+  "input_ops": {
+   "quantum_volume_[100,100,12345]": 1
+  },
+  "release": "2026-10-06.2",
+  "compile_s": 2.267740451999998,
+  "psf_stdout_tail": [],
+  "output_qubits": 133,
+  "q2": 99069,
+  "d2": 10545,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 5.666297005999695,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 10218,
+    "q2": 96612,
+    "t": 1.480899739999586
+   },
+   "tket_2.18.0": {
+    "d2": 8925,
+    "q2": 105015,
+    "t": 202.92370616800326
+   }
+  }
+ },
+ {
+  "test": "test_QV_100_transpile",
+  "kind": "device100",
+  "arm": "PSFH",
+  "input_qubits": 100,
+  "input_ops": {
+   "quantum_volume_[100,100,12345]": 1
+  },
+  "release": "2026-10-06.2",
+  "unrolled_ops": {
+   "rz": 180000,
+   "sx": 110000,
+   "cz": 15000
+  },
+  "compile_s": 4.256575905999853,
+  "psf_stdout_tail": [],
+  "output_qubits": 133,
+  "q2": 97155,
+  "d2": 10398,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 7.756778406000194,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 10218,
+    "q2": 96612,
+    "t": 1.480899739999586
+   },
+   "tket_2.18.0": {
+    "d2": 8925,
+    "q2": 105015,
+    "t": 202.92370616800326
+   }
+  }
+ },
+ {
+  "test": "test_circSU2_100_transpile",
+  "kind": "device100",
+  "arm": "QK",
+  "input_qubits": 100,
+  "input_ops": {
+   "EfficientSU2": 1
+  },
+  "compile_s": 0.08649573100046837,
+  "psf_stdout_tail": [],
+  "output_qubits": 133,
+  "q2": 300,
+  "d2": 300,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 1.9333877919998486,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 300,
+    "q2": 300,
+    "t": 0.03729508795668548
+   }
+  }
+ },
+ {
+  "test": "test_circSU2_100_transpile",
+  "kind": "device100",
+  "arm": "PSF",
+  "input_qubits": 100,
+  "input_ops": {
+   "EfficientSU2": 1
+  },
+  "release": "2026-10-06.2",
+  "compile_s": 0.1332090870000684,
+  "psf_stdout_tail": [],
+  "output_qubits": 133,
+  "q2": 1887,
+  "d2": 1447,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 2.003012909000063,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 300,
+    "q2": 300,
+    "t": 0.03729508795668548
+   }
+  }
+ },
+ {
+  "test": "test_circSU2_100_transpile",
+  "kind": "device100",
+  "arm": "PSFH",
+  "input_qubits": 100,
+  "input_ops": {
+   "EfficientSU2": 1
+  },
+  "release": "2026-10-06.2",
+  "unrolled_ops": {
+   "rz": 2800,
+   "sx": 1400,
+   "cz": 300
+  },
+  "compile_s": 0.41050768200057064,
+  "psf_stdout_tail": [],
+  "output_qubits": 133,
+  "q2": 300,
+  "d2": 300,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 2.3327483749999374,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 300,
+    "q2": 300,
+    "t": 0.03729508795668548
+   }
+  }
+ },
+ {
+  "test": "test_QFT_100_transpile",
+  "kind": "device100",
+  "arm": "QK",
+  "input_qubits": 100,
+  "input_ops": {
+   "rz": 14850,
+   "cx": 10050,
+   "ry": 100,
+   "rx": 100
+  },
+  "compile_s": 0.2506214400000317,
+  "psf_stdout_tail": [],
+  "output_qubits": 133,
+  "q2": 9267,
+  "d2": 1689,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 2.3155650349999632,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 1713,
+    "q2": 9305,
+    "t": 0.10956007970016798
+   },
+   "tket_2.18.0": {
+    "d2": 3506,
+    "q2": 17805,
+    "t": 39.89766881200194
+   }
+  }
+ },
+ {
+  "test": "test_QFT_100_transpile",
+  "kind": "device100",
+  "arm": "PSF",
+  "input_qubits": 100,
+  "input_ops": {
+   "rz": 14850,
+   "cx": 10050,
+   "ry": 100,
+   "rx": 100
+  },
+  "release": "2026-10-06.2",
+  "compile_s": 1.5111340100002053,
+  "psf_stdout_tail": [],
+  "output_qubits": 133,
+  "q2": 13456,
+  "d2": 2114,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 3.6669209510000655,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 1713,
+    "q2": 9305,
+    "t": 0.10956007970016798
+   },
+   "tket_2.18.0": {
+    "d2": 3506,
+    "q2": 17805,
+    "t": 39.89766881200194
+   }
+  }
+ },
+ {
+  "test": "test_QFT_100_transpile",
+  "kind": "device100",
+  "arm": "PSFH",
+  "input_qubits": 100,
+  "input_ops": {
+   "rz": 14850,
+   "cx": 10050,
+   "ry": 100,
+   "rx": 100
+  },
+  "release": "2026-10-06.2",
+  "unrolled_ops": {
+   "rz": 55650,
+   "sx": 20500,
+   "cz": 10050
+  },
+  "compile_s": 4.448177074000341,
+  "psf_stdout_tail": [],
+  "output_qubits": 133,
+  "q2": 17078,
+  "d2": 2646,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 6.790627637000398,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 1713,
+    "q2": 9305,
+    "t": 0.10956007970016798
+   },
+   "tket_2.18.0": {
+    "d2": 3506,
+    "q2": 17805,
+    "t": 39.89766881200194
+   }
+  }
+ }
+]

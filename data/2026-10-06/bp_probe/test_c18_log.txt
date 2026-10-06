@@ -1,0 +1,23 @@
+$ python -m pytest patches/psf_compile_c18_2026-10-06/test_c18.py -q -s -p no:cacheprovider 2>&1 | tail -30
+.release: returncode -6, 0.5 s, stderr tail 'memory allocation of 2251799813685256 bytes failed\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n'
+.....8-qubit Ising, time 1: state infidelity exact exponential vs product formula = 8.603e-01
+......c18 recommended call, 14 qubits (random): 10.1 s, cz 1004, EXACT_STATS {'checked': 54, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 2}
+.c18 recommended call, 48 qubits (ising): 0.5 s, cz 309, EXACT_STATS {'checked': 58, 'refused_resynthesis': 2, 'refused_floor': 1, 'refused_level3': 1, 'not_checkable': 6}
+.
+=============================== warnings summary ===============================
+patches/psf_compile_c18_2026-10-06/test_c18.py::test_definition_agrees_with_the_matrix_where_both_are_exact[zz9]
+patches/psf_compile_c18_2026-10-06/test_c18.py::test_product_formula_is_the_reference_for_non_commuting_terms
+  <wsl-home>/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/scipy/sparse/linalg/_dsolve/linsolve.py:653: SparseEfficiencyWarning: splu converted its input to CSC format
+    return splu(A).solve
+
+patches/psf_compile_c18_2026-10-06/test_c18.py::test_definition_agrees_with_the_matrix_where_both_are_exact[zz9]
+patches/psf_compile_c18_2026-10-06/test_c18.py::test_product_formula_is_the_reference_for_non_commuting_terms
+  <wsl-home>/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/scipy/sparse/linalg/_matfuncs.py:706: SparseEfficiencyWarning: spsolve is more efficient when sparse b is in the CSC matrix format
+    return spsolve(Q, P)
+
+patches/psf_compile_c18_2026-10-06/test_c18.py::test_definition_agrees_with_the_matrix_where_both_are_exact[zz9]
+  <wsl-home>/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/scipy/sparse/_index.py:174: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+    self._set_intXint(row, col, x.flat[0])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+14 passed, 5 warnings in 19.04s

@@ -1,0 +1,692 @@
+[
+ {
+  "test": "test_QASMBench_small[adder_n4-all-to-all]",
+  "kind": "qasmbench",
+  "arm": "QK",
+  "input_qubits": 4,
+  "input_ops": {
+   "cx": 10,
+   "t": 4,
+   "tdg": 4,
+   "measure": 4,
+   "x": 2,
+   "h": 2,
+   "s": 1
+  },
+  "compile_s": 0.0537549240007138,
+  "psf_stdout_tail": [],
+  "output_qubits": 4,
+  "q2": 10,
+  "d2": 6,
+  "other_2q": {},
+  "valid": true,
+  "equivalent": true,
+  "wall_s": 1.8664188090006064,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 6,
+    "q2": 10,
+    "t": 0.0008002756045602138
+   },
+   "tket_2.18.0": {
+    "d2": 6,
+    "q2": 10,
+    "t": 0.0753590577826669
+   }
+  }
+ },
+ {
+  "test": "test_QASMBench_small[adder_n4-all-to-all]",
+  "kind": "qasmbench",
+  "arm": "PSF",
+  "input_qubits": 4,
+  "input_ops": {
+   "cx": 10,
+   "t": 4,
+   "tdg": 4,
+   "measure": 4,
+   "x": 2,
+   "h": 2,
+   "s": 1
+  },
+  "release": "2026-10-06.2",
+  "compile_s": 0.22386913999980607,
+  "psf_stdout_tail": [],
+  "output_qubits": 4,
+  "q2": 10,
+  "d2": 6,
+  "other_2q": {},
+  "valid": true,
+  "equivalent": true,
+  "wall_s": 2.0031523999996352,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 6,
+    "q2": 10,
+    "t": 0.0008002756045602138
+   },
+   "tket_2.18.0": {
+    "d2": 6,
+    "q2": 10,
+    "t": 0.0753590577826669
+   }
+  }
+ },
+ {
+  "test": "test_QASMBench_small[basis_trotter_n4-all-to-all]",
+  "kind": "qasmbench",
+  "arm": "QK",
+  "input_qubits": 4,
+  "input_ops": {
+   "rz": 462,
+   "cx": 402,
+   "u3": 216,
+   "rx": 162,
+   "h": 120,
+   "swap": 60,
+   "ry": 54,
+   "z": 30,
+   "measure": 4
+  },
+  "compile_s": 0.04420011999991402,
+  "psf_stdout_tail": [],
+  "output_qubits": 4,
+  "q2": 179,
+  "d2": 123,
+  "other_2q": {},
+  "valid": true,
+  "equivalent": false,
+  "wall_s": 1.8677975439995862,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 123,
+    "q2": 179,
+    "t": 0.004460523822636416
+   },
+   "tket_2.18.0": {
+    "d2": 103,
+    "q2": 159,
+    "t": 1.4646991729969159
+   }
+  }
+ },
+ {
+  "test": "test_QASMBench_small[basis_trotter_n4-all-to-all]",
+  "kind": "qasmbench",
+  "arm": "PSF",
+  "input_qubits": 4,
+  "input_ops": {
+   "rz": 462,
+   "cx": 402,
+   "u3": 216,
+   "rx": 162,
+   "h": 120,
+   "swap": 60,
+   "ry": 54,
+   "z": 30,
+   "measure": 4
+  },
+  "release": "2026-10-06.2",
+  "compile_s": 0.2183598300007361,
+  "psf_stdout_tail": [],
+  "output_qubits": 4,
+  "q2": 199,
+  "d2": 133,
+  "other_2q": {},
+  "valid": true,
+  "equivalent": true,
+  "wall_s": 2.092502077000063,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 123,
+    "q2": 179,
+    "t": 0.004460523822636416
+   },
+   "tket_2.18.0": {
+    "d2": 103,
+    "q2": 159,
+    "t": 1.4646991729969159
+   }
+  }
+ },
+ {
+  "test": "test_feynman_transpile[barenco_tof_10.qasm]",
+  "kind": "feynman",
+  "arm": "QK",
+  "input_qubits": 19,
+  "input_ops": {
+   "h": 98,
+   "ccx": 32
+  },
+  "compile_s": 0.055853257999842754,
+  "psf_stdout_tail": [],
+  "output_qubits": 133,
+  "q2": 368,
+  "d2": 287,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 1.934070822000649,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 292,
+    "q2": 367,
+    "t": 0.007833509929808139
+   },
+   "tket_2.18.0": {
+    "d2": 327,
+    "q2": 394,
+    "t": 1.0041081070085056
+   }
+  }
+ },
+ {
+  "test": "test_feynman_transpile[barenco_tof_10.qasm]",
+  "kind": "feynman",
+  "arm": "PSF",
+  "input_qubits": 19,
+  "input_ops": {
+   "h": 98,
+   "ccx": 32
+  },
+  "release": "2026-10-06.2",
+  "compile_s": 0.15307846700034133,
+  "psf_stdout_tail": [],
+  "output_qubits": 133,
+  "q2": 729,
+  "d2": 449,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 2.064725035000265,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 292,
+    "q2": 367,
+    "t": 0.007833509929808139
+   },
+   "tket_2.18.0": {
+    "d2": 327,
+    "q2": 394,
+    "t": 1.0041081070085056
+   }
+  }
+ },
+ {
+  "test": "test_feynman_transpile[barenco_tof_10.qasm]",
+  "kind": "feynman",
+  "arm": "PSFR",
+  "input_qubits": 19,
+  "input_ops": {
+   "h": 98,
+   "ccx": 32
+  },
+  "release": "2026-10-06.2",
+  "compile_s": 0.41119960800006083,
+  "psf_stdout_tail": [],
+  "output_qubits": 133,
+  "q2": 729,
+  "d2": 449,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 2.3507688930003496,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 292,
+    "q2": 367,
+    "t": 0.007833509929808139
+   },
+   "tket_2.18.0": {
+    "d2": 327,
+    "q2": 394,
+    "t": 1.0041081070085056
+   }
+  }
+ },
+ {
+  "test": "test_hamlib_hamiltonians_transpile[ham_enc_gray_dvalues_4-4-4-4-4-4-4]",
+  "kind": "ham_device",
+  "arm": "QK",
+  "input_qubits": 14,
+  "input_ops": {
+   "PauliEvolution": 1
+  },
+  "compile_s": 0.12445654400016792,
+  "psf_stdout_tail": [],
+  "output_qubits": 133,
+  "q2": 3689,
+  "d2": 3092,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 2.227832433000003,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 3120,
+    "q2": 3768,
+    "t": 0.05014825914284821
+   },
+   "tket_2.18.0": {
+    "d2": 8042,
+    "q2": 12119,
+    "t": 33.885301031012204
+   }
+  }
+ },
+ {
+  "test": "test_hamlib_hamiltonians_transpile[ham_enc_gray_dvalues_4-4-4-4-4-4-4]",
+  "kind": "ham_device",
+  "arm": "PSF",
+  "input_qubits": 14,
+  "input_ops": {
+   "PauliEvolution": 1
+  },
+  "release": "2026-10-06.2",
+  "compile_s": 0.3153850299995611,
+  "psf_stdout_tail": [],
+  "output_qubits": 133,
+  "q2": 6195,
+  "d2": 4735,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 2.499424093000016,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 3120,
+    "q2": 3768,
+    "t": 0.05014825914284821
+   },
+   "tket_2.18.0": {
+    "d2": 8042,
+    "q2": 12119,
+    "t": 33.885301031012204
+   }
+  }
+ },
+ {
+  "test": "test_hamlib_hamiltonians_transpile[ham_enc_gray_dvalues_4-4-4-4-4-4-4]",
+  "arm": "PSFR",
+  "error": "timeout 600 s",
+  "wall_s": 600.2043882639991,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 3120,
+    "q2": 3768,
+    "t": 0.05014825914284821
+   },
+   "tket_2.18.0": {
+    "d2": 8042,
+    "q2": 12119,
+    "t": 33.885301031012204
+   }
+  }
+ },
+ {
+  "test": "test_hamlib_hamiltonians_transpile[ham_enc_gray_dvalues_4-4-4-4-4-4-4]",
+  "kind": "ham_device",
+  "arm": "PSFH",
+  "input_qubits": 14,
+  "input_ops": {
+   "PauliEvolution": 1
+  },
+  "release": "2026-10-06.2",
+  "unrolled_ops": {
+   "rz": 34715,
+   "sx": 16844,
+   "cz": 5954
+  },
+  "compile_s": 2.324702205999529,
+  "psf_stdout_tail": [],
+  "output_qubits": 133,
+  "q2": 6011,
+  "d2": 5021,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 4.806114371000149,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 3120,
+    "q2": 3768,
+    "t": 0.05014825914284821
+   },
+   "tket_2.18.0": {
+    "d2": 8042,
+    "q2": 12119,
+    "t": 33.885301031012204
+   }
+  }
+ },
+ {
+  "test": "test_hamlib_hamiltonians_transpile[ham_bh_graph-1D-grid-nonpbc-qubitnodes_Lx-12_U-40_enc-unary_d-4]",
+  "kind": "ham_device",
+  "arm": "QK",
+  "input_qubits": 48,
+  "input_ops": {
+   "PauliEvolution": 1
+  },
+  "compile_s": 0.1535100949995467,
+  "psf_stdout_tail": [],
+  "output_qubits": 133,
+  "q2": 4509,
+  "d2": 3995,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 2.3281159419993855,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 4075,
+    "q2": 4409,
+    "t": 0.06068589423525469
+   },
+   "tket_2.18.0": {
+    "d2": 2355,
+    "q2": 8336,
+    "t": 22.120181602993398
+   }
+  }
+ },
+ {
+  "test": "test_hamlib_hamiltonians_transpile[ham_bh_graph-1D-grid-nonpbc-qubitnodes_Lx-12_U-40_enc-unary_d-4]",
+  "kind": "ham_device",
+  "arm": "PSF",
+  "input_qubits": 48,
+  "input_ops": {
+   "PauliEvolution": 1
+  },
+  "release": "2026-10-06.2",
+  "compile_s": 0.4225879209998311,
+  "psf_stdout_tail": [],
+  "output_qubits": 133,
+  "q2": 8556,
+  "d2": 5963,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 2.669565588000296,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 4075,
+    "q2": 4409,
+    "t": 0.06068589423525469
+   },
+   "tket_2.18.0": {
+    "d2": 2355,
+    "q2": 8336,
+    "t": 22.120181602993398
+   }
+  }
+ },
+ {
+  "test": "test_hamlib_hamiltonians_transpile[ham_bh_graph-1D-grid-nonpbc-qubitnodes_Lx-12_U-40_enc-unary_d-4]",
+  "arm": "PSFR",
+  "error": "memory allocation of 2251799813685256 bytes failed\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n",
+  "wall_s": 3.619085826000628,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 4075,
+    "q2": 4409,
+    "t": 0.06068589423525469
+   },
+   "tket_2.18.0": {
+    "d2": 2355,
+    "q2": 8336,
+    "t": 22.120181602993398
+   }
+  }
+ },
+ {
+  "test": "test_hamlib_hamiltonians_transpile[ham_bh_graph-1D-grid-nonpbc-qubitnodes_Lx-12_U-40_enc-unary_d-4]",
+  "kind": "ham_device",
+  "arm": "PSFH",
+  "input_qubits": 48,
+  "input_ops": {
+   "PauliEvolution": 1
+  },
+  "release": "2026-10-06.2",
+  "unrolled_ops": {
+   "rz": 32496,
+   "sx": 15840,
+   "cz": 4752
+  },
+  "compile_s": 1.4103554690000237,
+  "psf_stdout_tail": [],
+  "output_qubits": 133,
+  "q2": 4970,
+  "d2": 4515,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 3.7074817560005613,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 4075,
+    "q2": 4409,
+    "t": 0.06068589423525469
+   },
+   "tket_2.18.0": {
+    "d2": 2355,
+    "q2": 8336,
+    "t": 22.120181602993398
+   }
+  }
+ },
+ {
+  "test": "test_hamiltonians[ham_0-uuf100-0810.cnf-40-res-heavy-hex]",
+  "kind": "ham_abstract",
+  "arm": "QK",
+  "input_qubits": 40,
+  "input_ops": {
+   "PauliEvolution": 1
+  },
+  "compile_s": 0.060714399999596935,
+  "psf_stdout_tail": [],
+  "output_qubits": 57,
+  "q2": 1279,
+  "d2": 493,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 2.0067742299997917,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 435,
+    "q2": 1276,
+    "t": 0.014018705569431708
+   },
+   "tket_2.18.0": {
+    "d2": 549,
+    "q2": 1617,
+    "t": 2.311900471977424
+   }
+  }
+ },
+ {
+  "test": "test_hamiltonians[ham_0-uuf100-0810.cnf-40-res-heavy-hex]",
+  "kind": "ham_abstract",
+  "arm": "PSF",
+  "input_qubits": 40,
+  "input_ops": {
+   "PauliEvolution": 1
+  },
+  "release": "2026-10-06.2",
+  "compile_s": 0.20635120600036316,
+  "psf_stdout_tail": [],
+  "output_qubits": 57,
+  "q2": 1983,
+  "d2": 560,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 2.167476187999455,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 435,
+    "q2": 1276,
+    "t": 0.014018705569431708
+   },
+   "tket_2.18.0": {
+    "d2": 549,
+    "q2": 1617,
+    "t": 2.311900471977424
+   }
+  }
+ },
+ {
+  "test": "test_hamiltonians[ham_0-uuf100-0810.cnf-40-res-heavy-hex]",
+  "kind": "ham_abstract",
+  "arm": "PSFH",
+  "input_qubits": 40,
+  "input_ops": {
+   "PauliEvolution": 1
+  },
+  "release": "2026-10-06.2",
+  "unrolled_ops": {
+   "rz": 1587,
+   "sx": 700,
+   "cz": 350
+  },
+  "compile_s": 0.2921691390001797,
+  "psf_stdout_tail": [],
+  "output_qubits": 57,
+  "q2": 1379,
+  "d2": 513,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 2.2578192959999797,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 435,
+    "q2": 1276,
+    "t": 0.014018705569431708
+   },
+   "tket_2.18.0": {
+    "d2": 549,
+    "q2": 1617,
+    "t": 2.311900471977424
+   }
+  }
+ },
+ {
+  "test": "test_QASMBench_medium[bigadder_n18-square]",
+  "kind": "qasmbench",
+  "arm": "QK",
+  "input_qubits": 18,
+  "input_ops": {
+   "x": 10,
+   "measure": 9,
+   "add4": 2
+  },
+  "compile_s": 0.045868229999541654,
+  "psf_stdout_tail": [],
+  "output_qubits": 25,
+  "q2": 189,
+  "d2": 137,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 1.7243028789998789,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 133,
+    "q2": 197,
+    "t": 0.004736649236353211
+   },
+   "tket_2.18.0": {
+    "d2": 147,
+    "q2": 213,
+    "t": 0.5935201635147678
+   }
+  }
+ },
+ {
+  "test": "test_QASMBench_medium[bigadder_n18-square]",
+  "kind": "qasmbench",
+  "arm": "PSF",
+  "input_qubits": 18,
+  "input_ops": {
+   "x": 10,
+   "measure": 9,
+   "add4": 2
+  },
+  "release": "2026-10-06.2",
+  "compile_s": 0.2023762329999954,
+  "psf_stdout_tail": [],
+  "output_qubits": 25,
+  "q2": 274,
+  "d2": 167,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 2.0142676879995633,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 133,
+    "q2": 197,
+    "t": 0.004736649236353211
+   },
+   "tket_2.18.0": {
+    "d2": 147,
+    "q2": 213,
+    "t": 0.5935201635147678
+   }
+  }
+ },
+ {
+  "test": "test_QASMBench_medium[bv_n14-square]",
+  "kind": "qasmbench",
+  "arm": "QK",
+  "input_qubits": 14,
+  "input_ops": {
+   "h": 27,
+   "cx": 13,
+   "measure": 13,
+   "barrier": 2,
+   "x": 1
+  },
+  "compile_s": 0.04047524399993563,
+  "psf_stdout_tail": [],
+  "output_qubits": 16,
+  "q2": 25,
+  "d2": 25,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 1.7332926730005056,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 24,
+    "q2": 24,
+    "t": 0.001854493939197946
+   },
+   "tket_2.18.0": {
+    "d2": 22,
+    "q2": 24,
+    "t": 0.14557806114732688
+   }
+  }
+ },
+ {
+  "test": "test_QASMBench_medium[bv_n14-square]",
+  "kind": "qasmbench",
+  "arm": "PSF",
+  "input_qubits": 14,
+  "input_ops": {
+   "h": 27,
+   "cx": 13,
+   "measure": 13,
+   "barrier": 2,
+   "x": 1
+  },
+  "release": "2026-10-06.2",
+  "compile_s": 0.1736782680000033,
+  "psf_stdout_tail": [],
+  "output_qubits": 16,
+  "q2": 29,
+  "d2": 29,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 1.862908255999173,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 24,
+    "q2": 24,
+    "t": 0.001854493939197946
+   },
+   "tket_2.18.0": {
+    "d2": 22,
+    "q2": 24,
+    "t": 0.14557806114732688
+   }
+  }
+ }
+]

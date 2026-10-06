@@ -16998,6 +16998,208 @@ NumPy 2.5.3, core 2026-09-29.1) are right. The line in Addendum 374 is corrected
 - **The predictions followed the smoke run** (Addendum 375, section 3).
 - **Local paths:** none were found in the output; nothing was replaced when it was copied into the repository.
 
+
+---
+
+<!-- ===== Addendum 377 (source: spare-qubit-cliff-addendum-377-2026-10-06.md) ===== -->
+
+> **Note added when merging:** Exploratory, not pre-registered: no predictions; written after every output was seen. Candidate 2026-10-06.c18 (changelog item 44) is described here; its adoption is the owner's decision.
+
+## Addendum 377 -- BP-PROBE (exploratory, not pre-registered): twelve Benchpress transpilation tests compiled by Qiskit's Benchpress call and by release 2026-10-06.2; the default call is valid on all twelve but uses more two-qubit gates on ten (geometric mean 1.53x Qiskit level 2); the recommended call aborts the process on a 48-qubit Hamiltonian and runs past 600 s on a 14-qubit one; candidate 2026-10-06.c18 (changelog item 44) removes both (2026-10-06)
+
+**Status: exploratory. Not pre-registered; no predictions were written; this report was written after every output
+was seen.** It was run to learn how PSF-Zero handles Benchpress's inputs and how long it takes, before BP-MOCK (a
+pre-registered mock exam on a stratified sample of Benchpress) is designed in detail. The fourteen tests used here
+are excluded from BP-MOCK's sample.
+
+## 1. Why
+
+[Benchpress](https://github.com/Qiskit/benchpress) is IBM's open benchmark of quantum SDKs. Its transpilation part has
+1,032 tests: QASMBench circuits and HamLib Hamiltonians on four abstract topologies (all-to-all, square, heavy-hex,
+linear), and HamLib, Feynman and 100-qubit circuits on FakeTorino, with basis `id, sx, x, rz, cz`, Qiskit at
+optimization level 2, and two metrics: the output's two-qubit gate count and two-qubit depth. A structural validator
+checks the gate set and the couplings; nothing checks equivalence. Its authors publish their results: on the branch
+`previous_results` (commit `f87a12a`, 2026-07-06), Qiskit 2.5.0rc1 and Tket 2.18.0, both run on an AMD Ryzen 9 7900.
+
+## 2. Setup
+
+- **Benchpress:** commit `b695f30` (main, 2026-07-29), cloned at home. Every test is built as Benchpress's Qiskit gym
+  builds it: the same input circuit (a HamLib test is one `PauliEvolutionGate` on all qubits), the same backend
+  (FakeTorino, or `FlexibleBackend` for an abstract topology), the same metrics and validator (Benchpress's own
+  functions).
+- **Tests (14, fixed by rule before the runs):** QASMBench small `adder_n4` and `basis_trotter_n4` on all-to-all;
+  Feynman `barenco_tof_10` on FakeTorino; the first HamLib chemistry instance of 10-20 qubits and the first condensed
+  matter instance of 40-80 qubits (sorted by name) on FakeTorino; the first binary-optimization instance of 20-40
+  qubits on heavy-hex; the first two QASMBench medium circuits (by name) on square; the first QASMBench large circuit of
+  28-60 qubits (by name; `QV_n32`, test id "32") on linear; QV, circSU2 and QFT at 100 qubits on FakeTorino. Twelve
+  are reported in section 3; the two HamLib device tests are also the subject of section 4.
+- **Arms** (each test and arm in its own process, 600 s limit):
+
+| arm | what it is |
+|---|---|
+| QK | `generate_preset_pass_manager(2, backend).run(circuit)`, Benchpress's Qiskit call (not seeded, as in Benchpress) |
+| PSF | `compile_for_hardware(circuit, coupling_map, basis_gates, entangling_basis="cx", layout_search=True, seed_transpiler=0)`, the default call |
+| PSFR | the same with `target` and the README's recommended options (device tests only) |
+| PSFH | PSF after unrolling to the basis with Qiskit level 0 (HamLib and 100-qubit tests) |
+
+- **Also recorded:** compile time; Benchpress's validator; for outputs on at most 10 qubits, equivalence with the
+  input (`Operator.equiv`, after removing final measurements).
+- **Machine:** home, WSL2; Python 3.12.13, Qiskit 2.5.2, qiskit-ibm-runtime 0.49.0, NumPy 2.5.3, SciPy 1.18.1, core
+  `CORE_VERSION` 2026-09-29.1, release 2026-10-06.2 at commit `8424bde` (no change to a tracked file).
+- **Script:** [`benchmarks/bp_probe.py`](../../benchmarks/bp_probe.py). Runs 1 and 2 used v1; v2 (the committed file)
+  adds only `--psf` (compile the PSF arms with another `psf_compile.py`), per-job `EXACT_STATS` and `env.json`, and
+  made run 3. The published values come from
+  [`data/2026-10-06/bp_probe/published_ref.json`](../../data/2026-10-06/bp_probe/published_ref.json), which
+  [`benchmarks/bp_published_ref.py`](../../benchmarks/bp_published_ref.py) rebuilds, identical, from the published
+  files `benchpress_v1/qiskit/qiskit_2.5.0rc1.json` and `benchpress_v1/tket/2.18.0/tket-*.json` of that branch
+  (1,032 tests; 984 with Tket).
+- **Runs (UTC):** run 1 (8 tests) 12:19:59-12:30:50; run 2 (4 tests, arms QK, PSF, PSFH) 12:34:49-12:35:31; the tests
+  of c18 and run 3 (c18, section 4) 12:44-12:45:47.
+- **Output:** [`data/2026-10-06/bp_probe/`](../../data/2026-10-06/bp_probe/): `run1_small/`, `run2_large/`,
+  `run3_c18/` (each `bp_probe.json` and `log.txt`; run 3 also `env.json`), `test_c18_log.txt`, `published_ref.json`.
+
+## 3. Results (release 2026-10-06.2)
+
+Two-qubit gate count (cz) / two-qubit depth; time is the compile call only.
+
+| test | QK | PSF | PSFH | QK s | PSF s | published Qiskit 2.5.0rc1 | published Tket 2.18.0 |
+|---|---|---|---|---|---|---|---|
+| QASMBench small `adder_n4`, all-to-all | 10 / 6 | 10 / 6 | - | 0.05 | 0.22 | 10 / 6 | 10 / 6 |
+| QASMBench small `basis_trotter_n4`, all-to-all | 179 / 123 | 199 / 133 | - | 0.04 | 0.22 | 179 / 123 | 159 / 103 |
+| Feynman `barenco_tof_10`, FakeTorino | 368 / 287 | 729 / 449 | - | 0.06 | 0.15 | 367 / 292 | 394 / 327 |
+| HamLib chemistry, 14 qubits, FakeTorino | 3,689 / 3,092 | 6,195 / 4,735 | 6,011 / 5,021 | 0.12 | 0.32 | 3,768 / 3,120 | 12,119 / 8,042 |
+| HamLib condensed matter, 48 qubits, FakeTorino | 4,509 / 3,995 | 8,556 / 5,963 | 4,970 / 4,515 | 0.15 | 0.42 | 4,409 / 4,075 | 8,336 / 2,355 |
+| HamLib binary optimization, 40 qubits, heavy-hex | 1,279 / 493 | 1,983 / 560 | 1,379 / 513 | 0.06 | 0.21 | 1,276 / 435 | 1,617 / 549 |
+| QASMBench medium `bigadder_n18`, square | 189 / 137 | 274 / 167 | - | 0.05 | 0.20 | 197 / 133 | 213 / 147 |
+| QASMBench medium `bv_n14`, square | 25 / 25 | 29 / 29 | - | 0.04 | 0.17 | 24 / 24 | 24 / 22 |
+| QASMBench large `QV_n32`, linear | 10,101 / 1,485 | 9,957 / 1,599 | - | 0.26 | 0.43 | 9,693 / 1,377 | 10,908 / 1,563 |
+| QV 100, FakeTorino | 96,483 / 10,530 | 99,069 / 10,545 | 97,155 / 10,398 | 2.99 | 2.27 | 96,612 / 10,218 | 105,015 / 8,925 |
+| circSU2 100, FakeTorino | 300 / 300 | 1,887 / 1,447 | 300 / 300 | 0.09 | 0.13 | 300 / 300 | - |
+| QFT 100, FakeTorino | 9,267 / 1,689 | 13,456 / 2,114 | 17,078 / 2,646 | 0.25 | 1.51 | 9,305 / 1,713 | 17,805 / 3,506 |
+
+- **Validity:** every output of every arm passed Benchpress's validator. Equivalence could be checked on the two
+  all-to-all tests (4 qubits): PSF's outputs are equivalent. QK's output of `basis_trotter_n4` was reported **not**
+  equivalent; the input has 60 SWAPs, which Qiskit removes and records as a final permutation, and the probe's check
+  most likely does not undo it correctly. This is taken as a defect of the probe's check, not of Qiskit, until shown
+  otherwise; it is to be fixed before BP-MOCK.
+- **The reproduction holds:** QK's counts are within a few percent of the published Qiskit 2.5.0rc1 values on every
+  test (QK is not seeded, in Benchpress or here; `QV_n32`: 10,101 here, 9,693 published).
+- **PSF against QK, two-qubit count:** one tie (`adder_n4`), one lower count (`QV_n32`, -1.4%, inside QK's own
+  run-to-run spread), ten higher (+3% to +529%). Geometric mean of PSF / QK: **1.53** (median 1.45); two-qubit depth
+  1.36; compile time 2.9 (PSF faster only on QV 100: 2.27 s against 2.99 s).
+- **The better of PSF and PSFH against QK:** geometric mean 1.21. Unrolling first closes the gap on circSU2 (1,887
+  to 300, a tie) and most of it on two HamLib tests (48 and 40 qubits: +10% and +8% after unrolling), but not on the
+  14-qubit HamLib test (+68% before, +63% after) or on QFT 100 (+45% before, +84% after).
+- **PSFR** returned PSF's circuit on `barenco_tof_10` (0.41 s) and failed on both HamLib device tests (section 4).
+
+## 4. The defect, and candidate 2026-10-06.c18 (changelog item 44)
+
+**What happened (run 1):** on the 14-qubit HamLib test PSFR ran past 600 s (PSF: 0.32 s). On the 48-qubit one the
+process died with `memory allocation of 2251799813685256 bytes failed` (Rust's allocator aborts; no exception reaches
+the caller). 2,251,799,813,685,256 = (2^48 + 1) x 8 bytes: the row index of a 2^48-row sparse matrix.
+
+**Why:** item 39's checks (`_implements`, `_same_action`) build the logical circuit's action from
+`to_matrix()` of every instruction (`_ops_of`), and `_implements` did so before applying its 16-qubit limit. A
+`PauliEvolutionGate` on 48 qubits was turned into a 2^48 x 2^48 matrix, and one on 14 qubits into a dense
+2^14 x 2^14 one. These checks run only with `compare_floor` or `compare_level3`, so the recommended call is affected
+and, through it, the AI front end (which sends circuits above 8 qubits there); the default call is not.
+
+**A second problem in the same place:** `to_matrix()` of a `PauliEvolutionGate` is the exact exponential, but every
+compiler (Qiskit and PSF-Zero alike) builds the gate's definition, a product formula. For non-commuting terms the two
+differ; on an 8-qubit Ising Hamiltonian at time 1 the state infidelity between them is 0.86 (`test_c18.py`). Under the
+release, item 39 would therefore refuse every Qiskit-made candidate for such an input even where it finishes.
+
+**c18** ([`patches/psf_compile_c18_2026-10-06/psf_compile.py`](../../patches/psf_compile_c18_2026-10-06/psf_compile.py)):
+the qubit limits are applied before any matrix is built, and an instruction on more than `EXACT_MAX_GATE_QUBITS` (6)
+qubits is expanded through its `definition`, recursively, instead of being made a matrix (no definition, or more than
+`EXACT_MAX_OPS` = 200,000 instructions, makes the check one that cannot be made, which refuses the candidate as
+before). Nothing else changes.
+
+**Tests** ([`patches/psf_compile_c18_2026-10-06/test_c18.py`](../../patches/psf_compile_c18_2026-10-06/test_c18.py),
+home WSL2, [`test_c18_log.txt`](../../data/2026-10-06/bp_probe/test_c18_log.txt)): **14 passed.**
+
+| test | result |
+|---|---|
+| the release's `_implements` on a 48-qubit Ising `PauliEvolutionGate`, in a subprocess | aborts: return code -6 after 0.5 s, the same allocation message |
+| c18 on the same input | "cannot be checked" in under 5 s, no matrix built |
+| c18's expansion against Qiskit's `Operator` (commuting 9-qubit ZZ/Z Hamiltonian, `QFTGate(8)`, `MCXGate(6)` on 7 qubits) | state infidelity <= 1e-10, every matrix at most 64 x 64 |
+| matrices of five random circuits with instructions on at most 3 qubits | identical to the release's |
+| recommended call on three ring circuits (5, 7, 12 qubits) on FakeTorino, FakeHanoiV2, FakeGeneva, FakeKingston | every output identical to the release's, gate for gate |
+| recommended call on FakeTorino, 14-qubit random Hamiltonian / 48-qubit Ising | finishes in 10.1 s / 0.5 s, in the gate set and on the couplings |
+
+**Run 3** (c18, the three HamLib tests, arms PSF and PSFR; [`run3_c18/`](../../data/2026-10-06/bp_probe/run3_c18/)):
+
+| test | PSF (c18) | PSFR (c18) | QK (run 1) |
+|---|---|---|---|
+| HamLib chemistry, 14 qubits, FakeTorino | 6,195 / 4,735, 0.30 s | **3,616 / 3,074, 38.8 s** (4 checks, none refused) | 3,689 / 3,092, 0.12 s |
+| HamLib condensed matter, 48 qubits, FakeTorino | 8,556 / 5,963, 0.38 s | 8,556 / 5,963, 1.5 s (level 3 and floor refused: not checkable) | 4,509 / 3,995, 0.15 s |
+| HamLib binary optimization, 40 qubits, heavy-hex | 1,983 / 560, 0.16 s | - | 1,279 / 493, 0.06 s |
+
+- PSF's counts under c18 equal the release's on all three, as expected (the default call does not run the checks).
+- On 14 qubits the recommended call now finishes and gives the lowest count of this test (3,616 against QK's 3,689
+  and the published 3,768), at about 300 times QK's time. Which candidate it chose (the release's, the floor's or
+  level 3's) was not recorded (`COMPARE_STATS` is not in v2's output); with every check passed, level 3 is the likely
+  one, so the gain is most likely Qiskit level 3's, kept by the recommended call, not PSF-Zero's own synthesis.
+- On 48 qubits it now returns instead of aborting, but with the default call's circuit: above 16 qubits item 39
+  cannot check level 3 or the floor, so both are refused (section 5).
+
+## 5. Also found
+
+- **Above 16 qubits the level-3 comparison can never be chosen.** By item 39's design a check that cannot be made
+  refuses the candidate, and `_implements` cannot check a circuit of more than `RESYNTH_MAX_QUBITS` (16) qubits. The
+  level-3 transpile is still run and its time spent (run 3, 48 qubits: `refused_level3` 1, `not_checkable` 4). This
+  also explains G9 of PL-GPU-REDO (Addendum 376): on FakeAuckland at spare 0 (27 qubits) the recommended call and the
+  AI front end returned the default call's own circuit on 30 of 30 laps because level 3's circuit could not be
+  accepted at all, not because it was worse. Candidate c17 (named in Addendum 376: skip the level-3 comparison when
+  the circuit occupies the whole device) is better stated as: skip it whenever item 39 cannot check its result.
+  This is from reading the code and one run's counters; it is to be confirmed before c17 is written.
+- **The default call's weaknesses on Benchpress's circuits**, from section 3:
+  1. Composite input instructions (`PauliEvolutionGate`, `EfficientSU2`) handed over as they are: circSU2 100 6.3x,
+     HamLib 1.55-1.90x; unrolling first recovers all of it on circSU2 and most of it on two of the three HamLib
+     tests, but not on the 14-qubit one, and it makes QFT worse.
+  2. Layout and routing at Qiskit level 1 (`routing_optimization_level=1`, chosen for speed on circuits with deep
+     same-pair blocks, as the docstring says): on circuits without such blocks (`bigadder`, `bv`, `barenco`, QFT) the
+     count is 16-98% above level 2's.
+
+## 6. What this shows, and what it does not
+
+1. **On Benchpress's kind of circuit the current release does not beat Qiskit level 2.** All outputs are valid, but
+   the default call uses more two-qubit gates on ten of twelve tests (geometric mean 1.53x) and more time on eleven.
+   On QV (same-pair blocks, PSF-Zero's own case) it is level with Qiskit: +2.7% on QV 100 (+0.7% after unrolling),
+   -1.4% on `QV_n32`, inside QK's spread.
+2. **The recommended call of 2026-10-06.2 is not safe on wide composite instructions**: it can abort the process. c18
+   removes that; the tests show its output unchanged wherever no instruction acts on more than 6 qubits.
+3. **Not established:** anything about the other 1,018 tests; any statistical claim (fourteen tests chosen by rule,
+   one run each, QK unseeded); hardware; equivalence beyond 4 qubits.
+
+## 7. Next
+
+- **c18:** adoption is the owner's decision (14 passed; run 3).
+- **c17**, restated as in section 5, with a pre-registered check.
+- **The default call's weaknesses** (section 5) as candidates, then **BP-MOCK** pre-registered as release, candidates
+  and QK on a stratified sample that excludes these fourteen tests, with the probe's equivalence check fixed and
+  `COMPARE_STATS` recorded.
+
+## 8. Files and normalized SHA-256
+
+| file | normalized SHA-256 |
+|---|---|
+| [`benchmarks/bp_probe.py`](../../benchmarks/bp_probe.py) (v2; v1, which made runs 1-2, was `c58edca87b27de1c336843efeb4008158bf61fa0e75c212efaf2d274cc0dfd72`) | `73defde66868852db583d5e4fb055ec53c6ea864aae6466876c571f8d26cee66` |
+| [`benchmarks/bp_published_ref.py`](../../benchmarks/bp_published_ref.py) | `a9ddc1b819ac00042f38b628497dc6dc29832de0e3ace0e2d36567e80e3a1118` |
+| [`data/2026-10-06/bp_probe/published_ref.json`](../../data/2026-10-06/bp_probe/published_ref.json) | `d05231a75695c4fa9cbe2f09891ae8a835db32699e381c4d8de4b2afaaf56877` |
+| [`patches/psf_compile_c18_2026-10-06/psf_compile.py`](../../patches/psf_compile_c18_2026-10-06/psf_compile.py) | `e852fcbdb5f022a00b9acf04341be3f73ed62050e3aee70d5ed227766e219c4c` |
+| [`patches/psf_compile_c18_2026-10-06/test_c18.py`](../../patches/psf_compile_c18_2026-10-06/test_c18.py) | `08f2e36836605fdbf45a8235977cb4f827278205b2634bd2dd2e8eb041e6e440` |
+| [`psf_compile.py`](../../psf_compile.py) (release 2026-10-06.2, unchanged) | `1c3dfb0853c2fcd28eacbcdd14abc4c328cf5f40ac8a0a771fbfd70a183dfb84` |
+
+## 9. Disclosures
+
+- **Exploratory:** no pre-registration, no predictions. The tests and arms were fixed before run 1; run 2 dropped
+  PSFR after run 1 had failed with it. The script changed from v1 to v2 between runs 2 and 3.
+- **One machine, one run per job;** QK is not seeded. Published values are from another machine and Qiskit 2.5.0rc1.
+- **c18 was written and tested after the failures were seen.** Its tests use synthetic Hamiltonians; run 3 is the
+  Benchpress check.
+- **Local paths** in the logs were replaced by `<project-folder>` and `<wsl-home>`; the json files had none.
+
 ---
 
 ---

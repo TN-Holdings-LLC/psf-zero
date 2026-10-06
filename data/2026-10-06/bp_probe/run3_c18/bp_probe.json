@@ -1,0 +1,187 @@
+[
+ {
+  "test": "test_hamlib_hamiltonians_transpile[ham_enc_gray_dvalues_4-4-4-4-4-4-4]",
+  "kind": "ham_device",
+  "arm": "PSF",
+  "input_qubits": 14,
+  "input_ops": {
+   "PauliEvolution": 1
+  },
+  "release": "2026-10-06.c18",
+  "compile_s": 0.30393378700046014,
+  "exact_stats": {
+   "checked": 0,
+   "refused_resynthesis": 0,
+   "refused_floor": 0,
+   "refused_level3": 0,
+   "not_checkable": 0
+  },
+  "psf_stdout_tail": [],
+  "output_qubits": 133,
+  "q2": 6195,
+  "d2": 4735,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 2.0429964749991996,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 3120,
+    "q2": 3768,
+    "t": 0.05014825914284821
+   },
+   "tket_2.18.0": {
+    "d2": 8042,
+    "q2": 12119,
+    "t": 33.885301031012204
+   }
+  }
+ },
+ {
+  "test": "test_hamlib_hamiltonians_transpile[ham_enc_gray_dvalues_4-4-4-4-4-4-4]",
+  "kind": "ham_device",
+  "arm": "PSFR",
+  "input_qubits": 14,
+  "input_ops": {
+   "PauliEvolution": 1
+  },
+  "release": "2026-10-06.c18",
+  "compile_s": 38.8116909219998,
+  "exact_stats": {
+   "checked": 4,
+   "refused_resynthesis": 0,
+   "refused_floor": 0,
+   "refused_level3": 0,
+   "not_checkable": 0
+  },
+  "psf_stdout_tail": [],
+  "output_qubits": 133,
+  "q2": 3616,
+  "d2": 3074,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 40.41089550800007,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 3120,
+    "q2": 3768,
+    "t": 0.05014825914284821
+   },
+   "tket_2.18.0": {
+    "d2": 8042,
+    "q2": 12119,
+    "t": 33.885301031012204
+   }
+  }
+ },
+ {
+  "test": "test_hamlib_hamiltonians_transpile[ham_bh_graph-1D-grid-nonpbc-qubitnodes_Lx-12_U-40_enc-unary_d-4]",
+  "kind": "ham_device",
+  "arm": "PSF",
+  "input_qubits": 48,
+  "input_ops": {
+   "PauliEvolution": 1
+  },
+  "release": "2026-10-06.c18",
+  "compile_s": 0.38053603500065947,
+  "exact_stats": {
+   "checked": 0,
+   "refused_resynthesis": 0,
+   "refused_floor": 0,
+   "refused_level3": 0,
+   "not_checkable": 0
+  },
+  "psf_stdout_tail": [],
+  "output_qubits": 133,
+  "q2": 8556,
+  "d2": 5963,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 2.0602461389999007,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 4075,
+    "q2": 4409,
+    "t": 0.06068589423525469
+   },
+   "tket_2.18.0": {
+    "d2": 2355,
+    "q2": 8336,
+    "t": 22.120181602993398
+   }
+  }
+ },
+ {
+  "test": "test_hamlib_hamiltonians_transpile[ham_bh_graph-1D-grid-nonpbc-qubitnodes_Lx-12_U-40_enc-unary_d-4]",
+  "kind": "ham_device",
+  "arm": "PSFR",
+  "input_qubits": 48,
+  "input_ops": {
+   "PauliEvolution": 1
+  },
+  "release": "2026-10-06.c18",
+  "compile_s": 1.5109546439998667,
+  "exact_stats": {
+   "checked": 4,
+   "refused_resynthesis": 2,
+   "refused_floor": 1,
+   "refused_level3": 1,
+   "not_checkable": 4
+  },
+  "psf_stdout_tail": [],
+  "output_qubits": 133,
+  "q2": 8556,
+  "d2": 5963,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 3.250268906999736,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 4075,
+    "q2": 4409,
+    "t": 0.06068589423525469
+   },
+   "tket_2.18.0": {
+    "d2": 2355,
+    "q2": 8336,
+    "t": 22.120181602993398
+   }
+  }
+ },
+ {
+  "test": "test_hamiltonians[ham_0-uuf100-0810.cnf-40-res-heavy-hex]",
+  "kind": "ham_abstract",
+  "arm": "PSF",
+  "input_qubits": 40,
+  "input_ops": {
+   "PauliEvolution": 1
+  },
+  "release": "2026-10-06.c18",
+  "compile_s": 0.1613581189994875,
+  "exact_stats": {
+   "checked": 0,
+   "refused_resynthesis": 0,
+   "refused_floor": 0,
+   "refused_level3": 0,
+   "not_checkable": 0
+  },
+  "psf_stdout_tail": [],
+  "output_qubits": 57,
+  "q2": 1983,
+  "d2": 560,
+  "other_2q": {},
+  "valid": true,
+  "wall_s": 1.5842052609996244,
+  "published": {
+   "qiskit_2.5.0rc1": {
+    "d2": 435,
+    "q2": 1276,
+    "t": 0.014018705569431708
+   },
+   "tket_2.18.0": {
+    "d2": 549,
+    "q2": 1617,
+    "t": 2.311900471977424
+   }
+  }
+ }
+]

@@ -1,0 +1,25 @@
+$ python bp_probe.py run --bp <benchpress> --ref published_ref.json --out <project-folder>/bp_probe_run_big --tests 32-linear,_100_ --arms QK,PSF,PSFH
+4 tests; out <project-folder>/bp_probe_run_big
+  ... 12:34:49 UTC test_QASMBench_large[32-linear] QK
+test_QASMBench_large[32-linear]                              QK   q2  10101 d2   1485 t     0.26s valid True eq - | pub QK2.5 q2 9693 d2 1377 | Tket2.18 q2 10908 d2 1563
+  ... 12:34:52 UTC test_QASMBench_large[32-linear] PSF
+test_QASMBench_large[32-linear]                              PSF  q2   9957 d2   1599 t     0.43s valid True eq - | pub QK2.5 q2 9693 d2 1377 | Tket2.18 q2 10908 d2 1563
+  ... 12:34:54 UTC test_QV_100_transpile QK
+test_QV_100_transpile                                        QK   q2  96483 d2  10530 t     2.99s valid True eq - | pub QK2.5 q2 96612 d2 10218 | Tket2.18 q2 105015 d2 8925
+  ... 12:35:00 UTC test_QV_100_transpile PSF
+test_QV_100_transpile                                        PSF  q2  99069 d2  10545 t     2.27s valid True eq - | pub QK2.5 q2 96612 d2 10218 | Tket2.18 q2 105015 d2 8925
+  ... 12:35:06 UTC test_QV_100_transpile PSFH
+test_QV_100_transpile                                        PSFH q2  97155 d2  10398 t     4.26s valid True eq - | pub QK2.5 q2 96612 d2 10218 | Tket2.18 q2 105015 d2 8925
+  ... 12:35:14 UTC test_circSU2_100_transpile QK
+test_circSU2_100_transpile                                   QK   q2    300 d2    300 t     0.09s valid True eq - | pub QK2.5 q2 300 d2 300 | Tket2.18 q2 None d2 None
+  ... 12:35:16 UTC test_circSU2_100_transpile PSF
+test_circSU2_100_transpile                                   PSF  q2   1887 d2   1447 t     0.13s valid True eq - | pub QK2.5 q2 300 d2 300 | Tket2.18 q2 None d2 None
+  ... 12:35:18 UTC test_circSU2_100_transpile PSFH
+test_circSU2_100_transpile                                   PSFH q2    300 d2    300 t     0.41s valid True eq - | pub QK2.5 q2 300 d2 300 | Tket2.18 q2 None d2 None
+  ... 12:35:20 UTC test_QFT_100_transpile QK
+test_QFT_100_transpile                                       QK   q2   9267 d2   1689 t     0.25s valid True eq - | pub QK2.5 q2 9305 d2 1713 | Tket2.18 q2 17805 d2 3506
+  ... 12:35:22 UTC test_QFT_100_transpile PSF
+test_QFT_100_transpile                                       PSF  q2  13456 d2   2114 t     1.51s valid True eq - | pub QK2.5 q2 9305 d2 1713 | Tket2.18 q2 17805 d2 3506
+  ... 12:35:26 UTC test_QFT_100_transpile PSFH
+test_QFT_100_transpile                                       PSFH q2  17078 d2   2646 t     4.45s valid True eq - | pub QK2.5 q2 9305 d2 1713 | Tket2.18 q2 17805 d2 3506
+DONE

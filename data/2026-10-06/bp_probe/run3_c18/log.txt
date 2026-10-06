@@ -1,0 +1,13 @@
+$ python benchmarks/bp_probe.py run --bp <benchpress> --ref published_ref.json --out <project-folder>/bp_probe_run_c18 --tests ham_ --arms PSF,PSFR --psf patches/psf_compile_c18_2026-10-06/psf_compile.py
+3 tests; out <project-folder>/bp_probe_run_c18
+  ... 12:44:57 UTC test_hamlib_hamiltonians_transpile[ham_enc_gray_dvalues_4-4- PSF
+test_hamlib_hamiltonians_transpile[ham_enc_gray_dvalues_4-4- PSF  q2   6195 d2   4735 t     0.30s valid True eq - | pub QK2.5 q2 3768 d2 3120 | Tket2.18 q2 12119 d2 8042
+  ... 12:44:59 UTC test_hamlib_hamiltonians_transpile[ham_enc_gray_dvalues_4-4- PSFR
+test_hamlib_hamiltonians_transpile[ham_enc_gray_dvalues_4-4- PSFR q2   3616 d2   3074 t    38.81s valid True eq - | pub QK2.5 q2 3768 d2 3120 | Tket2.18 q2 12119 d2 8042
+  ... 12:45:39 UTC test_hamlib_hamiltonians_transpile[ham_bh_graph-1D-grid-nonp PSF
+test_hamlib_hamiltonians_transpile[ham_bh_graph-1D-grid-nonp PSF  q2   8556 d2   5963 t     0.38s valid True eq - | pub QK2.5 q2 4409 d2 4075 | Tket2.18 q2 8336 d2 2355
+  ... 12:45:41 UTC test_hamlib_hamiltonians_transpile[ham_bh_graph-1D-grid-nonp PSFR
+test_hamlib_hamiltonians_transpile[ham_bh_graph-1D-grid-nonp PSFR q2   8556 d2   5963 t     1.51s valid True eq - | pub QK2.5 q2 4409 d2 4075 | Tket2.18 q2 8336 d2 2355
+  ... 12:45:45 UTC test_hamiltonians[ham_0-uuf100-0810.cnf-40-res-heavy-hex] PSF
+test_hamiltonians[ham_0-uuf100-0810.cnf-40-res-heavy-hex]    PSF  q2   1983 d2    560 t     0.16s valid True eq - | pub QK2.5 q2 1276 d2 435 | Tket2.18 q2 1617 d2 549
+DONE
