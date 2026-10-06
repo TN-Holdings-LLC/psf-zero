@@ -15771,6 +15771,178 @@ Whether this is worth a candidate is open. The smoke run's differences between `
 
 None of them is a lock.
 
+
+---
+
+<!-- ===== Addendum 364 (source: spare-qubit-cliff-addendum-364-2026-10-06.md) ===== -->
+
+> **Note added when merging:** Pre-registration of SPEED (candidate psf_ai_compile 2026-10-06.a12); the predictions were written before the smoke runs, which were run and seen at the workplace (section 5); the lock is the commit that adds it, made before the scored run and pushed afterwards.
+
+## Addendum 364 -- Pre-registration: candidate psf_ai_compile 2026-10-06.a12 (changelog item 17: the AI front end's re-placement made faster without changing its result) against the adopted front end a11 (SPEED) (2026-10-06)
+
+**Status: pre-registration.**
+
+- **Lock:** the git commit that adds this document, made at the workplace before the scored run and pushed from home
+  afterwards with the same hash, as for Addenda 358-359. It locks:
+  - `patches/psf_ai_compile_a12_2026-10-06/` (the candidate and its test);
+  - `benchmarks/a12_eval.py` and its runner `benchmarks/run_a12_2026-10-06.py`;
+  - `benchmarks/a12_verify.py`, an independent re-computation of every verdict from the raw output, written before the
+    lock and before any scored output exists. It does not import `a12_eval.py`.
+- **No hardware:** fake devices only.
+- **The predictions (section 4) are in `a12_eval.py score`.** They were written before the first smoke run and are not
+  changed.
+
+## 1. Why
+
+**a11 is slow.** a11, adopted on 2026-10-06 (Addendum 362), takes 3-4 × the release's time on cz devices (RECR:
+median 0.87-1.23 s per circuit). In the vLLM loop it is called for every circuit a model writes.
+
+**An exploratory profile** (2026-10-06, 32 model-style circuits per device, not pre-registered) located the time:
+
+| device | median per circuit | state-aware re-placement | release calls | level 3 | polish |
+|---|---|---|---|---|---|
+| FakeTorino | 0.41 s | 53% | 33% | 6% | 5% |
+| FakeKingston | 0.59 s | 62% | 28% | 4% | 4% |
+| FakeAuckland | 0.16 s | 29% | 46% | 10% | 11% |
+
+- **What the re-placement does** (a4, `best_placement_state_aware`): for each of up to REMAP_TOP + 1 candidates it
+  scores up to MAX_MAPPINGS placements.
+- **Where the time goes:** every score looks up each gate's error parameters in the Target again.
+- **A second waste:** identical candidates produced from different starting points or seeds are re-placed again.
+
+## 2. The candidate
+
+**a12** is a11 plus item 17 (`AI_COMPILE_VERSION = "2026-10-06.a12"`). Against a11 it differs only in:
+
+- its changelog and version line;
+- a new `_score_weights_cached`;
+- `best_placement_state_aware`, which gets an optional `cache` argument and uses the new function;
+- the re-placement loop of `compile_for_model_circuit`.
+
+It makes two changes:
+
+- **(a) Cached scoring terms.** Within one call, the scoring terms of each (gate, device qubits) are kept once
+  computed. The same values are added in the same order, so each score is the same float.
+  - In a mock check (300 random targets, 12,000 placements, including missing directions and missing readout), the
+    cached score equalled `_score_weights` exactly every time.
+- **(b) No repeated re-placement.** A candidate identical to an earlier one is not re-placed again; it reuses the
+  earlier re-placement. Identical means the same instructions, clbits, parameters, global phase and layouts.
+  - The sort that picks the winner is stable, and identical candidates tie, so the winner is always the
+    first-placed one.
+
+The returned circuit should therefore be exactly a11's.
+
+**Its test** (`test_a12.py`, 7 cases):
+
+- the versions;
+- the cached score equals `_score_weights` on random placements of compiled circuits on FakeTorino and FakeBrussels;
+- a12 returns a11's circuit on 8 circuits, measured and not, on FakeTorino, FakeKingston, FakeAuckland and
+  FakeBrussels.
+
+## 3. Design (`benchmarks/a12_eval.py`)
+
+**Circuits:**
+
+- MODEL-RO2's model-style generator (`ai10_eval2._family`, `_model_style`, unchanged), 6 per (family, n) cell: 96
+  circuits, each with `measure_all()`;
+- the first 2 per cell (32) also without measurements.
+
+That gives 128 per device, at seeds 76,000,000 + k, none used before. Smoke: 76,500,000 + k, 1 per cell.
+
+**Devices:**
+
+| type | devices |
+|---|---|
+| cz | FakeTorino, FakeKingston |
+| cx | FakeAuckland, FakeHanoiV2 |
+| ecr | FakeBrussels, FakeOsaka |
+
+**Per circuit:**
+
+1. A warm-up call of a11, discarded. A second call of the same circuit runs warm (Addendum 359).
+2. a11 and a12, in alternating order, each timed.
+3. The two outputs compared:
+   - instruction by instruction, with clbits and parameters;
+   - global phase;
+   - where the logical qubits start and end.
+4. a12's output checked:
+   - exactness: the workplace probe's state infidelity, measurements removed, <= 1e-6;
+   - off-target two-qubit gates.
+
+**Size:** 6 jobs, one per device (`run_a12_2026-10-06.py`, 6 in parallel).
+
+## 4. Predictions (scored only by `a12_eval.py score`; written before the first smoke run)
+
+**P0:** all of these must hold, or nothing below is scored:
+
+- 6 files of 128 circuits;
+- no error;
+- every a12 output exact and on the target.
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| S1 | a12 returns a11's circuit | identical on every circuit of every device | any circuit differs |
+| S2 | faster on the cz devices | median a12 / median a11 <= 0.75 on both | > 1.00 on either |
+| S3 | not slower elsewhere | <= 0.90 on the cx and ecr devices | > 1.05 on any |
+
+**How the thresholds were set (disclosed):**
+
+- **S1:** from the construction (section 2).
+- **S2:** if the re-placement's 53-62% fell to about a third, the total would fall to about 0.6-0.65.
+- **S3:** the re-placement is 29% of the time on cx devices.
+
+**Reported without prediction:**
+
+- the ratios for measured and unmeasured circuits separately;
+- the median of per-circuit ratios.
+
+## 5. Development and smoke run (disclosed)
+
+**Built at home on 2026-10-06.** The cached score was mock-checked (section 2). `a12_eval.py score` and
+`a12_verify.py` were checked on synthetic files.
+
+**At the workplace on 2026-10-06** (Windows, Python 3.11.9, numpy 2.4.6, qiskit 2.5.2, Aer 0.17.2; repository at
+`99f5b2a`):
+
+1. **First `test_a12.py`:** 3 of 7 passed. The four failures were in the comparison of the outputs. The instructions
+   and global phase were the same; the layouts differed only in where the ancilla qubits were assigned on the
+   device, which does not change the circuit. **The comparison (in the test and in `a12_eval.py`) was changed before
+   the lock** to compare the logical qubits' initial and final positions only. Then 7 of 7 passed.
+2. **First two smoke runs:** stopped at loading. The harness did not put DEPTH's folder on the path for
+   `readout_eval.py`'s import of `depth_eval`. Fixed.
+3. **Smoke run** (32 circuits per device, 6 devices in parallel, 96 s):
+
+   | device | identical | median a11 | median a12 | ratio |
+   |---|---|---|---|---|
+   | FakeTorino | 32/32 | 0.712 s | 0.456 s | 0.640 |
+   | FakeKingston | 32/32 | 0.990 s | 0.569 s | 0.575 |
+   | FakeAuckland | 32/32 | 0.188 s | 0.170 s | 0.905 |
+   | FakeHanoiV2 | 32/32 | 0.182 s | 0.166 s | 0.911 |
+   | FakeBrussels | 32/32 | 0.442 s | 0.319 s | 0.722 |
+   | FakeOsaka | 32/32 | 0.456 s | 0.357 s | 0.782 |
+
+   S1 and S2 were CONFIRMED. S3 was AMBIGUOUS: the cx devices were at 0.905 and 0.911, just above 0.90.
+
+**Disclosed, not changed:** the predictions and thresholds, after these smoke lines.
+
+## 6. What this will not establish
+
+- **Speed on the home PC or on Linux.** The ratio should carry over; the absolute times will not.
+- **Behaviour above `SMALL_MAX_QUBITS`.** a12 changes nothing there.
+- **Anything about fidelity.** a12 is meant to return the same circuits.
+
+## 7. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `patches/psf_ai_compile_a12_2026-10-06/psf_ai_compile.py` | `828c0c9d053c103ea98b267033bfff2108fbfcf648c5353067eedee0f9e6864a` |
+| `patches/psf_ai_compile_a12_2026-10-06/test_a12.py` | `b3f3f441de753386d60a271fbb2264bbafb1c60d1874abd14b49c096dc86b5a0` |
+| `benchmarks/a12_eval.py` | `7c5cc1bd47a48e2a3aca1ca0d4e1702c47b2288b1f527bd9c0f8e331351f1b6f` |
+| `benchmarks/run_a12_2026-10-06.py` | `bdeda965dcda4f059794da2dc10ed87351358d9d95c8204aefc1fe6d8cf00833` |
+| `benchmarks/a12_verify.py` | `1a7bb430da207b32f6a25829830ecf8dfff227abd074fd045820900f6482c560` |
+| the adopted front end: `benchmarks/psf_ai_compile.py` (a11), unchanged | `b619dcd5775cb1ba59fef3346349c436a9b5bf210cfb7be71171890e92c1ace9` |
+| the release: `psf_compile.py` (2026-10-06.1), unchanged | `bf4630d6356d8e288902fc1cf5460a0929b7fe6b385fa0f1d6faf8a8971d9246` |
+
 ---
 
 ---
