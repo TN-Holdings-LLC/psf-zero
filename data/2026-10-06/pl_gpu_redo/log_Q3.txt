@@ -1,0 +1,65 @@
+{"arm": "Q3", "smoke": false, "laps": 30, "spares": [0, 4], "fake": "FakeAuckland", "device": "lightning.gpu", "start_utc": "2026-10-06T11:30:38+00:00", "git_head": "64f25d5", "git_dirty": "", "versions": {"release": "2026-10-06.2", "core": "2026-09-29.1", "layout": "2026-10-01.1", "a12": "2026-10-06.a12", "qiskit": "2.5.2", "pennylane": "0.45.1", "numpy": "2.5.3", "lightning": "0.45.0", "lightning_gpu": "0.45.0", "python": "3.12.13"}, "sha": {"script": "132739b23ca439b769f8bf31b305ff5484ea4bf6df7514e1542abf2eab124b8b", "gpu_helpers": "a0081c2917591de57a2e3a9d4914441c47f030282c5128b3f18642b7dd8402ea", "release": "1c3dfb0853c2fcd28eacbcdd14abc4c328cf5f40ac8a0a771fbfd70a183dfb84", "layout": "624e8f8a00e1635a1ee3bc77b5b0f41bd69a94022e214d679b86cc66cc1cf241", "a12": "2227cca2b0675f8ca21c999b071fa30278d616d27536c5376b47ed9faf7236ad"}, "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43", "cpus": 12, "qiskit_17057_present": true, "gpu": "NVIDIA GeForce RTX 4070, 12282 MiB, 616.92", "failed_elements": {"edges": [], "qubits": []}}
+spare=0 n=27 reference 71 values | C0 GPU vs CPU 1.05e-15 | C1 control 5.06e-07
+Q3  spare=0 lap   1 compile   6.097s gpu   5.04s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap   2 compile   6.181s gpu   5.00s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap   3 compile   5.963s gpu   5.00s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap   4 compile   6.045s gpu   5.02s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap   5 compile   6.040s gpu   5.01s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap   6 compile   6.190s gpu   4.99s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap   7 compile   6.152s gpu   5.00s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap   8 compile   6.096s gpu   5.15s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap   9 compile   6.133s gpu   4.95s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap  10 compile   5.997s gpu   4.97s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap  11 compile   6.044s gpu   4.88s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap  12 compile   6.126s gpu   4.94s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap  13 compile   6.062s gpu   4.99s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap  14 compile   6.365s gpu   5.03s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap  15 compile   6.161s gpu   4.97s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap  16 compile   6.160s gpu   5.02s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap  17 compile   6.068s gpu   4.87s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap  18 compile   6.006s gpu   4.97s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap  19 compile   6.074s gpu   4.88s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap  20 compile   5.931s gpu   4.86s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap  21 compile   6.022s gpu   5.01s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap  22 compile   6.024s gpu   4.95s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap  23 compile   6.052s gpu   4.94s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap  24 compile   6.033s gpu   4.97s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap  25 compile   6.000s gpu   4.95s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap  26 compile   6.057s gpu   4.89s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap  27 compile   5.997s gpu   4.81s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap  28 compile   5.989s gpu   5.02s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap  29 compile   5.931s gpu   4.87s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+Q3  spare=0 lap  30 compile   6.148s gpu   5.04s 2q=54 (swap-free 51) whole=4.863e-14 block=- failed-element=False swap: routing permuted qubits
+spare=4 n=23 reference 61 values | C0 GPU vs CPU 1.05e-15 | C1 control 2.87e-07
+Q3  spare=4 lap   1 compile   0.084s gpu   4.00s 2q=45 (swap-free 45) whole=6.634e-14 block=7.839e-14 failed-element=False OK
+Q3  spare=4 lap   2 compile   0.081s gpu   3.99s 2q=45 (swap-free 45) whole=6.745e-14 block=1.039e-13 failed-element=False OK
+Q3  spare=4 lap   3 compile   0.081s gpu   4.01s 2q=45 (swap-free 45) whole=6.933e-14 block=1.020e-13 failed-element=False OK
+Q3  spare=4 lap   4 compile   0.083s gpu   3.99s 2q=45 (swap-free 45) whole=7.022e-14 block=1.374e-13 failed-element=False OK
+Q3  spare=4 lap   5 compile   0.084s gpu   3.99s 2q=45 (swap-free 45) whole=6.989e-14 block=1.382e-13 failed-element=False OK
+Q3  spare=4 lap   6 compile   0.082s gpu   4.00s 2q=45 (swap-free 45) whole=6.867e-14 block=1.341e-13 failed-element=False OK
+Q3  spare=4 lap   7 compile   0.080s gpu   4.00s 2q=45 (swap-free 45) whole=6.883e-14 block=1.433e-13 failed-element=False OK
+Q3  spare=4 lap   8 compile   0.083s gpu   3.99s 2q=45 (swap-free 45) whole=6.767e-14 block=1.670e-13 failed-element=False OK
+Q3  spare=4 lap   9 compile   0.083s gpu   4.00s 2q=45 (swap-free 45) whole=6.817e-14 block=1.694e-13 failed-element=False OK
+Q3  spare=4 lap  10 compile   0.082s gpu   4.02s 2q=45 (swap-free 45) whole=6.828e-14 block=1.666e-13 failed-element=False OK
+Q3  spare=4 lap  11 compile   0.082s gpu   4.14s 2q=45 (swap-free 45) whole=6.833e-14 block=1.836e-13 failed-element=False OK
+Q3  spare=4 lap  12 compile   0.080s gpu   4.05s 2q=45 (swap-free 45) whole=6.645e-14 block=2.020e-13 failed-element=False OK
+Q3  spare=4 lap  13 compile   0.081s gpu   4.01s 2q=45 (swap-free 45) whole=6.800e-14 block=2.256e-13 failed-element=False OK
+Q3  spare=4 lap  14 compile   0.079s gpu   4.00s 2q=45 (swap-free 45) whole=6.772e-14 block=2.475e-13 failed-element=False OK
+Q3  spare=4 lap  15 compile   0.081s gpu   4.00s 2q=45 (swap-free 45) whole=6.717e-14 block=2.681e-13 failed-element=False OK
+Q3  spare=4 lap  16 compile   0.080s gpu   4.00s 2q=45 (swap-free 45) whole=6.824e-14 block=2.892e-13 failed-element=False OK
+Q3  spare=4 lap  17 compile   0.083s gpu   3.99s 2q=45 (swap-free 45) whole=7.286e-14 block=3.093e-13 failed-element=False OK
+Q3  spare=4 lap  18 compile   0.079s gpu   3.99s 2q=45 (swap-free 45) whole=7.805e-14 block=3.257e-13 failed-element=False OK
+Q3  spare=4 lap  19 compile   0.081s gpu   3.99s 2q=45 (swap-free 45) whole=8.185e-14 block=3.462e-13 failed-element=False OK
+Q3  spare=4 lap  20 compile   0.079s gpu   3.99s 2q=45 (swap-free 45) whole=8.631e-14 block=3.618e-13 failed-element=False OK
+Q3  spare=4 lap  21 compile   0.083s gpu   3.97s 2q=45 (swap-free 45) whole=8.893e-14 block=3.801e-13 failed-element=False OK
+Q3  spare=4 lap  22 compile   0.079s gpu   4.00s 2q=45 (swap-free 45) whole=9.251e-14 block=4.006e-13 failed-element=False OK
+Q3  spare=4 lap  23 compile   0.080s gpu   3.98s 2q=45 (swap-free 45) whole=9.745e-14 block=4.162e-13 failed-element=False OK
+Q3  spare=4 lap  24 compile   0.082s gpu   3.99s 2q=45 (swap-free 45) whole=1.020e-13 block=4.322e-13 failed-element=False OK
+Q3  spare=4 lap  25 compile   0.079s gpu   3.99s 2q=45 (swap-free 45) whole=1.067e-13 block=4.460e-13 failed-element=False OK
+Q3  spare=4 lap  26 compile   0.080s gpu   3.99s 2q=45 (swap-free 45) whole=1.120e-13 block=4.647e-13 failed-element=False OK
+Q3  spare=4 lap  27 compile   0.081s gpu   3.98s 2q=45 (swap-free 45) whole=1.168e-13 block=4.788e-13 failed-element=False OK
+Q3  spare=4 lap  28 compile   0.080s gpu   3.99s 2q=45 (swap-free 45) whole=1.207e-13 block=4.928e-13 failed-element=False OK
+Q3  spare=4 lap  29 compile   0.087s gpu   4.01s 2q=45 (swap-free 45) whole=1.246e-13 block=5.093e-13 failed-element=False OK
+Q3  spare=4 lap  30 compile   0.083s gpu   3.99s 2q=45 (swap-free 45) whole=1.287e-13 block=5.233e-13 failed-element=False OK
+Wrote /tmp/pgr_run/pl_gpu_redo_Q3.json (60 rows)
+DONE

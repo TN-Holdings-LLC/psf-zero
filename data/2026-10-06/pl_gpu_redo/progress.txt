@@ -1,0 +1,9 @@
+11:09:29 start R
+11:14:17 end R rc 0
+11:14:17 start RR
+11:22:30 end RR rc 0
+11:22:30 start A12
+11:30:36 end A12 rc 0
+11:30:36 start Q3
+11:38:23 end Q3 rc 0
+11:38:24 scored and verified

@@ -1,0 +1,31 @@
+# PL-GPU-REDO score (thresholds as pre-registered in Addendum 375)
+
+- P0 (validity): PASS -- 4 arms x 2 spares x 30 laps True, versions True, not smoke and clean tree True, lightning.gpu True, one git_head ['64f25d5'], C0 GPU vs CPU max 1.17e-15 (<= 1e-12), C1 control min 2.87e-07 (>= 1e-9)
+
+| spare | arm | compile median s | max s | within 1 s | errors | swap-free and mapped back | 2q | uses a failed element | whole-circuit max | block distance worst | GPU check median s |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 0 | R | 0.014 | 0.019 | 30/30 | 0 | 30/30 | [51] | 0 | 2.93e-14 | 9.85e-14 | 4.80 |
+| 0 | RR | 6.374 | 6.685 | 0/30 | 0 | 30/30 | [51] | 0 | 2.93e-14 | 9.85e-14 | 5.08 |
+| 0 | A12 | 6.166 | 6.337 | 0/30 | 0 | 30/30 | [51] | 0 | 2.93e-14 | 9.85e-14 | 5.10 |
+| 0 | Q3 | 6.055 | 6.365 | 0/30 | 0 | 0/30 | [54] | 0 | 4.86e-14 | - | 4.97 |
+| 4 | R | 0.014 | 0.015 | 30/30 | 0 | 30/30 | [45] | 0 | 2.65e-14 | 9.24e-14 | 4.17 |
+| 4 | RR | 0.246 | 0.372 | 30/30 | 0 | 30/30 | [45] | 0 | 2.64e-14 | 9.26e-14 | 4.17 |
+| 4 | A12 | 0.159 | 0.259 | 30/30 | 0 | 30/30 | [45] | 0 | 2.64e-14 | 9.26e-14 | 4.18 |
+| 4 | Q3 | 0.081 | 0.087 | 30/30 | 0 | 30/30 | [45] | 0 | 1.29e-13 | 5.23e-13 | 3.99 |
+
+- G1 (R, spare 0, within 1 s in 30/30; confirmed 30/30, refuted <= 15): **CONFIRMED**
+- G2 (R, swap-free and mapped back in 60/60; confirmed 60/60, refuted <= 30): **CONFIRMED**
+- G3 (R correct as a whole circuit on every lap, max 2.93e-14; confirmed <= 1e-12 with every lap checked, refuted > 1e-10): **CONFIRMED**
+- G4 (no arm raises: 0 of 240 laps; confirmed 0, refuted >= 1): **CONFIRMED**
+- G5 (RR, A12 and Q3 correct as whole circuits on every lap, SWAP outputs included, max 1.29e-13; confirmed <= 1e-10 with every lap checked, refuted > 1e-6): **CONFIRMED**
+- G6 (Q3, spare 0, within 1 s in 0/30; confirmed 0, refuted >= 15): **CONFIRMED**
+- G7 (RR and A12, spare 0, within 1 s in 0/30 and 0/30; confirmed both <= 2, refuted either >= 15): **CONFIRMED**
+- G8 (spare 4: RR, A12 and Q3 within 1 s in 30/30, 30/30 and 30/30; confirmed all >= 28, refuted any <= 15): **CONFIRMED**
+- G9 (spare 0: RR's and A12's outputs are R's own circuit on 30/30 and 30/30 laps; confirmed both >= 28, refuted either <= 15): **CONFIRMED**
+
+Reported without prediction: which outputs use a failed element; whether RR's and A12's outputs are R's at spare 4 (digests); GPU-check times; against Addendum 257 (RunPod RTX 4090).
+- spare 0: RR output = R's on 30/30 laps
+- spare 0: A12 output = R's on 30/30 laps
+- spare 4: RR output = R's on 0/30 laps
+- spare 4: A12 output = R's on 0/30 laps
+

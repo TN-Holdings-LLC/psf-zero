@@ -1,0 +1,20 @@
+git_head ['64f25d5'], flags [], laps per cell [30]
+P0 PASS
+spare 0 R   median   0.014 s  errors  0  within 1 s 30  back 30  whole max 2.93e-14
+spare 0 RR  median   6.374 s  errors  0  within 1 s  0  back 30  whole max 2.93e-14
+spare 0 A12 median   6.166 s  errors  0  within 1 s  0  back 30  whole max 2.93e-14
+spare 0 Q3  median   6.055 s  errors  0  within 1 s  0  back  0  whole max 4.86e-14
+spare 4 R   median   0.014 s  errors  0  within 1 s 30  back 30  whole max 2.65e-14
+spare 4 RR  median   0.246 s  errors  0  within 1 s 30  back 30  whole max 2.64e-14
+spare 4 A12 median   0.159 s  errors  0  within 1 s 30  back 30  whole max 2.64e-14
+spare 4 Q3  median   0.081 s  errors  0  within 1 s 30  back 30  whole max 1.29e-13
+G1 CONFIRMED
+G2 CONFIRMED
+G3 CONFIRMED
+G4 CONFIRMED
+G5 CONFIRMED
+G6 CONFIRMED
+G7 CONFIRMED
+G8 CONFIRMED
+G9 CONFIRMED
+verdicts identical to score.md: True

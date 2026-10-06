@@ -16784,7 +16784,7 @@ full-device circuits (PL-REDO's arm A12C).
 ## 3. Checks before the commit
 
 The 27 test files this commit adds or changes were run at home before the commit, one pytest session per file
-(WSL2; Python 3.11, Qiskit 2.5.2, Aer 0.17.2, NumPy 2.5.3, core 2026-09-29.1): 221 passed, none failed or errored.
+(WSL2; Python 3.12.13, Qiskit 2.5.2, Aer 0.17.2, NumPy 2.5.3, core 2026-09-29.1): 221 passed, none failed or errored. *(Python corrected from "3.11" by Addendum 376, section 4.)*
 
 ## 4. What item 43 does not change
 
@@ -16908,6 +16908,95 @@ arms one after another, then score and verify).
   finding that Addendum 373 reported after its run, without prediction.
 - **The home machine differs from the pod** of Addendum 257 (RTX 4070 against RTX 4090; WSL2 against a pod); times
   are not a like-for-like comparison.
+
+
+---
+
+<!-- ===== Addendum 376 (source: spare-qubit-cliff-addendum-376-2026-10-06.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 375 (lock commit 64f25d5, pushed before the run), scored by the locked script and re-checked by benchmarks/pl_gpu_redo_verify.py; written after the output was seen.
+
+## Addendum 376 -- Results of PL-GPU-REDO (Addendum 375): on the owner's GPU every output of the PennyLane loop on a fully occupied FakeAuckland is correct as a whole circuit (<= 1.3e-13, SWAP outputs included); the default call takes 0.014 s per compile; at full occupancy the recommended call and the AI front end take 6 s and return the default call's own circuit on 30 of 30 laps; G1-G9 all CONFIRMED (2026-10-06)
+
+**Status: results of the pre-registered test in Addendum 375, scored by the locked script and re-checked by the
+independent [`benchmarks/pl_gpu_redo_verify.py`](../../benchmarks/pl_gpu_redo_verify.py).** Written after the output
+was seen.
+
+## 1. The run
+
+- **Lock:** commit `64f25d5` (Addendum 375), made at home at 13:09:23 CEST and **pushed to GitHub before the run**;
+  every arm's `git_head` is `64f25d5`, with no uncommitted change to a tracked file.
+- **Machine:** home, WSL2 (Linux 6.18.33.2-microsoft-standard-WSL2, 12 CPUs), NVIDIA GeForce RTX 4070 (12,282 MiB,
+  driver 616.92); Python 3.12.13, Qiskit 2.5.2, Aer 0.17.2, PennyLane 0.45.1, pennylane-lightning and
+  pennylane-lightning-gpu 0.45.0, NumPy 2.5.3, core `CORE_VERSION` 2026-09-29.1; `qiskit_17057_present()` True.
+- **Times (UTC):** start 11:09:27; R 11:09:29-11:14:17, RR -11:22:30, A12 -11:30:36, Q3 -11:38:23; scored and
+  verified 11:38:24 (`progress.txt`), one arm at a time.
+- **Output:** [`data/2026-10-06/pl_gpu_redo/`](../../data/2026-10-06/pl_gpu_redo/): one json per arm (metadata and
+  every lap), the logs, `env.txt`, `progress.txt`, `score.md`, `score_log.txt`, `verify_log.txt`.
+
+## 2. Results (`score.md`)
+
+**P0: PASS.** 4 arms × 2 spares × 30 laps; versions as locked; `lightning.gpu`; one `git_head`; C0 (GPU against CPU on
+the 3-block sub-circuit) at most 1.17e-15; C1 (the RX(1e-6) control) at least 2.87e-7.
+
+| spare | arm | compile median s | max s | within 1 s | errors | swap-free and mapped back | 2q | uses a failed element | whole-circuit max | block distance worst | GPU check median s |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 0 | R | 0.014 | 0.019 | 30/30 | 0 | 30/30 | 51 | 0 | 2.93e-14 | 9.85e-14 | 4.80 |
+| 0 | RR | 6.374 | 6.685 | 0/30 | 0 | 30/30 | 51 | 0 | 2.93e-14 | 9.85e-14 | 5.08 |
+| 0 | A12 | 6.166 | 6.337 | 0/30 | 0 | 30/30 | 51 | 0 | 2.93e-14 | 9.85e-14 | 5.10 |
+| 0 | Q3 | 6.055 | 6.365 | 0/30 | 0 | 0/30 | 54 | 0 | 4.86e-14 | - | 4.97 |
+| 4 | R | 0.014 | 0.015 | 30/30 | 0 | 30/30 | 45 | 0 | 2.65e-14 | 9.24e-14 | 4.17 |
+| 4 | RR | 0.246 | 0.372 | 30/30 | 0 | 30/30 | 45 | 0 | 2.64e-14 | 9.26e-14 | 4.17 |
+| 4 | A12 | 0.159 | 0.259 | 30/30 | 0 | 30/30 | 45 | 0 | 2.64e-14 | 9.26e-14 | 4.18 |
+| 4 | Q3 | 0.081 | 0.087 | 30/30 | 0 | 30/30 | 45 | 0 | 1.29e-13 | 5.23e-13 | 3.99 |
+
+| | prediction | result | verdict |
+|---|---|---|---|
+| G1 | R within 1 s at spare 0 | 30/30 | **CONFIRMED** |
+| G2 | R swap-free and mapped back | 60/60 | **CONFIRMED** |
+| G3 | R correct as a whole circuit | max 2.93e-14 | **CONFIRMED** |
+| G4 | no arm raises | 0 of 240 | **CONFIRMED** |
+| G5 | RR, A12, Q3 correct as whole circuits, SWAP outputs included | max 1.29e-13 | **CONFIRMED** |
+| G6 | Q3 misses 1 s at spare 0 | 0/30 within | **CONFIRMED** |
+| G7 | RR and A12 miss 1 s at spare 0 | 0/30 and 0/30 within | **CONFIRMED** |
+| G8 | RR, A12, Q3 within 1 s at spare 4 | 30/30 each | **CONFIRMED** |
+| G9 | at spare 0, RR's and A12's outputs are R's own circuit | 30/30 and 30/30 | **CONFIRMED** |
+
+`pl_gpu_redo_verify.py`: P0 PASS, the same nine verdicts, "verdicts identical to score.md: True".
+
+**Reported without prediction:**
+
+- **Failed elements:** FakeAuckland reports none at item 31's threshold (0.5), so no output used one.
+- **At spare 4** RR's and A12's outputs were not R's on any lap (0/30 each): with room to choose, the target-aware
+  calls place the circuit differently by their noise estimate, with the same two-qubit count (45).
+- **GPU check:** 4.0-5.1 s per lap (median), longer than every compile except the level-3 ones at spare 0.
+- **Against Addendum 257** (2026-09-29, RunPod RTX 4090, release 2026-09-28.1 and candidate 2026-09-29.1): the
+  candidate PN took 0.015 s at spare 0, R now 0.014 s; Q3 then 9.6 s, now 6.1 s on this machine; Q3's SWAP output at
+  spare 0 then 4.88e-14 every lap, now 4.86e-14. Different machines.
+
+## 3. What this shows
+
+1. **Every output of the current release, its recommended call, its AI front end and Qiskit level 3 is correct as a
+   whole circuit** in this loop, on the owner's own GPU: 240 laps, at most 1.3e-13, outputs with SWAPs included.
+   Addendum 257 had shown this for the stack of 2026-09-29.
+2. **The default call keeps the speed of Addendum 257** (0.014 s per compile at full occupancy, swap-free, every lap).
+3. **On a full device the target-aware calls cost level 3's time and add nothing here.** At spare 0, RR and A12 took
+   6.2-6.4 s per compile and returned the default call's own circuit on 30 of 30 laps (G9). Addendum 373 had found
+   the same on FakeKingston after its run; this is the pre-registered confirmation on a second device. It is the
+   evidence for the next candidate (c17): skip the level-3 comparison when the circuit occupies the whole device.
+4. **With spare qubits the target-aware calls fit the 1 s budget** (0.16-0.25 s at spare 4) and choose a different
+   placement from the default call's.
+
+## 4. Correction to Addendum 374
+
+Addendum 374, section 3, gives the home environment of the adoption tests as "Python 3.11". It was Python 3.12.13:
+the same venv ran this test, whose metadata records the version. The other versions there (Qiskit 2.5.2, Aer 0.17.2,
+NumPy 2.5.3, core 2026-09-29.1) are right. The line in Addendum 374 is corrected in place, with a note.
+
+## 5. Disclosures
+
+- **The predictions followed the smoke run** (Addendum 375, section 3).
+- **Local paths:** none were found in the output; nothing was replaced when it was copied into the repository.
 
 ---
 
