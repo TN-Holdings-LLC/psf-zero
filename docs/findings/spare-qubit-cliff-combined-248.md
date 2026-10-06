@@ -16363,6 +16363,97 @@ it would not need to. The prediction is not changed.
 | the release: `psf_compile.py` (2026-10-06.1), unchanged | `bf4630d6356d8e288902fc1cf5460a0929b7fe6b385fa0f1d6faf8a8971d9246` |
 | imported, unchanged: `benchmarks/hold6_eval.py` | `8740a33225f24da12f1d07c235695950f03643d4160283eb1623ad9d7f05108a` |
 
+
+---
+
+<!-- ===== Addendum 371 (source: spare-qubit-cliff-addendum-371-2026-10-06.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 370 (lock commit 36cb158), scored by the locked script and re-checked by benchmarks/big_verify.py; written after the output was seen; the owner's decision not to adopt.
+
+## Addendum 371 -- Results of BIG (Addendum 370): a13 (the release's whole recommended call for the front end's large circuits) sampled better than a12 on 7 of 9 devices, by up to 3.1%, worse on 1 by 0.4%, for 1.7-2.0 × the time; B1 AMBIGUOUS, B2 REFUTED, B3 CONFIRMED, B4 AMBIGUOUS; not adopted (2026-10-06)
+
+**Status: results of a pre-registered test, and the owner's decision not to adopt.**
+
+- **Lock:** commit `36cb158` (Addendum 370), made at the workplace at 06:38 UTC (08:38 CEST), before the run.
+- **Deviation (disclosed):** Addendum 370 said the lock would be pushed from home and the run made there. By the
+  owner's decision (time at home), the run was made at the workplace right after the lock commit and before the
+  push, as for Addenda 358, 359 and 364.
+- **Run:** the workplace PC (Windows, build 26100, 14 logical CPUs; Python 3.11.9, numpy 2.4.6, qiskit 2.5.2, Aer
+  0.17.2), with `run_big_2026-10-06.py` (6 parallel jobs). Every output file records `git_head` `36cb158`.
+- **Scored** by the locked `big_eval.py score`; **re-computed** by the locked `big_verify.py`, with identical verdicts.
+- Raw output: `data/2026-10-06/big/`.
+
+## 1. P0
+
+| check | result |
+|---|---|
+| files | 54 of 54; 12 circuits per family on every device (72 per device) |
+| errors | 0 |
+| inexact outputs | 0 |
+| wrong measurement mapping | 0 |
+
+**P0 passed.**
+
+## 2. Results
+
+| device | simulated / all | A12 | A13 | L3TM | A13/A12 | A13/L3TM | measure error A13 - A12 | time A13/A12 |
+|---|---|---|---|---|---|---|---|---|
+| FakeAuckland | 47/72 | 0.13560 | 0.13535 | 0.13774 | 0.9982 | 0.9827 | +0.00017 | 1.83 |
+| FakeTorino | 49/72 | 0.10769 | 0.10760 | 0.10805 | 0.9991 | 0.9958 | +0.00053 | 1.89 |
+| FakeKingston | 45/72 | 0.05984 | 0.05801 | 0.06026 | 0.9693 | 0.9625 | +0.00307 | 1.90 |
+| FakeHanoiV2 | 48/72 | 0.12847 | 0.12899 | 0.13237 | 1.0041 | 0.9745 | -0.00003 | 1.84 |
+| FakeAlgiers | 47/72 | 0.15049 | 0.15051 | 0.15460 | 1.0001 | 0.9736 | +0.00385 | 1.73 |
+| FakeGeneva | 45/72 | 0.16472 | 0.16212 | 0.17224 | 0.9842 | 0.9413 | +0.00671 | 1.84 |
+| FakeFez | 44/72 | 0.07508 | 0.07504 | 0.07599 | 0.9995 | 0.9875 | -0.00039 | 1.93 |
+| FakeMarrakesh | 41/72 | 0.05346 | 0.05336 | 0.05501 | 0.9981 | 0.9700 | -0.00030 | 2.04 |
+| FakeAachen | 44/72 | 0.03821 | 0.03815 | 0.03873 | 0.9985 | 0.9852 | -0.00482 | 1.98 |
+
+"A12", "A13", "L3TM" are the mean classical infidelities on the circuits all three arms could simulate (at most 11
+touched qubits).
+
+| ID | Prediction | Verdict | Value |
+|---|---|---|---|
+| B1 | A13/A12 <= 1.000 on >= 8 of 9 (refuted > 1.005 on any) | **AMBIGUOUS** | 7 of 9; FakeHanoiV2 1.0041, FakeAlgiers 1.0001 |
+| B2 | measure error A13 - A12 <= 0 on >= 8 of 9 (refuted > 0 on >= 3) | **REFUTED** | higher on 5 of 9 |
+| B3 | A13/L3TM <= 1.00 on >= 7 of 9 | **CONFIRMED** | 0.941-0.996, all nine |
+| B4 | median time A13/A12 <= 2.0 on every device (refuted > 3.0) | **AMBIGUOUS** | 1.73-2.04; FakeMarrakesh 2.04 |
+
+## 3. Reading
+
+**What a13 buys.** The release's whole recommended call helps the front end's 9-10-qubit sampled circuits:
+
+- on two devices clearly: FakeKingston 3.1%, FakeGeneva 1.6%;
+- elsewhere by 0.1-0.2%;
+- FakeHanoiV2 is 0.4% worse.
+
+The same direction and size as HOLD6 (0.998-1.000 without measurements).
+
+**B2 assumed something it should not have.** The hybrid score weighs readout against gate error. On 5 devices a13
+chose qubits with somewhat more readout error and fewer or better gates; its classical infidelity was still equal or
+lower on all of them but FakeAlgiers (1.0001). The smoke run showed the same, and the prediction was kept unchanged.
+
+**What it costs.**
+
+- About twice the compile time for these circuits: the floor-placed candidate is a third full candidate (HOLD6:
+  0.313 s against 0.186 s).
+- A third to two fifths of the circuits touched more than 11 qubits and are not in the means. The result covers the
+  narrower placements only.
+
+**The decision.** The owner chose not to adopt a13:
+
+- the pre-registered criterion (B1) was not met;
+- the gain is small outside two devices;
+- the time roughly doubles.
+
+The front end stays a12. Its large circuits use the older recommended call, and this record says so. Users who
+compile large circuits can call `psf_compile.compile_for_hardware` with the full recommended call directly.
+
+## 4. What this does not establish
+
+- circuits wider than 11 touched qubits;
+- hardware;
+- unmeasured large circuits (HOLD6 covered those).
+
 ---
 
 ---

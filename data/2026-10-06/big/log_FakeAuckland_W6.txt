@@ -1,0 +1,1 @@
+wrote big_FakeAuckland_W6.json: 12 circuits, 37.8 s
