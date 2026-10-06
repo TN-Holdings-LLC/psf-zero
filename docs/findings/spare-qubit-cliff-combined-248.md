@@ -14890,6 +14890,221 @@ and that the fix protects either way.
 | `pyproject.toml` | `a2e4f0068796329d…` | `79b5b7e942eeea43…` |
 | `README.md` | `a707b1d051e2d81e…` | `e62803f4ff851424…` |
 
+
+---
+
+<!-- ===== Addendum 358 (source: spare-qubit-cliff-addendum-358-2026-10-06.md) ===== -->
+
+> **Note added when merging:** Pre-registration of RECR (candidates psf_compile 2026-10-05.c14 and psf_ai_compile 2026-10-05.a11, from the workplace); the predictions were written before the smoke run, which was run and seen at the workplace (section 5); the lock is the commit that adds it.
+
+## Addendum 358 -- Pre-registration: the workplace candidates psf_compile 2026-10-05.c14 (readout of measured qubits in the choice; direction-aware failed-element check) and psf_ai_compile 2026-10-05.a11 (readout in the front end's estimate; gate direction kept), on top of release 2026-10-05.1 and front end a9, on cx, cz and ecr devices, with and without measurements (RECR) (2026-10-06)
+
+**Status: pre-registration.**
+
+- **Written at home, on 2026-10-06, from the workplace candidates** (Addenda 345-356), with the smoke run made at the
+  workplace (section 5).
+- **Lock:** the git commit that adds this document, with:
+  - `patches/psf_compile_c14_2026-10-05/` (the candidate and its test);
+  - `patches/psf_ai_compile_a11_2026-10-05/` (the candidate and its test);
+  - `benchmarks/recr_eval.py` and its runner;
+  - `benchmarks/recr_verify.py`, an independent re-computation of every verdict from the raw output. It was
+    written before the lock and before any scored output exists, and does not import `recr_eval.py`.
+
+  **The commit is made before the scored run, at the workplace, and pushed from home afterwards with the same hash**
+  (section 5). The workplace PC has no GitHub login, so the lock could not be pushed before the run.
+- **No hardware:** fake devices only.
+- **The predictions (section 4) are in `recr_eval.py score`.** They were written before the smoke run and are not
+  changed.
+
+## 1. Why
+
+**Five workplace findings of 2026-10-05:**
+
+| finding | source |
+|---|---|
+| Compiling a sampled circuit with its final measurements lets placement see readout error. FakeTorino: a classifier's output qubit went from readout error 0.048 to 0.0084 | READOUT, Addendum 348 |
+| The release's choice among candidates (item 38) skips `measure`. Candidate c13 adds readout (item 40). It helped on FakeKingston, and changed nothing without measurements | READOUT, Addendum 348 |
+| The front end's estimate skipped `measure` too. Candidate a10 (item 15) cut the classical infidelity of sampled model-style circuits to 0.35 × (FakeTorino) and 0.11 × (FakeKingston) of a9's | MODEL-RO2, Addendum 352 |
+| On ecr devices a9 and a10 returned gates in a direction the device does not provide. Aer simulates such a gate as error-free, so it went unnoticed. Candidate a11 (item 16) fixes it | ecr exploration, Addendum 353 |
+| Item 31's check was direction-blind. Candidate c14 (item 41) made it direction-aware. It changed no output | Addendum 354 |
+
+**What these left open:**
+
+- Each of them was tested alone, on two or three devices.
+- None was tested on top of the release that is now current (2026-10-05.1, Addendum 344).
+- The ecr finding has not been pre-registered.
+
+## 2. The candidates
+
+**c14** is the workplace file, unchanged (`VERSION = "2026-10-05.c14"`). It is release 2026-10-05.1 plus two items:
+
+- **item 40:** `readout_cost`, added to `hybrid_cost`;
+- **item 41:** a direction-aware `_uses_failed`.
+
+Release 2026-10-05.1 is candidate c12 with only its version lines changed (Addendum 344). Against the c12 file, c14
+differs only in items 40 and 41 and in its version lines (`diff`, checked at home).
+
+**a11** is the workplace file, unchanged (`AI_COMPILE_VERSION = "2026-10-05.a11"`). It is a9 plus two items:
+
+- **item 15:** readout in the state-aware estimate;
+- **item 16:** an unsupported direction is charged as infinite. A final `GateDirection` backstop is kept only if
+  `_same_action` confirms it; otherwise the release's call is used.
+
+Against the a9 file, it differs only in these items and its version line. a11 runs with c14 as its `psf_compile`, as
+at the workplace.
+
+**Tests,** adapted to the repository and to the current release. They were run at the workplace (Windows, section 5):
+
+| file | cases | from |
+|---|---|---|
+| `test_c14.py` | 12 | `test_c13_readout.py`, `test_c14_direction.py` |
+| `test_a11.py` | 10 | `test_a11_direction.py` |
+
+- Comparisons that the workplace made with c12 or c13 are made with the release.
+- One case is new: a9's direction defect reproduces on FakeBrussels.
+
+## 3. Design (`benchmarks/recr_eval.py`)
+
+**Devices:**
+
+| type | devices |
+|---|---|
+| cx | FakeAuckland, FakeHanoiV2 |
+| cz | FakeTorino, FakeKingston |
+| ecr, one direction per coupler | FakeBrussels, FakeOsaka |
+
+**Circuits,** the same on every device, 104 in all:
+
+- 96 from MODEL-RO2's generator (`ai10_eval2._family`, `_model_style`, unchanged): 6 per (family, n) cell, seed base
+  74,000,000;
+- 8 classifiers (DEPTH's `depth_eval.circuit`, n 4 and 6, L 4), seed base 74,400,000.
+
+None of these seeds has been used before.
+
+**Arms.** FULL is the recommended call; M means compiled with `measure_all()`.
+
+| arm | what it is |
+|---|---|
+| R51 | release 2026-10-05.1, FULL, without measurements; measured afterwards at the final layout (the old practice) |
+| R51M | the release, FULL, with measurements |
+| C14 / C14M | c14, FULL, without / with measurements |
+| A9 / A9M | front end a9 on the release, without / with measurements |
+| A11 / A11M | a11 on c14, without / with measurements |
+| L3TM | Qiskit level 3 with the Target, `approximation_degree=1.0`, with measurements |
+
+C14, A9 and A11 are compared instruction by instruction and not simulated.
+
+**Recorded per simulated arm:**
+
+- the state infidelity of the compiled circuit without its measurements (the Addendum-340 probe's check);
+- whether clbit j measures logical j's final qubit;
+- off-target instructions, and uses of failed directions or qubits;
+- the summed Target measure error of the measured qubits;
+- the classical infidelity of the sampled distribution (MODEL-RO2's metric: Aer, device noise restricted to the
+  touched qubits, then readout assignment);
+- the two-qubit count and the compile time.
+
+**Off-target gates are scored on their own.** Aer's noise model has no entry for an instruction the device does not
+provide, so it simulates such a gate as error-free.
+
+**Size:** 6 jobs, one per device.
+
+## 4. Predictions (scored only by `recr_eval.py score`; written before the smoke run)
+
+**P0, harness.** All of these must hold, or nothing below is scored:
+
+- 6 files of 104 circuits;
+- no compile error;
+- every simulated output exact (state infidelity <= 1e-6);
+- every measured arm measuring logical j's final qubit into clbit j.
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| Q1 | compiling with measurements moves the release's measured qubits to better readout | mean summed measure error R51M / R51 <= 0.85 on both cz devices | >= 1.00 on either |
+| Q2 | c14's readout term never hurts | C14M / R51M mean classical infidelity <= 1.005, and measure error difference <= +0.0005, on every device | infidelity ratio > 1.02 on any device |
+| Q3 | without measurements, c14 is the release | C14 identical to R51 in >= 99.9% of circuits on every device | < 99% on any |
+| Q4 | a11 keeps every instruction on the target | A11 and A11M off-target 0 on every device | any |
+| Q5 | the a9 defect reproduces on ecr devices | A9M off-target >= 1 on both ecr devices | 0 on both |
+| Q6 | without measurements, a11 is a9 on bidirectional devices | A11 identical to A9 in >= 99.9% on each cx and cz device | < 99% on any |
+| Q7 | a11 counts readout | A11M / A9M mean classical infidelity <= 0.80 on both cz devices | >= 1.00 on either |
+| Q8 | a11 is level with or ahead of Qiskit level 3 | A11M / L3TM <= 1.00 on >= 5 of 6 devices | > 1.05 on any |
+| Q9 | c14 with measurements is level with or ahead of level 3 | C14M / L3TM <= 1.00 on >= 5 of 6 devices | > 1.05 on any |
+| Q10 | both cost nothing | median compile time C14M / R51M on every device, and A11M / A9M on the cx and cz devices, <= 1.15 | > 1.50 on any |
+
+**How the thresholds were set (disclosed):**
+
+- **Q1, Q7:** from READOUT (0.17) and MODEL-RO2 (0.11-0.35), with margin.
+- **Q2:** item 40 can trade gate error for readout. Its estimate counts both, so a mean loss above 2% would mean the
+  trade is mis-weighted.
+- **Q8, Q9:** from MODEL-RO2 (0.87-0.98) and the ecr exploration (0.65-1.00).
+- **Q10:** both changes add arithmetic only. After EXACT's E9 (Addendum 343) the bound is set per comparison, and the
+  front ends are not compared on ecr devices, where a9's outputs are not executable.
+
+**Reported without prediction:**
+
+- the full table by device and arm;
+- A9M's infidelity on ecr devices (not comparable: its off-target gates are simulated as error-free);
+- the check counters (`EXACT_STATS`, `DIRECTION_STATS`, a11's `L3T_CHECK_STATS`).
+
+## 5. Development and smoke run (disclosed)
+
+**Built at home on 2026-10-06 (morning).** `recr_eval.py`'s scorer was checked on synthetic files. Nothing else was
+run at home, because no Qiskit was available in the home build environment.
+
+**Run at the workplace on 2026-10-06** (Windows, Python 3.11.9, qiskit 2.5.2, Aer 0.17.2, numpy 2.4.6; repository at
+`a789db9` with bundle am applied; the stage files untracked):
+
+- **Tests:** `test_c14.py` and `test_a11.py`, 22 of 22 passed (37 s).
+- **Smoke run:** 6 devices × 10 circuits (seed bases 74,500,000 and 74,900,000), run one after another, 13-39 s per
+  device. Its output was seen before the lock.
+- **P0 passed.** The verdict lines (not results):
+
+| Q1 | Q2 | Q3 | Q4 | Q5 | Q6 | Q7 | Q8 | Q9 | Q10 |
+|---|---|---|---|---|---|---|---|---|---|
+| CONFIRMED | **REFUTED** | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | CONFIRMED | **AMBIGUOUS** | **AMBIGUOUS** |
+
+- **Q2** was refuted on FakeHanoiV2: C14M / R51M = 1.023, on 10 circuits.
+- **Q9** was ambiguous: FakeHanoiV2 1.020, FakeTorino 1.000.
+- **Q10** was ambiguous: FakeHanoiV2 C14M / R51M 1.29 and FakeAuckland A11M / A9M 1.19, as medians of 10.
+- **Notable:**
+  - A9M had 57 and 50 off-target gates on FakeBrussels and FakeOsaka;
+  - on FakeOsaka, L3TM was about twice as unfaithful as every PSF-Zero arm (Addendum 293's floor pattern).
+
+**Disclosed, not changed:**
+
+- the predictions, after these lines;
+- **the platform.** The scored run is made on the same workplace PC as the smoke run (Windows), where Qiskit issue
+  #17057 does not appear (Addendum 357). These circuits are not built near that boundary. It is run by
+  `benchmarks/run_parallel_2026-10-06.py`, a Python runner with the same jobs as `run_recr_2026-10-06.sh`, because
+  the PC has no bash. That runner is locked by Addendum 359's commit, which is also made before the scored run.
+
+**How the lock was kept (disclosed).** Addenda 357, 358 and 359 were committed on the workplace PC, in that order,
+before either scored run. The commits were carried home as a git bundle and pushed with the same hashes. The scored
+output records the commit it ran on (`git_head`). Before the run, the SHA-256 of each bundle and of every locked file
+was given in the conversation with Claude that prepared it. That is weaker than a push, which GitHub timestamps.
+
+## 6. What this will not establish
+
+- **Hardware.** Readout on a real device drifts and is correlated across qubits; Aer's model is neither.
+- **Model-written circuits from the vLLM loop.** These circuits are synthetic in their style.
+- **The noise model's floor on ecr devices.** It is Aer's, by construction (Addendum 353).
+
+## 7. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `patches/psf_compile_c14_2026-10-05/psf_compile.py` (raw `aad584bf…`) | `8cdeaa30c8ae597c4125b67d39ed4aec0a40b3cdf26e0e2671411fe678217e5a` |
+| `patches/psf_compile_c14_2026-10-05/test_c14.py` | `6f3f94e16a111ababf14f06c3ea3880068ae8566e9604d365e30be8006cb64c9` |
+| `patches/psf_ai_compile_a11_2026-10-05/psf_ai_compile.py` (raw `55d622da…`) | `380102b2856fe034f317041825fe9bc98b4a268dda768177dba443420a17ab2e` |
+| `patches/psf_ai_compile_a11_2026-10-05/test_a11.py` | `8f2c19575c6124aba443d47ce7869f28d92309c09706156244774a69e228ef2f` |
+| `benchmarks/recr_eval.py` | `ed9f5dbe8e95300ace5f1dec6efa48db3f3215bf8090cd6e5b3c8797dcc00408` |
+| `benchmarks/run_recr_2026-10-06.sh` | `a19a604c4e28c4ae1af4bf133e1ec30181fbb4bd2e5b92a56925f14520a76864` |
+| `benchmarks/recr_verify.py` | `f4f5aeb7b8a3cbb97b44eb66e1fa63815019d683729f3f3a3bbf62bd3d4a658c` |
+| imported, unchanged: `data/2026-10-05/workplace/model_ro2/ai10_eval2.py` | `12bba73653b607c1cd6bfad99c7b184e10af2ca6262a8e5531e9b5d665a8e299` |
+| imported, unchanged: `data/2026-10-05/workplace/readout/readout_eval.py` (READOUT's lock) | `9d83426dd28ecddff67c555656d2ef3c5e0b9b43ee5a2d4eb5bc7204e8c6f1d0` |
+| imported, unchanged: `data/2026-10-05/workplace/depth1/depth_eval.py` (DEPTH's lock) | `82488d96144bb1c88f69676a0e6a642c22d4756a47d8a1ad8b07be5327c796ac` |
+| used by the a11 test: `data/2026-10-05/workplace/model_ro2/a10/psf_ai_compile.py` | `1af633d5f91a639a4894a092b5d4603c738cb51584d69d8068bfce9a0303e480` |
+
 ---
 
 ---
