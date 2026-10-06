@@ -45,6 +45,9 @@ including the failures, are recorded in [`docs/findings/`](docs/findings/).
 >   - every refusal checked was of a wrong circuit (an exploratory check after the run, on FakeAuckland);
 >   - cost: median compile time 1.27-1.42 times 2026-10-04.1 on the nine devices (35-55 ms more).
 > - cz devices were not affected.
+> - Whether Qiskit's failure appears depends on floating-point rounding: it appeared in Linux environments
+>   (WSL2 and a Linux sandbox), and not in a Windows environment tested on 2026-10-06 (Addendum 357). The fix
+>   protects either way.
 
 > **Still open:** on ecr devices the AI front end can return ECR gates in a direction the device does not provide (a
 > workplace exploration, 2026-10-05). Until that is fixed, do not give it a target on ecr devices.
@@ -86,7 +89,7 @@ If the circuit will be sampled, compile it **with** its final measurements, so t
 ```bash
 git clone https://github.com/TN-Holdings-LLC/psf-zero.git
 cd psf-zero
-pip install -e .            # the Python package (psf_compile.py), numpy, scipy, qiskit==2.5.2
+pip install -e .            # the Python package (psf_compile.py), numpy, scipy, networkx, qiskit==2.5.2
 maturin develop --release   # the Rust core (src/lib.rs, psf_zero_core) -- must run LAST
 python benchmarks/check_core_build.py   # prints RESULT: OK if the core has every function the Python code calls
 ```

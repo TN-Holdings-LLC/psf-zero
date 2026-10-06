@@ -25,6 +25,22 @@ def mods():
             H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile_rel_c12_test"))
 
 
+def qiskit_17057_present():
+    """True if Qiskit's CX-basis synthesis shows issue #17057 in this environment, on the issue's own input
+    (exp(i(0.6 XX + 0.3 YY + c ZZ)), c = 1e-7). The failure hinges on a rounding-level offset: it appeared in the
+    Linux environments at home and at the workplace, and not in a Windows environment (Addendum 357). Where it does
+    not appear, Qiskit makes no wrong circuit for the checks to refuse, so the refusal counts are asserted only where
+    it does; exactness is asserted everywhere."""
+    from qiskit import QuantumCircuit, transpile
+    from qiskit.quantum_info import Operator, average_gate_fidelity
+    core = QuantumCircuit(2)
+    core.rxx(-1.2, 0, 1)
+    core.ryy(-0.6, 0, 1)
+    core.rzz(-2e-7, 0, 1)
+    out = transpile(core, basis_gates=["cx", "rz", "sx", "x"], optimization_level=1)
+    return 1 - average_gate_fidelity(Operator(out), Operator(core)) > 1e-6
+
+
 def backend(name):
     from qiskit_ibm_runtime import fake_provider
     return getattr(fake_provider, name)()
@@ -245,7 +261,8 @@ def test_recommended_call_exact_on_near_boundary_cx(mods):
             worst = max(worst, state_infid(qc, c12.compile_for_hardware(qc, target=tgt, **FULL, **kw)))
     assert worst <= 1e-6, worst
     refused = sum(c12.EXACT_STATS[k] - before[k] for k in ("refused_resynthesis", "refused_floor", "refused_level3"))
-    assert refused >= 1
+    if qiskit_17057_present():  # Addendum 357: only where Qiskit makes a wrong circuit to refuse
+        assert refused >= 1
 
 
 def test_resynthesis_refused_on_near_boundary_trotter(mods):
@@ -258,7 +275,8 @@ def test_resynthesis_refused_on_near_boundary_trotter(mods):
     for qc in near_boundary("W1", 4, 2):
         out = c12.compile_for_hardware(qc, target=tgt, placement_refine=True, final_resynthesis=True, **kw)
         assert state_infid(qc, out) <= 1e-6
-    assert c12.EXACT_STATS["refused_resynthesis"] - before >= 1
+    if qiskit_17057_present():  # Addendum 357
+        assert c12.EXACT_STATS["refused_resynthesis"] - before >= 1
 
 
 def test_cz_device_unchanged_on_near_boundary(mods):

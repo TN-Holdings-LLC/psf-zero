@@ -1,0 +1,12 @@
+# Output of check17057.py at the workplace on 2026-10-06 (Windows, a fresh venv; Python 3.11.9; numpy's
+# np.show_config() abridged to the BLAS/LAPACK and SIMD lines; a local path in a pyyaml warning removed).
+qiskit 2.5.2 | numpy 2.4.6 | scipy 1.17.1 | Windows-10-10.0.26100-SP0
+blas:   scipy-openblas 0.3.31.188.0 (OpenBLAS USE64BITINT DYNAMIC_ARCH NO_AFFINITY SkylakeX MAX_THREADS=24)
+lapack: scipy-openblas 0.3.31.188.0
+SIMD:   baseline X86_V2, found X86_V3
+c=1e-08  decomposer -4.441e-16   transpile L1 -1.110e-15
+c=3e-08  decomposer 0.000e+00   transpile L1 -6.661e-16
+c=1e-07  decomposer 0.000e+00   transpile L1 -6.661e-16
+c=2e-07  decomposer 2.220e-16   transpile L1 -6.661e-16
+c=3e-07  decomposer 0.000e+00   transpile L1 -6.661e-16
+c=1e-06  decomposer 0.000e+00   transpile L1 -6.661e-16

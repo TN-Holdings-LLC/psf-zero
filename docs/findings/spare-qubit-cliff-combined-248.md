@@ -14794,6 +14794,102 @@ workplace handoff `handoff_2026-10-05_v8.zip`, all 442 files checked against its
 home candidates c12 and a9 (Addendum 342; adopted as release 2026-10-05.1 and front end a9, Addendum 344); the
 workplace candidates themselves are not part of any release.
 
+
+---
+
+<!-- ===== Addendum 357 (source: spare-qubit-cliff-addendum-357-2026-10-06.md) ===== -->
+
+> **Note added when merging:** A fresh install on Windows (2026-10-06): Qiskit #17057 does not appear there; three tests made conditional on it; networkx declared as a dependency.
+
+## Addendum 357 -- A fresh install on Windows: Qiskit issue #17057 does not appear there, so three tests that assumed it would were made conditional; networkx was missing from the declared dependencies (2026-10-06)
+
+**Status: a record of an installation and of test fixes.** No prediction; no change to `psf_compile.py` or the AI
+front end.
+
+## 1. What happened
+
+The release tests of 2026-10-05.1 (Addendum 344) were run at the workplace on a Windows PC, in a fresh virtual
+environment at commit `a789db9`:
+
+- Windows 11 (10.0.26100), Python 3.11.9, qiskit 2.5.2, numpy 2.4.6, scipy 1.17.1;
+- the Rust core built with `maturin develop --release`.
+
+**Two findings.**
+
+1. **`networkx` was not installed.** `benchmarks/psf_smart_layout.py` imports it, and every call with
+   `layout_search=True` needs it, but `pyproject.toml` did not declare it. The home environments had it for other
+   reasons, so no earlier run noticed. After `pip install networkx`, the tests ran.
+2. **3 of the 11 tests failed, all on the same assertion:**
+   - the exactness checks passed (state infidelity <= 1e-6);
+   - the assertion that the checks refused at least one Qiskit-made circuit failed: there was nothing to refuse.
+
+   Affected tests:
+   - `test_recommended_call_exact_on_near_boundary_cx`;
+   - `test_resynthesis_refused_on_near_boundary_trotter`;
+   - `test_exact_on_near_boundary_unitaries_cx`.
+
+## 2. Why: #17057 depends on rounding
+
+`data/2026-10-06/windows/check17057.py` feeds the issue's own input, `exp(i(0.6 XX + 0.3 YY + c ZZ))`, to:
+
+- `TwoQubitBasisDecomposer(CXGate(), euler_basis="ZSX")`;
+- `transpile(basis_gates=[cx, rz, sx, x], optimization_level=1)`.
+
+**On this Windows environment, both were exact for every c from 1e-8 to 1e-6** (1 - F_avg at most 1.1e-15;
+`output.txt`). In the Linux environments the same input fails at c = 3e-8 to 3e-7 with 7.0e-2:
+
+- home: WSL2, Addendum 343 and the reproduction of 2026-10-05;
+- the workplace: a Linux sandbox, Addendum 340.
+
+**This fits the cause found while bisecting.** Near c = 0 an angle is off a multiple of pi by an offset of order
+1e-17/c. The branch is taken wrongly only when that offset exceeds a fixed tolerance. Whether it does depends on
+rounding in the steps before it, which can differ between platforms and builds.
+
+**Not established:**
+
+- which difference matters (OS, BLAS build, compiler or CPU path);
+- whether other Windows builds behave the same.
+
+The numpy version of the home environment has not yet been recorded for comparison.
+
+## 3. Changes
+
+**Tests.** A helper, `qiskit_17057_present()`, runs the issue's input through `transpile` (c = 1e-7). The refusal
+counts are asserted only where it returns True. Exactness is still asserted everywhere. The change was made in four
+files:
+
+- the two release tests: `benchmarks/test_release_2026_10_05_1.py`, `benchmarks/test_ai_compile_a9.py`;
+- the two locked candidate tests they were adapted from (Addendum 342): `patches/psf_compile_c12_2026-10-05/test_c12_exact.py`,
+  `patches/psf_ai_compile_a9_2026-10-05/test_a9.py`.
+
+**Unchanged:** what these tests check in the Linux environments, where the scored runs were made. EXACT's results
+(Addenda 342-343) stand as measured there.
+
+**Dependencies.** `pyproject.toml` now declares `networkx>=2.6`, and the README's install line names it.
+
+**README.** The correctness notice now says that whether Qiskit's failure appears depends on floating-point rounding,
+and that the fix protects either way.
+
+## 4. Consequences
+
+- **For users:** on a platform where Qiskit happens to be exact, releases 2026-10-03.1 to 2026-10-04.1 were not wrong
+  on these inputs. Anyone on Linux x86_64 was exposed. 2026-10-05.1 is safe on both.
+- **For testing:** a test that needs an upstream defect in order to exercise a guard must first check that the defect
+  is present. From now on, such tests assert the guard's effect conditionally and its exactness unconditionally.
+- **For the upstream issue:** maintainers on a platform like this one may not reproduce it. This is recorded here only.
+  It will be mentioned upstream only if a maintainer reports that it does not reproduce.
+
+**Normalized SHA-256, before and after:**
+
+| file | before | after |
+|---|---|---|
+| `benchmarks/test_release_2026_10_05_1.py` | `b369ca331c368fbc…` | `9ac2762c8b344874…` |
+| `patches/psf_compile_c12_2026-10-05/test_c12_exact.py` | `4313a8fbc3eef127…` | `d7d99c7ca66161fb…` |
+| `benchmarks/test_ai_compile_a9.py` | `1038f9c5933ef516…` | `2a36a47b1951bfcd…` |
+| `patches/psf_ai_compile_a9_2026-10-05/test_a9.py` | `ff69fb714d60a73d…` | `3ba72b87c7869b63…` |
+| `pyproject.toml` | `a2e4f0068796329d…` | `79b5b7e942eeea43…` |
+| `README.md` | `a707b1d051e2d81e…` | `e62803f4ff851424…` |
+
 ---
 
 ---
