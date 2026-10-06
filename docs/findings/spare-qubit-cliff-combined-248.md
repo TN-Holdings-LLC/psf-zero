@@ -15105,6 +15105,248 @@ was given in the conversation with Claude that prepared it. That is weaker than 
 | imported, unchanged: `data/2026-10-05/workplace/depth1/depth_eval.py` (DEPTH's lock) | `82488d96144bb1c88f69676a0e6a642c22d4756a47d8a1ad8b07be5327c796ac` |
 | used by the a11 test: `data/2026-10-05/workplace/model_ro2/a10/psf_ai_compile.py` | `1af633d5f91a639a4894a092b5d4603c738cb51584d69d8068bfce9a0303e480` |
 
+
+---
+
+<!-- ===== Addendum 359 (source: spare-qubit-cliff-addendum-359-2026-10-06.md) ===== -->
+
+> **Note added when merging:** Pre-registration of KRAUS (candidate psf_compile 2026-10-06.c15, candidate_score="kraus"); the predictions were written before the first smoke run; the smoke runs were made and seen at the workplace (section 5); the lock is the commit that adds it.
+
+## Addendum 359 -- Pre-registration: candidate psf_compile 2026-10-06.c15 (`candidate_score="kraus"`, the estimate exact to first order of Addendum 339) against release 2026-10-05.1's `hybrid_cost`, on fresh circuits on HOLD6's nine devices, with HOLD6's H4 case as a named check (KRAUS) (2026-10-06)
+
+**Status: pre-registration.**
+
+- **Written on 2026-10-06,** during the day, with tests and smoke runs made on the workplace PC (section 5).
+- **Lock:** the git commit that adds this document, with:
+  - `patches/psf_compile_c15_2026-10-06/` (the candidate and its test);
+  - `benchmarks/kr_eval.py` and its runners: `benchmarks/run_kr_2026-10-06.sh` (bash), and
+    `benchmarks/run_parallel_2026-10-06.py` (Python, the same jobs; it also runs RECR, Addendum 358);
+  - `benchmarks/kr_verify.py`, an independent re-computation of every verdict from the raw output. It was written
+    before the lock and before any scored output exists, and does not import `kr_eval.py`.
+
+  **The commit is made before the scored run, at the workplace, and pushed from home afterwards with the same hash**
+  (section 5; as for Addendum 358).
+- **No hardware:** fake devices only.
+- **The predictions (section 4) are in `kr_eval.py score`.** They were written before the first smoke run and are not
+  changed.
+
+## 1. Why
+
+**HOLD6's one open loss.** HOLD6 (Addenda 336-338) adopted `candidate_score="hybrid"` (item 38). It left one named
+case: on FakeAlgiers, 4-qubit GHZ chains (family F5, n = 4) came out 6.7% worse than the floor-placed candidate that
+the same call had already built (H4).
+
+**The diagnosis (Addendum 339, exploratory).** `hybrid_cost` makes two approximations that add up against one
+placement:
+
+- amplitude damping is counted on the state before each gate;
+- the reported error above the thermal floor is counted as if the gate's qubits were maximally mixed.
+
+An estimate without either approximation (`kraus_pur` in `h4_diag.py`) chose, when HOLD5's circuits were rescored
+in-sample, the measured best on all nine devices, to four decimals.
+
+**What that left open:**
+
+- in-sample only: the same circuits that showed the problem;
+- not run through the compiler: the rescoring replayed the recorded candidates;
+- no cost measured.
+
+## 2. The candidate
+
+**c15** is release 2026-10-05.1 plus one item (`VERSION = "2026-10-06.c15"`):
+
+- **item 42:** `kraus_cost(circ, target)`, the terms of `kraus_pur`, and `candidate_score="kraus"`, which uses it in
+  `_choose`. Everything else is unchanged; other values of `candidate_score` behave as in the release.
+
+Against the release file, c15 differs in seven places (`diff`): its two version lines, the changelog entry, the new
+function, the `_choose` mapping, the accepted values of `candidate_score`, and one docstring line.
+
+**`kraus_cost` was rewritten once before the lock** (section 5). The first version built the Kraus operators as
+matrices, as `h4_diag.py` does. The second evaluates the same traces in closed form:
+
+- `Tr(rho K)` from the single-qubit reduced state's three entries;
+- the purity as the sum of `|rho_ij|^2`.
+
+On 200 random circuits with random device data (mock objects, up to 7 qubits), the two agree with
+`h4_diag.terms(...)["kraus_pur"]` to a relative 6.9e-16.
+
+**Its test** (`test_c15.py`, 9 cases) checks:
+
+- the versions;
+- `kraus_cost` equals `kraus_pur` (relative 1e-12) on compiled circuits on FakeAlgiers and FakeTorino;
+- with `candidate_score="hybrid"`, c15's output is the release's, instruction by instruction;
+- `kraus` outputs are exact;
+- on three H4 circuits, hybrid keeps the release's circuit and kraus takes the floor-placed one;
+- an unknown score is rejected.
+
+## 3. Design (`benchmarks/kr_eval.py`)
+
+**Devices:** HOLD6's nine:
+
+| type | devices |
+|---|---|
+| cx | FakeAuckland, FakeHanoiV2, FakeAlgiers, FakeGeneva |
+| cz | FakeTorino, FakeKingston, FakeFez, FakeMarrakesh, FakeAachen |
+
+**Circuits:**
+
+- HOLD6's families F1-F6 and per-cell sizes, from `hold6_eval.family`, unchanged except its seed base, set to
+  110,000,000. That gives seeds between 111 and 117 million, none used before (section 5).
+- 1,506 circuits per device: F1 432, F2 240, F3 300, F4 270, F5 144, F6 120.
+- F5 at n = 4 on FakeAlgiers is H4's cell: 72 circuits.
+
+**Per circuit:**
+
+- **R:** the release's recommended call (`placement_refine`, `final_resynthesis="select"`, `compare_level3`,
+  `compare_floor`, `candidate_score="hybrid"`).
+- **K:** c15 with the same call and `candidate_score="kraus"`.
+  - Its candidates (the release's circuit, the floor-placed one, level 3's) are captured from `c15._choose`.
+  - R and K run in alternating order, circuit by circuit.
+- **Estimates:** every candidate is scored by `hybrid_cost`, `kraus_cost` and `pauli_cost`.
+- **Simulation:** every distinct candidate is simulated once:
+  - Aer density matrix, the device's noise model;
+  - HOLD6's metric: 1 - <psi|rho|psi> on the final-layout qubits;
+  - at most 11 touched qubits; wider candidates are excluded from every mean, and their count is reported;
+  - a noiseless statevector run for the exactness check.
+- **The choices:**
+  - HYB, KRA and PAU are the candidates with the lowest estimate (ties, or any estimate that cannot be made: the
+    release's circuit, as in `_choose`);
+  - BEST is the candidate with the lowest simulated infidelity;
+  - L3 is level 3's candidate.
+- **Consistency:**
+  - R must equal HYB's candidate, and K must equal KRA's, instruction by instruction;
+  - every 10th circuit, c15 with `candidate_score="hybrid"` must equal R.
+
+**Time.** A second compile of the same circuit runs warm, so measured K / R does not measure the change (section 5).
+K's time is therefore estimated as:
+
+- R's measured time,
+- plus `kraus_cost`'s time,
+- minus `hybrid_cost`'s time,
+- both timed on the same candidates.
+
+The measured times are recorded and reported.
+
+**Size:** 54 jobs (9 devices × 6 families).
+
+## 4. Predictions (scored only by `kr_eval.py score`; written before the first smoke run)
+
+**P0, harness.** All of these must hold, or nothing below is scored:
+
+- 54 files with the counts above;
+- no compile error;
+- every candidate exact (noiseless infidelity <= 1e-6);
+- R = HYB and K = KRA on every circuit, and c15-hybrid = R on every checked circuit.
+
+`kr_verify.py` adds one more condition: every recorded choice is re-derived from the recorded estimates.
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| K1 | kraus chooses at least as well as hybrid overall | KRA/HYB mean infidelity <= 1.000 on >= 8 of 9 devices | > 1.002 on any |
+| K2 | the H4 case is repaired | FakeAlgiers F5 n = 4: KRA/HYB <= 0.96 | >= 1.00 |
+| K3 | kraus is closer to the measured best | gap to BEST: KRA <= 0.5 × HYB's on >= 7 of 9 devices | KRA's gap larger than HYB's on >= 3 |
+| K4 | where the choice changes, kraus is better more often | >= 60% of changed choices on every device with >= 20 changes | < 50% on any |
+| K5 | no family loses | KRA/HYB <= 1.01 in every family-device cell | > 1.03 in any |
+| K6 | kraus stays ahead of Qiskit level 3 | KRA/L3 <= 1.00 on 9 of 9 devices | > 1.02 on any |
+| K7 | it costs little | median K time (estimated, above) / median R time <= 1.15 on every device | > 1.50 on any |
+
+**How the thresholds were set (disclosed):**
+
+- **K1, K3:** from Addendum 339's in-sample rescoring, with margin for out-of-sample circuits and for the step from
+  replayed candidates to the compiler.
+- **K2:** H4 was 6.7% worse than the floor-placed candidate. 0.96 asks for most of that back.
+- **K4:** the choice changes only where the two estimates disagree. 60% would show the disagreement is resolved the
+  right way more often than by chance.
+- **K5:** the same margin as earlier HOLD tests.
+- **K6:** the release is ahead of level 3 on these families (HOLD6); kraus must not give that back.
+- **K7:** the change adds arithmetic per candidate only. The bound is the same as RECR's Q10 (Addendum 358).
+
+**Reported without prediction:**
+
+- the full table by device;
+- every family-device KRA/HYB cell;
+- the measured K / R times;
+- PAU's results;
+- how many candidates were too wide to simulate.
+
+## 5. Development and smoke runs (disclosed)
+
+**Built at home on 2026-10-06.** `kr_eval.py`'s scorer and `kr_verify.py` were checked on synthetic files: one set
+built to pass, one built to fail K1 and K4-K6, and one with a choice that does not follow its estimates. `kr_verify.py`
+caught the last; `kr_eval.py`'s P0 does not look for it.
+
+**Run at the workplace on 2026-10-06** (Windows, Python 3.11.9, qiskit 2.5.2, Aer 0.17.2, numpy 2.4.6; repository at
+`a789db9` with bundle am applied; the stage files untracked). Every smoke run used `hold6_eval`'s smoke sizes (1
+circuit per cell). Their output was seen before the lock.
+
+1. **Smoke 1** (first harness, first `kraus_cost`), all nine devices.
+   - `test_c15.py` passed 9 of 9.
+   - P0 passed.
+   - K1, K2 (0.937, on 1 circuit), K3, K5, K6 and K7 were CONFIRMED; K4 was AMBIGUOUS.
+   - Measured K / R was 0.68-0.88.
+2. **Smoke 2** (alternating order). The measured ratios on three devices were 0.70, 0.79 and 0.73. Split by order:
+   0.43 when K ran second, 1.14 when K ran first. The second call on a circuit runs warm, so the measured ratio
+   cannot measure the change. **K7 was redefined before the lock to the estimate in section 3.** Its threshold is
+   unchanged.
+3. **Smoke 3** (estimate-based K7, FakeAlgiers). `hybrid_cost` took 0.0117 s per circuit and the first `kraus_cost`
+   0.0219 s; the K7 ratio was 1.1425, close to the 1.15 bound. **`kraus_cost` was rewritten in closed form** (section
+   2). Its values are the same (6.9e-16), and the prediction is unchanged.
+4. **Smoke 4** (closed form, FakeAlgiers): 19 circuits. `hybrid_cost` took 0.0118 s and `kraus_cost`
+   0.0144 s (medians per circuit); the K7 ratio was 1.045.
+5. **Final smoke** (the locked files, all nine devices): 171 circuits (19 per device), seed base 110,000,000 at its smoke offset.
+   - `test_c15.py` (closed form) passed 9 of 9 (5.8 s).
+   - P0 passed.
+   - K1, K2 (0.937, on 1 circuit), K3, K5, K6 and K7 were CONFIRMED.
+   - K4 was AMBIGUOUS: no device had 20 changed choices; there were 1-4 per device, and KRA was better in 17 of 22.
+   - KRA/HYB was 0.995-1.000 and KRA/L3 0.939-0.992.
+   - K7 was 1.008-1.079.
+   - The measured K / R was 0.59-0.85.
+   - Its output is in `data/2026-10-06/kr_smoke/`.
+
+**Changed before the lock (disclosed):**
+
+- **The seed base.** It was 96,000,000 during the smoke runs. While writing this document it was found that HOLD6's
+  W families used seeds from 96 to 101.5 million (`W_BASE` 95,000,000). Same seed numbers would not have given the
+  same circuits, because the generators differ, but the scored run should not reuse seeds. It is now 110,000,000.
+  The smoke seeds of the final smoke run lie at that base's smoke offset and are not scored.
+- **The K7 method and `kraus_cost`'s speed,** above.
+
+**Not changed:** the predictions and their thresholds.
+
+**The platform.** The scored run is made on the same workplace PC as the smoke runs (Windows), with
+`run_parallel_2026-10-06.py`. Qiskit issue #17057 does not appear there (Addendum 357). Where it does appear, the
+release's check (item 39) refuses the wrong circuit before `_choose` sees it, so the comparison is between exact
+candidates on both platforms; this run does not exercise that path.
+
+**How the lock was kept (disclosed).** As for Addendum 358: Addenda 357-359 were committed on the workplace PC before
+either scored run, carried home as a git bundle and pushed with the same hashes; the scored output records the commit
+(`git_head`); the SHA-256 of each bundle and locked file was given in the conversation with Claude before the run.
+That is weaker than a push, which GitHub timestamps.
+
+## 6. What this will not establish
+
+- **Hardware.** `kraus_cost` reproduces Aer's own noise model: thermal relaxation after each gate plus a
+  depolarizing remainder. A simulation test therefore favours it by construction. On hardware, relaxation acts during
+  the gate, and there are errors (leakage, crosstalk, coherent over-rotation) that this model lacks.
+- **Wider circuits.** Candidates touching more than 11 qubits are not simulated. Above `RESYNTH_MAX_QUBITS`,
+  `kraus_cost` returns None and the release's circuit is kept.
+- **Readout.** These circuits are compiled without measurements. RECR (Addendum 358) tests readout separately; the two
+  items have not been combined.
+
+## 7. Locked files (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| `patches/psf_compile_c15_2026-10-06/psf_compile.py` | `24affde8f5d6f218319b4ff2d7e98317a37b5fdb816381d64e91cfc6a9ef97f0` |
+| `patches/psf_compile_c15_2026-10-06/test_c15.py` | `df3c611dc0e59eba194f297b35db00d5e59dfa74155cf0de4de7db0d3facf984` |
+| `benchmarks/kr_eval.py` | `dc55a9db28a2c42d24cee6d01c097e491056870d0bff1ed0e5335d2689d2200d` |
+| `benchmarks/run_kr_2026-10-06.sh` | `1a74d85b508ba43c4034d54f93a349b6d348f423f7762a142fbe80485f490ddb` |
+| `benchmarks/run_parallel_2026-10-06.py` | `1e490057b248c5b61e47169899d3efe9772389187573594ec2c2e896470a18cb` |
+| `benchmarks/kr_verify.py` | `6703d98ee823d719b4ba1e94e3ae3d014e6bbbcfb2fc0c55bd14cb732b79dcb8` |
+| the release: `psf_compile.py` (2026-10-05.1), unchanged | `33853989e0bf02fedeabda7edbc9e84c6b1a630e9af490751025ca2c8f176b67` |
+| imported, unchanged: `benchmarks/hold6_eval.py` (HOLD6's lock) | `8740a33225f24da12f1d07c235695950f03643d4160283eb1623ad9d7f05108a` |
+| used by the test, unchanged: `data/2026-10-04/h4/diag/h4_diag.py` (Addendum 339) | `5de3f263696e95b9adbd4fcbf61346d58e823a9304b9de9ebea4d1f30e9bee2c` |
+
 ---
 
 ---
