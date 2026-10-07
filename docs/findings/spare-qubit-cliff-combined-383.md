@@ -1957,6 +1957,60 @@ release 2026-10-07.1 as locked; every stale Target differs from the true one.
 Real calibration drift (a perturbation model); hardware; why draw 1 hurt the recommended call on FakeAuckland (not
 examined); other tasks than DEPTH-R's classifiers; readout errors in the stale calibration.
 
+
+---
+
+<!-- ===== Addendum 404 (source: spare-qubit-cliff-addendum-404-2026-10-07.md) ===== -->
+
+> **Note added when merging:** A documentation change after Addendum 403: README and RELEASES only, no code and no run. Committed before the files of candidate 2026-10-07.c24 and its test.
+
+## Addendum 404 -- README and RELEASES: what CALSPLIT (Addendum 403) means for users. On a device with failed couplers, pass `target`; the recommended call's estimate-driven choices need a fresh calibration (2026-10-07)
+
+**Status: a documentation change. No code changed and nothing was run; every number is from Addendum 403 or
+Addendum 400.**
+
+## 1. What changed
+
+Addendum 403 (section 4) named two things users should know. They are now in the
+[`README.md`](../../README.md) and in [`docs/RELEASES.md`](../../docs/RELEASES.md):
+
+- **README, introduction.** The sentence that the recommended call "gave lower simulated infidelity than level 3 on
+  every fake device tested" now says that its choice among candidates is only as good as the calibration it reads.
+  With a calibration off by tens of per cent it stayed level with level 3. On one of two devices it lost its lead
+  over the simpler target-aware call.
+- **README, Quick start.** A new paragraph: on a device that reports failed couplers, give the call the device's
+  `target` (the recommended call, or at least `target` with `placement_refine=True`). The default call does not read
+  the target. In CALSPLIT on FakeTorino it reached 0.77 accuracy even at 1,023 shots, against 0.94 for every
+  target-aware call.
+- **README, "Where it is weaker".** A new paragraph on CALSPLIT. It gives:
+  - what was tested;
+  - that reading a calibration that is 30% wrong still beats not reading one (1.7 and 4.9 points of accuracy at 15
+    shots, 0.1 and 0.4 at 1,023);
+  - that the recommended call's estimate-driven choices need a fresh calibration (FakeAuckland: +0.0056 with the
+    true calibration, -0.0041 with stale ones, -0.0142 in one draw; FakeTorino +0.0194, from routing);
+  - that it stays level with Qiskit level 3 given the same stale Target;
+  - the default call's 21,204 gates on failed couplers;
+  - what CALSPLIT did not cover.
+- **README, "Results in brief".** The stale-calibration line adds CALSPLIT's result. It used to cite only
+  Addendum 335.
+- **RELEASES.** The current release's block has a new bullet, "Found after the release (CALSPLIT, Addenda
+  402-403, pre-registered)". It follows the REC-PROBE bullet of Addendum 398.
+
+## 2. What did not change
+
+- The release (`psf_compile.py` 2026-10-07.1), the AI front end, the layout search and the core.
+- The README's table "What it does well, and what it costs". Its numbers come from tests with the true calibration,
+  and they stand.
+- The README line "No failed coupler or qubit was used in any of these tests". It is about the 1,506-circuit device
+  tests, which used only target-aware calls. CALSPLIT's default-call arm is reported separately.
+
+## 3. What follows
+
+Addendum 403 also proposed a candidate: the recommended call switches to an alternative only when the estimated
+gain exceeds a margin. It is being prepared as candidate 2026-10-07.c24 (changelog item 51). It will get its own
+pre-registered test, with both true and stale calibrations, in a later Addendum. The README will say nothing about
+it until that test is scored.
+
 ---
 
 ---

@@ -45,6 +45,12 @@ the earlier parts they link to. The README itself, as it was before the move, is
 >   such gates on two Benchpress tests). 2026-10-07.1, through item 48, avoids them there. On BP-MOCK's 20
 >   FakeTorino tests its recommended call never used more two-qubit gates than 2026-10-06.4's, and fewer on 8
 >   (BV-like 1,071 to 0).
+> - **Found after the release (CALSPLIT, Addenda 402-403, pre-registered):** with stale calibrations (errors off by
+>   about 30%, T1 and T2 by 20%; scored with the true noise) the recommended call's estimate-driven choices lost
+>   their lead over the guarded call (`target` and `placement_refine` only) on FakeAuckland (-0.0041 of classification
+>   margin, -0.0142 in one draw of three) and kept it on FakeTorino (+0.0194); it stayed level with Qiskit level 3.
+>   The default call, which does not read the target, placed 21,204 two-qubit gates on FakeTorino's failed couplers
+>   and lost 17 points of accuracy. The README now says to pass `target` on such devices (Addendum 404).
 
 > **Previous release (2026-10-06, fourth release): `psf_compile.py` 2026-10-06.4 and the AI front end a12, with
 > `psf_smart_layout` 2026-10-01.1 and the Rust core `CORE_VERSION` 2026-09-29.1 (both unchanged)**

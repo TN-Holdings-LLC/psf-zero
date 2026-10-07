@@ -18,7 +18,9 @@ PSF-Zero is a Qiskit-compatible compiler with two layers.
   `Target`, error-aware placement and a choice among candidate circuits by a noise estimate. Up to 16 logical
   qubits this recommended call is slower than Qiskit level 3, and in exchange gave lower simulated infidelity than
   level 3 on every fake device tested (circuits of 4-10 qubits). Above 16 it returns the default call's circuit with
-  the error-aware placement, without building level 3 (since 2026-10-06.4).
+  the error-aware placement, without building level 3 (since 2026-10-06.4). Its choice among candidates is only as
+  good as the calibration it reads: with one off by tens of per cent it stayed level with level 3 but lost its lead
+  over the simpler target-aware call on one of two devices (CALSPLIT, Addendum 403).
 - **General circuits: about level with Qiskit level 2, and slower.** On 139 Benchpress tests chosen by a
   pre-registered rule, the default call of 2026-10-07.1 used 1.03 times Qiskit level 2's two-qubit gates (geometric
   mean; fewer on 18 tests, as many on 59, more on 62), at about four times its compile time. 2026-10-06.4 used 1.33
@@ -148,6 +150,12 @@ out = compile_for_hardware(qc, coupling_map=cm, basis_gates=basis, entangling_ba
 If the circuit will be sampled, compile it **with** its final measurements: since 2026-10-06.1 the placement and the
 choice among candidates then count readout error (Addenda 358, 360).
 
+**On a device that reports failed couplers** (FakeTorino does), give the call the device's `target`: the recommended
+call above, or at least `target=backend.target, placement_refine=True`. The default call (coupling map and basis
+only) does not read the target and can route through couplers the device reports as failed, as Qiskit level 2 can
+(Addendum 393). In CALSPLIT a classifier compiled that way on FakeTorino reached 0.77 accuracy even at 1,023 shots,
+against 0.94 with any target-aware call (Addendum 403).
+
 ## Install
 
 ```bash
@@ -212,6 +220,22 @@ output passed Benchpress's validator.
 - Not covered: Benchpress's other tests, depth, hardware. The same inputs informed items 48 and 50, so this is not an
   independent sample.
 
+**With a calibration that is not the device's (CALSPLIT, Addenda 402-403).** DEPTH-R's classifiers (4 and 6 qubits,
+1-16 layers; Addenda 399-400) were compiled with stale Targets (gate errors off by about 30%, T1 and T2 by about
+20%, three draws per device) and scored with the device's true noise, on FakeAuckland and FakeTorino.
+
+- **Reading a calibration that is 30% wrong still beats not reading one.** Every target-aware call kept more margin
+  and flipped fewer answers than the calls that ignore the target. At 15 shots the recommended call was 1.7 points
+  (FakeAuckland) and 4.9 points (FakeTorino) of accuracy ahead of the better of them; at 1,023 shots 0.1 and 0.4.
+- **The recommended call's estimate-driven choices need a fresh calibration.** Over the guarded call (`target` and
+  `placement_refine` only) they gained +0.0056 of classification margin on FakeAuckland with the true calibration
+  (Addendum 400) and lost 0.0041 with stale ones, 0.0142 in one draw (0.3 points of accuracy at 15 shots). On
+  FakeTorino the lead held (+0.0194): it comes from routing, not from the estimate. Given the same stale Target it
+  stayed level with Qiskit level 3 (+0.0049 and -0.0098).
+- **The default call on a device with failed couplers is a real hazard.** On FakeTorino it placed 21,204 two-qubit
+  gates on failed couplers and lost 17 points of accuracy (see [Quick start](#quick-start)).
+- Not covered: real calibration drift (this was a perturbation model), hardware, other tasks, stale readout errors.
+
 **The recommended call at 16 qubits.** Up to 16 logical qubits it builds Qiskit level 3 and a second candidate and
 checks them by state-vector simulation. 2026-10-07.1 does this in about 0.13-0.24 of 2026-10-06.4's time (see
 Current version); with 2026-10-06.4 it took a median of 31 s for Hamiltonians of 48 Pauli terms and 20 s for QFT at
@@ -241,7 +265,9 @@ Current version); with 2026-10-06.4 it took a median of 31 s for Hamiltonians of
 - Sampled circuits compiled with their measurements (6 devices): release 2026-10-06.1 at 0.66-1.01 times Qiskit level 3's
   classical infidelity, a11 at 0.63-0.98 (Addendum 360).
 - With a stale calibration (errors off by 30%, T1/T2 by 20%) the previous release stayed ahead of level 3
-  (Addendum 335).
+  (Addendum 335). On a classification task 2026-10-07.1's recommended call stayed level with level 3 given the same
+  stale Target, but not ahead of the guarded call on FakeAuckland (CALSPLIT, Addendum 403; see
+  [Where it is weaker](#where-it-is-weaker)).
 - At 8-10 logical qubits it stayed ahead too (0.951-0.998).
 - No failed coupler or qubit was used in any of these tests. (On an input that is one instruction over many
   qubits, 2026-10-06.4's recommended call could still use them, with a warning; 2026-10-07.1 avoids them where
