@@ -1,0 +1,14 @@
+$ python fuse_diag.py
+(workplace, Windows; release 2026-10-06.4 against the first version of candidate c19; 2026-10-07, about 00:35 UTC)
+release: moved {'COMPARE_STATS': {'psf': 1}, 'RESYNTH_STATS': {'applied': 2, 'selected_original': 2}, 'EXACT_STATS': {'checked': 4}, 'PRUNE_STATS': {'checked': 1}, 'SKIP_STATS': {}}
+   2q 30, ops {'sx': 64, 'rz': 64, 'cz': 30, 'measure': 16, 'barrier': 1}
+   initial [108, 109, 110, 111, 98, 91, 90, 89, 88, 87, 97, 107, 106, 105, 104, 103]
+   final   [108, 109, 110, 111, 98, 91, 90, 89, 88, 87, 97, 107, 106, 105, 104, 103]
+c19: moved {'COMPARE_STATS': {'level3': 1}, 'RESYNTH_STATS': {'applied': 2, 'selected_original': 2}, 'EXACT_STATS': {'checked': 4}, 'PRUNE_STATS': {'checked': 1}, 'SKIP_STATS': {}}
+   2q 30, ops {'sx': 64, 'rz': 62, 'cz': 30, 'measure': 16, 'barrier': 1}
+   initial [108, 109, 110, 111, 98, 91, 90, 89, 88, 87, 97, 107, 106, 105, 104, 103]
+   final   [108, 109, 110, 111, 98, 91, 90, 89, 88, 87, 97, 107, 106, 105, 104, 103]
+output of release: rel: hybrid 0.23233754846574337 excitation 0.07653858667243477 | c19: hybrid 0.23233754846574342 excitation 0.07653858667243475
+output of c19: rel: hybrid 0.23233754846574337 excitation 0.07653858667243477 | c19: hybrid 0.2323375484657434 excitation 0.07653858667243475
+same instructions apart from layout: False
+implements (release check): True True

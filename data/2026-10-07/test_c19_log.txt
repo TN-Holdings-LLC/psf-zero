@@ -1,0 +1,11 @@
+(workplace, Windows, Python 3.11.9)
+first version of c19:
+$ python -m pytest patches/psf_compile_c19_2026-10-07/test_c19.py -q -s -p no:cacheprovider
+.fusion: worst state infidelity 2.0e-14, ops kept 0.37-0.49
+..........pauli16 on FakeTorino: release 80.9 s, c19 39.4 s (0.49)
+.
+12 passed in 184.15s (0:03:04)
+
+second version (the locked one; two tests added for ties):
+$ python -m pytest patches/psf_compile_c19_2026-10-07/test_c19.py -q -s -p no:cacheprovider
+14 passed in 275.44s (0:04:35)

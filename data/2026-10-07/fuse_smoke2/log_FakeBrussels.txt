@@ -1,0 +1,21 @@
+  0 ring8m rel 0.109 s c19 0.121 s identical True
+  1 ring12m rel 0.258 s c19 0.189 s identical True
+  2 ring14m rel 0.499 s c19 0.301 s identical True
+  3 ring16m rel 9.347 s c19 3.680 s identical True
+  4 ring20m rel 0.028 s c19 0.030 s identical True
+  5 brick8m rel 0.386 s c19 0.321 s identical True
+  6 brick12m rel 0.859 s c19 0.564 s identical True
+  7 brick14m rel 2.305 s c19 1.061 s identical True
+  8 brick16m rel 42.160 s c19 10.872 s identical True
+  9 brick20m rel 0.088 s c19 0.102 s identical True
+ 10 pauli8m rel 2.581 s c19 2.166 s identical True
+ 11 pauli12m rel 8.358 s c19 5.507 s identical True
+ 12 pauli14m rel 21.714 s c19 8.336 s identical True
+ 13 pauli16m rel 210.762 s c19 70.000 s identical True
+ 14 pauli20m rel 0.148 s c19 0.190 s identical True
+ 15 qft8m rel 1.308 s c19 0.880 s identical True
+ 16 qft12m rel 4.507 s c19 2.615 s identical True
+ 17 qft14m rel 13.082 s c19 5.245 s identical True
+ 18 qft16m rel 127.604 s c19 29.824 s identical True
+ 19 qft20m rel 0.088 s c19 0.081 s identical True
+wrote fuse_FakeBrussels_smoke.json: 20 circuits, 591.1 s

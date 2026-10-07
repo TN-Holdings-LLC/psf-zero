@@ -1,0 +1,54 @@
+$ python cliff16_profile.py --device FakeTorino --out <project-folder>/cliff16_profile.txt
+(home, WSL2; release 2026-10-06.4; 2026-10-06, about 14:10 UTC; SKIP_STATS are cumulative over the four calls)
+
+pauli n=16: wall 53.31 s; EXACT_STATS {'checked': 4, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 1, 'not_checkable': 1}; SKIP_STATS {'resynthesis': 0, 'floor': 0, 'level3': 0}
+  cumulative s  calls  function
+         53.31      3  compile_for_hardware (psf_compile.py)
+         32.53      2  _resynthesise (psf_compile.py)
+         32.51      2  _select_resynthesis (psf_compile.py)
+         25.87     12  _apply_ops (psf_compile.py)
+         18.86      2  _final_resynthesis (psf_compile.py)
+         18.74      2  _same_action (psf_compile.py)
+         13.65      4  excitation_cost (psf_compile.py)
+         12.68      1  _choose (psf_compile.py)
+         12.68      2  hybrid_cost (psf_compile.py)
+          7.48      2  _implements (psf_compile.py)
+          0.26      8  _ops_of (psf_compile.py)
+          0.16      2  smart_vf2_layout (psf_smart_layout.py)
+          0.10      1  transpile (transpiler.py)
+          0.08      2  _acceptable (psf_compile.py)
+          0.07      1  floor_aware_target (psf_compile.py)
+          0.00      2  compile (psf_compile.py)
+
+pauli n=17: wall 0.11 s; EXACT_STATS {'checked': 0, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}; SKIP_STATS {'resynthesis': 1, 'floor': 1, 'level3': 1}
+  cumulative s  calls  function
+          0.11      2  compile_for_hardware (psf_compile.py)
+          0.03      1  smart_vf2_layout (psf_smart_layout.py)
+          0.01      1  _resynthesise (psf_compile.py)
+          0.00      1  compile (psf_compile.py)
+
+qft n=16: wall 27.13 s; EXACT_STATS {'checked': 4, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}; SKIP_STATS {'resynthesis': 1, 'floor': 1, 'level3': 1}
+  cumulative s  calls  function
+         27.13      3  compile_for_hardware (psf_compile.py)
+         16.09      2  _resynthesise (psf_compile.py)
+         16.07      2  _select_resynthesis (psf_compile.py)
+         11.79     16  _apply_ops (psf_compile.py)
+          8.12      2  _final_resynthesis (psf_compile.py)
+          8.05      2  _same_action (psf_compile.py)
+          7.95      4  excitation_cost (psf_compile.py)
+          6.64      1  _choose (psf_compile.py)
+          6.63      3  hybrid_cost (psf_compile.py)
+          3.98      2  _implements (psf_compile.py)
+          0.18      8  _ops_of (psf_compile.py)
+          0.09      1  transpile (transpiler.py)
+          0.08      1  floor_aware_target (psf_compile.py)
+          0.04      2  smart_vf2_layout (psf_smart_layout.py)
+          0.04      2  _acceptable (psf_compile.py)
+          0.00      2  compile (psf_compile.py)
+
+qft n=17: wall 0.14 s; EXACT_STATS {'checked': 0, 'refused_resynthesis': 0, 'refused_floor': 0, 'refused_level3': 0, 'not_checkable': 0}; SKIP_STATS {'resynthesis': 2, 'floor': 2, 'level3': 2}
+  cumulative s  calls  function
+          0.14      2  compile_for_hardware (psf_compile.py)
+          0.03      1  smart_vf2_layout (psf_smart_layout.py)
+          0.01      1  _resynthesise (psf_compile.py)
+          0.00      1  compile (psf_compile.py)

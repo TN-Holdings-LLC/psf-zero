@@ -1,0 +1,21 @@
+  0 ring8m rel 0.130 s c19 0.128 s identical True
+  1 ring12m rel 0.201 s c19 0.166 s identical True
+  2 ring14m rel 0.375 s c19 0.259 s identical True
+  3 ring16m rel 7.769 s c19 2.221 s identical True
+  4 ring20m rel 0.060 s c19 0.047 s identical True
+  5 brick8m rel 0.464 s c19 0.352 s identical True
+  6 brick12m rel 0.922 s c19 0.532 s identical True
+  7 brick14m rel 2.044 s c19 0.992 s identical True
+  8 brick16m rel 39.143 s c19 12.959 s identical True
+  9 brick20m rel 0.136 s c19 0.121 s identical True
+ 10 pauli8m rel 2.711 s c19 2.181 s identical True
+ 11 pauli12m rel 6.517 s c19 4.154 s identical True
+ 12 pauli14m rel 21.038 s c19 9.438 s identical True
+ 13 pauli16m rel 202.966 s c19 75.788 s identical True
+ 14 pauli20m rel 0.152 s c19 0.140 s identical True
+ 15 qft8m rel 0.861 s c19 0.796 s identical True
+ 16 qft12m rel 2.919 s c19 2.084 s identical True
+ 17 qft14m rel 11.078 s c19 4.998 s identical True
+ 18 qft16m rel 101.948 s c19 39.956 s identical True
+ 19 qft20m rel 0.136 s c19 0.114 s identical True
+wrote fuse_FakeTorino_smoke.json: 20 circuits, 561.4 s

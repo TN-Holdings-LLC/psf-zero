@@ -1,0 +1,21 @@
+  0 ring8m rel 0.076 s c19 0.084 s identical True
+  1 ring12m rel 0.132 s c19 0.187 s identical True
+  2 ring14m rel 0.421 s c19 0.242 s identical True
+  3 ring16m rel 6.095 s c19 2.282 s identical True
+  4 ring20m rel 0.017 s c19 0.017 s identical True
+  5 brick8m rel 0.247 s c19 0.228 s identical True
+  6 brick12m rel 0.567 s c19 0.399 s identical True
+  7 brick14m rel 1.468 s c19 0.713 s identical True
+  8 brick16m rel 18.520 s c19 7.830 s identical True
+  9 brick20m rel 0.053 s c19 0.062 s identical True
+ 10 pauli8m rel 1.180 s c19 1.062 s identical True
+ 11 pauli12m rel 11.482 s c19 6.413 s identical True
+ 12 pauli14m rel 21.747 s c19 11.151 s identical True
+ 13 pauli16m rel 113.886 s c19 42.305 s identical True
+ 14 pauli20m rel 0.144 s c19 0.145 s identical True
+ 15 qft8m rel 0.537 s c19 0.479 s identical True
+ 16 qft12m rel 12.254 s c19 6.580 s identical True
+ 17 qft14m rel 20.059 s c19 9.546 s identical True
+ 18 qft16m rel 102.563 s c19 45.796 s identical True
+ 19 qft20m rel 0.225 s c19 0.190 s identical True
+wrote fuse_FakeHanoiV2_smoke.json: 20 circuits, 449.0 s

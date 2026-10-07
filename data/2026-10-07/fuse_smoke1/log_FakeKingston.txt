@@ -1,0 +1,21 @@
+  0 ring8m rel 0.127 s c19 0.131 s identical True
+  1 ring12m rel 0.212 s c19 0.252 s identical True
+  2 ring14m rel 0.368 s c19 0.316 s identical True
+  3 ring16m rel 4.859 s c19 2.349 s identical False
+  4 ring20m rel 0.058 s c19 0.056 s identical True
+  5 brick8m rel 0.442 s c19 0.404 s identical True
+  6 brick12m rel 0.771 s c19 0.571 s identical True
+  7 brick14m rel 2.070 s c19 1.147 s identical True
+  8 brick16m rel 26.033 s c19 10.783 s identical True
+  9 brick20m rel 0.127 s c19 0.121 s identical True
+ 10 pauli8m rel 1.943 s c19 1.765 s identical True
+ 11 pauli12m rel 5.715 s c19 3.613 s identical True
+ 12 pauli14m rel 19.166 s c19 8.034 s identical True
+ 13 pauli16m rel 240.635 s c19 84.431 s identical True
+ 14 pauli20m rel 0.175 s c19 0.217 s identical True
+ 15 qft8m rel 1.252 s c19 1.261 s identical True
+ 16 qft12m rel 5.143 s c19 4.708 s identical True
+ 17 qft14m rel 15.011 s c19 9.684 s identical True
+ 18 qft16m rel 114.809 s c19 45.025 s identical True
+ 19 qft20m rel 0.200 s c19 0.192 s identical True
+wrote fuse_FakeKingston_smoke.json: 20 circuits, 616.1 s

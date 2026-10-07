@@ -1,0 +1,21 @@
+  0 ring8m rel 0.128 s c19 0.138 s identical True
+  1 ring12m rel 0.218 s c19 0.164 s identical True
+  2 ring14m rel 0.506 s c19 0.349 s identical True
+  3 ring16m rel 8.929 s c19 3.595 s identical True
+  4 ring20m rel 0.049 s c19 0.053 s identical True
+  5 brick8m rel 0.471 s c19 0.309 s identical True
+  6 brick12m rel 0.746 s c19 0.603 s identical True
+  7 brick14m rel 2.172 s c19 1.088 s identical True
+  8 brick16m rel 41.303 s c19 11.281 s identical True
+  9 brick20m rel 0.193 s c19 0.191 s identical True
+ 10 pauli8m rel 2.634 s c19 2.150 s identical True
+ 11 pauli12m rel 7.724 s c19 5.334 s identical True
+ 12 pauli14m rel 21.220 s c19 8.763 s identical True
+ 13 pauli16m rel 209.673 s c19 70.274 s identical True
+ 14 pauli20m rel 0.178 s c19 0.136 s identical True
+ 15 qft8m rel 0.946 s c19 0.864 s identical True
+ 16 qft12m rel 4.109 s c19 3.024 s identical True
+ 17 qft14m rel 12.215 s c19 5.527 s identical True
+ 18 qft16m rel 127.411 s c19 31.101 s identical True
+ 19 qft20m rel 0.145 s c19 0.142 s identical True
+wrote fuse_FakeOsaka_smoke.json: 20 circuits, 588.8 s
