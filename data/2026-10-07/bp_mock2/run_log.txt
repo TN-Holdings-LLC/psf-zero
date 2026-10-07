@@ -1,0 +1,194 @@
+{"smoke": false, "git_head": "fffedd5", "dirty_tracked": "", "benchpress": "b695f30", "qiskit": "2.5.2", "python": "3.11.9", "par": 6, "tests": 48, "jobs": 192, "sha": {"script": "e0c182acb99768a88bedb07c6f56aae84fc234b62a17bd2a046452de3bccf93c", "bp_mock": "7757e848c9848c9644a845ce97198966b2fb2f98fa9584c2d0050d45b573b4d0", "release": "69fe51d2d503638ceb4d067a0d86a5b27c38586694ec84996dea5e7ab6dab7aa", "c22": "30675c37e6c9400803ed4d53c8d146ecdebec24b9452037808c9e9acf150f858"}, "start_utc": "2026-10-07T05:29:56Z"}
+    3 s  test_QASMBench_small[qec_sm_n5-all-to-all]                   QK   {'q2': 4, 'd2': 4, 'valid': True, 'implements': False}
+    3 s  test_QASMBench_small[grover_n2-all-to-all]                   QK   {'q2': 2, 'd2': 2, 'valid': True, 'implements': True}
+    3 s  test_QASMBench_small[grover_n2-all-to-all]                   REL  {'q2': 2, 'd2': 2, 'valid': True, 'implements': True}
+    3 s  test_QASMBench_small[qec_sm_n5-all-to-all]                   REL2 {'q2': 4, 'd2': 4, 'valid': True, 'implements': False}
+    4 s  test_QASMBench_small[qec_sm_n5-all-to-all]                   REL  {'q2': 4, 'd2': 4, 'valid': True, 'implements': False}
+    4 s  test_QASMBench_small[qec_sm_n5-all-to-all]                   C22  {'q2': 4, 'd2': 4, 'valid': True, 'implements': False}
+    7 s  test_QASMBench_small[grover_n2-all-to-all]                   REL2 {'q2': 2, 'd2': 2, 'valid': True, 'implements': True}
+    7 s  test_QASMBench_small[grover_n2-all-to-all]                   C22  {'q2': 2, 'd2': 2, 'valid': True, 'implements': True}
+    7 s  test_QASMBench_small[qaoa_n3-all-to-all]                     QK   {'q2': 6, 'd2': 6, 'valid': True, 'implements': True}
+    7 s  test_QASMBench_small[qaoa_n3-all-to-all]                     REL2 {'q2': 6, 'd2': 6, 'valid': True, 'implements': True}
+    7 s  test_QASMBench_small[qaoa_n3-all-to-all]                     C22  {'q2': 6, 'd2': 6, 'valid': True, 'implements': True}
+    7 s  test_QASMBench_small[qaoa_n3-all-to-all]                     REL  {'q2': 6, 'd2': 6, 'valid': True, 'implements': True}
+   10 s  test_QASMBench_small[qec_en_n5-square]                       QK   {'q2': 10, 'd2': 10, 'valid': True, 'implements': True}
+   11 s  test_QASMBench_small[qec_en_n5-square]                       REL  {'q2': 10, 'd2': 10, 'valid': True, 'implements': True}
+   11 s  test_QASMBench_small[qec_en_n5-square]                       REL2 {'q2': 10, 'd2': 10, 'valid': True, 'implements': True}
+   11 s  test_QASMBench_small[grover_n2-square]                       QK   {'q2': 2, 'd2': 2, 'valid': True, 'implements': True}
+   11 s  test_QASMBench_small[grover_n2-square]                       REL  {'q2': 2, 'd2': 2, 'valid': True, 'implements': True}
+   11 s  test_QASMBench_small[qec_en_n5-square]                       C22  {'q2': 10, 'd2': 10, 'valid': True, 'implements': True}
+   14 s  test_QASMBench_small[grover_n2-square]                       REL2 {'q2': 2, 'd2': 2, 'valid': True, 'implements': True}
+   14 s  test_QASMBench_small[wstate_n3-square]                       QK   {'q2': 10, 'd2': 10, 'valid': True, 'implements': False}
+   14 s  test_QASMBench_small[grover_n2-square]                       C22  {'q2': 2, 'd2': 2, 'valid': True, 'implements': True}
+   15 s  test_QASMBench_small[wstate_n3-square]                       REL  {'q2': 15, 'd2': 15, 'valid': True, 'implements': True}
+   15 s  test_QASMBench_small[wstate_n3-square]                       REL2 {'q2': 15, 'd2': 15, 'valid': True, 'implements': True}
+   15 s  test_QASMBench_small[wstate_n3-square]                       C22  {'q2': 13, 'd2': 12, 'valid': True, 'implements': True}
+   17 s  test_QASMBench_small[qaoa_n6-heavy-hex]                      QK   {'q2': 60, 'd2': 48, 'valid': True, 'implements': True}
+   18 s  test_QASMBench_small[qaoa_n6-heavy-hex]                      REL  {'q2': 62, 'd2': 46, 'valid': True, 'implements': True}
+   18 s  test_QASMBench_small[qaoa_n6-heavy-hex]                      REL2 {'q2': 62, 'd2': 46, 'valid': True, 'implements': True}
+   19 s  test_QASMBench_small[qaoa_n6-heavy-hex]                      C22  {'q2': 62, 'd2': 46, 'valid': True, 'implements': True}
+   19 s  test_QASMBench_small[vqe_uccsd_n6-heavy-hex]                 QK   {'q2': 987, 'd2': 965, 'valid': True, 'implements': True}
+   20 s  test_QASMBench_small[vqe_uccsd_n6-heavy-hex]                 REL  {'q2': 995, 'd2': 973, 'valid': True, 'implements': True}
+   22 s  test_QASMBench_small[vqe_uccsd_n6-heavy-hex]                 REL2 {'q2': 995, 'd2': 973, 'valid': True, 'implements': True}
+   22 s  test_QASMBench_small[variational_n4-heavy-hex]               QK   {'q2': 8, 'd2': 6, 'valid': True, 'implements': False}
+   22 s  test_QASMBench_small[vqe_uccsd_n6-heavy-hex]                 C22  {'q2': 995, 'd2': 973, 'valid': True, 'implements': True}
+   23 s  test_QASMBench_small[variational_n4-heavy-hex]               REL  {'q2': 8, 'd2': 6, 'valid': True, 'implements': True}
+   23 s  test_QASMBench_small[variational_n4-heavy-hex]               REL2 {'q2': 8, 'd2': 6, 'valid': True, 'implements': True}
+   24 s  test_QASMBench_small[variational_n4-heavy-hex]               C22  {'q2': 8, 'd2': 6, 'valid': True, 'implements': True}
+   26 s  test_QASMBench_small[pea_n5-linear]                          QK   {'q2': 29, 'd2': 27, 'valid': True, 'implements': True}
+   26 s  test_QASMBench_small[pea_n5-linear]                          REL  {'q2': 36, 'd2': 31, 'valid': True, 'implements': True}
+   27 s  test_QASMBench_small[inverseqft_n4-linear]                   QK   {'q2': 0, 'd2': 0, 'valid': True, 'implements': False}
+   27 s  test_QASMBench_small[pea_n5-linear]                          REL2 {'q2': 36, 'd2': 31, 'valid': True, 'implements': True}
+   27 s  test_QASMBench_small[pea_n5-linear]                          C22  {'q2': 36, 'd2': 31, 'valid': True, 'implements': True}
+   29 s  test_QASMBench_small[inverseqft_n4-linear]                   REL  {'q2': 0, 'd2': 0, 'valid': True, 'implements': False}
+   31 s  test_QASMBench_small[inverseqft_n4-linear]                   REL2 {'q2': 0, 'd2': 0, 'valid': True, 'implements': False}
+   32 s  test_QASMBench_small[inverseqft_n4-linear]                   C22  {'q2': 0, 'd2': 0, 'valid': True, 'implements': False}
+   32 s  test_QASMBench_small[sat_n7-linear]                          QK   {'q2': 114, 'd2': 87, 'valid': True, 'implements': True}
+   33 s  test_QASMBench_small[sat_n7-linear]                          REL  {'q2': 120, 'd2': 91, 'valid': True, 'implements': True}
+   33 s  test_QASMBench_small[sat_n7-linear]                          REL2 {'q2': 120, 'd2': 91, 'valid': True, 'implements': True}
+   35 s  test_QASMBench_small[sat_n7-linear]                          C22  {'q2': 115, 'd2': 85, 'valid': True, 'implements': True}
+   36 s  test_QASMBench_medium[qf21_n15-all-to-all]                   QK   {'q2': 115, 'd2': 112, 'valid': True}
+   37 s  test_QASMBench_medium[qf21_n15-all-to-all]                   REL  {'q2': 115, 'd2': 112, 'valid': True}
+   38 s  test_QASMBench_medium[qf21_n15-all-to-all]                   REL2 {'q2': 115, 'd2': 112, 'valid': True}
+   38 s  test_QASMBench_medium[multiplier_n15-all-to-all]             QK   {'q2': 222, 'd2': 133, 'valid': True}
+   39 s  test_QASMBench_medium[qf21_n15-all-to-all]                   C22  {'q2': 115, 'd2': 112, 'valid': True}
+   41 s  test_QASMBench_medium[multiplier_n15-all-to-all]             REL  {'q2': 222, 'd2': 133, 'valid': True}
+   42 s  test_QASMBench_medium[multiplier_n15-all-to-all]             REL2 {'q2': 222, 'd2': 133, 'valid': True}
+   43 s  test_QASMBench_medium[multiplier_n15-all-to-all]             C22  {'q2': 222, 'd2': 133, 'valid': True}
+   44 s  test_QASMBench_medium[knn_n25-square]                        QK   {'q2': 143, 'd2': 120, 'valid': True}
+   45 s  test_QASMBench_medium[knn_n25-square]                        REL  {'q2': 238, 'd2': 140, 'valid': True}
+   45 s  test_QASMBench_medium[knn_n25-square]                        REL2 {'q2': 238, 'd2': 140, 'valid': True}
+   47 s  test_QASMBench_medium[knn_n25-square]                        C22  {'q2': 156, 'd2': 123, 'valid': True}
+   48 s  test_QASMBench_medium[wstate_n27-square]                     QK   {'q2': 52, 'd2': 28, 'valid': True}
+   50 s  test_QASMBench_medium[wstate_n27-square]                     REL  {'q2': 52, 'd2': 28, 'valid': True}
+   51 s  test_QASMBench_medium[wstate_n27-square]                     REL2 {'q2': 52, 'd2': 28, 'valid': True}
+   51 s  test_QASMBench_medium[bv_n19-heavy-hex]                      QK   {'q2': 55, 'd2': 55, 'valid': True}
+   51 s  test_QASMBench_medium[wstate_n27-square]                     C22  {'q2': 52, 'd2': 28, 'valid': True}
+   54 s  test_QASMBench_medium[bv_n19-heavy-hex]                      REL  {'q2': 71, 'd2': 68, 'valid': True}
+   56 s  test_QASMBench_medium[bv_n19-heavy-hex]                      REL2 {'q2': 71, 'd2': 68, 'valid': True}
+   57 s  test_QASMBench_medium[bv_n19-heavy-hex]                      C22  {'q2': 71, 'd2': 68, 'valid': True}
+   57 s  test_QASMBench_medium[qram_n20-heavy-hex]                    QK   {'q2': 301, 'd2': 172, 'valid': True}
+   59 s  test_QASMBench_medium[qram_n20-heavy-hex]                    REL  {'q2': 314, 'd2': 186, 'valid': True}
+   59 s  test_QASMBench_medium[qram_n20-heavy-hex]                    REL2 {'q2': 314, 'd2': 186, 'valid': True}
+   62 s  test_QASMBench_medium[qram_n20-heavy-hex]                    C22  {'q2': 311, 'd2': 185, 'valid': True}
+   63 s  test_QASMBench_medium[ghz_state_n23-linear]                  QK   {'q2': 22, 'd2': 22, 'valid': True}
+   66 s  test_QASMBench_medium[ghz_state_n23-linear]                  REL  {'q2': 22, 'd2': 22, 'valid': True}
+   66 s  test_QASMBench_medium[ghz_state_n23-linear]                  REL2 {'q2': 22, 'd2': 22, 'valid': True}
+   67 s  test_QASMBench_medium[multiply_n13-linear]                   QK   {'q2': 99, 'd2': 63, 'valid': True}
+   67 s  test_QASMBench_medium[ghz_state_n23-linear]                  C22  {'q2': 22, 'd2': 22, 'valid': True}
+   71 s  test_QASMBench_medium[multiply_n13-linear]                   REL  {'q2': 179, 'd2': 86, 'valid': True}
+   72 s  test_QASMBench_medium[multiply_n13-linear]                   REL2 {'q2': 179, 'd2': 86, 'valid': True}
+   74 s  test_QASMBench_large[knn_n41-all-to-all]                     QK   {'q2': 140, 'd2': 102, 'valid': True}
+   74 s  test_QASMBench_medium[multiply_n13-linear]                   C22  {'q2': 103, 'd2': 66, 'valid': True}
+   76 s  test_QASMBench_large[knn_n41-all-to-all]                     REL  {'q2': 160, 'd2': 103, 'valid': True}
+   76 s  test_QASMBench_large[knn_n41-all-to-all]                     REL2 {'q2': 160, 'd2': 103, 'valid': True}
+   80 s  test_QASMBench_large[bv_n30-all-to-all]                      QK   {'q2': 18, 'd2': 18, 'valid': True}
+   80 s  test_QASMBench_large[knn_n41-all-to-all]                     C22  {'q2': 140, 'd2': 102, 'valid': True}
+   83 s  test_QASMBench_large[bv_n30-all-to-all]                      REL  {'q2': 18, 'd2': 18, 'valid': True}
+   83 s  test_QASMBench_large[bv_n30-all-to-all]                      REL2 {'q2': 18, 'd2': 18, 'valid': True}
+   84 s  test_QASMBench_large[ising_n420-square]                      QK   {'q2': 838, 'd2': 4, 'valid': True}
+   85 s  test_QASMBench_large[bv_n30-all-to-all]                      C22  {'q2': 18, 'd2': 18, 'valid': True}
+   91 s  test_QASMBench_large[ising_n66-square]                       QK   {'q2': 130, 'd2': 4, 'valid': True}
+   91 s  test_QASMBench_large[ising_n420-square]                      REL2 {'q2': 838, 'd2': 4, 'valid': True}
+   91 s  test_QASMBench_large[ising_n420-square]                      REL  {'q2': 838, 'd2': 4, 'valid': True}
+   93 s  test_QASMBench_large[ising_n66-square]                       REL2 {'q2': 130, 'd2': 4, 'valid': True}
+   93 s  test_QASMBench_large[ising_n66-square]                       REL  {'q2': 130, 'd2': 4, 'valid': True}
+   93 s  test_QASMBench_large[ising_n420-square]                      C22  {'q2': 838, 'd2': 4, 'valid': True}
+   99 s  test_QASMBench_large[ising_n66-square]                       C22  {'q2': 130, 'd2': 4, 'valid': True}
+  100 s  test_QASMBench_large[ising_n98-heavy-hex]                    REL  {'q2': 575, 'd2': 51, 'valid': True}
+  101 s  test_QASMBench_large[qugan_n39-heavy-hex]                    QK   {'q2': 497, 'd2': 245, 'valid': True}
+  102 s  test_QASMBench_large[ising_n98-heavy-hex]                    REL2 {'q2': 575, 'd2': 51, 'valid': True}
+  102 s  test_QASMBench_large[ising_n98-heavy-hex]                    C22  {'q2': 575, 'd2': 51, 'valid': True}
+  108 s  test_QASMBench_large[ising_n98-heavy-hex]                    QK   {'q2': 563, 'd2': 36, 'valid': True}
+  108 s  test_QASMBench_large[qugan_n39-heavy-hex]                    REL  {'q2': 560, 'd2': 254, 'valid': True}
+  109 s  test_QASMBench_large[qugan_n39-heavy-hex]                    REL2 {'q2': 560, 'd2': 254, 'valid': True}
+  110 s  test_QASMBench_large[qugan_n39-heavy-hex]                    C22  {'q2': 571, 'd2': 303, 'valid': True}
+  139 s  test_QASMBench_large[square_root_n45-linear]                 REL  {'q2': 300882, 'd2': 167071, 'valid': True}
+  144 s  test_QASMBench_large[square_root_n45-linear]                 REL2 {'q2': 300882, 'd2': 167071, 'valid': True}
+  144 s  test_QASMBench_large[square_root_n45-linear]                 C22  {'q2': 297217, 'd2': 164158, 'valid': True}
+  151 s  test_QASMBench_large[square_root_n45-linear]                 QK   {'q2': 295974, 'd2': 165482, 'valid': True}
+  155 s  test_hamiltonians[ham_graph-2D-grid-pbc-qubitnodes_Lx-2_Ly-1 QK   {'q2': 1665, 'd2': 1104, 'valid': True}
+  167 s  test_hamiltonians[ham_graph-2D-grid-pbc-qubitnodes_Lx-2_Ly-1 REL  {'q2': 3330, 'd2': 2208, 'valid': True}
+  173 s  test_hamiltonians[ham_graph-2D-grid-pbc-qubitnodes_Lx-2_Ly-1 REL2 {'q2': 3330, 'd2': 2208, 'valid': True}
+  180 s  test_hamiltonians[ham_ham_parity-14-all-to-all]              QK   {'q2': 3684, 'd2': 3658, 'valid': True}
+  183 s  test_hamiltonians[ham_graph-2D-grid-pbc-qubitnodes_Lx-2_Ly-1 C22  {'q2': 1665, 'd2': 1104, 'valid': True}
+  188 s  test_hamiltonians[ham_ham_parity-14-all-to-all]              REL  {'q2': 3756, 'd2': 3726, 'valid': True}
+  190 s  test_hamiltonians[ham_ham_parity-14-all-to-all]              REL2 {'q2': 3756, 'd2': 3726, 'valid': True}
+  196 s  test_hamiltonians[ham_ham_parity-14-all-to-all]              C22  {'q2': 3666, 'd2': 3639, 'valid': True}
+  209 s  test_hamiltonians[ham_ash608gpia,n-160,rinst-1-all-to-all]   QK   {'q2': 2268, 'd2': 108, 'valid': True}
+  216 s  test_hamiltonians[ham_ash608gpia,n-160,rinst-1-all-to-all]   REL  {'q2': 2268, 'd2': 108, 'valid': True}
+  235 s  test_hamiltonians[ham_ash608gpia,n-160,rinst-1-all-to-all]   REL2 {'q2': 2268, 'd2': 108, 'valid': True}
+  235 s  test_hamiltonians[ham_ash608gpia,n-160,rinst-1-all-to-all]   C22  {'q2': 2268, 'd2': 108, 'valid': True}
+  239 s  test_hamiltonians[ham_graph-1D-grid-pbc-qubitnodes_Lx-26_h-6 QK   {'q2': 52, 'd2': 48, 'valid': True}
+  239 s  test_hamiltonians[ham_graph-1D-grid-pbc-qubitnodes_Lx-26_h-6 REL  {'q2': 140, 'd2': 109, 'valid': True}
+  243 s  test_hamiltonians[ham_graph-1D-grid-pbc-qubitnodes_Lx-26_h-6 REL2 {'q2': 140, 'd2': 109, 'valid': True}
+  243 s  test_hamiltonians[ham_graph-1D-grid-pbc-qubitnodes_Lx-26_h-6 C22  {'q2': 52, 'd2': 48, 'valid': True}
+  254 s  test_hamiltonians[ham_bh_graph-2D-triag-pbc-qubitnodes_Lx-3_ QK   {'q2': 46106, 'd2': 35022, 'valid': True}
+  256 s  test_hamiltonians[ham_bh_graph-2D-triag-pbc-qubitnodes_Lx-3_ REL  {'q2': 65391, 'd2': 42983, 'valid': True}
+  265 s  test_hamiltonians[ham_bh_graph-2D-triag-pbc-qubitnodes_Lx-3_ REL2 {'q2': 65391, 'd2': 42983, 'valid': True}
+  272 s  test_hamiltonians[ham_graph-2D-triag-nonpbc-qubitnodes_Lx-3_ QK   {'q2': 6594, 'd2': 1645, 'valid': True}
+  277 s  test_hamiltonians[ham_bh_graph-2D-triag-pbc-qubitnodes_Lx-3_ C22  {'q2': 50574, 'd2': 39215, 'valid': True}
+  280 s  test_hamiltonians[ham_graph-2D-triag-nonpbc-qubitnodes_Lx-3_ REL  {'q2': 15006, 'd2': 2605, 'valid': True}
+  285 s  test_hamiltonians[ham_graph-2D-triag-nonpbc-qubitnodes_Lx-3_ REL2 {'q2': 15006, 'd2': 2605, 'valid': True}
+  290 s  test_hamiltonians[ham_graph-2D-triag-nonpbc-qubitnodes_Lx-3_ C22  {'q2': 6280, 'd2': 1396, 'valid': True}
+  293 s  test_hamiltonians[ham_ham_parity-4-heavy-hex]                QK   {'q2': 62, 'd2': 61, 'valid': True, 'implements': True}
+  297 s  test_hamiltonians[ham_ham_parity-4-heavy-hex]                REL  {'q2': 101, 'd2': 93, 'valid': True, 'implements': True}
+  299 s  test_hamiltonians[ham_ham_parity-4-heavy-hex]                REL2 {'q2': 101, 'd2': 93, 'valid': True, 'implements': True}
+  303 s  test_hamiltonians[ham_ham_parity-4-heavy-hex]                C22  {'q2': 63, 'd2': 62, 'valid': True, 'implements': True}
+  340 s  test_hamiltonians[ham_fh-graph-2D-grid-pbc-qubitnodes_Lx-5_L REL  {'q2': 287055, 'd2': 204179, 'valid': True}
+  393 s  test_hamiltonians[ham_fh-graph-2D-grid-pbc-qubitnodes_Lx-5_L QK   {'q2': 141203, 'd2': 103943, 'valid': True}
+  397 s  test_hamiltonians[ham_fh-graph-2D-grid-pbc-qubitnodes_Lx-5_L REL2 {'q2': 287055, 'd2': 204179, 'valid': True}
+  403 s  test_hamiltonians[ham_graph-1D-grid-pbc-qubitnodes_Lx-16_h-2 QK   {'q2': 32, 'd2': 28, 'valid': True}
+  410 s  test_hamiltonians[ham_graph-1D-grid-pbc-qubitnodes_Lx-16_h-2 REL  {'q2': 127, 'd2': 76, 'valid': True}
+  420 s  test_hamiltonians[ham_graph-1D-grid-pbc-qubitnodes_Lx-16_h-2 REL2 {'q2': 127, 'd2': 76, 'valid': True}
+  429 s  test_hamiltonians[ham_graph-1D-grid-pbc-qubitnodes_Lx-16_h-2 C22  {'q2': 32, 'd2': 28, 'valid': True}
+  443 s  test_hamiltonians[ham_4-uf100-0246.cnf-70-res-linear]        QK   {'q2': 22469, 'd2': 5880, 'valid': True}
+  449 s  test_hamiltonians[ham_fh-graph-2D-grid-pbc-qubitnodes_Lx-5_L C22  {'q2': 147650, 'd2': 109032, 'valid': True}
+  455 s  test_hamiltonians[ham_4-uf100-0246.cnf-70-res-linear]        REL  {'q2': 27254, 'd2': 7118, 'valid': True}
+  457 s  test_hamiltonians[ham_4-uf100-0246.cnf-70-res-linear]        REL2 {'q2': 27254, 'd2': 7118, 'valid': True}
+  464 s  test_hamiltonians[ham_enc_gray_dvalues_4-4-4-4-4-4-4-linear] QK   {'q2': 4265, 'd2': 3547, 'valid': True}
+  464 s  test_hamiltonians[ham_4-uf100-0246.cnf-70-res-linear]        C22  {'q2': 22901, 'd2': 5990, 'valid': True}
+  474 s  test_hamiltonians[ham_enc_gray_dvalues_4-4-4-4-4-4-4-linear] REL  {'q2': 6195, 'd2': 4710, 'valid': True}
+  474 s  test_hamiltonians[ham_enc_gray_dvalues_4-4-4-4-4-4-4-linear] REL2 {'q2': 6195, 'd2': 4710, 'valid': True}
+  487 s  test_hamiltonians[ham_reg-4_n-90_rinst-07-linear]            QK   {'q2': 9442, 'd2': 1762, 'valid': True}
+  487 s  test_hamiltonians[ham_enc_gray_dvalues_4-4-4-4-4-4-4-linear] C22  {'q2': 4717, 'd2': 4005, 'valid': True}
+  499 s  test_hamiltonians[ham_reg-4_n-90_rinst-07-linear]            REL2 {'q2': 20011, 'd2': 3231, 'valid': True}
+  499 s  test_hamiltonians[ham_reg-4_n-90_rinst-07-linear]            REL  {'q2': 20011, 'd2': 3231, 'valid': True}
+  506 s  test_hamlib_hamiltonians_transpile[ham_tsp_prob-ts225_Ncity- QK   {'q2': 483, 'd2': 162, 'valid': True}
+  507 s  test_hamiltonians[ham_reg-4_n-90_rinst-07-linear]            C22  {'q2': 9585, 'd2': 1630, 'valid': True}
+  512 s  test_hamlib_hamiltonians_transpile[ham_tsp_prob-ts225_Ncity- REL  {'q2': 814, 'd2': 249, 'valid': True}
+  512 s  test_hamlib_hamiltonians_transpile[ham_tsp_prob-ts225_Ncity- REL2 {'q2': 814, 'd2': 249, 'valid': True}
+  517 s  test_hamlib_hamiltonians_transpile[ham_tsp_prob-ts225_Ncity- C22  {'q2': 542, 'd2': 164, 'valid': True}
+  519 s  test_hamlib_hamiltonians_transpile[ham_gnp-k_5_n-60_rinst-19 QK   {'q2': 16485, 'd2': 9759, 'valid': True}
+  524 s  test_hamlib_hamiltonians_transpile[ham_gnp-k_5_n-60_rinst-19 REL  {'q2': 18181, 'd2': 10745, 'valid': True}
+  526 s  test_hamlib_hamiltonians_transpile[ham_gnp-k_5_n-60_rinst-19 REL2 {'q2': 18181, 'd2': 10745, 'valid': True}
+  531 s  test_hamlib_hamiltonians_transpile[ham_gnp-k_5_n-60_rinst-19 C22  {'q2': 16529, 'd2': 9793, 'valid': True}
+  534 s  test_hamlib_hamiltonians_transpile[ham_ham_JW-14]            QK   {'q2': 12153, 'd2': 10684, 'valid': True}
+  543 s  test_hamlib_hamiltonians_transpile[ham_ham_JW-14]            REL  {'q2': 23065, 'd2': 18797, 'valid': True}
+  546 s  test_hamlib_hamiltonians_transpile[ham_ham_JW-14]            REL2 {'q2': 23065, 'd2': 18797, 'valid': True}
+  552 s  test_hamlib_hamiltonians_transpile[ham_ham_JW-14]            C22  {'q2': 13644, 'd2': 11721, 'valid': True}
+  570 s  test_hamlib_hamiltonians_transpile[ham_enc_gray_dvalues_8-8- QK   {'q2': 12555, 'd2': 10542, 'valid': True, 'implements': True}
+  576 s  test_hamlib_hamiltonians_transpile[ham_enc_gray_dvalues_8-8- REL  {'q2': 16749, 'd2': 13181, 'valid': True, 'implements': True}
+  597 s  test_hamlib_hamiltonians_transpile[ham_enc_gray_dvalues_8-8- REL2 {'q2': 16749, 'd2': 13181, 'valid': True, 'implements': True}
+  601 s  test_feynman_transpile[rb.qasm]                              QK   {'q2': 2, 'd2': 2, 'valid': True, 'implements': True}
+  603 s  test_hamlib_hamiltonians_transpile[ham_enc_gray_dvalues_8-8- C22  {'q2': 14298, 'd2': 11435, 'valid': True, 'implements': True}
+  608 s  test_feynman_transpile[rb.qasm]                              REL  {'q2': 2, 'd2': 2, 'valid': True, 'implements': True}
+  609 s  test_feynman_transpile[rb.qasm]                              REL2 {'q2': 2, 'd2': 2, 'valid': True, 'implements': True}
+  614 s  test_feynman_transpile[rb.qasm]                              C22  {'q2': 2, 'd2': 2, 'valid': True, 'implements': True}
+  616 s  test_feynman_transpile[grover_5.qasm]                        QK   {'q2': 549, 'd2': 470, 'valid': True, 'implements': True}
+  622 s  test_feynman_transpile[grover_5.qasm]                        REL  {'q2': 526, 'd2': 390, 'valid': True, 'implements': True}
+  623 s  test_feynman_transpile[grover_5.qasm]                        REL2 {'q2': 526, 'd2': 390, 'valid': True, 'implements': True}
+  630 s  test_feynman_transpile[grover_5.qasm]                        C22  {'q2': 537, 'd2': 425, 'valid': True, 'implements': True}
+  656 s  test_feynman_transpile[hwb10.qasm]                           QK   {'q2': 112970, 'd2': 67328, 'valid': True}
+  663 s  test_feynman_transpile[hwb10.qasm]                           REL  {'q2': 113609, 'd2': 68282, 'valid': True}
+  694 s  test_feynman_transpile[hwb10.qasm]                           REL2 {'q2': 113609, 'd2': 68282, 'valid': True}
+  697 s  test_feynman_transpile[hwb10.qasm]                           C22  {'q2': 114203, 'd2': 68475, 'valid': True}
+  707 s  test_feynman_transpile[mod_mult_55.qasm]                     QK   {'q2': 81, 'd2': 50, 'valid': True, 'implements': True}
+  708 s  test_feynman_transpile[mod_mult_55.qasm]                     REL  {'q2': 112, 'd2': 70, 'valid': True, 'implements': True}
+  709 s  test_QASMBench_large[bwt_n37-linear]                         QK   {'error': 'timeout 600 s'}
+  710 s  test_QASMBench_large[bwt_n37-linear]                         REL  {'error': 'timeout 600 s'}
+  718 s  test_feynman_transpile[mod_mult_55.qasm]                     C22  {'q2': 94, 'd2': 55, 'valid': True, 'implements': True}
+  718 s  test_feynman_transpile[mod_mult_55.qasm]                     REL2 {'q2': 112, 'd2': 70, 'valid': True, 'implements': True}
+  737 s  test_QASMBench_large[bwt_n37-linear]                         C22  {'q2': 3281757, 'd2': 1856985, 'valid': True}
+  739 s  test_QASMBench_large[bwt_n37-linear]                         REL2 {'error': 'timeout 600 s'}
+wrote bp_mock2.json: 48 tests, 192 jobs, 739.8 s

@@ -21,7 +21,12 @@ the earlier parts they link to. The README itself, as it was before the move, is
 >   Part 10, Addenda 386-388): the recommended call makes item 39's checks only where they can change the
 >   output, and its estimates follow single-qubit gates on 2x2 reduced states. Pre-registered test TRACK (360
 >   circuits, 6 devices): the same circuit as c19 on 360 of 360; 0.37-0.51 of c19's time at 16 qubits, 0.59-0.68
->   at 12-14. c22's file also carries item 48, which is not accepted until BP-MOCK (Addendum 389).
+>   at 12-14.
+>
+> - **c21 and c22, item 48** (the same file; Part 10, Addenda 386-392): the default call expands instructions on
+>   three or more qubits before its own pipeline. Pre-registered tests BP-MOCK (92 Benchpress tests) and BP-MOCK2
+>   (48 new ones): on such inputs 0.71 and 0.74 of 2026-10-06.4's two-qubit count; the default call at 1.12 and
+>   1.04 of Qiskit level 2's (1.36 and 1.26 before); other inputs unchanged where the release reproduces itself.
 
 > **Current version (2026-10-06, fourth release): `psf_compile.py` 2026-10-06.4 and the AI front end a12, with
 > `psf_smart_layout` 2026-10-01.1 and the Rust core `CORE_VERSION` 2026-09-29.1 (both unchanged)**

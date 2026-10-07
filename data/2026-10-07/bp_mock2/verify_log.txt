@@ -1,0 +1,8 @@
+BP-MOCK's sample re-drawn 86 (without its 6 100-qubit tests); BP-MOCK2's 48; in the run 48; same set True
+P0 PASS: C22 failed or invalid 0, versions ok True, git_head fffedd5
+done 47 (flat 17, REL reproducible on 16; wide 30); M1 differ 0; M2 0.738; M3 1.039; M5 0 of 15 do not implement
+M1 CONFIRMED
+M2 CONFIRMED
+M3 CONFIRMED
+M5 CONFIRMED
+verdicts identical to score.md: True

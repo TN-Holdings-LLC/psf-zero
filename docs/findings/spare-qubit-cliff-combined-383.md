@@ -973,6 +973,77 @@ used, here on the linear topology instead of FakeTorino). Disclosed, not changed
 2. Lock: the commit with this Addendum and the smoke output.
 3. Scored run into `data/2026-10-07/bp_mock2`, then `score` and `bp_mock2_verify.py`.
 
+
+---
+
+<!-- ===== Addendum 392 (source: spare-qubit-cliff-addendum-392-2026-10-07.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 391, and the owner's decision of 2026-10-07.
+
+## Addendum 392 -- Results of BP-MOCK2 (Addendum 391): M1, M2, M3 and M5 CONFIRMED on 48 new Benchpress tests; with item 48 the default call comes to 1.039 of Qiskit level 2's two-qubit count (1.261 for the release); item 48 accepted, not released (2026-10-07)
+
+**Status: results of the pre-registered test in Addendum 391, scored by the locked script and re-checked by the
+independent [`benchmarks/bp_mock2_verify.py`](../../benchmarks/bp_mock2_verify.py); then the owner's decision.**
+
+## 1. The run
+
+- **Lock:** commit `fffedd5` (Addendum 391, with the smoke run); the run recorded `git_head` `fffedd5` and no
+  uncommitted change to a tracked file. Pushed after the run.
+- **Machine:** the workplace PC (Windows, Python 3.11.9, Qiskit 2.5.2), Benchpress `b695f30`, six jobs at a time.
+- **Time:** started 2026-10-07T05:29:56Z; 192 jobs in 740 s.
+- **Output:** [`data/2026-10-07/bp_mock2/`](../../data/2026-10-07/bp_mock2/): `bp_mock2.json`, `score.md`,
+  `run_log.txt`, `score_log.txt`, `verify_log.txt`; the smoke run in
+  [`data/2026-10-07/bp_mock2_smoke/`](../../data/2026-10-07/bp_mock2_smoke/).
+
+## 2. Results
+
+**P0: PASS.** The 48 tests of the rule (re-drawn by `bp_mock2_verify.py`: same set); C22 never failed where REL
+finished; every C22 output passes Benchpress's validator; versions as named. One test, QASMBench large `bwt_n37` on
+linear, timed out at 600 s in QK, REL and REL2; C22 finished it (3,281,757 two-qubit gates). It is outside the 47
+tests all four arms finished, over which M1-M5 are computed.
+
+| | prediction | result | verdict |
+|---|---|---|---|
+| M1 | flat inputs where REL = REL2 (16 of 17): C22 returns REL's circuit | 0 of 16 differ | **CONFIRMED** |
+| M2 | wide inputs (30): geometric mean C22 / REL <= 0.85 | 0.738 | **CONFIRMED** |
+| M3 | all 47: geometric mean C22 / QK <= 1.15 | 1.039 (REL / QK: 1.261) | **CONFIRMED** |
+| M5 | checkable C22 outputs (15) implement their input | 0 of 15 fail | **CONFIRMED** |
+
+`bp_mock2_verify.py`: the same four verdicts, "verdicts identical to score.md: True".
+
+**Reported without prediction:**
+
+- REL2 differed from REL on 2 of 47 tests (one flat, one wide), with the same two-qubit count both times: the
+  release's non-reproducibility of Addendum 390, section 4.
+- Wide inputs where C22 used more two-qubit gates than REL: 3 of 30 (`qugan_n39` on heavy-hex 571 against 560, depth
+  303 against 254; Feynman `grover_5` 537 against 526; `hwb10` 114,203 against 113,609).
+- REL's 15 checkable outputs all implement their input; QK's fail on two (state checks, not comparable after Qiskit's
+  measurement-aware passes; Addendum 390).
+- By stratum, C22 / QK: QASMBench 1.00-1.15 (REL 1.00-1.34); HamLib on abstract topologies 1.00-1.05 (REL
+  1.27-2.34); HamLib on FakeTorino 1.10 (REL 1.47); Feynman 1.04 (REL 1.07).
+
+## 3. What BP-MOCK and BP-MOCK2 show together
+
+1. **On two independent stratified samples of Benchpress** (92 and 48 tests, none used by BP-PROBE), item 48 lowers
+   the default call's two-qubit count on inputs with instructions on more than two qubits to 0.71 and 0.74 of the
+   release's, and the default call's distance to Qiskit level 2 from 1.36 / 1.26 to 1.12 / 1.04 (geometric means).
+2. **It changes nothing else:** on inputs without such instructions C22 returns the release's circuit wherever the
+   release reproduces itself (38 + 16 tests), and every checkable output implements its input.
+3. **It is not better everywhere:** on 4 of 84 wide inputs it used more two-qubit gates than the release (+0.5% to
+   +14.5%).
+4. **Not established:** Benchpress's other tests; hardware; the recommended call (not part of BP-MOCK2; BP-MOCK's M4
+   was CONFIRMED on 20 FakeTorino tests).
+
+## 4. Decision (the owner, 2026-10-07)
+
+**Item 48 is accepted, not released,** with items 46, 47 and 49, under the policy of Addendum 385. Candidate c22
+(`patches/psf_compile_c22_2026-10-07/psf_compile.py`, items 46-49, as locked in Addendum 387) carries all four and is
+the basis of the next release. `docs/RELEASES.md` lists item 48 under "Accepted, not yet released".
+
+Open, each for its own item: the default call's non-reproducible layout on some inputs (Addenda 390, 392); the CX
+gates of BV-like circuits that Qiskit cancels and PSF-Zero keeps (Addendum 390); the recommended call's higher
+two-qubit count than the default call on FakeTorino's 100-qubit tests (Addendum 390).
+
 ---
 
 ---
