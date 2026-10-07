@@ -189,6 +189,95 @@ of 0.0-0.2 s each, where timing noise is large, and the scored run has 12 per de
 - **The lock is pushed after the scored run** (no GitHub login at the workplace).
 - **Times are wall-clock times of one process per device, six in parallel,** on one machine.
 
+
+---
+
+<!-- ===== Addendum 384 (source: spare-qubit-cliff-addendum-384-2026-10-07.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 383 (lock commit c4f943b, made before the run and pushed after it), scored by the locked script and re-checked by benchmarks/fuse_verify.py; written after the output was seen.
+
+## Addendum 384 -- Results of FUSE (Addendum 383): candidate c19 takes 0.36-0.49 of release 2026-10-06.4's time at 16 qubits and 0.53-0.65 at 12-14 (F2, F3 CONFIRMED); it returns the release's circuit on 359 of 360, the one difference being a 1.35e-16 near-tie that c19 keeps as a tie by design (F1 AMBIGUOUS); at 20 qubits, where both run the same code, one device's median ratio is 1.104 (F4 AMBIGUOUS) (2026-10-07)
+
+**Status: results of the pre-registered test in Addendum 383, scored by the locked script and re-checked by the
+independent [`benchmarks/fuse_verify.py`](../../benchmarks/fuse_verify.py).** Written after the output was seen.
+
+## 1. The run
+
+- **Lock:** commit `c4f943b` (Addendum 383), made at the workplace before the run; every job's `git_head` is
+  `c4f943b`, with no uncommitted change to a tracked file. **It was pushed to GitHub after the run** (no GitHub login
+  at the workplace), as Addendum 383 said it would be.
+- **Machine:** the workplace PC, Windows, Python 3.11.9 (versions and hashes in `env.txt`); six jobs in parallel.
+- **Time:** 2,012 s for the slowest job (FakeOsaka), on 2026-10-07 between about 01:00 and 01:34 UTC (`env.txt`,
+  `progress.txt`); scored and verified at once.
+- **Output:** [`data/2026-10-07/fuse/`](../../data/2026-10-07/fuse/): one json per device (metadata and every
+  circuit), the logs, `env.txt`, `progress.txt`, `score.md`, `score_log.txt`, `verify_log.txt`.
+
+## 2. Results (`score.md`)
+
+**P0: PASS.** Six files of 60 circuits; no error; no c19 output off the target; all 54 exactness checks made and at
+most 1e-6.
+
+| device | circuits | identical | n = 16: median c19 / release | n = 12-14 | n = 20 | n = 8 |
+|---|---|---|---|---|---|---|
+| FakeTorino | 60 | 60 | 0.397 | 0.649 | **1.104** | 0.987 |
+| FakeKingston | 60 | **59** | 0.418 | 0.606 | 0.933 | 0.982 |
+| FakeAuckland | 60 | 60 | 0.485 | 0.530 | 1.035 | 0.964 |
+| FakeHanoiV2 | 60 | 60 | 0.460 | 0.530 | 1.035 | 0.950 |
+| FakeBrussels | 60 | 60 | 0.357 | 0.607 | 1.004 | 0.981 |
+| FakeOsaka | 60 | 60 | 0.359 | 0.646 | 0.991 | 0.948 |
+
+| | prediction | result | verdict |
+|---|---|---|---|
+| F1 | c19 returns the release's circuit | 359 of 360 (1 differs; REFUTED needed more than 2) | **AMBIGUOUS** |
+| F2 | n = 16: median ratio <= 0.6 on every device | 0.357-0.485 | **CONFIRMED** |
+| F3 | n = 12-14: median ratio <= 0.9 on every device | 0.530-0.649 | **CONFIRMED** |
+| F4 | n = 20: median ratio <= 1.10 on every device | 0.933-1.104 (REFUTED needed more than 1.25) | **AMBIGUOUS** |
+
+`fuse_verify.py`: P0 PASS, the same four verdicts, "verdicts identical to score.md: True".
+
+**Reported without prediction:**
+
+- **Per family** (median ratio at n = 16 | n = 12-14): ring 0.455 | 0.735, brick 0.350 | 0.578, pauli 0.469 | 0.520,
+  qft 0.410 | 0.531.
+- **Total compile time per size** (release, c19): n = 8 47.1 s, 44.9 s (0.953); n = 12 363.8 s, 185.3 s (0.509);
+  n = 14 686.6 s, 353.1 s (0.514); **n = 16 5,982.2 s, 2,495.1 s (0.417)**; n = 20 7.6 s, 7.8 s (1.029).
+
+## 3. The two AMBIGUOUS verdicts (exploratory, after the run)
+
+[`benchmarks/fuse_run_diag.py`](../../benchmarks/fuse_run_diag.py) rebuilt the differing circuit and printed the n = 20
+ratios ([`fuse_run_diag_log.txt`](../../data/2026-10-07/fuse_run_diag_log.txt)).
+
+**F1.** The one difference is FakeKingston, ring, 8 qubits, measured (seed 82,000,001), and it reproduces. The
+release took level 3's circuit and c19 kept its own. The two have the same placement and the same 14 CZ and differ
+only in `rz` gates (28 against 32), which add nothing to the estimates. The release scored level 3's lower by
+1.35e-16 (relative), a rounding difference, and took it; c19 treats estimates within 1e-12 as a tie and keeps the
+earlier candidate. Both circuits implement the input. This is the one case item 46 names in advance as able to
+differ ("where 2026-10-06.4 saw two estimates differ by less than 1e-12 without being equal"), and the margin F1
+allowed for. Compared with the release, c19 is the consistent one here: the release chose between two circuits of
+equal estimated cost by the direction of a rounding error; in the smoke run (Addendum 383) the same situation went the
+other way, to the release's own circuit, on an exact tie.
+
+**F4.** At 20 qubits both arms run the same code (item 45 skips every simulation above 16 qubits, so nothing c19
+changed is reached). The 12 circuits per device took 0.01-0.32 s each; FakeTorino's ratios ranged 0.81-2.12 and their
+median was 1.104, just over the line; the other devices' medians were 0.933-1.035. This is timing noise on short
+calls with six jobs in parallel, not a cost of c19.
+
+## 4. What this shows
+
+1. **c19 roughly halves the recommended call's time where it simulates:** 0.36-0.49 of the release's time per device
+   at 16 qubits (42% of the total there), 0.53-0.65 at 12-14, and nothing changes at 8 or at 20.
+2. **The circuits are the release's,** except where the release's choice was decided by rounding between candidates
+   of equal estimated cost; there c19 keeps the release's own circuit.
+3. **16 qubits remain expensive on this machine:** in the smoke runs a 16-qubit Hamiltonian still took about 40-85 s
+   with c19 (113-241 s with the release). The remaining time is the state-vector work itself.
+
+## 5. Disclosures
+
+- **The lock was pushed after the run** (section 1).
+- **The predictions were written before the first smoke run;** the candidate was changed after it (Addendum 383,
+  section 6).
+- **Section 3 is exploratory,** after the output was seen.
+
 ---
 
 ---

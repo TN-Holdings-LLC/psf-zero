@@ -1,0 +1,16 @@
+files 6, git_head ['c4f943b'], flags []
+P0 PASS: errors 0, off-target 0, inexact 0 of 54 checked (expected 54)
+
+device         n   identical  n16    n12-14  n20
+FakeTorino     60  60/60    0.397  0.649   1.104
+FakeKingston   60  59/60    0.418  0.606   0.933
+FakeAuckland   60  60/60    0.485  0.530   1.035
+FakeHanoiV2    60  60/60    0.460  0.530   1.035
+FakeBrussels   60  60/60    0.357  0.607   1.004
+FakeOsaka      60  60/60    0.359  0.646   0.991
+circuits that differ: 1
+F1 AMBIGUOUS
+F2 CONFIRMED
+F3 CONFIRMED
+F4 AMBIGUOUS
+verdicts identical to score.md: True

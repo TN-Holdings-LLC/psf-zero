@@ -1,0 +1,21 @@
+$ python fuse_run_diag.py <project-folder>/fuse_run
+(workplace, Windows; after FUSE's scored run, at the lock commit c4f943b)
+FakeAuckland: n=20 median ratio 1.035; ratios [0.95, 0.95, 0.97, 0.98, 0.99, 1.01, 1.06, 1.07, 1.07, 1.18, 1.43, 1.45]; release times [0.02, 0.014, 0.015, 0.05, 0.045, 0.049, 0.095, 0.078, 0.081, 0.077, 0.102, 0.087]
+FakeBrussels: n=20 median ratio 1.004; ratios [0.6, 0.69, 0.86, 0.95, 0.98, 1.0, 1.01, 1.05, 1.09, 1.15, 1.17, 1.26]; release times [0.035, 0.029, 0.031, 0.048, 0.049, 0.062, 0.199, 0.161, 0.184, 0.124, 0.197, 0.124]
+FakeHanoiV2: n=20 median ratio 1.035; ratios [0.76, 0.8, 0.97, 1.02, 1.03, 1.03, 1.04, 1.1, 1.15, 1.2, 1.22, 1.63]; release times [0.021, 0.02, 0.017, 0.056, 0.059, 0.063, 0.144, 0.13, 0.149, 0.211, 0.17, 0.231]
+FakeKingston: n=20 median ratio 0.933; ratios [0.69, 0.81, 0.81, 0.85, 0.89, 0.92, 0.95, 0.97, 0.97, 0.99, 1.17, 1.59]; release times [0.066, 0.069, 0.075, 0.097, 0.095, 0.096, 0.232, 0.19, 0.201, 0.216, 0.324, 0.143]
+
+== FakeKingston circuit 1: ring n=8 measured=True (seed 82000001)
+release: moved {'COMPARE_STATS': {'level3': 1}, 'RESYNTH_STATS': {'applied': 2, 'selected_original': 2}, 'EXACT_STATS': {'checked': 4}, 'PRUNE_STATS': {'checked': 1}}
+   ops {'sx': 32, 'rz': 28, 'cz': 14, 'measure': 8, 'barrier': 1}
+   initial [88, 89, 90, 91, 98, 111, 110, 109]
+c19: moved {'COMPARE_STATS': {'psf': 1}, 'RESYNTH_STATS': {'applied': 2, 'selected_original': 2}, 'EXACT_STATS': {'checked': 4}, 'PRUNE_STATS': {'checked': 1}}
+   ops {'rz': 32, 'sx': 32, 'cz': 14, 'measure': 8, 'barrier': 1}
+   initial [88, 89, 90, 91, 98, 111, 110, 109]
+identical now: False
+output of release: rel: hybrid 0.10309828056855717 excitation 0.03204775024150937 | c19: hybrid 0.10309828056855717 excitation 0.03204775024150937
+output of c19: rel: hybrid 0.10309828056855719 excitation 0.03204775024150937 | c19: hybrid 0.10309828056855719 excitation 0.03204775024150936
+release's own hybrid estimates of the two outputs differ by 1.35e-16 (relative; the tie band is 1e-12)
+implements (release check): True True
+FakeOsaka: n=20 median ratio 0.991; ratios [0.81, 0.93, 0.98, 0.98, 0.99, 0.99, 0.99, 1.0, 1.01, 1.06, 1.11, 1.24]; release times [0.067, 0.071, 0.067, 0.104, 0.118, 0.102, 0.227, 0.184, 0.164, 0.076, 0.077, 0.076]
+FakeTorino: n=20 median ratio 1.104; ratios [0.81, 0.86, 0.91, 0.97, 0.97, 1.05, 1.16, 1.23, 1.67, 1.75, 1.78, 2.12]; release times [0.081, 0.042, 0.053, 0.062, 0.082, 0.063, 0.134, 0.138, 0.122, 0.151, 0.154, 0.171]
