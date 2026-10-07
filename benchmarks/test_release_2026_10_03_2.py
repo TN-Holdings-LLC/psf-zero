@@ -146,7 +146,7 @@ def l3(qc, tgt):
 
 
 def test_version(mods):
-    assert mods[0].VERSION == "2026-10-06.4"  # current release (this file was written for 2026-10-03.2)
+    assert mods[0].VERSION == "2026-10-07.1"  # current release (this file was written for 2026-10-03.2)
     assert mods[1].VERSION == "2026-10-03.c8"  # the code of release 2026-10-03.1
 
 
@@ -183,7 +183,8 @@ def test_compare_returns_lower_estimate_exact_and_safe(mods, name):
                                     compare_level3=True, **kw)
         assert compact_fidelity(qc, c) > 1 - 1e-6, name
         ea, eb = new.excitation_cost(a, tgt), new.excitation_cost(b, tgt)
-        if new._acceptable(b, tgt, 0.5) and eb < ea:
+        # since 2026-10-07.1 (Addendum 397): estimates within ESTIMATE_TIE_TOL are a tie that keeps the own circuit
+        if new._acceptable(b, tgt, 0.5) and new._lower(eb, ea):
             assert sig(c) == sig(b), name
         else:
             assert sig(c) == sig(a), name

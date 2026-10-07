@@ -1343,6 +1343,105 @@ tests, so the runs can be put side by side.
    device reports as failed (the default call does not read the target); the recommended call does not (Addendum 393,
    section 4).
 
+
+---
+
+<!-- ===== Addendum 397 (source: spare-qubit-cliff-addendum-397-2026-10-07.md) ===== -->
+
+> **Note added when merging:** The owner's release decision of 2026-10-07, committed with the release's files after the release tests.
+
+## Addendum 397 -- Release: psf_compile 2026-10-07.1 = candidate 2026-10-07.c23 of Addendum 394 (changelog items 46-50, accepted in Addenda 385, 388, 392 and 395); the AI front end stays a12 (2026-10-07)
+
+**Status: the owner's decision of 2026-10-07 (home), under the release policy of Addendum 385: improvements are
+accepted one by one and released together.**
+
+## 1. The decision
+
+The owner released candidate c23, which carries items 46-50, as **2026-10-07.1**. The evidence, item by item:
+
+| item | what it does | test | result |
+|---|---|---|---|
+| 46 | the recommended call's checks and estimates apply fewer, larger matrices; estimates within 1e-12 are a tie | FUSE (Addenda 383-385) | 0.36-0.49 of 2026-10-06.4's time at 16 qubits; the same circuit on 359 of 360, the other a near-tie |
+| 47, 49 | item 39's checks only where they can change the output; estimates on 2x2 reduced states | TRACK (Addenda 386-388) | 0.37-0.51 of c19's time at 16 qubits; c19's circuit on 360 of 360 |
+| 48 | the default call expands instructions on three or more qubits first | BP-MOCK, BP-MOCK2 (Addenda 389-392) | 0.71 and 0.74 of 2026-10-06.4's two-qubit count on such inputs; nothing else changed |
+| 50 | commutative cancellation tried where it removes two-qubit gates | CANCEL (Addenda 394-395) | kept on 20 of 32 tried, never more two-qubit gates; elsewhere c22's circuit |
+
+Together, on 139 Benchpress tests, the default call's two-qubit count is 1.027 times Qiskit level 2's (2026-10-06.4:
+1.328; Addendum 396, exploratory). The AI front end is unchanged (a12); it calls `psf_compile`, so it gets items
+46-50.
+
+## 2. What changes in the repository
+
+- **[`psf_compile.py`](../../psf_compile.py)** is c23's file with the two version lines changed
+  (`VERSION: 2026-10-07.1 -- release ...` and `VERSION = "2026-10-07.1"`). Nothing else differs;
+  [`benchmarks/test_release_2026_10_07_1.py`](../../benchmarks/test_release_2026_10_07_1.py) checks this.
+- **The outgoing release 2026-10-06.4** is kept unchanged as
+  [`patches/psf_compile_release_2026-10-06.4/psf_compile.py`](../../patches/psf_compile_release_2026-10-06.4/psf_compile.py).
+- **Tests:**
+  - [`benchmarks/test_release_2026_10_07_1.py`](../../benchmarks/test_release_2026_10_07_1.py) (new): the version and
+    the new counters; the file equals c23's except the version lines; c23 and the kept 2026-10-06.4 are the locked
+    files; on four devices 2026-10-06.4's circuit with the recommended and the default call (6, 9 and 20 qubits,
+    nothing to expand or cancel); Benchpress's BV-like circuit at 8 and 30 qubits compiles to no two-qubit gate
+    (2026-10-06.4 keeps them); a circuit with `ccx` gates is expanded and the output is valid and exact; three
+    random circuits with commuting CX pairs give valid, exact outputs with no more two-qubit gates than 2026-10-06.4.
+  - [`benchmarks/test_release_2026_10_06_4.py`](../../benchmarks/test_release_2026_10_06_4.py) and
+    [`patches/psf_compile_c19_2026-10-07/test_c19.py`](../../patches/psf_compile_c19_2026-10-07/test_c19.py) now load
+    2026-10-06.4 from the kept copy, because they compare against it.
+  - Every other test that asserted the current release's version (24 lines in `benchmarks/` and `patches/`) now
+    asserts `"2026-10-07.1"`.
+  - [`benchmarks/test_release_2026_10_03_2.py`](../../benchmarks/test_release_2026_10_03_2.py): one comparison now
+    uses the release's own tie rule (section 3).
+  - The locked scripts of the tests (`fuse_eval.py`, `track_eval.py`, `bp_mock.py`, `bp_mock2.py`,
+    `cancel_eval.py` and their verifiers) are records and are not changed; they name the releases of their day.
+- **README:** "Current version" names 2026-10-07.1 with items 46-50; "Where it is weaker" reports the Benchpress
+  results (1.03 times Qiskit level 2's two-qubit count, about 4 times its compile time), the non-reproducibility of
+  Qiskit's level 1 that the default call inherits, and the failed couplers (Addendum 393).
+- **[`docs/RELEASES.md`](../../docs/RELEASES.md):** a new "Current version" block replaces the "Accepted, not yet
+  released" block; the 2026-10-06.4 block becomes "Previous release".
+
+## 3. Checks before the commit
+
+[`benchmarks/run_release_tests_2026-10-07_1.py`](../../benchmarks/run_release_tests_2026-10-07_1.py) ran the 31 test
+files that load the repository's `psf_compile.py` (the 27 this commit adds or changes, and four that load it
+unchanged), one pytest session per file, at home (WSL2; Python 3.12.13, Qiskit 2.5.2, NumPy 2.5.3, `psf_compile`
+2026-10-07.1, core 2026-09-29.1; on commit `038417d` with these changes uncommitted). Logs:
+[`data/2026-10-07/release_2026-10-07.1/`](../../data/2026-10-07/release_2026-10-07.1/).
+
+**Run 1** (10:23:31-10:29:52 UTC): 250 passed, 2 failed.
+
+1. `test_release_2026_10_07_1.py::test_bvlike_cancels[30]`: **a defect of the new test.** It asked `_implements` to
+   confirm a 30-qubit output; `_implements` returns False for any circuit of more than 16 qubits (it cannot check
+   them; item 44). The output was valid and had no two-qubit gate. The test now checks exactness at 8 qubits only.
+2. `test_release_2026_10_03_2.py::test_compare_returns_lower_estimate_exact_and_safe[FakeAuckland]`: **a comparison
+   made stricter than the release.** The test expects level 3's circuit whenever its `excitation_cost` is lower at
+   all. [`benchmarks/release_10071_diag.py`](../../benchmarks/release_10071_diag.py) repeated the test's four
+   circuits with 2026-10-07.1, 2026-10-06.4 and c19 (output `diag_out.txt`): on `chain5` the two estimates are equal
+   in 2026-10-06.4 and c19 and differ by 1.6e-16 (relative) in 2026-10-07.1, from the different order of
+   floating-point operations of item 49; all three releases return the same circuit (their own) on `chain5` and the
+   same choice on the other three circuits, where the estimates differ by 1.5-7.7%. Under item 46 such a difference is
+   a tie that keeps the own circuit. The test now decides with the release's `_lower` (the tie band
+   `ESTIMATE_TIE_TOL`); before item 46 the two rules agree.
+
+**Run 2** (ended 10:43:17 UTC), after the two changes: **252 passed**, none failed or errored, on all 31 files.
+
+| file | normalized SHA-256 |
+|---|---|
+| [`psf_compile.py`](../../psf_compile.py) (release 2026-10-07.1) | `73fb2cb0b1acc5870339c23599829b326fbf57aa198945231e8551e55c1884dc` |
+| [`patches/psf_compile_release_2026-10-06.4/psf_compile.py`](../../patches/psf_compile_release_2026-10-06.4/psf_compile.py) (kept) | `69fe51d2d503638ceb4d067a0d86a5b27c38586694ec84996dea5e7ab6dab7aa` |
+| [`patches/psf_compile_c23_2026-10-07/psf_compile.py`](../../patches/psf_compile_c23_2026-10-07/psf_compile.py) (candidate, unchanged) | `568de9e691796e4efb330dff3f2ed61aa1cca4cc888286f9727854cf8c744420` |
+| [`benchmarks/test_release_2026_10_07_1.py`](../../benchmarks/test_release_2026_10_07_1.py) (new) | `082681a6524db803bec28a73d75e1ee3f0f0430d4f87dc4c2acd6bb949435894` |
+| [`benchmarks/test_release_2026_10_03_2.py`](../../benchmarks/test_release_2026_10_03_2.py) (changed) | `8efcc598f259dd4a3ea793f0533a0678d0b048dc64edb817ee480c0762d209ef` |
+
+## 4. What 2026-10-07.1 does not establish
+
+- **The recommended call where items 48 and 50 act.** Both act at the start of the pipeline without a target, so
+  also in the recommended call's first compile. BP-MOCK's M4 checked item 48 there on 20 FakeTorino tests; item 50
+  there was not part of a pre-registered test.
+- **Benchpress beyond the 139 tests**, depth, and hardware. The 139 tests also informed items 48 and 50.
+- **Reproducibility:** where Qiskit's own level 1 is not reproducible, neither is the default call (Addendum 393).
+- **Time:** the default call takes about 4 times Qiskit level 2's compile time on the Benchpress sample, and where
+  item 50's cancellation removes something it compiles twice.
+
 ---
 
 ---

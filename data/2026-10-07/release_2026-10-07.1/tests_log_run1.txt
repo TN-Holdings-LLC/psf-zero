@@ -1,0 +1,154 @@
+environment: {"python": "3.12.13", "qiskit": "2.5.2", "numpy": "2.5.3", "psf_compile": "2026-10-07.1", "core": "2026-09-29.1", "git_head": "038417d", "dirty": [" M README.md", " M benchmarks/test_ai_compile_a11.py", " M benchmarks/test_ai_compile_a12.py", " M benchmarks/test_ai_compile_a8.py", " M benchmarks/test_ai_compile_a9.py", " M benchmarks/test_core_fix_c2.py", " M benchmarks/test_release_2026_09_28.py", " M benchmarks/test_release_2026_10_02.py", " M benchmarks/test_release_2026_10_02_2.py", " M benchmarks/test_release_2026_10_03.py", " M benchmarks/test_release_2026_10_03_2.py", " M benchmarks/test_release_2026_10_03_3.py", " M benchmarks/test_release_2026_10_04_1.py", " M benchmarks/test_release_2026_10_05_1.py", " M benchmarks/test_release_2026_10_06_4.py", " M docs/RELEASES.md", " M patches/psf_ai_compile_a12_2026-10-06/test_a12.py", " M patches/psf_ai_compile_a13_2026-10-06/test_a13.py", " M patches/psf_ai_compile_a6_2026-10-02/test_ai6.py", " M patches/psf_ai_compile_a8_2026-10-04/test_a8.py", " M patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py", " M patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py", " M patches/psf_compile_c12_2026-10-05/test_c12_exact.py", " M patches/psf_compile_c19_2026-10-07/test_c19.py", " M patches/psf_compile_c4_2026-10-02/test_c4_layout.py", " M patches/psf_compile_c6_2026-10-03/test_c6_floor.py", " M patches/psf_compile_c8_2026-10-03/test_c8_resynth.py", " M patches/psf_compile_c9_2026-10-03/test_c9_compare.py", " M psf_compile.py"]}
+start 2026-10-07T10:23:31Z
+
+== benchmarks/test_release_2026_10_07_1.py (2026-10-07T10:23:31Z)
+        assert q2(out) == 0 and q2(old) > 0
+        assert mods["rel"].CANCEL_STATS["cancelled_kept"] == kept + 1
+>       assert valid(out, b) and mods["rel"]._implements(qc, out)
+E       AssertionError: assert (True and False)
+E        +  where True = valid(<qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7b2739c07ef0>, <qiskit_ibm_runtime.fake_provider.backends.torino.fake_torino.FakeTorino object at 0x7b2739c26270>)
+E        +  and   False = <function _implements at 0x7b2794471a80>(<qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7b2739c261b0>, <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7b2739c07ef0>)
+E        +    where <function _implements at 0x7b2794471a80> = <module 'psf_compile_rel10071_test' from '<wsl-home>/psf_zero_fresh_test/psf_compile.py'>._implements
+
+benchmarks/test_release_2026_10_07_1.py:165: AssertionError
+----------------------------- Captured stdout call -----------------------------
+
+BV-like 30: 2026-10-06.4 114, 2026-10-07.1 0
+=========================== short test summary info ============================
+FAILED benchmarks/test_release_2026_10_07_1.py::test_bvlike_cancels[30] - Ass...
+1 failed, 10 passed in 10.00s
+
+== benchmarks/test_release_2026_10_06_4.py (2026-10-07T10:23:42Z)
+........                                                                 [100%]
+8 passed in 5.65s
+
+== patches/psf_compile_c19_2026-10-07/test_c19.py (2026-10-07T10:23:48Z)
+..............                                                           [100%]
+14 passed in 104.69s (0:01:44)
+
+== benchmarks/test_release_2026_09_28.py (2026-10-07T10:25:33Z)
+........                                                                 [100%]
+8 passed in 0.89s
+
+== benchmarks/test_core_fix_c2.py (2026-10-07T10:25:34Z)
+..........                                                               [100%]
+10 passed in 1.56s
+
+== benchmarks/test_release_2026_10_02.py (2026-10-07T10:25:36Z)
+.....                                                                    [100%]
+5 passed in 2.57s
+
+== benchmarks/test_release_2026_10_02_2.py (2026-10-07T10:25:39Z)
+......                                                                   [100%]
+6 passed in 2.77s
+
+== benchmarks/test_release_2026_10_03.py (2026-10-07T10:25:42Z)
+...............                                                          [100%]
+15 passed in 4.87s
+
+== benchmarks/test_release_2026_10_03_2.py (2026-10-07T10:25:48Z)
+                                        compare_level3=True, **kw)
+            assert compact_fidelity(qc, c) > 1 - 1e-6, name
+            ea, eb = new.excitation_cost(a, tgt), new.excitation_cost(b, tgt)
+            if new._acceptable(b, tgt, 0.5) and eb < ea:
+>               assert sig(c) == sig(b), name
+E               AssertionError: FakeAuckland
+E               assert [('sx', [2], ...[3], []), ...] == [('sx', [2], ...973883]), ...]
+E                 
+E                 At index 3 diff: ('rz', [2], [-3.141592653589793]) != ('rz', [2], [9.42477796076938])
+E                 Use -v to get more diff
+
+benchmarks/test_release_2026_10_03_2.py:187: AssertionError
+=========================== short test summary info ============================
+FAILED benchmarks/test_release_2026_10_03_2.py::test_compare_returns_lower_estimate_exact_and_safe[FakeAuckland]
+1 failed, 9 passed in 5.66s
+
+== benchmarks/test_release_2026_10_03_3.py (2026-10-07T10:25:54Z)
+...........                                                              [100%]
+11 passed in 6.65s
+
+== benchmarks/test_release_2026_10_04_1.py (2026-10-07T10:26:01Z)
+..........                                                               [100%]
+10 passed in 7.80s
+
+== benchmarks/test_release_2026_10_05_1.py (2026-10-07T10:26:09Z)
+.......                                                                  [100%]
+7 passed in 7.25s
+
+== benchmarks/test_ai_compile_a7.py (2026-10-07T10:26:17Z)
+.....                                                                    [100%]
+5 passed in 18.34s
+
+== benchmarks/test_ai_compile_a8.py (2026-10-07T10:26:36Z)
+.......                                                                  [100%]
+7 passed in 8.95s
+
+== benchmarks/test_ai_compile_a9.py (2026-10-07T10:26:45Z)
+....                                                                     [100%]
+4 passed in 16.08s
+
+== benchmarks/test_ai_compile_a11.py (2026-10-07T10:27:02Z)
+........                                                                 [100%]
+8 passed in 16.80s
+
+== benchmarks/test_ai_compile_a12.py (2026-10-07T10:27:19Z)
+.....                                                                    [100%]
+5 passed in 17.36s
+
+== patches/psf_ai_compile_a6_2026-10-02/test_ai6.py (2026-10-07T10:27:37Z)
+......                                                                   [100%]
+6 passed in 14.27s
+
+== patches/psf_ai_compile_a7_2026-10-02/test_a7.py (2026-10-07T10:27:52Z)
+.....                                                                    [100%]
+5 passed in 15.74s
+
+== patches/psf_ai_compile_a8_2026-10-04/test_a8.py (2026-10-07T10:28:08Z)
+.......                                                                  [100%]
+7 passed in 8.93s
+
+== patches/psf_ai_compile_a12_2026-10-06/test_a12.py (2026-10-07T10:28:17Z)
+.......                                                                  [100%]
+7 passed in 38.42s
+
+== patches/psf_ai_compile_a13_2026-10-06/test_a13.py (2026-10-07T10:28:56Z)
+.....                                                                    [100%]
+5 passed in 7.47s
+
+== patches/psf_compile_c3_2026-10-02/test_c3_prune.py (2026-10-07T10:29:04Z)
+.....                                                                    [100%]
+5 passed in 2.54s
+
+== patches/psf_compile_c4_2026-10-02/test_c4_layout.py (2026-10-07T10:29:07Z)
+....                                                                     [100%]
+4 passed in 2.16s
+
+== patches/psf_compile_c5_2026-10-02/test_c5_placement.py (2026-10-07T10:29:10Z)
+......                                                                   [100%]
+6 passed in 2.92s
+
+== patches/psf_compile_c6_2026-10-03/test_c6_floor.py (2026-10-07T10:29:13Z)
+..........                                                               [100%]
+10 passed in 3.70s
+
+== patches/psf_compile_c8_2026-10-03/test_c8_resynth.py (2026-10-07T10:29:17Z)
+...............                                                          [100%]
+15 passed in 4.83s
+
+== patches/psf_compile_c9_2026-10-03/test_c9_compare.py (2026-10-07T10:29:22Z)
+..........                                                               [100%]
+10 passed in 5.65s
+
+== patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py (2026-10-07T10:29:29Z)
+...........                                                              [100%]
+11 passed in 6.65s
+
+== patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py (2026-10-07T10:29:36Z)
+..........                                                               [100%]
+10 passed in 7.79s
+
+== patches/psf_compile_c12_2026-10-05/test_c12_exact.py (2026-10-07T10:29:44Z)
+.......                                                                  [100%]
+7 passed in 7.69s
+
+files 31; {'passed': 250, 'failed': 2, 'errors': 0, 'skipped': 0}; files not passing: ['benchmarks/test_release_2026_10_07_1.py', 'benchmarks/test_release_2026_10_03_2.py']; end 2026-10-07T10:29:52Z

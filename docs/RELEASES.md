@@ -9,34 +9,38 @@ from this folder. The full record behind each entry is in Parts 9 and 10 of the 
 the earlier parts they link to. The README itself, as it was before the move, is kept as
 [`README_2026-10-05_before_restructure.md`](README_2026-10-05_before_restructure.md).
 
-> **Accepted, not yet released** (to be released together with the next accepted improvements; Addendum 385):
+> **Current version (2026-10-07, first release): `psf_compile.py` 2026-10-07.1 and the AI front end a12, with
+> `psf_smart_layout` 2026-10-01.1 and the Rust core `CORE_VERSION` 2026-09-29.1 (all three unchanged)**
+> ([Part 10](findings/spare-qubit-cliff-combined-383.md), Addenda 383-397). The file is candidate c23
+> ([`patches/psf_compile_c23_2026-10-07/`](../patches/psf_compile_c23_2026-10-07/)) with its version lines changed.
+> It carries items 46-50, each accepted after its own pre-registered test and released together under the policy of
+> Addendum 385.
 >
-> - **c19, item 46** ([`patches/psf_compile_c19_2026-10-07/`](../patches/psf_compile_c19_2026-10-07/), Part 10,
->   Addenda 383-385): the recommended call's state-vector checks and estimates apply fewer, larger matrices,
->   and estimates within 1e-12 of each other are a tie that keeps the earlier candidate. Pre-registered test FUSE
->   (360 circuits, 6 devices): 0.36-0.49 of 2026-10-06.4's time at 16 qubits, 0.53-0.65 at 12-14; the same circuit
->   on 359, the other a near-tie of 1.35e-16 now kept as a tie.
->
-> - **c20 and c22, items 47 and 49** ([`patches/psf_compile_c22_2026-10-07/`](../patches/psf_compile_c22_2026-10-07/),
->   Part 10, Addenda 386-388): the recommended call makes item 39's checks only where they can change the
->   output, and its estimates follow single-qubit gates on 2x2 reduced states. Pre-registered test TRACK (360
->   circuits, 6 devices): the same circuit as c19 on 360 of 360; 0.37-0.51 of c19's time at 16 qubits, 0.59-0.68
->   at 12-14.
->
-> - **c21 and c22, item 48** (the same file; Part 10, Addenda 386-392): the default call expands instructions on
->   three or more qubits before its own pipeline. Pre-registered tests BP-MOCK (92 Benchpress tests) and BP-MOCK2
->   (48 new ones): on such inputs 0.71 and 0.74 of 2026-10-06.4's two-qubit count; the default call at 1.12 and
->   1.04 of Qiskit level 2's (1.36 and 1.26 before); other inputs unchanged where the release reproduces itself.
->
-> - **c23, item 50** ([`patches/psf_compile_c23_2026-10-07/`](../patches/psf_compile_c23_2026-10-07/), Part 10,
->   Addenda 393-395): where Qiskit's commutative cancellation removes two-qubit gates from the input, the default
->   call compiles the input and the cancelled input and keeps the one with fewer two-qubit gates. Pre-registered
->   test CANCEL (140 Benchpress tests): tried on 32 and kept on 20 (Benchpress's BV-like test 392 to 0;
->   QASMBench's 160-qubit QFT and 11 HamLib Hamiltonians 5-29% fewer), never more; on the other 108 c22's circuit
->   wherever c22 reproduces itself, at 1.02 of its time (median); 0.96-3.96 of c22's time where it is tried.
->   c23 carries items 46-50.
+> - **Item 46 (c19; FUSE, Addenda 383-385):** the recommended call's state-vector checks and estimates apply fewer,
+>   larger matrices, and estimates within 1e-12 of each other are a tie that keeps the earlier candidate. 360
+>   circuits on 6 devices: 0.36-0.49 of 2026-10-06.4's time at 16 qubits, 0.53-0.65 at 12-14; the same circuit on
+>   359, the other a near-tie of 1.35e-16 now kept as a tie.
+> - **Items 47 and 49 (c20, c22; TRACK, Addenda 386-388):** the recommended call makes item 39's checks only where
+>   they can change the output, and its estimates follow single-qubit gates on 2x2 reduced states. 360 new circuits
+>   of the same families: c19's circuit on 360; 0.37-0.51 of c19's time at 16 qubits, 0.59-0.68 at 12-14. With item
+>   46, about 0.13-0.24 of 2026-10-06.4's time at 16 qubits (the product of the two tests' per-device medians, on
+>   different circuits).
+> - **Item 48 (c21, c22; BP-MOCK and BP-MOCK2, Addenda 386-392):** the default call expands instructions on three
+>   or more qubits before its own pipeline. On such Benchpress inputs 0.71 and 0.74 of 2026-10-06.4's two-qubit
+>   count; other inputs unchanged where the release reproduces itself.
+> - **Item 50 (c23; CANCEL, Addenda 393-395):** where Qiskit's commutative cancellation removes two-qubit gates from
+>   the input, the default call compiles the input and the cancelled input and keeps the one with fewer two-qubit
+>   gates. 140 Benchpress tests: tried on 32 and kept on 20 (Benchpress's BV-like test 392 to 0; QASMBench's
+>   160-qubit QFT and 11 HamLib Hamiltonians 5-29% fewer), never more; on the other 108 c22's circuit wherever c22
+>   reproduces itself, at 1.02 of its time (median); 0.96-3.96 of c22's time where it is tried.
+> - **Against Qiskit level 2 (Addendum 396, exploratory, from the committed output):** on 139 of those Benchpress
+>   tests the default call's two-qubit count is 1.03 times Qiskit level 2's as a geometric mean (2026-10-06.4: 1.33);
+>   fewer on 18, as many on 59, more on 62; about 3.9 times its compile time.
+> - **Not changed:** the AI front end (a12), which calls `psf_compile` and so gets items 46-50; the layout search;
+>   the core. `seed_transpiler` still does not make the default call reproducible on inputs where Qiskit's own
+>   level 1 is not (Addendum 393).
 
-> **Current version (2026-10-06, fourth release): `psf_compile.py` 2026-10-06.4 and the AI front end a12, with
+> **Previous release (2026-10-06, fourth release): `psf_compile.py` 2026-10-06.4 and the AI front end a12, with
 > `psf_smart_layout` 2026-10-01.1 and the Rust core `CORE_VERSION` 2026-09-29.1 (both unchanged)**
 > ([Part 9](findings/spare-qubit-cliff-combined-248.md), Addenda 379-381). The recommended call is unchanged.
 >

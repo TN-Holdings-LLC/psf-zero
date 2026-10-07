@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-10-07.1 -- release, adopted on 2026-10-07 from candidate 2026-10-07.c23 of Addendum 394 (previous release: 2026-10-06.4)
+VERSION: 2026-10-06.4 -- release, adopted on 2026-10-06 from candidate 2026-10-06.c17 of Addendum 379 (previous release: 2026-10-06.3)
 
 Where to look for what
 ----------------------
@@ -682,120 +682,6 @@ adopted on 2026-10-06 after their pre-registered evaluations RECR and KRAUS, Add
     Each skip is counted in `SKIP_STATS`. The output is the one 2026-10-06.3 returns, because what is skipped is
     exactly what it refused; only counters (`COMPARE_STATS`, `EXACT_STATS`, `RESYNTH_STATS`, `PRUNE_STATS` of the
     floor's compile) and a `callback`'s calls during the floor's compile differ.
-
-2026-10-07.c19 (candidate, Addendum 383):
-
-46. **SPEED: the state-vector estimates and checks apply fewer, larger matrices.** Up to 16 qubits the recommended
-    call simulates its circuits gate by gate on a numpy state vector: item 39's checks (`_same_action`,
-    `_implements`) and the estimates of items 35 and 38 (`excitation_cost`, `hybrid_cost`). At 16 qubits that took
-    20-60 s per compile for Hamiltonian and QFT circuits (SKIP, Addendum 380), almost all of it in these
-    simulations (profile, Addendum 383). Now:
-    - **checks:** before simulating, every single-qubit gate is multiplied into the next gate on its qubit that acts
-      on more qubits, and consecutive gates on the same qubits are multiplied into one (`_fuse_ops`); single-qubit
-      gates left at the end are kept as they are. The action is the same; only the order of floating-point
-      operations changes.
-    - **estimates:** a single-qubit gate whose matrix is diagonal and which has no reported error and no duration
-      (an `rz` on IBM devices) is multiplied into the next gate on its qubit instead of being applied on its own. It
-      adds nothing to either estimate, and a diagonal gate changes neither the populations the estimates read
-      before a gate nor the state after the gate it is multiplied into, so every term is the same up to rounding.
-    - **`hybrid_cost` and `excitation_cost`** read a qubit's populations with one pass over the state
-      (`_populations`); `hybrid_cost` no longer builds the qubit's reduced density matrix, of which it used only
-      the diagonal.
-    - **ties:** the choice among candidates (`_choose`), item 35's "select" and item 36's comparison now treat two
-      estimates within a relative 1e-12 (`ESTIMATE_TIE_TOL`) as equal, and a tie keeps the earlier candidate, as an
-      exact tie always did. Without this the new rounding broke exact ties: FUSE's smoke run (Addendum 383) found a
-      16-qubit ring on FakeKingston whose own circuit and level 3's differed only by two `rz` gates, which add
-      nothing to the estimate; 2026-10-06.4 scored them equal to the bit and kept its own, while the first version
-      of this candidate scored level 3's lower by 2e-17 and took it.
-    `excitation_cost` now builds each gate's matrix before its cost terms (it returned None for a gate without a
-    matrix either way). `pauli_cost` and `kraus_cost` are unchanged. The decisions taken from these numbers can
-    differ from 2026-10-06.4's only where 2026-10-06.4 saw two estimates differ by less than 1e-12 (relative)
-    without being equal, or a check land within rounding of `EXACT_TOL`.
-
-2026-10-07.c20 (candidate, based on c19):
-
-47. **SPEED: item 39's checks are made only where their result can change the output.** Item 39 checks, by
-    simulation, that a circuit the recommended call could return does what the input does: `_same_action` for item
-    35's re-synthesis, `_implements` for the floor candidate (item 37) and for Qiskit level 3 (item 36). Up to
-    2026-10-07.c19 every check was made before the estimates, so a candidate was simulated two more times (two
-    seeded product states) even when its estimate then lost and it was not returned. Now the estimates come first:
-    - **item 35's "select"** (`_select_resynthesis`): the re-synthesised circuit is built and checked against the
-      target as before (`_resynthesis_candidate`), then both estimates are made, and `_same_action` is made only if
-      the re-synthesised circuit's estimate is lower, i.e. only when it would be returned. If the check fails, the
-      original is returned, as before. `final_resynthesis=True` (always) is unchanged (`_final_resynthesis`).
-    - **item 36** (`_compare_level3`): `_implements` is made on level 3's circuit only if its estimate is lower.
-    - **item 37** (the candidates of `compare_floor`/`compare_level3` with any `candidate_score`): the estimates of
-      the release's circuit and of every acceptable candidate are made first; `_implements` is made only on a
-      candidate whose estimate is None or not higher than the release's by more than `ESTIMATE_TIE_TOL`. A candidate
-      whose estimate is higher than the release's by more than that can be neither the lowest nor within the tie band
-      of the lowest, and leaving it out does not change the lowest, so whether it implements the input cannot change
-      the choice (`_choose_lazy`). If the release's own estimate is None, the release's circuit is returned without
-      any check, as 2026-10-07.c19 returned it either way.
-    The output is 2026-10-07.c19's in every case. What differs:
-    - fewer checks: `EXACT_STATS["checked"]` and the `refused_*` counts count only the checks made; a candidate that
-      was not checked is counted in `RESYNTH_STATS["not_checked"]` or `COMPARE_STATS["not_checked"]`;
-    - `RESYNTH_STATS["applied"]` under "select" counts re-synthesised circuits that passed the check (it counted those
-      that passed it before the estimates), and `selected_original` now also counts those not checked;
-    - estimates are made for candidates that 2026-10-07.c19 refused before estimating them (one simulation each,
-      against the two of the check), and `COMPARE_STATS["not_estimable"]` counts a None estimate whenever an
-      acceptable candidate exists;
-    - in item 37's comparison a candidate refused by `_implements` is counted as before (`floor_refused`,
-      `level3_refused`).
-
-2026-10-07.c21 (candidate, based on c20):
-
-48. **QUALITY: instructions on three or more qubits are expanded before PSF-Zero's own pipeline.** The default
-    call handed instructions on more than two qubits (`ccx`, a `PauliEvolutionGate`, `qft`, `EfficientSU2`, a
-    Quantum Volume layer, a QASMBench `add4`) to its pipeline as they were. On Benchpress and SKIP circuits that
-    contain them it returned up to 6.3 times Qiskit level 2's two-qubit gates (EfficientSU2 on 100 qubits: 1,887
-    against 300; DISPATCH-PROBE, 2026-10-07). Expanding only those instructions first, with Qiskit's
-    `Unroll3qOrMore` (each through its `definition`, recursively, until no instruction acts on more than two
-    qubits; two-qubit gates are left as they are), lowered the two-qubit count on every such circuit of that probe
-    (to 1.00-1.38 of level 2's) and changed nothing elsewhere (DISPATCH-PROBE 2). Expanding the whole circuit to the
-    basis instead also broke two-qubit structure the pipeline uses (a flat 100-qubit QFT: 17,544 against 13,456).
-    - Where: at the start of the pipeline without a `target` (`_unroll_wide`), so in the default call, in the
-      first compile of the recommended call and in its floor candidate. Qiskit level 3's candidate (item 36) and
-      item 39's checks still take the input as given.
-    - Only when the input has such an instruction (barriers aside): every other circuit reaches the pipeline as the
-      same object, so its output is 2026-10-07.c20's.
-    - An instruction Qiskit cannot expand (no definition) leaves the input as it was, with a warning; counts in
-      `UNROLL_STATS`.
-    Exploratory so far: DISPATCH-PROBE's circuits chose this change, so they cannot test it.
-
-2026-10-07.c22 (candidate, based on c21):
-
-49. **SPEED: the estimates follow single-qubit gates on each qubit's 2x2 reduced state.** After items 46-47 the
-    recommended call still spent most of its time at 16 qubits in `excitation_cost` and `hybrid_cost` (profile,
-    2026-10-07: 74 of 87 s for a 16-qubit Hamiltonian on FakeTorino, two thirds of it reading populations and
-    applying single-qubit gates to the whole 2^16 state). Both estimates read, per gate, only the populations of the
-    gate's own qubits before it (and `hybrid_cost` after it). A single-qubit gate changes the reduced state of its own
-    qubit only, as rho -> U rho U^dagger, and changes no other qubit's reduced state. Now:
-    - each qubit's 2x2 reduced density matrix is kept (`_rho1`); it is |0><0| at the start, follows every
-      single-qubit gate on the qubit by U rho U^dagger, and is read again from the state after every gate on more
-      qubits that acts on it;
-    - a single-qubit gate is not applied to the state; it is multiplied into the next gate on more qubits that acts
-      on its qubit (as item 46 did for free diagonal gates only), and the populations it is charged for come from
-      the 2x2 matrix;
-    - every cost term is the one item 46 computed, up to rounding.
-    `pauli_cost` and `kraus_cost` are unchanged. Decisions can differ from 2026-10-07.c21's only where two estimates
-    lie within rounding of each other's tie band (`ESTIMATE_TIE_TOL`).
-
-2026-10-07.c23 (candidate, based on c22):
-
-50. **QUALITY: two-qubit gates that cancel through commutation are removed when that helps.** Benchpress's BV-like
-    test (100 qubits, two CX from every qubit to one target) reduces to no two-qubit gate: CX gates that share a
-    target commute, and each pair cancels. Qiskit level 2 removes them (`CommutativeCancellation`); PSF-Zero's
-    pipeline, which routes at level 1, did not, and returned 392 two-qubit gates (BP-MOCK, Addendum 390). Applying
-    the pass to every input is not neutral: on Hamiltonian inputs it removed no two-qubit gate yet changed the default
-    call's count both ways (-6% to +5%), because it also merges and moves single-qubit gates (Addendum 393). Now, at
-    the start of the pipeline without a `target` (after item 48's expansion):
-    - Qiskit's `CommutativeCancellation` is run on the input (`_cancel_candidate`); if it removes no two-qubit gate,
-      nothing else happens and the input goes on as before;
-    - if it removes at least one, the pipeline is run on both the input and the cancelled input, and the result with
-      fewer two-qubit gates is returned (the input's on a tie). Counts in `CANCEL_STATS`.
-    The pass is exact (it removes or merges only gates whose product is the identity or a single rotation), so both
-    results implement the input. Where it removes no two-qubit gate the output is 2026-10-07.c22's; where it removes
-    some, the output has no more two-qubit gates than 2026-10-07.c22's would have, for twice the pipeline's time.
 """
 from __future__ import annotations
 
@@ -818,8 +704,7 @@ from qiskit.transpiler.basepasses import AnalysisPass, TransformationPass
 from qiskit.transpiler.passes import (BasisTranslator, Collect2qBlocks, ConsolidateBlocks, ElidePermutations,
                                       Optimize1qGatesDecomposition, Split2QUnitaries, UnitarySynthesis)
 from qiskit.transpiler import ConditionalController
-from qiskit.transpiler.passes import ApplyLayout, VF2PostLayout, Unroll3qOrMore
-from qiskit.exceptions import QiskitError
+from qiskit.transpiler.passes import ApplyLayout, VF2PostLayout
 from qiskit.transpiler.passes.layout.vf2_post_layout import VF2PostLayoutStopReason
 
 try:
@@ -834,7 +719,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-10-07.1"  # release (from candidate 2026-10-07.c23 of Addendum 394): 2026-10-06.4 + items 46-50 (fused matrices and ties, lazy checks, 2x2 reduced states, wide instructions expanded, commutative cancellation)
+VERSION = "2026-10-06.4"  # release (from candidate 2026-10-06.c17 of Addendum 379): 2026-10-06.3 + item 45 (alternatives item 39 cannot check are not built)
 __version__ = VERSION
 
 # Changelog item 27: the version string of the loaded Rust core, for logs.
@@ -1940,7 +1825,7 @@ class _RecordRefine(AnalysisPass):
 
 
 RESYNTH_STATS = {"applied": 0, "kept_original": 0, "selected_resynthesised": 0, "selected_original": 0,
-                 "not_estimable": 0, "not_checked": 0}
+                 "not_estimable": 0}
 RESYNTH_MAX_QUBITS = 16
 
 
@@ -1948,8 +1833,7 @@ def excitation_cost(circ, target):
     """Item 35's estimate for "select": sum over gates of -log(1 - reported error), plus duration / T1 x P(1) on each
     of the gate's qubits, P(1) from the noiseless state (from |0...0>) just before the gate. None if more than
     RESYNTH_MAX_QUBITS qubits are touched or an instruction has no matrix (other than barrier, measure, delay).
-    The state is a plain numpy tensor (axis j = j-th touched qubit); gate matrices are Qiskit's (little-endian).
-    Item 49: P(1) is read from each qubit's 2x2 reduced state, which follows single-qubit gates without the state."""
+    The state is a plain numpy tensor (axis j = j-th touched qubit); gate matrices are Qiskit's (little-endian)."""
     import math
     ops = [(ins.operation, tuple(circ.find_bit(b).index for b in ins.qubits)) for ins in circ.data
            if ins.operation.name not in ("barrier", "measure", "delay")]
@@ -1962,39 +1846,25 @@ def excitation_cost(circ, target):
     psi = np.zeros((2,) * k, dtype=complex)
     psi[(0,) * k] = 1.0
     cost = 0.0
-    rho = {}   # item 49: qubit -> its 2x2 reduced state, single-qubit gates in `pend` included (absent: |0><0|)
-    pend = {}  # item 49: qubit -> product of its single-qubit gates not yet applied to the state
     for op, q in ops:
         props = target[op.name].get(q, None) if op.name in target.operation_names else None
+        if props is not None and props.error is not None:
+            cost += -math.log(max(1.0 - props.error, 1e-300))
+        dur = props.duration if props is not None and props.duration else 0.0
+        axes = [pos[i] for i in q]
+        if dur:
+            for i, ax in zip(q, axes):
+                t1 = getattr(qp[i], "t1", None) if i < len(qp) and qp[i] is not None else None
+                if t1:
+                    cost += dur / t1 * float(np.sum(np.abs(np.take(psi, 1, axis=ax)) ** 2))
         try:
             mat = np.asarray(op.to_matrix(), dtype=complex)
         except Exception:
             return None
-        if props is not None and props.error is not None:
-            cost += -math.log(max(1.0 - props.error, 1e-300))
-        dur = props.duration if props is not None and props.duration else 0.0
-        if dur:
-            for i in q:
-                t1 = getattr(qp[i], "t1", None) if i < len(qp) and qp[i] is not None else None
-                if t1:
-                    cost += dur / t1 * _p1(rho, i)
-        if len(q) == 1:
-            i = q[0]
-            p = pend.get(i)
-            pend[i] = mat if p is None else mat @ p
-            r = rho.get(i, _RHO0)
-            rho[i] = mat @ r @ mat.conj().T
-            continue
-        pre = {x: pend.pop(x) for x in q if x in pend}
-        if pre:
-            mat = mat @ _embed_1q(pre, q)
-        axes = [pos[i] for i in q]
         m = len(axes)
         rev = axes[::-1]  # Qiskit's matrix index is little-endian: the first qarg is the least significant bit
         psi = np.tensordot(mat.reshape((2,) * (2 * m)), psi, axes=(list(range(m, 2 * m)), rev))
         psi = np.moveaxis(psi, list(range(m)), rev)
-        for i, ax in zip(q, axes):
-            rho[i] = _rho1(psi, ax)
     return cost
 
 
@@ -2062,78 +1932,7 @@ def _ops_of(circ):
     for ins in circ.data:
         if not add(ins.operation, tuple(circ.find_bit(b).index for b in ins.qubits), 0):
             return None
-    return _fuse_ops(out)  # item 46
-
-
-def _embed_1q(mats, qubits):
-    """Item 46: the matrix on `qubits` (Qiskit's little-endian order, qubits[0] least significant) that applies
-    mats[q] to each qubit q in `mats` and the identity elsewhere."""
-    m = np.ones((1, 1), dtype=complex)
-    for q in reversed(qubits):
-        m = np.kron(m, mats.get(q, np.eye(2, dtype=complex)))
-    return m
-
-
-def _fuse_ops(ops):
-    """Item 46: [(matrix, qubits)] with the same action as `ops`: each single-qubit gate multiplied into the next gate
-    on its qubit that acts on more qubits, consecutive gates on the same qubits multiplied into one, and single-qubit
-    gates with no later gate on their qubit kept (in the order of their qubits' first appearance)."""
-    out, pend = [], {}
-    for mat, q in ops:
-        if len(q) == 1:
-            p = pend.get(q[0])
-            pend[q[0]] = mat if p is None else mat @ p
-            continue
-        pre = {x: pend.pop(x) for x in q if x in pend}
-        if pre:
-            mat = mat @ _embed_1q(pre, q)
-        if out and out[-1][1] == q:
-            out[-1] = (mat @ out[-1][0], q)
-        else:
-            out.append((mat, q))
-    out.extend((u, (x,)) for x, u in pend.items())
     return out
-
-
-ESTIMATE_TIE_TOL = 1e-12  # item 46: estimates within this relative difference are equal
-
-
-def _lower(b, a):
-    """Item 46: True if estimate `b` is lower than `a` by more than ESTIMATE_TIE_TOL (relative). Two estimates closer
-    than that are a tie, and a tie keeps the earlier candidate, as an exact tie always did."""
-    return b < a - ESTIMATE_TIE_TOL * max(abs(a), abs(b))
-
-
-_RHO0 = np.array([[1.0, 0.0], [0.0, 0.0]], dtype=complex)  # item 49: |0><0|
-
-
-def _rho1(psi, ax):
-    """Item 49: the 2x2 reduced density matrix of the qubit on axis `ax` of the state tensor `psi`."""
-    m = np.moveaxis(psi, ax, 0).reshape(2, -1)
-    a, b = m[0], m[1]
-    c = np.vdot(b, a)  # <0|rho|1> = sum a conj(b)
-    return np.array([[np.vdot(a, a).real, c], [np.conj(c), np.vdot(b, b).real]], dtype=complex)
-
-
-def _p1(rho, i):
-    """Item 49: P(1) of qubit `i` from its kept 2x2 reduced state (|0><0| if none is kept)."""
-    r = rho.get(i)
-    return 0.0 if r is None else float(r[1, 1].real)
-
-
-def _populations(psi, ax):
-    """Item 46: (P(0), P(1)) of the qubit on axis `ax` of the state tensor `psi`: the diagonal of its reduced density
-    matrix, which is all `hybrid_cost` reads of it."""
-    m = np.moveaxis(psi, ax, 0).reshape(2, -1)
-    return float(np.vdot(m[0], m[0]).real), float(np.vdot(m[1], m[1]).real)
-
-
-def _free_diagonal(mat, props, q):
-    """Item 46: True for a single-qubit gate with a diagonal matrix, no reported error and no duration (it adds
-    nothing to `excitation_cost` or `hybrid_cost`, and changes no population they read)."""
-    if len(q) != 1 or mat[0, 1] != 0 or mat[1, 0] != 0:
-        return False
-    return props is None or (not props.error and not props.duration)
 
 
 def _same_action(ref, new, tol=EXACT_TOL):
@@ -2216,21 +2015,7 @@ def _implements(qc, out, tol=EXACT_TOL):
 def _final_resynthesis(out, target, max_error):
     """Item 35: re-synthesise every two-qubit block of a finished circuit with Qiskit, on the target, exactly.
     Returns the original circuit if the result has an instruction the target does not provide or a two-qubit
-    gate in a direction the target reports failed, or if it fails item 39's check."""
-    new = _resynthesis_candidate(out, target, max_error)
-    if new is out:
-        return out
-    if not _same_action(out, new):  # item 39
-        EXACT_STATS["refused_resynthesis"] += 1
-        RESYNTH_STATS["kept_original"] += 1
-        return out
-    RESYNTH_STATS["applied"] += 1
-    return new
-
-
-def _resynthesis_candidate(out, target, max_error):
-    """Item 47: item 35's re-synthesised circuit, checked against the target but not yet by item 39; the original
-    circuit (counted in RESYNTH_STATS["kept_original"]) if the target check fails."""
+    gate in a direction the target reports failed."""
     pm = PassManager([ConsolidateBlocks(force_consolidate=True, approximation_degree=1.0, target=target),
                       UnitarySynthesis(approximation_degree=1.0, target=target),
                       Optimize1qGatesDecomposition(target=target)])
@@ -2246,11 +2031,15 @@ def _resynthesis_candidate(out, target, max_error):
                 or (len(q) == 2 and props is not None and props.error is not None and props.error >= max_error)):
             RESYNTH_STATS["kept_original"] += 1
             return out
+    if not _same_action(out, new):  # item 39
+        EXACT_STATS["refused_resynthesis"] += 1
+        RESYNTH_STATS["kept_original"] += 1
+        return out
+    RESYNTH_STATS["applied"] += 1
     return new
 
 
-COMPARE_STATS = {"psf": 0, "level3": 0, "level3_refused": 0, "not_estimable": 0, "floor": 0, "floor_refused": 0,
-                 "not_checked": 0}
+COMPARE_STATS = {"psf": 0, "level3": 0, "level3_refused": 0, "not_estimable": 0, "floor": 0, "floor_refused": 0}
 
 
 def decoherence_floor(target, qubits, duration) -> float:
@@ -2364,9 +2153,7 @@ def readout_cost(circ, target) -> float:
 def hybrid_cost(circ, target):
     """Item 38's estimate: amplitude damping as `excitation_cost` counts it, pure dephasing as the Z part of
     `pauli_cost`, and the reported error above the thermal floor (see the changelog). None if more than
-    RESYNTH_MAX_QUBITS qubits are touched or an instruction has no matrix (other than barrier, measure, delay).
-    Item 49: populations are read from each qubit's 2x2 reduced state, which follows single-qubit gates without the
-    state."""
+    RESYNTH_MAX_QUBITS qubits are touched or an instruction has no matrix (other than barrier, measure, delay)."""
     import math
     ops = [(ins.operation, tuple(circ.find_bit(b).index for b in ins.qubits)) for ins in circ.data
            if ins.operation.name not in ("barrier", "measure", "delay")]
@@ -2387,47 +2174,39 @@ def hybrid_cost(circ, target):
         t2 = getattr(p, "t2", None)
         return t1, (min(t2, 2 * t1) if t2 else 2 * t1)
 
+    def rho1(ax):
+        mm = np.moveaxis(psi, ax, 0).reshape(2, -1)
+        return mm @ mm.conj().T
+
     cost = 0.0
-    rho = {}   # item 49: qubit -> its 2x2 reduced state, single-qubit gates in `pend` included (absent: |0><0|)
-    pend = {}  # item 49: qubit -> product of its single-qubit gates not yet applied to the state
     for op, q in ops:
         try:
             mat = np.asarray(op.to_matrix(), dtype=complex)
         except Exception:
             return None
         props = target[op.name].get(q, None) if op.name in target.operation_names else None
-        m = len(q)
+        axes = [pos[i] for i in q]
+        m = len(axes)
         t = (props.duration or 0.0) if props is not None else 0.0
         if props is not None:
-            for i in q:
+            for i, ax in zip(q, axes):
                 th = thermal(i, t)
                 if th:
-                    cost += t / th[0] * _p1(rho, i)
-        if m == 1:
-            i = q[0]
-            p = pend.get(i)
-            pend[i] = mat if p is None else mat @ p
-            rho[i] = mat @ rho.get(i, _RHO0) @ mat.conj().T
-        else:
-            pre = {x: pend.pop(x) for x in q if x in pend}
-            if pre:
-                mat = mat @ _embed_1q(pre, q)
-            axes = [pos[i] for i in q]
-            rev = axes[::-1]  # Qiskit's matrix index is little-endian: the first qarg is the least significant bit
-            psi = np.tensordot(mat.reshape((2,) * (2 * m)), psi, axes=(list(range(m, 2 * m)), rev))
-            psi = np.moveaxis(psi, list(range(m)), rev)
-            for i, ax in zip(q, axes):
-                rho[i] = _rho1(psi, ax)
+                    cost += t / th[0] * float(rho1(ax)[1, 1].real)
+        rev = axes[::-1]  # Qiskit's matrix index is little-endian: the first qarg is the least significant bit
+        psi = np.tensordot(mat.reshape((2,) * (2 * m)), psi, axes=(list(range(m, 2 * m)), rev))
+        psi = np.moveaxis(psi, list(range(m)), rev)
         if props is None:
             continue
         thermal_f = 1.0
-        for i in q:
+        for i, ax in zip(q, axes):
             th = thermal(i, t)
             if not th:
                 continue
             t1, t2 = th
             rate = max(1.0 / t2 - 1.0 / (2.0 * t1), 0.0)
-            ez = float(rho[i][0, 0].real - rho[i][1, 1].real) if i in rho else 1.0  # <Z> after the gate
+            r = rho1(ax)
+            ez = float((r[0, 0] - r[1, 1]).real)
             cost += (1.0 - math.exp(-t * rate)) / 2.0 * (1.0 - ez * ez)
             thermal_f *= (1.0 + 2.0 * math.exp(-t / t2) + math.exp(-t / t1)) / 4.0
         d = 2 ** m
@@ -2502,61 +2281,13 @@ def kraus_cost(circ, target):
 
 def _choose(cands, target, score):
     """Items 37-38: the (name, circuit) with the lowest estimate; the first (the release's circuit) on ties or when
-    any estimate cannot be made. Item 47: `compile_for_hardware` now chooses with `_choose_lazy`, which returns what
-    this function returns on the candidates that pass item 39's check; this function is kept unchanged."""
+    any estimate cannot be made."""
     f = {"pauli": pauli_cost, "hybrid": hybrid_cost, "kraus": kraus_cost}.get(score, excitation_cost)
     costs = [f(c, target) for _, c in cands]
     if any(c is None for c in costs):
         COMPARE_STATS["not_estimable"] += 1
         return cands[0][1]
-    low = min(costs)
-    best = next(j for j in range(len(cands)) if not _lower(low, costs[j]))  # item 46: the first within the tie band
-    COMPARE_STATS[cands[best][0]] += 1
-    return cands[best][1]
-
-
-def _cost_fn(score):
-    return {"pauli": pauli_cost, "hybrid": hybrid_cost, "kraus": kraus_cost}.get(score, excitation_cost)
-
-
-def _choose_lazy(qc, out, others, target, score):
-    """Item 47: `_choose` over the release's circuit `out` and those of `others` -- (name, circuit) pairs, each
-    already acceptable on the target (item 36) -- that pass item 39's `_implements`, making that check only where its
-    result can change the choice. Returns exactly what 2026-10-07.c19 returned:
-    - if `out`'s estimate is None, `out` (c19 returned it whether or not another candidate passed);
-    - a candidate whose estimate is None and which passes the check makes the choice `out` (c19's "not_estimable");
-    - a candidate whose estimate is higher than `out`'s by more than ESTIMATE_TIE_TOL is never chosen and does not
-      change the lowest estimate, so it is not checked;
-    - otherwise the lowest among `out` and the candidates that pass, the first within the tie band (`_lower`)."""
-    if not others:
-        return out
-    f = _cost_fn(score)
-    c0 = f(out, target)
-    if c0 is None:
-        COMPARE_STATS["not_estimable"] += 1
-        return out
-    costs = [f(c, target) for _, c in others]
-    valid, skipped = [], False  # valid: (name, circuit, cost) in the original order
-    for (name, c), x in zip(others, costs):
-        if x is not None and _lower(c0, x):
-            COMPARE_STATS["not_checked"] += 1
-            skipped = True
-            continue
-        if not _implements(qc, c):  # item 39
-            EXACT_STATS["refused_" + name] += 1
-            COMPARE_STATS[name + "_refused"] += 1
-            continue
-        if x is None:
-            COMPARE_STATS["not_estimable"] += 1
-            return out
-        valid.append((name, c, x))
-    if not valid:
-        if skipped:  # the release's circuit won against a candidate that was not checked
-            COMPARE_STATS["psf"] += 1
-        return out
-    cands = [("psf", out, c0)] + valid
-    low = min(x for _, _, x in cands)
-    best = next(j for j in range(len(cands)) if not _lower(low, cands[j][2]))  # item 46: the first within the band
+    best = min(range(len(cands)), key=lambda j: (costs[j], j))
     COMPARE_STATS[cands[best][0]] += 1
     return cands[best][1]
 
@@ -2582,66 +2313,22 @@ def _compare_level3(qc, out, target, max_error, seed_transpiler):
     if not _acceptable(l3, target, max_error):
         COMPARE_STATS["level3_refused"] += 1
         return out
-    a, b = excitation_cost(out, target), excitation_cost(l3, target)  # item 47: the estimates first
-    if a is None or b is None:
-        COMPARE_STATS["not_estimable"] += 1
-        return out
-    if not _lower(b, a):  # item 46: a tie keeps the release's circuit
-        COMPARE_STATS["not_checked"] += 1
-        COMPARE_STATS["psf"] += 1
-        return out
-    if not _implements(qc, l3):  # item 39, made only when level 3's circuit would be returned (item 47)
+    if not _implements(qc, l3):  # item 39
         EXACT_STATS["refused_level3"] += 1
         COMPARE_STATS["level3_refused"] += 1
         return out
-    COMPARE_STATS["level3"] += 1
-    return l3
+    a, b = excitation_cost(out, target), excitation_cost(l3, target)
+    if a is None or b is None:
+        COMPARE_STATS["not_estimable"] += 1
+        return out
+    if b < a:
+        COMPARE_STATS["level3"] += 1
+        return l3
+    COMPARE_STATS["psf"] += 1
+    return out
 
 
 SKIP_STATS = {"resynthesis": 0, "floor": 0, "level3": 0}  # item 45
-UNROLL_STATS = {"unrolled": 0, "failed": 0}  # item 48
-CANCEL_STATS = {"tried": 0, "cancelled_kept": 0, "original_kept": 0, "failed": 0}  # item 50
-
-
-def _count_2q(qc):
-    """Item 50: the number of instructions on two qubits (barriers aside)."""
-    return sum(1 for ins in qc.data if len(ins.qubits) == 2 and ins.operation.name != "barrier")
-
-
-def _cancel_candidate(qc):
-    """Item 50: `qc` after Qiskit's CommutativeCancellation if that removes at least one two-qubit gate, else None."""
-    from qiskit.transpiler.passes import CommutativeCancellation
-    n = _count_2q(qc)
-    if n == 0:
-        return None
-    try:
-        out = PassManager([CommutativeCancellation()]).run(qc)
-    except QiskitError:
-        CANCEL_STATS["failed"] += 1
-        return None
-    return out if _count_2q(out) < n else None
-
-
-def _has_wide(qc):
-    """Item 48: True if `qc` has an instruction on more than two qubits other than a barrier."""
-    return any(len(ins.qubits) > 2 and ins.operation.name != "barrier" for ins in qc.data)
-
-
-def _unroll_wide(qc, basis_gates):
-    """Item 48: `qc` with every instruction on more than two qubits (barriers aside, and gates named in
-    `basis_gates`) expanded through its definition by Qiskit's Unroll3qOrMore; `qc` itself, unchanged, if it has
-    none or if one cannot be expanded (with a warning)."""
-    if not _has_wide(qc):
-        return qc
-    try:
-        out = PassManager([Unroll3qOrMore(basis_gates=list(basis_gates) if basis_gates else None)]).run(qc)
-    except QiskitError as exc:
-        UNROLL_STATS["failed"] += 1
-        warnings.warn(f"an instruction on more than two qubits could not be expanded ({exc}); the input is compiled "
-                      "as given (changelog item 48)")
-        return qc
-    UNROLL_STATS["unrolled"] += 1
-    return out
 
 
 def _checkable_logical(qc):
@@ -2664,26 +2351,19 @@ def _resynthesise(circ, mode, target, max_error):
 
 
 def _select_resynthesis(out, target, max_error):
-    """Item 35, "select": the re-synthesised circuit if its excitation_cost is lower and it passes item 39's check,
-    else the original. Item 47: the check is made only when the estimate would select the re-synthesised circuit."""
-    new = _resynthesis_candidate(out, target, max_error)
+    """Item 35, "select": the re-synthesised circuit if its excitation_cost is lower, else the original."""
+    new = _final_resynthesis(out, target, max_error)
     if new is out:
         return out
     a, b = excitation_cost(out, target), excitation_cost(new, target)
     if a is None or b is None:
         RESYNTH_STATS["not_estimable"] += 1
         return out
-    if not _lower(b, a):  # item 46: a tie keeps the original
-        RESYNTH_STATS["not_checked"] += 1
-        RESYNTH_STATS["selected_original"] += 1
-        return out
-    if not _same_action(out, new):  # item 39
-        EXACT_STATS["refused_resynthesis"] += 1
-        RESYNTH_STATS["kept_original"] += 1
-        return out
-    RESYNTH_STATS["applied"] += 1
-    RESYNTH_STATS["selected_resynthesised"] += 1
-    return new
+    if b < a:
+        RESYNTH_STATS["selected_resynthesised"] += 1
+        return new
+    RESYNTH_STATS["selected_original"] += 1
+    return out
 
 
 def _refine_found(property_set):
@@ -2902,7 +2582,6 @@ def compile_for_hardware(
     compare_floor: bool = False,
     candidate_score: str = "excitation",
     _refine_target=None,
-    _cancel_done: bool = False,
 ) -> QuantumCircuit:
     """Compress with PSF-Zero, then route (and, if `basis_gates` is given,
     translate) with Qiskit.
@@ -3047,7 +2726,6 @@ def compile_for_hardware(
     about this function's behavior or cost. See item 13 in this file's
     changelog for why this exists.
     """
-    call_args = dict(locals())  # item 50: this call's arguments, for the two runs of the pipeline
     if placement_refine and target is None:
         raise ValueError("placement_refine=True needs the device `target` (changelog item 33)")
     if final_resynthesis not in (False, True, "select"):
@@ -3109,8 +2787,11 @@ def compile_for_hardware(
             fo = _resynthesise(fo, final_resynthesis, target, prune_max_error)
             if not _acceptable(fo, target, prune_max_error):
                 COMPARE_STATS["floor_refused"] += 1
+            elif not _implements(qc, fo):  # item 39
+                EXACT_STATS["refused_floor"] += 1
+                COMPARE_STATS["floor_refused"] += 1
             else:
-                cands.append(("floor", fo))  # item 47: item 39's check is made in _choose_lazy, if needed
+                cands.append(("floor", fo))
         if compare_level3 and not _checkable_logical(qc):  # item 45
             SKIP_STATS["level3"] += 1
         elif compare_level3:
@@ -3118,23 +2799,12 @@ def compile_for_hardware(
                            approximation_degree=1.0)
             if not _acceptable(l3, target, prune_max_error):
                 COMPARE_STATS["level3_refused"] += 1
+            elif not _implements(qc, l3):  # item 39
+                EXACT_STATS["refused_level3"] += 1
+                COMPARE_STATS["level3_refused"] += 1
             else:
-                cands.append(("level3", l3))  # item 47: item 39's check is made in _choose_lazy, if needed
-        return _choose_lazy(qc, out, cands[1:], target, candidate_score)
-
-    qc = _unroll_wide(qc, basis_gates)  # item 48
-    if not _cancel_done:  # item 50
-        alt = _cancel_candidate(qc)
-        if alt is not None:
-            CANCEL_STATS["tried"] += 1
-            kw = dict(call_args, qc=qc, _cancel_done=True)
-            first = compile_for_hardware(**kw)
-            second = compile_for_hardware(**dict(kw, qc=alt))
-            if _count_2q(second) < _count_2q(first):
-                CANCEL_STATS["cancelled_kept"] += 1
-                return second
-            CANCEL_STATS["original_kept"] += 1
-            return first
+                cands.append(("level3", l3))
+        return _choose(cands, target, candidate_score) if len(cands) > 1 else out
 
     # Candidate 2026-10-01.c2: both default to on only for entangling_basis="cx" (their saving is counted in
     # CX); post-routing re-synthesis also needs basis_gates to translate its output.

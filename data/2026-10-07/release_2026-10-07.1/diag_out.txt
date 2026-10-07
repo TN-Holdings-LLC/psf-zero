@@ -1,0 +1,16 @@
+FakeAuckland ring4: level 3 acceptable True
+   2026-10-07.1  ea 0.1757289624441445 eb 0.1783782258118346 (ea-eb)/ea -1.508e-02 | returns own
+   2026-10-06.4  ea 0.1757289624441445 eb 0.1783782258118346 (ea-eb)/ea -1.508e-02 | returns own
+   c19           ea 0.17572896244414454 eb 0.17837822581183457 (ea-eb)/ea -1.508e-02 | returns own
+FakeAuckland ring6: level 3 acceptable True
+   2026-10-07.1  ea 0.36117647147762266 eb 0.3539093128165797 (ea-eb)/ea 2.012e-02 | returns level 3
+   2026-10-06.4  ea 0.3611764714776227 eb 0.35390931281657984 (ea-eb)/ea 2.012e-02 | returns level 3
+   c19           ea 0.36117647147762266 eb 0.3539093128165798 (ea-eb)/ea 2.012e-02 | returns level 3
+FakeAuckland chain5: level 3 acceptable True
+   2026-10-07.1  ea 0.043312630897169115 eb 0.04331263089716911 (ea-eb)/ea 1.602e-16 | returns own
+   2026-10-06.4  ea 0.04331263089716911 eb 0.04331263089716911 (ea-eb)/ea 0.000e+00 | returns own
+   c19           ea 0.04331263089716911 eb 0.04331263089716911 (ea-eb)/ea 0.000e+00 | returns own
+FakeAuckland xxz_ring: level 3 acceptable True
+   2026-10-07.1  ea 0.5332431043355894 eb 0.49241798951909205 (ea-eb)/ea 7.656e-02 | returns level 3
+   2026-10-06.4  ea 0.5332431043355899 eb 0.49241798951909205 (ea-eb)/ea 7.656e-02 | returns level 3
+   c19           ea 0.5332431043355899 eb 0.4924179895190918 (ea-eb)/ea 7.656e-02 | returns level 3

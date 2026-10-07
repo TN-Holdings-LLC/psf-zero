@@ -163,7 +163,7 @@ def nat(tgt):
 def test_version(mods):
     assert mods["a9"].AI_COMPILE_VERSION == "2026-10-05.a9"
     assert mods["a8"].AI_COMPILE_VERSION == "2026-10-04.a8"
-    assert mods["c12"].VERSION == "2026-10-06.4"  # current release (2026-10-05.1 when this file was written)
+    assert mods["c12"].VERSION == "2026-10-07.1"  # current release (2026-10-05.1 when this file was written)
     assert mods["a9"].pc is mods["c12"] and mods["a8"].pc is mods["c12"]
 
 

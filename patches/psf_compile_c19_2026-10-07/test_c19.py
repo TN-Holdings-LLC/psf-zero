@@ -1,5 +1,6 @@
 """Tests for candidate psf_compile 2026-10-07.c19 (changelog item 46: fewer, larger matrices in the state-vector
-estimates and checks) against the release 2026-10-06.4 (psf_compile.py).
+estimates and checks) against the release 2026-10-06.4 (since 2026-10-07.1, Addendum 397, loaded from its
+kept copy patches/psf_compile_release_2026-10-06.4/psf_compile.py).
 
 Run from the repository root:  python -m pytest patches/psf_compile_c19_2026-10-07/test_c19.py -q -s
 """
@@ -28,7 +29,8 @@ DEVICES = ("FakeTorino", "FakeHanoiV2", "FakeGeneva", "FakeKingston")
 def mods():
     import core_fix_c2_eval as H
     H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psf_smart_layout")
-    rel = H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile_rel_c19_test")
+    rel = H.load_module(os.path.join(REPO, "patches", "psf_compile_release_2026-10-06.4", "psf_compile.py"),
+                        "psf_compile_rel_c19_test")  # kept copy since 2026-10-07.1 (Addendum 397)
     c19 = H.load_module(os.path.join(HERE, "psf_compile.py"), "psf_compile_c19_test")
     return dict(rel=rel, c19=c19)
 

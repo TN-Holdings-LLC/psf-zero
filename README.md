@@ -19,20 +19,44 @@ PSF-Zero is a Qiskit-compatible compiler with two layers.
   qubits this recommended call is slower than Qiskit level 3, and in exchange gave lower simulated infidelity than
   level 3 on every fake device tested (circuits of 4-10 qubits). Above 16 it returns the default call's circuit with
   the error-aware placement, without building level 3 (since 2026-10-06.4).
-- **Where it is weaker: general circuits.** On 12 Benchpress tests (Quantum Volume, adders, Trotter steps,
-  Bernstein-Vazirani, Toffoli circuits, QFT, Hamiltonians, EfficientSU2), the default call used more two-qubit gates
-  than Qiskit level 2 on 10 (geometric mean 1.53x) and was level only on Quantum Volume. See [Where it is weaker](#where-it-is-weaker).
+- **General circuits: about level with Qiskit level 2, and slower.** On 139 Benchpress tests chosen by a
+  pre-registered rule, the default call of 2026-10-07.1 used 1.03 times Qiskit level 2's two-qubit gates (geometric
+  mean; fewer on 18 tests, as many on 59, more on 62), at about four times its compile time. 2026-10-06.4 used 1.33
+  times. See [Where it is weaker](#where-it-is-weaker).
 
 Everything is pre-registered and self-audited: predictions are locked in git before a scored run, and results,
 including the failures, are recorded in [`docs/findings/`](docs/findings/).
 
 ## Current version
 
-**`psf_compile.py` 2026-10-06.4** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 and the Rust core
-`CORE_VERSION` 2026-09-29.1 (Part 9, Addenda 357-381). Every release and dated notice:
+**`psf_compile.py` 2026-10-07.1** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 and the Rust core
+`CORE_VERSION` 2026-09-29.1 (Part 10, Addenda 383-397). Every release and dated notice:
 [`docs/RELEASES.md`](docs/RELEASES.md).
 
-> **New in 2026-10-06.1-.4 and a11/a12: readout is counted, ecr devices are fixed, the AI front end is faster,
+> **New in 2026-10-07.1: on general circuits the default call is about level with Qiskit level 2 (1.03 times its
+> two-qubit gates, where 2026-10-06.4 needed 1.33), and the recommended call is about four to eight times faster at
+> 16 qubits.** Five changes (items 46-50), each accepted after its own pre-registered test and released together
+> (Part 10, Addenda 383-397):
+>
+> - **Default call (items 48 and 50):** instructions on three or more qubits (`ccx`, a `PauliEvolutionGate`, a QFT
+>   block) are expanded before PSF-Zero's own pipeline; and where Qiskit's commutative cancellation removes two-qubit
+>   gates from the input, the call compiles both and keeps the circuit with fewer. On 139 Benchpress tests the
+>   two-qubit count went from 1.33 to 1.03 times Qiskit level 2's (geometric means; BP-MOCK, BP-MOCK2, CANCEL and
+>   the exploratory Addendum 396). Benchpress's BV-like test goes from 392 two-qubit gates to none, a 160-qubit QFT
+>   on heavy-hex from 21,361 to 15,793.
+> - **Recommended call (items 46, 47 and 49):** its state-vector checks apply fewer, larger matrices, are made only
+>   where they can change the output, and its estimates follow single-qubit gates on 2x2 reduced states. At 16
+>   qubits 0.36-0.49 and then 0.37-0.51 of the time (FUSE and TRACK, 360 circuits each on 6 devices), about
+>   0.13-0.24 of 2026-10-06.4's together (the product of the two tests' medians per device). The same circuits: in
+>   FUSE 359 of 360 as 2026-10-06.4's, the other a near-tie of 1.35e-16 between two estimates, now kept as a tie;
+>   in TRACK 360 of 360 as FUSE's candidate.
+> - **Unchanged:** on inputs with no instruction on three or more qubits and no two-qubit gate that cancels, both
+>   calls return 2026-10-06.4's circuit, apart from near-ties like the one above and inputs on which Qiskit's own
+>   level 1 does not reproduce itself (see [Where it is weaker](#where-it-is-weaker)).
+> - **Cost:** where cancellation removes something the default call compiles twice (1.5 times the time as a median,
+>   up to 4 times).
+
+> **In 2026-10-06.1-.4 and a11/a12: readout is counted, ecr devices are fixed, the AI front end is faster,
 > the target-aware calls no longer fail on full-device circuits or on wide instructions, and they are about four
 > times faster above 16 qubits.**
 >
@@ -160,30 +184,38 @@ model-written circuits.
 
 ### Where it is weaker
 
-**General circuits.** An exploratory probe on 12 of Benchpress's 1,032 transpilation tests (Addendum 377; not
-pre-registered, one run each) compared the default call of `compile_for_hardware()` with Qiskit level 2, the call
-Benchpress uses. Every output passed Benchpress's validator.
+**General circuits (Benchpress).** Two pre-registered tests drew 92 and 48 of Benchpress's transpilation tests by a
+stratified rule (QASMBench small, medium and large, HamLib, Feynman, 100-qubit tests; all-to-all, square, heavy-hex,
+linear and FakeTorino) and compiled each with the default call of `compile_for_hardware()` and with Qiskit level 2,
+the call Benchpress uses (BP-MOCK and BP-MOCK2, Addenda 388-392). CANCEL (Addenda 394-395) compiled the same inputs
+with the release's code; Addendum 396 puts the two side by side (exploratory, from the committed output). Every
+output passed Benchpress's validator.
 
-| kind of circuit (tests) | two-qubit gates, PSF-Zero / Qiskit level 2 |
+| on 139 tests (one where Qiskit timed out left out) | two-qubit gates / Qiskit level 2 (geometric mean) |
 | :--- | :--- |
-| Quantum Volume (`QV_n32`, QV 100) | 0.99, 1.03 (level) |
-| Hamiltonians as one `PauliEvolutionGate` (3) | 1.55-1.90 (1.08-1.63 if unrolled first) |
-| EfficientSU2, 100 qubits | 6.3 (1.0 if unrolled first) |
-| QFT, 100 qubits | 1.45 (1.84 if unrolled first) |
-| adder, Trotter steps, Bernstein-Vazirani, Toffoli (5) | 1.0-1.98 |
+| 2026-10-06.4 | 1.33 |
+| **2026-10-07.1** | **1.03**: fewer on 18 tests, as many on 59, more on 62 (by over 10% on 15) |
+| 2026-10-07.1, per stratum of 5-12 tests | 0.99-1.08 |
 
-Over the 12 tests: geometric mean 1.53, and 2.9 times Qiskit level 2's compile time. What follows from this today:
-
-- **For circuits without same-pair two-qubit chains, Qiskit level 2 is as good or better.** PSF-Zero's default call
-  lays out and routes with Qiskit level 1 for speed, which costs two-qubit gates on such circuits.
-- **Unroll composite instructions before compiling** (`transpile(qc, basis_gates=..., optimization_level=0)`) when
-  the input holds one large gate such as a `PauliEvolutionGate` or `EfficientSU2`. On QFT 100, which is already made
-  of plain gates, unrolling made the count worse.
-- 12 tests are a probe, not a benchmark result. A pre-registered run on a stratified sample of Benchpress is planned.
+- **It is about level, not better.** The largest remaining gaps are a few gates on small circuits (`basis_test_n4`
+  10 against 6), `bv_n19` on heavy-hex (71 against 55) and some HamLib Hamiltonians (up to 18% more on a 100-qubit
+  one on FakeTorino); it uses fewer on, for example, HamLib `JW12` on heavy-hex (5,007 against 5,547).
+- **It is slower:** about four times Qiskit level 2's compile time (median 3.9; from different runs, so indicative).
+- **Not reproducible where Qiskit is not.** The default call lays out and routes with Qiskit level 1. On some inputs
+  (`bv_n30` on square, `bv_n140` on linear) Qiskit's own `transpile(optimization_level=1, seed_transpiler=0)` returns
+  a different circuit in each process, with the same two-qubit count, and so does PSF-Zero's default call
+  (Addendum 393). `seed_transpiler` does not fix it.
+- **Failed couplers:** on FakeTorino's 100-qubit tests Qiskit level 2 used couplers the device reports as failed
+  (error 0.5 or more) on 5 of 6, and so does the default call, which does not read the target. The recommended call
+  avoids them; on the map without them Qiskit level 2 needs about as many two-qubit gates as the recommended call
+  (0.93-1.04 of it; Addendum 393).
+- Not covered: Benchpress's other tests, depth, hardware. The same inputs informed items 48 and 50, so this is not an
+  independent sample.
 
 **The recommended call at 16 qubits.** Up to 16 logical qubits it builds Qiskit level 3 and a second candidate and
-checks them by state-vector simulation. At 16 qubits that took a median of 31 s for Hamiltonians of 48 Pauli terms
-and 20 s for QFT (SKIP, Addendum 380), against about 0.3 s at 17 qubits. Making it faster is the next candidate.
+checks them by state-vector simulation. 2026-10-07.1 does this in about 0.13-0.24 of 2026-10-06.4's time (see
+Current version); with 2026-10-06.4 it took a median of 31 s for Hamiltonians of 48 Pauli terms and 20 s for QFT at
+16 qubits (SKIP, Addendum 380), against about 0.3 s at 17 qubits.
 
 ## Results in brief
 
@@ -272,8 +304,9 @@ Full account: [`spare-qubit-cliff.md`](docs/findings/spare-qubit-cliff.md) (summ
 - **Tolerance of the equivalence check:** a Qiskit-made circuit is accepted up to a state infidelity of 1e-6. On
   near-boundary Trotter circuits the accepted ones were off by up to 5.8e-8, where PSF-Zero's own path is exact to
   1e-14 (Addendum 343).
-- **Benchpress:** an exploratory probe on 12 tests is in Addendum 377 (see [Where it is weaker](#where-it-is-weaker));
-  a pre-registered run on a stratified sample is planned. There is no Benchpress gym for PSF-Zero yet.
+- **Benchpress:** 139 tests of a pre-registered stratified sample (see [Where it is weaker](#where-it-is-weaker));
+  not the full suite, and there is no Benchpress gym for PSF-Zero yet. Qiskit's own level 1, which the default call
+  routes with, is not reproducible on some inputs (Addendum 393); whether to report that upstream is open.
 - **Two upstream findings:**
   - Qiskit #17057 (CX-basis synthesis) is open.
   - A qiskit-aer `save_expectation_value` defect with qubit truncation was found on 2026-10-05 and is not yet reported.
@@ -296,7 +329,7 @@ Full account: [`spare-qubit-cliff.md`](docs/findings/spare-qubit-cliff.md) (summ
 | | |
 | :--- | :--- |
 | [`docs/RELEASES.md`](docs/RELEASES.md) | Every release, update and correctness notice, newest first |
-| [`docs/findings/spare-qubit-cliff-combined-383.md`](docs/findings/spare-qubit-cliff-combined-383.md) | Part 10 of the full record (Addenda 383 on); earlier parts are linked from it |
+| [`docs/findings/spare-qubit-cliff-combined-383.md`](docs/findings/spare-qubit-cliff-combined-383.md) | Part 10 of the full record (Addenda 383 on: the Benchpress tests and release 2026-10-07.1); earlier parts are linked from it |
 | [`docs/findings/spare-qubit-cliff-combined-248.md`](docs/findings/spare-qubit-cliff-combined-248.md) | Part 9 (Addenda 248-382) |
 | [`docs/findings/compile-time.md`](docs/findings/compile-time.md) | The compile-time arc: three retractions, the `verify` split, and what survives |
 | [`docs/findings/spare-qubit-cliff.md`](docs/findings/spare-qubit-cliff.md) | The Qiskit coupling-map cliff |

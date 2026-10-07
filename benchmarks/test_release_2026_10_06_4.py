@@ -3,6 +3,9 @@ alternatives that item 39 cannot check are not built). The candidate's own test 
 patches/psf_compile_c17_2026-10-06/test_c17.py; SKIP (Addenda 379-380) tested it on 294 circuits on six devices.
 The previous release, 2026-10-06.3, is kept unchanged in patches/psf_compile_release_2026-10-06.3/psf_compile.py.
 
+Since 2026-10-07.1 (Addendum 397) 2026-10-06.4 is loaded from its kept copy,
+patches/psf_compile_release_2026-10-06.4/psf_compile.py.
+
 Run from the repository root:  python -m pytest benchmarks/test_release_2026_10_06_4.py -q
 """
 import contextlib
@@ -22,7 +25,8 @@ REPO = os.path.abspath(os.path.join(HERE, ".."))
 for p in (os.path.join(REPO, "benchmarks"), REPO):
     sys.path.insert(0, p)
 
-REL = os.path.join(REPO, "psf_compile.py")
+# kept copy since 2026-10-07.1 (Addendum 397)
+REL = os.path.join(REPO, "patches", "psf_compile_release_2026-10-06.4", "psf_compile.py")
 C17 = os.path.join(REPO, "patches", "psf_compile_c17_2026-10-06", "psf_compile.py")
 PREV = os.path.join(REPO, "patches", "psf_compile_release_2026-10-06.3", "psf_compile.py")
 RECOMMENDED = dict(placement_refine=True, final_resynthesis="select", compare_level3=True, compare_floor=True,
