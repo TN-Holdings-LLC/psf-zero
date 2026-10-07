@@ -543,6 +543,214 @@ c20 and c21 (Addendum 386) are not run by TRACK; c22 contains their items.
 - T2 or T3 AMBIGUOUS or REFUTED: the items are not proposed on time grounds alone; the profile is repeated.
 - Item 48 is decided by BP-MOCK, not here.
 
+
+---
+
+<!-- ===== Addendum 388 (source: spare-qubit-cliff-addendum-388-2026-10-07.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 387, and the owner's decision of 2026-10-07.
+
+## Addendum 388 -- Results of TRACK (Addendum 387): candidate c22 returns candidate c19's circuit on all 360 circuits and takes 0.37-0.51 of its time at 16 qubits (T1-T4 CONFIRMED); items 47 and 49 accepted, not released (2026-10-07)
+
+**Status: results of the pre-registered test in Addendum 387, scored by the locked script and re-checked by the
+independent [`benchmarks/track_verify.py`](../../benchmarks/track_verify.py); then the owner's decision.** Written
+after the output was seen.
+
+## 1. The run
+
+- **Lock:** commit `6dbadfa` (Addenda 386-387, with the smoke run), made at the workplace before the scored run;
+  every job's `git_head` is `6dbadfa`, with no uncommitted change to a tracked file. It is pushed after the run (no
+  GitHub login at the workplace).
+- **Machine:** the workplace PC, Windows, Python 3.11.9, Qiskit 2.5.2, 14 logical CPUs, six jobs in parallel
+  (`env.txt`).
+- **Time:** started 2026-10-07T04:23:11Z; the slowest job (FakeKingston) finished after 541 s.
+- **Output:** [`data/2026-10-07/track/`](../../data/2026-10-07/track/) (one json per device, the logs, `env.txt`,
+  `progress.txt`, `score.md`, `score_log.txt`, `verify_log.txt`); the smoke run is in
+  [`data/2026-10-07/track_smoke/`](../../data/2026-10-07/track_smoke/).
+
+## 2. Results
+
+**P0: PASS.** Six files of 60, one git head and one script and c22 hash, no error, no input with an instruction on
+more than two qubits, no c22 output off the target, 54 of 54 exactness checks made and at most 1e-6.
+
+| device | identical | n = 16: median c22 / c19 | n = 12-14 | n = 20 |
+|---|---|---|---|---|
+| FakeTorino | 60 / 60 | 0.395 | 0.656 | 1.035 |
+| FakeKingston | 60 / 60 | 0.396 | 0.634 | 1.006 |
+| FakeAuckland | 60 / 60 | 0.499 | 0.642 | 1.027 |
+| FakeHanoiV2 | 60 / 60 | 0.506 | 0.675 | 0.910 |
+| FakeBrussels | 60 / 60 | 0.365 | 0.592 | 0.964 |
+| FakeOsaka | 60 / 60 | 0.386 | 0.601 | 0.995 |
+
+| | prediction | result | verdict |
+|---|---|---|---|
+| T1 | c22 returns c19's circuit | 360 of 360 | **CONFIRMED** |
+| T2 | n = 16: median ratio <= 0.6 on every device | 0.365-0.506 | **CONFIRMED** |
+| T3 | n = 12-14: median ratio <= 0.85 on every device | 0.592-0.675 | **CONFIRMED** |
+| T4 | n = 20: median ratio <= 1.15 on every device | 0.910-1.035 | **CONFIRMED** |
+
+`track_verify.py`: P0 PASS, the same four verdicts, "verdicts identical to score.md: True".
+
+**Reported without prediction:** median c22 / c19 per family at n = 16 | n = 12-14: ring 0.402 | 0.678, brick 0.379 |
+0.644, pauli 0.438 | 0.542, qft 0.407 | 0.627. Total compile time (c19, c22): n = 8 47.2 s, 35.7 s (0.757); n = 12
+132.2 s, 81.8 s (0.619); n = 14 339.1 s, 166.7 s (0.492); **n = 16 1,519.9 s, 644.1 s (0.424)**; n = 20 9.3 s, 8.7 s
+(0.940).
+
+## 3. What this shows
+
+1. **Items 47 and 49 change the recommended call's time, not its output,** on inputs without instructions on more
+   than two qubits: the same circuit on 360 of 360, including six devices of three gate families.
+2. **At 16 qubits the recommended call takes 0.37-0.51 of c19's time** (0.42 of the total). With FUSE (c19 against
+   release 2026-10-06.4: 0.42 of the total at 16 qubits, Addendum 384), that is roughly a fifth of the release's time
+   at 16 qubits. This product of two tests on different circuits is an estimate, not a measurement.
+3. **The cx devices gained least** (FakeAuckland 0.499, FakeHanoiV2 0.506), as the smoke run had shown (0.539 and
+   0.610 on four circuits each); the prediction was left as written.
+4. **Not established:** item 48 (c21), which TRACK kept out by expanding every input first; inputs that are not
+   SKIP's families; any machine but the workplace PC.
+
+## 4. Decision (the owner, 2026-10-07)
+
+**Items 47 and 49 are accepted, not released,** under the policy of Addendum 385: they are released together with the
+next accepted improvements. Item 48 is decided by BP-MOCK (Addendum 389). Candidate c22's file contains items 46-49;
+if item 48 is not accepted, the release is built from c22 without item 48 and checked against c22 on inputs without
+wide instructions before it is released. `docs/RELEASES.md` lists items 47 and 49 under "Accepted, not yet released".
+
+## 5. Erratum to Addenda 377 and 386
+
+Addendum 377 calls BP-PROBE's tests "fourteen"; its list and its data
+([`data/2026-10-06/bp_probe/`](../../data/2026-10-06/bp_probe/)) have twelve test ids. Addendum 386 repeats "14"
+(section 2); DISPATCH-PROBE ran those twelve, with SKIP's eight and family T's three circuits (23 in all, as its
+tables show). BP-MOCK excludes the twelve.
+
+
+---
+
+<!-- ===== Addendum 389 (source: spare-qubit-cliff-addendum-389-2026-10-07.md) ===== -->
+
+> **Note added when merging:** Pre-registration of BP-MOCK, committed with its smoke run as the lock before the scored run.
+
+## Addendum 389 -- Pre-registration of BP-MOCK: a mock exam on 92 Benchpress transpilation tests; does candidate c22 (item 48: instructions on three or more qubits expanded first) bring the default call to within 15% of Qiskit level 2's two-qubit count, and leave every other input's circuit unchanged? (2026-10-07)
+
+**Status: pre-registration, written before BP-MOCK's smoke run and before any of its output exists.** The lock is the
+commit that adds this Addendum with the smoke run's output; the scored run follows that commit.
+
+## 1. Question
+
+BP-PROBE (Addendum 377) found the default call behind Qiskit level 2 on Benchpress's circuits (two-qubit count,
+geometric mean 1.53 on twelve tests). DISPATCH-PROBE (Addendum 386) traced most of the gap to instructions on more
+than two qubits and led to item 48 (candidate c21, carried in c22). Those probes chose item 48, so they cannot test
+it. BP-MOCK tests it on a sample of Benchpress that excludes every test they used, and records where the default
+call stands against Qiskit level 2 as Benchpress calls it. It is the "mock exam" named in Addendum 377.
+
+## 2. Design
+
+[`benchmarks/bp_mock.py`](../../benchmarks/bp_mock.py), checked by the independent
+[`benchmarks/bp_mock_verify.py`](../../benchmarks/bp_mock_verify.py) (reads the raw json and re-draws the sample by
+itself).
+
+- **Benchpress:** commit `b695f30`, the clone used by BP-PROBE and DISPATCH-PROBE. The published reference
+  ([`published_ref.json`](../../data/2026-10-06/bp_probe/published_ref.json), 1,032 test ids) is BP-PROBE's,
+  unchanged.
+- **Sample (fixed by rule; the list below is what the rule gives):** Benchpress's transpilation tests are divided into
+  19 strata (QASMBench small, medium and large on each of the four abstract topologies; HamLib on each topology;
+  HamLib, Feynman and the 100-qubit tests on FakeTorino). In each stratum the published test ids, minus the twelve ids
+  BP-PROBE ran, are ordered by SHA-256 of `"BP-MOCK|" + id` and the first K taken: K = 5 for QASMBench small and
+  HamLib on a topology, 4 for QASMBench medium and large, 8 for HamLib on FakeTorino, 6 for Feynman, 6 for the
+  100-qubit tests (all that remain). 92 tests.
+- **Building:** as Benchpress's Qiskit gym builds them (BP-PROBE's builders in `bp_probe.py`, plus the 100-qubit
+  "summit" circuits as `test_summit.py` builds them): the same input circuit and backend (FakeTorino, or Benchpress's
+  `FlexibleBackend` with basis `id, sx, x, rz, cz`), the same metrics (count and depth of the backend's two-qubit gate)
+  and Benchpress's structural validator.
+- **Arms** (each test and arm in its own process, 600 s limit; jobs run six at a time, which changes only times):
+
+| arm | call |
+|---|---|
+| QK | `generate_preset_pass_manager(2, backend).run(circuit)`: Benchpress's Qiskit call, not seeded, as in Benchpress |
+| REL | release 2026-10-06.4, default call: `compile_for_hardware(circuit, coupling_map, basis_gates, entangling_basis="cx", layout_search=True, seed_transpiler=0)` |
+| C22 | candidate c22 (items 46-49), the same default call |
+| RELR, C22R | the README's recommended call of each, with the backend's target (FakeTorino tests only) |
+
+- **Also recorded:** compile time; whether the input has an instruction on more than two qubits (barriers aside);
+  a hash of each output (every instruction, parameters, global phase, layouts); for outputs on at most 10 qubits,
+  equivalence with the input (`Operator.equiv`, with measurements removed while keeping the output's layout, which
+  fixes BP-PROBE's check, Addendum 377 section 3); the recommended call's counters.
+
+## 3. Predictions
+
+Ratios are of (two-qubit gates + 1), so that a test with none (a BV-like circuit) counts; geometric means are over the
+tests that QK, REL and C22 all finished.
+
+| | prediction | CONFIRMED | REFUTED |
+|---|---|---|---|
+| P0 | the run is valid | the 92 tests of the rule; C22 never fails where REL finishes; every C22 and C22R output passes Benchpress's validator; versions as named; one git head, no uncommitted change to a tracked file | otherwise nothing is scored |
+| M1 | inputs without an instruction on more than two qubits: C22's default call returns REL's circuit | none differs | any differs |
+| M2 | inputs with one: geometric mean C22 / REL | <= 0.85 | > 1.00 |
+| M3 | all tests: geometric mean C22 / QK | <= 1.15 | > 1.30 |
+| M4 | FakeTorino tests that both finish: geometric mean C22R / RELR | <= 1.00 | > 1.05 |
+| M5 | C22 outputs checked for equivalence | all equivalent | any not equivalent |
+
+Between the two columns the verdict is AMBIGUOUS. **Where the numbers come from:** on DISPATCH-PROBE's 23 circuits the
+expansion alone (PSFU) gave a geometric mean of 1.045 against level 2 and never more two-qubit gates than the default
+call; on BP-PROBE's twelve tests the release's default call was at 1.53. M1 is the property item 48 was written to
+have. M4's line allows for the recommended call's choice by estimate rather than by count. Nothing is predicted about
+time; it is reported.
+
+**Not tested here:** routing level 2 (not proposed, Addendum 386); anything at 133 qubits beyond FakeTorino; hardware.
+
+## 4. The sample
+
+| stratum | K | tests |
+|---|---|---|
+| QASMBench small, all-to-all | 5 | `basis_test_n4`, `bb84_n8`, `qaoa_n6`, `lpn_n5`, `cat_state_n4` |
+| QASMBench small, square | 5 | `vqe_n4`, `qaoa_n6`, `fredkin_n3`, `error_correctiond3_n5`, `lpn_n5` |
+| QASMBench small, heavy-hex | 5 | `vqe_uccsd_n4`, `adder_n10`, `teleportation_n3`, `qaoa_n3`, `iswap_n2` |
+| QASMBench small, linear | 5 | `hs4_n4`, `qaoa_n3`, `bb84_n8`, `adder_n4`, `dnn_n8` |
+| QASMBench medium, all-to-all | 4 | `ghz_state_n23`, `qec9xz_n17`, `bwt_n21`, `seca_n11` |
+| QASMBench medium, square | 4 | `qram_n20`, `ghz_state_n23`, `cat_state_n22`, `factor247_n15` |
+| QASMBench medium, heavy-hex | 4 | `multiply_n13`, `dnn_n16`, `swap_test_n25`, `bwt_n21` |
+| QASMBench medium, linear | 4 | `square_root_n18`, `dnn_n16`, `qec9xz_n17`, `factor247_n15` |
+| QASMBench large, all-to-all | 4 | `qugan_n111`, `square_root_n45`, `qugan_n395`, `qugan_n39` |
+| QASMBench large, square | 4 | `swap_test_n41`, `bv_n30`, `knn_341`, `ghz_n78` |
+| QASMBench large, heavy-hex | 4 | `qft_n160`, `square_root_n60`, `knn_129`, `multiplier_n400` |
+| QASMBench large, linear | 4 | `ghz_n127`, `bv_n140`, `swap_test_n83`, `adder_n64` |
+| HamLib, all-to-all | 5 | `reg-4_n-90_rinst-07`, `tsp_prob-lin105_Ncity-7_enc-unary`, `ham_parity-4`, `4-uf100-0246.cnf-70-res`, `mu_x_prime_enc_unary_dvalues_4-4-4` |
+| HamLib, square | 5 | `graph-1D-grid-pbc-qubitnodes_Lx-16_h-2`, `fh-graph-1D-grid-pbc-qubitnodes_Lx-50_U-2_enc-jw`, `reg-5_n-10_rinst-07`, `bh_graph-2D-grid-nonpbc-qubitnodes_Lx-7_Ly-7_U-70_enc-gray_d-4`, `mu_y_prime_enc_stdbinary_dvalues_4-...-4` (18 fours) |
+| HamLib, heavy-hex | 5 | `graph-2D-grid-pbc-qubitnodes_Lx-5_Ly-186_h-3`, `tsp_prob-ulysses22_Ncity-8_enc-stdbinary`, `ham_JW12`, `ham_JW-14`, `reg-5_n-10_rinst-07` |
+| HamLib, linear | 5 | `mu_x_prime_enc_stdbinary_dvalues_8-8-8-8-8-8-8-8-8-4-4-4-4-4-4`, `enc_unary_dvalues_4-4-4`, `ham_BK22`, `reg-5_n-10_rinst-07`, `bh_graph-2D-triag-nonpbc-qubitnodes_Lx-11_Ly-11_U-100_enc-gray_d-4` |
+| HamLib, FakeTorino | 8 | `ham_JW-18`, `bh_graph-2D-triag-pbc-qubitnodes_Lx-3_Ly-22_U-70_enc-unary_d-4`, `bh_graph-2D-triag-pbc-qubitnodes_Lx-10_Ly-10_U-30_enc-stdbinary_d-4`, `ham_JW-10`, `ham_parity10`, `ham_JW-22`, `mu_x_prime_enc_unary_dvalues_4-4-4`, `ham_JW-6` |
+| Feynman, FakeTorino | 6 | `mod_red_21`, `qcla_com_7`, `gf2^6_mult`, `mod5_4`, `gf2^8_mult`, `barenco_tof_5` |
+| 100-qubit, FakeTorino | 6 | `circSU2_89`, `BVlike_simplification`, `QAOA_100`, `BV_100`, `square_heisenberg_100`, `clifford_100` |
+
+(HamLib names without their `ham_` test-id prefix; `python benchmarks/bp_mock.py sample --bp <clone>` prints the full
+ids.)
+
+## 5. Files locked
+
+| file | normalized SHA-256 |
+|---|---|
+| [`benchmarks/bp_mock.py`](../../benchmarks/bp_mock.py) | `7757e848c9848c9644a845ce97198966b2fb2f98fa9584c2d0050d45b573b4d0` |
+| [`benchmarks/bp_mock_verify.py`](../../benchmarks/bp_mock_verify.py) | `a9d2840065b6769d2e688c728290e7cbda335f2b676b3ac391ab2f25099bb9b4` |
+| [`benchmarks/bp_probe.py`](../../benchmarks/bp_probe.py) (builders, unchanged) | `73defde66868852db583d5e4fb055ec53c6ea864aae6466876c571f8d26cee66` |
+| `psf_compile.py` (release 2026-10-06.4, unchanged) | `69fe51d2d503638ceb4d067a0d86a5b27c38586694ec84996dea5e7ab6dab7aa` |
+| `patches/psf_compile_c22_2026-10-07/psf_compile.py` (as locked in Addendum 387) | `30675c37e6c9400803ed4d53c8d146ecdebec24b9452037808c9e9acf150f858` |
+
+## 6. Smoke run, then the scored run
+
+1. Smoke: `python benchmarks/bp_mock.py run --bp <clone> --out data/2026-10-07/bp_mock_smoke --smoke` (the first test
+   of each stratum: 19 tests) and `score` on it. It checks that the scripts run; its numbers are reported in the lock
+   commit and not scored. A fault in a script found there is fixed and disclosed here before the lock.
+2. Lock: the commit with this Addendum and the smoke output.
+3. Scored run: `run` into `data/2026-10-07/bp_mock`, then `score` and `bp_mock_verify.py`.
+
+## 7. What the verdicts decide
+
+- M1 and M5 CONFIRMED with M2 CONFIRMED: item 48 is proposed for acceptance (not release) with items 46, 47 and 49.
+- M1 or M5 REFUTED: item 48 is not proposed; the cause is found first.
+- M3 is the mock exam's grade, not a condition for item 48: whatever its verdict, it says where the default call stands
+  against Qiskit level 2 on Benchpress, and the README's claims follow it.
+- M4 REFUTED: the recommended call's loss on wide inputs (Addendum 386, section 4) is studied before item 48 is
+  proposed for the recommended call.
+
 ---
 
 ---

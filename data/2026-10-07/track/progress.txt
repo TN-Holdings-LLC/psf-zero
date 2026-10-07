@@ -1,0 +1,6 @@
+   done FakeBrussels (470 s)
+   done FakeHanoiV2 (496 s)
+   done FakeAuckland (497 s)
+   done FakeTorino (508 s)
+   done FakeOsaka (516 s)
+   done FakeKingston (541 s)

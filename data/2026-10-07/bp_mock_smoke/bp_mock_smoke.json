@@ -1,0 +1,1207 @@
+{
+ "meta": {
+  "smoke": true,
+  "git_head": "6dbadfa",
+  "dirty_tracked": "M docs/RELEASES.md\n M docs/findings/spare-qubit-cliff-combined-383.md",
+  "benchpress": "b695f30",
+  "qiskit": "2.5.2",
+  "python": "3.11.9",
+  "par": 6,
+  "tests": 19,
+  "jobs": 63,
+  "sha": {
+   "script": "7757e848c9848c9644a845ce97198966b2fb2f98fa9584c2d0050d45b573b4d0",
+   "release": "69fe51d2d503638ceb4d067a0d86a5b27c38586694ec84996dea5e7ab6dab7aa",
+   "c22": "30675c37e6c9400803ed4d53c8d146ecdebec24b9452037808c9e9acf150f858",
+   "bp_probe": "73defde66868852db583d5e4fb055ec53c6ea864aae6466876c571f8d26cee66",
+   "published_ref": "d05231a75695c4fa9cbe2f09891ae8a835db32699e381c4d8de4b2afaaf56877"
+  },
+  "start_utc": "2026-10-07T04:51:58Z",
+  "wall_s": 77.7
+ },
+ "rows": [
+  {
+   "stratum": "QASMBench small, all-to-all",
+   "test": "test_QASMBench_small[basis_test_n4-all-to-all]",
+   "arm": "QK",
+   "input_qubits": 4,
+   "wide": 0,
+   "t": 0.04113610000058543,
+   "q2": 6,
+   "d2": 4,
+   "other_2q": 0,
+   "sig": "d190f6e6850d3991af97493977bfedafa05830c164b940ac4f335b63b7daa9b3",
+   "valid": true,
+   "equivalent": false,
+   "wall": 5.88
+  },
+  {
+   "stratum": "QASMBench small, all-to-all",
+   "test": "test_QASMBench_small[basis_test_n4-all-to-all]",
+   "arm": "REL",
+   "input_qubits": 4,
+   "wide": 0,
+   "version": "2026-10-06.4",
+   "t": 1.0312239000013506,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {}
+   },
+   "q2": 10,
+   "d2": 6,
+   "other_2q": 0,
+   "sig": "0ffb082357e5e21d629fbf113e7554e97ec5be782b04355ed700007725a1937a",
+   "valid": true,
+   "equivalent": true,
+   "wall": 7.02
+  },
+  {
+   "stratum": "QASMBench small, all-to-all",
+   "test": "test_QASMBench_small[basis_test_n4-all-to-all]",
+   "arm": "C22",
+   "input_qubits": 4,
+   "wide": 0,
+   "version": "2026-10-07.c22",
+   "t": 1.0400745000006282,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {},
+    "UNROLL_STATS": {}
+   },
+   "q2": 10,
+   "d2": 6,
+   "other_2q": 0,
+   "sig": "0ffb082357e5e21d629fbf113e7554e97ec5be782b04355ed700007725a1937a",
+   "valid": true,
+   "equivalent": true,
+   "wall": 7.0
+  },
+  {
+   "stratum": "QASMBench small, square",
+   "test": "test_QASMBench_small[vqe_n4-square]",
+   "arm": "QK",
+   "input_qubits": 4,
+   "wide": 0,
+   "t": 0.07239339999796357,
+   "q2": 9,
+   "d2": 7,
+   "other_2q": 0,
+   "sig": "3eca72aae8bb64dcee03a9e8c0926bff83e224b5e3b334c0a1aa17506241645d",
+   "valid": true,
+   "equivalent": true,
+   "wall": 5.86
+  },
+  {
+   "stratum": "QASMBench small, square",
+   "test": "test_QASMBench_small[vqe_n4-square]",
+   "arm": "REL",
+   "input_qubits": 4,
+   "wide": 0,
+   "version": "2026-10-06.4",
+   "t": 1.0468982999991567,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {}
+   },
+   "q2": 9,
+   "d2": 7,
+   "other_2q": 0,
+   "sig": "ef38f5248999d8418695f0aefd8de3e38900d625590ad6597652e6480fe758f9",
+   "valid": true,
+   "equivalent": true,
+   "wall": 7.02
+  },
+  {
+   "stratum": "QASMBench small, square",
+   "test": "test_QASMBench_small[vqe_n4-square]",
+   "arm": "C22",
+   "input_qubits": 4,
+   "wide": 0,
+   "version": "2026-10-07.c22",
+   "t": 1.0384107999998378,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {},
+    "UNROLL_STATS": {}
+   },
+   "q2": 9,
+   "d2": 7,
+   "other_2q": 0,
+   "sig": "ef38f5248999d8418695f0aefd8de3e38900d625590ad6597652e6480fe758f9",
+   "valid": true,
+   "equivalent": true,
+   "wall": 7.03
+  },
+  {
+   "stratum": "QASMBench small, heavy-hex",
+   "test": "test_QASMBench_small[vqe_uccsd_n4-heavy-hex]",
+   "arm": "QK",
+   "input_qubits": 4,
+   "wide": 0,
+   "t": 0.03882039999734843,
+   "q2": 71,
+   "d2": 70,
+   "other_2q": 0,
+   "sig": "5fbe43e80a20a3734e2ddf36aee1c29c60e754f808eed1ccc3f0fac7d93d5da0",
+   "valid": true,
+   "wall": 3.32
+  },
+  {
+   "stratum": "QASMBench small, heavy-hex",
+   "test": "test_QASMBench_small[vqe_uccsd_n4-heavy-hex]",
+   "arm": "REL",
+   "input_qubits": 4,
+   "wide": 0,
+   "version": "2026-10-06.4",
+   "t": 0.38193649999811896,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {}
+   },
+   "q2": 71,
+   "d2": 70,
+   "other_2q": 0,
+   "sig": "9e808db3193a54de48b89ea54e9975c1d2bc01163a104df2a0c592312ed583b3",
+   "valid": true,
+   "wall": 3.66
+  },
+  {
+   "stratum": "QASMBench small, heavy-hex",
+   "test": "test_QASMBench_small[vqe_uccsd_n4-heavy-hex]",
+   "arm": "C22",
+   "input_qubits": 4,
+   "wide": 0,
+   "version": "2026-10-07.c22",
+   "t": 0.3844472000018868,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {},
+    "UNROLL_STATS": {}
+   },
+   "q2": 71,
+   "d2": 70,
+   "other_2q": 0,
+   "sig": "9e808db3193a54de48b89ea54e9975c1d2bc01163a104df2a0c592312ed583b3",
+   "valid": true,
+   "wall": 3.89
+  },
+  {
+   "stratum": "QASMBench small, linear",
+   "test": "test_QASMBench_small[hs4_n4-linear]",
+   "arm": "QK",
+   "input_qubits": 4,
+   "wide": 0,
+   "t": 0.03972950000024866,
+   "q2": 4,
+   "d2": 2,
+   "other_2q": 0,
+   "sig": "0bf8ffaa748f9ffb434281f1cb14333ba40890f2a74c57baa0ae09bb06508376",
+   "valid": true,
+   "equivalent": true,
+   "wall": 3.62
+  },
+  {
+   "stratum": "QASMBench small, linear",
+   "test": "test_QASMBench_small[hs4_n4-linear]",
+   "arm": "REL",
+   "input_qubits": 4,
+   "wide": 0,
+   "version": "2026-10-06.4",
+   "t": 0.08270830000037677,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {}
+   },
+   "q2": 4,
+   "d2": 2,
+   "other_2q": 0,
+   "sig": "f77d12f972511f96c3a7a3b0d3e849f21ba6b84718c88915138c656a64b6740d",
+   "valid": true,
+   "equivalent": true,
+   "wall": 3.55
+  },
+  {
+   "stratum": "QASMBench small, linear",
+   "test": "test_QASMBench_small[hs4_n4-linear]",
+   "arm": "C22",
+   "input_qubits": 4,
+   "wide": 0,
+   "version": "2026-10-07.c22",
+   "t": 0.09326549999968847,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {},
+    "UNROLL_STATS": {}
+   },
+   "q2": 4,
+   "d2": 2,
+   "other_2q": 0,
+   "sig": "f77d12f972511f96c3a7a3b0d3e849f21ba6b84718c88915138c656a64b6740d",
+   "valid": true,
+   "equivalent": true,
+   "wall": 3.67
+  },
+  {
+   "stratum": "QASMBench medium, all-to-all",
+   "test": "test_QASMBench_medium[ghz_state_n23-all-to-all]",
+   "arm": "QK",
+   "input_qubits": 23,
+   "wide": 0,
+   "t": 0.09956860000238521,
+   "q2": 22,
+   "d2": 22,
+   "other_2q": 0,
+   "sig": "13cd9f1c36796e702ab82805160d82e4dda4a001c61f6023986d828b897d670a",
+   "valid": true,
+   "wall": 3.48
+  },
+  {
+   "stratum": "QASMBench medium, all-to-all",
+   "test": "test_QASMBench_medium[ghz_state_n23-all-to-all]",
+   "arm": "REL",
+   "input_qubits": 23,
+   "wide": 0,
+   "version": "2026-10-06.4",
+   "t": 0.34147680000023684,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {}
+   },
+   "q2": 22,
+   "d2": 22,
+   "other_2q": 0,
+   "sig": "34bab960fca59f6ed6e09bcc8dc632891007ee668bf47c025128e856afea6b0e",
+   "valid": true,
+   "wall": 3.75
+  },
+  {
+   "stratum": "QASMBench medium, all-to-all",
+   "test": "test_QASMBench_medium[ghz_state_n23-all-to-all]",
+   "arm": "C22",
+   "input_qubits": 23,
+   "wide": 0,
+   "version": "2026-10-07.c22",
+   "t": 0.3712385999970138,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {},
+    "UNROLL_STATS": {}
+   },
+   "q2": 22,
+   "d2": 22,
+   "other_2q": 0,
+   "sig": "34bab960fca59f6ed6e09bcc8dc632891007ee668bf47c025128e856afea6b0e",
+   "valid": true,
+   "wall": 3.94
+  },
+  {
+   "stratum": "QASMBench medium, square",
+   "test": "test_QASMBench_medium[qram_n20-square]",
+   "arm": "QK",
+   "input_qubits": 20,
+   "wide": 20,
+   "t": 0.05407349999950384,
+   "q2": 252,
+   "d2": 180,
+   "other_2q": 0,
+   "sig": "83d3fec8ae9d249b3f7db9ab50ced397a2a82ea58763bc2056697e1933cc160f",
+   "valid": true,
+   "wall": 3.57
+  },
+  {
+   "stratum": "QASMBench medium, square",
+   "test": "test_QASMBench_medium[qram_n20-square]",
+   "arm": "REL",
+   "input_qubits": 20,
+   "wide": 20,
+   "version": "2026-10-06.4",
+   "t": 0.38036619999911636,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {}
+   },
+   "q2": 320,
+   "d2": 202,
+   "other_2q": 0,
+   "sig": "1dfe348aa07d5c23f482cdc6526931ee0302472b19b72c8a052eb8a3952f20d2",
+   "valid": true,
+   "wall": 3.8
+  },
+  {
+   "stratum": "QASMBench medium, square",
+   "test": "test_QASMBench_medium[qram_n20-square]",
+   "arm": "C22",
+   "input_qubits": 20,
+   "wide": 20,
+   "version": "2026-10-07.c22",
+   "t": 0.36958700000104727,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {},
+    "UNROLL_STATS": {
+     "unrolled": 1
+    }
+   },
+   "q2": 255,
+   "d2": 130,
+   "other_2q": 0,
+   "sig": "35758156e960391a5028584ba02228f7e321d7cc272ee65fa8536ccb0ac1ff38",
+   "valid": true,
+   "wall": 3.85
+  },
+  {
+   "stratum": "QASMBench medium, heavy-hex",
+   "test": "test_QASMBench_medium[multiply_n13-heavy-hex]",
+   "arm": "QK",
+   "input_qubits": 13,
+   "wide": 6,
+   "t": 0.03526799999963259,
+   "q2": 84,
+   "d2": 54,
+   "other_2q": 0,
+   "sig": "e47f1d78166c3372f8e4860e72af6e85c296c742dadb6fa2a87d426fa2805b1f",
+   "valid": true,
+   "wall": 3.62
+  },
+  {
+   "stratum": "QASMBench medium, heavy-hex",
+   "test": "test_QASMBench_medium[multiply_n13-heavy-hex]",
+   "arm": "REL",
+   "input_qubits": 13,
+   "wide": 6,
+   "version": "2026-10-06.4",
+   "t": 0.3680346999972244,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {}
+   },
+   "q2": 148,
+   "d2": 74,
+   "other_2q": 0,
+   "sig": "3f49d4d8cb25fbfe5356bc1dc9f411274d5c481e704a9a03cf2e1ddaf4e4ce69",
+   "valid": true,
+   "wall": 3.96
+  },
+  {
+   "stratum": "QASMBench medium, heavy-hex",
+   "test": "test_QASMBench_medium[multiply_n13-heavy-hex]",
+   "arm": "C22",
+   "input_qubits": 13,
+   "wide": 6,
+   "version": "2026-10-07.c22",
+   "t": 0.32030350000059116,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {},
+    "UNROLL_STATS": {
+     "unrolled": 1
+    }
+   },
+   "q2": 95,
+   "d2": 64,
+   "other_2q": 0,
+   "sig": "dc18444453c21c8a48ca7f06a8746778c625836ae4c9e4998535333151ef4b12",
+   "valid": true,
+   "wall": 3.74
+  },
+  {
+   "stratum": "QASMBench medium, linear",
+   "test": "test_QASMBench_medium[square_root_n18-linear]",
+   "arm": "QK",
+   "input_qubits": 18,
+   "wide": 130,
+   "t": 0.17367860000013025,
+   "q2": 2730,
+   "d2": 1808,
+   "other_2q": 0,
+   "sig": "fce4c58127f02db2415d93d1a465fda7b7e1cacb2c59a3f6e941206e48261e53",
+   "valid": true,
+   "wall": 3.8
+  },
+  {
+   "stratum": "QASMBench medium, linear",
+   "test": "test_QASMBench_medium[square_root_n18-linear]",
+   "arm": "REL",
+   "input_qubits": 18,
+   "wide": 130,
+   "version": "2026-10-06.4",
+   "t": 0.49548549999963143,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {}
+   },
+   "q2": 3144,
+   "d2": 2147,
+   "other_2q": 0,
+   "sig": "acbcd30515b1f2260c2246c14e22f5474a519363397b509de5eca5fe5af72a66",
+   "valid": true,
+   "wall": 4.1
+  },
+  {
+   "stratum": "QASMBench medium, linear",
+   "test": "test_QASMBench_medium[square_root_n18-linear]",
+   "arm": "C22",
+   "input_qubits": 18,
+   "wide": 130,
+   "version": "2026-10-07.c22",
+   "t": 0.510202900000877,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {},
+    "UNROLL_STATS": {
+     "unrolled": 1
+    }
+   },
+   "q2": 2876,
+   "d2": 2005,
+   "other_2q": 0,
+   "sig": "d47de65e470c28399591d4ae3be737f658946a11ec33d06350dfdab8492d4533",
+   "valid": true,
+   "wall": 4.21
+  },
+  {
+   "stratum": "QASMBench large, all-to-all",
+   "test": "test_QASMBench_large[qugan_n111-all-to-all]",
+   "arm": "QK",
+   "input_qubits": 111,
+   "wide": 55,
+   "t": 0.3584560999988753,
+   "q2": 601,
+   "d2": 279,
+   "other_2q": 0,
+   "sig": "ce8d5b6e7ee1c113e223f0df25db8157f46b9ed7119d0ad7e533dba52dd72ddc",
+   "valid": true,
+   "wall": 4.12
+  },
+  {
+   "stratum": "QASMBench large, all-to-all",
+   "test": "test_QASMBench_large[qugan_n111-all-to-all]",
+   "arm": "REL",
+   "input_qubits": 111,
+   "wide": 55,
+   "version": "2026-10-06.4",
+   "t": 0.7998722000011185,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {}
+   },
+   "q2": 656,
+   "d2": 280,
+   "other_2q": 0,
+   "sig": "e3acffbed05f37039b78cf3b9e683577111d998d3eed0559443e06899ee683c8",
+   "valid": true,
+   "wall": 4.6
+  },
+  {
+   "stratum": "QASMBench large, all-to-all",
+   "test": "test_QASMBench_large[qugan_n111-all-to-all]",
+   "arm": "C22",
+   "input_qubits": 111,
+   "wide": 55,
+   "version": "2026-10-07.c22",
+   "t": 0.7692955999991682,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {},
+    "UNROLL_STATS": {
+     "unrolled": 1
+    }
+   },
+   "q2": 601,
+   "d2": 279,
+   "other_2q": 0,
+   "sig": "d119f8045ce7683ca50cc67c1ab30c3d0f94fa89815a47479be4d8c3e219615a",
+   "valid": true,
+   "wall": 4.48
+  },
+  {
+   "stratum": "QASMBench large, square",
+   "test": "test_QASMBench_large[swap_test_n41-square]",
+   "arm": "QK",
+   "input_qubits": 41,
+   "wide": 20,
+   "t": 0.12369799999942188,
+   "q2": 284,
+   "d2": 214,
+   "other_2q": 0,
+   "sig": "d338ad1553b4a5693775e92fb0588bb103fcb7f74011057f88cf06db406244f2",
+   "valid": true,
+   "wall": 3.55
+  },
+  {
+   "stratum": "QASMBench large, square",
+   "test": "test_QASMBench_large[swap_test_n41-square]",
+   "arm": "REL",
+   "input_qubits": 41,
+   "wide": 20,
+   "version": "2026-10-06.4",
+   "t": 0.3892615000004298,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {}
+   },
+   "q2": 421,
+   "d2": 251,
+   "other_2q": 0,
+   "sig": "88d5ee3bf90d665159ffd2a6f51b32474620b90910663820533442f6fadaaf98",
+   "valid": true,
+   "wall": 3.95
+  },
+  {
+   "stratum": "QASMBench large, square",
+   "test": "test_QASMBench_large[swap_test_n41-square]",
+   "arm": "C22",
+   "input_qubits": 41,
+   "wide": 20,
+   "version": "2026-10-07.c22",
+   "t": 0.4696492000002763,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {},
+    "UNROLL_STATS": {
+     "unrolled": 1
+    }
+   },
+   "q2": 320,
+   "d2": 240,
+   "other_2q": 0,
+   "sig": "96fd8882812b937634207ec597ff0b02338262b5307f4ba57192d4bd468d7ea3",
+   "valid": true,
+   "wall": 4.08
+  },
+  {
+   "stratum": "QASMBench large, heavy-hex",
+   "test": "test_QASMBench_large[qft_n160-heavy-hex]",
+   "arm": "QK",
+   "input_qubits": 160,
+   "wide": 0,
+   "t": 1.7563339000007545,
+   "q2": 14880,
+   "d2": 2431,
+   "other_2q": 0,
+   "sig": "0ee141e817c5df95483f5e32f89c480a75331120933bb0355747e54db2f0edaf",
+   "valid": true,
+   "wall": 6.43
+  },
+  {
+   "stratum": "QASMBench large, heavy-hex",
+   "test": "test_QASMBench_large[qft_n160-heavy-hex]",
+   "arm": "REL",
+   "input_qubits": 160,
+   "wide": 0,
+   "version": "2026-10-06.4",
+   "t": 4.138243000001239,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {}
+   },
+   "q2": 21361,
+   "d2": 3496,
+   "other_2q": 0,
+   "sig": "8c86431cb509047f6b0f1054c97091fe5a0a6215d40bb87ef45ecc36e0c6a603",
+   "valid": true,
+   "wall": 10.37
+  },
+  {
+   "stratum": "QASMBench large, heavy-hex",
+   "test": "test_QASMBench_large[qft_n160-heavy-hex]",
+   "arm": "C22",
+   "input_qubits": 160,
+   "wide": 0,
+   "version": "2026-10-07.c22",
+   "t": 4.264484100000118,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {},
+    "UNROLL_STATS": {}
+   },
+   "q2": 21361,
+   "d2": 3496,
+   "other_2q": 0,
+   "sig": "8c86431cb509047f6b0f1054c97091fe5a0a6215d40bb87ef45ecc36e0c6a603",
+   "valid": true,
+   "wall": 10.39
+  },
+  {
+   "stratum": "QASMBench large, linear",
+   "test": "test_QASMBench_large[ghz_n127-linear]",
+   "arm": "QK",
+   "input_qubits": 127,
+   "wide": 0,
+   "t": 0.11028219999934663,
+   "q2": 126,
+   "d2": 126,
+   "other_2q": 0,
+   "sig": "4bbf43e5c9759abac1f87915638b26e6bad199d4d1efa14b81f913df031cb20a",
+   "valid": true,
+   "wall": 3.42
+  },
+  {
+   "stratum": "QASMBench large, linear",
+   "test": "test_QASMBench_large[ghz_n127-linear]",
+   "arm": "REL",
+   "input_qubits": 127,
+   "wide": 0,
+   "version": "2026-10-06.4",
+   "t": 0.3268912999992608,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {}
+   },
+   "q2": 126,
+   "d2": 126,
+   "other_2q": 0,
+   "sig": "626e5f8cbdef51a0146f6daf124c26fd08a14e812f0165fec713bf5b78a18257",
+   "valid": true,
+   "wall": 3.77
+  },
+  {
+   "stratum": "QASMBench large, linear",
+   "test": "test_QASMBench_large[ghz_n127-linear]",
+   "arm": "C22",
+   "input_qubits": 127,
+   "wide": 0,
+   "version": "2026-10-07.c22",
+   "t": 0.4168026999977883,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {},
+    "UNROLL_STATS": {}
+   },
+   "q2": 126,
+   "d2": 126,
+   "other_2q": 0,
+   "sig": "626e5f8cbdef51a0146f6daf124c26fd08a14e812f0165fec713bf5b78a18257",
+   "valid": true,
+   "wall": 3.75
+  },
+  {
+   "stratum": "HamLib, all-to-all",
+   "test": "test_hamiltonians[ham_reg-4_n-90_rinst-07-all-to-all]",
+   "arm": "QK",
+   "input_qubits": 90,
+   "wide": 1,
+   "t": 0.24941330000001471,
+   "q2": 1008,
+   "d2": 179,
+   "other_2q": 0,
+   "sig": "2204a31012e90f816c82c02e4ad1f9116b93a081159124909485167b851f2922",
+   "valid": true,
+   "wall": 4.29
+  },
+  {
+   "stratum": "HamLib, all-to-all",
+   "test": "test_hamiltonians[ham_reg-4_n-90_rinst-07-all-to-all]",
+   "arm": "REL",
+   "input_qubits": 90,
+   "wide": 1,
+   "version": "2026-10-06.4",
+   "t": 0.5266458000005514,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {}
+   },
+   "q2": 1080,
+   "d2": 188,
+   "other_2q": 0,
+   "sig": "cd5cb0ba6f9fab342ed83602d9c4305ac8107062ce518d6c345455a03f3c816d",
+   "valid": true,
+   "wall": 4.53
+  },
+  {
+   "stratum": "HamLib, all-to-all",
+   "test": "test_hamiltonians[ham_reg-4_n-90_rinst-07-all-to-all]",
+   "arm": "C22",
+   "input_qubits": 90,
+   "wide": 1,
+   "version": "2026-10-07.c22",
+   "t": 0.4717653000006976,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {},
+    "UNROLL_STATS": {
+     "unrolled": 1
+    }
+   },
+   "q2": 1008,
+   "d2": 179,
+   "other_2q": 0,
+   "sig": "e66f4b0b2d722cd4b1493eec997858760b2724c36b36f477ce5b44cac57ea4bc",
+   "valid": true,
+   "wall": 4.54
+  },
+  {
+   "stratum": "HamLib, square",
+   "test": "test_hamiltonians[ham_graph-1D-grid-pbc-qubitnodes_Lx-16_h-2-square]",
+   "arm": "QK",
+   "input_qubits": 16,
+   "wide": 1,
+   "t": 0.06119060000128229,
+   "q2": 32,
+   "d2": 28,
+   "other_2q": 0,
+   "sig": "b7e83ba0de1c454ea094bff6f21bf724e089f6d8c50579ecc3edfd3d5f8d9948",
+   "valid": true,
+   "wall": 3.98
+  },
+  {
+   "stratum": "HamLib, square",
+   "test": "test_hamiltonians[ham_graph-1D-grid-pbc-qubitnodes_Lx-16_h-2-square]",
+   "arm": "REL",
+   "input_qubits": 16,
+   "wide": 1,
+   "version": "2026-10-06.4",
+   "t": 0.4695458999995026,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {}
+   },
+   "q2": 63,
+   "d2": 40,
+   "other_2q": 0,
+   "sig": "88d207a5535bbf2fc586d699ce5b1831419eb02d7cfac6462f245a27d9219595",
+   "valid": true,
+   "wall": 5.14
+  },
+  {
+   "stratum": "HamLib, square",
+   "test": "test_hamiltonians[ham_graph-1D-grid-pbc-qubitnodes_Lx-16_h-2-square]",
+   "arm": "C22",
+   "input_qubits": 16,
+   "wide": 1,
+   "version": "2026-10-07.c22",
+   "t": 0.4992171999983839,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {},
+    "UNROLL_STATS": {
+     "unrolled": 1
+    }
+   },
+   "q2": 32,
+   "d2": 28,
+   "other_2q": 0,
+   "sig": "80cd26ff554e5523d75b2458fce2db5aca0c1031c64e8900b40c1e82be3f44cc",
+   "valid": true,
+   "wall": 4.93
+  },
+  {
+   "stratum": "HamLib, heavy-hex",
+   "test": "test_hamiltonians[ham_graph-2D-grid-pbc-qubitnodes_Lx-5_Ly-186_h-3-heavy-hex]",
+   "arm": "QK",
+   "input_qubits": 930,
+   "wide": 1,
+   "t": 23.016176299999643,
+   "q2": 38883,
+   "d2": 8118,
+   "other_2q": 0,
+   "sig": "86d0b0b5bcdb322f03e436af7b90848989a57841c9f55c772fd36d8ac0834759",
+   "valid": true,
+   "wall": 30.0
+  },
+  {
+   "stratum": "HamLib, heavy-hex",
+   "test": "test_hamiltonians[ham_graph-2D-grid-pbc-qubitnodes_Lx-5_Ly-186_h-3-heavy-hex]",
+   "arm": "REL",
+   "input_qubits": 930,
+   "wide": 1,
+   "version": "2026-10-06.4",
+   "t": 2.712826799997856,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {}
+   },
+   "q2": 64656,
+   "d2": 13080,
+   "other_2q": 0,
+   "sig": "a049545b9860078d13959a64fff4cb4c9702343ffec396ec004ebebc03d84af1",
+   "valid": true,
+   "wall": 10.58
+  },
+  {
+   "stratum": "HamLib, heavy-hex",
+   "test": "test_hamiltonians[ham_graph-2D-grid-pbc-qubitnodes_Lx-5_Ly-186_h-3-heavy-hex]",
+   "arm": "C22",
+   "input_qubits": 930,
+   "wide": 1,
+   "version": "2026-10-07.c22",
+   "t": 17.361842700000125,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {},
+    "UNROLL_STATS": {
+     "unrolled": 1
+    }
+   },
+   "q2": 41424,
+   "d2": 7995,
+   "other_2q": 0,
+   "sig": "5b14158a14b9a7d8e27a1c688533ed480c8266aedfb112660b005976471f226a",
+   "valid": true,
+   "wall": 25.17
+  },
+  {
+   "stratum": "HamLib, linear",
+   "test": "test_hamiltonians[ham_mu_x_prime_enc_stdbinary_dvalues_8-8-8-8-8-8-8-8-8-4-4-4-4-4-4-linear]",
+   "arm": "QK",
+   "input_qubits": 11,
+   "wide": 1,
+   "t": 0.05340559999967809,
+   "q2": 56,
+   "d2": 18,
+   "other_2q": 0,
+   "sig": "581aee6b9a74779b89c1ebb99484d1b28949bc9fbe32ea3a917e11f63bbc953d",
+   "valid": true,
+   "wall": 4.92
+  },
+  {
+   "stratum": "HamLib, linear",
+   "test": "test_hamiltonians[ham_mu_x_prime_enc_stdbinary_dvalues_8-8-8-8-8-8-8-8-8-4-4-4-4-4-4-linear]",
+   "arm": "REL",
+   "input_qubits": 11,
+   "wide": 1,
+   "version": "2026-10-06.4",
+   "t": 0.6143436000020301,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {}
+   },
+   "q2": 108,
+   "d2": 34,
+   "other_2q": 0,
+   "sig": "bdeb185453342bbac3625e57f37c9ffbea478dd72f74714b39e7434d9e5029b1",
+   "valid": true,
+   "wall": 5.95
+  },
+  {
+   "stratum": "HamLib, linear",
+   "test": "test_hamiltonians[ham_mu_x_prime_enc_stdbinary_dvalues_8-8-8-8-8-8-8-8-8-4-4-4-4-4-4-linear]",
+   "arm": "C22",
+   "input_qubits": 11,
+   "wide": 1,
+   "version": "2026-10-07.c22",
+   "t": 0.5852450999991561,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {},
+    "UNROLL_STATS": {
+     "unrolled": 1
+    }
+   },
+   "q2": 74,
+   "d2": 24,
+   "other_2q": 0,
+   "sig": "79504511ad17346c44377cb1ec3f30e2a89ddbef181bcf324653d374d326d371",
+   "valid": true,
+   "wall": 5.98
+  },
+  {
+   "stratum": "HamLib, FakeTorino",
+   "test": "test_hamlib_hamiltonians_transpile[ham_ham_JW-18]",
+   "arm": "QK",
+   "input_qubits": 18,
+   "wide": 1,
+   "t": 5.388694800003577,
+   "q2": 37557,
+   "d2": 33078,
+   "other_2q": 0,
+   "sig": "bca8433948712933e8e670e5ea63f09d1a5305faff64c38f589e76f78c2bfe08",
+   "valid": true,
+   "wall": 12.65
+  },
+  {
+   "stratum": "HamLib, FakeTorino",
+   "test": "test_hamlib_hamiltonians_transpile[ham_ham_JW-18]",
+   "arm": "REL",
+   "input_qubits": 18,
+   "wide": 1,
+   "version": "2026-10-06.4",
+   "t": 5.352581700000883,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {}
+   },
+   "q2": 58085,
+   "d2": 49385,
+   "other_2q": 0,
+   "sig": "c645145d76608141274bc6011e5cfd32baaddc818f7bc1e14c6eedb3dac70f91",
+   "valid": true,
+   "wall": 14.78
+  },
+  {
+   "stratum": "HamLib, FakeTorino",
+   "test": "test_hamlib_hamiltonians_transpile[ham_ham_JW-18]",
+   "arm": "C22",
+   "input_qubits": 18,
+   "wide": 1,
+   "version": "2026-10-07.c22",
+   "t": 5.8392925999978615,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {},
+    "UNROLL_STATS": {
+     "unrolled": 1
+    }
+   },
+   "q2": 43491,
+   "d2": 37435,
+   "other_2q": 0,
+   "sig": "aaca27659d2c7fe03bc789cf9a29eeeab0605000e51527ae13ca330da398ecf0",
+   "valid": true,
+   "wall": 14.54
+  },
+  {
+   "stratum": "HamLib, FakeTorino",
+   "test": "test_hamlib_hamiltonians_transpile[ham_ham_JW-18]",
+   "arm": "RELR",
+   "input_qubits": 18,
+   "wide": 1,
+   "version": "2026-10-06.4",
+   "t": 6.155877999997756,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {
+     "resynthesis": 1,
+     "floor": 1,
+     "level3": 1
+    }
+   },
+   "q2": 58085,
+   "d2": 49385,
+   "other_2q": 0,
+   "sig": "18218f4ef5bb51c87c5b9aa8215f83c91b438cc86428f50a2a600292a75cf3a2",
+   "valid": true,
+   "wall": 15.21
+  },
+  {
+   "stratum": "HamLib, FakeTorino",
+   "test": "test_hamlib_hamiltonians_transpile[ham_ham_JW-18]",
+   "arm": "C22R",
+   "input_qubits": 18,
+   "wide": 1,
+   "version": "2026-10-07.c22",
+   "t": 7.400977500001318,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {
+     "resynthesis": 1,
+     "floor": 1,
+     "level3": 1
+    },
+    "UNROLL_STATS": {
+     "unrolled": 1
+    }
+   },
+   "q2": 43491,
+   "d2": 37435,
+   "other_2q": 0,
+   "sig": "35e164308a61186b8bc3dbdbc85aa25da84cf9ab154af5f7c78195acbb7215ca",
+   "valid": true,
+   "wall": 16.51
+  },
+  {
+   "stratum": "Feynman, FakeTorino",
+   "test": "test_feynman_transpile[mod_red_21.qasm]",
+   "arm": "QK",
+   "input_qubits": 11,
+   "wide": 17,
+   "t": 0.11656389999916428,
+   "q2": 201,
+   "d2": 142,
+   "other_2q": 0,
+   "sig": "0ade5e3dabf1bf631fa027289fcde9473f3ede10fe7cf6d885f8380dc358c9e2",
+   "valid": true,
+   "wall": 6.65
+  },
+  {
+   "stratum": "Feynman, FakeTorino",
+   "test": "test_feynman_transpile[mod_red_21.qasm]",
+   "arm": "REL",
+   "input_qubits": 11,
+   "wide": 17,
+   "version": "2026-10-06.4",
+   "t": 0.6864650000024994,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {}
+   },
+   "q2": 237,
+   "d2": 171,
+   "other_2q": 0,
+   "sig": "2389a3d7862e9bba0ab9f177a163c0d63a0ca3dffd67339e4d5bf12bbb62be66",
+   "valid": true,
+   "wall": 7.05
+  },
+  {
+   "stratum": "Feynman, FakeTorino",
+   "test": "test_feynman_transpile[mod_red_21.qasm]",
+   "arm": "C22",
+   "input_qubits": 11,
+   "wide": 17,
+   "version": "2026-10-07.c22",
+   "t": 0.661219000001438,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {},
+    "UNROLL_STATS": {
+     "unrolled": 1
+    }
+   },
+   "q2": 198,
+   "d2": 158,
+   "other_2q": 0,
+   "sig": "0e6cede52c551806bbb5c78a02ca2edd8f18702c832f9e473c05ce1d004a99af",
+   "valid": true,
+   "wall": 7.24
+  },
+  {
+   "stratum": "Feynman, FakeTorino",
+   "test": "test_feynman_transpile[mod_red_21.qasm]",
+   "arm": "RELR",
+   "input_qubits": 11,
+   "wide": 17,
+   "version": "2026-10-06.4",
+   "t": 2.4476503999976558,
+   "stats": {
+    "COMPARE_STATS": {
+     "level3": 1
+    },
+    "SKIP_STATS": {}
+   },
+   "q2": 188,
+   "d2": 143,
+   "other_2q": 0,
+   "sig": "e0893b0cbeaf7a394fb65145bc8b15cb1251c0df01c72f66dd3229febf12a1db",
+   "valid": true,
+   "wall": 9.12
+  },
+  {
+   "stratum": "Feynman, FakeTorino",
+   "test": "test_feynman_transpile[mod_red_21.qasm]",
+   "arm": "C22R",
+   "input_qubits": 11,
+   "wide": 17,
+   "version": "2026-10-07.c22",
+   "t": 1.600970999999845,
+   "stats": {
+    "COMPARE_STATS": {
+     "level3": 1
+    },
+    "SKIP_STATS": {},
+    "UNROLL_STATS": {
+     "unrolled": 2
+    }
+   },
+   "q2": 188,
+   "d2": 143,
+   "other_2q": 0,
+   "sig": "e0893b0cbeaf7a394fb65145bc8b15cb1251c0df01c72f66dd3229febf12a1db",
+   "valid": true,
+   "wall": 8.16
+  },
+  {
+   "stratum": "100-qubit, FakeTorino",
+   "test": "test_circSU2_89_transpile",
+   "arm": "QK",
+   "input_qubits": 89,
+   "wide": 1,
+   "t": 4.986420100001851,
+   "q2": 336,
+   "d2": 333,
+   "other_2q": 0,
+   "sig": "80f60d3518d37109b3d02e940be820594f4e12ec2484b835f5a187f66ebee71c",
+   "valid": true,
+   "wall": 11.87
+  },
+  {
+   "stratum": "100-qubit, FakeTorino",
+   "test": "test_circSU2_89_transpile",
+   "arm": "REL",
+   "input_qubits": 89,
+   "wide": 1,
+   "version": "2026-10-06.4",
+   "t": 0.606455700002698,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {}
+   },
+   "q2": 1719,
+   "d2": 1392,
+   "other_2q": 0,
+   "sig": "8b2c41603fd76940a1eb4da3f9fc65015748e41240d1686a94a597f7d975a491",
+   "valid": true,
+   "wall": 7.76
+  },
+  {
+   "stratum": "100-qubit, FakeTorino",
+   "test": "test_circSU2_89_transpile",
+   "arm": "C22",
+   "input_qubits": 89,
+   "wide": 1,
+   "version": "2026-10-07.c22",
+   "t": 3.5264248000021325,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {},
+    "UNROLL_STATS": {
+     "unrolled": 1
+    }
+   },
+   "q2": 336,
+   "d2": 333,
+   "other_2q": 0,
+   "sig": "987bc31906c4e80a85193cdebaf3565f3d53a4635a8a23a16657873c109b6cfd",
+   "valid": true,
+   "wall": 10.18
+  },
+  {
+   "stratum": "100-qubit, FakeTorino",
+   "test": "test_circSU2_89_transpile",
+   "arm": "RELR",
+   "input_qubits": 89,
+   "wide": 1,
+   "version": "2026-10-06.4",
+   "t": 0.555409900000086,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {
+     "resynthesis": 1,
+     "floor": 1,
+     "level3": 1
+    }
+   },
+   "q2": 1719,
+   "d2": 1392,
+   "other_2q": 0,
+   "sig": "f0e2b977ee5195f402d66e2ec4a8c2a791078356d8e2f14ab3ba95c8e3b7e82c",
+   "valid": true,
+   "wall": 6.88
+  },
+  {
+   "stratum": "100-qubit, FakeTorino",
+   "test": "test_circSU2_89_transpile",
+   "arm": "C22R",
+   "input_qubits": 89,
+   "wide": 1,
+   "version": "2026-10-07.c22",
+   "t": 4.981284000001324,
+   "stats": {
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {
+     "resynthesis": 1,
+     "floor": 1,
+     "level3": 1
+    },
+    "UNROLL_STATS": {
+     "unrolled": 2
+    }
+   },
+   "q2": 1344,
+   "d2": 1212,
+   "other_2q": 0,
+   "sig": "e36732d4889b9aa3ead0ee6e1f3feadbc1ba1d8c34e0459156013be1eee963cb",
+   "valid": true,
+   "wall": 11.16
+  }
+ ]
+}

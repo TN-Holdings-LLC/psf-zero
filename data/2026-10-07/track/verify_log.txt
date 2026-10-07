@@ -1,0 +1,16 @@
+files 6, git_head ['6dbadfa'], one script/c22 hash True, flags []
+P0 PASS: errors 0, off-target 0, wide inputs 0, inexact 0 of 54 checked (expected 54)
+
+device         n   identical  n16    n12-14  n20
+FakeTorino     60  60/60    0.395  0.656   1.035
+FakeKingston   60  60/60    0.396  0.634   1.006
+FakeAuckland   60  60/60    0.499  0.642   1.027
+FakeHanoiV2    60  60/60    0.506  0.675   0.910
+FakeBrussels   60  60/60    0.365  0.592   0.964
+FakeOsaka      60  60/60    0.386  0.601   0.995
+circuits that differ: 0
+T1 CONFIRMED
+T2 CONFIRMED
+T3 CONFIRMED
+T4 CONFIRMED
+verdicts identical to score.md: True

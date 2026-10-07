@@ -16,6 +16,12 @@ the earlier parts they link to. The README itself, as it was before the move, is
 >   and estimates within 1e-12 of each other are a tie that keeps the earlier candidate. Pre-registered test FUSE
 >   (360 circuits, 6 devices): 0.36-0.49 of 2026-10-06.4's time at 16 qubits, 0.53-0.65 at 12-14; the same circuit
 >   on 359, the other a near-tie of 1.35e-16 now kept as a tie.
+>
+> - **c20 and c22, items 47 and 49** ([`patches/psf_compile_c22_2026-10-07/`](../patches/psf_compile_c22_2026-10-07/),
+>   Part 10, Addenda 386-388): the recommended call makes item 39's checks only where they can change the
+>   output, and its estimates follow single-qubit gates on 2x2 reduced states. Pre-registered test TRACK (360
+>   circuits, 6 devices): the same circuit as c19 on 360 of 360; 0.37-0.51 of c19's time at 16 qubits, 0.59-0.68
+>   at 12-14. c22's file also carries item 48, which is not accepted until BP-MOCK (Addendum 389).
 
 > **Current version (2026-10-06, fourth release): `psf_compile.py` 2026-10-06.4 and the AI front end a12, with
 > `psf_smart_layout` 2026-10-01.1 and the Rust core `CORE_VERSION` 2026-09-29.1 (both unchanged)**
