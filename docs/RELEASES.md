@@ -9,6 +9,14 @@ from this folder. The full record behind each entry is in Parts 9 and 10 of the 
 the earlier parts they link to. The README itself, as it was before the move, is kept as
 [`README_2026-10-05_before_restructure.md`](README_2026-10-05_before_restructure.md).
 
+> **Accepted, not yet released** (to be released together with the next accepted improvements; Addendum 385):
+>
+> - **c19, item 46** ([`patches/psf_compile_c19_2026-10-07/`](../patches/psf_compile_c19_2026-10-07/), Part 10,
+>   Addenda 383-385): the recommended call's state-vector checks and estimates apply fewer, larger matrices,
+>   and estimates within 1e-12 of each other are a tie that keeps the earlier candidate. Pre-registered test FUSE
+>   (360 circuits, 6 devices): 0.36-0.49 of 2026-10-06.4's time at 16 qubits, 0.53-0.65 at 12-14; the same circuit
+>   on 359, the other a near-tie of 1.35e-16 now kept as a tie.
+
 > **Current version (2026-10-06, fourth release): `psf_compile.py` 2026-10-06.4 and the AI front end a12, with
 > `psf_smart_layout` 2026-10-01.1 and the Rust core `CORE_VERSION` 2026-09-29.1 (both unchanged)**
 > ([Part 9](findings/spare-qubit-cliff-combined-248.md), Addenda 379-381). The recommended call is unchanged.

@@ -278,6 +278,46 @@ calls with six jobs in parallel, not a cost of c19.
   section 6).
 - **Section 3 is exploratory,** after the output was seen.
 
+
+---
+
+<!-- ===== Addendum 385 (source: spare-qubit-cliff-addendum-385-2026-10-07.md) ===== -->
+
+> **Note added when merging:** The owner's decision on the evidence of Addendum 384: c19 accepted, not released; release policy from 2026-10-07.
+
+## Addendum 385 -- Decision: candidate c19 (changelog item 46) is accepted but not released; from now on, speed and quality improvements are released together, correctness fixes at once (2026-10-07)
+
+**Status: the owner's decision, on the evidence of Addendum 384.**
+
+## 1. The decision
+
+- **c19 is accepted.** FUSE (Addendum 384) confirmed that it roughly halves the recommended call's time where it
+  simulates (F2, F3), and found its one difference from 2026-10-06.4 to be the near-tie it keeps by design (F1); F4's
+  excess was timing noise on code both run. [`patches/psf_compile_c19_2026-10-07/psf_compile.py`](../../patches/psf_compile_c19_2026-10-07/psf_compile.py)
+  (normalized SHA-256 `efb4dac3...`) stays where it is.
+- **It is not released now.** [`psf_compile.py`](../../psf_compile.py) stays 2026-10-06.4. c19 will be released
+  together with the next accepted improvements, in one release.
+- **The next candidates are built on c19,** not on 2026-10-06.4, and are tested against c19 as well as against the
+  release, so that what is finally released has been tested as one file.
+
+## 2. The release policy from now on
+
+Four releases in one day (2026-10-06.1 to .4) were each tested, but are hard to follow from outside. From 2026-10-07:
+
+- **Correctness fixes** (a wrong circuit, an exception, a crash, a hang) are released at once, as 2026-10-06.2 (item
+  43) and 2026-10-06.3 (item 44) were.
+- **Speed and quality improvements** are accepted as candidates, recorded in an Addendum, and released together,
+  when a batch is complete or before a pre-registered comparison against other compilers (BP-MOCK).
+- [`docs/RELEASES.md`](../../docs/RELEASES.md) lists the accepted, unreleased candidates above the current version, so
+  a reader can see what the next release will contain.
+
+## 3. What changes in the repository
+
+- `docs/RELEASES.md`: a short block "Accepted, not yet released" naming c19 (item 46, Addenda 383-385) above the
+  current version. Nothing else.
+
+This follows advice from a separate review of the record (the workplace session of 2026-10-07).
+
 ---
 
 ---
