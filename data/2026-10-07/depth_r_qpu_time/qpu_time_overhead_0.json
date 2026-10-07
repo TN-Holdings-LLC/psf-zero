@@ -1,0 +1,1298 @@
+{
+ "overhead_us": "0",
+ "rep_delay_s": {
+  "FakeAuckland": 0.00025,
+  "FakeTorino": 0.00025
+ },
+ "summary": {
+  "FakeAuckland": {
+   "cells_all_reached": 23,
+   "not_reached": {
+    "RPSF": 1,
+    "REC": 1,
+    "L3T": 1
+   },
+   "accuracy_at_budget": {
+    "15": {
+     "RPSF": 0.8729250705538455,
+     "REC": 0.8741708112305875,
+     "L3T": 0.872583041698017
+    },
+    "63": {
+     "RPSF": 0.9207377292912781,
+     "REC": 0.921065777943646,
+     "L3T": 0.9205954724297064
+    },
+    "255": {
+     "RPSF": 0.9320559869769349,
+     "REC": 0.9322267836999334,
+     "L3T": 0.9321929996644477
+    },
+    "1023": {
+     "RPSF": 0.9341695902351054,
+     "REC": 0.9341363864155068,
+     "L3T": 0.9343519374260586
+    },
+    "4095": {
+     "RPSF": 0.9342831285711831,
+     "REC": 0.9341240456301323,
+     "L3T": 0.9345791969366862
+    }
+   },
+   "shots REC/RPSF": 0.8588336566675823,
+   "time REC/RPSF": 0.882476059631107,
+   "shots REC/L3T": 0.9874672762017234,
+   "time REC/L3T": 0.9908091011037254,
+   "shots REC/RPSF median": 1.0,
+   "shots REC<RPSF / = / > cells": "8/12/3",
+   "shots REC/L3T median": 1.0,
+   "shots REC<L3T / = / > cells": "8/11/4"
+  },
+  "FakeTorino": {
+   "cells_all_reached": 24,
+   "not_reached": {
+    "RPSF": 0,
+    "REC": 0,
+    "L3T": 0
+   },
+   "accuracy_at_budget": {
+    "15": {
+     "RPSF": 0.8976276906358369,
+     "REC": 0.9035566936900653,
+     "L3T": 0.9077641840161377
+    },
+    "63": {
+     "RPSF": 0.9301348664174842,
+     "REC": 0.9311624988462258,
+     "L3T": 0.9315452336090081
+    },
+    "255": {
+     "RPSF": 0.9351277834344002,
+     "REC": 0.9352625082040159,
+     "L3T": 0.9351573935994768
+    },
+    "1023": {
+     "RPSF": 0.9358262193055635,
+     "REC": 0.9358259692465619,
+     "L3T": 0.9356109734523437
+    },
+    "4095": {
+     "RPSF": 0.935891145473675,
+     "REC": 0.9359135663466059,
+     "L3T": 0.9356882586570557
+    }
+   },
+   "shots REC/RPSF": 0.8808475013013188,
+   "time REC/RPSF": 0.9451459802462261,
+   "shots REC/L3T": 0.8242051906563461,
+   "time REC/L3T": 0.8655028677194736,
+   "shots REC/RPSF median": 1.0,
+   "shots REC<RPSF / = / > cells": "11/12/1",
+   "shots REC/L3T median": 1.0,
+   "shots REC<L3T / = / > cells": "4/16/4"
+  }
+ },
+ "cells": [
+  {
+   "device": "FakeAuckland",
+   "dataset": "BC",
+   "n": 4,
+   "L": 1,
+   "target": 0.9210526315789473,
+   "RPSF": {
+    "acc_inf": 0.9298245614035088,
+    "shots": 137,
+    "us_per_shot": 4.305777777777778,
+    "ms_per_prediction": 0.5898915555555555
+   },
+   "REC": {
+    "acc_inf": 0.9298245614035088,
+    "shots": 139,
+    "us_per_shot": 4.305777777777778,
+    "ms_per_prediction": 0.5985031111111111
+   },
+   "L3T": {
+    "acc_inf": 0.9298245614035088,
+    "shots": 151,
+    "us_per_shot": 4.305777777777779,
+    "ms_per_prediction": 0.6501724444444447
+   }
+  },
+  {
+   "device": "FakeAuckland",
+   "dataset": "BC",
+   "n": 4,
+   "L": 2,
+   "target": 0.9385964912280701,
+   "RPSF": {
+    "acc_inf": 0.9473684210526315,
+    "shots": 39,
+    "us_per_shot": 8.757333333333333,
+    "ms_per_prediction": 0.341536
+   },
+   "REC": {
+    "acc_inf": 0.9473684210526315,
+    "shots": 39,
+    "us_per_shot": 8.757333333333333,
+    "ms_per_prediction": 0.341536
+   },
+   "L3T": {
+    "acc_inf": 0.9473684210526315,
+    "shots": 45,
+    "us_per_shot": 8.828444444444445,
+    "ms_per_prediction": 0.39728
+   }
+  },
+  {
+   "device": "FakeAuckland",
+   "dataset": "BC",
+   "n": 4,
+   "L": 4,
+   "target": 0.9385964912280701,
+   "RPSF": {
+    "acc_inf": 0.9473684210526315,
+    "shots": 21,
+    "us_per_shot": 17.660444444444444,
+    "ms_per_prediction": 0.37086933333333333
+   },
+   "REC": {
+    "acc_inf": 0.9473684210526315,
+    "shots": 21,
+    "us_per_shot": 17.660444444444444,
+    "ms_per_prediction": 0.37086933333333333
+   },
+   "L3T": {
+    "acc_inf": 0.9473684210526315,
+    "shots": 23,
+    "us_per_shot": 17.76711111111111,
+    "ms_per_prediction": 0.4086435555555555
+   }
+  },
+  {
+   "device": "FakeAuckland",
+   "dataset": "BC",
+   "n": 4,
+   "L": 8,
+   "target": 0.956140350877193,
+   "RPSF": {
+    "acc_inf": 0.9649122807017544,
+    "shots": 89,
+    "us_per_shot": 35.46666666666663,
+    "ms_per_prediction": 3.1565333333333303
+   },
+   "REC": {
+    "acc_inf": 0.9649122807017544,
+    "shots": 89,
+    "us_per_shot": 35.46666666666663,
+    "ms_per_prediction": 3.1565333333333303
+   },
+   "L3T": {
+    "acc_inf": 0.9649122807017544,
+    "shots": 93,
+    "us_per_shot": 35.53777777777776,
+    "ms_per_prediction": 3.305013333333332
+   }
+  },
+  {
+   "device": "FakeAuckland",
+   "dataset": "BC",
+   "n": 4,
+   "L": 12,
+   "target": 0.956140350877193,
+   "RPSF": {
+    "acc_inf": 0.9649122807017544,
+    "shots": 235,
+    "us_per_shot": 53.27288888888885,
+    "ms_per_prediction": 12.51912888888888
+   },
+   "REC": {
+    "acc_inf": 0.9649122807017544,
+    "shots": 217,
+    "us_per_shot": 53.052444444444376,
+    "ms_per_prediction": 11.51238044444443
+   },
+   "L3T": {
+    "acc_inf": 0.9649122807017544,
+    "shots": 217,
+    "us_per_shot": 53.30844444444442,
+    "ms_per_prediction": 11.56793244444444
+   }
+  },
+  {
+   "device": "FakeAuckland",
+   "dataset": "BC",
+   "n": 4,
+   "L": 16,
+   "target": 0.9385964912280701,
+   "RPSF": {
+    "acc_inf": 0.9385964912280702,
+    "shots": 273,
+    "us_per_shot": 71.07911111111117,
+    "ms_per_prediction": 19.40459733333335
+   },
+   "REC": {
+    "acc_inf": 0.9385964912280702,
+    "shots": 273,
+    "us_per_shot": 71.07911111111117,
+    "ms_per_prediction": 19.40459733333335
+   },
+   "L3T": {
+    "acc_inf": 0.9385964912280702,
+    "shots": 435,
+    "us_per_shot": 71.22133333333342,
+    "ms_per_prediction": 30.981280000000037
+   }
+  },
+  {
+   "device": "FakeAuckland",
+   "dataset": "BC",
+   "n": 6,
+   "L": 1,
+   "target": 0.9298245614035088,
+   "RPSF": {
+    "acc_inf": 0.9385964912280702,
+    "shots": 937,
+    "us_per_shot": 4.170666666666667,
+    "ms_per_prediction": 3.9079146666666675
+   },
+   "REC": {
+    "acc_inf": 0.9385964912280702,
+    "shots": 867,
+    "us_per_shot": 4.2844444444444445,
+    "ms_per_prediction": 3.7146133333333333
+   },
+   "L3T": {
+    "acc_inf": 0.9385964912280702,
+    "shots": 803,
+    "us_per_shot": 4.135111111111112,
+    "ms_per_prediction": 3.3204942222222225
+   }
+  },
+  {
+   "device": "FakeAuckland",
+   "dataset": "BC",
+   "n": 6,
+   "L": 2,
+   "target": 0.9473684210526315,
+   "RPSF": {
+    "acc_inf": 0.956140350877193,
+    "shots": 89,
+    "us_per_shot": 9.432888888888888,
+    "ms_per_prediction": 0.839527111111111
+   },
+   "REC": {
+    "acc_inf": 0.956140350877193,
+    "shots": 101,
+    "us_per_shot": 12.512000000000004,
+    "ms_per_prediction": 1.2637120000000004
+   },
+   "L3T": {
+    "acc_inf": 0.956140350877193,
+    "shots": 101,
+    "us_per_shot": 12.512000000000004,
+    "ms_per_prediction": 1.2637120000000004
+   }
+  },
+  {
+   "device": "FakeAuckland",
+   "dataset": "BC",
+   "n": 6,
+   "L": 4,
+   "target": 0.956140350877193,
+   "RPSF": {
+    "acc_inf": 0.9649122807017544,
+    "shots": 591,
+    "us_per_shot": 25.326222222222214,
+    "ms_per_prediction": 14.967797333333328
+   },
+   "REC": {
+    "acc_inf": 0.9649122807017544,
+    "shots": 469,
+    "us_per_shot": 25.96622222222221,
+    "ms_per_prediction": 12.178158222222217
+   },
+   "L3T": {
+    "acc_inf": 0.9649122807017544,
+    "shots": 469,
+    "us_per_shot": 25.96622222222221,
+    "ms_per_prediction": 12.178158222222217
+   }
+  },
+  {
+   "device": "FakeAuckland",
+   "dataset": "BC",
+   "n": 6,
+   "L": 8,
+   "target": 0.9298245614035088,
+   "RPSF": {
+    "acc_inf": 0.9385964912280702,
+    "shots": 41,
+    "us_per_shot": 54.908444444444385,
+    "ms_per_prediction": 2.25124622222222
+   },
+   "REC": {
+    "acc_inf": 0.9385964912280702,
+    "shots": 41,
+    "us_per_shot": 54.908444444444385,
+    "ms_per_prediction": 2.25124622222222
+   },
+   "L3T": {
+    "acc_inf": 0.9385964912280702,
+    "shots": 41,
+    "us_per_shot": 54.197333333333276,
+    "ms_per_prediction": 2.222090666666664
+   }
+  },
+  {
+   "device": "FakeAuckland",
+   "dataset": "BC",
+   "n": 6,
+   "L": 12,
+   "target": 0.9210526315789473,
+   "RPSF": {
+    "acc_inf": 0.9210526315789473,
+    "shots": 91,
+    "us_per_shot": 81.44000000000011,
+    "ms_per_prediction": 7.41104000000001
+   },
+   "REC": {
+    "acc_inf": 0.9210526315789473,
+    "shots": 83,
+    "us_per_shot": 81.368888888889,
+    "ms_per_prediction": 6.753617777777787
+   },
+   "L3T": {
+    "acc_inf": 0.9298245614035088,
+    "shots": 83,
+    "us_per_shot": 81.5822222222223,
+    "ms_per_prediction": 6.771324444444451
+   }
+  },
+  {
+   "device": "FakeAuckland",
+   "dataset": "BC",
+   "n": 6,
+   "L": 16,
+   "target": 0.956140350877193,
+   "RPSF": {
+    "acc_inf": 0.956140350877193,
+    "shots": 1013,
+    "us_per_shot": 111.28533333333371,
+    "ms_per_prediction": 112.73204266666706
+   },
+   "REC": {
+    "acc_inf": 0.956140350877193,
+    "shots": 1013,
+    "us_per_shot": 111.28533333333371,
+    "ms_per_prediction": 112.73204266666706
+   },
+   "L3T": {
+    "acc_inf": 0.956140350877193,
+    "shots": 689,
+    "us_per_shot": 109.4008888888892,
+    "ms_per_prediction": 75.37721244444465
+   }
+  },
+  {
+   "device": "FakeAuckland",
+   "dataset": "D38",
+   "n": 4,
+   "L": 1,
+   "target": 0.888888888888889,
+   "RPSF": {
+    "acc_inf": 0.9027777777777778,
+    "shots": 21,
+    "us_per_shot": 4.305777777777778,
+    "ms_per_prediction": 0.09042133333333334
+   },
+   "REC": {
+    "acc_inf": 0.9027777777777778,
+    "shots": 21,
+    "us_per_shot": 4.305777777777778,
+    "ms_per_prediction": 0.09042133333333334
+   },
+   "L3T": {
+    "acc_inf": 0.9027777777777778,
+    "shots": 21,
+    "us_per_shot": 4.305777777777779,
+    "ms_per_prediction": 0.09042133333333337
+   }
+  },
+  {
+   "device": "FakeAuckland",
+   "dataset": "D38",
+   "n": 4,
+   "L": 2,
+   "target": 0.888888888888889,
+   "RPSF": {
+    "acc_inf": 0.8888888888888888,
+    "shots": 9,
+    "us_per_shot": 8.757333333333333,
+    "ms_per_prediction": 0.078816
+   },
+   "REC": {
+    "acc_inf": 0.8888888888888888,
+    "shots": 9,
+    "us_per_shot": 8.757333333333333,
+    "ms_per_prediction": 0.078816
+   },
+   "L3T": {
+    "acc_inf": 0.8888888888888888,
+    "shots": 9,
+    "us_per_shot": 8.79288888888889,
+    "ms_per_prediction": 0.079136
+   }
+  },
+  {
+   "device": "FakeAuckland",
+   "dataset": "D38",
+   "n": 4,
+   "L": 4,
+   "target": 0.9166666666666667,
+   "RPSF": {
+    "acc_inf": 0.9444444444444444,
+    "shots": 9,
+    "us_per_shot": 17.660444444444444,
+    "ms_per_prediction": 0.158944
+   },
+   "REC": {
+    "acc_inf": 0.9444444444444444,
+    "shots": 9,
+    "us_per_shot": 17.660444444444444,
+    "ms_per_prediction": 0.158944
+   },
+   "L3T": {
+    "acc_inf": 0.9444444444444444,
+    "shots": 9,
+    "us_per_shot": 17.695999999999998,
+    "ms_per_prediction": 0.159264
+   }
+  },
+  {
+   "device": "FakeAuckland",
+   "dataset": "D38",
+   "n": 4,
+   "L": 8,
+   "target": 0.9166666666666667,
+   "RPSF": {
+    "acc_inf": 0.9166666666666666,
+    "shots": 31,
+    "us_per_shot": 35.46666666666663,
+    "ms_per_prediction": 1.0994666666666655
+   },
+   "REC": {
+    "acc_inf": 0.9166666666666666,
+    "shots": 25,
+    "us_per_shot": 35.189333333333295,
+    "ms_per_prediction": 0.8797333333333324
+   },
+   "L3T": {
+    "acc_inf": 0.9166666666666666,
+    "shots": 29,
+    "us_per_shot": 35.53777777777776,
+    "ms_per_prediction": 1.0305955555555553
+   }
+  },
+  {
+   "device": "FakeAuckland",
+   "dataset": "D38",
+   "n": 4,
+   "L": 12,
+   "target": 0.9305555555555556,
+   "RPSF": {
+    "acc_inf": 0.9305555555555556,
+    "shots": 45,
+    "us_per_shot": 53.27288888888885,
+    "ms_per_prediction": 2.3972799999999985
+   },
+   "REC": {
+    "acc_inf": 0.9305555555555556,
+    "shots": 43,
+    "us_per_shot": 53.27288888888885,
+    "ms_per_prediction": 2.2907342222222207
+   },
+   "L3T": {
+    "acc_inf": 0.9305555555555556,
+    "shots": 45,
+    "us_per_shot": 53.272888888888865,
+    "ms_per_prediction": 2.397279999999999
+   }
+  },
+  {
+   "device": "FakeAuckland",
+   "dataset": "D38",
+   "n": 4,
+   "L": 16,
+   "target": 0.9583333333333334,
+   "RPSF": {
+    "acc_inf": 0.9722222222222222,
+    "shots": 403,
+    "us_per_shot": 71.07911111111117,
+    "ms_per_prediction": 28.6448817777778
+   },
+   "REC": {
+    "acc_inf": 0.9583333333333334,
+    "shots": 689,
+    "us_per_shot": 71.07911111111117,
+    "ms_per_prediction": 48.9735075555556
+   },
+   "L3T": {
+    "acc_inf": 0.9722222222222222,
+    "shots": 507,
+    "us_per_shot": 71.11466666666675,
+    "ms_per_prediction": 36.05513600000004
+   }
+  },
+  {
+   "device": "FakeAuckland",
+   "dataset": "D38",
+   "n": 6,
+   "L": 1,
+   "target": 0.888888888888889,
+   "RPSF": {
+    "acc_inf": 0.8888888888888888,
+    "shots": 23,
+    "us_per_shot": 4.170666666666667,
+    "ms_per_prediction": 0.09592533333333336
+   },
+   "REC": {
+    "acc_inf": 0.8888888888888888,
+    "shots": 23,
+    "us_per_shot": 4.170666666666667,
+    "ms_per_prediction": 0.09592533333333336
+   },
+   "L3T": {
+    "acc_inf": 0.8888888888888888,
+    "shots": 23,
+    "us_per_shot": 4.064,
+    "ms_per_prediction": 0.09347200000000001
+   }
+  },
+  {
+   "device": "FakeAuckland",
+   "dataset": "D38",
+   "n": 6,
+   "L": 2,
+   "target": 0.9027777777777778,
+   "RPSF": {
+    "acc_inf": 0.9027777777777778,
+    "shots": 13,
+    "us_per_shot": 9.432888888888888,
+    "ms_per_prediction": 0.12262755555555555
+   },
+   "REC": {
+    "acc_inf": 0.9027777777777778,
+    "shots": 13,
+    "us_per_shot": 12.440888888888892,
+    "ms_per_prediction": 0.1617315555555556
+   },
+   "L3T": {
+    "acc_inf": 0.9027777777777778,
+    "shots": 13,
+    "us_per_shot": 12.440888888888892,
+    "ms_per_prediction": 0.1617315555555556
+   }
+  },
+  {
+   "device": "FakeAuckland",
+   "dataset": "D38",
+   "n": 6,
+   "L": 4,
+   "target": 0.9305555555555556,
+   "RPSF": {
+    "acc_inf": 0.9305555555555556,
+    "shots": 937,
+    "us_per_shot": 25.326222222222214,
+    "ms_per_prediction": 23.730670222222216
+   },
+   "REC": {
+    "acc_inf": 0.9444444444444444,
+    "shots": 31,
+    "us_per_shot": 26.001777777777768,
+    "ms_per_prediction": 0.8060551111111108
+   },
+   "L3T": {
+    "acc_inf": 0.9444444444444444,
+    "shots": 31,
+    "us_per_shot": 26.001777777777768,
+    "ms_per_prediction": 0.8060551111111108
+   }
+  },
+  {
+   "device": "FakeAuckland",
+   "dataset": "D38",
+   "n": 6,
+   "L": 8,
+   "target": 0.9166666666666667,
+   "RPSF": {
+    "acc_inf": 0.9305555555555556,
+    "shots": 29,
+    "us_per_shot": 54.87288888888883,
+    "ms_per_prediction": 1.5913137777777762
+   },
+   "REC": {
+    "acc_inf": 0.9305555555555556,
+    "shots": 29,
+    "us_per_shot": 54.87288888888883,
+    "ms_per_prediction": 1.5913137777777762
+   },
+   "L3T": {
+    "acc_inf": 0.9305555555555556,
+    "shots": 31,
+    "us_per_shot": 54.19733333333327,
+    "ms_per_prediction": 1.6801173333333312
+   }
+  },
+  {
+   "device": "FakeAuckland",
+   "dataset": "D38",
+   "n": 6,
+   "L": 12,
+   "target": 0.9305555555555556,
+   "RPSF": {
+    "acc_inf": 0.9166666666666666,
+    "shots": null,
+    "us_per_shot": 81.47555555555567,
+    "ms_per_prediction": null
+   },
+   "REC": {
+    "acc_inf": 0.9166666666666666,
+    "shots": null,
+    "us_per_shot": 81.44000000000011,
+    "ms_per_prediction": null
+   },
+   "L3T": {
+    "acc_inf": 0.9166666666666666,
+    "shots": null,
+    "us_per_shot": 81.19111111111118,
+    "ms_per_prediction": null
+   }
+  },
+  {
+   "device": "FakeAuckland",
+   "dataset": "D38",
+   "n": 6,
+   "L": 16,
+   "target": 0.888888888888889,
+   "RPSF": {
+    "acc_inf": 0.9027777777777778,
+    "shots": 147,
+    "us_per_shot": 111.28533333333371,
+    "ms_per_prediction": 16.358944000000054
+   },
+   "REC": {
+    "acc_inf": 0.9027777777777778,
+    "shots": 143,
+    "us_per_shot": 111.28533333333371,
+    "ms_per_prediction": 15.91380266666672
+   },
+   "L3T": {
+    "acc_inf": 0.9027777777777778,
+    "shots": 139,
+    "us_per_shot": 109.54311111111141,
+    "ms_per_prediction": 15.226492444444485
+   }
+  },
+  {
+   "device": "FakeTorino",
+   "dataset": "BC",
+   "n": 4,
+   "L": 1,
+   "target": 0.9210526315789473,
+   "RPSF": {
+    "acc_inf": 0.9298245614035088,
+    "shots": 147,
+    "us_per_shot": 2.192,
+    "ms_per_prediction": 0.32222400000000007
+   },
+   "REC": {
+    "acc_inf": 0.9298245614035088,
+    "shots": 141,
+    "us_per_shot": 2.4040000000000004,
+    "ms_per_prediction": 0.33896400000000004
+   },
+   "L3T": {
+    "acc_inf": 0.9298245614035088,
+    "shots": 141,
+    "us_per_shot": 2.4040000000000004,
+    "ms_per_prediction": 0.33896400000000004
+   }
+  },
+  {
+   "device": "FakeTorino",
+   "dataset": "BC",
+   "n": 4,
+   "L": 2,
+   "target": 0.9385964912280701,
+   "RPSF": {
+    "acc_inf": 0.956140350877193,
+    "shots": 43,
+    "us_per_shot": 2.9600000000000004,
+    "ms_per_prediction": 0.12728
+   },
+   "REC": {
+    "acc_inf": 0.956140350877193,
+    "shots": 39,
+    "us_per_shot": 3.2920000000000007,
+    "ms_per_prediction": 0.12838800000000003
+   },
+   "L3T": {
+    "acc_inf": 0.956140350877193,
+    "shots": 39,
+    "us_per_shot": 3.2920000000000007,
+    "ms_per_prediction": 0.12838800000000003
+   }
+  },
+  {
+   "device": "FakeTorino",
+   "dataset": "BC",
+   "n": 4,
+   "L": 4,
+   "target": 0.9385964912280701,
+   "RPSF": {
+    "acc_inf": 0.9473684210526315,
+    "shots": 21,
+    "us_per_shot": 4.592,
+    "ms_per_prediction": 0.09643199999999999
+   },
+   "REC": {
+    "acc_inf": 0.9473684210526315,
+    "shots": 19,
+    "us_per_shot": 5.292,
+    "ms_per_prediction": 0.100548
+   },
+   "L3T": {
+    "acc_inf": 0.9473684210526315,
+    "shots": 19,
+    "us_per_shot": 5.292,
+    "ms_per_prediction": 0.100548
+   }
+  },
+  {
+   "device": "FakeTorino",
+   "dataset": "BC",
+   "n": 4,
+   "L": 8,
+   "target": 0.956140350877193,
+   "RPSF": {
+    "acc_inf": 0.9649122807017544,
+    "shots": 69,
+    "us_per_shot": 7.791999999999996,
+    "ms_per_prediction": 0.5376479999999998
+   },
+   "REC": {
+    "acc_inf": 0.9649122807017544,
+    "shots": 47,
+    "us_per_shot": 9.163999999999994,
+    "ms_per_prediction": 0.43070799999999976
+   },
+   "L3T": {
+    "acc_inf": 0.9649122807017544,
+    "shots": 47,
+    "us_per_shot": 9.163999999999994,
+    "ms_per_prediction": 0.43070799999999976
+   }
+  },
+  {
+   "device": "FakeTorino",
+   "dataset": "BC",
+   "n": 4,
+   "L": 12,
+   "target": 0.956140350877193,
+   "RPSF": {
+    "acc_inf": 0.9649122807017544,
+    "shots": 119,
+    "us_per_shot": 10.640000000000004,
+    "ms_per_prediction": 1.2661600000000006
+   },
+   "REC": {
+    "acc_inf": 0.9649122807017544,
+    "shots": 93,
+    "us_per_shot": 13.132000000000025,
+    "ms_per_prediction": 1.2212760000000022
+   },
+   "L3T": {
+    "acc_inf": 0.9649122807017544,
+    "shots": 93,
+    "us_per_shot": 13.132000000000025,
+    "ms_per_prediction": 1.2212760000000022
+   }
+  },
+  {
+   "device": "FakeTorino",
+   "dataset": "BC",
+   "n": 4,
+   "L": 16,
+   "target": 0.9385964912280701,
+   "RPSF": {
+    "acc_inf": 0.9473684210526315,
+    "shots": 103,
+    "us_per_shot": 14.19200000000003,
+    "ms_per_prediction": 1.461776000000003
+   },
+   "REC": {
+    "acc_inf": 0.9473684210526315,
+    "shots": 61,
+    "us_per_shot": 17.03600000000005,
+    "ms_per_prediction": 1.0391960000000031
+   },
+   "L3T": {
+    "acc_inf": 0.9473684210526315,
+    "shots": 61,
+    "us_per_shot": 17.03600000000005,
+    "ms_per_prediction": 1.0391960000000031
+   }
+  },
+  {
+   "device": "FakeTorino",
+   "dataset": "BC",
+   "n": 6,
+   "L": 1,
+   "target": 0.9298245614035088,
+   "RPSF": {
+    "acc_inf": 0.9385964912280702,
+    "shots": 591,
+    "us_per_shot": 3.128000000000001,
+    "ms_per_prediction": 1.8486480000000005
+   },
+   "REC": {
+    "acc_inf": 0.9385964912280702,
+    "shots": 591,
+    "us_per_shot": 3.128000000000001,
+    "ms_per_prediction": 1.8486480000000005
+   },
+   "L3T": {
+    "acc_inf": 0.9385964912280702,
+    "shots": 469,
+    "us_per_shot": 2.964000000000001,
+    "ms_per_prediction": 1.3901160000000004
+   }
+  },
+  {
+   "device": "FakeTorino",
+   "dataset": "BC",
+   "n": 6,
+   "L": 2,
+   "target": 0.9473684210526315,
+   "RPSF": {
+    "acc_inf": 0.956140350877193,
+    "shots": 81,
+    "us_per_shot": 4.688,
+    "ms_per_prediction": 0.37972799999999995
+   },
+   "REC": {
+    "acc_inf": 0.956140350877193,
+    "shots": 83,
+    "us_per_shot": 4.292,
+    "ms_per_prediction": 0.356236
+   },
+   "L3T": {
+    "acc_inf": 0.956140350877193,
+    "shots": 85,
+    "us_per_shot": 4.26,
+    "ms_per_prediction": 0.3621
+   }
+  },
+  {
+   "device": "FakeTorino",
+   "dataset": "BC",
+   "n": 6,
+   "L": 4,
+   "target": 0.956140350877193,
+   "RPSF": {
+    "acc_inf": 0.9649122807017544,
+    "shots": 253,
+    "us_per_shot": 8.619999999999996,
+    "ms_per_prediction": 2.1808599999999987
+   },
+   "REC": {
+    "acc_inf": 0.9649122807017544,
+    "shots": 253,
+    "us_per_shot": 8.619999999999996,
+    "ms_per_prediction": 2.1808599999999987
+   },
+   "L3T": {
+    "acc_inf": 0.9649122807017544,
+    "shots": 547,
+    "us_per_shot": 8.027999999999995,
+    "ms_per_prediction": 4.391315999999997
+   }
+  },
+  {
+   "device": "FakeTorino",
+   "dataset": "BC",
+   "n": 6,
+   "L": 8,
+   "target": 0.9298245614035088,
+   "RPSF": {
+    "acc_inf": 0.9385964912280702,
+    "shots": 21,
+    "us_per_shot": 17.33600000000004,
+    "ms_per_prediction": 0.3640560000000008
+   },
+   "REC": {
+    "acc_inf": 0.9385964912280702,
+    "shots": 21,
+    "us_per_shot": 17.33600000000004,
+    "ms_per_prediction": 0.3640560000000008
+   },
+   "L3T": {
+    "acc_inf": 0.9385964912280702,
+    "shots": 19,
+    "us_per_shot": 15.032000000000037,
+    "ms_per_prediction": 0.2856080000000007
+   }
+  },
+  {
+   "device": "FakeTorino",
+   "dataset": "BC",
+   "n": 6,
+   "L": 12,
+   "target": 0.9210526315789473,
+   "RPSF": {
+    "acc_inf": 0.9298245614035088,
+    "shots": 79,
+    "us_per_shot": 25.08399999999996,
+    "ms_per_prediction": 1.9816359999999968
+   },
+   "REC": {
+    "acc_inf": 0.9298245614035088,
+    "shots": 79,
+    "us_per_shot": 25.08399999999996,
+    "ms_per_prediction": 1.9816359999999968
+   },
+   "L3T": {
+    "acc_inf": 0.9298245614035088,
+    "shots": 43,
+    "us_per_shot": 22.1,
+    "ms_per_prediction": 0.9503
+   }
+  },
+  {
+   "device": "FakeTorino",
+   "dataset": "BC",
+   "n": 6,
+   "L": 16,
+   "target": 0.956140350877193,
+   "RPSF": {
+    "acc_inf": 0.956140350877193,
+    "shots": 201,
+    "us_per_shot": 34.09199999999994,
+    "ms_per_prediction": 6.852491999999988
+   },
+   "REC": {
+    "acc_inf": 0.956140350877193,
+    "shots": 201,
+    "us_per_shot": 34.09199999999994,
+    "ms_per_prediction": 6.852491999999988
+   },
+   "L3T": {
+    "acc_inf": 0.956140350877193,
+    "shots": 195,
+    "us_per_shot": 29.46799999999993,
+    "ms_per_prediction": 5.746259999999986
+   }
+  },
+  {
+   "device": "FakeTorino",
+   "dataset": "D38",
+   "n": 4,
+   "L": 1,
+   "target": 0.888888888888889,
+   "RPSF": {
+    "acc_inf": 0.9027777777777778,
+    "shots": 23,
+    "us_per_shot": 2.192,
+    "ms_per_prediction": 0.050416
+   },
+   "REC": {
+    "acc_inf": 0.9027777777777778,
+    "shots": 21,
+    "us_per_shot": 2.372,
+    "ms_per_prediction": 0.049811999999999995
+   },
+   "L3T": {
+    "acc_inf": 0.9027777777777778,
+    "shots": 21,
+    "us_per_shot": 2.372,
+    "ms_per_prediction": 0.049811999999999995
+   }
+  },
+  {
+   "device": "FakeTorino",
+   "dataset": "D38",
+   "n": 4,
+   "L": 2,
+   "target": 0.888888888888889,
+   "RPSF": {
+    "acc_inf": 0.8888888888888888,
+    "shots": 9,
+    "us_per_shot": 2.9600000000000004,
+    "ms_per_prediction": 0.026640000000000004
+   },
+   "REC": {
+    "acc_inf": 0.8888888888888888,
+    "shots": 7,
+    "us_per_shot": 3.3240000000000007,
+    "ms_per_prediction": 0.023268000000000004
+   },
+   "L3T": {
+    "acc_inf": 0.8888888888888888,
+    "shots": 7,
+    "us_per_shot": 3.3240000000000007,
+    "ms_per_prediction": 0.023268000000000004
+   }
+  },
+  {
+   "device": "FakeTorino",
+   "dataset": "D38",
+   "n": 4,
+   "L": 4,
+   "target": 0.9166666666666667,
+   "RPSF": {
+    "acc_inf": 0.9444444444444444,
+    "shots": 7,
+    "us_per_shot": 4.592,
+    "ms_per_prediction": 0.032144
+   },
+   "REC": {
+    "acc_inf": 0.9444444444444444,
+    "shots": 7,
+    "us_per_shot": 5.292,
+    "ms_per_prediction": 0.037043999999999994
+   },
+   "L3T": {
+    "acc_inf": 0.9444444444444444,
+    "shots": 7,
+    "us_per_shot": 5.292,
+    "ms_per_prediction": 0.037043999999999994
+   }
+  },
+  {
+   "device": "FakeTorino",
+   "dataset": "D38",
+   "n": 4,
+   "L": 8,
+   "target": 0.9166666666666667,
+   "RPSF": {
+    "acc_inf": 0.9166666666666666,
+    "shots": 19,
+    "us_per_shot": 7.791999999999996,
+    "ms_per_prediction": 0.14804799999999993
+   },
+   "REC": {
+    "acc_inf": 0.9166666666666666,
+    "shots": 13,
+    "us_per_shot": 9.163999999999994,
+    "ms_per_prediction": 0.11913199999999992
+   },
+   "L3T": {
+    "acc_inf": 0.9166666666666666,
+    "shots": 13,
+    "us_per_shot": 9.163999999999994,
+    "ms_per_prediction": 0.11913199999999992
+   }
+  },
+  {
+   "device": "FakeTorino",
+   "dataset": "D38",
+   "n": 4,
+   "L": 12,
+   "target": 0.9305555555555556,
+   "RPSF": {
+    "acc_inf": 0.9444444444444444,
+    "shots": 21,
+    "us_per_shot": 10.640000000000004,
+    "ms_per_prediction": 0.22344000000000008
+   },
+   "REC": {
+    "acc_inf": 0.9444444444444444,
+    "shots": 15,
+    "us_per_shot": 13.068000000000023,
+    "ms_per_prediction": 0.19602000000000036
+   },
+   "L3T": {
+    "acc_inf": 0.9444444444444444,
+    "shots": 15,
+    "us_per_shot": 13.068000000000023,
+    "ms_per_prediction": 0.19602000000000036
+   }
+  },
+  {
+   "device": "FakeTorino",
+   "dataset": "D38",
+   "n": 4,
+   "L": 16,
+   "target": 0.9583333333333334,
+   "RPSF": {
+    "acc_inf": 0.9722222222222222,
+    "shots": 165,
+    "us_per_shot": 14.19200000000003,
+    "ms_per_prediction": 2.3416800000000046
+   },
+   "REC": {
+    "acc_inf": 0.9722222222222222,
+    "shots": 89,
+    "us_per_shot": 16.97200000000005,
+    "ms_per_prediction": 1.5105080000000046
+   },
+   "L3T": {
+    "acc_inf": 0.9722222222222222,
+    "shots": 89,
+    "us_per_shot": 16.97200000000005,
+    "ms_per_prediction": 1.5105080000000046
+   }
+  },
+  {
+   "device": "FakeTorino",
+   "dataset": "D38",
+   "n": 6,
+   "L": 1,
+   "target": 0.888888888888889,
+   "RPSF": {
+    "acc_inf": 0.9027777777777778,
+    "shots": 23,
+    "us_per_shot": 3.128000000000001,
+    "ms_per_prediction": 0.07194400000000002
+   },
+   "REC": {
+    "acc_inf": 0.9027777777777778,
+    "shots": 23,
+    "us_per_shot": 3.128000000000001,
+    "ms_per_prediction": 0.07194400000000002
+   },
+   "L3T": {
+    "acc_inf": 0.9027777777777778,
+    "shots": 23,
+    "us_per_shot": 2.9960000000000004,
+    "ms_per_prediction": 0.06890800000000001
+   }
+  },
+  {
+   "device": "FakeTorino",
+   "dataset": "D38",
+   "n": 6,
+   "L": 2,
+   "target": 0.9027777777777778,
+   "RPSF": {
+    "acc_inf": 0.9027777777777778,
+    "shots": 11,
+    "us_per_shot": 4.688,
+    "ms_per_prediction": 0.051567999999999996
+   },
+   "REC": {
+    "acc_inf": 0.9027777777777778,
+    "shots": 11,
+    "us_per_shot": 4.688,
+    "ms_per_prediction": 0.051567999999999996
+   },
+   "L3T": {
+    "acc_inf": 0.9027777777777778,
+    "shots": 11,
+    "us_per_shot": 4.26,
+    "ms_per_prediction": 0.04686
+   }
+  },
+  {
+   "device": "FakeTorino",
+   "dataset": "D38",
+   "n": 6,
+   "L": 4,
+   "target": 0.9305555555555556,
+   "RPSF": {
+    "acc_inf": 0.9444444444444444,
+    "shots": 15,
+    "us_per_shot": 8.715999999999994,
+    "ms_per_prediction": 0.13073999999999988
+   },
+   "REC": {
+    "acc_inf": 0.9444444444444444,
+    "shots": 15,
+    "us_per_shot": 8.715999999999994,
+    "ms_per_prediction": 0.13073999999999988
+   },
+   "L3T": {
+    "acc_inf": 0.9444444444444444,
+    "shots": 17,
+    "us_per_shot": 7.995999999999996,
+    "ms_per_prediction": 0.13593199999999994
+   }
+  },
+  {
+   "device": "FakeTorino",
+   "dataset": "D38",
+   "n": 6,
+   "L": 8,
+   "target": 0.9166666666666667,
+   "RPSF": {
+    "acc_inf": 0.9305555555555556,
+    "shots": 15,
+    "us_per_shot": 17.304000000000045,
+    "ms_per_prediction": 0.2595600000000007
+   },
+   "REC": {
+    "acc_inf": 0.9305555555555556,
+    "shots": 15,
+    "us_per_shot": 17.304000000000045,
+    "ms_per_prediction": 0.2595600000000007
+   },
+   "L3T": {
+    "acc_inf": 0.9305555555555556,
+    "shots": 15,
+    "us_per_shot": 15.16000000000004,
+    "ms_per_prediction": 0.2274000000000006
+   }
+  },
+  {
+   "device": "FakeTorino",
+   "dataset": "D38",
+   "n": 6,
+   "L": 12,
+   "target": 0.9305555555555556,
+   "RPSF": {
+    "acc_inf": 0.9305555555555556,
+    "shots": 187,
+    "us_per_shot": 25.051999999999964,
+    "ms_per_prediction": 4.684723999999993
+   },
+   "REC": {
+    "acc_inf": 0.9305555555555556,
+    "shots": 187,
+    "us_per_shot": 25.051999999999964,
+    "ms_per_prediction": 4.684723999999993
+   },
+   "L3T": {
+    "acc_inf": 0.9305555555555556,
+    "shots": 20353,
+    "us_per_shot": 22.163999999999998,
+    "ms_per_prediction": 451.1038919999999
+   }
+  },
+  {
+   "device": "FakeTorino",
+   "dataset": "D38",
+   "n": 6,
+   "L": 16,
+   "target": 0.888888888888889,
+   "RPSF": {
+    "acc_inf": 0.8888888888888888,
+    "shots": 31,
+    "us_per_shot": 34.02799999999995,
+    "ms_per_prediction": 1.0548679999999984
+   },
+   "REC": {
+    "acc_inf": 0.8888888888888888,
+    "shots": 31,
+    "us_per_shot": 34.02799999999995,
+    "ms_per_prediction": 1.0548679999999984
+   },
+   "L3T": {
+    "acc_inf": 0.8888888888888888,
+    "shots": 31,
+    "us_per_shot": 29.403999999999932,
+    "ms_per_prediction": 0.911523999999998
+   }
+  }
+ ],
+ "n2q_mismatch": []
+}

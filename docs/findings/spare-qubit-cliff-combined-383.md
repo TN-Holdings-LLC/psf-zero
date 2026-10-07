@@ -1702,6 +1702,74 @@ Hardware; more than 6 logical qubits; other models, encodings, optimisers; relia
 noiseless training per cell); a noise model independent of the calibration the recommended call reads (both come
 from the same fake device, which favours REC and L3T by construction, Addendum 399, section 4).
 
+
+---
+
+<!-- ===== Addendum 401 (source: spare-qubit-cliff-addendum-401-2026-10-07.md) ===== -->
+
+> **Note added when merging:** Exploratory, after Addendum 400, at the owner's request.
+
+## Addendum 401 -- Exploratory: DEPTH-R's shots and device time to a common accuracy target. The recommended call needs fewer shots than the guarded call in 8 and 11 of 24 cells, the same in 12 (geometric mean 0.86-0.88, median 1.00); with the device's 250 us repetition delay, device time follows shots, not circuit length; above about 255 shots the compilers' accuracies are equal (2026-10-07)
+
+**Status: exploratory, not pre-registered; computed after Addendum 400 at the owner's request ("実機時間の計算"). No
+classifier was trained or simulated again;** only the first 3 test points of each cell were compiled again, to
+measure circuit durations.
+
+## 1. Method
+
+[`benchmarks/depth_r_qpu_time.py`](../../benchmarks/depth_r_qpu_time.py), on DEPTH-R's recorded output
+([`data/2026-10-07/depth_r/`](../../data/2026-10-07/depth_r/)); output in
+[`data/2026-10-07/depth_r_qpu_time/`](../../data/2026-10-07/depth_r_qpu_time/).
+
+- **Shots.** For each test point the recorded noisy z and the readout error of the qubit carrying logical 0 give the
+  probability q of reading 0. With S shots (S odd) the prediction is the majority outcome; the chance it is right is
+  a binomial tail, computed exactly. A cell's expected accuracy at S shots is the mean over its points.
+- **Common target:** the noiseless model's accuracy on the cell minus 1 test point, the same for every arm. Reported:
+  the smallest S on a fixed grid reaching it.
+- **Device time per shot:** the compiled circuit's as-soon-as-possible duration with the fake device's gate durations
+  (rz virtual), plus the final measurement, median of 3 recompiled points per cell (the two-qubit count equalled the
+  record on all 432); with and without the device's reported `default_rep_delay`, 250 us on both devices.
+
+## 2. Results
+
+| | FakeAuckland | FakeTorino |
+|---|---|---|
+| cells where all three arms reach the target | 23 of 24 | 24 of 24 |
+| shots REC / RPSF: fewer / same / more (cells) | 8 / 12 / 3 | 11 / 12 / 1 |
+| shots REC / RPSF, geometric mean (median) | 0.859 (1.00) | 0.881 (1.00) |
+| shots REC / L3T, geometric mean (median) | 0.987 (1.00) | 0.824 (1.00) |
+| device time REC / RPSF, circuit only / with 250 us delay | 0.882 / 0.860 | 0.945 / 0.883 |
+| device time REC / L3T, circuit only / with 250 us delay | 0.991 / 0.988 | 0.866 / 0.827 |
+
+**Expected accuracy at a fixed number of shots** (pooled over the 24 cells; REC - RPSF in percentage points):
+FakeAuckland +0.12 at 15 shots, +0.03 at 63, +0.02 at 255, 0.00 at 1,023; FakeTorino +0.59, +0.10, +0.01, 0.00. At
+15 shots on FakeTorino Qiskit level 3 is 0.42 above REC.
+
+**Scale:** circuit durations at L = 16 are 14-34 us on FakeTorino and 71-111 us on FakeAuckland, below the 250 us
+repetition delay. Example: FakeAuckland, BC, n = 6, L = 16 needs about 1,000 shots per prediction, 0.11 s of circuit
+time and 0.37 s with the delay; for the 114 test points about 42 s.
+
+## 3. Reading
+
+1. **Where the compiler shows, it saves shots, not seconds per shot.** Fewer two-qubit gates raise the margin, and
+   with it the chance that few shots give the right sign; on half the cells the saving is zero. With the device's
+   repetition delay the per-shot time is nearly the same for every compiler, so device time follows the shot count.
+   (On FakeTorino's 4-qubit rings the recommended call's circuit has fewer two-qubit gates but a longer schedule,
+   17.0 against 14.2 us; why was not examined.)
+2. **The effect is confined to small shot budgets.** At 255 shots or more the three compilers give the same expected
+   accuracy to within 0.02 points; at 15 shots the recommended call is ahead of the guarded call by 0.1-0.6 points.
+3. **"Shots to a target" is a fragile measure.** It depends on the one or two points nearest the decision boundary:
+   one cell needs 20,353 shots with Qiskit level 3 and 187 with the others, another flips the order. Its geometric
+   means move with a few cells; the medians are 1.00. Accuracy at fixed shot budgets is the stabler measure.
+4. **For the benchmark design** ("Task-Oriented Quantum Benchmark", owner's draft of 2026-10-07): report task
+   accuracy at fixed shot budgets as the main task-time measure, shots to a target only beside it; count the device's
+   repetition delay; and expect compilers to matter for device time mainly when shots are scarce.
+
+## 4. Limits
+
+The same fake noise as DEPTH-R (the calibration the recommended call reads; Addendum 399, section 4); circuit
+durations from 3 points per cell; no queueing, no compile time in the device time; one training per cell.
+
 ---
 
 ---
