@@ -1770,6 +1770,107 @@ time and 0.37 s with the delay; for the 114 test points about 42 s.
 The same fake noise as DEPTH-R (the calibration the recommended call reads; Addendum 399, section 4); circuit
 durations from 3 points per cell; no queueing, no compile time in the device time; one training per cell.
 
+
+---
+
+<!-- ===== Addendum 402 (source: spare-qubit-cliff-addendum-402-2026-10-07.md) ===== -->
+
+> **Note added when merging:** Pre-registration of CALSPLIT, committed with its scripts and dry run as the lock, before the scored run.
+
+## Addendum 402 -- Pre-registration: CALSPLIT. Does the recommended call's task-level advantage survive when the calibration it compiles with is not the device's? The first neutrality test of the task-oriented benchmark draft: compilers read a stale calibration, the score uses the device's true noise (2026-10-07)
+
+**Status: pre-registration, written after CALSPLIT's dry run (development seed 2) and before any circuit of the scored
+data is compiled for it.** The lock is the commit that adds this Addendum with the three scripts and the dry run; the
+scored run follows it. Owner's go-ahead: 2026-10-07 ("最初の試験を設計").
+
+## 1. Why
+
+In DEPTH and DEPTH-R the recommended call's estimate and the simulator's noise come from the same fake-device
+calibration, so the tests favour calibration-aware compilers by construction (Addenda 345, 399). The benchmark draft
+(owner's document of 2026-10-07) makes separating the two its first neutrality rule. CALSPLIT keeps everything of
+DEPTH-R except what the compilers see.
+
+## 2. Design
+
+[`benchmarks/calsplit_eval.py`](../../benchmarks/calsplit_eval.py), run by
+[`benchmarks/run_calsplit.sh`](../../benchmarks/run_calsplit.sh), checked by the independent
+[`benchmarks/calsplit_verify.py`](../../benchmarks/calsplit_verify.py).
+
+- **Unchanged from DEPTH-R** (imported through [`depth_r_eval.py`](../../benchmarks/depth_r_eval.py) and DEPTH's
+  [`depth_eval.py`](../../data/2026-10-05/workplace/depth1/depth_eval.py)): data (split seed 4), the trained
+  parameters as committed in [`data/2026-10-07/depth_r/`](../../data/2026-10-07/depth_r/) (no training), the circuits,
+  BC and D38, n in {4, 6}, L in {1, 2, 4, 8, 12, 16}, FakeAuckland and FakeTorino, the noisy simulation with the
+  device's **true** noise model, readout, P0's checks (state infidelity <= 1e-6; reduced = whole-device simulation
+  within 1e-9 on the first two points of every (L, file)).
+- **What the calibration-aware compilers see:** a stale Target from STALE's `stale_target()`
+  ([`benchmarks/stale_eval.py`](../../benchmarks/stale_eval.py), Addendum 334, unchanged): instruction errors x
+  exp(N(0, 0.3)), T1 and T2 x exp(N(0, 0.2)), failed entries unchanged; **three draws per device** (`BASE` =
+  91,000,000 + 1,000,000 k, k = 0, 1, 2; STALE used 80,000,000).
+- **Arms:** calibration-aware, each with every draw: **REC** (release 2026-10-07.1's recommended call), **RPSF** (the
+  release with target + `placement_refine`), **L3T** (Qiskit level 3 with the stale Target, `approximation_degree=1.0`);
+  calibration-blind, once: **DEF** (the release's default call: coupling map and basis only) and **L3B** (Qiskit level
+  3 with coupling map and basis only). 88 deployment jobs.
+- **Pooling:** for each device, the mean over the 24 cells (dataset, n, L) of the cell's mean margin y x z (true
+  noise), then the mean over draws. Flips (noisy sign != noiseless sign) are counted, not averaged per cell. Every
+  comparison carries a tolerance of 1e-12 (Addenda 397, 400: two ties read as differences).
+
+## 3. Predictions (scored only by `calsplit_eval.py score`)
+
+**P0:** 88 files; every state infidelity <= 1e-6; reduced = whole-device within 1e-9; every output names release
+2026-10-07.1 and its locked file; every stale Target differs from the true one. Otherwise nothing is scored.
+
+| ID | Prediction | CONFIRMED (both devices) | REFUTED (either device) |
+|---|---|---|---|
+| K1 | stale calibration still helps | REC - (better blind arm) pooled margin >= +0.002 | < -0.002 |
+| K2 | the advantage over the guarded call survives | REC - RPSF >= +0.003 | < 0 |
+| K3 | it shrinks little | DEPTH-R's same-calibration REC - RPSF (Addendum 400: +0.0056, +0.0178) minus the stale value <= 0.005 | > 0.01 |
+| K4 | REC stays level with Qiskit level 3 (both stale) | \|REC - L3T\| <= 0.01 | REC < L3T - 0.02 |
+| K5 | no more flipped answers than without calibration | (flips REC - flips of the better blind arm) / points <= +0.002 | > +0.01 |
+
+"Better blind arm": per device, the blind arm with the larger pooled margin (K1) or with fewer flips (K5).
+
+**Reported without prediction:** each arm's pooled margin and per-draw values; expected accuracy at 15, 63, 255 and
+1,023 shots (exact binomial, as Addendum 401); two-qubit gates on couplers the true device reports as failed; compile
+times; the full per-cell data.
+
+## 4. What is known (disclosed)
+
+- **The dry run** (development seed 2, 12 points, L in {1, 4, 12}; 88 jobs in 230 s; output in
+  [`data/2026-10-07/calsplit_dry/`](../../data/2026-10-07/calsplit_dry/)): the harness ran end to end; P0 passed
+  (largest infidelity 6.8e-11); the independent check agreed. Its lines, which are not results: REC - RPSF -0.0029 on
+  FakeAuckland (draws +0.0003, -0.0101, +0.0011) and +0.0140 on FakeTorino, so **K2 read REFUTED** and K3 AMBIGUOUS;
+  K4 CONFIRMED (+0.0059, -0.0076).
+- **Changed after the dry run, before the lock: K1 and K5 now compare with the better blind arm,** not with DEF alone.
+  In the dry run DEF placed 1,080 two-qubit gates on FakeTorino's failed couplers (it does not read the target;
+  Addenda 393, 398), giving it margin 0.30 against L3B's 0.44 and 32 flips against REC's 0; "calibration helps" would
+  have held for that reason alone. Only the score changed; the dry run's deployment files were made by the earlier
+  version of `calsplit_eval.py` (normalized SHA-256 `cab715e3...`, deployment code identical) and are re-scored by the
+  locked one in the lock commit.
+- **Expectations:** K1 expected (the blind arms lose the error-aware placement). K2 open, and the dry run suggests it
+  may fail on FakeAuckland: with a wrong calibration the recommended call's estimate-driven choices can be worse than
+  the guarded call's. K3 follows K2. K4 expected (L3T reads the same stale Target). K5 expected. STALE (Addendum 335)
+  found the release's lead over L3T kept under a stale calibration on other circuits and devices.
+
+## 5. What this will not establish
+
+Real calibration drift (a perturbation model, not a later calibration of a real device); hardware; readout errors
+in the stale Target (STALE does not perturb them; these circuits are compiled without measurements, so the readout
+term does not act); other tasks than DEPTH-R's classifiers.
+
+## 6. Files locked (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| [`benchmarks/calsplit_eval.py`](../../benchmarks/calsplit_eval.py) | `0b39ad2edf7249a19dff94d8e2784389a14d7f412af0902a06c16be978e3600d` |
+| [`benchmarks/run_calsplit.sh`](../../benchmarks/run_calsplit.sh) | `9b03f924f6449f30dadfd48ee18c11d51ea5506065b363a727643fd1791a5aeb` |
+| [`benchmarks/calsplit_verify.py`](../../benchmarks/calsplit_verify.py) | `19c1d3deeb6e85c5c711e50a21a63dc163b7a2d18a2ddcc584d68662bf8d4958` |
+| [`benchmarks/stale_eval.py`](../../benchmarks/stale_eval.py) (STALE, unchanged) | `f2dd16caf17d25232f2452b08a5654f83a8ae10459c773dfa3acfc74005a1cc0` |
+| [`benchmarks/depth_r_eval.py`](../../benchmarks/depth_r_eval.py) (DEPTH-R, unchanged) | `6f636b677f1a481ef3492bf0de467893cde70359c717bc901b6cb5cd2838f3b6` |
+| [`psf_compile.py`](../../psf_compile.py) (release 2026-10-07.1) | `73fb2cb0b1acc5870339c23599829b326fbf57aa198945231e8551e55c1884dc` |
+
+**Scored run:** `PAR=6 bash benchmarks/run_calsplit.sh data/2026-10-07/calsplit`, then
+`python benchmarks/calsplit_verify.py data/2026-10-07/calsplit`; results in Addendum 403.
+
 ---
 
 ---
