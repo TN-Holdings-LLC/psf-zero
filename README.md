@@ -296,7 +296,8 @@ Full account: [`spare-qubit-cliff.md`](docs/findings/spare-qubit-cliff.md) (summ
 | | |
 | :--- | :--- |
 | [`docs/RELEASES.md`](docs/RELEASES.md) | Every release, update and correctness notice, newest first |
-| [`docs/findings/spare-qubit-cliff-combined-248.md`](docs/findings/spare-qubit-cliff-combined-248.md) | Part 9 of the full record (Addenda 248 on); earlier parts are linked from it |
+| [`docs/findings/spare-qubit-cliff-combined-383.md`](docs/findings/spare-qubit-cliff-combined-383.md) | Part 10 of the full record (Addenda 383 on); earlier parts are linked from it |
+| [`docs/findings/spare-qubit-cliff-combined-248.md`](docs/findings/spare-qubit-cliff-combined-248.md) | Part 9 (Addenda 248-382) |
 | [`docs/findings/compile-time.md`](docs/findings/compile-time.md) | The compile-time arc: three retractions, the `verify` split, and what survives |
 | [`docs/findings/spare-qubit-cliff.md`](docs/findings/spare-qubit-cliff.md) | The Qiskit coupling-map cliff |
 | [`docs/findings/core-verification.md`](docs/findings/core-verification.md) | The core's infidelity harness |

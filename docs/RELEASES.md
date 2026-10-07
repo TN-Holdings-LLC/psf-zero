@@ -3,9 +3,10 @@
 Every release block, update and correctness notice that the README carried until 2026-10-05, newest first and
 unchanged in wording, followed by those since (from 2026-10-05.1 on, each release is added here and the README
 keeps only the current one). They were moved here from the README on 2026-10-05; only links were adjusted so that they work
-from this folder. The full record behind each entry is in Part 9 of the findings
-([`findings/spare-qubit-cliff-combined-248.md`](findings/spare-qubit-cliff-combined-248.md)) and the earlier parts it
-links to. The README itself, as it was before the move, is kept as
+from this folder. The full record behind each entry is in Parts 9 and 10 of the findings
+([`findings/spare-qubit-cliff-combined-248.md`](findings/spare-qubit-cliff-combined-248.md), Addenda 248-382;
+[`findings/spare-qubit-cliff-combined-383.md`](findings/spare-qubit-cliff-combined-383.md), from Addendum 383) and
+the earlier parts they link to. The README itself, as it was before the move, is kept as
 [`README_2026-10-05_before_restructure.md`](README_2026-10-05_before_restructure.md).
 
 > **Current version (2026-10-06, fourth release): `psf_compile.py` 2026-10-06.4 and the AI front end a12, with

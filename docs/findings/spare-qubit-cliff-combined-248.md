@@ -1,4 +1,4 @@
-# spare-qubit-cliff: Combined Addenda, Part 9 of 9 (Addendum 248 onward)
+# spare-qubit-cliff: Combined Addenda, Part 9 of 10 (Addenda 248-382)
 
 **Continued from [Part 8](spare-qubit-cliff-combined-135.md) (and [Part 1](spare-qubit-cliff-combined.md), [Part 2](spare-qubit-cliff-combined-17.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 7](spare-qubit-cliff-combined-108.md)).** Same conventions as every prior part.
 
@@ -17619,4 +17619,4 @@ No number in the README is changed; the new numbers are those of Addenda 377 and
 
 ---
 
-**End of Part 9 of 9 (end of document, for now).** Back to [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
+**End of Part 9 of 10.** Continued in [Part 10](spare-qubit-cliff-combined-383.md) (Addendum 383 onward). Back to [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
