@@ -1,0 +1,5 @@
+dry False; P0 PASS: files 88/88, max infidelity 3.32e-09, reduced-vs-whole 0.00e+00
+FakeAuckland: REC-DEF +0.0308, REC-RPSF -0.0041, same-calibration minus stale +0.0097, REC-L3T +0.0049, flip-rate REC-DEF -0.0024
+FakeTorino: REC-L3B +0.0860, REC-RPSF +0.0194, same-calibration minus stale -0.0016, REC-L3T -0.0098, flip-rate REC-L3B -0.0048
+mine {'K1': 'CONFIRMED', 'K2': 'REFUTED', 'K3': 'AMBIGUOUS', 'K4': 'CONFIRMED', 'K5': 'CONFIRMED'}
+identical to score.md: verdicts True, P0 True

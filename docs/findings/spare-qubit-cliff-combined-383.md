@@ -1871,6 +1871,92 @@ term does not act); other tasks than DEPTH-R's classifiers.
 **Scored run:** `PAR=6 bash benchmarks/run_calsplit.sh data/2026-10-07/calsplit`, then
 `python benchmarks/calsplit_verify.py data/2026-10-07/calsplit`; results in Addendum 403.
 
+
+---
+
+<!-- ===== Addendum 403 (source: spare-qubit-cliff-addendum-403-2026-10-07.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 402.
+
+## Addendum 403 -- Results of CALSPLIT (Addendum 402): with a stale calibration, calibration-aware compilation still beats calibration-blind compilation (K1, K5 CONFIRMED) and the recommended call stays level with Qiskit level 3 (K4 CONFIRMED); but on FakeAuckland its lead over the guarded call is gone (K2 REFUTED: -0.0041, one draw -0.0142); on FakeTorino it holds (+0.0194). The blind default call on FakeTorino placed 21,204 gates on failed couplers and lost 17 points of accuracy (2026-10-07)
+
+**Status: results of the pre-registered test in Addendum 402, scored by the locked harness and re-checked by the
+independent [`benchmarks/calsplit_verify.py`](../../benchmarks/calsplit_verify.py).**
+
+## 1. The run
+
+- **Lock:** commit `9435659` (Addendum 402 with the scripts and the dry run), pushed before the run; no uncommitted
+  change to a tracked file at the start.
+- **Machine:** home (WSL2; Python 3.12.13, Qiskit 2.5.2, qiskit-aer 0.17.2, scikit-learn 1.8.0), six jobs at a time;
+  88 jobs in 1,745 s.
+- **Output:** [`data/2026-10-07/calsplit/`](../../data/2026-10-07/calsplit/) (`score.md`, every job's JSON and log,
+  `env.txt`, `progress.txt`, `verify.txt`). The independent check gave the same P0 and the same five verdicts.
+
+## 2. Results
+
+**P0: PASS.** 88 of 88 files; largest state infidelity 3.3e-9; reduced = whole-device simulation on 1,056 circuits;
+release 2026-10-07.1 as locked; every stale Target differs from the true one.
+
+| | FakeAuckland | FakeTorino | verdict |
+|---|---|---|---|
+| K1 REC - better blind arm, pooled margin (>= +0.002) | +0.0308 (vs DEF) | +0.0860 (vs L3B) | **CONFIRMED** |
+| K2 REC - RPSF (>= +0.003; REFUTED if < 0) | **-0.0041** (draws +0.0010, -0.0142, +0.0009) | +0.0194 (draws -0.0005, +0.0314, +0.0273) | **REFUTED** |
+| K3 shrinkage against DEPTH-R (<= 0.005; REFUTED if > 0.01) | +0.0056 - (-0.0041) = 0.0097 | +0.0178 - 0.0194 = -0.0016 | **AMBIGUOUS** |
+| K4 \|REC - L3T\| (<= 0.01) | +0.0049 | -0.0098 | **CONFIRMED** |
+| K5 flip-rate difference to the better blind arm (<= +0.002) | -0.0024 (18.7 against 24 of 2,232) | -0.0048 (8.3 against 19) | **CONFIRMED** |
+
+**Reported without prediction** (pooled; true noise; accuracy at a fixed number of shots, exact binomial):
+
+| device | arm | margin | 15 shots | 63 | 255 | 1,023 | gates on failed couplers |
+|---|---|---|---|---|---|---|---|
+| FakeAuckland | REC | 0.4001 | 0.8666 | 0.9178 | 0.9315 | 0.9341 | 0 |
+| | RPSF | 0.4042 | 0.8700 | 0.9190 | 0.9314 | 0.9337 | 0 |
+| | L3T | 0.3952 | 0.8648 | 0.9171 | 0.9311 | 0.9338 | 0 |
+| | DEF | 0.3693 | 0.8492 | 0.9091 | 0.9286 | 0.9332 | 0 |
+| | L3B | 0.3680 | 0.8464 | 0.9068 | 0.9279 | 0.9327 | 0 |
+| FakeTorino | REC | 0.4838 | 0.9031 | 0.9309 | 0.9351 | 0.9356 | 0 |
+| | RPSF | 0.4645 | 0.8972 | 0.9299 | 0.9350 | 0.9357 | 0 |
+| | L3T | 0.4936 | 0.9049 | 0.9311 | 0.9350 | 0.9355 | 0 |
+| | DEF | 0.2839 | 0.7386 | 0.7611 | 0.7651 | 0.7656 | 21,204 |
+| | L3B | 0.3978 | 0.8541 | 0.9036 | 0.9243 | 0.9318 | 0 |
+
+## 3. Reading
+
+1. **A calibration that is 30% wrong is still worth reading.** Every calibration-aware arm keeps more margin and
+   flips fewer answers than the blind arms, on both devices. At 15 shots the recommended call is 1.7 points (FakeAuckland)
+   and 4.9 points (FakeTorino) of accuracy ahead of the better blind arm; at 1,023 shots 0.1 and 0.4.
+2. **The recommended call's own choices are not robust to a wrong calibration on FakeAuckland.** Its extra steps over
+   the guarded call (re-synthesis, the floor candidate and Qiskit level 3, chosen by an estimate) gained +0.0056 in
+   DEPTH-R with the true calibration and lost -0.0041 with stale ones, -0.0142 in one draw. At 15 shots that is 0.3
+   points behind the guarded call. The estimate picks among candidates that differ little; when its inputs are wrong
+   by 30% it picks the worse one about as often as the better one, and sometimes clearly worse.
+3. **On FakeTorino the lead holds (+0.0194), because it is structural.** It comes from routing the 4-qubit rings with
+   fewer two-qubit gates (DEPTH-R, Addendum 400), which does not depend on the calibration. One draw of three was level
+   (-0.0005).
+4. **The recommended call stays level with Qiskit level 3 given the same stale Target** (+0.0049, -0.0098; the second
+   close to the bound).
+5. **The blind default call on a device with failed couplers is a real hazard at the task level.** On FakeTorino it
+   placed 21,204 two-qubit gates on couplers the device reports as failed (it does not read the target; Addenda 393,
+   398) and its accuracy stayed at 0.766 even at 1,023 shots, against 0.932-0.936 for every other arm. Qiskit level 3
+   without a target happened to avoid them here.
+
+## 4. What follows
+
+- **For users (README):** on a device that reports failed couplers, use a target-aware call; the default call can
+  lose most of a classifier's accuracy there. With an up-to-date calibration the recommended call is level with Qiskit
+  level 3 and ahead of the guarded call; with a calibration that is off by tens of per cent its estimate-driven
+  choices are no better than the guarded call's on FakeAuckland.
+- **A candidate, not proposed yet:** make the recommended call switch to an alternative only when the estimated gain
+  exceeds what calibration error could explain (a margin on the estimate, as item 46's tie band but wider). It would
+  need its own pre-registered test with both true and stale calibrations.
+- **For the benchmark draft:** the calibration split changes a verdict (K2), so it belongs in the standard tier; the
+  blind default call's collapse shows why "hardware fitness" (failed elements) must be its own layer.
+
+## 5. What this does not establish
+
+Real calibration drift (a perturbation model); hardware; why draw 1 hurt the recommended call on FakeAuckland (not
+examined); other tasks than DEPTH-R's classifiers; readout errors in the stale calibration.
+
 ---
 
 ---
