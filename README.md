@@ -15,8 +15,13 @@ PSF-Zero is a Qiskit-compatible compiler with two layers.
   input, with no seed) and several times faster than Qiskit's `optimization_level=3` on circuits made of two-qubit
   blocks.
 - **`compile_for_hardware()`: compilation for a device.** It adds layout search, routing, and, given the device's
-  `Target`, error-aware placement and a choice among candidate circuits by a noise estimate. It is slower than
-  Qiskit level 3, and in exchange gave lower simulated infidelity than level 3 on every fake device tested.
+  `Target`, error-aware placement and a choice among candidate circuits by a noise estimate. Up to 16 logical
+  qubits this recommended call is slower than Qiskit level 3, and in exchange gave lower simulated infidelity than
+  level 3 on every fake device tested (circuits of 4-10 qubits). Above 16 it returns the default call's circuit with
+  the error-aware placement, without building level 3 (since 2026-10-06.4).
+- **Where it is weaker: general circuits.** On 12 Benchpress tests (Quantum Volume, adders, Trotter steps,
+  Bernstein-Vazirani, Toffoli circuits, QFT, Hamiltonians, EfficientSU2), the default call used more two-qubit gates
+  than Qiskit level 2 on 10 (geometric mean 1.53x) and was level only on Quantum Volume. See [Where it is weaker](#where-it-is-weaker).
 
 Everything is pre-registered and self-audited: predictions are locked in git before a scored run, and results,
 including the failures, are recorded in [`docs/findings/`](docs/findings/).
@@ -153,6 +158,33 @@ model-written circuits.
   noise estimates PSF-Zero chooses by share the simulator's physics, so part of that advantage is built in. Hardware
   is the real test, and it has not been run for the device layer.
 
+### Where it is weaker
+
+**General circuits.** An exploratory probe on 12 of Benchpress's 1,032 transpilation tests (Addendum 377; not
+pre-registered, one run each) compared the default call of `compile_for_hardware()` with Qiskit level 2, the call
+Benchpress uses. Every output passed Benchpress's validator.
+
+| kind of circuit (tests) | two-qubit gates, PSF-Zero / Qiskit level 2 |
+| :--- | :--- |
+| Quantum Volume (`QV_n32`, QV 100) | 0.99, 1.03 (level) |
+| Hamiltonians as one `PauliEvolutionGate` (3) | 1.55-1.90 (1.08-1.63 if unrolled first) |
+| EfficientSU2, 100 qubits | 6.3 (1.0 if unrolled first) |
+| QFT, 100 qubits | 1.45 (1.84 if unrolled first) |
+| adder, Trotter steps, Bernstein-Vazirani, Toffoli (5) | 1.0-1.98 |
+
+Over the 12 tests: geometric mean 1.53, and 2.9 times Qiskit level 2's compile time. What follows from this today:
+
+- **For circuits without same-pair two-qubit chains, Qiskit level 2 is as good or better.** PSF-Zero's default call
+  lays out and routes with Qiskit level 1 for speed, which costs two-qubit gates on such circuits.
+- **Unroll composite instructions before compiling** (`transpile(qc, basis_gates=..., optimization_level=0)`) when
+  the input holds one large gate such as a `PauliEvolutionGate` or `EfficientSU2`. On QFT 100, which is already made
+  of plain gates, unrolling made the count worse.
+- 12 tests are a probe, not a benchmark result. A pre-registered run on a stratified sample of Benchpress is planned.
+
+**The recommended call at 16 qubits.** Up to 16 logical qubits it builds Qiskit level 3 and a second candidate and
+checks them by state-vector simulation. At 16 qubits that took a median of 31 s for Hamiltonians of 48 Pauli terms
+and 20 s for QFT (SKIP, Addendum 380), against about 0.3 s at 17 qubits. Making it faster is the next candidate.
+
 ## Results in brief
 
 **Compile time against Qiskit `optimization_level=3`** (`compile()`, dense two-qubit-block circuits, `verify=False`,
@@ -236,11 +268,12 @@ Full account: [`spare-qubit-cliff.md`](docs/findings/spare-qubit-cliff.md) (summ
 - **ecr devices:** the release has not been tested on them in a pre-registered test. A workplace exploration found it
   working there. It also found the AI front end defect noted above.
 - **Above 16 touched qubits** the noise estimates and the equivalence checks are not made, and the release keeps its
-  own circuit.
+  own circuit. Since 2026-10-06.4 the alternatives that would be refused there are not built at all (item 45).
 - **Tolerance of the equivalence check:** a Qiskit-made circuit is accepted up to a state infidelity of 1e-6. On
   near-boundary Trotter circuits the accepted ones were off by up to 5.8e-8, where PSF-Zero's own path is exact to
   1e-14 (Addendum 343).
-- **Benchpress** integration is not done.
+- **Benchpress:** an exploratory probe on 12 tests is in Addendum 377 (see [Where it is weaker](#where-it-is-weaker));
+  a pre-registered run on a stratified sample is planned. There is no Benchpress gym for PSF-Zero yet.
 - **Two upstream findings:**
   - Qiskit #17057 (CX-basis synthesis) is open.
   - A qiskit-aer `save_expectation_value` defect with qubit truncation was found on 2026-10-05 and is not yet reported.

@@ -17576,6 +17576,45 @@ one pytest session per file (WSL2; Python 3.12.13, Qiskit 2.5.2, NumPy 2.5.3, `p
   where it applies), as 2026-10-06.3 did; it is only faster.
 - The default call (no target) is not touched.
 
+
+---
+
+<!-- ===== Addendum 382 (source: spare-qubit-cliff-addendum-382-2026-10-07.md) ===== -->
+
+> **Note added when merging:** A documentation change (README scope of the claims); no new measurement.
+
+## Addendum 382 -- README: the scope of the claims stated where a reader starts (no new measurement) (2026-10-07)
+
+**Status: a documentation change; no test, no new data.**
+
+## 1. Why
+
+The README's introduction and its table "What it does well, and what it costs" state PSF-Zero's strengths with their
+conditions, but two results of 2026-10-06 were only in the release notes:
+
+- **BP-PROBE (Addendum 377, exploratory):** on 12 Benchpress transpilation tests, the default call of
+  `compile_for_hardware()` used more two-qubit gates than Qiskit level 2 (Benchpress's call) on 10, geometric mean
+  1.53x, and more compile time on 11; it was level only on Quantum Volume.
+- **SKIP (Addendum 380):** up to 16 logical qubits the recommended call builds and checks its candidates, which takes
+  20-60 s at 16 qubits for long Hamiltonian and QFT circuits; above 16 (since 2026-10-06.4) it does not build them.
+
+A reader of the introduction could take "faster than Qiskit level 3" and "lower simulated infidelity" to hold for
+any circuit. This change states, where a reader starts, on which circuits each claim was measured and where PSF-Zero
+is weaker. It follows advice from a separate review of the record (the workplace session of 2026-10-07).
+
+## 2. What changes ([`README.md`](../../README.md) only)
+
+- **Introduction:** the `compile_for_hardware()` bullet now separates the recommended call up to 16 logical qubits
+  (slower than level 3; the infidelity result, on circuits of 4-10 qubits) from above 16 (the default call's circuit
+  with error-aware placement); a third bullet states the Benchpress result and points to the new subsection.
+- **"What it does well, and what it costs":** a new subsection "Where it is weaker" with the 12 Benchpress tests by
+  kind, the advice that follows from them (for circuits without same-pair two-qubit chains Qiskit level 2 is as good
+  or better today; unroll composite instructions first), and the recommended call's cost at 16 qubits.
+- **"Known limits":** "Benchpress integration is not done" is replaced by what was done and what is planned; the
+  item on circuits above 16 touched qubits now says that since 2026-10-06.4 the alternatives are not built.
+
+No number in the README is changed; the new numbers are those of Addenda 377 and 380.
+
 ---
 
 ---
