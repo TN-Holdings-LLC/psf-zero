@@ -1516,6 +1516,116 @@ started 2026-10-07T11:42:04Z, 60 jobs in 85 s, four at a time. Output:
 3. Not established: other devices; inputs with wide instructions beyond these; that the recompile always succeeds
    once the input is expanded.
 
+
+---
+
+<!-- ===== Addendum 399 (source: spare-qubit-cliff-addendum-399-2026-10-07.md) ===== -->
+
+> **Note added when merging:** Pre-registration of DEPTH-R, committed with its scripts and dry run as the lock, before the scored run.
+
+## Addendum 399 -- Pre-registration: DEPTH-R. QML-2 "DEPTH" stage 1 (Addenda 345-346) again, now scorable: its exactness check stated as a state infidelity, new data (split seed 4), and release 2026-10-07.1's calls; predictions H1-H6 and the stage-2 gate word for word (2026-10-07)
+
+**Status: pre-registration, written after DEPTH-R's dry run (development seed 2) and before any circuit of split seed
+4 is trained, compiled or simulated.** The lock is the commit that adds this Addendum with the three scripts and the
+dry run's output; the scored run follows it. Owner's go-ahead: 2026-10-07 ("1": the same question again).
+
+## 1. Why
+
+DEPTH asked how a data re-uploading classifier trained on real data behaves on a noisy fake device as it is made
+deeper, how much compilers move that, and whether fine-tuning through the noise helps. Its P0 failed on a design error:
+it required every compiled circuit's noiseless z within 1e-6 of the logical z, and two Qiskit level 3 circuits of
+286-289 two-qubit gates were off by 1.03e-5 and 8.7e-6, a state infidelity of order 1e-10 (Addendum 346, section 1).
+So nothing was scored, and its "NO-GO" for a GPU stage was not a result. DEPTH-R asks the same question with the
+check stated as Addendum 346 says it should be, on data no run has used, with the current release.
+
+## 2. Design
+
+[`benchmarks/depth_r_eval.py`](../../benchmarks/depth_r_eval.py) imports DEPTH's
+[`depth_eval.py`](../../data/2026-10-05/workplace/depth1/depth_eval.py) unchanged (normalized SHA-256 `82488d96...`,
+checked at start) and uses its data, model, training, noise simulation, shots, readout and fine-tuning as they are
+(Addendum 345, section 2). What differs:
+
+| | DEPTH (Addendum 345) | DEPTH-R |
+|---|---|---|
+| data | split seed 1, init seed 1 | **split seed 4, init seed 4** (0 pilot, 1 DEPTH, 2 development, 3 READOUT) |
+| arms | RPSF (c12, target + `placement_refine`), C12 (c12, recommended call), L3T | **RPSF** (release 2026-10-07.1, target + `placement_refine`), **REC** (release 2026-10-07.1, recommended call: + `final_resynthesis="select"`, `compare_level3`, `compare_floor`, `candidate_score="hybrid"`), **L3T** (Qiskit level 3 with the Target, `approximation_degree=1.0`; unchanged) |
+| fine-tuning arm | C12 | REC |
+| P0, exactness | \|z compiled - z logical\| <= 1e-6 | **state infidelity <= 1e-6**: the compiled circuit's noiseless state on the qubits it touches against the logical circuit's output placed at the compiled circuit's final layout (other touched qubits in \|0>); \|z difference\| recorded and reported, not gated |
+| P0, other | 24 deployment and 4 fine-tuning files; reduced simulation = whole-device simulation within 1e-9 on the first two points of every (L, file) | the same, and: every output names release 2026-10-07.1 and the locked release file, and split and init seeds 4 |
+
+Everything else as in DEPTH: BC (114 test points) and D38 (72); n in {4, 6}; L in {1, 2, 4, 8, 12, 16}; FakeAuckland
+(cx) and FakeTorino (cz); noise restricted to the touched qubits, Aer density matrix; readout of the qubit carrying
+logical 0; 4,000 shots x 20 repetitions with the same random numbers in every arm; fine-tuning BC, n = 6, FakeAuckland,
+L in {4, 12}, seeds 1 and 2, 40 SPSA steps, FTN and FT0. Run by
+[`benchmarks/run_depth_r.sh`](../../benchmarks/run_depth_r.sh) (4 training, 24 deployment and 4 fine-tuning jobs, six
+at a time) at home (WSL2; Python 3.12.13, Qiskit 2.5.2, qiskit-aer as installed, scikit-learn 1.8.0, Rust core
+2026-09-29.1); checked by the independent [`benchmarks/depth_r_verify.py`](../../benchmarks/depth_r_verify.py) (reads
+the raw JSON only, imports neither harness).
+
+## 3. Predictions (scored only by `depth_r_eval.py score`)
+
+**P0** as in section 2; if it fails nothing below is scored.
+
+H1-H6 and the gate are DEPTH's (Addendum 345, section 3) word for word, with C12 read as REC:
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| H1 | depth stops paying in margin (FakeAuckland, n = 6) | for both datasets and every arm, the deployed margin at L = 16 is below 0.8 x the best margin over L | for any dataset and arm, L = 16 has the largest margin |
+| H2 | ... and in accuracy (FakeAuckland, n = 6, shot-based with readout) | for at least one dataset, in every arm, the shot accuracy at L = 16 is at least 2 test points below the best over L | for every dataset and arm, L = 16 is the best (or tied best) |
+| H3 | the recommended call keeps more margin than the guarded call | pooled over datasets, n and L, REC - RPSF mean margin >= +0.005 on both devices | < 0 on either device |
+| H4 | REC is level with error-aware Qiskit | pooled \|REC - L3T\| margin <= 0.01 on both devices | REC < L3T - 0.02 on either device |
+| H5 | REC flips no more predictions than RPSF | pooled exact flip rate (noisy sign != noiseless sign) REC <= RPSF on both devices | REC > RPSF + 0.01 on either device |
+| H6 | fine-tuning through the noise helps where noise binds | at L = 12, mean over seeds of FTN - DEP deployed margin >= +0.02, and larger than FT0 - DEP | FTN - DEP < -0.01 |
+
+**Gate for stage 2 (GPU):** GO if (H1 or H2 CONFIRMED) and (H3 CONFIRMED, or some cell has |shot accuracy REC - RPSF|
+of at least 2 test points); NO-GO otherwise.
+
+**Reported without prediction:** the full table; FakeTorino for H1 and H2; n = 4; fine-tuning at L = 4; compile
+times; the largest |z difference|; and **the noise's share of H2** (FakeAuckland, n = 6: ideal accuracy minus shot
+accuracy per L, in test points). DEPTH's H2 line was confounded by the noiseless model's own variation between depths
+(Addendum 346, section 2); this report separates the two. It is not a prediction, and H2 is scored as written.
+
+## 4. What is known, and what is expected (disclosed)
+
+- **DEPTH's unscored outcome** (Addendum 346; split seed 1, release candidate c12): H1 and H2 lines "CONFIRMED" (H2
+  confounded), H3 AMBIGUOUS (FakeAuckland +0.0049 against the +0.005 bound; FakeTorino +0.0187), H4 CONFIRMED, H5
+  AMBIGUOUS (FakeTorino flip 0.0039 against 0.0036), H6 AMBIGUOUS (FTN - DEP -0.002); gate NO-GO. Noise removed
+  77-80% of the margin at L = 16 and cost at most 2 test points in any cell.
+- **DEPTH-R's dry run** (development seed 2, 12 points, L in {1, 4, 12}, 60 training and 3 fine-tuning steps; 109 s;
+  output in [`data/2026-10-07/depth_r_dry/`](../../data/2026-10-07/depth_r_dry/)): the harness ran end to end; P0
+  passed (largest state infidelity 8.2e-15, |z difference| 2.5e-14, reduced against whole device 0 on 144
+  circuits); its verdict lines, which are not results: H1 CONFIRMED, H2 AMBIGUOUS, H3-H5 CONFIRMED (REC - RPSF
+  +0.0070 and +0.0150), H6 AMBIGUOUS, gate GO. Its table's "ideal" column is over the whole test set while the dry
+  run deploys 12 points, so the dry run's noise-share line is not meaningful; in the scored run both use the whole
+  test set.
+- **Expectations:** H1 expected again. H2 open (DEPTH's evidence is that noise costs at most about 2 points). H3 is
+  near its bound on FakeAuckland, so AMBIGUOUS is likely there; on FakeTorino the 4-qubit ring's routing difference
+  (Addendum 346) should give REC the margin. H4 expected. H5 and H6 open. The gate depends mostly on H3. As in
+  DEPTH, REC's estimate shares the simulator's physics, so H3 and H4 favour it by construction.
+- **The release on these circuits:** items 48 and 50 are not expected to act (no instruction on three or more qubits; CZ layers
+  separated by RY gates, so no two-qubit gate cancels); items 46, 47 and 49 change the recommended call's time, not
+  its circuit (Addenda 385, 388); the circuits are compiled without measurements, so the readout terms of
+  2026-10-06.1 do not act.
+
+## 5. What this will not establish
+
+Hardware; more than 6 logical qubits; other models, encodings or optimisers; reliability over training seeds (one
+noiseless training per (dataset, n, L), two fine-tuning seeds); a GPU stage itself (the gate only says whether this
+evidence supports proposing one).
+
+## 6. Files locked (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| [`benchmarks/depth_r_eval.py`](../../benchmarks/depth_r_eval.py) | `6f636b677f1a481ef3492bf0de467893cde70359c717bc901b6cb5cd2838f3b6` |
+| [`benchmarks/run_depth_r.sh`](../../benchmarks/run_depth_r.sh) | `76487e410d656467308f272d2609fd755511b4356c4e76c142e752ff1f361cc6` |
+| [`benchmarks/depth_r_verify.py`](../../benchmarks/depth_r_verify.py) | `b378f17205cbd1c7351e4fac44f0e4a047e403f4ec7a018ef0395042a48d12c8` |
+| [`data/2026-10-05/workplace/depth1/depth_eval.py`](../../data/2026-10-05/workplace/depth1/depth_eval.py) (DEPTH, unchanged) | `82488d96144bb1c88f69676a0e6a642c22d4756a47d8a1ad8b07be5327c796ac` |
+| [`psf_compile.py`](../../psf_compile.py) (release 2026-10-07.1) | `73fb2cb0b1acc5870339c23599829b326fbf57aa198945231e8551e55c1884dc` |
+
+**Scored run:** `PAR=6 bash benchmarks/run_depth_r.sh data/2026-10-07/depth_r`, then
+`python benchmarks/depth_r_verify.py data/2026-10-07/depth_r`; results in Addendum 400.
+
 ---
 
 ---

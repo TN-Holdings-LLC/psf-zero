@@ -1,0 +1,44 @@
+{
+ "meta": {
+  "script_sha": "82488d96144bb1c88f69676a0e6a642c22d4756a47d8a1ad8b07be5327c796ac",
+  "dry": true,
+  "qiskit": "2.5.2",
+  "aer": "0.17.2",
+  "sklearn": "1.8.0",
+  "started": "2026-10-07T11:56:55Z",
+  "c12_sha": "73fb2cb0b1acc5870339c23599829b326fbf57aa198945231e8551e55c1884dc",
+  "mode": "train",
+  "dataset": "D38",
+  "n": 4,
+  "ntest": 72,
+  "harness_sha": "6f636b677f1a481ef3492bf0de467893cde70359c717bc901b6cb5cd2838f3b6",
+  "depth_eval_sha": "82488d96144bb1c88f69676a0e6a642c22d4756a47d8a1ad8b07be5327c796ac",
+  "seeds": [
+   2,
+   2
+  ]
+ },
+ "rows": [
+  {
+   "L": 1,
+   "ideal_acc": 0.9444444444444444,
+   "ideal_margin": 0.5241232999820338,
+   "train_loss": 0.30165548885235877,
+   "s": 0.2
+  },
+  {
+   "L": 4,
+   "ideal_acc": 0.9583333333333334,
+   "ideal_margin": 0.6729863125741987,
+   "train_loss": 0.18172785262121652,
+   "s": 0.5
+  },
+  {
+   "L": 12,
+   "ideal_acc": 0.9444444444444444,
+   "ideal_margin": 0.5285115217790052,
+   "train_loss": 0.22308301720638804,
+   "s": 1.4
+  }
+ ]
+}

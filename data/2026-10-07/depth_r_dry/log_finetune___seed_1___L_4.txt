@@ -1,0 +1,3 @@
+FT DEP {"acc": 1.0, "margin": 0.5116422917827876, "shot_acc": 1.0, "ideal_acc": 1.0, "ideal_margin": 0.6938123831358659}
+FT FT0 {"acc": 1.0, "margin": 0.5159532931397938, "shot_acc": 1.0, "ideal_acc": 1.0, "ideal_margin": 0.6964939300496046}
+FT FTN {"acc": 1.0, "margin": 0.5159655652455682, "shot_acc": 1.0, "ideal_acc": 1.0, "ideal_margin": 0.6961022753540002}
