@@ -1,0 +1,54 @@
+== M1: inputs without wide instructions whose C22 circuit differed from REL's
+
+test_QASMBench_large[bv_n30-square]: in the run REL q2 51 d2 51, C22 q2 51 d2 51; input 30 qubits, backend 36
+   budget 2 s  REL: q2 51  sig 10a2c111ebe2
+   budget 2 s  C22: q2 51  sig d6343e58f503
+   budget 2 s  REL: q2 51  sig e9775eda63a4
+   budget 2 s  C22: q2 51  sig 384340dac2d1
+   REL = REL False, C22 = C22 False, REL = C22 False, run's REL reproduced False, run's C22 reproduced False
+   budget 60 s: REL = C22 False, q2 [51, 51]
+
+test_QASMBench_large[bv_n140-linear]: in the run REL q2 352 d2 352, C22 q2 352 d2 352; input 140 qubits, backend 140
+   budget 2 s  REL: q2 352  sig 4893789784e9
+   budget 2 s  C22: q2 352  sig 4893789784e9
+   budget 2 s  REL: q2 352  sig 10c576096ef3
+   budget 2 s  C22: q2 352  sig 19573684408d
+   REL = REL False, C22 = C22 False, REL = C22 True, run's REL reproduced False, run's C22 reproduced False
+   budget 60 s: REL = C22 False, q2 [352, 352]
+
+== M5: tests with an output reported not equivalent
+
+test_QASMBench_small[basis_test_n4-all-to-all]: input 4 qubits, backend 4, PauliEvolution False; run: QK False, REL True, C22 True
+   QK (again, unseeded)   output 4 qubits: implements False; state infidelity from |0> -3.1e-15
+   REL                    output 4 qubits: implements True; state infidelity from |0> -5.1e-15
+   C22                    output 4 qubits: implements True; state infidelity from |0> -5.1e-15
+
+test_QASMBench_small[qaoa_n6-square]: input 6 qubits, backend 9, PauliEvolution False; run: QK False, REL False, C22 False
+   QK (again, unseeded)   output 9 qubits: implements True; state infidelity from |0> -2.2e-14
+   REL                    output 9 qubits: implements True; state infidelity from |0> -2.9e-14
+   C22                    output 9 qubits: implements True; state infidelity from |0> -2.9e-14
+
+test_QASMBench_small[fredkin_n3-square]: input 3 qubits, backend 4, PauliEvolution False; run: QK False, REL False, C22 False
+   QK (again, unseeded)   output 4 qubits: implements True; state infidelity from |0> -1.8e-15
+   REL                    output 4 qubits: implements True; state infidelity from |0> -3.6e-15
+   C22                    output 4 qubits: implements True; state infidelity from |0> -3.6e-15
+
+test_QASMBench_small[error_correctiond3_n5-square]: input 5 qubits, backend 9, PauliEvolution False; run: QK False, REL False, C22 False
+   QK (again, unseeded)   output 9 qubits: implements False; state infidelity from |0> 5.0e-01
+   REL                    output 9 qubits: implements True; state infidelity from |0> -2.1e-14
+   C22                    output 9 qubits: implements True; state infidelity from |0> -2.1e-14
+
+test_QASMBench_small[lpn_n5-square]: input 5 qubits, backend 9, PauliEvolution False; run: QK False, REL False, C22 False
+   QK (again, unseeded)   output 9 qubits: implements True; state infidelity from |0> -8.9e-16
+   REL                    output 9 qubits: implements True; state infidelity from |0> -8.9e-16
+   C22                    output 9 qubits: implements True; state infidelity from |0> -8.9e-16
+
+test_QASMBench_small[dnn_n8-linear]: input 8 qubits, backend 8, PauliEvolution False; run: QK False, REL True, C22 True
+   QK (again, unseeded)   output 8 qubits: implements False; state infidelity from |0> 9.9e-01
+   REL                    output 8 qubits: implements True; state infidelity from |0> -7.8e-14
+   C22                    output 8 qubits: implements True; state infidelity from |0> -7.8e-14
+
+test_hamiltonians[ham_ham_parity-4-all-to-all]: input 4 qubits, backend 4, PauliEvolution True; run: QK False, REL False, C22 False
+   QK (again, unseeded)   output 4 qubits: implements True; state infidelity from |0> -1.1e-14
+   REL                    output 4 qubits: implements True; state infidelity from |0> -3.0e-14
+   C22                    output 4 qubits: implements True; state infidelity from |0> -2.0e-14

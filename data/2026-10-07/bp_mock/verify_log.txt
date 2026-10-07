@@ -1,0 +1,9 @@
+probed ids found 12; sample re-drawn 92; tests in the run 92; same set True
+P0 PASS: C22 failed or invalid 0, C22R failed or invalid 0, versions ok True, git_head 86f992c, dirty False
+done 92 (flat 38, wide 54); M1 differ 2; M2 0.709; M3 1.115; M4 0.887 on 20; M5 5 of 14 not equivalent
+M1 REFUTED
+M2 CONFIRMED
+M3 CONFIRMED
+M4 CONFIRMED
+M5 REFUTED
+verdicts identical to score.md: True

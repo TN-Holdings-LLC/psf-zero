@@ -751,6 +751,110 @@ ids.)
 - M4 REFUTED: the recommended call's loss on wide inputs (Addendum 386, section 4) is studied before item 48 is
   proposed for the recommended call.
 
+
+---
+
+<!-- ===== Addendum 390 (source: spare-qubit-cliff-addendum-390-2026-10-07.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 389, with an exploratory diagnosis made after the run.
+
+## Addendum 390 -- Results of BP-MOCK (Addendum 389): with item 48 the default call comes to 1.115 of Qiskit level 2's two-qubit count on 92 Benchpress tests (1.364 for the release; M2-M4 CONFIRMED); M1 and M5 REFUTED, the first by the release's own non-reproducible layout on two BV circuits, the second by a defect of the equivalence check (2026-10-07)
+
+**Status: results of the pre-registered test in Addendum 389, scored by the locked script and re-checked by the
+independent [`benchmarks/bp_mock_verify.py`](../../benchmarks/bp_mock_verify.py); section 4 is an exploratory
+diagnosis made after the output was seen.**
+
+## 1. The run
+
+- **Lock:** commit `86f992c` (Addenda 388-389, with the smoke run); the run recorded `git_head` `86f992c` and no
+  uncommitted change to a tracked file. It is pushed after the run.
+- **Machine:** the workplace PC (Windows, Python 3.11.9, Qiskit 2.5.2), Benchpress `b695f30`, six jobs at a time.
+- **Time:** started 2026-10-07T04:56:02Z; 316 jobs in 929 s.
+- **Output:** [`data/2026-10-07/bp_mock/`](../../data/2026-10-07/bp_mock/): `bp_mock.json` (every job), `score.md`,
+  `run_log.txt`, `score_log.txt`, `verify_log.txt`, and the diagnosis of section 4 (`diag_log.txt`).
+
+## 2. Results
+
+**P0: PASS.** The 92 tests of the rule (re-drawn by `bp_mock_verify.py`: same set); no error or timeout in any arm;
+every C22 and C22R output passes Benchpress's validator; versions as named.
+
+| | prediction | result | verdict |
+|---|---|---|---|
+| M1 | inputs without wide instructions (38): C22's default call returns REL's circuit | 2 of 38 differ | **REFUTED** |
+| M2 | inputs with wide instructions (54): geometric mean C22 / REL two-qubit count <= 0.85 | 0.709 | **CONFIRMED** |
+| M3 | all 92: geometric mean C22 / QK <= 1.15 | 1.115 (REL / QK: 1.364) | **CONFIRMED** |
+| M4 | FakeTorino tests (20): geometric mean C22R / RELR <= 1.00 | 0.887 | **CONFIRMED** |
+| M5 | C22 outputs checked for equivalence (14) are all equivalent | 5 of 14 reported not equivalent | **REFUTED** |
+
+`bp_mock_verify.py`: the same five verdicts, "verdicts identical to score.md: True".
+
+**Reported without prediction** (geometric means of (two-qubit gates + 1); full table in `score.md`):
+
+- Two-qubit depth against QK: C22 1.117, REL 1.279.
+- By stratum, C22 / QK: QASMBench 0.96-1.12 (REL 0.96-1.56); HamLib on abstract topologies 1.00-1.22 (REL
+  1.30-1.87); HamLib on FakeTorino 1.12 (REL 1.58); Feynman 1.01 (REL 1.26); the six 100-qubit tests 2.77 (REL 3.63).
+- The 100-qubit stratum is dominated by `BVlike_simplification`: Qiskit reduces it to no two-qubit gate (the CX
+  gates cancel), REL and C22 keep 392 (a ratio of 393 with the +1). Without it the five others are 0.97-1.12.
+- Largest C22 / QK otherwise: `basis_test_n4` 1.57 (10 against 6), `error_correctiond3_n5` 1.46, HamLib
+  `enc_unary_dvalues_4-4-4` on linear 1.47, `qft_n160` on heavy-hex 1.41. Lowest: `qaoa_n3` on linear 0.80.
+- **One wide input where C22 used more two-qubit gates than REL:** HamLib
+  `bh_graph-2D-triag-nonpbc-qubitnodes_Lx-11_Ly-11_U-100_enc-gray_d-4` on linear, 64,436 against 56,291 (+14.5%;
+  QK 57,349). On the other 53 C22 had as many or fewer.
+- **The recommended call against the default call on FakeTorino's 100-qubit tests:** C22R used more two-qubit
+  gates than C22's default call on all six, and RELR more than REL's on five (for example `BV_100` 580 against 200,
+  `circSU2_89` C22R 1,344 against C22's 336). This is the release's behaviour as much as c22's (RELR equals C22R on
+  five of six). Its cause
+  (most likely item 31's recompile around FakeTorino's failed couplers) was not measured here.
+- Time: C22's default call took 0.95-10.7 times QK's (stratum means); C22R took 1.15 times RELR's.
+
+## 3. What the two REFUTED verdicts were scored on
+
+- **M1:** `bv_n30` on square and `bv_n140` on linear. In both REL and C22 have the same two-qubit count and depth (51
+  / 51 and 352 / 352); only the circuits' signatures differ. Neither input has an instruction on more than two
+  qubits, so item 48 hands both modules the same input object.
+- **M5:** the five C22 outputs reported not equivalent are `qaoa_n6`, `fredkin_n3`, `error_correctiond3_n5` and
+  `lpn_n5` on square, and HamLib `ham_parity-4` on all-to-all. REL's outputs were reported not equivalent on the same
+  five, and QK's on seven (those five, `basis_test_n4` and `dnn_n8`).
+
+## 4. Diagnosis (exploratory, after the run)
+
+[`benchmarks/bp_mock_diag.py`](../../benchmarks/bp_mock_diag.py), one call at a time on the workplace PC
+([`diag_log.txt`](../../data/2026-10-07/bp_mock/diag_log.txt)):
+
+- **M1: the release's default call is not reproducible on these two circuits.** Compiled REL, C22, REL, C22 in one
+  process, the four circuits of `bv_n30` were all different (same counts); on `bv_n140` REL differed from itself and
+  C22 from itself (one REL-C22 pair was identical). Neither run's circuit was reproduced, and a layout-search budget
+  of 60 s instead of 2 s did not make REL and C22 agree. The difference is in the release, not in item 48: on a BV
+  circuit (one qubit coupled to all others) the layout search does not settle on one placement. Which step is not
+  deterministic was not found; the layout search has time budgets (`layout_search_time_budget_s`, and a fixed 1 s
+  for its packing search), which make it depend on the machine's load. `seed_transpiler` does not make the default
+  call reproducible on such inputs.
+- **M5: the check, not the circuits.** Checked again in two ways that allow for the extra qubits of an abstract
+  square lattice (a 3-qubit input on a 4-qubit square, 5 and 6 on 9) and for a `PauliEvolutionGate` built as a
+  product formula (the input expanded through its definitions first): item 39's `_implements` (two random product
+  states) and the workplace probe's state check from |0...0>, **REL's and C22's outputs implement the input on all
+  seven tests** (state infidelity at most 8e-14). BP-MOCK's check compared operators of different sizes on the
+  square tests, and on `ham_parity-4` compared the product formula with the exact exponential, the trap Addendum 377
+  (section 4) had already described.
+- **QK** fails the state checks on three tests (`basis_test_n4`, `error_correctiond3_n5`, `dnn_n8`; infidelity up to
+  0.99). These inputs end in measurements, and Qiskit's level 2 removes gates before final measurements and folds
+  final swaps into the measurement map, which changes the state but not the measured distribution. The checks here
+  compare states, so this is not evidence of a Qiskit error.
+
+## 5. What this shows
+
+1. **Item 48 does what DISPATCH-PROBE suggested, on circuits it did not see:** with it the default call goes from
+   1.36 to 1.12 of Qiskit level 2's two-qubit count on a stratified Benchpress sample, and below 1.05 on most strata;
+   on wide inputs it uses 0.71 of the release's count, more on one of 54.
+2. **Both REFUTED verdicts trace to things other than item 48** (the release's non-reproducible layout on BV
+   circuits; the equivalence check), but that was found after the run. By the rule of Addendum 389 (section 7), item
+   48 is not proposed on this test.
+3. **New findings, each for its own item:** the default call is not reproducible on some inputs; it does not cancel
+   the CX gates of a BV-like circuit that Qiskit removes; the recommended call uses more two-qubit gates than the
+   default call on FakeTorino's 100-qubit tests.
+4. **Not established:** anything about Benchpress's other 940 tests beyond what a stratified sample of 92 says; QK is
+   unseeded and ran once; hardware.
+
 ---
 
 ---
