@@ -855,6 +855,124 @@ every C22 and C22R output passes Benchpress's validator; versions as named.
 4. **Not established:** anything about Benchpress's other 940 tests beyond what a stratified sample of 92 says; QK is
    unseeded and ran once; hardware.
 
+
+---
+
+<!-- ===== Addendum 391 (source: spare-qubit-cliff-addendum-391-2026-10-07.md) ===== -->
+
+> **Note added when merging:** Pre-registration of BP-MOCK2, chosen by the owner after Addendum 390; committed with its smoke run as the lock.
+
+## Addendum 391 -- Pre-registration of BP-MOCK2: item 48 re-tested on 48 new Benchpress tests, with the release compiled twice and the equivalence check of Addendum 390's diagnosis (2026-10-07)
+
+**Status: pre-registration, written before BP-MOCK2's smoke run and before any of its output exists.** The owner chose
+this re-test after Addendum 390. The lock is the commit that adds this Addendum with the smoke run's output; the scored
+run follows that commit.
+
+## 1. Question
+
+BP-MOCK (Addenda 389-390) refuted M1 and M5, and its diagnosis traced both to things other than item 48: the release's
+default call does not reproduce its own circuit on some inputs (two BV circuits), and the equivalence check compared
+operators of different sizes and a product formula with the exact exponential. Under BP-MOCK's rule item 48 was not
+proposed. BP-MOCK2 asks the same questions again on tests none of the earlier probes used, with those two faults
+removed from the design, not from the data:
+
+- **M1** now counts a difference only where the release reproduces itself: REL is compiled twice, in separate
+  processes (REL, REL2), and a test where REL and REL2 differ is reported, not scored.
+- **M5** uses the checks of Addendum 390's diagnosis: item 39's `_implements` (two random product states; layout and
+  ancilla qubits handled) and, reported alongside, the workplace probe's state check from |0...0>, both against the
+  input with final measurements removed and expanded through its definitions (a `PauliEvolutionGate` becomes the
+  product formula every compiler builds). QK is checked and reported but not scored: its level 2 changes states
+  before final measurements (Addendum 390, section 4).
+
+## 2. Design
+
+[`benchmarks/bp_mock2.py`](../../benchmarks/bp_mock2.py) (imports BP-MOCK's locked `bp_mock.py` for the strata,
+builders and metrics), checked by the independent [`benchmarks/bp_mock2_verify.py`](../../benchmarks/bp_mock2_verify.py)
+(imports neither; re-draws both samples itself).
+
+- **Sample:** BP-MOCK's strata without the 100-qubit stratum (all nine of its tests are used). In each, the published
+  test ids minus the twelve BP-PROBE ran and the 92 BP-MOCK ran, ordered by SHA-256 of `"BP-MOCK2|" + id`, the first
+  K: 3 for QASMBench small and for HamLib on each topology, 2 for QASMBench medium and large, 4 for HamLib on
+  FakeTorino, 4 for Feynman. 48 tests (listed in section 5).
+- **Arms:** QK, REL, REL2 and C22, as in BP-MOCK (default calls; Benchpress's Qiskit call unseeded). No recommended
+  call (M4 is not repeated).
+- **Equivalence:** on inputs of at most 10 qubits, every arm's output; "checkable" means `_implements` could be made
+  (at most 16 touched qubits, every instruction with a matrix).
+- Each test and arm in its own process, 600 s limit, six at a time; Benchpress `b695f30`.
+
+## 3. Predictions
+
+Ratios are of (two-qubit gates + 1); geometric means over the tests all four arms finished.
+
+| | prediction | CONFIRMED | REFUTED |
+|---|---|---|---|
+| P0 | the run is valid | the 48 tests of the rule; C22 never fails where REL finishes; every C22 output passes Benchpress's validator; versions as named; no uncommitted change to a tracked file | otherwise nothing is scored |
+| M1 | inputs without wide instructions, where REL = REL2: C22 returns REL's circuit | none differs | 2 or more differ |
+| M2 | inputs with wide instructions: geometric mean C22 / REL | <= 0.85 | > 1.00 |
+| M3 | all tests: geometric mean C22 / QK | <= 1.15 | > 1.30 |
+| M5 | every checkable C22 output implements its input (`_implements`) | none fails, at least 5 checked | any fails |
+
+Between the columns the verdict is AMBIGUOUS. M1 allows one difference as AMBIGUOUS because a release that does not
+reproduce itself can still agree with itself twice by chance. M2 and M3 repeat BP-MOCK's lines (BP-MOCK: 0.709 and
+1.115).
+
+**Reported without prediction:** how often REL2 differs from REL (BP-MOCK's diagnosis suggests BV-like circuits);
+wide inputs where C22 uses more two-qubit gates than REL; REL's and QK's checks; the state check; per-stratum ratios.
+
+## 4. What the verdicts decide
+
+- M1, M2 and M5 CONFIRMED: item 48 is proposed for acceptance (not release), with items 46, 47 and 49.
+- M1 or M5 REFUTED: item 48 is not proposed; the failing tests are examined first.
+- M2 AMBIGUOUS or REFUTED: item 48 is not proposed on quality grounds.
+- M3 is the mock exam's grade, as in BP-MOCK.
+- The release's non-reproducibility (Addendum 390) is a separate item, whatever the verdicts.
+
+## 5. The sample
+
+| stratum | tests |
+|---|---|
+| QASMBench small, all-to-all | `qec_sm_n5`, `grover_n2`, `qaoa_n3` |
+| QASMBench small, square | `qec_en_n5`, `grover_n2`, `wstate_n3` |
+| QASMBench small, heavy-hex | `qaoa_n6`, `vqe_uccsd_n6`, `variational_n4` |
+| QASMBench small, linear | `pea_n5`, `inverseqft_n4`, `sat_n7` |
+| QASMBench medium, all-to-all | `qf21_n15`, `multiplier_n15` |
+| QASMBench medium, square | `knn_n25`, `wstate_n27` |
+| QASMBench medium, heavy-hex | `bv_n19`, `qram_n20` |
+| QASMBench medium, linear | `ghz_state_n23`, `multiply_n13` |
+| QASMBench large, all-to-all | `knn_n41`, `bv_n30` |
+| QASMBench large, square | `ising_n420`, `ising_n66` |
+| QASMBench large, heavy-hex | `ising_n98`, `qugan_n39` |
+| QASMBench large, linear | `square_root_n45`, `bwt_n37` |
+| HamLib, all-to-all | `graph-2D-grid-pbc-qubitnodes_Lx-2_Ly-185_h-0.5`, `ham_parity-14`, `ash608gpia,n-160,rinst-1` |
+| HamLib, square | `graph-1D-grid-pbc-qubitnodes_Lx-26_h-6`, `bh_graph-2D-triag-pbc-qubitnodes_Lx-3_Ly-22_U-70_enc-unary_d-4`, `graph-2D-triag-nonpbc-qubitnodes_Lx-3_Ly-160_h-0.1` |
+| HamLib, heavy-hex | `ham_parity-4`, `fh-graph-2D-grid-pbc-qubitnodes_Lx-5_Ly-72_U-0_enc-parity`, `graph-1D-grid-pbc-qubitnodes_Lx-16_h-2` |
+| HamLib, linear | `4-uf100-0246.cnf-70-res`, `enc_gray_dvalues_4-4-4-4-4-4-4`, `reg-4_n-90_rinst-07` |
+| HamLib, FakeTorino | `tsp_prob-ts225_Ncity-5_enc-unary`, `gnp-k_5_n-60_rinst-19`, `ham_JW-14`, `enc_gray_dvalues_8-8-8` |
+| Feynman, FakeTorino | `rb`, `grover_5`, `hwb10`, `mod_mult_55` |
+
+The rule excludes test ids, not circuits: many of these circuits were compiled in BP-PROBE or BP-MOCK on another
+topology or device (for example `qaoa_n3`, `qram_n20`, `bv_n30`, `square_root_n45`, HamLib `ham_parity-4`,
+`reg-4_n-90_rinst-07`, `ham_JW-14`, and `enc_gray_dvalues_4-4-4-4-4-4-4`, a BP-PROBE circuit that DISPATCH-PROBE also
+used, here on the linear topology instead of FakeTorino). Disclosed, not changed.
+
+## 6. Files locked
+
+| file | normalized SHA-256 |
+|---|---|
+| [`benchmarks/bp_mock2.py`](../../benchmarks/bp_mock2.py) | `e0c182acb99768a88bedb07c6f56aae84fc234b62a17bd2a046452de3bccf93c` |
+| [`benchmarks/bp_mock2_verify.py`](../../benchmarks/bp_mock2_verify.py) | `ac86488b3f4949d92dde1192cc3a0660f36a147716fbeb912471bed13af8263b` |
+| `benchmarks/bp_mock.py` (as locked in Addendum 389) | `7757e848c9848c9644a845ce97198966b2fb2f98fa9584c2d0050d45b573b4d0` |
+| `psf_compile.py` (release 2026-10-06.4) | `69fe51d2d503638ceb4d067a0d86a5b27c38586694ec84996dea5e7ab6dab7aa` |
+| `patches/psf_compile_c22_2026-10-07/psf_compile.py` (as locked in Addendum 387) | `30675c37e6c9400803ed4d53c8d146ecdebec24b9452037808c9e9acf150f858` |
+
+## 7. Smoke run, then the scored run
+
+1. Smoke: `python benchmarks/bp_mock2.py run --bp <clone> --out data/2026-10-07/bp_mock2_smoke --smoke` (the first
+   test of each stratum: 18) and `score`. Not scored; a fault in a script found there is fixed and disclosed here
+   before the lock.
+2. Lock: the commit with this Addendum and the smoke output.
+3. Scored run into `data/2026-10-07/bp_mock2`, then `score` and `bp_mock2_verify.py`.
+
 ---
 
 ---
