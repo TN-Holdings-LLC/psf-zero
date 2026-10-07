@@ -1,0 +1,21 @@
+  0 ring8m c19 0.140 s c22 0.125 s identical True
+  1 ring12m c19 0.228 s c22 0.217 s identical True
+  2 ring14m c19 0.289 s c22 0.205 s identical True
+  3 ring16m c19 1.986 s c22 0.899 s identical True
+  4 ring20m c19 0.035 s c22 0.035 s identical True
+  5 brick8m c19 0.283 s c22 0.218 s identical True
+  6 brick12m c19 0.356 s c22 0.271 s identical True
+  7 brick14m c19 1.371 s c22 0.471 s identical True
+  8 brick16m c19 11.278 s c22 3.351 s identical True
+  9 brick20m c19 0.097 s c22 0.098 s identical True
+ 10 pauli8m c19 0.979 s c22 0.760 s identical True
+ 11 pauli12m c19 5.793 s c22 2.855 s identical True
+ 12 pauli14m c19 7.793 s c22 3.778 s identical True
+ 13 pauli16m c19 50.952 s c22 26.605 s identical True
+ 14 pauli20m c19 0.233 s c22 0.276 s identical True
+ 15 qft8m c19 1.181 s c22 0.769 s identical True
+ 16 qft12m c19 2.468 s c22 1.470 s identical True
+ 17 qft14m c19 5.216 s c22 2.858 s identical True
+ 18 qft16m c19 26.828 s c22 7.187 s identical True
+ 19 qft20m c19 0.085 s c22 0.076 s identical True
+wrote track_FakeKingston_smoke.json: 20 circuits, 172.0 s

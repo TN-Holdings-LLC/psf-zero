@@ -1,0 +1,249 @@
+{
+ "device": "FakeTorino",
+ "versions": {
+  "c21": "2026-10-07.c21",
+  "c22": "2026-10-07.c22"
+ },
+ "rows": [
+  {
+   "n": 12,
+   "family": "ring",
+   "measured": false,
+   "t21": 0.117,
+   "t22": 0.109,
+   "checks21": 2,
+   "checks22": 2,
+   "identical": true
+  },
+  {
+   "n": 12,
+   "family": "ring",
+   "measured": true,
+   "t21": 0.115,
+   "t22": 0.095,
+   "checks21": 1,
+   "checks22": 1,
+   "identical": true
+  },
+  {
+   "n": 12,
+   "family": "brick",
+   "measured": false,
+   "t21": 0.268,
+   "t22": 0.258,
+   "checks21": 3,
+   "checks22": 3,
+   "identical": true
+  },
+  {
+   "n": 12,
+   "family": "brick",
+   "measured": true,
+   "t21": 0.238,
+   "t22": 0.173,
+   "checks21": 1,
+   "checks22": 1,
+   "identical": true
+  },
+  {
+   "n": 12,
+   "family": "pauli",
+   "measured": false,
+   "t21": 0.69,
+   "t22": 0.586,
+   "checks21": 2,
+   "checks22": 2,
+   "identical": true
+  },
+  {
+   "n": 12,
+   "family": "pauli",
+   "measured": true,
+   "t21": 0.802,
+   "t22": 0.652,
+   "checks21": 2,
+   "checks22": 2,
+   "identical": true
+  },
+  {
+   "n": 12,
+   "family": "qft",
+   "measured": false,
+   "t21": 0.536,
+   "t22": 1.132,
+   "checks21": 1,
+   "checks22": 1,
+   "identical": true
+  },
+  {
+   "n": 12,
+   "family": "qft",
+   "measured": true,
+   "t21": 1.154,
+   "t22": 1.271,
+   "checks21": 1,
+   "checks22": 1,
+   "identical": true
+  },
+  {
+   "n": 14,
+   "family": "ring",
+   "measured": false,
+   "t21": 0.602,
+   "t22": 0.457,
+   "checks21": 1,
+   "checks22": 1,
+   "identical": true
+  },
+  {
+   "n": 14,
+   "family": "ring",
+   "measured": true,
+   "t21": 0.581,
+   "t22": 0.467,
+   "checks21": 1,
+   "checks22": 1,
+   "identical": true
+  },
+  {
+   "n": 14,
+   "family": "brick",
+   "measured": false,
+   "t21": 1.936,
+   "t22": 1.188,
+   "checks21": 3,
+   "checks22": 3,
+   "identical": true
+  },
+  {
+   "n": 14,
+   "family": "brick",
+   "measured": true,
+   "t21": 1.779,
+   "t22": 1.079,
+   "checks21": 2,
+   "checks22": 2,
+   "identical": true
+  },
+  {
+   "n": 14,
+   "family": "pauli",
+   "measured": false,
+   "t21": 0.469,
+   "t22": 0.391,
+   "checks21": 0,
+   "checks22": 0,
+   "identical": true
+  },
+  {
+   "n": 14,
+   "family": "pauli",
+   "measured": true,
+   "t21": 12.183,
+   "t22": 6.666,
+   "checks21": 2,
+   "checks22": 2,
+   "identical": true
+  },
+  {
+   "n": 14,
+   "family": "qft",
+   "measured": false,
+   "t21": 4.115,
+   "t22": 2.729,
+   "checks21": 1,
+   "checks22": 1,
+   "identical": true
+  },
+  {
+   "n": 14,
+   "family": "qft",
+   "measured": true,
+   "t21": 3.594,
+   "t22": 3.129,
+   "checks21": 1,
+   "checks22": 1,
+   "identical": true
+  },
+  {
+   "n": 16,
+   "family": "ring",
+   "measured": false,
+   "t21": 2.335,
+   "t22": 1.424,
+   "checks21": 2,
+   "checks22": 2,
+   "identical": true
+  },
+  {
+   "n": 16,
+   "family": "ring",
+   "measured": true,
+   "t21": 2.271,
+   "t22": 1.303,
+   "checks21": 1,
+   "checks22": 1,
+   "identical": true
+  },
+  {
+   "n": 16,
+   "family": "brick",
+   "measured": false,
+   "t21": 8.565,
+   "t22": 3.853,
+   "checks21": 3,
+   "checks22": 3,
+   "identical": true
+  },
+  {
+   "n": 16,
+   "family": "brick",
+   "measured": true,
+   "t21": 8.233,
+   "t22": 3.106,
+   "checks21": 1,
+   "checks22": 1,
+   "identical": true
+  },
+  {
+   "n": 16,
+   "family": "pauli",
+   "measured": false,
+   "t21": 0.481,
+   "t22": 0.441,
+   "checks21": 0,
+   "checks22": 0,
+   "identical": true
+  },
+  {
+   "n": 16,
+   "family": "pauli",
+   "measured": true,
+   "t21": 0.438,
+   "t22": 0.48,
+   "checks21": 0,
+   "checks22": 0,
+   "identical": true
+  },
+  {
+   "n": 16,
+   "family": "qft",
+   "measured": false,
+   "t21": 32.924,
+   "t22": 14.124,
+   "checks21": 2,
+   "checks22": 2,
+   "identical": true
+  },
+  {
+   "n": 16,
+   "family": "qft",
+   "measured": true,
+   "t21": 24.654,
+   "t22": 8.221,
+   "checks21": 2,
+   "checks22": 2,
+   "identical": true
+  }
+ ]
+}

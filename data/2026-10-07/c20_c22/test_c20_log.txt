@@ -1,0 +1,9 @@
+.FakeTorino: item 39 checks c19 24, c20 10
+.FakeHanoiV2: item 39 checks c19 24, c20 13
+.FakeGeneva: item 39 checks c19 24, c20 7
+.FakeKingston: item 39 checks c19 24, c20 13
+.......c19: {'COMPARE_STATS': {'psf': 1, 'level3_refused': 1}, 'RESYNTH_STATS': {'applied': 2, 'selected_resynthesised': 2}, 'EXACT_STATS': {'checked': 4, 'refused_level3': 1, 'not_checkable': 1}}
+c20: {'COMPARE_STATS': {'psf': 1, 'level3_refused': 1}, 'RESYNTH_STATS': {'applied': 2, 'selected_resynthesised': 2}, 'EXACT_STATS': {'checked': 4, 'refused_level3': 1, 'not_checkable': 1}}
+pauli16 on FakeTorino: c19 106.3 s, c20 107.7 s (1.01)
+.
+12 passed in 356.22s (0:05:56)

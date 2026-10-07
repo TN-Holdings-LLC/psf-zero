@@ -1,0 +1,29 @@
+{'c21': '2026-10-07.c21', 'c22': '2026-10-07.c22'} core 2026-09-29.1
+n=12 ring  m=0 c21    0.12 s  c22    0.11 s  ratio 0.93  checks 2->2  identical True
+n=12 ring  m=1 c21    0.12 s  c22    0.10 s  ratio 0.83  checks 1->1  identical True
+n=12 brick m=0 c21    0.27 s  c22    0.26 s  ratio 0.96  checks 3->3  identical True
+n=12 brick m=1 c21    0.24 s  c22    0.17 s  ratio 0.73  checks 1->1  identical True
+n=12 pauli m=0 c21    0.69 s  c22    0.59 s  ratio 0.85  checks 2->2  identical True
+n=12 pauli m=1 c21    0.80 s  c22    0.65 s  ratio 0.81  checks 2->2  identical True
+n=12 qft   m=0 c21    0.54 s  c22    1.13 s  ratio 2.11  checks 1->1  identical True
+n=12 qft   m=1 c21    1.15 s  c22    1.27 s  ratio 1.10  checks 1->1  identical True
+n=14 ring  m=0 c21    0.60 s  c22    0.46 s  ratio 0.76  checks 1->1  identical True
+n=14 ring  m=1 c21    0.58 s  c22    0.47 s  ratio 0.80  checks 1->1  identical True
+n=14 brick m=0 c21    1.94 s  c22    1.19 s  ratio 0.61  checks 3->3  identical True
+n=14 brick m=1 c21    1.78 s  c22    1.08 s  ratio 0.61  checks 2->2  identical True
+n=14 pauli m=0 c21    0.47 s  c22    0.39 s  ratio 0.83  checks 0->0  identical True
+n=14 pauli m=1 c21   12.18 s  c22    6.67 s  ratio 0.55  checks 2->2  identical True
+n=14 qft   m=0 c21    4.12 s  c22    2.73 s  ratio 0.66  checks 1->1  identical True
+n=14 qft   m=1 c21    3.59 s  c22    3.13 s  ratio 0.87  checks 1->1  identical True
+n=16 ring  m=0 c21    2.33 s  c22    1.42 s  ratio 0.61  checks 2->2  identical True
+n=16 ring  m=1 c21    2.27 s  c22    1.30 s  ratio 0.57  checks 1->1  identical True
+n=16 brick m=0 c21    8.56 s  c22    3.85 s  ratio 0.45  checks 3->3  identical True
+n=16 brick m=1 c21    8.23 s  c22    3.11 s  ratio 0.38  checks 1->1  identical True
+n=16 pauli m=0 c21    0.48 s  c22    0.44 s  ratio 0.92  checks 0->0  identical True
+n=16 pauli m=1 c21    0.44 s  c22    0.48 s  ratio 1.10  checks 0->0  identical True
+n=16 qft   m=0 c21   32.92 s  c22   14.12 s  ratio 0.43  checks 2->2  identical True
+n=16 qft   m=1 c21   24.65 s  c22    8.22 s  ratio 0.33  checks 2->2  identical True
+n=12: median ratio 0.890 (range 0.73-2.11); total c21 3.9 s, c22 4.3 s
+n=14: median ratio 0.711 (range 0.55-0.87); total c21 25.3 s, c22 16.1 s
+n=16: median ratio 0.512 (range 0.33-1.10); total c21 79.9 s, c22 33.0 s
+all identical: True

@@ -1,0 +1,88 @@
+module 2026-10-07.c20, core 2026-09-29.1, device FakeTorino
+
+pauli n=16: wall 77.66 s
+  own functions, cumulative s / calls
+       77.66       3  compile_for_hardware
+       46.66       2  _resynthesise
+       46.62       2  _select_resynthesis
+       38.21       4  excitation_cost
+       29.76       1  _choose_lazy
+       28.86   42458  _populations
+       28.44       3  hybrid_cost
+        8.22       2  _same_action
+        7.23      12  _apply_ops
+        4.58   22653  _embed_1q
+        2.12       8  _ops_of
+        1.46       8  _fuse_ops
+        1.31       2  _implements
+        0.32       2  smart_vf2_layout
+        0.27       2  _acceptable
+        0.20       1  floor_aware_target
+        0.19       2  _resynthesis_candidate
+        0.15   40092  _free_diagonal
+        0.07       2  readout_cost
+        0.00       2  compile
+  most time of their own, s / calls
+       20.04  340011  <method 'reshape' of 'numpy.ndarray' objects> (~:0)
+       18.37   29448  tensordot (numeric.py:1001)
+       17.53   42458  _populations (psf_compile.py:2044)
+        5.21       4  excitation_cost (psf_compile.py:1891)
+        3.46       3  hybrid_cost (psf_compile.py:2284)
+        1.30  287368  normalize_axis_tuple (numeric.py:1431)
+        1.20   35888  kron (_shape_base_impl.py:1080)
+        1.12      12  _apply_ops (psf_compile.py:1950)
+        0.71  143552  expand_dims (_shape_base_impl.py:515)
+        0.70   71908  moveaxis (numeric.py:1493)
+        0.29   35909  eye (_twodim_base_impl.py:176)
+        0.29  130804  <method 'transpose' of 'numpy.ndarray' objects> (~:0)
+        0.29  601516  <genexpr> (numeric.py:1480)
+        0.28 1301418  <built-in method builtins.len> (~:0)
+        0.27 1191481  <built-in method builtins.isinstance> (~:0)
+        0.27   22653  _embed_1q (psf_compile.py:2005)
+        0.25   22653  ones (numeric.py:170)
+        0.23   71908  <listcomp> (numeric.py:1554)
+        0.22  112119  <built-in method numpy.array> (~:0)
+        0.22  143552  <listcomp> (_shape_base_impl.py:600)
+
+qft n=16: wall 37.54 s
+  own functions, cumulative s / calls
+       37.54       3  compile_for_hardware
+       24.58       1  _choose_lazy
+       20.49       3  hybrid_cost
+       15.30   25820  _populations
+       12.61       2  _resynthesise
+       12.59       2  _select_resynthesis
+       12.53       4  excitation_cost
+        4.08       2  _implements
+        3.53       8  _apply_ops
+        1.44    9568  _embed_1q
+        0.51       4  _ops_of
+        0.32       4  _fuse_ops
+        0.07       3  readout_cost
+        0.07       1  floor_aware_target
+        0.06   23783  _free_diagonal
+        0.06       2  _resynthesis_candidate
+        0.04       2  smart_vf2_layout
+        0.03       2  _acceptable
+        0.00       2  compile
+  most time of their own, s / calls
+        9.63   25820  _populations (psf_compile.py:2044)
+        9.60  155721  <method 'reshape' of 'numpy.ndarray' objects> (~:0)
+        9.34   15850  tensordot (numeric.py:1001)
+        2.45       3  hybrid_cost (psf_compile.py:2284)
+        1.52       4  excitation_cost (psf_compile.py:1891)
+        0.53  136544  normalize_axis_tuple (numeric.py:1431)
+        0.53       8  _apply_ops (psf_compile.py:1950)
+        0.39   13299  kron (_shape_base_impl.py:1080)
+        0.32   41674  moveaxis (numeric.py:1493)
+        0.21   53196  expand_dims (_shape_base_impl.py:515)
+        0.14   73374  <method 'transpose' of 'numpy.ndarray' objects> (~:0)
+        0.11  285040  <genexpr> (numeric.py:1480)
+        0.11  648841  <built-in method builtins.len> (~:0)
+        0.11   41674  <listcomp> (numeric.py:1554)
+        0.10   63400  <built-in method math.prod> (~:0)
+        0.10  515223  <built-in method builtins.isinstance> (~:0)
+        0.10   13299  eye (_twodim_base_impl.py:176)
+        0.09    9568  ones (numeric.py:170)
+        0.09    9568  _embed_1q (psf_compile.py:2005)
+        0.08   43377  <built-in method numpy.array> (~:0)

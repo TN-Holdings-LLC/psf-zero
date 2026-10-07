@@ -1,0 +1,10 @@
+....
+FakeTorino: two-qubit gates c20 -> c21: pauli8 378->247, pauli12 671->499, qft8 138->97, qft12 326->238, pauli24 2044->1474, qft24 1725->926, ccx5 81->55, ccx7 74->57, ccx9 102->69
+.
+FakeHanoiV2: two-qubit gates c20 -> c21: pauli8 295->296, pauli12 536->466, qft8 170->92, qft12 410->215, pauli24 1503->1348, qft24 1522->1006, ccx5 65->55, ccx7 72->57, ccx9 91->62
+.
+FakeKingston: two-qubit gates c20 -> c21: pauli8 378->276, pauli12 671->478, qft8 138->89, qft12 326->210, pauli24 2209->1454, qft24 1596->940, ccx5 81->57, ccx7 74->63, ccx9 102->58
+..
+opaque three-qubit gate: c20 TranspilerError, c21 TranspilerError
+.
+9 passed in 46.52s

@@ -1,0 +1,21 @@
+  0 ring8m c19 0.132 s c22 0.103 s identical True
+  1 ring12m c19 0.200 s c22 0.159 s identical True
+  2 ring14m c19 0.283 s c22 0.226 s identical True
+  3 ring16m c19 2.210 s c22 1.571 s identical True
+  4 ring20m c19 0.048 s c22 0.020 s identical True
+  5 brick8m c19 0.294 s c22 0.171 s identical True
+  6 brick12m c19 0.623 s c22 0.392 s identical True
+  7 brick14m c19 1.354 s c22 0.583 s identical True
+  8 brick16m c19 10.737 s c22 2.907 s identical True
+  9 brick20m c19 0.044 s c22 0.063 s identical True
+ 10 pauli8m c19 1.266 s c22 0.782 s identical True
+ 11 pauli12m c19 2.856 s c22 1.790 s identical True
+ 12 pauli14m c19 6.100 s c22 3.157 s identical True
+ 13 pauli16m c19 54.583 s c22 25.641 s identical True
+ 14 pauli20m c19 0.266 s c22 0.243 s identical True
+ 15 qft8m c19 1.173 s c22 0.745 s identical True
+ 16 qft12m c19 2.334 s c22 1.586 s identical True
+ 17 qft14m c19 4.809 s c22 2.652 s identical True
+ 18 qft16m c19 26.419 s c22 7.739 s identical True
+ 19 qft20m c19 0.117 s c22 0.121 s identical True
+wrote track_FakeBrussels_smoke.json: 20 circuits, 168.9 s

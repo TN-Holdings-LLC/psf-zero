@@ -1,0 +1,249 @@
+{
+ "device": "FakeTorino",
+ "versions": {
+  "c19": "2026-10-07.c19",
+  "c20": "2026-10-07.c20"
+ },
+ "rows": [
+  {
+   "n": 12,
+   "family": "ring",
+   "measured": false,
+   "t19": 0.119,
+   "t20": 0.108,
+   "checks19": 4,
+   "checks20": 2,
+   "identical": true
+  },
+  {
+   "n": 12,
+   "family": "ring",
+   "measured": true,
+   "t19": 0.115,
+   "t20": 0.098,
+   "checks19": 4,
+   "checks20": 1,
+   "identical": true
+  },
+  {
+   "n": 12,
+   "family": "brick",
+   "measured": false,
+   "t19": 0.253,
+   "t20": 0.3,
+   "checks19": 4,
+   "checks20": 3,
+   "identical": true
+  },
+  {
+   "n": 12,
+   "family": "brick",
+   "measured": true,
+   "t19": 0.258,
+   "t20": 0.233,
+   "checks19": 4,
+   "checks20": 1,
+   "identical": true
+  },
+  {
+   "n": 12,
+   "family": "pauli",
+   "measured": false,
+   "t19": 1.048,
+   "t20": 1.073,
+   "checks19": 4,
+   "checks20": 4,
+   "identical": true
+  },
+  {
+   "n": 12,
+   "family": "pauli",
+   "measured": true,
+   "t19": 3.517,
+   "t20": 1.167,
+   "checks19": 4,
+   "checks20": 4,
+   "identical": true
+  },
+  {
+   "n": 12,
+   "family": "qft",
+   "measured": false,
+   "t19": 3.047,
+   "t20": 2.917,
+   "checks19": 4,
+   "checks20": 4,
+   "identical": true
+  },
+  {
+   "n": 12,
+   "family": "qft",
+   "measured": true,
+   "t19": 2.903,
+   "t20": 2.46,
+   "checks19": 4,
+   "checks20": 2,
+   "identical": true
+  },
+  {
+   "n": 14,
+   "family": "ring",
+   "measured": false,
+   "t19": 0.819,
+   "t20": 0.689,
+   "checks19": 4,
+   "checks20": 1,
+   "identical": true
+  },
+  {
+   "n": 14,
+   "family": "ring",
+   "measured": true,
+   "t19": 0.689,
+   "t20": 0.669,
+   "checks19": 4,
+   "checks20": 1,
+   "identical": true
+  },
+  {
+   "n": 14,
+   "family": "brick",
+   "measured": false,
+   "t19": 1.839,
+   "t20": 1.265,
+   "checks19": 4,
+   "checks20": 3,
+   "identical": true
+  },
+  {
+   "n": 14,
+   "family": "brick",
+   "measured": true,
+   "t19": 2.193,
+   "t20": 1.124,
+   "checks19": 4,
+   "checks20": 2,
+   "identical": true
+  },
+  {
+   "n": 14,
+   "family": "pauli",
+   "measured": false,
+   "t19": 13.743,
+   "t20": 13.65,
+   "checks19": 4,
+   "checks20": 2,
+   "identical": true
+  },
+  {
+   "n": 14,
+   "family": "pauli",
+   "measured": true,
+   "t19": 11.708,
+   "t20": 12.819,
+   "checks19": 4,
+   "checks20": 4,
+   "identical": true
+  },
+  {
+   "n": 14,
+   "family": "qft",
+   "measured": false,
+   "t19": 8.096,
+   "t20": 7.629,
+   "checks19": 4,
+   "checks20": 2,
+   "identical": true
+  },
+  {
+   "n": 14,
+   "family": "qft",
+   "measured": true,
+   "t19": 9.167,
+   "t20": 7.702,
+   "checks19": 4,
+   "checks20": 2,
+   "identical": true
+  },
+  {
+   "n": 16,
+   "family": "ring",
+   "measured": false,
+   "t19": 3.715,
+   "t20": 2.903,
+   "checks19": 4,
+   "checks20": 2,
+   "identical": true
+  },
+  {
+   "n": 16,
+   "family": "ring",
+   "measured": true,
+   "t19": 3.98,
+   "t20": 3.083,
+   "checks19": 4,
+   "checks20": 1,
+   "identical": true
+  },
+  {
+   "n": 16,
+   "family": "brick",
+   "measured": false,
+   "t19": 12.527,
+   "t20": 12.041,
+   "checks19": 4,
+   "checks20": 3,
+   "identical": true
+  },
+  {
+   "n": 16,
+   "family": "brick",
+   "measured": true,
+   "t19": 13.412,
+   "t20": 10.866,
+   "checks19": 4,
+   "checks20": 1,
+   "identical": true
+  },
+  {
+   "n": 16,
+   "family": "pauli",
+   "measured": false,
+   "t19": 104.671,
+   "t20": 102.057,
+   "checks19": 4,
+   "checks20": 4,
+   "identical": true
+  },
+  {
+   "n": 16,
+   "family": "pauli",
+   "measured": true,
+   "t19": 120.705,
+   "t20": 121.01,
+   "checks19": 4,
+   "checks20": 4,
+   "identical": true
+  },
+  {
+   "n": 16,
+   "family": "qft",
+   "measured": false,
+   "t19": 60.412,
+   "t20": 56.9,
+   "checks19": 4,
+   "checks20": 2,
+   "identical": true
+  },
+  {
+   "n": 16,
+   "family": "qft",
+   "measured": true,
+   "t19": 61.528,
+   "t20": 58.42,
+   "checks19": 4,
+   "checks20": 2,
+   "identical": true
+  }
+ ]
+}

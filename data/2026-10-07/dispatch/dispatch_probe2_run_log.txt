@@ -1,0 +1,116 @@
+test_QASMBench_small[adder_n4-all-to-all]      PSF    {'q2': 10, 'd2': 6, 't': 0.2589, 't_pre': 0.0, 'valid': True}
+test_QASMBench_small[adder_n4-all-to-all]      L2     {'q2': 10, 'd2': 6, 't': 0.0276, 'valid': True}
+test_QASMBench_small[adder_n4-all-to-all]      PSFU   {'q2': 10, 'd2': 6, 't': 0.2377, 't_pre': 0.0007, 'valid': True}
+test_QASMBench_small[adder_n4-all-to-all]      PSFU2  {'q2': 10, 'd2': 6, 't': 0.2438, 't_pre': 0.0006, 'valid': True}
+test_QASMBench_small[adder_n4-all-to-all]      PSFH2  {'q2': 10, 'd2': 6, 't': 0.271, 't_pre': 0.0206, 'valid': True}
+test_QASMBench_small[basis_trotter_n4-all-to-a PSF    {'q2': 199, 'd2': 133, 't': 0.2758, 't_pre': 0.0, 'valid': True}
+test_QASMBench_small[basis_trotter_n4-all-to-a L2     {'q2': 179, 'd2': 123, 't': 0.0719, 'valid': True}
+test_QASMBench_small[basis_trotter_n4-all-to-a PSFU   {'q2': 199, 'd2': 133, 't': 0.2795, 't_pre': 0.001, 'valid': True}
+test_QASMBench_small[basis_trotter_n4-all-to-a PSFU2  {'q2': 179, 'd2': 123, 't': 0.275, 't_pre': 0.0009, 'valid': True}
+test_QASMBench_small[basis_trotter_n4-all-to-a PSFH2  {'q2': 232, 'd2': 152, 't': 0.2727, 't_pre': 0.0209, 'valid': True}
+test_feynman_transpile[barenco_tof_10.qasm]    PSF    {'q2': 729, 'd2': 449, 't': 0.2528, 't_pre': 0.0, 'valid': True}
+test_feynman_transpile[barenco_tof_10.qasm]    L2     {'q2': 367, 'd2': 292, 't': 0.0566, 'valid': True}
+test_feynman_transpile[barenco_tof_10.qasm]    PSFU   {'q2': 365, 'd2': 290, 't': 0.2264, 't_pre': 0.0009, 'valid': True}
+test_feynman_transpile[barenco_tof_10.qasm]    PSFU2  {'q2': 367, 'd2': 292, 't': 0.2196, 't_pre': 0.0009, 'valid': True}
+test_feynman_transpile[barenco_tof_10.qasm]    PSFH2  {'q2': 367, 'd2': 292, 't': 0.3099, 't_pre': 0.0273, 'valid': True}
+test_hamlib_hamiltonians_transpile[ham_enc_gra PSF    {'q2': 6195, 'd2': 4735, 't': 0.3747, 't_pre': 0.0, 'valid': True}
+test_hamlib_hamiltonians_transpile[ham_enc_gra L2     {'q2': 3696, 'd2': 3124, 't': 0.094, 'valid': True}
+test_hamlib_hamiltonians_transpile[ham_enc_gra PSFU   {'q2': 4569, 'd2': 3822, 't': 0.5558, 't_pre': 0.0096, 'valid': True}
+test_hamlib_hamiltonians_transpile[ham_enc_gra PSFU2  {'q2': 3632, 'd2': 3030, 't': 0.6461, 't_pre': 0.01, 'valid': True}
+test_hamlib_hamiltonians_transpile[ham_enc_gra PSFH2  {'q2': 3745, 'd2': 3128, 't': 1.655, 't_pre': 0.038, 'valid': True}
+test_hamlib_hamiltonians_transpile[ham_bh_grap PSF    {'q2': 8556, 'd2': 5963, 't': 0.4711, 't_pre': 0.0, 'valid': True}
+test_hamlib_hamiltonians_transpile[ham_bh_grap L2     {'q2': 4499, 'd2': 4065, 't': 0.1078, 'valid': True}
+test_hamlib_hamiltonians_transpile[ham_bh_grap PSFU   {'q2': 5042, 'd2': 4507, 't': 0.6024, 't_pre': 0.0094, 'valid': True}
+test_hamlib_hamiltonians_transpile[ham_bh_grap PSFU2  {'q2': 4499, 'd2': 4065, 't': 0.5673, 't_pre': 0.0093, 'valid': True}
+test_hamlib_hamiltonians_transpile[ham_bh_grap PSFH2  {'q2': 4595, 'd2': 4045, 't': 1.0654, 't_pre': 0.0396, 'valid': True}
+test_hamiltonians[ham_0-uuf100-0810.cnf-40-res PSF    {'q2': 1983, 'd2': 560, 't': 0.2501, 't_pre': 0.0, 'valid': True}
+test_hamiltonians[ham_0-uuf100-0810.cnf-40-res L2     {'q2': 1301, 'd2': 457, 't': 0.0904, 'valid': True}
+test_hamiltonians[ham_0-uuf100-0810.cnf-40-res PSFU   {'q2': 1361, 'd2': 426, 't': 0.2601, 't_pre': 0.0022, 'valid': True}
+test_hamiltonians[ham_0-uuf100-0810.cnf-40-res PSFU2  {'q2': 1273, 'd2': 427, 't': 0.274, 't_pre': 0.002, 'valid': True}
+test_hamiltonians[ham_0-uuf100-0810.cnf-40-res PSFH2  {'q2': 1276, 'd2': 452, 't': 0.3658, 't_pre': 0.0207, 'valid': True}
+test_QASMBench_medium[bigadder_n18-square]     PSF    {'q2': 274, 'd2': 167, 't': 0.2309, 't_pre': 0.0, 'valid': True}
+test_QASMBench_medium[bigadder_n18-square]     L2     {'q2': 196, 'd2': 129, 't': 0.0335, 'valid': True}
+test_QASMBench_medium[bigadder_n18-square]     PSFU   {'q2': 201, 'd2': 135, 't': 0.2268, 't_pre': 0.0017, 'valid': True}
+test_QASMBench_medium[bigadder_n18-square]     PSFU2  {'q2': 196, 'd2': 129, 't': 0.27, 't_pre': 0.0027, 'valid': True}
+test_QASMBench_medium[bigadder_n18-square]     PSFH2  {'q2': 196, 'd2': 126, 't': 0.3057, 't_pre': 0.0367, 'valid': True}
+test_QASMBench_medium[bv_n14-square]           PSF    {'q2': 29, 'd2': 29, 't': 0.2417, 't_pre': 0.0, 'valid': True}
+test_QASMBench_medium[bv_n14-square]           L2     {'q2': 26, 'd2': 25, 't': 0.0292, 'valid': True}
+test_QASMBench_medium[bv_n14-square]           PSFU   {'q2': 29, 'd2': 29, 't': 0.2526, 't_pre': 0.0006, 'valid': True}
+test_QASMBench_medium[bv_n14-square]           PSFU2  {'q2': 26, 'd2': 25, 't': 0.2491, 't_pre': 0.0006, 'valid': True}
+test_QASMBench_medium[bv_n14-square]           PSFH2  {'q2': 26, 'd2': 25, 't': 0.2538, 't_pre': 0.0189, 'valid': True}
+test_QASMBench_large[32-linear]                PSF    {'q2': 9957, 'd2': 1599, 't': 0.4533, 't_pre': 0.0, 'valid': True}
+test_QASMBench_large[32-linear]                L2     {'q2': 9849, 'd2': 1518, 't': 0.1836, 'valid': True}
+test_QASMBench_large[32-linear]                PSFU   {'q2': 9957, 'd2': 1599, 't': 0.4677, 't_pre': 0.0021, 'valid': True}
+test_QASMBench_large[32-linear]                PSFU2  {'q2': 9690, 'd2': 1377, 't': 0.4999, 't_pre': 0.0018, 'valid': True}
+test_QASMBench_large[32-linear]                PSFH2  {'q2': 9702, 'd2': 1401, 't': 0.5913, 't_pre': 0.0364, 'valid': True}
+test_QV_100_transpile                          PSF    {'q2': 99069, 'd2': 10545, 't': 1.8859, 't_pre': 0.0, 'valid': True}
+test_QV_100_transpile                          L2     {'q2': 95676, 'd2': 10581, 't': 2.7872, 'valid': True}
+test_QV_100_transpile                          PSFU   {'q2': 96522, 'd2': 10113, 't': 3.3394, 't_pre': 0.0038, 'valid': True}
+test_QV_100_transpile                          PSFU2  {'q2': 96426, 'd2': 10293, 't': 5.0407, 't_pre': 0.0048, 'valid': True}
+test_QV_100_transpile                          PSFH2  {'q2': 96825, 'd2': 10719, 't': 10.8206, 't_pre': 0.2275, 'valid': True}
+test_circSU2_100_transpile                     PSF    {'q2': 1887, 'd2': 1447, 't': 0.2098, 't_pre': 0.0, 'valid': True}
+test_circSU2_100_transpile                     L2     {'q2': 300, 'd2': 300, 't': 0.0999, 'valid': True}
+test_circSU2_100_transpile                     PSFU   {'q2': 300, 'd2': 300, 't': 0.5081, 't_pre': 0.0093, 'valid': True}
+test_circSU2_100_transpile                     PSFU2  {'q2': 300, 'd2': 300, 't': 0.5158, 't_pre': 0.0095, 'valid': True}
+test_circSU2_100_transpile                     PSFH2  {'q2': 300, 'd2': 300, 't': 0.6041, 't_pre': 0.0317, 'valid': True}
+test_QFT_100_transpile                         PSF    {'q2': 13456, 'd2': 2114, 't': 1.3287, 't_pre': 0.0, 'valid': True}
+test_QFT_100_transpile                         L2     {'q2': 9774, 'd2': 1954, 't': 0.2121, 'valid': True}
+test_QFT_100_transpile                         PSFU   {'q2': 13456, 'd2': 2114, 't': 1.3584, 't_pre': 0.0072, 'valid': True}
+test_QFT_100_transpile                         PSFU2  {'q2': 10427, 'd2': 1853, 't': 1.0741, 't_pre': 0.0068, 'valid': True}
+test_QFT_100_transpile                         PSFH2  {'q2': 10713, 'd2': 1565, 't': 2.9483, 't_pre': 0.0456, 'valid': True}
+ring12-FakeTorino                              PSF    {'q2': 22, 'd2': 13, 't': 0.2205, 't_pre': 0.0, 'valid': True}
+ring12-FakeTorino                              L2     {'q2': 22, 'd2': 13, 't': 0.0353, 'valid': True}
+ring12-FakeTorino                              PSFU   {'q2': 22, 'd2': 13, 't': 0.2024, 't_pre': 0.0006, 'valid': True}
+ring12-FakeTorino                              PSFU2  {'q2': 22, 'd2': 13, 't': 0.211, 't_pre': 0.001, 'valid': True}
+ring12-FakeTorino                              PSFH2  {'q2': 22, 'd2': 13, 't': 0.2203, 't_pre': 0.0195, 'valid': True}
+ring40-FakeTorino                              PSF    {'q2': 78, 'd2': 41, 't': 0.2115, 't_pre': 0.0, 'valid': True}
+ring40-FakeTorino                              L2     {'q2': 78, 'd2': 41, 't': 0.0407, 'valid': True}
+ring40-FakeTorino                              PSFU   {'q2': 78, 'd2': 41, 't': 0.2068, 't_pre': 0.0009, 'valid': True}
+ring40-FakeTorino                              PSFU2  {'q2': 78, 'd2': 41, 't': 0.2148, 't_pre': 0.0013, 'valid': True}
+ring40-FakeTorino                              PSFH2  {'q2': 78, 'd2': 41, 't': 0.2318, 't_pre': 0.0198, 'valid': True}
+brick12-FakeTorino                             PSF    {'q2': 66, 'd2': 12, 't': 0.2557, 't_pre': 0.0, 'valid': True}
+brick12-FakeTorino                             L2     {'q2': 66, 'd2': 12, 't': 0.0444, 'valid': True}
+brick12-FakeTorino                             PSFU   {'q2': 66, 'd2': 12, 't': 0.272, 't_pre': 0.0008, 'valid': True}
+brick12-FakeTorino                             PSFU2  {'q2': 66, 'd2': 12, 't': 0.2712, 't_pre': 0.0008, 'valid': True}
+brick12-FakeTorino                             PSFH2  {'q2': 66, 'd2': 12, 't': 0.2688, 't_pre': 0.0213, 'valid': True}
+brick40-FakeTorino                             PSF    {'q2': 234, 'd2': 12, 't': 0.2723, 't_pre': 0.0, 'valid': True}
+brick40-FakeTorino                             L2     {'q2': 234, 'd2': 12, 't': 0.0414, 'valid': True}
+brick40-FakeTorino                             PSFU   {'q2': 234, 'd2': 12, 't': 0.2844, 't_pre': 0.0016, 'valid': True}
+brick40-FakeTorino                             PSFU2  {'q2': 234, 'd2': 12, 't': 0.2738, 't_pre': 0.0013, 'valid': True}
+brick40-FakeTorino                             PSFH2  {'q2': 234, 'd2': 12, 't': 0.2881, 't_pre': 0.0232, 'valid': True}
+pauli12-FakeTorino                             PSF    {'q2': 609, 'd2': 277, 't': 0.2197, 't_pre': 0.0, 'valid': True}
+pauli12-FakeTorino                             L2     {'q2': 377, 'd2': 217, 't': 0.0429, 'valid': True}
+pauli12-FakeTorino                             PSFU   {'q2': 396, 'd2': 233, 't': 0.235, 't_pre': 0.0011, 'valid': True}
+pauli12-FakeTorino                             PSFU2  {'q2': 377, 'd2': 217, 't': 0.2706, 't_pre': 0.0013, 'valid': True}
+pauli12-FakeTorino                             PSFH2  {'q2': 363, 'd2': 221, 't': 0.3451, 't_pre': 0.0251, 'valid': True}
+pauli40-FakeTorino                             PSF    {'q2': 3662, 'd2': 938, 't': 0.2488, 't_pre': 0.0, 'valid': True}
+pauli40-FakeTorino                             L2     {'q2': 2787, 'd2': 761, 't': 0.0859, 'valid': True}
+pauli40-FakeTorino                             PSFU   {'q2': 2957, 'd2': 759, 't': 0.3093, 't_pre': 0.0026, 'valid': True}
+pauli40-FakeTorino                             PSFU2  {'q2': 2787, 'd2': 761, 't': 0.354, 't_pre': 0.0034, 'valid': True}
+pauli40-FakeTorino                             PSFH2  {'q2': 2795, 'd2': 696, 't': 0.5409, 't_pre': 0.0246, 'valid': True}
+qft12-FakeTorino                               PSF    {'q2': 326, 'd2': 126, 't': 0.2663, 't_pre': 0.0, 'valid': True}
+qft12-FakeTorino                               L2     {'q2': 219, 'd2': 113, 't': 0.0418, 'valid': True}
+qft12-FakeTorino                               PSFU   {'q2': 238, 'd2': 106, 't': 0.2714, 't_pre': 0.0011, 'valid': True}
+qft12-FakeTorino                               PSFU2  {'q2': 219, 'd2': 113, 't': 0.2786, 't_pre': 0.0012, 'valid': True}
+qft12-FakeTorino                               PSFH2  {'q2': 264, 'd2': 101, 't': 0.3202, 't_pre': 0.0219, 'valid': True}
+qft40-FakeTorino                               PSF    {'q2': 5151, 'd2': 1089, 't': 0.364, 't_pre': 0.0, 'valid': True}
+qft40-FakeTorino                               L2     {'q2': 2307, 'd2': 533, 't': 0.1313, 'valid': True}
+qft40-FakeTorino                               PSFU   {'q2': 2556, 'd2': 337, 't': 0.4832, 't_pre': 0.0063, 'valid': True}
+qft40-FakeTorino                               PSFU2  {'q2': 2307, 'd2': 533, 't': 0.4469, 't_pre': 0.0051, 'valid': True}
+qft40-FakeTorino                               PSFH2  {'q2': 2960, 'd2': 535, 't': 0.8989, 't_pre': 0.0331, 'valid': True}
+T-spare0-FakeAuckland                          PSF    {'q2': 51, 'd2': 6, 't': 0.0377, 't_pre': 0.0, 'valid': True}
+T-spare0-FakeAuckland                          L2     {'q2': 54, 'd2': 9, 't': 0.5048, 'valid': True}
+T-spare0-FakeAuckland                          PSFU   {'q2': 51, 'd2': 6, 't': 0.0333, 't_pre': 0.0019, 'valid': True}
+T-spare0-FakeAuckland                          PSFU2  {'q2': 51, 'd2': 6, 't': 0.0408, 't_pre': 0.0021, 'valid': True}
+T-spare0-FakeAuckland                          PSFH2  {'q2': 51, 'd2': 6, 't': 0.0453, 't_pre': 0.0251, 'valid': True}
+T-spare4-FakeAuckland                          PSF    {'q2': 45, 'd2': 6, 't': 0.0301, 't_pre': 0.0, 'valid': True}
+T-spare4-FakeAuckland                          L2     {'q2': 45, 'd2': 6, 't': 0.033, 'valid': True}
+T-spare4-FakeAuckland                          PSFU   {'q2': 45, 'd2': 6, 't': 0.0367, 't_pre': 0.0033, 'valid': True}
+T-spare4-FakeAuckland                          PSFU2  {'q2': 45, 'd2': 6, 't': 0.037, 't_pre': 0.0017, 'valid': True}
+T-spare4-FakeAuckland                          PSFH2  {'q2': 45, 'd2': 6, 't': 0.0458, 't_pre': 0.028, 'valid': True}
+T-spare0-FakeKingston                          PSF    {'q2': 276, 'd2': 6, 't': 0.0646, 't_pre': 0.0, 'valid': True}
+T-spare0-FakeKingston                          L2     {'q2': 327, 'd2': 15, 't': 1.3755, 'valid': True}
+T-spare0-FakeKingston                          PSFU   {'q2': 276, 'd2': 6, 't': 0.0664, 't_pre': 0.0034, 'valid': True}
+T-spare0-FakeKingston                          PSFU2  {'q2': 276, 'd2': 6, 't': 0.073, 't_pre': 0.0036, 'valid': True}
+T-spare0-FakeKingston                          PSFH2  {'q2': 276, 'd2': 6, 't': 0.1028, 't_pre': 0.0309, 'valid': True}
+DONE

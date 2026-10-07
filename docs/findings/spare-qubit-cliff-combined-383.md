@@ -318,6 +318,231 @@ Four releases in one day (2026-10-06.1 to .4) were each tested, but are hard to 
 
 This follows advice from a separate review of the record (the workplace session of 2026-10-07).
 
+
+---
+
+<!-- ===== Addendum 386 (source: spare-qubit-cliff-addendum-386-2026-10-07.md) ===== -->
+
+> **Note added when merging:** Exploratory work of 2026-10-07 at the workplace, after Addendum 385; written after the output was seen.
+
+## Addendum 386 -- DISPATCH-PROBE and DISPATCH-PROBE 2 (exploratory): most of the default call's gap to Qiskit level 2 on general circuits comes from instructions on three or more qubits; candidates c20 (item 47), c21 (item 48) and c22 (item 49) and their exploratory tests (2026-10-07)
+
+**Status: exploratory, not pre-registered. Written after all the output below was seen.** Nothing here is a test of
+a prediction; Addendum 387 pre-registers the test of the speed items, and the quality item is to be tested in BP-MOCK.
+
+## 1. Why
+
+After Addendum 385 the owner asked for two things: (1) the default call's quality against Qiskit level 2 on general
+circuits, where BP-PROBE (Addendum 377) found it behind; (2) a shorter time for the recommended call at 16 qubits,
+which after c19 still took about 40-85 s on the workplace PC for a Hamiltonian (Addendum 384, section 4).
+
+## 2. DISPATCH-PROBE: where the default call loses to level 2
+
+[`benchmarks/dispatch_probe.py`](../../benchmarks/dispatch_probe.py) was written to find a rule by which the default
+call could hand a circuit to level 2. It was run at the workplace from the project folder outside the repository and
+is copied here unchanged. Circuits: BP-PROBE's 14 Benchpress tests (built as Benchpress builds them, Benchpress at
+`b695f30`), SKIP's four families at 12 and 40 qubits on FakeTorino, and PL-GPU-REDO's family T at spare 0 and 4 on
+FakeAuckland and spare 0 on FakeKingston: 23 circuits. Arms, all without a target: PSF (candidate c19's default
+call), PSFH (the same after unrolling the input to the basis with level 0), L2 (`transpile(..., optimization_level=2)`)
+and PSF2 (c19 with `routing_optimization_level=2`). Every output was valid (basis gates, two-qubit gates on
+couplings). Output: [`data/2026-10-07/dispatch/`](../../data/2026-10-07/dispatch/).
+
+Two-qubit gates, as a ratio to level 2's (below 1: PSF-Zero has fewer):
+
+| circuit | instruction on 3+ qubits | PSF | PSFH | PSF2 |
+|---|---|---|---|---|
+| EfficientSU2, 100 qubits | EfficientSU2 | 6.29 | 1.00 | 6.29 |
+| barenco_tof_10 | ccx | 1.99 | 0.99 | 1.99 |
+| HamLib (two) | PauliEvolution | 1.68, 1.90 | 1.63, 1.10 | 1.08, 1.15 |
+| SKIP pauli 12 / 40 | PauliEvolution | 1.62 / 1.31 | 0.97 / 1.09 | 1.56 / 1.29 |
+| SKIP qft 12 / 40 | qft | 1.49 / 2.23 | 1.25 / 1.29 | 1.01 / 1.31 |
+| QFT, 100 qubits (flat) | none | 1.38 | **1.79** | 1.07 |
+| bv_n14, basis_trotter_n4 | none | 1.12, 1.11 | 1.12, 1.41 | 1.00, 1.00 |
+| QV 100, QASMBench 32-linear | QV layer / none | 1.04, 1.01 | 1.02, 1.01 | 1.03, 1.02 |
+| ring, brick (4), adder_n4 | none | 1.00 | 1.00 | 1.00 |
+| family T: Auckland spare 0, Kingston spare 0 | none | **0.94, 0.84** | 0.94, 0.84 | 0.94, 0.84 |
+
+Readings:
+
+- **Most of the gap comes from instructions on more than two qubits.** The default call handed them to its pipeline
+  as they were; unrolling the input first removed most of the gap.
+- **Unrolling everything breaks two-qubit structure the pipeline uses:** on the flat 100-qubit QFT the ratio rose
+  from 1.38 to 1.79.
+- **`frac_deep`** (the share of CX in same-pair blocks of at least 4 CX) **does not separate the cases:** the
+  four-qubit Trotter circuit has 0.97 and level 2 wins; family T has 1.0 and PSF-Zero wins. No dispatch rule by
+  these features was found.
+- **PSF-Zero's own case holds:** on family T at full occupancy level 2 meets the coupling-map cliff (FakeKingston:
+  327 two-qubit gates and depth 15 against 276 and 6).
+
+## 3. DISPATCH-PROBE 2: expanding only the wide instructions
+
+[`benchmarks/dispatch_probe2.py`](../../benchmarks/dispatch_probe2.py) (same circuits, imported from the first
+probe) measured PSFU (Qiskit's `Unroll3qOrMore` first: only instructions on three or more qubits are expanded),
+PSFU2 (PSFU with routing level 2) and PSFH2 (PSFH with routing level 2), and repeated PSF and L2. It was run twice;
+both runs gave the same two-qubit count and depth in every row, and the saved files are the second run.
+
+| arm | geometric mean of the ratio to level 2 (23 circuits) | largest | fewer / more than level 2 |
+|---|---|---|---|
+| PSF | 1.341 | 6.29 | 2 / 15 |
+| PSFU | 1.045 | 1.38 | 3 / 13 |
+| PSFU2 | 0.991 | 1.07 | 5 / 2 |
+| PSFH2 | 1.024 | 1.30 | 5 / 8 |
+
+- **PSFU had no more two-qubit gates than PSF on all 23;** on circuits without wide instructions it changed nothing.
+- **PSFU2 matched level 2 gate for gate on many rows** (same two-qubit count and depth). This is the effect the
+  docstring of `routing_optimization_level` records: at level 2 Qiskit's preset re-runs block consolidation and
+  synthesis and the result is level 2's. At full occupancy, raising the level also brings back the cliff (Addenda
+  24-25); family T did not show it here only because the layout search placed it without routing. **Routing level 2
+  as a default is therefore not proposed;** it would give up what the default call is for. If it is ever considered,
+  it is a separate item to be timed on the cliff first.
+
+## 4. Candidates (all with changelog entries in the file)
+
+| candidate | item | what it changes | based on |
+|---|---|---|---|
+| [c20](../../patches/psf_compile_c20_2026-10-07/psf_compile.py) | 47 | item 39's checks are made only where their result can change the output (estimates first) | c19 |
+| [c21](../../patches/psf_compile_c21_2026-10-07/psf_compile.py) | 48 | instructions on 3+ qubits expanded with `Unroll3qOrMore` before PSF-Zero's own pipeline | c20 |
+| [c22](../../patches/psf_compile_c22_2026-10-07/psf_compile.py) | 49 | `excitation_cost` and `hybrid_cost` follow single-qubit gates on each qubit's 2x2 reduced state | c21 |
+
+Exploratory checks, all at the workplace (Windows, Python 3.11.9, core 2026-09-29.1), files in
+[`data/2026-10-07/c20_c22/`](../../data/2026-10-07/c20_c22/):
+
+- **c20.** [`test_c20.py`](../../patches/psf_compile_c20_2026-10-07/test_c20.py): 12 passed, twice. Outputs equal
+  c19's, including with every item 39 check forced to fail or to pass. The checks made fell from 24 to 7-13 per
+  device. [`c20_timing.py`](../../benchmarks/c20_timing.py) (24 circuits, SKIP's families at 12-16 qubits, seeds
+  47,500,000 + k): all identical in both runs, total time at 16 qubits 310 → 274 s and 381 → 367 s (median ratios
+  0.879 and 0.946; the saved log is the second run). The gain was smaller than expected because after item 46 the
+  estimates, not the checks, took most of the time: [`c20_profile.py`](../../benchmarks/c20_profile.py) put 67-74 s of
+  78-87 s of a 16-qubit Hamiltonian (two runs) in `excitation_cost` and `hybrid_cost` (reading populations and applying
+  single-qubit gates to the whole state).
+- **c21.** [`test_c21.py`](../../patches/psf_compile_c21_2026-10-07/test_c21.py): 9 passed (a first version used
+  30-qubit circuits on the 27-qubit FakeHanoiV2 and failed for that reason in both modules; fixed to 24 qubits).
+  Circuits without wide instructions: c20's output, default and recommended call. With wide instructions, the default
+  call's two-qubit count fell on 26 of 27 circuits (by 10-48%; for example qft at 24 qubits on FakeTorino 1,725 →
+  926) and rose by one on one (FakeHanoiV2, pauli at 8 qubits: 295 → 296); every output valid and, up to 16 qubits,
+  implementing the input wherever c20's did. An instruction that cannot be expanded gives the same exception as c20.
+- **c22.** [`test_c22.py`](../../patches/psf_compile_c22_2026-10-07/test_c22.py): 12 passed, twice; both estimates
+  agree with c21's to 3.1e-15 (relative) or better on four devices; outputs equal c21's.
+  [`c22_timing.py`](../../benchmarks/c22_timing.py): all 24 identical in both runs; total at 16 qubits 89.0 → 39.6 s
+  and 79.9 → 33.0 s (median ratios 0.454 and 0.512), at 14 qubits 0.645 and 0.711.
+
+**Something to watch (from `c22_timing`):** two of the 16-qubit pauli circuits took 0.5 s with c21 and c22 and made
+no check. After expansion their routed circuit touched more than 16 qubits, so the recommended call made no estimate
+and returned its own circuit without comparing it with level 3's (items 36-38). With c20 the same circuits may have
+been compared. Whether item 48 lowers the recommended call's quality on some circuits this way is one of the things
+BP-MOCK must measure.
+
+## 5. What this shows and what it does not
+
+- The DISPATCH probes chose item 48, so they cannot test it. Its effect is to be measured on circuits not used here
+  (BP-MOCK, to be pre-registered).
+- The timings come from one workplace PC under varying load (the same 16-qubit call took 50 s in one run and 106 s in
+  another); they set the predictions of Addendum 387 and are not results.
+
+## 6. Disclosures
+
+- The probes were run from the project folder outside the repository; the copies here are the files that ran.
+- Runs that were repeated overwrote their logs; the numbers of the first runs quoted above are from the output pasted
+  into the session.
+- Local paths in the saved logs are replaced by `<windows-home>`.
+
+
+---
+
+<!-- ===== Addendum 387 (source: spare-qubit-cliff-addendum-387-2026-10-07.md) ===== -->
+
+> **Note added when merging:** Pre-registration of TRACK, committed with its smoke run as the lock before the scored run.
+
+## Addendum 387 -- Pre-registration of TRACK: does candidate c22 (items 47-49) return candidate c19's circuit with the recommended call on inputs without instructions on three or more qubits, in 0.6 of its time or less at 16 qubits? (2026-10-07)
+
+**Status: pre-registration, written before TRACK's smoke run and before any of its output exists.** The lock is the
+commit that adds this Addendum together with the smoke run's output; the scored run follows that commit.
+
+## 1. Question
+
+Candidate c22 carries three items on top of candidate c19 (accepted, not released; Addendum 385). Two of them are
+meant to change only the time of the recommended call:
+
+- item 47: item 39's checks only where their result can change the output (c20);
+- item 49: the estimates follow single-qubit gates on each qubit's 2x2 reduced state (c22).
+
+The third, item 48 (c21), changes what is returned for inputs with an instruction on more than two qubits, and is
+not tested here (BP-MOCK). TRACK asks whether c22 returns c19's circuit with the recommended call on inputs that item
+48 does not touch, and how much faster it is.
+
+## 2. Design
+
+[`benchmarks/track_eval.py`](../../benchmarks/track_eval.py), run by
+[`benchmarks/run_track_2026-10-07.py`](../../benchmarks/run_track_2026-10-07.py), checked by the independent
+[`benchmarks/track_verify.py`](../../benchmarks/track_verify.py) (reads the raw json only). It is FUSE's design
+(Addendum 383) with c19 and c22 as the two arms, new seeds and one change to the inputs:
+
+- **Circuits:** SKIP's four families (ring, brick, pauli, qft; `skip_eval.family_circuit`, unchanged) at 8, 12, 14,
+  16 and 20 qubits, 3 per (family, size), the first two measured: 60 per device, seeds 85,000,000 + k (smoke:
+  85,500,000 + k, one per cell). These seeds have not been used.
+- **Expansion:** every circuit is first passed through Qiskit's `Unroll3qOrMore`, so that it has no instruction on
+  more than two qubits (SKIP's pauli and qft circuits have them; ring and brick do not). Both arms compile the same
+  expanded circuit, and c22's item 48 leaves it as it is. P0 checks that no input has such an instruction.
+- **Devices:** FakeTorino, FakeKingston (cz), FakeAuckland, FakeHanoiV2 (cx), FakeBrussels, FakeOsaka (ecr).
+- **Per circuit:** c19 and c22 in alternating order, each timed, with the README's recommended call; the outputs
+  compared instruction by instruction (clbits, parameters, global phase, initial and final layout); c22's output
+  checked for instructions or couplings the target lacks and, for ring, brick and qft at 8 qubits, for exactness (the
+  workplace probe's state infidelity, at most 1e-6).
+- **Run:** one job per device, in parallel, on one machine, from the lock commit with no uncommitted change to a
+  tracked file.
+
+## 3. Predictions
+
+| | prediction | CONFIRMED | REFUTED |
+|---|---|---|---|
+| P0 | the run is valid | six files of 60, no error, no input with a wide instruction, no c22 output off the target, all 54 exactness checks made and at most 1e-6, one git head | otherwise nothing is scored |
+| T1 | c22 returns c19's circuit | no circuit differs | more than 2 of 360 differ |
+| T2 | n = 16: median per-circuit time ratio c22 / c19 | <= 0.6 on every device | above 0.8 on any device |
+| T3 | n = 12-14 | <= 0.85 on every device | above 1.05 on any device |
+| T4 | n = 20 (nothing changed runs) | <= 1.15 on every device | above 1.30 on any device |
+
+Between the two columns the verdict is AMBIGUOUS.
+
+**Where the numbers come from.** The exploratory timings of Addendum 386 (c20 against c19: median 0.88-0.95 at 16
+qubits; c22 against c21: 0.45-0.51 at 16 qubits, 0.65-0.71 at 14, 0.81-0.89 at 12) suggest about 0.4-0.5 at 16
+qubits and about 0.7 at 12-14. The thresholds leave room for the workplace PC's load and for circuits whose routed
+form touches more than 16 qubits, where neither arm simulates and the ratio is about 1. T1 allows 2 differences, as
+FUSE's F1 did, for estimates within rounding of the tie band. T4's line is wider than FUSE's F4 (1.10), whose
+AMBIGUOUS verdict came from timing noise on calls of 0.01-0.3 s (Addendum 384); the change is made before any TRACK
+output exists.
+
+## 4. Files locked
+
+Normalized SHA-256 (CRLF to LF, trailing spaces and trailing blank lines removed):
+
+| file | normalized SHA-256 |
+|---|---|
+| `patches/psf_compile_c19_2026-10-07/psf_compile.py` | `efb4dac3df771d032ae16338200ff103fe0b7bf98e1c29255d3a6e3b42b561e8` (as locked in Addendum 383) |
+| [`patches/psf_compile_c22_2026-10-07/psf_compile.py`](../../patches/psf_compile_c22_2026-10-07/psf_compile.py) | `30675c37e6c9400803ed4d53c8d146ecdebec24b9452037808c9e9acf150f858` |
+| [`benchmarks/track_eval.py`](../../benchmarks/track_eval.py) | `3a574d5f87e77a18337eb77156b999b2b3ac64ad73b1d5dea29060ec5238d7bd` |
+| [`benchmarks/track_verify.py`](../../benchmarks/track_verify.py) | `094070dffc274d306fa2845f96c6132129d9e51c4eab6ddc54b0d4804f3935a9` |
+| [`benchmarks/run_track_2026-10-07.py`](../../benchmarks/run_track_2026-10-07.py) | `762d8b1ea4fb308bca7076abd1ca58a2d115d458e2529a4e601ddae0951eb7a7` |
+
+c20 and c21 (Addendum 386) are not run by TRACK; c22 contains their items.
+
+## 5. Smoke run, then the scored run
+
+1. Smoke: `python benchmarks/run_track_2026-10-07.py track data/2026-10-07/track_smoke --smoke` (20 circuits per
+   device, seeds 85,500,000 + k). It checks that the scripts run; its numbers are reported in the lock commit and are
+   not scored. If the smoke run shows a fault in a script or in c22, the fault is fixed, disclosed here, and the smoke
+   run repeated before the lock.
+2. Lock: the commit with this Addendum and the smoke output.
+3. Scored run: `python benchmarks/run_track_2026-10-07.py track data/2026-10-07/track`, then scoring and
+   `track_verify.py` (both run by the runner).
+
+## 6. What the verdicts decide
+
+- T1 CONFIRMED with T2 and T3 CONFIRMED: items 47 and 49 are proposed for acceptance (not release) on top of c19,
+  under Addendum 385's policy.
+- T1 REFUTED: whatever made the circuits differ is found before anything else.
+- T2 or T3 AMBIGUOUS or REFUTED: the items are not proposed on time grounds alone; the profile is repeated.
+- Item 48 is decided by BP-MOCK, not here.
+
 ---
 
 ---

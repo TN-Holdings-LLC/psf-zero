@@ -1,0 +1,14 @@
+..
+FakeTorino: worst relative difference of the estimates 7.6e-16
+.
+FakeHanoiV2: worst relative difference of the estimates 3.1e-15
+.
+FakeGeneva: worst relative difference of the estimates 1.2e-15
+.
+FakeKingston: worst relative difference of the estimates 8.8e-16
+......
+pauli16 on FakeTorino: c21 55.8 s, c22 22.9 s (0.41)
+
+qft16 on FakeTorino: c21 33.0 s, c22 15.4 s (0.47)
+.
+12 passed in 373.63s (0:06:13)
