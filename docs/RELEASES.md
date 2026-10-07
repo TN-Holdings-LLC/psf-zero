@@ -39,6 +39,12 @@ the earlier parts they link to. The README itself, as it was before the move, is
 > - **Not changed:** the AI front end (a12), which calls `psf_compile` and so gets items 46-50; the layout search;
 >   the core. `seed_transpiler` still does not make the default call reproducible on inputs where Qiskit's own
 >   level 1 is not (Addendum 393).
+> - **Found after the release (REC-PROBE, Addendum 398, exploratory):** on an input that is one instruction over
+>   many qubits (a `PauliEvolutionGate`, `EfficientSU2`), 2026-10-06.4's recommended call could fail to avoid failed
+>   couplers where the device had room, and returned the circuit with item 43's warning (FakeTorino: 1,438 and 140
+>   such gates on two Benchpress tests). 2026-10-07.1, through item 48, avoids them there. On BP-MOCK's 20
+>   FakeTorino tests its recommended call never used more two-qubit gates than 2026-10-06.4's, and fewer on 8
+>   (BV-like 1,071 to 0).
 
 > **Previous release (2026-10-06, fourth release): `psf_compile.py` 2026-10-06.4 and the AI front end a12, with
 > `psf_smart_layout` 2026-10-01.1 and the Rust core `CORE_VERSION` 2026-09-29.1 (both unchanged)**

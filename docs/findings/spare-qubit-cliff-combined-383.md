@@ -1442,6 +1442,80 @@ unchanged), one pytest session per file, at home (WSL2; Python 3.12.13, Qiskit 2
 - **Time:** the default call takes about 4 times Qiskit level 2's compile time on the Benchpress sample, and where
   item 50's cancellation removes something it compiles twice.
 
+
+---
+
+<!-- ===== Addendum 398 (source: spare-qubit-cliff-addendum-398-2026-10-07.md) ===== -->
+
+> **Note added when merging:** Exploratory, after the release of Addendum 397, at the owner's request.
+
+## Addendum 398 -- REC-PROBE (exploratory): release 2026-10-07.1's recommended call on BP-MOCK's 20 FakeTorino tests: never more two-qubit gates than 2026-10-06.4, fewer on 8 (geometric mean 0.62; BV-like 1,071 to 0); and 2026-10-06.4 placed gates on failed couplers on two inputs where they could be avoided, which 2026-10-07.1 does not (2026-10-07)
+
+**Status: exploratory, not pre-registered; run at home after the release (Addendum 397), at the owner's request.** It
+answers the first open point of Addendum 397, section 4: what items 48 and 50 do inside the recommended call.
+
+## 1. The run
+
+[`benchmarks/rec_probe.py`](../../benchmarks/rec_probe.py): the 20 FakeTorino tests of BP-MOCK (HamLib 8, Feynman 6,
+100-qubit 6), built as there (`bp_mock.build`, Benchpress `b695f30`); three arms, each test and arm in its own
+process: **R4** 2026-10-06.4's recommended call (the kept copy), **R1** 2026-10-07.1's recommended call, **D1**
+2026-10-07.1's default call. Home (WSL2, Python 3.12.13, Qiskit 2.5.2), commit `724acbd`, no uncommitted change;
+started 2026-10-07T11:42:04Z, 60 jobs in 85 s, four at a time. Output:
+[`data/2026-10-07/rec_probe/`](../../data/2026-10-07/rec_probe/) (`rec_probe.json`, `score.md`); the smoke run
+(BV-like and `mod5_4`) in [`data/2026-10-07/rec_probe_smoke/`](../../data/2026-10-07/rec_probe_smoke/).
+
+## 2. Results
+
+- **R4 reproduces BP-MOCK's RELR** (workplace PC) on all 20: the same two-qubit count.
+- **No error; every output passes Benchpress's validator.** On the 7 inputs of at most 16 qubits that item 39 can
+  check, R1's output implements the input.
+- **Two-qubit count, R1 against R4:** fewer on 8, the same on 12, more on none; geometric mean 0.62 (0.87 without
+  the BV-like test).
+
+| test | R4 | R1 | what acted in R1 |
+|---|---|---|---|
+| `BVlike_simplification` | 1,071 | **0** | item 50 (cancelled input kept) |
+| HamLib `JW-22` | 182,362 | 120,561 (-34%) | items 48 and 50 |
+| HamLib `bh_graph` triangular Lx-3 (132 qubits) | 91,486 | 58,199 (-36%) | item 48 |
+| HamLib `JW-18` | 58,085 | 39,717 (-32%) | items 48 and 50 |
+| Feynman `qcla_com_7` | 803 | 362 | item 48 (cancellation tried, input kept) |
+| Feynman `gf2^6_mult` | 710 | 561 | item 48 |
+| `circSU2_89` | 1,719 | 1,344 | item 48 |
+| HamLib `bh_graph` triangular Lx-10 (100 qubits) | 26,221 | 25,616 | item 48 |
+
+  On the other 12 the circuits' two-qubit counts are equal; on HamLib `JW-10` and `parity10` the cancellation was
+  tried twice (first compile and floor candidate) and Qiskit level 3's candidate was chosen, as with R4.
+- **Failed couplers** (error at least 0.5; FakeTorino reports 22 directed couplers, isolating 4 qubits). R4 placed
+  two-qubit gates on them in three tests, each time with `PRUNE_STATS["unavoidable"]` (it recompiled on the pruned map,
+  got a circuit that still used them, and returned the first circuit with a warning, item 43):
+  - HamLib `bh_graph` Lx-10 (100 qubits): 1,438 gates; R1 **0**;
+  - `circSU2_89` (89 qubits): 140 gates; R1 **0**;
+  - HamLib `bh_graph` Lx-3 (132 qubits): 6,542 gates; R1 3,908, also `unavoidable` (132 logical qubits do not fit
+    in the 129 qubits left).
+  In the first two the input is one wide instruction (`PauliEvolutionGate`, `EfficientSU2`) on fewer qubits than
+  the device has without its failed elements; with item 48 the pruned recompile works on the expanded circuit and
+  avoids them. Why the recompile of the unexpanded input could not was not examined further.
+- **Default call (D1):** no target, so it does not look at failed couplers; it used them on 14 of 20 tests (16 to
+  9,533 gates), as BP-MOCK's default calls and Qiskit level 2 did (Addendum 393).
+- **Time:** total R4 57.9 s, R1 74.9 s, D1 48.8 s; R1 / R4 median 1.00 per test. R1 is faster on the small HamLib and
+  Feynman tests that build level 3 (items 46, 47, 49; `JW-10` 12.1 to 6.4 s) and slower where item 48 or 50 adds a
+  compile or makes the pruned recompile succeed (`circSU2_89` 0.21 to 4.43 s, `bh_graph` Lx-10 1.75 to 5.80 s,
+  `JW-18` 4.67 to 8.63 s).
+
+## 3. What this shows
+
+1. Inside the recommended call items 48 and 50 do what they do in the default call: on these 20 tests they never
+   added a two-qubit gate, removed a third of them on three large HamLib inputs, and removed all of them on the
+   BV-like test.
+2. **A defect of 2026-10-06.4 found here:** on inputs that are one instruction over many qubits, its recommended call
+   could fail to avoid failed couplers even where the device had room, and returned the circuit with item 43's
+   warning. 2026-10-07.1 avoids them on both such inputs here. It was not a silent error (the warning names it). The
+   README's statement that no failed coupler was used refers to the pre-registered tests of 1,506 circuits per
+   device; the README now qualifies it, and [`docs/RELEASES.md`](../../docs/RELEASES.md) notes the defect under
+   2026-10-07.1.
+3. Not established: other devices; inputs with wide instructions beyond these; that the recompile always succeeds
+   once the input is expanded.
+
 ---
 
 ---

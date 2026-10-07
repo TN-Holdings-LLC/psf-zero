@@ -243,7 +243,9 @@ Current version); with 2026-10-06.4 it took a median of 31 s for Hamiltonians of
 - With a stale calibration (errors off by 30%, T1/T2 by 20%) the previous release stayed ahead of level 3
   (Addendum 335).
 - At 8-10 logical qubits it stayed ahead too (0.951-0.998).
-- No failed coupler or qubit was used in any test.
+- No failed coupler or qubit was used in any of these tests. (On an input that is one instruction over many
+  qubits, 2026-10-06.4's recommended call could still use them, with a warning; 2026-10-07.1 avoids them where
+  the device has room: Addendum 398.)
 
 **On real IBM hardware** (15 qubits, 10 jobs on `ibm_marrakesh` and `ibm_fez`, `compile()` path): fidelity was
 indistinguishable from Qiskit L3 (0.0919 ± 0.0016 against 0.0925 ± 0.0016), and compile time 14-16x shorter.

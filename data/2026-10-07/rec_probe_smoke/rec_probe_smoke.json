@@ -1,0 +1,186 @@
+{
+ "meta": {
+  "smoke": true,
+  "git_head": "724acbd",
+  "dirty_tracked": "",
+  "benchpress": "b695f30",
+  "qiskit": "2.5.2",
+  "python": "3.12.13",
+  "par": 2,
+  "tests": 2,
+  "jobs": 6,
+  "sha": {
+   "script": "a01619042da25cc2aa3b431cea3ed532b2193a88f474583b21d795d237e50dfd",
+   "R4": "69fe51d2d503638ceb4d067a0d86a5b27c38586694ec84996dea5e7ab6dab7aa",
+   "R1": "73fb2cb0b1acc5870339c23599829b326fbf57aa198945231e8551e55c1884dc"
+  },
+  "start_utc": "2026-10-07T11:41:00Z",
+  "wall_s": 6.6
+ },
+ "rows": [
+  {
+   "stratum": "Feynman, FakeTorino",
+   "test": "test_feynman_transpile[mod5_4.qasm]",
+   "arm": "R4",
+   "version": "2026-10-06.4",
+   "input_qubits": 5,
+   "wide": 4,
+   "t": 0.3743558399992253,
+   "stats": {
+    "PRUNE_STATS": {
+     "checked": 1
+    },
+    "COMPARE_STATS": {
+     "level3": 1
+    },
+    "SKIP_STATS": {}
+   },
+   "q2": 45,
+   "d2": 45,
+   "sig": "196a2d1eff49c9f1a952725a7e8ec64bcb48a52bc7c82517d7a8c688aa43f8c6",
+   "on_failed": 0,
+   "valid": true,
+   "implements": true,
+   "wall": 2.74
+  },
+  {
+   "stratum": "Feynman, FakeTorino",
+   "test": "test_feynman_transpile[mod5_4.qasm]",
+   "arm": "R1",
+   "version": "2026-10-07.1",
+   "input_qubits": 5,
+   "wide": 4,
+   "t": 0.3530875710002874,
+   "stats": {
+    "CANCEL_STATS": {},
+    "UNROLL_STATS": {
+     "unrolled": 2
+    },
+    "PRUNE_STATS": {
+     "checked": 1
+    },
+    "COMPARE_STATS": {
+     "level3": 1
+    },
+    "SKIP_STATS": {}
+   },
+   "q2": 45,
+   "d2": 45,
+   "sig": "196a2d1eff49c9f1a952725a7e8ec64bcb48a52bc7c82517d7a8c688aa43f8c6",
+   "on_failed": 0,
+   "valid": true,
+   "implements": true,
+   "wall": 2.72
+  },
+  {
+   "stratum": "Feynman, FakeTorino",
+   "test": "test_feynman_transpile[mod5_4.qasm]",
+   "arm": "D1",
+   "version": "2026-10-07.1",
+   "input_qubits": 5,
+   "wide": 4,
+   "t": 0.13246776500000124,
+   "stats": {
+    "CANCEL_STATS": {},
+    "UNROLL_STATS": {
+     "unrolled": 1
+    },
+    "PRUNE_STATS": {},
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {}
+   },
+   "q2": 50,
+   "d2": 50,
+   "sig": "846e75c07035a7a9fd4cf2a92eb7d13849c1f9d5fe5b2dd5112b9a4e846dd0c7",
+   "on_failed": 0,
+   "valid": true,
+   "implements": true,
+   "wall": 1.66
+  },
+  {
+   "stratum": "100-qubit, FakeTorino",
+   "test": "test_BVlike_simplification_transpile",
+   "arm": "R4",
+   "version": "2026-10-06.4",
+   "input_qubits": 100,
+   "wide": 0,
+   "t": 0.5235491840003306,
+   "stats": {
+    "PRUNE_STATS": {
+     "calls": 1,
+     "edges_removed": 22,
+     "qubits_isolated": 4,
+     "checked": 1,
+     "recompiled": 1
+    },
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {
+     "resynthesis": 1,
+     "floor": 1,
+     "level3": 1
+    }
+   },
+   "q2": 1071,
+   "d2": 962,
+   "sig": "d2745f56ae6918a7cf06f92a74516b59c1269c3925f660344b54a423ed2f7f24",
+   "on_failed": 0,
+   "valid": true,
+   "wall": 2.12
+  },
+  {
+   "stratum": "100-qubit, FakeTorino",
+   "test": "test_BVlike_simplification_transpile",
+   "arm": "R1",
+   "version": "2026-10-07.1",
+   "input_qubits": 100,
+   "wide": 0,
+   "t": 0.42584829299994453,
+   "stats": {
+    "CANCEL_STATS": {
+     "tried": 1,
+     "cancelled_kept": 1
+    },
+    "UNROLL_STATS": {},
+    "PRUNE_STATS": {
+     "checked": 1
+    },
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {
+     "floor": 1,
+     "level3": 1
+    }
+   },
+   "q2": 0,
+   "d2": 0,
+   "sig": "7e4b69ef6c58769c9face99e75e01806d74a3e90f2f262e8e4ea8bf6b23ce613",
+   "on_failed": 0,
+   "valid": true,
+   "wall": 1.98
+  },
+  {
+   "stratum": "100-qubit, FakeTorino",
+   "test": "test_BVlike_simplification_transpile",
+   "arm": "D1",
+   "version": "2026-10-07.1",
+   "input_qubits": 100,
+   "wide": 0,
+   "t": 0.21602028000052087,
+   "stats": {
+    "CANCEL_STATS": {
+     "tried": 1,
+     "cancelled_kept": 1
+    },
+    "UNROLL_STATS": {},
+    "PRUNE_STATS": {},
+    "COMPARE_STATS": {},
+    "SKIP_STATS": {}
+   },
+   "q2": 0,
+   "d2": 0,
+   "sig": "7e4b69ef6c58769c9face99e75e01806d74a3e90f2f262e8e4ea8bf6b23ce613",
+   "on_failed": 0,
+   "valid": true,
+   "wall": 1.7
+  }
+ ]
+}
