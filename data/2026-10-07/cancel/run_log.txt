@@ -1,0 +1,422 @@
+{"smoke": false, "git_head": "9c341a3", "dirty_tracked": "", "qiskit": "2.5.2", "python": "3.11.9", "par": 6, "tests": 140, "jobs": 420, "sha": {"script": "b1f76259d66110c8c4e736cb408c7a74e6c86c88df7588fd63b4bce4fe659785", "c22": "30675c37e6c9400803ed4d53c8d146ecdebec24b9452037808c9e9acf150f858", "c23": "568de9e691796e4efb330dff3f2ed61aa1cca4cc888286f9727854cf8c744420", "bp_mock": "7757e848c9848c9644a845ce97198966b2fb2f98fa9584c2d0050d45b573b4d0", "bp_mock2": "e0c182acb99768a88bedb07c6f56aae84fc234b62a17bd2a046452de3bccf93c"}, "start_utc": "2026-10-07T06:41:11Z"}
+    3 s  test_QASMBench_small[bb84_n8-all-to-all]                   C22B {'q2': 0, 'valid': True, 'implements': True}
+    3 s  test_QASMBench_small[basis_test_n4-all-to-all]             C23  {'q2': 10, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+    3 s  test_QASMBench_small[bb84_n8-all-to-all]                   C23  {'q2': 0, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+    4 s  test_QASMBench_small[basis_test_n4-all-to-all]             C22B {'q2': 10, 'valid': True, 'implements': True}
+    4 s  test_QASMBench_small[basis_test_n4-all-to-all]             C22  {'q2': 10, 'valid': True, 'implements': True}
+    4 s  test_QASMBench_small[bb84_n8-all-to-all]                   C22  {'q2': 0, 'valid': True, 'implements': True}
+    7 s  test_QASMBench_small[lpn_n5-all-to-all]                    C22B {'q2': 2, 'valid': True, 'implements': True}
+    7 s  test_QASMBench_small[qaoa_n6-all-to-all]                   C22  {'q2': 36, 'valid': True, 'implements': True}
+    7 s  test_QASMBench_small[qaoa_n6-all-to-all]                   C22B {'q2': 36, 'valid': True, 'implements': True}
+    7 s  test_QASMBench_small[lpn_n5-all-to-all]                    C23  {'q2': 2, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+    7 s  test_QASMBench_small[lpn_n5-all-to-all]                    C22  {'q2': 2, 'valid': True, 'implements': True}
+    7 s  test_QASMBench_small[qaoa_n6-all-to-all]                   C23  {'q2': 36, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+   12 s  test_QASMBench_small[cat_state_n4-all-to-all]              C22  {'q2': 3, 'valid': True, 'implements': True}
+   12 s  test_QASMBench_small[cat_state_n4-all-to-all]              C22B {'q2': 3, 'valid': True, 'implements': True}
+   12 s  test_QASMBench_small[vqe_n4-square]                        C22B {'q2': 9, 'valid': True, 'implements': True}
+   12 s  test_QASMBench_small[cat_state_n4-all-to-all]              C23  {'q2': 3, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+   12 s  test_QASMBench_small[vqe_n4-square]                        C22  {'q2': 9, 'valid': True, 'implements': True}
+   12 s  test_QASMBench_small[vqe_n4-square]                        C23  {'q2': 9, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+   16 s  test_QASMBench_small[qaoa_n6-square]                       C22B {'q2': 50, 'valid': True, 'implements': True}
+   16 s  test_QASMBench_small[qaoa_n6-square]                       C22  {'q2': 50, 'valid': True, 'implements': True}
+   16 s  test_QASMBench_small[qaoa_n6-square]                       C23  {'q2': 50, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+   16 s  test_QASMBench_small[fredkin_n3-square]                    C22  {'q2': 14, 'valid': True, 'implements': True}
+   16 s  test_QASMBench_small[fredkin_n3-square]                    C22B {'q2': 14, 'valid': True, 'implements': True}
+   16 s  test_QASMBench_small[fredkin_n3-square]                    C23  {'q2': 14, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+   20 s  test_QASMBench_small[error_correctiond3_n5-square]         C22  {'q2': 56, 'valid': True, 'implements': True}
+   20 s  test_QASMBench_small[error_correctiond3_n5-square]         C22B {'q2': 56, 'valid': True, 'implements': True}
+   20 s  test_QASMBench_small[error_correctiond3_n5-square]         C23  {'q2': 41, 'valid': True, 'implements': True, 'cancel': {'tried': 1, 'cancelled_kept': 1, 'original_kept': 0, 'failed': 0}}
+   21 s  test_QASMBench_small[lpn_n5-square]                        C22  {'q2': 2, 'valid': True, 'implements': True}
+   21 s  test_QASMBench_small[lpn_n5-square]                        C23  {'q2': 2, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+   21 s  test_QASMBench_small[lpn_n5-square]                        C22B {'q2': 2, 'valid': True, 'implements': True}
+   25 s  test_QASMBench_small[vqe_uccsd_n4-heavy-hex]               C22B {'q2': 71, 'valid': True, 'implements': True}
+   26 s  test_QASMBench_small[vqe_uccsd_n4-heavy-hex]               C22  {'q2': 71, 'valid': True, 'implements': True}
+   26 s  test_QASMBench_small[vqe_uccsd_n4-heavy-hex]               C23  {'q2': 71, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+   26 s  test_QASMBench_small[adder_n10-heavy-hex]                  C22  {'q2': 103, 'valid': True, 'implements': True}
+   26 s  test_QASMBench_small[adder_n10-heavy-hex]                  C23  {'q2': 103, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+   26 s  test_QASMBench_small[adder_n10-heavy-hex]                  C22B {'q2': 103, 'valid': True, 'implements': True}
+   31 s  test_QASMBench_small[teleportation_n3-heavy-hex]           C22B {'q2': 2, 'valid': True, 'implements': True}
+   31 s  test_QASMBench_small[teleportation_n3-heavy-hex]           C22  {'q2': 2, 'valid': True, 'implements': True}
+   31 s  test_QASMBench_small[qaoa_n3-heavy-hex]                    C22  {'q2': 7, 'valid': True, 'implements': True}
+   31 s  test_QASMBench_small[teleportation_n3-heavy-hex]           C23  {'q2': 2, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+   31 s  test_QASMBench_small[qaoa_n3-heavy-hex]                    C22B {'q2': 7, 'valid': True, 'implements': True}
+   31 s  test_QASMBench_small[qaoa_n3-heavy-hex]                    C23  {'q2': 7, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+   36 s  test_QASMBench_small[iswap_n2-heavy-hex]                   C22B {'q2': 2, 'valid': True, 'implements': True}
+   36 s  test_QASMBench_small[iswap_n2-heavy-hex]                   C22  {'q2': 2, 'valid': True, 'implements': True}
+   37 s  test_QASMBench_small[iswap_n2-heavy-hex]                   C23  {'q2': 2, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+   37 s  test_QASMBench_small[hs4_n4-linear]                        C22  {'q2': 4, 'valid': True, 'implements': True}
+   37 s  test_QASMBench_small[hs4_n4-linear]                        C22B {'q2': 4, 'valid': True, 'implements': True}
+   37 s  test_QASMBench_small[hs4_n4-linear]                        C23  {'q2': 4, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+   42 s  test_QASMBench_small[qaoa_n3-linear]                       C22B {'q2': 7, 'valid': True, 'implements': True}
+   42 s  test_QASMBench_small[qaoa_n3-linear]                       C22  {'q2': 7, 'valid': True, 'implements': True}
+   43 s  test_QASMBench_small[qaoa_n3-linear]                       C23  {'q2': 7, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+   43 s  test_QASMBench_small[bb84_n8-linear]                       C22B {'q2': 0, 'valid': True, 'implements': True}
+   43 s  test_QASMBench_small[bb84_n8-linear]                       C22  {'q2': 0, 'valid': True, 'implements': True}
+   43 s  test_QASMBench_small[bb84_n8-linear]                       C23  {'q2': 0, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+   49 s  test_QASMBench_small[adder_n4-linear]                      C22  {'q2': 16, 'valid': True, 'implements': True}
+   49 s  test_QASMBench_small[adder_n4-linear]                      C22B {'q2': 16, 'valid': True, 'implements': True}
+   49 s  test_QASMBench_small[adder_n4-linear]                      C23  {'q2': 16, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+   49 s  test_QASMBench_small[dnn_n8-linear]                        C22  {'q2': 109, 'valid': True, 'implements': True}
+   49 s  test_QASMBench_small[dnn_n8-linear]                        C22B {'q2': 109, 'valid': True, 'implements': True}
+   50 s  test_QASMBench_small[dnn_n8-linear]                        C23  {'q2': 109, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+   56 s  test_QASMBench_medium[ghz_state_n23-all-to-all]            C22  {'q2': 22, 'valid': True}
+   56 s  test_QASMBench_medium[ghz_state_n23-all-to-all]            C23  {'q2': 22, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+   57 s  test_QASMBench_medium[ghz_state_n23-all-to-all]            C22B {'q2': 22, 'valid': True}
+   57 s  test_QASMBench_medium[qec9xz_n17-all-to-all]               C22  {'q2': 32, 'valid': True}
+   57 s  test_QASMBench_medium[qec9xz_n17-all-to-all]               C22B {'q2': 32, 'valid': True}
+   57 s  test_QASMBench_medium[qec9xz_n17-all-to-all]               C23  {'q2': 32, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+   64 s  test_QASMBench_medium[seca_n11-all-to-all]                 C22  {'q2': 80, 'valid': True}
+   64 s  test_QASMBench_medium[seca_n11-all-to-all]                 C22B {'q2': 80, 'valid': True}
+   64 s  test_QASMBench_medium[seca_n11-all-to-all]                 C23  {'q2': 80, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+   71 s  test_QASMBench_medium[qram_n20-square]                     C22  {'q2': 255, 'valid': True}
+   71 s  test_QASMBench_medium[qram_n20-square]                     C22B {'q2': 255, 'valid': True}
+   71 s  test_QASMBench_medium[qram_n20-square]                     C23  {'q2': 255, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+   76 s  test_QASMBench_medium[ghz_state_n23-square]                C22B {'q2': 22, 'valid': True}
+   76 s  test_QASMBench_medium[ghz_state_n23-square]                C22  {'q2': 22, 'valid': True}
+   77 s  test_QASMBench_medium[ghz_state_n23-square]                C23  {'q2': 22, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+   84 s  test_QASMBench_medium[cat_state_n22-square]                C22B {'q2': 21, 'valid': True}
+   84 s  test_QASMBench_medium[cat_state_n22-square]                C22  {'q2': 21, 'valid': True}
+   84 s  test_QASMBench_medium[cat_state_n22-square]                C23  {'q2': 21, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  111 s  test_QASMBench_medium[bwt_n21-all-to-all]                  C22  {'q2': 169200, 'valid': True}
+  112 s  test_QASMBench_medium[bwt_n21-all-to-all]                  C22B {'q2': 169200, 'valid': True}
+  114 s  test_QASMBench_medium[bwt_n21-all-to-all]                  C23  {'q2': 169200, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  117 s  test_QASMBench_medium[multiply_n13-heavy-hex]              C22  {'q2': 95, 'valid': True}
+  117 s  test_QASMBench_medium[multiply_n13-heavy-hex]              C22B {'q2': 95, 'valid': True}
+  120 s  test_QASMBench_medium[multiply_n13-heavy-hex]              C23  {'q2': 95, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  122 s  test_QASMBench_medium[dnn_n16-heavy-hex]                   C22  {'q2': 128, 'valid': True}
+  123 s  test_QASMBench_medium[dnn_n16-heavy-hex]                   C22B {'q2': 128, 'valid': True}
+  125 s  test_QASMBench_medium[dnn_n16-heavy-hex]                   C23  {'q2': 128, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  128 s  test_QASMBench_medium[swap_test_n25-heavy-hex]             C22  {'q2': 199, 'valid': True}
+  128 s  test_QASMBench_medium[swap_test_n25-heavy-hex]             C22B {'q2': 199, 'valid': True}
+  131 s  test_QASMBench_medium[swap_test_n25-heavy-hex]             C23  {'q2': 199, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  212 s  test_QASMBench_medium[factor247_n15-square]                C22B {'q2': 394739, 'valid': True}
+  213 s  test_QASMBench_medium[factor247_n15-square]                C22  {'q2': 394739, 'valid': True}
+  216 s  test_QASMBench_medium[square_root_n18-linear]              C22  {'q2': 2876, 'valid': True}
+  216 s  test_QASMBench_medium[square_root_n18-linear]              C22B {'q2': 2876, 'valid': True}
+  220 s  test_QASMBench_medium[square_root_n18-linear]              C23  {'q2': 2876, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  221 s  test_QASMBench_medium[dnn_n16-linear]                      C22  {'q2': 242, 'valid': True}
+  224 s  test_QASMBench_medium[dnn_n16-linear]                      C22B {'q2': 242, 'valid': True}
+  224 s  test_QASMBench_medium[dnn_n16-linear]                      C23  {'q2': 242, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  228 s  test_QASMBench_medium[qec9xz_n17-linear]                   C22  {'q2': 139, 'valid': True}
+  228 s  test_QASMBench_medium[qec9xz_n17-linear]                   C22B {'q2': 139, 'valid': True}
+  231 s  test_QASMBench_medium[bwt_n21-heavy-hex]                   C22  {'q2': 530133, 'valid': True}
+  232 s  test_QASMBench_medium[bwt_n21-heavy-hex]                   C22B {'q2': 530133, 'valid': True}
+  233 s  test_QASMBench_medium[qec9xz_n17-linear]                   C23  {'q2': 139, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  235 s  test_QASMBench_medium[bwt_n21-heavy-hex]                   C23  {'q2': 530133, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  242 s  test_QASMBench_large[qugan_n111-all-to-all]                C22  {'q2': 601, 'valid': True}
+  243 s  test_QASMBench_large[qugan_n111-all-to-all]                C22B {'q2': 601, 'valid': True}
+  250 s  test_QASMBench_large[qugan_n111-all-to-all]                C23  {'q2': 601, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  264 s  test_QASMBench_large[square_root_n45-all-to-all]           C22  {'q2': 54151, 'valid': True}
+  267 s  test_QASMBench_large[square_root_n45-all-to-all]           C22B {'q2': 54151, 'valid': True}
+  278 s  test_QASMBench_large[square_root_n45-all-to-all]           C23  {'q2': 54151, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  285 s  test_QASMBench_large[qugan_n395-all-to-all]                C22  {'q2': 2163, 'valid': True}
+  286 s  test_QASMBench_large[qugan_n395-all-to-all]                C22B {'q2': 2163, 'valid': True}
+  290 s  test_QASMBench_large[qugan_n39-all-to-all]                 C22  {'q2': 205, 'valid': True}
+  294 s  test_QASMBench_large[qugan_n39-all-to-all]                 C22B {'q2': 205, 'valid': True}
+  297 s  test_QASMBench_large[qugan_n395-all-to-all]                C23  {'q2': 2163, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  297 s  test_QASMBench_large[qugan_n39-all-to-all]                 C23  {'q2': 205, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  302 s  test_QASMBench_large[swap_test_n41-square]                 C22  {'q2': 320, 'valid': True}
+  302 s  test_QASMBench_large[swap_test_n41-square]                 C22B {'q2': 320, 'valid': True}
+  303 s  test_QASMBench_medium[factor247_n15-square]                C23  {'q2': 393215, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 1, 'original_kept': 0, 'failed': 0}}
+  307 s  test_QASMBench_large[swap_test_n41-square]                 C23  {'q2': 320, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  308 s  test_QASMBench_large[bv_n30-square]                        C22  {'q2': 51, 'valid': True}
+  309 s  test_QASMBench_large[bv_n30-square]                        C22B {'q2': 51, 'valid': True}
+  315 s  test_QASMBench_large[bv_n30-square]                        C23  {'q2': 51, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  318 s  test_QASMBench_large[knn_341-square]                       C22  {'q2': 3420, 'valid': True}
+  319 s  test_QASMBench_large[knn_341-square]                       C22B {'q2': 3420, 'valid': True}
+  326 s  test_QASMBench_large[ghz_n78-square]                       C22  {'q2': 77, 'valid': True}
+  326 s  test_QASMBench_large[knn_341-square]                       C23  {'q2': 3420, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  327 s  test_QASMBench_large[ghz_n78-square]                       C22B {'q2': 77, 'valid': True}
+  332 s  test_QASMBench_large[ghz_n78-square]                       C23  {'q2': 77, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  343 s  test_QASMBench_large[qft_n160-heavy-hex]                   C22B {'q2': 21361, 'valid': True}
+  343 s  test_QASMBench_large[qft_n160-heavy-hex]                   C22  {'q2': 21361, 'valid': True}
+  349 s  test_QASMBench_large[qft_n160-heavy-hex]                   C23  {'q2': 15793, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 1, 'original_kept': 0, 'failed': 0}}
+  381 s  test_QASMBench_medium[factor247_n15-linear]                C22  {'q2': 425065, 'valid': True}
+  385 s  test_QASMBench_medium[factor247_n15-linear]                C22B {'q2': 425065, 'valid': True}
+  387 s  test_QASMBench_large[knn_129-heavy-hex]                    C22  {'q2': 1743, 'valid': True}
+  392 s  test_QASMBench_large[knn_129-heavy-hex]                    C22B {'q2': 1743, 'valid': True}
+  394 s  test_QASMBench_large[knn_129-heavy-hex]                    C23  {'q2': 1743, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  486 s  test_QASMBench_medium[factor247_n15-linear]                C23  {'q2': 423541, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 1, 'original_kept': 0, 'failed': 0}}
+  561 s  test_QASMBench_large[multiplier_n400-heavy-hex]            C22B {'q2': 787940, 'valid': True}
+  561 s  test_QASMBench_large[multiplier_n400-heavy-hex]            C22  {'q2': 787940, 'valid': True}
+  566 s  test_QASMBench_large[ghz_n127-linear]                      C22  {'q2': 126, 'valid': True}
+  566 s  test_QASMBench_large[ghz_n127-linear]                      C22B {'q2': 126, 'valid': True}
+  570 s  test_QASMBench_large[bv_n140-linear]                       C22  {'q2': 352, 'valid': True}
+  570 s  test_QASMBench_large[ghz_n127-linear]                      C23  {'q2': 126, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  575 s  test_QASMBench_large[bv_n140-linear]                       C23  {'q2': 352, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  575 s  test_QASMBench_large[bv_n140-linear]                       C22B {'q2': 352, 'valid': True}
+  578 s  test_QASMBench_large[swap_test_n83-linear]                 C22B {'q2': 494, 'valid': True}
+  579 s  test_QASMBench_large[swap_test_n83-linear]                 C22  {'q2': 494, 'valid': True}
+  582 s  test_QASMBench_large[swap_test_n83-linear]                 C23  {'q2': 494, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  583 s  test_QASMBench_large[adder_n64-linear]                     C22  {'q2': 691, 'valid': True}
+  587 s  test_QASMBench_large[adder_n64-linear]                     C22B {'q2': 691, 'valid': True}
+  587 s  test_QASMBench_large[adder_n64-linear]                     C23  {'q2': 691, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  591 s  test_hamiltonians[ham_reg-4_n-90_rinst-07-all-to-all]      C22  {'q2': 1008, 'valid': True}
+  591 s  test_hamiltonians[ham_reg-4_n-90_rinst-07-all-to-all]      C22B {'q2': 1008, 'valid': True}
+  596 s  test_hamiltonians[ham_tsp_prob-lin105_Ncity-7_enc-unary-al C22  {'q2': 588, 'valid': True}
+  597 s  test_hamiltonians[ham_reg-4_n-90_rinst-07-all-to-all]      C23  {'q2': 1008, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  604 s  test_hamiltonians[ham_tsp_prob-lin105_Ncity-7_enc-unary-al C23  {'q2': 588, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  604 s  test_hamiltonians[ham_tsp_prob-lin105_Ncity-7_enc-unary-al C22B {'q2': 588, 'valid': True}
+  611 s  test_hamiltonians[ham_ham_parity-4-all-to-all]             C22  {'q2': 48, 'valid': True, 'implements': True}
+  611 s  test_hamiltonians[ham_ham_parity-4-all-to-all]             C22B {'q2': 48, 'valid': True, 'implements': True}
+  619 s  test_hamiltonians[ham_ham_parity-4-all-to-all]             C23  {'q2': 48, 'valid': True, 'implements': True, 'cancel': {'tried': 1, 'cancelled_kept': 0, 'original_kept': 1, 'failed': 0}}
+  619 s  test_hamiltonians[ham_4-uf100-0246.cnf-70-res-all-to-all]  C22  {'q2': 1262, 'valid': True}
+  624 s  test_hamiltonians[ham_4-uf100-0246.cnf-70-res-all-to-all]  C22B {'q2': 1262, 'valid': True}
+  624 s  test_hamiltonians[ham_4-uf100-0246.cnf-70-res-all-to-all]  C23  {'q2': 1262, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 0, 'original_kept': 1, 'failed': 0}}
+  628 s  test_hamiltonians[ham_mu_x_prime_enc_unary_dvalues_4-4-4-a C22B {'q2': 18, 'valid': True}
+  628 s  test_hamiltonians[ham_mu_x_prime_enc_unary_dvalues_4-4-4-a C22  {'q2': 18, 'valid': True}
+  632 s  test_hamiltonians[ham_mu_x_prime_enc_unary_dvalues_4-4-4-a C23  {'q2': 18, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  633 s  test_hamiltonians[ham_graph-1D-grid-pbc-qubitnodes_Lx-16_h C22  {'q2': 32, 'valid': True}
+  637 s  test_hamiltonians[ham_graph-1D-grid-pbc-qubitnodes_Lx-16_h C22B {'q2': 32, 'valid': True}
+  637 s  test_hamiltonians[ham_graph-1D-grid-pbc-qubitnodes_Lx-16_h C23  {'q2': 32, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  642 s  test_hamiltonians[ham_fh-graph-1D-grid-pbc-qubitnodes_Lx-5 C22  {'q2': 1705, 'valid': True}
+  642 s  test_hamiltonians[ham_fh-graph-1D-grid-pbc-qubitnodes_Lx-5 C22B {'q2': 1705, 'valid': True}
+  647 s  test_hamiltonians[ham_fh-graph-1D-grid-pbc-qubitnodes_Lx-5 C23  {'q2': 1705, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  648 s  test_hamiltonians[ham_reg-5_n-10_rinst-07-square]          C22  {'q2': 5367, 'valid': True}
+  660 s  test_hamiltonians[ham_reg-5_n-10_rinst-07-square]          C22B {'q2': 5367, 'valid': True}
+  663 s  test_hamiltonians[ham_reg-5_n-10_rinst-07-square]          C23  {'q2': 5275, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 1, 'original_kept': 0, 'failed': 0}}
+  677 s  test_hamiltonians[ham_bh_graph-2D-grid-nonpbc-qubitnodes_L C22  {'q2': 12013, 'valid': True}
+  678 s  test_hamiltonians[ham_bh_graph-2D-grid-nonpbc-qubitnodes_L C22B {'q2': 12013, 'valid': True}
+  688 s  test_hamiltonians[ham_mu_y_prime_enc_stdbinary_dvalues_4-4 C22  {'q2': 24, 'valid': True}
+  695 s  test_hamiltonians[ham_bh_graph-2D-grid-nonpbc-qubitnodes_L C23  {'q2': 11963, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 1, 'original_kept': 0, 'failed': 0}}
+  696 s  test_hamiltonians[ham_mu_y_prime_enc_stdbinary_dvalues_4-4 C22B {'q2': 24, 'valid': True}
+  703 s  test_hamiltonians[ham_mu_y_prime_enc_stdbinary_dvalues_4-4 C23  {'q2': 24, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  707 s  test_QASMBench_large[square_root_n60-heavy-hex]            C22  {'q2': 1980063, 'valid': True}
+  710 s  test_QASMBench_large[square_root_n60-heavy-hex]            C22B {'q2': 1980063, 'valid': True}
+  714 s  test_hamiltonians[ham_tsp_prob-ulysses22_Ncity-8_enc-stdbi C22  {'q2': 1870, 'valid': True}
+  717 s  test_QASMBench_large[square_root_n60-heavy-hex]            C23  {'q2': 1980063, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  718 s  test_hamiltonians[ham_tsp_prob-ulysses22_Ncity-8_enc-stdbi C22B {'q2': 1870, 'valid': True}
+  721 s  test_hamiltonians[ham_tsp_prob-ulysses22_Ncity-8_enc-stdbi C23  {'q2': 1870, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 0, 'original_kept': 1, 'failed': 0}}
+  723 s  test_hamiltonians[ham_ham_JW12-heavy-hex]                  C22  {'q2': 6175, 'valid': True}
+  727 s  test_hamiltonians[ham_ham_JW12-heavy-hex]                  C22B {'q2': 6175, 'valid': True}
+  729 s  test_hamiltonians[ham_ham_JW12-heavy-hex]                  C23  {'q2': 5007, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 1, 'original_kept': 0, 'failed': 0}}
+  733 s  test_hamiltonians[ham_graph-2D-grid-pbc-qubitnodes_Lx-5_Ly C22  {'q2': 41424, 'valid': True}
+  733 s  test_hamiltonians[ham_ham_JW-14-heavy-hex]                 C22  {'q2': 15941, 'valid': True}
+  736 s  test_hamiltonians[ham_ham_JW-14-heavy-hex]                 C22B {'q2': 15941, 'valid': True}
+  739 s  test_hamiltonians[ham_graph-2D-grid-pbc-qubitnodes_Lx-5_Ly C22B {'q2': 41424, 'valid': True}
+  739 s  test_hamiltonians[ham_graph-2D-grid-pbc-qubitnodes_Lx-5_Ly C23  {'q2': 41424, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  741 s  test_hamiltonians[ham_reg-5_n-10_rinst-07-heavy-hex]       C22  {'q2': 6111, 'valid': True}
+  746 s  test_hamiltonians[ham_reg-5_n-10_rinst-07-heavy-hex]       C22B {'q2': 6111, 'valid': True}
+  747 s  test_QASMBench_large[multiplier_n400-heavy-hex]            C23  {'q2': 787940, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 0, 'original_kept': 1, 'failed': 0}}
+  747 s  test_hamiltonians[ham_mu_x_prime_enc_stdbinary_dvalues_8-8 C22  {'q2': 74, 'valid': True}
+  747 s  test_hamiltonians[ham_ham_JW-14-heavy-hex]                 C23  {'q2': 14364, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 1, 'original_kept': 0, 'failed': 0}}
+  749 s  test_hamiltonians[ham_mu_x_prime_enc_stdbinary_dvalues_8-8 C22B {'q2': 74, 'valid': True}
+  750 s  test_hamiltonians[ham_reg-5_n-10_rinst-07-heavy-hex]       C23  {'q2': 6111, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 0, 'original_kept': 1, 'failed': 0}}
+  753 s  test_hamiltonians[ham_mu_x_prime_enc_stdbinary_dvalues_8-8 C23  {'q2': 74, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  761 s  test_hamiltonians[ham_enc_unary_dvalues_4-4-4-linear]      C22  {'q2': 20982, 'valid': True}
+  762 s  test_hamiltonians[ham_enc_unary_dvalues_4-4-4-linear]      C22B {'q2': 20982, 'valid': True}
+  765 s  test_hamiltonians[ham_enc_unary_dvalues_4-4-4-linear]      C23  {'q2': 14833, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 1, 'original_kept': 0, 'failed': 0}}
+  768 s  test_hamiltonians[ham_reg-5_n-10_rinst-07-linear]          C22  {'q2': 6403, 'valid': True}
+  768 s  test_hamiltonians[ham_reg-5_n-10_rinst-07-linear]          C22B {'q2': 6403, 'valid': True}
+  772 s  test_hamiltonians[ham_reg-5_n-10_rinst-07-linear]          C23  {'q2': 6403, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 0, 'original_kept': 1, 'failed': 0}}
+  783 s  test_hamiltonians[ham_bh_graph-2D-triag-nonpbc-qubitnodes_ C22  {'q2': 64436, 'valid': True}
+  784 s  test_hamiltonians[ham_bh_graph-2D-triag-nonpbc-qubitnodes_ C22B {'q2': 64436, 'valid': True}
+  793 s  test_hamiltonians[ham_bh_graph-2D-triag-nonpbc-qubitnodes_ C23  {'q2': 59389, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 1, 'original_kept': 0, 'failed': 0}}
+  796 s  test_hamlib_hamiltonians_transpile[ham_ham_JW-18]          C22  {'q2': 43491, 'valid': True}
+  796 s  test_hamlib_hamiltonians_transpile[ham_ham_JW-18]          C22B {'q2': 43491, 'valid': True}
+  799 s  test_hamiltonians[ham_ham_BK22-linear]                     C22  {'q2': 256735, 'valid': True}
+  801 s  test_hamiltonians[ham_ham_BK22-linear]                     C22B {'q2': 256735, 'valid': True}
+  816 s  test_hamlib_hamiltonians_transpile[ham_ham_JW-18]          C23  {'q2': 39717, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 1, 'original_kept': 0, 'failed': 0}}
+  816 s  test_hamlib_hamiltonians_transpile[ham_bh_graph-2D-triag-p C22  {'q2': 25535, 'valid': True}
+  821 s  test_hamlib_hamiltonians_transpile[ham_bh_graph-2D-triag-p C22  {'q2': 58199, 'valid': True}
+  823 s  test_hamlib_hamiltonians_transpile[ham_bh_graph-2D-triag-p C22B {'q2': 58199, 'valid': True}
+  823 s  test_hamiltonians[ham_ham_BK22-linear]                     C23  {'q2': 207796, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 1, 'original_kept': 0, 'failed': 0}}
+  826 s  test_hamlib_hamiltonians_transpile[ham_bh_graph-2D-triag-p C23  {'q2': 58199, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  829 s  test_hamlib_hamiltonians_transpile[ham_bh_graph-2D-triag-p C22B {'q2': 25535, 'valid': True}
+  830 s  test_hamlib_hamiltonians_transpile[ham_ham_JW-10]          C22  {'q2': 2854, 'valid': True, 'implements': True}
+  830 s  test_hamlib_hamiltonians_transpile[ham_bh_graph-2D-triag-p C23  {'q2': 25535, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  831 s  test_hamlib_hamiltonians_transpile[ham_ham_JW-10]          C22B {'q2': 2854, 'valid': True, 'implements': True}
+  832 s  test_hamlib_hamiltonians_transpile[ham_ham_JW-10]          C23  {'q2': 2484, 'valid': True, 'implements': True, 'cancel': {'tried': 1, 'cancelled_kept': 1, 'original_kept': 0, 'failed': 0}}
+  835 s  test_hamlib_hamiltonians_transpile[ham_ham_parity10]       C22  {'q2': 2723, 'valid': True, 'implements': True}
+  838 s  test_hamlib_hamiltonians_transpile[ham_ham_parity10]       C22B {'q2': 2723, 'valid': True, 'implements': True}
+  840 s  test_hamlib_hamiltonians_transpile[ham_ham_parity10]       C23  {'q2': 2543, 'valid': True, 'implements': True, 'cancel': {'tried': 1, 'cancelled_kept': 1, 'original_kept': 0, 'failed': 0}}
+  841 s  test_hamlib_hamiltonians_transpile[ham_mu_x_prime_enc_unar C22  {'q2': 18, 'valid': True}
+  844 s  test_hamlib_hamiltonians_transpile[ham_mu_x_prime_enc_unar C22B {'q2': 18, 'valid': True}
+  845 s  test_hamlib_hamiltonians_transpile[ham_mu_x_prime_enc_unar C23  {'q2': 18, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  847 s  test_hamlib_hamiltonians_transpile[ham_ham_JW-6]           C22  {'q2': 351, 'valid': True, 'implements': True}
+  849 s  test_hamlib_hamiltonians_transpile[ham_ham_JW-6]           C22B {'q2': 351, 'valid': True, 'implements': True}
+  850 s  test_hamlib_hamiltonians_transpile[ham_ham_JW-6]           C23  {'q2': 351, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  851 s  test_feynman_transpile[mod_red_21.qasm]                    C22  {'q2': 198, 'valid': True}
+  853 s  test_feynman_transpile[mod_red_21.qasm]                    C22B {'q2': 198, 'valid': True}
+  854 s  test_feynman_transpile[mod_red_21.qasm]                    C23  {'q2': 198, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  856 s  test_feynman_transpile[qcla_com_7.qasm]                    C22  {'q2': 362, 'valid': True}
+  857 s  test_feynman_transpile[qcla_com_7.qasm]                    C22B {'q2': 362, 'valid': True}
+  858 s  test_feynman_transpile[qcla_com_7.qasm]                    C23  {'q2': 362, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 0, 'original_kept': 1, 'failed': 0}}
+  860 s  test_feynman_transpile[gf2^6_mult.qasm]                    C22  {'q2': 561, 'valid': True}
+  862 s  test_feynman_transpile[gf2^6_mult.qasm]                    C22B {'q2': 561, 'valid': True}
+  863 s  test_feynman_transpile[gf2^6_mult.qasm]                    C23  {'q2': 561, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  864 s  test_feynman_transpile[mod5_4.qasm]                        C22  {'q2': 50, 'valid': True, 'implements': True}
+  867 s  test_feynman_transpile[mod5_4.qasm]                        C22B {'q2': 50, 'valid': True, 'implements': True}
+  867 s  test_feynman_transpile[mod5_4.qasm]                        C23  {'q2': 50, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  870 s  test_feynman_transpile[gf2^8_mult.qasm]                    C22  {'q2': 1190, 'valid': True}
+  870 s  test_hamlib_hamiltonians_transpile[ham_ham_JW-22]          C22  {'q2': 129070, 'valid': True}
+  870 s  test_hamlib_hamiltonians_transpile[ham_ham_JW-22]          C22B {'q2': 129070, 'valid': True}
+  872 s  test_feynman_transpile[gf2^8_mult.qasm]                    C22B {'q2': 1190, 'valid': True}
+  873 s  test_feynman_transpile[gf2^8_mult.qasm]                    C23  {'q2': 1190, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  876 s  test_feynman_transpile[barenco_tof_5.qasm]                 C22  {'q2': 117, 'valid': True, 'implements': True}
+  876 s  test_feynman_transpile[barenco_tof_5.qasm]                 C22B {'q2': 117, 'valid': True, 'implements': True}
+  876 s  test_feynman_transpile[barenco_tof_5.qasm]                 C23  {'q2': 117, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  883 s  test_circSU2_89_transpile                                  C22  {'q2': 336, 'valid': True}
+  883 s  test_BVlike_simplification_transpile                       C22  {'q2': 392, 'valid': True}
+  883 s  test_BVlike_simplification_transpile                       C22B {'q2': 392, 'valid': True}
+  884 s  test_circSU2_89_transpile                                  C22B {'q2': 336, 'valid': True}
+  887 s  test_circSU2_89_transpile                                  C23  {'q2': 336, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  890 s  test_BVlike_simplification_transpile                       C23  {'q2': 0, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 1, 'original_kept': 0, 'failed': 0}}
+  892 s  test_QAOA_100_transpile                                    C22  {'q2': 8890, 'valid': True}
+  892 s  test_QAOA_100_transpile                                    C23  {'q2': 8890, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  892 s  test_QAOA_100_transpile                                    C22B {'q2': 8890, 'valid': True}
+  895 s  test_hamlib_hamiltonians_transpile[ham_ham_JW-22]          C23  {'q2': 120561, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 1, 'original_kept': 0, 'failed': 0}}
+  895 s  test_BV_100_transpile                                      C22  {'q2': 200, 'valid': True}
+  899 s  test_BV_100_transpile                                      C22B {'q2': 200, 'valid': True}
+  901 s  test_BV_100_transpile                                      C23  {'q2': 200, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  901 s  test_square_heisenberg_100_transpile                       C22  {'q2': 1587, 'valid': True}
+  901 s  test_square_heisenberg_100_transpile                       C22B {'q2': 1587, 'valid': True}
+  904 s  test_square_heisenberg_100_transpile                       C23  {'q2': 1587, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  908 s  test_QASMBench_small[qec_sm_n5-all-to-all]                 C22  {'q2': 4, 'valid': True, 'implements': False}
+  909 s  test_QASMBench_small[qec_sm_n5-all-to-all]                 C22B {'q2': 4, 'valid': True, 'implements': False}
+  911 s  test_QASMBench_small[qec_sm_n5-all-to-all]                 C23  {'q2': 4, 'valid': True, 'implements': False, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  912 s  test_clifford_100_transpile                                C22  {'q2': 58949, 'valid': True}
+  915 s  test_QASMBench_small[grover_n2-all-to-all]                 C22  {'q2': 2, 'valid': True, 'implements': True}
+  915 s  test_clifford_100_transpile                                C22B {'q2': 58949, 'valid': True}
+  915 s  test_QASMBench_small[grover_n2-all-to-all]                 C22B {'q2': 2, 'valid': True, 'implements': True}
+  916 s  test_clifford_100_transpile                                C23  {'q2': 58949, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  917 s  test_QASMBench_small[grover_n2-all-to-all]                 C23  {'q2': 2, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  919 s  test_QASMBench_small[qaoa_n3-all-to-all]                   C22  {'q2': 6, 'valid': True, 'implements': True}
+  921 s  test_QASMBench_small[qaoa_n3-all-to-all]                   C22B {'q2': 6, 'valid': True, 'implements': True}
+  921 s  test_QASMBench_small[qaoa_n3-all-to-all]                   C23  {'q2': 6, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  922 s  test_QASMBench_small[qec_en_n5-square]                     C22  {'q2': 10, 'valid': True, 'implements': True}
+  922 s  test_QASMBench_small[qec_en_n5-square]                     C22B {'q2': 10, 'valid': True, 'implements': True}
+  923 s  test_QASMBench_small[qec_en_n5-square]                     C23  {'q2': 10, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  924 s  test_QASMBench_small[grover_n2-square]                     C22  {'q2': 2, 'valid': True, 'implements': True}
+  926 s  test_QASMBench_small[grover_n2-square]                     C22B {'q2': 2, 'valid': True, 'implements': True}
+  927 s  test_QASMBench_small[grover_n2-square]                     C23  {'q2': 2, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  928 s  test_QASMBench_small[wstate_n3-square]                     C22  {'q2': 13, 'valid': True, 'implements': True}
+  928 s  test_QASMBench_small[wstate_n3-square]                     C22B {'q2': 13, 'valid': True, 'implements': True}
+  929 s  test_QASMBench_small[wstate_n3-square]                     C23  {'q2': 13, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  930 s  test_QASMBench_small[qaoa_n6-heavy-hex]                    C22  {'q2': 62, 'valid': True, 'implements': True}
+  932 s  test_QASMBench_small[qaoa_n6-heavy-hex]                    C22B {'q2': 62, 'valid': True, 'implements': True}
+  932 s  test_QASMBench_small[qaoa_n6-heavy-hex]                    C23  {'q2': 62, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  933 s  test_QASMBench_small[vqe_uccsd_n6-heavy-hex]               C22  {'q2': 995, 'valid': True, 'implements': True}
+  934 s  test_QASMBench_small[vqe_uccsd_n6-heavy-hex]               C22B {'q2': 995, 'valid': True, 'implements': True}
+  935 s  test_QASMBench_small[vqe_uccsd_n6-heavy-hex]               C23  {'q2': 995, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  935 s  test_QASMBench_small[variational_n4-heavy-hex]             C22  {'q2': 8, 'valid': True, 'implements': True}
+  937 s  test_QASMBench_small[variational_n4-heavy-hex]             C23  {'q2': 8, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  938 s  test_QASMBench_small[variational_n4-heavy-hex]             C22B {'q2': 8, 'valid': True, 'implements': True}
+  939 s  test_QASMBench_small[pea_n5-linear]                        C22  {'q2': 36, 'valid': True, 'implements': True}
+  939 s  test_QASMBench_small[pea_n5-linear]                        C22B {'q2': 36, 'valid': True, 'implements': True}
+  940 s  test_QASMBench_small[pea_n5-linear]                        C23  {'q2': 36, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  941 s  test_QASMBench_small[inverseqft_n4-linear]                 C22  {'q2': 0, 'valid': True, 'implements': False}
+  943 s  test_QASMBench_small[inverseqft_n4-linear]                 C22B {'q2': 0, 'valid': True, 'implements': False}
+  943 s  test_QASMBench_small[inverseqft_n4-linear]                 C23  {'q2': 0, 'valid': True, 'implements': False, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  945 s  test_QASMBench_small[sat_n7-linear]                        C22  {'q2': 115, 'valid': True, 'implements': True}
+  945 s  test_QASMBench_small[sat_n7-linear]                        C22B {'q2': 115, 'valid': True, 'implements': True}
+  946 s  test_QASMBench_small[sat_n7-linear]                        C23  {'q2': 115, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  947 s  test_QASMBench_medium[qf21_n15-all-to-all]                 C22  {'q2': 115, 'valid': True}
+  950 s  test_QASMBench_medium[qf21_n15-all-to-all]                 C22B {'q2': 115, 'valid': True}
+  950 s  test_QASMBench_medium[qf21_n15-all-to-all]                 C23  {'q2': 115, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  951 s  test_QASMBench_medium[multiplier_n15-all-to-all]           C22  {'q2': 222, 'valid': True}
+  952 s  test_QASMBench_medium[multiplier_n15-all-to-all]           C22B {'q2': 222, 'valid': True}
+  953 s  test_QASMBench_medium[multiplier_n15-all-to-all]           C23  {'q2': 222, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 0, 'original_kept': 1, 'failed': 0}}
+  954 s  test_QASMBench_medium[knn_n25-square]                      C22  {'q2': 156, 'valid': True}
+  957 s  test_QASMBench_medium[knn_n25-square]                      C22B {'q2': 156, 'valid': True}
+  957 s  test_QASMBench_medium[knn_n25-square]                      C23  {'q2': 156, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  959 s  test_QASMBench_medium[wstate_n27-square]                   C22  {'q2': 52, 'valid': True}
+  959 s  test_QASMBench_medium[wstate_n27-square]                   C22B {'q2': 52, 'valid': True}
+  961 s  test_QASMBench_medium[wstate_n27-square]                   C23  {'q2': 52, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  961 s  test_QASMBench_medium[bv_n19-heavy-hex]                    C22  {'q2': 71, 'valid': True}
+  964 s  test_QASMBench_medium[bv_n19-heavy-hex]                    C22B {'q2': 71, 'valid': True}
+  965 s  test_QASMBench_medium[bv_n19-heavy-hex]                    C23  {'q2': 71, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  966 s  test_QASMBench_medium[qram_n20-heavy-hex]                  C22  {'q2': 311, 'valid': True}
+  967 s  test_QASMBench_medium[qram_n20-heavy-hex]                  C22B {'q2': 311, 'valid': True}
+  968 s  test_QASMBench_medium[ghz_state_n23-linear]                C22  {'q2': 22, 'valid': True}
+  968 s  test_QASMBench_medium[qram_n20-heavy-hex]                  C23  {'q2': 311, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  972 s  test_QASMBench_medium[ghz_state_n23-linear]                C23  {'q2': 22, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  972 s  test_QASMBench_medium[ghz_state_n23-linear]                C22B {'q2': 22, 'valid': True}
+  973 s  test_QASMBench_medium[multiply_n13-linear]                 C22  {'q2': 103, 'valid': True}
+  974 s  test_QASMBench_medium[multiply_n13-linear]                 C22B {'q2': 103, 'valid': True}
+  976 s  test_QASMBench_medium[multiply_n13-linear]                 C23  {'q2': 103, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  976 s  test_QASMBench_large[knn_n41-all-to-all]                   C22  {'q2': 140, 'valid': True}
+  979 s  test_QASMBench_large[knn_n41-all-to-all]                   C22B {'q2': 140, 'valid': True}
+  979 s  test_QASMBench_large[knn_n41-all-to-all]                   C23  {'q2': 140, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  980 s  test_QASMBench_large[bv_n30-all-to-all]                    C22  {'q2': 18, 'valid': True}
+  981 s  test_QASMBench_large[bv_n30-all-to-all]                    C22B {'q2': 18, 'valid': True}
+  982 s  test_QASMBench_large[bv_n30-all-to-all]                    C23  {'q2': 18, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  984 s  test_QASMBench_large[ising_n420-square]                    C22  {'q2': 838, 'valid': True}
+  986 s  test_QASMBench_large[ising_n420-square]                    C22B {'q2': 838, 'valid': True}
+  987 s  test_QASMBench_large[ising_n420-square]                    C23  {'q2': 838, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  987 s  test_QASMBench_large[ising_n66-square]                     C22  {'q2': 130, 'valid': True}
+  987 s  test_QASMBench_large[ising_n66-square]                     C22B {'q2': 130, 'valid': True}
+  989 s  test_QASMBench_large[ising_n66-square]                     C23  {'q2': 130, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  990 s  test_QASMBench_large[ising_n98-heavy-hex]                  C22  {'q2': 575, 'valid': True}
+  992 s  test_QASMBench_large[ising_n98-heavy-hex]                  C22B {'q2': 575, 'valid': True}
+  993 s  test_QASMBench_large[qugan_n39-heavy-hex]                  C22  {'q2': 571, 'valid': True}
+  993 s  test_QASMBench_large[ising_n98-heavy-hex]                  C23  {'q2': 575, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+  993 s  test_QASMBench_large[qugan_n39-heavy-hex]                  C22B {'q2': 571, 'valid': True}
+  995 s  test_QASMBench_large[qugan_n39-heavy-hex]                  C23  {'q2': 571, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+ 1036 s  test_QASMBench_large[square_root_n45-linear]               C22  {'q2': 297217, 'valid': True}
+ 1038 s  test_QASMBench_large[square_root_n45-linear]               C22B {'q2': 297217, 'valid': True}
+ 1040 s  test_QASMBench_large[square_root_n45-linear]               C23  {'q2': 297217, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+ 1052 s  test_hamiltonians[ham_graph-2D-grid-pbc-qubitnodes_Lx-2_Ly C22  {'q2': 1665, 'valid': True}
+ 1054 s  test_hamiltonians[ham_graph-2D-grid-pbc-qubitnodes_Lx-2_Ly C22B {'q2': 1665, 'valid': True}
+ 1055 s  test_hamiltonians[ham_graph-2D-grid-pbc-qubitnodes_Lx-2_Ly C23  {'q2': 1665, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+ 1059 s  test_hamiltonians[ham_ham_parity-14-all-to-all]            C22  {'q2': 3666, 'valid': True}
+ 1061 s  test_hamiltonians[ham_ham_parity-14-all-to-all]            C22B {'q2': 3666, 'valid': True}
+ 1062 s  test_hamiltonians[ham_ham_parity-14-all-to-all]            C23  {'q2': 3649, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 1, 'original_kept': 0, 'failed': 0}}
+ 1076 s  test_hamiltonians[ham_ash608gpia,n-160,rinst-1-all-to-all] C22  {'q2': 2268, 'valid': True}
+ 1078 s  test_hamiltonians[ham_ash608gpia,n-160,rinst-1-all-to-all] C22B {'q2': 2268, 'valid': True}
+ 1080 s  test_hamiltonians[ham_ash608gpia,n-160,rinst-1-all-to-all] C23  {'q2': 2268, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+ 1084 s  test_hamiltonians[ham_graph-1D-grid-pbc-qubitnodes_Lx-26_h C22  {'q2': 52, 'valid': True}
+ 1086 s  test_hamiltonians[ham_graph-1D-grid-pbc-qubitnodes_Lx-26_h C22B {'q2': 52, 'valid': True}
+ 1088 s  test_hamiltonians[ham_graph-1D-grid-pbc-qubitnodes_Lx-26_h C23  {'q2': 52, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+ 1110 s  test_hamiltonians[ham_bh_graph-2D-triag-pbc-qubitnodes_Lx- C22  {'q2': 50574, 'valid': True}
+ 1113 s  test_hamiltonians[ham_bh_graph-2D-triag-pbc-qubitnodes_Lx- C22B {'q2': 50574, 'valid': True}
+ 1116 s  test_hamiltonians[ham_bh_graph-2D-triag-pbc-qubitnodes_Lx- C23  {'q2': 50574, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+ 1121 s  test_hamiltonians[ham_graph-2D-triag-nonpbc-qubitnodes_Lx- C22  {'q2': 6280, 'valid': True}
+ 1123 s  test_hamiltonians[ham_graph-2D-triag-nonpbc-qubitnodes_Lx- C22B {'q2': 6280, 'valid': True}
+ 1126 s  test_hamiltonians[ham_graph-2D-triag-nonpbc-qubitnodes_Lx- C23  {'q2': 6280, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+ 1130 s  test_hamiltonians[ham_ham_parity-4-heavy-hex]              C22  {'q2': 63, 'valid': True, 'implements': True}
+ 1131 s  test_hamiltonians[ham_ham_parity-4-heavy-hex]              C22B {'q2': 63, 'valid': True, 'implements': True}
+ 1134 s  test_hamiltonians[ham_ham_parity-4-heavy-hex]              C23  {'q2': 63, 'valid': True, 'implements': True, 'cancel': {'tried': 1, 'cancelled_kept': 0, 'original_kept': 1, 'failed': 0}}
+ 1166 s  test_hamiltonians[ham_fh-graph-2D-grid-pbc-qubitnodes_Lx-5 C22  {'q2': 147650, 'valid': True}
+ 1171 s  test_hamiltonians[ham_fh-graph-2D-grid-pbc-qubitnodes_Lx-5 C22B {'q2': 147650, 'valid': True}
+ 1173 s  test_hamiltonians[ham_fh-graph-2D-grid-pbc-qubitnodes_Lx-5 C23  {'q2': 147650, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+ 1186 s  test_hamiltonians[ham_graph-1D-grid-pbc-qubitnodes_Lx-16_h C22  {'q2': 32, 'valid': True}
+ 1187 s  test_hamiltonians[ham_graph-1D-grid-pbc-qubitnodes_Lx-16_h C22B {'q2': 32, 'valid': True}
+ 1191 s  test_hamiltonians[ham_graph-1D-grid-pbc-qubitnodes_Lx-16_h C23  {'q2': 32, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+ 1200 s  test_hamiltonians[ham_4-uf100-0246.cnf-70-res-linear]      C22  {'q2': 22901, 'valid': True}
+ 1200 s  test_hamiltonians[ham_4-uf100-0246.cnf-70-res-linear]      C22B {'q2': 22901, 'valid': True}
+ 1203 s  test_hamiltonians[ham_4-uf100-0246.cnf-70-res-linear]      C23  {'q2': 22901, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 0, 'original_kept': 1, 'failed': 0}}
+ 1209 s  test_hamiltonians[ham_enc_gray_dvalues_4-4-4-4-4-4-4-linea C22  {'q2': 4717, 'valid': True}
+ 1209 s  test_hamiltonians[ham_enc_gray_dvalues_4-4-4-4-4-4-4-linea C22B {'q2': 4717, 'valid': True}
+ 1212 s  test_hamiltonians[ham_enc_gray_dvalues_4-4-4-4-4-4-4-linea C23  {'q2': 4717, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 0, 'original_kept': 1, 'failed': 0}}
+ 1216 s  test_hamiltonians[ham_reg-4_n-90_rinst-07-linear]          C22  {'q2': 9585, 'valid': True}
+ 1216 s  test_hamiltonians[ham_reg-4_n-90_rinst-07-linear]          C22B {'q2': 9585, 'valid': True}
+ 1220 s  test_hamiltonians[ham_reg-4_n-90_rinst-07-linear]          C23  {'q2': 9585, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+ 1223 s  test_hamlib_hamiltonians_transpile[ham_tsp_prob-ts225_Ncit C22  {'q2': 542, 'valid': True}
+ 1223 s  test_hamlib_hamiltonians_transpile[ham_tsp_prob-ts225_Ncit C22B {'q2': 542, 'valid': True}
+ 1228 s  test_hamlib_hamiltonians_transpile[ham_tsp_prob-ts225_Ncit C23  {'q2': 542, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+ 1235 s  test_hamlib_hamiltonians_transpile[ham_gnp-k_5_n-60_rinst- C22B {'q2': 16529, 'valid': True}
+ 1235 s  test_hamlib_hamiltonians_transpile[ham_gnp-k_5_n-60_rinst- C22  {'q2': 16529, 'valid': True}
+ 1241 s  test_hamlib_hamiltonians_transpile[ham_gnp-k_5_n-60_rinst- C23  {'q2': 16529, 'valid': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+ 1247 s  test_hamlib_hamiltonians_transpile[ham_ham_JW-14]          C22  {'q2': 13644, 'valid': True}
+ 1247 s  test_hamlib_hamiltonians_transpile[ham_ham_JW-14]          C22B {'q2': 13644, 'valid': True}
+ 1257 s  test_hamlib_hamiltonians_transpile[ham_ham_JW-14]          C23  {'q2': 12927, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 1, 'original_kept': 0, 'failed': 0}}
+ 1269 s  test_hamlib_hamiltonians_transpile[ham_enc_gray_dvalues_8- C22  {'q2': 14298, 'valid': True, 'implements': True}
+ 1269 s  test_hamlib_hamiltonians_transpile[ham_enc_gray_dvalues_8- C22B {'q2': 14298, 'valid': True, 'implements': True}
+ 1275 s  test_feynman_transpile[rb.qasm]                            C22  {'q2': 2, 'valid': True, 'implements': True}
+ 1275 s  test_feynman_transpile[rb.qasm]                            C22B {'q2': 2, 'valid': True, 'implements': True}
+ 1278 s  test_hamlib_hamiltonians_transpile[ham_enc_gray_dvalues_8- C23  {'q2': 13261, 'valid': True, 'implements': True, 'cancel': {'tried': 1, 'cancelled_kept': 1, 'original_kept': 0, 'failed': 0}}
+ 1280 s  test_feynman_transpile[rb.qasm]                            C23  {'q2': 2, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+ 1281 s  test_feynman_transpile[grover_5.qasm]                      C22  {'q2': 537, 'valid': True, 'implements': True}
+ 1285 s  test_feynman_transpile[grover_5.qasm]                      C22B {'q2': 537, 'valid': True, 'implements': True}
+ 1286 s  test_feynman_transpile[grover_5.qasm]                      C23  {'q2': 537, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+ 1306 s  test_feynman_transpile[hwb10.qasm]                         C22  {'q2': 114203, 'valid': True}
+ 1310 s  test_feynman_transpile[hwb10.qasm]                         C22B {'q2': 114203, 'valid': True}
+ 1311 s  test_feynman_transpile[mod_mult_55.qasm]                   C22  {'q2': 94, 'valid': True, 'implements': True}
+ 1316 s  test_feynman_transpile[mod_mult_55.qasm]                   C22B {'q2': 94, 'valid': True, 'implements': True}
+ 1317 s  test_feynman_transpile[mod_mult_55.qasm]                   C23  {'q2': 94, 'valid': True, 'implements': True, 'cancel': {'tried': 0, 'cancelled_kept': 0, 'original_kept': 0, 'failed': 0}}
+ 1323 s  test_feynman_transpile[hwb10.qasm]                         C23  {'q2': 113292, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 1, 'original_kept': 0, 'failed': 0}}
+ 1485 s  test_QASMBench_large[bwt_n37-linear]                       C22B {'q2': 3281757, 'valid': True}
+ 1494 s  test_QASMBench_large[bwt_n37-linear]                       C22  {'q2': 3281757, 'valid': True}
+ 1647 s  test_QASMBench_large[bwt_n37-linear]                       C23  {'q2': 3281757, 'valid': True, 'cancel': {'tried': 1, 'cancelled_kept': 0, 'original_kept': 1, 'failed': 0}}
+wrote cancel.json: 140 tests, 420 jobs, 1647.3 s

@@ -1,0 +1,8 @@
+expected tests (BP-MOCK + BP-MOCK2 output) 140; in the run 140; same set True
+P0 PASS: C23 failed or invalid 0, versions ok True, git_head 9c341a3
+done 140; tried 32: ['test_QASMBench_small[error_correctiond3_', 'test_QASMBench_medium[factor247_n15-squa', 'test_QASMBench_medium[factor247_n15-line', 'test_QASMBench_large[qft_n160-heavy-hex]', 'test_QASMBench_large[multiplier_n400-hea', 'test_hamiltonians[ham_ham_parity-4-all-t', 'test_hamiltonians[ham_4-uf100-0246.cnf-7', 'test_hamiltonians[ham_reg-5_n-10_rinst-0', 'test_hamiltonians[ham_bh_graph-2D-grid-n', 'test_hamiltonians[ham_tsp_prob-ulysses22', 'test_hamiltonians[ham_ham_JW12-heavy-hex', 'test_hamiltonians[ham_ham_JW-14-heavy-he', 'test_hamiltonians[ham_reg-5_n-10_rinst-0', 'test_hamiltonians[ham_enc_unary_dvalues_', 'test_hamiltonians[ham_ham_BK22-linear]', 'test_hamiltonians[ham_reg-5_n-10_rinst-0', 'test_hamiltonians[ham_bh_graph-2D-triag-', 'test_hamlib_hamiltonians_transpile[ham_h', 'test_hamlib_hamiltonians_transpile[ham_h', 'test_hamlib_hamiltonians_transpile[ham_h', 'test_hamlib_hamiltonians_transpile[ham_h', 'test_feynman_transpile[qcla_com_7.qasm]', 'test_BVlike_simplification_transpile', 'test_QASMBench_medium[multiplier_n15-all', 'test_QASMBench_large[bwt_n37-linear]', 'test_hamiltonians[ham_ham_parity-14-all-', 'test_hamiltonians[ham_ham_parity-4-heavy', 'test_hamiltonians[ham_4-uf100-0246.cnf-7', 'test_hamiltonians[ham_enc_gray_dvalues_4', 'test_hamlib_hamiltonians_transpile[ham_h', 'test_hamlib_hamiltonians_transpile[ham_e', 'test_feynman_transpile[hwb10.qasm]']; K1 0 of 102; K2 0; K4 0 of 41; K5 1.023
+K1 CONFIRMED
+K2 CONFIRMED
+K4 CONFIRMED
+K5 CONFIRMED
+verdicts identical to score.md: True

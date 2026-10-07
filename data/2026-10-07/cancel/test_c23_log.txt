@@ -1,0 +1,32 @@
+.
+BV-like 8: c22 26, c23 0
+.
+BV-like 30: c22 114, c23 0
+.
+BV-like 100: c22 392, c23 0
+....
+random 0 (7 qubits): c22 26, c23 26
+
+random 1 (5 qubits): c22 11, c23 11
+
+random 2 (7 qubits): c22 12, c23 12
+
+random 3 (6 qubits): c22 14, c23 14
+
+random 4 (6 qubits): c22 7, c23 7
+
+random 5 (5 qubits): c22 9, c23 9
+.
+commutative cancellation on a 100-qubit QFT (5000 two-qubit gates): 0.25 s
+.
+============================== warnings summary ===============================
+patches/psf_compile_c23_2026-10-07/test_c23.py::test_time_when_nothing_cancels
+  <windows-home>\Desktop\psf_zero_test\psf-zero\patches\psf_compile_c23_2026-10-07\test_c23.py:144: DeprecationWarning: The class ``qiskit.circuit.library.basis_change.qft.QFT`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. ('Use qiskit.circuit.library.QFTGate or qiskit.synthesis.qft.synth_qft_full instead, for access to all previous arguments.',)
+    qc.append(QFT(100), range(100))
+
+patches/psf_compile_c23_2026-10-07/test_c23.py::test_time_when_nothing_cancels
+  <windows-home>\Desktop\psf_zero_test\.venv_psf\Lib\site-packages\qiskit\circuit\library\basis_change\qft.py:108: DeprecationWarning: The class ``qiskit.circuit.library.blueprintcircuit.BlueprintCircuit`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. There is no direct replacement other than the QuantumCircuit class.
+    super().__init__(name=name)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+9 passed, 2 warnings in 26.89s

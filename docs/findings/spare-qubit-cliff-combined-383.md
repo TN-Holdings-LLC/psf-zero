@@ -1190,6 +1190,102 @@ two-qubit counts there, which result was kept, and the time.
 - K1, K2 or K4 REFUTED: item 50 is not proposed; the failing tests are examined first.
 - K5 REFUTED: item 50 is not proposed in this form (the pass would cost too much on every input).
 
+
+---
+
+<!-- ===== Addendum 395 (source: spare-qubit-cliff-addendum-395-2026-10-07.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 394, and the owner's decision of 2026-10-07.
+
+## Addendum 395 -- Results of CANCEL (Addendum 394): K1, K2, K4 and K5 CONFIRMED on 140 Benchpress tests; commutative cancellation was tried on 32 and kept on 20 (Benchpress's BV-like test 392 to 0, others up to 29% fewer two-qubit gates) and never gave more; item 50 accepted, not released (2026-10-07)
+
+**Status: results of the pre-registered test in Addendum 394, scored by the locked script and re-checked by the
+independent [`benchmarks/cancel_verify.py`](../../benchmarks/cancel_verify.py); then the owner's decision.**
+
+## 1. The run
+
+- **Lock:** commit `9c341a3` (Addenda 393-394, with c23, its test and the smoke run); the run recorded `git_head`
+  `9c341a3` and no uncommitted change to a tracked file. The lock commit and this one reach GitHub together.
+- **Machine:** the workplace PC (Windows, Python 3.11.9, Qiskit 2.5.2), Benchpress `b695f30`, six jobs at a time.
+- **Time:** started 2026-10-07T06:41:11Z; 420 jobs (140 tests, three arms) in 1,647 s.
+- **Output:** [`data/2026-10-07/cancel/`](../../data/2026-10-07/cancel/): `cancel.json`, `score.md`, `run_log.txt`,
+  `score_log.txt`, `verify_log.txt`; the smoke run in
+  [`data/2026-10-07/cancel_smoke/`](../../data/2026-10-07/cancel_smoke/).
+- **Disclosed:** the log of [`test_c23.py`](../../patches/psf_compile_c23_2026-10-07/test_c23.py) (9 passed, run
+  before the smoke run and the lock) was left out of the lock commit; it is committed here as
+  [`data/2026-10-07/cancel/test_c23_log.txt`](../../data/2026-10-07/cancel/test_c23_log.txt), unchanged apart from
+  the local path.
+
+## 2. Results
+
+**P0: PASS.** The 140 tests of BP-MOCK and BP-MOCK2 (`cancel_verify.py`: same set); no error or time-out in any arm;
+every C23 output passes Benchpress's validator; versions as named. All three arms finished all 140 tests.
+
+| | prediction | result | verdict |
+|---|---|---|---|
+| K1 | nothing cancels and C22 = C22B (102 tests): C23 returns C22's circuit | 0 of 102 differ | **CONFIRMED** |
+| K2 | some two-qubit gates cancel (32 tests): C23 has no more than C22 | 0 of 32 have more | **CONFIRMED** |
+| K4 | checkable C23 outputs (41) implement their input | 0 of 41 fail | **CONFIRMED** |
+| K5 | nothing cancels (108 tests): median time C23 / C22 <= 1.15 | 1.023 | **CONFIRMED** |
+
+`cancel_verify.py`: the same four verdicts, "verdicts identical to score.md: True". Of the 108 tests where nothing
+cancels, 6 are outside K1 because C22 did not reproduce itself (C22 against C22B; Addendum 393, section 2).
+
+**Reported without prediction** (the full table is in `score.md`):
+
+- **Cancelled input kept on 20 of 32**, two-qubit count C22 to C23:
+
+  | test | C22 | C23 | change | time C23 / C22 |
+  |---|---|---|---|---|
+  | `BVlike_simplification` | 392 | 0 | -100% | 1.39 |
+  | HamLib `enc_unary_dvalues_4-4-4`, linear | 20,982 | 14,833 | -29.3% | 1.67 |
+  | QASMBench `error_correctiond3_n5`, square | 56 | 41 | -26.8% | 1.11 |
+  | QASMBench `qft_n160`, heavy-hex | 21,361 | 15,793 | -26.1% | 1.24 |
+  | HamLib `BK22`, linear | 256,735 | 207,796 | -19.1% | 1.78 |
+  | HamLib `JW12`, heavy-hex | 6,175 | 5,007 | -18.9% | 1.50 |
+  | HamLib `JW-10`, FakeTorino | 2,854 | 2,484 | -13.0% | 1.46 |
+  | HamLib `JW-14`, heavy-hex | 15,941 | 14,364 | -9.9% | 3.96 |
+  | HamLib `JW-18`, FakeTorino | 43,491 | 39,717 | -8.7% | 3.09 |
+  | HamLib `bh_graph` triag Lx-11, linear | 64,436 | 59,389 | -7.8% | 1.97 |
+  | HamLib `enc_gray_dvalues_8-8-8`, FakeTorino | 14,298 | 13,261 | -7.3% | 1.17 |
+  | HamLib `parity10`, FakeTorino | 2,723 | 2,543 | -6.6% | 1.38 |
+  | HamLib `JW-22`, FakeTorino | 129,070 | 120,561 | -6.6% | 1.87 |
+  | HamLib `JW-14`, FakeTorino | 13,644 | 12,927 | -5.3% | 1.78 |
+  | HamLib `reg-5_n-10`, square | 5,367 | 5,275 | -1.7% | 3.70 |
+  | five more (Feynman `hwb10`, HamLib `parity-14`, `bh_graph` grid Lx-7, QASMBench `factor247_n15` square and linear) | | | -0.4% to -0.8% | 1.41-2.21 |
+
+  Over the 19 with a non-zero result, the geometric mean of C23 / C22 is 0.895.
+- **Input kept on 12 of 32:** the two compiles gave the same two-qubit count on all 12 (a tie keeps the input's), so
+  C23's count equals C22's there; the time was spent for nothing (0.96-2.05 of C22's).
+- **Time where cancellation is tried:** C23 / C22 median 1.52 (0.96-3.96); 1.73 where the cancelled input was kept,
+  1.39 where the input was. The two compiles run one after the other.
+- `CANCEL_STATS`: `failed` 0 on all 140.
+
+## 3. What CANCEL shows
+
+1. **Item 50 does what it was built for:** where the cancellation removes no two-qubit gate the default call returns
+   c22's circuit wherever c22 reproduces itself, at about the same time; where it removes some, the result never has
+   more two-qubit gates than c22's; every checkable output implements its input.
+2. **The gains reach beyond the BV-like test it was written from:** they are largest on Hamiltonian-simulation
+   circuits (Jordan-Wigner, Bravyi-Kitaev and parity encodings, unary and Gray encodings) and on the 160-qubit QFT,
+   where adjacent terms leave CX gates that commute and cancel.
+3. **The price:** on the inputs where it is tried the default call takes about 1.5 times as long, up to 4 times.
+4. **Limits:** item 50 was written from one of these 140 tests after BP-MOCK and BP-MOCK2 and not tuned on the
+   others, but the 140 are not a fresh sample. **Not established:** Benchpress's other tests; the distance to Qiskit
+   level 2 with item 50 (CANCEL has no Qiskit arm; it can be computed from BP-MOCK's and BP-MOCK2's QK rows); depth
+   (recorded in `cancel.json`, not scored); the recommended call (not an arm of CANCEL); hardware.
+
+## 4. Decision (the owner, 2026-10-07)
+
+**Item 50 is accepted, not released,** with items 46-49, under the policy of Addendum 385. Candidate c23
+([`patches/psf_compile_c23_2026-10-07/psf_compile.py`](../../patches/psf_compile_c23_2026-10-07/psf_compile.py),
+items 46-50, as locked in Addendum 394) carries all five and replaces c22 as the basis of the next release.
+[`docs/RELEASES.md`](../../docs/RELEASES.md) lists item 50 under "Accepted, not yet released".
+
+The README is to say, with that release: `seed_transpiler` does not make the default call reproducible where Qiskit's
+own level 1 is not (Addendum 393, section 2); the recommended call avoids FakeTorino's failed couplers, which Qiskit
+level 2 uses, and what that costs (Addendum 393, section 4).
+
 ---
 
 ---

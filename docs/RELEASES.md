@@ -27,6 +27,14 @@ the earlier parts they link to. The README itself, as it was before the move, is
 >   three or more qubits before its own pipeline. Pre-registered tests BP-MOCK (92 Benchpress tests) and BP-MOCK2
 >   (48 new ones): on such inputs 0.71 and 0.74 of 2026-10-06.4's two-qubit count; the default call at 1.12 and
 >   1.04 of Qiskit level 2's (1.36 and 1.26 before); other inputs unchanged where the release reproduces itself.
+>
+> - **c23, item 50** ([`patches/psf_compile_c23_2026-10-07/`](../patches/psf_compile_c23_2026-10-07/), Part 10,
+>   Addenda 393-395): where Qiskit's commutative cancellation removes two-qubit gates from the input, the default
+>   call compiles the input and the cancelled input and keeps the one with fewer two-qubit gates. Pre-registered
+>   test CANCEL (140 Benchpress tests): tried on 32 and kept on 20 (Benchpress's BV-like test 392 to 0;
+>   QASMBench's 160-qubit QFT and 11 HamLib Hamiltonians 5-29% fewer), never more; on the other 108 c22's circuit
+>   wherever c22 reproduces itself, at 1.02 of its time (median); 0.96-3.96 of c22's time where it is tried.
+>   c23 carries items 46-50.
 
 > **Current version (2026-10-06, fourth release): `psf_compile.py` 2026-10-06.4 and the AI front end a12, with
 > `psf_smart_layout` 2026-10-01.1 and the Rust core `CORE_VERSION` 2026-09-29.1 (both unchanged)**
