@@ -1286,6 +1286,63 @@ The README is to say, with that release: `seed_transpiler` does not make the def
 own level 1 is not (Addendum 393, section 2); the recommended call avoids FakeTorino's failed couplers, which Qiskit
 level 2 uses, and what that costs (Addendum 393, section 4).
 
+
+---
+
+<!-- ===== Addendum 396 (source: spare-qubit-cliff-addendum-396-2026-10-07.md) ===== -->
+
+> **Note added when merging:** Exploratory, after Addendum 395, at the owner's request; computed from committed output only.
+
+## Addendum 396 -- Candidate c23's default call against Qiskit level 2 on 139 Benchpress tests (exploratory, from committed output): 1.027 of Qiskit level 2's two-qubit count (2026-10-06.4: 1.328), fewer on 18, as many on 59, more on 62; about 3.9 times its compile time (2026-10-07)
+
+**Status: exploratory, not pre-registered; computed after CANCEL (Addendum 395) from output already committed. No
+compile was run.** It gives the number the README needs for the release of c23 (Addendum 397).
+
+## 1. Why and how
+
+CANCEL compared c23 with c22 and had no Qiskit arm. BP-MOCK (Addendum 390) and BP-MOCK2 (Addendum 392) had one: Qiskit
+level 2 as Benchpress calls it (QK), on the same 140 inputs, built the same way from the same Benchpress commit
+(`b695f30`) on the same workplace PC. [`benchmarks/c23_vs_qk.py`](../../benchmarks/c23_vs_qk.py) puts CANCEL's C23
+rows next to those QK rows. A test counts where every arm of its BP-MOCK or BP-MOCK2 run finished and C23 finished:
+92 + 47 = 139 (BP-MOCK2's `bwt_n37` on linear, where QK timed out, is left out). Two-qubit counts are compared as
+(count + 1) / (count + 1), as in those tests. Output: [`data/2026-10-07/c23_vs_qk/`](../../data/2026-10-07/c23_vs_qk/).
+
+A consistency check: CANCEL's C22 arm gave the same two-qubit count as C22 in BP-MOCK and BP-MOCK2 on 139 of 139
+tests, so the runs can be put side by side.
+
+## 2. Results
+
+| sample | tests | C23 / QK | C22 / QK | 2026-10-06.4 / QK |
+|---|---|---|---|---|
+| BP-MOCK | 92 | 1.023 | 1.115 | 1.364 |
+| BP-MOCK2 | 47 | 1.036 | 1.039 | 1.261 |
+| both | 139 | **1.027** | 1.089 | 1.328 |
+
+- **Per test:** C23 used fewer two-qubit gates than QK on 18, as many on 59 and more on 62; more by over 10% on 15
+  and by over 25% on 4.
+- **Per stratum** (19 strata of 5-12 tests): C23 / QK 0.994-1.083; 2026-10-06.4 / QK was 1.005-3.630. The largest
+  remaining gaps are QASMBench medium on heavy-hex (1.083), HamLib on FakeTorino (1.066) and on linear (1.062), and
+  QASMBench small on all-to-all (1.058).
+- **Where C23 uses most more:** small circuits by a few gates (`basis_test_n4` 10 against 6, `wstate_n3` 13 against
+  10, `pea_n5` 36 against 29); `bv_n19` on heavy-hex 71 against 55; HamLib `bh_graph` triangular Lx-10 (100 qubits)
+  on FakeTorino 25,535 against 21,619 (+18%).
+- **Where it uses fewer:** for example HamLib `JW12` on heavy-hex 5,007 against 5,547 (-10%), a 324-qubit HamLib
+  graph on square 6,280 against 6,594, Feynman `mod_red_21`, `grover_5`, `circSU2_89`, `bv_n140` on linear.
+- **Compile time** (C23 and QK come from different runs; indicative only): C23 / QK median 3.87, geometric mean
+  3.72, range 0.10-19.0.
+
+## 3. What this shows, and what it does not
+
+1. With items 48 and 50 the default call's two-qubit count on this Benchpress sample is close to Qiskit level 2's
+   (2.7% more as a geometric mean), where 2026-10-06.4 used 33% more. It is not lower: it uses more on more tests
+   than it uses fewer.
+2. It costs compile time: about four times Qiskit level 2's.
+3. Limits: exploratory; c23 was built after BP-MOCK and BP-MOCK2 had shown these inputs (item 48 from DISPATCH-PROBE,
+   item 50 from the BV-like test), so this is not an independent sample; one run per arm; Benchpress's other tests,
+   depth and hardware are not covered. On FakeTorino's 100-qubit tests both the default call and QK use couplers the
+   device reports as failed (the default call does not read the target); the recommended call does not (Addendum 393,
+   section 4).
+
 ---
 
 ---
