@@ -1626,6 +1626,82 @@ evidence supports proposing one).
 **Scored run:** `PAR=6 bash benchmarks/run_depth_r.sh data/2026-10-07/depth_r`, then
 `python benchmarks/depth_r_verify.py data/2026-10-07/depth_r`; results in Addendum 400.
 
+
+---
+
+<!-- ===== Addendum 400 (source: spare-qubit-cliff-addendum-400-2026-10-07.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 399.
+
+## Addendum 400 -- Results of DEPTH-R (Addendum 399): P0 passed; H1-H4 CONFIRMED, H5 and H6 AMBIGUOUS, gate GO. But the compilers moved the margin, never the accuracy by 2 test points; H2's drop at L = 16 is the noiseless model's, not the noise's; and H5's AMBIGUOUS is a floating-point tie (2026-10-07)
+
+**Status: results of the pre-registered test in Addendum 399, scored by the locked harness and re-checked by the
+independent [`benchmarks/depth_r_verify.py`](../../benchmarks/depth_r_verify.py).**
+
+## 1. The run
+
+- **Lock:** commit `49637e9` (Addendum 399 with the scripts and the dry run), pushed before the run; no uncommitted
+  change to a tracked file at the start.
+- **Machine:** home (WSL2; Python 3.12.13, Qiskit 2.5.2, qiskit-aer 0.17.2, scikit-learn 1.8.0, NumPy 2.5.3, Rust
+  core 2026-09-29.1), six jobs at a time; 32 jobs in 1,060 s.
+- **Output:** [`data/2026-10-07/depth_r/`](../../data/2026-10-07/depth_r/) (`score.md`, every job's JSON and log,
+  `env.txt`, `progress.txt`, `verify.txt`). `depth_r_verify.py`: the same P0, the same six verdicts and the same
+  gate ("identical to score.md: verdicts True, gate True, P0 True").
+
+## 2. Results
+
+**P0: PASS.** 24 of 24 deployment files and 4 fine-tuning files; largest state infidelity **1.13e-9** (bound 1e-6);
+reduced against whole-device simulation 0 on 288 circuits; every output names release 2026-10-07.1, its locked file
+and seeds 4. Recorded, not gated: largest |z compiled - z logical| 7.45e-7 (this time below DEPTH's old 1e-6 too).
+
+| | result | verdict |
+|---|---|---|
+| H1 margin stops paying (FakeAuckland, n = 6) | best margin at L = 2 (0.548-0.591), at L = 16 0.160-0.216, in every arm and dataset | **CONFIRMED** |
+| H2 shot accuracy stops paying | D38: 0.903-0.904 at L = 16 against best 0.933-0.936 (2.2-2.4 test points of 72), every arm; BC: 0.956-0.959 against 0.961-0.962 | **CONFIRMED** |
+| H3 REC - RPSF pooled margin >= +0.005 on both devices | FakeAuckland **+0.0056**, FakeTorino +0.0178 | **CONFIRMED** |
+| H4 \|REC - L3T\| pooled margin <= 0.01 | +0.0046, +0.0019 | **CONFIRMED** |
+| H5 REC flip rate <= RPSF on both devices | FakeAuckland 0.00935 and 0.00935; FakeTorino 0.0042 and 0.0042 | **AMBIGUOUS** (section 3, point 4) |
+| H6 FTN - DEP >= +0.02 at L = 12, and above FT0 - DEP | FTN - DEP **+0.0197**, FT0 - DEP -0.0120 | **AMBIGUOUS** |
+
+**Gate: GO** (H1 CONFIRMED and H3 CONFIRMED). No cell had |shot accuracy REC - RPSF| of 2 test points.
+
+## 3. Reading
+
+1. **Noise eats the margin, not the answers.** On FakeAuckland, n = 6, the noise removes 7-10% of the noiseless
+   margin at L = 2 and 70-75% at L = 16. Predictions flipped by the noise: pooled 0.94% (FakeAuckland) and 0.42%
+   (FakeTorino), at most 4 of 72 points in one cell (D38, n = 6, L = 16).
+2. **H2 is confirmed by the noiseless model, as in DEPTH.** The pre-registered report of the noise's share (ideal
+   accuracy minus shot accuracy) is -0.1 test points for D38 at L = 16: the noiseless model itself scores 0.903
+   there, against 0.944 at L = 4. For BC the noise costs +0.7 to +1.0 points at L = 16. As a statement about noise,
+   H2 does not hold; the prediction, scored as written, is CONFIRMED.
+3. **The recommended call keeps more margin; it does not change an answer.** FakeAuckland +0.0056 is just above the
+   bound (DEPTH: +0.0049, just below). FakeTorino's +0.0178 comes mostly from the 4-qubit rings, which the guarded
+   call routes with 188 two-qubit gates at L = 16 against 157 (margin 0.338 against 0.404 for BC, 0.350 against
+   0.424 for D38: +20%), as in DEPTH. REC is level with Qiskit level 3 with the Target (H4).
+4. **H5's AMBIGUOUS is a floating-point tie.** Counted from the table, REC and RPSF flip exactly as many predictions
+   on FakeAuckland: REC one more in D38, n = 4, L = 16 and one fewer in D38, n = 6, L = 4. The scorer's mean of the
+   24 cells put REC 1.7e-18 above RPSF, so "REC <= RPSF" read false. On the prediction's own words an exact tie
+   satisfies it; the scored verdict stays AMBIGUOUS. Lesson (as in Addendum 397, section 3): a scorer that compares
+   means of counts needs a tolerance or compares the counts.
+5. **Fine-tuning through the noise did not hurt and the noiseless control did:** FTN - FT0 +0.032 at L = 12 (DEPTH:
+   +0.035), but FTN - DEP stayed just below the +0.02 bound.
+
+## 4. The gate
+
+By the rule, GO: the evidence supports proposing a stage 2 (GPU). On the substance the case is weak: the compiler
+difference that opens the gate is a margin difference at its bound on FakeAuckland, no prediction changed by 2 test
+points between compilers, and noise flips few predictions at 4,000 shots. A GPU stage of the same design would most
+likely measure the same thing at larger size. **Proposal (not run):** before any GPU, the question where a margin
+difference becomes an answer or a cost, the shot budget (Addendum 346, proposal 1): shots needed to reach a target
+accuracy and the device time that takes, first computed from DEPTH-R's recorded z (exploratory, no new run). The
+owner decides.
+
+## 5. What this does not establish
+
+Hardware; more than 6 logical qubits; other models, encodings, optimisers; reliability over training seeds (one
+noiseless training per cell); a noise model independent of the calibration the recommended call reads (both come
+from the same fake device, which favours REC and L3T by construction, Addendum 399, section 4).
+
 ---
 
 ---

@@ -1,0 +1,7 @@
+dry False | harness {'6f636b677f1a481ef3492bf0de467893cde70359c717bc901b6cb5cd2838f3b6'} | depth_eval {'82488d96144bb1c88f69676a0e6a642c22d4756a47d8a1ad8b07be5327c796ac'} | release {'73fb2cb0b1acc5870339c23599829b326fbf57aa198945231e8551e55c1884dc'} | versions {'2026-10-07.1'} | seeds {(4, 4)}
+P0 PASS: files 24/24, finetune 4, max infidelity 1.13e-09, reduced-vs-whole 0.00e+00
+FakeAuckland: REC-RPSF +0.0056, REC-L3T +0.0046, flip REC 0.0094 RPSF 0.0094
+FakeTorino: REC-RPSF +0.0178, REC-L3T +0.0019, flip REC 0.0042 RPSF 0.0042
+H6: FTN-DEP +0.0197, FT0-DEP -0.0120
+mine {'H1': 'CONFIRMED', 'H2': 'CONFIRMED', 'H3': 'CONFIRMED', 'H4': 'CONFIRMED', 'H5': 'AMBIGUOUS', 'H6': 'AMBIGUOUS'} gate GO
+identical to score.md: verdicts True, gate True, P0 True
