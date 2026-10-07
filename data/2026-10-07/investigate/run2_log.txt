@@ -1,0 +1,63 @@
+c22 2026-10-07.c22, core 2026-09-29.1
+
+== D. which stage is not reproducible (5 runs each; number of distinct circuits)
+
+test_QASMBench_large[bv_n30-square]: PSF-Zero's compile() alone, 5 runs: 1 distinct
+  default call, no layout search       5 distinct, q2 [51]
+    elide_permutations=False           5 distinct, q2 [51]
+    post_routing_resynthesis=False     5 distinct, q2 [51]
+    both False                         5 distinct, q2 [51]
+  Qiskit transpile(level 1, seed 0) of compile() 5 distinct, q2 [51]
+  Qiskit transpile(level 1, seed 0) of the input 5 distinct, q2 [51]
+
+test_QASMBench_large[bv_n140-linear]: PSF-Zero's compile() alone, 5 runs: 1 distinct
+  default call, no layout search       4 distinct, q2 [352]
+    elide_permutations=False           4 distinct, q2 [352]
+    post_routing_resynthesis=False     5 distinct, q2 [486]
+    both False                         4 distinct, q2 [486]
+  Qiskit transpile(level 1, seed 0) of compile() 5 distinct, q2 [486]
+  Qiskit transpile(level 1, seed 0) of the input 5 distinct, q2 [486]
+
+== E. the same pre-pass where nothing should cancel (C22 default call, two-qubit gates without | with CC):
+  ring12  FakeTorino      22 |     22  same circuit True
+  ring40  FakeTorino      78 |     78  same circuit True
+  brick12  FakeTorino      66 |     66  same circuit True
+  brick40  FakeTorino     234 |    234  same circuit True
+  pauli12  FakeTorino     497 |    521  same circuit False
+  pauli40  FakeTorino    3089 |   3124  same circuit False
+  qft12  FakeTorino     238 |    238  same circuit True
+  qft40  FakeTorino    2556 |   2556  same circuit True
+  T spare 0 FakeAuckland     51 |     51  same circuit True
+  T spare 0 FakeKingston    276 |    276  same circuit True
+
+== C. FakeTorino, 100-qubit tests: default against recommended call (C22)
+
+test_BV_100_transpile: FakeTorino reports 22 failed directed couplers and 0 failed qubits; the default call (200 two-qubit gates) uses a failed element: True
+   prune only (target, nothing else)    q2    580  uses failed False     0.1 s  {'PRUNE_STATS': {'calls': 1, 'edges_removed': 22, 'qubits_isolated': 4, 'checked': 1, 'recompiled': 1}}
+   + placement_refine                   q2    580  uses failed False     0.3 s  {'PRUNE_STATS': {'calls': 1, 'edges_removed': 22, 'qubits_isolated': 4, 'checked': 1, 'recompiled': 1}, 'REFINE_STATS': {'calls': 2, 'applied': 1}}
+   recommended call                     q2    580  uses failed False     0.3 s  {'PRUNE_STATS': {'calls': 1, 'edges_removed': 22, 'qubits_isolated': 4, 'checked': 1, 'recompiled': 1}, 'SKIP_STATS': {'resynthesis': 1, 'floor': 1, 'level3': 1}, 'REFINE_STATS': {'calls': 2, 'applied': 1}}
+
+test_BVlike_simplification_transpile: FakeTorino reports 22 failed directed couplers and 0 failed qubits; the default call (392 two-qubit gates) uses a failed element: True
+   prune only (target, nothing else)    q2   1071  uses failed False     0.5 s  {'PRUNE_STATS': {'calls': 1, 'edges_removed': 22, 'qubits_isolated': 4, 'checked': 1, 'recompiled': 1}}
+   + placement_refine                   q2   1071  uses failed False     1.2 s  {'PRUNE_STATS': {'calls': 1, 'edges_removed': 22, 'qubits_isolated': 4, 'checked': 1, 'recompiled': 1}, 'REFINE_STATS': {'calls': 2, 'applied': 1}}
+   recommended call                     q2   1071  uses failed False     1.2 s  {'PRUNE_STATS': {'calls': 1, 'edges_removed': 22, 'qubits_isolated': 4, 'checked': 1, 'recompiled': 1}, 'SKIP_STATS': {'resynthesis': 1, 'floor': 1, 'level3': 1}, 'REFINE_STATS': {'calls': 2, 'applied': 1}}
+
+test_QAOA_100_transpile: FakeTorino reports 22 failed directed couplers and 0 failed qubits; the default call (8890 two-qubit gates) uses a failed element: True
+   prune only (target, nothing else)    q2   9461  uses failed False     1.2 s  {'PRUNE_STATS': {'calls': 1, 'edges_removed': 22, 'qubits_isolated': 4, 'checked': 1, 'recompiled': 1}}
+   + placement_refine                   q2   9461  uses failed False     1.2 s  {'PRUNE_STATS': {'calls': 1, 'edges_removed': 22, 'qubits_isolated': 4, 'checked': 1, 'recompiled': 1}, 'REFINE_STATS': {'calls': 2}}
+   recommended call                     q2   9461  uses failed False     1.5 s  {'PRUNE_STATS': {'calls': 1, 'edges_removed': 22, 'qubits_isolated': 4, 'checked': 1, 'recompiled': 1}, 'SKIP_STATS': {'resynthesis': 1, 'floor': 1, 'level3': 1}, 'REFINE_STATS': {'calls': 2}}
+
+test_square_heisenberg_100_transpile: FakeTorino reports 22 failed directed couplers and 0 failed qubits; the default call (1587 two-qubit gates) uses a failed element: True
+   prune only (target, nothing else)    q2   1758  uses failed False     1.0 s  {'PRUNE_STATS': {'calls': 1, 'edges_removed': 22, 'qubits_isolated': 4, 'checked': 1, 'recompiled': 1}}
+   + placement_refine                   q2   1758  uses failed False     0.9 s  {'PRUNE_STATS': {'calls': 1, 'edges_removed': 22, 'qubits_isolated': 4, 'checked': 1, 'recompiled': 1}, 'REFINE_STATS': {'calls': 2, 'applied': 1}}
+   recommended call                     q2   1758  uses failed False     0.9 s  {'PRUNE_STATS': {'calls': 1, 'edges_removed': 22, 'qubits_isolated': 4, 'checked': 1, 'recompiled': 1}, 'SKIP_STATS': {'resynthesis': 1, 'floor': 1, 'level3': 1}, 'REFINE_STATS': {'calls': 2, 'applied': 1}}
+
+test_clifford_100_transpile: FakeTorino reports 22 failed directed couplers and 0 failed qubits; the default call (58949 two-qubit gates) uses a failed element: True
+   prune only (target, nothing else)    q2  64650  uses failed False     6.2 s  {'PRUNE_STATS': {'calls': 1, 'edges_removed': 22, 'qubits_isolated': 4, 'checked': 1, 'recompiled': 1}}
+   + placement_refine                   q2  64650  uses failed False     6.4 s  {'PRUNE_STATS': {'calls': 1, 'edges_removed': 22, 'qubits_isolated': 4, 'checked': 1, 'recompiled': 1}, 'REFINE_STATS': {'calls': 2, 'applied': 1}}
+   recommended call                     q2  64650  uses failed False     6.5 s  {'PRUNE_STATS': {'calls': 1, 'edges_removed': 22, 'qubits_isolated': 4, 'checked': 1, 'recompiled': 1}, 'SKIP_STATS': {'resynthesis': 1, 'floor': 1, 'level3': 1}, 'REFINE_STATS': {'calls': 2, 'applied': 1}}
+
+test_circSU2_89_transpile: FakeTorino reports 22 failed directed couplers and 0 failed qubits; the default call (336 two-qubit gates) uses a failed element: True
+   prune only (target, nothing else)    q2   1344  uses failed False     8.7 s  {'PRUNE_STATS': {'calls': 1, 'edges_removed': 22, 'qubits_isolated': 4, 'checked': 1, 'recompiled': 1}}
+   + placement_refine                   q2   1344  uses failed False    10.5 s  {'PRUNE_STATS': {'calls': 1, 'edges_removed': 22, 'qubits_isolated': 4, 'checked': 1, 'recompiled': 1}, 'REFINE_STATS': {'calls': 2, 'applied': 1}}
+   recommended call                     q2   1344  uses failed False    10.5 s  {'PRUNE_STATS': {'calls': 1, 'edges_removed': 22, 'qubits_isolated': 4, 'checked': 1, 'recompiled': 1}, 'SKIP_STATS': {'resynthesis': 1, 'floor': 1, 'level3': 1}, 'REFINE_STATS': {'calls': 2, 'applied': 1}}

@@ -1,0 +1,21 @@
+c22 2026-10-07.c22, core 2026-09-29.1
+
+== F. FakeTorino's failed couplers: does Qiskit avoid them, and what does avoiding them cost Qiskit?
+  test_BV_100_transpile                    QK    200 (uses failed True) | on the pruned map: QK    554, C22    580, C22 routing 2    554 | C22 full map    200
+  test_BVlike_simplification_transpile     QK      0 (uses failed False) | on the pruned map: QK      0, C22   1071, C22 routing 2   1002 | C22 full map    392
+  test_QAOA_100_transpile                  QK   8710 (uses failed True) | on the pruned map: QK   9406, C22   9461, C22 routing 2   9406 | C22 full map   8890
+  test_square_heisenberg_100_transpile     QK   1572 (uses failed True) | on the pruned map: QK   1755, C22   1758, C22 routing 2   1815 | C22 full map   1587
+  test_clifford_100_transpile              QK  58429 (uses failed True) | on the pruned map: QK  62246, C22  64650, C22 routing 2  63507 | C22 full map  58949
+  test_circSU2_89_transpile                QK    345 (uses failed True) | on the pruned map: QK   1446, C22   1344, C22 routing 2   1446 | C22 full map    336
+
+== G. CommutativeCancellation on Hamiltonian inputs: two-qubit gates removed from the input, and the default call's count without | with it
+  pauli8   #0: input    92 ->    92 two-qubit gates; default call    219 |    219
+  pauli8   #1: input    93 ->    93 two-qubit gates; default call    209 |    209
+  pauli12  #0: input   131 ->   131 two-qubit gates; default call    365 |    365
+  pauli12  #1: input   144 ->   144 two-qubit gates; default call    508 |    508
+  pauli16  #0: input   181 ->   181 two-qubit gates; default call    676 |    634
+  pauli16  #1: input   184 ->   184 two-qubit gates; default call    677 |    698
+  pauli24  #0: input   256 ->   256 two-qubit gates; default call   1234 |   1234
+  pauli24  #1: input   258 ->   258 two-qubit gates; default call   1259 |   1238
+  pauli40  #0: input   457 ->   457 two-qubit gates; default call   3008 |   2983
+  pauli40  #1: input   494 ->   494 two-qubit gates; default call   3173 |   3104

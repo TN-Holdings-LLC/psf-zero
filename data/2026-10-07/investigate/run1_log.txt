@@ -1,0 +1,109 @@
+c22 2026-10-07.c22, core 2026-09-29.1
+
+== A. reproducibility of the default call
+
+test_QASMBench_large[bv_n30-square] (30 qubits, backend 36)
+  layout search  run 0: compile() 354d0546ba  layout None (0.2 s, {'feasible': True, 'found': False, 'orderings_tried': 9})  final 3a89f035cc  q2 51
+  layout search  run 1: compile() 354d0546ba  layout None (0.0 s, {'feasible': True, 'found': False, 'orderings_tried': 9})  final 89c44c02d4  q2 51
+  layout search  run 2: compile() 354d0546ba  layout None (0.0 s, {'feasible': True, 'found': False, 'orderings_tried': 9})  final 9465618651  q2 51
+  layout search  run 3: compile() 354d0546ba  layout None (0.0 s, {'feasible': True, 'found': False, 'orderings_tried': 9})  final c41a1bf220  q2 51
+  layout search  run 4: compile() 354d0546ba  layout None (0.0 s, {'feasible': True, 'found': False, 'orderings_tried': 9})  final fbfdb77127  q2 51
+  no search      run 0: compile() 354d0546ba  final 2425496152  q2 51
+  no search      run 1: compile() 354d0546ba  final f52f7bd614  q2 51
+  no search      run 2: compile() 354d0546ba  final 53c06b72cb  q2 51
+  no search      run 3: compile() 354d0546ba  final 21cacfcdec  q2 51
+  no search      run 4: compile() 354d0546ba  final 8c9412012c  q2 51
+
+test_QASMBench_large[bv_n140-linear] (140 qubits, backend 140)
+  layout search  run 0: compile() 98efa22721  layout None (0.0 s, {'feasible': True, 'found': False, 'orderings_tried': 9})  final b2a6e76f4a  q2 352
+  layout search  run 1: compile() 98efa22721  layout None (0.0 s, {'feasible': True, 'found': False, 'orderings_tried': 9})  final c75db381b5  q2 352
+  layout search  run 2: compile() 98efa22721  layout None (0.0 s, {'feasible': True, 'found': False, 'orderings_tried': 9})  final 49cbfc72c9  q2 352
+  layout search  run 3: compile() 98efa22721  layout None (0.0 s, {'feasible': True, 'found': False, 'orderings_tried': 9})  final feb35732ec  q2 352
+  layout search  run 4: compile() 98efa22721  layout None (0.0 s, {'feasible': True, 'found': False, 'orderings_tried': 9})  final 01a63b6657  q2 352
+  no search      run 0: compile() 98efa22721  final bb6314fb2d  q2 352
+  no search      run 1: compile() 98efa22721  final 49cbfc72c9  q2 352
+  no search      run 2: compile() 98efa22721  final 3d1ef55123  q2 352
+  no search      run 3: compile() 98efa22721  final 00aacb8ef6  q2 352
+  no search      run 4: compile() 98efa22721  final e32230461f  q2 352
+
+test_QASMBench_medium[bv_n19-heavy-hex] (19 qubits, backend 19)
+  layout search  run 0: compile() a38fc60f16  layout None (0.0 s, {'feasible': True, 'found': False, 'orderings_tried': 9})  final 35bed7e96d  q2 71
+  layout search  run 1: compile() a38fc60f16  layout None (0.0 s, {'feasible': True, 'found': False, 'orderings_tried': 9})  final 35bed7e96d  q2 71
+  layout search  run 2: compile() a38fc60f16  layout None (0.0 s, {'feasible': True, 'found': False, 'orderings_tried': 9})  final 35bed7e96d  q2 71
+  layout search  run 3: compile() a38fc60f16  layout None (0.0 s, {'feasible': True, 'found': False, 'orderings_tried': 9})  final 35bed7e96d  q2 71
+  layout search  run 4: compile() a38fc60f16  layout None (0.0 s, {'feasible': True, 'found': False, 'orderings_tried': 9})  final 35bed7e96d  q2 71
+  no search      run 0: compile() a38fc60f16  final 35bed7e96d  q2 71
+  no search      run 1: compile() a38fc60f16  final 35bed7e96d  q2 71
+  no search      run 2: compile() a38fc60f16  final 35bed7e96d  q2 71
+  no search      run 3: compile() a38fc60f16  final 35bed7e96d  q2 71
+  no search      run 4: compile() a38fc60f16  final 35bed7e96d  q2 71
+
+test_BV_100_transpile (100 qubits, backend 133)
+  layout search  run 0: compile() 3ef2da9fcf  layout None (0.01 s, {'feasible': True, 'found': False, 'orderings_tried': 9})  final f08a001029  q2 200
+  layout search  run 1: compile() 3ef2da9fcf  layout None (0.01 s, {'feasible': True, 'found': False, 'orderings_tried': 9})  final f08a001029  q2 200
+  layout search  run 2: compile() 3ef2da9fcf  layout None (0.01 s, {'feasible': True, 'found': False, 'orderings_tried': 9})  final f08a001029  q2 200
+  layout search  run 3: compile() 3ef2da9fcf  layout None (0.01 s, {'feasible': True, 'found': False, 'orderings_tried': 9})  final f08a001029  q2 200
+  layout search  run 4: compile() 3ef2da9fcf  layout None (0.01 s, {'feasible': True, 'found': False, 'orderings_tried': 9})  final f08a001029  q2 200
+  no search      run 0: compile() 3ef2da9fcf  final f08a001029  q2 200
+  no search      run 1: compile() 3ef2da9fcf  final f08a001029  q2 200
+  no search      run 2: compile() 3ef2da9fcf  final f08a001029  q2 200
+  no search      run 3: compile() 3ef2da9fcf  final f08a001029  q2 200
+  no search      run 4: compile() 3ef2da9fcf  final f08a001029  q2 200
+
+test_QASMBench_large[ghz_n78-square] (78 qubits, backend 81)
+  layout search  run 0: compile() 4739a6fd7b  layout 3ed6cd9df7 (0.0 s, {'feasible': True, 'found': True, 'orderings_tried': 1, 'order_name': 'bfs_from_max_degree', 'phase': 1})  final f665eb50a7  q2 77
+  layout search  run 1: compile() 4739a6fd7b  layout 3ed6cd9df7 (0.0 s, {'feasible': True, 'found': True, 'orderings_tried': 1, 'order_name': 'bfs_from_max_degree', 'phase': 1})  final f665eb50a7  q2 77
+  layout search  run 2: compile() 4739a6fd7b  layout 3ed6cd9df7 (0.0 s, {'feasible': True, 'found': True, 'orderings_tried': 1, 'order_name': 'bfs_from_max_degree', 'phase': 1})  final f665eb50a7  q2 77
+  layout search  run 3: compile() 4739a6fd7b  layout 3ed6cd9df7 (0.0 s, {'feasible': True, 'found': True, 'orderings_tried': 1, 'order_name': 'bfs_from_max_degree', 'phase': 1})  final f665eb50a7  q2 77
+  layout search  run 4: compile() 4739a6fd7b  layout 3ed6cd9df7 (0.0 s, {'feasible': True, 'found': True, 'orderings_tried': 1, 'order_name': 'bfs_from_max_degree', 'phase': 1})  final f665eb50a7  q2 77
+  no search      run 0: compile() 4739a6fd7b  final d4b940fb2e  q2 77
+  no search      run 1: compile() 4739a6fd7b  final d4b940fb2e  q2 77
+  no search      run 2: compile() 4739a6fd7b  final d4b940fb2e  q2 77
+  no search      run 3: compile() 4739a6fd7b  final d4b940fb2e  q2 77
+  no search      run 4: compile() 4739a6fd7b  final d4b940fb2e  q2 77
+  fixed layout   run 0: final f665eb50a7  q2 77
+  fixed layout   run 1: final f665eb50a7  q2 77
+  fixed layout   run 2: final f665eb50a7  q2 77
+  fixed layout   run 3: final f665eb50a7  q2 77
+  fixed layout   run 4: final f665eb50a7  q2 77
+
+== B. BV-like circuits: two-qubit gates (QK, C22, C22 after CommutativeCancellation, C22 routing 2)
+  test_BVlike_simplification_transpile                     input 2q   198  after CC     0 | QK     0  C22   392  CC+C22     0  C22 r2   382
+  test_BV_100_transpile                                    input 2q    99  after CC    99 | QK   196  C22   200  CC+C22   200  C22 r2   196
+  test_QASMBench_medium[bv_n19-heavy-hex]                  input 2q    18  after CC    18 | QK    63  C22    71  CC+C22    71  C22 r2    68
+  test_QASMBench_large[bv_n30-square]                      input 2q    18  after CC    18 | QK    53  C22    51  CC+C22    51  C22 r2    42
+  test_QASMBench_large[bv_n140-linear]                     input 2q    72  after CC    72 | QK   353  C22   352  CC+C22   352  C22 r2   352
+
+   the same pre-pass where nothing should cancel (C22 default call, two-qubit gates without | with CC):
+python : Traceback (most recent call last):
+発生場所 行:1 文字:1
++ python benchmarks\investigate_2026-10-07.py --bp $BP 2>&1 | Tee-Objec ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteExcepti
+   on
+    + FullyQualifiedErrorId : NativeCommandError
+
+  File "<windows-home>\Desktop\psf_zero_test\.venv_psf\Lib\site-packages\qiskit_ibm_runtime\fake_provi
+der\fake_backend.py", line 100, in __getattr__
+    return self.configuration().__getattribute__(name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'BackendConfiguration' object has no attribute 'two_q_gate_type'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<windows-home>\Desktop\psf_zero_test\psf-zero\benchmarks\investigate_2026-10-07.py", line 191,
+ in <module>
+    main()
+  File "<windows-home>\Desktop\psf_zero_test\psf-zero\benchmarks\investigate_2026-10-07.py", line 146,
+ in main
+    print(f"  {fam}{n:<3d} FakeTorino  {q2(o, t):6d} | {q2(occ, t):6d}  same circuit "
+                                        ^^^^^^^^
+  File "<windows-home>\Desktop\psf_zero_test\psf-zero\benchmarks\investigate_2026-10-07.py", line 62,
+in q2
+    return c.count_ops().get(backend.two_q_gate_type, 0)
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "<windows-home>\Desktop\psf_zero_test\.venv_psf\Lib\site-packages\qiskit_ibm_runtime\fake_provi
+der\fake_backend.py", line 102, in __getattr__
+    raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
+AttributeError: 'FakeTorino' object has no attribute 'two_q_gate_type'

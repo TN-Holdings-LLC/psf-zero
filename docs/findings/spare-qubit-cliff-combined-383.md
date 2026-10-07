@@ -1044,6 +1044,152 @@ Open, each for its own item: the default call's non-reproducible layout on some 
 gates of BV-like circuits that Qiskit cancels and PSF-Zero keeps (Addendum 390); the recommended call's higher
 two-qubit count than the default call on FakeTorino's 100-qubit tests (Addendum 390).
 
+
+---
+
+<!-- ===== Addendum 393 (source: spare-qubit-cliff-addendum-393-2026-10-07.md) ===== -->
+
+> **Note added when merging:** Exploratory, after Addendum 392, at the owner's request; written after the output was seen.
+
+## Addendum 393 -- Three questions after BP-MOCK (exploratory): the non-reproducible circuits come from Qiskit's level 1 itself; the BV-like test's CX gates are removed by commutative cancellation, which must not be applied blindly; the recommended call's higher count at 100 qubits is the price of avoiding FakeTorino's failed couplers, which Qiskit level 2 uses (2026-10-07)
+
+**Status: exploratory, not pre-registered; written after the output was seen.** It answers the three open points of
+Addendum 392 (section 4) and leads to candidate c23 (item 50), pre-registered in Addendum 394.
+
+## 1. The runs
+
+[`benchmarks/investigate_2026-10-07.py`](../../benchmarks/investigate_2026-10-07.py), on candidate c22, at the
+workplace, in three runs (the script grew between them; the committed file is the last; parts A and B are as in the
+first run apart from a fallback added to the gate counter, which they do not reach): run 1 parts A and B, after which
+part E stopped on that counter (a backend without `two_q_gate_type`); run 2 parts D, E and C; run 3 parts F and G. Logs: [`data/2026-10-07/investigate/`](../../data/2026-10-07/investigate/).
+The circuits are Benchpress tests built as in BP-MOCK, SKIP's families and PL family T.
+
+## 2. Reproducibility (parts A and D)
+
+- On `bv_n30` (square) and `bv_n140` (linear) five default calls in one process gave five different circuits with
+  the same two-qubit count. On `bv_n19` (heavy-hex), `BV_100` (FakeTorino) and a 78-qubit GHZ circuit all five were
+  the same.
+- PSF-Zero's own `compile()` gave the same output all five times, and its layout search found no layout on these BV
+  circuits (Qiskit's layout stage takes over). Turning off `elide_permutations` and `post_routing_resynthesis` did
+  not make the result reproducible.
+- **`qiskit.transpile(..., optimization_level=1, seed_transpiler=0)` of the input itself gave five different circuits
+  on both tests.** The non-reproducibility is Qiskit's, which the default call routes with; PSF-Zero adds none.
+- In passing: on `bv_n140` PSF-Zero's post-routing re-synthesis lowers the count from 486 (Qiskit's level 1) to 352.
+
+## 3. BV-like circuits and commutative cancellation (parts B, E and G)
+
+| test | QK | C22 | Qiskit's `CommutativeCancellation` first, then C22 | C22, routing level 2 |
+|---|---|---|---|---|
+| `BVlike_simplification` (198 CX in the input) | 0 | 392 | **0** (the pass removes all 198) | 382 |
+| `BV_100` | 196 | 200 | 200 | 196 |
+| `bv_n19`, heavy-hex | 63 | 71 | 71 | 68 |
+| `bv_n30`, square | 53 | 51 | 51 | 42 |
+| `bv_n140`, linear | 353 | 352 | 352 | 352 |
+
+On inputs where nothing should cancel (part E, C22's default call): ring, brick and QFT at 12 and 40 qubits on
+FakeTorino and family T at spare 0 on FakeAuckland and FakeKingston were unchanged (the same circuit); SKIP's
+Hamiltonians changed, 497 to 521 at 12 qubits and 3,089 to 3,124 at 40. On ten SKIP Hamiltonians of 8-40 qubits
+(part G) the pass removed **no** two-qubit gate from any input, yet the default call's count moved both ways (for
+example 676 to 634 and 677 to 698 at 16 qubits): the pass also merges and moves single-qubit gates, which changes the
+blocks PSF-Zero builds. So the pass helps where it removes two-qubit gates and is noise where it does not.
+
+## 4. The recommended call at 100 qubits (parts C and F)
+
+- FakeTorino reports 22 directed couplers with error at least 0.5 (item 31's "failed"), which isolate 4 qubits. On
+  all six 100-qubit tests the default call's circuit uses one of them; the recommended call compiles again on the
+  pruned map (`PRUNE_STATS`: recompiled 1) and uses none. All of its extra two-qubit gates come from that step;
+  `placement_refine` and the comparisons change nothing at this size (above 16 qubits they are skipped).
+- **Qiskit level 2 (QK) also uses a failed coupler on five of the six** (the sixth has no two-qubit gate). On the
+  pruned map Qiskit pays about as much: QK 554 / 9,406 / 1,755 / 62,246 / 1,446 against C22's 580 / 9,461 / 1,758 /
+  64,650 / 1,344 (BV_100, QAOA_100, square-Heisenberg, Clifford, circSU2_89; 0.93-1.04 of QK).
+- The comparison of BP-MOCK (C22R against QK) was therefore not like for like: QK's circuits would run through couplers
+  the device reports as failed.
+
+## 5. What follows
+
+1. Reproducibility: nothing to change in PSF-Zero; the README should say that `seed_transpiler` does not make the
+   default call reproducible on inputs where Qiskit's own level 1 is not.
+2. BV-like circuits: candidate c23 (item 50) uses the cancellation only where it removes two-qubit gates, and then
+   keeps whichever of the two compiles has fewer (Addendum 394).
+3. The recommended call: nothing to change; the README should say that it avoids failed couplers that Qiskit level 2
+   uses, and what that costs.
+
+
+---
+
+<!-- ===== Addendum 394 (source: spare-qubit-cliff-addendum-394-2026-10-07.md) ===== -->
+
+> **Note added when merging:** Candidate c23 and the pre-registration of CANCEL, committed with c23's test log and the smoke run as the lock.
+
+## Addendum 394 -- Candidate c23 (item 50) and the pre-registration of CANCEL: commutative cancellation is tried only where it removes two-qubit gates; does c23 leave every other default call unchanged, never use more two-qubit gates, stay exact and cost little time? (2026-10-07)
+
+**Status: candidate and pre-registration, written before CANCEL's smoke run and before any of its output exists.**
+The lock is the commit that adds this Addendum with c23's tests and the smoke run's output; the scored run follows it.
+
+## 1. Candidate c23 (item 50)
+
+[`patches/psf_compile_c23_2026-10-07/psf_compile.py`](../../patches/psf_compile_c23_2026-10-07/psf_compile.py), based
+on c22 (items 46-49), changelog item 50. At the start of the pipeline without a `target` (after item 48's expansion),
+Qiskit's `CommutativeCancellation` is run on the input. If it removes no two-qubit gate nothing else happens. If it
+removes at least one, the pipeline runs on the input and on the cancelled input and returns the result with fewer
+two-qubit gates (the input's on a tie). The reasons are in Addendum 393, section 3.
+[`test_c23.py`](../../patches/psf_compile_c23_2026-10-07/test_c23.py) checks it against c22 before the smoke run
+(Benchpress's BV-like circuit at 8, 30 and 100 qubits; unchanged circuits where nothing cancels, default and
+recommended call, on three devices; exactness on random circuits with cancelling CX pairs; the pass's time on a
+100-qubit QFT).
+
+## 2. Design of CANCEL
+
+[`benchmarks/cancel_eval.py`](../../benchmarks/cancel_eval.py), checked by the independent
+[`benchmarks/cancel_verify.py`](../../benchmarks/cancel_verify.py) (imports none of the test's scripts; takes the
+expected tests from BP-MOCK's and BP-MOCK2's committed output).
+
+- **Tests:** the 140 Benchpress tests of BP-MOCK (92) and BP-MOCK2 (48), built as there. Item 50 was written from one
+  of them (BV-like) after both runs; it was not tuned on the others. They are re-used because they are the Benchpress
+  tests whose builders and checks are already locked; this is disclosed, not hidden.
+- **Arms** (default call, no target): C22; C22 again in its own process (C22B), because Qiskit's level 1 does not
+  always reproduce itself (Addendum 393); C23. Each test and arm in its own process, 1,500 s limit (C23 may run the
+  pipeline twice), six at a time.
+- **Recorded:** two-qubit count and depth, the circuit's hash, Benchpress's validator, `CANCEL_STATS`, time, and on
+  inputs of at most 10 qubits item 39's `_implements` against the input expanded through its definitions (as BP-MOCK2).
+
+## 3. Predictions
+
+| | prediction | CONFIRMED | REFUTED |
+|---|---|---|---|
+| P0 | the run is valid | the 140 tests; C23 never fails where C22 finishes; every C23 output passes the validator; versions as named; no uncommitted change to a tracked file | otherwise nothing is scored |
+| K1 | where the cancellation removes nothing and C22 = C22B: C23 returns C22's circuit | none differs | 2 or more differ |
+| K2 | where it removes some: C23 has no more two-qubit gates than C22 | none has more, and it was tried at least once | any has more |
+| K4 | every checkable C23 output implements its input | none fails, at least 5 checked | any fails |
+| K5 | where it removes nothing: median time C23 / C22 | <= 1.15 | > 1.5 |
+
+Between the columns the verdict is AMBIGUOUS. K1 and K2 are what item 50 is built to guarantee; K5 is the price of
+running the pass on every input. **Reported without prediction:** on which tests the cancellation was tried, the
+two-qubit counts there, which result was kept, and the time.
+
+## 4. Files locked
+
+| file | normalized SHA-256 |
+|---|---|
+| [`patches/psf_compile_c23_2026-10-07/psf_compile.py`](../../patches/psf_compile_c23_2026-10-07/psf_compile.py) | `568de9e691796e4efb330dff3f2ed61aa1cca4cc888286f9727854cf8c744420` |
+| [`patches/psf_compile_c23_2026-10-07/test_c23.py`](../../patches/psf_compile_c23_2026-10-07/test_c23.py) | `57f74590d0b46c3c6a6fc52da4f489d587e70d8f7f8ff326a078c61ece620c4f` |
+| [`benchmarks/cancel_eval.py`](../../benchmarks/cancel_eval.py) | `b1f76259d66110c8c4e736cb408c7a74e6c86c88df7588fd63b4bce4fe659785` |
+| [`benchmarks/cancel_verify.py`](../../benchmarks/cancel_verify.py) | `6f7ded7c65e82781497f5bb2d4be8d9eadee05b32d9648f8fffff4ab6a6e2326` |
+| `patches/psf_compile_c22_2026-10-07/psf_compile.py` (as locked in Addendum 387) | `30675c37e6c9400803ed4d53c8d146ecdebec24b9452037808c9e9acf150f858` |
+
+## 5. Smoke, lock, scored run
+
+1. `test_c23.py`, then the smoke run (`cancel_eval.py run ... --smoke`: one test per stratum and the BV-like test, 20
+   tests) and `score` on it. A fault found there is fixed and disclosed here before the lock.
+2. Lock: the commit with this Addendum, the test log and the smoke output.
+3. Scored run into `data/2026-10-07/cancel`, then `score` and `cancel_verify.py`.
+
+## 6. What the verdicts decide
+
+- K1, K2 and K4 CONFIRMED and K5 not REFUTED: item 50 is proposed for acceptance (not release) with items 46-49.
+- K1, K2 or K4 REFUTED: item 50 is not proposed; the failing tests are examined first.
+- K5 REFUTED: item 50 is not proposed in this form (the pass would cost too much on every input).
+
 ---
 
 ---
