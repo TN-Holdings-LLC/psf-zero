@@ -2639,6 +2639,85 @@ Times come from one machine running 12 jobs at a time.
 
 ---
 
+<!-- ===== Addendum 409 (source: spare-qubit-cliff-addendum-409-2026-10-09.md) ===== -->
+
+> **Note added when merging:** Pre-registration of C25-ID, committed with candidate 2026-10-09.c25, its tests and its script as the lock, before the run.
+
+## Addendum 409 -- Pre-registration: C25-ID. Candidate 2026-10-09.c25 (changelog item 52) computes the layout search's two maximum matching sizes with rustworkx instead of networkx. Are the outputs unchanged, and is it faster? The 152 development tests of Benchpress (2026-10-09)
+
+**Status: pre-registration.** It was written after the candidate's tests and before C25-ID's run. The lock is the
+commit that adds this Addendum with the candidate and the script. It is made at the workplace as for Addendum 405:
+
+1. the lock commit is made locally;
+2. its hash is e-mailed before the run;
+3. the run records the commit it ran on;
+4. the lock commit and the results are pushed later from home, unchanged.
+
+## 1. Why
+
+TOQB's profile of 2026-10-08 (seven development tests, one warm compile each under cProfile) found the release's
+default call spends 7-17% of its time in networkx's `max_weight_matching` on HamLib (FakeTorino), Feynman and Ising
+tests. Two feasibility checks in [`benchmarks/psf_smart_layout.py`](../../benchmarks/psf_smart_layout.py) call it:
+
+- `_interaction_matching_size`: the circuit's interaction graph;
+- `_has_feasible_matching`: the coupling map, on every call, although it does not depend on the circuit.
+
+Both read only the size of a maximum matching. That size is unique, so computing it another way cannot change any
+decision. networkx is pure Python; rustworkx, already a dependency, is compiled. In TOQB's time budgets a few
+hundredths of a second matter: the smallest budget is 0.05 s.
+
+## 2. The candidate: 2026-10-09.c25 (item 52)
+
+[`patches/psf_compile_c25_2026-10-09/`](../../patches/psf_compile_c25_2026-10-09/):
+
+- `psf_smart_layout.py`: the release's layout file (2026-10-01.1) with both sizes from rustworkx's
+  `max_weight_matching` (every weight 1, `max_cardinality=True`), and the coupling map's size kept for the last 32
+  maps. `LAYOUT_VERSION` 2026-10-09.c25. The layout itself (Stage 0b's `short_path_layout`, which uses a matching,
+  not only its size) is not changed.
+- `psf_compile.py`: release 2026-10-07.1 with `VERSION` 2026-10-09.c25 and changelog item 52. Nothing else.
+- `test_c25.py`: the sizes equal networkx's on 400 random graphs, 300 random interaction graphs with sparse qubit
+  indices, and six coupling maps (FakeTorino's among them), with thresholds around each size, twice (the second time
+  from the kept sizes); the kept sizes stay at 32.
+
+## 3. The test
+
+[`benchmarks/c25_identity.py`](../../benchmarks/c25_identity.py):
+
+- **Tests:** the 152 Benchpress tests this project's development used (BP-PROBE's 12, BP-MOCK's 92, BP-MOCK2's 48),
+  built as those tests built them (`bp_mock.build`, unchanged). None of BP-FINAL's 880 is used.
+- **Calls, as BP-FINAL made them:** the default call on every test; the recommended call with the backend's target
+  on the FakeTorino tests.
+- **Arms:** REL (the release's two files) and C25 (the candidate's two files). Each test, call and arm runs in its
+  own process; one compile, timed, with the module load untimed. The two arms of a test and call are next to each
+  other in the queue, in an order set by the test's hash. 1,800 s limit.
+- **Output identity:** the SHA-256 of every instruction, its qubits, clbits and parameters, the global phase and the
+  initial and final layouts (`bp_mock.sig_hash`, unchanged).
+
+## 4. Predictions
+
+| ID | prediction | confirmed if | refuted if |
+|---|---|---|---|
+| I0 | the run is as locked | 152 tests; both arms on every job; every record names its arm's two versions; no uncommitted change | any fails |
+| I1 | item 52 changes no output | every test and call both arms finish has the same signature | one differs |
+| I2 | item 52 changes no failure | the tests and calls that fail (error or timeout) are the same for both arms | they differ |
+
+Reported without prediction: the compile time C25/REL (median and geometric mean), overall and on the pairs REL
+compiled in under 1 s.
+
+**What follows.**
+
+- If I0-I2 hold, item 52 can be proposed for the next release on speed alone. The owner decides. Its effect on time
+  budgets is measured later in TOQB.
+- If I1 or I2 fails, item 52 is not proposed, and the difference is examined.
+
+## 5. What this does not establish
+
+- Speed on other machines, or with the jobs not run in parallel. Times come from one compile per job, with several
+  jobs at a time.
+- Anything about quality: the outputs are meant to be the release's.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
