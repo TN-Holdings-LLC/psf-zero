@@ -1,0 +1,5 @@
+dry True; P0 PASS: files 96/96, train 4/4, max infidelity 5.11e-15, reduced-vs-whole 0.00e+00, versions {'REC': {'2026-10-07.1'}, 'C24': {'2026-10-07.c24'}, 'RPSF': {'2026-10-07.1'}}
+FakeAuckland: C24-RPSF stale +0.0013 (worst draw -0.0001), C24-REC stale -0.0006, REC-C24 true +0.0073, C24-RPSF true +0.0002; C24 differs from REC on 0.319 of stale rows
+FakeTorino: C24-RPSF stale +0.0188 (worst draw +0.0178), C24-REC stale -0.0005, REC-C24 true +0.0001, C24-RPSF true +0.0147; C24 differs from REC on 0.053 of stale rows
+mine {'M1': 'CONFIRMED', 'M2': 'CONFIRMED', 'M3': 'REFUTED', 'M4': 'CONFIRMED', 'M5': 'CONFIRMED', 'P0': 'PASS', 'ITEM51': 'NO'}
+identical to score.md: True

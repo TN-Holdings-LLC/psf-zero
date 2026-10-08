@@ -1,0 +1,8 @@
+........
+FakeAuckland: 2 of 16 outputs differ from the release's; the margin turned an alternative away in 3 calls; time c24 6.5 s, release 7.1 s
+.
+FakeTorino: 1 of 16 outputs differ from the release's; the margin turned an alternative away in 2 calls; time c24 10.4 s, release 10.9 s
+.
+FakeHanoiV2: 4 of 16 outputs differ from the release's; the margin turned an alternative away in 6 calls; time c24 5.2 s, release 5.8 s
+.
+11 passed in 89.10s (0:01:29)

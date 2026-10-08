@@ -1,0 +1,3 @@
+DEPLOY {"L": 1, "margin": 0.5363377773348021, "max_infid": 0.0, "n2q": 13.0}
+DEPLOY {"L": 4, "margin": 0.5790325996483038, "max_infid": 0.0, "n2q": 71.0}
+DEPLOY {"L": 12, "margin": 0.2470345660261405, "max_infid": 0.0, "n2q": 213.0}

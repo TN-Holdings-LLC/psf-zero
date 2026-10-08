@@ -2011,6 +2011,243 @@ gain exceeds a margin. It is being prepared as candidate 2026-10-07.c24 (changel
 pre-registered test, with both true and stale calibrations, in a later Addendum. The README will say nothing about
 it until that test is scored.
 
+
+---
+
+<!-- ===== Addendum 405 (source: spare-qubit-cliff-addendum-405-2026-10-08.md) ===== -->
+
+> **Note added when merging:** Pre-registration of MARGIN, committed with candidate 2026-10-07.c24, its test output, the scripts and the dry run as the lock, before the scored run.
+
+## Addendum 405 -- Pre-registration: MARGIN. Candidate 2026-10-07.c24 (changelog item 51) makes the recommended call switch to an alternative only when the estimate is lower by more than 5%. Does that keep the call's gain with a fresh calibration and lose less with a stale one? True and stale calibrations, new data (seed 5) (2026-10-08)
+
+**Status: pre-registration.** It was written after the candidate's tests and MARGIN's dry run (development seed 2),
+and before any circuit of the scored data was compiled. The lock is the commit that adds this Addendum together with
+the candidate, the four scripts, the candidate's test output and the dry run. The scored run follows the lock.
+Owner's go-ahead: 2026-10-07 ("今日やってしまいましょう": do the README change and the candidate with its test
+today), continued on 2026-10-08 at the workplace.
+
+**Where and how it is locked (a departure, disclosed).** The tests, the dry run and the scored run are made on the
+workplace machine (Windows; Python 3.11.9, Qiskit 2.5.2, qiskit-aer 0.17.2, qiskit-ibm-runtime 0.49.0, NumPy 2.4.6,
+scikit-learn 1.8.0; 14 cores). That machine does not push to GitHub, so the lock cannot be made public before the
+scored run, as it was for every earlier test. Instead:
+
+1. the lock commit is made locally;
+2. its hash is e-mailed by the owner to himself before the scored run starts (a third-party timestamp);
+3. the scored run's `env.txt` records the commit it ran on;
+4. the lock commit and the results are pushed later from home, the lock commit unchanged.
+
+The home machine (Python 3.12.13, NumPy 2.5.3) was used for a first test run and dry run on 2026-10-07; those are
+reported below for comparison, and are not the committed ones.
+
+## 1. Why
+
+CALSPLIT (Addenda 402-403) compiled DEPTH-R's classifiers with stale calibrations and scored them with the device's
+true noise. On FakeAuckland, the recommended call kept less margin than the guarded call (`target` and
+`placement_refine` only):
+
+- -0.0041 on average over three draws, and -0.0142 in one of them;
+- with the true calibration (DEPTH-R, Addendum 400) it had kept +0.0056 more.
+
+The recommended call's extra steps are three choices made by a noise estimate:
+
+- item 35's re-synthesis;
+- item 36's comparison with Qiskit level 3;
+- item 37's floor candidate and level 3.
+
+Each takes an alternative whenever the alternative's estimate is lower by more than item 46's tie band (1e-12,
+relative). Addendum 403 (section 4) proposed a margin wider than that tie band. MARGIN tests it, with fresh data,
+under both true and stale calibrations.
+
+## 2. The candidate: 2026-10-07.c24 (item 51)
+
+[`patches/psf_compile_c24_2026-10-07/psf_compile.py`](../../patches/psf_compile_c24_2026-10-07/psf_compile.py) is
+release 2026-10-07.1 with the following changes:
+
+- **`SWITCH_MARGIN = 0.05` and `_better(b, a)`.** `_better` is true if `b < a - max(1e-12, SWITCH_MARGIN) *
+  max(|a|, |b|)`.
+- **Item 35 and item 36 switch only if `_better`.** That is item 35's re-synthesis under `"select"`
+  (`_select_resynthesis`) and item 36's comparison with level 3 (`_compare_level3`). Otherwise they keep the
+  release's circuit, without item 39's check.
+- **Item 37's choice (`_choose_lazy`) first leaves out every candidate that is not `_better` than the release's
+  circuit.** Among the rest it takes the lowest, as before.
+- **A candidate the margin turns away is counted in `margin_kept`.** These are candidates that the tie band alone
+  would have let through.
+- **Nothing else changes.** That covers the estimates, the placement, the default call and the legacy `_choose`.
+
+The value 0.05 was set before any test of it, without a sweep. It is round, and it is not derived from anything.
+With `SWITCH_MARGIN` at the tie band, the choices are the release's. There is one exception, in item 37, where three
+estimates lie within about 2e-12 of each other; the tie band is not transitive.
+
+**Its tests.** [`test_c24.py`](../../patches/psf_compile_c24_2026-10-07/test_c24.py) passed 11 of 11 on both
+machines (home 52 s; workplace 113 s, the output committed in
+[`data/2026-10-07/c24_tests/`](../../data/2026-10-07/c24_tests/), re-run by the lock bundle). The tests check these
+things:
+
+- The version is c24.
+- `_better` equals `_lower` when the margin is 0 or the tie band (22,000 pairs).
+- The default call returns the release's circuit on 4 inputs and 3 devices.
+- With the margin set to the tie band, the recommended call returns the release's circuit on 8 inputs, 3 devices and
+  both a true and a stale Target.
+- With the margin at 0.05:
+  - every output implements its input and uses no failed element of the true device;
+  - every output that differs from the release's comes from a call in which the margin turned an alternative away.
+
+The outputs differed from the release's on 3, 1 and 5 of 16 at home and 2, 1 and 4 of 16 at the workplace
+(FakeAuckland, FakeTorino, FakeHanoiV2); compile time was 0.92-0.96 and 0.87-0.94 of the release's. That the counts
+differ between the machines means some outputs of the release or of c24 differ between the two environments
+(Python 3.12 / NumPy 2.5.3 against 3.11 / 2.4.6); this was not examined. Each machine's test compares the two files
+in the same environment, so the checks hold on each. Before that, the choice logic alone was checked in a sandbox, against the release's
+on 200,000 random sets of estimates. With the margin at 0 the two differed only in the non-transitive case above
+(64 sets, built with estimates crowded within 3e-12). With the margin at 0.05, c24 never switched where the release
+did not.
+
+## 3. Design
+
+The test is run by [`benchmarks/margin_eval.py`](../../benchmarks/margin_eval.py) through
+[`benchmarks/run_margin.sh`](../../benchmarks/run_margin.sh) or, on a machine without a POSIX shell,
+[`benchmarks/run_margin.py`](../../benchmarks/run_margin.py) (the same jobs and the same score; it also records
+qiskit-ibm-runtime's version, which sets the fake devices' calibrations). The independent
+[`benchmarks/margin_verify.py`](../../benchmarks/margin_verify.py) reads only the raw JSON and does not import the
+harness.
+
+- **Unchanged.** These come from DEPTH-R, through [`depth_r_eval.py`](../../benchmarks/depth_r_eval.py) and DEPTH's
+  [`depth_eval.py`](../../data/2026-10-05/workplace/depth1/depth_eval.py), and from CALSPLIT:
+  - the model, the training (300 steps), the circuits;
+  - BC and D38, n in {4, 6}, L in {1, 2, 4, 8, 12, 16};
+  - FakeAuckland and FakeTorino;
+  - the noisy simulation with the device's **true** noise model, and readout;
+  - P0's checks.
+- **New data.** The split seed and the init seed are both 5:
+  - seed 0 was the pilot, 1 DEPTH, 2 development and dry runs, 3 READOUT, and 4 DEPTH-R and CALSPLIT;
+  - the classifiers are trained in this run (4 jobs);
+  - seed 4 is not used because item 51 was proposed after seeing it.
+- **Calibrations the compilers read.** "t" is the true Target. The three stale draws come from STALE's
+  `stale_target()` ([`stale_eval.py`](../../benchmarks/stale_eval.py), unchanged), with `BASE` = 97,000,000 +
+  1,000,000 k, k = 0, 1, 2. STALE used 80,000,000; CALSPLIT used 91,000,000-93,000,000; c24's tests used
+  96,000,000.
+- **Arms.** Each arm is run with every calibration:
+  - **REC**: release 2026-10-07.1, recommended call;
+  - **C24**: candidate c24, recommended call;
+  - **RPSF**: the release with `target` and `placement_refine`.
+  
+  That is 96 deployment jobs. Every row records a signature of the compiled circuit, and every file records C24's
+  choice counters.
+- **Pooling, as in CALSPLIT.** For each device, take the mean over the 24 cells (dataset, n, L) of the cell's mean
+  margin y x z, under true noise. "Stale" is the mean over the three draws. Every comparison has a tolerance of
+  1e-12.
+
+## 4. Predictions (scored only by `margin_eval.py score`)
+
+**P0:**
+
+- 96 deployment files and 4 training files;
+- every state infidelity <= 1e-6;
+- reduced simulation = whole-device simulation within 1e-9;
+- REC and RPSF name release 2026-10-07.1, and C24 names 2026-10-07.c24, each with its locked file;
+- `SWITCH_MARGIN` is 0.05 in C24 only;
+- every stale Target differs from the true one;
+- the seeds are (5, 5).
+
+If P0 fails, nothing is scored.
+
+| ID | Prediction | CONFIRMED | REFUTED |
+|---|---|---|---|
+| M1 | with stale calibrations, C24 keeps at least the guarded call's margin | C24 - RPSF (stale) >= 0 on both devices | < -0.002 on either |
+| M2 | with stale calibrations, the margin costs nothing | C24 - REC (stale) >= -0.001 on both devices | < -0.005 on either |
+| M3 | with the true calibration, it costs little | REC - C24 (true) <= +0.002 on both devices | > +0.005 on either |
+| M4 | FakeTorino's structural lead (Addendum 403, reading 3) is kept | C24 - RPSF >= +0.01 with the true and with stale calibrations | < +0.005 in either |
+| M5 | no bad draw | FakeAuckland's worst stale draw, C24 - RPSF >= -0.005 | < -0.01 |
+
+**Reading rule.** Suppose C24 returns REC's circuit on more than 95% of a device's stale rows. Then M1, M2 and M5 on
+that device show only that the margin rarely bit; they do not show that it works.
+
+**Decision rule for item 51.** Acceptance is proposed to the owner only if all of these hold:
+
+- P0 passes;
+- M1 is CONFIRMED;
+- M2 and M3 are not REFUTED;
+- the margin bit on at least one device.
+
+Otherwise item 51 is not proposed. The score prints this as `ITEM51`. Acceptance would not mean release: under
+Addendum 385, improvements are batched.
+
+**Reported without prediction:**
+
+- pooled margins, per draw too;
+- accuracy at 15, 63, 255 and 1,023 shots (exact binomial);
+- flips;
+- gates on the true device's failed couplers;
+- median compile times;
+- the share of rows where C24's circuit differs from REC's;
+- C24's counters;
+- REC - RPSF with true and with stale calibrations. That is CALSPLIT's K2 question again, on new data.
+
+## 5. What is known (disclosed)
+
+**The dry runs.** Development seed 2, 12 points, L in {1, 4, 12}. The committed one is the workplace's (100 jobs in
+519 s with `run_margin.py`, 12 at a time; output in
+[`data/2026-10-07/margin_dry/`](../../data/2026-10-07/margin_dry/)): the harness ran end to end, P0 passed (largest
+infidelity 5.1e-15), and the independent check agreed. The home machine's dry run (317 s, `run_margin.sh`) gave the
+same verdicts with numbers that differ in the third or fourth decimal (training and compilation in the two
+environments). Their numbers are not results:
+
+| | FakeAuckland, workplace (home) | FakeTorino, workplace (home) |
+|---|---|---|
+| C24 - RPSF, stale (worst draw) | +0.0013 (-0.0001); home +0.0013 (-0.0005) | +0.0188 (+0.0178); home +0.0180 (+0.0162) |
+| C24 - REC, stale | -0.0006; home -0.0001 | -0.0005; home -0.0007 |
+| REC - C24, true | **+0.0073**; home **+0.0064** | +0.0001; home +0.0002 |
+| C24 - RPSF, true | +0.0002; home +0.0006 | +0.0147; home +0.0148 |
+| REC - RPSF, true / stale | +0.0075 / +0.0019; home +0.0069 / +0.0014 | +0.0148 / +0.0193; home +0.0149 / +0.0187 |
+| rows where C24 differs from REC, true / stale | 0.32 / 0.32; home 0.31 / 0.30 | 0.03 / 0.05; home 0.06 / 0.10 |
+
+In both dry runs, M1, M2, M4 and M5 read CONFIRMED. **M3 read REFUTED, so ITEM51 read "do not propose".** On
+FakeAuckland, with the true calibration, most of REC's gain over the guarded call came from switches whose estimated
+gain was below 5%, and the margin removed that gain. With stale calibrations, REC did not lose to the guarded call in
+the dry run (+0.0014), unlike CALSPLIT (-0.0041).
+
+**Nothing was changed after the dry run.** That covers `SWITCH_MARGIN`, the predictions, the thresholds and the
+decision rule. Choosing a width from 12 points per cell would be tuning on development data too thin to tune on. The
+scored run is meant to answer two questions on new data:
+
+- whether the small-gain switches are worth keeping with a fresh calibration (M3);
+- whether CALSPLIT's loss under stale calibrations reproduces at all (REC - RPSF, stale).
+
+**Expectations:**
+
+- M3 may well fail on FakeAuckland, and with it item 51.
+- M2 and M4 are expected.
+- M1 and M5 are open.
+
+A failed M3 with a CONFIRMED M1 would say the following: on FakeAuckland, the recommended call's small switches are
+worth about +0.007 with a fresh calibration, and they are what goes wrong with a stale one. That would point to a decision
+for the user (calibration age), not for the compiler.
+
+## 6. What this will not establish
+
+- real calibration drift (this is a perturbation model);
+- hardware;
+- readout errors in a stale Target;
+- other tasks than DEPTH-R's classifiers;
+- other margin widths: one value is tested, chosen in advance.
+
+## 7. Files locked (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| [`patches/psf_compile_c24_2026-10-07/psf_compile.py`](../../patches/psf_compile_c24_2026-10-07/psf_compile.py) (candidate c24) | `9174ce54ba923d5628abdeb8c050bf84358e60bf3ad3e3b865f6bff56b21710e` |
+| [`patches/psf_compile_c24_2026-10-07/test_c24.py`](../../patches/psf_compile_c24_2026-10-07/test_c24.py) | `c4473dc78f9f8ac830df50585d8396b3239238463c5ed5f3d4f7129e371cc607` |
+| [`benchmarks/margin_eval.py`](../../benchmarks/margin_eval.py) | `c155216d3e0f2811eda3f84bfd4fa9d54d44e9e7f7df17df117646a48a301416` |
+| [`benchmarks/run_margin.sh`](../../benchmarks/run_margin.sh) | `c03ec97f48c09d2a587b9ed68e5c511ba2f80954331318d3f499aba96397c861` |
+| [`benchmarks/run_margin.py`](../../benchmarks/run_margin.py) | `b8840072c88fa53a5ae1a528dc1402893c811d77245a964c06b2271fe70f84d2` |
+| [`benchmarks/margin_verify.py`](../../benchmarks/margin_verify.py) | `5f0f65d8bf680f478a4542871f294e650be1566a7c3d0aa489fc08ba445c88a5` |
+| [`benchmarks/stale_eval.py`](../../benchmarks/stale_eval.py) (STALE, unchanged) | `f2dd16caf17d25232f2452b08a5654f83a8ae10459c773dfa3acfc74005a1cc0` |
+| [`benchmarks/depth_r_eval.py`](../../benchmarks/depth_r_eval.py) (DEPTH-R, unchanged) | `6f636b677f1a481ef3492bf0de467893cde70359c717bc901b6cb5cd2838f3b6` |
+| [`psf_compile.py`](../../psf_compile.py) (release 2026-10-07.1) | `73fb2cb0b1acc5870339c23599829b326fbf57aa198945231e8551e55c1884dc` |
+
+**Scored run** (workplace, after the lock commit's hash is e-mailed): `python benchmarks/run_margin.py
+data/2026-10-07/margin --par 12`, then `python benchmarks/margin_verify.py data/2026-10-07/margin`. The results go in
+the next Addendum.
+
 ---
 
 ---
