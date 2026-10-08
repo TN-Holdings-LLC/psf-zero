@@ -2248,6 +2248,395 @@ for the user (calibration age), not for the compiler.
 data/2026-10-07/margin --par 12`, then `python benchmarks/margin_verify.py data/2026-10-07/margin`. The results go in
 the next Addendum.
 
+
+---
+
+<!-- ===== Addendum 406 (source: spare-qubit-cliff-addendum-406-2026-10-08.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 405. Merged on 2026-10-08 together with Addenda 407 and 408: the first apply of this text (bundle ck) stopped at its checks, and the data was committed without it (ba4f2d0). The text and the data are unchanged; `verify.txt` was produced at this merge.
+
+## Addendum 406 -- Results of MARGIN (Addendum 405): P0 passed; M1, M4, M5 CONFIRMED, M2 and M3 AMBIGUOUS. The decision rule prints "propose", but candidate c24 was never better than the release: the margin gave up part of the recommended call's gain with a fresh calibration and gained nothing with a stale one. The problem it was meant to fix, CALSPLIT's loss on FakeAuckland, did not reproduce on new data. Item 51 is not recommended (2026-10-08)
+
+**Status: results of the pre-registered test in Addendum 405, scored by the locked harness and re-checked by the
+independent [`benchmarks/margin_verify.py`](../../benchmarks/margin_verify.py).**
+
+## 1. The run
+
+- **Lock.** The local commit of Addendum 405, made at the workplace. Its hash was e-mailed before the run, as
+  Addendum 405 set out. The commit is pushed together with this Addendum.
+- **Machine.** The workplace PC: Windows, Python 3.11.9, Qiskit 2.5.2, qiskit-aer 0.17.2, qiskit-ibm-runtime 0.49.0,
+  NumPy 2.4.6, scikit-learn 1.8.0, 14 cores. `run_margin.py` ran 12 jobs at a time: 4 training jobs and 96
+  deployment jobs, 6,857 s in all.
+- **Output.** [`data/2026-10-07/margin/`](../../data/2026-10-07/margin/) holds `score.md`, every job's JSON and log,
+  `env.txt`, `progress.txt` and `verify.txt`. The independent check gave the same P0 and the same verdicts.
+
+## 2. Results
+
+**P0: PASS.**
+
+- 96 of 96 deployment files and 4 of 4 training files.
+- Largest state infidelity 2.1e-9.
+- The reduced simulation equals the whole-device simulation.
+- Versions and files are as locked, and `SWITCH_MARGIN` is 0.05 in C24 only.
+- Every stale Target differs from the true one, and the seeds are (5, 5).
+
+Pooled margin, mean y x z over the 24 cells; "stale" is the mean of three draws:
+
+| | FakeAuckland | FakeTorino |
+|---|---|---|
+| REC, true / stale | 0.4275 / 0.4091 | 0.5132 / 0.5056 |
+| C24, true / stale | 0.4241 / 0.4089 | 0.5132 / 0.5031 |
+| RPSF, true / stale | 0.4217 / 0.4080 | 0.4957 / 0.4810 |
+
+| ID | prediction | FakeAuckland | FakeTorino | verdict |
+|---|---|---|---|---|
+| M1 | C24 - RPSF (stale) >= 0 | +0.0009 | +0.0221 | **CONFIRMED** |
+| M2 | C24 - REC (stale) >= -0.001 (REFUTED < -0.005) | -0.0002 | **-0.0024** | **AMBIGUOUS** |
+| M3 | REC - C24 (true) <= +0.002 (REFUTED > +0.005) | **+0.0034** | +0.0000 | **AMBIGUOUS** |
+| M4 | FakeTorino C24 - RPSF >= +0.01, true and stale | | +0.0175 / +0.0221 | **CONFIRMED** |
+| M5 | FakeAuckland worst stale draw C24 - RPSF >= -0.005 | -0.0017 | | **CONFIRMED** |
+
+**The margin bit often.** C24's circuit differed from REC's on these shares of rows:
+
+| | true calibration | stale calibrations |
+|---|---|---|
+| FakeAuckland | 40% | 31% |
+| FakeTorino | 1.3% | 17% |
+
+It turned away 3,191 and 1,449 candidates of item 37, and 1,401 and 1,160 re-syntheses. The reading rule of Addendum
+405 therefore does not apply on either device. The decision rule's line reads **ITEM51: PROPOSE ACCEPTANCE**.
+
+**Reported without prediction.** Accuracy at 15 shots:
+
+| | REC | C24 | RPSF |
+|---|---|---|---|
+| FakeAuckland, true | 0.8845 | 0.8828 | 0.8825 |
+| FakeAuckland, stale | 0.8742 | 0.8744 | 0.8731 |
+| FakeTorino, true | 0.9194 | 0.9194 | 0.9128 |
+| FakeTorino, stale | 0.9188 | 0.9172 | 0.9099 |
+
+At 1,023 shots the three arms are within 0.0004 of each other in every condition. No arm placed a gate on a failed
+coupler. Median compile times were similar for REC and C24 (0.74-1.14 s), and RPSF took 0.12-0.13 s.
+
+## 3. Reading
+
+1. **C24 was never better than the release.** Here is C24 - REC in each of the four conditions:
+
+   | calibration | FakeAuckland | FakeTorino |
+   |---|---|---|
+   | true | -0.0034 | 0.0000 |
+   | stale | -0.0002 | -0.0024 |
+
+   With a fresh calibration on FakeAuckland, the margin gave up 0.0034 of the release's 0.0058 lead over the guarded
+   call; it threw away well-founded small switches. With stale calibrations it saved nothing on FakeAuckland, and it
+   cost 0.0024 on FakeTorino.
+2. **The decision rule was too weak, and that is this project's error.** The rule required M1 (C24 at least the
+   guarded call's level under stale calibrations), and M2 and M3 not REFUTED. M1 is satisfied whenever the release
+   itself does not lose to the guarded call. Nothing in the rule asked for C24 to beat REC anywhere. Read by its
+   letter, the rule proposes a change that the data show does not help. **Item 51 is therefore not recommended for
+   acceptance.** The decision is the owner's. Candidate c24 stays in [`patches/`](../../patches/) as the record.
+3. **CALSPLIT's FakeAuckland loss did not reproduce on new data.** On seed 5 the release kept more margin than the
+   guarded call even with stale calibrations: +0.0011 on FakeAuckland and +0.0246 on FakeTorino. CALSPLIT, on seed 4,
+   had -0.0041 on FakeAuckland, with -0.0142 in one draw. With the true calibration the lead on FakeAuckland is the
+   same in both tests: +0.0056 in DEPTH-R and +0.0058 here. The estimate-driven choices hold up with a fresh
+   calibration. With a stale one they range from a small loss to a small gain on FakeAuckland, depending on the data
+   and the draw. The README's statement that they "need a fresh calibration" (Addendum 404) is stronger than these
+   two tests support. It will be corrected with the next README change, together with BP-FINAL's.
+4. **A width chosen in advance can be the wrong width.** 5% was round, chosen without a sweep, and Addendum 405
+   disclosed that. These data say only that 5% is too wide on FakeAuckland with a fresh calibration. They do not
+   suggest a better width, and none is proposed.
+
+## 4. What this does not establish
+
+- real calibration drift, since this is a perturbation model;
+- hardware;
+- other tasks;
+- other widths of the margin.
+
+
+---
+
+<!-- ===== Addendum 407 (source: spare-qubit-cliff-addendum-407-2026-10-08.md) ===== -->
+
+> **Note added when merging:** Pre-registration of BP-FINAL. This text was written before the scored run (bundle cl, 2026-10-08, about 04:12 CEST), but its apply stopped at its checks because Part 10 did not yet contain Addendum 406. So the lock commit `79b73ed`, whose hash was e-mailed before the scored run, carries the two scripts and the smoke run but not this text. The population rule and the six predictions, with their thresholds, are in the locked `benchmarks/bp_final.py` (its `population` and `score`); this text states them in words and was not changed. The smoke run's `verify.txt` was produced at this merge.
+
+## Addendum 407 -- Pre-registration: BP-FINAL. Release 2026-10-07.1 against Qiskit level 2, as Benchpress calls it, on every published Benchpress transpilation test this project has not yet used (880 tests). The last unseen sample: run once (2026-10-08)
+
+**Status: pre-registration.** It was written after BP-FINAL's smoke run, which compiled only tests already used, and
+before any of the 880 tests was compiled. The lock is the commit that adds this Addendum together with the two
+scripts and the smoke run. The scored run follows the lock. Owner's decisions, 2026-10-08: all 880 tests, this
+project's own harness (not a Benchpress gym), run on the workplace machine ("全件で自前GYMでここで回す").
+
+**Locked at the workplace, as MARGIN was (Addendum 405).** The workplace machine does not push. The lock commit is
+made locally. Its hash is e-mailed by the owner to himself before the scored run. The scored run records the commit
+it ran on. The lock commit and the results are pushed later from home, the lock commit unchanged.
+
+## 1. Why
+
+The README says the default call is "about level with Qiskit level 2" on general circuits. That rests on Addendum
+396: 1.027 times level 2's two-qubit count on 139 Benchpress tests. Those 139 are the tests of BP-MOCK and BP-MOCK2,
+which items 48 and 50 were written from or tested on. So the number is not from an independent sample, and Addendum
+396 says so. The workplace review of 2026-10-08 named this as the gap to close before the number is used outside the
+project. BP-FINAL closes it on every test that is left.
+
+After this run no unseen Benchpress transpilation test remains. A later change to the default call cannot be tested
+on unseen Benchpress inputs again, and this run should not be repeated on a new candidate.
+
+## 2. Design
+
+The test is run by [`benchmarks/bp_final.py`](../../benchmarks/bp_final.py). The independent
+[`benchmarks/bp_final_verify.py`](../../benchmarks/bp_final_verify.py) reads only the raw JSON.
+
+- **Benchpress.** Commit `b695f30`, as in every earlier Benchpress test. Published reference: BP-PROBE's
+  `published_ref.json` (1,032 test ids), unchanged.
+- **Population (no sampling).** BP-MOCK's strata (`bp_mock.strata`, imported unchanged) contribute their published
+  test ids, minus:
+  - the 12 BP-PROBE ran;
+  - the 92 BP-MOCK ran;
+  - the 48 BP-MOCK2 ran.
+
+  That leaves 880 tests:
+
+  | family | tests |
+  |---|---|
+  | QASMBench, small, medium and large on four topologies | 407 |
+  | HamLib on four topologies | 367 |
+  | HamLib on FakeTorino | 67 |
+  | Feynman on FakeTorino | 39 |
+
+  The 100-qubit stratum is empty (all 9 used).
+- **Building, backends and metrics.** As BP-MOCK and BP-MOCK2 (`bp_mock.py`, `bp_mock2.py`, unchanged):
+  - Benchpress's own builders, backends and validator;
+  - the backend's two-qubit gate count and depth;
+  - the equivalence check of BP-MOCK2: item 39's `_implements` against the input expanded through its definitions,
+    for inputs of at most 10 qubits.
+- **Arms.** Each test and arm runs in its own process, with a 1,500 s limit for every arm:
+  - **QK**: `generate_preset_pass_manager(2, backend).run(circuit)`, Benchpress's call, not seeded;
+  - **REL**: release 2026-10-07.1, default call;
+  - **REL2**: REL again (reproducibility);
+  - **RECR**: the recommended call with the backend's target, on the 106 FakeTorino tests only.
+
+  That makes 2,746 jobs. They run 12 at a time on the workplace machine (Windows, Python 3.11.9, Qiskit 2.5.2,
+  14 cores). The jobs record times, so times are comparable only within the run.
+- **Ratios.** The ratio is (two-qubit gates + 1) / (QK's + 1), so that a test with none counts. Means are geometric,
+  over the tests that QK and REL both finished. The 95% interval resamples tests within each stratum (10,000
+  resamples, seed 20261008).
+
+## 3. Predictions (scored only by `bp_final.py score`)
+
+**P0:**
+
+- 880 tests, with every arm present;
+- every PSF-Zero output names release 2026-10-07.1;
+- the release file, the published reference and Benchpress as locked;
+- no uncommitted change to a tracked file.
+
+If P0 fails, nothing is scored.
+
+| ID | Prediction | CONFIRMED | REFUTED |
+|---|---|---|---|
+| F1 | all tests: geometric mean REL/QK | <= 1.06 | > 1.10 |
+| F2 | no family far behind (QASMBench, HamLib on topologies, HamLib on FakeTorino, Feynman) | every family <= 1.15 | any > 1.25 |
+| F3 | few large losses: share of tests with REL/QK > 1.10 | <= 0.15 | > 0.25 |
+| F4 | correctness: every REL, REL2 and RECR output passes Benchpress's validator, and every checkable one implements its input | none fails, at least 20 checked | any fails |
+| F5 | the recommended call places no two-qubit gate on FakeTorino's failed couplers or qubits | 0 tests | any |
+| F6 | robustness: REL fails (error or 1,500 s) where QK finishes | <= 1% | > 3% |
+
+**Where the lines come from.**
+
+- F1: the seen tests gave 1.027 (139 tests, Addendum 396), and the 48 new tests of BP-MOCK2 gave 1.039 before item
+  50. Unseen tests are expected to be a little worse than the ones the items were written from.
+- F2: per stratum, the seen values were 0.99-1.08.
+- F3: the seen tests had 15 of 139 (11%) above 1.10.
+
+**Reported without prediction:**
+
+- two-qubit depth;
+- the equally weighted mean over families;
+- how many tests have fewer, as many and more two-qubit gates than QK;
+- compile time REL/QK (median and geometric mean);
+- how often REL2 differs from REL;
+- on FakeTorino, RECR/QK and the gates each arm places on failed elements;
+- a table per stratum.
+
+## 4. What is known (disclosed)
+
+- **The smoke run** used the first BP-MOCK2 test of each stratum: 18 tests already used, none of the 880. It started
+  2026-10-08T02:07:59Z and ran 56 jobs in 163 s, 12 at a time, on commit `ba4f2d0`. Its output is in
+  [`data/2026-10-08/bp_final_smoke/`](../../data/2026-10-08/bp_final_smoke/). Every arm finished, and every output
+  passed Benchpress's validator. The independent check agreed with the score. Its numbers are not results:
+  - REL/QK was 1.016;
+  - F4 read AMBIGUOUS only because 11 outputs could be checked, fewer than 20;
+  - REL2 differed from REL on 2 of 18 tests, with the same two-qubit counts;
+  - the median compile time REL/QK was 4.85.
+- **Two things the smoke run showed, which the predictions already allow for:**
+  - `qec_sm_n5` returned `implements: False` for REL and REL2, but was marked not checkable. Its input measures and
+    resets mid-circuit, so item 39's check does not apply, and F4 counts only checkable outputs, as BP-MOCK2 did.
+  - On the FakeTorino HamLib test, the default call (REL) placed 28 two-qubit gates on failed couplers; QK and the
+    recommended call placed none. The default call does not read the target (Addenda 393, 403), and F5 is about the
+    recommended call only.
+- **The scoring was rehearsed on synthetic data** of the full size. The independent check agreed with the score.
+- **Nothing about the 880 tests was looked at before the lock** beyond their ids and strata, which the population
+  rule lists.
+- **The README will report F1's value and interval**, whatever the verdict, in the same paragraph as the compile-time
+  cost.
+
+## 5. What this will not establish
+
+- Benchpress's other test groups (construction, manipulation);
+- Benchpress's own gym and pytest harness (not used here; a PSF-Zero gym is a separate task);
+- depth as a target;
+- hardware;
+- other versions of Qiskit.
+
+## 6. Files locked (normalized SHA-256)
+
+| file | normalized SHA-256 |
+|---|---|
+| [`benchmarks/bp_final.py`](../../benchmarks/bp_final.py) | `bbcbc6ebf313d838259f9cb0c507fd0f3aa5fb1937f65dd78bf4176e31e5e7d0` |
+| [`benchmarks/bp_final_verify.py`](../../benchmarks/bp_final_verify.py) | `5bfe840c83306afdaccb2b6c4634c0634078c893b481a062c1331b6b2804f943` |
+| [`benchmarks/bp_mock.py`](../../benchmarks/bp_mock.py) (BP-MOCK, unchanged) | `7757e848c9848c9644a845ce97198966b2fb2f98fa9584c2d0050d45b573b4d0` |
+| [`benchmarks/bp_mock2.py`](../../benchmarks/bp_mock2.py) (BP-MOCK2, unchanged) | `e0c182acb99768a88bedb07c6f56aae84fc234b62a17bd2a046452de3bccf93c` |
+| [`benchmarks/bp_probe.py`](../../benchmarks/bp_probe.py) (BP-PROBE, unchanged) | `73defde66868852db583d5e4fb055ec53c6ea864aae6466876c571f8d26cee66` |
+| [`data/2026-10-06/bp_probe/published_ref.json`](../../data/2026-10-06/bp_probe/published_ref.json) | `d05231a75695c4fa9cbe2f09891ae8a835db32699e381c4d8de4b2afaaf56877` |
+| [`psf_compile.py`](../../psf_compile.py) (release 2026-10-07.1) | `73fb2cb0b1acc5870339c23599829b326fbf57aa198945231e8551e55c1884dc` |
+
+**Scored run** (workplace, after the lock commit's hash is e-mailed): `python benchmarks/bp_final.py run --bp <clone>
+--out data/2026-10-08/bp_final --par 12`, then `python benchmarks/bp_final.py score --out data/2026-10-08/bp_final`
+and `python benchmarks/bp_final_verify.py data/2026-10-08/bp_final`. The results go in the next Addendum.
+
+
+---
+
+<!-- ===== Addendum 408 (source: spare-qubit-cliff-addendum-408-2026-10-08.md) ===== -->
+
+> **Note added when merging:** Results of the pre-registered test in Addendum 407, with the README and RELEASES changes they and Addendum 406 call for. Merged with Addenda 406 and 407: the first apply (bundle cm) stopped at its checks, and the data was committed without the text (c727f12). `verify.txt` was produced at this merge.
+
+## Addendum 408 -- Results of BP-FINAL (Addendum 407): all six predictions CONFIRMED. On 877 Benchpress transpilation tests never used before, release 2026-10-07.1's default call uses 1.046 times Qiskit level 2's two-qubit gates (95% 1.037-1.055), at a median 3.5 times its compile time; every output valid, every checkable one exact. README and RELEASES updated, with MARGIN's correction (2026-10-08)
+
+**Status: results of the pre-registered test in Addendum 407. The locked harness scored them, and the independent
+[`benchmarks/bp_final_verify.py`](../../benchmarks/bp_final_verify.py) re-checked them. The documentation changes
+listed in section 4 come with them.**
+
+## 1. The run
+
+- **Lock.** Commit `79b73ed`, the local commit of Addendum 407 at the workplace. Its hash was e-mailed before the
+  run, and it is pushed unchanged with this Addendum. The run recorded it as its head, with no uncommitted change.
+- **Machine.**
+  - The workplace PC: Windows, Python 3.11.9, Qiskit 2.5.2, qiskit-ibm-runtime 0.49.0, NumPy 2.4.6, 14 cores.
+  - Windows power mode "best power efficiency", with sleep off. The screen turned itself off; the machine did not
+    sleep.
+  - 2,746 jobs, 12 at a time, took 13,355 s.
+  - Progress lines were shown on screen only. Every job's record is in the JSON.
+- **Output.** [`data/2026-10-08/bp_final/`](../../data/2026-10-08/bp_final/) holds:
+  - `bp_final.json`;
+  - `bp_final_first.json`, from before the re-run below;
+  - `score.md` and `score_first.md`;
+  - `verify.txt`.
+- **Re-run of timed-out jobs.** At 12:19 JST, before any result was seen, a rule was fixed in case the machine slept
+  during the run. Every job that timed out is re-run once, with the locked script ("one" mode), the same limit and the
+  same parallelism, by [`benchmarks/bp_final_rerun.py`](../../benchmarks/bp_final_rerun.py). The re-run's record
+  replaces the first one and keeps it under "first". The machine had not slept, but the rule was applied as fixed.
+  - Nine jobs had timed out on four tests:
+    - `bwt_n37` on square: REL and REL2;
+    - `bwt_n37` on heavy-hex: QK, REL and REL2;
+    - `square_root_n60` on linear: QK, REL and REL2;
+    - Feynman `hwb11`: RECR.
+  - All nine timed out again.
+  - The score and the verdicts are identical before and after.
+
+## 2. Results
+
+**P0: PASS.** Every condition was met:
+
+- 880 of 880 tests;
+- every arm present;
+- every PSF-Zero output names release 2026-10-07.1;
+- the release file, the published reference and Benchpress (`b695f30`) are as locked;
+- no uncommitted change.
+
+QK and REL both finished on 877 tests.
+
+| ID | prediction | value | verdict |
+|---|---|---|---|
+| F1 | geometric mean REL/QK <= 1.06 (REFUTED > 1.10) | **1.046** (95% 1.037-1.055) | **CONFIRMED** |
+| F2 | every family <= 1.15 (REFUTED if any > 1.25) | QASMBench 1.020 (404), HamLib on four maps 1.069 (367), HamLib on FakeTorino 1.090 (67), Feynman 1.022 (39) | **CONFIRMED** |
+| F3 | share of tests with REL/QK > 1.10 <= 0.15 (REFUTED > 0.25) | 0.149 (131 of 877) | **CONFIRMED** |
+| F4 | every output valid; every checkable one implements its input | 0 invalid of 1,859; 0 wrong of 491 checked | **CONFIRMED** |
+| F5 | the recommended call places no gate on FakeTorino's failed elements | 0 of 105 tests | **CONFIRMED** |
+| F6 | REL fails where QK finishes <= 1% | 1 of 878 (0.1%) | **CONFIRMED** |
+
+**Reported without prediction:**
+
+- **Two-qubit gates.** REL used fewer than QK on 117 tests, as many on 314 and more on 446.
+- **Two-qubit depth.** REL/QK is 1.040.
+- **Families weighted equally.** The geometric mean is 1.050.
+- **Per stratum.**
+  - QASMBench: 0.987-1.056. The best is large circuits on linear maps, the worst large circuits on square maps.
+  - HamLib: 1.056-1.090.
+- **Compile time.** REL/QK has a median of 3.52 and a geometric mean of 2.99. Per stratum the median is 2.3-6.5;
+  small circuits cost the most, relative to Qiskit.
+- **Reproducibility.** REL2 differed from REL on 83 of 877 tests, never in the two-qubit count.
+- **FakeTorino.** RECR/QK is 1.035 (105 tests). Tests with gates on failed couplers or qubits:
+  - QK: 25;
+  - REL (the default call, which does not read the target): 62, including 40,801 gates on `hwb11`;
+  - RECR: 0.
+
+## 3. Reading
+
+1. **The README's "about level with Qiskit level 2" holds on an independent sample, now with an interval.**
+   - On unseen tests the default call is 4.6% above Qiskit level 2 (3.7-5.5%).
+   - That is a little worse than on the 139 development tests (1.027, Addendum 396). Items 48 and 50 were written
+     from those tests.
+   - It is not better than Qiskit on general circuits, and the README does not say it is.
+2. **F3 was confirmed at the edge (0.149 against 0.15).** About one test in seven costs more than 10% extra two-qubit
+   gates. A small change in the population could have made F3 AMBIGUOUS.
+3. **Hamiltonian simulation is the weakest family.** HamLib is at 1.06-1.09 in every stratum. QASMBench (1.02) and
+   Feynman (1.02) are close to level. Any further work on the default call should start there. No unseen Benchpress
+   test remains to test such work.
+4. **Correctness held on every test.** No output was invalid, and none of the 491 checkable outputs fails to
+   implement its input.
+5. **The default call's blindness to failed elements shows on 62 of 105 FakeTorino tests.** The recommended call
+   avoided them every time, at 1.035 times Qiskit level 2's count. This supports the README's advice (Addendum 404)
+   to pass `target` on such devices.
+6. **The price is compile time.** A median of 3.5 times Qiskit level 2's.
+
+## 4. Documentation changed with this Addendum
+
+[`README.md`](../../README.md):
+
+- **The introduction's general-circuits bullet.** It now gives BP-FINAL's 1.046 (interval, counts, compile time)
+  instead of the development tests' 1.03.
+- **"Where it is weaker", Benchpress.**
+  - BP-FINAL's design and table. The development tests' 1.03 and 2026-10-06.4's 1.33 are kept as context.
+  - HamLib as the weakest family.
+  - Compile time from BP-FINAL.
+  - The reproducibility count.
+  - The failed-element counts on FakeTorino.
+  - What is not covered.
+- **The calibration paragraph (MARGIN's correction of Addendum 404).**
+  - "Need a fresh calibration" became: they pay off with a fresh calibration, and with a stale one it depends on the
+    data. The figures are -0.0041 in CALSPLIT and +0.0011 in MARGIN.
+  - Item 51 is not recommended (Addendum 406).
+  - The introduction and "Results in brief" changed to match.
+- **Known limits.** Benchpress is now covered by BP-FINAL, and no unseen test is left.
+
+[`docs/RELEASES.md`](../../docs/RELEASES.md):
+
+- **A five-line "In brief (as of 2026-10-08)" at the top.** The workplace review of 2026-10-08 asked for it: one day
+  produced over twenty Addenda.
+- **Two bullets under the current release:** BP-FINAL and MARGIN.
+
+## 5. What this does not establish
+
+- Benchpress's other test groups;
+- Benchpress's own gym;
+- other Qiskit versions;
+- depth as a target;
+- hardware.
+
+Times come from one machine running 12 jobs at a time.
+
 ---
 
 ---

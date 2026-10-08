@@ -1,0 +1,3 @@
+smoke False; P0 PASS; tests 880, done 877; F1 1.0455; families QASMBench 1.020, HamLib, abstract 1.069, HamLib, FakeTorino 1.090, Feynman, FakeTorino 1.022; share > 1.10 0.149; invalid 0; not implementing 0 of 491; RECR on failed 0 of 105; REL failures 0.001
+mine {'F1': 'CONFIRMED', 'F2': 'CONFIRMED', 'F3': 'CONFIRMED', 'F4': 'CONFIRMED', 'F5': 'CONFIRMED', 'F6': 'CONFIRMED'}
+identical to score.md: True

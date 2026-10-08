@@ -9,6 +9,17 @@ from this folder. The full record behind each entry is in Parts 9 and 10 of the 
 the earlier parts they link to. The README itself, as it was before the move, is kept as
 [`README_2026-10-05_before_restructure.md`](README_2026-10-05_before_restructure.md).
 
+> **In brief (as of 2026-10-08)**
+>
+> 1. Release 2026-10-07.1 is about level with Qiskit level 2 on general circuits: 1.046 times its two-qubit gates on
+>    880 Benchpress tests not used during development (BP-FINAL, Addenda 407-408), at about 3.5 times its compile time.
+> 2. On a device that reports failed couplers, pass `target`. The default call does not read it, and in BP-FINAL it
+>    placed gates on failed elements in 62 of 105 FakeTorino tests; the recommended call in none.
+> 3. With a fresh calibration the recommended call keeps a small lead over the guarded call; with a stale one the lead
+>    depends on the data (CALSPLIT, MARGIN; Addenda 402-406).
+> 4. Candidate c24 (item 51, a 5% switching margin) was tested and is not recommended (Addendum 406).
+> 5. The device layer has been tested only in noisy simulation on fake devices, not on hardware.
+
 > **Current version (2026-10-07, first release): `psf_compile.py` 2026-10-07.1 and the AI front end a12, with
 > `psf_smart_layout` 2026-10-01.1 and the Rust core `CORE_VERSION` 2026-09-29.1 (all three unchanged)**
 > ([Part 10](findings/spare-qubit-cliff-combined-383.md), Addenda 383-397). The file is candidate c23
@@ -45,6 +56,12 @@ the earlier parts they link to. The README itself, as it was before the move, is
 >   such gates on two Benchpress tests). 2026-10-07.1, through item 48, avoids them there. On BP-MOCK's 20
 >   FakeTorino tests its recommended call never used more two-qubit gates than 2026-10-06.4's, and fewer on 8
 >   (BV-like 1,071 to 0).
+> - **BP-FINAL (Addenda 407-408, pre-registered; the last unseen Benchpress sample):** on 877 of the 880 published
+>   transpilation tests that no earlier test had used, the default call's two-qubit count was 1.046 times Qiskit level
+>   2's (95% 1.037-1.055; per family 1.020-1.090; fewer on 117, as many on 314, more on 446); all six predictions
+>   confirmed; every output valid, every checkable one exact; a median 3.5 times Qiskit level 2's compile time.
+> - **MARGIN (Addenda 405-406, pre-registered):** candidate c24 (item 51) never beat the release and is not
+>   recommended. CALSPLIT's loss against the guarded call on FakeAuckland did not reproduce on new data (+0.0011).
 > - **Found after the release (CALSPLIT, Addenda 402-403, pre-registered):** with stale calibrations (errors off by
 >   about 30%, T1 and T2 by 20%; scored with the true noise) the recommended call's estimate-driven choices lost
 >   their lead over the guarded call (`target` and `placement_refine` only) on FakeAuckland (-0.0041 of classification

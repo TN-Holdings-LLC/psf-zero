@@ -19,12 +19,14 @@ PSF-Zero is a Qiskit-compatible compiler with two layers.
   qubits this recommended call is slower than Qiskit level 3, and in exchange gave lower simulated infidelity than
   level 3 on every fake device tested (circuits of 4-10 qubits). Above 16 it returns the default call's circuit with
   the error-aware placement, without building level 3 (since 2026-10-06.4). Its choice among candidates is only as
-  good as the calibration it reads: with one off by tens of per cent it stayed level with level 3 but lost its lead
-  over the simpler target-aware call on one of two devices (CALSPLIT, Addendum 403).
-- **General circuits: about level with Qiskit level 2, and slower.** On 139 Benchpress tests chosen by a
-  pre-registered rule, the default call of 2026-10-07.1 used 1.03 times Qiskit level 2's two-qubit gates (geometric
-  mean; fewer on 18 tests, as many on 59, more on 62), at about four times its compile time. 2026-10-06.4 used 1.33
-  times. See [Where it is weaker](#where-it-is-weaker).
+  good as the calibration it reads: with one off by tens of per cent it stayed level with level 3, and its lead
+  over the simpler target-aware call on FakeAuckland ranged from a small loss to a small gain, depending on the data
+  (CALSPLIT and MARGIN, Addenda 403 and 406).
+- **General circuits: about level with Qiskit level 2, and slower.** On all 880 Benchpress transpilation tests that
+  no earlier test of this project had used (BP-FINAL, pre-registered, Addenda 407-408), the default call of
+  2026-10-07.1 used 1.046 times Qiskit level 2's two-qubit gates (geometric mean, 95% interval 1.037-1.055; fewer on
+  117 tests, as many on 314, more on 446), at a median 3.5 times its compile time. See
+  [Where it is weaker](#where-it-is-weaker).
 
 Everything is pre-registered and self-audited: predictions are locked in git before a scored run, and results,
 including the failures, are recorded in [`docs/findings/`](docs/findings/).
@@ -192,46 +194,54 @@ model-written circuits.
 
 ### Where it is weaker
 
-**General circuits (Benchpress).** Two pre-registered tests drew 92 and 48 of Benchpress's transpilation tests by a
-stratified rule (QASMBench small, medium and large, HamLib, Feynman, 100-qubit tests; all-to-all, square, heavy-hex,
-linear and FakeTorino) and compiled each with the default call of `compile_for_hardware()` and with Qiskit level 2,
-the call Benchpress uses (BP-MOCK and BP-MOCK2, Addenda 388-392). CANCEL (Addenda 394-395) compiled the same inputs
-with the release's code; Addendum 396 puts the two side by side (exploratory, from the committed output). Every
-output passed Benchpress's validator.
+**General circuits (Benchpress).** BP-FINAL (Addenda 407-408) compiled every published Benchpress transpilation
+test that no earlier test of this project had used: 880 tests (QASMBench small, medium and large and HamLib on
+all-to-all, square, heavy-hex and linear maps; HamLib and Feynman on FakeTorino). Each was compiled with the default
+call of `compile_for_hardware()` and with Qiskit level 2 as Benchpress calls it. The predictions were locked before
+any of the 880 was compiled, and all six were confirmed. Every PSF-Zero output passed Benchpress's validator, and
+every one that could be checked (491) implements its input.
 
-| on 139 tests (one where Qiskit timed out left out) | two-qubit gates / Qiskit level 2 (geometric mean) |
+| two-qubit gates / Qiskit level 2 (geometric mean) | |
 | :--- | :--- |
-| 2026-10-06.4 | 1.33 |
-| **2026-10-07.1** | **1.03**: fewer on 18 tests, as many on 59, more on 62 (by over 10% on 15) |
-| 2026-10-07.1, per stratum of 5-12 tests | 0.99-1.08 |
+| **2026-10-07.1 on 877 unseen tests (BP-FINAL)** | **1.046** (95% 1.037-1.055): fewer on 117, as many on 314, more on 446 (by over 10% on 131) |
+| per family | QASMBench 1.020 (404 tests), HamLib on the four maps 1.069 (367), HamLib on FakeTorino 1.090 (67), Feynman 1.022 (39) |
+| 2026-10-07.1 on the 139 development tests (BP-MOCK, BP-MOCK2, CANCEL; Addendum 396) | 1.03 |
+| 2026-10-06.4 on the same 139 | 1.33 |
 
-- **It is about level, not better.** The largest remaining gaps are a few gates on small circuits (`basis_test_n4`
-  10 against 6), `bv_n19` on heavy-hex (71 against 55) and some HamLib Hamiltonians (up to 18% more on a 100-qubit
-  one on FakeTorino); it uses fewer on, for example, HamLib `JW12` on heavy-hex (5,007 against 5,547).
-- **It is slower:** about four times Qiskit level 2's compile time (median 3.9; from different runs, so indicative).
+- **It is about level, not better**, and a little worse on unseen tests than on the tests its changes were written
+  from (1.046 against 1.03). Hamiltonian simulation is where it is weakest: 1.06-1.09 per HamLib stratum.
+- **It is slower:** a median 3.5 times Qiskit level 2's compile time (geometric mean 3.0; BP-FINAL, 12 jobs at a
+  time on one machine).
 - **Not reproducible where Qiskit is not.** The default call lays out and routes with Qiskit level 1. On some inputs
   (`bv_n30` on square, `bv_n140` on linear) Qiskit's own `transpile(optimization_level=1, seed_transpiler=0)` returns
   a different circuit in each process, with the same two-qubit count, and so does PSF-Zero's default call
-  (Addendum 393). `seed_transpiler` does not fix it.
-- **Failed couplers:** on FakeTorino's 100-qubit tests Qiskit level 2 used couplers the device reports as failed
-  (error 0.5 or more) on 5 of 6, and so does the default call, which does not read the target. The recommended call
-  avoids them; on the map without them Qiskit level 2 needs about as many two-qubit gates as the recommended call
-  (0.93-1.04 of it; Addendum 393).
-- Not covered: Benchpress's other tests, depth, hardware. The same inputs informed items 48 and 50, so this is not an
-  independent sample.
+  (Addendum 393). `seed_transpiler` does not fix it. In BP-FINAL a second run of the default call returned a
+  different circuit on 83 of 877 tests, never with a different two-qubit count.
+- **Failed couplers:** on FakeTorino the default call, which does not read the target, placed two-qubit gates on
+  couplers or qubits the device reports as failed (error 0.5 or more) in 62 of 105 tests (40,801 gates on `hwb11`);
+  Qiskit level 2, given the device, in 25; the recommended call in none, at 1.035 times Qiskit level 2's two-qubit
+  count (BP-FINAL). Use the recommended call on such devices (see [Quick start](#quick-start)).
+- Not covered: Benchpress's other test groups, Benchpress's own gym (BP-FINAL used this project's harness with
+  Benchpress's builders, backends and validator), depth as a target, hardware. Three tests timed out (1,500 s) for
+  the default call or Qiskit and are left out of the ratios.
 
-**With a calibration that is not the device's (CALSPLIT, Addenda 402-403).** DEPTH-R's classifiers (4 and 6 qubits,
-1-16 layers; Addenda 399-400) were compiled with stale Targets (gate errors off by about 30%, T1 and T2 by about
-20%, three draws per device) and scored with the device's true noise, on FakeAuckland and FakeTorino.
+**With a calibration that is not the device's (CALSPLIT and MARGIN, Addenda 402-406).** DEPTH-R's classifiers (4
+and 6 qubits, 1-16 layers; Addenda 399-400) were compiled with stale Targets (gate errors off by about 30%, T1 and T2
+by about 20%, three draws per device) and scored with the device's true noise, on FakeAuckland and FakeTorino;
+MARGIN repeated this on new data.
 
 - **Reading a calibration that is 30% wrong still beats not reading one.** Every target-aware call kept more margin
   and flipped fewer answers than the calls that ignore the target. At 15 shots the recommended call was 1.7 points
   (FakeAuckland) and 4.9 points (FakeTorino) of accuracy ahead of the better of them; at 1,023 shots 0.1 and 0.4.
-- **The recommended call's estimate-driven choices need a fresh calibration.** Over the guarded call (`target` and
-  `placement_refine` only) they gained +0.0056 of classification margin on FakeAuckland with the true calibration
-  (Addendum 400) and lost 0.0041 with stale ones, 0.0142 in one draw (0.3 points of accuracy at 15 shots). On
-  FakeTorino the lead held (+0.0194): it comes from routing, not from the estimate. Given the same stale Target it
-  stayed level with Qiskit level 3 (+0.0049 and -0.0098).
+- **The recommended call's estimate-driven choices pay off with a fresh calibration; with a stale one it depends on
+  the data.** Over the guarded call (`target` and `placement_refine` only) they gained +0.0056 and +0.0058 of
+  classification margin on FakeAuckland with the true calibration (Addenda 400, 406). With stale calibrations they
+  lost 0.0041 in CALSPLIT (0.0142 in one draw; 0.3 points of accuracy at 15 shots) and gained 0.0011 on new data in
+  MARGIN. On FakeTorino the lead held in both (+0.0194, +0.0246): it comes from routing, not from the estimate. Given
+  the same stale Target it stayed level with Qiskit level 3 (+0.0049 and -0.0098).
+- **A variant that switches only for an estimated gain above 5% (candidate c24, item 51) is not recommended.** In
+  MARGIN it never beat the release: it gave up 0.0034 of the gain on FakeAuckland with a fresh calibration and gained
+  nothing with stale ones (Addendum 406).
 - **The default call on a device with failed couplers is a real hazard.** On FakeTorino it placed 21,204 two-qubit
   gates on failed couplers and lost 17 points of accuracy (see [Quick start](#quick-start)).
 - Not covered: real calibration drift (this was a perturbation model), hardware, other tasks, stale readout errors.
@@ -266,8 +276,8 @@ Current version); with 2026-10-06.4 it took a median of 31 s for Hamiltonians of
   classical infidelity, a11 at 0.63-0.98 (Addendum 360).
 - With a stale calibration (errors off by 30%, T1/T2 by 20%) the previous release stayed ahead of level 3
   (Addendum 335). On a classification task 2026-10-07.1's recommended call stayed level with level 3 given the same
-  stale Target, but not ahead of the guarded call on FakeAuckland (CALSPLIT, Addendum 403; see
-  [Where it is weaker](#where-it-is-weaker)).
+  stale Target; against the guarded call on FakeAuckland it lost 0.004 in CALSPLIT and gained 0.001 on new data in
+  MARGIN (Addenda 403, 406; see [Where it is weaker](#where-it-is-weaker)).
 - At 8-10 logical qubits it stayed ahead too (0.951-0.998).
 - No failed coupler or qubit was used in any of these tests. (On an input that is one instruction over many
   qubits, 2026-10-06.4's recommended call could still use them, with a warning; 2026-10-07.1 avoids them where
@@ -332,8 +342,9 @@ Full account: [`spare-qubit-cliff.md`](docs/findings/spare-qubit-cliff.md) (summ
 - **Tolerance of the equivalence check:** a Qiskit-made circuit is accepted up to a state infidelity of 1e-6. On
   near-boundary Trotter circuits the accepted ones were off by up to 5.8e-8, where PSF-Zero's own path is exact to
   1e-14 (Addendum 343).
-- **Benchpress:** 139 tests of a pre-registered stratified sample (see [Where it is weaker](#where-it-is-weaker));
-  not the full suite, and there is no Benchpress gym for PSF-Zero yet. Qiskit's own level 1, which the default call
+- **Benchpress:** BP-FINAL covered every published transpilation test not used during development (880; see
+  [Where it is weaker](#where-it-is-weaker)). No unseen Benchpress transpilation test is left for testing later
+  changes, and there is no Benchpress gym for PSF-Zero yet. Qiskit's own level 1, which the default call
   routes with, is not reproducible on some inputs (Addendum 393); whether to report that upstream is open.
 - **Two upstream findings:**
   - Qiskit #17057 (CX-basis synthesis) is open.
