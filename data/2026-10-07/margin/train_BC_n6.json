@@ -1,0 +1,68 @@
+{
+ "meta": {
+  "script_sha": "82488d96144bb1c88f69676a0e6a642c22d4756a47d8a1ad8b07be5327c796ac",
+  "dry": false,
+  "qiskit": "2.5.2",
+  "aer": "0.17.2",
+  "sklearn": "1.8.0",
+  "started": "2026-10-08T00:09:24Z",
+  "c12_sha": "73fb2cb0b1acc5870339c23599829b326fbf57aa198945231e8551e55c1884dc",
+  "mode": "train",
+  "dataset": "BC",
+  "n": 6,
+  "ntest": 114,
+  "harness_sha": "6f636b677f1a481ef3492bf0de467893cde70359c717bc901b6cb5cd2838f3b6",
+  "depth_eval_sha": "82488d96144bb1c88f69676a0e6a642c22d4756a47d8a1ad8b07be5327c796ac",
+  "seeds": [
+   5,
+   5
+  ],
+  "margin_sha": "c155216d3e0f2811eda3f84bfd4fa9d54d44e9e7f7df17df117646a48a301416",
+  "c24_sha": "9174ce54ba923d5628abdeb8c050bf84358e60bf3ad3e3b865f6bff56b21710e",
+  "stale_eval_sha": "f2dd16caf17d25232f2452b08a5654f83a8ae10459c773dfa3acfc74005a1cc0"
+ },
+ "rows": [
+  {
+   "L": 1,
+   "ideal_acc": 0.9298245614035088,
+   "ideal_margin": 0.4583413351959445,
+   "train_loss": 0.42517184510121175,
+   "s": 2.8
+  },
+  {
+   "L": 2,
+   "ideal_acc": 0.9473684210526315,
+   "ideal_margin": 0.6225120597871735,
+   "train_loss": 0.2862105031163346,
+   "s": 6.2
+  },
+  {
+   "L": 4,
+   "ideal_acc": 0.956140350877193,
+   "ideal_margin": 0.6337066595267069,
+   "train_loss": 0.213376574170207,
+   "s": 15.5
+  },
+  {
+   "L": 8,
+   "ideal_acc": 0.9736842105263158,
+   "ideal_margin": 0.6849291630409687,
+   "train_loss": 0.17996323832428027,
+   "s": 15.4
+  },
+  {
+   "L": 12,
+   "ideal_acc": 0.956140350877193,
+   "ideal_margin": 0.6648995841709192,
+   "train_loss": 0.17062290902796054,
+   "s": 22.8
+  },
+  {
+   "L": 16,
+   "ideal_acc": 0.956140350877193,
+   "ideal_margin": 0.6371740178384122,
+   "train_loss": 0.18326520864310547,
+   "s": 34.6
+  }
+ ]
+}

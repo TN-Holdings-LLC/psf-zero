@@ -1,0 +1,6 @@
+DEPLOY {"L": 1, "margin": 0.541593596500863, "max_infid": 0.0, "n2q": 13.0}
+DEPLOY {"L": 2, "margin": 0.633659760028613, "max_infid": 0.0, "n2q": 33.56944444444444}
+DEPLOY {"L": 4, "margin": 0.5791935169671127, "max_infid": 0.0, "n2q": 70.68055555555556}
+DEPLOY {"L": 8, "margin": 0.389682613978798, "max_infid": 0.0, "n2q": 144.0}
+DEPLOY {"L": 12, "margin": 0.2666193599046189, "max_infid": 0.0, "n2q": 213.0}
+DEPLOY {"L": 16, "margin": 0.1622322595654094, "max_infid": 0.0, "n2q": 286.0}
