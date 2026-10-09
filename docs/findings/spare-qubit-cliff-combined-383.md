@@ -3419,6 +3419,54 @@ What WB did instead, and what it returned:
 
 ---
 
+<!-- ===== Addendum 418 (source: spare-qubit-cliff-addendum-418-2026-10-09.md) ===== -->
+
+> **Note added when merging:** A record of how the workplace locks of 2026-10-09 were kept.
+
+## Addendum 418 -- The workplace locks of 2026-10-09 and their e-mails. Addendum 405's procedure asks for each lock's hash to be e-mailed before the run. One hash was e-mailed, about a minute after its run had started; three were not e-mailed. No locked file changed between a lock and its results (2026-10-09)
+
+**Status: a record of how four locks were kept, written after their runs. It changes no result.**
+
+## 1. The four locks
+
+Times in CEST. The commits carry the workplace PC's clock in +0900 (JST); they are not rewritten.
+
+| lock | for | committed | e-mail of the hash |
+|---|---|---|---|
+| `af2e640` | C25-ID (Addendum 409) | 01:47:14 | 01:49, with the run's first progress lines: sent about a minute after the run started |
+| `759f220` | C25-ID2 (Addendum 411) | 02:38:34 | none |
+| `9e1cd3a` | C26-ID (Addendum 413) | 06:27:07 | none |
+| `be9e8e8` | C27-B (Addendum 416) | 07:37:56 | none |
+
+The e-mail of `af2e640` went from the owner's address to the project's address; it shows the commit's subject and
+hash, and the start of the run.
+
+## 2. What still holds
+
+- **Each run records the commit it ran on** (`git_head` in its data), with no uncommitted change to tracked files.
+- **No locked file changed between a lock and its results.** Between each lock and the commit of its results, the
+  only changes to `patches/`, `benchmarks/` and `psf_compile.py` are new files (the next test's script, and the
+  exploratory scripts of Addendum 412):
+
+  | lock -> results | files changed in patches/, benchmarks/, psf_compile.py |
+  |---|---|
+  | `af2e640` -> `759f220` | `benchmarks/c25_identity2.py` added (C25-ID2's own lock) |
+  | `759f220` -> `5370828` | `benchmarks/c25_hashseed.py`, `benchmarks/c25_nondet.py` added |
+  | `9e1cd3a` -> `fbe95df` | none |
+  | `be9e8e8` -> `b401ba5` | none |
+
+- **What is lost** is the independent time stamp: without the e-mail, that a lock came before its results rests on
+  the commits' own dates and order, which the workplace PC sets.
+
+## 3. From now on
+
+- Before the command that starts a run after a workplace lock, Claude asks whether the hash has been e-mailed, and
+  the run starts after the e-mail.
+- Commits made at home carry CEST (WSL's time zone set to Europe/Zurich on 2026-10-09). Commits made at the
+  workplace keep its clock; their times are converted to CEST in the Addenda.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
