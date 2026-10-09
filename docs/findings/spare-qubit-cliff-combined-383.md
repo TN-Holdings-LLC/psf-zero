@@ -3525,6 +3525,77 @@ designed next. If H2 fails, hwb10 is where the release's own pipeline wins, and 
 
 ---
 
+<!-- ===== Addendum 420 (source: spare-qubit-cliff-addendum-420-2026-10-09.md) ===== -->
+
+> **Note added when merging:** Results of H10-FULL (Addendum 419), with its data.
+
+## Addendum 420 -- Results of H10-FULL (Addendum 419): H1 and H4 CONFIRMED, H2, H3 and H5 REFUTED. The release finishes hwb10 in 852 s at home, but does not choose level 3's circuit: no candidate can be checked on a circuit of more than 200,000 instructions, so every one of its 819 s of estimates decided nothing. It returns the circuit candidate c27 returns without them (2026-10-09)
+
+**Status: results of the pre-registered test in Addendum 419**, scored by the locked script.
+
+## 1. The run
+
+- **Lock.** Commit `ad2f481`, pushed at 13:47:52 CEST, before the run.
+- **Data.** [`data/2026-10-09/hwb10_full/`](../../data/2026-10-09/hwb10_full/): `meta.json`, `L3.jsonl`, `REL.jsonl`
+  (an event per estimate, check, transpile and re-synthesis candidate) and `hwb10_full.md` (the score).
+- **Machine.** The home PC (WSL2, 12 CPUs, Python 3.12.13), alone, after TOQB's run 1c had finished. L3 started at
+  13:48:09 CEST, REL at 13:48:17, REL ended at 14:02:34.
+
+## 2. Results
+
+| ID | prediction | value | verdict |
+|---|---|---|---|
+| H1 | the release finishes hwb10 in 3 hours at home | 852 s | **CONFIRMED** |
+| H2 | it ends by choosing Qiskit level 3's circuit | level 3's candidate refused (`level3_refused`) | **REFUTED** |
+| H3 | fewer two-qubit gates than c27's 113,292 | 113,292 | **REFUTED** |
+| H4 | wall time of the estimates and checks 0.2-1.0 times their counted work | 819 s for 3,485 s of work: 0.23 | **CONFIRMED** |
+| H5 | the chosen circuit is level 3's own | 113,292 against level 3's 113,250 | **REFUTED** |
+
+**Level 3 alone:** 3.1 s, 113,250 two-qubit gates.
+
+**The release's decisions** (its counters): re-synthesis estimated twice and not selected (`selected_original` 2,
+`not_checked` 2); the floor-aware and level-3 candidates estimated, then refused because their exactness check could
+not be made (`not_checkable` 2, `refused_floor` 1, `refused_level3` 1).
+
+| calls | made by | counted work (s) | wall (s) |
+|---|---|---|---|
+| 4 `excitation_cost` | `_select_resynthesis` | 1,741 | 424 |
+| 3 `hybrid_cost` | `_choose_lazy` | 1,053 | 393 |
+| 2 `_implements` | `_choose_lazy` | 691 | 1.7 |
+
+**The circuit returned** has the same two-qubit gate count as c27's in C27-B (Addendum 417); but a different signature (`bp_mock.sig_hash`): the same count, not the same circuit; the two runs were on different machines, and the release's outputs can differ between processes (Addenda 410-412).
+
+## 3. Reading
+
+- **Why level 3 was not chosen.** The exactness check (item 39) simulates both circuits gate by gate, and item 44
+  makes it "cannot be made" when a circuit has more than 200,000 instructions (`EXACT_MAX_OPS`). hwb10's compiled
+  circuits have about 500,000. Both checks gave up within a second (0.9 s each), and a candidate that cannot be
+  checked is refused. So on hwb10 no candidate can ever replace the release's own circuit, whatever the estimates
+  say. The same holds for re-synthesis, whose check (`_same_action`) has the same limit.
+- **So the 819 s of estimates decided nothing.** Every outcome was fixed before the first estimate: the circuit in
+  hand is returned. Candidate c27 returns the same circuit by refusing those estimates, for a different reason (its
+  budget). A rule that asks first whether a check can be made at all, and skips the estimates when it cannot, would
+  return exactly the release's circuit, without them.
+- **What H2's refutation means for Addenda 417 and the weakness report.** "The full call ends with level 3's
+  circuit" holds on the five tests where the checks can be made (Addendum 417); on hwb10 they cannot. The two kinds
+  of slow test need two different fixes: where checks can be made, comparing with level 3 first (weakness items 2
+  and 4); where they cannot, not estimating at all (below).
+- **Level 3 is not hard for Qiskit:** 3.1 s alone. The quality given up by refusing it is 42 two-qubit gates of
+  113,292 (0.04%).
+- **H4:** the counts predicted the wall time at 0.23 of their work at home, against 1.3-1.5 at the workplace: the
+  home PC runs these calls about five times as fast. The counts stay proportional to the time across machines; their
+  unit is the workplace's.
+
+## 4. What follows
+
+- **A candidate "feasibility first" (proposed item 56):** before an estimate whose only use is to choose a candidate
+  that must then be checked, test whether that check can be made (instruction counts against `EXACT_MAX_OPS`,
+  touched qubits against 16). If it cannot, skip the estimate. By construction this returns exactly the release's
+  outputs; on hwb10 it would save the 819 s. Its identity is tested, pre-registered, before it is proposed.
+- **Then** "compare with level 3 first", for the tests where the checks can be made.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

@@ -1,0 +1,9 @@
+{
+ "start_utc": "2026-10-09T11:48:09Z",
+ "git_head": "ad2f481",
+ "dirty_tracked": "",
+ "cpus": 12,
+ "python": "3.12.13",
+ "l3_limit_s": 1800,
+ "rel_limit_s": 10800
+}

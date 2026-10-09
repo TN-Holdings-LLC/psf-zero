@@ -1,0 +1,28 @@
+{"ev": "input", "arm": "REL", "qubits": 16, "size": 31764, "at_s": 0.0}
+{"ev": "compile_start", "version": "2026-10-07.1", "layout_version": "2026-10-01.1", "clock": "_VirtualTime", "at_s": 0.018}
+{"ev": "start", "seq": 1, "fn": "_resynthesis_candidate", "caller": "_select_resynthesis", "work": null, "at_s": 8.915}
+{"ev": "end", "seq": 1, "fn": "_resynthesis_candidate", "t": 2.078, "result": null, "at_s": 10.999}
+{"ev": "start", "seq": 2, "fn": "excitation_cost", "caller": "_select_resynthesis", "work": 433281617184, "at_s": 11.727}
+{"ev": "end", "seq": 2, "fn": "excitation_cost", "t": 120.869, "result": "value", "at_s": 132.602}
+{"ev": "start", "seq": 3, "fn": "excitation_cost", "caller": "_select_resynthesis", "work": 437003203872, "at_s": 133.67}
+{"ev": "end", "seq": 3, "fn": "excitation_cost", "t": 108.413, "result": "value", "at_s": 242.089}
+{"ev": "start", "seq": 4, "fn": "_resynthesis_candidate", "caller": "_select_resynthesis", "work": null, "at_s": 250.697}
+{"ev": "end", "seq": 4, "fn": "_resynthesis_candidate", "t": 2.036, "result": null, "at_s": 252.737}
+{"ev": "start", "seq": 5, "fn": "excitation_cost", "caller": "_select_resynthesis", "work": 433281617184, "at_s": 253.442}
+{"ev": "end", "seq": 5, "fn": "excitation_cost", "t": 93.852, "result": "value", "at_s": 347.299}
+{"ev": "start", "seq": 6, "fn": "excitation_cost", "caller": "_select_resynthesis", "work": 437003203872, "at_s": 348.364}
+{"ev": "end", "seq": 6, "fn": "excitation_cost", "t": 100.962, "result": "value", "at_s": 449.331}
+{"ev": "start", "seq": 7, "fn": "transpile", "caller": "compile_for_hardware", "work": null, "at_s": 450.212}
+{"ev": "end", "seq": 7, "fn": "transpile", "t": 3.231, "result": null, "at_s": 453.447}
+{"ev": "start", "seq": 8, "fn": "hybrid_cost", "caller": "_choose_lazy", "work": 351609867552, "at_s": 454.885}
+{"ev": "end", "seq": 8, "fn": "hybrid_cost", "t": 146.013, "result": "value", "at_s": 600.902}
+{"ev": "start", "seq": 9, "fn": "hybrid_cost", "caller": "_choose_lazy", "work": 351609867552, "at_s": 601.598}
+{"ev": "end", "seq": 9, "fn": "hybrid_cost", "t": 153.099, "result": "value", "at_s": 754.7}
+{"ev": "start", "seq": 10, "fn": "hybrid_cost", "caller": "_choose_lazy", "work": 349947512000, "at_s": 755.279}
+{"ev": "end", "seq": 10, "fn": "hybrid_cost", "t": 93.63, "result": "value", "at_s": 848.915}
+{"ev": "start", "seq": 11, "fn": "_implements", "caller": "_choose_lazy", "work": 372321472320, "at_s": 849.658}
+{"ev": "end", "seq": 11, "fn": "_implements", "t": 0.886, "result": false, "at_s": 850.546}
+{"ev": "start", "seq": 12, "fn": "_implements", "caller": "_choose_lazy", "work": 318926864000, "at_s": 851.142}
+{"ev": "end", "seq": 12, "fn": "_implements", "t": 0.854, "result": false, "at_s": 852.002}
+{"ev": "compile_end", "t": 851.988, "q2": 113292, "sig": "dd13b67940e36457da97364bc682b34b88abcf216ea0f132e6690c0a0fd3e698", "stats": {"RESYNTH_STATS": {"selected_original": 2, "not_checked": 2}, "COMPARE_STATS": {"level3_refused": 1, "floor_refused": 1}, "EXACT_STATS": {"checked": 2, "refused_floor": 1, "refused_level3": 1, "not_checkable": 2}, "SKIP_STATS": {}}, "at_s": 854.377}
+{"ev": "job_end", "status": "ok", "wall": 856.4}
