@@ -1,0 +1,3 @@
+# c28_try.py func, re-run 2026-10-10 01:09 CEST; c28 psf_compile.py sha256 cf10b54700ce258a
+excitation_cost: largest relative difference 1.89e-16; time C26 2.17 s, C28 2.13 s (0.98)
+hybrid_cost: largest relative difference 3.23e-16; time C26 2.42 s, C28 2.16 s (0.89)

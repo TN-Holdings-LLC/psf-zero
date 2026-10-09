@@ -3596,6 +3596,126 @@ not be made (`not_checkable` 2, `refused_floor` 1, `refused_level3` 1).
 
 ---
 
+<!-- ===== Addendum 421 (source: spare-qubit-cliff-addendum-421-2026-10-10.md) ===== -->
+
+> **Note added when merging:** Exploratory (nothing predicted): candidate c28's try on the night of 2026-10-09, with its code, script and data.
+
+## Addendum 421 -- Exploratory: candidate c28 (items 53, 56 and 57a). Not estimating the candidates whose exactness check cannot be made returns the release's circuit on the nine tests tried, hwb10 included, in 26.9 s where the release took 852 s; forming the reduced states in one pass saves little (2026-10-10)
+
+**Status: exploratory.** Not pre-registered, nothing predicted, and not proposed for adoption as it stands. It tries the
+"feasibility first" rule that Addendum 420 proposed (item 56), together with a first, Python-only step towards faster
+estimates (item 57, part a). Item 56's identity on the 152 development tests is to be tested in a pre-registered
+candidate.
+
+## 1. The candidate
+
+- **Code.** [`patches/psf_compile_c28_2026-10-09/psf_compile.py`](../../patches/psf_compile_c28_2026-10-09/psf_compile.py)
+  (`VERSION = "2026-10-09.c28"`; sha256 `cf10b547...`; changelog items 56 and 57), with a
+  [README](../../patches/psf_compile_c28_2026-10-09/README.md). Base: release 2026-10-07.1 with item 53 (candidate
+  c26, Addenda 413-414).
+- **Item 56, feasibility first.** A candidate is used only if item 39's exactness check passes, and the check cannot
+  be made on a circuit of more than `EXACT_MAX_OPS` (200,000) instructions or more than 16 touched qubits (items
+  44-45). c28 tests this from counts before any matrix is formed (`_too_long`, `_cannot_implement`) and then does not
+  build or estimate the candidate: in `_choose_lazy` (the other candidates), `_compare_level3` (level 3's circuit),
+  `_checkable_logical` (whether the floor-aware and level-3 compiles are made at all) and the re-synthesis check. The
+  circuit in hand is kept, which is what the release returns after those estimates. Its outputs are therefore the
+  release's by construction; its counters are not.
+- **Item 57a, the reduced states in one pass.** After a two-qubit gate, `excitation_cost` and `hybrid_cost` need the
+  2x2 reduced state of each of its two qubits. The release forms each from the whole state, one qubit at a time.
+  c28 forms the pair's 4x4 reduced state in one matrix product as the state leaves the gate (`_rho_pair`), and takes
+  each qubit's state from it. Only the summation order changes, so values may differ in the last bits. This part is
+  not identity by construction.
+
+## 2. The runs
+
+All on the home PC (WSL2, 12 CPUs, Python 3.12.13), with
+[`benchmarks/c28_try.py`](../../benchmarks/c28_try.py). Data:
+[`data/2026-10-09/c28_try/`](../../data/2026-10-09/c28_try/). Times are CEST.
+
+- **demo**
+  - **Setup.** The recommended call of REL (release 2026-10-07.1), C26 and C28, on nine development tests on
+    FakeTorino. Each test and arm ran in its own process, three at a time, with the layout search's clock virtual and
+    `PYTHONHASHSEED=0` (as C27-B). Each job was killed after 1,200 s, and none started after 3,000 s. For each
+    output: time, two-qubit gates, and the signature (`bp_mock.sig_hash`).
+  - **First run** ([`c28_demo.jsonl`](../../data/2026-10-09/c28_try/c28_demo.jsonl), last record 15:03).
+    - REL and C26 completed on eight tests.
+    - C28 failed on seven of the eight with a `ValueError`. In `hybrid_cost`, the state after the gate had been
+      named `t`, which overwrote the gate's duration `t`; `thermal()` uses that duration later.
+    - The run was stopped by hand while REL compiled hwb10 (about 15 minutes), so it has no hwb10 records.
+  - **The fix** (15:15). The state is named `after`. The file kept in the repository is the fixed one.
+  - **Second run** ([`c28_demo2.jsonl`](../../data/2026-10-09/c28_try/c28_demo2.jsonl), table
+    [`c28_demo2.md`](../../data/2026-10-09/c28_try/c28_demo2.md), ended 15:17).
+    - C28 only, on the nine tests.
+    - It was compared with the first run's REL and C26 records.
+- **func.** The values and times of `excitation_cost` and `hybrid_cost`, C28 against C26, on 200 random circuits
+  transpiled for FakeTorino.
+  - It ran after the fix on 2026-10-09, but its console output was not saved.
+  - It was re-run unchanged on 2026-10-10 at 01:09:
+    [`func_2026-10-10.txt`](../../data/2026-10-09/c28_try/func_2026-10-10.txt).
+
+## 3. Results
+
+| test | REL s / 2q | C26 s / 2q | C28 s / 2q | C28's output is REL's |
+|---|---|---|---|---|
+| grover_5 | 1.4 / 537 | 1.2 / 537 | 1.1 / 537 | yes |
+| mod_red_21 | 0.7 / 188 | 0.6 / 188 | 0.6 / 188 | yes |
+| barenco_tof_10 | 0.2 / 365 | 0.2 / 365 | 0.3 / 365 | yes |
+| ham_JW-6 | 1.0 / 351 | 0.8 / 351 | 0.9 / 351 | yes |
+| ham_JW-10 | 6.7 / 2,371 | 5.1 / 2,371 | 5.0 / 2,371 | yes |
+| ham_parity10 | 6.4 / 2,367 | 5.0 / 2,367 | 5.0 / 2,367 | yes |
+| enc_gray_dvalues_8-8-8 | 33.5 / 11,688 | 26.0 / 11,688 | 25.3 / 11,688 | yes |
+| ham_JW-14 | 44.9 / 10,856 | 36.9 / 10,856 | 32.3 / 10,856 | yes |
+| hwb10 | 852 / 113,292 (H10-FULL, alone) | -- | 26.9 / 113,292 | yes (H10-FULL's signature) |
+
+**func** (C28 against C26, 200 circuits):
+
+| function | largest relative difference | time C26 (s) | time C28 (s) | ratio |
+|---|---|---|---|---|
+| `excitation_cost` | 1.89e-16 | 2.17 | 2.13 | 0.98 |
+| `hybrid_cost` | 3.23e-16 | 2.42 | 2.16 | 0.89 |
+
+Before the console output was lost, the night's run showed the same picture: 3.2e-16, and ratios 0.97 and 0.88.
+
+## 4. Reading
+
+- **Item 56 does what Addendum 420 said it would.** On hwb10, the circuit C28 returns is the release's, with the
+  same signature, in 26.9 s instead of 852 s. The comparison does not favour C28: the release ran alone, while C28
+  ran with two other jobs.
+- **Nine tests are not an identity test.** Item 56 is identity by construction only if nothing it skips has a side
+  effect on what follows, for example:
+  - a random-number state;
+  - a cache;
+  - the layout search's clock.
+
+  Nothing on these nine tests suggests such an effect, but the 152 development tests are where identity is shown,
+  pre-registered.
+- **Where the time on the other tests went is not known.** `c28_try.py` did not record the decision counters. On
+  JW-14, C28 took 12% less time than C26. This may be item 56 (a candidate over 16 touched qubits), item 57a, or
+  noise: each figure is a single run, and differences of about 10% are within run-to-run variation (barenco_tof_10:
+  0.2 against 0.3 s).
+- **Item 57a is modest.** It changes the values only in the last bits (at most 3.2e-16 relative). It saves 2% in
+  `excitation_cost` and 11% in `hybrid_cost`. The time is not in forming the reduced states. It is in the per-gate
+  loop itself: Python dispatch, a `tensordot` and a `moveaxis` per gate, and the lookup of each gate's matrix. Making
+  the estimates fast therefore means moving the whole loop into the Rust core (part b), not tuning parts of it in
+  NumPy.
+- **Item 57a is not identity by construction.** Two estimates that differ only in the last bits could swap a close
+  decision. None did on these nine tests, but this is why the pre-registered candidate leaves it out.
+- **Against the [weakness report](psf-zero-weakness-report-2026-10-09.md)**:
+  - Slow tests whose checks cannot be made (type B: hwb10) are what item 56 removes.
+  - Slow tests whose checks can be made (type A: JW-14, enc_gray, JW-10, parity10) stay slow. They need "compare
+    with level 3 first", or the estimates in Rust.
+
+## 5. What follows
+
+1. **A pre-registered candidate: the release with items 53 and 56, without 57a.** Its outputs are to be identical
+   to the release's on the 152 development tests (the signatures), and its counters are reported. If they are, it
+   is proposed for adoption.
+2. **Item 57b, the design of the estimate and check loops in Rust.** The whole per-gate loop goes into the Rust
+   core. It is accepted if its values are within 1e-12 relative of the Python ones and its decisions on the
+   development tests are identical.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
