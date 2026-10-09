@@ -3467,6 +3467,64 @@ hash, and the start of the run.
 
 ---
 
+<!-- ===== Addendum 419 (source: spare-qubit-cliff-addendum-419-2026-10-09.md) ===== -->
+
+> **Note added when merging:** Pre-registration of H10-FULL, with the script it locks.
+
+## Addendum 419 -- Pre-registration: H10-FULL. The release's recommended call on hwb10, the development test it has never finished, given up to 3 hours on the home PC. Does it finish, and does it end, as on the five tests of Addendum 417, by choosing Qiskit level 3's circuit? (2026-10-09)
+
+**Status: pre-registration**, written before H10-FULL's run. The lock is the commit that adds this Addendum and the
+script, pushed to the public repository before the run (the push is the run's time stamp). It was committed and
+pushed while TOQB's standard run 1c was running on the same machine; committing takes a few seconds.
+
+## 1. Why
+
+- hwb10 (Feynman, 16 qubits, FakeTorino) is the one development test whose recommended call has never finished: not
+  in an hour at the workplace (Addendum 412), not in 600 s in C27-B (Addendum 417), not in 300 s at home on
+  2026-10-09 (a demonstration kept outside the records). Candidate c27 finishes it by giving up its estimates (113,292 two-qubit
+  gates, at the workplace and at home).
+- On the five tests where the release's recommended call finished in C27-B, it ended by choosing Qiskit level 3's
+  circuit (Addendum 417, section 4.2). If hwb10 ends the same way, the hours of estimates and checks buy a circuit
+  Qiskit makes alone: the case for comparing with level 3 first (the weakness report of 2026-10-09, items 2 and 4).
+- It also tests item 54's counts end to end, on the largest calls seen.
+
+## 2. The test
+
+[`benchmarks/hwb10_full.py`](../../benchmarks/hwb10_full.py), on the home PC (WSL, Python 3.12.13, Qiskit 2.5.2),
+after TOQB's run 1c has finished, with nothing else running:
+
+1. **L3:** Qiskit's level 3 alone, called as `_compare_level3` calls it (the backend's target, `seed_transpiler=0`,
+   `approximation_degree=1.0`). Killed after 1,800 s.
+2. **REL:** release 2026-10-07.1, the recommended call, the layout search's clock virtual (as C25-ID2),
+   `PYTHONHASHSEED=0`. Killed after 10,800 s. An event before and after every estimate, check, Qiskit transpile and
+   re-synthesis candidate is written to disk as it happens. Each estimate and check is counted as candidate c27
+   counts it (units of about a nanosecond on the workplace PC), with no budget.
+
+## 3. Predictions
+
+| ID | prediction | confirmed if | refuted if |
+|---|---|---|---|
+| H1 | the release finishes hwb10 in 3 hours at home | REL ends within 10,800 s | it is killed |
+| H2 | it ends by choosing Qiskit level 3's circuit | `COMPARE_STATS` level3 = 1 | anything else |
+| H3 | its circuit has fewer two-qubit gates than c27's | fewer than 113,292 | as many or more |
+| H4 | item 54's counts hold on the home PC | the estimates' and checks' wall time is 0.2-1.0 times their counted work | outside |
+| H5 | the chosen circuit is level 3's own | its two-qubit gate count equals L3's | it differs |
+
+H4's range: the home PC compiled 3-4 times as fast as the workplace PC on 2026-10-09 (the same demonstration), and
+the counts were fitted at the workplace with 1.3-1.5 times their work in wall time (Addendum 417): about 0.3-0.5 is
+expected. A prediction that cannot be decided (the run killed) is NOT DECIDED.
+
+**What follows.** If H1, H2 and H5 hold, all six development tests where the recommended call's estimates take most
+of its time end with level 3's circuit, and a candidate that compares with level 3 before re-synthesising is
+designed next. If H2 fails, hwb10 is where the release's own pipeline wins, and that is examined first.
+
+## 4. What this does not establish
+
+- Anything beyond one test on one machine.
+- The time on the workplace PC, or within TOQB's budgets.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
