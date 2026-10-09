@@ -3306,6 +3306,79 @@ of the 34 tests are expected to reach the budget; that number is not a predictio
 
 ---
 
+<!-- ===== Addendum 417 (source: spare-qubit-cliff-addendum-417-2026-10-09.md) ===== -->
+
+> **Note added when merging:** Results of C27-B (Addendum 416).
+
+## Addendum 417 -- Results of C27-B (Addendum 416): B0 PASS, B1 CONFIRMED, B2 CONFIRMED, B3 REFUTED. The work budget decides exactly as counted and changes nothing where it is not reached; hwb10 now finishes (177 s). But the work before each count is not bounded (hwb10: 37.8 s in five refused calls), and at 10 s the budget costs 13-19% more two-qubit gates on the three largest tests it touches. Item 54 is not proposed as it stands (2026-10-09)
+
+**Status: results of the pre-registered test in Addendum 416, scored by the locked script.**
+
+## 1. The run
+
+- **Lock.** Commit `be9e8e8`, made at the workplace. Its hash was e-mailed before the run (Addendum 405's procedure).
+- **Data.** [`data/2026-10-09/c27_budget/`](../../data/2026-10-09/c27_budget/): `c27_budget.jsonl` (one record per
+  job) and `c27_budget.md` (the score), committed unchanged in `b401ba5`.
+- **Machine.** The workplace PC (14 CPUs, Python 3.11.9), 4 jobs at a time. 102 jobs in 1,383 s.
+- **Killed.** hwb10's NB and NB2 jobs, at 600 s. No other job failed.
+- **Stable tests** (NB and NB2 finished with the same output): 31 of 34. Besides hwb10, two tests gave different
+  outputs in NB and NB2 (the process-to-process differences of Addenda 410-412).
+
+## 2. Results
+
+| ID | prediction | value | verdict |
+|---|---|---|---|
+| B0 | the run is as locked | 34 tests, 102 records; c27 and the virtual clock in every finished record; no uncommitted change | **PASS** |
+| B1 | nothing changes where the budget is not reached | 26 of 26 stable tests without a refusal: WB's output is NB's | **CONFIRMED** |
+| B2 | the budget stops a call exactly where the work exceeds it | 31 of 31 stable tests | **CONFIRMED** |
+| B3 | the time is bounded | every WB job finished (34 of 34); on hwb10 the estimates and checks took 37.8 s, over the 30 s bound | **REFUTED** |
+
+**Where the budget binds** (reported without prediction; WB's records, printed from the data after the run):
+
+| test | NB work (s of units) | WB work made | WB refused | q2 NB / NB2 / WB | compile s NB / NB2 / WB |
+|---|---|---|---|---|---|
+| hwb10 | (killed) | 0 | 4 excitation, 1 hybrid | killed / killed / 113,292 | >600 / >600 / 176.6 |
+| ham_JW-14 | 153.9 | 0 | 4 excitation, 1 hybrid | 10,856 / 10,856 / 12,927 | 199.3 / 179.0 / 16.7 |
+| ham_enc_gray_dvalues_4-4-... | 89.8 | 8.25 | 3 excitation, 1 hybrid | 3,616 / 3,616 / 4,196 | 145.7 / 142.6 / 34.6 |
+| ham_enc_gray_dvalues_8-8-8 | 57.9 | 8.48 | 1 same_action, 2 excitation, 1 hybrid | 11,688 / 11,688 / 13,261 | 74.8 / 77.7 / 32.4 |
+| ham_JW-10 | 11.3 | 9.42 | 2 implements | 2,371 / 2,371 / 2,383 | 24.6 / 25.2 / 17.5 |
+| ham_parity10 | 11.5 | 9.60 | 2 implements | 2,367 / 2,367 / 2,404 | 20.2 / 22.0 / 18.7 |
+
+## 3. Reading
+
+- **The mechanism works as designed.**
+  - Its decisions follow the counts exactly (B2, 31 of 31), with no clock.
+  - Where it is not reached, it changes nothing (B1, 26 of 26).
+  - It turns an unbounded compile into a bounded one: hwb10 went from not finishing (an hour in Addendum 412; 600 s
+    here) to 177 s, and ham_JW-14 from 199 s to 17 s.
+- **Why B3 failed.** On hwb10 every call was refused (work made 0), yet the five calls took 37.8 s (31 s in
+  `excitation_cost`, 7 s in `hybrid_cost`): about 7.5 s each, spent listing the circuit's instructions and their
+  qubits before the count. hwb10's compiled circuit has about 690,000 instructions. Addendum 416 allowed for this work
+  in the 30 s bound, but not enough. Addendum 416 said a B3 failure would mean the counts or constants were wrong; the
+  record shows a different cause, the work before the count, which the counts do not cover.
+- **The constants hold roughly.** Where calls were made, the wall time of the estimates and checks was 1.3-1.5 times
+  the work made (ham_JW-10: 12.4 s for 9.42; ham_enc_gray_dvalues_8-8-8: 12.3 s for 8.48, refused calls included).
+  On ham_enc_gray_dvalues_4-4-... it was 22.2 s for 8.25, with three refused calls on a large circuit included.
+- **The quality cost is large at 10 s.**
+  - On ham_JW-14 the first estimate alone exceeds the budget (153.9 s of work in NB), so nothing is estimated or
+    checked: no re-synthesis, no choice between candidates. The result has 19% more two-qubit gates.
+  - ham_enc_gray_dvalues_4-4-... +16%, ham_enc_gray_dvalues_8-8-8 +13%; ham_JW-10 and ham_parity10 +0.5% and +1.6%.
+  - The estimates cost 10 times as much per amplitude as the checks (57 and 46 ns against 5; Addenda 415-416), and
+    they are what the budget mostly refuses.
+
+## 4. What follows
+
+- **Item 54 is not proposed as it stands.** B3 failed, and the quality given up at 10 s is too large to adopt it.
+- **Bound the work before the count.** The number of instructions can be had without listing them (Qiskit's
+  `count_ops`). A call whose instructions alone exceed what is left (20,000 units each) can be refused before the
+  listing, with the same decision as now.
+- **Make the estimates cheaper.** Each two-qubit gate in `excitation_cost` and `hybrid_cost` reads its qubits' reduced
+  states from the whole state (item 49). Doing that work once per gate, or in compiled code, would let the same budget
+  cover the estimates that now are refused, and recover the quality.
+- **Then** the budget's value is chosen again, with a new pre-registered test.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
