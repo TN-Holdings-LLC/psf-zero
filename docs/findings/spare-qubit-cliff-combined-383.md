@@ -2718,6 +2718,136 @@ compiled in under 1 s.
 
 ---
 
+<!-- ===== Addendum 410 (source: spare-qubit-cliff-addendum-410-2026-10-09.md) ===== -->
+
+> **Note added when merging:** Results of C25-ID (Addendum 409), with its data.
+
+## Addendum 410 -- Results of C25-ID (Addendum 409): I0 PASS, I1 and I2 REFUTED. 24 of 111 outputs differ and the failures differ, for two reasons outside item 52: the workplace machine ran out of memory with 12 jobs at a time, and the layout search stops by wall-clock time, so its output depends on the machine's speed. The prediction should have allowed for the second (2026-10-09)
+
+**Status: results of the pre-registered test in Addendum 409, scored by the locked script.** The run is
+[`data/2026-10-09/c25_identity/`](../../data/2026-10-09/c25_identity/): `c25_identity.jsonl` and `compare.md`. In
+the records, the workplace machine's home folder is replaced by `<windows-home>`.
+
+## 1. The run
+
+- **Lock.** Commit `af2e640`, made at the workplace. Its hash was e-mailed a few minutes after the run started,
+  before any result was seen.
+- **Machine.** The workplace PC (Windows, Python 3.11.9, 14 CPUs), 12 jobs at a time, 372 jobs in 2,589 s. The PC
+  froze several times during the run.
+
+## 2. Results
+
+| ID | prediction | value | verdict |
+|---|---|---|---|
+| I0 | the run is as locked | 152 tests; both arms on every job; every record names its arm's versions; no uncommitted change | **PASS** |
+| I1 | item 52 changes no output | 87 identical of the 111 tests and calls both arms finished; 24 differ | **REFUTED** |
+| I2 | item 52 changes no failure | REL failed on 55, C25 on 59, not the same set | **REFUTED** |
+
+Reported without prediction: the compile time C25/REL has a median of 0.410 and a geometric mean of 0.422 over the
+111 pairs, and no REL compile took under 1 s.
+
+## 3. Why
+
+**Most failures were the machine running out of memory.**
+
+- Of 114 failed jobs, one was a timeout (bwt_n37 on linear, C25, 1,800 s).
+- The others ended with `MemoryError`, NumPy unable to allocate about 1 MiB, OpenBLAS unable to allocate memory,
+  extension modules that could not be imported, or a process that ended with no message at all.
+- They include the smallest circuits (adder_n4, wstate_n3, iswap_n2). BP-FINAL ran 12 jobs at a time on the same
+  machine without this; why memory ran short this time was not established.
+- Which job fails depends on what else is running at that moment, so the failures differ between the arms whatever
+  the arms compute.
+
+**The differing outputs are explained by a search that stops by time.**
+
+- `psf_smart_layout.smart_vf2_layout` has a time budget (2 s), shrinks each attempt's call limit to fit the time
+  left, and gives the packing search a time budget of its own. On a slower or busier machine it tries fewer
+  candidates, and can return another layout.
+- Item 52 makes the two feasibility checks faster. Most of all on all-to-all maps, whose complete coupling graphs
+  were slow for networkx. That leaves more of the budget for the search itself.
+- 11 of the 24 differences are on all-to-all maps, and 4 are the 100-qubit circSU2 tests on FakeTorino.
+- This was known: in BP-FINAL, the release run twice in separate processes (REL and REL2) gave different outputs on
+  83 of 877 tests (Addendum 408). Addendum 409's I1 required identity against that background. **That was a design
+  error in the prediction, not a property of item 52.**
+
+**The time ratio is not item 52's speed-up in ordinary use.**
+
+- Each job made one compile in a fresh process, under memory pressure.
+- The release's checks import networkx inside the function. Its first import (a fraction of a second) is therefore
+  inside the timed compile; item 52 does not import networkx there.
+- A warm comparison is still needed.
+
+## 4. What this shows about PSF-Zero
+
+**A weakness, recorded as found.** With `layout_search=True`, the same input, seed and version can give different
+outputs depending on the machine's speed and load. BP-FINAL measured it at 83 of 877 tests between two runs. Today it
+showed in 24 of 111 under heavy load. A search budgeted in calls instead of seconds would make the output a function
+of the input; it is a candidate for a later item.
+
+## 5. What follows
+
+- C25-ID2 (Addendum 411) tests item 52 again with the layout module's clock made virtual, so that the search no longer
+  depends on the machine's speed, with a control arm (the release twice) and 4 jobs at a time.
+- Item 52 is not proposed on this run.
+
+---
+
+<!-- ===== Addendum 411 (source: spare-qubit-cliff-addendum-411-2026-10-09.md) ===== -->
+
+> **Note added when merging:** Pre-registration of C25-ID2, committed with its script and Addendum 410 as the lock, before the run.
+
+## Addendum 411 -- Pre-registration: C25-ID2. C25-ID again with the layout search made independent of the machine's speed (a virtual clock in the layout module), a control arm (the release run twice) and 4 jobs at a time. Does item 52 change any output when timing cannot? (2026-10-09)
+
+**Status: pre-registration.** Written after C25-ID's results (Addendum 410) and before C25-ID2's run. Locked at the
+workplace like Addendum 409: a local commit, its hash e-mailed before the run, pushed later from home unchanged.
+
+## 1. The test
+
+[`benchmarks/c25_identity2.py`](../../benchmarks/c25_identity2.py) is C25-ID's script
+([`c25_identity.py`](../../benchmarks/c25_identity.py), unchanged) with four differences:
+
+1. **A virtual clock in the layout module.**
+   - In each job, after the layout module is loaded, its `time` is replaced by `_VirtualTime`. Every
+     `perf_counter()` call advances that clock by 1e-4 s; everything else is the real `time` module.
+   - The search's three time-based decisions (its 2 s budget, the call limits shrunk to fit the time left, the
+     packing search's budget) then depend only on the sequence of calls. An arm that makes the same decisions makes
+     the same calls.
+   - Item 52's functions do not read the clock. If they return the same sizes, every arm makes the same decisions.
+   - The clock is the same in every arm. `psf_compile.py` and Qiskit are not changed.
+2. **A control arm, REL2.** The release again, in its own process: it shows whether the harness itself is
+   deterministic.
+3. **4 jobs at a time,** not 12. Other programs are closed before the run.
+4. **3,600 s per job,** because a search that no longer stops at 2 s of wall time can take longer.
+
+Tests, calls and output signature as Addendum 409: the 152 development tests; the default call on all; the
+recommended call on the FakeTorino tests; 558 jobs. The three arms of a test and call are next to each other in the
+queue, in an order set by the test's hash. Times are recorded, but they describe this virtual-clock mode, not the
+ordinary call.
+
+## 2. Predictions
+
+| ID | prediction | confirmed if | refuted if |
+|---|---|---|---|
+| J0 | the run is as locked | 152 tests; all three arms on every job; every record names its arm's versions and the virtual clock; no uncommitted change | any fails |
+| J1 | the harness is deterministic (REL2 = REL) | every test and call both finish has the same signature | one differs |
+| J2 | item 52 changes no output (C25 = REL) | every test and call both finish has the same signature | one differs |
+| J3 | the same failures in every arm | the tests and calls that fail are the same in all three arms | they differ |
+
+**How the verdicts are read.**
+
+- If J1 is refuted, something else in the pipeline is not deterministic. J2 and J3 then cannot separate item 52 from
+  that, and the test is inconclusive.
+- If J1 holds and J2 and J3 hold, item 52 can be proposed for the next release on identity. Its speed in ordinary use
+  is measured separately (warm compiles, and TOQB).
+- If J1 holds and J2 or J3 fails, item 52 changes something, and it is not proposed.
+
+## 3. What this does not establish
+
+- Speed in ordinary use.
+- That the release's outputs are reproducible in ordinary use (Addendum 410 shows they are not under load).
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
