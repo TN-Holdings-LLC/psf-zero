@@ -3026,58 +3026,74 @@ Reported without prediction:
 
 <!-- ===== Addendum 414 (source: spare-qubit-cliff-addendum-414-2026-10-09.md) ===== -->
 
-> **Note added when merging:** Results of C26-ID (Addendum 413), with its data.
+> **Note added when merging:** Results of C26-ID (Addendum 413), two runs, with their data. Corrected version.
 
-## Addendum 414 -- Results of C26-ID (Addendum 413): M0 PASS, M1 CONFIRMED. Item 53 changes none of 3,300 values, and makes the estimates and exactness checks 1.3-1.5 times as fast (function times 0.67-0.79 of the release's; `_ops_of` 0.45). Whole compiles vary too much from run to run to show its effect (2026-10-09)
+## Addendum 414 -- Results of C26-ID (Addendum 413): M0 PASS, M1 CONFIRMED, in both of two runs. Item 53 changes none of 3,300 values, and makes the estimates and exactness checks 1.3-1.5 times as fast (function times 0.67-0.79 of the release's; `_ops_of` 0.42-0.45). Whole compiles vary too much from run to run to show its effect (2026-10-09)
 
-**Status: results of the pre-registered test in Addendum 413, scored by the locked script.** The run is
-[`data/2026-10-09/c26_identity/`](../../data/2026-10-09/c26_identity/): `c26_identity.md` and `c26_identity.json`.
+**Status: results of the pre-registered test in Addendum 413, scored by the locked script.**
 
-## 1. The run
+**Corrected.** The first version of this Addendum (commit `5a65e5f`, not pushed) reported only run 1's numbers,
+while the data files it linked are run 2's. This version replaces it in Part 10 and adds run 1's record; the first
+version stays in the history.
+
+## 1. The runs
 
 - **Lock.** Commit `9e1cd3a`, made at the workplace.
 - **Machine.** The workplace PC (Windows, Python 3.11.9), one process.
-- **Duration.** 112 s for the 300 cases, then the three whole compiles.
+- **Two runs.** The locked script was run twice on the lock commit, one after the other, unchanged. Addendum 413
+  planned one run. Both are reported; neither was chosen over the other.
+  - **Run 1** took 112 s for the 300 cases; its output was shared by 06:35 CEST.
+  - **Run 2** took 86 s for the 300 cases; its output was shared by 06:42 CEST.
+- **Files.** The script writes to the same folder on every run, so run 2 replaced run 1's files.
+  - [`data/2026-10-09/c26_identity/`](../../data/2026-10-09/c26_identity/): `c26_identity.md` and
+    `c26_identity.json` are **run 2's**.
+  - `run1_console.txt` in the same folder is run 1's terminal output, copied by hand, unedited. It is the only record
+    of run 1.
 
 ## 2. Results
 
-| ID | prediction | value | verdict |
-|---|---|---|---|
-| M0 | the run is as locked | 300 cases; 3,300 values compared; versions 2026-10-07.1 and 2026-10-09.c26; no uncommitted change | **PASS** |
-| M1 | item 53 changes no value | 0 of 3,300 differ | **CONFIRMED** |
+| ID | prediction | run 1 | run 2 | verdict |
+|---|---|---|---|---|
+| M0 | the run is as locked | 300 cases; 3,300 values; versions 2026-10-07.1 and 2026-10-09.c26; no uncommitted change | the same | **PASS** |
+| M1 | item 53 changes no value | 0 of 3,300 differ | 0 of 3,300 differ | **CONFIRMED** |
 
 **Reported without prediction: time per function** (summed over the 300 cases, the versions alternating):
 
-| function | REL (s) | C26 (s) | C26 / REL |
-|---|---|---|---|
-| excitation_cost | 5.55 | 4.37 | 0.786 |
-| hybrid_cost | 5.93 | 3.98 | 0.672 |
-| pauli_cost | 6.02 | 6.05 | 1.004 |
-| kraus_cost | 9.23 | 9.29 | 1.007 |
-| readout_cost | 0.14 | 0.14 | 0.994 |
-| _ops_of | 1.96 | 0.88 | 0.450 |
-| _implements | 10.00 | 6.68 | 0.668 |
-| _same_action | 14.08 | 9.63 | 0.684 |
+| function | run 1: REL / C26 (s) | run 1: C26 / REL | run 2: REL / C26 (s) | run 2: C26 / REL |
+|---|---|---|---|---|
+| excitation_cost | 5.55 / 4.37 | 0.786 | 4.05 / 3.07 | 0.757 |
+| hybrid_cost | 5.93 / 3.98 | 0.672 | 4.29 / 3.17 | 0.740 |
+| pauli_cost | 6.02 / 6.05 | 1.004 | 4.77 / 4.62 | 0.968 |
+| kraus_cost | 9.23 / 9.29 | 1.007 | 6.49 / 6.65 | 1.025 |
+| readout_cost | 0.14 / 0.14 | 0.994 | 0.11 / 0.11 | 1.001 |
+| _ops_of | 1.96 / 0.88 | 0.450 | 1.57 / 0.66 | 0.420 |
+| _implements | 10.00 / 6.68 | 0.668 | 8.10 / 5.48 | 0.677 |
+| _same_action | 14.08 / 9.63 | 0.684 | 11.02 / 7.91 | 0.718 |
 
-**Reported without prediction: the recommended call, whole compiles** (two each, the versions alternating):
+**Reported without prediction: the recommended call, whole compiles** (two per version per run, alternating):
 
-| test | REL (s) | C26 (s) | two-qubit gates |
+| test | REL (s), run 1 / run 2 | C26 (s), run 1 / run 2 | two-qubit gates |
 |---|---|---|---|
-| ham_enc_gray_dvalues_8-8-8, FakeTorino | 104.3, 36.9 | 69.2, 58.8 | 11,688 in all four |
-| grover_5, FakeTorino | 1.19, 0.88 | 0.99, 0.84 | 537 in all four |
-| ham_JW-10, FakeTorino | 5.95, 15.07 | 5.02, 5.63 | 2,371 in all four |
+| ham_enc_gray_dvalues_8-8-8, FakeTorino | 104.3, 36.9 / 34.3, 34.8 | 69.2, 58.8 / 43.9, 27.5 | 11,688 in all eight |
+| grover_5, FakeTorino | 1.19, 0.88 / 1.16, 2.97 | 0.99, 0.84 / 0.83, 1.12 | 537 in all eight |
+| ham_JW-10, FakeTorino | 5.95, 15.07 / 9.95, 7.05 | 5.02, 5.63 / 5.58, 5.15 | 2,371 in all eight |
 
 ## 3. Reading
 
 - **Item 53 does what it claims, without changing what is computed.**
-  - It changes how matrices are built, not their values.
-  - The estimates and checks it serves are 1.3-1.5 times as fast.
-  - The estimates dominated by the state update (`pauli_cost`, `kraus_cost`) are unchanged.
-- **The whole compiles cannot show the gain.** The same version on the same test varied by up to 2.8 times within one
-  process (REL on ham_enc_gray_dvalues_8-8-8: 104 s, then 37 s). From the profile of Addendum 413, where estimates and
-  checks took about 30% of the recommended call, the expected gain is of the order of 10%. TOQB measures it.
+  - It changes how matrices are built, not their values: 0 of 6,600 values differ over the two runs.
+  - The estimates and checks it serves are 1.3-1.5 times as fast, in both runs. The ratios moved by up to 0.07
+    between runs, while the absolute times moved by about 25% (the whole machine was slower in run 1).
+  - The estimates dominated by the state update (`pauli_cost`, `kraus_cost`) are unchanged (0.97-1.03).
+- **The whole compiles cannot show the gain.** The same version on the same test varied by up to 2.8 times within
+  one process (REL on ham_enc_gray_dvalues_8-8-8 in run 1: 104 s, then 37 s; REL on grover_5 in run 2: 1.16 s, then
+  2.97 s). On ham_JW-10, C26's four times (5.0-5.6 s) are all below REL's four (6.0-15.1 s); four against four is
+  not a test, and nothing is concluded from it. From the profile of Addendum 413, where estimates and checks took
+  about 30% of the recommended call, the expected gain is of the order of 10%. TOQB measures it.
 - **The variation itself is a finding.** It adds to Addenda 410-412: the compile time of the recommended call is not
   stable even in one process. The causes are not examined here; caches that fill on first use are one candidate.
+- **A lesson for the scripts.** A run should not replace an earlier run's files. Later scripts write to a new
+  folder per run, or refuse to overwrite.
 
 ## 4. What follows
 

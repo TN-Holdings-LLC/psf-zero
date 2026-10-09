@@ -1,0 +1,37 @@
+C26-ID, first run on commit 9e1cd3a: the terminal output, copied by hand after the run. The script writes
+c26_identity.md and c26_identity.json to the same folder on every run, so the second run replaced the first's files;
+this copy is the only record of the first run. Nothing below is edited.
+
+[50/300    16 s] 550 values compared, 0 differ
+[100/300    33 s] 1100 values compared, 0 differ
+[150/300    58 s] 1650 values compared, 0 differ
+[200/300    77 s] 2200 values compared, 0 differ
+[250/300    95 s] 2750 values compared, 0 differ
+[300/300   112 s] 3300 values compared, 0 differ
+recommended call, test_hamlib_hamiltonians_transpile[ham_enc_gray_dvalues_8-8-: REL [104.252, 36.869] s, C26 [69.163, 58.81] s
+recommended call, test_feynman_transpile[grover_5.qasm]: REL [1.188, 0.875] s, C26 [0.994, 0.842] s
+recommended call, test_hamlib_hamiltonians_transpile[ham_ham_JW-10]: REL [5.948, 15.069] s, C26 [5.024, 5.626] s
+# C26-ID
+
+git head 9e1cd3a, uncommitted tracked changes: none; 300 cases, 3300 values compared (expected 3300); versions 2026-10-07.1, 2026-10-09.c26; Python 3.11.9
+
+- values that differ: 0
+
+| function | REL (s) | C26 (s) | C26 / REL |
+|---|---|---|---|
+| excitation_cost | 5.55 | 4.37 | 0.786 |
+| hybrid_cost | 5.93 | 3.98 | 0.672 |
+| pauli_cost | 6.02 | 6.05 | 1.004 |
+| kraus_cost | 9.23 | 9.29 | 1.007 |
+| readout_cost | 0.14 | 0.14 | 0.994 |
+| _ops_of | 1.96 | 0.88 | 0.450 |
+| _implements | 10.00 | 6.68 | 0.668 |
+| _same_action | 14.08 | 9.63 | 0.684 |
+
+Recommended call, whole compile (reported only):
+
+- test_hamlib_hamiltonians_transpile[ham_enc_gray_dvalues_8-8-8]: REL [104.252, 36.869] s, C26 [69.163, 58.81] s; two-qubit gates REL [11688, 11688], C26 [11688, 11688]
+- test_feynman_transpile[grover_5.qasm]: REL [1.188, 0.875] s, C26 [0.994, 0.842] s; two-qubit gates REL [537, 537], C26 [537, 537]
+- test_hamlib_hamiltonians_transpile[ham_ham_JW-10]: REL [5.948, 15.069] s, C26 [5.024, 5.626] s; two-qubit gates REL [2371, 2371], C26 [2371, 2371]
+
+VERDICT IDENTICAL
