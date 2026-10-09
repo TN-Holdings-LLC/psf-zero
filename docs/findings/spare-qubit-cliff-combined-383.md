@@ -3192,6 +3192,120 @@ functions differ too much for that; it is not used.
 
 ---
 
+<!-- ===== Addendum 416 (source: spare-qubit-cliff-addendum-416-2026-10-09.md) ===== -->
+
+> **Note added when merging:** Pre-registration of C27-B, with the candidate and the script it locks.
+
+## Addendum 416 -- Pre-registration: C27-B. Candidate 2026-10-09.c27 (changelog item 54) gives the recommended call's estimates and exactness checks one work budget per compile, counted from circuit sizes, never from a clock. Does it change nothing where the budget is not reached, stop exactly where it is, and bound the time? The 34 development tests with a target (2026-10-09)
+
+**Status: pre-registration.** It was written after the candidate's unit tests were written and before C27-B's run.
+The lock is the commit that adds this Addendum with the candidate and the script. It is made at the workplace as for
+Addendum 405:
+
+1. the lock commit is made locally, after the candidate's unit tests pass;
+2. its hash is e-mailed before the run;
+3. the run records the commit it ran on;
+4. the lock commit and the results are pushed later from home, unchanged.
+
+## 1. Why
+
+The recommended call checks and compares its candidates by simulating them: the estimates (`excitation_cost`,
+`hybrid_cost`, ...) and the exactness checks (`_implements`, `_same_action`, item 39). Their work grows as the number
+of gates times 2 to the number of touched qubits, up to 16 qubits, with no bound:
+
+- hwb10 (16 qubits) did not finish in an hour (Addendum 412);
+- on the slow development tests these functions took 70-100% of the compile (Addendum 415);
+- one `excitation_cost` call on hwb10 took 433 s.
+
+A tool that can run for an hour on one input cannot be given a time budget. Stopping by a clock would make the output
+depend on the machine and its load (Addenda 410-412 found that cost in the layout search). Item 54 counts work
+instead.
+
+## 2. The candidate: 2026-10-09.c27 (item 54)
+
+[`patches/psf_compile_c27_2026-10-09/`](../../patches/psf_compile_c27_2026-10-09/):
+
+- `psf_compile.py`: candidate c26 (item 53) plus item 54. `VERSION` 2026-10-09.c27.
+  - **The count.** Before an estimate or check runs, its work is computed from the circuit: the gate applications
+    it will make (`ops`) and the sum of 2^k over those applied to the k-qubit state (`amps`).
+    work = 20,000 * ops + c_f * amps, in integer units, with c_f 57 (`excitation_cost`, `pauli_cost`, `kraus_cost`),
+    46 (`hybrid_cost`) and 5 (the two checks). The constants are Addendum 415's fits, rounded; a unit is about a
+    nanosecond on the workplace PC. `pauli_cost` and `kraus_cost` were not measured (the recommended call does not
+    use them); they take `excitation_cost`'s constant.
+  - **The budget.** One per `compile_for_hardware` call, shared by every estimate and check under it, its internal
+    recompilations included: `work_budget_s` (default 10) times 10^9 units.
+  - **The fallback.** A call that does not fit in what is left is not made, and nothing is drawn. An estimate then
+    "cannot be made" (None) and a check "cannot be made" (False): what the release already does above 16 qubits. The
+    circuit in hand is kept.
+  - `work_budget_s=None` restores the earlier behaviour. Estimates and checks called outside `compile_for_hardware`
+    have no budget. Counted in `WORK_STATS`.
+  - A call that cannot be made anyway (more than 16 touched qubits) is not counted and draws nothing. For this,
+    `_implements` finds the qubits its check would touch (the compiled circuit's and both layouts') before building
+    any matrix, and returns False there if they are more than 16; it returned the same False after building them.
+  - **Found before the lock.** The first version counted `_implements` before that test, from the compiled
+    circuit's qubits alone, so a check over 16 qubits could be charged 2^k work (k up to the device's size) and then
+    not be made. The unit tests found the related miscount (a `_same_action` call over 16 qubits, correctly not
+    counted, that the test expected to be counted: case 8, 19 qubits); the test and the code were corrected before
+    the lock. Addendum 415's script counted `_implements` the first way, but no `_implements` call in its run
+    touched more than 16 qubits (the largest was 15), so its constants are unaffected.
+- `test_c27.py`: without a budget, and with one not reached, every estimate and check returns c26's value on 40
+  random circuits; the work drawn equals the count computed independently (0 for a call over 16 touched qubits);
+  with no budget left, estimates return None
+  and checks False and nothing is drawn; the budget is opened by the outermost call and closed after it, after an
+  error too; `work_budget_s=0` refuses every estimate and check and still compiles; bad values are rejected.
+
+## 3. The test
+
+[`benchmarks/c27_budget.py`](../../benchmarks/c27_budget.py):
+
+- **Tests:** the 34 development tests with a target, as Addendum 415 (the FakeTorino and summit tests of C25-ID's
+  152). None of BP-FINAL's 880 is used.
+- **Call:** the recommended call with the backend's target.
+- **Arms**, each test and arm in its own process, with the layout search's clock virtual (as C25-ID2) and
+  `PYTHONHASHSEED=0`:
+  - **NB:** c27 with `work_budget_s=1e6`. The budget is never reached, so it decides as no budget does, and the work
+    is counted.
+  - **NB2:** the same again, to see where two processes disagree on their own (Addenda 410-412).
+  - **WB:** c27 with its default budget (10).
+  The three arms of a test are next to each other in the queue, in an order set by the test's hash.
+- **Caps:** each job is killed after 600 s; no job starts after 7,200 s; 4 jobs at a time.
+- **Recorded:** the output's signature (`bp_mock.sig_hash`) and two-qubit gate count, the compile time, every draw on
+  the budget, and the wall time of the estimates and checks.
+
+A test is **stable** if NB and NB2 both finish with the same signature. B1 and B2 are judged on the stable tests only:
+where two processes of the same arm disagree, nothing can be said of the third.
+
+## 4. Predictions
+
+| ID | prediction | confirmed if | refuted if |
+|---|---|---|---|
+| B0 | the run is as locked | 34 tests, 102 records; every finished record names c27 and the virtual clock; no uncommitted change | any fails |
+| B1 | item 54 changes nothing where the budget is not reached | on every stable test where WB refuses no call, WB's signature is NB's | one differs |
+| B2 | the budget stops a call exactly where the work exceeds it | on every stable test, WB refuses a call if and only if NB's counted work exceeds 10^10 units | one is not so |
+| B3 | the time is bounded | every WB job finishes within 600 s, hwb10 included, and on each its estimates and checks take at most 30 s of wall time | a job fails, or one takes longer |
+
+B3's 30 s is the budget's 10 s with room for running 4 jobs at a time and for the work before each count (listing
+the circuit's instructions), which is not counted.
+
+**Reported without prediction:** on the tests where WB refuses, the two-qubit gate counts and compile times of the
+three arms, and the work NB counted. This is the quality item 54 gives up for its bound. From Addendum 415, about 6
+of the 34 tests are expected to reach the budget; that number is not a prediction.
+
+**What follows.**
+
+- If B0-B3 hold, item 54 can be proposed for the next release with the quality table. The owner decides.
+- If B1 or B2 fails, item 54 is not proposed, and the difference is examined.
+- If only B3 fails, the counts or the constants are wrong for the test that failed; the constants are re-measured
+  before item 54 is proposed.
+
+## 5. What this does not establish
+
+- Quality on any test outside these 34, and whether 10 s is the right budget. TOQB and BP-FINAL measure those.
+- Times on other machines. The decisions are the same everywhere; the seconds they correspond to are not.
+- Anything about item 53's speed; c27 contains it, and it is not measured here.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
