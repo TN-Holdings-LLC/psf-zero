@@ -3716,6 +3716,160 @@ Before the console output was lost, the night's run showed the same picture: 3.2
 
 ---
 
+<!-- ===== Addendum 422 (source: spare-qubit-cliff-addendum-422-2026-10-10.md) ===== -->
+
+> **Note added when merging:** Pre-registration of C29-ID, committed with candidate 2026-10-10.c29, its tests and its script as the lock, and pushed before the run.
+
+## Addendum 422 -- Pre-registration: C29-ID. Candidate 2026-10-10.c29 (changelog items 53 and 56) skips the estimates of candidates whose exactness check cannot be made. Does it return the release's compiled output, by value, on every development test where the release returns the same output twice, and does it finish hwb10 in a fifth of the release's time? (2026-10-10)
+
+**Status: pre-registration.** It is written after the candidate's tests and before C29-ID's run. It is locked at
+home: the commit, with the candidate, its tests and the script, is pushed before the run starts.
+
+## 1. Why
+
+- **hwb10's 819 s decided nothing.** On hwb10 the release spent 819 of its 852 s on estimates whose candidates could
+  never pass item 39's exactness check, because the check cannot be made on circuits of that size (Addendum 420).
+- **c28 removed them.** Exploratory candidate c28 removed those estimates (item 56). On nine development tests it
+  returned the release's circuits, hwb10's in 26.9 s (Addendum 421). Nine tests do not show identity.
+- **The candidate here.**
+  - It carries item 56 with sounder counts than c28's (below).
+  - It does not carry item 57a: that part changes values in their last bits, so it could swap a close decision.
+  - It carries item 53 (candidate c26, Addenda 413-414). Item 53's identity was shown function by function, never on
+    whole outputs. This test covers both items.
+
+## 2. The candidate: 2026-10-10.c29
+
+[`patches/psf_compile_c29_2026-10-10/psf_compile.py`](../../patches/psf_compile_c29_2026-10-10/psf_compile.py) is
+candidate c26 (release 2026-10-07.1 with item 53) with item 56. `VERSION` is 2026-10-10.c29; changelog item 56 is
+added; nothing else changes.
+
+- **`_n_narrow(circ)`.** It counts the instructions that `_ops_of` turns into one matrix each: not barrier, measure or
+  delay, and on at most `EXACT_MAX_GATE_QUBITS` qubits. Each adds one entry to `_ops_of`'s list or makes it give up,
+  and `_ops_of` gives up rather than hold more than `EXACT_MAX_OPS`. So if the count exceeds `EXACT_MAX_OPS`,
+  `_ops_of` returns None, and every check on that circuit returns False.
+- **`_narrow_touched(circ)`.** It collects the qubits of those instructions. They are all among the qubits of
+  `_ops_of`'s list.
+- **`_cannot_implement(qc, out)`.** It is True only where `_implements(qc, out)` would return False:
+  - more than 16 logical qubits;
+  - either circuit over the count;
+  - more than 16 qubits among `_narrow_touched(out)` and the initial and final layouts.
+
+  When a count raises, it returns False (not certain, so nothing is skipped).
+- **Where it is used.**
+  - `_choose_lazy` drops such a candidate before the estimates. In the loop that follows it could only have been
+    skipped or refused, and neither changes the choice.
+  - `_compare_level3` does not estimate level 3's circuit. Every path after that point returns the circuit in hand.
+  - `_checkable_logical` also returns False when the input itself is over the count, so the floor-aware and level-3
+    compiles are not made. Their candidates could only be refused.
+  - `_resynthesise` does not build the re-synthesis when the circuit is over the count. `_same_action` would refuse it.
+- **Counters.** `FEASIBILITY_STATS` counts the skips. The other counters change (fewer estimates, fewer checks).
+- **The difference from c28.** c28 counted every instruction and qubit, including those of instructions that
+  `_ops_of` expands through their definitions. A definition can hold fewer instructions, on fewer qubits. Counting
+  them could say "cannot" where the check can be made, which would change an output.
+
+**The claim.** Wherever the release returns a circuit, c29 returns the same circuit. Where the work it skips would
+have raised an error, it returns the circuit in hand instead. The claim rests on the code paths above. This test
+checks it on whole outputs.
+
+**Its tests** ([`test_c29.py`](../../patches/psf_compile_c29_2026-10-10/test_c29.py)). `EXACT_MAX_OPS` is lowered in
+both c26 and c29 so that the skips happen on small circuits.
+
+- On 40 random circuits and their level-1, level-2 and wrong transpilations for FakeTorino:
+  - the count is a sound bound;
+  - `_cannot_implement` implies that `_implements` returns False, and both outcomes occur.
+- A gate wider than six qubits with an empty definition is not counted. On it, c28's count would have said "cannot"
+  where the check can be made and passes.
+- `_choose_lazy`, `_compare_level3` and `_resynthesise` return c26's results, with some candidates over the limit.
+- On five small circuits, the recommended call with the virtual clock returns c26's output wherever c26 returns the
+  same output twice. Outputs are compared as C29-ID compares them (`value_sig`, below).
+
+**Found before the lock.**
+
+- **The first version of the last test failed.** It compared whole layouts, including which ancilla sits on which
+  physical qubit, and failed on a layout.
+- **A diagnostic, not pre-registered.**
+  - It ran [`diag_c29.py`](../../data/2026-10-10/c29_lock_diag/diag_c29.py), with output
+    [`diag_c29.txt`](../../data/2026-10-10/c29_lock_diag/diag_c29.txt).
+  - It compiled the test's ten cases (five circuits, two limits) in one process, in the order c26, c26, c29, c26, c29.
+    Each output was compared with the first.
+- **Instructions and logical layouts never differed:** all 50 outputs matched the first on both.
+- **Only the ancillas' assignment differed, and the release does this to itself.**
+  - It differed in 3 of the 10 sequences, between c26's own first and later runs (k=1 at both limits, k=2 without a
+    lowered limit).
+  - In one more sequence (k=2 with the lower limit), it first differed in c29's run and then in c26's next run as
+    well.
+- **Reading.**
+  - Within one process, the ancillas' assignment changes from run to run. The circuit and the logical qubits'
+    placement stay the same.
+  - This is another small reproducibility weakness of the pipeline, to be looked at with the others (Addendum
+    412). Its cause was not sought.
+  - It cannot be attributed to item 56: c26 differs from itself in the same way.
+  - C29-ID was designed to compare outputs with the ancillas filtered out, so it is not affected.
+- **The fix.** The test now compares by `value_sig`. Nothing else was changed.
+
+## 3. The test
+
+[`benchmarks/c29_identity.py`](../../benchmarks/c29_identity.py) is C25-ID2 (Addendum 411) with the changes Addendum
+412 called for.
+
+- **Tests and calls.** C25-ID2's 152 development tests and its calls:
+  - "default" on every test;
+  - "recommended", with the backend's target, on the FakeTorino and summit tests.
+- **Arms.**
+  - REL: release 2026-10-07.1.
+  - REL2: the release again (control).
+  - C29.
+
+  All arms use layout 2026-10-01.1. Each test, call and arm runs in its own process, with one compile, the layout
+  search's clock virtual and `PYTHONHASHSEED=0`.
+- **Comparison by value.** `value_sig` records:
+  - instruction names, qubits and clbits;
+  - parameters as numbers, their number type ignored;
+  - the global phase;
+  - the initial and final layouts.
+
+  `bp_mock.sig_hash` is recorded as well.
+- **Counters.** Each record carries the compile's decision counters, including C29's `FEASIBILITY_STATS`.
+- **Machine.** The home PC (WSL2, 12 CPUs), with nothing else running, 4 jobs at a time.
+- **Caps.** A job is killed after 3,600 s, no job starts after 14,400 s, and the output folder must not exist.
+- **Scoring.** `c29_identity.py compare` scores the run.
+
+## 4. Predictions
+
+| ID | prediction | confirmed if | refuted if |
+|---|---|---|---|
+| U0 | the run is as locked | 152 tests; all three arms on every test-call; versions 2026-10-07.1 and 2026-10-10.c29, layout 2026-10-01.1 and the virtual clock in every record; no uncommitted change | any fails |
+| U1 | item 56 (with item 53) changes no output | C29 = REL by value on every test-call where REL2 = REL by value and C29 finished | one differs |
+| U2 | C29 adds no failure | every test-call where C29 failed also failed in REL and REL2 | one did not |
+| U3 | hwb10, recommended call: C29 is fast | C29's wall time under 0.2 of REL's (both finishing) | otherwise |
+
+Reported without prediction:
+
+- the control, by value and by `sig_hash`: on how many test-calls REL2 = REL;
+- the test-calls not scored;
+- those on which item 56 skipped something, with what it skipped;
+- the summed compile time of the recommended calls in each arm.
+
+**What follows.**
+
+- **If U0, U1 and U2 hold**, candidate c29 (items 53 and 56) is proposed for the next release on identity. U1 holds
+  only on the test-calls where the release repeats itself; those not scored are listed.
+- **If U1 fails**, c29 is not proposed. The test-calls that differ are examined first. A difference would mean a
+  path that item 56 skips is not one that returns the circuit in hand.
+- **U3 is about speed only.** It does not bear on adoption.
+
+## 5. What this does not establish
+
+- **Identity where the release does not repeat itself.** On those test-calls, item 56's effect cannot be separated
+  from the release's own variation.
+- **Identity with the real clock.** In ordinary use the layout search stops by wall-clock time, so its result
+  depends on the machine's speed and load (Addenda 410-411). This holds for the release as much as for C29. The
+  test makes the clock virtual to remove that variation. Item 56 acts only after the release's own circuit is
+  complete, so it does not change how long that search runs.
+- **Speed in general.** C29 is faster only where item 56 skips something, mainly circuits too large to check.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
