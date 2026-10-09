@@ -2937,6 +2937,93 @@ type ignored, global phase and layouts.
 
 ---
 
+<!-- ===== Addendum 413 (source: spare-qubit-cliff-addendum-413-2026-10-09.md) ===== -->
+
+> **Note added when merging:** Pre-registration of C26-ID, committed with candidate 2026-10-09.c26, its tests and its script as the lock, before the run.
+
+## Addendum 413 -- Pre-registration: C26-ID. Candidate 2026-10-09.c26 (changelog item 53) keeps standard gates' matrices and embeds one-qubit gates without np.kron. Do the recommended call's estimates and exactness checks return exactly what they returned, function by function, and how much faster are they? (2026-10-09)
+
+**Status: pre-registration.** Written after the candidate's tests and before C26-ID's run. Locked at the workplace
+like Addendum 409: a local commit, its hash e-mailed before the run, pushed later from home unchanged.
+
+## 1. Why
+
+The profile of 2026-10-09 compiled 30 FakeTorino development tests with the release's recommended call under cProfile
+(`rec_profile.py`; 375 s in all, cProfile included; one test with a warm-up over 60 s was skipped, and the run was
+stopped during the 33rd test).
+
+- Estimates (`excitation_cost`, `hybrid_cost`, `readout_cost`): 17% of the time.
+- Exactness checks (`_implements`, `_same_action`): 12%.
+- Inside them, two small steps were large:
+  - `_embed_1q`, which builds the matrix of the one-qubit gates waiting on a two-qubit gate with `np.kron`: 8.9%;
+  - `_ops_of`, which builds every instruction's matrix with `to_matrix()`, again and again for the same gates:
+    7.6%.
+- One test (ham_enc_gray_dvalues_8-8-8) spent 66 of its 90 s in estimates and checks.
+
+## 2. The candidate: 2026-10-09.c26 (item 53)
+
+[`patches/psf_compile_c26_2026-10-09/psf_compile.py`](../../patches/psf_compile_c26_2026-10-09/psf_compile.py) is
+release 2026-10-07.1 with:
+
+- **`_gate_matrix`.** In place of `np.asarray(op.to_matrix(), dtype=complex)` in the five places that read
+  instruction matrices. A standard gate with numeric parameters has its matrix kept, keyed by (name, parameters), for
+  the last 4,096 keys, read-only. Anything else is built and raises as before.
+- **`_embed_1q`.** On one qubit it returns the matrix itself. On two, it forms the Kronecker product as one broadcast
+  multiplication: the same products np.kron forms. Wider: unchanged.
+- `VERSION` 2026-10-09.c26, and changelog item 53. Nothing else.
+
+Its tests
+([`test_c26.py`](../../patches/psf_compile_c26_2026-10-09/test_c26.py)):
+
+- `_embed_1q` equals the release's on 500 random cases;
+- the kept matrices equal `to_matrix()` and are read-only;
+- a non-standard gate is not kept, and an unbound parameter still raises;
+- the kept matrices stay at 4,096.
+
+## 3. The test
+
+[`benchmarks/c26_identity.py`](../../benchmarks/c26_identity.py) loads both versions in one process.
+
+- **Cases.** 300 random circuits (`random_circuit`, 2-10 qubits, seeds 20261009 + k). Each is transpiled for
+  FakeTorino at level 1 (seed k) and level 2 (seed k + 1). A wrong copy of the first adds an X gate.
+- **Values compared.** For each case, each version computes:
+  - the five estimates (`excitation_cost`, `hybrid_cost`, `pauli_cost`, `kraus_cost`, `readout_cost`);
+  - `_ops_of`, with its matrices and qubits;
+  - `_implements` on the two transpilations and on the wrong copy;
+  - `_same_action` on the two transpilations, and on the first with itself.
+
+  That is 11 values per case, 3,300 in all, compared exactly: floats with ==, matrices element by element, booleans.
+- **Times.** The two versions alternate which goes first, and their times are summed per function.
+- **Whole compiles.** With `--bp`, the recommended call is timed twice per version on three development tests:
+  ham_enc_gray_dvalues_8-8-8 and ham_JW-10 on FakeTorino, and grover_5. Whole outputs are not compared, because they
+  differ from process to process (Addendum 412).
+
+## 4. Predictions
+
+| ID | prediction | confirmed if | refuted if |
+|---|---|---|---|
+| M0 | the run is as locked | 300 cases; 3,300 values compared; versions 2026-10-07.1 and 2026-10-09.c26; no uncommitted change | any fails |
+| M1 | item 53 changes no value | 0 of the 3,300 differ | one differs |
+
+Reported without prediction:
+
+- each function's time, C26/REL;
+- the three whole compiles' times and two-qubit counts.
+
+**What follows.**
+
+- If M0 and M1 hold, item 53 can be proposed for the next release on identity. Its speed is reported here and is
+  measured again in TOQB.
+- If M1 fails, item 53 is not proposed, and the difference is examined.
+
+## 5. What this does not establish
+
+- That whole compiled outputs are unchanged. They are not reproducible between processes even for the release
+  (Addendum 412). Their parts that item 53 touches are what is compared.
+- Speed on other machines.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
