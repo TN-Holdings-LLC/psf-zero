@@ -3024,6 +3024,71 @@ Reported without prediction:
 
 ---
 
+<!-- ===== Addendum 414 (source: spare-qubit-cliff-addendum-414-2026-10-09.md) ===== -->
+
+> **Note added when merging:** Results of C26-ID (Addendum 413), with its data.
+
+## Addendum 414 -- Results of C26-ID (Addendum 413): M0 PASS, M1 CONFIRMED. Item 53 changes none of 3,300 values, and makes the estimates and exactness checks 1.3-1.5 times as fast (function times 0.67-0.79 of the release's; `_ops_of` 0.45). Whole compiles vary too much from run to run to show its effect (2026-10-09)
+
+**Status: results of the pre-registered test in Addendum 413, scored by the locked script.** The run is
+[`data/2026-10-09/c26_identity/`](../../data/2026-10-09/c26_identity/): `c26_identity.md` and `c26_identity.json`.
+
+## 1. The run
+
+- **Lock.** Commit `9e1cd3a`, made at the workplace.
+- **Machine.** The workplace PC (Windows, Python 3.11.9), one process.
+- **Duration.** 112 s for the 300 cases, then the three whole compiles.
+
+## 2. Results
+
+| ID | prediction | value | verdict |
+|---|---|---|---|
+| M0 | the run is as locked | 300 cases; 3,300 values compared; versions 2026-10-07.1 and 2026-10-09.c26; no uncommitted change | **PASS** |
+| M1 | item 53 changes no value | 0 of 3,300 differ | **CONFIRMED** |
+
+**Reported without prediction: time per function** (summed over the 300 cases, the versions alternating):
+
+| function | REL (s) | C26 (s) | C26 / REL |
+|---|---|---|---|
+| excitation_cost | 5.55 | 4.37 | 0.786 |
+| hybrid_cost | 5.93 | 3.98 | 0.672 |
+| pauli_cost | 6.02 | 6.05 | 1.004 |
+| kraus_cost | 9.23 | 9.29 | 1.007 |
+| readout_cost | 0.14 | 0.14 | 0.994 |
+| _ops_of | 1.96 | 0.88 | 0.450 |
+| _implements | 10.00 | 6.68 | 0.668 |
+| _same_action | 14.08 | 9.63 | 0.684 |
+
+**Reported without prediction: the recommended call, whole compiles** (two each, the versions alternating):
+
+| test | REL (s) | C26 (s) | two-qubit gates |
+|---|---|---|---|
+| ham_enc_gray_dvalues_8-8-8, FakeTorino | 104.3, 36.9 | 69.2, 58.8 | 11,688 in all four |
+| grover_5, FakeTorino | 1.19, 0.88 | 0.99, 0.84 | 537 in all four |
+| ham_JW-10, FakeTorino | 5.95, 15.07 | 5.02, 5.63 | 2,371 in all four |
+
+## 3. Reading
+
+- **Item 53 does what it claims, without changing what is computed.**
+  - It changes how matrices are built, not their values.
+  - The estimates and checks it serves are 1.3-1.5 times as fast.
+  - The estimates dominated by the state update (`pauli_cost`, `kraus_cost`) are unchanged.
+- **The whole compiles cannot show the gain.** The same version on the same test varied by up to 2.8 times within one
+  process (REL on ham_enc_gray_dvalues_8-8-8: 104 s, then 37 s). From the profile of Addendum 413, where estimates and
+  checks took about 30% of the recommended call, the expected gain is of the order of 10%. TOQB measures it.
+- **The variation itself is a finding.** It adds to Addenda 410-412: the compile time of the recommended call is not
+  stable even in one process. The causes are not examined here; caches that fill on first use are one candidate.
+
+## 4. What follows
+
+- Item 53 can be proposed for the next release on identity. The owner decides.
+- It does not touch what made the recommended call slow on some tests. The checks' work grows as gates times 2 to the
+  number of qubits, up to 16 qubits, with no budget: hwb10 (16 qubits) did not finish in an hour (Addendum 412),
+  ham_JW-14 (14 qubits) took over a minute. That is item 54: a budget for the checks' work, counted in operations,
+  not seconds.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
