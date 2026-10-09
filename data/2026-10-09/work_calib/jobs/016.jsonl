@@ -1,0 +1,4 @@
+{"ev": "job", "stratum": "Feynman, FakeTorino", "test": "test_feynman_transpile[gf2^6_mult.qasm]", "kind": "feynman", "arg": "gf2^6_mult.qasm"}
+{"ev": "compile_start", "version": "2026-10-09.c26", "num_qubits": 18, "size": 135}
+{"ev": "compile_end", "t": 0.765, "q2": 561}
+{"ev": "job_end", "status": "ok", "wall": 10.89}

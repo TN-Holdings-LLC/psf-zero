@@ -1,0 +1,4 @@
+{"ev": "job", "stratum": "HamLib, FakeTorino", "test": "test_hamlib_hamiltonians_transpile[ham_bh_graph-1D-grid-nonpbc-qubitnodes_Lx-12_U-40_enc-unary_d-4]", "kind": "ham_device", "arg": "/bh_graph-1D-grid-nonpbc-qubitnodes_Lx-12_U-40_enc-unary_d-4,"}
+{"ev": "compile_start", "version": "2026-10-09.c26", "num_qubits": 48, "size": 1}
+{"ev": "compile_end", "t": 2.573, "q2": 5042}
+{"ev": "job_end", "status": "ok", "wall": 13.92}

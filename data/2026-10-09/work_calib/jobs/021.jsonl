@@ -1,0 +1,10 @@
+{"ev": "job", "stratum": "100-qubit, FakeTorino", "test": "test_BVlike_simplification_transpile", "kind": "summit", "arg": "test_BVlike_simplification_transpile"}
+{"ev": "compile_start", "version": "2026-10-09.c26", "num_qubits": 100, "size": 200}
+{"ev": "start", "seq": 1, "fn": "_resynthesis_candidate", "ops": null, "amps": null, "k": null}
+{"ev": "end", "seq": 1, "fn": "_resynthesis_candidate", "t": 0.002677, "result": null}
+{"ev": "start", "seq": 2, "fn": "excitation_cost", "ops": 2, "amps": 0, "k": 2}
+{"ev": "end", "seq": 2, "fn": "excitation_cost", "t": 0.000965, "result": "value"}
+{"ev": "start", "seq": 3, "fn": "excitation_cost", "ops": 2, "amps": 0, "k": 2}
+{"ev": "end", "seq": 3, "fn": "excitation_cost", "t": 0.000221, "result": "value"}
+{"ev": "compile_end", "t": 1.292, "q2": 0}
+{"ev": "job_end", "status": "ok", "wall": 6.86}

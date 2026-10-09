@@ -1,0 +1,4 @@
+{"ev": "job", "stratum": "100-qubit, FakeTorino", "test": "test_QFT_100_transpile", "kind": "summit", "arg": "test_QFT_100_transpile"}
+{"ev": "compile_start", "version": "2026-10-09.c26", "num_qubits": 100, "size": 25100}
+{"ev": "compile_end", "t": 14.064, "q2": 10490}
+{"ev": "job_end", "status": "ok", "wall": 23.88}

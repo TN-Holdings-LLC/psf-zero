@@ -1,0 +1,4 @@
+{"ev": "job", "stratum": "HamLib, FakeTorino", "test": "test_hamlib_hamiltonians_transpile[ham_ham_JW-18]", "kind": "ham_device", "arg": "/ham_JW-18,"}
+{"ev": "compile_start", "version": "2026-10-09.c26", "num_qubits": 18, "size": 1}
+{"ev": "compile_end", "t": 21.537, "q2": 39717}
+{"ev": "job_end", "status": "ok", "wall": 30.08}

@@ -1,0 +1,4 @@
+{"ev": "job", "stratum": "Feynman, FakeTorino", "test": "test_feynman_transpile[qcla_com_7.qasm]", "kind": "feynman", "arg": "qcla_com_7.qasm"}
+{"ev": "compile_start", "version": "2026-10-09.c26", "num_qubits": 24, "size": 153}
+{"ev": "compile_end", "t": 1.068, "q2": 362}
+{"ev": "job_end", "status": "ok", "wall": 11.65}

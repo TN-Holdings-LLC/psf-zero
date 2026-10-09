@@ -1,0 +1,32 @@
+{"ev": "job", "stratum": "HamLib, FakeTorino", "test": "test_hamlib_hamiltonians_transpile[ham_enc_gray_dvalues_4-4-4-4-4-4-4]", "kind": "ham_device", "arg": "/enc_gray_dvalues_4-4-4-4-4-4-4,"}
+{"ev": "compile_start", "version": "2026-10-09.c26", "num_qubits": 14, "size": 1}
+{"ev": "start", "seq": 1, "fn": "_resynthesis_candidate", "ops": null, "amps": null, "k": null}
+{"ev": "end", "seq": 1, "fn": "_resynthesis_candidate", "t": 0.340488, "result": null}
+{"ev": "start", "seq": 2, "fn": "excitation_cost", "ops": 20503, "amps": 137494528, "k": 15}
+{"ev": "end", "seq": 2, "fn": "excitation_cost", "t": 16.723539, "result": "value"}
+{"ev": "start", "seq": 3, "fn": "excitation_cost", "ops": 22889, "amps": 121765888, "k": 15}
+{"ev": "end", "seq": 3, "fn": "excitation_cost", "t": 16.651587, "result": "value"}
+{"ev": "start", "seq": 4, "fn": "_same_action", "ops": 86784, "amps": 2843738112, "k": 15}
+{"ev": "end", "seq": 4, "fn": "_same_action", "t": 5.960789, "result": true}
+{"ev": "start", "seq": 5, "fn": "_resynthesis_candidate", "ops": null, "amps": null, "k": null}
+{"ev": "end", "seq": 5, "fn": "_resynthesis_candidate", "t": 0.23426, "result": null}
+{"ev": "start", "seq": 6, "fn": "excitation_cost", "ops": 20503, "amps": 137494528, "k": 15}
+{"ev": "end", "seq": 6, "fn": "excitation_cost", "t": 14.472958, "result": "value"}
+{"ev": "start", "seq": 7, "fn": "excitation_cost", "ops": 22889, "amps": 121765888, "k": 15}
+{"ev": "end", "seq": 7, "fn": "excitation_cost", "t": 16.765059, "result": "value"}
+{"ev": "start", "seq": 8, "fn": "_same_action", "ops": 86784, "amps": 2843738112, "k": 15}
+{"ev": "end", "seq": 8, "fn": "_same_action", "t": 6.519179, "result": true}
+{"ev": "start", "seq": 9, "fn": "transpile", "ops": null, "amps": null, "k": null}
+{"ev": "end", "seq": 9, "fn": "transpile", "t": 0.789128, "result": null}
+{"ev": "start", "seq": 10, "fn": "hybrid_cost", "ops": 22889, "amps": 121765888, "k": 15}
+{"ev": "end", "seq": 10, "fn": "hybrid_cost", "t": 15.337793, "result": "value"}
+{"ev": "start", "seq": 11, "fn": "hybrid_cost", "ops": 22889, "amps": 121765888, "k": 15}
+{"ev": "end", "seq": 11, "fn": "hybrid_cost", "t": 13.869964, "result": "value"}
+{"ev": "start", "seq": 12, "fn": "hybrid_cost", "ops": 15073, "amps": 59244544, "k": 14}
+{"ev": "end", "seq": 12, "fn": "hybrid_cost", "t": 3.115616, "result": "value"}
+{"ev": "start", "seq": 13, "fn": "_implements", "ops": 45780, "amps": 1500086272, "k": 15}
+{"ev": "end", "seq": 13, "fn": "_implements", "t": 6.500983, "result": true}
+{"ev": "start", "seq": 14, "fn": "_implements", "ops": 30148, "amps": 493944832, "k": 14}
+{"ev": "end", "seq": 14, "fn": "_implements", "t": 5.967533, "result": true}
+{"ev": "compile_end", "t": 134.162, "q2": 3616}
+{"ev": "job_end", "status": "ok", "wall": 141.97}

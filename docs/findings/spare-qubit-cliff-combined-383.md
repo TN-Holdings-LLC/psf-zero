@@ -3105,6 +3105,93 @@ version stays in the history.
 
 ---
 
+<!-- ===== Addendum 415 (source: spare-qubit-cliff-addendum-415-2026-10-09.md) ===== -->
+
+> **Note added when merging:** Exploratory calibration for item 54, with its script and data.
+
+## Addendum 415 -- Exploratory (nothing predicted): where the recommended call's time goes on the slow development tests, call by call. The estimates and checks take 70-100% of the four slowest compiles; one `excitation_cost` call on hwb10 takes 433 s. Time follows two counts known before a call runs, with constants that differ by function. This prepares item 54 (2026-10-09)
+
+**Status: exploratory.** Nothing was predicted. It informs the design of item 54; item 54's own test will be
+pre-registered separately.
+
+## 1. The run
+
+- **Script.** [`benchmarks/work_calib.py`](../../benchmarks/work_calib.py). The run records git head `fbe95df`, with
+  no uncommitted change to tracked files: the script was not yet committed when it ran. It is identified by its
+  SHA-256, `28483b5c0c109533270c82d8672879b22f7272e66ca482bed4177e19f6a2d09b`, checked on the workplace PC before the
+  run and again when this Addendum was added; it is committed with this Addendum, unchanged.
+- **Data.** [`data/2026-10-09/work_calib/`](../../data/2026-10-09/work_calib/): `meta.json`, one file of events per
+  test in `jobs/`, and the report `work_calib.md`.
+- **What ran.** The recommended call of the 34 development tests with a target (the FakeTorino and summit tests of
+  C25-ID's 152; none of BP-FINAL's 880), with candidate 2026-10-09.c26 (item 53), on the workplace PC (14 CPUs,
+  Python 3.11.9), 4 tests at a time.
+- **Caps.** Each test in its own process, killed after 600 s; no test started after 5,400 s. The run took 775 s.
+  One test was killed: hwb10.
+- **What was recorded.** For every call of `excitation_cost`, `hybrid_cost`, `_implements` and `_same_action`
+  (`pauli_cost` and `kraus_cost` are not called by the recommended call), before it ran: the number of gate
+  applications it would make (`ops`) and the sum of the state sizes 2^k over them (`amps`); after it ran, its wall
+  time. Qiskit's `transpile` and the re-synthesis candidate were timed without counts.
+
+## 2. Results
+
+**Where the time goes** (wall time in this run, 4 tests at a time):
+
+| test | compile (s) | estimates and checks (s) | Qiskit transpile + re-synthesis (s) |
+|---|---|---|---|
+| hwb10 (16 qubits) | killed at 600 | 433 (one call) and one call that never ended | 5.4 |
+| ham_enc_gray_dvalues_4-4-... | 134.2 | 121.9 | 1.4 |
+| ham_JW-14 | 130.9 | 110.5 | 2.9 |
+| ham_enc_gray_dvalues_8-8-8 | 80.3 | 55.4 | 2.9 |
+| ham_JW-10 | 21.9 | 15.5 | 0.7 |
+| ham_parity10 | 21.4 | 15.3 | 0.6 |
+| the other 28 | 0.2-66.4 | 1.6 or less each | 0.3 or less each |
+
+On the 28 others, the slow ones (ham_JW-22 66 s, QV_100 30 s) make no estimate or check: more than 16 qubits.
+
+**Time against the counts**, per function, least squares t = a * ops + b * amps over the calls that ended:
+
+| function | calls | a (us per gate application) | b (ns per amplitude) | R^2 |
+|---|---|---|---|---|
+| excitation_cost | 56 (1 never ended) | 19.9 | 57.0 | 0.998 |
+| hybrid_cost | 39 | 33.8 | 46.1 | 0.620 |
+| _implements | 25 | 24.3 | 4.8 | 0.758 |
+| _same_action | 10 | 14.0 | 1.9 | 0.976 |
+
+The longest calls: hwb10's two `excitation_cost` calls (k 16, 7.4 * 10^9 amplitudes each: 433 s, and one cut by the
+kill), then `excitation_cost` and `hybrid_cost` on ham_enc_gray_dvalues_4-4-... (k 15, 14-17 s each, five calls),
+then `_implements` and `_same_action` on ham_JW-14 (k 14, 10-16 s each).
+
+The report's "calls a work cap would stop" table uses one fit pooled over the four functions (R^2 0.53). The
+functions differ too much for that; it is not used.
+
+## 3. Reading
+
+- **Item 54 aims at the right place.** On every slow test with at most 16 qubits, the estimates and checks take
+  70-100% of the compile; Qiskit's own passes take a few seconds at most.
+- **The time of a call is predictable before it runs**, from two counts, with constants that depend on the function.
+  On `excitation_cost`, 0.998 of the variance: hwb10's 433 s is 7.4 * 10^9 amplitudes at 57 ns.
+- **The estimates cost far more per amplitude than the checks** (46-57 ns against 2-5 ns). Each two-qubit gate in
+  `excitation_cost` and `hybrid_cost` also reads each of its qubits' reduced states from the whole state (item 49),
+  several passes over it instead of one. Making that cheaper is a separate speed item; item 54 bounds it first.
+- **`hybrid_cost`'s fit is poor** (R^2 0.62): its time has a part the two counts do not describe. Not examined here.
+- **Limits.** One machine; times with 4 tests at a time (the compiles were slower than when run alone: Addendum 414's
+  ham_enc_gray_dvalues_8-8-8 took 27-104 s alone, 80 s here); one run; 34 tests.
+
+## 4. What follows: the shape of item 54
+
+- **Work counted, not time.** Before each estimate or check, its work is computed from its counts with constants fixed
+  from this run:
+  work = 20 us * ops + b_f * amps, with b_f 57 ns (excitation_cost), 46 ns (hybrid_cost), 5 ns (the checks).
+  The constants make the unit "seconds on the workplace PC"; the decision depends only on the counts, so it is the
+  same on every machine.
+- **A budget per compile.** The calls draw on one budget; a call whose work exceeds what is left is not made, and is
+  treated as the release already treats a circuit over 16 qubits: the estimate "cannot be made", the check "cannot
+  be made", and the release's circuit is kept.
+- **Its value** and the test (identity where the budget is not reached; the fallback where it is; the worst case;
+  the quality given up) are pre-registered next.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

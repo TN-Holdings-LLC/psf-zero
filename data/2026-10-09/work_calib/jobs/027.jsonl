@@ -1,0 +1,4 @@
+{"ev": "job", "stratum": "HamLib, FakeTorino", "test": "test_hamlib_hamiltonians_transpile[ham_gnp-k_5_n-60_rinst-19]", "kind": "ham_device", "arg": "/gnp-k_5_n-60_rinst-19,"}
+{"ev": "compile_start", "version": "2026-10-09.c26", "num_qubits": 60, "size": 1}
+{"ev": "compile_end", "t": 3.572, "q2": 17057}
+{"ev": "job_end", "status": "ok", "wall": 12.62}

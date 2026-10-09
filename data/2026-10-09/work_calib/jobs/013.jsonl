@@ -1,0 +1,28 @@
+{"ev": "job", "stratum": "HamLib, FakeTorino", "test": "test_hamlib_hamiltonians_transpile[ham_ham_JW-6]", "kind": "ham_device", "arg": "/ham_JW-6,"}
+{"ev": "compile_start", "version": "2026-10-09.c26", "num_qubits": 6, "size": 1}
+{"ev": "start", "seq": 1, "fn": "_resynthesis_candidate", "ops": null, "amps": null, "k": null}
+{"ev": "end", "seq": 1, "fn": "_resynthesis_candidate", "t": 0.031395, "result": null}
+{"ev": "start", "seq": 2, "fn": "excitation_cost", "ops": 1813, "amps": 22464, "k": 6}
+{"ev": "end", "seq": 2, "fn": "excitation_cost", "t": 0.103889, "result": "value"}
+{"ev": "start", "seq": 3, "fn": "excitation_cost", "ops": 2114, "amps": 22080, "k": 6}
+{"ev": "end", "seq": 3, "fn": "excitation_cost", "t": 0.119682, "result": "value"}
+{"ev": "start", "seq": 4, "fn": "_resynthesis_candidate", "ops": null, "amps": null, "k": null}
+{"ev": "end", "seq": 4, "fn": "_resynthesis_candidate", "t": 0.032319, "result": null}
+{"ev": "start", "seq": 5, "fn": "excitation_cost", "ops": 1813, "amps": 22464, "k": 6}
+{"ev": "end", "seq": 5, "fn": "excitation_cost", "t": 0.120562, "result": "value"}
+{"ev": "start", "seq": 6, "fn": "excitation_cost", "ops": 2114, "amps": 22080, "k": 6}
+{"ev": "end", "seq": 6, "fn": "excitation_cost", "t": 0.119891, "result": "value"}
+{"ev": "start", "seq": 7, "fn": "transpile", "ops": null, "amps": null, "k": null}
+{"ev": "end", "seq": 7, "fn": "transpile", "t": 0.112765, "result": null}
+{"ev": "start", "seq": 8, "fn": "hybrid_cost", "ops": 1813, "amps": 22464, "k": 6}
+{"ev": "end", "seq": 8, "fn": "hybrid_cost", "t": 0.119951, "result": "value"}
+{"ev": "start", "seq": 9, "fn": "hybrid_cost", "ops": 1813, "amps": 22464, "k": 6}
+{"ev": "end", "seq": 9, "fn": "hybrid_cost", "t": 0.214185, "result": "value"}
+{"ev": "start", "seq": 10, "fn": "hybrid_cost", "ops": 1410, "amps": 20608, "k": 6}
+{"ev": "end", "seq": 10, "fn": "hybrid_cost", "t": 0.11278, "result": "value"}
+{"ev": "start", "seq": 11, "fn": "_implements", "ops": 3628, "amps": 232192, "k": 6}
+{"ev": "end", "seq": 11, "fn": "_implements", "t": 0.114928, "result": false}
+{"ev": "start", "seq": 12, "fn": "_implements", "ops": 2822, "amps": 180608, "k": 6}
+{"ev": "end", "seq": 12, "fn": "_implements", "t": 0.106678, "result": false}
+{"ev": "compile_end", "t": 3.276, "q2": 351}
+{"ev": "job_end", "status": "ok", "wall": 11.97}

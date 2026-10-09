@@ -1,0 +1,4 @@
+{"ev": "job", "stratum": "HamLib, FakeTorino", "test": "test_hamlib_hamiltonians_transpile[ham_tsp_prob-ts225_Ncity-5_enc-unary]", "kind": "ham_device", "arg": "/tsp_prob-ts225_Ncity-5_enc-unary,"}
+{"ev": "compile_start", "version": "2026-10-09.c26", "num_qubits": 25, "size": 1}
+{"ev": "compile_end", "t": 1.127, "q2": 542}
+{"ev": "job_end", "status": "ok", "wall": 10.52}

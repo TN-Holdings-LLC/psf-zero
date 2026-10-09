@@ -1,0 +1,4 @@
+{"ev": "job", "stratum": "HamLib, FakeTorino", "test": "test_hamlib_hamiltonians_transpile[ham_bh_graph-2D-triag-pbc-qubitnodes_Lx-10_Ly-10_U-30_enc-stdbinary_d-4]", "kind": "ham_device", "arg": "/bh_graph-2D-triag-pbc-qubitnodes_Lx-10_Ly-10_U-30_enc-stdbinary_d-4,"}
+{"ev": "compile_start", "version": "2026-10-09.c26", "num_qubits": 100, "size": 1}
+{"ev": "compile_end", "t": 20.919, "q2": 25616}
+{"ev": "job_end", "status": "ok", "wall": 33.59}

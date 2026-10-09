@@ -1,0 +1,4 @@
+{"ev": "job", "stratum": "Feynman, FakeTorino", "test": "test_feynman_transpile[barenco_tof_10.qasm]", "kind": "feynman", "arg": "barenco_tof_10.qasm"}
+{"ev": "compile_start", "version": "2026-10-09.c26", "num_qubits": 19, "size": 130}
+{"ev": "compile_end", "t": 0.837, "q2": 365}
+{"ev": "job_end", "status": "ok", "wall": 9.78}

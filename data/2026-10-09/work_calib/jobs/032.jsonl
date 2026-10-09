@@ -1,0 +1,8 @@
+{"ev": "job", "stratum": "Feynman, FakeTorino", "test": "test_feynman_transpile[hwb10.qasm]", "kind": "feynman", "arg": "hwb10.qasm"}
+{"ev": "compile_start", "version": "2026-10-09.c26", "num_qubits": 16, "size": 31764}
+{"ev": "start", "seq": 1, "fn": "_resynthesis_candidate", "ops": null, "amps": null, "k": null}
+{"ev": "end", "seq": 1, "fn": "_resynthesis_candidate", "t": 5.444989, "result": null}
+{"ev": "start", "seq": 2, "fn": "excitation_cost", "ops": 503690, "amps": 7424704512, "k": 16}
+{"ev": "end", "seq": 2, "fn": "excitation_cost", "t": 432.630429, "result": "value"}
+{"ev": "start", "seq": 3, "fn": "excitation_cost", "ops": 689252, "amps": 7424311296, "k": 16}
+{"ev": "job_end", "status": "killed after 600 s", "wall": 600.02}

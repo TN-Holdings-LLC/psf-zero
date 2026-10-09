@@ -1,0 +1,12 @@
+{
+ "start_utc": "2026-10-09T05:07:26Z",
+ "git_head": "fbe95df",
+ "dirty_tracked": "",
+ "version": "2026-10-09.c26",
+ "tests": 34,
+ "par": 4,
+ "job_timeout": 600,
+ "budget": 5400,
+ "cpus": 14,
+ "python": "3.11.9"
+}
