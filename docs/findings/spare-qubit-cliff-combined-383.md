@@ -2848,6 +2848,95 @@ ordinary call.
 
 ---
 
+<!-- ===== Addendum 412 (source: spare-qubit-cliff-addendum-412-2026-10-09.md) ===== -->
+
+> **Note added when merging:** Results of C25-ID2 (Addendum 411), with its data and the two exploratory scripts.
+
+## Addendum 412 -- Results of C25-ID2 (Addendum 411): J0 PASS, J1 REFUTED (the release differs from itself on 8 of 185 tests and calls), J2 REFUTED on the same 8, J3 CONFIRMED. Inconclusive for item 52, as pre-registered. Two exploratory follow-ups: the release's own output changes from process to process on these tests even with a fixed hash seed and one thread (2026-10-09)
+
+**Status: results of the pre-registered test in Addendum 411, scored by the locked script, and two exploratory
+follow-ups that were not pre-registered.** The run is
+[`data/2026-10-09/c25_identity2/`](../../data/2026-10-09/c25_identity2/): `c25_identity2.jsonl` and `compare.md`. In
+the records, the workplace machine's home folder is replaced by `<windows-home>`.
+
+## 1. The run
+
+- **Lock.** Commit `759f220`, made at the workplace.
+- **Machine.** The workplace PC (Windows, Python 3.11.9, 14 CPUs), 4 jobs at a time, 558 jobs in 6,533 s. No job ran
+  out of memory.
+
+## 2. Results
+
+| ID | prediction | value | verdict |
+|---|---|---|---|
+| J0 | the run is as locked | 152 tests; all three arms on every job; versions and the virtual clock in every record; no uncommitted change | **PASS** |
+| J1 | the harness is deterministic (REL2 = REL) | 177 identical of 185; 8 differ | **REFUTED** |
+| J2 | item 52 changes no output (C25 = REL) | 177 identical of 185; 8 differ | **REFUTED** |
+| J3 | the same failures in every arm | one in every arm: hwb10, recommended call, the 3,600 s limit | **CONFIRMED** |
+
+**Reading, as pre-registered.** J1 is refuted, so the test cannot separate item 52 from the pipeline's own
+variation: it is inconclusive, and item 52 is not proposed on it.
+
+**Reported without prediction.**
+
+- The 8 where C25 differs from REL are exactly the 8 where REL2 differs from REL:
+  - bv_n140 on linear, bv_n30 on square, inverseqft_n4 on linear, qec_sm_n5 on all-to-all (default call);
+  - circSU2 with 100 and 89 qubits on FakeTorino, default and recommended calls.
+- On the other 177, all three arms agree.
+- On all 8, the three arms' two-qubit counts are equal.
+
+## 3. Exploratory follow-ups (not pre-registered; scripts committed, outputs as printed)
+
+**Hash randomization is not the cause** ([`benchmarks/c25_hashseed.py`](../../benchmarks/c25_hashseed.py)).
+
+- The 8 were compiled again in each arm with `PYTHONHASHSEED=0`, and in REL with `PYTHONHASHSEED=1`.
+- The three arms still differed on all 8 at seed 0.
+- REL at seed 0 equalled REL at seed 1 on 1 of 8.
+- Every run gave a new signature.
+
+**What differs, and whether one thread removes it** ([`benchmarks/c25_nondet.py`](../../benchmarks/c25_nondet.py)).
+REL was compiled three times on each of the 8, in two environments:
+
+- as C25-ID2 ran;
+- with OMP, OpenBLAS, MKL and Rayon on one thread, Qiskit's parallelism off and `PYTHONHASHSEED=0`.
+
+Neither environment gave three identical outputs on any of the 8.
+
+| test | what differs between runs |
+|---|---|
+| bv_n140, linear | the layouts, and 4-5 instructions in name or qubits. In one thread, two of the three runs agreed, and their signature is C25-ID2's REL signature. |
+| bv_n30, square | the layouts, and 24-91 instructions in name or qubits |
+| inverseqft_n4, linear; qec_sm_n5, all-to-all | nothing the diagnostic compares: instruction names, qubits, parameter values, global phase and layouts are equal, yet the signature differs. `bp_mock.sig_hash` records parameters with `repr()`, which also records their number type. Equal values held in different types would do this. **Not established.** |
+| circSU2, 100 and 89 qubits (4) | not examined: the diagnostic converts parameters to floats, and circSU2's parameters are unbound, so every run of it failed |
+
+## 4. What this shows about PSF-Zero
+
+**A second reproducibility weakness, recorded as found.** On bv_n140 and bv_n30, the release chose different layouts
+in different processes. This held with the layout search's clock made virtual, the hash seed fixed and every
+numeric library on one thread. The cause is not found.
+
+- A candidate is iteration over objects hashed by identity, whose order follows their memory addresses.
+- This weakness is separate from the time dependence of Addenda 410-411.
+
+**The test method also has a weakness.** The output signature can differ between outputs with equal values (third row
+of the table). Comparing outputs by value would avoid this: instruction names, qubits, parameter values with their
+type ignored, global phase and layouts.
+
+## 5. What follows
+
+- Item 52 is not proposed on C25-ID or C25-ID2.
+- Its correctness rests, for now, on its unit tests. Those show the two sizes equal networkx's on 400 random graphs,
+  300 random interaction graphs and six coupling maps.
+- Any later identity test first shows that the release is deterministic on its tests. It then compares outputs by
+  value.
+- Making the release deterministic is a candidate item:
+  - search budgets counted in calls, not seconds (Addenda 410-411);
+  - deterministic iteration where the layout is chosen (this Addendum).
+
+  Item 52 is better tested after that.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
