@@ -12653,6 +12653,8 @@ disjoint pair blocks. Times are home-WSL times.
 
 ## Addendum 246 -- The layout cliff on a real device's Target (ibm_kingston, 156 qubits): no cliff at any tested width; PSF-Zero compiles in about 0.05 s, exact, with Qiskit L3's two-qubit count; R2 and R3 are ambiguous because disjoint pair blocks can fill only 128 of the 156 qubits, so the device was never saturated (2026-09-28)
 
+> **Correction (2026-10-10, Addendum 434 in [Part 10](spare-qubit-cliff-combined-383.md)):** the ibm_kingston Target used here keeps 4 couplers and 3 qubits at error 1 (none marked non-operational). Re-compiled from the same pickle, the outputs below reproduce exactly, and every PSF-Zero output (12 of 12) and Qiskit level 3's at spare 0 and 2 (6 of 12) put operations on those elements: their estimated success probability is 0, and none could have run on the device. The statements on compile time, gate count and exactness stand; nothing here favours PSF-Zero for running on that device.
+
 **Pre-registered in**: `spare-qubit-cliff-addendum-245-preregistration-2026-09-28.md`
 (Addendum 245). Home WSL2 (12 cores), Python 3.12.13, Qiskit 2.5.2,
 `psf_compile.py` 2026-09-28.1 (`3616efc8...c60b`) with `CORE_VERSION`

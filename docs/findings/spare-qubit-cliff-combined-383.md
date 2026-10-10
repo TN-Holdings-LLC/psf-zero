@@ -4698,6 +4698,147 @@ of working qubits.
 
 ---
 
+<!-- ===== Addenda 434-435 (source: addenda_434_435.md) ===== -->
+
+> **Note added when merging:** a check of Addendum 246 against the failed elements of the Target it used (a correction), and STEINER4. Their scripts are in `benchmarks/`, their data in `data/2026-10-10/`.
+
+## Addendum 434 -- Correction of Addendum 246: ibm_kingston's live Target (2026-09-28) keeps 4 couplers and 3 qubits at error 1, and every PSF-Zero output of Addendum 246 used them (12 of 12; Qiskit level 3: 6 of 12). Re-compiled from the pickled Target, all 24 outputs reproduce Addendum 246's records exactly; c35 given the Target uses none (2026-10-10)
+
+**Status: a check of a past record, nothing predicted.** Two runs at home, reading only the Target that
+`benchmarks/real_target_cliff.py` pickled on 2026-09-28 (Addendum 245). No service call, no job.
+
+**1. KT: what the live Target contains** ([`benchmarks/kingston_target.py`](../../benchmarks/kingston_target.py);
+[`data/2026-10-10/kingston_target/`](../../data/2026-10-10/kingston_target/); 14:48 CEST).
+
+| element | reported error |
+|---|---|
+| couplers (112,113), (130,131), (145,146), (146,147), both directions | 1 |
+| qubits 113, 121, 146: `sx`, `x`, `id`, `xslow` | 1 |
+| qubit 146: `measure` | 0.504 |
+
+- Nothing was removed. All 176 couplers and 156 qubits are present, as in FakeKingston's snapshot. The service did
+  not mark these elements non-operational on that day, so `filter_faulty` left them in `backend.target`.
+- This answers Addendum 430's open question. ESP-FT's finding is not an artefact of the snapshots: a compiler that
+  reads only the coupling map can place gates on these elements on the live device too. An output that does has
+  ESP 0.
+- Qubit 121's couplers report ordinary errors. Only its single-qubit gates are at 1. A check of couplers alone would
+  miss it, and any route through it (a SWAP needs `sx` there) is lost.
+
+**2. A246-FE: did Addendum 246's outputs use them?** ([`benchmarks/a246_check.py`](../../benchmarks/a246_check.py);
+[`data/2026-10-10/a246_check/`](../../data/2026-10-10/a246_check/); 15:12 CEST).
+
+The 12 circuits of Addendum 246 were compiled again from the pickle, each compile in its own process. There were
+four arms:
+
+| arm | call |
+|---|---|
+| Q3 | Addendum 246's Qiskit level 3 call |
+| P0 | Addendum 246's PSF-Zero call, with the `psf_compile.py` that run loaded: 2026-09-28.1, found in git history (commit `5a0cba8`) by its normalized hash `3616efc8...c60b`; Rust core 2026-09-29.1 installed |
+| PR | the same call with release 2026-10-10.2: the default call, no Target |
+| C35 | candidate c35 given the Target |
+
+Q3 and P0 were compared with Addendum 246's record on two values, the two-qubit count and the per-pair operator
+distance of its own `pair_check` (to 1e-6 relative). Both matched on 12 of 12 for each arm. The re-runs are
+Addendum 246's outputs.
+
+| | Q3 | P0 (= Addendum 246's PSF-Zero) | PR (release, default call) | C35 (Target given) |
+|---|---|---|---|---|
+| outputs with an operation on a failed element | 6 of 12 (spare 0 and 2) | **12 of 12** | 12 of 12 | 0 of 12 |
+| ... failed qubits / couplers used | 113, 121 / (112,113), (130,131) | 113, 121, 146 / (146,147) (spare 16: 113, 121) | as P0 | - |
+| ESP | 0 on those 6; spare 8: 10^-0.430, spare 16: 10^-0.364 | 0 on all 12 | 0 on all 12 | spare 0: 10^-0.613, 2: 10^-0.553, 8: 10^-0.430, 16: 10^-0.364 |
+| two-qubit gates | 192 / 189 / 180 / 168 | the same | the same | 222 / 222 / 180 / 168 |
+
+**Reading.**
+
+- **Addendum 246's comparison was between outputs a device user could not use.**
+  - Every PSF-Zero output was ESP 0. So were Qiskit's at spare 0 and 2.
+  - R1, R4 and R5 stand as statements about compile time, gate count and exactness. They say nothing in PSF-Zero's
+    favour for running on that device. Its headline, "PSF-Zero compiles in about 0.05 s, exact, with Qiskit L3's
+    two-qubit count", compared a worthless output with a partly worthless one.
+  - At spare 8 and 16, Qiskit level 3 avoided the failed elements and PSF-Zero did not.
+- **Why.**
+  - Addendum 246 gave PSF-Zero the coupling map and the basis, not the Target. That was the documented way to call
+    it then, and it cannot avoid what it is not told.
+  - Level 3, which reads the errors, avoided them whenever there was room.
+  - At spare 0 and 2, level 3 still used failed elements. A matching of 63-64 pairs on working couplers alone does
+    not exist, and level 3 preferred them to SWAPs.
+- **With the Target, the current candidate avoids every failed element.**
+  - At spare 8 and 16, c35 has exactly level 3's two-qubit count and ESP, and its pairs are exact (`pair_check` worst
+    9.7e-15).
+  - At spare 0 and 2, it routes around the failed elements with about 10 SWAPs: 222 two-qubit gates instead of 192
+    and 189, and ESP 10^-0.61 and 10^-0.55 (0.24 and 0.28). Those are the only usable outputs of the four arms
+    there.
+- **The release's default call (PR) still does what Addendum 246's call did.** The release itself gives no warning:
+  item 58's once-per-process warning is in the candidates only. The README warns (Addenda 393, 403). The candidates'
+  `backend=`/`target=` path is what a device user needs.
+- The times of this re-run are not comparable with Addendum 246's: each process here timed its first compile with
+  Qiskit's lazy imports. They are not used.
+
+A note pointing here was added under Addendum 246's heading in Part 8.
+
+## Addendum 435 -- Exploratory: STEINER4. Qiskit level 3's optimisation on STEINER3's construction (fixed layout, no routing) cuts its two-qubit count by 18% and wins on the largest Hamiltonians (JW24: 22-30% below level 3), but overall it stays 1.58-1.68 times level 3, and below level 3's ESP where a result survives; aligning the trees adds little (2026-10-10)
+
+**Status: exploratory.** Script: [`benchmarks/steiner4.py`](../../benchmarks/steiner4.py) (imports
+`benchmarks/steiner3.py`). Data: [`data/2026-10-10/steiner4/`](../../data/2026-10-10/steiner4/). Run 14:55-15:03 CEST
+on commit `07be729`. Stated in the session before the full run: level 3's optimisation should be the larger part of
+the gap; "within 1.2 times level 3" would make the construction competitive.
+
+**The arms.** STEINER3's 67 HamLib FakeTorino tests on FakeTorino and FakeKingston, each test, device and arm in its
+own process.
+
+- **A, aligned trees.** Each term's parity is collected onto the previous term's root when that qubit is in the term
+  (otherwise onto its qubit nearest to it). Its tree grows from there by a multi-source shortest-path search in which
+  the previous tree's couplers cost 1 and others 2. Translation is level 1, as STEINER3. NumPy self-test: 40 of 40
+  random term sets exact.
+- **O.** STEINER3's construction, then Qiskit level 3 with the layout fixed (`initial_layout` = all qubits in order)
+  and `routing_method="none"`.
+- **AO.** Both.
+
+Exactness was checked on the construction for A, and on the final translated circuit for O and AO.
+
+| | FakeTorino | FakeKingston |
+|---|---|---|
+| exact, of those checked (each arm) | 23 of 23 | 23 of 23 |
+| operations on failed elements (each arm) | 0 | 0 |
+| two-qubit count / STEINER3: A / O / AO | 0.968 / 0.818 / 0.826 | 0.981 / 0.818 / 0.831 |
+| O / QK3, two-qubit (gmean, +1); fewer / equal / more | 1.683; 5 / 6 / 56 | 1.583; 6 / 6 / 55 |
+| O / QK3, ESP where the best >= 0.01 | 0.692 (23 tests) | 0.232 (33 tests) |
+| time summed: A / O / AO | 84.6 / 87.2 / 95.5 s | 88.9 / 86.0 / 96.0 s |
+
+| test (two-qubit gates) | STEINER3 | O | QK2 | QK3 | PSFR |
+|---|---|---|---|---|---|
+| ham_JW24, FakeTorino | 141,378 | 96,807 | 191,950 | 124,642 | 211,033 |
+| ham_JW24, FakeKingston | 115,630 | 83,180 | 189,813 | 118,553 | 207,548 |
+| ham_BK22, FakeTorino | 112,148 | 104,323 | 138,536 | 112,608 | 134,458 |
+| ham_BK22, FakeKingston | 112,148 | 103,894 | 131,161 | 115,495 | 135,917 |
+| ham_enc_unary_dvalues_4-4-4, FakeTorino | 25,970 | 22,329 | 12,015 | 10,344 | 11,414 |
+| ham_bh_graph-1D-grid-pbc-qubitnodes_Lx-6 (120 qubits), FakeTorino | 18,216 | 15,339 | 4,877 | 4,769 | 6,690 |
+
+**Reading.**
+
+- **The expectation of "within 1.2 times level 3" was not met.**
+- **Two numbers.**
+  - Display: on the largest Hamiltonians, the construction with level 3's optimisation needs 7-30% fewer two-qubit
+    gates than level 3, without a routing search and without a failed element.
+  - Essential: those circuits have ESP below 10^-100 on every arm and run on no device. Where a result survives, the
+    construction loses: 1.6 times the gates, 0.23-0.69 of the ESP.
+- **The small tests' gap was the optimisation.** STEINER3's 10 against 3 on a two-qubit test, and 12 against 6, close
+  completely with O.
+- **What remains is the placement.**
+  - The clearest case is a one-dimensional periodic chain on 120 qubits: 15,339 against level 3's 4,769. The chain
+    embeds in the heavy-hex lattice, which level 3's layout finds. STEINER3's greedy placement does not, so its trees
+    pay bridges on every term.
+  - The placement also ignores the working elements' errors. That is why the ESP ratio is lower than the gate ratio,
+    above all on FakeKingston.
+- **Aligning the trees adds little, and costs something with O.** The cheaper shared couplers lengthen some trees.
+  It is dropped.
+- **Next for this track.**
+  - Placement by PSF-Zero's own layout search (an embedding where one exists) and by the errors.
+  - Then, for dense Hamiltonians, moving qubits during the construction, planned from the known term order rather
+    than searched.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
