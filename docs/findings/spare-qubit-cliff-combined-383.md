@@ -4919,6 +4919,67 @@ Between the two thresholds a prediction is ambiguous.
 
 ---
 
+<!-- ===== Addendum 437 (source: addendum_437.md) ===== -->
+
+> **Note added when merging:** Results of C35-VAL (Addendum 436), scored by the locked script, with its data.
+
+## Addendum 437 -- Results of C35-VAL (Addendum 436): V0-V6 all CONFIRMED on both devices; the release rule is met. With the device given, candidate c35 never used a failed element (0 of 424 outputs), reached the release's recommended-call ESP (1.002 and 0.964) at 0.41-0.43 of its time, and 1.15-1.16 times Qiskit level 2's ESP; without the device it keeps the release's two-qubit counts on 212 of 212. Still behind Qiskit level 3: ESP 0.957 and 0.899 (2026-10-10)
+
+**Run.**
+
+- **When and where:** 15:21-15:49 CEST at home, on commit `5ca55be` (the lock, pushed before the run), with no
+  uncommitted tracked changes.
+- **Software:** Qiskit 2.5.2, qiskit-ibm-runtime 0.49.0.
+- **Jobs:** 1,484, 4 at a time, no error. c35's tests passed first.
+- **Script:** the locked [`benchmarks/c35_val.py`](../../benchmarks/c35_val.py).
+- **Data:** [`data/2026-10-10/c35_val/`](../../data/2026-10-10/c35_val/).
+
+**Scoring, as locked.**
+
+| ID | FakeTorino | FakeKingston |
+|---|---|---|
+| V0 every arm returns a circuit on every test | **CONFIRMED** (0 missing) | **CONFIRMED** (0 missing) |
+| V1 C35D and C35R: no output on a failed element | **CONFIRMED** (0 of 212) | **CONFIRMED** (0 of 212) |
+| V2 ESP C35D / RELR (>= 0.95; refuted < 0.90) | **CONFIRMED**: 1.002 | **CONFIRMED**: 0.964 |
+| V3 ESP C35D / QK2 (>= 1.05; refuted < 1.00) | **CONFIRMED**: 1.158 | **CONFIRMED**: 1.153 |
+| V4 time C35D / RELR (<= 0.60; refuted > 0.80) | **CONFIRMED**: 183 / 448 s = 0.409 | **CONFIRMED**: 187 / 439 s = 0.427 |
+| V5 C35N's two-qubit count = RELD's | **CONFIRMED**: 106 of 106 | **CONFIRMED**: 106 of 106 |
+| V6 ESP C35R / RELR (>= 0.97; refuted < 0.93) | **CONFIRMED**: 1.019 | **CONFIRMED**: 0.974 |
+
+**Release rule (V0, V1, V2, V3, V5 not refuted on either device): met.** c35 replaces release 2026-10-10.2
+(Addendum 438).
+
+**The arms side by side** (106 tests per device; runnable = best ESP >= 0.01: 53 on FakeTorino, 65 on FakeKingston).
+
+| | QK2 | QK3 | RELR | RELD | C35D | C35R | C35N |
+|---|---|---|---|---|---|---|---|
+| outputs on failed elements, FakeTorino / FakeKingston | 25 / 19 | 22 / 12 | 0 / 0 | 63 / 17 | **0 / 0** | 0 / 0 | 63 / 17 |
+| ESP 0 on runnable tests | 2 / 2 | 0 / 2 | 0 / 0 | 20 / 1 | **0 / 0** | 0 / 0 | 20 / 1 |
+| two-qubit / QK2 (geometric mean) | 1.000 / 1.000 | 0.982 / 0.982 | 1.036 / 1.023 | 1.066 / 1.059 | 1.089 / 1.078 | 1.045 / 1.031 | 1.066 / 1.059 |
+| compile time summed (s) | 60 / 61 | 111 / 138 | 448 / 439 | 210 / 214 | 183 / 187 | 354 / 414 | 168 / 174 |
+
+| ESP ratio on runnable tests (geometric mean) | FakeTorino | FakeKingston |
+|---|---|---|
+| C35D / QK3 | 0.957 | 0.899 |
+| C35R / QK3 | 0.973 | 0.909 |
+| RELR / QK3 | 0.955 | 0.933 |
+
+**Reading: two numbers.**
+
+- **Display.** With the device given, PSF-Zero's plain call has 15-16% more ESP than Qiskit level 2 and the release's
+  recommended call's ESP, at less than half that call's time. Not one output used a failed element. Qiskit level 2
+  did on 25 and 19 tests, and level 3 on 22 and 12.
+- **Essential.**
+  - What makes an output usable is giving the call the device. Without it, c35 does what the release did: on
+    FakeTorino, 63 of 106 outputs use a failed element, and 20 of the 53 runnable tests have ESP 0.
+  - The release decision changes the documented call, not the physics.
+  - Against Qiskit level 3, PSF-Zero is still behind on the tests where a result survives: 4-10% of ESP. It is also
+    behind on time: c35's default call took 1.4-1.6 times level 3's summed time, and 3 times level 2's.
+  - Level 3's own outputs used failed elements on 22 and 12 tests. On FakeKingston 2 of those were runnable tests,
+    lost (ESP 0).
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
