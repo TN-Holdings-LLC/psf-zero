@@ -5209,6 +5209,94 @@ C35-VAL's tests and devices. Release 2026-10-10.3's plain call with `backend=`, 
 
 ---
 
+<!-- ===== Addendum 440 (source: addendum_440.md) ===== -->
+
+> **Note added when merging:** C36-VAL's pre-registration, committed and pushed before the run.
+
+## Addendum 440 -- Pre-registration: C36-VAL. Should candidate 2026-10-10.c36 (changelog item 64: routing at Qiskit's level 3 whenever the device's Target is given) replace release 2026-10-10.3? On two devices that neither C35-VAL nor ROUTE-X used (2026-10-11)
+
+**Status: pre-registration, committed and pushed before the run.**
+
+- **Candidate:** [`patches/psf_compile_c36_2026-10-10/`](../../patches/psf_compile_c36_2026-10-10/), built from release
+  2026-10-10.3 by `make_c36.py` (exact substitutions) and tested by `test_c36.py`. Its tests passed before this lock
+  was committed.
+- **Script:** [`benchmarks/c36_val.py`](../../benchmarks/c36_val.py).
+
+**The change (item 64).**
+
+- `routing_optimization_level` becomes `"auto"`: 3 when a Target is given (`backend=` or `target=`), 1 otherwise.
+- An explicit integer keeps its meaning.
+- Nothing else changes. `test_c36.py` checks:
+  - that the default with `backend=` equals the release's call with `routing_optimization_level=3`, by value;
+  - that without a Target it equals the release's default call, by value.
+
+**Why.** ROUTE-X (Addendum 439, exploratory) measured the release's plain call with `backend=` at routing level 3
+instead of 1, on C35-VAL's tests and devices.
+
+- ESP rose by 5% (FakeTorino) and 10% (FakeKingston), to 0.975 and 0.985 of Qiskit level 3's.
+- The two-qubit count went from 1.11 to 1.01 times level 3's.
+- The time was 1.15-1.2 times the release's.
+- No failed element was used.
+- That was found on the same tests and devices it would be judged on. This test changes the devices.
+
+**Tests, devices, runs.**
+
+- **Tests:** BP-FINAL's 106 FakeTorino tests (HamLib and Feynman), as ESP-FT built them.
+- **Devices:** FakeMarrakesh and FakeFez: qiskit-ibm-runtime's Heron r2 snapshots, 156 qubits, with 13 and 7
+  couplers at error >= 0.5 (Addendum 430). Neither C35-VAL nor ROUTE-X used them. The circuits are the same, so this
+  is new devices on known circuits, not new circuits.
+- **Runs:** each test, device and arm in its own process, one cold call, 4 at a time. A job is killed after 1,500 s;
+  no job starts after 7,200 s.
+
+**Arms.**
+
+| arm | call |
+|---|---|
+| QK2 | Qiskit level 2 on the backend |
+| QK3 | Qiskit level 3 on the backend |
+| REL3D | release 2026-10-10.3, the plain call with `backend=` |
+| REL3R | release 2026-10-10.3, `backend=` and `bp_final.RECOMMENDED` |
+| REL3N | release 2026-10-10.3, without the Target |
+| C36D | c36, the plain call with `backend=` |
+| C36R | c36, `backend=` and `bp_final.RECOMMENDED` |
+| C36N | c36, without the Target |
+
+**Measures.** As in C35-VAL (Addendum 436):
+
+- **ESP:** the product of (1 - error) over gates and measurements, 0 on an operation of error 1.
+- **Failed element:** error >= 0.5.
+- **Runnable test:** the best ESP over the arms is >= 0.01.
+- **ESP ratio:** the geometric mean over the runnable tests where both arms' ESP > 0.
+
+**Predictions, each scored on both devices.**
+
+| ID | prediction | confirmed | refuted |
+|---|---|---|---|
+| W0 | every arm returns a circuit on every test (a FailedElementsError counts against it) | none missing | any missing |
+| W1 | C36D and C36R: no output with an operation on a failed element | 0 | any |
+| W2 | ESP C36D / REL3D | >= 1.03 | < 1.00 |
+| W3 | ESP C36D / QK3 | >= 0.96 | < 0.93 |
+| W4 | without a Target nothing changes: C36N's two-qubit count = REL3N's on every test | every test | any differs |
+| W5 | compile time summed, C36D / REL3D | <= 1.5 | > 2.0 |
+| W6 | ESP C36R / REL3R | >= 1.00 | < 0.97 |
+
+Between the two thresholds a prediction is ambiguous.
+
+**Release rule.** c36 replaces release 2026-10-10.3 if W0, W1, W2 and W4 are not refuted on either device.
+
+- W3, W5 and W6 are reported, and do not decide.
+- If the rule is met, the README says that the plain call with the device now routes at level 3, with C36-VAL's two
+  numbers.
+
+**Two numbers in the results.**
+
+- **Display:** ESP and two-qubit count against Qiskit level 2 and 3.
+- **Essential:**
+  - outputs on failed elements, counted first;
+  - ESP on the runnable tests, where level 3's own outputs on failed elements count as lost.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
