@@ -17,7 +17,7 @@ import psf_zero_core  # noqa: E402
 
 
 def test_version():
-    assert pc.VERSION == "2026-10-10.3"  # current release (this file was written for 2026-09-28.1)
+    assert pc.VERSION == "2026-10-11.1"  # current release (this file was written for 2026-09-28.1)
     assert pc.__version__ == pc.VERSION
 
 

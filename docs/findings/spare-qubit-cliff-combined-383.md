@@ -5356,6 +5356,92 @@ Between the two thresholds a prediction is ambiguous.
 
 ---
 
+<!-- ===== Addendum 442 (source: spare-qubit-cliff-addendum-442-2026-10-11.md) ===== -->
+
+> **Note added when merging:** The release of candidate c36 as 2026-10-11.1, by the owner's decision after Addendum 441 (C36-VAL's release rule met).
+
+## Addendum 442 -- Release: psf_compile 2026-10-11.1 = candidate 2026-10-10.c36 (changelog item 64, accepted in C36-VAL, Addenda 440-441). Given the device, the plain call now routes at Qiskit's level 3: 6-8% more ESP than 2026-10-10.3, within 2-4% of level 3's, no failed element; without the device nothing changes; the AI front end stays a12 (2026-10-11)
+
+**Status: the owner's decision of 2026-10-11 (home), after C36-VAL's results (Addendum 441).** It follows the
+procedure of releases 2026-10-10.1 to 2026-10-10.3 (Addenda 424, 428 and 438). C36-VAL's release rule was locked
+before the run (Addendum 440) and met.
+
+## 1. The decision
+
+The owner released candidate c36 as **2026-10-11.1**: release 2026-10-10.3 with item 64.
+
+| item | what it does |
+|---|---|
+| 64 | `routing_optimization_level` is `"auto"`: 3 when a Target is given (`backend=` or `target=`), 1 otherwise. An explicit integer keeps its meaning |
+
+**Where it came from.**
+
+- **ROUTE-X** (Addendum 439, exploratory; FakeTorino and FakeKingston): level 3 raised the release's ESP by 5-10%.
+- **C36-VAL** (pre-registered; FakeMarrakesh and FakeFez, which ROUTE-X did not use): W0-W6 all confirmed.
+
+| C36-VAL, the plain call with `backend=` | FakeMarrakesh | FakeFez |
+|---|---|---|
+| outputs on failed elements: 2026-10-11.1 / Qiskit L2 / Qiskit L3 | 0 / 32 / 29 | 0 / 28 / 28 |
+| ESP / 2026-10-10.3's | 1.059 | 1.077 |
+| ESP / Qiskit L3's (runnable tests where both > 0) | 0.976 | 0.963 |
+| ESP / Qiskit L2's | 0.989 | 1.087 |
+| two-qubit / Qiskit L2's | 0.989 | 0.998 |
+| compile time / 2026-10-10.3's | 1.255 | 1.340 |
+
+**What a user sees.**
+
+- **With the device** (`backend=` or `target=`):
+  - outputs differ from 2026-10-10.3's: routing at level 3;
+  - more ESP;
+  - a quarter to a third more compile time, about 0.2 s per test as a median in C36-VAL.
+- **The recommended options** (`bp_final.RECOMMENDED`) with the device also route at level 3. In C36-VAL that gave
+  1.048 and 1.062 of 2026-10-10.3's recommended call's ESP.
+- **Without the device:** 2026-10-10.3's outputs, by value (`test_release_2026_10_11_1.py`). C36-VAL found the
+  two-qubit counts equal on 212 of 212.
+- **Still behind Qiskit level 3 by 2-4% of ESP** where level 3's output is clean. On FakeMarrakesh it is also 1%
+  behind level 2 on such tests. At level 3, PSF-Zero's two-qubit count is about level 3's: its lead is the failed
+  elements it avoids and the placement by the errors, not fewer gates (Addendum 439).
+- The AI front end (a12) calls `psf_compile`, so with a Target it gets level-3 routing too. Its own code is
+  unchanged. The core and `psf_zero_core57` are unchanged.
+
+## 2. What changes in the repository
+
+- **[`psf_compile.py`](../../psf_compile.py)** is c36's file with its two version lines changed;
+  [`benchmarks/test_release_2026_10_11_1.py`](../../benchmarks/test_release_2026_10_11_1.py) checks this.
+- **The outgoing release 2026-10-10.3** is kept unchanged as
+  [`patches/psf_compile_release_2026-10-10.3/psf_compile.py`](../../patches/psf_compile_release_2026-10-10.3/psf_compile.py).
+  `psf_smart_layout.py` does not change.
+- **Tests.**
+  - [`benchmarks/test_release_2026_10_11_1.py`](../../benchmarks/test_release_2026_10_11_1.py) (new) checks:
+    - the versions;
+    - that the file is c36's except the version lines, and that c36 and the kept 2026-10-10.3 are the locked files;
+    - on six small circuits on FakeTorino: with `backend=`, 2026-10-10.3's call at routing level 3, by value, and no
+      failed element; without the Target, 2026-10-10.3's call, by value;
+    - the warning, given once.
+  - The 10 test files that assert the current release's version now assert 2026-10-11.1.
+  - `test_release_2026_10_10_3.py` and c36's own test, which test 2026-10-10.3 as "the release", load the kept copy.
+  - c36's test joins the list.
+- **Release tests:**
+  - **Runner:** [`benchmarks/run_release_tests_2026-10-11_1.py`](../../benchmarks/run_release_tests_2026-10-11_1.py).
+  - **Scope:** 45 test files, one pytest session each.
+  - **Environment:** Python 3.12.13, Qiskit 2.5.2, NumPy 2.5.3, `CORE_VERSION` 2026-09-29.1, `psf_zero_core57`
+    2026-10-10.c30, over commit `1e4e4a8`.
+  - **When:** 00:08:45-00:17:47 CEST.
+  - **Result:** 341 passed, none failed, none skipped.
+  - **Log:** [`data/2026-10-11/release_2026-10-11.1/`](../../data/2026-10-11/release_2026-10-11.1/) (home folder
+    redacted).
+- **README and [`docs/RELEASES.md`](../../docs/RELEASES.md):** the current version, and that the plain call with the
+  device routes at level 3, with C36-VAL's two numbers.
+
+## 3. Not established
+
+- **Hardware.** No job has been run. ESP is computed from the fake devices' calibration, with no idling term.
+- **Circuits beyond BP-FINAL's 106 FakeTorino tests.** C36-VAL used new devices, not new circuits.
+- **Whether level-3 routing changes the AI front end's measured results.** a12's own tests pass; its measurements
+  were not repeated.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

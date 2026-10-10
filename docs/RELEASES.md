@@ -11,10 +11,11 @@ the earlier parts they link to. The README itself, as it was before the move, is
 
 > **In brief (as of 2026-10-10)**
 >
-> 1. Release 2026-10-10.2 (items 53, 56 and 57b) returns 2026-10-07.1's circuits wherever 2026-10-07.1 repeats
->    itself, skips estimates that could never change the result, and runs the remaining estimates in Rust when the
->    optional module psf_zero_core57 is installed (C29-ID and C30-ID, Addenda 422-428). The figures below were
->    measured with 2026-10-07.1; its default call is unchanged.
+> 1. Release 2026-10-11.1: given the device (`backend=`), the call avoids failed elements, places by the errors
+>    (2026-10-10.3, items 58-63) and routes at Qiskit's level 3 (item 64). In C36-VAL (Addenda 440-441) it used no
+>    failed element and reached 0.976 and 0.963 of Qiskit level 3's ESP; level 3 used failed elements on 29 and
+>    28 of 106 tests. Releases 2026-10-10.1-.2 (items 53, 56, 57b) made the recommended call faster with the same
+>    circuits. The BP-FINAL figures below were measured with 2026-10-07.1.
 > 2. Release 2026-10-07.1 is about level with Qiskit level 2 on general circuits: 1.046 times its two-qubit gates on
 >    880 Benchpress tests not used during development (BP-FINAL, Addenda 407-408), at about 3.5 times its compile time.
 > 3. Give the call the device (`backend=` or `target=`). Since 2026-10-10.3 the plain call given the device avoids
@@ -26,7 +27,25 @@ the earlier parts they link to. The README itself, as it was before the move, is
 > 5. Candidate c24 (item 51, a 5% switching margin) was tested and is not recommended (Addendum 406).
 > 6. The device layer has been tested only in noisy simulation on fake devices, not on hardware.
 
-> **Current version (2026-10-10, third release): `psf_compile.py` 2026-10-10.3 and the AI front end a12, with
+> **Current version (2026-10-11, first release): `psf_compile.py` 2026-10-11.1 and the AI front end a12, with
+> `psf_smart_layout` 2026-10-01.1, the Rust core `CORE_VERSION` 2026-09-29.1 and the optional `psf_zero_core57`
+> 2026-10-10.c30 (all unchanged)** ([Part 10](findings/spare-qubit-cliff-combined-383.md), Addenda 439-442). The
+> file is candidate c36 ([`patches/psf_compile_c36_2026-10-10/`](../patches/psf_compile_c36_2026-10-10/)) with its
+> version lines changed; 2026-10-10.3 is kept as
+> [`patches/psf_compile_release_2026-10-10.3/`](../patches/psf_compile_release_2026-10-10.3/).
+>
+> - **Item 64 (c36):** `routing_optimization_level="auto"`: 3 with a Target, 1 without. Found in ROUTE-X
+>   (Addendum 439, exploratory).
+> - **C36-VAL** (pre-registered, Addendum 440; results Addendum 441; 106 tests on FakeMarrakesh and FakeFez, devices
+>   ROUTE-X did not use): W0-W6 all confirmed.
+>   - With `backend=`: no output on a failed element (Qiskit level 2: 60, level 3: 57).
+>   - ESP 1.059 and 1.077 of 2026-10-10.3's; 0.976 and 0.963 of Qiskit level 3's.
+>   - 1.26-1.34 times 2026-10-10.3's time.
+>   - Without the device: 2026-10-10.3's two-qubit counts on 212 of 212.
+> - **Not changed:** the call without a Target, the AI front end's code, the layout search, the core. Not
+>   established: hardware, other circuits (Addendum 442).
+
+> **Previous release (2026-10-10, third release): `psf_compile.py` 2026-10-10.3 and the AI front end a12, with
 > `psf_smart_layout` 2026-10-01.1 (two matching checks in rustworkx, the same results), the Rust core
 > `CORE_VERSION` 2026-09-29.1 and the optional `psf_zero_core57` 2026-10-10.c30 (unchanged)**
 > ([Part 10](findings/spare-qubit-cliff-combined-383.md), Addenda 429-438). The file is candidate c35

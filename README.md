@@ -33,12 +33,26 @@ including the failures, are recorded in [`docs/findings/`](docs/findings/).
 
 ## Current version
 
-**`psf_compile.py` 2026-10-10.3** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 (its matching
+**`psf_compile.py` 2026-10-11.1** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 (its matching
 checks now in rustworkx, the same results) and the Rust core `CORE_VERSION` 2026-09-29.1, and optionally
-`psf_zero_core57` 2026-10-10.c30 (Part 10, Addenda 383-438). Every release and dated notice:
+`psf_zero_core57` 2026-10-10.c30 (Part 10, Addenda 383-442). Every release and dated notice:
 [`docs/RELEASES.md`](docs/RELEASES.md).
 
-> **New in 2026-10-10.3: give the call the device, and it never returns a circuit on a failed element.** Items 58-63
+> **New in 2026-10-11.1: given the device, the call also routes at Qiskit's level 3.** Item 64 (candidate c36),
+> accepted in a pre-registered test on two devices it was not found on (C36-VAL; Part 10, Addenda 439-442):
+>
+> - **With `backend=` (or `target=`)** the call routes with Qiskit's level-3 settings instead of level 1. Without the
+>   device nothing changes.
+> - **C36-VAL** (106 Benchpress tests on FakeMarrakesh and FakeFez):
+>   - no output on a failed element (Qiskit level 2: 60; level 3: 57);
+>   - ESP 1.06 and 1.08 times 2026-10-10.3's;
+>   - 0.976 and 0.963 of Qiskit level 3's, on the tests where level 3's output is clean;
+>   - two-qubit gates level with Qiskit level 2's;
+>   - 1.26-1.34 times 2026-10-10.3's compile time, about 0.2 s per test as a median.
+> - **Still behind Qiskit level 3** by 2-4% of ESP where its output is clean. At level 3 PSF-Zero's two-qubit count is
+>   about level 3's: what it adds is the avoidance of failed elements and the placement by the errors.
+
+> **In 2026-10-10.3: give the call the device, and it never returns a circuit on a failed element.** Items 58-63
 > (candidates c31-c35), accepted together in a pre-registered test (C35-VAL; Part 10, Addenda 429-438):
 >
 > - **Why:** real devices' Targets keep failed couplers and qubits at error 1. The live ibm_kingston Target did on
@@ -185,6 +199,7 @@ optimized = psf_compile(qc)          # add verify=False for the fastest path
 ```
 
 **For a device** (the recommended call since 2026-10-10.3, the same on cx and cz devices): give it the device.
+Since 2026-10-11.1 it then also routes at Qiskit's level 3 (item 64; C36-VAL, Addenda 440-441).
 
 ```python
 from qiskit_ibm_runtime.fake_provider import FakeTorino

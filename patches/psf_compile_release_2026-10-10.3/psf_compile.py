@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-10-11.1 -- release, adopted on 2026-10-11 from candidate 2026-10-10.c36, accepted in C36-VAL (Addenda 440-441) (previous release: 2026-10-10.3)
+VERSION: 2026-10-10.3 -- release, adopted on 2026-10-10 from candidate 2026-10-10.c35 of Addenda 431-432, accepted in C35-VAL (Addenda 436-437) (previous release: 2026-10-10.2)
 
 Where to look for what
 ----------------------
@@ -892,11 +892,6 @@ adopted on 2026-10-06 after their pre-registered evaluations RECR and KRAUS, Add
     c34's two-qubit count, ESP was 1.005 of c34's, and the summed time 0.89 of it; the outputs differ in their
     single-qubit gates only. Both of PSF-Zero's own steps paid for themselves there: without the absorption 10% more
     two-qubit gates (ESP 0.918), without the compression 11% more (ESP 0.956). "psf" restores c34's synthesis.
-64. **ACCURACY: routing at level 3 when the device is given (candidate 2026-10-10.c36).** `routing_optimization_level`
-    is "auto": 3 when a Target is given (`backend=` or `target=`), 1 otherwise. In ROUTE-X (Addendum 439; release
-    2026-10-10.3's plain call with backend= on BP-FINAL's 106 FakeTorino tests) level 3 raised ESP by 5% (FakeTorino)
-    and 10% (FakeKingston) over level 1, to 0.975 and 0.985 of Qiskit level 3's, at 1.15-1.2 times the time. Without
-    a Target nothing changes. An explicit integer keeps its meaning.
 """
 from __future__ import annotations
 
@@ -935,7 +930,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-10-11.1"  # release (from candidate 2026-10-10.c36, C36-VAL): 2026-10-10.3 + item 64 (routing at level 3 when the device is given)
+VERSION = "2026-10-10.3"  # release (from candidate 2026-10-10.c35, C35-VAL): 2026-10-10.2 + items 58, 59a, 60-63 (the device given by backend= or target=: no failed element used; placement by the errors; speed)
 __version__ = VERSION
 
 # Changelog item 27: the version string of the loaded Rust core, for logs.
@@ -3240,7 +3235,7 @@ def compile_for_hardware(
     coupling_map: CouplingMap | None = None,
     basis_gates: list[str] | None = None,
     block_gate_floor: int = DEFAULT_BLOCK_GATE_FLOOR,
-    routing_optimization_level: Union[int, str] = "auto",
+    routing_optimization_level: int = 1,
     verify: Union[bool, str] = True,
     entangling_basis: str = "canonical",
     seed_transpiler: int | None = None,
@@ -3280,8 +3275,7 @@ def compile_for_hardware(
     RXX/RYY/RZZ this pass emits pass straight through and the result is not
     ISA-submittable.
 
-    `routing_optimization_level` defaults to "auto" (item 64): 3 when the device's Target is given, 1
-    otherwise; what follows is about the call without a Target. It defaulted to 1, and earlier to 2, on the
+    `routing_optimization_level` defaults to 1. It used to default to 2, on the
     stated grounds that translation "only happens" at level 2 -- that is not
     true, and was measured: with `basis_gates=["rz","sx","x","cx"]` the output
     contains nothing outside that set at level 0, 1 and 2 alike. What level 2
@@ -3432,8 +3426,6 @@ def compile_for_hardware(
         if target is None:
             raise ValueError("compile_for_hardware needs coupling_map, target or backend (changelog item 58)")
         coupling_map = target.build_coupling_map()
-    if routing_optimization_level == "auto":  # item 64: level 3 with the device's Target, level 1 without
-        routing_optimization_level = 3 if target is not None else 1
     if on_failed_elements not in ("raise", "keep"):
         raise ValueError('on_failed_elements must be "raise" or "keep" (changelog item 58)')
     if target is None and not _inner and WARN_WITHOUT_TARGET and not _WARNED["no_target"]:

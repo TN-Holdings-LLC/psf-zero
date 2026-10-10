@@ -18,7 +18,7 @@ sys.path[:0] = [os.path.join(REPO, "benchmarks"), REPO]
 def mods():
     import core_fix_c2_eval as H
     H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psf_smart_layout")
-    rel = H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile_rel_for_c36_test")
+    rel = H.load_module(os.path.join(REPO, "patches", "psf_compile_release_2026-10-10.3", "psf_compile.py"), "psf_compile_rel_for_c36_test")
     c36 = H.load_module(os.path.join(HERE, "psf_compile.py"), "psf_compile_c36_test")
     rel.WARN_WITHOUT_TARGET = c36.WARN_WITHOUT_TARGET = False
     return dict(rel=rel, c36=c36)
@@ -51,7 +51,7 @@ def test_version(mods):
 
 
 def test_file_is_the_release_plus_item_64():
-    with open(os.path.join(REPO, "psf_compile.py"), encoding="utf-8") as f:
+    with open(os.path.join(REPO, "patches", "psf_compile_release_2026-10-10.3", "psf_compile.py"), encoding="utf-8") as f:
         a = f.read().splitlines()
     with open(os.path.join(HERE, "psf_compile.py"), encoding="utf-8") as f:
         b = f.read().splitlines()

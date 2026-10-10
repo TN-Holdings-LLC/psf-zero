@@ -18,7 +18,7 @@ REPO = os.path.abspath(os.path.join(HERE, ".."))
 for p in (os.path.join(REPO, "benchmarks"), REPO):
     sys.path.insert(0, p)
 
-REL = os.path.join(REPO, "psf_compile.py")
+REL = os.path.join(REPO, "patches", "psf_compile_release_2026-10-10.3", "psf_compile.py")
 LAYOUT = os.path.join(REPO, "benchmarks", "psf_smart_layout.py")
 C35 = os.path.join(REPO, "patches", "psf_compile_c35_2026-10-10")
 PREV_DIR = os.path.join(REPO, "patches", "psf_compile_release_2026-10-10.2")
