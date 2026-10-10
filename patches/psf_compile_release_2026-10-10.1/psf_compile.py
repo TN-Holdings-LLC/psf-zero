@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-10-10.2 -- release, adopted on 2026-10-10 from candidate 2026-10-10.c30 of Addendum 426 (previous release: 2026-10-10.1)
+VERSION: 2026-10-10.1 -- release, adopted on 2026-10-10 from candidate 2026-10-10.c29 of Addendum 422 (previous release: 2026-10-07.1)
 
 Where to look for what
 ----------------------
@@ -829,19 +829,6 @@ adopted on 2026-10-06 after their pre-registered evaluations RECR and KRAUS, Add
     instead. Counters differ (FEASIBILITY_STATS counts the skips). Exploratory candidate 2026-10-09.c28 (Addendum 421)
     counted every instruction and qubit, including those of instructions `_ops_of` expands through their
     definitions, which can count more than `_ops_of` sees; these counts cannot.
-57. **SPEED: the estimates' and checks' per-gate loops in Rust, when psf_zero_core57 is installed (part b;
-    candidate 2026-10-10.c30).** (Part a, the reduced states in one NumPy pass, was tried in exploratory candidate
-    c28 and saved little: Addendum 421.) `excitation_cost`, `hybrid_cost` and item 39's `_apply_ops` spend their
-    time in a loop over the gates: Python's work per gate and NumPy's copies per amplitude. Now Python still reads
-    the circuit -- the instructions, their qubits, `_gate_matrix`, the Target's error and duration, T1 and T2 -- and
-    decides the cases that return None, then passes one byte buffer to `psf_zero_core57` (a module of its own, built
-    from patches/psf_zero_core57_2026-10-10, so that the release's psf_zero_core is not changed). The core walks the
-    gates exactly as the Python code does: single-qubit gates waiting with their reduced states (item 49), each wider
-    gate applied to the state, a two-qubit gate and both of its qubits' reduced states in one pass, and every cost
-    term in the same order. `hybrid_cost` adds `readout_cost` in Python, as before. The values agree with the Python
-    code's to rounding (sums are formed in another order), not bit for bit, so this is not identity by
-    construction; it is tested. Without psf_zero_core57, or for a call it cannot take (an instruction on more than
-    six qubits), the Python code runs. CORE57_STATS counts the calls made each way.
 """
 from __future__ import annotations
 
@@ -880,18 +867,12 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-10-10.2"  # release (from candidate 2026-10-10.c30 of Addendum 426): 2026-10-10.1 + item 57b (the estimates' and checks' loops in psf_zero_core57, when installed)
+VERSION = "2026-10-10.1"  # release (from candidate 2026-10-10.c29 of Addendum 422): 2026-10-07.1 + items 53 and 56 (gate matrices kept; no estimate for a candidate that cannot be checked)
 __version__ = VERSION
 
 # Changelog item 27: the version string of the loaded Rust core, for logs.
 # Cores built before 2026-09-28 do not define it.
 CORE_VERSION = getattr(psf_zero_core, "CORE_VERSION", None)
-
-try:  # item 57b: optional; without it the estimates and checks run in Python, as before
-    import psf_zero_core57 as _CORE57
-except ImportError:
-    _CORE57 = None
-CORE57_VERSION = getattr(_CORE57, "CORE57_VERSION", None)
 
 __all__ = [
     "VERSION",
@@ -1996,81 +1977,6 @@ RESYNTH_STATS = {"applied": 0, "kept_original": 0, "selected_resynthesised": 0, 
 RESYNTH_MAX_QUBITS = 16
 
 
-CORE57_STATS = {"rust": 0, "python": 0, "fallback": 0}  # item 57b: calls made in Rust, in Python, and refused
-_NOT_DONE = object()  # item 57b: the core did not take the call; the Python code runs
-_CORE57_MAGIC, _CORE57_BUFFER = 0x37354650, 1
-
-
-def _core57_buffer(kind, rows, k, t1, t2, state=None):
-    """Item 57b: the byte buffer of psf_zero_core57 (its `statevec::parse`): rows are (matrix, positions, error,
-    duration, has_props), NaN for a value not reported."""
-    import struct
-    ms = bytes(len(p) for _, p, _, _, _ in rows)
-    ps = bytes(x for _, p, _, _, _ in rows for x in p)
-    hp = bytes(1 if h else 0 for _, _, _, _, h in rows)
-    err = np.array([e for _, _, e, _, _ in rows], dtype="<f8")
-    dur = np.array([d for _, _, _, d, _ in rows], dtype="<f8")
-    mat = (np.concatenate([np.ascontiguousarray(m, dtype=complex).ravel() for m, _, _, _, _ in rows]).view("<f8")
-           if rows else np.zeros(0, dtype="<f8"))
-    out = [struct.pack("<7I", _CORE57_MAGIC, _CORE57_BUFFER, kind, k, len(rows), len(ps), mat.size),
-           np.asarray(t1, dtype="<f8").tobytes(), np.asarray(t2, dtype="<f8").tobytes(), ms, ps, hp,
-           err.tobytes(), dur.tobytes(), mat.astype("<f8", copy=False).tobytes()]
-    if state is not None:
-        out.append(np.ascontiguousarray(state, dtype=complex).ravel().view("<f8").astype("<f8", copy=False).tobytes())
-    return b"".join(out)
-
-
-def _core57_estimate(kind, ops, active, pos, qp, target):
-    """Item 57b: `excitation_cost` (kind 0) or `hybrid_cost`'s gate terms (kind 1) in psf_zero_core57. None where
-    the Python code returns None (an instruction without a matrix); _NOT_DONE where the core cannot take the call."""
-    nan = float("nan")
-    names = target.operation_names
-    rows = []
-    for op, q in ops:
-        if len(q) > 6:
-            return _NOT_DONE
-        props = target[op.name].get(q, None) if op.name in names else None
-        try:
-            mat = _gate_matrix(op)
-        except Exception:
-            return None
-        if props is None:
-            rows.append((mat, [pos[i] for i in q], nan, nan, False))
-        else:
-            e, d = props.error, props.duration
-            rows.append((mat, [pos[i] for i in q], nan if e is None else float(e), nan if d is None else float(d),
-                         True))
-    t1, t2 = [], []
-    for i in active:
-        p = qp[i] if i < len(qp) else None
-        a = getattr(p, "t1", None) if p is not None else None
-        b = getattr(p, "t2", None) if p is not None else None
-        t1.append(nan if a is None else float(a))
-        t2.append(nan if b is None else float(b))
-    try:
-        value = _CORE57.estimate57(_core57_buffer(kind, rows, len(active), t1, t2))
-    except ValueError:
-        CORE57_STATS["fallback"] += 1
-        return _NOT_DONE
-    CORE57_STATS["rust"] += 1
-    return value
-
-
-def _core57_apply(psi, ops, pos):
-    """Item 57b: `_apply_ops` in psf_zero_core57; None where the core cannot take the call."""
-    if any(len(q) > 6 for _, q in ops) or psi.ndim > RESYNTH_MAX_QUBITS:
-        return None
-    nan = float("nan")
-    rows = [(mat, [pos[i] for i in q], nan, nan, False) for mat, q in ops]
-    try:
-        out = _CORE57.apply_ops57(_core57_buffer(2, rows, psi.ndim, [nan] * psi.ndim, [nan] * psi.ndim, psi))
-    except ValueError:
-        CORE57_STATS["fallback"] += 1
-        return None
-    CORE57_STATS["rust"] += 1
-    return np.frombuffer(out, dtype="<c16").reshape(psi.shape)
-
-
 def excitation_cost(circ, target):
     """Item 35's estimate for "select": sum over gates of -log(1 - reported error), plus duration / T1 x P(1) on each
     of the gate's qubits, P(1) from the noiseless state (from |0...0>) just before the gate. None if more than
@@ -2086,11 +1992,6 @@ def excitation_cost(circ, target):
     k = max(len(active), 1)
     pos = {p: j for j, p in enumerate(active)}
     qp = getattr(target, "qubit_properties", None) or []
-    if _CORE57 is not None:  # item 57b
-        r = _core57_estimate(0, ops, active, pos, qp, target)
-        if r is not _NOT_DONE:
-            return r
-    CORE57_STATS["python"] += 1
     psi = np.zeros((2,) * k, dtype=complex)
     psi[(0,) * k] = 1.0
     cost = 0.0
@@ -2144,12 +2045,7 @@ def _product_state(rng):
 
 def _apply_ops(psi, ops, pos):
     """Applies [(matrix, physical qubits)] to the tensor `psi` (axis pos[q] = qubit q); Qiskit's little-endian
-    matrices, as in excitation_cost. Item 57b: in psf_zero_core57 when it is installed and can take the call."""
-    if _CORE57 is not None and ops:
-        out = _core57_apply(psi, ops, pos)
-        if out is not None:
-            return out
-    CORE57_STATS["python"] += 1
+    matrices, as in excitation_cost."""
     for mat, q in ops:
         axes = [pos[i] for i in q]
         m = len(axes)
@@ -2599,11 +2495,6 @@ def hybrid_cost(circ, target):
     k = max(len(active), 1)
     pos = {p: j for j, p in enumerate(active)}
     qp = getattr(target, "qubit_properties", None) or []
-    if _CORE57 is not None:  # item 57b
-        r = _core57_estimate(1, ops, active, pos, qp, target)
-        if r is not _NOT_DONE:
-            return None if r is None else r + readout_cost(circ, target)  # item 40, as below
-    CORE57_STATS["python"] += 1
     psi = np.zeros((2,) * k, dtype=complex)
     psi[(0,) * k] = 1.0
 

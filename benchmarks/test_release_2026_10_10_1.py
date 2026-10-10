@@ -19,7 +19,7 @@ REPO = os.path.abspath(os.path.join(HERE, ".."))
 for p in (os.path.join(REPO, "benchmarks"), REPO):
     sys.path.insert(0, p)
 
-REL = os.path.join(REPO, "psf_compile.py")
+REL = os.path.join(REPO, "patches", "psf_compile_release_2026-10-10.1", "psf_compile.py")  # kept copy
 C29 = os.path.join(REPO, "patches", "psf_compile_c29_2026-10-10", "psf_compile.py")
 PREV = os.path.join(REPO, "patches", "psf_compile_release_2026-10-07.1", "psf_compile.py")
 

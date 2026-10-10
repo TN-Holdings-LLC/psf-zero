@@ -11,8 +11,9 @@ the earlier parts they link to. The README itself, as it was before the move, is
 
 > **In brief (as of 2026-10-10)**
 >
-> 1. Release 2026-10-10.1 (items 53 and 56) returns 2026-10-07.1's circuits wherever 2026-10-07.1 repeats itself,
->    and skips estimates that could never change the result (C29-ID, Addenda 422-424). The figures below were
+> 1. Release 2026-10-10.2 (items 53, 56 and 57b) returns 2026-10-07.1's circuits wherever 2026-10-07.1 repeats
+>    itself, skips estimates that could never change the result, and runs the remaining estimates in Rust when the
+>    optional module psf_zero_core57 is installed (C29-ID and C30-ID, Addenda 422-428). The figures below were
 >    measured with 2026-10-07.1; its default call is unchanged.
 > 2. Release 2026-10-07.1 is about level with Qiskit level 2 on general circuits: 1.046 times its two-qubit gates on
 >    880 Benchpress tests not used during development (BP-FINAL, Addenda 407-408), at about 3.5 times its compile time.
@@ -23,7 +24,24 @@ the earlier parts they link to. The README itself, as it was before the move, is
 > 5. Candidate c24 (item 51, a 5% switching margin) was tested and is not recommended (Addendum 406).
 > 6. The device layer has been tested only in noisy simulation on fake devices, not on hardware.
 
-> **Current version (2026-10-10, first release): `psf_compile.py` 2026-10-10.1 and the AI front end a12, with
+> **Current version (2026-10-10, second release): `psf_compile.py` 2026-10-10.2 and the AI front end a12, with
+> `psf_smart_layout` 2026-10-01.1 and the Rust core `CORE_VERSION` 2026-09-29.1 (all three unchanged), and the
+> optional module `psf_zero_core57` 2026-10-10.c30** ([Part 10](findings/spare-qubit-cliff-combined-383.md), Addenda
+> 425-428). The file is candidate c30
+> ([`patches/psf_compile_c30_2026-10-10/`](../patches/psf_compile_c30_2026-10-10/)) with its version lines changed;
+> 2026-10-10.1 is kept as [`patches/psf_compile_release_2026-10-10.1/`](../patches/psf_compile_release_2026-10-10.1/).
+>
+> - **Item 57b (c30; C30-ID, Addenda 426-427):** the per-gate loops of the recommended call's estimates and checks
+>   run in `psf_zero_core57`, built from [`patches/psf_zero_core57_2026-10-10/`](../patches/psf_zero_core57_2026-10-10/);
+>   without it, the Python code. On the 152 development tests, 2026-10-10.1's output by value on 184 of 184
+>   test-calls where 2026-10-10.1 repeats itself, no failure; where the recommended call makes estimates, 0.656 of
+>   the time (geometric mean, 14 test-calls; enc_gray_dvalues_4-4-4-4-4-4-4 1,546 s to 39 s; JW-14 slower in that
+>   run, 63 s against 40 s, probably from the load at the moment).
+> - **Not changed:** the default call, the AI front end, the layout search, the core. Not established: identity
+>   where 2026-10-10.1 does not repeat itself (bv_n140, bv_n30), with the real clock, and speed on other machines
+>   (Addendum 428).
+
+> **Previous release (2026-10-10, first release): `psf_compile.py` 2026-10-10.1 and the AI front end a12, with
 > `psf_smart_layout` 2026-10-01.1 and the Rust core `CORE_VERSION` 2026-09-29.1 (all three unchanged)**
 > ([Part 10](findings/spare-qubit-cliff-combined-383.md), Addenda 413-424). The file is candidate c29
 > ([`patches/psf_compile_c29_2026-10-10/`](../patches/psf_compile_c29_2026-10-10/)) with its version lines changed;

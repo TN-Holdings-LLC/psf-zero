@@ -103,7 +103,7 @@ def compact_fidelity(qc, out):
 
 
 def test_version(mods):
-    assert mods[0].VERSION == "2026-10-10.1"  # current release (this file was written for 2026-10-02.2)
+    assert mods[0].VERSION == "2026-10-10.2"  # current release (this file was written for 2026-10-02.2)
     assert mods[1].VERSION == "2026-10-02.c3"  # the code of release 2026-10-02.1
 
 

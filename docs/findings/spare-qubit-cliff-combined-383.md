@@ -4291,6 +4291,95 @@ Reported without prediction:
 
 ---
 
+<!-- ===== Addendum 428 (source: spare-qubit-cliff-addendum-428-2026-10-10.md) ===== -->
+
+> **Note added when merging:** The release of candidate c30 as 2026-10-10.2, by the owner's decision after Addendum 427.
+
+## Addendum 428 -- Release: psf_compile 2026-10-10.2 = candidate 2026-10-10.c30 of Addendum 426 (changelog item 57b, accepted in Addendum 427), with its Rust loops in the optional module psf_zero_core57; the AI front end stays a12 (2026-10-10)
+
+**Status: the owner's decision of 2026-10-10 (home), after C30-ID's results (Addendum 427).** It follows the
+procedure of releases 2026-10-07.1 and 2026-10-10.1 (Addenda 397 and 424).
+
+## 1. The decision
+
+The owner released candidate c30 as **2026-10-10.2**. It is release 2026-10-10.1 (items 53 and 56) with item 57b.
+
+| item | what it does | test | result |
+|---|---|---|---|
+| 57b | the recommended call's estimates (`excitation_cost`, `hybrid_cost`) and exactness checks (`_apply_ops`) run their per-gate loops in Rust, in `psf_zero_core57`, when it is installed | C30-ID (Addenda 426-427) | the release's output by value on 184 of 184 test-calls where the release repeats itself; no failure; where the recommended call makes estimates, 0.656 of the time (geometric mean, 14 test-calls); enc_gray_dvalues_4-4-4-4-4-4-4 from 1,546 s to 39 s |
+
+**How the Rust code ships.** As the owner chose, `psf_zero_core57` is a Python module of its own, built from
+[`patches/psf_zero_core57_2026-10-10/`](../../patches/psf_zero_core57_2026-10-10/) with `maturin develop --release`.
+
+- It is optional. Without it, 2026-10-10.2 runs the Python code, with 2026-10-10.1's exact values.
+- The release's core, `psf_zero_core` (`CORE_VERSION` 2026-09-29.1), is unchanged.
+- Merging the module into the core is left for later.
+
+**What a user sees.**
+
+- The same circuits as 2026-10-10.1, wherever 2026-10-10.1 reproduces itself.
+- With the module, the recommended call is faster wherever it makes estimates: 0.5-0.7 of the time on tests of a
+  few seconds to a minute, much less where the estimates dominate, and 0.8-1.0 on circuits under a second.
+- The default call is unchanged.
+- The AI front end (a12) calls `psf_compile`, so it gets item 57b. The layout search is unchanged.
+
+## 2. What changes in the repository
+
+- **[`psf_compile.py`](../../psf_compile.py)** is c30's file with its two version lines changed. Nothing else differs;
+  [`benchmarks/test_release_2026_10_10_2.py`](../../benchmarks/test_release_2026_10_10_2.py) checks this.
+- **The outgoing release 2026-10-10.1** is kept unchanged as
+  [`patches/psf_compile_release_2026-10-10.1/psf_compile.py`](../../patches/psf_compile_release_2026-10-10.1/psf_compile.py).
+- **Tests.**
+  - [`benchmarks/test_release_2026_10_10_2.py`](../../benchmarks/test_release_2026_10_10_2.py) (new) checks:
+    - the version and item 57b's counters;
+    - that the file equals c30's except the version lines;
+    - that c30 and the kept 2026-10-10.1 are the locked files;
+    - on four small circuits, with the default and the recommended call, with the module and without it:
+      2026-10-10.1's output by value wherever 2026-10-10.1 gives one output twice. The module is used only by the
+      recommended call.
+  - [`benchmarks/test_release_2026_10_10_1.py`](../../benchmarks/test_release_2026_10_10_1.py), which tests
+    2026-10-10.1, now loads the kept copy.
+  - The 24 lines that asserted the current release's version now assert `"2026-10-10.2"`.
+  - The locked scripts are records and are not changed.
+- **README:**
+  - "Current version" names 2026-10-10.2;
+  - "Install" adds the optional build of `psf_zero_core57`.
+- **[`docs/RELEASES.md`](../../docs/RELEASES.md):** a new "Current version" block; the 2026-10-10.1 block becomes
+  "Previous release".
+
+## 3. Checks before the commit
+
+[`benchmarks/run_release_tests_2026-10-10_2.py`](../../benchmarks/run_release_tests_2026-10-10_2.py) ran 37 test
+files, one pytest session per file:
+
+- the 35 of release 2026-10-10.1's checks;
+- the new release test;
+- candidate c30's tests.
+
+**Environment.** Home (WSL2; Python 3.12.13, Qiskit 2.5.2, NumPy 2.5.3, `psf_compile` 2026-10-10.2, core
+2026-09-29.1, `psf_zero_core57` 2026-10-10.c30), on commit `9ea53e1` with these changes uncommitted, from 06:58:02 to 07:06:56 CEST.
+
+**Result:** 297 passed, none failed or errored, on all 37 files. Logs:
+[`data/2026-10-10/release_2026-10-10.2/`](../../data/2026-10-10/release_2026-10-10.2/).
+
+| file | normalized SHA-256 |
+|---|---|
+| [`psf_compile.py`](../../psf_compile.py) (release 2026-10-10.2) | `3b027b856e1b997906f1ad19cfa123d4f9503473c737eeb7ba40bac266c0ad8b` |
+| [`patches/psf_compile_release_2026-10-10.1/psf_compile.py`](../../patches/psf_compile_release_2026-10-10.1/psf_compile.py) (kept) | `0999bb063393e4fb174cd4018d9b9a0ffabf3146494a3fed5a55e0658968da09` |
+| [`patches/psf_compile_c30_2026-10-10/psf_compile.py`](../../patches/psf_compile_c30_2026-10-10/psf_compile.py) (candidate, unchanged) | `e753f72a918854b2e9cee786557cb137d7ace56d0de4038d18364008b180ff25` |
+| [`benchmarks/test_release_2026_10_10_2.py`](../../benchmarks/test_release_2026_10_10_2.py) (new) | `eee537ab3210c05e33548cda87b2529df03709ef9810525ab0edc52f9641ef10` |
+
+## 4. What 2026-10-10.2 does not establish
+
+- **Identity where the release does not repeat itself, and with the real clock** (as Addendum 424).
+- **The speed-up on other machines.** The module has been built and run only on the home PC (Linux, x86-64), and
+  each timing was a single run. JW-14 was slower with the module in C30-ID (63 s against 40 s), probably because of
+  the load at that moment. Alone it took 0.77 of the time (Addenda 425, 427).
+- **Speed on small circuits.** Below about a second the time is outside the estimates. The recommended call's fixed
+  cost there remains (TOQB run 1c; weakness report).
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

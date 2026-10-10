@@ -74,7 +74,7 @@ def code(path):
 def test_versions(mods):
     assert mods["a11"].AI_COMPILE_VERSION == "2026-10-05.a11"
     assert mods["a9"].AI_COMPILE_VERSION == "2026-10-05.a9"
-    assert mods["rel"].VERSION == "2026-10-10.1"
+    assert mods["rel"].VERSION == "2026-10-10.2"
     assert mods["a11"].pc is mods["rel"] and mods["a9"].pc is mods["rel"]
 
 

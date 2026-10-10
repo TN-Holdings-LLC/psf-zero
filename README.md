@@ -33,11 +33,22 @@ including the failures, are recorded in [`docs/findings/`](docs/findings/).
 
 ## Current version
 
-**`psf_compile.py` 2026-10-10.1** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 and the Rust core
-`CORE_VERSION` 2026-09-29.1 (Part 10, Addenda 383-424). Every release and dated notice:
+**`psf_compile.py` 2026-10-10.2** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 and the Rust core
+`CORE_VERSION` 2026-09-29.1, and optionally `psf_zero_core57` 2026-10-10.c30 (Part 10, Addenda 383-428). Every release and dated notice:
 [`docs/RELEASES.md`](docs/RELEASES.md).
 
-> **New in 2026-10-10.1: the same circuits, and the recommended call no longer estimates candidates it can never
+> **New in 2026-10-10.2: the same circuits, and the recommended call's estimates and checks run in Rust.** One
+> change (item 57b), tested for identity (Part 10, Addenda 425-428):
+>
+> - **Item 57b:** the per-gate loops of the recommended call's estimates and exactness checks run in an optional
+>   Rust module, `psf_zero_core57` (see [Install](#install)); without it the Python code runs, with the same values
+>   as before. On 152 Benchpress development tests (C30-ID, Addenda 426-427) it returned 2026-10-10.1's circuit, by
+>   value, on all 184 test-calls where 2026-10-10.1 repeats itself. Where the recommended call makes estimates, it
+>   took 0.656 of the time (geometric mean of 14 test-calls); on `enc_gray_dvalues_4-4-4-4-4-4-4`, 39 s instead of
+>   1,546 s.
+> - **Not changed:** the default call, the AI front end (a12), the layout search, the core `psf_zero_core`.
+
+> **In 2026-10-10.1: the same circuits, and the recommended call no longer estimates candidates it can never
 > use.** Two changes (items 53 and 56), each tested for identity (Part 10, Addenda 413-424):
 >
 > - **Item 56:** the recommended call replaces its circuit with a candidate (re-synthesis, a floor-aware compile,
@@ -178,6 +189,7 @@ git clone https://github.com/TN-Holdings-LLC/psf-zero.git
 cd psf-zero
 pip install -e .            # the Python package (psf_compile.py), numpy, scipy, networkx, qiskit==2.5.2
 maturin develop --release   # the Rust core (src/lib.rs, psf_zero_core) -- must run LAST
+(cd patches/psf_zero_core57_2026-10-10 && maturin develop --release)   # optional: item 57b's Rust loops
 python benchmarks/check_core_build.py   # prints RESULT: OK if the core has every function the Python code calls
 ```
 
