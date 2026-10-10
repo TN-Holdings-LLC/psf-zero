@@ -3870,6 +3870,89 @@ Reported without prediction:
 
 ---
 
+<!-- ===== Addendum 423 (source: spare-qubit-cliff-addendum-423-2026-10-10.md) ===== -->
+
+> **Note added when merging:** Results of C29-ID (Addendum 422), scored by the locked script, with its data.
+
+## Addendum 423 -- Results of C29-ID (Addendum 422): U0 PASS, U1 and U2 CONFIRMED, U3 REFUTED as scored. Candidate c29 (items 53 and 56) returns the release's output, by value, on all 183 test-calls where the release repeats itself, and fails nowhere the release does not; on hwb10 it finishes in 82 s where the release did not finish in 3,600 s. Proposed for the next release (2026-10-10)
+
+**Status: results of the pre-registered test in Addendum 422**, scored by the locked script (`c29_identity.py
+compare`).
+
+## 1. The run
+
+- **Lock.** Commit `a00ade5`, pushed at 01:35:09 CEST, before the run.
+- **Data.** [`data/2026-10-10/c29_identity/`](../../data/2026-10-10/c29_identity/): `c29_identity.jsonl` (one record
+  per job, with its decision counters) and `compare.md` (the score). In the records, the home folder in the
+  benchmark file paths is replaced by `/home/<user>`.
+- **Machine and timing.** The home PC (WSL2, 12 CPUs, Python 3.12.13), with nothing else running, 4 jobs at a time.
+  The run started at 01:35:59 CEST and ended at 03:20:42; its 558 jobs took 24,996 s of wall time in all. No job
+  failed except the two below, and none was left unstarted.
+
+## 2. Results
+
+| ID | prediction | value | verdict |
+|---|---|---|---|
+| U0 | the run is as locked | 152 tests, 186 test-calls, all three arms on every one; versions, layout and virtual clock in every record; no uncommitted change | **PASS** |
+| U1 | C29 = REL by value wherever REL2 = REL | 183 identical of 183 scored | **CONFIRMED** |
+| U2 | C29 adds no failure | C29: no failure; REL and REL2: one each (hwb10, recommended call, the 3,600 s limit) | **CONFIRMED** |
+| U3 | hwb10, recommended call: C29's wall time under 0.2 of REL's (both finishing) | C29 82 s; REL and REL2 stopped at 3,600 s | **REFUTED** |
+
+**U3, as scored and as read.** The prediction required both arms to finish, so the locked script scores it REFUTED.
+The comparison it describes could not be made: the release did not finish. C29's 82 s is under 0.03 of the
+3,600 s at which the release was stopped. The prediction was wrong about the release's time in this run, not about
+C29's speed. Alone on the same machine, the release took 852 s (H10-FULL, Addendum 420). Here, with three other
+jobs running, it took more than four times as long. C29 also ran slower than when the machine was less loaded: 82 s
+here against 26.9 s in Addendum 421, with two other jobs then. As pre-registered, U3 does not bear on adoption.
+
+**Reported without prediction.**
+
+- **The control.** REL2 = REL by value on 183 of the 185 test-calls both finished. By `sig_hash`, they agree on
+  177.
+  - The six that differ only by `sig_hash` are inverseqft_n4 (linear), qec_sm_n5 (all-to-all), and circSU2 with 100
+    and 89 qubits under both calls. Their values are equal, which confirms Addendum 412's guess: the signature
+    recorded the number type of equal values.
+  - The two that differ by value are bv_n140 (linear) and bv_n30 (square), default call. This is the layout
+    nondeterminism of Addendum 412, found again with the virtual clock and a fixed hash seed. On bv_n140, C29
+    equals REL2; on bv_n30, it equals neither.
+- **Not scored.** Three test-calls: those two, and hwb10 (recommended), where the release did not finish.
+- **Where item 56 acted.** It skipped something on one test-call only: hwb10, recommended. It dropped two candidates
+  before their estimates and two re-syntheses. Its output there has signature `dd13b679...`, the same as the
+  release's in H10-FULL (Addenda 420-421).
+- **Time.**
+
+  | calls | REL (s) | REL2 (s) | C29 (s) |
+  |---|---|---|---|
+  | recommended, 33 finished in all arms | 2,848 | 2,840 | 2,795 |
+  | default, 152 | 1,605 | 1,620 | 1,600 |
+
+  C29 is 2% faster on the recommended calls (item 53). REL and REL2 differ by 0.3%. Per test-call, the ratio C29/REL
+  ranges from 0.76 to 1.78, and REL2/REL from 0.79 to 1.30. Single small timings vary that much on this machine.
+
+## 3. Reading
+
+- **Item 56 is identity in practice as well as by construction.** Wherever the release returns the same output
+  twice, c29 returns it. Item 53, which C26-ID (Addenda 413-414) had shown only function by function, is now also
+  shown on whole outputs.
+- **What c29 gains.**
+  - On the development tests, it finishes the one test the release cannot finish within an hour when the machine is
+    loaded, hwb10, with the release's own circuit.
+  - Elsewhere it gains item 53's 2%.
+  - The slow tests where checks can be made (type A: JW-14, enc_gray, JW-10, parity10) are not helped by item 56.
+    Item 57b (the loops in Rust, candidate c30) is for them.
+- **What the run says about the release.**
+  - The release is reproducible by value on 183 of 185 test-calls under the virtual clock.
+  - The two exceptions (bv_n140, bv_n30) remain the open determinism weakness (item 55's subject).
+  - Comparing by value removed the six apparent differences that came from the signature.
+
+## 4. What follows
+
+- **Candidate c29 is proposed for the next release.** U0, U1 and U2 hold, as Addendum 422 set out. The release would
+  be release 2026-10-07.1 with items 53 and 56. Adoption is the owner's decision.
+- **Item 57b** is tested next, on c29.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
