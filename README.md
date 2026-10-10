@@ -33,11 +33,36 @@ including the failures, are recorded in [`docs/findings/`](docs/findings/).
 
 ## Current version
 
-**`psf_compile.py` 2026-10-10.2** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 and the Rust core
-`CORE_VERSION` 2026-09-29.1, and optionally `psf_zero_core57` 2026-10-10.c30 (Part 10, Addenda 383-428). Every release and dated notice:
+**`psf_compile.py` 2026-10-10.3** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 (its matching
+checks now in rustworkx, the same results) and the Rust core `CORE_VERSION` 2026-09-29.1, and optionally
+`psf_zero_core57` 2026-10-10.c30 (Part 10, Addenda 383-438). Every release and dated notice:
 [`docs/RELEASES.md`](docs/RELEASES.md).
 
-> **New in 2026-10-10.2: the same circuits, and the recommended call's estimates and checks run in Rust.** One
+> **New in 2026-10-10.3: give the call the device, and it never returns a circuit on a failed element.** Items 58-63
+> (candidates c31-c35), accepted together in a pre-registered test (C35-VAL; Part 10, Addenda 429-438):
+>
+> - **Why:** real devices' Targets keep failed couplers and qubits at error 1. The live ibm_kingston Target did on
+>   2026-09-28, and every PSF-Zero output of Addendum 246 used them (Addendum 434). A call that is not given the
+>   device cannot avoid them.
+> - **`backend=` (item 58):** `compile_for_hardware(qc, backend=backend)` takes the Target, coupling map and basis
+>   from the device. Given the device, the call places by the errors (item 60) and avoids failed elements. It raises
+>   `FailedElementsError` rather than return a circuit that cannot avoid them (`on_failed_elements="keep"` returns it
+>   with a warning). Without the device it warns once per process.
+> - **C35-VAL** (106 Benchpress tests on FakeTorino and FakeKingston, Addenda 436-437):
+>   - with `backend=`, 0 of 212 outputs on a failed element (Qiskit level 2: 44; level 3: 34);
+>   - estimated success probability (ESP) 1.002 and 0.964 of 2026-10-10.2's recommended call, at 0.41-0.43 of its
+>     time;
+>   - ESP 1.16 and 1.15 times Qiskit level 2's;
+>   - without the device, 2026-10-10.2's two-qubit counts on 212 of 212.
+> - **Still behind Qiskit level 3:** ESP 0.957 and 0.899 of its on the tests where a result survives, at 1.4-1.6 times
+>   its compile time.
+> - **By PSF-Zero's own `hybrid_cost`** (which counts decoherence while qubits wait), the full-option call was worse
+>   than an older call's on 1 of 20 small test cells (2.4%, from item 63's single-qubit gates) and better on 2
+>   (Addendum 438).
+> - **Speed (items 61-63):** with the device, one compile on the pruned map. The SWAP absorption is synthesised by
+>   Qiskit's Rust decomposer, and rustworkx does the layout search's matching checks.
+
+> **In 2026-10-10.2: the same circuits, and the recommended call's estimates and checks run in Rust.** One
 > change (item 57b), tested for identity (Part 10, Addenda 425-428):
 >
 > - **Item 57b:** the per-gate loops of the recommended call's estimates and exactness checks run in an optional
@@ -159,28 +184,32 @@ qc.append(UnitaryGate(random_unitary(4)), [0, 1])
 optimized = psf_compile(qc)          # add verify=False for the fastest path
 ```
 
-**For a device** (the recommended call since 2026-10-04.1, the same on cx and cz devices):
+**For a device** (the recommended call since 2026-10-10.3, the same on cx and cz devices): give it the device.
 
 ```python
 from qiskit_ibm_runtime.fake_provider import FakeTorino
 from psf_compile import compile_for_hardware
 
 backend = FakeTorino()
-cm = backend.target.build_coupling_map()
-basis = [g for g in ("cx", "cz", "rz", "sx", "x") if g in backend.target.operation_names]
-out = compile_for_hardware(qc, coupling_map=cm, basis_gates=basis, entangling_basis="cx", layout_search=True,
-                           target=backend.target, placement_refine=True, final_resynthesis="select",
-                           compare_level3=True, compare_floor=True, candidate_score="hybrid")
+out = compile_for_hardware(qc, backend=backend, entangling_basis="cx", layout_search=True)
 ```
+
+The earlier recommended options (`placement_refine=True, final_resynthesis="select", compare_level3=True,
+compare_floor=True, candidate_score="hybrid"`) still work with `backend=`. In C35-VAL they gave about 1-2% more ESP at
+about twice the time (Addendum 437).
 
 If the circuit will be sampled, compile it **with** its final measurements: since 2026-10-06.1 the placement and the
 choice among candidates then count readout error (Addenda 358, 360).
 
-**On a device that reports failed couplers** (FakeTorino does), give the call the device's `target`: the recommended
-call above, or at least `target=backend.target, placement_refine=True`. The default call (coupling map and basis
-only) does not read the target and can route through couplers the device reports as failed, as Qiskit level 2 can
-(Addendum 393). In CALSPLIT a classifier compiled that way on FakeTorino reached 0.77 accuracy even at 1,023 shots,
-against 0.94 with any target-aware call (Addendum 403).
+**Always give the call the device** (`backend=`, or `target=`).
+
+- Real devices' Targets keep failed couplers and qubits at error 1, and an output that uses one has an estimated
+  success probability of 0. The live ibm_kingston Target did on 2026-09-28 (Addendum 434).
+- A call given only a coupling map and a basis does not read the errors. It cannot avoid failed elements, and warns
+  once. In C35-VAL 63 of 106 FakeTorino outputs of such a call used one; with `backend=`, none (Addendum 437).
+- In CALSPLIT a classifier compiled without the device reached 0.77 accuracy on FakeTorino even at 1,023 shots,
+  against 0.94 with any call given the Target (Addendum 403).
+- Qiskit level 2 and level 3 can use failed elements too (Addendum 393).
 
 ## Install
 
@@ -245,7 +274,8 @@ every one that could be checked (491) implements its input.
 - **Failed couplers:** on FakeTorino the default call, which does not read the target, placed two-qubit gates on
   couplers or qubits the device reports as failed (error 0.5 or more) in 62 of 105 tests (40,801 gates on `hwb11`);
   Qiskit level 2, given the device, in 25; the recommended call in none, at 1.035 times Qiskit level 2's two-qubit
-  count (BP-FINAL). Use the recommended call on such devices (see [Quick start](#quick-start)).
+  count (BP-FINAL). Give the call the device (see [Quick start](#quick-start)): with `backend=`, 2026-10-10.3 used
+  no failed element in C35-VAL (Addendum 437).
 - Not covered: Benchpress's other test groups, Benchpress's own gym (BP-FINAL used this project's harness with
   Benchpress's builders, backends and validator), depth as a target, hardware. Three tests timed out (1,500 s) for
   the default call or Qiskit and are left out of the ratios.

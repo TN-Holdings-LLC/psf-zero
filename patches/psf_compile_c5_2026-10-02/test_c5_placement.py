@@ -20,7 +20,7 @@ def mods():
     lay = H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psl_c5_test")
     sys.modules["psf_smart_layout"] = lay
     return (H.load_module(os.path.join(HERE, "psf_compile.py"), "psf_compile_c5_test"),
-            H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile_rel_c5_test"))
+            H.load_module(os.path.join(REPO, "patches", "psf_compile_release_2026-10-10.2", "psf_compile.py"), "psf_compile_rel_c5_test"))
 
 
 def backend(name):

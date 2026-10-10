@@ -17,14 +17,41 @@ the earlier parts they link to. The README itself, as it was before the move, is
 >    measured with 2026-10-07.1; its default call is unchanged.
 > 2. Release 2026-10-07.1 is about level with Qiskit level 2 on general circuits: 1.046 times its two-qubit gates on
 >    880 Benchpress tests not used during development (BP-FINAL, Addenda 407-408), at about 3.5 times its compile time.
-> 3. On a device that reports failed couplers, pass `target`. The default call does not read it, and in BP-FINAL it
->    placed gates on failed elements in 62 of 105 FakeTorino tests; the recommended call in none.
+> 3. Give the call the device (`backend=` or `target=`). Since 2026-10-10.3 the plain call given the device avoids
+>    failed elements and refuses an output that cannot (C35-VAL, Addenda 436-438). Without it, no call can avoid
+>    them: in BP-FINAL the default call placed gates on failed elements in 62 of 105 FakeTorino tests, and real
+>    devices' Targets keep such elements (Addendum 434).
 > 4. With a fresh calibration the recommended call keeps a small lead over the guarded call; with a stale one the lead
 >    depends on the data (CALSPLIT, MARGIN; Addenda 402-406).
 > 5. Candidate c24 (item 51, a 5% switching margin) was tested and is not recommended (Addendum 406).
 > 6. The device layer has been tested only in noisy simulation on fake devices, not on hardware.
 
-> **Current version (2026-10-10, second release): `psf_compile.py` 2026-10-10.2 and the AI front end a12, with
+> **Current version (2026-10-10, third release): `psf_compile.py` 2026-10-10.3 and the AI front end a12, with
+> `psf_smart_layout` 2026-10-01.1 (two matching checks in rustworkx, the same results), the Rust core
+> `CORE_VERSION` 2026-09-29.1 and the optional `psf_zero_core57` 2026-10-10.c30 (unchanged)**
+> ([Part 10](findings/spare-qubit-cliff-combined-383.md), Addenda 429-438). The file is candidate c35
+> ([`patches/psf_compile_c35_2026-10-10/`](../patches/psf_compile_c35_2026-10-10/)) with its version lines changed;
+> 2026-10-10.2 and its `psf_smart_layout.py` are kept in
+> [`patches/psf_compile_release_2026-10-10.2/`](../patches/psf_compile_release_2026-10-10.2/).
+>
+> - **Items 58-63 (c31-c35):**
+>   - `backend=`;
+>   - a check, after the recompile, that refuses an output still on a failed element (`FailedElementsError`);
+>   - a once-per-process warning without a Target;
+>   - placement by the errors whenever a Target is given;
+>   - one compile on the pruned map;
+>   - faster checks;
+>   - Qiskit's decomposer for the SWAP absorption.
+> - **C35-VAL** (pre-registered, Addendum 436; results Addendum 437; 106 tests on FakeTorino and FakeKingston): V0-V6
+>   all confirmed.
+>   - With `backend=`: no output on a failed element (Qiskit level 2: 44, level 3: 34). ESP 1.002 and 0.964 of
+>     2026-10-10.2's recommended call at 0.41-0.43 of its time; 1.16 and 1.15 of Qiskit level 2's; 0.957 and 0.899
+>     of level 3's.
+>   - Without the device: 2026-10-10.2's two-qubit counts on 212 of 212.
+> - **Not changed:** the AI front end's code, the core, `psf_zero_core57`. Not established: hardware, other test sets
+>   (Addendum 438).
+
+> **Previous release (2026-10-10, second release): `psf_compile.py` 2026-10-10.2 and the AI front end a12, with
 > `psf_smart_layout` 2026-10-01.1 and the Rust core `CORE_VERSION` 2026-09-29.1 (all three unchanged), and the
 > optional module `psf_zero_core57` 2026-10-10.c30** ([Part 10](findings/spare-qubit-cliff-combined-383.md), Addenda
 > 425-428). The file is candidate c30

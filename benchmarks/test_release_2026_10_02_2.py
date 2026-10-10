@@ -22,7 +22,7 @@ def mods():
     import core_fix_c2_eval as H
     lay = H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psl_rel1002b_test")
     sys.modules["psf_smart_layout"] = lay
-    return (H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile_rel1002b_test"),
+    return (H.load_module(os.path.join(REPO, "patches", "psf_compile_release_2026-10-10.2", "psf_compile.py"), "psf_compile_rel1002b_test"),
             H.load_module(os.path.join(REPO, "patches", "psf_compile_c3_2026-10-02", "psf_compile.py"),
                           "psf_compile_prev1002_test"))
 

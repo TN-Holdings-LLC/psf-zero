@@ -24,7 +24,7 @@ RECOMMENDED = dict(placement_refine=True, final_resynthesis="select", compare_le
 def mods():
     import core_fix_c2_eval as H
     H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psf_smart_layout")
-    rel = H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile_rel_for_c31_test")
+    rel = H.load_module(os.path.join(REPO, "patches", "psf_compile_release_2026-10-10.2", "psf_compile.py"), "psf_compile_rel_for_c31_test")
     c31 = H.load_module(os.path.join(HERE, "psf_compile.py"), "psf_compile_c31_test")
     rel_warn, c31_warn = getattr(rel, "WARN_WITHOUT_TARGET", None), c31.WARN_WITHOUT_TARGET
     c31.WARN_WITHOUT_TARGET = False

@@ -4980,6 +4980,140 @@ Between the two thresholds a prediction is ambiguous.
 
 ---
 
+<!-- ===== Addendum 438 (source: spare-qubit-cliff-addendum-438-2026-10-10.md) ===== -->
+
+> **Note added when merging:** The release of candidate c35 as 2026-10-10.3, by the owner's decision after Addendum 437 (C35-VAL's release rule met).
+
+## Addendum 438 -- Release: psf_compile 2026-10-10.3 = candidate 2026-10-10.c35 (changelog items 58-63, accepted in C35-VAL, Addenda 436-437). Given the device (backend= or target=), the plain call places by the errors, never returns a circuit on a failed element, and refuses one that cannot avoid them; the AI front end stays a12 (2026-10-10)
+
+**Status: the owner's decision of 2026-10-10 (home), after C35-VAL's results (Addendum 437).** It follows the
+procedure of releases 2026-10-10.1 and 2026-10-10.2 (Addenda 424 and 428). C35-VAL's release rule was locked before
+the run (Addendum 436) and met.
+
+## 1. The decision
+
+The owner released candidate c35 as **2026-10-10.3**: release 2026-10-10.2 with items 58-63 (candidates c31-c35,
+Addenda 431-432).
+
+| item | what it does |
+|---|---|
+| 58 | `backend=` gives the call the device: its Target, coupling map and basis (`coupling_map` may be left out). Without a Target the call warns once per process that failed elements cannot be avoided. A qubit whose measurement error is >= 0.5 counts as failed. After item 31's recompile the output is checked again; `on_failed_elements="raise"` (the default) raises `FailedElementsError` rather than return a circuit that still uses a failed element, and `"keep"` returns it with item 43's warning |
+| 59a | `EXACT_SEEN` records the infidelities of item 39's checks (no decision changes) |
+| 60 | `placement_refine="auto"`: the placement by the errors (item 33) is on whenever a Target is given |
+| 61 | with a Target that reports failed elements, one compile on the pruned map instead of a compile and a recompile |
+| 62 | `_uses_failed` reads qubit indices from a table; `psf_smart_layout`'s two matching-size checks use rustworkx (the size of a maximum matching does not depend on the algorithm; `LAYOUT_VERSION` unchanged) |
+| 63 | the SWAP absorption's blocks (item 30) are synthesised by Qiskit's `TwoQubitBasisDecomposer` on CX (`ABSORB_SYNTH="qiskit"`; `"psf"` restores 2026-10-10.2's synthesis) |
+
+**Why now.**
+
+- The live ibm_kingston Target kept 4 couplers and 3 qubits at error 1 (Addendum 434).
+- Every PSF-Zero output of Addendum 246 used them.
+- 2026-10-10.2's plain call cannot avoid them and gives no warning.
+
+**What C35-VAL found** (Addendum 437; 106 Benchpress tests on FakeTorino and FakeKingston, 1,484 jobs).
+
+| | FakeTorino | FakeKingston |
+|---|---|---|
+| outputs on failed elements: c35 with `backend=` / Qiskit L2 / Qiskit L3 / 2026-10-10.2's plain call | 0 / 25 / 22 / 63 | 0 / 19 / 12 / 17 |
+| ESP, c35 with `backend=` / 2026-10-10.2's recommended call | 1.002 | 0.964 |
+| ESP, c35 with `backend=` / Qiskit L2 | 1.158 | 1.153 |
+| ESP, c35 with `backend=` / Qiskit L3 | 0.957 | 0.899 |
+| compile time summed, c35 with `backend=` / 2026-10-10.2's recommended call | 0.409 | 0.427 |
+| two-qubit counts without the device: c35 = 2026-10-10.2 | 106 of 106 | 106 of 106 |
+
+**What a user sees.**
+
+- **The recommended call for a device is now the plain call with the device:**
+  `compile_for_hardware(qc, backend=backend, entangling_basis="cx", layout_search=True)`.
+  - It gives the ESP of 2026-10-10.2's recommended call in less than half its time.
+  - The earlier recommended options still work with `backend=`. In C35-VAL they gave about 1-2% more ESP at about
+    twice the time.
+- **A call that cannot avoid a failed element raises `FailedElementsError`** (`on_failed_elements="keep"` to get the
+  circuit with a warning). In C35-VAL none did.
+- **Without the device:**
+  - the same two-qubit counts as 2026-10-10.2, as C35-VAL found. The single-qubit gates around absorbed SWAPs may
+    differ (item 63).
+  - a warning, once per process.
+- **Still behind Qiskit level 3** where a result survives: 4-10% of ESP, at 1.4-1.6 times its compile time.
+- **By PSF-Zero's own `hybrid_cost`, the full-option call is not always better.** Unlike ESP, this estimate counts
+  decoherence while qubits wait. On the release tests' 20 small cells (5 devices x 4 circuits; REL3-DIAG, section 2)
+  it was worse than an older call's on one cell, by 2.4% (FakeHanoiV2, `ring(6)`: one more single-qubit gate from item
+  63). It was better on two (FakeTorino and FakeKingston, `ring(6)`), and equal or better on the rest.
+- **The AI front end (a12)** calls `psf_compile`, so it gets these items. Its own code is unchanged.
+- The Rust core `psf_zero_core` and the optional `psf_zero_core57` are unchanged.
+
+## 2. What changes in the repository
+
+- **[`psf_compile.py`](../../psf_compile.py)** is c35's file with its two version lines changed. Nothing else differs;
+  [`benchmarks/test_release_2026_10_10_3.py`](../../benchmarks/test_release_2026_10_10_3.py) checks this.
+- **[`benchmarks/psf_smart_layout.py`](../../benchmarks/psf_smart_layout.py)** is c35's (item 62).
+- **The outgoing release 2026-10-10.2 and its `psf_smart_layout.py`** are kept unchanged in
+  [`patches/psf_compile_release_2026-10-10.2/`](../../patches/psf_compile_release_2026-10-10.2/).
+- **Tests.**
+  - [`benchmarks/test_release_2026_10_10_3.py`](../../benchmarks/test_release_2026_10_10_3.py) (new) checks:
+    - the versions and the two new defaults;
+    - that the files equal c35's except the version lines, and that the kept files are 2026-10-10.2's;
+    - on six small circuits on FakeTorino: with `backend=`, no operation on a failed element; without the Target,
+      2026-10-10.2's two-qubit counts;
+    - the warning, given once.
+  - The 10 test files that assert the current release's version and hold for c35 now assert 2026-10-10.3.
+  - [`benchmarks/test_release_2026_10_10_2.py`](../../benchmarks/test_release_2026_10_10_2.py) loads the kept copy.
+  - c31-c35's tests join the list.
+- **The first run of the release tests failed: 40 tests and 1 error in 17 files.** Its log is in
+  [`data/2026-10-10/release_2026-10-10.3_run1/`](../../data/2026-10-10/release_2026-10-10.3_run1/) (home folder
+  redacted). Each failure was read; they fall into three kinds.
+  - **(a) Claims of identity with "the release"** (`*_identical_to_release`, and c31's version check). The older
+    candidates' and releases' outputs were identical to the release of their time. c35 changes the single-qubit
+    gates around absorbed SWAPs (item 63) and, on devices with failed elements, compiles on the pruned map (item 61).
+  - **(b) Mechanisms that c35 replaces.**
+    - "Re-placement only relabels the compile without a Target" and "the resynthesis keeps the layout of the call
+      without it" do not hold once the pruned map is compiled first (item 61). They failed on FakeTorino and
+      FakeKingston only, the two devices with failed elements.
+    - "The compare call returns the release's circuit or level 3's, by signature" does not hold once the release's
+      own circuit changes (item 63).
+  - **(c) "No worse by the estimate than the release".**
+    - In c10's and c11's tests an old candidate must be no worse than the release. These failed where the new
+      release was better (FakeTorino, FakeKingston).
+    - In `test_release_2026_10_04_1.py` the release must be no worse than c10's call. That failed on one cell
+      (FakeHanoiV2, `ring(6)`, 0.24515 against 0.23931).
+- **REL3-DIAG** ([`benchmarks/diag_rel3.py`](../../benchmarks/diag_rel3.py);
+  [`data/2026-10-10/rel3_diag/`](../../data/2026-10-10/rel3_diag/)) attributed (c):
+  - **The cell is item 63's.** With `ABSORB_SYNTH="psf"` it equals 2026-10-10.2's and the reference's (0.23931);
+    without item 61 it does not change.
+  - **Two cells are better with item 63:** FakeTorino `ring(6)` 0.14689 against 0.14751, and FakeKingston
+    `ring(6)` 0.06230 against 0.06261.
+  - **The other 17 are equal.**
+- **The owner released c35 as validated**, rather than change a default C35-VAL did not test. So:
+  - The 17 files test claims made about the releases of their time. They now load the kept 2026-10-10.2 as "the
+    release" and pass on it.
+  - The new release's own properties are tested in `test_release_2026_10_10_3.py` and c31-c35's tests.
+  - That file includes the full-choice property with its one known exception (at most one of the 20 cells worse,
+    by at most 3%).
+- **Release tests:**
+  - **Runner:** [`benchmarks/run_release_tests_2026-10-10_3.py`](../../benchmarks/run_release_tests_2026-10-10_3.py).
+  - **Scope:** 43 test files, one pytest session each.
+  - **Environment:** Python 3.12.13, Qiskit 2.5.2, NumPy 2.5.3, `CORE_VERSION` 2026-09-29.1, `psf_zero_core57`
+    2026-10-10.c30, over commit `d2dbb80`.
+  - **When:** 16:36:38-16:45:48 CEST.
+  - **Result:** 328 passed, none failed, none skipped.
+  - **Log:** [`data/2026-10-10/release_2026-10-10.3/`](../../data/2026-10-10/release_2026-10-10.3/).
+- **README and [`docs/RELEASES.md`](../../docs/RELEASES.md):**
+  - the current version;
+  - the recommended call with `backend=`;
+  - the plain statement that a call without the device cannot avoid failed elements.
+
+## 3. Not established
+
+- **Hardware.** C35-VAL used fake devices whose snapshots keep failed elements, as the live Target did on
+  2026-09-28. No job has been run.
+- **Tests beyond BP-FINAL's 106 FakeTorino tests**, other devices, and the AI front end's own measurements with
+  these items.
+- **Identity with 2026-10-10.2 is not claimed.**
+  - Without the device, the two-qubit counts are the same (212 of 212). The single-qubit gates may differ.
+  - With the device, outputs differ by design.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

@@ -1,0 +1,497 @@
+{
+ "env": {
+  "python": "3.12.13",
+  "qiskit": "2.5.2",
+  "numpy": "2.5.3",
+  "psf_compile": "2026-10-10.3",
+  "core": "2026-09-29.1",
+  "core57": "2026-10-10.c30",
+  "git_head": "d2dbb80",
+  "dirty": [
+   " M benchmarks/psf_smart_layout.py",
+   " M benchmarks/test_ai_compile_a11.py",
+   " M benchmarks/test_ai_compile_a12.py",
+   " M benchmarks/test_ai_compile_a8.py",
+   " M benchmarks/test_ai_compile_a9.py",
+   " M benchmarks/test_core_fix_c2.py",
+   " M benchmarks/test_release_2026_09_28.py",
+   " M benchmarks/test_release_2026_10_02.py",
+   " M benchmarks/test_release_2026_10_02_2.py",
+   " M benchmarks/test_release_2026_10_03.py",
+   " M benchmarks/test_release_2026_10_03_2.py",
+   " M benchmarks/test_release_2026_10_03_3.py",
+   " M benchmarks/test_release_2026_10_04_1.py",
+   " M benchmarks/test_release_2026_10_05_1.py",
+   " M benchmarks/test_release_2026_10_10_2.py",
+   " M patches/psf_ai_compile_a12_2026-10-06/test_a12.py",
+   " M patches/psf_ai_compile_a13_2026-10-06/test_a13.py",
+   " M patches/psf_ai_compile_a6_2026-10-02/test_ai6.py",
+   " M patches/psf_ai_compile_a8_2026-10-04/test_a8.py",
+   " M patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py",
+   " M patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py",
+   " M patches/psf_compile_c12_2026-10-05/test_c12_exact.py",
+   " M patches/psf_compile_c4_2026-10-02/test_c4_layout.py",
+   " M patches/psf_compile_c6_2026-10-03/test_c6_floor.py",
+   " M patches/psf_compile_c8_2026-10-03/test_c8_resynth.py",
+   " M patches/psf_compile_c9_2026-10-03/test_c9_compare.py",
+   " M psf_compile.py"
+  ]
+ },
+ "results": [
+  {
+   "file": "benchmarks/test_release_2026_10_10_3.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:18:42Z",
+   "passed": 6,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "6 passed in 2.16s"
+  },
+  {
+   "file": "benchmarks/test_release_2026_10_10_2.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:18:44Z",
+   "passed": 7,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "7 passed in 11.22s"
+  },
+  {
+   "file": "benchmarks/test_release_2026_10_10_1.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:18:56Z",
+   "passed": 5,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "5 passed in 11.10s"
+  },
+  {
+   "file": "benchmarks/test_release_2026_10_07_1.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:19:08Z",
+   "passed": 11,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "11 passed in 8.46s"
+  },
+  {
+   "file": "benchmarks/test_release_2026_10_06_4.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:19:16Z",
+   "passed": 8,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "8 passed in 5.49s"
+  },
+  {
+   "file": "patches/psf_compile_c19_2026-10-07/test_c19.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:19:22Z",
+   "passed": 14,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "14 passed in 121.95s (0:02:01)"
+  },
+  {
+   "file": "benchmarks/test_release_2026_09_28.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:21:25Z",
+   "passed": 8,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "8 passed in 0.90s"
+  },
+  {
+   "file": "benchmarks/test_core_fix_c2.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:21:26Z",
+   "passed": 10,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "10 passed, 1 warning in 1.53s"
+  },
+  {
+   "file": "benchmarks/test_release_2026_10_02.py",
+   "returncode": 1,
+   "start": "2026-10-10T14:21:28Z",
+   "passed": 4,
+   "failed": 1,
+   "errors": 0,
+   "skipped": 0,
+   "last": "1 failed, 4 passed, 1 warning in 2.21s"
+  },
+  {
+   "file": "benchmarks/test_release_2026_10_02_2.py",
+   "returncode": 1,
+   "start": "2026-10-10T14:21:31Z",
+   "passed": 3,
+   "failed": 3,
+   "errors": 0,
+   "skipped": 0,
+   "last": "3 failed, 3 passed, 1 warning in 2.23s"
+  },
+  {
+   "file": "benchmarks/test_release_2026_10_03.py",
+   "returncode": 1,
+   "start": "2026-10-10T14:21:34Z",
+   "passed": 12,
+   "failed": 3,
+   "errors": 0,
+   "skipped": 0,
+   "last": "3 failed, 12 passed, 1 warning in 3.72s"
+  },
+  {
+   "file": "benchmarks/test_release_2026_10_03_2.py",
+   "returncode": 1,
+   "start": "2026-10-10T14:21:38Z",
+   "passed": 5,
+   "failed": 5,
+   "errors": 0,
+   "skipped": 0,
+   "last": "5 failed, 5 passed, 1 warning in 3.57s"
+  },
+  {
+   "file": "benchmarks/test_release_2026_10_03_3.py",
+   "returncode": 1,
+   "start": "2026-10-10T14:21:42Z",
+   "passed": 10,
+   "failed": 1,
+   "errors": 0,
+   "skipped": 0,
+   "last": "1 failed, 10 passed, 1 warning in 5.54s"
+  },
+  {
+   "file": "benchmarks/test_release_2026_10_04_1.py",
+   "returncode": 1,
+   "start": "2026-10-10T14:21:48Z",
+   "passed": 8,
+   "failed": 2,
+   "errors": 0,
+   "skipped": 0,
+   "last": "2 failed, 8 passed, 1 warning in 5.07s"
+  },
+  {
+   "file": "benchmarks/test_release_2026_10_05_1.py",
+   "returncode": 1,
+   "start": "2026-10-10T14:21:53Z",
+   "passed": 5,
+   "failed": 2,
+   "errors": 0,
+   "skipped": 0,
+   "last": "2 failed, 5 passed, 1 warning in 4.51s"
+  },
+  {
+   "file": "benchmarks/test_ai_compile_a7.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:21:59Z",
+   "passed": 5,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "5 passed in 19.77s"
+  },
+  {
+   "file": "benchmarks/test_ai_compile_a8.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:22:19Z",
+   "passed": 7,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "7 passed in 9.16s"
+  },
+  {
+   "file": "benchmarks/test_ai_compile_a9.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:22:29Z",
+   "passed": 4,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "4 passed in 16.63s"
+  },
+  {
+   "file": "benchmarks/test_ai_compile_a11.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:22:46Z",
+   "passed": 8,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "8 passed in 15.96s"
+  },
+  {
+   "file": "benchmarks/test_ai_compile_a12.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:23:02Z",
+   "passed": 5,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "5 passed in 16.11s"
+  },
+  {
+   "file": "patches/psf_ai_compile_a6_2026-10-02/test_ai6.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:23:19Z",
+   "passed": 6,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "6 passed in 11.92s"
+  },
+  {
+   "file": "patches/psf_ai_compile_a7_2026-10-02/test_a7.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:23:31Z",
+   "passed": 5,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "5 passed in 15.64s"
+  },
+  {
+   "file": "patches/psf_ai_compile_a8_2026-10-04/test_a8.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:23:47Z",
+   "passed": 7,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "7 passed in 8.41s"
+  },
+  {
+   "file": "patches/psf_ai_compile_a12_2026-10-06/test_a12.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:23:56Z",
+   "passed": 7,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "7 passed in 35.51s"
+  },
+  {
+   "file": "patches/psf_ai_compile_a13_2026-10-06/test_a13.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:24:32Z",
+   "passed": 5,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "5 passed in 6.89s"
+  },
+  {
+   "file": "patches/psf_compile_c3_2026-10-02/test_c3_prune.py",
+   "returncode": 1,
+   "start": "2026-10-10T14:24:40Z",
+   "passed": 3,
+   "failed": 2,
+   "errors": 0,
+   "skipped": 0,
+   "last": "2 failed, 3 passed, 1 warning in 2.24s"
+  },
+  {
+   "file": "patches/psf_compile_c4_2026-10-02/test_c4_layout.py",
+   "returncode": 1,
+   "start": "2026-10-10T14:24:42Z",
+   "passed": 3,
+   "failed": 1,
+   "errors": 0,
+   "skipped": 0,
+   "last": "1 failed, 3 passed, 1 warning in 1.92s"
+  },
+  {
+   "file": "patches/psf_compile_c5_2026-10-02/test_c5_placement.py",
+   "returncode": 1,
+   "start": "2026-10-10T14:24:45Z",
+   "passed": 5,
+   "failed": 1,
+   "errors": 0,
+   "skipped": 0,
+   "last": "1 failed, 5 passed, 1 warning in 2.29s"
+  },
+  {
+   "file": "patches/psf_compile_c6_2026-10-03/test_c6_floor.py",
+   "returncode": 1,
+   "start": "2026-10-10T14:24:48Z",
+   "passed": 9,
+   "failed": 1,
+   "errors": 0,
+   "skipped": 0,
+   "last": "1 failed, 9 passed, 1 warning in 2.88s"
+  },
+  {
+   "file": "patches/psf_compile_c8_2026-10-03/test_c8_resynth.py",
+   "returncode": 1,
+   "start": "2026-10-10T14:24:51Z",
+   "passed": 12,
+   "failed": 3,
+   "errors": 0,
+   "skipped": 0,
+   "last": "3 failed, 12 passed, 1 warning in 3.66s"
+  },
+  {
+   "file": "patches/psf_compile_c9_2026-10-03/test_c9_compare.py",
+   "returncode": 1,
+   "start": "2026-10-10T14:24:55Z",
+   "passed": 5,
+   "failed": 5,
+   "errors": 0,
+   "skipped": 0,
+   "last": "5 failed, 5 passed, 1 warning in 3.56s"
+  },
+  {
+   "file": "patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py",
+   "returncode": 1,
+   "start": "2026-10-10T14:24:59Z",
+   "passed": 8,
+   "failed": 3,
+   "errors": 0,
+   "skipped": 0,
+   "last": "3 failed, 8 passed, 1 warning in 4.83s"
+  },
+  {
+   "file": "patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py",
+   "returncode": 1,
+   "start": "2026-10-10T14:25:04Z",
+   "passed": 7,
+   "failed": 3,
+   "errors": 0,
+   "skipped": 0,
+   "last": "3 failed, 7 passed, 1 warning in 4.81s"
+  },
+  {
+   "file": "patches/psf_compile_c12_2026-10-05/test_c12_exact.py",
+   "returncode": 1,
+   "start": "2026-10-10T14:25:10Z",
+   "passed": 5,
+   "failed": 2,
+   "errors": 0,
+   "skipped": 0,
+   "last": "2 failed, 5 passed, 1 warning in 4.51s"
+  },
+  {
+   "file": "patches/psf_compile_c24_2026-10-07/test_c24.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:25:15Z",
+   "passed": 11,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "11 passed in 51.04s"
+  },
+  {
+   "file": "patches/psf_compile_c26_2026-10-09/test_c26.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:26:06Z",
+   "passed": 4,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "4 passed in 0.41s"
+  },
+  {
+   "file": "patches/psf_compile_c29_2026-10-10/test_c29.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:26:07Z",
+   "passed": 10,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "10 passed in 53.36s"
+  },
+  {
+   "file": "patches/psf_compile_c30_2026-10-10/test_c30.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:27:01Z",
+   "passed": 8,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "8 passed in 27.35s"
+  },
+  {
+   "file": "patches/psf_compile_c31_2026-10-10/test_c31.py",
+   "returncode": 1,
+   "start": "2026-10-10T14:27:29Z",
+   "passed": 5,
+   "failed": 2,
+   "errors": 1,
+   "skipped": 0,
+   "last": "2 failed, 5 passed, 1 warning, 1 error in 1.99s"
+  },
+  {
+   "file": "patches/psf_compile_c32_2026-10-10/test_c32.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:27:31Z",
+   "passed": 4,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "4 passed in 3.34s"
+  },
+  {
+   "file": "patches/psf_compile_c33_2026-10-10/test_c33.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:27:35Z",
+   "passed": 4,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "4 passed in 1.96s"
+  },
+  {
+   "file": "patches/psf_compile_c34_2026-10-10/test_c34.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:27:37Z",
+   "passed": 5,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "5 passed in 2.37s"
+  },
+  {
+   "file": "patches/psf_compile_c35_2026-10-10/test_c35.py",
+   "returncode": 0,
+   "start": "2026-10-10T14:27:40Z",
+   "passed": 4,
+   "failed": 0,
+   "errors": 0,
+   "skipped": 0,
+   "last": "4 passed in 2.49s"
+  }
+ ],
+ "totals": {
+  "passed": 287,
+  "failed": 40,
+  "errors": 1,
+  "skipped": 0
+ },
+ "not_passing": [
+  "benchmarks/test_release_2026_10_02.py",
+  "benchmarks/test_release_2026_10_02_2.py",
+  "benchmarks/test_release_2026_10_03.py",
+  "benchmarks/test_release_2026_10_03_2.py",
+  "benchmarks/test_release_2026_10_03_3.py",
+  "benchmarks/test_release_2026_10_04_1.py",
+  "benchmarks/test_release_2026_10_05_1.py",
+  "patches/psf_compile_c3_2026-10-02/test_c3_prune.py",
+  "patches/psf_compile_c4_2026-10-02/test_c4_layout.py",
+  "patches/psf_compile_c5_2026-10-02/test_c5_placement.py",
+  "patches/psf_compile_c6_2026-10-03/test_c6_floor.py",
+  "patches/psf_compile_c8_2026-10-03/test_c8_resynth.py",
+  "patches/psf_compile_c9_2026-10-03/test_c9_compare.py",
+  "patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py",
+  "patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py",
+  "patches/psf_compile_c12_2026-10-05/test_c12_exact.py",
+  "patches/psf_compile_c31_2026-10-10/test_c31.py"
+ ]
+}

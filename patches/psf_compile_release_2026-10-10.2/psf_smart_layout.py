@@ -328,15 +328,10 @@ def _interaction_matching_size(interaction_pairs):
     any other graph it can wrongly declare a feasible layout impossible (a
     3-qubit path has 2 edges but needs only 1 disjoint edge), so the search
     returned None at once and the caller fell back to Qiskit's own layout."""
-    import rustworkx as rx  # c34: rustworkx (loaded with Qiskit) instead of networkx; the size is the same
-    g = rx.PyGraph()
-    index = {}
-    for a, b in interaction_pairs:
-        for v in (a, b):
-            if v not in index:
-                index[v] = g.add_node(v)
-        g.add_edge(index[a], index[b], None)
-    return len(rx.max_weight_matching(g, max_cardinality=True))
+    import networkx as nx
+    g = nx.Graph()
+    g.add_edges_from(interaction_pairs)
+    return len(nx.max_weight_matching(g, maxcardinality=True))
 
 
 def _has_feasible_matching(cmap, num_logical_pairs):
@@ -344,12 +339,11 @@ def _has_feasible_matching(cmap, num_logical_pairs):
     None when no matching exists (same logic as
     `vf2_probe_common.has_perfect_matching`; reimplemented independently here
     to reduce dependencies)."""
-    import rustworkx as rx  # c34: rustworkx (loaded with Qiskit) instead of networkx; the size is the same
-    g = rx.PyGraph()
+    import networkx as nx
+    g = nx.Graph()
     g.add_nodes_from(range(cmap.size()))
-    for a, b in {(min(a, b), max(a, b)) for a, b in cmap.get_edges() if a != b}:
-        g.add_edge(a, b, None)
-    m = rx.max_weight_matching(g, max_cardinality=True)
+    g.add_edges_from([tuple(e) for e in cmap.get_edges()])
+    m = nx.max_weight_matching(g, maxcardinality=True)
     return len(m) >= num_logical_pairs
 
 

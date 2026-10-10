@@ -1,0 +1,403 @@
+environment: {"python": "3.12.13", "qiskit": "2.5.2", "numpy": "2.5.3", "psf_compile": "2026-10-10.3", "core": "2026-09-29.1", "core57": "2026-10-10.c30", "git_head": "d2dbb80", "dirty": [" M benchmarks/psf_smart_layout.py", " M benchmarks/test_ai_compile_a11.py", " M benchmarks/test_ai_compile_a12.py", " M benchmarks/test_ai_compile_a8.py", " M benchmarks/test_ai_compile_a9.py", " M benchmarks/test_core_fix_c2.py", " M benchmarks/test_release_2026_09_28.py", " M benchmarks/test_release_2026_10_02.py", " M benchmarks/test_release_2026_10_02_2.py", " M benchmarks/test_release_2026_10_03.py", " M benchmarks/test_release_2026_10_03_2.py", " M benchmarks/test_release_2026_10_03_3.py", " M benchmarks/test_release_2026_10_04_1.py", " M benchmarks/test_release_2026_10_05_1.py", " M benchmarks/test_release_2026_10_10_2.py", " M patches/psf_ai_compile_a12_2026-10-06/test_a12.py", " M patches/psf_ai_compile_a13_2026-10-06/test_a13.py", " M patches/psf_ai_compile_a6_2026-10-02/test_ai6.py", " M patches/psf_ai_compile_a8_2026-10-04/test_a8.py", " M patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py", " M patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py", " M patches/psf_compile_c12_2026-10-05/test_c12_exact.py", " M patches/psf_compile_c4_2026-10-02/test_c4_layout.py", " M patches/psf_compile_c6_2026-10-03/test_c6_floor.py", " M patches/psf_compile_c8_2026-10-03/test_c8_resynth.py", " M patches/psf_compile_c9_2026-10-03/test_c9_compare.py", " M psf_compile.py"]}
+start 2026-10-10T14:18:42Z
+
+== benchmarks/test_release_2026_10_10_3.py (2026-10-10T14:18:42Z)
+......                                                                   [100%]
+6 passed in 2.16s
+
+== benchmarks/test_release_2026_10_10_2.py (2026-10-10T14:18:44Z)
+.......                                                                  [100%]
+7 passed in 11.22s
+
+== benchmarks/test_release_2026_10_10_1.py (2026-10-10T14:18:56Z)
+.....                                                                    [100%]
+5 passed in 11.10s
+
+== benchmarks/test_release_2026_10_07_1.py (2026-10-10T14:19:08Z)
+...........                                                              [100%]
+11 passed in 8.46s
+
+== benchmarks/test_release_2026_10_06_4.py (2026-10-10T14:19:16Z)
+........                                                                 [100%]
+8 passed in 5.49s
+
+== patches/psf_compile_c19_2026-10-07/test_c19.py (2026-10-10T14:19:22Z)
+..............                                                           [100%]
+14 passed in 121.95s (0:02:01)
+
+== benchmarks/test_release_2026_09_28.py (2026-10-10T14:21:25Z)
+........                                                                 [100%]
+8 passed in 0.90s
+
+== benchmarks/test_core_fix_c2.py (2026-10-10T14:21:26Z)
+..........                                                               [100%]
+=============================== warnings summary ===============================
+benchmarks/test_core_fix_c2.py::test_swap_is_elided_with_final_layout[False]
+  /home/<user>/psf_zero_fresh_test/benchmarks/test_core_fix_c2.py:105: UserWarning: compile_for_hardware was called without the device's Target (target= or backend=): couplers and qubits the device reports as failed cannot be avoided, and a result that uses one is noise (changelog item 58). This warning is given once per process.
+    out = pc.compile_for_hardware(qc, coupling_map=cm, basis_gates=nat, entangling_basis="cx",
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+10 passed, 1 warning in 1.53s
+
+== benchmarks/test_release_2026_10_02.py (2026-10-10T14:21:28Z)
+E               assert [('rz', [10],...999402]), ...] == [('sx', [0], ...[1], []), ...]
+E                 
+E                 At index 0 diff: ('rz', [10], [-2.6803882479627865]) != ('sx', [0], [])
+E                 Use -v to get more diff
+
+benchmarks/test_release_2026_10_02.py:126: AssertionError
+=============================== warnings summary ===============================
+benchmarks/test_release_2026_10_02.py::test_unaffected_output_identical_with_target
+  /home/<user>/psf_zero_fresh_test/benchmarks/test_release_2026_10_02.py:120: UserWarning: compile_for_hardware was called without the device's Target (target= or backend=): couplers and qubits the device reports as failed cannot be avoided, and a result that uses one is noise (changelog item 58). This warning is given once per process.
+    b = rel.compile_for_hardware(qc, **kw)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED benchmarks/test_release_2026_10_02.py::test_unaffected_output_identical_with_target
+1 failed, 4 passed, 1 warning in 2.21s
+
+== benchmarks/test_release_2026_10_02_2.py (2026-10-10T14:21:31Z)
+E             At index 109 diff: 'x' != 'sx'
+E             Use -v to get more diff
+
+benchmarks/test_release_2026_10_02_2.py:148: AssertionError
+=============================== warnings summary ===============================
+benchmarks/test_release_2026_10_02_2.py::test_default_identical_to_release
+  /home/<user>/psf_zero_fresh_test/benchmarks/test_release_2026_10_02_2.py:117: UserWarning: compile_for_hardware was called without the device's Target (target= or backend=): couplers and qubits the device reports as failed cannot be avoided, and a result that uses one is noise (changelog item 58). This warning is given once per process.
+    assert sig(c5.compile_for_hardware(qc, **kw)) == sig(rel.compile_for_hardware(qc, **kw)), (name, n)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED benchmarks/test_release_2026_10_02_2.py::test_default_identical_to_release
+FAILED benchmarks/test_release_2026_10_02_2.py::test_refine_exact_relabel_only_and_not_worse[FakeTorino]
+FAILED benchmarks/test_release_2026_10_02_2.py::test_refine_exact_relabel_only_and_not_worse[FakeKingston]
+3 failed, 3 passed, 1 warning in 2.23s
+
+== benchmarks/test_release_2026_10_03.py (2026-10-10T14:21:34Z)
+E             At index 0 diff: 3 != 16
+E             Use -v to get more diff
+
+benchmarks/test_release_2026_10_03.py:162: AssertionError
+=============================== warnings summary ===============================
+benchmarks/test_release_2026_10_03.py::test_default_identical_to_release
+  /home/<user>/psf_zero_fresh_test/benchmarks/test_release_2026_10_03.py:138: UserWarning: compile_for_hardware was called without the device's Target (target= or backend=): couplers and qubits the device reports as failed cannot be avoided, and a result that uses one is noise (changelog item 58). This warning is given once per process.
+    assert sig(new.compile_for_hardware(qc, **kw, **extra)) == sig(prev.compile_for_hardware(qc, **kw, **extra)), \
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED benchmarks/test_release_2026_10_03.py::test_default_identical_to_release
+FAILED benchmarks/test_release_2026_10_03.py::test_resynthesis_exact_on_target_same_layout[FakeTorino]
+FAILED benchmarks/test_release_2026_10_03.py::test_resynthesis_exact_on_target_same_layout[FakeKingston]
+3 failed, 12 passed, 1 warning in 3.72s
+
+== benchmarks/test_release_2026_10_03_2.py (2026-10-10T14:21:38Z)
+
+benchmarks/test_release_2026_10_03_2.py:190: AssertionError
+=============================== warnings summary ===============================
+benchmarks/test_release_2026_10_03_2.py::test_default_identical_to_release
+  /home/<user>/psf_zero_fresh_test/benchmarks/test_release_2026_10_03_2.py:161: UserWarning: compile_for_hardware was called without the device's Target (target= or backend=): couplers and qubits the device reports as failed cannot be avoided, and a result that uses one is noise (changelog item 58). This warning is given once per process.
+    assert sig(new.compile_for_hardware(qc, **kw, **extra)) == sig(prev.compile_for_hardware(qc, **kw, **extra)), \
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED benchmarks/test_release_2026_10_03_2.py::test_default_identical_to_release
+FAILED benchmarks/test_release_2026_10_03_2.py::test_compare_returns_lower_estimate_exact_and_safe[FakeHanoiV2]
+FAILED benchmarks/test_release_2026_10_03_2.py::test_compare_returns_lower_estimate_exact_and_safe[FakeGeneva]
+FAILED benchmarks/test_release_2026_10_03_2.py::test_compare_returns_lower_estimate_exact_and_safe[FakeTorino]
+FAILED benchmarks/test_release_2026_10_03_2.py::test_compare_returns_lower_estimate_exact_and_safe[FakeKingston]
+5 failed, 5 passed, 1 warning in 3.57s
+
+== benchmarks/test_release_2026_10_03_3.py (2026-10-10T14:21:42Z)
+E                     
+E                     At index 10 diff: ('rz', [115], [-1.5707963267948966]) != ('rz', [115], [-0.7907696146499514])
+E                     Left contains 2 more items, first extra item: ('cz', [115, 114], [])
+E                     Use -v to get more diff
+
+benchmarks/test_release_2026_10_03_3.py:178: AssertionError
+=============================== warnings summary ===============================
+benchmarks/test_release_2026_10_03_3.py::test_default_identical_to_release
+  /home/<user>/psf_zero_fresh_test/benchmarks/test_release_2026_10_03_3.py:178: UserWarning: compile_for_hardware was called without the device's Target (target= or backend=): couplers and qubits the device reports as failed cannot be avoided, and a result that uses one is noise (changelog item 58). This warning is given once per process.
+    assert sig(new.compile_for_hardware(qc, **kw, **extra)) == sig(prev.compile_for_hardware(qc, **kw, **extra)), \
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED benchmarks/test_release_2026_10_03_3.py::test_default_identical_to_release
+1 failed, 10 passed, 1 warning in 5.54s
+
+== benchmarks/test_release_2026_10_04_1.py (2026-10-10T14:21:48Z)
+E           AssertionError: assert 0.24515297746245163 <= (0.23930964642451183 + 1e-12)
+E            +  where 0.23930964642451183 = <function hybrid_cost at 0x70c4618902c0>(<qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x70c4070a8260>, <qiskit.transpiler.target.Target object at 0x70c40810b940>)
+E            +    where <function hybrid_cost at 0x70c4618902c0> = <module 'psf_compile_rel10041_test' from '/home/<user>/psf_zero_fresh_test/psf_compile.py'>.hybrid_cost
+
+benchmarks/test_release_2026_10_04_1.py:256: AssertionError
+=============================== warnings summary ===============================
+benchmarks/test_release_2026_10_04_1.py::test_other_options_identical_to_release
+  /home/<user>/psf_zero_fresh_test/benchmarks/test_release_2026_10_04_1.py:183: UserWarning: compile_for_hardware was called without the device's Target (target= or backend=): couplers and qubits the device reports as failed cannot be avoided, and a result that uses one is noise (changelog item 58). This warning is given once per process.
+    assert sig(c11.compile_for_hardware(qc, **kw, **extra)) == sig(rel.compile_for_hardware(qc, **kw, **extra)), \
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED benchmarks/test_release_2026_10_04_1.py::test_other_options_identical_to_release
+FAILED benchmarks/test_release_2026_10_04_1.py::test_full_choice_exact_safe_and_not_worse_by_estimate[FakeHanoiV2]
+2 failed, 8 passed, 1 warning in 5.07s
+
+== benchmarks/test_release_2026_10_05_1.py (2026-10-10T14:21:53Z)
+E                 At index 37 diff: ('sx', [3], []) != ('rz', [3], [-0.7853981633974483])
+E                 Right contains 3 more items, first extra item: ('rz', [19], [-3.141592653589793])
+E                 Use -v to get more diff
+
+benchmarks/test_release_2026_10_05_1.py:241: AssertionError
+=============================== warnings summary ===============================
+benchmarks/test_release_2026_10_05_1.py::test_identical_to_release_where_qiskit_is_exact[FakeAuckland]
+  /home/<user>/psf_zero_fresh_test/benchmarks/test_release_2026_10_05_1.py:241: UserWarning: compile_for_hardware was called without the device's Target (target= or backend=): couplers and qubits the device reports as failed cannot be avoided, and a result that uses one is noise (changelog item 58). This warning is given once per process.
+    assert sig(c12.compile_for_hardware(qc, **kw, **extra)) == sig(rel.compile_for_hardware(qc, **kw, **extra)), \
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED benchmarks/test_release_2026_10_05_1.py::test_identical_to_release_where_qiskit_is_exact[FakeAuckland]
+FAILED benchmarks/test_release_2026_10_05_1.py::test_identical_to_release_where_qiskit_is_exact[FakeTorino]
+2 failed, 5 passed, 1 warning in 4.51s
+
+== benchmarks/test_ai_compile_a7.py (2026-10-10T14:21:59Z)
+.....                                                                    [100%]
+5 passed in 19.77s
+
+== benchmarks/test_ai_compile_a8.py (2026-10-10T14:22:19Z)
+.......                                                                  [100%]
+7 passed in 9.16s
+
+== benchmarks/test_ai_compile_a9.py (2026-10-10T14:22:29Z)
+....                                                                     [100%]
+4 passed in 16.63s
+
+== benchmarks/test_ai_compile_a11.py (2026-10-10T14:22:46Z)
+........                                                                 [100%]
+8 passed in 15.96s
+
+== benchmarks/test_ai_compile_a12.py (2026-10-10T14:23:02Z)
+.....                                                                    [100%]
+5 passed in 16.11s
+
+== patches/psf_ai_compile_a6_2026-10-02/test_ai6.py (2026-10-10T14:23:19Z)
+......                                                                   [100%]
+6 passed in 11.92s
+
+== patches/psf_ai_compile_a7_2026-10-02/test_a7.py (2026-10-10T14:23:31Z)
+.....                                                                    [100%]
+5 passed in 15.64s
+
+== patches/psf_ai_compile_a8_2026-10-04/test_a8.py (2026-10-10T14:23:47Z)
+.......                                                                  [100%]
+7 passed in 8.41s
+
+== patches/psf_ai_compile_a12_2026-10-06/test_a12.py (2026-10-10T14:23:56Z)
+.......                                                                  [100%]
+7 passed in 35.51s
+
+== patches/psf_ai_compile_a13_2026-10-06/test_a13.py (2026-10-10T14:24:32Z)
+.....                                                                    [100%]
+5 passed in 6.89s
+
+== patches/psf_compile_c3_2026-10-02/test_c3_prune.py (2026-10-10T14:24:40Z)
+E             At index 10 diff: ('rz', [115], [-0.7907696146499514]) != ('rz', [115], [-1.5707963267948966])
+E             Right contains 2 more items, first extra item: ('cz', [115, 114], [])
+E             Use -v to get more diff
+
+patches/psf_compile_c3_2026-10-02/test_c3_prune.py:135: AssertionError
+=============================== warnings summary ===============================
+patches/psf_compile_c3_2026-10-02/test_c3_prune.py::test_unaffected_output_identical_with_target
+  /home/<user>/psf_zero_fresh_test/patches/psf_compile_c3_2026-10-02/test_c3_prune.py:118: UserWarning: compile_for_hardware was called without the device's Target (target= or backend=): couplers and qubits the device reports as failed cannot be avoided, and a result that uses one is noise (changelog item 58). This warning is given once per process.
+    b = rel.compile_for_hardware(qc, **kw)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED patches/psf_compile_c3_2026-10-02/test_c3_prune.py::test_unaffected_output_identical_with_target
+FAILED patches/psf_compile_c3_2026-10-02/test_c3_prune.py::test_without_target_identical_to_release
+2 failed, 3 passed, 1 warning in 2.24s
+
+== patches/psf_compile_c4_2026-10-02/test_c4_layout.py (2026-10-10T14:24:42Z)
+E             
+E             At index 10 diff: ('rz', [115], [-0.9263282037760092]) != ('rz', [115], [0.7564573626997371])
+E             Right contains one more item: ('cz', [114, 129], [])
+E             Use -v to get more diff
+
+patches/psf_compile_c4_2026-10-02/test_c4_layout.py:87: AssertionError
+=============================== warnings summary ===============================
+patches/psf_compile_c4_2026-10-02/test_c4_layout.py::test_default_identical_to_release
+  /home/<user>/psf_zero_fresh_test/patches/psf_compile_c4_2026-10-02/test_c4_layout.py:87: UserWarning: compile_for_hardware was called without the device's Target (target= or backend=): couplers and qubits the device reports as failed cannot be avoided, and a result that uses one is noise (changelog item 58). This warning is given once per process.
+    assert sig(c4.compile_for_hardware(qc, **kw)) == sig(rel.compile_for_hardware(qc, **kw))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED patches/psf_compile_c4_2026-10-02/test_c4_layout.py::test_default_identical_to_release
+1 failed, 3 passed, 1 warning in 1.92s
+
+== patches/psf_compile_c5_2026-10-02/test_c5_placement.py (2026-10-10T14:24:45Z)
+E                 
+E                 At index 10 diff: ('rz', [115], [-0.7907696146499514]) != ('rz', [115], [-1.5707963267948966])
+E                 Right contains 2 more items, first extra item: ('cz', [115, 114], [])
+E                 Use -v to get more diff
+
+patches/psf_compile_c5_2026-10-02/test_c5_placement.py:112: AssertionError
+=============================== warnings summary ===============================
+patches/psf_compile_c5_2026-10-02/test_c5_placement.py::test_default_identical_to_release
+  /home/<user>/psf_zero_fresh_test/patches/psf_compile_c5_2026-10-02/test_c5_placement.py:112: UserWarning: compile_for_hardware was called without the device's Target (target= or backend=): couplers and qubits the device reports as failed cannot be avoided, and a result that uses one is noise (changelog item 58). This warning is given once per process.
+    assert sig(c5.compile_for_hardware(qc, **kw)) == sig(rel.compile_for_hardware(qc, **kw)), (name, n)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED patches/psf_compile_c5_2026-10-02/test_c5_placement.py::test_default_identical_to_release
+1 failed, 5 passed, 1 warning in 2.29s
+
+== patches/psf_compile_c6_2026-10-03/test_c6_floor.py (2026-10-10T14:24:48Z)
+E                     
+E                     At index 10 diff: ('rz', [115], [-0.7907696146499514]) != ('rz', [115], [-1.5707963267948966])
+E                     Right contains 2 more items, first extra item: ('cz', [115, 114], [])
+E                     Use -v to get more diff
+
+patches/psf_compile_c6_2026-10-03/test_c6_floor.py:114: AssertionError
+=============================== warnings summary ===============================
+patches/psf_compile_c6_2026-10-03/test_c6_floor.py::test_default_identical_to_release
+  /home/<user>/psf_zero_fresh_test/patches/psf_compile_c6_2026-10-03/test_c6_floor.py:114: UserWarning: compile_for_hardware was called without the device's Target (target= or backend=): couplers and qubits the device reports as failed cannot be avoided, and a result that uses one is noise (changelog item 58). This warning is given once per process.
+    assert sig(c6.compile_for_hardware(qc, **kw, **extra)) == sig(rel.compile_for_hardware(qc, **kw, **extra)), \
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED patches/psf_compile_c6_2026-10-03/test_c6_floor.py::test_default_identical_to_release
+1 failed, 9 passed, 1 warning in 2.88s
+
+== patches/psf_compile_c8_2026-10-03/test_c8_resynth.py (2026-10-10T14:24:51Z)
+E             At index 0 diff: 16 != 3
+E             Use -v to get more diff
+
+patches/psf_compile_c8_2026-10-03/test_c8_resynth.py:160: AssertionError
+=============================== warnings summary ===============================
+patches/psf_compile_c8_2026-10-03/test_c8_resynth.py::test_default_identical_to_release
+  /home/<user>/psf_zero_fresh_test/patches/psf_compile_c8_2026-10-03/test_c8_resynth.py:136: UserWarning: compile_for_hardware was called without the device's Target (target= or backend=): couplers and qubits the device reports as failed cannot be avoided, and a result that uses one is noise (changelog item 58). This warning is given once per process.
+    assert sig(c8.compile_for_hardware(qc, **kw, **extra)) == sig(rel.compile_for_hardware(qc, **kw, **extra)), \
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED patches/psf_compile_c8_2026-10-03/test_c8_resynth.py::test_default_identical_to_release
+FAILED patches/psf_compile_c8_2026-10-03/test_c8_resynth.py::test_resynthesis_exact_on_target_same_layout[FakeTorino]
+FAILED patches/psf_compile_c8_2026-10-03/test_c8_resynth.py::test_resynthesis_exact_on_target_same_layout[FakeKingston]
+3 failed, 12 passed, 1 warning in 3.66s
+
+== patches/psf_compile_c9_2026-10-03/test_c9_compare.py (2026-10-10T14:24:55Z)
+
+patches/psf_compile_c9_2026-10-03/test_c9_compare.py:187: AssertionError
+=============================== warnings summary ===============================
+patches/psf_compile_c9_2026-10-03/test_c9_compare.py::test_default_identical_to_release
+  /home/<user>/psf_zero_fresh_test/patches/psf_compile_c9_2026-10-03/test_c9_compare.py:159: UserWarning: compile_for_hardware was called without the device's Target (target= or backend=): couplers and qubits the device reports as failed cannot be avoided, and a result that uses one is noise (changelog item 58). This warning is given once per process.
+    assert sig(c9.compile_for_hardware(qc, **kw, **extra)) == sig(rel.compile_for_hardware(qc, **kw, **extra)), \
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED patches/psf_compile_c9_2026-10-03/test_c9_compare.py::test_default_identical_to_release
+FAILED patches/psf_compile_c9_2026-10-03/test_c9_compare.py::test_compare_returns_lower_estimate_exact_and_safe[FakeHanoiV2]
+FAILED patches/psf_compile_c9_2026-10-03/test_c9_compare.py::test_compare_returns_lower_estimate_exact_and_safe[FakeGeneva]
+FAILED patches/psf_compile_c9_2026-10-03/test_c9_compare.py::test_compare_returns_lower_estimate_exact_and_safe[FakeTorino]
+FAILED patches/psf_compile_c9_2026-10-03/test_c9_compare.py::test_compare_returns_lower_estimate_exact_and_safe[FakeKingston]
+5 failed, 5 passed, 1 warning in 3.56s
+
+== patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py (2026-10-10T14:24:59Z)
+E            +  where np.float64(0.06070798839915097) = <function pauli_cost at 0x70f813962f20>(<qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x70f7b97763f0>, <qiskit.transpiler.target.Target object at 0x70f7ba2af940>)
+E            +    where <function pauli_cost at 0x70f813962f20> = <module 'psf_compile_c10_test' from '/home/<user>/psf_zero_fresh_test/patches/psf_compile_c10_2026-10-03/psf_compile.py'>.pauli_cost
+
+patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py:233: AssertionError
+=============================== warnings summary ===============================
+patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py::test_default_identical_to_release
+  /home/<user>/psf_zero_fresh_test/patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py:175: UserWarning: compile_for_hardware was called without the device's Target (target= or backend=): couplers and qubits the device reports as failed cannot be avoided, and a result that uses one is noise (changelog item 58). This warning is given once per process.
+    assert sig(c10.compile_for_hardware(qc, **kw, **extra)) == sig(rel.compile_for_hardware(qc, **kw, **extra)), \
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py::test_default_identical_to_release
+FAILED patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py::test_full_choice_exact_safe_and_not_worse_by_estimate[FakeHanoiV2]
+FAILED patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py::test_full_choice_exact_safe_and_not_worse_by_estimate[FakeKingston]
+3 failed, 8 passed, 1 warning in 4.83s
+
+== patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py (2026-10-10T14:25:04Z)
+E            +  where 0.06230434857182886 = <function hybrid_cost at 0x7a6404972e80>(<qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7a63aa349b50>, <qiskit.transpiler.target.Target object at 0x7a63ab2bf940>)
+E            +    where <function hybrid_cost at 0x7a6404972e80> = <module 'psf_compile_c11_test' from '/home/<user>/psf_zero_fresh_test/patches/psf_compile_c11_2026-10-04/psf_compile.py'>.hybrid_cost
+
+patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py:254: AssertionError
+=============================== warnings summary ===============================
+patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py::test_other_options_identical_to_release
+  /home/<user>/psf_zero_fresh_test/patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py:181: UserWarning: compile_for_hardware was called without the device's Target (target= or backend=): couplers and qubits the device reports as failed cannot be avoided, and a result that uses one is noise (changelog item 58). This warning is given once per process.
+    assert sig(c11.compile_for_hardware(qc, **kw, **extra)) == sig(rel.compile_for_hardware(qc, **kw, **extra)), \
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py::test_other_options_identical_to_release
+FAILED patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py::test_full_choice_exact_safe_and_not_worse_by_estimate[FakeTorino]
+FAILED patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py::test_full_choice_exact_safe_and_not_worse_by_estimate[FakeKingston]
+3 failed, 7 passed, 1 warning in 4.81s
+
+== patches/psf_compile_c12_2026-10-05/test_c12_exact.py (2026-10-10T14:25:10Z)
+E                 At index 37 diff: ('rz', [3], [-0.7853981633974483]) != ('sx', [3], [])
+E                 Left contains 3 more items, first extra item: ('rz', [19], [-3.141592653589793])
+E                 Use -v to get more diff
+
+patches/psf_compile_c12_2026-10-05/test_c12_exact.py:238: AssertionError
+=============================== warnings summary ===============================
+patches/psf_compile_c12_2026-10-05/test_c12_exact.py::test_identical_to_release_where_qiskit_is_exact[FakeAuckland]
+  /home/<user>/psf_zero_fresh_test/patches/psf_compile_c12_2026-10-05/test_c12_exact.py:238: UserWarning: compile_for_hardware was called without the device's Target (target= or backend=): couplers and qubits the device reports as failed cannot be avoided, and a result that uses one is noise (changelog item 58). This warning is given once per process.
+    assert sig(c12.compile_for_hardware(qc, **kw, **extra)) == sig(rel.compile_for_hardware(qc, **kw, **extra)), \
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED patches/psf_compile_c12_2026-10-05/test_c12_exact.py::test_identical_to_release_where_qiskit_is_exact[FakeAuckland]
+FAILED patches/psf_compile_c12_2026-10-05/test_c12_exact.py::test_identical_to_release_where_qiskit_is_exact[FakeTorino]
+2 failed, 5 passed, 1 warning in 4.51s
+
+== patches/psf_compile_c24_2026-10-07/test_c24.py (2026-10-10T14:25:15Z)
+...........                                                              [100%]
+11 passed in 51.04s
+
+== patches/psf_compile_c26_2026-10-09/test_c26.py (2026-10-10T14:26:06Z)
+....                                                                     [100%]
+4 passed in 0.41s
+
+== patches/psf_compile_c29_2026-10-10/test_c29.py (2026-10-10T14:26:07Z)
+..........                                                               [100%]
+10 passed in 53.36s
+
+== patches/psf_compile_c30_2026-10-10/test_c30.py (2026-10-10T14:27:01Z)
+........                                                                 [100%]
+8 passed in 27.35s
+
+== patches/psf_compile_c31_2026-10-10/test_c31.py (2026-10-10T14:27:29Z)
+E                     - 711be8bbcfca06964e6a5a20592229c932df46bda477591bbbf1529225e40668
+E                     + d61733de22b4c91423df59d57c0a279849695b907f510a788fa3f89a3e74de10
+
+patches/psf_compile_c31_2026-10-10/test_c31.py:86: AssertionError
+=============================== warnings summary ===============================
+patches/psf_compile_c31_2026-10-10/test_c31.py::test_same_output_as_the_release
+  /home/<user>/psf_zero_fresh_test/patches/psf_compile_c31_2026-10-10/test_c31.py:83: UserWarning: compile_for_hardware was called without the device's Target (target= or backend=): couplers and qubits the device reports as failed cannot be avoided, and a result that uses one is noise (changelog item 58). This warning is given once per process.
+    a = rel.compile_for_hardware(qc, **kw)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED patches/psf_compile_c31_2026-10-10/test_c31.py::test_version - Asserti...
+FAILED patches/psf_compile_c31_2026-10-10/test_c31.py::test_same_output_as_the_release
+ERROR patches/psf_compile_c31_2026-10-10/test_c31.py::test_exact_seen_records_without_changing_decisions
+2 failed, 5 passed, 1 warning, 1 error in 1.99s
+
+== patches/psf_compile_c32_2026-10-10/test_c32.py (2026-10-10T14:27:31Z)
+....                                                                     [100%]
+4 passed in 3.34s
+
+== patches/psf_compile_c33_2026-10-10/test_c33.py (2026-10-10T14:27:35Z)
+....                                                                     [100%]
+4 passed in 1.96s
+
+== patches/psf_compile_c34_2026-10-10/test_c34.py (2026-10-10T14:27:37Z)
+.....                                                                    [100%]
+5 passed in 2.37s
+
+== patches/psf_compile_c35_2026-10-10/test_c35.py (2026-10-10T14:27:40Z)
+....                                                                     [100%]
+4 passed in 2.49s
+
+files 43; {'passed': 287, 'failed': 40, 'errors': 1, 'skipped': 0}; files not passing: ['benchmarks/test_release_2026_10_02.py', 'benchmarks/test_release_2026_10_02_2.py', 'benchmarks/test_release_2026_10_03.py', 'benchmarks/test_release_2026_10_03_2.py', 'benchmarks/test_release_2026_10_03_3.py', 'benchmarks/test_release_2026_10_04_1.py', 'benchmarks/test_release_2026_10_05_1.py', 'patches/psf_compile_c3_2026-10-02/test_c3_prune.py', 'patches/psf_compile_c4_2026-10-02/test_c4_layout.py', 'patches/psf_compile_c5_2026-10-02/test_c5_placement.py', 'patches/psf_compile_c6_2026-10-03/test_c6_floor.py', 'patches/psf_compile_c8_2026-10-03/test_c8_resynth.py', 'patches/psf_compile_c9_2026-10-03/test_c9_compare.py', 'patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py', 'patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py', 'patches/psf_compile_c12_2026-10-05/test_c12_exact.py', 'patches/psf_compile_c31_2026-10-10/test_c31.py']; end 2026-10-10T14:27:43Z

@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-10-10.3 -- release, adopted on 2026-10-10 from candidate 2026-10-10.c35 of Addenda 431-432, accepted in C35-VAL (Addenda 436-437) (previous release: 2026-10-10.2)
+VERSION: 2026-10-10.2 -- release, adopted on 2026-10-10 from candidate 2026-10-10.c30 of Addendum 426 (previous release: 2026-10-10.1)
 
 Where to look for what
 ----------------------
@@ -842,56 +842,6 @@ adopted on 2026-10-06 after their pre-registered evaluations RECR and KRAUS, Add
     code's to rounding (sums are formed in another order), not bit for bit, so this is not identity by
     construction; it is tested. Without psf_zero_core57, or for a call it cannot take (an instruction on more than
     six qubits), the Python code runs. CORE57_STATS counts the calls made each way.
-58. **SAFETY: a circuit that uses an element the device reports as failed is never returned silently (candidate
-    2026-10-10.c31).** An output with a gate on a failed coupler or qubit gives no usable result on the device, and
-    nothing in the output says so. Item 31 already avoided failed elements, but only when the caller passed `target`
-    (the recommended call), and item 43 then returned the failing circuit with a warning when no placement avoided
-    them. Now:
-    - `backend=` (new) supplies the device: its Target, and from it the coupling map and the basis, unless given.
-      `coupling_map` may be left out when `target` or `backend` is given. With a device, the default call avoids
-      failed elements exactly as item 31 does; with the same arguments as before, every output is unchanged.
-    - Without a Target, the first call in a process warns once that failed elements cannot be avoided
-      (`WARN_WITHOUT_TARGET` switches this off).
-    - A qubit whose measurement error is >= `prune_max_error` is a failed qubit too (`_failed_elements`,
-      `prune_coupling_map`): a result read from it is noise.
-    - After item 31's recompile on the pruned map the output is checked again. If no placement avoids the failed
-      elements, or the output still uses one, `on_failed_elements="raise"` (the default) raises `FailedElementsError`
-      instead of returning it; `"keep"` returns it with item 43's warning, as before.
-59. **EXACTNESS (part a: measurement only; candidate 2026-10-10.c31).** Item 39 accepts a circuit when its state
-    infidelity against the reference is <= `EXACT_TOL` (1e-6). Dropping a Z rotation of angle theta, as Qiskit
-    level 3's CommutativeCancellation does below |theta| = 1.2566e-4 (Addendum 247), changes the infidelity by at
-    most theta^2 / 4 (4e-9), far inside that tolerance. Before the tolerance is tightened, the infidelities that
-    exact paths actually produce are recorded: `EXACT_SEEN` keeps, per check, the largest infidelity found and
-    where (`_same_action`, `_implements`), up to `EXACT_SEEN_MAX` entries. No decision changes.
-60. **QUALITY ON THE DEVICE: with a Target, the default call places by the device's errors (candidate
-    2026-10-10.c32).** With item 58 the default call avoids failed elements, but it chose among the working qubits
-    without looking at their errors: on BP-FINAL's 106 FakeTorino tests its estimated success probability was 0.66
-    (FakeTorino) and 0.84 (FakeKingston) of Qiskit level 2's (ESP-C31). `placement_refine` (item 33, Qiskit level 3's
-    exact re-placement by the Target's errors) is now "auto" by default: on whenever a Target is given (by `target`
-    or `backend`), off otherwise. `placement_refine=False` gives c31's default call with a Target; calls without a
-    Target, and calls that pass `placement_refine` explicitly, are unchanged.
-61. **SPEED: with a Target, one compile on the map without the failed elements (candidate 2026-10-10.c33).** Item 31
-    compiled on the full map first and, when the result used a failed element, compiled again on the pruned map: on
-    FakeTorino 63 of BP-FINAL's 106 tests were compiled twice (ESP-C31). Now, when the Target reports failed elements,
-    the circuit is compiled once, on `prune_coupling_map(...)`, and checked as item 58 checks a recompile. When no
-    placement exists there, "raise" raises FailedElementsError; "keep" compiles on the full map, with item 43's
-    warning. `PRUNE_FIRST = False` restores c32's order. The output can differ from c32's where c32's first compile
-    used no failed element (the router then saw the whole map).
-62. **SPEED, and switches to measure the compiler's own steps (candidate 2026-10-10.c34).** Timers around the stages
-    of c33's default call (STAGETIME, 2026-10-10) found the time in PSF-Zero's own steps, not in Qiskit's: the SWAP
-    absorption after routing (item 30) took 30% of it, the compression 16-22%, and on small circuits the first call's
-    layout search 23% (networkx's import). Here:
-    - `_uses_failed` reads each qubit's index from a table instead of `find_bit` (the same answer, faster);
-    - `ABSORB_SYNTH = "psf"` (default) synthesises the absorbed blocks as before; `"qiskit"` uses Qiskit's
-      TwoQubitBasisDecomposer on CX (Rust; exact; the same CX count for a two-qubit unitary);
-    - `COMPRESS = True` (default) compresses as before; False routes the input uncompressed.
-    The defaults change no output. psf_smart_layout's two matching-size checks use rustworkx instead of networkx
-    (the size of a maximum matching does not depend on the algorithm), in patches/psf_compile_c34_2026-10-10.
-63. **SPEED: the SWAP absorption's blocks synthesised by Qiskit's decomposer (candidate 2026-10-10.c35).**
-    `ABSORB_SYNTH` is "qiskit" by default. On BP-FINAL's 106 FakeTorino tests (ABLATE-C34, arm C34Q) every output had
-    c34's two-qubit count, ESP was 1.005 of c34's, and the summed time 0.89 of it; the outputs differ in their
-    single-qubit gates only. Both of PSF-Zero's own steps paid for themselves there: without the absorption 10% more
-    two-qubit gates (ESP 0.918), without the compression 11% more (ESP 0.956). "psf" restores c34's synthesis.
 """
 from __future__ import annotations
 
@@ -930,7 +880,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-10-10.3"  # release (from candidate 2026-10-10.c35, C35-VAL): 2026-10-10.2 + items 58, 59a, 60-63 (the device given by backend= or target=: no failed element used; placement by the errors; speed)
+VERSION = "2026-10-10.2"  # release (from candidate 2026-10-10.c30 of Addendum 426): 2026-10-10.1 + item 57b (the estimates' and checks' loops in psf_zero_core57, when installed)
 __version__ = VERSION
 
 # Changelog item 27: the version string of the loaded Rust core, for logs.
@@ -2016,58 +1966,19 @@ def qubit_errors_from_target(target, gate_name: str = "sx") -> dict:
     return out
 
 
-class FailedElementsError(TranspilerError):
-    """Item 58: no placement of the circuit avoids the couplers and qubits the device reports as failed."""
-
-
-WARN_WITHOUT_TARGET = True  # item 58: warn once per process when compile_for_hardware has no device Target
-_WARNED = {"no_target": False}
-_BACKEND_BASIS = ("cx", "cz", "ecr", "rz", "sx", "x", "id")  # item 58: the basis taken from a backend's Target
-
-
-def readout_errors_from_target(target) -> dict:
-    """Item 58: `{q: error}` of `measure`, for the qubits that have an error value."""
-    out = {}
-    if "measure" not in target.operation_names:
-        return out
-    for qargs, props in target["measure"].items():
-        if qargs is None or props is None or props.error is None:
-            continue
-        out[qargs[0]] = props.error
-    return out
-
-
 PRUNE_STATS = {"calls": 0, "edges_removed": 0, "qubits_isolated": 0, "checked": 0, "recompiled": 0,
-               "unavoidable": 0, "still_failed": 0, "raised": 0, "pruned_first": 0}
-PRUNE_FIRST = True  # item 61: with failed elements in the Target, compile once on the pruned map
-ABSORB_SYNTH = "qiskit"  # items 62-63: "qiskit" (default) or "psf": how item 30's absorbed blocks are synthesised
-COMPRESS = True  # item 62: False routes the input without PSF-Zero's compression (a switch for measurement)
+               "unavoidable": 0}
 
 
-def _recompile_pruned(args, first, edges=None, qubits=None, mode="keep"):
-    """Item 43: item 31's recompile on the pruned map, or `first` (with a warning) when no placement exists.
-    Item 58: with `edges` and `qubits`, the recompiled circuit is checked again; with `mode="raise"`, a circuit that
-    cannot avoid the failed elements raises FailedElementsError instead of being returned."""
+def _recompile_pruned(args, first):
+    """Item 43: item 31's recompile on the pruned map, or `first` (with a warning) when no placement exists."""
     try:
-        out = compile_for_hardware(**args)
-    except QiskitError as exc:  # item 58: TranspilerError, and CouplingError on a map left without edges
+        return compile_for_hardware(**args)
+    except TranspilerError as exc:
         PRUNE_STATS["unavoidable"] += 1
-        if mode == "raise":
-            PRUNE_STATS["raised"] += 1
-            raise FailedElementsError(f"no placement avoids the failed couplers and qubits ({exc}) (changelog "
-                                      f"item 58)") from exc
         warnings.warn(f"no placement on the coupling map without the failed elements ({exc}); keeping the output "
                       f"that uses them (changelog item 43)", RuntimeWarning, stacklevel=3)
         return first
-    if edges is not None and _uses_failed(out, edges, qubits):
-        PRUNE_STATS["still_failed"] += 1
-        if mode == "raise":
-            PRUNE_STATS["raised"] += 1
-            raise FailedElementsError("the circuit compiled on the map without the failed couplers still uses a "
-                                      "failed qubit (changelog item 58)")
-        warnings.warn("the output still uses a failed qubit; keeping it (changelog item 58)", RuntimeWarning,
-                      stacklevel=3)
-    return out
 REFINE_STATS = {"calls": 0, "applied": 0}  # changelog item 33
 
 
@@ -2222,8 +2133,6 @@ def excitation_cost(circ, target):
 EXACT_TOL = 1e-6  # item 39: largest state infidelity accepted (B17's failure line; exact paths stay below 1e-7)
 EXACT_SEEDS = (39_001, 39_002)
 EXACT_STATS = {"checked": 0, "refused_resynthesis": 0, "refused_floor": 0, "refused_level3": 0, "not_checkable": 0}
-EXACT_SEEN = []  # item 59a: (where, largest state infidelity over the seeds) per check that was made
-EXACT_SEEN_MAX = 10_000
 _EXACT_SKIP = ("barrier", "measure", "delay")
 
 
@@ -2450,12 +2359,6 @@ def _free_diagonal(mat, props, q):
     return props is None or (not props.error and not props.duration)
 
 
-def _seen(where, value):
-    """Item 59a: records a check's largest infidelity."""
-    if len(EXACT_SEEN) < EXACT_SEEN_MAX:
-        EXACT_SEEN.append((where, float(value)))
-
-
 def _same_action(ref, new, tol=EXACT_TOL):
     """Item 39: True if `new` and `ref` (same physical qubits and layout) map two seeded random product states of
     every touched qubit to the same state, up to global phase. False otherwise or if the check cannot be made."""
@@ -2474,19 +2377,14 @@ def _same_action(ref, new, tol=EXACT_TOL):
     if not touched:
         return True
     pos = {p: j for j, p in enumerate(touched)}
-    worst = 0.0
     for seed in EXACT_SEEDS:
         rng = np.random.default_rng(seed)
         psi = np.array(1.0 + 0j)
         for _ in touched:
             psi = np.multiply.outer(psi, _product_state(rng))
         x, y = _apply_ops(psi, a, pos), _apply_ops(psi, b, pos)
-        inf = 1.0 - abs(np.vdot(x.ravel(), y.ravel())) ** 2
-        worst = max(worst, inf)
-        if inf > tol:
-            _seen("same_action", worst)
+        if 1.0 - abs(np.vdot(x.ravel(), y.ravel())) ** 2 > tol:
             return False
-    _seen("same_action", worst)
     return True
 
 
@@ -2517,7 +2415,6 @@ def _implements(qc, out, tol=EXACT_TOL):
     pos = {p: j for j, p in enumerate(touched)}
     zero = np.array([1.0 + 0j, 0.0])
     rest = [pos[p] for p in touched if p not in set(fin)]
-    worst = 0.0
     for seed in EXACT_SEEDS:
         rng = np.random.default_rng(seed)
         states = [_product_state(rng) for _ in range(n)]
@@ -2534,12 +2431,8 @@ def _implements(qc, out, tol=EXACT_TOL):
         red = psi[idx]                                   # axes: final positions, in touched order
         kept = [p for p in touched if p in set(fin)]
         red = np.moveaxis(red, [kept.index(fin[v]) for v in range(n)], list(range(n)))
-        inf = 1.0 - abs(np.vdot(ideal.ravel(), red.ravel())) ** 2
-        worst = max(worst, inf)
-        if inf > tol:
-            _seen("implements", worst)
+        if 1.0 - abs(np.vdot(ideal.ravel(), red.ravel())) ** 2 > tol:
             return False
-    _seen("implements", worst)
     return True
 
 
@@ -3052,7 +2945,6 @@ def _failed_elements(target, max_error: float, gate_names=("cz", "ecr", "cx"), q
             if qargs is not None and props is not None and props.error is not None and props.error >= max_error:
                 edges.add(tuple(qargs))
     qubits = {q for q, e in qubit_errors_from_target(target, qubit_gate).items() if e >= max_error}
-    qubits |= {q for q, e in readout_errors_from_target(target).items() if e >= max_error}  # item 58
     return edges, qubits
 
 
@@ -3062,9 +2954,8 @@ _SYMMETRIC_2Q = frozenset(("cz", "swap", "iswap", "rzz", "rxx", "ryy", "cp", "xx
 def _uses_failed(circ, edges, qubits) -> bool:
     """Item 31 (direction-aware from item 41): a gate on a failed qubit, a two-qubit gate in a direction reported
     failed, or a symmetric two-qubit gate on a coupler failed in either direction."""
-    pos = {q: i for i, q in enumerate(circ.qubits)}  # item 62: the same indices as find_bit, without its cost
     for inst in circ.data:
-        idx = tuple(pos[q] for q in inst.qubits)
+        idx = tuple(circ.find_bit(q).index for q in inst.qubits)
         if any(i in qubits for i in idx):
             return True
         if len(idx) == 2 and (idx in edges or (inst.operation.name in _SYMMETRIC_2Q and idx[::-1] in edges)):
@@ -3087,7 +2978,6 @@ def prune_coupling_map(coupling_map: CouplingMap, target, max_error: float = 0.5
             if qargs is not None and props is not None and props.error is not None:
                 gate_err[tuple(qargs)] = props.error
     bad_q = {q for q, e in qubit_errors_from_target(target, qubit_gate).items() if e >= max_error}
-    bad_q |= {q for q, e in readout_errors_from_target(target).items() if e >= max_error}  # item 58
     out = CouplingMap()
     for q in range(coupling_map.size()):
         out.add_physical_qubit(q)
@@ -3211,14 +3101,10 @@ class _AbsorbRoutingSwaps(TransformationPass):
                if len(inst.qubits) == 2 and inst.operation.name == "unitary"]
         if not idx:
             return dag
-        if ABSORB_SYNTH == "qiskit":  # item 62: Qiskit's two-qubit synthesis on CX, in Rust
-            dec = TwoQubitBasisDecomposer(CXGate())
-            done = {i: (dec(blocked.data[i].operation.to_matrix()),) for i in idx}
-        else:
-            synth = SU4GeodesicPSFSynthesizer(
-                GeodesicPSFHyper(tol=self._tol, on_unsupported=self._on_unsupported, entangling_basis="cx"),
-                verify=self._verify)
-            done = dict(zip(idx, synth.synthesize_many([blocked.data[i].operation.to_matrix() for i in idx])))
+        synth = SU4GeodesicPSFSynthesizer(
+            GeodesicPSFHyper(tol=self._tol, on_unsupported=self._on_unsupported, entangling_basis="cx"),
+            verify=self._verify)
+        done = dict(zip(idx, synth.synthesize_many([blocked.data[i].operation.to_matrix() for i in idx])))
         out = blocked.copy_empty_like()
         out.global_phase = blocked.global_phase
         for i, inst in enumerate(blocked.data):
@@ -3232,7 +3118,7 @@ class _AbsorbRoutingSwaps(TransformationPass):
 
 def compile_for_hardware(
     qc: QuantumCircuit,
-    coupling_map: CouplingMap | None = None,
+    coupling_map: CouplingMap,
     basis_gates: list[str] | None = None,
     block_gate_floor: int = DEFAULT_BLOCK_GATE_FLOOR,
     routing_optimization_level: int = 1,
@@ -3254,7 +3140,7 @@ def compile_for_hardware(
     post_routing_resynthesis: Union[bool, str] = "auto",
     target=None,
     prune_max_error: float = 0.5,
-    placement_refine: Union[bool, str] = "auto",
+    placement_refine: bool = False,
     placement_call_limit: int = 300_000,
     placement_max_trials: int = 2_500,
     final_resynthesis: Union[bool, str] = False,
@@ -3263,9 +3149,6 @@ def compile_for_hardware(
     candidate_score: str = "excitation",
     _refine_target=None,
     _cancel_done: bool = False,
-    backend=None,
-    on_failed_elements: str = "raise",
-    _inner: bool = False,
 ) -> QuantumCircuit:
     """Compress with PSF-Zero, then route (and, if `basis_gates` is given,
     translate) with Qiskit.
@@ -3409,33 +3292,8 @@ def compile_for_hardware(
     ...)` accepts. `None` by default -- passing nothing here changes nothing
     about this function's behavior or cost. See item 13 in this file's
     changelog for why this exists.
-    `backend`, `on_failed_elements` (candidate 2026-10-10.c31, item 58): `backend` supplies the device's Target, and
-    from it `coupling_map` and `basis_gates` when they are not given; `coupling_map` may then be left out. With a
-    Target, failed couplers and qubits (error >= `prune_max_error`, measurement included) are avoided as in item 31;
-    when they cannot be, "raise" (default) raises `FailedElementsError` and "keep" returns the circuit with a warning.
-    Without a Target, the first call in a process warns that they cannot be avoided.
-    `placement_refine` (candidate 2026-10-10.c32, item 60): "auto" (default) is True when a Target is given and False
-    otherwise.
     """
-    if backend is not None:  # item 58: the device, from which the Target, map and basis follow unless given
-        if target is None:
-            target = backend.target
-        if basis_gates is None:
-            basis_gates = [g for g in target.operation_names if g in _BACKEND_BASIS]
-    if coupling_map is None:
-        if target is None:
-            raise ValueError("compile_for_hardware needs coupling_map, target or backend (changelog item 58)")
-        coupling_map = target.build_coupling_map()
-    if on_failed_elements not in ("raise", "keep"):
-        raise ValueError('on_failed_elements must be "raise" or "keep" (changelog item 58)')
-    if target is None and not _inner and WARN_WITHOUT_TARGET and not _WARNED["no_target"]:
-        _WARNED["no_target"] = True
-        warnings.warn("compile_for_hardware was called without the device's Target (target= or backend=): couplers "
-                      "and qubits the device reports as failed cannot be avoided, and a result that uses one is "
-                      "noise (changelog item 58). This warning is given once per process.", UserWarning, stacklevel=2)
     call_args = dict(locals())  # item 50: this call's arguments, for the two runs of the pipeline
-    if placement_refine == "auto":  # item 60: on with a Target, off without one
-        placement_refine = target is not None
     if placement_refine and target is None:
         raise ValueError("placement_refine=True needs the device `target` (changelog item 33)")
     if final_resynthesis not in (False, True, "select"):
@@ -3469,22 +3327,14 @@ def compile_for_hardware(
                     layout_qubit_errors=layout_qubit_errors, callback=callback,
                     elide_permutations=elide_permutations, post_routing_resynthesis=post_routing_resynthesis,
                     placement_call_limit=placement_call_limit, placement_max_trials=placement_max_trials,
-                    _refine_target=target if placement_refine else None, _inner=True)
+                    _refine_target=target if placement_refine else None)
+        out = compile_for_hardware(**args)
         edges, qubits = _failed_elements(target, prune_max_error)
         PRUNE_STATS["checked"] += 1
-        if PRUNE_FIRST and (edges or qubits):  # item 61: one compile, on the map without the failed elements
-            PRUNE_STATS["pruned_first"] += 1
+        if _uses_failed(out, edges, qubits):
+            PRUNE_STATS["recompiled"] += 1
             args["coupling_map"] = prune_coupling_map(coupling_map, target, prune_max_error)
-            out = _recompile_pruned(args, None, edges, qubits, on_failed_elements)
-            if out is None:  # "keep", and no placement on the pruned map: the full map, as item 43 did
-                args["coupling_map"] = coupling_map
-                out = compile_for_hardware(**args)
-        else:
-            out = compile_for_hardware(**args)
-            if _uses_failed(out, edges, qubits):
-                PRUNE_STATS["recompiled"] += 1
-                args["coupling_map"] = prune_coupling_map(coupling_map, target, prune_max_error)
-                out = _recompile_pruned(args, out, edges, qubits, on_failed_elements)  # item 58
+            out = _recompile_pruned(args, out)
         out = _resynthesise(out, final_resynthesis, target, prune_max_error)
         if not compare_floor and candidate_score == "excitation":
             if compare_level3 and not _checkable_logical(qc):  # item 45
@@ -3523,7 +3373,7 @@ def compile_for_hardware(
         alt = _cancel_candidate(qc)
         if alt is not None:
             CANCEL_STATS["tried"] += 1
-            kw = dict(call_args, qc=qc, _cancel_done=True, _inner=True)
+            kw = dict(call_args, qc=qc, _cancel_done=True)
             first = compile_for_hardware(**kw)
             second = compile_for_hardware(**dict(kw, qc=alt))
             if _count_2q(second) < _count_2q(first):
@@ -3548,7 +3398,7 @@ def compile_for_hardware(
         if permutation is not None:
             qc_elided._layout = None
             qc = qc_elided
-    qc_compressed = qc if not COMPRESS else compile(  # item 62: COMPRESS=False skips the compression
+    qc_compressed = compile(
         qc,
         block_gate_floor=block_gate_floor,
         verify=verify,
