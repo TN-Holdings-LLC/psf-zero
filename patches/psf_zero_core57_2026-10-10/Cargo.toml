@@ -1,0 +1,12 @@
+[package]
+name = "psf_zero_core57"
+version = "0.1.0"
+edition = "2021"
+description = "Item 57b (candidate, 2026-10-10): the per-gate loops of PSF-Zero's estimates and exactness checks in Rust. Separate from psf_zero_core so that the release's core is not touched."
+
+[lib]
+name = "psf_zero_core57"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+pyo3 = { version = "0.19", features = ["extension-module"] }

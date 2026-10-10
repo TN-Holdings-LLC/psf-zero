@@ -4044,6 +4044,182 @@ files, one pytest session per file:
 
 ---
 
+<!-- ===== Addendum 425 (source: spare-qubit-cliff-addendum-425-2026-10-10.md) ===== -->
+
+> **Note added when merging:** Exploratory (nothing predicted): item 57b's design, prototype and candidate c30, with a first measurement.
+
+## Addendum 425 -- Exploratory: item 57b, the estimates' and checks' per-gate loops in Rust (candidate c30). The core loop agrees with the Python code to 5e-16; on seven development tests the recommended call returned the same circuits in 0.65-0.77 of c29's time (2026-10-10)
+
+**Status: exploratory.** Not pre-registered, nothing predicted. The candidate is tested for identity in Addendum 426.
+
+## 1. Why
+
+Item 56 (release 2026-10-10.1) removed the estimates that cannot change the result. It does not help the slow
+development tests whose checks can be made: type A, which covers JW-14, enc_gray, JW-10 and parity10 (weakness
+report; Addenda 417, 420-423). Doing item 57's single step in NumPy (part a, Addendum 421) saved 2-11% of the
+estimates' time. The time is in the loop over the gates, so part b moves the whole loop.
+
+## 2. The design and the prototype
+
+[`psf-zero-rust-estimates-design-2026-10-10.md`](psf-zero-rust-estimates-design-2026-10-10.md) sets out what moves
+and what stays. Python still reads the circuit and the Target, decides the cases that return None, and packs one
+byte buffer. The Rust code walks the gates exactly as the Python code does:
+
+- item 49's waiting single-qubit gates and reduced states;
+- each wider gate applied to the state;
+- a two-qubit gate and both of its qubits' reduced states in one pass;
+- every cost term in the same order.
+
+**The prototype was tested here** (a cloud container without Qiskit). It is the standard-library-only `statevec.rs`
+with a driver and a NumPy copy of c29's `excitation_cost`, `hybrid_cost` and `_apply_ops`, in
+[`data/2026-10-10/r57_prototype/`](../../data/2026-10-10/r57_prototype/) (`main.rs`, `ref57.py`, `bench57.py`).
+
+- **Agreement.** On 300 random problems, the largest relative differences from the NumPy code were 4.6e-16
+  (`excitation_cost`) and 4.3e-16 (`hybrid_cost`). After `_apply_ops`, amplitudes differed by at most 1.3e-15.
+- **Speed.** One thread on a shared 2.8 GHz Xeon:
+
+  | touched qubits | Rust against the NumPy copy | Rust per amplitude per two-qubit gate |
+  |---|---|---|
+  | 10 | about 9 times as fast | about 11 ns |
+  | 14 | 2-3 times as fast | about 9 ns |
+
+## 3. The candidate: c30
+
+- **The core.** [`patches/psf_zero_core57_2026-10-10/`](../../patches/psf_zero_core57_2026-10-10/) is the Rust code
+  as a Python module of its own, `psf_zero_core57`. The release's core is not changed.
+- **The compiler.**
+  [`patches/psf_compile_c30_2026-10-10/psf_compile.py`](../../patches/psf_compile_c30_2026-10-10/psf_compile.py)
+  is c29 with item 57 (part b) in its changelog. It uses the module when it is installed and can take the call.
+  Otherwise it runs the Python code; `CORE57_STATS` counts the calls each way.
+- **The buffers.** The buffers that c30's Python side packs were checked byte for byte against the prototype's tested
+  encoder on 200 random problems.
+
+**At home** (2026-10-10, before the release tests that began at 04:15 CEST; console output, not saved to a file):
+
+- the core built with `maturin develop --release` (7 s);
+- the release's core was reported unchanged (2026-09-29.1);
+- the kernel's Rust tests passed (5);
+- [`test_c30.py`](../../patches/psf_compile_c30_2026-10-10/test_c30.py) passed (8). The largest relative difference
+  from c29's estimates on 60 random circuits transpiled for FakeTorino was 4.67e-16. The checks returned c29's
+  booleans, and without the core c30 returned c29's values exactly.
+
+## 4. A first measurement
+
+[`benchmarks/c30_speed.py`](../../benchmarks/c30_speed.py) ran c29 and c30, one at a time, on seven development tests
+on FakeTorino. Each ran the recommended call once, with the virtual clock. Data:
+[`data/2026-10-10/c30_speed/`](../../data/2026-10-10/c30_speed/).
+
+| test | c29 (s) | c30 (s) | c30 / c29 | the same output by value | c30's calls in Rust / Python |
+|---|---|---|---|---|---|
+| ham_JW-14 | 33.6 | 26.0 | 0.77 | yes | 23 / 0 |
+| enc_gray_dvalues_8-8-8 | 23.7 | 16.5 | 0.70 | yes | 23 / 0 |
+| ham_JW-10 | 4.4 | 3.1 | 0.70 | yes | 23 / 0 |
+| ham_parity10 | 4.6 | 3.2 | 0.69 | yes | 23 / 0 |
+| ham_JW-6 | 0.7 | 0.5 | 0.74 | yes | 11 / 0 |
+| grover_5 | 0.9 | 0.6 | 0.65 | yes | 15 / 0 |
+| mod_red_21 | 0.5 | 0.3 | 0.76 | yes | 15 / 0 |
+
+## 5. Reading
+
+- **A whole-compile saving of 23-35%, with the same circuits.** It holds on the slow tests of type A and on small
+  circuits alike. On the small circuits this also touches the recommended call's fixed cost, which the TOQB run 1c
+  found (weakness report).
+- **Not more.** Most of the time that remains is outside the estimates: the layout search, Qiskit's transpiles and
+  the building of candidates. Which part dominates is not yet measured.
+- **Each figure is a single run.** Identity on seven tests is not identity. The values differ from Python's in the
+  last bits, so a close decision could change. Addendum 426 tests both, pre-registered.
+
+---
+
+<!-- ===== Addendum 426 (source: spare-qubit-cliff-addendum-426-2026-10-10.md) ===== -->
+
+> **Note added when merging:** Pre-registration of C30-ID, committed with candidate 2026-10-10.c30, its core, its tests and its script as the lock, and pushed before the run.
+
+## Addendum 426 -- Pre-registration: C30-ID. Candidate 2026-10-10.c30 (item 57b) runs the estimates' and checks' per-gate loops in Rust. Does it return release 2026-10-10.1's compiled output, by value, on every development test where the release repeats itself, and is it at least 15% faster where the recommended call makes estimates? (2026-10-10)
+
+**Status: pre-registration.** It is written after the candidate's tests and a first measurement (Addendum 425), and
+before C30-ID's run. It is locked at home: the commit, with the candidate, the core, the tests and the script, is
+pushed before the run starts.
+
+## 1. Why
+
+Item 57b's values agree with the Python code's only to rounding (about 5e-16, relative). Item 46's tie band
+(`ESTIMATE_TIE_TOL`, 1e-12) makes most such differences harmless. A decision whose two estimates lie at the band's
+edge could still change, so c30 is not identity by construction, unlike item 56. Its speed was measured once, on
+seven tests, one at a time (Addendum 425).
+
+## 2. The candidate
+
+- **The compiler.**
+  [`patches/psf_compile_c30_2026-10-10/psf_compile.py`](../../patches/psf_compile_c30_2026-10-10/psf_compile.py)
+  is candidate c29 (whose code is release 2026-10-10.1's apart from the version lines) with changelog item 57,
+  part b.
+- **The core.** It uses `psf_zero_core57`, built from
+  [`patches/psf_zero_core57_2026-10-10/`](../../patches/psf_zero_core57_2026-10-10/) and installed in the run's
+  environment, version `2026-10-10.c30`. The release's core is unchanged.
+- **The tests.** Its tests are [`test_c30.py`](../../patches/psf_compile_c30_2026-10-10/test_c30.py), and the
+  kernel's own Rust tests are in `src/statevec.rs`.
+
+## 3. The test
+
+[`benchmarks/c30_identity.py`](../../benchmarks/c30_identity.py) is C29-ID's script (Addendum 422) with the arms and
+predictions changed, and with `c29_identity.value_sig` used unchanged.
+
+- **Tests and calls.** C25-ID2's 152 development tests: the default call on every test, and the recommended call on
+  the FakeTorino and summit tests, for 186 test-calls and 558 jobs.
+- **Arms.**
+  - REL: release 2026-10-10.1.
+  - REL2: the release again (control).
+  - C30, with `psf_zero_core57`.
+
+  All arms use layout 2026-10-01.1. Each test, call and arm runs in its own process, with one compile, the layout
+  search's clock virtual and `PYTHONHASHSEED=0`.
+- **Comparison.** Outputs are compared by value (`value_sig`).
+- **Records.** Each record carries the compile's counters, including C30's `CORE57_STATS` (calls in Rust and in
+  Python) and the core's version.
+- **Machine.** The home PC (WSL2, 12 CPUs), with nothing else running, 4 jobs at a time.
+- **Caps.** A job is killed after 3,600 s, no job starts after 14,400 s, and the output folder must not exist.
+- **Scoring.** `c30_identity.py compare` scores the run.
+
+## 4. Predictions
+
+| ID | prediction | confirmed if | refuted if |
+|---|---|---|---|
+| RC0 | the run is as locked | 152 tests; all three arms on every test-call; versions 2026-10-10.1 and 2026-10-10.c30, layout 2026-10-01.1 and the virtual clock in every record; psf_zero_core57 2026-10-10.c30 in every C30 record; no uncommitted change | any fails |
+| RC1 | item 57b changes no output | C30 = REL by value on every test-call where REL2 = REL by value and C30 finished | one differs |
+| RC2 | C30 adds no failure | every test-call where C30 failed also failed in REL and REL2 | one did not |
+| RC3 | C30 is faster where the recommended call makes estimates | on the recommended test-calls finished in all three arms where REL's counters show at least one estimate, the geometric mean of C30 / REL compile time is at most 0.85 (and there are at least 5 such test-calls) | otherwise |
+
+Reported without prediction:
+
+- the control: REL2 = REL by value, and REL2 / REL time on RC3's test-calls;
+- the test-calls not scored;
+- RC3's test-calls one by one, with summed times;
+- how many of C30's estimate and check calls ran in Rust and how many in Python.
+
+**Why 0.85.**
+
+- **The first measurement.** It gave 0.65-0.77, one at a time, on seven tests, all of them in RC3's set. In
+  C29-ID's data, that set has 14 test-calls.
+- **Noise.** With four jobs at a time, single small timings vary: REL2 / REL ranged from 0.79 to 1.53 on these
+  test-calls in C29-ID.
+- **What 0.85 claims.** It allows for that noise and still claims a real gain.
+
+**What follows.**
+
+- **If RC0, RC1 and RC2 hold**, item 57b is accepted for the next release, together with a decision on how the core
+  is shipped: as its own module, or merged into `psf_zero_core`. RC3 decides whether it is reported as a speed-up.
+- **If RC1 fails**, the differing test-calls are examined first: a near-tie decision, or a defect.
+
+## 5. What this does not establish
+
+- **Identity where the release does not repeat itself, and with the real clock** (as Addendum 422).
+- **Behaviour without the core.** c30 then runs the Python code, which `test_c30.py` checks equals c29's values
+  exactly.
+- **Machines other than the home PC.** The core has been built and run only there (Linux, x86-64).
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
