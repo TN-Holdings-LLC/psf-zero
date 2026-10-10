@@ -1,0 +1,4 @@
+working qubits 153; longest path found 107
+periodic chain of 26: chain length 26; path placement 50; greedy placement 34
+periodic chain of 80: chain length 80; path placement 158; greedy placement 102
+periodic chain of 120: chain length 120; path placement 250; greedy placement 176

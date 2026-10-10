@@ -5114,6 +5114,101 @@ Addenda 431-432).
 
 ---
 
+<!-- ===== Addendum 439 (source: addendum_439.md) ===== -->
+
+> **Note added when merging:** three exploratory pieces of 2026-10-10's evening, recorded together after the release of 2026-10-10.3.
+
+## Addendum 439 -- Exploratory: STEINER5, a desk check that stopped STEINER6, and ROUTE-X. Computing the construction's placement (VF2 embeddings, and the device's errors) brings it to 1.50-1.56 times Qiskit level 3's two-qubit gates and wins on the largest Hamiltonians and on one runnable test; placing chains along a long path is worse than the greedy placement, so STEINER6 was not run. Routing release 2026-10-10.3 at level 3 instead of 1 raises its ESP by 5-10%, to 0.975 and 0.985 of level 3's (2026-10-10)
+
+**Status: exploratory.** All three are recorded together; none was pre-registered.
+
+**1. STEINER5** ([`benchmarks/steiner5.py`](../../benchmarks/steiner5.py);
+[`data/2026-10-10/steiner5/`](../../data/2026-10-10/steiner5/); 16:07-16:14 CEST, commit `5ca55be`).
+
+STEINER4's arm O (Addendum 435), with the placement computed instead of guessed:
+
+- **Candidates.**
+  - STEINER3's greedy placement.
+  - Up to 6 VF2 embeddings of the heaviest part of the terms' interaction graph that embeds in the working graph.
+  - Each candidate is scored by the construction's own cost over all terms.
+- **Arm P:** hop distances.
+- **Arm PE:** a coupler costs -ln(1 - its error), in the placement and in the trees.
+
+| | FakeTorino | FakeKingston |
+|---|---|---|
+| exact, of those checked; on failed elements | 23 of 23; 0 | 23 of 23; 0 |
+| two-qubit / QK3: STEINER4 O / P / PE | 1.683 / 1.559 / 1.636 | 1.583 / 1.503 / 1.604 |
+| ESP / QK3 (runnable): STEINER4 O / P / PE | 0.692 / 0.767 / 0.878 | 0.232 / 0.246 / 0.311 |
+
+| test (two-qubit gates) | P | PE | QK3 |
+|---|---|---|---|
+| ham_JW24, FakeTorino / FakeKingston | 88,875 / 85,951 | 89,144 / 81,629 | 124,642 / 118,553 |
+| ham_BK22, FakeTorino / FakeKingston | 95,384 / 95,078 | 97,605 / 94,531 | 112,608 / 115,495 |
+| graph-1D-grid-pbc-qubitnodes_Lx-26 (26 qubits), FakeTorino / FakeKingston | 58 / 60 | 60 / 60 | 95 / 112 |
+| bh_graph-1D-grid-pbc-qubitnodes_Lx-6 (120 qubits), FakeTorino | 15,339 | 17,159 | 4,769 |
+
+- **Display:** on the largest Hamiltonians, 15-31% fewer two-qubit gates than level 3. On Lx-26, a test that runs, 39-46%
+  fewer, and a higher ESP: 0.76 against 0.67 on FakeTorino (PE), 0.83 against 0.79 on FakeKingston.
+- **Essential:**
+  - Overall the construction still needs 1.5-1.6 times level 3's gates.
+  - It reaches 0.31-0.88 of level 3's ESP where a result survives.
+  - On the 80-120-qubit Bose-Hubbard chains no embedding was found within VF2's call limit, and the greedy placement
+    stayed.
+
+**2. STEINER6, stopped at its desk check**
+([`data/2026-10-10/steiner6_desk/`](../../data/2026-10-10/steiner6_desk/): the draft `steiner6.py`, the check
+`steiner6_desk.py` and its output).
+
+- **The idea:** lay the logical qubits, in a linear order, along a long path of the working graph. The orders tried
+  were spectral, natural and folded.
+- **The check, before delivery:** on ibm_kingston's live working graph (153 working qubits; the longest path found
+  had 107), with periodic chains and the sum of hop distances over their couplings.
+
+  | periodic chain | path placement | STEINER3's greedy |
+  |---|---|---|
+  | 26 qubits | 50 | 34 |
+  | 80 qubits | 158 | 102 |
+  | 120 qubits | 250 | 176 |
+
+- **Not run.** The heavy-hex lattice's short cycles let the greedy placement close most of a ring; a path doubles the
+  distances.
+- **The failing tests are not chains.** The Bose-Hubbard encodings give dense blocks of qubits per site, coupled to
+  the neighbouring sites' blocks. No placement embeds them in a graph of degree 3.
+- **What remains:** moving qubits during the construction, planned from the known term order. That is a research
+  track (Addendum 435).
+
+**3. ROUTE-X** ([`benchmarks/route_x.py`](../../benchmarks/route_x.py);
+[`data/2026-10-10/route_x/`](../../data/2026-10-10/route_x/); 16:49-17:08 CEST, on the release commit `3e18265`).
+
+C35-VAL's tests and devices. Release 2026-10-10.3's plain call with `backend=`, with `routing_optimization_level` 1
+(R1, as released), 2 (R2) and 3 (R3), against Qiskit level 2 and level 3.
+
+- **Stated before the run:** R3's two-qubit count moves toward QK3's and its ESP rises above R1's, and whether it
+  reaches QK3 is open.
+- **The concern:** levels 2-3 re-run Qiskit's block consolidation over PSF-Zero's output.
+
+| | FakeTorino | FakeKingston |
+|---|---|---|
+| outputs on failed elements: R1 / R2 / R3 / QK2 / QK3 | 0 / 0 / 0 / 25 / 24 | 0 / 0 / 0 / 14 / 14 |
+| two-qubit / QK3: R1 / R2 / R3 | 1.108 / 1.031 / 1.011 | 1.094 / 1.023 / 1.007 |
+| ESP / QK3 (runnable, both > 0): R1 / R2 / R3 | 0.929 / 0.956 / 0.975 | 0.897 / 0.960 / 0.985 |
+| ESP R3 / R1; R3 / QK2 | 1.050; 1.227 | 1.102; 1.236 |
+| time summed: R1 / R3 / QK3 (s) | 192 / 222 / 114 | 205 / 246 / 139 |
+
+**Reading: two numbers.**
+
+- **Display:** at routing level 3, PSF-Zero's plain call with the device is 23-24% above Qiskit level 2's ESP. It is
+  within 1.5-2.5% of level 3's, at 1.15-1.2 times its own release time (a median of 0.2 s per test).
+- **Essential:**
+  - It used no failed element. Level 3 did on 24 and 14 tests, and lost 2 runnable tests on FakeKingston (ESP 0).
+  - Where level 3's output is clean it is still 1.5-2.5% ahead.
+  - At level 3 PSF-Zero's two-qubit count is level 3's (1.01). Its compression gives no measurable gain in gates
+    there. What it adds is the avoidance of failed elements and the placement by the errors.
+- **Next:** candidate c36 makes level-3 routing the default whenever the device is given. A pre-registered test on
+  devices ROUTE-X did not use comes before any release.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
