@@ -1,0 +1,122 @@
+===== test_hamlib_hamiltonians_transpile[ham_tsp_prob-fl417_Ncity-16_enc-stdbinary] -- C33D cold call: 5.5547 s =====
+--- top 25 by tottime ---
+         11171475 function calls (11144846 primitive calls) in 5.555 seconds
+   Ordered by: internal time
+   List reduced from 1770 to 25 due to restriction <25>
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+    84447    0.463    0.000    1.264    0.000 quantumcircuit.py:2832(append)
+       11    0.231    0.021    0.231    0.021 {optimize_1q_gates_decomposition}
+       13    0.226    0.017    0.226    0.017 {run_inverse_cancellation_standard_gates}
+  1263504    0.162    0.000    0.276    0.000 {built-in method builtins.isinstance}
+   129293    0.142    0.000    0.269    0.000 gate.py:206(broadcast_arguments)
+    44846    0.139    0.000    0.394    0.000 quantumcircuit.py:2807(_append_standard_gate)
+     7051    0.133    0.000    0.324    0.000 quantumcircuit.py:2071(compose)
+       13    0.118    0.009    0.118    0.009 {method 'depth' of 'qiskit._accelerate.circuit.DAGCircuit' objects}
+        2    0.116    0.058    2.261    1.131 psf_compile.py:3182(run)
+1445551/1441477    0.113    0.000    0.114    0.000 {built-in method builtins.len}
+    37582    0.112    0.000    0.559    0.000 psf_compile.py:1025(_block_saves_cx)
+        1    0.112    0.112    0.223    0.223 psf_compile.py:3045(_uses_failed)
+    80703    0.101    0.000    0.135    0.000 psf_compile.py:2935(<genexpr>)
+   253947    0.092    0.000    0.297    0.000 {built-in method builtins.any}
+    12608    0.086    0.000    0.309    0.000 psf_compile.py:990(_block_unitary_4x4)
+    39188    0.085    0.000    0.149    0.000 gate.py:49(to_matrix)
+     3589    0.083    0.000    0.083    0.000 {built-in method psf_zero_core.psf_zero_core.geometric_decompose_checked}
+        2    0.080    0.040    1.569    0.784 psf_compile.py:1863(compile)
+        4    0.076    0.019    0.076    0.019 {base_run}
+       12    0.067    0.006    0.067    0.006 {built-in method converters.dag_to_circuit}
+   129293    0.067    0.000    0.067    0.000 {method 'append' of 'qiskit._accelerate.circuit.CircuitData' objects}
+      307    0.059    0.000    0.072    0.000 <frozen importlib._bootstrap_external>:755(_compile_bytecode)
+    77229    0.059    0.000    0.187    0.000 instruction.py:59(__init__)
+   287686    0.057    0.000    0.067    0.000 {built-in method _abc._abc_instancecheck}
+   129293    0.057    0.000    0.132    0.000 quantumcircuit.py:2960(_append)
+--- top 25 by cumulative ---
+         11171475 function calls (11144846 primitive calls) in 5.555 seconds
+   Ordered by: cumulative time
+   List reduced from 1770 to 25 due to restriction <25>
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000    5.555    5.555 repl_c33.py:98(run)
+      4/1    0.039    0.010    5.555    5.555 psf_compile.py:3211(compile_for_hardware)
+        1    0.000    0.000    5.552    5.552 psf_compile.py:2030(_recompile_pruned)
+    88/70    0.000    0.000    3.836    0.055 passmanager.py:453(wrapper)
+     10/8    0.000    0.000    3.835    0.479 passmanager.py:126(run)
+     10/8    0.003    0.000    3.835    0.479 passmanager.py:173(run)
+     10/8    0.001    0.000    3.832    0.479 passmanager.py:284(_run_workflow)
+     43/8    0.002    0.000    3.754    0.469 base_tasks.py:204(execute)
+  156/152    0.003    0.000    3.752    0.025 base_tasks.py:76(execute)
+        2    0.000    0.000    3.149    1.575 passmanager.py:409(run)
+    69/67    0.000    0.000    2.974    0.044 basepasses.py:162(execute)
+        2    0.116    0.058    2.261    1.131 psf_compile.py:3182(run)
+        2    0.080    0.040    1.569    0.784 psf_compile.py:1863(compile)
+    84447    0.463    0.000    1.264    0.000 quantumcircuit.py:2832(append)
+        4    0.011    0.003    1.192    0.298 psf_compile.py:1655(synthesize_many)
+     3589    0.004    0.000    1.077    0.000 psf_compile.py:1716(_finish)
+     3589    0.013    0.000    1.072    0.000 psf_compile.py:1608(_build_circuit)
+        4    0.027    0.007    0.788    0.197 collect_2q_blocks.py:39(run)
+       28    0.000    0.000    0.563    0.020 control_flow.py:52(out)
+    37582    0.112    0.000    0.559    0.000 psf_compile.py:1025(_block_saves_cx)
+     3589    0.007    0.000    0.551    0.000 psf_compile.py:1587(_entangling_core)
+    27997    0.013    0.000    0.539    0.000 psf_compile.py:1904(worth_consolidating)
+    14356    0.016    0.000    0.418    0.000 psf_compile.py:1612(local)
+    44846    0.139    0.000    0.394    0.000 quantumcircuit.py:2807(_append_standard_gate)
+       32    0.001    0.000    0.371    0.012 __init__.py:1(<module>)
+===== test_hamlib_hamiltonians_transpile[ham_tsp_prob-fl417_Ncity-16_enc-stdbinary] -- C33D warm call: 5.1472 s =====
+--- top 25 by tottime ---
+         10508571 function calls (10501393 primitive calls) in 5.147 seconds
+   Ordered by: internal time
+   List reduced from 738 to 25 due to restriction <25>
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+    84447    0.538    0.000    1.351    0.000 quantumcircuit.py:2832(append)
+       11    0.234    0.021    0.234    0.021 {optimize_1q_gates_decomposition}
+       13    0.227    0.017    0.227    0.017 {run_inverse_cancellation_standard_gates}
+  1200083    0.150    0.000    0.244    0.000 {built-in method builtins.isinstance}
+   128912    0.143    0.000    0.275    0.000 gate.py:206(broadcast_arguments)
+    44465    0.141    0.000    0.387    0.000 quantumcircuit.py:2807(_append_standard_gate)
+    75399    0.137    0.000    0.191    0.000 instruction.py:270(params)
+        2    0.117    0.059    2.087    1.043 psf_compile.py:3182(run)
+1409286/1405445    0.115    0.000    0.116    0.000 {built-in method builtins.len}
+        1    0.114    0.114    0.226    0.226 psf_compile.py:3045(_uses_failed)
+    37582    0.113    0.000    0.495    0.000 psf_compile.py:1025(_block_saves_cx)
+       13    0.110    0.008    0.110    0.008 {method 'depth' of 'qiskit._accelerate.circuit.DAGCircuit' objects}
+    80703    0.099    0.000    0.133    0.000 psf_compile.py:2935(<genexpr>)
+   251584    0.091    0.000    0.379    0.000 {built-in method builtins.any}
+    12608    0.087    0.000    0.244    0.000 psf_compile.py:990(_block_unitary_4x4)
+     3589    0.085    0.000    0.085    0.000 {built-in method psf_zero_core.psf_zero_core.geometric_decompose_checked}
+        4    0.083    0.021    0.083    0.021 {base_run}
+        2    0.081    0.040    1.474    0.737 psf_compile.py:1863(compile)
+    19713    0.078    0.000    0.078    0.000 sparse_pauli_op.py:1261(<genexpr>)
+       12    0.065    0.005    0.065    0.005 {built-in method converters.dag_to_circuit}
+     7051    0.065    0.000    0.258    0.000 quantumcircuit.py:2071(compose)
+   128912    0.063    0.000    0.063    0.000 {method 'append' of 'qiskit._accelerate.circuit.CircuitData' objects}
+       11    0.058    0.005    0.058    0.005 {any_gate_missing_from_target}
+    75394    0.057    0.000    0.267    0.000 instruction.py:59(__init__)
+   189658    0.054    0.000    0.054    0.000 {method '_qbit_argument_conversion' of 'qiskit._accelerate.circuit.CircuitData' objects}
+--- top 25 by cumulative ---
+         10508571 function calls (10501393 primitive calls) in 5.147 seconds
+   Ordered by: cumulative time
+   List reduced from 738 to 25 due to restriction <25>
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000    5.147    5.147 repl_c33.py:98(run)
+      4/1    0.037    0.009    5.147    5.147 psf_compile.py:3211(compile_for_hardware)
+        1    0.000    0.000    5.145    5.145 psf_compile.py:2030(_recompile_pruned)
+    88/70    0.000    0.000    3.663    0.052 passmanager.py:453(wrapper)
+     10/8    0.000    0.000    3.662    0.458 passmanager.py:126(run)
+     10/8    0.003    0.000    3.662    0.458 passmanager.py:173(run)
+     10/8    0.001    0.000    3.659    0.457 passmanager.py:284(_run_workflow)
+     43/8    0.002    0.000    3.586    0.448 base_tasks.py:204(execute)
+  156/152    0.003    0.000    3.584    0.024 base_tasks.py:76(execute)
+        2    0.000    0.000    2.972    1.486 passmanager.py:409(run)
+    69/67    0.000    0.000    2.873    0.043 basepasses.py:162(execute)
+        2    0.117    0.059    2.087    1.043 psf_compile.py:3182(run)
+        2    0.081    0.040    1.474    0.737 psf_compile.py:1863(compile)
+    84447    0.538    0.000    1.351    0.000 quantumcircuit.py:2832(append)
+        4    0.031    0.008    0.811    0.203 collect_2q_blocks.py:39(run)
+        4    0.012    0.003    0.798    0.199 psf_compile.py:1655(synthesize_many)
+     3589    0.004    0.000    0.680    0.000 psf_compile.py:1716(_finish)
+     3589    0.013    0.000    0.675    0.000 psf_compile.py:1608(_build_circuit)
+       28    0.000    0.000    0.631    0.023 control_flow.py:52(out)
+    37582    0.113    0.000    0.495    0.000 psf_compile.py:1025(_block_saves_cx)
+    27997    0.013    0.000    0.476    0.000 psf_compile.py:1904(worth_consolidating)
+    14356    0.017    0.000    0.415    0.000 psf_compile.py:1612(local)
+    44465    0.141    0.000    0.387    0.000 quantumcircuit.py:2807(_append_standard_gate)
+   251584    0.091    0.000    0.379    0.000 {built-in method builtins.any}
+    75389    0.051    0.000    0.325    0.000 gate.py:29(__init__)

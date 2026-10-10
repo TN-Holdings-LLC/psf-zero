@@ -1,0 +1,7 @@
+     6.35 ms  preset pass manager, level 1, map + basis (as psf_compile builds it)
+     6.36 ms  the same with an initial layout
+     3.92 ms  preset pass manager, level 2, the backend (as Qiskit's user builds it)
+    34.52 ms  c33's default call, whole (9 qubits, warm)
+    21.27 ms  Qiskit level 2, whole (the same circuit, warm)
+     0.88 ms  networkx max_weight_matching (60 nodes, 3-regular)
+     0.07 ms  rustworkx max_weight_matching (the same graph)

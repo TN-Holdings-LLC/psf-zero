@@ -1,0 +1,122 @@
+===== test_feynman_transpile[ham15-low.qasm] -- C33D cold call: 0.2714 s =====
+--- top 25 by tottime ---
+         461617 function calls (451007 primitive calls) in 0.271 seconds
+   Ordered by: internal time
+   List reduced from 1737 to 25 due to restriction <25>
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+      307    0.015    0.000    0.015    0.000 {built-in method marshal.loads}
+     1155    0.010    0.000    0.010    0.000 {built-in method posix.stat}
+     1359    0.007    0.000    0.016    0.000 backends.py:218(__new__)
+        1    0.007    0.007    0.007    0.007 {sabre_layout_and_routing}
+        2    0.006    0.003    0.020    0.010 matching.py:318(max_weight_matching)
+     1097    0.006    0.000    0.015    0.000 quantumcircuit.py:2832(append)
+    44180    0.005    0.000    0.013    0.000 {built-in method builtins.isinstance}
+ 3372/346    0.004    0.000    0.005    0.000 {built-in method _abc._abc_subclasscheck}
+6945/5673    0.004    0.000    0.006    0.000 matching.py:513(assignLabel)
+        1    0.004    0.004    0.009    0.009 psf_compile.py:3045(_uses_failed)
+        2    0.004    0.002    0.004    0.002 {base_run}
+      307    0.004    0.000    0.004    0.000 {built-in method _io.open_code}
+        1    0.004    0.004    0.004    0.004 {cancel_commutations}
+      307    0.004    0.000    0.004    0.000 {method 'read' of '_io.BufferedReader' objects}
+      496    0.004    0.000    0.005    0.000 glob.py:142(_iterdir)
+    27420    0.004    0.000    0.004    0.000 {built-in method builtins.getattr}
+    35635    0.003    0.000    0.003    0.000 {method 'get' of 'dict' objects}
+      307    0.003    0.000    0.019    0.000 <frozen importlib._bootstrap_external>:755(_compile_bytecode)
+     1284    0.003    0.000    0.009    0.000 decorators.py:763(__call__)
+        2    0.003    0.001    0.003    0.001 {vf2_layout_pass_average}
+28730/28689    0.002    0.000    0.002    0.000 {built-in method builtins.len}
+     5639    0.002    0.000    0.005    0.000 {built-in method builtins.any}
+        2    0.002    0.001    0.002    0.001 {optimize_1q_gates_decomposition}
+      324    0.002    0.000    0.012    0.000 <frozen importlib._bootstrap_external>:1597(find_spec)
+      650    0.002    0.000    0.006    0.000 <frozen importlib._bootstrap>:304(acquire)
+--- top 25 by cumulative ---
+         461617 function calls (451007 primitive calls) in 0.271 seconds
+   Ordered by: cumulative time
+   List reduced from 1737 to 25 due to restriction <25>
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       32    0.001    0.000    0.281    0.009 __init__.py:1(<module>)
+        1    0.000    0.000    0.271    0.271 repl_c33.py:98(run)
+      2/1    0.000    0.000    0.271    0.271 psf_compile.py:3211(compile_for_hardware)
+        1    0.000    0.000    0.269    0.269 psf_compile.py:2030(_recompile_pruned)
+        1    0.000    0.000    0.142    0.142 psf_smart_layout.py:543(smart_vf2_layout)
+  518/206    0.001    0.000    0.125    0.001 <frozen importlib._bootstrap>:1349(_find_and_load)
+    314/3    0.001    0.000    0.125    0.042 <frozen importlib._bootstrap>:1304(_find_and_load_unlocked)
+    309/4    0.001    0.000    0.123    0.031 <frozen importlib._bootstrap>:911(_load_unlocked)
+    307/4    0.001    0.000    0.123    0.031 <frozen importlib._bootstrap_external>:993(exec_module)
+    647/7    0.000    0.000    0.123    0.018 <frozen importlib._bootstrap>:480(_call_with_frames_removed)
+    329/6    0.002    0.000    0.123    0.020 {built-in method builtins.exec}
+        1    0.000    0.000    0.121    0.121 psf_smart_layout.py:320(_interaction_matching_size)
+    27/10    0.000    0.000    0.110    0.011 {built-in method builtins.__import__}
+  451/164    0.000    0.000    0.107    0.001 <frozen importlib._bootstrap>:1390(_handle_fromlist)
+    47/37    0.000    0.000    0.072    0.002 passmanager.py:453(wrapper)
+      6/5    0.000    0.000    0.071    0.014 passmanager.py:126(run)
+      6/5    0.000    0.000    0.071    0.014 passmanager.py:173(run)
+      6/5    0.000    0.000    0.071    0.014 passmanager.py:284(_run_workflow)
+     19/5    0.000    0.000    0.067    0.013 base_tasks.py:204(execute)
+    52/50    0.000    0.000    0.066    0.001 base_tasks.py:76(execute)
+        1    0.000    0.000    0.062    0.062 passmanager.py:409(run)
+    26/25    0.000    0.000    0.058    0.002 basepasses.py:162(execute)
+        1    0.001    0.001    0.036    0.036 psf_compile.py:3182(run)
+      307    0.002    0.000    0.035    0.000 <frozen importlib._bootstrap_external>:1066(get_code)
+        1    0.000    0.000    0.034    0.034 generate_preset_pass_manager.py:59(generate_preset_pass_manager)
+===== test_feynman_transpile[ham15-low.qasm] -- C33D warm call: 0.1700 s =====
+--- top 25 by tottime ---
+         269114 function calls (267008 primitive calls) in 0.170 seconds
+   Ordered by: internal time
+   List reduced from 696 to 25 due to restriction <25>
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        2    0.062    0.031    0.067    0.033 collect_2q_blocks.py:39(run)
+     1097    0.006    0.000    0.016    0.000 quantumcircuit.py:2832(append)
+        2    0.006    0.003    0.020    0.010 matching.py:318(max_weight_matching)
+        1    0.004    0.004    0.009    0.009 psf_compile.py:3045(_uses_failed)
+6945/5673    0.004    0.000    0.007    0.000 matching.py:513(assignLabel)
+    28627    0.003    0.000    0.006    0.000 {built-in method builtins.isinstance}
+    34540    0.003    0.000    0.003    0.000 {method 'get' of 'dict' objects}
+        1    0.003    0.003    0.003    0.003 {sabre_layout_and_routing}
+        1    0.003    0.003    0.003    0.003 {cancel_commutations}
+        2    0.002    0.001    0.002    0.001 {vf2_layout_pass_average}
+        2    0.002    0.001    0.002    0.001 {base_run}
+     5565    0.002    0.000    0.004    0.000 {built-in method builtins.any}
+    22112    0.002    0.000    0.002    0.000 {built-in method builtins.len}
+        2    0.002    0.001    0.002    0.001 {optimize_1q_gates_decomposition}
+     1209    0.002    0.000    0.006    0.000 instruction_durations.py:151(get)
+     1480    0.002    0.000    0.003    0.000 gate.py:206(broadcast_arguments)
+     3431    0.002    0.000    0.004    0.000 matching.py:508(slack)
+        1    0.001    0.001    0.022    0.022 psf_compile.py:3182(run)
+     2418    0.001    0.000    0.002    0.000 exceptions.py:93(__init__)
+     4948    0.001    0.000    0.002    0.000 quantumcircuit.py:3698(find_bit)
+     7878    0.001    0.000    0.003    0.000 psf_compile.py:3049(<genexpr>)
+     1209    0.001    0.000    0.002    0.000 instruction_durations.py:194(_get)
+      424    0.001    0.000    0.003    0.000 psf_compile.py:1025(_block_saves_cx)
+      383    0.001    0.000    0.003    0.000 quantumcircuit.py:2807(_append_standard_gate)
+     7256    0.001    0.000    0.002    0.000 {built-in method _abc._abc_instancecheck}
+--- top 25 by cumulative ---
+         269114 function calls (267008 primitive calls) in 0.170 seconds
+   Ordered by: cumulative time
+   List reduced from 696 to 25 due to restriction <25>
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000    0.170    0.170 repl_c33.py:98(run)
+      2/1    0.000    0.000    0.170    0.170 psf_compile.py:3211(compile_for_hardware)
+        1    0.000    0.000    0.168    0.168 psf_compile.py:2030(_recompile_pruned)
+    47/37    0.000    0.000    0.109    0.003 passmanager.py:453(wrapper)
+      6/5    0.000    0.000    0.108    0.022 passmanager.py:126(run)
+      6/5    0.000    0.000    0.108    0.022 passmanager.py:173(run)
+      6/5    0.000    0.000    0.108    0.022 passmanager.py:284(_run_workflow)
+     19/5    0.000    0.000    0.106    0.021 base_tasks.py:204(execute)
+    52/50    0.000    0.000    0.106    0.002 base_tasks.py:76(execute)
+        1    0.001    0.001    0.074    0.074 psf_compile.py:1863(compile)
+        2    0.062    0.031    0.067    0.033 collect_2q_blocks.py:39(run)
+        1    0.000    0.000    0.039    0.039 passmanager.py:409(run)
+    26/25    0.000    0.000    0.036    0.001 basepasses.py:162(execute)
+        1    0.001    0.001    0.022    0.022 psf_compile.py:3182(run)
+        1    0.000    0.000    0.022    0.022 psf_smart_layout.py:543(smart_vf2_layout)
+        2    0.000    0.000    0.020    0.010 <class 'networkx.utils.decorators.argmap'> compilation 10:1(argmap_max_weight_matching_5)
+        4    0.000    0.000    0.020    0.005 backends.py:541(_call_if_no_backends_installed)
+        2    0.006    0.003    0.020    0.010 matching.py:318(max_weight_matching)
+        1    0.000    0.000    0.019    0.019 psf_smart_layout.py:337(_has_feasible_matching)
+        1    0.000    0.000    0.016    0.016 generate_preset_pass_manager.py:59(generate_preset_pass_manager)
+     1097    0.006    0.000    0.016    0.000 quantumcircuit.py:2832(append)
+        1    0.004    0.004    0.009    0.009 psf_compile.py:3045(_uses_failed)
+       50    0.000    0.000    0.008    0.000 basepasses.py:49(__call__)
+        1    0.000    0.000    0.008    0.008 generate_preset_pass_manager.py:584(_parse_common_options)
+        2    0.001    0.000    0.008    0.004 target.py:783(from_configuration)

@@ -1,0 +1,122 @@
+===== test_feynman_transpile[qpt.qasm] -- C33D cold call: 0.1798 s =====
+--- top 25 by tottime ---
+         310041 function calls (300811 primitive calls) in 0.180 seconds
+   Ordered by: internal time
+   List reduced from 1552 to 25 due to restriction <25>
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+      307    0.015    0.000    0.015    0.000 {built-in method marshal.loads}
+     1155    0.009    0.000    0.009    0.000 {built-in method posix.stat}
+     1359    0.008    0.000    0.017    0.000 backends.py:218(__new__)
+        2    0.005    0.003    0.018    0.009 matching.py:318(max_weight_matching)
+6832/5576    0.004    0.000    0.006    0.000 matching.py:513(assignLabel)
+      307    0.004    0.000    0.004    0.000 {built-in method _io.open_code}
+      307    0.004    0.000    0.004    0.000 {method 'read' of '_io.BufferedReader' objects}
+     1284    0.004    0.000    0.009    0.000 decorators.py:763(__call__)
+      496    0.004    0.000    0.005    0.000 glob.py:142(_iterdir)
+  2591/87    0.003    0.000    0.004    0.000 {built-in method _abc._abc_subclasscheck}
+    34111    0.003    0.000    0.003    0.000 {method 'get' of 'dict' objects}
+    28020    0.003    0.000    0.008    0.000 {built-in method builtins.isinstance}
+    24617    0.003    0.000    0.003    0.000 {built-in method builtins.getattr}
+      164    0.002    0.000    0.004    0.000 __init__.py:347(__new__)
+      650    0.002    0.000    0.006    0.000 <frozen importlib._bootstrap>:304(acquire)
+      324    0.002    0.000    0.012    0.000 <frozen importlib._bootstrap_external>:1597(find_spec)
+    329/6    0.002    0.000    0.121    0.020 {built-in method builtins.exec}
+      163    0.002    0.000    0.004    0.000 {built-in method _io.open}
+     5017    0.002    0.000    0.002    0.000 {method 'update' of 'dict' objects}
+     1209    0.002    0.000    0.007    0.000 instruction_durations.py:151(get)
+      310    0.002    0.000    0.016    0.000 <frozen importlib._bootstrap>:1240(_find_spec)
+      307    0.002    0.000    0.032    0.000 <frozen importlib._bootstrap_external>:1066(get_code)
+2909/2899    0.002    0.000    0.002    0.000 {built-in method __new__ of type object at 0xa1ab20}
+     1959    0.002    0.000    0.002    0.000 <frozen importlib._bootstrap_external>:126(_path_join)
+     3338    0.002    0.000    0.004    0.000 matching.py:508(slack)
+--- top 25 by cumulative ---
+         310041 function calls (300811 primitive calls) in 0.180 seconds
+   Ordered by: cumulative time
+   List reduced from 1552 to 25 due to restriction <25>
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       32    0.001    0.000    0.274    0.009 __init__.py:1(<module>)
+        1    0.000    0.000    0.180    0.180 repl_c33.py:98(run)
+      2/1    0.000    0.000    0.180    0.180 psf_compile.py:3211(compile_for_hardware)
+        1    0.000    0.000    0.177    0.177 psf_compile.py:2030(_recompile_pruned)
+        1    0.000    0.000    0.137    0.137 psf_smart_layout.py:543(smart_vf2_layout)
+  518/206    0.001    0.000    0.123    0.001 <frozen importlib._bootstrap>:1349(_find_and_load)
+    314/3    0.001    0.000    0.123    0.041 <frozen importlib._bootstrap>:1304(_find_and_load_unlocked)
+    309/4    0.001    0.000    0.121    0.030 <frozen importlib._bootstrap>:911(_load_unlocked)
+    307/4    0.000    0.000    0.121    0.030 <frozen importlib._bootstrap_external>:993(exec_module)
+    647/7    0.000    0.000    0.121    0.017 <frozen importlib._bootstrap>:480(_call_with_frames_removed)
+    329/6    0.002    0.000    0.121    0.020 {built-in method builtins.exec}
+        1    0.000    0.000    0.118    0.118 psf_smart_layout.py:320(_interaction_matching_size)
+    27/10    0.000    0.000    0.107    0.011 {built-in method builtins.__import__}
+   350/63    0.000    0.000    0.104    0.002 <frozen importlib._bootstrap>:1390(_handle_fromlist)
+        1    0.000    0.000    0.032    0.032 generate_preset_pass_manager.py:59(generate_preset_pass_manager)
+      307    0.002    0.000    0.032    0.000 <frozen importlib._bootstrap_external>:1066(get_code)
+        1    0.000    0.000    0.024    0.024 level1.py:26(level_1_pass_manager)
+        2    0.000    0.000    0.022    0.011 backends.py:45(_get_backends)
+        2    0.000    0.000    0.022    0.011 __init__.py:901(entry_points)
+      162    0.000    0.000    0.021    0.000 __init__.py:910(<genexpr>)
+        1    0.000    0.000    0.018    0.018 psf_smart_layout.py:337(_has_feasible_matching)
+        2    0.000    0.000    0.018    0.009 <class 'networkx.utils.decorators.argmap'> compilation 10:1(argmap_max_weight_matching_5)
+        4    0.000    0.000    0.018    0.004 backends.py:541(_call_if_no_backends_installed)
+        2    0.005    0.003    0.018    0.009 matching.py:318(max_weight_matching)
+     1359    0.008    0.000    0.017    0.000 backends.py:218(__new__)
+===== test_feynman_transpile[qpt.qasm] -- C33D warm call: 0.0417 s =====
+--- top 25 by tottime ---
+         133329 function calls (131216 primitive calls) in 0.042 seconds
+   Ordered by: internal time
+   List reduced from 583 to 25 due to restriction <25>
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        2    0.005    0.003    0.018    0.009 matching.py:318(max_weight_matching)
+6832/5576    0.004    0.000    0.006    0.000 matching.py:513(assignLabel)
+    33064    0.003    0.000    0.003    0.000 {method 'get' of 'dict' objects}
+     1209    0.002    0.000    0.006    0.000 instruction_durations.py:151(get)
+     3338    0.002    0.000    0.004    0.000 matching.py:508(slack)
+    13918    0.001    0.000    0.003    0.000 {built-in method builtins.isinstance}
+     2418    0.001    0.000    0.002    0.000 exceptions.py:93(__init__)
+     1209    0.001    0.000    0.002    0.000 instruction_durations.py:194(_get)
+     3338    0.001    0.000    0.001    0.000 coreviews.py:81(__getitem__)
+      278    0.001    0.000    0.001    0.000 coupling.py:117(add_edge)
+        1    0.001    0.001    0.007    0.007 target.py:783(from_configuration)
+     6680    0.001    0.000    0.001    0.000 {method 'append' of 'list' objects}
+     3903    0.001    0.000    0.001    0.000 {built-in method _abc._abc_instancecheck}
+     3338    0.001    0.000    0.002    0.000 graph.py:508(__getitem__)
+     3903    0.001    0.000    0.002    0.000 <frozen abc>:117(__instancecheck__)
+        9    0.001    0.000    0.002    0.000 target.py:615(build_coupling_map)
+     3730    0.000    0.000    0.001    0.000 target.py:650(<genexpr>)
+     2010    0.000    0.000    0.001    0.000 graph.py:1343(neighbors)
+   330/10    0.000    0.000    0.000    0.000 {built-in method _abc._abc_subclasscheck}
+     4836    0.000    0.000    0.000    0.000 {method 'join' of 'str' objects}
+        1    0.000    0.000    0.001    0.001 target.py:585(_build_coupling_graph)
+      205    0.000    0.000    0.001    0.000 __init__.py:199(load)
+       44    0.000    0.000    0.001    0.000 inspect.py:2397(_signature_from_function)
+        1    0.000    0.000    0.000    0.000 {vf2_layout_pass_exact}
+      931    0.000    0.000    0.000    0.000 __init__.py:66(isinstanceint)
+--- top 25 by cumulative ---
+         133329 function calls (131216 primitive calls) in 0.042 seconds
+   Ordered by: cumulative time
+   List reduced from 583 to 25 due to restriction <25>
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000    0.042    0.042 repl_c33.py:98(run)
+      2/1    0.000    0.000    0.042    0.042 psf_compile.py:3211(compile_for_hardware)
+        1    0.000    0.000    0.040    0.040 psf_compile.py:2030(_recompile_pruned)
+        1    0.000    0.000    0.019    0.019 psf_smart_layout.py:543(smart_vf2_layout)
+        1    0.000    0.000    0.018    0.018 psf_smart_layout.py:337(_has_feasible_matching)
+        2    0.000    0.000    0.018    0.009 <class 'networkx.utils.decorators.argmap'> compilation 10:1(argmap_max_weight_matching_5)
+        4    0.000    0.000    0.018    0.004 backends.py:541(_call_if_no_backends_installed)
+        2    0.005    0.003    0.018    0.009 matching.py:318(max_weight_matching)
+        1    0.000    0.000    0.015    0.015 generate_preset_pass_manager.py:59(generate_preset_pass_manager)
+        1    0.000    0.000    0.008    0.008 generate_preset_pass_manager.py:584(_parse_common_options)
+        1    0.001    0.001    0.007    0.007 target.py:783(from_configuration)
+        1    0.000    0.000    0.007    0.007 level1.py:26(level_1_pass_manager)
+      7/6    0.000    0.000    0.007    0.001 plugin.py:259(get_passmanager_stage)
+      7/6    0.000    0.000    0.007    0.001 plugin.py:294(_build_pm)
+       44    0.000    0.000    0.006    0.000 basepasses.py:49(__call__)
+6832/5576    0.004    0.000    0.006    0.000 matching.py:513(assignLabel)
+     1209    0.002    0.000    0.006    0.000 instruction_durations.py:151(get)
+    35/31    0.000    0.000    0.005    0.000 passmanager.py:453(wrapper)
+        3    0.000    0.000    0.004    0.001 passmanager.py:126(run)
+        3    0.000    0.000    0.004    0.001 passmanager.py:173(run)
+        3    0.000    0.000    0.004    0.001 passmanager.py:284(_run_workflow)
+     3338    0.002    0.000    0.004    0.000 matching.py:508(slack)
+        1    0.000    0.000    0.003    0.003 passmanager.py:409(run)
+    13918    0.001    0.000    0.003    0.000 {built-in method builtins.isinstance}
+    33064    0.003    0.000    0.003    0.000 {method 'get' of 'dict' objects}

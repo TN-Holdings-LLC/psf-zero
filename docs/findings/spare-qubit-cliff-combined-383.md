@@ -4380,6 +4380,324 @@ files, one pytest session per file:
 
 ---
 
+<!-- ===== Addenda 429-433 (source: addenda_429_433.md) ===== -->
+
+> **Note added when merging:** 2026-10-10's exploratory work after release 2026-10-10.2: BP-REC, ESP-FT, candidates c31-c35 (changelog items 58-63, not released), where the default call's time goes, and compiling by construction. Nothing in them was pre-registered; their scripts are in `benchmarks/`, their data in `data/2026-10-10/`.
+
+## Addendum 429 -- Exploratory: BP-REC. On BP-FINAL's 106 FakeTorino tests, release 2026-10-10.2's recommended call returns release 2026-10-07.1's circuits, by value, on all 106, in 0.84 of its time (geometric mean; 0.47 on the tests of 2 s or more, about 1.05 on those under 1 s); hwb11 went from 1,208 s to 89 s (2026-10-10)
+
+**Status: exploratory, nothing predicted.** Run at home after TOQB standard run 2. Script:
+[`benchmarks/bp_rec.py`](../../benchmarks/bp_rec.py). Data: [`data/2026-10-10/bp_rec/`](../../data/2026-10-10/bp_rec/).
+
+**The run.**
+
+- **Tests:** BP-FINAL's 106 FakeTorino tests (HamLib and Feynman on FakeTorino), built as BP-FINAL builds them.
+- **Calls:** the README's recommended call of the kept release 2026-10-07.1 (R071) and of `psf_compile.py`
+  2026-10-10.2 with `psf_zero_core57` (R102).
+- **Timing:** each test and release in its own process, in an order set by a hash, 4 at a time, with the real clock;
+  one cold call each.
+- **When:** 08:09-08:36 CEST, on commit `0b7f790`, clean.
+
+| | value |
+|---|---|
+| finished | 106 of 106 for both; no failure, no invalid output, no gate on a failed element |
+| the same output by value | 106 of 106 |
+| R071's two-qubit count equal to BP-FINAL's RECR (the same release, work PC) | 103 of 105 |
+| R102 / R071 compile time | geometric mean 0.839, median 0.962; summed 2,013 s -> 567 s |
+| ... on the 28 tests where R071 took 2 s or more | 0.471 |
+| ... on the 11 tests of 1-2 s | 0.912 |
+| ... on the 67 tests under 1 s | 1.053 (0.872 on the 26 where the Rust loops ran, 1.187 on the 41 where they did not) |
+| hwb11 | 1,207.7 s -> 89.2 s (no Rust call: item 56's work) |
+| ham_BK12, ham_parity-14, ham_JW14 | 0.13, 0.27, 0.38 |
+
+**Reading.**
+
+- The release's gain is where the recommended call makes estimates, as C30-ID showed (Addendum 427).
+- On circuits under a second it gains nothing. The 1.19 on the 41 tests where no Rust loop ran is a cold, single,
+  four-at-a-time measurement. TOQB run 2 timed the same release warm and found no slowdown on its 17 FakeTorino
+  tests. It is not taken as a regression.
+
+## Addendum 430 -- Exploratory: ESP-FT. Gates on failed elements, priced as an estimated success probability. Qiskit level 2 and level 3 put gates on failed couplers in 13-25% of BP-FINAL's FakeTorino tests on FakeTorino and FakeKingston; the recommended call never did, and the default call (no Target) did most often. Where a result survives (best ESP >= 1%), the recommended call is 15-17% above level 2 and 3-7% below level 3 (2026-10-10)
+
+**Status: exploratory, nothing predicted.** Script: [`benchmarks/esp_ft.py`](../../benchmarks/esp_ft.py). Data:
+[`data/2026-10-10/esp_ft/`](../../data/2026-10-10/esp_ft/).
+
+**What was measured.** BP-FINAL's 106 FakeTorino tests were compiled on two devices:
+
+- FakeTorino (snapshot 2025-02);
+- FakeKingston (qiskit-ibm-runtime 0.49.0's newest Heron r2 snapshot, 2026-04).
+
+There were four arms, each test and arm in its own process:
+
+| arm | call |
+|---|---|
+| QK2 | Qiskit level 2 on the backend |
+| QK3 | Qiskit level 3 on the backend |
+| PSFD | release 2026-10-10.2's default call (coupling map and basis, no Target) |
+| PSFR | the same release's recommended call |
+
+**The measure.**
+
+- **ESP:** the product of (1 - error) over gates and measurements, with the errors the Target reports. There is no
+  idling term.
+- **Failed element:** one whose error is >= 0.5. An operation on an element of error 1 makes ESP 0.
+
+**Do real devices' Targets contain such couplers?**
+
+- qiskit-ibm-runtime (`utils/backend_converter.py`, `filter_faulty=True`) removes only the elements a device marks
+  non-operational.
+- In the snapshots shipped with qiskit-ibm-runtime, the failed couplers are reported with error 1 and are *not*
+  marked non-operational. So they stay in the Target that `backend.target` gives.
+
+| snapshot | date | couplers | error >= 0.5 |
+|---|---|---|---|
+| Torino | 2025-02 | 150 | 11 |
+| Marrakesh | 2025-02 | 176 | 13 |
+| Fez | 2025-02 | 176 | 7 |
+| Kingston | 2026-04 | 176 | 7 |
+| Aachen | 2026-04 | 176 | 2 |
+
+Whether the live service treats them otherwise was not checked. The Target of ibm_kingston pickled on 2026-09-28
+(Addendum 245) can answer that.
+
+**Results.**
+
+| | FakeTorino | FakeKingston |
+|---|---|---|
+| tests with operations on failed elements: QK2 / QK3 / PSFD / PSFR | 27 / 22 / 63 / 0 | 15 / 14 / 17 / 0 |
+| tests where the best arm's ESP >= 0.01 | 52 | 65 |
+| ... of them with ESP 0 (an operation on an element of error 1): QK2 / QK3 / PSFD / PSFR | 2 / 0 / 19 / 0 | 2 / 2 / 1 / 0 |
+| ... PSFR / QK2, ESP (geometric mean where both > 0) | 1.149 | 1.173 |
+| ... PSFR / QK3, ESP | 0.970 | 0.930 |
+| two-qubit count / QK2 (geometric mean): QK3 / PSFD / PSFR | 0.976 / 1.056 / 1.027 | 0.979 / 1.054 / 1.018 |
+| compile time, summed: QK2 / QK3 / PSFD / PSFR | 60 / 98 / 207 / 446 s | 63 / 108 / 219 / 438 s |
+
+**Reading.**
+
+- **Most failed-element gates fall on circuits that no compiler makes runnable.** On FakeTorino, level 3's 22 tests
+  are all ones where even PSFR's ESP is about 10^-14. Where a result survives, a failed element costs everything:
+  - mu_x and mu_y, unary encoding: QK2's ESP was 0, PSFR's 0.56 and 0.78 (FakeTorino);
+  - 4-flat100 and graph-2D-grid: QK2's and QK3's ESP were 0, PSFR's 3-4% (FakeKingston).
+- **The default call is the worst, because it is given no error information.** On FakeTorino 19 of its 52 runnable
+  outputs used a failed element. The README has said since Addenda 393 and 403 that the default call cannot avoid
+  failed couplers, and that a device user should give the call the Target. ESP-FT measures what that costs.
+- **On clean outputs, level 3 is ahead.** The recommended call needs about 5% more two-qubit gates than level 3
+  there, and the difference is in the routing.
+
+TOQB has added a notice to its runs 1 and 2 for the same reason: outputs with gates on failed elements were scored
+there. It is in the TOQB repository, `results/CONTAMINATION.md`.
+
+## Addendum 431 -- Exploratory candidates c31, c32 and c33 (changelog items 58-61): a failed element is never returned silently, the default call avoids failed elements and places by the errors whenever it has the device, and compiles once. On ESP-FT's tests the default call with the device reaches the recommended call's ESP (1.12-1.16 of Qiskit level 2's) at about half its time; not a release (2026-10-10)
+
+**Status: exploratory candidates, not released.** Each is built from the previous one by its `make_cXX.py` (exact
+substitutions) and tested by its `test_cXX.py`. The tests of c31-c35 were run again, and passed, just before this
+record was committed:
+
+- [`patches/psf_compile_c31_2026-10-10/`](../../patches/psf_compile_c31_2026-10-10/)
+- [`patches/psf_compile_c32_2026-10-10/`](../../patches/psf_compile_c32_2026-10-10/)
+- [`patches/psf_compile_c33_2026-10-10/`](../../patches/psf_compile_c33_2026-10-10/)
+
+**The items.**
+
+- **58 (c31).**
+  - `backend=` supplies the Target, and from it the map and the basis; `coupling_map` may be omitted.
+  - Without a Target, the first call warns once that failed elements cannot be avoided.
+  - A qubit whose measurement error is >= 0.5 counts as failed.
+  - After item 31's recompile on the pruned map the output is checked again. If it still uses a failed element, or
+    no placement exists, `on_failed_elements="raise"` (default) raises `FailedElementsError`. `"keep"` keeps item
+    43's warning and output.
+- **59a (c31).** `EXACT_SEEN` records the infidelities of item 39's checks. No decision changes.
+  - Why: item 39 accepts a candidate up to an infidelity of 1e-6. Dropping a Z rotation below Qiskit level 3's
+    cutoff (1.26e-4, Addendum 247) changes the infidelity by at most 4e-9. So the recommended call can accept level
+    3's inexact output. Tightening the tolerance needs the recorded values first.
+- **60 (c32).** `placement_refine` is "auto": on whenever a Target is given.
+- **61 (c33).** With a Target that reports failed elements, the circuit is compiled once, on the pruned map, instead
+  of compiled and then recompiled.
+
+**Measurements.** Scripts in [`benchmarks/`](../../benchmarks/); data in [`data/2026-10-10/`](../../data/2026-10-10/).
+All are on ESP-FT's tests and devices, each test and arm in its own process.
+
+- **ESP-C31** ([`esp_c31.py`](../../benchmarks/esp_c31.py), [`esp_c31/`](../../data/2026-10-10/esp_c31/)):
+  - c31's default call with `backend=` used no failed element and raised on no test.
+  - Its two-qubit counts equal the release's default call given `target=` on 106 of 106 tests on each device.
+  - Its ESP on runnable tests was 0.66 (FakeTorino) and 0.84 (FakeKingston) of QK2's: it avoided failed elements but
+    ignored the errors of the rest.
+- **ESP-C32** ([`esp_c32.py`](../../benchmarks/esp_c32.py), [`esp_c32/`](../../data/2026-10-10/esp_c32/)):
+  - c32's default call reached ESP 1.122 (FakeTorino) and 1.161 (FakeKingston) of QK2's.
+  - That is 0.977 and 0.990 of the release's recommended call's, and 0.948 and 0.921 of level 3's.
+  - It took 240 s and 241 s summed, against the recommended call's 446 s and 438 s.
+  - It used no failed element.
+- **REPL-C33** ([`repl_c33.py`](../../benchmarks/repl_c33.py), [`repl_c33/`](../../data/2026-10-10/repl_c33/)):
+  - Each arm (QK2, c32's default call, c33's) was called twice in its process, cold and warm.
+  - Five expectations were stated in the session before the results were seen (13:01 CEST; not committed), and each
+    held:
+
+  | expectation | result |
+  |---|---|
+  | no failed element | none |
+  | FakeTorino summed cold time at least 10% below c32's | 256 -> 218 s (-15%) |
+  | FakeKingston within 10% of c32's | 257 -> 249 s (-3%) |
+  | still at least twice QK2's | 3.5x and 3.1x |
+  | ESP within 0.9-1.1 of c32's | 1.019 and 0.969 |
+
+  - c33's output differed from c32's on about 58% of the tests, with 1% more two-qubit gates. The pruned map
+    narrows the routing.
+  - Qiskit level 2's own first call was slow too. On small tests the medians were 0.076 s cold and 0.039 s warm
+    (FakeTorino), and 0.251 s and 0.044 s (FakeKingston).
+
+## Addendum 432 -- Exploratory: where the default call's time goes, and candidates c34 and c35 (items 62-63). A profiler had inflated the cost of building Qiskit's pass manager tenfold (60 ms against 6.4 ms measured); timers around the stages put half of the time in PSF-Zero's own steps (the SWAP absorption 30%, the compression 16-22%). Both steps pay for themselves (without them 10-11% more two-qubit gates); done by Qiskit's Rust decomposer the absorption gives the same counts 11% faster; rustworkx instead of networkx halves the small circuits' first call (2026-10-10)
+
+**Status: exploratory, nothing predicted; candidates, not released.**
+
+**1. The profile, and why it misled.** cProfile of c33's default call ([`repl_c33.py`](../../benchmarks/repl_c33.py)
+`profile`; [`repl_c33_profile/`](../../data/2026-10-10/repl_c33_profile/)) put 36% of a small circuit's time in
+building Qiskit's pass manager. The profiler inflates small Python calls, and timing without it showed the inflation
+([`microbench.py`](../../benchmarks/microbench.py); [`microbench.txt`](../../data/2026-10-10/microbench.txt), medians of 15):
+
+| | time |
+|---|---|
+| preset pass manager, level 1, from map and basis (as psf_compile builds it) | 6.35 ms |
+| preset pass manager, level 2, from the backend | 3.92 ms |
+| c33's default call, a 9-qubit circuit, warm | 34.52 ms |
+| Qiskit level 2, the same circuit, warm | 21.27 ms |
+| max_weight_matching, 60 nodes: networkx / rustworkx | 0.88 / 0.07 ms |
+
+**2. Timers around the stages.** STAGETIME ([`stagetime.py`](../../benchmarks/stagetime.py);
+[`stagetime/`](../../data/2026-10-10/stagetime/)) changed nothing in the compiler: it wrapped its stages in the
+module's namespace. It ran on the 106 FakeTorino tests, one process each.
+
+| share of c33's time | small tests, warm | small, cold | large tests, warm |
+|---|---|---|---|
+| SWAP absorption and re-synthesis (item 30, inside Qiskit's pass manager run) | 29.5% | 23.7% | 30.1% |
+| compression (`compile`) | 21.6% | 16.1% | 15.8% |
+| the rest of Qiskit's pass manager run (layout, routing, translation) | about 24% | about 18% | about 44% |
+| VF2PostLayout (item 33) | 6.2% | 4.0% | 0.3% |
+| layout search (`smart_vf2_layout`) | 4.8% | 22.7% | 0.1% |
+| building the pass manager | 3.7% | 6.9% | 0.2% |
+| `_uses_failed` | 3.9% | 2.9% | 4.6% |
+| per test, median: c33 / QK2 warm | 116 / 41 ms | 261 ms / - | 3.7 / 0.65 s |
+
+- On the 94 small tests, Qiskit's own share inside the call took 7.2 s summed, against Qiskit level 2's whole call at
+  7.5 s. The rest is PSF-Zero's own steps.
+- The layout search's cold cost (95 ms median, 11 ms warm) is networkx's import.
+
+**3. The candidates.**
+
+- **c34, item 62** ([`patches/psf_compile_c34_2026-10-10/`](../../patches/psf_compile_c34_2026-10-10/)):
+  - `_uses_failed` reads qubit indices from a table.
+  - `psf_smart_layout`'s two matching-size checks use rustworkx. The size of a maximum matching does not depend on
+    the algorithm. The third use, `short_path_layout`, needs networkx's particular matching and keeps it.
+  - Two switches for measurement: `ABSORB_SYNTH` ("psf" or "qiskit") and `COMPRESS`.
+- **c35, item 63** ([`patches/psf_compile_c35_2026-10-10/`](../../patches/psf_compile_c35_2026-10-10/)):
+  `ABSORB_SYNTH="qiskit"` is the default. The absorbed blocks are synthesised by Qiskit's `TwoQubitBasisDecomposer`
+  on CX, which is exact and gives the same CX count for a two-qubit unitary.
+- Both are tested by their `test_c34.py` and `test_c35.py`. c35's measurement is ABLATE-C34's arm with
+  `ABSORB_SYNTH="qiskit"`, the same code path.
+
+**4. ABLATE-C34** ([`ablate_c34.py`](../../benchmarks/ablate_c34.py); [`ablate_c34/`](../../data/2026-10-10/ablate_c34/);
+106 FakeTorino tests on FakeTorino, cold and warm calls):
+
+| arm | cold, summed | small tests, median cold / warm | two-qubit / c33 | ESP / c33 (runnable, 52) | same output as c33 |
+|---|---|---|---|---|---|
+| c33 | 223 s | 221 / 82 ms | 1.000 | 1.000 | - |
+| c34, defaults | 207 s | 111 / 66 ms | 1.000 | 1.000 | 106 of 106 |
+| c34, `ABSORB_SYNTH="qiskit"` (= c35) | 184 s | 101 / 60 ms | 1.000 | 1.005 | 15 of 106 |
+| c34, no SWAP absorption | 126 s | 86 / 53 ms | 1.100 | 0.918 | 15 of 106 |
+| c34, no compression | 175 s | 96 / 64 ms | 1.112 | 0.956 | 37 of 106 |
+
+For scale, ESP-FT's Qiskit level 2 took 60 s summed on the same tests, one cold call each.
+
+**Reading.**
+
+- **The time was in PSF-Zero's own work, and the work is worth keeping.** Without the absorption the outputs need 10%
+  more two-qubit gates; without the compression, 11%.
+- **What could be replaced was its implementation.** Qiskit's Rust decomposer for the absorbed blocks gives the same
+  counts. rustworkx for the matching sizes gives the same outputs.
+- **Two figures to state side by side.**
+  - The small circuits' first call halved, and the default call is 18% faster than c33.
+  - It is still about three times Qiskit level 2's time, and its two-qubit count is 1.106 times level 3's
+    (FakeTorino).
+
+## Addendum 433 -- Exploratory: compiling by construction instead of by search, for HamLib. A line swap network applied to no test (one fixable fault). Steiner-tree synthesis directly on the device, term by term with no routing step, is exact (23 of 23 checked) and uses no failed element, but needs more two-qubit gates than Qiskit level 3 on 64-65 of 67 tests, about twice as many (geometric mean); it is level with or below level 3 only on some of the largest dense Hamiltonians (BK22 on both devices, JW24 on FakeKingston) (2026-10-10)
+
+**Status: exploratory, nothing predicted.**
+
+**The question.** PSF-Zero computes where a closed form exists (two-qubit synthesis) and leaves routing, which has
+none in general, to Qiskit's search. Can a construction replace the routing search for circuits whose structure is
+known? Two constructions were tried on BP-FINAL's 67 HamLib FakeTorino tests, on FakeTorino and FakeKingston.
+
+**1. SWAPNET** ([`swapnet.py`](../../benchmarks/swapnet.py); [`swapnet/`](../../data/2026-10-10/swapnet/)). A
+Hamiltonian with Z and ZZ terms only is routed by Qiskit's `Commuting2qGateRouter` with a line swap strategy on a path
+of working qubits.
+
+- 188 of the 268 jobs had X or Y terms, and 56 had Z terms of weight above 2.
+- For 8, no path of 100-112 working qubits was found.
+- The 5 eligible tests (16 jobs) failed: Qiskit's router takes two-qubit terms only, and the single-qubit Z terms were
+  passed to it.
+- [`swapnet2.py`](../../benchmarks/swapnet2.py) fixes this (single-qubit terms as Rz before the network) and was not
+  run. At most 5 of 67 tests are eligible.
+
+**2. STEINER** ([`steiner.py`](../../benchmarks/steiner.py), [`steiner2.py`](../../benchmarks/steiner2.py),
+[`steiner3.py`](../../benchmarks/steiner3.py); [`steiner3/`](../../data/2026-10-10/steiner3/)).
+
+*The construction.*
+
+- The placement is computed once per circuit: greedy, from the terms' co-occurrence and the hop distances on the
+  working couplers, with four starts.
+- Each term exp(-i t c P), in the given order, is built in four steps:
+  - a basis change;
+  - a CNOT tree along an approximate Steiner tree of the device's working graph, collecting the term's parity onto
+    one of its qubits (a tree qubit outside the term is added to its parent once more, so that it cancels);
+  - Rz(2 t c) on that qubit;
+  - the tree and the basis change undone.
+- Qiskit level 1 with the trivial layout and no routing translates the result.
+
+*Checks.*
+
+- The construction was checked first without Qiskit, on 40 random term sets with a NumPy simulator: all exact.
+- On the tests with at most 12 logical qubits and 20 touched qubits, the output state from a random product input
+  is compared with the reference's.
+
+*Two faults of the check itself.*
+
+- STEINER's check compared with Statevector of the PauliEvolutionGate, which is the exact exponential. No product
+  formula equals it, so overlaps of 0.9993 and 0.0093 appeared.
+- STEINER2's calibration made the same comparison through Operator, so no reading matched.
+- STEINER3 compares with the gate's definition: the first-order product formula, which Qiskit's transpiler compiles.
+  The terms' given order and 2 t c then match.
+
+**Results (STEINER3).**
+
+| | FakeTorino | FakeKingston |
+|---|---|---|
+| exact, of those checked | 23 of 23 (44 too large to check) | 23 of 23 |
+| operations on failed elements | 0 | 0 |
+| two-qubit count / QK3 (geometric mean, +1) | 2.057 (fewer on 2 of 67) | 1.936 (fewer on 3) |
+| two-qubit count / QK2 | 1.987 | 1.868 |
+| ESP / QK3, runnable tests | 0.575 (23 tests) | 0.186 (33 tests) |
+| time summed / QK3's | 79.7 / 50.8 s | 71.1 / 66.0 s |
+
+| test | STEINER3 | QK2 | QK3 | PSFR |
+|---|---|---|---|---|
+| ham_BK22 (22 qubits, 5,466 terms), FakeTorino | 112,148 | 138,536 | 112,608 | 134,458 |
+| ham_JW24 (24 qubits, 6,509 terms), FakeTorino | 141,378 | 191,950 | 124,642 | 211,033 |
+| ham_BK22, FakeKingston | 112,148 | 131,161 | 115,495 | 135,917 |
+| ham_JW24, FakeKingston | 115,630 | 189,813 | 118,553 | 207,548 |
+| ham_enc_unary_dvalues_4-4-4 (12 qubits, 1,789 terms), FakeTorino | 25,970 | 12,015 | 10,344 | 11,414 |
+
+**Reading.**
+
+- **Built term by term, the construction loses about a factor of two.** Each term builds and dismantles its own tree,
+  so consecutive terms share no CNOTs. Qiskit's synthesis and its cancellation do share them.
+- **On the largest dense Hamiltonians it is level with level 3, or below it, and well below level 2 and PSF-Zero.**
+  There the routing search has to insert many SWAPs anyway.
+- **A construction that shares CNOTs between consecutive terms is the direction this points to.** Ordering the terms
+  and sharing their trees, as in the Pauli-network literature, is a research track, not a fix.
+- **What it shows about the question.** Replacing search by construction is not a win by itself. The construction
+  has to do the work the search's neighbours did: sharing and cancelling CNOTs between terms.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

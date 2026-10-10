@@ -1,0 +1,122 @@
+===== test_hamlib_hamiltonians_transpile[ham_mu_z_prime_enc_gray_dvalues_4-4-4-4] -- C33D cold call: 0.0573 s =====
+--- top 25 by tottime ---
+         89207 function calls (84660 primitive calls) in 0.057 seconds
+   Ordered by: internal time
+   List reduced from 1023 to 25 due to restriction <25>
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.004    0.004    0.004    0.004 {vf2_layout_pass_exact}
+      496    0.004    0.000    0.006    0.000 glob.py:142(_iterdir)
+ 2160/171    0.002    0.000    0.003    0.000 {built-in method _abc._abc_subclasscheck}
+        2    0.002    0.001    0.002    0.001 {optimize_1q_gates_decomposition}
+       22    0.002    0.000    0.002    0.000 {built-in method posix.scandir}
+     1209    0.002    0.000    0.006    0.000 instruction_durations.py:151(get)
+     2418    0.001    0.000    0.002    0.000 exceptions.py:93(__init__)
+     9973    0.001    0.000    0.006    0.000 {built-in method builtins.isinstance}
+     1209    0.001    0.000    0.002    0.000 instruction_durations.py:194(_get)
+      112    0.001    0.000    0.001    0.000 {built-in method posix.stat}
+       17    0.001    0.000    0.001    0.000 {built-in method marshal.loads}
+      278    0.001    0.000    0.001    0.000 coupling.py:117(add_edge)
+        2    0.001    0.000    0.001    0.001 target.py:585(_build_coupling_graph)
+        2    0.001    0.000    0.008    0.004 target.py:783(from_configuration)
+     4162    0.001    0.000    0.004    0.000 {built-in method _abc._abc_instancecheck}
+        9    0.001    0.000    0.003    0.000 target.py:615(build_coupling_map)
+     4162    0.001    0.000    0.004    0.000 <frozen abc>:117(__instancecheck__)
+        2    0.001    0.000    0.001    0.000 {base_run}
+     3730    0.001    0.000    0.001    0.000 target.py:650(<genexpr>)
+      119    0.000    0.000    0.001    0.000 {built-in method __new__ of type object at 0xa1ab20}
+7737/7716    0.000    0.000    0.000    0.000 {built-in method builtins.len}
+        1    0.000    0.000    0.000    0.000 {cancel_commutations}
+        1    0.000    0.000    0.000    0.000 commutative_cancellation.py:44(__init__)
+     3428    0.000    0.000    0.000    0.000 {method 'get' of 'dict' objects}
+        3    0.000    0.000    0.001    0.000 psf_compile.py:1437(_reconstruct_batch)
+--- top 25 by cumulative ---
+         89207 function calls (84660 primitive calls) in 0.057 seconds
+   Ordered by: cumulative time
+   List reduced from 1023 to 25 due to restriction <25>
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000    0.057    0.057 repl_c33.py:98(run)
+      2/1    0.000    0.000    0.057    0.057 psf_compile.py:3211(compile_for_hardware)
+        1    0.000    0.000    0.055    0.055 psf_compile.py:2030(_recompile_pruned)
+        1    0.000    0.000    0.031    0.031 generate_preset_pass_manager.py:59(generate_preset_pass_manager)
+        1    0.000    0.000    0.023    0.023 level1.py:26(level_1_pass_manager)
+       15    0.000    0.000    0.016    0.001 extension.py:169(__init__)
+       15    0.000    0.000    0.016    0.001 extension.py:290(_load_plugins)
+    41/35    0.000    0.000    0.014    0.000 passmanager.py:453(wrapper)
+        2    0.000    0.000    0.014    0.007 plugin.py:238(__init__)
+        5    0.000    0.000    0.014    0.003 passmanager.py:126(run)
+        5    0.000    0.000    0.013    0.003 passmanager.py:173(run)
+        5    0.000    0.000    0.013    0.003 passmanager.py:284(_run_workflow)
+        1    0.000    0.000    0.011    0.011 passmanager.py:409(run)
+     17/5    0.000    0.000    0.011    0.002 base_tasks.py:204(execute)
+       46    0.000    0.000    0.011    0.000 base_tasks.py:76(execute)
+       15    0.000    0.000    0.009    0.001 extension.py:275(list_entry_points)
+        7    0.000    0.000    0.009    0.001 _cache.py:186(get_group_all)
+        7    0.000    0.000    0.009    0.001 _cache.py:158(_get_data_for_path)
+        1    0.000    0.000    0.009    0.009 _cache.py:75(_hash_settings_for_path)
+       46    0.000    0.000    0.009    0.000 basepasses.py:49(__call__)
+      7/6    0.000    0.000    0.009    0.001 plugin.py:259(get_passmanager_stage)
+      7/6    0.000    0.000    0.009    0.001 plugin.py:294(_build_pm)
+        1    0.000    0.000    0.008    0.008 generate_preset_pass_manager.py:584(_parse_common_options)
+        2    0.001    0.000    0.008    0.004 target.py:783(from_configuration)
+   149/45    0.000    0.000    0.008    0.000 glob.py:60(_iglob)
+===== test_hamlib_hamiltonians_transpile[ham_mu_z_prime_enc_gray_dvalues_4-4-4-4] -- C33D warm call: 0.0334 s =====
+--- top 25 by tottime ---
+         61790 function calls (61578 primitive calls) in 0.033 seconds
+   Ordered by: internal time
+   List reduced from 663 to 25 due to restriction <25>
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.004    0.004    0.004    0.004 {vf2_layout_pass_exact}
+        2    0.002    0.001    0.002    0.001 {optimize_1q_gates_decomposition}
+     1209    0.002    0.000    0.006    0.000 instruction_durations.py:151(get)
+     2418    0.001    0.000    0.002    0.000 exceptions.py:93(__init__)
+     1209    0.001    0.000    0.002    0.000 instruction_durations.py:194(_get)
+     8676    0.001    0.000    0.002    0.000 {built-in method builtins.isinstance}
+      278    0.001    0.000    0.001    0.000 coupling.py:117(add_edge)
+        2    0.001    0.000    0.008    0.004 target.py:783(from_configuration)
+        1    0.001    0.001    0.001    0.001 {cancel_commutations}
+        9    0.001    0.000    0.002    0.000 target.py:615(build_coupling_map)
+     3905    0.001    0.000    0.001    0.000 {built-in method _abc._abc_instancecheck}
+     3905    0.001    0.000    0.001    0.000 <frozen abc>:117(__instancecheck__)
+     3730    0.001    0.000    0.001    0.000 target.py:650(<genexpr>)
+     4844    0.000    0.000    0.000    0.000 {method 'join' of 'str' objects}
+       46    0.000    0.000    0.001    0.000 inspect.py:2397(_signature_from_function)
+        1    0.000    0.000    0.000    0.000 commutative_cancellation.py:44(__init__)
+     3325    0.000    0.000    0.000    0.000 {method 'get' of 'dict' objects}
+      205    0.000    0.000    0.001    0.000 __init__.py:199(load)
+        2    0.000    0.000    0.000    0.000 {base_run}
+        1    0.000    0.000    0.000    0.000 {max_weight_matching}
+      931    0.000    0.000    0.000    0.000 __init__.py:66(isinstanceint)
+        1    0.000    0.000    0.001    0.001 target.py:585(_build_coupling_graph)
+       46    0.000    0.000    0.000    0.000 inspect.py:3133(_bind)
+5598/5588    0.000    0.000    0.000    0.000 {built-in method builtins.len}
+      138    0.000    0.000    0.001    0.000 {built-in method builtins.any}
+--- top 25 by cumulative ---
+         61790 function calls (61578 primitive calls) in 0.033 seconds
+   Ordered by: cumulative time
+   List reduced from 663 to 25 due to restriction <25>
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000    0.033    0.033 repl_c33.py:98(run)
+      2/1    0.000    0.000    0.033    0.033 psf_compile.py:3211(compile_for_hardware)
+        1    0.000    0.000    0.031    0.031 psf_compile.py:2030(_recompile_pruned)
+        1    0.000    0.000    0.015    0.015 generate_preset_pass_manager.py:59(generate_preset_pass_manager)
+    41/35    0.000    0.000    0.011    0.000 passmanager.py:453(wrapper)
+        5    0.000    0.000    0.011    0.002 passmanager.py:126(run)
+        5    0.000    0.000    0.011    0.002 passmanager.py:173(run)
+        5    0.000    0.000    0.011    0.002 passmanager.py:284(_run_workflow)
+     17/5    0.000    0.000    0.010    0.002 base_tasks.py:204(execute)
+       46    0.000    0.000    0.010    0.000 base_tasks.py:76(execute)
+        1    0.000    0.000    0.009    0.009 passmanager.py:409(run)
+        2    0.001    0.000    0.008    0.004 target.py:783(from_configuration)
+        1    0.000    0.000    0.008    0.008 generate_preset_pass_manager.py:584(_parse_common_options)
+       46    0.000    0.000    0.008    0.000 basepasses.py:49(__call__)
+        1    0.000    0.000    0.007    0.007 level1.py:26(level_1_pass_manager)
+      7/6    0.000    0.000    0.007    0.001 plugin.py:259(get_passmanager_stage)
+      7/6    0.000    0.000    0.007    0.001 plugin.py:294(_build_pm)
+     1209    0.002    0.000    0.006    0.000 instruction_durations.py:151(get)
+        1    0.000    0.000    0.005    0.005 vf2_post_layout.py:128(run)
+       24    0.000    0.000    0.005    0.000 basepasses.py:162(execute)
+        1    0.004    0.004    0.004    0.004 {vf2_layout_pass_exact}
+        8    0.000    0.000    0.003    0.000 control_flow.py:52(out)
+       46    0.000    0.000    0.002    0.000 basepasses.py:54(_freeze_init_parameters)
+        1    0.000    0.000    0.002    0.002 psf_compile.py:1863(compile)
+        1    0.000    0.000    0.002    0.002 builtin_plugins.py:523(pass_manager)
