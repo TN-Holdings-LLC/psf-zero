@@ -9,18 +9,40 @@ from this folder. The full record behind each entry is in Parts 9 and 10 of the 
 the earlier parts they link to. The README itself, as it was before the move, is kept as
 [`README_2026-10-05_before_restructure.md`](README_2026-10-05_before_restructure.md).
 
-> **In brief (as of 2026-10-08)**
+> **In brief (as of 2026-10-10)**
 >
-> 1. Release 2026-10-07.1 is about level with Qiskit level 2 on general circuits: 1.046 times its two-qubit gates on
+> 1. Release 2026-10-10.1 (items 53 and 56) returns 2026-10-07.1's circuits wherever 2026-10-07.1 repeats itself,
+>    and skips estimates that could never change the result (C29-ID, Addenda 422-424). The figures below were
+>    measured with 2026-10-07.1; its default call is unchanged.
+> 2. Release 2026-10-07.1 is about level with Qiskit level 2 on general circuits: 1.046 times its two-qubit gates on
 >    880 Benchpress tests not used during development (BP-FINAL, Addenda 407-408), at about 3.5 times its compile time.
-> 2. On a device that reports failed couplers, pass `target`. The default call does not read it, and in BP-FINAL it
+> 3. On a device that reports failed couplers, pass `target`. The default call does not read it, and in BP-FINAL it
 >    placed gates on failed elements in 62 of 105 FakeTorino tests; the recommended call in none.
-> 3. With a fresh calibration the recommended call keeps a small lead over the guarded call; with a stale one the lead
+> 4. With a fresh calibration the recommended call keeps a small lead over the guarded call; with a stale one the lead
 >    depends on the data (CALSPLIT, MARGIN; Addenda 402-406).
-> 4. Candidate c24 (item 51, a 5% switching margin) was tested and is not recommended (Addendum 406).
-> 5. The device layer has been tested only in noisy simulation on fake devices, not on hardware.
+> 5. Candidate c24 (item 51, a 5% switching margin) was tested and is not recommended (Addendum 406).
+> 6. The device layer has been tested only in noisy simulation on fake devices, not on hardware.
 
-> **Current version (2026-10-07, first release): `psf_compile.py` 2026-10-07.1 and the AI front end a12, with
+> **Current version (2026-10-10, first release): `psf_compile.py` 2026-10-10.1 and the AI front end a12, with
+> `psf_smart_layout` 2026-10-01.1 and the Rust core `CORE_VERSION` 2026-09-29.1 (all three unchanged)**
+> ([Part 10](findings/spare-qubit-cliff-combined-383.md), Addenda 413-424). The file is candidate c29
+> ([`patches/psf_compile_c29_2026-10-10/`](../patches/psf_compile_c29_2026-10-10/)) with its version lines changed;
+> 2026-10-07.1 is kept as [`patches/psf_compile_release_2026-10-07.1/`](../patches/psf_compile_release_2026-10-07.1/).
+>
+> - **Item 53 (c26; C26-ID, Addenda 413-414):** the recommended call's estimates and checks keep standard gates'
+>   matrices and embed one-qubit gates without `np.kron`. 3,300 of 3,300 values identical to 2026-10-07.1's.
+> - **Item 56 (c29; C29-ID, Addenda 422-423):** the recommended call no longer builds or estimates a candidate whose
+>   exactness check cannot be made (more than 200,000 instructions, or more than 16 qubits involved), decided from
+>   counts; such a candidate could never be chosen. On the 152 development tests, 2026-10-07.1's output by value on
+>   183 of 183 test-calls where 2026-10-07.1 repeats itself, no new failure; `hwb10` (recommended) in 82 s, where
+>   2026-10-07.1 took 852 s alone and did not finish in 3,600 s beside three other jobs.
+> - **Time:** about 2% less for the recommended call on the development tests (item 53); much less only where item
+>   56 acts, on circuits too large to check. The slow development tests whose checks can be made (JW-14, enc_gray,
+>   JW-10, parity10) are not helped; item 57b (candidate c30) is for them.
+> - **Not changed:** the default call, the AI front end, the layout search, the core. Not established: identity where
+>   2026-10-07.1 does not repeat itself (bv_n140, bv_n30), and with the layout search's real clock (Addendum 424).
+
+> **Previous release (2026-10-07, first release): `psf_compile.py` 2026-10-07.1 and the AI front end a12, with
 > `psf_smart_layout` 2026-10-01.1 and the Rust core `CORE_VERSION` 2026-09-29.1 (all three unchanged)**
 > ([Part 10](findings/spare-qubit-cliff-combined-383.md), Addenda 383-397). The file is candidate c23
 > ([`patches/psf_compile_c23_2026-10-07/`](../patches/psf_compile_c23_2026-10-07/)) with its version lines changed.

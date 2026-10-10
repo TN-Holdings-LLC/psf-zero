@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-10-10.1 -- release, adopted on 2026-10-10 from candidate 2026-10-10.c29 of Addendum 422 (previous release: 2026-10-07.1)
+VERSION: 2026-10-07.1 -- release, adopted on 2026-10-07 from candidate 2026-10-07.c23 of Addendum 394 (previous release: 2026-10-06.4)
 
 Where to look for what
 ----------------------
@@ -796,39 +796,6 @@ adopted on 2026-10-06 after their pre-registered evaluations RECR and KRAUS, Add
     The pass is exact (it removes or merges only gates whose product is the identity or a single rotation), so both
     results implement the input. Where it removes no two-qubit gate the output is 2026-10-07.c22's; where it removes
     some, the output has no more two-qubit gates than 2026-10-07.c22's would have, for twice the pipeline's time.
-53. **SPEED: gate matrices are kept, and one-qubit gates are embedded without np.kron (candidate 2026-10-09.c26).**
-    (Items 51 and 52 are candidates 2026-10-07.c24 and 2026-10-09.c25, not adopted; Addenda 406, 410-412.) The
-    recommended call's estimates and exactness checks build a matrix for every instruction they read. In the profile
-    of 2026-10-09 (rec_profile.py, 30 FakeTorino development tests), `_embed_1q` took 8.9% of the time and `_ops_of`
-    7.6%. Now:
-    - `_gate_matrix` keeps the matrix of a standard gate with numeric parameters, keyed by (name, parameters), for the
-      last 4,096 keys, read-only; any other instruction is built as before;
-    - `_embed_1q` returns the matrix itself on one qubit, and on two qubits forms the Kronecker product's products as
-      one broadcast multiplication.
-    The values are the same (the same products of the same numbers; at most the sign of a zero can differ, which
-    changes no sum or product that is read), so every estimate and check returns what it returned. Nothing else
-    changes.
-56. **SPEED: no estimate for a candidate that cannot be checked (candidate 2026-10-10.c29).** A candidate circuit
-    (re-synthesis, the floor-aware compile, Qiskit level 3's) replaces the release's circuit only if item 39's
-    exactness check passes, and that check cannot be made -- it returns False -- when `_ops_of` gives up on a circuit
-    (more than EXACT_MAX_OPS matrices, item 44) or more than RESYNTH_MAX_QUBITS qubits are involved (items 44-45).
-    On hwb10 the release spent 819 s on estimates whose candidates could never pass that check (Addendum 420). Now,
-    before a candidate is built or estimated, counts made without any matrix decide whether its check certainly
-    cannot be made, and if so it is neither built nor estimated and the circuit in hand is kept:
-    - `_n_narrow`: the instructions `_ops_of` turns into one matrix each (not barrier, measure or delay, and on at
-      most EXACT_MAX_GATE_QUBITS qubits). Each of them adds one entry to its list or makes it give up, so more than
-      EXACT_MAX_OPS of them means it gives up;
-    - `_narrow_touched`: their qubits, which are all among the qubits of `_ops_of`'s list;
-    - `_cannot_implement(qc, out)`: True only where `_implements(qc, out)` would return False;
-    - used in `_choose_lazy` (a candidate that can never pass is dropped before the estimates), `_compare_level3`
-      (level 3's circuit is not estimated), `_checkable_logical` (the floor-aware and level-3 compiles are not made
-      when the input itself cannot be checked) and `_resynthesise` (the re-synthesis is not built when the circuit
-      cannot be checked).
-    Wherever the release returns a circuit, this returns the same circuit: every path the release takes from those
-    points returns the circuit in hand. Where the skipped work would have raised, this returns the circuit in hand
-    instead. Counters differ (FEASIBILITY_STATS counts the skips). Exploratory candidate 2026-10-09.c28 (Addendum 421)
-    counted every instruction and qubit, including those of instructions `_ops_of` expands through their
-    definitions, which can count more than `_ops_of` sees; these counts cannot.
 """
 from __future__ import annotations
 
@@ -867,7 +834,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-10-10.1"  # release (from candidate 2026-10-10.c29 of Addendum 422): 2026-10-07.1 + items 53 and 56 (gate matrices kept; no estimate for a candidate that cannot be checked)
+VERSION = "2026-10-07.1"  # release (from candidate 2026-10-07.c23 of Addendum 394): 2026-10-06.4 + items 46-50 (fused matrices and ties, lazy checks, 2x2 reduced states, wide instructions expanded, commutative cancellation)
 __version__ = VERSION
 
 # Changelog item 27: the version string of the loaded Rust core, for logs.
@@ -2000,7 +1967,7 @@ def excitation_cost(circ, target):
     for op, q in ops:
         props = target[op.name].get(q, None) if op.name in target.operation_names else None
         try:
-            mat = _gate_matrix(op)
+            mat = np.asarray(op.to_matrix(), dtype=complex)
         except Exception:
             return None
         if props is not None and props.error is not None:
@@ -2064,45 +2031,6 @@ def _touched_qubits(circ):
     return {circ.find_bit(b).index for ins in circ.data if ins.operation.name not in _EXACT_SKIP for b in ins.qubits}
 
 
-FEASIBILITY_STATS = {"candidate": 0, "level3": 0, "input": 0, "resynthesis": 0}  # item 56: what was skipped
-
-
-def _narrow(ins):
-    """Item 56: True for an instruction `_ops_of` turns into one matrix (or gives up on)."""
-    return ins.operation.name not in _EXACT_SKIP and ins.operation.num_qubits <= EXACT_MAX_GATE_QUBITS
-
-
-def _n_narrow(circ):
-    """Item 56: the instructions `_ops_of` turns into one matrix each. Each adds one entry to its list or makes it
-    give up, and it gives up rather than hold more than EXACT_MAX_OPS: so if this exceeds EXACT_MAX_OPS,
-    `_ops_of(circ)` is None."""
-    return sum(1 for ins in circ.data if _narrow(ins))
-
-
-def _narrow_touched(circ):
-    """Item 56: the qubits of the instructions `_n_narrow` counts: all among the qubits of `_ops_of(circ)`'s list
-    when it is not None (`_fuse_ops` keeps every qubit)."""
-    return {circ.find_bit(b).index for ins in circ.data if _narrow(ins) for b in ins.qubits}
-
-
-def _cannot_implement(qc, out):
-    """Item 56: True only if `_implements(qc, out)` would return False, decided from counts, without a matrix. False
-    whenever that is not certain, including when a count raises."""
-    try:
-        n = qc.num_qubits
-        if n > RESYNTH_MAX_QUBITS or _n_narrow(qc) > EXACT_MAX_OPS or _n_narrow(out) > EXACT_MAX_OPS:
-            return True
-        lay = getattr(out, "layout", None)
-        if lay is not None:
-            init = set(lay.initial_index_layout(filter_ancillas=True)[:n])
-            fin = set(lay.final_index_layout(filter_ancillas=True)[:n])
-        else:
-            init = fin = set(range(n))
-        return len(_narrow_touched(out) | init | fin) > RESYNTH_MAX_QUBITS
-    except Exception:  # noqa: BLE001 - not certain, so not skipped
-        return False
-
-
 def _ops_of(circ):
     """[(matrix, qubit indices)] for every instruction except barrier, measure and delay; None if one has no
     matrix. Item 44: an instruction on more than EXACT_MAX_GATE_QUBITS qubits is expanded through its `definition`
@@ -2125,7 +2053,7 @@ def _ops_of(circ):
         if len(out) >= EXACT_MAX_OPS:
             return False
         try:
-            mat = _gate_matrix(op)
+            mat = np.asarray(op.to_matrix(), dtype=complex)
         except Exception:
             return False
         out.append((mat, qubits))
@@ -2137,60 +2065,13 @@ def _ops_of(circ):
     return _fuse_ops(out)  # item 46
 
 
-_EYE2 = np.eye(2, dtype=complex)
-_EYE2.flags.writeable = False
-
-
 def _embed_1q(mats, qubits):
     """Item 46: the matrix on `qubits` (Qiskit's little-endian order, qubits[0] least significant) that applies
-    mats[q] to each qubit q in `mats` and the identity elsewhere.
-
-    Item 53: on one qubit, the matrix itself; on two, the Kronecker product as one broadcast multiplication (the same
-    products np.kron forms, without its overhead). Wider: as before."""
-    if len(qubits) == 1:
-        return mats.get(qubits[0], _EYE2)
-    if len(qubits) == 2:
-        a, b = mats.get(qubits[1], _EYE2), mats.get(qubits[0], _EYE2)
-        return (a[:, None, :, None] * b[None, :, None, :]).reshape(4, 4)
+    mats[q] to each qubit q in `mats` and the identity elsewhere."""
     m = np.ones((1, 1), dtype=complex)
     for q in reversed(qubits):
-        m = np.kron(m, mats.get(q, _EYE2))
+        m = np.kron(m, mats.get(q, np.eye(2, dtype=complex)))
     return m
-
-
-_GATE_MATRICES = OrderedDict()  # item 53: (name, parameters) -> read-only matrix of a standard gate
-_GATE_MATRICES_MAX = 4096
-_STANDARD_GATES = None
-
-
-def _gate_matrix(op):
-    """Item 53: np.asarray(op.to_matrix(), dtype=complex). For a standard gate (its class is Qiskit's standard gate
-    of that name) with numeric parameters, the matrix is kept for the last _GATE_MATRICES_MAX (name, parameters) and
-    returned read-only: the same values every time, without rebuilding them. Anything else is built as before, and
-    raises as before."""
-    global _STANDARD_GATES
-    if _STANDARD_GATES is None:
-        from qiskit.circuit.library.standard_gates import get_standard_gate_name_mapping
-        _STANDARD_GATES = {name: getattr(g, "base_class", type(g)) for name, g in get_standard_gate_name_mapping().items()}
-    cls = _STANDARD_GATES.get(op.name)
-    key = None
-    if cls is not None and getattr(op, "base_class", type(op)) is cls:
-        try:
-            key = (op.name, tuple(float(p) for p in op.params))
-        except (TypeError, ValueError):
-            key = None
-    if key is None:
-        return np.asarray(op.to_matrix(), dtype=complex)
-    mat = _GATE_MATRICES.get(key)
-    if mat is None:
-        mat = np.asarray(op.to_matrix(), dtype=complex).copy()
-        mat.flags.writeable = False
-        _GATE_MATRICES[key] = mat
-        while len(_GATE_MATRICES) > _GATE_MATRICES_MAX:
-            _GATE_MATRICES.popitem(last=False)
-    else:
-        _GATE_MATRICES.move_to_end(key)
-    return mat
 
 
 def _fuse_ops(ops):
@@ -2430,7 +2311,7 @@ def pauli_cost(circ, target):
     cost = 0.0
     for op, q in ops:
         try:
-            mat = _gate_matrix(op)
+            mat = np.asarray(op.to_matrix(), dtype=complex)
         except Exception:
             return None
         axes = [pos[i] for i in q]
@@ -2511,7 +2392,7 @@ def hybrid_cost(circ, target):
     pend = {}  # item 49: qubit -> product of its single-qubit gates not yet applied to the state
     for op, q in ops:
         try:
-            mat = _gate_matrix(op)
+            mat = np.asarray(op.to_matrix(), dtype=complex)
         except Exception:
             return None
         props = target[op.name].get(q, None) if op.name in target.operation_names else None
@@ -2584,7 +2465,7 @@ def kraus_cost(circ, target):
     cost = 0.0
     for op, q in ops:
         try:
-            mat = _gate_matrix(op)
+            mat = np.asarray(op.to_matrix(), dtype=complex)
         except Exception:
             return None
         props = target[op.name].get(q, None) if op.name in target.operation_names else None
@@ -2646,12 +2527,7 @@ def _choose_lazy(qc, out, others, target, score):
     - a candidate whose estimate is None and which passes the check makes the choice `out` (c19's "not_estimable");
     - a candidate whose estimate is higher than `out`'s by more than ESTIMATE_TIE_TOL is never chosen and does not
       change the lowest estimate, so it is not checked;
-    - otherwise the lowest among `out` and the candidates that pass, the first within the tie band (`_lower`).
-    Item 56: a candidate whose check certainly cannot be made is dropped first; in the loop below it could only be
-    skipped or refused, neither of which changes the result."""
-    kept = [(name, c) for name, c in others if not _cannot_implement(qc, c)]
-    FEASIBILITY_STATS["candidate"] += len(others) - len(kept)
-    others = kept
+    - otherwise the lowest among `out` and the candidates that pass, the first within the tie band (`_lower`)."""
     if not others:
         return out
     f = _cost_fn(score)
@@ -2704,10 +2580,6 @@ def _compare_level3(qc, out, target, max_error, seed_transpiler):
     """Item 36: the release's circuit `out` or Qiskit level 3's, whichever has the lower excitation_cost."""
     l3 = transpile(qc, target=target, optimization_level=3, seed_transpiler=seed_transpiler, approximation_degree=1.0)
     if not _acceptable(l3, target, max_error):
-        COMPARE_STATS["level3_refused"] += 1
-        return out
-    if _cannot_implement(qc, l3):  # item 56: every path below would return `out`
-        FEASIBILITY_STATS["level3"] += 1
         COMPARE_STATS["level3_refused"] += 1
         return out
     a, b = excitation_cost(out, target), excitation_cost(l3, target)  # item 47: the estimates first
@@ -2773,14 +2645,8 @@ def _unroll_wide(qc, basis_gates):
 
 
 def _checkable_logical(qc):
-    """Item 45: True if item 39's `_implements` can be made for `qc` (at most RESYNTH_MAX_QUBITS logical qubits).
-    Item 56: and if `_ops_of(qc)` does not certainly give up."""
-    if qc.num_qubits > RESYNTH_MAX_QUBITS:
-        return False
-    if _n_narrow(qc) > EXACT_MAX_OPS:
-        FEASIBILITY_STATS["input"] += 1
-        return False
-    return True
+    """Item 45: True if item 39's `_implements` can be made for `qc` (at most RESYNTH_MAX_QUBITS logical qubits)."""
+    return qc.num_qubits <= RESYNTH_MAX_QUBITS
 
 
 def _resynthesise(circ, mode, target, max_error):
@@ -2791,9 +2657,6 @@ def _resynthesise(circ, mode, target, max_error):
         return circ
     if len(_touched_qubits(circ)) > RESYNTH_MAX_QUBITS:
         SKIP_STATS["resynthesis"] += 1
-        return circ
-    if _n_narrow(circ) > EXACT_MAX_OPS:  # item 56: _same_action(circ, ...) would return False
-        FEASIBILITY_STATS["resynthesis"] += 1
         return circ
     if mode == "select":
         return _select_resynthesis(circ, target, max_error)

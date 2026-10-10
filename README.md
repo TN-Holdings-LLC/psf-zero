@@ -33,11 +33,24 @@ including the failures, are recorded in [`docs/findings/`](docs/findings/).
 
 ## Current version
 
-**`psf_compile.py` 2026-10-07.1** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 and the Rust core
-`CORE_VERSION` 2026-09-29.1 (Part 10, Addenda 383-397). Every release and dated notice:
+**`psf_compile.py` 2026-10-10.1** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 and the Rust core
+`CORE_VERSION` 2026-09-29.1 (Part 10, Addenda 383-424). Every release and dated notice:
 [`docs/RELEASES.md`](docs/RELEASES.md).
 
-> **New in 2026-10-07.1: on general circuits the default call is about level with Qiskit level 2 (1.03 times its
+> **New in 2026-10-10.1: the same circuits, and the recommended call no longer estimates candidates it can never
+> use.** Two changes (items 53 and 56), each tested for identity (Part 10, Addenda 413-424):
+>
+> - **Item 56:** the recommended call replaces its circuit with a candidate (re-synthesis, a floor-aware compile,
+>   Qiskit level 3) only if an exactness check confirms it, and that check cannot be made on circuits of more than
+>   200,000 instructions or 16 qubits. It now decides this from counts before estimating the candidate, and skips
+>   estimates that could never change the result. On 152 Benchpress development tests (C29-ID, Addenda 422-423) it
+>   returned 2026-10-07.1's circuit, by value, on all 183 test-calls where 2026-10-07.1 repeats itself; on `hwb10`
+>   it finished in 82 s where 2026-10-07.1 did not finish in an hour.
+> - **Item 53:** the estimates and checks keep standard gates' matrices and embed one-qubit gates without `np.kron`:
+>   the same values (C26-ID, Addenda 413-414), about 2% less time for the recommended call.
+> - **Not changed:** the default call, the AI front end (a12), the layout search and the core.
+
+> **In 2026-10-07.1: on general circuits the default call is about level with Qiskit level 2 (1.03 times its
 > two-qubit gates, where 2026-10-06.4 needed 1.33), and the recommended call is about four to eight times faster at
 > 16 qubits.** Five changes (items 46-50), each accepted after its own pre-registered test and released together
 > (Part 10, Addenda 383-397):

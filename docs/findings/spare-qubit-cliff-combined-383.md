@@ -3953,6 +3953,97 @@ here against 26.9 s in Addendum 421, with two other jobs then. As pre-registered
 
 ---
 
+<!-- ===== Addendum 424 (source: spare-qubit-cliff-addendum-424-2026-10-10.md) ===== -->
+
+> **Note added when merging:** The release of candidate c29 as 2026-10-10.1, by the owner's decision after Addendum 423.
+
+## Addendum 424 -- Release: psf_compile 2026-10-10.1 = candidate 2026-10-10.c29 of Addendum 422 (changelog items 53 and 56, accepted in Addenda 414 and 423); the AI front end stays a12 (2026-10-10)
+
+**Status: the owner's decision of 2026-10-10 (home), after C29-ID's results (Addendum 423).** It follows the
+procedure of release 2026-10-07.1 (Addendum 397).
+
+## 1. The decision
+
+The owner released candidate c29, which carries items 53 and 56, as **2026-10-10.1**. The evidence, item by item:
+
+| item | what it does | test | result |
+|---|---|---|---|
+| 53 | the recommended call's estimates and checks keep standard gates' matrices and embed one-qubit gates without `np.kron` | C26-ID (Addenda 413-414): function by function; C29-ID (Addendum 423): whole outputs | 3,300 of 3,300 values identical; whole outputs below |
+| 56 | no estimate for a candidate whose exactness check cannot be made (more than 200,000 instructions or 16 qubits involved, decided from counts) | C29-ID (Addendum 423) | the release's output by value on 183 of 183 test-calls where the release repeats itself; no new failure; hwb10 (recommended) in 82 s where the release did not finish in 3,600 s |
+
+**What a user sees.**
+
+- The same circuits as 2026-10-07.1, wherever 2026-10-07.1 reproduces itself.
+- The recommended call is about 2% faster on the development tests (item 53).
+- On circuits too large to check it is much faster: hwb10 takes 82 s, where 2026-10-07.1 took 852 s alone and more
+  than 3,600 s with three other jobs (Addendum 420).
+- The default call is unchanged; item 56 acts only with a target.
+- The AI front end is unchanged (a12). It calls `psf_compile`, so it gets items 53 and 56. The layout search and the
+  core are unchanged.
+
+## 2. What changes in the repository
+
+- **[`psf_compile.py`](../../psf_compile.py)** is c29's file with its two version lines changed
+  (`VERSION: 2026-10-10.1 -- release ...` and `VERSION = "2026-10-10.1"`). Nothing else differs;
+  [`benchmarks/test_release_2026_10_10_1.py`](../../benchmarks/test_release_2026_10_10_1.py) checks this.
+- **The outgoing release 2026-10-07.1** is kept unchanged as
+  [`patches/psf_compile_release_2026-10-07.1/psf_compile.py`](../../patches/psf_compile_release_2026-10-07.1/psf_compile.py).
+- **Tests.**
+  - [`benchmarks/test_release_2026_10_10_1.py`](../../benchmarks/test_release_2026_10_10_1.py) (new) checks:
+    - the version and item 56's counters;
+    - that the file equals c29's except the version lines;
+    - that c29 and the kept 2026-10-07.1 are the locked files;
+    - on four small circuits, with the default and the recommended call: 2026-10-07.1's output by value wherever
+      2026-10-07.1 gives one output twice. This holds with `EXACT_MAX_OPS` lowered as well, so that item 56 acts,
+      and item 56 acts only in the recommended call.
+  - Three tests compare a candidate with 2026-10-07.1, the release it was built on. They now load the kept copy:
+    [`benchmarks/test_release_2026_10_07_1.py`](../../benchmarks/test_release_2026_10_07_1.py),
+    [`patches/psf_compile_c24_2026-10-07/test_c24.py`](../../patches/psf_compile_c24_2026-10-07/test_c24.py) and
+    [`patches/psf_compile_c26_2026-10-09/test_c26.py`](../../patches/psf_compile_c26_2026-10-09/test_c26.py).
+  - Every other test that asserted the current release's version (24 lines in `benchmarks/` and `patches/`) now
+    asserts `"2026-10-10.1"`.
+  - The locked scripts of the tests (`c26_identity.py`, `c29_identity.py`, `hwb10_full.py` and the others) are
+    records and are not changed.
+- **README:** "Current version" names 2026-10-10.1 with items 53 and 56.
+- **[`docs/RELEASES.md`](../../docs/RELEASES.md):** a new "Current version" block; the 2026-10-07.1 block becomes
+  "Previous release".
+
+## 3. Checks before the commit
+
+[`benchmarks/run_release_tests_2026-10-10_1.py`](../../benchmarks/run_release_tests_2026-10-10_1.py) ran 35 test
+files, one pytest session per file:
+
+- the 31 files of release 2026-10-07.1's checks;
+- the new release test;
+- the tests of candidates c24, c26 and c29.
+
+**Environment.** Home (WSL2; Python 3.12.13, Qiskit 2.5.2, NumPy 2.5.3, `psf_compile` 2026-10-10.1, core
+2026-09-29.1), on commit `3940153` with these changes uncommitted, from 04:15:04 to 04:23:25 CEST.
+
+**Result:** 282 passed, none failed or errored, on all 35 files. Logs:
+[`data/2026-10-10/release_2026-10-10.1/`](../../data/2026-10-10/release_2026-10-10.1/).
+
+| file | normalized SHA-256 |
+|---|---|
+| [`psf_compile.py`](../../psf_compile.py) (release 2026-10-10.1) | `0999bb063393e4fb174cd4018d9b9a0ffabf3146494a3fed5a55e0658968da09` |
+| [`patches/psf_compile_release_2026-10-07.1/psf_compile.py`](../../patches/psf_compile_release_2026-10-07.1/psf_compile.py) (kept) | `73fb2cb0b1acc5870339c23599829b326fbf57aa198945231e8551e55c1884dc` |
+| [`patches/psf_compile_c29_2026-10-10/psf_compile.py`](../../patches/psf_compile_c29_2026-10-10/psf_compile.py) (candidate, unchanged) | `36fdd78d854bb8f3ce170e76cded8f313b6f0429e13ea6af9e0d6b57cd4936a0` |
+| [`benchmarks/test_release_2026_10_10_1.py`](../../benchmarks/test_release_2026_10_10_1.py) (new) | `28efc5868c293768ae3a5f6d9ef88f1a63cfc12557be4f5ec33286f90f6ef6d9` |
+
+## 4. What 2026-10-10.1 does not establish
+
+- **Identity where 2026-10-07.1 does not repeat itself.** This covers bv_n140 (linear) and bv_n30 (square), default
+  call (Addenda 393, 412, 423). Within one process, the ancillas' assignment in the layout can also change between
+  runs (Addendum 422).
+- **Identity with the real clock.** The layout search stops by wall-clock time. C29-ID made the clock virtual.
+- **Speed in general.** Apart from circuits too large to check, the gain is item 53's 2%. The slow development tests
+  whose checks can be made (JW-14, enc_gray, JW-10, parity10) are not helped. For those, item 57b (the estimate and
+  check loops in Rust, candidate c30) is being tested.
+- **Benchpress beyond the development tests, and hardware.** BP-FINAL's figures (Addendum 408) were measured with
+  2026-10-07.1. Its default call is unchanged here.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

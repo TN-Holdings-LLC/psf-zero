@@ -97,7 +97,7 @@ def state_infid(qc, out):
 def test_versions(mods):
     assert mods["a13"].AI_COMPILE_VERSION == "2026-10-06.a13"
     assert mods["a12"].AI_COMPILE_VERSION == "2026-10-06.a12"
-    assert mods["rel"].VERSION == "2026-10-07.1"
+    assert mods["rel"].VERSION == "2026-10-10.1"
     assert mods["a13"].FAST_PATH_RECOMMENDED == RECOMMENDED
 
 

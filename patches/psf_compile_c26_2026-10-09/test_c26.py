@@ -17,7 +17,8 @@ sys.path[:0] = [os.path.join(REPO, "benchmarks"), REPO]
 @pytest.fixture(scope="module")
 def mods():
     import core_fix_c2_eval as H
-    rel = H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile_rel_c26_test")
+    rel = H.load_module(os.path.join(REPO, "patches", "psf_compile_release_2026-10-07.1", "psf_compile.py"),
+                        "psf_compile_rel_c26_test")  # 2026-10-07.1, kept since release 2026-10-10.1
     c26 = H.load_module(os.path.join(HERE, "psf_compile.py"), "psf_compile_c26_test")
     return dict(rel=rel, c26=c26)
 

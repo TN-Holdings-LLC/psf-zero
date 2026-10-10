@@ -29,7 +29,8 @@ STALE_BASE = 96_000_000  # the tests' own stale draws (STALE 80,000,000; CALSPLI
 def mods():
     import core_fix_c2_eval as H
     H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psf_smart_layout")
-    rel = H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile_rel_c24_test")
+    rel = H.load_module(os.path.join(REPO, "patches", "psf_compile_release_2026-10-07.1", "psf_compile.py"),
+                        "psf_compile_rel_c24_test")  # 2026-10-07.1, kept since release 2026-10-10.1
     c24 = H.load_module(os.path.join(HERE, "psf_compile.py"), "psf_compile_c24_test")
     return dict(rel=rel, c24=c24)
 

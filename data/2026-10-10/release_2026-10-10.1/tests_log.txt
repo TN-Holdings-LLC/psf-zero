@@ -1,0 +1,144 @@
+environment: {"python": "3.12.13", "qiskit": "2.5.2", "numpy": "2.5.3", "psf_compile": "2026-10-10.1", "core": "2026-09-29.1", "git_head": "3940153", "dirty": [" M benchmarks/test_ai_compile_a11.py", " M benchmarks/test_ai_compile_a12.py", " M benchmarks/test_ai_compile_a8.py", " M benchmarks/test_ai_compile_a9.py", " M benchmarks/test_core_fix_c2.py", " M benchmarks/test_release_2026_09_28.py", " M benchmarks/test_release_2026_10_02.py", " M benchmarks/test_release_2026_10_02_2.py", " M benchmarks/test_release_2026_10_03.py", " M benchmarks/test_release_2026_10_03_2.py", " M benchmarks/test_release_2026_10_03_3.py", " M benchmarks/test_release_2026_10_04_1.py", " M benchmarks/test_release_2026_10_05_1.py", " M benchmarks/test_release_2026_10_07_1.py", " M patches/psf_ai_compile_a12_2026-10-06/test_a12.py", " M patches/psf_ai_compile_a13_2026-10-06/test_a13.py", " M patches/psf_ai_compile_a6_2026-10-02/test_ai6.py", " M patches/psf_ai_compile_a8_2026-10-04/test_a8.py", " M patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py", " M patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py", " M patches/psf_compile_c12_2026-10-05/test_c12_exact.py", " M patches/psf_compile_c24_2026-10-07/test_c24.py", " M patches/psf_compile_c26_2026-10-09/test_c26.py", " M patches/psf_compile_c4_2026-10-02/test_c4_layout.py", " M patches/psf_compile_c6_2026-10-03/test_c6_floor.py", " M patches/psf_compile_c8_2026-10-03/test_c8_resynth.py", " M patches/psf_compile_c9_2026-10-03/test_c9_compare.py", " M psf_compile.py"]}
+start 2026-10-10T02:15:04Z
+
+== benchmarks/test_release_2026_10_10_1.py (2026-10-10T02:15:04Z)
+.....                                                                    [100%]
+5 passed in 11.89s
+
+== benchmarks/test_release_2026_10_07_1.py (2026-10-10T02:15:17Z)
+...........                                                              [100%]
+11 passed in 8.88s
+
+== benchmarks/test_release_2026_10_06_4.py (2026-10-10T02:15:26Z)
+........                                                                 [100%]
+8 passed in 5.67s
+
+== patches/psf_compile_c19_2026-10-07/test_c19.py (2026-10-10T02:15:32Z)
+..............                                                           [100%]
+14 passed in 109.47s (0:01:49)
+
+== benchmarks/test_release_2026_09_28.py (2026-10-10T02:17:22Z)
+........                                                                 [100%]
+8 passed in 0.89s
+
+== benchmarks/test_core_fix_c2.py (2026-10-10T02:17:23Z)
+..........                                                               [100%]
+10 passed in 1.56s
+
+== benchmarks/test_release_2026_10_02.py (2026-10-10T02:17:25Z)
+.....                                                                    [100%]
+5 passed in 2.62s
+
+== benchmarks/test_release_2026_10_02_2.py (2026-10-10T02:17:28Z)
+......                                                                   [100%]
+6 passed in 2.76s
+
+== benchmarks/test_release_2026_10_03.py (2026-10-10T02:17:32Z)
+...............                                                          [100%]
+15 passed in 4.95s
+
+== benchmarks/test_release_2026_10_03_2.py (2026-10-10T02:17:37Z)
+..........                                                               [100%]
+10 passed in 5.61s
+
+== benchmarks/test_release_2026_10_03_3.py (2026-10-10T02:17:43Z)
+...........                                                              [100%]
+11 passed in 6.74s
+
+== benchmarks/test_release_2026_10_04_1.py (2026-10-10T02:17:50Z)
+..........                                                               [100%]
+10 passed in 7.93s
+
+== benchmarks/test_release_2026_10_05_1.py (2026-10-10T02:17:59Z)
+.......                                                                  [100%]
+7 passed in 7.51s
+
+== benchmarks/test_ai_compile_a7.py (2026-10-10T02:18:07Z)
+.....                                                                    [100%]
+5 passed in 18.76s
+
+== benchmarks/test_ai_compile_a8.py (2026-10-10T02:18:26Z)
+.......                                                                  [100%]
+7 passed in 8.82s
+
+== benchmarks/test_ai_compile_a9.py (2026-10-10T02:18:35Z)
+....                                                                     [100%]
+4 passed in 16.01s
+
+== benchmarks/test_ai_compile_a11.py (2026-10-10T02:18:52Z)
+........                                                                 [100%]
+8 passed in 16.00s
+
+== benchmarks/test_ai_compile_a12.py (2026-10-10T02:19:08Z)
+.....                                                                    [100%]
+5 passed in 16.25s
+
+== patches/psf_ai_compile_a6_2026-10-02/test_ai6.py (2026-10-10T02:19:25Z)
+......                                                                   [100%]
+6 passed in 13.27s
+
+== patches/psf_ai_compile_a7_2026-10-02/test_a7.py (2026-10-10T02:19:39Z)
+.....                                                                    [100%]
+5 passed in 16.38s
+
+== patches/psf_ai_compile_a8_2026-10-04/test_a8.py (2026-10-10T02:19:56Z)
+.......                                                                  [100%]
+7 passed in 9.47s
+
+== patches/psf_ai_compile_a12_2026-10-06/test_a12.py (2026-10-10T02:20:06Z)
+.......                                                                  [100%]
+7 passed in 36.87s
+
+== patches/psf_ai_compile_a13_2026-10-06/test_a13.py (2026-10-10T02:20:43Z)
+.....                                                                    [100%]
+5 passed in 7.33s
+
+== patches/psf_compile_c3_2026-10-02/test_c3_prune.py (2026-10-10T02:20:51Z)
+.....                                                                    [100%]
+5 passed in 2.55s
+
+== patches/psf_compile_c4_2026-10-02/test_c4_layout.py (2026-10-10T02:20:54Z)
+....                                                                     [100%]
+4 passed in 2.19s
+
+== patches/psf_compile_c5_2026-10-02/test_c5_placement.py (2026-10-10T02:20:57Z)
+......                                                                   [100%]
+6 passed in 2.73s
+
+== patches/psf_compile_c6_2026-10-03/test_c6_floor.py (2026-10-10T02:21:00Z)
+..........                                                               [100%]
+10 passed in 3.62s
+
+== patches/psf_compile_c8_2026-10-03/test_c8_resynth.py (2026-10-10T02:21:04Z)
+...............                                                          [100%]
+15 passed in 4.76s
+
+== patches/psf_compile_c9_2026-10-03/test_c9_compare.py (2026-10-10T02:21:09Z)
+..........                                                               [100%]
+10 passed in 5.59s
+
+== patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py (2026-10-10T02:21:15Z)
+...........                                                              [100%]
+11 passed in 6.54s
+
+== patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py (2026-10-10T02:21:22Z)
+..........                                                               [100%]
+10 passed in 7.88s
+
+== patches/psf_compile_c12_2026-10-05/test_c12_exact.py (2026-10-10T02:21:31Z)
+.......                                                                  [100%]
+7 passed in 7.64s
+
+== patches/psf_compile_c24_2026-10-07/test_c24.py (2026-10-10T02:21:39Z)
+...........                                                              [100%]
+11 passed in 52.72s
+
+== patches/psf_compile_c26_2026-10-09/test_c26.py (2026-10-10T02:22:32Z)
+....                                                                     [100%]
+4 passed in 0.40s
+
+== patches/psf_compile_c29_2026-10-10/test_c29.py (2026-10-10T02:22:33Z)
+..........                                                               [100%]
+10 passed in 52.23s
+
+files 35; {'passed': 282, 'failed': 0, 'errors': 0, 'skipped': 0}; files not passing: []; end 2026-10-10T02:23:25Z
