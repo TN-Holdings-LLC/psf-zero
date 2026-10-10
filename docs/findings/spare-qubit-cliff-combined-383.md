@@ -4220,6 +4220,77 @@ Reported without prediction:
 
 ---
 
+<!-- ===== Addendum 427 (source: spare-qubit-cliff-addendum-427-2026-10-10.md) ===== -->
+
+> **Note added when merging:** Results of C30-ID (Addendum 426), scored by the locked script, with its data.
+
+## Addendum 427 -- Results of C30-ID (Addendum 426): RC0 PASS, RC1-RC3 CONFIRMED. Candidate c30 (item 57b, the loops in Rust) returns release 2026-10-10.1's output, by value, on all 184 test-calls where the release repeats itself; where the recommended call makes estimates its time is 0.656 of the release's (geometric mean, 14 test-calls); one test went from 1,546 s to 39 s. Proposed for the next release (2026-10-10)
+
+**Status: results of the pre-registered test in Addendum 426**, scored by the locked script
+(`c30_identity.py compare`).
+
+## 1. The run
+
+- **Lock.** Commit `9de4513`, pushed before the run.
+- **Data.** [`data/2026-10-10/c30_identity/`](../../data/2026-10-10/c30_identity/): `c30_identity.jsonl` (one record
+  per job, with its counters, `CORE57_STATS` among them) and `compare.md` (the score). The home folder in the
+  benchmark file paths is replaced by `/home/<user>`.
+- **Machine and timing.** The home PC (WSL2, 12 CPUs, Python 3.12.13), with nothing else running, 4 jobs at a time,
+  with `psf_zero_core57` 2026-10-10.c30 installed. The run started at 04:35:31 CEST and ended at 05:18:23. Its 558
+  jobs took 10,154 s of wall time in all, and none failed.
+
+## 2. Results
+
+| ID | prediction | value | verdict |
+|---|---|---|---|
+| RC0 | the run is as locked | 152 tests, 186 test-calls, all three arms on every one; versions, layout, virtual clock and psf_zero_core57 2026-10-10.c30 in every record; no uncommitted change | **PASS** |
+| RC1 | C30 = REL by value wherever REL2 = REL | 184 identical of 184 scored | **CONFIRMED** |
+| RC2 | C30 adds no failure | no failure in any arm | **CONFIRMED** |
+| RC3 | recommended calls with estimates: geometric mean of C30 / REL compile time <= 0.85 | 0.656 on 14 test-calls | **CONFIRMED** |
+
+**Reported without prediction.**
+
+- **The control.** REL2 = REL by value on 184 of 186 test-calls. The exceptions are bv_n140 (linear) and bv_n30
+  (square), default call, as in Addenda 412 and 423. On RC3's test-calls the geometric mean of REL2 / REL time was
+  0.978.
+- **The calls.** All 229 of C30's estimate and check calls ran in `psf_zero_core57`; none fell back to Python.
+- **RC3's test-calls.** Summed compile time: REL 1,641 s, REL2 1,638 s, C30 141 s.
+
+  | test | REL (s) | C30 (s) | C30 / REL |
+  |---|---|---|---|
+  | enc_gray_dvalues_4-4-4-4-4-4-4 | 1,546.5 | 39.1 | 0.03 |
+  | enc_gray_dvalues_8-8-8 | 27.6 | 19.7 | 0.71 |
+  | ham_JW-14 | 40.2 | 62.7 | 1.56 |
+  | ham_parity10 | 16.8 | 12.1 | 0.72 |
+  | ham_JW-10 | 5.3 | 3.8 | 0.71 |
+  | grover_5 | 1.3 | 0.6 | 0.49 |
+  | eight others of 0.1-0.9 s | | | 0.79-1.00 |
+
+## 3. Reading
+
+- **Item 57b changes no output.** The values from the Rust core differ from Python's in their last bits, which could
+  in principle swap a near-tie decision. That happened on none of the 184 test-calls.
+- **The gain is large where the estimates dominate, and small on small circuits.**
+  - enc_gray_dvalues_4-4-4-4-4-4-4 spends nearly all of its 1,546 s in estimates on 14 qubits. C30 takes 39 s.
+  - The tests of a few seconds to a minute take 0.5-0.7 of the time.
+  - Circuits of under a second take 0.8-1.0. Their time is in other steps.
+- **JW-14 is the exception, and is probably not a property of C30.**
+  - C30's JW-14 ran beside REL's and REL2's 1,550 s enc_gray jobs, both 14-qubit state-vector computations. It
+    finished right after them in the run's order. REL's and REL2's JW-14 ran later, on a lighter machine.
+  - The same test took REL 235 s in C29-ID (Addendum 423) and 40 s here: its time depends strongly on the load.
+  - Alone, c30 took 0.77 of c29's time on it (Addendum 425).
+  - Not established.
+- **The release's own nondeterminism is unchanged.** The same two test-calls differ between REL and REL2.
+
+## 4. What follows
+
+- **Candidate c30 is proposed for the next release** (RC0-RC2 hold, as Addendum 426 set out). The owner adopted it
+  on 2026-10-10, with the Rust code shipped as the optional module `psf_zero_core57`. The release's core
+  `psf_zero_core` is unchanged. Without the module, the Python code runs, with c29's exact values. Merging it into
+  `psf_zero_core` is left for later. The release is Addendum 428.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
