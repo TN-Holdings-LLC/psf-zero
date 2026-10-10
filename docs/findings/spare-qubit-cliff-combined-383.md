@@ -5297,6 +5297,65 @@ Between the two thresholds a prediction is ambiguous.
 
 ---
 
+<!-- ===== Addendum 441 (source: addendum_441.md) ===== -->
+
+> **Note added when merging:** Results of C36-VAL (Addendum 440), scored by the locked script, with its data.
+
+## Addendum 441 -- Results of C36-VAL (Addendum 440): W0-W6 all CONFIRMED on FakeMarrakesh and FakeFez; the release rule is met. With the device given, candidate c36 (routing at level 3) used no failed element (0 of 424 outputs), raised ESP by 6-8% over release 2026-10-10.3, to 0.976 and 0.963 of Qiskit level 3's, at 1.26-1.34 times the release's time; without the device it keeps the release's two-qubit counts on 212 of 212 (2026-10-11)
+
+**Run.**
+
+- **When and where:** 18:10-18:43 CEST on 2026-10-10 at home, on commit `866fea6` (the lock, pushed before the run),
+  with no uncommitted tracked changes.
+- **Software:** Qiskit 2.5.2, qiskit-ibm-runtime 0.49.0.
+- **Jobs:** 1,696, 4 at a time, no error. c36's tests passed first.
+- **Script:** the locked [`benchmarks/c36_val.py`](../../benchmarks/c36_val.py).
+- **Data:** [`data/2026-10-10/c36_val/`](../../data/2026-10-10/c36_val/).
+
+**Scoring, as locked.**
+
+| ID | FakeMarrakesh | FakeFez |
+|---|---|---|
+| W0 every arm returns a circuit on every test | **CONFIRMED** (0 missing) | **CONFIRMED** (0 missing) |
+| W1 C36D and C36R: no output on a failed element | **CONFIRMED** (0 of 212) | **CONFIRMED** (0 of 212) |
+| W2 ESP C36D / REL3D (>= 1.03; refuted < 1.00) | **CONFIRMED**: 1.059 | **CONFIRMED**: 1.077 |
+| W3 ESP C36D / QK3 (>= 0.96; refuted < 0.93) | **CONFIRMED**: 0.976 | **CONFIRMED**: 0.963 |
+| W4 C36N's two-qubit count = REL3N's | **CONFIRMED**: 106 of 106 | **CONFIRMED**: 106 of 106 |
+| W5 time C36D / REL3D (<= 1.5; refuted > 2.0) | **CONFIRMED**: 233 / 186 s = 1.255 | **CONFIRMED**: 244 / 182 s = 1.340 |
+| W6 ESP C36R / REL3R (>= 1.00; refuted < 0.97) | **CONFIRMED**: 1.048 | **CONFIRMED**: 1.062 |
+
+**Release rule (W0, W1, W2, W4 not refuted on either device): met.** c36 replaces release 2026-10-10.3
+(Addendum 442).
+
+**The arms side by side** (106 tests per device; runnable: 57 on FakeMarrakesh, 55 on FakeFez).
+
+| | QK2 | QK3 | REL3D | REL3N | C36D | C36N |
+|---|---|---|---|---|---|---|
+| outputs on failed elements, FakeMarrakesh / FakeFez | 32 / 28 | 29 / 28 | 0 / 0 | 52 / 61 | **0 / 0** | 52 / 61 |
+| ESP 0 on runnable tests | 1 / 1 | 0 / 0 | 0 / 0 | 15 / 14 | **0 / 0** | 15 / 14 |
+| two-qubit / QK2 (geometric mean) | 1.000 / 1.000 | 0.966 / 0.975 | 1.075 / 1.087 | 1.046 / 1.052 | 0.989 / 0.998 | 1.046 / 1.052 |
+| compile time summed (s) | 67 / 66 | 148 / 143 | 186 / 182 | 180 / 173 | 233 / 244 | 184 / 173 |
+
+| ESP ratio on runnable tests (geometric mean, both > 0) | FakeMarrakesh | FakeFez |
+|---|---|---|
+| C36D / QK2 | 0.989 | 1.087 |
+| REL3D / QK3 | 0.922 | 0.894 |
+| C36R / QK3 | 0.984 | 0.969 |
+
+**Reading: two numbers.**
+
+- **Display.** With the device given, PSF-Zero's plain call has 6-8% more ESP than the release's. It is within 2-4%
+  of Qiskit level 3's ESP and level with Qiskit level 2's two-qubit count.
+- **Essential.**
+  - c36 used no failed element. Qiskit level 3 did on 29 and 28 of 106 tests, and level 2 on 32 and 28. Level 2 lost
+    one runnable test to ESP 0 on each device.
+  - Where Qiskit's outputs are clean, c36 is still 2-4% behind level 3. On FakeMarrakesh it is 1% behind level 2 there
+    too (0.989): its lead over level 2 on that device is the failed elements it avoids, not a better circuit.
+  - The cost is 1.6-1.7 times level 3's compile time, about 0.2 s per test as a median.
+- Without the device nothing changes. Such a call still used failed elements on 52 and 61 of 106 tests.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
