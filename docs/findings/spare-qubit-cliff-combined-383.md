@@ -4839,6 +4839,86 @@ Exactness was checked on the construction for A, and on the final translated cir
 
 ---
 
+<!-- ===== Addendum 436 (source: addendum_436.md) ===== -->
+
+> **Note added when merging:** C35-VAL's pre-registration, committed and pushed before the run.
+
+## Addendum 436 -- Pre-registration: C35-VAL. Should candidate 2026-10-10.c35 (changelog items 58-63) replace release 2026-10-10.2? Measured as a device user meets it: an output on a failed element is worth nothing, then the estimated success probability, the two-qubit count and the compile time (2026-10-10)
+
+**Status: pre-registration, committed and pushed before the run.** Script:
+[`benchmarks/c35_val.py`](../../benchmarks/c35_val.py). Candidate:
+[`patches/psf_compile_c35_2026-10-10/`](../../patches/psf_compile_c35_2026-10-10/) (Addenda 431-432; its tests and
+those of c31-c34 passed before Addendum 429 was committed).
+
+**Why now.**
+
+- Addendum 434 showed that the live ibm_kingston Target keeps failed elements. It also showed that the release's
+  default call, given no Target, used them on every one of Addendum 246's circuits.
+- Candidates c31-c35 avoid them whenever they are given the device, and refuse rather than return an output that
+  cannot avoid them.
+- The release gives no warning. Until a candidate is released, the plain call of PSF-Zero can return outputs a
+  device user cannot use.
+
+**Tests and devices.**
+
+- **Tests:** BP-FINAL's 106 FakeTorino tests (HamLib and Feynman), as ESP-FT built them (Addendum 430).
+- **Devices:** FakeTorino and FakeKingston. Both keep couplers and qubits at error 1 in their Targets, as the live
+  device did.
+- **Runs:** each test, device and arm in its own process, one cold call, 4 at a time.
+- **Caps:** a job is killed after 1,500 s; no job starts after 7,200 s.
+
+**Arms.**
+
+| arm | call |
+|---|---|
+| QK2 | Qiskit level 2 on the backend |
+| QK3 | Qiskit level 3 on the backend |
+| RELR | release 2026-10-10.2, the README's recommended call (`target=` and `bp_final.RECOMMENDED`) |
+| RELD | release 2026-10-10.2, the default call without the Target |
+| C35D | c35, the default call with `backend=` |
+| C35R | c35, `backend=` and `bp_final.RECOMMENDED` |
+| C35N | c35, the default call without the Target |
+
+**Measures.**
+
+- **ESP:** the product of (1 - error) over gates and measurements, as the Target reports them. It is 0 when an
+  operation has error 1.
+- **Failed element:** one with error >= 0.5.
+- **Runnable test:** one where the best ESP over the seven arms is >= 0.01.
+- **ESP ratio:** the geometric mean over the runnable tests where both arms' ESP > 0.
+
+**Predictions, each scored on both devices.** The expected values come from ESP-C32, REPL-C33 and ABLATE-C34
+(Addenda 431-432). Those were exploratory runs; this one is not.
+
+| ID | prediction | confirmed | refuted |
+|---|---|---|---|
+| V0 | every arm returns a circuit on every test (a FailedElementsError counts against it) | none missing | any missing |
+| V1 | C35D and C35R: no output with an operation on a failed element | 0 | any |
+| V2 | ESP C35D / RELR | >= 0.95 | < 0.90 |
+| V3 | ESP C35D / QK2 | >= 1.05 | < 1.00 |
+| V4 | compile time summed, C35D / RELR | <= 0.60 | > 0.80 |
+| V5 | without a Target, c35 keeps the release's two-qubit counts: C35N = RELD on every test | every test | differs, and summed differs by > 0.5% |
+| V6 | ESP C35R / RELR | >= 0.97 | < 0.93 |
+
+Between the two thresholds a prediction is ambiguous.
+
+**Release rule.** c35 replaces release 2026-10-10.2 if V0, V1, V2, V3 and V5 are not refuted on either device.
+
+- V4 and V6 are reported, and do not decide.
+- If the rule is met, the release commit also changes the README. The recommended call becomes the plain call with
+  `backend=` (or `target=`), and the release's notes say plainly what a call without the device can return.
+- If it is not met, release 2026-10-10.2 stays. The README's warning that its default call cannot avoid failed
+  elements (Addenda 393, 403) is extended with Addendum 434's finding on the live device.
+
+**Two numbers in the results.**
+
+- **Display:** two-qubit count and time against Qiskit.
+- **Essential:**
+  - outputs on failed elements, counted first;
+  - ESP on the runnable tests.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
