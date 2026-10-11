@@ -1,0 +1,358 @@
+{
+"control_adder": [
+"control",
+"feynman/adder.qasm"
+],
+"control_clifford_20_12345": [
+"control",
+"clifford/clifford_20_12345.qasm"
+],
+"control_gf2^4_mult": [
+"control",
+"feynman/gf2^4_mult.qasm"
+],
+"control_qft_N010": [
+"control",
+"qft/qft_N010.qasm"
+],
+"control_qft_N020": [
+"control",
+"qft/qft_N020.qasm"
+],
+"control_qv_N010_12345": [
+"control",
+"qv/qv_N010_12345.qasm"
+],
+"control_random_n6": [
+"control",
+null
+],
+"control_random_n8": [
+"control",
+null
+],
+"feynman_W-state": [
+"feynman",
+"feynman/W-state.qasm"
+],
+"feynman_barenco_tof_10": [
+"feynman",
+"feynman/barenco_tof_10.qasm"
+],
+"feynman_barenco_tof_3": [
+"feynman",
+"feynman/barenco_tof_3.qasm"
+],
+"feynman_barenco_tof_4": [
+"feynman",
+"feynman/barenco_tof_4.qasm"
+],
+"feynman_barenco_tof_5": [
+"feynman",
+"feynman/barenco_tof_5.qasm"
+],
+"feynman_csum_mux_9": [
+"feynman",
+"feynman/csum_mux_9.qasm"
+],
+"feynman_grover_5": [
+"feynman",
+"feynman/grover_5.qasm"
+],
+"feynman_qcla_com_7": [
+"feynman",
+"feynman/qcla_com_7.qasm"
+],
+"feynman_qft": [
+"feynman",
+"feynman/qft.qasm"
+],
+"feynman_qft_4": [
+"feynman",
+"feynman/qft_4.qasm"
+],
+"feynman_tof_10": [
+"feynman",
+"feynman/tof_10.qasm"
+],
+"feynman_tof_3": [
+"feynman",
+"feynman/tof_3.qasm"
+],
+"feynman_tof_4": [
+"feynman",
+"feynman/tof_4.qasm"
+],
+"feynman_tof_5": [
+"feynman",
+"feynman/tof_5.qasm"
+],
+"gen_export_heis_n10": [
+"gen_export",
+null
+],
+"gen_export_heis_n16": [
+"gen_export",
+null
+],
+"gen_export_randpauli_n10": [
+"gen_export",
+null
+],
+"gen_export_tfim_n10": [
+"gen_export",
+null
+],
+"gen_export_tfim_n16": [
+"gen_export",
+null
+],
+"gen_qaoagates_n12_p2": [
+"gen_qaoa_gates",
+null
+],
+"gen_qaoagates_n20_p2": [
+"gen_qaoa_gates",
+null
+],
+"gen_qaoagates_n28_p2": [
+"gen_qaoa_gates",
+null
+],
+"heis_N100": [
+"heisenberg_qasm",
+"square-heisenberg/square_heisenberg_N100.qasm"
+],
+"heis_N16": [
+"heisenberg_qasm",
+"square-heisenberg/square_heisenberg_N16.qasm"
+],
+"heis_N25": [
+"heisenberg_qasm",
+"square-heisenberg/square_heisenberg_N25.qasm"
+],
+"heis_N36": [
+"heisenberg_qasm",
+"square-heisenberg/square_heisenberg_N36.qasm"
+],
+"heis_N4": [
+"heisenberg_qasm",
+"square-heisenberg/square_heisenberg_N4.qasm"
+],
+"heis_N49": [
+"heisenberg_qasm",
+"square-heisenberg/square_heisenberg_N49.qasm"
+],
+"heis_N64": [
+"heisenberg_qasm",
+"square-heisenberg/square_heisenberg_N64.qasm"
+],
+"heis_N81": [
+"heisenberg_qasm",
+"square-heisenberg/square_heisenberg_N81.qasm"
+],
+"heis_N9": [
+"heisenberg_qasm",
+"square-heisenberg/square_heisenberg_N9.qasm"
+],
+"qaoa_N10": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N10_3reps.qasm"
+],
+"qaoa_N100": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N100_3reps.qasm"
+],
+"qaoa_N12": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N12_3reps.qasm"
+],
+"qaoa_N15": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N15_3reps.qasm"
+],
+"qaoa_N20": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N20_3reps.qasm"
+],
+"qaoa_N25": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N25_3reps.qasm"
+],
+"qaoa_N30": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N30_3reps.qasm"
+],
+"qaoa_N40": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N40_3reps.qasm"
+],
+"qaoa_N5": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N5_3reps.qasm"
+],
+"qaoa_N60": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N60_3reps.qasm"
+],
+"qaoa_N8": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N8_3reps.qasm"
+],
+"qasmbench_basis_change_n3": [
+"qasmbench",
+"qasmbench-small/basis_change_n3/basis_change_n3.qasm"
+],
+"qasmbench_dnn_n33": [
+"qasmbench",
+"qasmbench-large/dnn_n33/dnn_n33.qasm"
+],
+"qasmbench_dnn_n51": [
+"qasmbench",
+"qasmbench-large/dnn_n51/dnn_n51.qasm"
+],
+"qasmbench_fredkin_n3": [
+"qasmbench",
+"qasmbench-small/fredkin_n3/fredkin_n3.qasm"
+],
+"qasmbench_hhl_n7": [
+"qasmbench",
+"qasmbench-small/hhl_n7/hhl_n7.qasm"
+],
+"qasmbench_ising_n10": [
+"qasmbench",
+"qasmbench-small/ising_n10/ising_n10.qasm"
+],
+"qasmbench_ising_n26": [
+"qasmbench",
+"qasmbench-medium/ising_n26/ising_n26.qasm"
+],
+"qasmbench_ising_n34": [
+"qasmbench",
+"qasmbench-large/ising_n34/ising_n34.qasm"
+],
+"qasmbench_ising_n42": [
+"qasmbench",
+"qasmbench-large/ising_n42/ising_n42.qasm"
+],
+"qasmbench_ising_n66": [
+"qasmbench",
+"qasmbench-large/ising_n66/ising_n66.qasm"
+],
+"qasmbench_ising_n98": [
+"qasmbench",
+"qasmbench-large/ising_n98/ising_n98.qasm"
+],
+"qasmbench_knn_129": [
+"qasmbench",
+"qasmbench-large/knn_n129/knn_129.qasm"
+],
+"qasmbench_knn_n25": [
+"qasmbench",
+"qasmbench-medium/knn_n25/knn_n25.qasm"
+],
+"qasmbench_knn_n31": [
+"qasmbench",
+"qasmbench-large/knn_n31/knn_n31.qasm"
+],
+"qasmbench_knn_n41": [
+"qasmbench",
+"qasmbench-large/knn_n41/knn_n41.qasm"
+],
+"qasmbench_knn_n67": [
+"qasmbench",
+"qasmbench-large/knn_n67/knn_n67.qasm"
+],
+"qasmbench_linearsolver_n3": [
+"qasmbench",
+"qasmbench-small/linearsolver_n3/linearsolver_n3.qasm"
+],
+"qasmbench_pea_n5": [
+"qasmbench",
+"qasmbench-small/pea_n5/pea_n5.qasm"
+],
+"qasmbench_qaoa_n6": [
+"qasmbench",
+"qasmbench-small/qaoa_n6/qaoa_n6.qasm"
+],
+"qasmbench_qft_n18": [
+"qasmbench",
+"qasmbench-medium/qft_n18/qft_n18.qasm"
+],
+"qasmbench_qft_n29": [
+"qasmbench",
+"qasmbench-large/qft_n29/qft_n29.qasm"
+],
+"qasmbench_qft_n4": [
+"qasmbench",
+"qasmbench-small/qft_n4/qft_n4.qasm"
+],
+"qasmbench_qft_n63": [
+"qasmbench",
+"qasmbench-large/qft_n63/qft_n63.qasm"
+],
+"qasmbench_qram_n20": [
+"qasmbench",
+"qasmbench-medium/qram_n20/qram_n20.qasm"
+],
+"qasmbench_qugan_n111": [
+"qasmbench",
+"qasmbench-large/qugan_n111/qugan_n111.qasm"
+],
+"qasmbench_qugan_n39": [
+"qasmbench",
+"qasmbench-large/qugan_n39/qugan_n39.qasm"
+],
+"qasmbench_qugan_n71": [
+"qasmbench",
+"qasmbench-large/qugan_n71/qugan_n71.qasm"
+],
+"qasmbench_sat_n11": [
+"qasmbench",
+"qasmbench-medium/sat_n11/sat_n11.qasm"
+],
+"qasmbench_sat_n7": [
+"qasmbench",
+"qasmbench-small/sat_n7/sat_n7.qasm"
+],
+"qasmbench_swap_test_n115": [
+"qasmbench",
+"qasmbench-large/swap_test_n115/swap_test_n115.qasm"
+],
+"qasmbench_swap_test_n25": [
+"qasmbench",
+"qasmbench-medium/swap_test_n25/swap_test_n25.qasm"
+],
+"qasmbench_swap_test_n41": [
+"qasmbench",
+"qasmbench-large/swap_test_n41/swap_test_n41.qasm"
+],
+"qasmbench_swap_test_n83": [
+"qasmbench",
+"qasmbench-large/swap_test_n83/swap_test_n83.qasm"
+],
+"qasmbench_toffoli_n3": [
+"qasmbench",
+"qasmbench-small/toffoli_n3/toffoli_n3.qasm"
+],
+"qasmbench_variational_n4": [
+"qasmbench",
+"qasmbench-small/variational_n4/variational_n4.qasm"
+],
+"qasmbench_vqe_uccsd_n4": [
+"qasmbench",
+"qasmbench-small/vqe_uccsd_n4/vqe_uccsd_n4.qasm"
+],
+"qasmbench_vqe_uccsd_n6": [
+"qasmbench",
+"qasmbench-small/vqe_uccsd_n6/vqe_uccsd_n6.qasm"
+],
+"qasmbench_vqe_uccsd_n8": [
+"qasmbench",
+"qasmbench-small/vqe_uccsd_n8/vqe_uccsd_n8.qasm"
+],
+"qasmbench_wstate_n3": [
+"qasmbench",
+"qasmbench-small/wstate_n3/wstate_n3.qasm"
+]
+}

@@ -1,0 +1,179 @@
+# C40-VAL
+
+jobs: 162; records with an error: 0
+
+
+| device | Y1 C40 on failed | Y2 C40 >= R1 every test | Y3 C40 >= C39 every test | Y7 controls C40 = R1 | qaoa: ESP C40/R1 (runnable), 2q C40/R1 | trotter_noncommuting: ESP C40/R1 (runnable), 2q C40/R1 | trotter_commuting: ESP C40/R1 (runnable), 2q C40/R1 | single_noncommuting: ESP C40/R1 (runnable), 2q C40/R1 | rotation_gates: ESP C40/R1 (runnable), 2q C40/R1 | ESP C40/QK3 (all runnable) | Y8 median time C40 / R1 s (readable) |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| FakeTorino | 0 | 27 / 27 | 27 / 27 | 2 / 2 | 1.329 (9), 0.893 | 1.135 (6), 0.906 | 8.876 (3), 0.327 | 1.024 (5), 1.017 | 1.009 (2), 1.033 | 1.591 (25) | 0.29 / 0.08 |
+| FakeKingston | 0 | 27 / 27 | 27 / 27 | 2 / 2 | 1.103 (9), 0.899 | 1.040 (6), 0.886 | 2.682 (3), 0.308 | 1.004 (5), 1.027 | 1.078 (2), 0.984 | 1.182 (25) | 0.43 / 0.10 |
+| FakeMarrakesh | 0 | 27 / 27 | 27 / 27 | 2 / 2 | 1.302 (9), 0.875 | 1.246 (6), 0.897 | 3.469 (3), 0.300 | 1.158 (5), 1.067 | 1.307 (2), 0.952 | 1.418 (25) | 0.39 / 0.10 |
+| FakeFez | 0 | 27 / 27 | 27 / 27 | 2 / 2 | 1.315 (9), 0.850 | 1.122 (6), 0.866 | 6.490 (3), 0.272 | 1.009 (5), 0.983 | 1.056 (2), 0.895 | 1.448 (25) | 0.42 / 0.10 |
+| FakeAachen | 0 | 27 / 27 | 27 / 27 | 2 / 2 | 1.045 (9), 0.940 | 1.082 (6), 0.861 | 2.540 (3), 0.282 | 1.000 (5), 1.000 | 1.036 (2), 1.051 | 1.151 (25) | 0.45 / 0.10 |
+| FakeBoston | 0 | 27 / 27 | 27 / 27 | 2 / 2 | 1.079 (9), 0.939 | 1.070 (6), 0.869 | 2.092 (3), 0.298 | 1.002 (5), 0.991 | 1.006 (2), 1.014 | 1.128 (25) | 0.41 / 0.10 |
+| all | 0 | 162 / 162 | 162 / 162 | 12 / 12 | 1.189 (54), 0.899 | 1.114 (36), 0.881 | 3.765 (18), 0.297 | 1.031 (30), 1.014 | 1.077 (12), 0.987 | 1.308 (150) | 0.41 / 0.10 |
+
+## Per test (log10 ESP C40 - R1, C40 - QK3; two-qubit C40 / R1 / QK3; STEINER chosen?)
+
+- gen_heisenberg3reg_n10 Aachen: +0.0000, +0.0036; 60 / 60 / 69; usual
+- gen_heisenberg3reg_n10 Boston: +0.0050, -0.0006; 66 / 69 / 69; steiner
+- gen_heisenberg3reg_n10 Fez: +0.0184, +0.0073; 66 / 72 / 69; steiner
+- gen_heisenberg3reg_n10 Kingston: +0.0000, +0.0048; 63 / 63 / 69; usual
+- gen_heisenberg3reg_n10 Marrakesh: +0.0015, +0.0075; 84 / 66 / 69; steiner
+- gen_heisenberg3reg_n10 Torino: +0.0028, +0.0356; 63 / 69 / 75; steiner
+- gen_heisenberg3reg_n16 Aachen: +0.0000, -0.0049; 129 / 129 / 126; usual
+- gen_heisenberg3reg_n16 Boston: +0.0000, -0.0075; 117 / 117 / 126; usual
+- gen_heisenberg3reg_n16 Fez: +0.0000, +0.0158; 132 / 132 / 126; usual
+- gen_heisenberg3reg_n16 Kingston: +0.0051, +0.0191; 153 / 135 / 126; steiner
+- gen_heisenberg3reg_n16 Marrakesh: +0.0438, +0.1064; 117 / 132 / 126; steiner
+- gen_heisenberg3reg_n16 Torino: +0.0000, +0.0053; 108 / 108 / 123; usual
+- gen_ising_lie3_n12 Aachen: +0.1349, +0.1313; 66 / 243 / 232; steiner
+- gen_ising_lie3_n12 Boston: +0.1047, +0.1034; 65 / 234 / 232; steiner
+- gen_ising_lie3_n12 Fez: +0.2578, +0.2467; 65 / 241 / 232; steiner
+- gen_ising_lie3_n12 Kingston: +0.1609, +0.1433; 77 / 238 / 232; steiner
+- gen_ising_lie3_n12 Marrakesh: +0.1826, +0.1738; 61 / 236 / 232; steiner
+- gen_ising_lie3_n12 Torino: +0.3516, +0.3513; 74 / 238 / 227; steiner
+- gen_ising_lie3_n20 Aachen: +0.3418, +0.4071; 139 / 545 / 560; steiner
+- gen_ising_lie3_n20 Boston: +0.2830, +0.2873; 149 / 555 / 560; steiner
+- gen_ising_lie3_n20 Fez: +0.7394, +0.8319; 139 / 575 / 560; steiner
+- gen_ising_lie3_n20 Kingston: +0.4378, +0.4227; 139 / 559 / 560; steiner
+- gen_ising_lie3_n20 Marrakesh: +0.4826, +0.5131; 158 / 532 / 560; steiner
+- gen_ising_lie3_n20 Torino: +0.8053, +0.8354; 178 / 533 / 556; steiner
+- gen_qaoa_n12_p1 Aachen: +0.0011, +0.0020; 80 / 76 / 77; steiner
+- gen_qaoa_n12_p1 Boston: +0.0080, -0.0015; 80 / 76 / 77; steiner
+- gen_qaoa_n12_p1 Fez: +0.0047, +0.0018; 77 / 78 / 77; steiner
+- gen_qaoa_n12_p1 Kingston: +0.0112, +0.0057; 78 / 84 / 77; steiner
+- gen_qaoa_n12_p1 Marrakesh: +0.0481, +0.0241; 70 / 76 / 77; steiner
+- gen_qaoa_n12_p1 Torino: +0.0360, +0.0436; 75 / 75 / 71; steiner
+- gen_qaoa_n12_p2 Aachen: +0.0360, +0.0362; 131 / 150 / 158; steiner
+- gen_qaoa_n12_p2 Boston: +0.0209, +0.0250; 131 / 151 / 158; steiner
+- gen_qaoa_n12_p2 Fez: +0.0702, +0.0636; 118 / 160 / 158; steiner
+- gen_qaoa_n12_p2 Kingston: +0.0322, +0.0268; 131 / 160 / 158; steiner
+- gen_qaoa_n12_p2 Marrakesh: +0.0310, +0.0105; 137 / 174 / 158; steiner
+- gen_qaoa_n12_p2 Torino: +0.1049, +0.0997; 150 / 164 / 161; steiner
+- gen_qaoa_n12_p3 Aachen: +0.0313, +0.0326; 204 / 256 / 272; steiner
+- gen_qaoa_n12_p3 Boston: +0.0349, +0.0273; 235 / 284 / 272; steiner
+- gen_qaoa_n12_p3 Fez: +0.0402, +0.0346; 250 / 276 / 272; steiner
+- gen_qaoa_n12_p3 Kingston: +0.0621, +0.0734; 221 / 261 / 272; steiner
+- gen_qaoa_n12_p3 Marrakesh: +0.0968, +0.0746; 231 / 283 / 272; steiner
+- gen_qaoa_n12_p3 Torino: +0.1293, +0.1041; 248 / 272 / 261; steiner
+- gen_qaoa_n20_p1 Aachen: +0.0137, +0.0029; 113 / 130 / 127; steiner
+- gen_qaoa_n20_p1 Boston: +0.0158, +0.0033; 135 / 136 / 127; steiner
+- gen_qaoa_n20_p1 Fez: +0.0940, +0.0267; 124 / 145 / 127; steiner
+- gen_qaoa_n20_p1 Kingston: +0.0596, +0.0226; 124 / 141 / 127; steiner
+- gen_qaoa_n20_p1 Marrakesh: +0.0385, +0.1395; 115 / 155 / 127; steiner
+- gen_qaoa_n20_p1 Torino: +0.0389, +0.0532; 113 / 120 / 140; steiner
+- gen_qaoa_n20_p2 Aachen: +0.0287, +0.0135; 313 / 319 / 305; steiner
+- gen_qaoa_n20_p2 Boston: +0.0179, +0.0150; 355 / 305 / 305; steiner
+- gen_qaoa_n20_p2 Fez: +0.0617, +0.0982; 311 / 354 / 305; steiner
+- gen_qaoa_n20_p2 Kingston: +0.0252, +0.0195; 285 / 305 / 305; steiner
+- gen_qaoa_n20_p2 Marrakesh: +0.0000, -0.0036; 305 / 305 / 305; usual
+- gen_qaoa_n20_p2 Torino: +0.0000, +0.0712; 305 / 305 / 314; usual
+- gen_qaoa_n20_p3 Aachen: +0.0161, +0.0179; 386 / 431 / 397; steiner
+- gen_qaoa_n20_p3 Boston: +0.0561, +0.0380; 342 / 420 / 397; steiner
+- gen_qaoa_n20_p3 Fez: +0.1741, +0.1546; 349 / 429 / 397; steiner
+- gen_qaoa_n20_p3 Kingston: +0.0674, +0.0580; 351 / 418 / 397; steiner
+- gen_qaoa_n20_p3 Marrakesh: +0.0822, +0.2300; 372 / 416 / 397; steiner
+- gen_qaoa_n20_p3 Torino: +0.2825, +0.2852; 330 / 421 / 431; steiner
+- gen_qaoa_n28_p1 Aachen: +0.0000, -0.0208; 220 / 220 / 200; usual
+- gen_qaoa_n28_p1 Boston: +0.0071, -0.0197; 233 / 231 / 200; steiner
+- gen_qaoa_n28_p1 Fez: +0.0154, -0.0612; 220 / 241 / 200; steiner
+- gen_qaoa_n28_p1 Kingston: +0.0000, -0.0279; 219 / 219 / 200; usual
+- gen_qaoa_n28_p1 Marrakesh: +0.1686, +0.1170; 245 / 248 / 200; steiner
+- gen_qaoa_n28_p1 Torino: +0.0000, +0.0073; 233 / 233 / 209; usual
+- gen_qaoa_n28_p2 Aachen: +0.0446, +0.0049; 521 / 511 / 504; steiner
+- gen_qaoa_n28_p2 Boston: +0.0929, +0.0889; 387 / 500 / 504; steiner
+- gen_qaoa_n28_p2 Fez: +0.1884, +0.3335; 492 / 534 / 504; steiner
+- gen_qaoa_n28_p2 Kingston: +0.0650, +0.0275; 513 / 556 / 504; steiner
+- gen_qaoa_n28_p2 Marrakesh: +0.2544, +0.0822; 508 / 531 / 504; steiner
+- gen_qaoa_n28_p2 Torino: +0.2363, +0.2212; 440 / 569 / 539; steiner
+- gen_qaoa_n28_p3 Aachen: +0.0000, +0.0301; 790 / 790 / 825; usual
+- gen_qaoa_n28_p3 Boston: +0.0450, +0.0189; 848 / 830 / 825; steiner
+- gen_qaoa_n28_p3 Fez: +0.4227, +0.5184; 602 / 883 / 825; steiner
+- gen_qaoa_n28_p3 Kingston: +0.0595, +0.0683; 746 / 800 / 825; steiner
+- gen_qaoa_n28_p3 Marrakesh: +0.3116, +0.3579; 672 / 837 / 825; steiner
+- gen_qaoa_n28_p3 Torino: +0.2826, +0.4239; 602 / 799 / 813; steiner
+- gen_random_n6 Aachen: +0.0000, -0.0029; 62 / 62 / 59; -
+- gen_random_n6 Boston: +0.0000, -0.0015; 62 / 62 / 59; -
+- gen_random_n6 Fez: +0.0000, -0.0059; 63 / 63 / 59; -
+- gen_random_n6 Kingston: +0.0000, +0.0017; 58 / 58 / 59; -
+- gen_random_n6 Marrakesh: +0.0000, -0.0023; 63 / 63 / 59; -
+- gen_random_n6 Torino: +0.0000, +0.0002; 62 / 62 / 62; -
+- gen_random_n8 Aachen: +0.0000, +0.0039; 101 / 101 / 106; -
+- gen_random_n8 Boston: +0.0000, +0.0018; 103 / 103 / 106; -
+- gen_random_n8 Fez: +0.0000, +0.0063; 102 / 102 / 106; -
+- gen_random_n8 Kingston: +0.0000, -0.0133; 106 / 106 / 106; -
+- gen_random_n8 Marrakesh: +0.0000, -0.0322; 96 / 96 / 106; -
+- gen_random_n8 Torino: +0.0000, -0.0166; 106 / 106 / 102; -
+- gen_randpauli_n10 Aachen: +0.0000, -0.0024; 179 / 179 / 179; usual
+- gen_randpauli_n10 Boston: +0.0000, +0.0014; 178 / 178 / 179; usual
+- gen_randpauli_n10 Fez: +0.0000, +0.0018; 182 / 182 / 179; usual
+- gen_randpauli_n10 Kingston: +0.0000, -0.0053; 180 / 180 / 179; usual
+- gen_randpauli_n10 Marrakesh: +0.0706, +0.0568; 245 / 186 / 179; steiner
+- gen_randpauli_n10 Torino: +0.0000, -0.0198; 189 / 189 / 177; usual
+- gen_randpauli_n16 Aachen: +0.0000, -0.0155; 501 / 501 / 476; usual
+- gen_randpauli_n16 Boston: +0.0000, +0.0091; 490 / 490 / 476; usual
+- gen_randpauli_n16 Fez: +0.0000, -0.0428; 514 / 514 / 476; usual
+- gen_randpauli_n16 Kingston: +0.0032, -0.0493; 506 / 501 / 476; steiner
+- gen_randpauli_n16 Marrakesh: +0.2028, +0.1214; 483 / 516 / 476; steiner
+- gen_randpauli_n16 Torino: +0.0489, +0.0737; 571 / 479 / 484; steiner
+- gen_rotations_n12 Aachen: +0.0169, +0.0332; 180 / 167 / 191; steiner
+- gen_rotations_n12 Boston: +0.0054, +0.0103; 182 / 177 / 193; steiner
+- gen_rotations_n12 Fez: +0.0417, +0.0393; 173 / 201 / 193; steiner
+- gen_rotations_n12 Kingston: +0.0499, +0.0395; 171 / 195 / 191; steiner
+- gen_rotations_n12 Marrakesh: +0.0000, +0.0306; 165 / 165 / 191; usual
+- gen_rotations_n12 Torino: +0.0077, -0.0091; 206 / 193 / 178; steiner
+- gen_rotations_n20 Aachen: +0.0142, -0.0172; 403 / 393 / 388; steiner
+- gen_rotations_n20 Boston: +0.0000, -0.0251; 380 / 380 / 388; usual
+- gen_rotations_n20 Fez: +0.0052, -0.0199; 390 / 419 / 388; steiner
+- gen_rotations_n20 Kingston: +0.0157, +0.0112; 423 / 383 / 388; steiner
+- gen_rotations_n20 Marrakesh: +0.2322, +0.2052; 376 / 415 / 388; steiner
+- gen_rotations_n20 Torino: +0.0000, +0.0370; 379 / 379 / 402; usual
+- gen_sat3_lie2_n14 Aachen: +0.7379, +0.7237; 440 / 1378 / 1415; steiner
+- gen_sat3_lie2_n14 Boston: +0.5738, +0.5852; 471 / 1350 / 1415; steiner
+- gen_sat3_lie2_n14 Fez: +1.4394, +1.4363; 421 / 1396 / 1415; steiner
+- gen_sat3_lie2_n14 Kingston: +0.6866, +0.8276; 489 / 1364 / 1415; steiner
+- gen_sat3_lie2_n14 Marrakesh: +0.9554, +1.1056; 476 / 1379 / 1415; steiner
+- gen_sat3_lie2_n14 Torino: +1.6877, +2.0089; 451 / 1362 / 1378; steiner
+- gen_tfim_lie2_n10 Aachen: +0.0105, -0.0040; 108 / 119 / 126; steiner
+- gen_tfim_lie2_n10 Boston: +0.0103, +0.0098; 103 / 126 / 126; steiner
+- gen_tfim_lie2_n10 Fez: +0.0481, +0.0345; 98 / 132 / 126; steiner
+- gen_tfim_lie2_n10 Kingston: +0.0293, +0.0157; 98 / 125 / 126; steiner
+- gen_tfim_lie2_n10 Marrakesh: +0.0000, -0.0222; 131 / 131 / 126; usual
+- gen_tfim_lie2_n10 Torino: +0.0461, +0.0404; 103 / 118 / 123; steiner
+- gen_tfim_lie2_n16 Aachen: +0.0411, +0.0388; 196 / 242 / 246; steiner
+- gen_tfim_lie2_n16 Boston: +0.0423, +0.0358; 214 / 249 / 246; steiner
+- gen_tfim_lie2_n16 Fez: +0.0791, +0.1060; 200 / 244 / 246; steiner
+- gen_tfim_lie2_n16 Kingston: +0.0093, -0.0011; 217 / 249 / 246; steiner
+- gen_tfim_lie2_n16 Marrakesh: +0.1612, +0.0641; 197 / 254 / 246; steiner
+- gen_tfim_lie2_n16 Torino: +0.0763, +0.1114; 239 / 241 / 248; steiner
+- gen_tfim_lie2_n22 Aachen: +0.0853, +0.0618; 253 / 333 / 298; steiner
+- gen_tfim_lie2_n22 Boston: +0.0270, +0.0204; 264 / 306 / 298; steiner
+- gen_tfim_lie2_n22 Fez: +0.1001, +0.1641; 253 / 307 / 298; steiner
+- gen_tfim_lie2_n22 Kingston: +0.0268, +0.0478; 253 / 283 / 298; steiner
+- gen_tfim_lie2_n22 Marrakesh: +0.2061, +0.0156; 308 / 349 / 298; steiner
+- gen_tfim_lie2_n22 Torino: +0.1256, +0.1376; 254 / 298 / 327; steiner
+- gen_tfim_suzuki2_n10 Aachen: +0.0000, -0.0190; 124 / 124 / 120; usual
+- gen_tfim_suzuki2_n10 Boston: +0.0041, +0.0009; 115 / 120 / 120; steiner
+- gen_tfim_suzuki2_n10 Fez: +0.0053, +0.0106; 113 / 111 / 120; steiner
+- gen_tfim_suzuki2_n10 Kingston: +0.0000, -0.0126; 115 / 115 / 120; usual
+- gen_tfim_suzuki2_n10 Marrakesh: +0.0462, +0.0176; 96 / 102 / 120; steiner
+- gen_tfim_suzuki2_n10 Torino: +0.0208, +0.0356; 107 / 116 / 129; steiner
+- gen_tfim_suzuki2_n16 Aachen: +0.0238, +0.0229; 184 / 224 / 218; steiner
+- gen_tfim_suzuki2_n16 Boston: +0.0351, +0.0311; 196 / 239 / 218; steiner
+- gen_tfim_suzuki2_n16 Fez: +0.0018, -0.0105; 209 / 224 / 218; steiner
+- gen_tfim_suzuki2_n16 Kingston: +0.0343, +0.0246; 211 / 236 / 218; steiner
+- gen_tfim_suzuki2_n16 Marrakesh: +0.0466, +0.0550; 187 / 229 / 218; steiner
+- gen_tfim_suzuki2_n16 Torino: +0.0620, +0.0383; 177 / 218 / 217; steiner
+- gen_tfim_suzuki2_n22 Aachen: +0.0440, +0.0460; 303 / 342 / 344; steiner
+- gen_tfim_suzuki2_n22 Boston: +0.0571, +0.0542; 311 / 346 / 344; steiner
+- gen_tfim_suzuki2_n22 Fez: +0.0667, +0.0253; 348 / 395 / 344; steiner
+- gen_tfim_suzuki2_n22 Kingston: +0.0026, +0.0556; 299 / 340 / 344; steiner
+- gen_tfim_suzuki2_n22 Marrakesh: +0.1119, +0.3118; 350 / 355 / 344; steiner
+- gen_tfim_suzuki2_n22 Torino: +0.0000, +0.0491; 352 / 352 / 340; usual
+- gen_xyring_n12 Aachen: +0.0002, -0.0001; 24 / 24 / 24; steiner
+- gen_xyring_n12 Boston: +0.0000, -0.0001; 24 / 24 / 24; usual
+- gen_xyring_n12 Fez: +0.0002, +0.0000; 24 / 24 / 24; steiner
+- gen_xyring_n12 Kingston: +0.0000, -0.0006; 24 / 24 / 24; usual
+- gen_xyring_n12 Marrakesh: +0.0001, -0.0002; 24 / 24 / 24; steiner
+- gen_xyring_n12 Torino: +0.0003, -0.0001; 24 / 24 / 24; steiner

@@ -1,0 +1,40 @@
+qaoa_qasm                      tests= 66 run= 46 C41/R1 1.294 C41/QK3 1.321 R1/QK3 1.020 chosen 63/66 >=1.1x 23/46
+heisenberg_qasm                tests= 54 run= 39 C41/R1 1.370 C41/QK3 1.090 R1/QK3 1.019 chosen 26/54 >=1.1x 5/39
+qasmbench                      tests=234 run=199 C41/R1 1.224 C41/QK3 1.174 R1/QK3 0.970 chosen 87/234 >=1.1x 26/199
+feynman                        tests= 84 run= 84 C41/R1 1.072 C41/QK3 1.058 R1/QK3 0.987 chosen 49/84 >=1.1x 14/84
+gen_export                     tests= 30 run= 30 C41/R1 1.052 C41/QK3 1.041 R1/QK3 0.990 chosen 16/30 >=1.1x 5/30
+gen_qaoa_gates                 tests= 18 run= 18 C41/R1 1.308 C41/QK3 1.168 R1/QK3 0.893 chosen 14/18 >=1.1x 8/18
+control                        tests= 48 run= 42 C41/R1 1.000 C41/QK3 0.982 R1/QK3 0.982 chosen 0/48 >=1.1x 0/42
+Z8 gen_export+gen_qaoa_gates   tests= 48 run= 48 C41/R1 1.141 C41/QK3 1.087 R1/QK3 0.953 chosen 30/48 >=1.1x 13/48
+all read (non-control)         tests=486 run=416 C41/R1 1.202 C41/QK3 1.147 R1/QK3 0.981 chosen 255/486 >=1.1x 81/416
+all read, without Boston       tests=405 run=340 C41/R1 1.151 C41/QK3 1.124 R1/QK3 0.979 chosen 212/405 >=1.1x 69/340
+heisenberg without Boston      tests= 45 run= 31 C41/R1 1.027 C41/QK3 1.047 R1/QK3 1.018 chosen 21/45 >=1.1x 3/31
+qasmbench without Boston       tests=195 run=162 C41/R1 1.163 C41/QK3 1.118 R1/QK3 0.968 chosen 70/195 >=1.1x 19/162
+
+Biggest gains C41/R1 (runnable):
+  heis_N81                     Boston     C41/R1 18511.63 C41/QK3 1006117493031608229220808009115507226370166954538858179405668673324228712937496977786372358144.00 ESP C41 0.0374 R1 2.02e-06 QK3 0 2q 1689/1209/1176
+  qasmbench_vqe_uccsd_n8       Marrakesh  C41/R1 125.14 C41/QK3 75.91 ESP C41 0.0254 R1 0.000203 QK3 0.000335 2q 2468/5410/5384
+  qasmbench_vqe_uccsd_n8       Kingston   C41/R1 124.53 C41/QK3 87.56 ESP C41 0.0319 R1 0.000256 QK3 0.000364 2q 2206/5382/5384
+  qasmbench_vqe_uccsd_n8       Aachen     C41/R1 62.97 C41/QK3 46.93 ESP C41 0.0568 R1 0.000902 QK3 0.00121 2q 2293/5382/5384
+  qasmbench_vqe_uccsd_n8       Boston     C41/R1 48.80 C41/QK3 36.69 ESP C41 0.062 R1 0.00127 QK3 0.00169 2q 2388/5382/5384
+  qasmbench_swap_test_n115     Boston     C41/R1 33.49 C41/QK3 20.71 ESP C41 0.0734 R1 0.00219 QK3 0.00354 2q 1561/1106/1113
+  qasmbench_qugan_n71          Boston     C41/R1 11.96 C41/QK3 236.62 ESP C41 0.0258 R1 0.00215 QK3 0.000109 2q 2268/1162/1094
+  qasmbench_knn_n67            Boston     C41/R1 11.58 C41/QK3 0.95 ESP C41 0.328 R1 0.0283 QK3 0.346 2q 682/589/636
+  qaoa_N30                     Marrakesh  C41/R1 6.07 C41/QK3 16.12 ESP C41 0.02 R1 0.00329 QK3 0.00124 2q 1221/1418/1326
+  qasmbench_vqe_uccsd_n6       Torino     C41/R1 5.86 C41/QK3 5.36 ESP C41 0.189 R1 0.0323 QK3 0.0353 2q 467/987/987
+  qaoa_N25                     Marrakesh  C41/R1 5.49 C41/QK3 4.94 ESP C41 0.0654 R1 0.0119 QK3 0.0132 2q 854/1005/983
+  qasmbench_vqe_uccsd_n6       Fez        C41/R1 5.37 C41/QK3 4.93 ESP C41 0.255 R1 0.0476 QK3 0.0518 2q 429/987/987
+  gen_qaoagates_n28_p2         Marrakesh  C41/R1 5.30 C41/QK3 1.65 ESP C41 0.24 R1 0.0452 QK3 0.145 2q 397/563/515
+  heis_N64                     Boston     C41/R1 4.96 C41/QK3 6.98 ESP C41 0.0976 R1 0.0197 QK3 0.014 2q 1134/903/789
+  qasmbench_swap_test_n83      Boston     C41/R1 4.14 C41/QK3 3.07 ESP C41 0.152 R1 0.0368 QK3 0.0495 2q 1189/684/760
+
+slowest C41:
+  qasmbench_qft_n63            Aachen     C41 48.4s R1 2.6s QK3 1.1s terms 1823 chosen 0
+  qasmbench_qft_n63            Boston     C41 44.0s R1 3.0s QK3 0.8s terms 1823 chosen 0
+  qasmbench_qft_n63            Kingston   C41 42.7s R1 3.3s QK3 0.9s terms 1823 chosen 0
+  qasmbench_qft_n63            Torino     C41 39.9s R1 2.4s QK3 0.8s terms 1823 chosen 0
+  qasmbench_qft_n63            Fez        C41 38.2s R1 2.6s QK3 0.8s terms 1823 chosen 0
+  qasmbench_qft_n63            Marrakesh  C41 29.5s R1 2.5s QK3 0.9s terms 1823 chosen 0
+  qasmbench_knn_n67            Aachen     C41 19.7s R1 18.5s QK3 1.1s terms 199 chosen 0
+  qaoa_N100                    Marrakesh  C41 19.3s R1 1.8s QK3 1.5s terms 888 chosen 1
+time ratio median 4.1 p90 9.9

@@ -1,0 +1,23 @@
+control                            n= 12 run= 12 ESP C40/R1 1.000 C40/QK3 0.988 R1/QK3 0.988 C40/C39 1.000 2q C40/R1 1.000 C40/QK3 1.003 steiner chosen 0/12 >=1.1x better 0/12
+qaoa                               n= 54 run= 54 ESP C40/R1 1.189 C40/QK3 1.191 R1/QK3 1.001 C40/C39 1.189 2q C40/R1 0.899 C40/QK3 0.935 steiner chosen 48/54 >=1.1x better 26/54
+rotation_gates                     n= 12 run= 12 ESP C40/R1 1.077 C40/QK3 1.066 R1/QK3 0.990 C40/C39 1.077 2q C40/R1 0.987 C40/QK3 0.974 steiner chosen 9/12 >=1.1x better 3/12
+single_noncommuting                n= 30 run= 30 ESP C40/R1 1.031 C40/QK3 1.025 R1/QK3 0.994 C40/C39 1.031 2q C40/R1 1.014 C40/QK3 1.016 steiner chosen 14/30 >=1.1x better 4/30
+trotter_commuting                  n= 18 run= 18 ESP C40/R1 3.765 C40/QK3 4.155 R1/QK3 1.104 C40/C39 3.765 2q C40/R1 0.297 C40/QK3 0.296 steiner chosen 18/18 >=1.1x better 18/18
+trotter_noncommuting               n= 36 run= 36 ESP C40/R1 1.114 C40/QK3 1.109 R1/QK3 0.995 C40/C39 1.114 2q C40/R1 0.881 C40/QK3 0.887 steiner chosen 32/36 >=1.1x better 17/36
+Y6 noncommuting (trotter+single)   n= 66 run= 66 ESP C40/R1 1.076 C40/QK3 1.070 R1/QK3 0.995 C40/C39 1.076 2q C40/R1 0.939 C40/QK3 0.944 steiner chosen 46/66 >=1.1x better 21/66
+
+gen_ising_lie3_n12 ESP C40/R1 1.580 C40/QK3 1.555  ESP C40 median 0.796  2q C40/R1/QK3 66/238/232
+gen_ising_lie3_n20 ESP C40/R1 3.273 C40/QK3 3.545  ESP C40 median 0.56  2q C40/R1/QK3 149/555/560
+gen_qaoa_n12_p1 ESP C40/R1 1.043 C40/QK3 1.030  ESP C40 median 0.776  2q C40/R1/QK3 78/76/77
+gen_qaoa_n12_p2 ESP C40/R1 1.120 C40/QK3 1.106  ESP C40 median 0.668  2q C40/R1/QK3 131/160/158
+gen_qaoa_n12_p3 ESP C40/R1 1.164 C40/QK3 1.142  ESP C40 median 0.581  2q C40/R1/QK3 235/276/272
+gen_qaoa_n20_p1 ESP C40/R1 1.105 C40/QK3 1.100  ESP C40 median 0.602  2q C40/R1/QK3 124/141/127
+gen_qaoa_n20_p2 ESP C40/R1 1.053 C40/QK3 1.085  ESP C40 median 0.389  2q C40/R1/QK3 311/305/305
+gen_qaoa_n20_p3 ESP C40/R1 1.297 C40/QK3 1.351  ESP C40 median 0.326  2q C40/R1/QK3 351/421/397
+gen_qaoa_n28_p1 ESP C40/R1 1.076 C40/QK3 0.998  ESP C40 median 0.378  2q C40/R1/QK3 233/233/200
+gen_qaoa_n28_p2 ESP C40/R1 1.403 C40/QK3 1.338  ESP C40 median 0.194  2q C40/R1/QK3 508/534/504
+gen_qaoa_n28_p3 ESP C40/R1 1.538 C40/QK3 1.723  ESP C40 median 0.116  2q C40/R1/QK3 746/830/825
+gen_rotations_n12 ESP C40/R1 1.048 C40/QK3 1.057  ESP C40 median 0.617  2q C40/R1/QK3 180/193/191
+gen_rotations_n20 ESP C40/R1 1.108 C40/QK3 1.076  ESP C40 median 0.292  2q C40/R1/QK3 390/393/388
+gen_sat3_lie2_n14 ESP C40/R1 10.315 C40/QK3 13.018  ESP C40 median 0.33  2q C40/R1/QK3 471/1378/1415
+time ratio median 4.3 max 8.5; max C40 t 1.46

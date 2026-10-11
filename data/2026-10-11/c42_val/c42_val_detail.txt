@@ -1,0 +1,27 @@
+errors: tests 17 QK3 on failed in those: 2
+tried 198 kept alt 73 kept first 25 no alt 100
+W4 all tried runnable (1.4019433350376378, 68)
+kept-alternative runnable (2.710350957895203, 23)
+W4 without Boston, Aachen (1.1258955300085542, 59)
+better >=10% among runnable tried 21 of 68
+feynman          tests 192 tried  41 ESP C42/C41 runnable tried 1.041 all-run C42/R1 1.005 C42/QK3 1.002
+gen_random       tests  14 tried   2 ESP C42/C41 runnable tried 2.041 all-run C42/R1 1.107 C42/QK3 0.985
+heisenberg_qasm  tests  11 tried  11 ESP C42/C41 runnable tried nan all-run C42/R1 nan C42/QK3 nan
+other            tests  12 tried  10 ESP C42/C41 runnable tried nan all-run C42/R1 nan C42/QK3 nan
+qaoa_qasm        tests  42 tried  22 ESP C42/C41 runnable tried 1.000 all-run C42/R1 1.189 C42/QK3 1.173
+qasmbench        tests 369 tried  78 ESP C42/C41 runnable tried 1.593 all-run C42/R1 1.063 C42/QK3 0.951
+qft              tests  42 tried  24 ESP C42/C41 runnable tried 1.000 all-run C42/R1 1.000 C42/QK3 1.174
+qv               tests  30 tried  10 ESP C42/C41 runnable tried 1.892 all-run C42/R1 1.073 C42/QK3 1.005
+largest gains:
+  qasmbench_cc_n151              Boston     0.00193 -> 0.0679 QK3 0 2q 798->783
+  qasmbench_cc_n151              Aachen     0.00151 -> 0.0212 QK3 0 2q 691->797
+  qasmbench_ghz_n127             Boston     0.0108 -> 0.123 QK3 0 2q 595->609
+  qasmbench_cat_n130             Boston     0.0108 -> 0.111 QK3 0 2q 586->633
+  qasmbench_cc_n64               Torino     0.00531 -> 0.0485 QK3 0.0624 2q 283->267
+  qasmbench_adder_n64            Boston     0.0141 -> 0.118 QK3 0.00578 2q 978->1001
+  gen_random_n40                 Marrakesh  0.0498 -> 0.207 QK3 0.175 2q 249->251
+  qasmbench_ghz_n127             Aachen     0.0159 -> 0.0604 QK3 0 2q 543->614
+  qasmbench_cat_n130             Aachen     0.0149 -> 0.0532 QK3 0 2q 594->640
+  qv_N16                         Marrakesh  0.0254 -> 0.079 QK3 0.089 2q 834->867
+time ratio tried median 1.85 p90 2.46 max 30.6
+max C42 t 71.843 on qasmbench_ghz_n127

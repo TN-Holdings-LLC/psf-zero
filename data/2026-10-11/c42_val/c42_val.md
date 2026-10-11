@@ -1,0 +1,235 @@
+# C42-VAL
+
+jobs: 729; records with an error: 51
+
+- FakeTorino R1 qasmbench_bv_n70: FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'
+- FakeTorino C41 qasmbench_bv_n70: FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'
+- FakeTorino C42 qasmbench_bv_n70: FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'
+- FakeBoston R1 qasmbench_bv_n140: FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'
+- FakeBoston C41 qasmbench_bv_n140: FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'
+- FakeBoston C42 qasmbench_bv_n140: FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'
+- FakeKingston R1 gen_random_n40: FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'
+- FakeKingston C41 gen_random_n40: FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'
+- FakeKingston C42 gen_random_n40: FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'
+- FakeTorino R1 gen_random_n40: FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'
+- FakeTorino C41 gen_random_n40: FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'
+- FakeTorino C42 gen_random_n40: FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'
+- FakeAachen R1 qasmbench_bv_n30: FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'
+- FakeAachen C41 qasmbench_bv_n30: FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'
+- FakeAachen C42 qasmbench_bv_n30: FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'
+- FakeTorino R1 qasmbench_cat_n130: FailedElementsError: "no placement avoids the failed couplers and qubits ('A connected component of the DAGCircuit is too large for any of the connect
+- FakeTorino C41 qasmbench_cat_n130: FailedElementsError: "no placement avoids the failed couplers and qubits ('A connected component of the DAGCircuit is too large for any of the connect
+- FakeTorino C42 qasmbench_cat_n130: FailedElementsError: "no placement avoids the failed couplers and qubits ('A connected component of the DAGCircuit is too large for any of the connect
+- FakeKingston R1 qasmbench_bv_n70: FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'
+- FakeKingston C41 qasmbench_bv_n70: FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'
+
+| device | W1 C42 on failed | W2 C42 >= C41 every test | W3 untried: C42 = C41 by value | W5 tried / tests | W4 tried, runnable: ESP C42/C41 | alternative kept | W6 tried: median time C42/C41 | W7 all runnable: ESP C42/R1, C42/QK3 |
+|---|---|---|---|---|---|---|---|---|
+| FakeTorino | 0 | 115 / 115 | 48 / 48 | 67 / 115 | 1.088 (33) | 7 | 1.79 | 1.041, 0.965 (80) |
+| FakeKingston | 0 | 117 / 117 | 79 / 79 | 38 / 117 | 1.045 (14) | 9 | 1.93 | 1.017, 0.998 (89) |
+| FakeMarrakesh | 0 | 121 / 122 | 88 / 88 | 34 / 122 | 1.486 (9) | 19 | 1.83 | 1.056, 0.939 (88) |
+| FakeFez | 0 | 122 / 122 | 94 / 96 | 26 / 122 | 1.014 (3) | 9 | 1.87 | 1.007, 0.968 (88) |
+| FakeAachen | 0 | 118 / 118 | 103 / 103 | 15 / 118 | 3.978 (4) | 12 | 1.88 | 1.061, 0.987 (95) |
+| FakeBoston | 0 | 118 / 118 | 100 / 100 | 18 / 118 | 8.094 (5) | 17 | 1.93 | 1.121, 1.038 (96) |
+| all | 0 | 711 / 712 | 512 / 514 | 198 / 712 | 1.402 (68) | 73 | 1.85 | 1.051, 0.983 (536) |
+
+## Tests where item 74 tried (log10 ESP C42 - C41; ESP C41 -> C42; two-qubit C41 -> C42; kept?)
+
+- feynman_adder_8 Torino: +0.0000; 0.0174 -> 0.0174; 746 -> 746; first
+- feynman_bigadder Torino: +0.0000; 0.281 -> 0.281; 222 -> 222; first
+- feynman_gf2^10_mult Kingston: +0.0000; 0.0139 -> 0.0139; 1717 -> 1717; first
+- feynman_gf2^10_mult Torino: +0.0000; 3.32e-05 -> 3.32e-05; 1804 -> 1804; first
+- feynman_gf2^16_mult Boston: +9.6220; 2.36e-14 -> 9.89e-05; 4786 -> 4964; alternative
+- feynman_gf2^16_mult Fez: +0.0000; 1.4e-11 -> 1.4e-11; 4589 -> 4589; first
+- feynman_gf2^16_mult Kingston: +0.0000; 8.51e-07 -> 8.51e-07; 4781 -> 4781; first
+- feynman_gf2^16_mult Marrakesh: +0.0000; 5.1e-10 -> 5.1e-10; 5247 -> 5247; first
+- feynman_gf2^16_mult Torino: +0.0000; 1.55e-12 -> 1.55e-12; 4832 -> 4832; first
+- feynman_gf2^32_mult Aachen: +12.9793; 5.68e-40 -> 5.41e-27; 17873 -> 19227; alternative
+- feynman_gf2^32_mult Boston: +33.3980; 8.28e-52 -> 2.07e-18; 18719 -> 18765; alternative
+- feynman_gf2^32_mult Fez: +0.0000; 1.18e-50 -> 1.18e-50; 19512 -> 19512; first
+- feynman_gf2^32_mult Kingston: +1.7072; 2.2e-32 -> 1.12e-30; 19020 -> 19775; alternative
+- feynman_gf2^32_mult Marrakesh: +4.1160; 1.44e-52 -> 1.88e-48; 20656 -> 21642; alternative
+- feynman_gf2^32_mult Torino: +0.0000; 7.76e-72 -> 7.76e-72; 20056 -> 20056; first
+- feynman_gf2^5_mult Torino: +0.0000; 0.116 -> 0.116; 380 -> 380; first
+- feynman_gf2^6_mult Torino: +0.0000; 0.0467 -> 0.0467; 563 -> 563; first
+- feynman_gf2^7_mult Kingston: +0.1495; 0.113 -> 0.159; 814 -> 758; alternative
+- feynman_gf2^7_mult Torino: +0.0000; 0.0122 -> 0.0122; 760 -> 760; first
+- feynman_gf2^8_mult Kingston: +0.0039; 0.0464 -> 0.0468; 1152 -> 1157; alternative
+- feynman_gf2^8_mult Marrakesh: +0.0000; 0.00918 -> 0.00918; 1136 -> 1136; first
+- feynman_gf2^8_mult Torino: +0.0000; 0.0013 -> 0.0013; 1143 -> 1143; first
+- feynman_gf2^9_mult Torino: +0.0000; 0.000231 -> 0.000231; 1423 -> 1423; first
+- feynman_ham15-high Kingston: +0.0000; 4.08e-05 -> 4.08e-05; 4959 -> 4959; first
+- feynman_ham15-high Torino: +0.0000; 3.32e-10 -> 3.32e-10; 4896 -> 4896; first
+- feynman_ham15-low Kingston: +0.0478; 0.162 -> 0.181; 788 -> 785; alternative
+- feynman_ham15-low Torino: +0.0000; 0.0155 -> 0.0155; 782 -> 782; first
+- feynman_ham15-med Torino: +0.0000; 0.00265 -> 0.00265; 1243 -> 1243; first
+- feynman_hwb10 Torino: +0.0000; 3.3e-202 -> 3.3e-202; 111912 -> 111912; first
+- feynman_hwb8 Kingston: +0.0000; 2.84e-14 -> 2.84e-14; 18342 -> 18342; first
+- feynman_hwb8 Torino: +0.0000; 3.93e-32 -> 3.93e-32; 18249 -> 18249; first
+- feynman_inverseqft1 Kingston: +0.0000; 0.81 -> 0.81; 0 -> 0; first
+- feynman_inverseqft1 Torino: +0.0000; 0.762 -> 0.762; 0 -> 0; first
+- feynman_inverseqft2 Kingston: +0.0000; 0.81 -> 0.81; 0 -> 0; first
+- feynman_inverseqft2 Torino: +0.0000; 0.762 -> 0.762; 0 -> 0; first
+- feynman_mod_adder_1024 Kingston: +0.0000; 4.87e-05 -> 4.87e-05; 4080 -> 4080; first
+- feynman_mod_adder_1024 Torino: +0.0000; 4.35e-10 -> 4.35e-10; 4121 -> 4121; first
+- feynman_qcla_adder_10 Marrakesh: +0.1112; 0.112 -> 0.144; 476 -> 501; alternative
+- feynman_qcla_adder_10 Torino: +0.0000; 0.0373 -> 0.0373; 501 -> 501; first
+- feynman_qcla_mod_7 Marrakesh: +0.0000; 0.0339 -> 0.0339; 904 -> 904; first
+- feynman_qcla_mod_7 Torino: +0.0000; 0.00742 -> 0.00742; 777 -> 777; first
+- gen_random_n20 Torino: +0.0000; 0.212 -> 0.212; 200 -> 200; first
+- gen_random_n40 Marrakesh: +0.6197; 0.0498 -> 0.207; 249 -> 251; alternative
+- heis_N121 Aachen: +1.0710; 4.13e-05 -> 0.000486; 2046 -> 2079; alternative
+- heis_N121 Boston: +0.8082; 0.000936 -> 0.00602; 3427 -> 2172; alternative
+- heis_N121 Fez: +0.0000; 4.92e-07 -> 4.92e-07; 2277 -> 2277; first
+- heis_N121 Kingston: +0.3471; 2.87e-05 -> 6.38e-05; 2319 -> 2304; alternative
+- heis_N121 Marrakesh: +0.5147; 1.39e-07 -> 4.54e-07; 2250 -> 2406; alternative
+- heis_N121 Torino: +0.0000; 1.33e-11 -> 1.33e-11; 2145 -> 2145; first
+- heis_N144 Aachen: +2.2143; 1.1e-06 -> 0.00018; 5111 -> 2514; alternative
+- heis_N144 Boston: +0.3327; 0.000384 -> 0.000826; 3827 -> 2637; alternative
+- heis_N144 Fez: +0.0443; 3.59e-08 -> 3.98e-08; 2694 -> 2718; alternative
+- heis_N144 Kingston: +0.0000; 9.27e-06 -> 9.27e-06; 2562 -> 2562; first
+- heis_N144 Marrakesh: +0.0000; 2.26e-09 -> 2.26e-09; 2880 -> 2880; first
+- other_clifford_100_12345 Aachen: +55.9478; 1.61e-148 -> 1.42e-92; 58113 -> 60307; alternative
+- other_clifford_100_12345 Boston: +188.7341; 1.8e-249 -> 9.78e-61; 59380 -> 63108; alternative
+- other_clifford_100_12345 Fez: +2.5935; 6.98e-153 -> 2.74e-150; 63406 -> 63966; alternative
+- other_clifford_100_12345 Kingston: +0.0000; 2.6e-81 -> 2.6e-81; 59144 -> 59144; first
+- other_clifford_100_12345 Marrakesh: +20.5202; 2.28e-168 -> 7.56e-148; 63613 -> 68693; alternative
+- other_clifford_100_12345 Torino: +0.0000; 3.27e-214 -> 3.27e-214; 63098 -> 63098; first
+- other_dtc_100_cx_12345 Fez: +0.0000; 2.04e-45 -> 2.04e-45; 19800 -> 19800; first
+- other_dtc_100_cx_12345 Kingston: +0.0000; 7.25e-28 -> 7.25e-28; 19800 -> 19800; first
+- other_dtc_100_cx_12345 Marrakesh: +3.7661; 1.1e-63 -> 6.42e-60; 19800 -> 26929; alternative
+- other_dtc_100_cx_12345 Torino: +0.0000; 1.21e-106 -> 1.21e-106; 28913 -> 28913; first
+- qaoa_N120 Aachen: +1.4014; 1.73e-18 -> 4.35e-17; 15800 -> 11662; alternative
+- qaoa_N120 Boston: +0.1986; 4.76e-11 -> 7.51e-11; 13899 -> 12334; alternative
+- qaoa_N120 Fez: +0.0000; 4.45e-27 -> 4.45e-27; 10250 -> 10250; alternative
+- qaoa_N120 Kingston: +0.0000; 1.1e-15 -> 1.1e-15; 10037 -> 10037; first
+- qaoa_N120 Marrakesh: +0.0000; 3.76e-26 -> 3.76e-26; 10163 -> 10163; alternative
+- qaoa_N120 Torino: +0.0000; 2.42e-35 -> 2.42e-35; 14128 -> 14128; first
+- qaoa_N18 Torino: +0.0000; 0.058 -> 0.058; 542 -> 542; alternative
+- qaoa_N35 Fez: +0.0000; 0.00118 -> 0.00118; 1575 -> 1575; first
+- qaoa_N35 Kingston: +0.0000; 0.0181 -> 0.0181; 1623 -> 1623; first
+- qaoa_N35 Marrakesh: +0.0000; 0.00646 -> 0.00646; 1420 -> 1420; alternative
+- qaoa_N35 Torino: +0.0000; 0.000181 -> 0.000181; 1389 -> 1389; first
+- qaoa_N50 Boston: +0.0000; 0.00698 -> 0.00698; 2770 -> 2770; alternative
+- qaoa_N50 Fez: +0.0000; 1.55e-06 -> 1.55e-06; 3137 -> 3137; alternative
+- qaoa_N50 Kingston: +0.0000; 0.000945 -> 0.000945; 2754 -> 2754; first
+- qaoa_N50 Marrakesh: +0.0000; 1.85e-05 -> 1.85e-05; 3164 -> 3164; first
+- qaoa_N50 Torino: +0.0000; 4.18e-08 -> 4.18e-08; 2566 -> 2566; first
+- qaoa_N80 Aachen: +0.0000; 2.21e-10 -> 2.21e-10; 8439 -> 8439; alternative
+- qaoa_N80 Boston: +0.0000; 5.48e-05 -> 5.48e-05; 5795 -> 5795; alternative
+- qaoa_N80 Fez: +0.0000; 3.04e-13 -> 3.04e-13; 5924 -> 5924; first
+- qaoa_N80 Kingston: +0.0000; 3.63e-08 -> 3.63e-08; 5490 -> 5490; first
+- qaoa_N80 Marrakesh: +0.0000; 5.11e-14 -> 5.11e-14; 4959 -> 4959; first
+- qaoa_N80 Torino: +0.0000; 5.95e-17 -> 5.95e-17; 6934 -> 6934; first
+- qasmbench_32 Fez: +0.0000; 1.1e-11 -> 1.1e-11; 5640 -> 5640; first
+- qasmbench_32 Kingston: +0.0000; 4.79e-06 -> 4.79e-06; 5070 -> 5070; first
+- qasmbench_32 Marrakesh: +0.0000; 8.03e-09 -> 8.03e-09; 5229 -> 5229; first
+- qasmbench_32 Torino: +0.0000; 4.49e-13 -> 4.49e-13; 5214 -> 5214; first
+- qasmbench_adder_n118 Aachen: +1.5334; 3.37e-05 -> 0.00115; 2053 -> 1924; alternative
+- qasmbench_adder_n118 Boston: +5.1432; 3.73e-08 -> 0.00519; 1891 -> 2173; alternative
+- qasmbench_adder_n118 Fez: +0.0000; 9.28e-07 -> 9.28e-07; 2077 -> 2077; first
+- qasmbench_adder_n118 Kingston: +0.4411; 9.07e-05 -> 0.000251; 2155 -> 2212; alternative
+- qasmbench_adder_n118 Marrakesh: +2.9339; 1.11e-08 -> 9.54e-06; 2018 -> 1855; alternative
+- qasmbench_adder_n118 Torino: +0.0000; 1.84e-09 -> 1.84e-09; 2022 -> 2022; first
+- qasmbench_adder_n28 Marrakesh: +0.1902; 0.161 -> 0.25; 399 -> 386; alternative
+- qasmbench_adder_n28 Torino: +0.0000; 0.0497 -> 0.0497; 391 -> 391; first
+- qasmbench_adder_n64 Boston: +0.9234; 0.0141 -> 0.118; 978 -> 1001; alternative
+- qasmbench_adder_n64 Fez: +0.0680; 0.00125 -> 0.00146; 1022 -> 1062; alternative
+- qasmbench_adder_n64 Kingston: +0.0654; 0.02 -> 0.0232; 1010 -> 967; alternative
+- qasmbench_adder_n64 Marrakesh: +0.0000; 0.000928 -> 0.000928; 1027 -> 1027; first
+- qasmbench_adder_n64 Torino: +0.7256; 4.36e-05 -> 0.000232; 1035 -> 1090; alternative
+- qasmbench_bb84_n8 Kingston: +0.0000; 0.587 -> 0.587; 0 -> 0; first
+- qasmbench_bb84_n8 Torino: +0.0000; 0.473 -> 0.473; 0 -> 0; first
+- qasmbench_bigadder_n18 Torino: +0.0000; 0.281 -> 0.281; 222 -> 222; first
+- qasmbench_bv_n140 Fez: +0.0181; 0.0124 -> 0.0129; 467 -> 467; first
+- qasmbench_bv_n140 Marrakesh: -0.0130; 0.00116 -> 0.00113; 423 -> 423; first
+- qasmbench_bv_n19 Torino: +0.0618; 0.472 -> 0.544; 72 -> 46; alternative
+- qasmbench_bv_n30 Marrakesh: +0.0000; 0.0698 -> 0.0698; 76 -> 76; first
+- qasmbench_bv_n70 Marrakesh: +0.0000; 0.0159 -> 0.0159; 181 -> 181; first
+- qasmbench_cat_n130 Aachen: +0.5521; 0.0149 -> 0.0532; 594 -> 640; alternative
+- qasmbench_cat_n130 Boston: +1.0134; 0.0108 -> 0.111; 586 -> 633; alternative
+- qasmbench_cat_n130 Fez: +0.0329; 0.00385 -> 0.00415; 659 -> 699; alternative
+- qasmbench_cat_n130 Kingston: +0.0000; 0.00817 -> 0.00817; 619 -> 619; first
+- qasmbench_cat_n130 Marrakesh: +0.5780; 0.000486 -> 0.00184; 691 -> 844; alternative
+- qasmbench_cat_n35 Torino: +0.0000; 0.362 -> 0.362; 34 -> 34; first
+- qasmbench_cat_n65 Torino: +0.0000; 0.0827 -> 0.0827; 64 -> 64; first
+- qasmbench_cat_state_n22 Torino: +0.0000; 0.55 -> 0.55; 21 -> 21; first
+- qasmbench_cc_n12 Torino: +0.0588; 0.596 -> 0.682; 34 -> 29; alternative
+- qasmbench_cc_n151 Aachen: +1.1461; 0.00151 -> 0.0212; 691 -> 797; alternative
+- qasmbench_cc_n151 Boston: +1.5460; 0.00193 -> 0.0679; 798 -> 783; alternative
+- qasmbench_cc_n151 Fez: +0.0000; 0.00178 -> 0.00178; 819 -> 819; first
+- qasmbench_cc_n151 Marrakesh: +0.0000; 0.00013 -> 0.00013; 811 -> 811; first
+- qasmbench_cc_n32 Torino: +0.0640; 0.233 -> 0.27; 110 -> 103; alternative
+- qasmbench_cc_n64 Fez: +0.0000; 0.0941 -> 0.0941; 282 -> 282; first
+- qasmbench_cc_n64 Kingston: +0.0000; 0.175 -> 0.175; 279 -> 279; first
+- qasmbench_cc_n64 Marrakesh: +0.1332; 0.0707 -> 0.096; 284 -> 349; alternative
+- qasmbench_cc_n64 Torino: +0.9611; 0.00531 -> 0.0485; 283 -> 267; alternative
+- qasmbench_dnn_n16 Torino: +0.0000; 0.293 -> 0.293; 161 -> 161; first
+- qasmbench_ghz_n127 Aachen: +0.5783; 0.0159 -> 0.0604; 543 -> 614; alternative
+- qasmbench_ghz_n127 Boston: +1.0579; 0.0108 -> 0.123; 595 -> 609; alternative
+- qasmbench_ghz_n127 Fez: +0.0394; 0.00396 -> 0.00433; 647 -> 710; alternative
+- qasmbench_ghz_n127 Kingston: +0.0000; 0.00811 -> 0.00811; 573 -> 573; first
+- qasmbench_ghz_n127 Marrakesh: +0.2375; 0.000557 -> 0.000962; 673 -> 853; alternative
+- qasmbench_ghz_n127 Torino: +0.0000; 1.18e-05 -> 1.18e-05; 663 -> 663; first
+- qasmbench_ghz_n40 Torino: +0.0000; 0.294 -> 0.294; 39 -> 39; first
+- qasmbench_ghz_n78 Torino: +0.0000; 0.0377 -> 0.0377; 77 -> 77; first
+- qasmbench_ghz_state_n23 Torino: +0.0000; 0.535 -> 0.535; 22 -> 22; first
+- qasmbench_inverseqft_n4 Kingston: +0.0000; 0.81 -> 0.81; 0 -> 0; first
+- qasmbench_inverseqft_n4 Torino: +0.0000; 0.762 -> 0.762; 0 -> 0; first
+- qasmbench_lpn_n5 Kingston: +0.0000; 0.797 -> 0.797; 2 -> 2; first
+- qasmbench_lpn_n5 Torino: +0.0000; 0.74 -> 0.74; 2 -> 2; first
+- qasmbench_multiplier_n45 Marrakesh: +0.0000; 1.84e-12 -> 1.84e-12; 6184 -> 6184; first
+- qasmbench_multiplier_n45 Torino: +0.0000; 4.13e-14 -> 4.13e-14; 6347 -> 6347; first
+- qasmbench_multiplier_n75 Aachen: +16.8026; 1.2e-45 -> 7.64e-29; 19410 -> 19326; alternative
+- qasmbench_multiplier_n75 Boston: +82.7992; 2.66e-99 -> 1.68e-16; 20021 -> 21276; alternative
+- qasmbench_multiplier_n75 Marrakesh: +0.0000; 4.91e-55 -> 4.91e-55; 20412 -> 20412; first
+- qasmbench_multiplier_n75 Torino: +0.0000; 5.08e-69 -> 5.08e-69; 19842 -> 19842; first
+- qasmbench_qrng_n4 Kingston: +0.0000; 0.811 -> 0.811; 0 -> 0; first
+- qasmbench_qrng_n4 Torino: +0.0000; 0.762 -> 0.762; 0 -> 0; first
+- qasmbench_square_root_n45 Fez: +95.6604; 0 -> 0; 231061 -> 228899; alternative
+- qasmbench_square_root_n45 Kingston: +0.0000; 1.88e-249 -> 1.88e-249; 230634 -> 230634; first
+- qasmbench_square_root_n45 Marrakesh: +0.0000; 0 -> 0; 225840 -> 225840; first
+- qasmbench_square_root_n45 Torino: +0.0000; 0 -> 0; 225169 -> 225169; first
+- qasmbench_wstate_n118 Aachen: +0.1220; 0.103 -> 0.137; 234 -> 234; alternative
+- qasmbench_wstate_n118 Boston: +0.0000; 0.177 -> 0.177; 234 -> 234; first
+- qasmbench_wstate_n118 Fez: +0.0000; 0.041 -> 0.041; 234 -> 234; first
+- qasmbench_wstate_n118 Kingston: +0.4032; 0.00232 -> 0.00588; 1010 -> 1014; alternative
+- qasmbench_wstate_n118 Marrakesh: +0.9387; 5.45e-05 -> 0.000474; 1089 -> 1044; alternative
+- qasmbench_wstate_n118 Torino: +0.0000; 1.9e-07 -> 1.9e-07; 1076 -> 1076; first
+- qasmbench_wstate_n27 Torino: +0.0000; 0.399 -> 0.399; 52 -> 52; first
+- qasmbench_wstate_n36 Torino: +0.0000; 0.281 -> 0.281; 70 -> 70; first
+- qasmbench_wstate_n76 Torino: +0.0000; 0.0259 -> 0.0259; 150 -> 150; first
+- qft_N16 Torino: +0.0000; 0.0545 -> 0.0545; 511 -> 511; first
+- qft_N24 Fez: +0.0000; 0.00816 -> 0.00816; 1092 -> 1092; first
+- qft_N24 Kingston: +0.0000; 0.0569 -> 0.0569; 1094 -> 1094; first
+- qft_N24 Torino: +0.0000; 0.00214 -> 0.00214; 1110 -> 1110; first
+- qft_N32 Fez: +0.0000; 0.000118 -> 0.000118; 1857 -> 1857; first
+- qft_N32 Kingston: +0.0000; 0.0091 -> 0.0091; 1856 -> 1856; first
+- qft_N32 Torino: +0.0000; 2.02e-05 -> 2.02e-05; 1861 -> 1861; first
+- qft_N48 Aachen: +0.0000; 9.9e-05 -> 9.9e-05; 3329 -> 3329; first
+- qft_N48 Boston: +0.6123; 0.000554 -> 0.00227; 3445 -> 3279; alternative
+- qft_N48 Fez: +0.0025; 1.97e-08 -> 1.98e-08; 3518 -> 3434; alternative
+- qft_N48 Kingston: +0.0000; 0.000103 -> 0.000103; 3232 -> 3232; first
+- qft_N48 Marrakesh: +0.7434; 7.21e-09 -> 3.99e-08; 3583 -> 3238; alternative
+- qft_N48 Torino: +0.0000; 3.37e-11 -> 3.37e-11; 3664 -> 3664; first
+- qft_N64 Aachen: +0.0000; 3.12e-08 -> 3.12e-08; 5258 -> 5258; first
+- qft_N64 Boston: +5.6894; 1.3e-10 -> 6.34e-05; 4850 -> 5142; alternative
+- qft_N64 Fez: +0.0000; 6.71e-10 -> 6.71e-10; 4726 -> 4726; first
+- qft_N64 Kingston: +0.0000; 7.75e-07 -> 7.75e-07; 5364 -> 5364; first
+- qft_N64 Marrakesh: +1.6693; 1.4e-14 -> 6.54e-13; 5000 -> 5474; alternative
+- qft_N64 Torino: +0.0000; 6.31e-14 -> 6.31e-14; 4790 -> 4790; first
+- qft_N96 Aachen: +0.0000; 3.64e-15 -> 3.64e-15; 8435 -> 8435; first
+- qft_N96 Boston: +0.3704; 4.17e-09 -> 9.78e-09; 8637 -> 9304; alternative
+- qft_N96 Kingston: +0.9444; 1.61e-15 -> 1.42e-14; 8837 -> 8908; alternative
+- qft_N96 Marrakesh: +0.9230; 2.78e-20 -> 2.33e-19; 9746 -> 10023; alternative
+- qft_N96 Torino: +0.0000; 1.6e-24 -> 1.6e-24; 8659 -> 8659; first
+- qv_N12 Torino: +0.0602; 0.105 -> 0.12; 402 -> 426; alternative
+- qv_N16 Marrakesh: +0.4936; 0.0254 -> 0.079; 834 -> 867; alternative
+- qv_N16 Torino: +0.0000; 0.00861 -> 0.00861; 828 -> 828; first
+- qv_N24 Fez: +0.0000; 1.57e-05 -> 1.57e-05; 2490 -> 2490; first
+- qv_N24 Kingston: +0.0000; 0.00264 -> 0.00264; 2400 -> 2400; first
+- qv_N24 Torino: +0.0000; 2.26e-06 -> 2.26e-06; 2370 -> 2370; first
+- qv_N32 Fez: +0.0000; 1.88e-11 -> 1.88e-11; 5529 -> 5529; first
+- qv_N32 Kingston: +0.0000; 5.64e-06 -> 5.64e-06; 4953 -> 4953; first
+- qv_N32 Marrakesh: +2.6519; 1.92e-12 -> 8.6e-10; 5370 -> 5664; alternative
+- qv_N32 Torino: +0.0000; 6.37e-14 -> 6.37e-14; 5397 -> 5397; first

@@ -5884,6 +5884,380 @@ The owner released candidate c38 as **2026-10-11.2**: release 2026-10-11.1 with 
 
 ---
 
+<!-- ===== Addendum 447 (source: addendum_447.md) ===== -->
+
+> **Note added when merging:** C39-VAL's predictions were fixed in a local file before the run (not committed first); the file and the run's data are committed here, with C39-KNOWN's.
+
+## Addendum 447 -- C39-VAL: candidate 2026-10-11.c39 (changelog items 69-70: STEINER6's output is kept only where its ESP on the device is above the usual path's; inputs of more than 2000 terms take the usual path), on new generated circuits including the type item 68 lost on. X1-X7 confirmed on all six devices: ESP 1.445 times release 2026-10-11.1's on the runnable commuting tests, never below release 2026-10-11.2; the C38-VAL losses (tsp ts225, lin105) are gone, 12 of 12 (2026-10-11)
+
+**Status: the predictions were fixed before the run in a local file, not committed first** (as in Addendum 445: the
+owner had asked to work without publishing for a while).
+
+- **The file:** [`data/2026-10-11/c39_val/C39-VAL_preregistration.md`](../../data/2026-10-11/c39_val/C39-VAL_preregistration.md),
+  written at 09:44 CEST.
+- **Its hash:** sha256 `01aaea72...02a0`, copied to the owner's PC before the run, with the candidate's.
+- **The file is unchanged.**
+- **Seen before the run:** only a smoke run of 4 jobs (one tsp-type circuit, k = 3, on four devices).
+
+**Why.** C38-VAL (Addendum 445) left item 68 worse than release 2026-10-11.1 on the dense two-local diagonal type
+(HamLib tsp in unary encoding: 0.87 of its ESP on ts225), and no structural rule from the data separated that type from
+types it wins on (a dense two-local gnp instance won by 2-3 times). Its slowest call (1-fullins, 5335 terms, 144
+qubits) took 129 s against the usual path's 10 s, at an ESP near 0 either way.
+
+**The candidate.** [`patches/psf_compile_c39_2026-10-11/`](../../patches/psf_compile_c39_2026-10-11/), built from
+release 2026-10-11.2 by `make_c39.py` (exact substitutions):
+
+| item | what it does |
+|---|---|
+| 69 | when item 68 applies, the input is also compiled by the usual path (`steiner=False`); the output with the lower summed -ln(1 - error) over all its operations on the device (the higher ESP) is returned, on a tie the usual path's. Two fixed constructions compared by the device's own error table, not a search over seeds |
+| 70 | an evolution of more than 2000 terms takes the usual path |
+
+[`test_c39.py`](../../patches/psf_compile_c39_2026-10-11/test_c39.py): 8 tests, all passed before the run (among them:
+item 69 is never worse than the usual path; large inputs take the usual path).
+
+**Run.**
+
+- **When and where:** 09:44-09:49 CEST on 2026-10-11, in Claude's cloud workspace (2 cores, Python 3.11, Qiskit
+  2.5.2, qiskit-ibm-runtime 0.49.0), on the release 2026-10-11.2 commit with the candidate.
+- **Scope:** 168 jobs: 28 generated circuits × 6 devices.
+- **Script:** [`benchmarks/c39_val.py`](../../benchmarks/c39_val.py). **Data:**
+  [`data/2026-10-11/c39_val/`](../../data/2026-10-11/c39_val/).
+- **Circuits** (generated, seeds "C39-VAL|..."):
+  - commuting: tsp type in unary encoding (k = 3, 4, 5 cities: 9, 16, 25 qubits; 9), dense random graphs G(n, 0.4)
+    (6), MaxCut type on 3-regular graphs (6), 3-SAT type (4);
+  - non-commuting controls: transverse-field Ising, Heisenberg ring (3).
+- **Devices:** FakeTorino, FakeKingston, FakeMarrakesh, FakeFez, FakeAachen, FakeBoston.
+- **Arms:** QK3 (Qiskit level 3, seed 0), R1 (release 2026-10-11.1), R2 (release 2026-10-11.2), C39.
+- **Errors:** none.
+
+**Scoring, as fixed** (runnable: the best ESP of the four >= 0.01; an output on a failed element has ESP 0):
+
+| ID | prediction | Torino | Kingston | Marrakesh | Fez | Aachen | Boston | result |
+|---|---|---|---|---|---|---|---|---|
+| X1 | C39 outputs on failed elements: 0 | 0 | 0 | 0 | 0 | 0 | 0 | **CONFIRMED** |
+| X2 | non-commuting: C39 = R1 = R2 by value | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | **CONFIRMED** |
+| X3 | every commuting test: ESP C39 >= R1 | 25/25 | 25/25 | 25/25 | 25/25 | 25/25 | 25/25 | **CONFIRMED** |
+| X4 | every commuting test: ESP C39 >= R2 | 25/25 | 25/25 | 25/25 | 25/25 | 25/25 | 25/25 | **CONFIRMED** |
+| X5 | runnable commuting: ESP C39 / R1 >= 1.10 (refuted < 1.00) | 1.487 | 1.295 | 1.908 | 1.647 | 1.238 | 1.215 | **CONFIRMED**; pooled 1.445 (148 tests) |
+| X6 | runnable tsp type: ESP C39 / R1 >= 1.00 | 1.592 | 1.282 | 1.948 | 1.438 | 1.250 | 1.259 | **CONFIRMED**; pooled 1.442 (54) |
+| X7 | median time C39 on commuting tests <= 1.0 s (reported) | 0.57 | 0.47 | 0.50 | 0.58 | 0.56 | 0.60 | **CONFIRMED** (R1: 0.11 s) |
+
+Pooled, R2 / R1 was 1.439 and C39 / QK3 1.406.
+
+**The known losses (C39-KNOWN, a supplementary check, not part of the scoring).** HamLib tsp ts225 and lin105 (unary
+encoding), where item 68 lost in C38-VAL and Addendum 444, and 1-fullins (5335 terms), on the six devices (1-fullins:
+five; it does not fit FakeTorino), 09:53-10:01 CEST:
+[`benchmarks/c39_known.py`](../../benchmarks/c39_known.py), data
+[`data/2026-10-11/c39_val/c39_known.jsonl`](../../data/2026-10-11/c39_val/c39_known.jsonl).
+
+- ts225 and lin105: C39 returned the better of R1's and R2's outputs on **12 of 12** device pairs (R1's on 8, R2's on 4; each time the higher ESP).
+- 1-fullins: C39 took the usual path (item 70) in 8-12 s, R2 105-126 s; ESP is below 1e-35 for every arm.
+
+**Reading, two numbers.**
+
+- **Display.** On commuting Hamiltonians C39 has 1.445 times the ESP of release 2026-10-11.1 and 1.41 times Qiskit
+  level 3's, never less than either release on any test.
+- **Essential.**
+  - Item 69 does what it was made for: the type item 68 lost on now gets the better of the two paths.
+  - On the new generated tsp-type circuits STEINER6 did not lose at all (1.44 times), so C38-VAL's loss on ts225
+    is not a property of the type as such; it remains unexplained.
+  - The cost is time: every commuting input is compiled twice (median 0.56 s against 0.11 s).
+  - The circuits are generated; the known losses are two HamLib instances.
+
+**Not established.** Hardware: no job has run.
+
+---
+
+<!-- ===== Addendum 448 (source: addendum_448.md) ===== -->
+
+> **Note added when merging:** C40-VAL's predictions were fixed in a local file before the run (not committed first); the file and the run's data are committed here.
+
+## Addendum 448 -- C40-VAL: prototype 2026-10-11.c40 (changelog items 71-72: STEINER6 tried on every circuit it can read as Pauli rotations, commuting or not -- product formulas of any order and repetitions, QAOAAnsatz, sequences of rotation gates -- with exact merging of repeated terms, kept only where its ESP is higher). Y1-Y8 confirmed on six devices: QAOA 1.19 times release 2026-10-11.1's ESP, non-commuting Hamiltonians 1.08 times, never below it; the 3.8 times on multi-step commuting evolutions is mostly a benchmark effect (2026-10-11)
+
+**Status: the predictions were fixed before the run in a local file, not committed first** (as in Addenda 445 and 447).
+
+- **The file:** [`data/2026-10-11/c40_val/C40-VAL_preregistration.md`](../../data/2026-10-11/c40_val/C40-VAL_preregistration.md),
+  written at 10:14 CEST, copied to the owner's PC with its hash (sha256 `ccd6a036...7132`) before the run; unchanged.
+- **Seen before the run:** a smoke run of 4 jobs (QAOA n = 12, p = 1 and a random control, on two devices).
+
+**Why.** Item 68 read one PauliEvolutionGate with all terms commuting, in Qiskit's default product formula. With item
+69 choosing by ESP, there is no reason left to keep the construction away from other inputs it can read: a Trotter
+circuit of several steps, a non-commuting Hamiltonian, a QAOA circuit.
+
+**The prototype.** [`patches/psf_compile_c40_2026-10-11/`](../../patches/psf_compile_c40_2026-10-11/), built from c39
+by `make_c40.py`:
+
+| item | what it does |
+|---|---|
+| 71 | STEINER6 is also tried when the terms do not all commute; terms never pass an anticommuting earlier term, so the result is exact; item 69 keeps it only where it is better |
+| 72 | more inputs are read as Pauli rotations: LieTrotter and SuzukiTrotter of any order and repetitions (from their own `expand()`), sequences of PauliEvolutionGates and rotation gates (rz, rx, ry, rzz, rxx, ryy), composite instructions through their definitions (QAOAAnsatz), a leading layer of single-qubit gates, final measurements. Repeated terms are merged where exact (no anticommuting term in between): a commuting Hamiltonian over r Trotter steps becomes one step. Item 70's limit applies after merging |
+
+[`test_c40.py`](../../patches/psf_compile_c40_2026-10-11/test_c40.py): 7 tests, all passed before the run. Exactness is
+checked against the product formula Qiskit itself compiles (`decompose`), not the exact exponential, which differs when
+terms do not commute.
+
+**Run.**
+
+- **When and where:** 10:14-10:18 CEST on 2026-10-11, in Claude's cloud workspace (as Addendum 447).
+- **Scope:** 162 jobs: 27 generated circuits × 6 devices. **Script:** [`benchmarks/c40_val.py`](../../benchmarks/c40_val.py).
+  **Data:** [`data/2026-10-11/c40_val/`](../../data/2026-10-11/c40_val/).
+- **Circuits** (generated, seeds "C40-VAL|...", final measurements on all qubits):
+  - qaoa: QAOAAnsatz, MaxCut on random 3-regular graphs, n = 12, 20, 28, p = 1-3 (9);
+  - trotter_noncommuting: transverse-field Ising, LieTrotter 2 steps and SuzukiTrotter order 2, n = 10, 16, 22 (6);
+  - trotter_commuting: Ising LieTrotter 3 steps n = 12, 20; 3-SAT type LieTrotter 2 steps n = 14 (3);
+  - single_noncommuting: Heisenberg n = 10, 16, random 2-/3-local Paulis n = 10, 16, XY ring n = 12 (5);
+  - rotation_gates: H layer, then twice rzz on a 3-regular graph and an rx layer, n = 12, 20 (2);
+  - control: random circuits n = 6, 8 (2).
+- **Arms:** QK3, R1 (release 2026-10-11.1), C39, C40. **Errors:** none.
+
+**Scoring, as fixed:**
+
+| ID | prediction | result | |
+|---|---|---|---|
+| Y1 | C40 outputs on failed elements: 0, per device | 0 on all six | **CONFIRMED** |
+| Y2 | every test: ESP C40 >= R1, per device | 162 / 162 | **CONFIRMED** |
+| Y3 | every test: ESP C40 >= C39, per device | 162 / 162 | **CONFIRMED** |
+| Y4 | qaoa, runnable, pooled: ESP C40 / R1 >= 1.10 (refuted < 1.02) | 1.189 (54; by device 1.05-1.33) | **CONFIRMED** |
+| Y5 | trotter_commuting, pooled: two-qubit count C40 / R1 <= 0.60 (refuted > 0.90) | 0.297 | **CONFIRMED** |
+| Y6 | non-commuting (trotter + single), runnable, pooled: ESP C40 / R1 >= 1.05 (refuted < 1.01) | 1.076 (66) | **CONFIRMED** |
+| Y7 | controls: C40 = R1 by value, per device | 12 / 12 | **CONFIRMED** |
+| Y8 | median time of C40 on readable tests <= 2 s (reported) | 0.41 s (R1: 0.10 s) | **CONFIRMED** |
+| Y9 | rotation_gates, runnable, pooled: ESP C40 / R1 (reported) | 1.077 (12) | -- |
+
+The proposed rule for the next bundled release (Y1, Y2, Y3, Y7 on every device and one of Y4-Y6 pooled) is met.
+
+**By family** (runnable, pooled over the six devices; ESP ratios, two-qubit counts over all tests):
+
+| family | ESP C40 / R1 | ESP C40 / QK3 | two-qubit C40 / R1 | STEINER kept | better by >= 10% |
+|---|---|---|---|---|---|
+| qaoa | 1.189 | 1.191 | 0.899 | 48 / 54 | 26 / 54 |
+| trotter_noncommuting | 1.114 | 1.109 | 0.881 | 32 / 36 | 17 / 36 |
+| single_noncommuting | 1.031 | 1.025 | 1.014 | 14 / 30 | 4 / 30 |
+| trotter_commuting | 3.765 | 4.155 | 0.297 | 18 / 18 | 18 / 18 |
+| rotation_gates | 1.077 | 1.066 | 0.987 | 9 / 12 | 3 / 12 |
+
+**Reading, two numbers.**
+
+- **Display.** ESP 1.31 times Qiskit level 3's over the 150 runnable tests, 3.8 times on multi-step commuting
+  evolutions (10 times on the 3-SAT type), never below the release.
+- **Essential.**
+  - **QAOA +19%** is the useful result. It grows with size and depth (n = 28, p = 3: 1.54 times; n = 12, p = 1: 1.04)
+    and is smaller on FakeAachen and FakeBoston (1.05-1.08).
+  - **The 3.8 times is mostly a benchmark effect.** A commuting Hamiltonian is exact in one step; someone who knows
+    that does not split it into three. The gain is real only for code that does (for example generated code).
+  - **Non-commuting:** multi-step Trotter +11%; a single step of Heisenberg or random Paulis +3%, about even.
+  - **Time:** about 4 times the release's, at most 1.5 s.
+
+**Not established.** Hardware: no job has run. The circuits are generated.
+
+---
+
+<!-- ===== Addendum 449 (source: addendum_449.md) ===== -->
+
+> **Note added when merging:** C41-VAL's predictions were fixed in a local file before the run (not committed first); the file, the readability survey, the exactness sweep and the run's data are committed here.
+
+## Addendum 449 -- C41-VAL: prototype 2026-10-11.c41 (changelog item 73: circuits written as gates are read as Pauli rotations by carrying their Clifford gates to the end, then go to STEINER6 under item 69's choice), on Benchpress's QASM files: 213 of 519 become readable. Z1-Z9 confirmed on six devices: ESP 1.20 times release 2026-10-11.1's on the 486 tests read, never below it; QAOA QASM 1.29 times; gate-level UCCSD with half the two-qubit gates; the Heisenberg figure rests on one FakeBoston case (2026-10-11)
+
+**Status: the predictions were fixed before the run in a local file, not committed first** (as in Addenda 445-448).
+
+- **The file:** [`data/2026-10-11/c41_val/C41-VAL_preregistration.md`](../../data/2026-10-11/c41_val/C41-VAL_preregistration.md),
+  written at 10:51 CEST, copied to the owner's PC with its hash (sha256 `b156f730...`) before the run; unchanged.
+- **Seen before the run:** a smoke run of 4 jobs (a random control on four devices), one job (qaoa_N5 on FakeTorino),
+  the readability survey (which files item 73 reads; no compilation) and the exactness sweep below.
+
+**Why.** Items 68-72 read a circuit only when it is written as Pauli evolutions or rotation gates. QASM files and most
+users' circuits are written as gates: cx-rz-cx for a ZZ rotation, h or rx(pi/2) around it for XX, Toffolis as h, t, cx.
+
+**The prototype.** [`patches/psf_compile_c41_2026-10-11/`](../../patches/psf_compile_c41_2026-10-11/), built from c40
+by `make_c41.py`:
+
+| item | what it does |
+|---|---|
+| 73 | a circuit item 72 cannot read is read gate by gate. Single-qubit gates before a qubit's first multi-qubit gate stay in front. After that, Clifford gates (any gate on one or two qubits that maps Paulis to Paulis, decided from its matrix, rotations by multiples of pi/2 included) are carried to the end: a later rotation exp(-i a P) becomes exp(-i a C^dagger P C), C the Clifford gates so far. Rotations, Pauli evolutions, p, t and any other single-qubit gate (as rz.ry.rz) give the terms; other gates are read through their definitions. It applies when the Clifford left at the end acts on each qubit alone; it is then placed after the terms at the final places. The output equals the input up to a global phase |
+
+**Checks before the run.**
+
+- [`test_c41.py`](../../patches/psf_compile_c41_2026-10-11/test_c41.py): 9 tests passed (exact construction on 14
+  kinds of input: cx-rz-cx QAOA, Heisenberg with rx/ry basis changes, Qiskit basis-gate exports, cp/crz/t gadgets,
+  Toffolis, QFT without swaps, mixed gates with a u gate and an X-basis end; unreadable inputs as the release by value).
+- **Exactness on real circuits:** [`benchmarks/c41_exact_sweep.py`](../../benchmarks/c41_exact_sweep.py) compiles every
+  Benchpress QASM file of <= 7 qubits that item 73 reads (37) on a 7-qubit test device and compares the measured
+  distribution with the input's for 6 random product input states each: **37 of 37 the same** (largest difference
+  5e-8, from rounding over hundreds of gates; tolerance 1e-6). The distribution, not the unitary, is the test, because
+  Qiskit's level 3 removes diagonal gates just before measurements. Before the run this was done by a workspace script
+  (named in the fixed file); the committed script repeats it with the same result
+  ([`c41_exact_sweep.txt`](../../data/2026-10-11/c41_val/c41_exact_sweep.txt)).
+- **Readability:** item 73 reads 213 of Benchpress's 519 QASM files of <= 156 qubits: all 147 QAOA and 11
+  square-lattice Heisenberg files, 39 of QASMBench (ising, qft, vqe_uccsd, knn, swap_test, ...), 14 of Feynman (Toffoli
+  circuits, qft) and the two dtc files; not the 99 QFT files (their final swaps leave a permutation), QV, the Clifford
+  circuits or most arithmetic. [`data/2026-10-11/c41_val/readability_survey.jsonl`](../../data/2026-10-11/c41_val/readability_survey.jsonl).
+
+**Run.**
+
+- **When and where:** 10:52-11:13 CEST on 2026-10-11, in Claude's cloud workspace (as Addendum 447).
+- **Scope:** 534 jobs: 89 tests on the six devices where they fit. **Script:** [`benchmarks/c41_val.py`](../../benchmarks/c41_val.py).
+  **Data:** [`data/2026-10-11/c41_val/`](../../data/2026-10-11/c41_val/) (the list of tests in `c41_tests.json`).
+- **Tests**, fixed by rules in the script: Benchpress QAOA N = 5-100 (11 sizes); square-lattice Heisenberg N = 4-100
+  (9); every QASMBench (39) and Feynman (14) file item 73 reads; generated gate-level circuits with seeds "C41-VAL|..."
+  (Qiskit basis-gate exports of Trotter evolutions, 5; cx-rz-cx QAOA, 3); controls item 73 does not read (QFT, QV,
+  Clifford, arithmetic, random; 8). A circuit without measurements gets measure_all().
+- **Arms:** QK3, R1 (release 2026-10-11.1), C40, C41. **Errors:** none.
+
+**Scoring, as fixed:**
+
+| ID | prediction | result | |
+|---|---|---|---|
+| Z1 | C41 outputs on failed elements: 0, per device | 0 on all six | **CONFIRMED** |
+| Z2 | every test: ESP C41 >= R1, per device | 534 / 534 | **CONFIRMED** |
+| Z3 | every test: ESP C41 >= C40, per device | 534 / 534 | **CONFIRMED** |
+| Z4 | controls: C41 = C40 = R1 by value, per device | 48 / 48 | **CONFIRMED** |
+| Z5 | QAOA QASM, runnable, pooled: ESP C41 / R1 >= 1.10 (refuted < 1.02) | 1.294 (46; by device 1.07-1.87) | **CONFIRMED** |
+| Z6 | Heisenberg QASM, runnable, pooled: >= 1.05 (refuted < 1.01) | 1.370 (39) | **CONFIRMED**, but see below |
+| Z7 | QASMBench and Feynman, runnable, pooled (reported) | 1.224 (199) and 1.072 (84) | -- |
+| Z8 | generated gate-level, runnable, pooled: >= 1.05 (refuted < 1.01) | 1.141 (48) | **CONFIRMED** |
+| Z9 | median time of C41 on tests it reads <= 5 s | 0.54 s (R1: 0.12 s); largest 48 s | **CONFIRMED** |
+
+The proposed rule for the next bundled release (Z1-Z4 on every device and one of Z5, Z6, Z8 pooled) is met.
+
+**By family** (runnable, pooled; [`c41_val_by_family.txt`](../../data/2026-10-11/c41_val/c41_val_by_family.txt)):
+
+| family | ESP C41 / R1 | ESP C41 / QK3 | STEINER kept | better by >= 10% |
+|---|---|---|---|---|
+| QAOA QASM | 1.294 | 1.321 | 63 / 66 | 23 / 46 |
+| Heisenberg QASM | 1.370 (without FakeBoston 1.027) | 1.090 | 26 / 54 | 5 / 39 |
+| QASMBench | 1.224 (without FakeBoston 1.163) | 1.174 | 87 / 234 | 26 / 199 |
+| Feynman | 1.072 | 1.058 | 49 / 84 | 14 / 84 |
+| generated exports | 1.052 | 1.041 | 16 / 30 | 5 / 30 |
+| generated cx-rz-cx QAOA | 1.308 | 1.168 | 14 / 18 | 8 / 18 |
+| all read | 1.202 (without FakeBoston 1.151) | 1.147 | 255 / 486 | 81 / 416 |
+
+**Reading, two numbers.**
+
+- **Display.** ESP 1.20 times the release's and 1.15 times Qiskit level 3's over the 486 tests read; vqe_uccsd_n8
+  125 times; square_heisenberg_N81 on FakeBoston 18,000 times.
+- **Essential.**
+  - **The Heisenberg figure is one device's.** FakeBoston has a coupler with 15% error (below the failed threshold
+    of 50%); the release's usual path crossed it hundreds of times (square_heisenberg_N81: ESP 2e-6; Qiskit level 3
+    used a failed element), STEINER6's error-aware placement did not (0.037). Without FakeBoston the Heisenberg QASM
+    files gain 2.7%, inside the "ambiguous" band fixed for Z6. The gain there comes from the usual path's weakness,
+    not from the construction (taken up in Addendum 450).
+  - **QAOA QASM +29%** is the construction's own gain, consistently over the devices.
+  - **Gate-level UCCSD:** vqe_uccsd_n6 and n8 get less than half the two-qubit gates (n = 6: 408-479 against 987;
+    n = 8: 2187-2468 against 5382-5410): 2-6 times the ESP at n = 6, 50-125 times at n = 8 on the four devices where it
+    is runnable. Chemistry had been called the construction's structural limit (Addendum 444), but that
+    holds for PauliEvolutionGates, which Qiskit synthesises with CNOTs cancelled between terms; written as gates, the
+    same circuits get no such cancellation from Qiskit or the release. Their ESP stays low at n = 8 (0.03-0.06).
+  - **Time:** median 4 times the release's; qft_n63 spent 30-48 s in STEINER6 and then kept the usual path.
+
+**Not established.** Hardware: no job has run. Global phase is not kept by item 73 (unobservable). Item 73 does not
+read circuits that end with a permutation (QFT with its swaps).
+
+---
+
+<!-- ===== Addendum 450 (source: addendum_450.md) ===== -->
+
+> **Note added when merging:** C42-VAL's predictions were fixed in a local file before each run (not committed first); the file (run 2's version), run 2's data and run 1's stopped partial data are committed here. Item 74 is not released.
+
+## Addendum 450 -- C42-VAL: prototype 2026-10-11.c42 (changelog item 74: an output that uses a near-failed element, error in [0.1, 0.5), is compared with the input compiled with those elements avoided too; the better by ESP is kept), on 122 Benchpress circuits C41-VAL did not use. W1, W4 and W6 confirmed (ESP 1.40 times c41's where item 74 acted); W2 and W3 refuted by the letter on one device each, by run-to-run variation of the release's own path; the rule for the bundled release is not met and item 74 is not released (2026-10-11)
+
+**Status: the predictions were fixed before the run in a local file, not committed first** (as in Addenda 445-449).
+
+- **The file:** [`data/2026-10-11/c42_val/C42-VAL_preregistration.md`](../../data/2026-10-11/c42_val/C42-VAL_preregistration.md),
+  written at 11:26 CEST and revised at 11:35 CEST for run 2 (below); each version copied to the owner's PC with its
+  hash before its run (run 2's: sha256 `d7c24a56...`); unchanged since.
+- **Seen before the runs:** a smoke run of 4 jobs (a random circuit on four devices, item 74 not triggered) and the one
+  case that suggested item 74 (square_heisenberg_N81 on FakeBoston, Addendum 449). C42-VAL uses none of C41-VAL's
+  circuits.
+- **Run 1 was stopped** at 11:33 CEST after 23 of 783 jobs: its list included QASM files of 170,000-660,000 gates whose
+  jobs would have used most of the time budget. Its results were not looked at; its data is kept
+  ([`c42_val_1_stopped_partial.jsonl`](../../data/2026-10-11/c42_val/c42_val_1_stopped_partial.jsonl)). Run 2 differs by
+  one rule only: QASM inputs of more than 50,000 instructions are left out (9 tests).
+
+**Why.** In C41-VAL the release's usual path crossed a coupler with 15% error hundreds of times on FakeBoston (ESP
+2e-6). Item 31 avoids only elements with error >= 0.5; anything below is used like any other element.
+
+**The prototype.** [`patches/psf_compile_c42_2026-10-11/`](../../patches/psf_compile_c42_2026-10-11/), built from c41
+by `make_c42.py`:
+
+| item | what it does |
+|---|---|
+| 74 | with the device's Target, when the output uses an element with error in [`near_failed_error`, `prune_max_error`) -- a two-qubit gate on such a coupler, any gate on a qubit with such an sx error, a measurement of a qubit with such a readout error -- the input is compiled again with every element of error >= `near_failed_error` avoided, and the output with the lower summed -ln(1 - error) is returned; on a tie, or when the second compile cannot avoid them, the first. Default 0.1, fixed before any measurement; None turns it off |
+
+[`test_c42.py`](../../patches/psf_compile_c42_2026-10-11/test_c42.py): 6 tests passed before the run; c41's 9 tests
+also pass on c42.
+
+**Run 2.**
+
+- **When and where:** 11:35-12:41 CEST on 2026-10-11, in Claude's cloud workspace (as Addendum 447).
+- **Scope:** 729 jobs: 122 tests on the six devices where they fit. **Script:** [`benchmarks/c42_val.py`](../../benchmarks/c42_val.py).
+  **Data:** [`data/2026-10-11/c42_val/`](../../data/2026-10-11/c42_val/).
+- **Tests**, fixed by rules in the script: Benchpress QAOA (7 sizes) and square-lattice Heisenberg (2 sizes) not in
+  C41-VAL, QFT (7), quantum volume (5), dtc cx and clifford_100, every Feynman (32) and QASMBench (64) file outside
+  C41-VAL's tests, random circuits n = 10, 20, 40 (seeds "C42-VAL|...").
+- **The devices' near-failed elements** (error in [0.1, 0.5)): couplers 0 / 1 / 2 / 0 / 2 / 4 and qubits (sx or
+  readout) 19 / 6 / 11 / 1 / 0 / 1 on FakeTorino / Kingston / Marrakesh / Fez / Aachen / Boston.
+- **Arms:** QK3, R1 (release 2026-10-11.1), C41, C42.
+- **Errors:** 51 records: 17 test-device pairs on which R1, C41 and C42 alike raised `FailedElementsError` (the
+  circuit cannot avoid the failed elements: large bv, cat, cc, a random circuit of 40 qubits), as the releases since
+  2026-10-10.3 do.
+
+**Scoring, as fixed** ("tried": item 74 compiled the alternative):
+
+| ID | prediction | Torino | Kingston | Marrakesh | Fez | Aachen | Boston | result |
+|---|---|---|---|---|---|---|---|---|
+| W1 | C42 outputs on failed elements: 0 | 0 | 0 | 0 | 0 | 0 | 0 | **CONFIRMED** |
+| W2 | every test: ESP C42 >= C41 | 115/115 | 117/117 | **121/122** | 122/122 | 118/118 | 118/118 | **REFUTED** on Marrakesh |
+| W3 | not tried: C42 = C41 by value | 48/48 | 79/79 | 88/88 | **94/96** | 103/103 | 100/100 | **REFUTED** on Fez |
+| W4 | tried, runnable, pooled: ESP C42 / C41 >= 1.10 (refuted < 1.02) | 1.088 | 1.045 | 1.486 | 1.014 | 3.978 | 8.094 | **CONFIRMED**: 1.402 (68) |
+| W5 | share of tests tried (reported) | 67/115 | 38/117 | 34/122 | 26/122 | 15/118 | 18/118 | 198/712 |
+| W6 | tried: median time C42 / C41 <= 2.5 | 1.79 | 1.93 | 1.83 | 1.87 | 1.88 | 1.93 | **CONFIRMED**: 1.85 |
+| W7 | all runnable: ESP C42 / R1, C42 / QK3 (reported) | 1.041, 0.965 | 1.017, 0.998 | 1.056, 0.939 | 1.007, 0.968 | 1.061, 0.987 | 1.121, 1.038 | 1.051, 0.983 (536) |
+
+**The proposed rule (W1-W3 on every device and W4) is not met.**
+
+**Why W2 and W3 fail: the release's usual path varies from run to run.** The three outputs that broke them were not
+made by item 74:
+
+- **W3, FakeFez** (qasmbench bv_n30 and bv_n70): item 74 did not act, and C42's output had the same cost as C41's but
+  not the same value.
+- **W2, FakeMarrakesh** (bv_n140, ESP 0.001, not runnable): item 74 tried, could not avoid the elements and returned
+  its first output, 3% below C41's.
+- **Check made after scoring:** c41 alone, called three times in separate processes on bv_n30 and FakeFez, gave three
+  different outputs of the same cost. It did so also with a fixed `PYTHONHASHSEED` and without the layout search's
+  time budget. The outputs differ in which idle (measured-only) qubits are used. The source of the variation is not
+  yet found.
+- **What it means for earlier work:** every "by value" comparison in this project rests on outputs being
+  reproducible, which holds for most inputs but not for all. Earlier "by value" results stand as measured; this run
+  is the first where the variation showed.
+
+**What item 74 does** ([`c42_val_detail.txt`](../../data/2026-10-11/c42_val/c42_val_detail.txt)):
+
+| | |
+|---|---|
+| tried | 198 test-device pairs |
+| alternative kept | 73 |
+| first kept (alternative worse) | 25 |
+| no alternative (the alternative compile could not avoid every element >= 0.1) | 100 |
+| tried, runnable: ESP C42 / C41 | 1.402 (68); without FakeBoston and FakeAachen 1.126 (59) |
+| tried, runnable: better by >= 10% | 21 of 68 |
+| largest gains | qasmbench cc_n151 on FakeBoston 0.002 to 0.068; ghz_n127 0.011 to 0.123; cat_n130 0.011 to 0.111 (Qiskit level 3: on failed elements, ESP 0) |
+
+**Reading, two numbers.**
+
+- **Display.** Where item 74 acts, ESP 1.40 times; on FakeBoston 8 times.
+- **Essential.**
+  - The gain is concentrated on devices with near-failed couplers (FakeBoston, FakeAachen). Elsewhere it is 13%.
+  - Half the attempts are wasted: avoiding every element of error >= 0.1 at once often leaves no placement (FakeTorino
+    has 19 qubits with readout error above 0.1), and then the second compile only costs time.
+  - Over all runnable tests C42 stays at 0.98 of Qiskit level 3's ESP on these general circuits (QASMBench 0.95):
+    the usual path is at parity with level 3, not ahead.
+- **Next:** make the usual path's output reproducible, avoid only the near-failed elements the first output used, and
+  test item 74 again.
+
+**Not established.** Hardware: no job has run.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

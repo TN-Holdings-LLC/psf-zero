@@ -1,0 +1,519 @@
+{"f": "clifford/clifford_100_12345.qasm", "n": 100, "ops": 9897, "how": null, "t": 0.13}
+{"f": "clifford/clifford_20_12345.qasm", "n": 20, "ops": 4000, "how": null, "t": 0.06}
+{"f": "dtc/dtc_100_cx_12345.qasm", "n": 100, "ops": 49700, "how": "gate", "t": 0.55, "terms": 29800, "merged": 29800, "suffix": 0}
+{"f": "dtc/dtc_100_cz_12345.qasm", "n": 100, "ops": 79102, "how": "gate", "t": 1.12, "terms": 34651, "merged": 34602, "suffix": 297}
+{"f": "feynman/W-state.qasm", "n": 3, "ops": 9, "how": "gate", "t": 0.01, "terms": 9, "merged": 9, "suffix": 7}
+{"f": "feynman/adder.qasm", "n": 10, "ops": 19, "how": null, "t": 0.0}
+{"f": "feynman/adder_8.qasm", "n": 24, "ops": 330, "how": null, "t": 0.01}
+{"f": "feynman/barenco_tof_10.qasm", "n": 19, "ops": 130, "how": "gate", "t": 0.01, "terms": 224, "merged": 155, "suffix": 0}
+{"f": "feynman/barenco_tof_3.qasm", "n": 5, "ops": 20, "how": "gate", "t": 0.0, "terms": 28, "merged": 22, "suffix": 0}
+{"f": "feynman/barenco_tof_4.qasm", "n": 7, "ops": 34, "how": "gate", "t": 0.0, "terms": 56, "merged": 41, "suffix": 0}
+{"f": "feynman/barenco_tof_5.qasm", "n": 9, "ops": 50, "how": "gate", "t": 0.0, "terms": 84, "merged": 60, "suffix": 0}
+{"f": "feynman/bigadder.qasm", "n": 18, "ops": 21, "how": null, "t": 0.01}
+{"f": "feynman/csla_mux_3.qasm", "n": 15, "ops": 70, "how": null, "t": 0.0}
+{"f": "feynman/csum_mux_9.qasm", "n": 30, "ops": 140, "how": "gate", "t": 0.01, "terms": 196, "merged": 140, "suffix": 16}
+{"f": "feynman/gf2^10_mult.qasm", "n": 30, "ops": 347, "how": null, "t": 0.03}
+{"f": "feynman/gf2^16_mult.qasm", "n": 48, "ops": 875, "how": null, "t": 0.07}
+{"f": "feynman/gf2^32_mult.qasm", "n": 96, "ops": 3322, "how": null, "t": 0.33}
+{"f": "feynman/gf2^4_mult.qasm", "n": 12, "ops": 65, "how": null, "t": 0.0}
+{"f": "feynman/gf2^5_mult.qasm", "n": 15, "ops": 97, "how": null, "t": 0.01}
+{"f": "feynman/gf2^6_mult.qasm", "n": 18, "ops": 135, "how": null, "t": 0.01}
+{"f": "feynman/gf2^7_mult.qasm", "n": 21, "ops": 179, "how": null, "t": 0.01}
+{"f": "feynman/gf2^8_mult.qasm", "n": 24, "ops": 243, "how": null, "t": 0.02}
+{"f": "feynman/gf2^9_mult.qasm", "n": 27, "ops": 285, "how": null, "t": 0.02}
+{"f": "feynman/grover_5.qasm", "n": 9, "ops": 351, "how": "gate", "t": 0.02, "terms": 336, "merged": 246, "suffix": 12}
+{"f": "feynman/ham15-high.qasm", "n": 20, "ops": 1798, "how": null, "t": 0.1}
+{"f": "feynman/ham15-low.qasm", "n": 17, "ops": 213, "how": null, "t": 0.01}
+{"f": "feynman/ham15-med.qasm", "n": 17, "ops": 452, "how": null, "t": 0.02}
+{"f": "feynman/hwb10.qasm", "n": 16, "ops": 31764, "how": null, "t": 1.42}
+{"f": "feynman/hwb11.qasm", "n": 15, "ops": 87789, "how": null, "t": 2.84}
+{"f": "feynman/hwb12.qasm", "n": 20, "ops": 171482, "how": null, "t": 4.0}
+{"f": "feynman/hwb6.qasm", "n": 7, "ops": 109, "how": null, "t": 0.0}
+{"f": "feynman/hwb8.qasm", "n": 12, "ops": 6446, "how": null, "t": 0.32}
+{"f": "feynman/inverseqft1.qasm", "n": 4, "ops": 24, "how": null, "t": 0.0}
+{"f": "feynman/inverseqft2.qasm", "n": 4, "ops": 19, "how": null, "t": 0.0}
+{"f": "feynman/mod5_4.qasm", "n": 5, "ops": 23, "how": null, "t": 0.0}
+{"f": "feynman/mod_adder_1024.qasm", "n": 28, "ops": 1435, "how": null, "t": 0.08}
+{"f": "feynman/mod_mult_55.qasm", "n": 9, "ops": 49, "how": null, "t": 0.0}
+{"f": "feynman/mod_red_21.qasm", "n": 11, "ops": 108, "how": null, "t": 0.01}
+{"f": "feynman/qcla_adder_10.qasm", "n": 36, "ops": 181, "how": null, "t": 0.01}
+{"f": "feynman/qcla_com_7.qasm", "n": 24, "ops": 153, "how": "gate", "t": 0.01, "terms": 203, "merged": 138, "suffix": 32}
+{"f": "feynman/qcla_mod_7.qasm", "n": 26, "ops": 294, "how": null, "t": 0.03}
+{"f": "feynman/qec.qasm", "n": 5, "ops": 11, "how": null, "t": 0.0}
+{"f": "feynman/qft.qasm", "n": 4, "ops": 17, "how": "gate", "t": 0.01, "terms": 18, "merged": 12, "suffix": 3}
+{"f": "feynman/qft_4.qasm", "n": 5, "ops": 159, "how": "gate", "t": 0.0, "terms": 69, "merged": 67, "suffix": 6}
+{"f": "feynman/qpt.qasm", "n": 1, "ops": 6, "how": null, "t": 0.0}
+{"f": "feynman/rb.qasm", "n": 2, "ops": 13, "how": null, "t": 0.0}
+{"f": "feynman/rc_adder_6.qasm", "n": 14, "ops": 90, "how": null, "t": 0.0}
+{"f": "feynman/teleport.qasm", "n": 3, "ops": 12, "how": null, "t": 0.0}
+{"f": "feynman/teleportv2.qasm", "n": 3, "ops": 13, "how": null, "t": 0.0}
+{"f": "feynman/tof_10.qasm", "n": 19, "ops": 85, "how": "gate", "t": 0.0, "terms": 119, "merged": 95, "suffix": 0}
+{"f": "feynman/tof_3.qasm", "n": 5, "ops": 15, "how": "gate", "t": 0.0, "terms": 21, "merged": 18, "suffix": 0}
+{"f": "feynman/tof_4.qasm", "n": 7, "ops": 25, "how": "gate", "t": 0.0, "terms": 35, "merged": 29, "suffix": 0}
+{"f": "feynman/tof_5.qasm", "n": 9, "ops": 35, "how": "gate", "t": 0.0, "terms": 49, "merged": 40, "suffix": 0}
+{"f": "feynman/vbe_adder_3.qasm", "n": 10, "ops": 50, "how": null, "t": 0.0}
+{"f": "qaoa/qaoa_barabasi_albert_N100_3reps.qasm", "n": 100, "ops": 2264, "how": "gate", "t": 0.03, "terms": 888, "merged": 888, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N101_3reps.qasm", "n": 101, "ops": 2287, "how": "gate", "t": 0.03, "terms": 897, "merged": 897, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N102_3reps.qasm", "n": 102, "ops": 2310, "how": "gate", "t": 0.03, "terms": 906, "merged": 906, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N103_3reps.qasm", "n": 103, "ops": 2333, "how": "gate", "t": 0.03, "terms": 915, "merged": 915, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N104_3reps.qasm", "n": 104, "ops": 2356, "how": "gate", "t": 0.03, "terms": 924, "merged": 924, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N105_3reps.qasm", "n": 105, "ops": 2379, "how": "gate", "t": 0.03, "terms": 933, "merged": 933, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N106_3reps.qasm", "n": 106, "ops": 2402, "how": "gate", "t": 0.03, "terms": 942, "merged": 942, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N107_3reps.qasm", "n": 107, "ops": 2425, "how": "gate", "t": 0.03, "terms": 951, "merged": 951, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N108_3reps.qasm", "n": 108, "ops": 2448, "how": "gate", "t": 0.03, "terms": 960, "merged": 960, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N109_3reps.qasm", "n": 109, "ops": 2471, "how": "gate", "t": 0.03, "terms": 969, "merged": 969, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N10_3reps.qasm", "n": 10, "ops": 194, "how": "gate", "t": 0.0, "terms": 78, "merged": 78, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N110_3reps.qasm", "n": 110, "ops": 2494, "how": "gate", "t": 0.04, "terms": 978, "merged": 978, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N111_3reps.qasm", "n": 111, "ops": 2517, "how": "gate", "t": 0.03, "terms": 987, "merged": 987, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N112_3reps.qasm", "n": 112, "ops": 2540, "how": "gate", "t": 0.03, "terms": 996, "merged": 996, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N113_3reps.qasm", "n": 113, "ops": 2563, "how": "gate", "t": 0.05, "terms": 1005, "merged": 1005, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N114_3reps.qasm", "n": 114, "ops": 2586, "how": "gate", "t": 0.04, "terms": 1014, "merged": 1014, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N115_3reps.qasm", "n": 115, "ops": 2609, "how": "gate", "t": 0.05, "terms": 1023, "merged": 1023, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N116_3reps.qasm", "n": 116, "ops": 2632, "how": "gate", "t": 0.04, "terms": 1032, "merged": 1032, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N117_3reps.qasm", "n": 117, "ops": 2655, "how": "gate", "t": 0.04, "terms": 1041, "merged": 1041, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N118_3reps.qasm", "n": 118, "ops": 2678, "how": "gate", "t": 0.03, "terms": 1050, "merged": 1050, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N119_3reps.qasm", "n": 119, "ops": 2701, "how": "gate", "t": 0.03, "terms": 1059, "merged": 1059, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N11_3reps.qasm", "n": 11, "ops": 217, "how": "gate", "t": 0.0, "terms": 87, "merged": 87, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N120_3reps.qasm", "n": 120, "ops": 2724, "how": "gate", "t": 0.03, "terms": 1068, "merged": 1068, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N121_3reps.qasm", "n": 121, "ops": 2747, "how": "gate", "t": 0.05, "terms": 1077, "merged": 1077, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N122_3reps.qasm", "n": 122, "ops": 2770, "how": "gate", "t": 0.04, "terms": 1086, "merged": 1086, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N123_3reps.qasm", "n": 123, "ops": 2793, "how": "gate", "t": 0.03, "terms": 1095, "merged": 1095, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N124_3reps.qasm", "n": 124, "ops": 2816, "how": "gate", "t": 0.03, "terms": 1104, "merged": 1104, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N125_3reps.qasm", "n": 125, "ops": 2839, "how": "gate", "t": 0.03, "terms": 1113, "merged": 1113, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N126_3reps.qasm", "n": 126, "ops": 2862, "how": "gate", "t": 0.03, "terms": 1122, "merged": 1122, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N127_3reps.qasm", "n": 127, "ops": 2885, "how": "gate", "t": 0.04, "terms": 1131, "merged": 1131, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N128_3reps.qasm", "n": 128, "ops": 2908, "how": "gate", "t": 0.05, "terms": 1140, "merged": 1140, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N129_3reps.qasm", "n": 129, "ops": 2931, "how": "gate", "t": 0.04, "terms": 1149, "merged": 1149, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N12_3reps.qasm", "n": 12, "ops": 240, "how": "gate", "t": 0.0, "terms": 96, "merged": 96, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N130_3reps.qasm", "n": 130, "ops": 2954, "how": "gate", "t": 0.05, "terms": 1158, "merged": 1158, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N131_3reps.qasm", "n": 131, "ops": 2977, "how": "gate", "t": 0.03, "terms": 1167, "merged": 1167, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N132_3reps.qasm", "n": 132, "ops": 3000, "how": "gate", "t": 0.03, "terms": 1176, "merged": 1176, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N133_3reps.qasm", "n": 133, "ops": 3023, "how": "gate", "t": 0.03, "terms": 1185, "merged": 1185, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N134_3reps.qasm", "n": 134, "ops": 3046, "how": "gate", "t": 0.06, "terms": 1194, "merged": 1194, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N135_3reps.qasm", "n": 135, "ops": 3069, "how": "gate", "t": 0.04, "terms": 1203, "merged": 1203, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N136_3reps.qasm", "n": 136, "ops": 3092, "how": "gate", "t": 0.04, "terms": 1212, "merged": 1212, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N137_3reps.qasm", "n": 137, "ops": 3115, "how": "gate", "t": 0.04, "terms": 1221, "merged": 1221, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N138_3reps.qasm", "n": 138, "ops": 3138, "how": "gate", "t": 0.03, "terms": 1230, "merged": 1230, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N139_3reps.qasm", "n": 139, "ops": 3161, "how": "gate", "t": 0.04, "terms": 1239, "merged": 1239, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N13_3reps.qasm", "n": 13, "ops": 263, "how": "gate", "t": 0.0, "terms": 105, "merged": 105, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N140_3reps.qasm", "n": 140, "ops": 3184, "how": "gate", "t": 0.03, "terms": 1248, "merged": 1248, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N141_3reps.qasm", "n": 141, "ops": 3207, "how": "gate", "t": 0.06, "terms": 1257, "merged": 1257, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N142_3reps.qasm", "n": 142, "ops": 3230, "how": "gate", "t": 0.04, "terms": 1266, "merged": 1266, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N143_3reps.qasm", "n": 143, "ops": 3253, "how": "gate", "t": 0.05, "terms": 1275, "merged": 1275, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N144_3reps.qasm", "n": 144, "ops": 3276, "how": "gate", "t": 0.07, "terms": 1284, "merged": 1284, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N145_3reps.qasm", "n": 145, "ops": 3299, "how": "gate", "t": 0.06, "terms": 1293, "merged": 1293, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N146_3reps.qasm", "n": 146, "ops": 3322, "how": "gate", "t": 0.04, "terms": 1302, "merged": 1302, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N147_3reps.qasm", "n": 147, "ops": 3345, "how": "gate", "t": 0.04, "terms": 1311, "merged": 1311, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N148_3reps.qasm", "n": 148, "ops": 3368, "how": "gate", "t": 0.08, "terms": 1320, "merged": 1320, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N149_3reps.qasm", "n": 149, "ops": 3391, "how": "gate", "t": 0.05, "terms": 1329, "merged": 1329, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N14_3reps.qasm", "n": 14, "ops": 286, "how": "gate", "t": 0.01, "terms": 114, "merged": 114, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N15_3reps.qasm", "n": 15, "ops": 309, "how": "gate", "t": 0.01, "terms": 123, "merged": 123, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N16_3reps.qasm", "n": 16, "ops": 332, "how": "gate", "t": 0.01, "terms": 132, "merged": 132, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N17_3reps.qasm", "n": 17, "ops": 355, "how": "gate", "t": 0.01, "terms": 141, "merged": 141, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N18_3reps.qasm", "n": 18, "ops": 378, "how": "gate", "t": 0.01, "terms": 150, "merged": 150, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N19_3reps.qasm", "n": 19, "ops": 401, "how": "gate", "t": 0.01, "terms": 159, "merged": 159, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N20_3reps.qasm", "n": 20, "ops": 424, "how": "gate", "t": 0.01, "terms": 168, "merged": 168, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N21_3reps.qasm", "n": 21, "ops": 447, "how": "gate", "t": 0.01, "terms": 177, "merged": 177, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N22_3reps.qasm", "n": 22, "ops": 470, "how": "gate", "t": 0.01, "terms": 186, "merged": 186, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N23_3reps.qasm", "n": 23, "ops": 493, "how": "gate", "t": 0.01, "terms": 195, "merged": 195, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N24_3reps.qasm", "n": 24, "ops": 516, "how": "gate", "t": 0.01, "terms": 204, "merged": 204, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N25_3reps.qasm", "n": 25, "ops": 539, "how": "gate", "t": 0.01, "terms": 213, "merged": 213, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N26_3reps.qasm", "n": 26, "ops": 562, "how": "gate", "t": 0.01, "terms": 222, "merged": 222, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N27_3reps.qasm", "n": 27, "ops": 585, "how": "gate", "t": 0.01, "terms": 231, "merged": 231, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N28_3reps.qasm", "n": 28, "ops": 608, "how": "gate", "t": 0.01, "terms": 240, "merged": 240, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N29_3reps.qasm", "n": 29, "ops": 631, "how": "gate", "t": 0.01, "terms": 249, "merged": 249, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N30_3reps.qasm", "n": 30, "ops": 654, "how": "gate", "t": 0.01, "terms": 258, "merged": 258, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N31_3reps.qasm", "n": 31, "ops": 677, "how": "gate", "t": 0.01, "terms": 267, "merged": 267, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N32_3reps.qasm", "n": 32, "ops": 700, "how": "gate", "t": 0.01, "terms": 276, "merged": 276, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N33_3reps.qasm", "n": 33, "ops": 723, "how": "gate", "t": 0.01, "terms": 285, "merged": 285, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N34_3reps.qasm", "n": 34, "ops": 746, "how": "gate", "t": 0.01, "terms": 294, "merged": 294, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N35_3reps.qasm", "n": 35, "ops": 769, "how": "gate", "t": 0.01, "terms": 303, "merged": 303, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N36_3reps.qasm", "n": 36, "ops": 792, "how": "gate", "t": 0.02, "terms": 312, "merged": 312, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N37_3reps.qasm", "n": 37, "ops": 815, "how": "gate", "t": 0.01, "terms": 321, "merged": 321, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N38_3reps.qasm", "n": 38, "ops": 838, "how": "gate", "t": 0.01, "terms": 330, "merged": 330, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N39_3reps.qasm", "n": 39, "ops": 861, "how": "gate", "t": 0.01, "terms": 339, "merged": 339, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N3_3reps.qasm", "n": 3, "ops": 33, "how": "gate", "t": 0.0, "terms": 15, "merged": 15, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N40_3reps.qasm", "n": 40, "ops": 884, "how": "gate", "t": 0.01, "terms": 348, "merged": 348, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N41_3reps.qasm", "n": 41, "ops": 907, "how": "gate", "t": 0.01, "terms": 357, "merged": 357, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N42_3reps.qasm", "n": 42, "ops": 930, "how": "gate", "t": 0.01, "terms": 366, "merged": 366, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N43_3reps.qasm", "n": 43, "ops": 953, "how": "gate", "t": 0.01, "terms": 375, "merged": 375, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N44_3reps.qasm", "n": 44, "ops": 976, "how": "gate", "t": 0.01, "terms": 384, "merged": 384, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N45_3reps.qasm", "n": 45, "ops": 999, "how": "gate", "t": 0.01, "terms": 393, "merged": 393, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N46_3reps.qasm", "n": 46, "ops": 1022, "how": "gate", "t": 0.01, "terms": 402, "merged": 402, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N47_3reps.qasm", "n": 47, "ops": 1045, "how": "gate", "t": 0.01, "terms": 411, "merged": 411, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N48_3reps.qasm", "n": 48, "ops": 1068, "how": "gate", "t": 0.01, "terms": 420, "merged": 420, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N49_3reps.qasm", "n": 49, "ops": 1091, "how": "gate", "t": 0.01, "terms": 429, "merged": 429, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N4_3reps.qasm", "n": 4, "ops": 56, "how": "gate", "t": 0.0, "terms": 24, "merged": 24, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N50_3reps.qasm", "n": 50, "ops": 1114, "how": "gate", "t": 0.02, "terms": 438, "merged": 438, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N51_3reps.qasm", "n": 51, "ops": 1137, "how": "gate", "t": 0.01, "terms": 447, "merged": 447, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N52_3reps.qasm", "n": 52, "ops": 1160, "how": "gate", "t": 0.01, "terms": 456, "merged": 456, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N53_3reps.qasm", "n": 53, "ops": 1183, "how": "gate", "t": 0.01, "terms": 465, "merged": 465, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N54_3reps.qasm", "n": 54, "ops": 1206, "how": "gate", "t": 0.01, "terms": 474, "merged": 474, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N55_3reps.qasm", "n": 55, "ops": 1229, "how": "gate", "t": 0.04, "terms": 483, "merged": 483, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N56_3reps.qasm", "n": 56, "ops": 1252, "how": "gate", "t": 0.01, "terms": 492, "merged": 492, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N57_3reps.qasm", "n": 57, "ops": 1275, "how": "gate", "t": 0.01, "terms": 501, "merged": 501, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N58_3reps.qasm", "n": 58, "ops": 1298, "how": "gate", "t": 0.01, "terms": 510, "merged": 510, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N59_3reps.qasm", "n": 59, "ops": 1321, "how": "gate", "t": 0.01, "terms": 519, "merged": 519, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N5_3reps.qasm", "n": 5, "ops": 79, "how": "gate", "t": 0.0, "terms": 33, "merged": 33, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N60_3reps.qasm", "n": 60, "ops": 1344, "how": "gate", "t": 0.01, "terms": 528, "merged": 528, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N61_3reps.qasm", "n": 61, "ops": 1367, "how": "gate", "t": 0.01, "terms": 537, "merged": 537, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N62_3reps.qasm", "n": 62, "ops": 1390, "how": "gate", "t": 0.02, "terms": 546, "merged": 546, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N63_3reps.qasm", "n": 63, "ops": 1413, "how": "gate", "t": 0.02, "terms": 555, "merged": 555, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N64_3reps.qasm", "n": 64, "ops": 1436, "how": "gate", "t": 0.02, "terms": 564, "merged": 564, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N65_3reps.qasm", "n": 65, "ops": 1459, "how": "gate", "t": 0.02, "terms": 573, "merged": 573, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N66_3reps.qasm", "n": 66, "ops": 1482, "how": "gate", "t": 0.02, "terms": 582, "merged": 582, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N67_3reps.qasm", "n": 67, "ops": 1505, "how": "gate", "t": 0.02, "terms": 591, "merged": 591, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N68_3reps.qasm", "n": 68, "ops": 1528, "how": "gate", "t": 0.02, "terms": 600, "merged": 600, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N69_3reps.qasm", "n": 69, "ops": 1551, "how": "gate", "t": 0.02, "terms": 609, "merged": 609, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N6_3reps.qasm", "n": 6, "ops": 102, "how": "gate", "t": 0.0, "terms": 42, "merged": 42, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N70_3reps.qasm", "n": 70, "ops": 1574, "how": "gate", "t": 0.03, "terms": 618, "merged": 618, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N71_3reps.qasm", "n": 71, "ops": 1597, "how": "gate", "t": 0.03, "terms": 627, "merged": 627, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N72_3reps.qasm", "n": 72, "ops": 1620, "how": "gate", "t": 0.02, "terms": 636, "merged": 636, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N73_3reps.qasm", "n": 73, "ops": 1643, "how": "gate", "t": 0.02, "terms": 645, "merged": 645, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N74_3reps.qasm", "n": 74, "ops": 1666, "how": "gate", "t": 0.02, "terms": 654, "merged": 654, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N75_3reps.qasm", "n": 75, "ops": 1689, "how": "gate", "t": 0.02, "terms": 663, "merged": 663, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N76_3reps.qasm", "n": 76, "ops": 1712, "how": "gate", "t": 0.02, "terms": 672, "merged": 672, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N77_3reps.qasm", "n": 77, "ops": 1735, "how": "gate", "t": 0.06, "terms": 681, "merged": 681, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N78_3reps.qasm", "n": 78, "ops": 1758, "how": "gate", "t": 0.02, "terms": 690, "merged": 690, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N79_3reps.qasm", "n": 79, "ops": 1781, "how": "gate", "t": 0.02, "terms": 699, "merged": 699, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N7_3reps.qasm", "n": 7, "ops": 125, "how": "gate", "t": 0.0, "terms": 51, "merged": 51, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N80_3reps.qasm", "n": 80, "ops": 1804, "how": "gate", "t": 0.02, "terms": 708, "merged": 708, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N81_3reps.qasm", "n": 81, "ops": 1827, "how": "gate", "t": 0.02, "terms": 717, "merged": 717, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N82_3reps.qasm", "n": 82, "ops": 1850, "how": "gate", "t": 0.02, "terms": 726, "merged": 726, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N83_3reps.qasm", "n": 83, "ops": 1873, "how": "gate", "t": 0.04, "terms": 735, "merged": 735, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N84_3reps.qasm", "n": 84, "ops": 1896, "how": "gate", "t": 0.02, "terms": 744, "merged": 744, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N85_3reps.qasm", "n": 85, "ops": 1919, "how": "gate", "t": 0.03, "terms": 753, "merged": 753, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N86_3reps.qasm", "n": 86, "ops": 1942, "how": "gate", "t": 0.02, "terms": 762, "merged": 762, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N87_3reps.qasm", "n": 87, "ops": 1965, "how": "gate", "t": 0.02, "terms": 771, "merged": 771, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N88_3reps.qasm", "n": 88, "ops": 1988, "how": "gate", "t": 0.04, "terms": 780, "merged": 780, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N89_3reps.qasm", "n": 89, "ops": 2011, "how": "gate", "t": 0.03, "terms": 789, "merged": 789, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N8_3reps.qasm", "n": 8, "ops": 148, "how": "gate", "t": 0.0, "terms": 60, "merged": 60, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N90_3reps.qasm", "n": 90, "ops": 2034, "how": "gate", "t": 0.02, "terms": 798, "merged": 798, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N91_3reps.qasm", "n": 91, "ops": 2057, "how": "gate", "t": 0.02, "terms": 807, "merged": 807, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N92_3reps.qasm", "n": 92, "ops": 2080, "how": "gate", "t": 0.02, "terms": 816, "merged": 816, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N93_3reps.qasm", "n": 93, "ops": 2103, "how": "gate", "t": 0.02, "terms": 825, "merged": 825, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N94_3reps.qasm", "n": 94, "ops": 2126, "how": "gate", "t": 0.02, "terms": 834, "merged": 834, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N95_3reps.qasm", "n": 95, "ops": 2149, "how": "gate", "t": 0.02, "terms": 843, "merged": 843, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N96_3reps.qasm", "n": 96, "ops": 2172, "how": "gate", "t": 0.02, "terms": 852, "merged": 852, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N97_3reps.qasm", "n": 97, "ops": 2195, "how": "gate", "t": 0.02, "terms": 861, "merged": 861, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N98_3reps.qasm", "n": 98, "ops": 2218, "how": "gate", "t": 0.03, "terms": 870, "merged": 870, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N99_3reps.qasm", "n": 99, "ops": 2241, "how": "gate", "t": 0.04, "terms": 879, "merged": 879, "suffix": 0}
+{"f": "qaoa/qaoa_barabasi_albert_N9_3reps.qasm", "n": 9, "ops": 171, "how": "gate", "t": 0.0, "terms": 69, "merged": 69, "suffix": 0}
+{"f": "qasmbench-large/QV_n100/100.qasm", "n": 100, "ops": 55101, "how": null, "t": 9.1}
+{"f": "qasmbench-large/QV_n32/32.qasm", "n": 32, "ops": 5665, "how": null, "t": 0.65}
+{"f": "qasmbench-large/adder_n118/adder_n118.qasm", "n": 118, "ops": 497, "how": null, "t": 0.05}
+{"f": "qasmbench-large/adder_n28/adder_n28.qasm", "n": 28, "ops": 117, "how": null, "t": 0.01}
+{"f": "qasmbench-large/adder_n64/adder_n64.qasm", "n": 64, "ops": 269, "how": null, "t": 0.02}
+{"f": "qasmbench-large/bv_n140/bv_n140.qasm", "n": 140, "ops": 493, "how": null, "t": 0.01}
+{"f": "qasmbench-large/bv_n30/bv_n30.qasm", "n": 30, "ops": 109, "how": null, "t": 0.0}
+{"f": "qasmbench-large/bv_n70/bv_n70.qasm", "n": 70, "ops": 247, "how": null, "t": 0.0}
+{"f": "qasmbench-large/bwt_n37/bwt_n37.qasm", "n": 37, "ops": 333654, "how": null, "t": 8.42}
+{"f": "qasmbench-large/cat_n130/cat_n130.qasm", "n": 130, "ops": 261, "how": null, "t": 0.0}
+{"f": "qasmbench-large/cat_n35/cat_n35.qasm", "n": 35, "ops": 71, "how": null, "t": 0.0}
+{"f": "qasmbench-large/cat_n65/cat_n65.qasm", "n": 65, "ops": 131, "how": null, "t": 0.0}
+{"f": "qasmbench-large/cc_n151/cc_n151.qasm", "n": 151, "ops": 756, "how": null, "t": 0.02}
+{"f": "qasmbench-large/cc_n32/cc_n32.qasm", "n": 32, "ops": 161, "how": null, "t": 0.0}
+{"f": "qasmbench-large/cc_n64/cc_n64.qasm", "n": 64, "ops": 321, "how": null, "t": 0.01}
+{"f": "qasmbench-large/dnn_n33/dnn_n33.qasm", "n": 33, "ops": 176, "how": "gate", "t": 0.09, "terms": 202, "merged": 187, "suffix": 1}
+{"f": "qasmbench-large/dnn_n51/dnn_n51.qasm", "n": 51, "ops": 275, "how": "gate", "t": 0.08, "terms": 319, "merged": 295, "suffix": 1}
+{"f": "qasmbench-large/ghz_n127/ghz_n127.qasm", "n": 127, "ops": 255, "how": null, "t": 0.0}
+{"f": "qasmbench-large/ghz_n40/ghz_n40.qasm", "n": 40, "ops": 81, "how": null, "t": 0.0}
+{"f": "qasmbench-large/ghz_n78/ghz_n78.qasm", "n": 78, "ops": 157, "how": null, "t": 0.0}
+{"f": "qasmbench-large/ising_n34/ising_n34.qasm", "n": 34, "ops": 403, "how": "gate", "t": 0.0, "terms": 81, "merged": 65, "suffix": 0}
+{"f": "qasmbench-large/ising_n42/ising_n42.qasm", "n": 42, "ops": 499, "how": "gate", "t": 0.0, "terms": 101, "merged": 81, "suffix": 0}
+{"f": "qasmbench-large/ising_n66/ising_n66.qasm", "n": 66, "ops": 787, "how": "gate", "t": 0.01, "terms": 161, "merged": 129, "suffix": 0}
+{"f": "qasmbench-large/ising_n98/ising_n98.qasm", "n": 98, "ops": 1171, "how": "gate", "t": 0.01, "terms": 241, "merged": 193, "suffix": 0}
+{"f": "qasmbench-large/knn_n129/knn_129.qasm", "n": 129, "ops": 195, "how": "gate", "t": 0.02, "terms": 448, "merged": 385, "suffix": 1}
+{"f": "qasmbench-large/knn_n31/knn_n31.qasm", "n": 31, "ops": 48, "how": "gate", "t": 0.0, "terms": 105, "merged": 91, "suffix": 1}
+{"f": "qasmbench-large/knn_n41/knn_n41.qasm", "n": 41, "ops": 63, "how": "gate", "t": 0.01, "terms": 140, "merged": 121, "suffix": 1}
+{"f": "qasmbench-large/knn_n67/knn_n67.qasm", "n": 67, "ops": 102, "how": "gate", "t": 0.01, "terms": 231, "merged": 199, "suffix": 1}
+{"f": "qasmbench-large/multiplier_n45/multiplier_n45.qasm", "n": 45, "ops": 698, "how": null, "t": 0.09}
+{"f": "qasmbench-large/multiplier_n75/multiplier_n75.qasm", "n": 75, "ops": 1972, "how": null, "t": 0.25}
+{"f": "qasmbench-large/qft_n29/qft_n29.qasm", "n": 29, "ops": 2089, "how": "gate", "t": 0.03, "terms": 1190, "merged": 461, "suffix": 28}
+{"f": "qasmbench-large/qft_n63/qft_n63.qasm", "n": 63, "ops": 9892, "how": "gate", "t": 0.14, "terms": 5060, "merged": 1823, "suffix": 62}
+{"f": "qasmbench-large/qugan_n111/qugan_n111.qasm", "n": 111, "ops": 438, "how": "gate", "t": 0.32, "terms": 709, "merged": 655, "suffix": 1}
+{"f": "qasmbench-large/qugan_n39/qugan_n39.qasm", "n": 39, "ops": 150, "how": "gate", "t": 0.1, "terms": 241, "merged": 223, "suffix": 1}
+{"f": "qasmbench-large/qugan_n71/qugan_n71.qasm", "n": 71, "ops": 278, "how": "gate", "t": 0.22, "terms": 449, "merged": 415, "suffix": 1}
+{"f": "qasmbench-large/square_root_n45/square_root_n45.qasm", "n": 45, "ops": 31095, "how": null, "t": 0.9}
+{"f": "qasmbench-large/square_root_n60/square_root_n60.qasm", "n": 60, "ops": 236563, "how": null, "t": 5.35}
+{"f": "qasmbench-large/swap_test_n115/swap_test_n115.qasm", "n": 115, "ops": 174, "how": "gate", "t": 0.02, "terms": 399, "merged": 343, "suffix": 1}
+{"f": "qasmbench-large/swap_test_n41/swap_test_n41.qasm", "n": 41, "ops": 63, "how": "gate", "t": 0.01, "terms": 140, "merged": 121, "suffix": 1}
+{"f": "qasmbench-large/swap_test_n83/swap_test_n83.qasm", "n": 83, "ops": 126, "how": "gate", "t": 0.02, "terms": 287, "merged": 247, "suffix": 1}
+{"f": "qasmbench-large/vqe_uccsd_n28/vqe_uccsd_n28.qasm", "n": 28, "ops": 400967, "how": null, "t": 1.95}
+{"f": "qasmbench-large/wstate_n118/wstate_n118.qasm", "n": 118, "ops": 588, "how": null, "t": 0.01}
+{"f": "qasmbench-large/wstate_n36/wstate_n36.qasm", "n": 36, "ops": 178, "how": null, "t": 0.0}
+{"f": "qasmbench-large/wstate_n76/wstate_n76.qasm", "n": 76, "ops": 378, "how": null, "t": 0.0}
+{"f": "qasmbench-medium/bigadder_n18/bigadder_n18.qasm", "n": 18, "ops": 21, "how": null, "t": 0.01}
+{"f": "qasmbench-medium/bv_n14/bv_n14.qasm", "n": 14, "ops": 56, "how": null, "t": 0.0}
+{"f": "qasmbench-medium/bv_n19/bv_n19.qasm", "n": 19, "ops": 76, "how": null, "t": 0.0}
+{"f": "qasmbench-medium/bwt_n21/bwt_n21.qasm", "n": 21, "ops": 112830, "how": null, "t": 2.49}
+{"f": "qasmbench-medium/cat_state_n22/cat_state_n22.qasm", "n": 22, "ops": 45, "how": null, "t": 0.0}
+{"f": "qasmbench-medium/cc_n12/cc_n12.qasm", "n": 12, "ops": 61, "how": null, "t": 0.0}
+{"f": "qasmbench-medium/dnn_n16/dnn_n16.qasm", "n": 16, "ops": 2032, "how": null, "t": 0.06}
+{"f": "qasmbench-medium/factor247_n15/factor247_n15.qasm", "n": 15, "ops": 660573, "how": null, "t": 4.65}
+{"f": "qasmbench-medium/gcm_n13/gcm_h6.qasm", "n": 13, "ops": 3149, "how": null, "t": 0.03}
+{"f": "qasmbench-medium/ghz_state_n23/ghz_state_n23.qasm", "n": 23, "ops": 47, "how": null, "t": 0.0}
+{"f": "qasmbench-medium/ising_n26/ising_n26.qasm", "n": 26, "ops": 307, "how": "gate", "t": 0.0, "terms": 61, "merged": 49, "suffix": 0}
+{"f": "qasmbench-medium/knn_n25/knn_n25.qasm", "n": 25, "ops": 39, "how": "gate", "t": 0.0, "terms": 84, "merged": 73, "suffix": 1}
+{"f": "qasmbench-medium/multiplier_n15/multiplier_n15.qasm", "n": 15, "ops": 73, "how": null, "t": 0.01}
+{"f": "qasmbench-medium/multiply_n13/multiply_n13.qasm", "n": 13, "ops": 21, "how": null, "t": 0.0}
+{"f": "qasmbench-medium/qec9xz_n17/qec9xz_n17.qasm", "n": 17, "ops": 61, "how": null, "t": 0.0}
+{"f": "qasmbench-medium/qf21_n15/qf21_n15.qasm", "n": 15, "ops": 79, "how": null, "t": 0.02}
+{"f": "qasmbench-medium/qft_n18/qft_n18.qasm", "n": 18, "ops": 802, "how": "gate", "t": 0.01, "terms": 442, "merged": 186, "suffix": 17}
+{"f": "qasmbench-medium/qram_n20/qram_n20.qasm", "n": 20, "ops": 45, "how": "gate", "t": 0.01, "terms": 140, "merged": 111, "suffix": 0}
+{"f": "qasmbench-medium/sat_n11/sat_n11.qasm", "n": 11, "ops": 95, "how": "gate", "t": 0.01, "terms": 294, "merged": 186, "suffix": 5}
+{"f": "qasmbench-medium/seca_n11/seca_n11.qasm", "n": 11, "ops": 80, "how": null, "t": 0.0}
+{"f": "qasmbench-medium/square_root_n18/square_root_n18.qasm", "n": 18, "ops": 558, "how": null, "t": 0.01}
+{"f": "qasmbench-medium/swap_test_n25/swap_test_n25.qasm", "n": 25, "ops": 39, "how": "gate", "t": 0.0, "terms": 84, "merged": 73, "suffix": 1}
+{"f": "qasmbench-medium/wstate_n27/wstate_n27.qasm", "n": 27, "ops": 133, "how": null, "t": 0.0}
+{"f": "qasmbench-small/adder_n10/adder_n10.qasm", "n": 10, "ops": 19, "how": null, "t": 0.0}
+{"f": "qasmbench-small/adder_n4/adder_n4.qasm", "n": 4, "ops": 27, "how": null, "t": 0.0}
+{"f": "qasmbench-small/basis_change_n3/basis_change_n3.qasm", "n": 3, "ops": 36, "how": "gate", "t": 0.01, "terms": 20, "merged": 20, "suffix": 5}
+{"f": "qasmbench-small/basis_trotter_n4/basis_test_n4.qasm", "n": 4, "ops": 102, "how": null, "t": 0.0}
+{"f": "qasmbench-small/basis_trotter_n4/basis_trotter_n4.qasm", "n": 4, "ops": 1510, "how": null, "t": 0.04}
+{"f": "qasmbench-small/bb84_n8/bb84_n8.qasm", "n": 8, "ops": 43, "how": null, "t": 0.0}
+{"f": "qasmbench-small/bell_n4/bell_n4.qasm", "n": 4, "ops": 37, "how": null, "t": 0.0}
+{"f": "qasmbench-small/cat_state_n4/cat_state_n4.qasm", "n": 4, "ops": 8, "how": null, "t": 0.0}
+{"f": "qasmbench-small/deutsch_n2/deutsch_n2.qasm", "n": 2, "ops": 7, "how": null, "t": 0.0}
+{"f": "qasmbench-small/dnn_n2/dnn_n2.qasm", "n": 2, "ops": 228, "how": null, "t": 0.0}
+{"f": "qasmbench-small/dnn_n8/dnn_n8.qasm", "n": 8, "ops": 1016, "how": null, "t": 0.03}
+{"f": "qasmbench-small/error_correctiond3_n5/error_correctiond3_n5.qasm", "n": 5, "ops": 119, "how": null, "t": 0.0}
+{"f": "qasmbench-small/fredkin_n3/fredkin_n3.qasm", "n": 3, "ops": 22, "how": "gate", "t": 0.0, "terms": 7, "merged": 7, "suffix": 0}
+{"f": "qasmbench-small/grover_n2/grover_n2.qasm", "n": 2, "ops": 18, "how": null, "t": 0.0}
+{"f": "qasmbench-small/hhl_n7/hhl_n7.qasm", "n": 7, "ops": 697, "how": "gate", "t": 0.01, "terms": 402, "merged": 313, "suffix": 19}
+{"f": "qasmbench-small/hs4_n4/hs4_n4.qasm", "n": 4, "ops": 32, "how": null, "t": 0.0}
+{"f": "qasmbench-small/inverseqft_n4/inverseqft_n4.qasm", "n": 4, "ops": 19, "how": null, "t": 0.0}
+{"f": "qasmbench-small/ipea_n2/ipea_n2.qasm", "n": 2, "ops": 41, "how": null, "t": 0.01}
+{"f": "qasmbench-small/ising_n10/ising_n10.qasm", "n": 10, "ops": 490, "how": "gate", "t": 0.0, "terms": 245, "merged": 124, "suffix": 0}
+{"f": "qasmbench-small/iswap_n2/iswap_n2.qasm", "n": 2, "ops": 11, "how": null, "t": 0.0}
+{"f": "qasmbench-small/linearsolver_n3/linearsolver_n3.qasm", "n": 3, "ops": 22, "how": "gate", "t": 0.0, "terms": 2, "merged": 2, "suffix": 2}
+{"f": "qasmbench-small/lpn_n5/lpn_n5.qasm", "n": 5, "ops": 16, "how": null, "t": 0.0}
+{"f": "qasmbench-small/pea_n5/pea_n5.qasm", "n": 5, "ops": 33, "how": "gate", "t": 0.0, "terms": 48, "merged": 17, "suffix": 4}
+{"f": "qasmbench-small/qaoa_n3/qaoa_n3.qasm", "n": 3, "ops": 18, "how": null, "t": 0.0}
+{"f": "qasmbench-small/qaoa_n6/qaoa_n6.qasm", "n": 6, "ops": 276, "how": "gate", "t": 0.01, "terms": 114, "merged": 42, "suffix": 25}
+{"f": "qasmbench-small/qec_en_n5/qec_en_n5.qasm", "n": 5, "ops": 30, "how": null, "t": 0.0}
+{"f": "qasmbench-small/qec_sm_n5/qec_sm_n5.qasm", "n": 5, "ops": 11, "how": null, "t": 0.0}
+{"f": "qasmbench-small/qft_n4/qft_n4.qasm", "n": 4, "ops": 17, "how": "gate", "t": 0.0, "terms": 18, "merged": 12, "suffix": 3}
+{"f": "qasmbench-small/qpe_n9/qpe_n9.qasm", "n": 9, "ops": 42, "how": null, "t": 0.0}
+{"f": "qasmbench-small/qrng_n4/qrng_n4.qasm", "n": 4, "ops": 8, "how": null, "t": 0.0}
+{"f": "qasmbench-small/quantumwalks_n2/quantumwalks_n2.qasm", "n": 2, "ops": 13, "how": null, "t": 0.0}
+{"f": "qasmbench-small/sat_n7/sat_n7.qasm", "n": 7, "ops": 42, "how": "gate", "t": 0.0, "terms": 70, "merged": 52, "suffix": 9}
+{"f": "qasmbench-small/shor_n5/shor_n5.qasm", "n": 5, "ops": 25, "how": null, "t": 0.0}
+{"f": "qasmbench-small/simon_n6/simon_n6.qasm", "n": 6, "ops": 24, "how": null, "t": 0.0}
+{"f": "qasmbench-small/teleportation_n3/teleportation_n3.qasm", "n": 3, "ops": 11, "how": null, "t": 0.0}
+{"f": "qasmbench-small/toffoli_n3/toffoli_n3.qasm", "n": 3, "ops": 21, "how": "gate", "t": 0.0, "terms": 7, "merged": 7, "suffix": 2}
+{"f": "qasmbench-small/variational_n4/variational_n4.qasm", "n": 4, "ops": 58, "how": "gate", "t": 0.0, "terms": 20, "merged": 16, "suffix": 0}
+{"f": "qasmbench-small/vqe_n4/vqe_n4.qasm", "n": 4, "ops": 94, "how": null, "t": 0.0}
+{"f": "qasmbench-small/vqe_uccsd_n4/vqe_uccsd_n4.qasm", "n": 4, "ops": 220, "how": "gate", "t": 0.0, "terms": 20, "merged": 15, "suffix": 2}
+{"f": "qasmbench-small/vqe_uccsd_n6/vqe_uccsd_n6.qasm", "n": 6, "ops": 2282, "how": "gate", "t": 0.02, "terms": 150, "merged": 84, "suffix": 4}
+{"f": "qasmbench-small/vqe_uccsd_n8/vqe_uccsd_n8.qasm", "n": 8, "ops": 10808, "how": "gate", "t": 0.12, "terms": 616, "merged": 321, "suffix": 6}
+{"f": "qasmbench-small/wstate_n3/wstate_n3.qasm", "n": 3, "ops": 9, "how": "gate", "t": 0.0, "terms": 9, "merged": 9, "suffix": 7}
+{"f": "qft/qft_N002.qasm", "n": 2, "ops": 12, "how": null, "t": 0.0}
+{"f": "qft/qft_N003.qasm", "n": 3, "ops": 24, "how": null, "t": 0.0}
+{"f": "qft/qft_N004.qasm", "n": 4, "ops": 44, "how": null, "t": 0.0}
+{"f": "qft/qft_N005.qasm", "n": 5, "ops": 66, "how": null, "t": 0.0}
+{"f": "qft/qft_N006.qasm", "n": 6, "ops": 96, "how": null, "t": 0.0}
+{"f": "qft/qft_N007.qasm", "n": 7, "ops": 128, "how": null, "t": 0.0}
+{"f": "qft/qft_N008.qasm", "n": 8, "ops": 168, "how": null, "t": 0.0}
+{"f": "qft/qft_N009.qasm", "n": 9, "ops": 210, "how": null, "t": 0.0}
+{"f": "qft/qft_N010.qasm", "n": 10, "ops": 260, "how": null, "t": 0.0}
+{"f": "qft/qft_N011.qasm", "n": 11, "ops": 312, "how": null, "t": 0.01}
+{"f": "qft/qft_N012.qasm", "n": 12, "ops": 372, "how": null, "t": 0.01}
+{"f": "qft/qft_N013.qasm", "n": 13, "ops": 434, "how": null, "t": 0.01}
+{"f": "qft/qft_N014.qasm", "n": 14, "ops": 504, "how": null, "t": 0.01}
+{"f": "qft/qft_N015.qasm", "n": 15, "ops": 576, "how": null, "t": 0.01}
+{"f": "qft/qft_N016.qasm", "n": 16, "ops": 656, "how": null, "t": 0.01}
+{"f": "qft/qft_N017.qasm", "n": 17, "ops": 738, "how": null, "t": 0.01}
+{"f": "qft/qft_N018.qasm", "n": 18, "ops": 828, "how": null, "t": 0.01}
+{"f": "qft/qft_N019.qasm", "n": 19, "ops": 920, "how": null, "t": 0.01}
+{"f": "qft/qft_N020.qasm", "n": 20, "ops": 1020, "how": null, "t": 0.01}
+{"f": "qft/qft_N021.qasm", "n": 21, "ops": 1122, "how": null, "t": 0.01}
+{"f": "qft/qft_N022.qasm", "n": 22, "ops": 1232, "how": null, "t": 0.01}
+{"f": "qft/qft_N023.qasm", "n": 23, "ops": 1344, "how": null, "t": 0.01}
+{"f": "qft/qft_N024.qasm", "n": 24, "ops": 1464, "how": null, "t": 0.01}
+{"f": "qft/qft_N025.qasm", "n": 25, "ops": 1586, "how": null, "t": 0.01}
+{"f": "qft/qft_N026.qasm", "n": 26, "ops": 1716, "how": null, "t": 0.02}
+{"f": "qft/qft_N027.qasm", "n": 27, "ops": 1848, "how": null, "t": 0.02}
+{"f": "qft/qft_N028.qasm", "n": 28, "ops": 1988, "how": null, "t": 0.02}
+{"f": "qft/qft_N029.qasm", "n": 29, "ops": 2130, "how": null, "t": 0.02}
+{"f": "qft/qft_N030.qasm", "n": 30, "ops": 2280, "how": null, "t": 0.02}
+{"f": "qft/qft_N031.qasm", "n": 31, "ops": 2432, "how": null, "t": 0.03}
+{"f": "qft/qft_N032.qasm", "n": 32, "ops": 2592, "how": null, "t": 0.02}
+{"f": "qft/qft_N033.qasm", "n": 33, "ops": 2754, "how": null, "t": 0.03}
+{"f": "qft/qft_N034.qasm", "n": 34, "ops": 2924, "how": null, "t": 0.03}
+{"f": "qft/qft_N035.qasm", "n": 35, "ops": 3096, "how": null, "t": 0.04}
+{"f": "qft/qft_N036.qasm", "n": 36, "ops": 3276, "how": null, "t": 0.03}
+{"f": "qft/qft_N037.qasm", "n": 37, "ops": 3458, "how": null, "t": 0.04}
+{"f": "qft/qft_N038.qasm", "n": 38, "ops": 3648, "how": null, "t": 0.06}
+{"f": "qft/qft_N039.qasm", "n": 39, "ops": 3840, "how": null, "t": 0.04}
+{"f": "qft/qft_N040.qasm", "n": 40, "ops": 4040, "how": null, "t": 0.04}
+{"f": "qft/qft_N041.qasm", "n": 41, "ops": 4242, "how": null, "t": 0.04}
+{"f": "qft/qft_N042.qasm", "n": 42, "ops": 4452, "how": null, "t": 0.28}
+{"f": "qft/qft_N043.qasm", "n": 43, "ops": 4664, "how": null, "t": 0.04}
+{"f": "qft/qft_N044.qasm", "n": 44, "ops": 4884, "how": null, "t": 0.05}
+{"f": "qft/qft_N045.qasm", "n": 45, "ops": 5106, "how": null, "t": 0.05}
+{"f": "qft/qft_N046.qasm", "n": 46, "ops": 5336, "how": null, "t": 0.05}
+{"f": "qft/qft_N047.qasm", "n": 47, "ops": 5568, "how": null, "t": 0.06}
+{"f": "qft/qft_N048.qasm", "n": 48, "ops": 5808, "how": null, "t": 0.08}
+{"f": "qft/qft_N049.qasm", "n": 49, "ops": 6050, "how": null, "t": 0.06}
+{"f": "qft/qft_N050.qasm", "n": 50, "ops": 6300, "how": null, "t": 0.35}
+{"f": "qft/qft_N051.qasm", "n": 51, "ops": 6552, "how": null, "t": 0.06}
+{"f": "qft/qft_N052.qasm", "n": 52, "ops": 6812, "how": null, "t": 0.06}
+{"f": "qft/qft_N053.qasm", "n": 53, "ops": 7074, "how": null, "t": 0.13}
+{"f": "qft/qft_N054.qasm", "n": 54, "ops": 7344, "how": null, "t": 0.12}
+{"f": "qft/qft_N055.qasm", "n": 55, "ops": 7616, "how": null, "t": 0.07}
+{"f": "qft/qft_N056.qasm", "n": 56, "ops": 7896, "how": null, "t": 0.12}
+{"f": "qft/qft_N057.qasm", "n": 57, "ops": 8178, "how": null, "t": 0.09}
+{"f": "qft/qft_N058.qasm", "n": 58, "ops": 8468, "how": null, "t": 0.08}
+{"f": "qft/qft_N059.qasm", "n": 59, "ops": 8760, "how": null, "t": 0.11}
+{"f": "qft/qft_N060.qasm", "n": 60, "ops": 9060, "how": null, "t": 0.09}
+{"f": "qft/qft_N061.qasm", "n": 61, "ops": 9362, "how": null, "t": 0.14}
+{"f": "qft/qft_N062.qasm", "n": 62, "ops": 9672, "how": null, "t": 0.18}
+{"f": "qft/qft_N063.qasm", "n": 63, "ops": 9984, "how": null, "t": 0.2}
+{"f": "qft/qft_N064.qasm", "n": 64, "ops": 10304, "how": null, "t": 0.13}
+{"f": "qft/qft_N065.qasm", "n": 65, "ops": 10626, "how": null, "t": 0.15}
+{"f": "qft/qft_N066.qasm", "n": 66, "ops": 10956, "how": null, "t": 0.13}
+{"f": "qft/qft_N067.qasm", "n": 67, "ops": 11288, "how": null, "t": 0.2}
+{"f": "qft/qft_N068.qasm", "n": 68, "ops": 11628, "how": null, "t": 0.12}
+{"f": "qft/qft_N069.qasm", "n": 69, "ops": 11970, "how": null, "t": 0.16}
+{"f": "qft/qft_N070.qasm", "n": 70, "ops": 12320, "how": null, "t": 0.12}
+{"f": "qft/qft_N071.qasm", "n": 71, "ops": 12672, "how": null, "t": 0.13}
+{"f": "qft/qft_N072.qasm", "n": 72, "ops": 13032, "how": null, "t": 0.17}
+{"f": "qft/qft_N073.qasm", "n": 73, "ops": 13394, "how": null, "t": 0.13}
+{"f": "qft/qft_N074.qasm", "n": 74, "ops": 13764, "how": null, "t": 0.13}
+{"f": "qft/qft_N075.qasm", "n": 75, "ops": 14136, "how": null, "t": 0.18}
+{"f": "qft/qft_N076.qasm", "n": 76, "ops": 14516, "how": null, "t": 0.15}
+{"f": "qft/qft_N077.qasm", "n": 77, "ops": 14898, "how": null, "t": 0.15}
+{"f": "qft/qft_N078.qasm", "n": 78, "ops": 15288, "how": null, "t": 0.2}
+{"f": "qft/qft_N079.qasm", "n": 79, "ops": 15680, "how": null, "t": 0.2}
+{"f": "qft/qft_N080.qasm", "n": 80, "ops": 16080, "how": null, "t": 0.22}
+{"f": "qft/qft_N081.qasm", "n": 81, "ops": 16482, "how": null, "t": 0.17}
+{"f": "qft/qft_N082.qasm", "n": 82, "ops": 16892, "how": null, "t": 0.17}
+{"f": "qft/qft_N083.qasm", "n": 83, "ops": 17304, "how": null, "t": 0.22}
+{"f": "qft/qft_N084.qasm", "n": 84, "ops": 17724, "how": null, "t": 0.22}
+{"f": "qft/qft_N085.qasm", "n": 85, "ops": 18146, "how": null, "t": 0.24}
+{"f": "qft/qft_N086.qasm", "n": 86, "ops": 18576, "how": null, "t": 0.26}
+{"f": "qft/qft_N087.qasm", "n": 87, "ops": 19008, "how": null, "t": 0.36}
+{"f": "qft/qft_N088.qasm", "n": 88, "ops": 19448, "how": null, "t": 0.33}
+{"f": "qft/qft_N089.qasm", "n": 89, "ops": 19890, "how": null, "t": 0.26}
+{"f": "qft/qft_N090.qasm", "n": 90, "ops": 20340, "how": null, "t": 0.26}
+{"f": "qft/qft_N091.qasm", "n": 91, "ops": 20792, "how": null, "t": 0.29}
+{"f": "qft/qft_N092.qasm", "n": 92, "ops": 21252, "how": null, "t": 0.27}
+{"f": "qft/qft_N093.qasm", "n": 93, "ops": 21714, "how": null, "t": 0.27}
+{"f": "qft/qft_N094.qasm", "n": 94, "ops": 22184, "how": null, "t": 0.27}
+{"f": "qft/qft_N095.qasm", "n": 95, "ops": 22656, "how": null, "t": 0.34}
+{"f": "qft/qft_N096.qasm", "n": 96, "ops": 23136, "how": null, "t": 0.29}
+{"f": "qft/qft_N097.qasm", "n": 97, "ops": 23618, "how": null, "t": 0.32}
+{"f": "qft/qft_N098.qasm", "n": 98, "ops": 24108, "how": null, "t": 0.29}
+{"f": "qft/qft_N099.qasm", "n": 99, "ops": 24600, "how": null, "t": 0.41}
+{"f": "qft/qft_N100.qasm", "n": 100, "ops": 25100, "how": null, "t": 0.38}
+{"f": "qv/qv_N002_12345.qasm", "n": 2, "ops": 86, "how": null, "t": 0.0}
+{"f": "qv/qv_N003_12345.qasm", "n": 3, "ops": 129, "how": null, "t": 0.0}
+{"f": "qv/qv_N004_12345.qasm", "n": 4, "ops": 344, "how": null, "t": 0.0}
+{"f": "qv/qv_N005_12345.qasm", "n": 5, "ops": 430, "how": null, "t": 0.01}
+{"f": "qv/qv_N006_12345.qasm", "n": 6, "ops": 774, "how": null, "t": 0.01}
+{"f": "qv/qv_N007_12345.qasm", "n": 7, "ops": 903, "how": null, "t": 0.01}
+{"f": "qv/qv_N008_12345.qasm", "n": 8, "ops": 1376, "how": null, "t": 0.02}
+{"f": "qv/qv_N009_12345.qasm", "n": 9, "ops": 1548, "how": null, "t": 0.02}
+{"f": "qv/qv_N010_12345.qasm", "n": 10, "ops": 2150, "how": null, "t": 0.03}
+{"f": "qv/qv_N011_12345.qasm", "n": 11, "ops": 2365, "how": null, "t": 0.03}
+{"f": "qv/qv_N012_12345.qasm", "n": 12, "ops": 3096, "how": null, "t": 0.09}
+{"f": "qv/qv_N013_12345.qasm", "n": 13, "ops": 3354, "how": null, "t": 0.04}
+{"f": "qv/qv_N014_12345.qasm", "n": 14, "ops": 4214, "how": null, "t": 0.04}
+{"f": "qv/qv_N015_12345.qasm", "n": 15, "ops": 4515, "how": null, "t": 0.05}
+{"f": "qv/qv_N016_12345.qasm", "n": 16, "ops": 5504, "how": null, "t": 0.06}
+{"f": "qv/qv_N017_12345.qasm", "n": 17, "ops": 5848, "how": null, "t": 0.06}
+{"f": "qv/qv_N018_12345.qasm", "n": 18, "ops": 6966, "how": null, "t": 0.07}
+{"f": "qv/qv_N019_12345.qasm", "n": 19, "ops": 7353, "how": null, "t": 0.08}
+{"f": "qv/qv_N020_12345.qasm", "n": 20, "ops": 8600, "how": null, "t": 0.09}
+{"f": "qv/qv_N021_12345.qasm", "n": 21, "ops": 9030, "how": null, "t": 0.09}
+{"f": "qv/qv_N022_12345.qasm", "n": 22, "ops": 10406, "how": null, "t": 0.12}
+{"f": "qv/qv_N023_12345.qasm", "n": 23, "ops": 10879, "how": null, "t": 0.17}
+{"f": "qv/qv_N024_12345.qasm", "n": 24, "ops": 12384, "how": null, "t": 0.12}
+{"f": "qv/qv_N025_12345.qasm", "n": 25, "ops": 12900, "how": null, "t": 0.16}
+{"f": "qv/qv_N026_12345.qasm", "n": 26, "ops": 14534, "how": null, "t": 0.24}
+{"f": "qv/qv_N027_12345.qasm", "n": 27, "ops": 15093, "how": null, "t": 0.25}
+{"f": "qv/qv_N028_12345.qasm", "n": 28, "ops": 16856, "how": null, "t": 0.28}
+{"f": "qv/qv_N029_12345.qasm", "n": 29, "ops": 17458, "how": null, "t": 0.22}
+{"f": "qv/qv_N030_12345.qasm", "n": 30, "ops": 19350, "how": null, "t": 0.27}
+{"f": "qv/qv_N031_12345.qasm", "n": 31, "ops": 19995, "how": null, "t": 0.28}
+{"f": "qv/qv_N032_12345.qasm", "n": 32, "ops": 22016, "how": null, "t": 0.35}
+{"f": "qv/qv_N033_12345.qasm", "n": 33, "ops": 22704, "how": null, "t": 0.33}
+{"f": "qv/qv_N034_12345.qasm", "n": 34, "ops": 24854, "how": null, "t": 0.39}
+{"f": "qv/qv_N035_12345.qasm", "n": 35, "ops": 25585, "how": null, "t": 0.42}
+{"f": "qv/qv_N036_12345.qasm", "n": 36, "ops": 27864, "how": null, "t": 0.47}
+{"f": "qv/qv_N037_12345.qasm", "n": 37, "ops": 28638, "how": null, "t": 0.42}
+{"f": "qv/qv_N038_12345.qasm", "n": 38, "ops": 31046, "how": null, "t": 0.44}
+{"f": "qv/qv_N039_12345.qasm", "n": 39, "ops": 31863, "how": null, "t": 0.46}
+{"f": "qv/qv_N040_12345.qasm", "n": 40, "ops": 34400, "how": null, "t": 0.63}
+{"f": "qv/qv_N041_12345.qasm", "n": 41, "ops": 35260, "how": null, "t": 0.61}
+{"f": "qv/qv_N042_12345.qasm", "n": 42, "ops": 37926, "how": null, "t": 0.64}
+{"f": "qv/qv_N043_12345.qasm", "n": 43, "ops": 38829, "how": null, "t": 0.64}
+{"f": "qv/qv_N044_12345.qasm", "n": 44, "ops": 41624, "how": null, "t": 0.58}
+{"f": "qv/qv_N045_12345.qasm", "n": 45, "ops": 42570, "how": null, "t": 0.74}
+{"f": "qv/qv_N046_12345.qasm", "n": 46, "ops": 45494, "how": null, "t": 0.66}
+{"f": "qv/qv_N047_12345.qasm", "n": 47, "ops": 46483, "how": null, "t": 0.7}
+{"f": "qv/qv_N048_12345.qasm", "n": 48, "ops": 49536, "how": null, "t": 0.76}
+{"f": "qv/qv_N049_12345.qasm", "n": 49, "ops": 50568, "how": null, "t": 0.83}
+{"f": "qv/qv_N050_12345.qasm", "n": 50, "ops": 53750, "how": null, "t": 0.82}
+{"f": "qv/qv_N051_12345.qasm", "n": 51, "ops": 54825, "how": null, "t": 0.85}
+{"f": "qv/qv_N052_12345.qasm", "n": 52, "ops": 58136, "how": null, "t": 1.05}
+{"f": "qv/qv_N053_12345.qasm", "n": 53, "ops": 59254, "how": null, "t": 0.95}
+{"f": "qv/qv_N054_12345.qasm", "n": 54, "ops": 62694, "how": null, "t": 0.92}
+{"f": "qv/qv_N055_12345.qasm", "n": 55, "ops": 63855, "how": null, "t": 0.92}
+{"f": "qv/qv_N056_12345.qasm", "n": 56, "ops": 67424, "how": null, "t": 1.08}
+{"f": "qv/qv_N057_12345.qasm", "n": 57, "ops": 68628, "how": null, "t": 0.98}
+{"f": "qv/qv_N058_12345.qasm", "n": 58, "ops": 72326, "how": null, "t": 1.09}
+{"f": "qv/qv_N059_12345.qasm", "n": 59, "ops": 73573, "how": null, "t": 1.07}
+{"f": "qv/qv_N060_12345.qasm", "n": 60, "ops": 77400, "how": null, "t": 1.44}
+{"f": "qv/qv_N061_12345.qasm", "n": 61, "ops": 78690, "how": null, "t": 1.55}
+{"f": "qv/qv_N062_12345.qasm", "n": 62, "ops": 82646, "how": null, "t": 1.58}
+{"f": "qv/qv_N063_12345.qasm", "n": 63, "ops": 83979, "how": null, "t": 1.99}
+{"f": "qv/qv_N064_12345.qasm", "n": 64, "ops": 88064, "how": null, "t": 1.94}
+{"f": "qv/qv_N065_12345.qasm", "n": 65, "ops": 89440, "how": null, "t": 1.7}
+{"f": "qv/qv_N066_12345.qasm", "n": 66, "ops": 93654, "how": null, "t": 1.72}
+{"f": "qv/qv_N067_12345.qasm", "n": 67, "ops": 95073, "how": null, "t": 1.8}
+{"f": "qv/qv_N068_12345.qasm", "n": 68, "ops": 99416, "how": null, "t": 1.73}
+{"f": "qv/qv_N069_12345.qasm", "n": 69, "ops": 100878, "how": null, "t": 1.78}
+{"f": "qv/qv_N070_12345.qasm", "n": 70, "ops": 105350, "how": null, "t": 1.83}
+{"f": "qv/qv_N071_12345.qasm", "n": 71, "ops": 106855, "how": null, "t": 1.97}
+{"f": "qv/qv_N072_12345.qasm", "n": 72, "ops": 111456, "how": null, "t": 2.55}
+{"f": "qv/qv_N073_12345.qasm", "n": 73, "ops": 113004, "how": null, "t": 2.0}
+{"f": "qv/qv_N074_12345.qasm", "n": 74, "ops": 117734, "how": null, "t": 2.9}
+{"f": "qv/qv_N075_12345.qasm", "n": 75, "ops": 119325, "how": null, "t": 2.24}
+{"f": "qv/qv_N076_12345.qasm", "n": 76, "ops": 124184, "how": null, "t": 2.33}
+{"f": "qv/qv_N077_12345.qasm", "n": 77, "ops": 125818, "how": null, "t": 2.11}
+{"f": "qv/qv_N078_12345.qasm", "n": 78, "ops": 130806, "how": null, "t": 2.37}
+{"f": "qv/qv_N079_12345.qasm", "n": 79, "ops": 132483, "how": null, "t": 2.32}
+{"f": "qv/qv_N080_12345.qasm", "n": 80, "ops": 137600, "how": null, "t": 2.49}
+{"f": "qv/qv_N081_12345.qasm", "n": 81, "ops": 139320, "how": null, "t": 2.57}
+{"f": "qv/qv_N082_12345.qasm", "n": 82, "ops": 144566, "how": null, "t": 2.43}
+{"f": "qv/qv_N083_12345.qasm", "n": 83, "ops": 146329, "how": null, "t": 2.53}
+{"f": "qv/qv_N084_12345.qasm", "n": 84, "ops": 151704, "how": null, "t": 3.09}
+{"f": "qv/qv_N085_12345.qasm", "n": 85, "ops": 153510, "how": null, "t": 3.06}
+{"f": "qv/qv_N086_12345.qasm", "n": 86, "ops": 159014, "how": null, "t": 2.91}
+{"f": "qv/qv_N087_12345.qasm", "n": 87, "ops": 160863, "how": null, "t": 2.96}
+{"f": "qv/qv_N088_12345.qasm", "n": 88, "ops": 166496, "how": null, "t": 3.28}
+{"f": "qv/qv_N089_12345.qasm", "n": 89, "ops": 168388, "how": null, "t": 3.14}
+{"f": "qv/qv_N090_12345.qasm", "n": 90, "ops": 174150, "how": null, "t": 3.35}
+{"f": "qv/qv_N091_12345.qasm", "n": 91, "ops": 176085, "how": null, "t": 3.25}
+{"f": "qv/qv_N092_12345.qasm", "n": 92, "ops": 181976, "how": null, "t": 3.64}
+{"f": "qv/qv_N093_12345.qasm", "n": 93, "ops": 183954, "how": null, "t": 3.58}
+{"f": "qv/qv_N094_12345.qasm", "n": 94, "ops": 189974, "how": null, "t": 3.66}
+{"f": "qv/qv_N095_12345.qasm", "n": 95, "ops": 191995, "how": null, "t": 3.64}
+{"f": "qv/qv_N096_12345.qasm", "n": 96, "ops": 198144, "how": null, "t": 3.72}
+{"f": "qv/qv_N097_12345.qasm", "n": 97, "ops": 200208, "how": null, "t": 0.85}
+{"f": "qv/qv_N098_12345.qasm", "n": 98, "ops": 206486, "how": null, "t": 0.82}
+{"f": "qv/qv_N099_12345.qasm", "n": 99, "ops": 208593, "how": null, "t": 0.8}
+{"f": "qv/qv_N100_12345.qasm", "n": 100, "ops": 215000, "how": null, "t": 0.78}
+{"f": "square-heisenberg/square_heisenberg_N100.qasm", "n": 100, "ops": 7660, "how": "gate", "t": 0.18, "terms": 1180, "merged": 640, "suffix": 0}
+{"f": "square-heisenberg/square_heisenberg_N121.qasm", "n": 121, "ops": 9361, "how": "gate", "t": 0.1, "terms": 1441, "merged": 781, "suffix": 0}
+{"f": "square-heisenberg/square_heisenberg_N144.qasm", "n": 144, "ops": 11232, "how": "gate", "t": 0.13, "terms": 1728, "merged": 936, "suffix": 0}
+{"f": "square-heisenberg/square_heisenberg_N16.qasm", "n": 16, "ops": 1024, "how": "gate", "t": 0.01, "terms": 160, "merged": 88, "suffix": 0}
+{"f": "square-heisenberg/square_heisenberg_N25.qasm", "n": 25, "ops": 1705, "how": "gate", "t": 0.02, "terms": 265, "merged": 145, "suffix": 0}
+{"f": "square-heisenberg/square_heisenberg_N36.qasm", "n": 36, "ops": 2556, "how": "gate", "t": 0.03, "terms": 396, "merged": 216, "suffix": 0}
+{"f": "square-heisenberg/square_heisenberg_N4.qasm", "n": 4, "ops": 172, "how": "gate", "t": 0.0, "terms": 28, "merged": 16, "suffix": 0}
+{"f": "square-heisenberg/square_heisenberg_N49.qasm", "n": 49, "ops": 3577, "how": "gate", "t": 0.04, "terms": 553, "merged": 301, "suffix": 0}
+{"f": "square-heisenberg/square_heisenberg_N64.qasm", "n": 64, "ops": 4768, "how": "gate", "t": 0.05, "terms": 736, "merged": 400, "suffix": 0}
+{"f": "square-heisenberg/square_heisenberg_N81.qasm", "n": 81, "ops": 6129, "how": "gate", "t": 0.15, "terms": 945, "merged": 513, "suffix": 0}
+{"f": "square-heisenberg/square_heisenberg_N9.qasm", "n": 9, "ops": 513, "how": "gate", "t": 0.01, "terms": 81, "merged": 45, "suffix": 0}
