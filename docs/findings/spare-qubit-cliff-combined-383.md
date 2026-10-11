@@ -5692,6 +5692,108 @@ its own pre-registered test on new circuits.
 
 ---
 
+<!-- ===== Addendum 445 (source: addendum_445.md) ===== -->
+
+> **Note added when merging:** C38-VAL's predictions were fixed in a local file before the run (not committed first); the file, its hash and the run's data are committed here.
+
+## Addendum 445 -- C38-VAL: candidate 2026-10-11.c38 (changelog item 68: a Pauli evolution whose terms all commute is compiled by STEINER6's construction; every other input as by release 2026-10-11.1), tested on circuits and two devices STEINER6 was never developed on. V1-V4 confirmed on all six devices, V5 on four (ambiguous on two): ESP 1.39 times the release's and 1.36 times Qiskit level 3's on the runnable commuting tests, no failed element, non-commuting inputs unchanged; the dense two-local diagonal type (tsp unary) still loses (2026-10-11)
+
+**Status: the predictions were fixed before the run in a local file, not committed first.** The owner had asked to
+work without publishing for a while, so C38-VAL broke this project's lock-commit practice. To make up for it:
+
+- the file is [`data/2026-10-11/c38_val/C38-VAL_preregistration.md`](../../data/2026-10-11/c38_val/C38-VAL_preregistration.md),
+  written at 07:31 CEST;
+- its sha256 (`d8940e7c...42c7`) and the candidate's were copied to the owner's PC before the run started at 07:32;
+- the file is unchanged.
+
+Only a smoke run of 4 jobs on one MaxCut circuit (n = 10) had been seen.
+
+**The candidate.** [`patches/psf_compile_c38_2026-10-11/`](../../patches/psf_compile_c38_2026-10-11/):
+
+- `make_c38.py` builds it from release 2026-10-11.1 by exact substitutions.
+- The STEINER block (`st_core.py`) is extracted from [`benchmarks/steiner6m.py`](../../benchmarks/steiner6m.py), run v6
+  of Addendum 444, by `gen_block.py`, so nothing was transcribed by hand. `gen_block.py` reproduces `st_core.py` from
+  the repository.
+- `st_driver.py` adds three things: the eligibility test, the construction's choice among its starting placements, and
+  the output's layout (initial placement and final permutation).
+- **The rule** is fixed from STEINER6's development data only (Addendum 444):
+  - STEINER6 is used when the device is given, the caller gives no `coupling_map` or `initial_layout`, and the input
+    is one PauliEvolutionGate (Qiskit's default product formula, real coefficients, optional final measurements) whose
+    terms all pairwise commute.
+  - Otherwise, and when its output would use a failed element, the release's path runs unchanged.
+  - On FakeTorino and FakeKingston, all-commuting inputs beat the release on 12 of 13 runnable cases. On the others
+    the result was even.
+- **`test_c38.py`** (6 tests, all passed before the run):
+  - the output, read through its layout, implements the input exactly on a 7-qubit device with differing errors,
+    ancillas untouched;
+  - measurements sit at the final placement;
+  - non-commuting inputs, ordinary circuits, the call without the device, the caller's map and `steiner=False` give
+    the release's outputs by value;
+  - no failed element, and every gate on the device.
+
+**Run.**
+
+- **When and where:** 07:32-07:55 CEST on 2026-10-11, in Claude's cloud workspace (2 cores, Python 3.11,
+  Qiskit 2.5.2, qiskit-ibm-runtime 0.49.0), on commit `fc8a5de` with the candidate.
+- **Scope:** 232 jobs.
+- **Script:** [`benchmarks/c38_val.py`](../../benchmarks/c38_val.py).
+- **Data:** [`data/2026-10-11/c38_val/`](../../data/2026-10-11/c38_val/).
+- **Circuits STEINER6 was never developed on:**
+  - Benchpress's HamLib instances outside BP-FINAL's 67 that fit the device. Two of them have all terms commuting:
+    tsp ts225, unary, and 1-fullins;
+  - generated circuits from fixed seeds:
+    - commuting: MaxCut type (Z + ZZ on random 3-regular graphs, n = 10-40) and 3-SAT type (Z + ZZ + ZZZ, n = 12-30);
+    - not commuting: transverse-field Ising and Heisenberg rings.
+- **Devices:** FakeTorino, FakeKingston, FakeMarrakesh, FakeFez, and FakeAachen and FakeBoston (never used by STEINER6).
+- **Arms:** QK3 (Qiskit level 3, seed 0), REL (the release's plain call with `backend=`), C38 (the same call).
+- **Errors:** 12 records, all the same `FailedElementsError` raised by both REL and C38 on two non-commuting HamLib
+  circuits that need the whole device. C38 behaved as the release there.
+
+**Scoring, as fixed** (runnable: the best ESP of the three >= 0.01; an output on a failed element has ESP 0):
+
+| ID | prediction | Torino | Kingston | Marrakesh | Fez | Aachen | Boston | result |
+|---|---|---|---|---|---|---|---|---|
+| V1 | C38 outputs on failed elements: 0 | 0 | 0 | 0 | 0 | 0 | 0 | **CONFIRMED** |
+| V2 | non-commuting inputs: C38 = REL by value | 17/17 | 18/18 | 18/18 | 18/18 | 18/18 | 18/18 | **CONFIRMED** |
+| V3 | runnable commuting: ESP C38 / REL >= 1.10 (refuted < 1.00) | 1.412 | 1.468 | 1.563 | 1.367 | 1.340 | 1.216 | **CONFIRMED** on all; pooled 1.387 (108 tests) |
+| V4 | runnable commuting: ESP C38 / QK3 >= 1.05 (refuted < 1.00) | 1.393 | 1.407 | 1.573 | 1.422 | 1.287 | 1.186 | **CONFIRMED** on all |
+| V5 | all commuting: two-qubit count C38 / REL <= 0.95 (refuted > 1.00) | 0.877 | 0.890 | 0.857 | 0.859 | 0.967 | 0.955 | **CONFIRMED** on 4, **ambiguous** on Aachen and Boston |
+| V6 | time C38 / REL on commuting tests (reported) | 3.6 | 8.2 | 9.0 | 9.5 | 9.9 | 8.5 | within 20 |
+
+**The proposed release rule** (V1, V2 and V3 not refuted on any device, V3 confirmed pooled) **is met.** QK3 lost 7
+runnable commuting tests to failed elements.
+
+**By kind** (runnable commuting tests, all six devices, ESP C38 / REL):
+
+| kind | tests | geometric mean | range | better / worse by 10% |
+|---|---|---|---|---|
+| 3-SAT type (Z, ZZ, ZZZ) | 30 | 2.80 | 1.15-9.67 | 30 / 0 |
+| MaxCut type, n >= 22 | 48 | 1.11 | 0.78-2.25 | 22 / 4 |
+| MaxCut type, n <= 16 | 24 | 1.00 | 0.96-1.09 | 0 / 0 |
+| HamLib tsp ts225 (unary, dense ZZ) | 6 | **0.87** | 0.76-1.01 | 0 / 5 |
+
+**Reading, two numbers.**
+
+- **Display.** On commuting Hamiltonians the plain call with the device gains 39% ESP over the release and 36% over
+  Qiskit level 3, with 10% fewer two-qubit gates. The gain holds on two devices STEINER6 never saw, and nothing changes
+  for any other input.
+- **Essential.**
+  - The gain is real where terms have three or more qubits, or where the interaction graph is sparse and large.
+  - On small MaxCut instances it is even.
+  - On the dense two-local diagonal type (tsp in unary encoding) it **loses**: 5 of 6 by more than 10%, with 13% more
+    two-qubit gates. That is the same type as STEINER6's one development loss (lin105, Addendum 444). The rule did not
+    exclude it, and a user compiling such a Hamiltonian gets a worse circuit than before.
+  - Only two of the new HamLib instances commute. The commuting set is mostly generated circuits.
+  - Compile time is 4-10 times the release's on those inputs.
+
+**Not established.**
+
+- Hardware: no job has run.
+- Wider HamLib coverage of commuting Hamiltonians.
+- Why the dense two-local type loses (the scheduler's front, Addendum 444), and whether the rule should exclude it.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
