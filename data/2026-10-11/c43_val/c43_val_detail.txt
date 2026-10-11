@@ -1,0 +1,30 @@
+errors by arm: {'C41': 15, 'C42': 15, 'C41r': 15}
+compiled by C43 where C41 raised FailedElementsError:
+  gen_bv_n20       Aachen     C43 on failed 0, ESP 0.857, repeats True; QK3 on failed 0, ESP 0.851
+  gen_bv_n40       Aachen     C43 on failed 0, ESP 0.626, repeats True; QK3 on failed 0, ESP 0.667
+  gen_bv_n80       Aachen     C43 on failed 0, ESP 0.291, repeats True; QK3 on failed 0, ESP 0.357
+  gen_random_n24   Aachen     C43 on failed 0, ESP 0.655, repeats True; QK3 on failed 0, ESP 0.658
+  gen_bv_n20       Boston     C43 on failed 0, ESP 0.891, repeats True; QK3 on failed 0, ESP 0.878
+  gen_bv_n40       Boston     C43 on failed 0, ESP 0.719, repeats True; QK3 on failed 0, ESP 0.724
+  gen_bv_n80       Boston     C43 on failed 0, ESP 0.474, repeats True; QK3 on failed 0, ESP 0.463
+  gen_random_n24   Boston     C43 on failed 0, ESP 0.745, repeats True; QK3 on failed 0, ESP 0.736
+  gen_bv_n20       Kingston   C43 on failed 0, ESP 0.799, repeats True; QK3 on failed 0, ESP 0.793
+  gen_bv_n40       Kingston   C43 on failed 0, ESP 0.578, repeats True; QK3 on failed 0, ESP 0.523
+  gen_bv_n80       Kingston   C43 on failed 0, ESP 0.235, repeats True; QK3 on failed 0, ESP 0.231
+  gen_random_n24   Kingston   C43 on failed 0, ESP 0.558, repeats True; QK3 on failed 0, ESP 0.547
+  gen_bv_n20       Torino     C43 on failed 0, ESP 0.59, repeats True; QK3 on failed 0, ESP 0.632
+  gen_bv_n40       Torino     C43 on failed 0, ESP 0.261, repeats True; QK3 on failed 0, ESP 0.294
+  gen_bv_n80       Torino     C43 on failed 0, ESP 0.0464, repeats True; QK3 on failed 0, ESP 0.0295
+runnable tests with ESP C43 below 0.95 x C41:
+  gen_random_n48 Aachen: C43 0.193, C41 0.399; item 74 {'checked': 2, 'tried': 1, 'kept_alternative': 1, 'kept_first': 0, 'no_alternative': 0}
+  gen_random_n48 Kingston: C43 0.221, C41 0.246; item 74 {'checked': 2, 'tried': 1, 'kept_alternative': 1, 'kept_first': 0, 'no_alternative': 0}
+  gen_random_n48 Boston: C43 0.356, C41 0.459; item 74 {'checked': 1, 'tried': 0, 'kept_alternative': 0, 'kept_first': 0, 'no_alternative': 0}
+by family, runnable (ESP C43 / C41, C43 / QK3):
+  gen_bv         6 3.204 1.057
+  gen_export    18 1.000 0.989
+  gen_random    32 1.013 5875.502
+  qaoa_qasm     36 1.000 1.789
+  qft_qasm      51 1.145 1.131
+  qv            22 1.043 0.953
+C41 repeated its output on 191 of 195 ; C43 on 195
+largest C43 time 18.1 s

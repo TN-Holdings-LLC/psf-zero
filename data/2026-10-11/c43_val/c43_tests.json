@@ -1,0 +1,142 @@
+{
+"gen_bv_n20": [
+"gen_bv",
+null
+],
+"gen_bv_n40": [
+"gen_bv",
+null
+],
+"gen_bv_n80": [
+"gen_bv",
+null
+],
+"gen_export_heis_n12": [
+"gen_export",
+null
+],
+"gen_export_randpauli_n12": [
+"gen_export",
+null
+],
+"gen_export_tfim_n12": [
+"gen_export",
+null
+],
+"gen_random_n12": [
+"gen_random",
+null
+],
+"gen_random_n16": [
+"gen_random",
+null
+],
+"gen_random_n24": [
+"gen_random",
+null
+],
+"gen_random_n32": [
+"gen_random",
+null
+],
+"gen_random_n48": [
+"gen_random",
+null
+],
+"gen_random_n8": [
+"gen_random",
+null
+],
+"qaoa_N13": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N13_3reps.qasm"
+],
+"qaoa_N17": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N17_3reps.qasm"
+],
+"qaoa_N22": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N22_3reps.qasm"
+],
+"qaoa_N27": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N27_3reps.qasm"
+],
+"qaoa_N45": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N45_3reps.qasm"
+],
+"qaoa_N6": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N6_3reps.qasm"
+],
+"qaoa_N70": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N70_3reps.qasm"
+],
+"qaoa_N9": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N9_3reps.qasm"
+],
+"qft_N10": [
+"qft_qasm",
+"qft/qft_N010.qasm"
+],
+"qft_N12": [
+"qft_qasm",
+"qft/qft_N012.qasm"
+],
+"qft_N14": [
+"qft_qasm",
+"qft/qft_N014.qasm"
+],
+"qft_N20": [
+"qft_qasm",
+"qft/qft_N020.qasm"
+],
+"qft_N28": [
+"qft_qasm",
+"qft/qft_N028.qasm"
+],
+"qft_N40": [
+"qft_qasm",
+"qft/qft_N040.qasm"
+],
+"qft_N5": [
+"qft_qasm",
+"qft/qft_N005.qasm"
+],
+"qft_N6": [
+"qft_qasm",
+"qft/qft_N006.qasm"
+],
+"qft_N7": [
+"qft_qasm",
+"qft/qft_N007.qasm"
+],
+"qft_N9": [
+"qft_qasm",
+"qft/qft_N009.qasm"
+],
+"qv_N14": [
+"qv",
+"qv/qv_N014_12345.qasm"
+],
+"qv_N20": [
+"qv",
+"qv/qv_N020_12345.qasm"
+],
+"qv_N28": [
+"qv",
+"qv/qv_N028_12345.qasm"
+],
+"qv_N6": [
+"qv",
+"qv/qv_N006_12345.qasm"
+],
+"qv_N9": [
+"qv",
+"qv/qv_N009_12345.qasm"
+]
+}

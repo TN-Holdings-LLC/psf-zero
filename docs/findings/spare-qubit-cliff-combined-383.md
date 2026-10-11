@@ -6358,6 +6358,111 @@ The owner released prototype c41 as **2026-10-11.3**: release 2026-10-11.2 with 
 
 ---
 
+<!-- ===== Addendum 452 (source: addendum_452.md) ===== -->
+
+> **Note added when merging:** C43-VAL's predictions were fixed in a local file before the run (not committed first); the file and the run's data are committed here.
+
+## Addendum 452 -- C43-VAL: prototype 2026-10-11.c43 (changelog items 74 revised, 75, 76): the same output on every call (195 of 195; the release 191), no output on a failed element, ESP 1.10 times release 2026-10-11.3's on the runnable tests and 1.18 times Qiskit level 3's, QFT read and 1.15 times; and the releases refused ordinary circuits on four of six devices because of Qiskit's VF2PostLayout, which c43 removes (2026-10-11)
+
+**Status: the predictions were fixed before the run in a local file, not committed first** (as in Addenda 445-450).
+
+- **The file:** [`data/2026-10-11/c43_val/C43-VAL_preregistration.md`](../../data/2026-10-11/c43_val/C43-VAL_preregistration.md),
+  written at 13:49 CEST, copied to the owner's PC with its hash (sha256 `b0469210...`) before the run; unchanged.
+- **Seen before the run:** a smoke run of 4 jobs (a random circuit on four devices), the two C42-VAL cases used to
+  develop item 75, the exactness sweep and the readability survey. No test of C43-VAL was used in C41-VAL or C42-VAL.
+
+**Why.**
+
+- **Run-to-run variation** (Addenda 450-451). Traced pass by pass: Qiskit 2.5.2's `VF2PostLayout`, with a fixed seed,
+  returns a different `post_layout` from call to call. The release's routing call builds its pass manager from the
+  coupling map and basis gates, so this pass sees a Target without errors and chooses among equal layouts by an
+  order that changes between calls.
+- **Item 74** (Addendum 450) wasted half its attempts: avoiding every element of error >= 0.1 at once often left no
+  placement.
+- **Item 73** did not read circuits whose final Clifford is a permutation (QFT with its swaps, 99 Benchpress files).
+
+**The prototype.** [`patches/psf_compile_c43_2026-10-11/`](../../patches/psf_compile_c43_2026-10-11/), built from c42 by
+`make_c43.py` (release 2026-10-11.3 is c41; c43 = c41 + items 74-76):
+
+| item | what it does |
+|---|---|
+| 74 (revised) | when the output uses near-failed elements (error in [0.1, 0.5)), the input is compiled again on a copy of the Target where only those elements are marked failed; the better on the real Target is returned |
+| 75 | a deterministic exact re-placement in place of Qiskit's VF2PostLayout -- in the preset pass managers PSF builds, in item 33's re-placement and in item 68's relabel: subgraph matchings from rustworkx's VF2 in a fixed order (`id_order=True`), each scored by the summed -ln(1 - error) of every operation on the device's own Target; qubits without two-qubit gates placed one by one on their cheapest free qubit; applied only if better than the current placement. Without a device Target, no re-placement |
+| 76 | item 73 also reads circuits whose final Clifford is a qubit permutation (with single-qubit Cliffords); the permutation costs no gate and goes into the measurements and the final layout |
+
+**Checks before the run.**
+
+- [`test_c43.py`](../../patches/psf_compile_c43_2026-10-11/test_c43.py): 13 tests passed (c41's item-73 tests on c43;
+  QFT with its swaps and a swapped cx-rz-cx circuit exact; the same output over three calls with and without the
+  device; item 74's marked elements; never worse than item 74 off on a device with a near-failed coupler).
+- [`benchmarks/c41_exact_sweep.py`](../../benchmarks/c41_exact_sweep.py) on c43: the 43 Benchpress files of <= 7 qubits
+  that items 73/76 read give the input's measured distribution
+  ([`c43_exact_sweep.txt`](../../data/2026-10-11/c43_val/c43_exact_sweep.txt)).
+- Readability: 312 of Benchpress's 519 QASM files (c41: 213; the 99 added are the QFT files;
+  [`readability_survey_c43.jsonl`](../../data/2026-10-11/c43_val/readability_survey_c43.jsonl)).
+
+**Run.**
+
+- **When and where:** 13:49-14:04 CEST on 2026-10-11, in Claude's cloud workspace (as Addendum 447).
+- **Scope:** 210 jobs: 35 tests on six devices. **Script:** [`benchmarks/c43_val.py`](../../benchmarks/c43_val.py).
+  **Data:** [`data/2026-10-11/c43_val/`](../../data/2026-10-11/c43_val/).
+- **Tests** (none used in C41-VAL or C42-VAL): Benchpress QFT N = 5-40 (10 sizes), QAOA N = 6-70 (8), quantum volume
+  N = 6-28 (5); generated with seeds "C43-VAL|...": random circuits n = 8-48 (6), Bernstein-Vazirani n = 20, 40, 80
+  (3), Qiskit basis-gate exports of Trotter evolutions (3).
+- **Arms:** QK3, C41 (release 2026-10-11.3 but its version lines), C42, C43; then C41 and C43 again in the same process.
+- **Errors:** 45 records: C41, C42 and C41's repeat raised `FailedElementsError` on 15 test-device pairs; C43 and
+  Qiskit level 3 compiled all of them (below).
+
+**Scoring, as fixed** (runnable: best ESP of QK3, C41, C42, C43 >= 0.01; "unread": items 72-73/76 do not read the
+input; "tried": item 74 compiled its alternative):
+
+| ID | prediction | Torino | Kingston | Marrakesh | Fez | Aachen | Boston | result |
+|---|---|---|---|---|---|---|---|---|
+| V1 | C43 outputs on failed elements: 0 | 0 | 0 | 0 | 0 | 0 | 0 | **CONFIRMED** |
+| V2 | C43's second call gives the same output | 32/32 | 31/31 | 35/35 | 35/35 | 31/31 | 31/31 | **CONFIRMED** (C41: 191 of 195) |
+| V3 | unread, not tried, runnable: ESP C43 / C41 >= 1.00 (refuted < 0.98) | 1.114 | 1.000 | 1.787 | 1.145 | 1.000 | 0.972 | **CONFIRMED**: 1.174 (51) |
+| V4 | runnable tests below 0.95 x C41's ESP <= 10% (refuted > 20%) | 0/24 | 1/27 | 0/30 | 0/29 | 1/27 | 1/28 | **CONFIRMED**: 3 of 165 |
+| V5 | tried, runnable: ESP C43 / C41 >= 1.05 (refuted < 1.01) | 1.067 | 0.974 | 1.379 | 1.011 | 0.483 | -- | **ambiguous**: 1.041 (20); no alternative 9 of 40 |
+| V6 | QFT, runnable: ESP C43 / C41 >= 1.02 (refuted < 1.00) | 1.194 | 1.086 | 1.142 | 1.215 | 1.100 | 1.150 | **CONFIRMED**: 1.145 (51) |
+| V7 | QAOA QASM, runnable (reported) | 1.000 | 1.000 | 1.000 | 1.000 | 0.999 | 1.000 | 1.000 (36) |
+| V8 | median time C43 / C41 <= 2.0 | 1.61 | 1.73 | 1.73 | 1.46 | 1.32 | 1.26 | **CONFIRMED**: 1.53 (largest 18 s) |
+
+All runnable tests: ESP C43 / C41 1.097, C43 / QK3 1.176 (165). **The proposed rule (V1, V2 on every device, V3 not
+refuted, V4, and V5 or V6) is met.**
+
+**The releases refused ordinary circuits.** On 15 test-device pairs -- Bernstein-Vazirani n = 20, 40, 80 on FakeTorino,
+FakeKingston, FakeAachen and FakeBoston, a random circuit n = 24 on three of them -- release 2026-10-11.3 (and c42)
+raised `FailedElementsError` ("the circuit compiled on the map without the failed couplers still uses a failed qubit"),
+where Qiskit level 3 compiled them on no failed element. C43 compiled all 15 on no failed element, with level 3's ESP
+or close to it (0.05-0.89 against 0.03-0.88), the same output on both calls
+([`c43_val_detail.txt`](../../data/2026-10-11/c43_val/c43_val_detail.txt)).
+
+- **The cause:** Qiskit's `VF2PostLayout`, seeing a Target without errors, moves qubits that are only measured onto
+  qubits the release had avoided as failed. The release then finds a failed qubit in its output and refuses it.
+- **Checked after scoring:** release 2026-10-11.3 on Bernstein-Vazirani n = 20 and FakeKingston raises; the same call
+  with only that pass replaced by nothing compiles.
+- This most likely also explains the 17 refusals in C42-VAL (large bv, cat, cc, random). Not checked one by one.
+
+**By family** (runnable; ESP C43 / C41, C43 / QK3): QFT 1.145, 1.131 (51); quantum volume 1.043, 0.953 (22);
+Bernstein-Vazirani 3.204, 1.057 (6); random 1.013 (32); QAOA QASM 1.000, 1.789 (36); exports 1.000, 0.989 (18).
+
+**Reading, two numbers.**
+
+- **Display.** ESP 1.10 times the release's and 1.18 times Qiskit level 3's; Bernstein-Vazirani 3.2 times; outputs now
+  reproducible.
+- **Essential.**
+  - The largest change for a user is that circuits the release refused now compile, on four of the six devices.
+  - The same input now gives the same output.
+  - QFT is read and gains 14%.
+  - Item 75 is worse on the largest random circuit (n = 48) on three devices: 0.48, 0.90 and 0.78 of the release's
+    ESP. The fixed search order may stop early on large circuits. Unexplored.
+  - Item 74 still gains little (+4%, ambiguous).
+  - Time 1.5 times the release's.
+
+**Not established.** Hardware: no job has run.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
