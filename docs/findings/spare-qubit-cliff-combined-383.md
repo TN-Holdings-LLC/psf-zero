@@ -5442,6 +5442,256 @@ The owner released candidate c36 as **2026-10-11.1**: release 2026-10-10.3 with 
 
 ---
 
+<!-- ===== Addendum 443 (source: addendum_443.md) ===== -->
+
+> **Note added when merging:** Recorded afterwards: GAP-DIAG's diagnosis and the exploratory candidate c37 (not pre-registered, not released), worked on without publishing at the owner's request on 2026-10-11.
+
+## Addendum 443 -- GAP-DIAG (where release 2026-10-11.1's last 2-4% to Qiskit level 3 comes from) and C37-X (candidate 2026-10-11.c37, items 65-67; exploratory, not pre-registered, not released). The readout loss was Qiskit's VF2PostLayout giving up on circuits whose qubits carry no two-qubit gate; the one-qubit loss was mostly lone X gates; the two-qubit loss was routing luck and the pruned map. c37's items 65-66 add 1-2% ESP, item 67 (best of several routings) 6-9% more, but item 67 is a search and was set aside by the owner (2026-10-11)
+
+**Status: exploratory, recorded afterwards.** Nothing here was pre-registered; the candidate is in
+[`patches/psf_compile_c37_2026-10-11/`](../../patches/psf_compile_c37_2026-10-11/) and is **not** a release. On the
+morning of 2026-10-11 the owner asked to work without publishing for a while; this Addendum records that work. Later
+the same morning the owner redirected the work to STEINER6 (Addendum 444) and said that search-type improvements to
+match IBM's level 3 were of little interest, so C37-X's held-out run was stopped.
+
+### 1. GAP-DIAG (a diagnosis; nothing predicted)
+
+- **Run:** 01:30-01:47 CEST on 2026-10-11, home PC, commit `fc8a5de` (release 2026-10-11.1), 848 jobs, no error.
+- **Script:** [`benchmarks/gap_diag.py`](../../benchmarks/gap_diag.py).
+- **Data:** [`data/2026-10-11/gap_diag/`](../../data/2026-10-11/gap_diag/).
+- **Method:** log10 ESP = -(two-qubit part + one-qubit part + measurement part), each part a sum of -log10(1 - error).
+  BP-FINAL's 106 FakeTorino tests on FakeTorino, FakeKingston, FakeMarrakesh and FakeFez. REL is the release's plain
+  call with `backend=`; QK3 is Qiskit level 3. Compared on the runnable tests where neither output uses a failed element.
+
+| | FakeTorino | FakeKingston | FakeMarrakesh | FakeFez |
+|---|---|---|---|---|
+| tests | 53 | 64 | 56 | 55 |
+| ESP REL / QK3 | 0.981 | 1.017 | 0.994 | 0.985 |
+| two-qubit part, REL - QK3 | +0.0017 | -0.0135 | -0.0010 | +0.0034 |
+| one-qubit part | +0.0013 | +0.0035 | +0.0033 | +0.0023 |
+| measurement part | +0.0052 | +0.0027 | +0.0002 | +0.0010 |
+
+**Causes, found afterwards on single tests:**
+
+- **Measurement.** The loss is concentrated in inverseqft1/2 (no two-qubit gate). The release measured them on qubits 0-3
+  (FakeTorino readout part 0.117 against level 3's 0.010). Item 33's exact VF2PostLayout returns "no solution" whenever
+  two or more qubits carry no two-qubit gate (Qiskit's `vf2_layout_pass_exact`), so nothing re-placed them. Level 3 places
+  them in its layout stage (VF2Layout, which assigns such qubits to the best qubits by their mean error).
+- **One-qubit gates.** At the same two-qubit count the release had 3-7% more non-rz single-qubit gates, many of them lone
+  X gates between CZs (ham_JW-8 on FakeTorino: 426 x against level 3's 67). A final re-optimisation of single-qubit runs
+  removed only 0.2%: the runs were already optimal one by one.
+- **Two-qubit count on the arithmetic circuits.** Before routing the counts are equal (all-to-all map: gf2^7_mult
+  300/300, tof_10 102/102, ham15-low 236/236). The difference is routing:
+  - Sabre's result moves widely with the seed (tof_10 on FakeMarrakesh: 145 to 201 two-qubit gates over six seeds);
+  - routing on the map without the failed elements costs 2-5% more than on the full map (median over six seeds: tof_10
+    200 against 190, ham15-low 795 against 775), whose outputs are often clean.
+
+### 2. Candidate c37
+
+Built from release 2026-10-11.1 by `make_c37.py` (exact substitutions); 10 tests in `test_c37.py` (outputs implement
+the input on a 7-qubit device with differing errors; the Pauli push is exact with global phase on random circuits; no
+failed element; without the device, and with the items off, the release's outputs by value).
+
+| item | what it does |
+|---|---|
+| 65 | with the device: a last relabelling scored on every operation's -ln(1 - error), readout and single-qubit gates included. Qubits with two-qubit gates are matched by VF2PostLayout without the others, which are then assigned by an exact assignment (scipy). Gates unchanged; kept only if the cost falls and no failed element is used. inverseqft1, FakeTorino: readout part 0.117 -> 0.0098 (level 3's) |
+| 66 | with the device: the Pauli part of single-qubit runs carried forward through two-qubit Clifford gates (X on one qubit of a CZ becomes X there and Z on the other; Z is free) until a run absorbs it at no extra cost. Exact, global phase included; kept only if the single-qubit gates' summed -ln(1 - error) falls. ham_JW-8, FakeTorino: one-qubit part 0.256 -> 0.213 (level 3: 0.233) |
+| 67 | with the device: seeds seed..seed+3, each on the pruned and on the full map; outputs on failed elements discarded; the highest ESP kept. One compile above 5000 two-qubit gates |
+
+### 3. C37-X (exploratory; on the same tests and devices as GAP-DIAG)
+
+- **Where:** Claude's cloud workspace (2 cores), Python 3.11, Qiskit 2.5.2, qiskit-ibm-runtime 0.49.0, on `fc8a5de`
+  with the candidate untracked.
+- **Script:** [`benchmarks/c37_x.py`](../../benchmarks/c37_x.py), [`benchmarks/c37_x_analyze.py`](../../benchmarks/c37_x_analyze.py).
+- **Data:** [`data/2026-10-11/c37_x/`](../../data/2026-10-11/c37_x/), with the candidate files each run used
+  (run 2: items 65-66; run 3: items 65-67 without the size limit).
+- **Times are indicative only:** runs overlapped with other work on two cores.
+
+**Run 2** (02:11-03:14 CEST): QK3 unseeded, REL, C37 with items 65-66; all 106 tests.
+
+| runnable, both clean | FakeTorino | FakeKingston | FakeMarrakesh | FakeFez |
+|---|---|---|---|---|
+| ESP C37 / REL | 1.017 | 1.019 | 1.009 | 1.008 |
+| ESP C37 / QK3 | 0.994 | 1.016 | 1.032 | 1.020 |
+| outputs on failed elements, QK3 / C37 (106 tests) | 22 / 0 | 10 / 0 | 28 / 0 | 28 / 0 |
+
+**Run 3** (03:14-03:25 CEST): C37 with items 65-67 and QK3x4 (level 3 with seeds 0-3, kept by the same rule), on run 2's
+229 runnable pairs.
+
+| runnable | FakeTorino | FakeKingston | FakeMarrakesh | FakeFez |
+|---|---|---|---|---|
+| ESP C37 / REL (run 2) | 1.065 | 1.087 | 1.091 | 1.062 |
+| ESP C37 / QK3 (run 2) | 1.040 | 1.071 | 1.116 | 1.075 |
+| ESP C37 / QK3x4 | 1.020 | 1.034 | 1.031 | 1.019 |
+| ESP QK3x4 / QK3 | 1.020 | 1.023 | 1.082 | 1.055 |
+| compile time C37 / REL | about 13 | about 14 | about 13 | about 12 |
+
+**Run 4** (from 03:29 CEST; held-out devices FakeAachen, FakeBoston, FakeNighthawk, FakeSherbrooke) was stopped at
+151 of 424 pairs when the owner redirected the work. It is kept as data and not scored.
+
+**Reading, two numbers.**
+
+- **Display.** c37 with items 65-67 has 6-9% more ESP than the release and 4-12% more than an unseeded level 3, with
+  no failed element.
+- **Essential.**
+  - Items 65 and 66 fix real defects (readout of loose qubits, lone X gates) for 1-2% of ESP, at no risk to exactness.
+  - Item 67's gain is mostly seed luck that level 3 can also buy: given the same four seeds, level 3 gains 2-8% and
+    c37's lead shrinks to 2-3%.
+  - Item 67 costs 12-14 times the release's time.
+  - Item 67 is a search by repetition, the kind of improvement the owner said is of little interest. It was set aside.
+
+### 4. Not established
+
+- **Held-out validation of c37:** run 4 was stopped, so c37 has been measured only on the devices it was developed on.
+- **Hardware:** no job has run.
+- **c37 as a release:** if items 65-66 are wanted, they need their own pre-registered test without item 67.
+
+---
+
+<!-- ===== Addendum 444 (source: addendum_444.md) ===== -->
+
+> **Note added when merging:** Recorded afterwards: STEINER6, developed on 2026-10-11 at the owner's request; expectations written in a local note before the final run, scored here.
+
+## Addendum 444 -- STEINER6: compiling a Pauli evolution by construction with the qubits MOVED during the construction. On BP-FINAL's 67 HamLib tests and four devices (two of them never used in its development): exact on all 92 checkable tests, no failed element, ESP 1.06-1.25 times Qiskit level 3's and 1.11-1.81 times release 2026-10-11.1's on the runnable tests, with 3-10% MORE two-qubit gates than level 3. It wins on gate count only where all terms commute; chemistry keeps a structural gap (2026-10-11)
+
+**Status: exploratory, recorded afterwards.** Developed on 2026-10-11 at the owner's request ("develop STEINER6 until
+a conclusion"). Nothing was pre-registered in the repository. Before the final run, five expectations (H1-H5 below)
+were written in a local note, with the code frozen in the run's folder.
+
+- **Script:** [`benchmarks/steiner6m.py`](../../benchmarks/steiner6m.py) (the run's code; only its default paths were
+  made repository-relative).
+- **Scoring:** [`benchmarks/steiner6_score.py`](../../benchmarks/steiner6_score.py).
+- **Survey of the tests:** [`benchmarks/steiner6_survey.py`](../../benchmarks/steiner6_survey.py).
+- **Probes:** [`benchmarks/steiner6_chem_probe.py`](../../benchmarks/steiner6_chem_probe.py),
+  [`benchmarks/steiner6_chain_probe.py`](../../benchmarks/steiner6_chain_probe.py).
+- **Data:** [`data/2026-10-11/steiner6/`](../../data/2026-10-11/steiner6/).
+
+### 1. Why, and the design
+
+STEINER3-5 fixed the placement once, so a term whose qubits are far apart paid "bridge" CNOTs every time. STEINER5 still
+lost badly on small dense tests (gnp-k_4_n-6: 277 two-qubit gates against level 3's 134). A survey of the 67 tests
+showed the room for movement:
+
+- 24 of them are diagonal: all terms commute and their order is free.
+- Most of the rest have 2-16% anticommuting term pairs.
+- Only chemistry (JW, BK, parity) has 26-46%.
+
+The construction keeps a current placement and works term by term:
+
+- **Exactness:** a term never passes an earlier term it anticommutes with (the anticommutation is computed once), so the
+  circuit equals Qiskit's product formula of the gate, up to the final placement, which the output records.
+- **Free terms run first:** every eligible term whose qubits are connected under the current placement runs at once.
+  Terms on 3 or more qubits run in a chain of the most similar (same Pauli on shared qubits), so that consecutive CNOT
+  trees cancel.
+- **Otherwise a SWAP or a bridge:**
+  - a SWAP is chosen on a working coupler next to the qubits of the 12 eligible terms of least excess, by the drop of
+    their summed excess. The excess is the CNOTs above 2 (k - 1). Other eligible terms weigh 0.03, and the next 200
+    blocked terms 0.1;
+  - a SWAP costs 3 CNOTs, or 1 when it joins the last two-qubit block on that pair (Qiskit's level 3 fuses a ZZ term
+    and a SWAP into one block of 3 CNOTs). Its cost is scaled by its coupler's error weight;
+  - if no SWAP pays, the eligible term of least excess runs with bridges.
+- **Errors:**
+  - initial placements: STEINER3's greedy one, on hop and on error distances, and STEINER5's two best VF2 embeddings;
+    the construction with the lowest estimated -ln ESP is kept;
+  - bridged terms take their trees on error distances;
+  - at the end, Qiskit level 3 on the fixed layout with no routing, then an exact VF2PostLayout relabelling.
+
+**Versions** (all exact where checked):
+
+| version | change | example |
+|---|---|---|
+| v1 | windowed scheduler | gnp-k_4_n-6: 144 |
+| v2 | SWAP fusing | gnp-k_4_n-6: 97 (level 3: 134) |
+| v3 | the errors | tsp_rand: ESP 1.14 times level 3's |
+| v4 | global eligibility | |
+| v4b | chain ordering | bh Lx-14: 1212 -> 942 (level 3: 1075) |
+| v5 | memoised trees, the embeddings | mu_x unary: 246 -> 120 (= level 3) |
+| v6 | bounded look-ahead and a memoised estimate | JW12: 233 -> 29 s |
+
+### 2. Final run v6
+
+- **When and where:** 05:42-06:28 CEST, Claude's cloud workspace (2 cores), Qiskit 2.5.2, qiskit-ibm-runtime 0.49.0.
+- **Scope:** 268 jobs, no error.
+- **Devices:** FakeTorino and FakeKingston (used in development); FakeMarrakesh and FakeFez (never used: held out).
+- **Baseline:** Qiskit level 3 with seed 0 in the same process; release 2026-10-11.1's outputs from C37-X run 2
+  (Addendum 443).
+- **Runnable:** the best ESP of the pair is >= 0.01; an output on a failed element counts as ESP 0.
+
+| runnable tests | FakeTorino | FakeKingston | FakeMarrakesh (held out) | FakeFez (held out) |
+|---|---|---|---|---|
+| tests | 25 | 35 | 31 | 28 |
+| ESP STEINER6 / level 3 (both > 0) | 1.099 | 1.248 | 1.185 | 1.058 |
+| better / worse by 10% than level 3 | 7 / 1 | 10 / 4 | 11 / 0 | 7 / 3 |
+| level 3's outputs lost to failed elements | 0 | 2 | 4 | 3 |
+| ESP STEINER6 / release 2026-10-11.1 | 1.114 | 1.277 | 1.805 | 1.567 |
+| two-qubit gates STEINER6 / level 3 (all 67) | 1.084 | 1.078 | 1.099 | 1.055 |
+| two-qubit gates STEINER6 / STEINER5-PE (all 67) | 0.662 | 0.671 | - | - |
+
+| two-qubit gates STEINER6 / level 3, by kind (all 67) | FakeTorino | FakeKingston | FakeMarrakesh | FakeFez |
+|---|---|---|---|---|
+| diagonal (20 tests) | 0.930 | 0.876 | 0.905 | 0.930 |
+| mixed (25) | 1.211 | 1.223 | 1.195 | 1.132 |
+| 20% or more anticommuting pairs (22) | 1.099 | 1.127 | 1.193 | 1.092 |
+
+- **Exactness:** all 92 checkable tests exact (at most 12 logical and 22 touched qubits); no STEINER6 output on a
+  failed element.
+- **Largest test:** JW24 on FakeTorino, 98,004 two-qubit gates against level 3's 120,975.
+- **Time:** 6-10 times level 3's (a Python prototype, up to 8 constructions per test).
+
+**Expectations, written before the run, scored on the held-out devices:**
+
+| ID | expectation | result |
+|---|---|---|
+| H1 | no inexact result, no failed element | **confirmed** |
+| H2 | diagonal tests: ESP / level 3 >= 1.2 | **confirmed**: 2.13 (4 tests), 1.48 (3) |
+| H3 | chemistry-like (>= 20% anticommuting): ESP / level 3 < 1.0 | **refuted**: 1.056, 1.007 |
+| H4 | all runnable: ESP / level 3 >= 1.0 | **confirmed**: 1.185, 1.058 |
+| H5 | two-qubit gates / STEINER5-PE <= 0.8 (Torino, Kingston) | **confirmed**: 0.662, 0.671 |
+
+### 3. What limits it
+
+- **Chemistry:**
+  - Qiskit's own synthesis, with no wiring constraint, already removes half the naive ladder CNOTs, because consecutive
+    terms' ladders in index order cancel (JW12: 6708 naive, 3324 at level 1, 2864 at level 3;
+    `steiner6_chem_probe.py`).
+  - STEINER's per-term Steiner trees change shape from term to term and keep little of this.
+  - Laying the qubits on a device path in index order, so the trees become ladders, was worse: gaps in a term's
+    support need bridges (JW12: 6665 against level 3's 4313; `steiner6_chain_probe.py`).
+  - Moving qubits does not close this gap. On the runnable chemistry tests (JW-8, JW10 and the 4-qubit ones) STEINER6
+    still wins on ESP; at 12-14 qubits it needs 1.2-1.3 times level 3's two-qubit gates.
+- **Sensitivity:** the result depends on the scheduler's settings. tsp lin105 gives 1522, 1996 and 1707 two-qubit gates
+  for a front of 4, 12 and 40 terms. One setting (12) was fixed for all tests; tuning per test would be a search.
+- **Where the ESP gain comes from:** outside the diagonal tests it comes from the errors (placement, SWAP choice,
+  relabelling) and from avoiding failed elements, not from fewer gates.
+
+### 4. Reading: two numbers
+
+- **Display.** Without search, and with no failed element, STEINER6 reaches 1.06-1.25 times Qiskit level 3's ESP.
+  Against level 3 it wins on 7-11 runnable tests per device and loses on 0-4, and the result holds on two devices it
+  never saw. It needs a third fewer two-qubit gates than STEINER5, and 19% fewer than level 3 on JW24.
+- **Essential.**
+  - It uses 3-10% more two-qubit gates than level 3 overall.
+  - Its ESP lead outside the diagonal Hamiltonians comes from choosing good elements, which release 2026-10-11.1 also
+    partly does. STEINER6 is still 1.11-1.81 times the release's ESP.
+  - The construction itself saves gates only where terms commute: diagonal Hamiltonians, 0.88-0.93 times level 3's
+    count.
+  - Chemistry needs a synthesis with inter-term cancellation, which this design does not have.
+  - The time is 6-10 times level 3's.
+
+**Conclusion:** moving qubits during the construction works (STEINER5 -> STEINER6: -33% two-qubit gates). It makes the
+construction competitive with and, by ESP, better than Qiskit level 3 on these Hamiltonians, with the limits above. The
+natural use is a routing-free path in PSF-Zero for Pauli-evolution inputs, chosen by the input's structure. That needs
+its own pre-registered test on new circuits.
+
+### 5. Not established
+
+- **New circuits:** the held-out part is new devices only; the circuits are BP-FINAL's.
+- **Hardware:** ESP is computed from the fake devices' calibration, with no idling term; no hardware job has run.
+- **Seeds:** level 3 was measured with one seed.
+- **Other compilers:** no comparison with other construction methods (Paulihedral, Rustiq).
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
