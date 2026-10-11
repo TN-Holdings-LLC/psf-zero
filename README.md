@@ -33,12 +33,30 @@ including the failures, are recorded in [`docs/findings/`](docs/findings/).
 
 ## Current version
 
-**`psf_compile.py` 2026-10-11.3** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 (its matching
+**`psf_compile.py` 2026-10-11.4** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 (its matching
 checks now in rustworkx, the same results) and the Rust core `CORE_VERSION` 2026-09-29.1, and optionally
-`psf_zero_core57` 2026-10-10.c30 (Part 10, Addenda 383-451). Every release and dated notice:
+`psf_zero_core57` 2026-10-10.c30 (Part 10, Addenda 383-453). Every release and dated notice:
 [`docs/RELEASES.md`](docs/RELEASES.md).
 
-> **New in 2026-10-11.3: every circuit that reads as Pauli rotations is also tried by construction, and the
+> **New in 2026-10-11.4: the same input gives the same output, and circuits the earlier releases refused
+> compile.** Items 74-76 (prototype c43), accepted in C43-VAL on circuits not used before (Part 10, Addenda 452-453):
+>
+> - **What changes.** Qiskit's VF2PostLayout, which returned a different layout from call to call with a fixed seed,
+>   is replaced by a deterministic re-placement scored on the device's own errors (item 75). With the device, that
+>   also ends a fault of the earlier releases: Qiskit's pass moved measured-only qubits onto failed qubits, and the
+>   release then refused the circuit (Bernstein-Vazirani and random circuits on four of six fake devices). Without
+>   the device, nothing is re-placed. Item 73 also reads circuits that end with a qubit permutation, such as QFT with
+>   its swaps (item 76). An output that uses a near-failed element (error 0.1-0.5) is compared with one that avoids
+>   the elements it used (item 74).
+> - **C43-VAL** (210 jobs on six devices; QFT, QAOA, quantum volume, random, Bernstein-Vazirani):
+>   - the same output on every second call (195 of 195; 2026-10-11.3: 191); no output on a failed element;
+>   - 15 test-device pairs that 2026-10-11.3 refused now compile, at Qiskit level 3's ESP or close to it;
+>   - ESP 1.10 times 2026-10-11.3's and 1.18 times Qiskit level 3's on the runnable tests; QFT 1.15 times;
+>   - 1.5 times 2026-10-11.3's compile time.
+> - **Where it loses.** The largest random circuit tested (48 qubits) on three devices: 0.48-0.90 of 2026-10-11.3's
+>   ESP. Item 74 gains little (+4%). Outputs differ from 2026-10-11.3's by value.
+
+> **In 2026-10-11.3: every circuit that reads as Pauli rotations is also tried by construction, and the
 > better on the device is kept.** Items 69-73 (prototype c41), accepted in three tests on circuits they were not
 > developed on (C39-VAL, C40-VAL, C41-VAL; Part 10, Addenda 447-451):
 >
@@ -240,7 +258,9 @@ optimized = psf_compile(qc)          # add verify=False for the fastest path
 Since 2026-10-11.1 it then also routes at Qiskit's level 3 (item 64; C36-VAL, Addenda 440-441), and since
 2026-10-11.2 a Pauli evolution whose terms all commute is built by STEINER6 (item 68; C38-VAL, Addendum 445).
 Since 2026-10-11.3 every input that reads as Pauli rotations, circuits written as gates included, is also built
-by STEINER6 and the better output on the device is kept (items 69-73; Addenda 447-451).
+by STEINER6 and the better output on the device is kept (items 69-73; Addenda 447-451). Since 2026-10-11.4 the
+same input gives the same output, and circuits the earlier releases refused compile (items 74-76; Addenda
+452-453).
 
 ```python
 from qiskit_ibm_runtime.fake_provider import FakeTorino

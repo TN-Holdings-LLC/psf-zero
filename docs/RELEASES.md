@@ -11,7 +11,9 @@ the earlier parts they link to. The README itself, as it was before the move, is
 
 > **In brief (as of 2026-10-10)**
 >
-> 1. Release 2026-10-11.3: given the device, every input that reads as Pauli rotations (evolutions, QAOA, circuits
+> 1. Release 2026-10-11.4: the same input gives the same output (Qiskit's VF2PostLayout replaced), and circuits the
+>    earlier releases refused compile (items 74-76; C43-VAL, Addendum 452: ESP 1.10 times 2026-10-11.3's, 1.18 times
+>    Qiskit level 3's). Release 2026-10-11.3: given the device, every input that reads as Pauli rotations (evolutions, QAOA, circuits
 >    written as gates) is also built by STEINER6 and the better output on the device is kept (items 69-73;
 >    C39-VAL to C41-VAL, Addenda 447-449: never below 2026-10-11.2; 1.2-1.45 times 2026-10-11.1's ESP on those
 >    inputs). Release 2026-10-11.2: given the device (`backend=`), a Pauli evolution whose terms all commute is built by
@@ -32,7 +34,27 @@ the earlier parts they link to. The README itself, as it was before the move, is
 > 5. Candidate c24 (item 51, a 5% switching margin) was tested and is not recommended (Addendum 406).
 > 6. The device layer has been tested only in noisy simulation on fake devices, not on hardware.
 
-> **Current version (2026-10-11, third release): `psf_compile.py` 2026-10-11.3 and the AI front end a12, with
+> **Current version (2026-10-11, fourth release): `psf_compile.py` 2026-10-11.4 and the AI front end a12, with
+> `psf_smart_layout` 2026-10-01.1, the Rust core `CORE_VERSION` 2026-09-29.1 and the optional `psf_zero_core57`
+> 2026-10-10.c30 (all unchanged)** ([Part 10](findings/spare-qubit-cliff-combined-383.md), Addenda 452-453). The
+> file is prototype c43 ([`patches/psf_compile_c43_2026-10-11/`](../patches/psf_compile_c43_2026-10-11/)) with its
+> version lines changed; 2026-10-11.3 is kept as
+> [`patches/psf_compile_release_2026-10-11.3/`](../patches/psf_compile_release_2026-10-11.3/).
+>
+> - **Item 75:** a deterministic exact re-placement in place of Qiskit's VF2PostLayout, scored on the device's own
+>   errors; without the device, no re-placement. The same input gives the same output, and measured-only qubits are
+>   no longer moved onto failed qubits (the cause of the earlier releases' refusals).
+> - **Item 76:** item 73 also reads circuits whose final Clifford is a qubit permutation (QFT with its swaps).
+> - **Item 74 (revised):** an output that uses near-failed elements (error 0.1-0.5) is compared with the input
+>   compiled with only those elements avoided; `near_failed_error=None` turns it off.
+> - **C43-VAL** (predictions fixed before the run in a local file, Addendum 452; six devices; tests not used before):
+>   - the same output on every second call (195 of 195); no output on a failed element;
+>   - 15 test-device pairs refused by 2026-10-11.3 compile;
+>   - ESP 1.10 times 2026-10-11.3's and 1.18 times Qiskit level 3's; QFT 1.15; 1.5 times the compile time;
+>   - worse on the largest random circuit (48 qubits) on three devices (0.48-0.90).
+> - **Not established:** hardware.
+
+> **Previous release (2026-10-11, third release): `psf_compile.py` 2026-10-11.3 and the AI front end a12, with
 > `psf_smart_layout` 2026-10-01.1, the Rust core `CORE_VERSION` 2026-09-29.1 and the optional `psf_zero_core57`
 > 2026-10-10.c30 (all unchanged)** ([Part 10](findings/spare-qubit-cliff-combined-383.md), Addenda 447-451). The
 > file is prototype c41 ([`patches/psf_compile_c41_2026-10-11/`](../patches/psf_compile_c41_2026-10-11/)) with its

@@ -6463,6 +6463,91 @@ Bernstein-Vazirani 3.204, 1.057 (6); random 1.013 (32); QAOA QASM 1.000, 1.789 (
 
 ---
 
+<!-- ===== Addendum 453 (source: spare-qubit-cliff-addendum-453-2026-10-11.md) ===== -->
+
+> **Note added when merging:** The release of prototype c43 as 2026-10-11.4, by the owner's decision after Addendum 452 (C43-VAL's proposed rule met).
+
+## Addendum 453 -- Release: psf_compile 2026-10-11.4 = prototype 2026-10-11.c43 (changelog items 74 revised, 75, 76, accepted in C43-VAL, Addendum 452). The same input gives the same output; circuits the earlier releases refused compile; QFT is read by construction; ESP 1.10 times 2026-10-11.3's on C43-VAL's runnable tests (2026-10-11)
+
+**Status: the owner's decision of 2026-10-11, after C43-VAL's results (Addendum 452).** It follows the procedure of
+releases 2026-10-10.1 to 2026-10-11.3 (Addenda 424, 428, 438, 442, 446 and 451). C43-VAL's rule was fixed before the
+run in a local file, not committed first (Addendum 452), and was met.
+
+## 1. The decision
+
+The owner released prototype c43 as **2026-10-11.4**: release 2026-10-11.3 with items 74 (revised), 75 and 76.
+
+| item | what it does |
+|---|---|
+| 74 (revised) | with the device, an output that uses near-failed elements (error in [`near_failed_error`, `prune_max_error`), default [0.1, 0.5)) is compared with the input compiled on a copy of the Target where only those elements are marked failed; the better on the real Target is returned. `near_failed_error=None` turns it off |
+| 75 | Qiskit's VF2PostLayout is replaced -- in the preset pass managers PSF builds, in item 33's re-placement and in item 68's relabel -- by a deterministic exact re-placement scored on the device's own Target (rustworkx VF2 in a fixed order, every operation's -ln(1 - error)); without a device Target, no re-placement |
+| 76 | item 73 also reads circuits whose final Clifford is a qubit permutation (QFT with its swaps); the permutation goes into the measurements and the final layout |
+
+**What C43-VAL found** (210 jobs, six devices, 35 tests not used before):
+
+| | |
+|---|---|
+| the same output on a second call | 195 of 195 (2026-10-11.3: 191) |
+| outputs on failed elements | 0 |
+| circuits 2026-10-11.3 refused, now compiled | 15 test-device pairs (Bernstein-Vazirani, random) on four devices, at Qiskit level 3's ESP or close to it |
+| runnable tests: ESP / 2026-10-11.3's, / Qiskit level 3's | 1.097, 1.176 (165) |
+| QFT (item 76) | 1.145 |
+| below 0.95 of 2026-10-11.3's ESP | 3 of 165 (the largest random circuit, 48 qubits) |
+| compile time / 2026-10-11.3's | median 1.53 (largest 18 s) |
+
+**What a user sees.**
+
+- **The same input gives the same output**, with the device and without it.
+- **With the device:** circuits that 2026-10-11.3 refused with `FailedElementsError` because Qiskit's VF2PostLayout had
+  moved a measured qubit onto a failed one now compile. The final re-placement uses the device's errors, so placements
+  can differ from 2026-10-11.3's (usually better, Addendum 452). QFT-type circuits are tried by construction. Outputs
+  using near-failed elements are compared with an alternative.
+- **Without the device:** nothing is re-placed after routing (there are no errors to place by), so outputs differ from
+  2026-10-11.3's by value, and repeat.
+- The AI front end (a12) calls `psf_compile` and gets these changes; its own code is unchanged. The core and
+  `psf_zero_core57` are unchanged.
+
+## 2. What changes in the repository
+
+- **[`psf_compile.py`](../../psf_compile.py)** is c43's file with its two version lines changed;
+  [`benchmarks/test_release_2026_10_11_4.py`](../../benchmarks/test_release_2026_10_11_4.py) checks this.
+- **The outgoing release 2026-10-11.3** is kept unchanged as
+  [`patches/psf_compile_release_2026-10-11.3/psf_compile.py`](../../patches/psf_compile_release_2026-10-11.3/psf_compile.py).
+  `psf_smart_layout.py` does not change.
+- **Tests.**
+  - [`benchmarks/test_release_2026_10_11_4.py`](../../benchmarks/test_release_2026_10_11_4.py) (new) checks:
+    - the versions; that the file is c43's except the version lines; that c43 and the kept 2026-10-11.3 are the
+      locked files;
+    - the same output over three calls, with FakeFez and without a Target;
+    - Bernstein-Vazirani on FakeKingston, which 2026-10-11.3 refuses, compiles on no failed element;
+    - on FakeTorino, no failed element and the device's gates only;
+    - without a Target, outputs implement the input; the warning, given once.
+  - The 10 test files that assert the current release's version now assert 2026-10-11.4.
+  - `test_release_2026_10_11_3.py` and the c43 tests, which load `psf_compile.py` as "the release", load the kept copy.
+  - The c42 and c43 tests join the list.
+- **Release tests:**
+  - **Runner:** [`benchmarks/run_release_tests_2026-10-11_4.py`](../../benchmarks/run_release_tests_2026-10-11_4.py).
+  - **Scope:** 54 test files, one pytest session each.
+  - **Environment:** Python 3.12.13, Qiskit 2.5.2, NumPy 2.5.3, `CORE_VERSION` 2026-09-29.1, `psf_zero_core57`
+    2026-10-10.c30, over commit `8b4d1ff`.
+  - **When:** 15:14:10-15:24:02 CEST.
+  - **Result:** 413 passed, none failed, none skipped.
+  - **Log:** [`data/2026-10-11/release_2026-10-11.4/`](../../data/2026-10-11/release_2026-10-11.4/) (home folder
+    redacted).
+- **README and [`docs/RELEASES.md`](../../docs/RELEASES.md):** the current version, what changes, C43-VAL's two numbers
+  and where it loses.
+
+## 3. Not established
+
+- **Hardware.** No job has run. ESP is computed from the fake devices' calibration, with no idling term.
+- **The largest random circuit** (48 qubits) is worse on three devices (0.48-0.90 of 2026-10-11.3's ESP); item 75's
+  fixed search order may stop early on large circuits.
+- **The C42-VAL refusals** (17 test-device pairs) are most likely the same fault; they were not rerun.
+- **Item 74** gains little (+4%, ambiguous in C43-VAL).
+- **The AI front end.** Whether the change alters a12's measured results was not measured; its own tests pass.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

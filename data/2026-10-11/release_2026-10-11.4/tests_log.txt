@@ -1,0 +1,291 @@
+environment: {"python": "3.12.13", "qiskit": "2.5.2", "numpy": "2.5.3", "psf_compile": "2026-10-11.4", "core": "2026-09-29.1", "core57": "2026-10-10.c30", "git_head": "8b4d1ff", "dirty": [" M benchmarks/test_ai_compile_a11.py", " M benchmarks/test_ai_compile_a12.py", " M benchmarks/test_ai_compile_a8.py", " M benchmarks/test_ai_compile_a9.py", " M benchmarks/test_core_fix_c2.py", " M benchmarks/test_release_2026_09_28.py", " M benchmarks/test_release_2026_10_11_3.py", " M patches/psf_ai_compile_a12_2026-10-06/test_a12.py", " M patches/psf_ai_compile_a13_2026-10-06/test_a13.py", " M patches/psf_ai_compile_a6_2026-10-02/test_ai6.py", " M patches/psf_ai_compile_a8_2026-10-04/test_a8.py", " M patches/psf_compile_c43_2026-10-11/test_c43.py", " M psf_compile.py"]}
+start 2026-10-11T13:14:10Z
+
+== benchmarks/test_release_2026_10_11_4.py (2026-10-11T13:14:10Z)
+........                                                                 [100%]
+8 passed in 3.73s
+
+== benchmarks/test_release_2026_10_11_3.py (2026-10-11T13:14:14Z)
+........                                                                 [100%]
+8 passed in 5.58s
+
+== benchmarks/test_release_2026_10_11_2.py (2026-10-11T13:14:20Z)
+.......                                                                  [100%]
+7 passed in 2.35s
+
+== benchmarks/test_release_2026_10_11_1.py (2026-10-11T13:14:22Z)
+.......                                                                  [100%]
+7 passed in 2.42s
+
+== benchmarks/test_release_2026_10_10_3.py (2026-10-11T13:14:25Z)
+.......                                                                  [100%]
+7 passed in 4.34s
+
+== benchmarks/test_release_2026_10_10_2.py (2026-10-11T13:14:30Z)
+.......                                                                  [100%]
+7 passed in 11.27s
+
+== benchmarks/test_release_2026_10_10_1.py (2026-10-11T13:14:42Z)
+.....                                                                    [100%]
+5 passed in 10.98s
+
+== benchmarks/test_release_2026_10_07_1.py (2026-10-11T13:14:53Z)
+...........                                                              [100%]
+11 passed in 8.28s
+
+== benchmarks/test_release_2026_10_06_4.py (2026-10-11T13:15:02Z)
+........                                                                 [100%]
+8 passed in 5.37s
+
+== patches/psf_compile_c19_2026-10-07/test_c19.py (2026-10-11T13:15:08Z)
+..............                                                           [100%]
+14 passed in 108.94s (0:01:48)
+
+== benchmarks/test_release_2026_09_28.py (2026-10-11T13:16:57Z)
+........                                                                 [100%]
+8 passed in 0.87s
+
+== benchmarks/test_core_fix_c2.py (2026-10-11T13:16:58Z)
+..........                                                               [100%]
+=============================== warnings summary ===============================
+benchmarks/test_core_fix_c2.py::test_swap_is_elided_with_final_layout[False]
+  /home/<user>/psf_zero_fresh_test/benchmarks/test_core_fix_c2.py:105: UserWarning: compile_for_hardware was called without the device's Target (target= or backend=): couplers and qubits the device reports as failed cannot be avoided, and a result that uses one is noise (changelog item 58). This warning is given once per process.
+    out = pc.compile_for_hardware(qc, coupling_map=cm, basis_gates=nat, entangling_basis="cx",
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+10 passed, 1 warning in 1.63s
+
+== benchmarks/test_release_2026_10_02.py (2026-10-11T13:17:00Z)
+.....                                                                    [100%]
+5 passed in 2.41s
+
+== benchmarks/test_release_2026_10_02_2.py (2026-10-11T13:17:03Z)
+......                                                                   [100%]
+6 passed in 2.50s
+
+== benchmarks/test_release_2026_10_03.py (2026-10-11T13:17:06Z)
+...............                                                          [100%]
+15 passed in 4.52s
+
+== benchmarks/test_release_2026_10_03_2.py (2026-10-11T13:17:11Z)
+..........                                                               [100%]
+10 passed in 4.85s
+
+== benchmarks/test_release_2026_10_03_3.py (2026-10-11T13:17:16Z)
+...........                                                              [100%]
+11 passed in 5.99s
+
+== benchmarks/test_release_2026_10_04_1.py (2026-10-11T13:17:23Z)
+..........                                                               [100%]
+10 passed in 6.73s
+
+== benchmarks/test_release_2026_10_05_1.py (2026-10-11T13:17:30Z)
+.......                                                                  [100%]
+7 passed in 6.61s
+
+== benchmarks/test_ai_compile_a7.py (2026-10-11T13:17:37Z)
+.....                                                                    [100%]
+5 passed in 18.32s
+
+== benchmarks/test_ai_compile_a8.py (2026-10-11T13:17:56Z)
+.......                                                                  [100%]
+7 passed in 8.60s
+
+== benchmarks/test_ai_compile_a9.py (2026-10-11T13:18:05Z)
+....                                                                     [100%]
+4 passed in 16.01s
+
+== benchmarks/test_ai_compile_a11.py (2026-10-11T13:18:21Z)
+........                                                                 [100%]
+8 passed in 16.14s
+
+== benchmarks/test_ai_compile_a12.py (2026-10-11T13:18:38Z)
+.....                                                                    [100%]
+5 passed in 16.23s
+
+== patches/psf_ai_compile_a6_2026-10-02/test_ai6.py (2026-10-11T13:18:55Z)
+......                                                                   [100%]
+6 passed in 13.57s
+
+== patches/psf_ai_compile_a7_2026-10-02/test_a7.py (2026-10-11T13:19:09Z)
+.....                                                                    [100%]
+5 passed in 15.27s
+
+== patches/psf_ai_compile_a8_2026-10-04/test_a8.py (2026-10-11T13:19:24Z)
+.......                                                                  [100%]
+7 passed in 8.61s
+
+== patches/psf_ai_compile_a12_2026-10-06/test_a12.py (2026-10-11T13:19:33Z)
+.......                                                                  [100%]
+7 passed in 36.15s
+
+== patches/psf_ai_compile_a13_2026-10-06/test_a13.py (2026-10-11T13:20:10Z)
+.....                                                                    [100%]
+5 passed in 7.20s
+
+== patches/psf_compile_c3_2026-10-02/test_c3_prune.py (2026-10-11T13:20:18Z)
+.....                                                                    [100%]
+5 passed in 2.34s
+
+== patches/psf_compile_c4_2026-10-02/test_c4_layout.py (2026-10-11T13:20:20Z)
+....                                                                     [100%]
+4 passed in 1.97s
+
+== patches/psf_compile_c5_2026-10-02/test_c5_placement.py (2026-10-11T13:20:23Z)
+......                                                                   [100%]
+6 passed in 2.46s
+
+== patches/psf_compile_c6_2026-10-03/test_c6_floor.py (2026-10-11T13:20:26Z)
+..........                                                               [100%]
+10 passed in 3.26s
+
+== patches/psf_compile_c8_2026-10-03/test_c8_resynth.py (2026-10-11T13:20:29Z)
+...............                                                          [100%]
+15 passed in 4.35s
+
+== patches/psf_compile_c9_2026-10-03/test_c9_compare.py (2026-10-11T13:20:34Z)
+..........                                                               [100%]
+10 passed in 5.00s
+
+== patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py (2026-10-11T13:20:40Z)
+...........                                                              [100%]
+11 passed in 6.01s
+
+== patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py (2026-10-11T13:20:46Z)
+..........                                                               [100%]
+10 passed in 6.96s
+
+== patches/psf_compile_c12_2026-10-05/test_c12_exact.py (2026-10-11T13:20:54Z)
+.......                                                                  [100%]
+7 passed in 6.91s
+
+== patches/psf_compile_c24_2026-10-07/test_c24.py (2026-10-11T13:21:01Z)
+...........                                                              [100%]
+11 passed in 49.63s
+
+== patches/psf_compile_c26_2026-10-09/test_c26.py (2026-10-11T13:21:51Z)
+....                                                                     [100%]
+4 passed in 0.38s
+
+== patches/psf_compile_c29_2026-10-10/test_c29.py (2026-10-11T13:21:52Z)
+..........                                                               [100%]
+10 passed in 50.54s
+
+== patches/psf_compile_c30_2026-10-10/test_c30.py (2026-10-11T13:22:43Z)
+........                                                                 [100%]
+8 passed in 26.86s
+
+== patches/psf_compile_c31_2026-10-10/test_c31.py (2026-10-11T13:23:10Z)
+.......                                                                  [100%]
+7 passed in 4.42s
+
+== patches/psf_compile_c32_2026-10-10/test_c32.py (2026-10-11T13:23:15Z)
+....                                                                     [100%]
+4 passed in 3.29s
+
+== patches/psf_compile_c33_2026-10-10/test_c33.py (2026-10-11T13:23:19Z)
+....                                                                     [100%]
+4 passed in 1.89s
+
+== patches/psf_compile_c34_2026-10-10/test_c34.py (2026-10-11T13:23:21Z)
+.....                                                                    [100%]
+5 passed in 2.34s
+
+== patches/psf_compile_c35_2026-10-10/test_c35.py (2026-10-11T13:23:24Z)
+....                                                                     [100%]
+4 passed in 2.33s
+
+== patches/psf_compile_c36_2026-10-10/test_c36.py (2026-10-11T13:23:26Z)
+......                                                                   [100%]
+6 passed in 2.51s
+
+== patches/psf_compile_c38_2026-10-11/test_c38.py (2026-10-11T13:23:29Z)
+=============================== warnings summary ===============================
+patches/psf_compile_c38_2026-10-11/test_c38.py::test_commuting_evolution_is_exact_with_its_layout
+  /home/<user>/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/scipy/sparse/linalg/_dsolve/linsolve.py:653: SparseEfficiencyWarning: splu converted its input to CSC format
+    return splu(A).solve
+
+patches/psf_compile_c38_2026-10-11/test_c38.py::test_commuting_evolution_is_exact_with_its_layout
+  /home/<user>/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/scipy/sparse/linalg/_matfuncs.py:706: SparseEfficiencyWarning: spsolve is more efficient when sparse b is in the CSC matrix format
+    return spsolve(Q, P)
+
+patches/psf_compile_c38_2026-10-11/test_c38.py::test_commuting_evolution_is_exact_with_its_layout
+  /home/<user>/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/scipy/sparse/_index.py:174: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+    self._set_intXint(row, col, x.flat[0])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+6 passed, 3 warnings in 2.46s
+
+== patches/psf_compile_c39_2026-10-11/test_c39.py (2026-10-11T13:23:32Z)
+=============================== warnings summary ===============================
+patches/psf_compile_c39_2026-10-11/test_c39.py::test_commuting_evolution_is_exact_with_its_layout
+  /home/<user>/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/scipy/sparse/linalg/_dsolve/linsolve.py:653: SparseEfficiencyWarning: splu converted its input to CSC format
+    return splu(A).solve
+
+patches/psf_compile_c39_2026-10-11/test_c39.py::test_commuting_evolution_is_exact_with_its_layout
+  /home/<user>/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/scipy/sparse/linalg/_matfuncs.py:706: SparseEfficiencyWarning: spsolve is more efficient when sparse b is in the CSC matrix format
+    return spsolve(Q, P)
+
+patches/psf_compile_c39_2026-10-11/test_c39.py::test_commuting_evolution_is_exact_with_its_layout
+  /home/<user>/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/scipy/sparse/_index.py:174: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+    self._set_intXint(row, col, x.flat[0])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+8 passed, 3 warnings in 5.61s
+
+== patches/psf_compile_c40_2026-10-11/test_c40.py (2026-10-11T13:23:38Z)
+patches/psf_compile_c40_2026-10-11/test_c40.py::test_chosen_output_is_exact_and_never_worse
+patches/psf_compile_c40_2026-10-11/test_c40.py::test_measurements_follow_the_final_placement
+patches/psf_compile_c40_2026-10-11/test_c40.py::test_no_failed_element_on_a_device
+  /home/<user>/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit/circuit/library/n_local/evolved_operator_ansatz.py:324: DeprecationWarning: The class ``qiskit.circuit.library.n_local.n_local.NLocal`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. This applies to NLocal subclasses too. Use the corresponding function from the module qiskit.circuit.library.n_local instead.
+    super().__init__(
+
+patches/psf_compile_c40_2026-10-11/test_c40.py::test_steiner_construction_is_exact
+patches/psf_compile_c40_2026-10-11/test_c40.py::test_chosen_output_is_exact_and_never_worse
+patches/psf_compile_c40_2026-10-11/test_c40.py::test_measurements_follow_the_final_placement
+patches/psf_compile_c40_2026-10-11/test_c40.py::test_no_failed_element_on_a_device
+  /home/<user>/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit/circuit/library/n_local/n_local.py:379: DeprecationWarning: The class ``qiskit.circuit.library.blueprintcircuit.BlueprintCircuit`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. There is no direct replacement other than the QuantumCircuit class.
+    super().__init__(name=name)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+7 passed, 8 warnings in 4.40s
+
+== patches/psf_compile_c41_2026-10-11/test_c41.py (2026-10-11T13:23:43Z)
+patches/psf_compile_c41_2026-10-11/test_c41.py::test_chosen_output_is_exact_and_never_worse
+patches/psf_compile_c41_2026-10-11/test_c41.py::test_measurements_follow_the_final_placement
+patches/psf_compile_c41_2026-10-11/test_c41.py::test_no_failed_element_on_a_device
+  /home/<user>/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit/circuit/library/n_local/evolved_operator_ansatz.py:324: DeprecationWarning: The class ``qiskit.circuit.library.n_local.n_local.NLocal`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. This applies to NLocal subclasses too. Use the corresponding function from the module qiskit.circuit.library.n_local instead.
+    super().__init__(
+
+patches/psf_compile_c41_2026-10-11/test_c41.py::test_steiner_construction_is_exact
+patches/psf_compile_c41_2026-10-11/test_c41.py::test_chosen_output_is_exact_and_never_worse
+patches/psf_compile_c41_2026-10-11/test_c41.py::test_measurements_follow_the_final_placement
+patches/psf_compile_c41_2026-10-11/test_c41.py::test_no_failed_element_on_a_device
+  /home/<user>/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit/circuit/library/n_local/n_local.py:379: DeprecationWarning: The class ``qiskit.circuit.library.blueprintcircuit.BlueprintCircuit`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. There is no direct replacement other than the QuantumCircuit class.
+    super().__init__(name=name)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+9 passed, 8 warnings in 6.47s
+
+== patches/psf_compile_c42_2026-10-11/test_c42.py (2026-10-11T13:23:50Z)
+......                                                                   [100%]
+6 passed in 2.69s
+
+== patches/psf_compile_c43_2026-10-11/test_c43.py (2026-10-11T13:23:53Z)
+patches/psf_compile_c43_2026-10-11/test_c43.py::test_chosen_output_is_exact_and_never_worse
+patches/psf_compile_c43_2026-10-11/test_c43.py::test_measurements_follow_the_final_placement
+patches/psf_compile_c43_2026-10-11/test_c43.py::test_no_failed_element_on_a_device
+  /home/<user>/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit/circuit/library/n_local/evolved_operator_ansatz.py:324: DeprecationWarning: The class ``qiskit.circuit.library.n_local.n_local.NLocal`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. This applies to NLocal subclasses too. Use the corresponding function from the module qiskit.circuit.library.n_local instead.
+    super().__init__(
+
+patches/psf_compile_c43_2026-10-11/test_c43.py::test_steiner_construction_is_exact
+patches/psf_compile_c43_2026-10-11/test_c43.py::test_chosen_output_is_exact_and_never_worse
+patches/psf_compile_c43_2026-10-11/test_c43.py::test_measurements_follow_the_final_placement
+patches/psf_compile_c43_2026-10-11/test_c43.py::test_no_failed_element_on_a_device
+  /home/<user>/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/qiskit/circuit/library/n_local/n_local.py:379: DeprecationWarning: The class ``qiskit.circuit.library.blueprintcircuit.BlueprintCircuit`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. There is no direct replacement other than the QuantumCircuit class.
+    super().__init__(name=name)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+13 passed, 8 warnings in 8.68s
+
+files 54; {'passed': 413, 'failed': 0, 'errors': 0, 'skipped': 0}; files not passing: []; end 2026-10-11T13:24:02Z
