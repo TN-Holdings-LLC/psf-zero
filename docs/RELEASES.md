@@ -11,7 +11,10 @@ the earlier parts they link to. The README itself, as it was before the move, is
 
 > **In brief (as of 2026-10-10)**
 >
-> 1. Release 2026-10-11.2: given the device (`backend=`), a Pauli evolution whose terms all commute is built by
+> 1. Release 2026-10-11.3: given the device, every input that reads as Pauli rotations (evolutions, QAOA, circuits
+>    written as gates) is also built by STEINER6 and the better output on the device is kept (items 69-73;
+>    C39-VAL to C41-VAL, Addenda 447-449: never below 2026-10-11.2; 1.2-1.45 times 2026-10-11.1's ESP on those
+>    inputs). Release 2026-10-11.2: given the device (`backend=`), a Pauli evolution whose terms all commute is built by
 >    STEINER6 (item 68; C38-VAL, Addendum 445: ESP 1.39 times 2026-10-11.1's on such inputs, worse on the dense
 >    two-local diagonal type). Release 2026-10-11.1: given the device, the call avoids failed elements, places by
 >    the errors (2026-10-10.3, items 58-63) and routes at Qiskit's level 3 (item 64). In C36-VAL (Addenda 440-441) it used no
@@ -29,7 +32,26 @@ the earlier parts they link to. The README itself, as it was before the move, is
 > 5. Candidate c24 (item 51, a 5% switching margin) was tested and is not recommended (Addendum 406).
 > 6. The device layer has been tested only in noisy simulation on fake devices, not on hardware.
 
-> **Current version (2026-10-11, second release): `psf_compile.py` 2026-10-11.2 and the AI front end a12, with
+> **Current version (2026-10-11, third release): `psf_compile.py` 2026-10-11.3 and the AI front end a12, with
+> `psf_smart_layout` 2026-10-01.1, the Rust core `CORE_VERSION` 2026-09-29.1 and the optional `psf_zero_core57`
+> 2026-10-10.c30 (all unchanged)** ([Part 10](findings/spare-qubit-cliff-combined-383.md), Addenda 447-451). The
+> file is prototype c41 ([`patches/psf_compile_c41_2026-10-11/`](../patches/psf_compile_c41_2026-10-11/)) with its
+> version lines changed; 2026-10-11.2 is kept as
+> [`patches/psf_compile_release_2026-10-11.2/`](../patches/psf_compile_release_2026-10-11.2/).
+>
+> - **Items 69-73 (c39-c41):** with the device, STEINER6's construction is tried on every input that reads as Pauli
+>   rotations -- Pauli evolutions of any kind, QAOA, rotation gates, circuits written as gates (Clifford gates carried
+>   to the end) -- and its output is kept only where its ESP is higher than the usual path's; inputs over 2000 terms
+>   take the usual path. `steiner=False` turns it off.
+> - **C39-VAL to C41-VAL** (predictions fixed before each run in a local file, Addenda 447-449; six devices):
+>   - no output on a failed element; never below 2026-10-11.2; unread inputs unchanged;
+>   - ESP compared with 2026-10-11.1: commuting Hamiltonians 1.445, QAOA 1.19, non-commuting 1.08, Benchpress QASM
+>     files read as gates 1.20 (QAOA QASM 1.29);
+>   - about 4 times 2026-10-11.1's compile time on the inputs read.
+> - **Not released:** item 74 (near-failed elements, prototype c42), whose rule was not met (Addendum 450).
+> - **Not established:** hardware; the run-to-run variation of the usual path found in C42-VAL (Addenda 450-451).
+
+> **Previous release (2026-10-11, second release): `psf_compile.py` 2026-10-11.2 and the AI front end a12, with
 > `psf_smart_layout` 2026-10-01.1, the Rust core `CORE_VERSION` 2026-09-29.1 and the optional `psf_zero_core57`
 > 2026-10-10.c30 (all unchanged)** ([Part 10](findings/spare-qubit-cliff-combined-383.md), Addenda 443-446). The
 > file is candidate c38 ([`patches/psf_compile_c38_2026-10-11/`](../patches/psf_compile_c38_2026-10-11/)) with its

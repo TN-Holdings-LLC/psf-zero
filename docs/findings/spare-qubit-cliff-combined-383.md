@@ -6258,6 +6258,106 @@ made by item 74:
 
 ---
 
+<!-- ===== Addendum 451 (source: spare-qubit-cliff-addendum-451-2026-10-11.md) ===== -->
+
+> **Note added when merging:** The release of prototype c41 as 2026-10-11.3, by the owner's decision after Addenda 447-450 (the proposed rules of C39-VAL, C40-VAL and C41-VAL met; C42-VAL's not).
+
+## Addendum 451 -- Release: psf_compile 2026-10-11.3 = prototype 2026-10-11.c41 (changelog items 69-73, accepted in C39-VAL to C41-VAL, Addenda 447-449). Given the device, STEINER6's construction is tried on every circuit that can be read as Pauli rotations -- Pauli evolutions of any kind, QAOA, rotation gates, and circuits written as gates such as QASM files -- and kept only where its ESP is higher: never below 2026-10-11.2, 1.2-1.45 times 2026-10-11.1's ESP on such inputs; item 74 is not released (2026-10-11)
+
+**Status: the owner's decision of 2026-10-11** (to release once several measures had accumulated), after C39-VAL to
+C42-VAL (Addenda 447-450). It follows the procedure of releases 2026-10-10.1 to 2026-10-11.2 (Addenda 424, 428, 438,
+442 and 446). Each validation's rule was fixed before its run in a local file, not committed first (Addenda 447-450).
+Items 69-73 met their rules; item 74 (prototype c42) did not by the letter and is left out.
+
+## 1. The decision
+
+The owner released prototype c41 as **2026-10-11.3**: release 2026-10-11.2 with items 69-73.
+
+| item | what it does | validated in |
+|---|---|---|
+| 69 | STEINER6's output is kept only if its summed -ln(1 - error) on the device is lower than the usual path's (`steiner=False`); on a tie the usual path's | C39-VAL (Addendum 447) |
+| 70 | an input of more than 2000 terms (after item 72's merging) takes the usual path | C39-VAL |
+| 71 | STEINER6 is tried also when the terms do not all commute (exact: a term never passes an anticommuting earlier one) | C40-VAL (Addendum 448) |
+| 72 | more inputs read as Pauli rotations: product formulas of any order and repetitions, sequences of evolutions and rotation gates, QAOAAnsatz, a leading single-qubit layer; repeated terms merged where exact | C40-VAL |
+| 73 | circuits written as gates are read too: Clifford gates are carried to the end, so cx-rz-cx, basis changes, cp/crz/t and Toffolis become Pauli rotations; the output equals the input up to a global phase | C41-VAL (Addendum 449) |
+
+**What the validations found** (ESP on the devices' calibration, no idling term; "runnable": best ESP >= 0.01):
+
+| | |
+|---|---|
+| outputs on failed elements | 0 in all three |
+| never below the release | every test in all three (C41-VAL: 534 of 534 against 2026-10-11.1 and c40) |
+| inputs not read: the release's output by value | all controls in all three |
+| commuting Hamiltonians (C39-VAL) | 1.445 times 2026-10-11.1's ESP; the C38-VAL losses (ts225, lin105) gone, 12 of 12 |
+| QAOA (C40-VAL; QAOAAnsatz) | 1.19 times |
+| non-commuting Hamiltonians (C40-VAL) | 1.08 times (multi-step Trotter 1.11; a single step 1.03) |
+| Benchpress QASM files read as gates (C41-VAL, 486 tests) | 1.20 times (1.15 without FakeBoston); QAOA QASM 1.29; gate-level UCCSD less than half the two-qubit gates |
+| compile time on the inputs read | about 4 times 2026-10-11.1's (median 0.4-0.6 s; largest 48 s, qft_n63) |
+
+**What a user sees.**
+
+- **With the device** (`backend=` or `target=`, no `coupling_map` or `initial_layout` of the caller's): an input that
+  items 72-73 read is compiled twice, by STEINER6 and by the usual path, and the better on the device's error table is
+  returned. Among those inputs: Pauli evolutions (commuting or not, any product formula), QAOA circuits, rotation-gate
+  circuits, and QASM files written as cx-rz-cx with basis changes. Benchpress: 213 of its 519 QASM files are read.
+- **Every other input**, and every call without the device: 2026-10-11.2's output, by value
+  (`test_release_2026_10_11_3.py`).
+- `steiner=False` turns items 68-73 off.
+- The output of an input read by item 73 equals the input up to a global phase.
+- The AI front end (a12) calls `psf_compile`, so circuits it passes with a Target take the new path where they are
+  read; its own code is unchanged. The core and `psf_zero_core57` are unchanged.
+
+## 2. What changes in the repository
+
+- **[`psf_compile.py`](../../psf_compile.py)** is c41's file with its two version lines changed;
+  [`benchmarks/test_release_2026_10_11_3.py`](../../benchmarks/test_release_2026_10_11_3.py) checks this.
+- **The outgoing release 2026-10-11.2** is kept unchanged as
+  [`patches/psf_compile_release_2026-10-11.2/psf_compile.py`](../../patches/psf_compile_release_2026-10-11.2/psf_compile.py).
+  `psf_smart_layout.py` does not change.
+- **Tests.**
+  - [`benchmarks/test_release_2026_10_11_3.py`](../../benchmarks/test_release_2026_10_11_3.py) (new) checks:
+    - the versions;
+    - that the file is c41's except the version lines, and that c41 and the kept 2026-10-11.2 are the locked files;
+    - inputs items 72-73 do not read give 2026-10-11.2's outputs by value; `steiner=False` gives 2026-10-11.2's
+      `steiner=False` outputs by value on FakeTorino (where both releases are reproducible: section 3);
+    - on FakeTorino, gate-level QAOA and ordinary circuits: ESP never below 2026-10-11.2's, no failed element, the
+      device's gates only;
+    - without the Target, 2026-10-11.2's outputs by value (where reproducible); the warning, given once.
+  - The 10 test files that assert the current release's version now assert 2026-10-11.3.
+  - `test_release_2026_10_11_2.py` and the c39, c40 and c41 tests, which test 2026-10-11.2 as "the release", load the
+    kept copy.
+  - The c39, c40 and c41 tests join the list.
+- **Release tests:**
+  - **Runner:** [`benchmarks/run_release_tests_2026-10-11_3.py`](../../benchmarks/run_release_tests_2026-10-11_3.py).
+  - **Scope:** 51 test files, one pytest session each.
+  - **Environment:** Python 3.12.13, Qiskit 2.5.2, NumPy 2.5.3, `CORE_VERSION` 2026-09-29.1, `psf_zero_core57`
+    2026-10-10.c30, over commit `44bdbda`.
+  - **When:** 13:30:29-13:40:19 CEST.
+  - **Result:** 386 passed, none failed, none skipped.
+  - **Log:** [`data/2026-10-11/release_2026-10-11.3/`](../../data/2026-10-11/release_2026-10-11.3/) (home folder
+    redacted).
+- **README and [`docs/RELEASES.md`](../../docs/RELEASES.md):** the current version, what changes, the validations' two
+  numbers and where the gains are small.
+
+## 3. Not established
+
+- **Hardware.** No job has run. ESP is computed from the fake devices' calibration, with no idling term.
+- **Item 74** (near-failed elements, prototype c42): its rule was not met by the letter (Addendum 450). It is not in
+  this release.
+- **Run-to-run variation.** C42-VAL found that the usual path's output can differ from run to run on some inputs
+  (Addendum 450). Found while preparing this release: Qiskit 2.5.2's own `transpile`, with a fixed
+  `seed_transpiler`, returns different outputs from call to call on some circuits, also in one process, with one
+  thread and a fixed `PYTHONHASHSEED`; for example on PSF's compressed form of a 6-qubit random circuit without the
+  Target (level 1: three or four different outputs in six calls; the uncompressed input gave one). Which Qiskit pass varies is
+  not established. The new release test therefore compares the two releases by value only on circuits where each gives
+  one output over three calls, and requires that to hold for at least half of them; earlier "by value" results stand as
+  measured.
+- **Where the gain is small.** Single-step non-commuting Hamiltonians (+3%), small MaxCut, Feynman's Toffoli circuits
+  (+7%). Circuits that end with a permutation (QFT with its swaps) are not read.
+- **The AI front end.** Whether the change alters a12's measured results was not measured; its own tests pass.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

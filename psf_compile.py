@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-10-11.2 -- release, adopted on 2026-10-11 from candidate 2026-10-11.c38, accepted in C38-VAL (Addendum 445) (previous release: 2026-10-11.1)
+VERSION: 2026-10-11.3 -- release, adopted on 2026-10-11 from prototype 2026-10-11.c41, accepted in C39-VAL to C41-VAL (Addenda 447-449) (previous release: 2026-10-11.2)
 
 Where to look for what
 ----------------------
@@ -908,6 +908,34 @@ adopted on 2026-10-06 after their pre-registered evaluations RECR and KRAUS, Add
     would use a failed element, goes by the release's path unchanged. The rule was fixed from STEINER6's development
     data only (Addendum 444: on all-commuting tests it beat the release on 12 of 13 runnable FakeTorino/FakeKingston
     cases; on the others it was even). Counts in `STEINER_STATS`.
+69. **ACCURACY: STEINER6's output is kept only where it is better (candidate 2026-10-11.c39).** When item 68 applies,
+    the input is also compiled by the usual path (`steiner=False`), and the output with the lower summed
+    -ln(1 - error) over all its operations on the device (the higher ESP) is returned; on a tie, the usual path's.
+    C38-VAL (Addendum 445) found item 68 worse than the usual path on the dense two-local diagonal type (HamLib tsp
+    in unary encoding: 0.87 of its ESP), which no structural rule from the data separated from types it wins on (a
+    dense two-local gnp instance won by 2-3 times). Two fixed constructions compared by the device's own error table,
+    not a search over seeds. Counts in `STEINER_STATS` ("chosen", "kept_usual").
+70. **SPEED: a size limit for item 68 (candidate 2026-10-11.c39).** An evolution of more than 2000 terms takes the
+    usual path. The largest commuting test runnable on a device so far had 449 terms (Addenda 444-445); C38-VAL's
+    slowest call was a 5335-term, 144-qubit evolution whose ESP is near 0 either way (129 s against the usual path's
+    10 s). Counts in `STEINER_STATS` ("too_large").
+71. **ACCURACY: STEINER6 also for terms that do not all commute (prototype c40).** Item 68 required all terms to
+    commute; with item 69 choosing by ESP, the construction is tried on every input it can read and kept only where it
+    is better. Terms never pass an anticommuting earlier term, so the result is exact.
+72. **ACCURACY: more inputs read as Pauli rotations (prototype c40).** Product formulas of any order and repetitions
+    (LieTrotter, SuzukiTrotter, from their own `expand()`), sequences of PauliEvolutionGates and rotation gates (rz, rx,
+    ry, rzz, rxx, ryy), composite instructions such as QAOAAnsatz (read through their definitions), a leading layer of
+    single-qubit gates (as QAOA's Hadamards) and final measurements. Repeated terms are merged where exact (no
+    anticommuting term in between): a commuting Hamiltonian over r Trotter steps becomes one step. The size limit of
+    item 70 applies after merging.
+73. **ACCURACY: circuits written as gates are read too (prototype c41).** A circuit that item 72 cannot read is read
+    gate by gate: single-qubit gates before a qubit's first multi-qubit gate stay in front; Clifford gates after that
+    (cx, cz, swap, ecr, h, s, sx, rotations by multiples of pi/2: any gate on one or two qubits that maps Paulis to
+    Paulis, from its matrix) are carried to the end, turning each later rotation exp(-i a P) into exp(-i a C^dagger P C);
+    rotations, Pauli evolutions, p, t and any other single-qubit gate (as rz.ry.rz) give the terms; other gates are read
+    through their definitions. It applies when the Clifford gates left at the end act on each qubit alone; they are
+    then placed after the terms at the qubits' final places. The output equals the input up to a global phase (the
+    Clifford gates' phases are not followed). QASM files of QAOA and Trotter circuits (cx-rz-cx) are of this kind.
 """
 from __future__ import annotations
 
@@ -946,7 +974,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-10-11.2"  # release (from candidate 2026-10-11.c38, C38-VAL): 2026-10-11.1 + item 68 (commuting Pauli evolutions by STEINER6)
+VERSION = "2026-10-11.3"  # release (from prototype 2026-10-11.c41, C39-VAL to C41-VAL): 2026-10-11.2 + items 69-73 (STEINER6 kept where its ESP is higher; non-commuting, multi-step, QAOA-type, gate-level inputs)
 __version__ = VERSION
 
 # Changelog item 27: the version string of the loaded Rust core, for logs.
@@ -3669,7 +3697,35 @@ _ST_FAILED = 0.5  # set from prune_max_error by _st_compile
 _ST_VF2_CHECK, _ST_VF2_MAPS, _ST_KEEP = 20_000, 200, 6
 _ST_EMBED = 2  # STEINER5's VF2 embeddings added per distance mode as initial placements
 _ST_BIG_TERMS = 2000  # above this many terms: the error mode only, one greedy start and one embedding
-STEINER_STATS = {"not_applicable": 0, "not_commuting": 0, "used": 0, "fallback": 0}  # changelog item 68
+STEINER_STATS = {"not_applicable": 0, "not_commuting": 0, "used": 0, "fallback": 0, "too_large": 0, "chosen": 0,
+                 "kept_usual": 0, "gate_level": 0}  # changelog items 68-73
+_ST_MAX_TERMS = 2000  # item 70
+
+
+def _st_cost(circ, target):
+    """Item 69: the summed -ln(1 - error) of every operation of `circ` on the device (-ln ESP); inf if one is not
+    offered there or has error >= 1. Barriers and delays count 0, and so does control flow (no error reported)."""
+    pos = {q: i for i, q in enumerate(circ.qubits)}
+    total = 0.0
+    for ins in circ.data:
+        name = ins.operation.name
+        if name in ("barrier", "delay"):
+            continue
+        if name not in target.operation_names:
+            return math.inf
+        entries = target[name]
+        qargs = tuple(pos[q] for q in ins.qubits)
+        if qargs in entries:
+            props = entries[qargs]
+        elif None in entries:
+            continue
+        else:
+            return math.inf
+        e = props.error if props is not None and props.error is not None else 0.0
+        if e >= 1.0:
+            return math.inf
+        total += -math.log1p(-max(e, 0.0))
+    return total
 
 
 def _st_evolution(qc):
@@ -3774,6 +3830,391 @@ def _st_construct(n, triples, target, meas):
     return best[3], list(best[4])
 
 
+_ST_ROT = {"rz": "Z", "rx": "X", "ry": "Y", "rzz": "ZZ", "rxx": "XX", "ryy": "YY"}  # item 72: exp(-i theta/2 P)
+_ST_FORMULAS = ("LieTrotter", "SuzukiTrotter")  # item 72: deterministic product formulas (not QDrift)
+
+
+def _st_flatten(qc, depth=0):
+    """Item 72: ([(operation, qubit indices, clbit indices)], global phase) of `qc`, with composite instructions that
+    are not read directly (a PauliEvolutionGate, a rotation, a single-qubit gate, measure, barrier) replaced by their
+    definitions, up to three levels."""
+    out, phase = [], float(qc.global_phase) if not hasattr(qc.global_phase, "parameters") else None
+    if phase is None:
+        return None, None
+    for ins in qc.data:
+        op = ins.operation
+        qs = [qc.find_bit(q).index for q in ins.qubits]
+        cs = [qc.find_bit(c).index for c in ins.clbits]
+        leaf = (op.name in ("barrier", "measure", "PauliEvolution") or op.name in _ST_ROT
+                or (len(qs) == 1 and not cs and getattr(op, "blocks", None) is None))
+        if not leaf and depth < 3 and not cs and getattr(op, "definition", None) is not None:
+            inner, ph = _st_flatten(op.definition, depth + 1)
+            if inner is None:
+                return None, None
+            phase += ph
+            out += [(o, [qs[i] for i in q2], c2) for o, q2, c2 in inner]
+        else:
+            out.append((op, qs, cs))
+    return out, phase
+
+
+def _st_pauli_terms(gate, qs, n):
+    """Item 72: the terms a PauliEvolutionGate on qubits `qs` applies, in order, as [(label on n qubits, angle, 1.0)]
+    with each term exp(-i angle P), from its product formula's own expansion (LieTrotter or SuzukiTrotter, any order and
+    repetitions); and the global phase of identity terms. None if not readable (a list of operators, an unbound time,
+    complex coefficients, another formula)."""
+    from qiskit.synthesis import LieTrotter
+    if isinstance(gate.operator, list):
+        return None
+    try:
+        float(gate.time)
+    except (TypeError, ValueError):
+        return None
+    coeffs = np.asarray(gate.operator.coeffs)
+    if coeffs.dtype == object or np.any(np.abs(np.imag(coeffs)) > 1e-12):
+        return None
+    syn = gate.synthesis if gate.synthesis is not None else LieTrotter()
+    if type(syn).__name__ not in _ST_FORMULAS:
+        return None
+    try:
+        seq = syn.expand(gate)
+    except Exception:  # noqa: BLE001 - not expandable: the usual path
+        return None
+    out, phase = [], 0.0
+    for item in seq:
+        pl, idx, coeff = item[0], list(item[1]), float(np.real(item[2]))
+        lab = ["I"] * n
+        for ch, i in zip(pl, idx):  # character k acts on the gate's qubit idx[k]
+            if ch != "I":
+                lab[n - 1 - qs[i]] = ch
+        lab = "".join(lab)
+        if set(lab) <= {"I"}:
+            phase -= coeff / 2
+            continue
+        out.append((lab, coeff / 2, 1.0))
+    return out, phase
+
+
+def _st_parse(qc):
+    """Item 72: (leading single-qubit gates [(operation, qubit)], final measurements [(qubit, clbit)], terms
+    [(label, angle, 1.0)] in order, global phase) when `qc` is: single-qubit gates first, then only Pauli evolutions and
+    rotation gates (rz, rx, ry, rzz, rxx, ryy), then measurements (barriers anywhere); else None."""
+    flat, phase = _st_flatten(qc)
+    if flat is None:
+        return None
+    n = qc.num_qubits
+    prefix, meas, terms = [], [], []
+    started = False
+    for op, qs, cs in flat:
+        name = op.name
+        if name == "barrier":
+            continue
+        if name == "measure":
+            meas.append((qs[0], cs[0]))
+            continue
+        if meas:
+            return None  # an operation after a measurement
+        if name == "PauliEvolution":
+            got = _st_pauli_terms(op, qs, n)
+            if got is None:
+                return None
+            terms += got[0]
+            phase += got[1]
+            started = True
+            continue
+        if name in _ST_ROT and len(op.params) == 1:
+            try:
+                angle = float(op.params[0])
+            except (TypeError, ValueError):
+                return None
+            lab = ["I"] * n
+            for ch, q in zip(_ST_ROT[name], qs):
+                lab[n - 1 - q] = ch
+            terms.append(("".join(lab), angle / 2, 1.0))
+            started = True
+            continue
+        if len(qs) == 1 and not cs and not started:
+            try:
+                op.to_matrix()
+            except Exception:  # noqa: BLE001 - not a unitary gate
+                return None
+            prefix.append((op, qs[0]))
+            continue
+        return None
+    if not terms:
+        return None
+    return prefix, meas, terms, phase
+
+
+def _st_merge(terms):
+    """Item 72: repeated terms joined where exact: a term is added to an earlier one with the same Pauli if no term in
+    between anticommutes with it (it could then be moved next to it). [(label, angle, 1.0)] in order."""
+    out, open_ = [], {}
+    for lb, c, t in terms:
+        x, z, _ = _st_term_masks(lb)
+        if lb in open_:
+            out[open_[lb]][1] += c * t
+            continue
+        for other in [k for k, i in open_.items() if bin((out[i][2] & z) ^ (out[i][3] & x)).count("1") & 1]:
+            del open_[other]
+        out.append([lb, c * t, x, z])
+        open_[lb] = len(out) - 1
+    return [(lb, a, 1.0) for lb, a, _, _ in out]
+
+
+_ST_GATE_LIMIT = 200_000  # item 73: circuits with more instructions are not read
+_ST_PAULI_1Q = {"I": (0, 0), "X": (1, 0), "Y": (1, 1), "Z": (0, 1)}
+_ST_CONJ_CACHE = {}
+_ST_CLIFF1Q = None
+
+
+def _st_pmul(a, b):
+    """Item 73: the product a.b of two Paulis written (x mask, z mask, k) for i^k X^x Z^z."""
+    return a[0] ^ b[0], a[1] ^ b[1], (a[2] + b[2] + 2 * bin(a[1] & b[0]).count("1")) % 4
+
+
+def _st_conj(op):
+    """Item 73: for a gate on k <= 2 qubits whose conjugation maps Paulis to Paulis (a Clifford gate), the images
+    G^dagger P G of X and Z on each of its qubits, as [(label on its k qubits, +1 or -1)] in the order X0, Z0, X1, Z1;
+    None if it is not Clifford or has no matrix. From the gate's own matrix, cached by name and parameters."""
+    try:
+        key = (op.name, tuple(float(p) for p in op.params))
+    except (TypeError, ValueError):
+        return None
+    if key in _ST_CONJ_CACHE:
+        return _ST_CONJ_CACHE[key]
+    from itertools import product
+    from qiskit.quantum_info import Pauli
+    k = op.num_qubits
+    try:
+        m = np.asarray(op.to_matrix(), dtype=complex)
+    except Exception:  # noqa: BLE001 - no matrix
+        _ST_CONJ_CACHE[key] = None
+        return None
+    basis = ["".join(t) for t in product("IXYZ", repeat=k)]
+    mats = {lb: Pauli(lb).to_matrix() for lb in basis}
+    out = []
+    for j in range(k):
+        for ch in "XZ":
+            lb = ["I"] * k
+            lb[k - 1 - j] = ch
+            img = m.conj().T @ mats["".join(lb)] @ m
+            hit = None
+            for r in basis:
+                c = np.trace(mats[r].conj().T @ img) / 2 ** k
+                if abs(c) > 1e-6:
+                    if hit is not None or abs(abs(c) - 1) > 1e-9 or abs(c.imag) > 1e-9:
+                        hit = None
+                        break
+                    hit = (r, 1 if c.real > 0 else -1)
+            if hit is None:
+                _ST_CONJ_CACHE[key] = None
+                return None
+            out.append(hit)
+    _ST_CONJ_CACHE[key] = out
+    return out
+
+
+def _st_cliff1q():
+    """Item 73: {(image of X, image of Z) as (character, sign): [gate, ...]} for the 24 single-qubit Cliffords, from
+    the shortest words in H and S."""
+    global _ST_CLIFF1Q
+    if _ST_CLIFF1Q is None:
+        from qiskit.circuit.library import HGate, SGate
+        table, frontier = {}, [[]]
+        while frontier and len(table) < 24:
+            nxt = []
+            for word in frontier:
+                m = np.eye(2, dtype=complex)
+                for g in word:
+                    m = g.to_matrix() @ m
+                c = _st_conj(type("W", (), {"name": "w" + "".join(g.name for g in word), "params": [],
+                                            "num_qubits": 1, "to_matrix": lambda self, m=m: m})())
+                key = (c[0], c[1])
+                if key not in table:
+                    table[key] = word
+                    nxt += [word + [HGate()], word + [SGate()]]
+            frontier = nxt
+        _ST_CLIFF1Q = table
+    return _ST_CLIFF1Q
+
+
+def _st_parse_gates(qc):
+    """Item 73: (leading single-qubit gates [(operation, qubit)], final measurements [(qubit, clbit)], terms
+    [(label, angle, 1.0)] in order, global phase, final single-qubit Cliffords [(operation, qubit)]) such that the
+    circuit equals, up to a global phase, the leading gates, then the terms exp(-i angle P), then the final gates, then
+    the measurements; None if it cannot be written so.
+
+    Single-qubit gates on a qubit before its first multi-qubit gate are kept as the leading gates. After that, Clifford
+    gates (any gate on one or two qubits that maps Paulis to Paulis, from its matrix, including rotations by multiples
+    of pi/2) are carried to the end: a later rotation exp(-i a P) becomes exp(-i a C^dagger P C), where C is the product
+    of the Clifford gates so far. Rotations rz, rx, ry, rzz, rxx, ryy, p, u1, t, tdg and Pauli evolutions give terms; any
+    other single-qubit gate is written as rz.ry.rz; other gates are read through their definitions (three levels). The
+    Clifford gates left at the end must act on each qubit alone (a product of single-qubit Cliffords)."""
+    from qiskit.synthesis import OneQubitEulerDecomposer
+    n = qc.num_qubits
+    if n == 0 or len(qc.data) > _ST_GATE_LIMIT:
+        return None
+    try:
+        phase = float(qc.global_phase)
+    except (TypeError, ValueError):
+        return None
+    frame = [[(1 << q, 0, 0), (0, 1 << q, 0)] for q in range(n)]  # C^dagger X_q C, C^dagger Z_q C
+    touched = [False] * n
+    prefix, meas, terms = [], [], []
+    count = [0]
+    euler = OneQubitEulerDecomposer("ZYZ")
+
+    def image(chars):  # chars: {qubit: "X" | "Y" | "Z"} -> C^dagger P C as (x, z, k)
+        acc = (0, 0, 0)
+        for q, ch in chars.items():
+            if ch == "X":
+                acc = _st_pmul(acc, frame[q][0])
+            elif ch == "Z":
+                acc = _st_pmul(acc, frame[q][1])
+            elif ch == "Y":
+                acc = _st_pmul(acc, _st_pmul((0, 0, 1), _st_pmul(frame[q][0], frame[q][1])))
+        return acc
+
+    def term(chars, angle):
+        x, z, k = image(chars)
+        if not x and not z:
+            return None
+        sign = (k - bin(x & z).count("1")) % 4
+        if sign not in (0, 2):
+            return None
+        lab = ["I"] * n
+        both = x | z
+        while both:
+            low = both & -both
+            j = low.bit_length() - 1
+            lab[n - 1 - j] = "Y" if x & low and z & low else ("X" if x & low else "Z")
+            both ^= low
+        terms.append(("".join(lab), angle if sign == 0 else -angle, 1.0))
+        return True
+
+    def clifford(op, qs):
+        c = _st_conj(op)
+        if c is None:
+            return False
+        new = []
+        for j in range(len(qs)):
+            row = []
+            for r, sg in c[2 * j: 2 * j + 2]:
+                chars = {qs[len(qs) - 1 - i]: ch for i, ch in enumerate(r) if ch != "I"}
+                acc = image(chars)
+                if sg < 0:
+                    acc = (acc[0], acc[1], (acc[2] + 2) % 4)
+                row.append(acc)
+            new.append(row)
+        for j, q in enumerate(qs):
+            frame[q] = new[j]
+        return True
+
+    def one(op, qs, depth):
+        nonlocal phase
+        count[0] += 1
+        if count[0] > _ST_GATE_LIMIT:
+            return False
+        name = op.name
+        if len(qs) == 1 and not touched[qs[0]] and name != "PauliEvolution":
+            try:
+                op.to_matrix()
+            except Exception:  # noqa: BLE001 - not a unitary gate
+                return False
+            prefix.append((op, qs[0]))
+            return True
+        if name == "PauliEvolution":
+            got = _st_pauli_terms(op, qs, n)
+            if got is None:
+                return False
+            for q in qs:
+                touched[q] = True
+            phase += got[1]
+            for lb, a, _ in got[0]:
+                chars = {n - 1 - i: ch for i, ch in enumerate(lb) if ch != "I"}
+                if term(chars, a) is None:
+                    return False
+            return True
+        for q in qs:
+            touched[q] = True
+        if name in ("p", "u1", "t", "tdg") and len(qs) == 1:
+            try:
+                lam = {"t": math.pi / 4, "tdg": -math.pi / 4}.get(name) or float(op.params[0])
+            except (TypeError, ValueError):
+                return False
+            phase += lam / 2
+            from qiskit.circuit.library import RZGate
+            return one(RZGate(lam), qs, depth)
+        if name in _ST_ROT and len(op.params) == 1:
+            try:
+                angle = float(op.params[0])
+            except (TypeError, ValueError):
+                return False
+            if len(qs) == 1 and abs(math.remainder(angle, math.pi / 2)) < 1e-12:
+                return clifford(op, qs)
+            return term({q: ch for q, ch in zip(qs, _ST_ROT[name])}, angle / 2) is not None
+        if len(qs) <= 2 and getattr(op, "blocks", None) is None and _st_conj(op) is not None:
+            return clifford(op, qs)
+        if len(qs) == 1:
+            try:
+                sub = euler(op.to_matrix())
+            except Exception:  # noqa: BLE001 - not a unitary gate
+                return False
+            phase += float(sub.global_phase)
+            return all(one(i.operation, qs, depth) for i in sub.data)
+        definition = getattr(op, "definition", None)
+        if depth >= 3 or definition is None or getattr(op, "blocks", None) is not None:
+            return False
+        try:
+            phase += float(definition.global_phase)
+        except (TypeError, ValueError):
+            return False
+        for i in definition.data:
+            if i.clbits:
+                return False
+            if not one(i.operation, [qs[definition.find_bit(b).index] for b in i.qubits], depth + 1):
+                return False
+        return True
+
+    for ins in qc.data:
+        op = ins.operation
+        name = op.name
+        if name == "barrier":
+            continue
+        qs = [qc.find_bit(q).index for q in ins.qubits]
+        if name == "measure":
+            meas.append((qs[0], qc.find_bit(ins.clbits[0]).index))
+            continue
+        if meas or ins.clbits:
+            return None
+        if not one(op, qs, 0):
+            return None
+    if not terms:
+        return None
+    suffix = []
+    table = None
+    for q in range(n):
+        if frame[q] == [(1 << q, 0, 0), (0, 1 << q, 0)]:
+            continue
+        key = []
+        for x, z, k in frame[q]:
+            if (x | z) & ~(1 << q) or not (x | z):
+                return None  # the Clifford left at the end acts on more than this qubit
+            ch = "Y" if x and z else ("X" if x else "Z")
+            sg = (k - (1 if ch == "Y" else 0)) % 4
+            if sg not in (0, 2):
+                return None
+            key.append((ch, 1 if sg == 0 else -1))
+        table = table or _st_cliff1q()
+        word = table.get(tuple(key))
+        if word is None:
+            return None
+        suffix += [(g, q) for g in word]
+    STEINER_STATS["gate_level"] += 1
+    return prefix, meas, terms, phase, suffix
+
+
 def _st_compile(qc, target, max_error, seed, call_limit, max_trials):
     """Item 68: the circuit compiled by STEINER6 with its layout, or None when the path does not apply (not one
     Pauli evolution, or its terms do not all commute) or its output would use a failed element (then the call goes on
@@ -3781,14 +4222,18 @@ def _st_compile(qc, target, max_error, seed, call_limit, max_trials):
     global _ST_FAILED
     from qiskit.circuit import QuantumRegister
     from qiskit.transpiler import Layout, TranspileLayout
-    ev = _st_evolution(qc)
+    ev = _st_parse(qc)  # item 72
+    ev = ev + ([],) if ev is not None else _st_parse_gates(qc)  # item 73
     if ev is None:
         STEINER_STATS["not_applicable"] += 1
         return None
-    evo, meas, triples = ev
-    if not triples or not _st_all_commute(triples):
-        STEINER_STATS["not_commuting"] += 1
+    prefix, meas, triples, extra_phase, suffix = ev
+    triples = _st_merge(triples)
+    if len(triples) > _ST_MAX_TERMS:  # item 70
+        STEINER_STATS["too_large"] += 1
         return None
+    if not _st_all_commute(triples):  # item 71: tried all the same; counted
+        STEINER_STATS["not_commuting"] += 1
     _ST_FAILED = max_error
     n, N = qc.num_qubits, target.num_qubits
     got = _st_construct(n, triples, target, meas)
@@ -3797,6 +4242,8 @@ def _st_compile(qc, target, max_error, seed, call_limit, max_trials):
         return None
     m, pi0 = got
     phys = QuantumCircuit(N, qc.num_clbits)
+    for op, q in prefix:  # item 72: the leading single-qubit gates, at the initial placement
+        phys.append(op, [pi0[q]])
     at = list(range(N))  # at[p]: the physical qubit whose state is at p (SWAPs move idle qubits' states too)
     for name, q, prm in m.ops:
         if name == "cx":
@@ -3808,7 +4255,9 @@ def _st_compile(qc, target, max_error, seed, call_limit, max_trials):
             phys.rz(prm[0], q[0])
         else:
             getattr(phys, name)(q[0])
-    phys.global_phase = qc.global_phase + m.gphase
+    phys.global_phase = extra_phase + m.gphase
+    for op, q in suffix:  # item 73: the Clifford gates left at the end, at the final places
+        phys.append(op, [m.pi[q]])
     for q, cb in meas:
         phys.measure(m.pi[q], cb)
     out = transpile(phys, target=target, initial_layout=list(range(N)), routing_method="none", optimization_level=3,
@@ -4277,8 +4726,16 @@ def compile_for_hardware(
     # only if that result uses a failed coupler or qubit.
     if steiner and target is not None and not (final_resynthesis or compare_level3 or compare_floor):  # item 68
         st = _st_compile(qc, target, prune_max_error, seed_transpiler, placement_call_limit, placement_max_trials)
-        if st is not None:
-            return st
+        if st is not None:  # item 69: kept only if its ESP on the device is above the usual path's
+            try:
+                usual = compile_for_hardware(**dict(call_args, steiner=False))
+            except FailedElementsError:
+                usual = None
+            if usual is None or _st_cost(st, target) < _st_cost(usual, target):
+                STEINER_STATS["chosen"] += 1
+                return st
+            STEINER_STATS["kept_usual"] += 1
+            return usual
     if target is not None:
         args = dict(qc=qc, coupling_map=coupling_map, basis_gates=basis_gates, block_gate_floor=block_gate_floor,
                     routing_optimization_level=routing_optimization_level, verify=verify,

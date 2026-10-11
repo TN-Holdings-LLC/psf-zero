@@ -33,12 +33,31 @@ including the failures, are recorded in [`docs/findings/`](docs/findings/).
 
 ## Current version
 
-**`psf_compile.py` 2026-10-11.2** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 (its matching
+**`psf_compile.py` 2026-10-11.3** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 (its matching
 checks now in rustworkx, the same results) and the Rust core `CORE_VERSION` 2026-09-29.1, and optionally
-`psf_zero_core57` 2026-10-10.c30 (Part 10, Addenda 383-446). Every release and dated notice:
+`psf_zero_core57` 2026-10-10.c30 (Part 10, Addenda 383-451). Every release and dated notice:
 [`docs/RELEASES.md`](docs/RELEASES.md).
 
-> **New in 2026-10-11.2: a Hamiltonian whose terms all commute is built on the device by construction.** Item
+> **New in 2026-10-11.3: every circuit that reads as Pauli rotations is also tried by construction, and the
+> better on the device is kept.** Items 69-73 (prototype c41), accepted in three tests on circuits they were not
+> developed on (C39-VAL, C40-VAL, C41-VAL; Part 10, Addenda 447-451):
+>
+> - **What changes.** With `backend=` (or `target=`), an input that can be read as a sequence of Pauli rotations is
+>   compiled twice, by STEINER6's construction and by the usual path, and the output with the higher ESP on the
+>   device's error table is returned (item 69). Read are: Pauli evolutions whose terms commute or not, in any product
+>   formula (items 71-72); QAOA circuits and rotation gates (item 72); and circuits written as gates, such as QASM
+>   files with cx-rz-cx and basis changes, by carrying their Clifford gates to the end (item 73; the output equals
+>   the input up to a global phase). Every other input is compiled exactly as by 2026-10-11.2.
+> - **The tests** (six fake devices; generated circuits and 89 Benchpress tests):
+>   - no output on a failed element, never below 2026-10-11.2 on any test, unread inputs unchanged;
+>   - ESP compared with 2026-10-11.1: 1.45 times on commuting Hamiltonians (the ts225 loss of 2026-10-11.2 is gone),
+>     1.19 on QAOA, 1.08 on non-commuting Hamiltonians, 1.20 on Benchpress QASM files read as gates (1.29 on QAOA
+>     QASM; gate-level UCCSD with less than half the two-qubit gates);
+>   - about 4 times 2026-10-11.1's compile time on the inputs read (median under 1 s; up to 48 s).
+> - **Where it gains little.** One Trotter step of a non-commuting Hamiltonian (+3%), small MaxCut instances, Toffoli
+>   circuits (+7%). Pass `steiner=False` to keep 2026-10-11.2's usual path.
+
+> **In 2026-10-11.2: a Hamiltonian whose terms all commute is built on the device by construction.** Item
 > 68 (candidate c38), accepted in a test on circuits and devices it was not developed on (C38-VAL; Part 10, Addenda
 > 444-446):
 >
@@ -220,6 +239,8 @@ optimized = psf_compile(qc)          # add verify=False for the fastest path
 **For a device** (the recommended call since 2026-10-10.3, the same on cx and cz devices): give it the device.
 Since 2026-10-11.1 it then also routes at Qiskit's level 3 (item 64; C36-VAL, Addenda 440-441), and since
 2026-10-11.2 a Pauli evolution whose terms all commute is built by STEINER6 (item 68; C38-VAL, Addendum 445).
+Since 2026-10-11.3 every input that reads as Pauli rotations, circuits written as gates included, is also built
+by STEINER6 and the better output on the device is kept (items 69-73; Addenda 447-451).
 
 ```python
 from qiskit_ibm_runtime.fake_provider import FakeTorino
