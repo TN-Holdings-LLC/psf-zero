@@ -1,0 +1,211 @@
+environment: {"python": "3.12.13", "qiskit": "2.5.2", "numpy": "2.5.3", "psf_compile": "2026-10-11.2", "core": "2026-09-29.1", "core57": "2026-10-10.c30", "git_head": "37fe443", "dirty": [" M benchmarks/test_ai_compile_a11.py", " M benchmarks/test_ai_compile_a12.py", " M benchmarks/test_ai_compile_a8.py", " M benchmarks/test_ai_compile_a9.py", " M benchmarks/test_core_fix_c2.py", " M benchmarks/test_release_2026_09_28.py", " M benchmarks/test_release_2026_10_11_1.py", " M patches/psf_ai_compile_a12_2026-10-06/test_a12.py", " M patches/psf_ai_compile_a13_2026-10-06/test_a13.py", " M patches/psf_ai_compile_a6_2026-10-02/test_ai6.py", " M patches/psf_ai_compile_a8_2026-10-04/test_a8.py", " M patches/psf_compile_c37_2026-10-11/test_c37.py", " M patches/psf_compile_c38_2026-10-11/test_c38.py", " M psf_compile.py"]}
+start 2026-10-11T07:33:39Z
+
+== benchmarks/test_release_2026_10_11_2.py (2026-10-11T07:33:39Z)
+.......                                                                  [100%]
+7 passed in 2.59s
+
+== benchmarks/test_release_2026_10_11_1.py (2026-10-11T07:33:42Z)
+.......                                                                  [100%]
+7 passed in 2.45s
+
+== benchmarks/test_release_2026_10_10_3.py (2026-10-11T07:33:45Z)
+.......                                                                  [100%]
+7 passed in 4.24s
+
+== benchmarks/test_release_2026_10_10_2.py (2026-10-11T07:33:50Z)
+.......                                                                  [100%]
+7 passed in 11.08s
+
+== benchmarks/test_release_2026_10_10_1.py (2026-10-11T07:34:01Z)
+.....                                                                    [100%]
+5 passed in 10.87s
+
+== benchmarks/test_release_2026_10_07_1.py (2026-10-11T07:34:12Z)
+...........                                                              [100%]
+11 passed in 8.25s
+
+== benchmarks/test_release_2026_10_06_4.py (2026-10-11T07:34:21Z)
+........                                                                 [100%]
+8 passed in 5.25s
+
+== patches/psf_compile_c19_2026-10-07/test_c19.py (2026-10-11T07:34:27Z)
+..............                                                           [100%]
+14 passed in 99.93s (0:01:39)
+
+== benchmarks/test_release_2026_09_28.py (2026-10-11T07:36:07Z)
+........                                                                 [100%]
+8 passed in 0.87s
+
+== benchmarks/test_core_fix_c2.py (2026-10-11T07:36:08Z)
+..........                                                               [100%]
+=============================== warnings summary ===============================
+benchmarks/test_core_fix_c2.py::test_swap_is_elided_with_final_layout[False]
+  /home/<user>/psf_zero_fresh_test/benchmarks/test_core_fix_c2.py:105: UserWarning: compile_for_hardware was called without the device's Target (target= or backend=): couplers and qubits the device reports as failed cannot be avoided, and a result that uses one is noise (changelog item 58). This warning is given once per process.
+    out = pc.compile_for_hardware(qc, coupling_map=cm, basis_gates=nat, entangling_basis="cx",
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+10 passed, 1 warning in 1.49s
+
+== benchmarks/test_release_2026_10_02.py (2026-10-11T07:36:10Z)
+.....                                                                    [100%]
+5 passed in 2.36s
+
+== benchmarks/test_release_2026_10_02_2.py (2026-10-11T07:36:13Z)
+......                                                                   [100%]
+6 passed in 2.45s
+
+== benchmarks/test_release_2026_10_03.py (2026-10-11T07:36:16Z)
+...............                                                          [100%]
+15 passed in 4.18s
+
+== benchmarks/test_release_2026_10_03_2.py (2026-10-11T07:36:20Z)
+..........                                                               [100%]
+10 passed in 4.73s
+
+== benchmarks/test_release_2026_10_03_3.py (2026-10-11T07:36:25Z)
+...........                                                              [100%]
+11 passed in 5.82s
+
+== benchmarks/test_release_2026_10_04_1.py (2026-10-11T07:36:32Z)
+..........                                                               [100%]
+10 passed in 6.68s
+
+== benchmarks/test_release_2026_10_05_1.py (2026-10-11T07:36:39Z)
+.......                                                                  [100%]
+7 passed in 6.36s
+
+== benchmarks/test_ai_compile_a7.py (2026-10-11T07:36:46Z)
+.....                                                                    [100%]
+5 passed in 17.70s
+
+== benchmarks/test_ai_compile_a8.py (2026-10-11T07:37:04Z)
+.......                                                                  [100%]
+7 passed in 8.12s
+
+== benchmarks/test_ai_compile_a9.py (2026-10-11T07:37:12Z)
+....                                                                     [100%]
+4 passed in 15.39s
+
+== benchmarks/test_ai_compile_a11.py (2026-10-11T07:37:28Z)
+........                                                                 [100%]
+8 passed in 14.78s
+
+== benchmarks/test_ai_compile_a12.py (2026-10-11T07:37:43Z)
+.....                                                                    [100%]
+5 passed in 14.78s
+
+== patches/psf_ai_compile_a6_2026-10-02/test_ai6.py (2026-10-11T07:37:59Z)
+......                                                                   [100%]
+6 passed in 12.81s
+
+== patches/psf_ai_compile_a7_2026-10-02/test_a7.py (2026-10-11T07:38:12Z)
+.....                                                                    [100%]
+5 passed in 15.16s
+
+== patches/psf_ai_compile_a8_2026-10-04/test_a8.py (2026-10-11T07:38:27Z)
+.......                                                                  [100%]
+7 passed in 8.36s
+
+== patches/psf_ai_compile_a12_2026-10-06/test_a12.py (2026-10-11T07:38:36Z)
+.......                                                                  [100%]
+7 passed in 34.94s
+
+== patches/psf_ai_compile_a13_2026-10-06/test_a13.py (2026-10-11T07:39:12Z)
+.....                                                                    [100%]
+5 passed in 6.95s
+
+== patches/psf_compile_c3_2026-10-02/test_c3_prune.py (2026-10-11T07:39:19Z)
+.....                                                                    [100%]
+5 passed in 2.59s
+
+== patches/psf_compile_c4_2026-10-02/test_c4_layout.py (2026-10-11T07:39:22Z)
+....                                                                     [100%]
+4 passed in 2.13s
+
+== patches/psf_compile_c5_2026-10-02/test_c5_placement.py (2026-10-11T07:39:25Z)
+......                                                                   [100%]
+6 passed in 2.46s
+
+== patches/psf_compile_c6_2026-10-03/test_c6_floor.py (2026-10-11T07:39:28Z)
+..........                                                               [100%]
+10 passed in 3.64s
+
+== patches/psf_compile_c8_2026-10-03/test_c8_resynth.py (2026-10-11T07:39:32Z)
+...............                                                          [100%]
+15 passed in 4.65s
+
+== patches/psf_compile_c9_2026-10-03/test_c9_compare.py (2026-10-11T07:39:37Z)
+..........                                                               [100%]
+10 passed in 5.25s
+
+== patches/psf_compile_c10_2026-10-03/test_c10_floor_pauli.py (2026-10-11T07:39:43Z)
+...........                                                              [100%]
+11 passed in 6.19s
+
+== patches/psf_compile_c11_2026-10-04/test_c11_hybrid.py (2026-10-11T07:39:49Z)
+..........                                                               [100%]
+10 passed in 7.25s
+
+== patches/psf_compile_c12_2026-10-05/test_c12_exact.py (2026-10-11T07:39:57Z)
+.......                                                                  [100%]
+7 passed in 7.19s
+
+== patches/psf_compile_c24_2026-10-07/test_c24.py (2026-10-11T07:40:05Z)
+...........                                                              [100%]
+11 passed in 51.76s
+
+== patches/psf_compile_c26_2026-10-09/test_c26.py (2026-10-11T07:40:57Z)
+....                                                                     [100%]
+4 passed in 0.40s
+
+== patches/psf_compile_c29_2026-10-10/test_c29.py (2026-10-11T07:40:58Z)
+..........                                                               [100%]
+10 passed in 51.33s
+
+== patches/psf_compile_c30_2026-10-10/test_c30.py (2026-10-11T07:41:49Z)
+........                                                                 [100%]
+8 passed in 28.49s
+
+== patches/psf_compile_c31_2026-10-10/test_c31.py (2026-10-11T07:42:18Z)
+.......                                                                  [100%]
+7 passed in 4.53s
+
+== patches/psf_compile_c32_2026-10-10/test_c32.py (2026-10-11T07:42:23Z)
+....                                                                     [100%]
+4 passed in 3.40s
+
+== patches/psf_compile_c33_2026-10-10/test_c33.py (2026-10-11T07:42:27Z)
+....                                                                     [100%]
+4 passed in 2.01s
+
+== patches/psf_compile_c34_2026-10-10/test_c34.py (2026-10-11T07:42:30Z)
+.....                                                                    [100%]
+5 passed in 2.34s
+
+== patches/psf_compile_c35_2026-10-10/test_c35.py (2026-10-11T07:42:33Z)
+....                                                                     [100%]
+4 passed in 2.50s
+
+== patches/psf_compile_c36_2026-10-10/test_c36.py (2026-10-11T07:42:36Z)
+......                                                                   [100%]
+6 passed in 2.63s
+
+== patches/psf_compile_c38_2026-10-11/test_c38.py (2026-10-11T07:42:39Z)
+=============================== warnings summary ===============================
+patches/psf_compile_c38_2026-10-11/test_c38.py::test_commuting_evolution_is_exact_with_its_layout
+  /home/<user>/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/scipy/sparse/linalg/_dsolve/linsolve.py:653: SparseEfficiencyWarning: splu converted its input to CSC format
+    return splu(A).solve
+
+patches/psf_compile_c38_2026-10-11/test_c38.py::test_commuting_evolution_is_exact_with_its_layout
+  /home/<user>/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/scipy/sparse/linalg/_matfuncs.py:706: SparseEfficiencyWarning: spsolve is more efficient when sparse b is in the CSC matrix format
+    return spsolve(Q, P)
+
+patches/psf_compile_c38_2026-10-11/test_c38.py::test_commuting_evolution_is_exact_with_its_layout
+  /home/<user>/psf_zero_fresh_test/psf_zero_wsl_env_fresh/lib/python3.12/site-packages/scipy/sparse/_index.py:174: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil and dok are more efficient.
+    self._set_intXint(row, col, x.flat[0])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+6 passed, 3 warnings in 2.50s
+
+files 47; {'passed': 354, 'failed': 0, 'errors': 0, 'skipped': 0}; files not passing: []; end 2026-10-11T07:42:42Z

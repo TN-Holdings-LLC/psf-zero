@@ -5794,6 +5794,96 @@ runnable commuting tests to failed elements.
 
 ---
 
+<!-- ===== Addendum 446 (source: spare-qubit-cliff-addendum-446-2026-10-11.md) ===== -->
+
+> **Note added when merging:** The release of candidate c38 as 2026-10-11.2, by the owner's decision after Addendum 445 (C38-VAL's proposed release rule met).
+
+## Addendum 446 -- Release: psf_compile 2026-10-11.2 = candidate 2026-10-11.c38 (changelog item 68, accepted in C38-VAL, Addendum 445). Given the device, a Pauli evolution whose terms all commute is built by STEINER6's construction: 1.39 times 2026-10-11.1's ESP on such inputs, no failed element, every other input unchanged; it loses on the dense two-local diagonal type (2026-10-11)
+
+**Status: the owner's decision of 2026-10-11, after C38-VAL's results (Addendum 445).** It follows the procedure of
+releases 2026-10-10.1 to 2026-10-11.1 (Addenda 424, 428, 438 and 442). C38-VAL's release rule was fixed before the run
+in a local file, not committed first (Addendum 445), and was met.
+
+## 1. The decision
+
+The owner released candidate c38 as **2026-10-11.2**: release 2026-10-11.1 with item 68.
+
+| item | what it does |
+|---|---|
+| 68 | with the device (`backend=` or `target=`) and no `coupling_map` or `initial_layout` of the caller's, one PauliEvolutionGate whose terms all commute is compiled by STEINER6's construction (Addendum 444), without routing; the output carries its layout. Every other input, and an output that would use a failed element, goes by 2026-10-11.1's path. `steiner=False` turns it off |
+
+**Where it came from.**
+
+- **STEINER6** (Addenda 443-444): moving qubits during the construction. Its development data fixed the rule: all
+  terms commute.
+- **C38-VAL** (Addendum 445): circuits and two devices STEINER6 was never developed on; V1-V4 confirmed on six
+  devices.
+
+| C38-VAL | |
+|---|---|
+| outputs on failed elements | 0 |
+| non-commuting inputs: 2026-10-11.1's output | 107 of 107 |
+| runnable commuting tests: ESP / 2026-10-11.1's | 1.387 (1.22-1.56 by device) |
+| runnable commuting tests: ESP / Qiskit level 3's | 1.361 |
+| commuting tests: two-qubit gates / 2026-10-11.1's | 0.900 |
+| commuting tests: compile time / 2026-10-11.1's | 3.6-9.9 |
+
+**What a user sees.**
+
+- **A commuting Hamiltonian with the device** (MaxCut, Ising, k-SAT and other diagonal Hamiltonians): a circuit built
+  by construction, usually with higher ESP:
+  - 3-SAT type: 2.8 times;
+  - MaxCut type with 22 qubits or more: 1.11 times;
+  - 16 qubits or fewer: even.
+- **The dense two-local diagonal type** (HamLib tsp, unary): worse than 2026-10-11.1, 0.87 of its ESP on ts225. Pass
+  `steiner=False` for such inputs.
+- **Everything else**, and every call without the device: 2026-10-11.1's outputs, by value
+  (`test_release_2026_10_11_2.py`).
+- The AI front end (a12) calls `psf_compile`, so a commuting evolution it passes with a Target takes the new path. Its
+  own code is unchanged. The core and `psf_zero_core57` are unchanged.
+
+## 2. What changes in the repository
+
+- **[`psf_compile.py`](../../psf_compile.py)** is c38's file with its two version lines changed;
+  [`benchmarks/test_release_2026_10_11_2.py`](../../benchmarks/test_release_2026_10_11_2.py) checks this.
+- **The outgoing release 2026-10-11.1** is kept unchanged as
+  [`patches/psf_compile_release_2026-10-11.1/psf_compile.py`](../../patches/psf_compile_release_2026-10-11.1/psf_compile.py).
+  `psf_smart_layout.py` does not change.
+- **Tests.**
+  - [`benchmarks/test_release_2026_10_11_2.py`](../../benchmarks/test_release_2026_10_11_2.py) (new) checks:
+    - the versions;
+    - that the file is c38's except the version lines, and that c38 and the kept 2026-10-11.1 are the locked files;
+    - on FakeTorino: ordinary circuits and a non-commuting evolution give 2026-10-11.1's outputs by value; a commuting
+      evolution takes the new path with no failed element, the device's gates only and its layout;
+    - without the Target, 2026-10-11.1's outputs by value;
+    - the warning, given once.
+  - The 10 test files that assert the current release's version now assert 2026-10-11.2.
+  - `test_release_2026_10_11_1.py` and the c37 and c38 tests, which test 2026-10-11.1 as "the release", load the kept
+    copy.
+  - c38's test joins the list.
+- **Release tests:**
+  - **Runner:** [`benchmarks/run_release_tests_2026-10-11_2.py`](../../benchmarks/run_release_tests_2026-10-11_2.py).
+  - **Scope:** 47 test files, one pytest session each.
+  - **Environment:** Python 3.12.13, Qiskit 2.5.2, NumPy 2.5.3, `CORE_VERSION` 2026-09-29.1, `psf_zero_core57`
+    2026-10-10.c30, over commit `37fe443`.
+  - **When:** 09:33:39-09:42:42 CEST.
+  - **Result:** 354 passed, none failed, none skipped.
+  - **Log:** [`data/2026-10-11/release_2026-10-11.2/`](../../data/2026-10-11/release_2026-10-11.2/) (home folder
+    redacted).
+- **README and [`docs/RELEASES.md`](../../docs/RELEASES.md):** the current version, what changes for commuting
+  Hamiltonians, C38-VAL's two numbers and the type where it loses.
+
+## 3. Not established
+
+- **Hardware.** No job has run. ESP is computed from the fake devices' calibration, with no idling term.
+- **Wider coverage.** Only two of the new HamLib instances commute; the commuting set in C38-VAL is mostly generated
+  circuits.
+- **The losing type.** Whether the rule should exclude the dense two-local diagonal type, and why the construction
+  loses there (Addendum 444).
+- **The AI front end.** Whether the change alters a12's measured results was not measured; its own tests pass.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

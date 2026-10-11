@@ -22,7 +22,7 @@ sys.path[:0] = [os.path.join(REPO, "benchmarks"), REPO]
 def mods():
     import core_fix_c2_eval as H
     H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psf_smart_layout")
-    rel = H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile_rel_for_c37_test")
+    rel = H.load_module(os.path.join(REPO, "patches", "psf_compile_release_2026-10-11.1", "psf_compile.py"), "psf_compile_rel_for_c37_test")
     c37 = H.load_module(os.path.join(HERE, "psf_compile.py"), "psf_compile_c37_test")
     rel.WARN_WITHOUT_TARGET = c37.WARN_WITHOUT_TARGET = False
     return dict(rel=rel, c37=c37)

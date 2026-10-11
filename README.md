@@ -33,12 +33,31 @@ including the failures, are recorded in [`docs/findings/`](docs/findings/).
 
 ## Current version
 
-**`psf_compile.py` 2026-10-11.1** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 (its matching
+**`psf_compile.py` 2026-10-11.2** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 (its matching
 checks now in rustworkx, the same results) and the Rust core `CORE_VERSION` 2026-09-29.1, and optionally
-`psf_zero_core57` 2026-10-10.c30 (Part 10, Addenda 383-442). Every release and dated notice:
+`psf_zero_core57` 2026-10-10.c30 (Part 10, Addenda 383-446). Every release and dated notice:
 [`docs/RELEASES.md`](docs/RELEASES.md).
 
-> **New in 2026-10-11.1: given the device, the call also routes at Qiskit's level 3.** Item 64 (candidate c36),
+> **New in 2026-10-11.2: a Hamiltonian whose terms all commute is built on the device by construction.** Item
+> 68 (candidate c38), accepted in a test on circuits and devices it was not developed on (C38-VAL; Part 10, Addenda
+> 444-446):
+>
+> - **What changes.** With `backend=` (or `target=`), one PauliEvolutionGate whose terms all commute is no longer
+>   routed: STEINER6 builds it term by term on the device (Addendum 444). It chooses the order of the terms, moves
+>   qubits with SWAPs planned from the terms still to come (a SWAP joining a ZZ term costs one CNOT), and picks
+>   placements and SWAPs by the device's errors. The output carries its layout. Every other input is compiled
+>   exactly as by 2026-10-11.1.
+> - **C38-VAL** (232 jobs on six devices, two of them never used by STEINER6; generated MaxCut-type and 3-SAT-type
+>   Hamiltonians and new HamLib instances):
+>   - no output on a failed element; non-commuting inputs unchanged (107 of 107);
+>   - on the runnable commuting tests, ESP 1.39 times 2026-10-11.1's and 1.36 times Qiskit level 3's (1.22-1.56 by
+>     device), with 10% fewer two-qubit gates;
+>   - 4-10 times 2026-10-11.1's compile time on those inputs.
+> - **Where it loses.** Dense two-local diagonal Hamiltonians, such as tsp in unary encoding, are compiled worse
+>   than before: 0.87 of 2026-10-11.1's ESP on HamLib's ts225, with 13% more two-qubit gates. Small MaxCut instances
+>   (16 qubits or fewer) are even. Pass `steiner=False` to keep 2026-10-11.1's path.
+
+> **In 2026-10-11.1: given the device, the call also routes at Qiskit's level 3.** Item 64 (candidate c36),
 > accepted in a pre-registered test on two devices it was not found on (C36-VAL; Part 10, Addenda 439-442):
 >
 > - **With `backend=` (or `target=`)** the call routes with Qiskit's level-3 settings instead of level 1. Without the
@@ -199,7 +218,8 @@ optimized = psf_compile(qc)          # add verify=False for the fastest path
 ```
 
 **For a device** (the recommended call since 2026-10-10.3, the same on cx and cz devices): give it the device.
-Since 2026-10-11.1 it then also routes at Qiskit's level 3 (item 64; C36-VAL, Addenda 440-441).
+Since 2026-10-11.1 it then also routes at Qiskit's level 3 (item 64; C36-VAL, Addenda 440-441), and since
+2026-10-11.2 a Pauli evolution whose terms all commute is built by STEINER6 (item 68; C38-VAL, Addendum 445).
 
 ```python
 from qiskit_ibm_runtime.fake_provider import FakeTorino
