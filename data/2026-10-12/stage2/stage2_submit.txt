@@ -1,0 +1,18 @@
+platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | python 3.12.13 | qiskit 2.5.2
+  qiskit_aer 0.17.2
+  qiskit_ibm_runtime 0.49.0
+  pennylane 0.45.1
+SCRIPT /home/<user>/psf_zero_fresh_test/benchmarks/xor_stage2_real.py 1e013e6b100d26b0fa364596b7715c59a4577c40620c869b4b4e9d281f4c830c
+sys.path entries dropped (not readable): ['/root/psf-zero/benchmarks']
+LOADED /home/<user>/psf_zero_fresh_test/benchmarks/xor_prereg_stage1_sweep.py 28197bc43fa70bb06a928da9a84552644d683353bc4eb6cb94e37ba72c45cf0f
+LOADED /home/<user>/psf_zero_fresh_test/benchmarks/xor_prereg_stage1b_sweep.py ec7f173cb36fa071b9dbd03de40ead48947edbbc955f6781369c2d8e71105d8e
+qiskit_runtime_service.__init__:WARNING:2026-10-12 13:20:16,915: Instance was not set at service instantiation. Free and trial plan instances will be prioritized. Based on the following filters: (tags: None, region: us-east, eu-de), and available plans: (open), the available account instances are: open-instance. If you need a specific instance set it explicitly either by using a saved account with a saved default instance or passing it in directly to QiskitRuntimeService(). Alternatively, pass instance='auto' or save it to your account for auto-selection without warning.
+qiskit_runtime_service.backends:WARNING:2026-10-12 13:20:16,915: Loading instance: open-instance, plan: open
+  ibm_fez              pending 32; predicted M: A 0.9108, B 0.8148, M1 0.9756, M4 0.9757  -> best M4
+  ibm_kingston         pending 2; predicted M: A 0.9686, B 0.9731, M1 0.9799, M4 0.9799  -> best M1
+  ibm_marrakesh        pending 12; predicted M: A 0.9069, B 0.9553, M1 0.9782, M4 0.9782  -> best M1
+
+Chosen device ibm_kingston (predicted M 0.9799); chosen arm M1; control arm A
+Manifest written (stage2_manifest_2026-09-28.json) before submission: predictions and calibration are fixed.
+Submitted job db6c5lamb58s738binm0 (8 circuits x 4000 shots). Results are NOT read here.
+Next: python -u benchmarks/xor_stage2_real.py score  (after the job finishes)

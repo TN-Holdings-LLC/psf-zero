@@ -1,0 +1,21 @@
+platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | python 3.12.13 | qiskit 2.5.2
+  qiskit_aer 0.17.2
+  qiskit_ibm_runtime 0.49.0
+  pennylane 0.45.1
+SCRIPT /home/<user>/psf_zero_fresh_test/benchmarks/xor_stage2_real.py 1e013e6b100d26b0fa364596b7715c59a4577c40620c869b4b4e9d281f4c830c
+sys.path entries dropped (not readable): ['/root/psf-zero/benchmarks']
+LOADED /home/<user>/psf_zero_fresh_test/benchmarks/xor_prereg_stage1_sweep.py 28197bc43fa70bb06a928da9a84552644d683353bc4eb6cb94e37ba72c45cf0f
+LOADED /home/<user>/psf_zero_fresh_test/benchmarks/xor_prereg_stage1b_sweep.py ec7f173cb36fa071b9dbd03de40ead48947edbbc955f6781369c2d8e71105d8e
+H0 exact <Z0>: [-0.99776, 0.99776, 0.99776, -0.99776] -> PASS
+H1 FakeBrisbane arm A seed 0: [-0.9, 0.9105, 0.9065, -0.9095] vs Stage 1 [-0.9, 0.9105, 0.9065, -0.9095] -> PASS
+H2 FakeKingston arm M1 M = 0.9815 vs Stage 1b 0.9815 -> PASS
+qiskit_runtime_service.__init__:WARNING:2026-10-12 13:11:22,260: Instance was not set at service instantiation. Free and trial plan instances will be prioritized. Based on the following filters: (tags: None, region: us-east, eu-de), and available plans: (open), the available account instances are: open-instance. If you need a specific instance set it explicitly either by using a saved account with a saved default instance or passing it in directly to QiskitRuntimeService(). Alternatively, pass instance='auto' or save it to your account for auto-selection without warning.
+IBM account: loaded (channel/instance not printed)
+qiskit_runtime_service.backends:WARNING:2026-10-12 13:11:22,260: Loading instance: open-instance, plan: open
+Real devices available now: 3
+  ibm_fez               156 qubits  pending jobs 35
+  ibm_kingston          156 qubits  pending jobs 8
+  ibm_marrakesh         156 qubits  pending jobs 12
+Nighthawk-class device available: False
+
+PREFLIGHT OK

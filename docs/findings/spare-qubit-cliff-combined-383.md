@@ -6548,6 +6548,283 @@ The owner released prototype c43 as **2026-10-11.4**: release 2026-10-11.3 with 
 
 ---
 
+<!-- ===== Addendum 212 (source: addendum_212.md) ===== -->
+
+> **Note added when merging:** Addendum 212 is the number Addendum 211 reserved for Stage 2's results; it is recorded here, after Addendum 453, on the day the job ran (2026-10-12, attempt 2).
+
+## Addendum 212 -- Results of Stage 2 (Addendum 211), attempt 2: the PennyLane-trained XOR classifier on a real IBM device (ibm_kingston, 2026-10-12). The rule chose ibm_kingston and arm M1, which classified all four inputs (M 0.937 against 0.980 predicted); the pinned control on qubits 0-3 got two of four wrong (M 0.236 against 0.969 predicted); S1-S4 confirmed; P0 met in substance (11 QPU seconds), not by the script's letter (2026-10-12)
+
+**Status: results of the pre-registration in Addendum 211, unchanged since 2026-09-28** (script normalized SHA-256
+`1e013e6b...`, the same predictions S1-S4 and P0). Recorded under the number Addendum 211 reserved for them; written
+on 2026-10-12, after Addenda 452-453.
+
+**Where and when.** The owner's home machine (WSL2), 2026-10-12, with the account saved in the terminal (the script
+never reads the key):
+
+- `preflight` and `submit` at 13:19-13:22 CEST, with the VPN off (no git, no pip in that session; the kit's
+  [`82_hw_run.sh`](../../data/2026-10-12/hw_kit/82_hw_run.sh));
+- the job ran 13:21:59-13:22:20 CEST and was scored at 13:28 CEST.
+
+Attempt 1's files of 2026-09-28 (the cancelled job, no result) are kept, as Amendment 2 said, in
+[`data/2026-09-28/stage2_attempt1/`](../../data/2026-09-28/stage2_attempt1/).
+
+**Device and arm rule, applied at submission** (Aer models of each device's calibration of 12:45:20 CEST, 20,000
+shots, seed 1000):
+
+| device | pending jobs | predicted M: A, B, M1, M4 | best |
+|---|---|---|---|
+| ibm_fez | 32 | 0.9108, 0.8148, 0.9756, 0.9757 | M4 |
+| ibm_kingston | 2 | 0.9686, 0.9731, 0.9799, 0.9799 | M1 |
+| ibm_marrakesh | 12 | 0.9069, 0.9553, 0.9782, 0.9782 | M1 |
+
+The rule chose ibm_kingston (highest best-arm prediction) and arm M1; the control is arm A (logical qubits on
+physical qubits 0-3). M1 placed the circuit on physical qubits 93, 79, 73 and 74 and measured qubit 93. One job
+(`db6c5lamb58s738binm0`), 8 circuits x 4,000 shots.
+
+**Results** ([`data/2026-10-12/stage2/`](../../data/2026-10-12/stage2/)):
+
+| arm | input 00 | 01 | 10 | 11 | M observed | M predicted |
+|---|---|---|---|---|---|---|
+| M1 (chosen) | -0.9330 | +0.9570 | +0.9225 | -0.9360 | **0.9371** (SE 0.0028) | 0.9799 |
+| A (control) | -0.6135 | **-0.1200** | **-0.1455** | -0.5945 | 0.2356 (SE 0.0071) | 0.9686 |
+
+| ID | prediction | result |
+|---|---|---|
+| S1 | the chosen arm classifies all four inputs | **CONFIRMED** (4 of 4) |
+| S2 | observed M >= predicted M - 0.15 | **CONFIRMED** (0.937 >= 0.830) |
+| S3 | observed M < predicted M + 3 SE | **CONFIRMED** (0.937 < 0.988) |
+| S4 | the chosen arm's M >= the control's M - 0.02 | **CONFIRMED** (0.937 against 0.236) |
+| P0 | every step completes, at most 60 QPU seconds | **met in substance, NOT CONFIRMED by the script's letter**: the job used 11 QPU seconds (dashboard: 11 s), but IBM now reports usage as `qpu_charge_time_seconds`, and the script, written for `quantum_seconds`, printed "None" |
+
+**Reading, two numbers.**
+
+- **Display:** the selected arm kept 95.6% of its predicted margin (0.937 of 0.980) and classified every input.
+- **Essential:** the whole route from a PennyLane-trained circuit to a real device and back works, and choosing qubits
+  from the day's calibration matters on hardware: the pinned layout on qubits 0-3, predicted at 0.969 from the same
+  calibration, gave 0.236 and two wrong answers. The calibration exported from the dashboard at 13:15 CEST shows
+  nothing unusual on qubits 0-3 (T1 142-362 us, readout errors 0.007-0.010, CZ errors 0.001-0.002); the cause is not
+  established. A calibration-based prediction can miss a failure of this size.
+
+**Not established.** One device, one day; the cause of the control's failure.
+
+---
+
+<!-- ===== Addendum 454 (source: addendum_454.md) ===== -->
+
+> **Note added when merging:** HW1's predictions were fixed in a local file before the real-device session (not committed first); the file, the kit and the data are committed here.
+
+## Addendum 454 -- Pre-registration of HW1 and PSF-XOR (run 2026-10-12 on ibm_kingston): does the ESP advantage PSF-Zero predicts from a device's calibration hold on the real device, and does the PennyLane-trained XOR classifier run through PSF-Zero on hardware? (2026-10-12)
+
+**Status: the predictions were fixed before any real-device step in a local file, not committed first** (as Addenda
+445-452). The file is [`data/2026-10-12/hw_kit/HW1_preregistration.md`](../../data/2026-10-12/hw_kit/HW1_preregistration.md)
+(sha256 `6acc70e641c4d4cf19cf3ca1a72b5536cac537f281a8df72a9c49550df4ae99e`), copied to the owner's PC and checked
+there at 13:09 CEST; the kit's scripts checked it again before `prepare` (13:22 CEST). It is reproduced below
+unchanged except for its title line. The script is [`benchmarks/hw1_real.py`](../../benchmarks/hw1_real.py) (sha256
+`d3c6dabd...`); the kit, with its runners and Benchpress's four QAOA files, is
+[`data/2026-10-12/hw_kit/`](../../data/2026-10-12/hw_kit/). Prototypes c45 and c47, used as arms, are
+[`patches/psf_compile_c45_2026-10-12/`](../../patches/psf_compile_c45_2026-10-12/) and
+[`patches/psf_compile_c47_2026-10-12/`](../../patches/psf_compile_c47_2026-10-12/) (their own records follow in later
+Addenda). Results: Addendum 455.
+
+Written 2026-10-12 before the real-device session, kept on the owner's PC with its sha256 and CEST time, and checked
+against them before `prepare`. Run on the same day as Stage 2's attempt 2 (Addendum 211, unchanged; results as
+Addendum 212).
+
+**Seen before this file:**
+
+- a full rehearsal on FakeKingston with a noiseless local simulator (every circuit exact, every F and R near 1, XOR
+  4 of 4);
+- the circuits' ESP on FakeKingston and FakeFez (calibration snapshots of 2026-04);
+- no real-device data of any kind since Addendum 211.
+
+### 1. Why
+
+Every gain PSF-Zero has claimed since Addendum 300 or so is an ESP computed from a fake device's calibration
+(summed -ln(1 - error) of every operation, no idling term). HW1 asks whether that estimate ranks the compilers
+correctly on a real device: where PSF-Zero's own pipeline predicts a higher ESP than Qiskit level 3, does the real
+device give a higher fidelity?
+
+PSF-XOR runs the PennyLane-trained XOR classifier (Stage 2's four circuits, built by the locked Stage-1 code) through
+PSF-Zero to the real device: the whole PennyLane -> PSF-Zero -> IBM pipeline on hardware.
+
+### 2. Design (`hw1_real.py`, sha256 in `SHA256SUMS`)
+
+**Device rule:** `ibm_kingston` if operational when `prepare` runs, else `ibm_fez`, else nothing is prepared. (The
+dashboard on 2026-10-12: kingston 2Q layered error 3.1e-3, readout 8.7e-3, 3 pending jobs; fez 4.8e-3, 1.07e-2, 35;
+marrakesh paused.) The device's Target at that moment is used for compiling and for every predicted ESP.
+
+**HW1 circuits** (all with ideal distributions computed exactly; at most 20 qubits):
+
+| test | what |
+|---|---|
+| qaoa_n12_p2, qaoa_n20_p2 | QAOAAnsatz on a random 3-regular graph (seed "HW1|<test>"), linear ramp gamma_k = 0.55 (k + 1)/p, beta_k = 0.45 (1 - k/p) |
+| ba_n14, ba_n16, ba_n18, ba_n20 | Benchpress `qaoa_barabasi_albert_N{n}_3reps.qasm` (copies in the kit's `qasm/`) |
+| tfim_n12, tfim_n16 | open-chain transverse-field Ising, J = h = 1, t = 0.6, Suzuki-Trotter order 2, 2 steps |
+| ghz_n12 | H and a cx chain (control: the same circuit expected from both compilers) |
+
+**Arms:** QK3 = Qiskit level 3 (`generate_preset_pass_manager(3, backend, seed_transpiler=0)`); PSF = prototype c45
+with `level3_candidate=False` (PSF-Zero's own pipeline, no Qiskit candidate); C47 = prototype c47 (item 82) with
+`level3_candidate=False`, submitted only where its circuit differs from PSF's. Every circuit is checked before
+submission: the device's gates only, no failed element (error >= 0.5), and its measured distribution equal to the
+ideal one to 1e-6 by noiseless simulation; a circuit failing a check is not submitted and is reported.
+
+**PSF-XOR circuits:** Stage 2's four logical circuits (measuring logical qubit 0) compiled by release 2026-10-11.4
+(R4) and by c45 (C45, default call). Predicted z from an Aer noise model of the device now (20,000 shots, seed
+1000), as in Stage 2.
+
+**One job:** HW1 circuits twice (repeat 1, then the XOR circuits, then repeat 2 in reverse order), 6,000 shots each;
+XOR circuits once, 4,000 shots each. SamplerV2 with dynamical decoupling and twirling off. `prepare` refuses a job
+whose rough QPU estimate (0.5 ms per shot + 1 s per circuit) exceeds 240 s.
+
+**Measures:**
+- F, primary: normalised linear cross-entropy against the ideal distribution, (2^n mean p_ideal(x) - 1) / (2^n
+  sum p_ideal^2 - 1): 1 for the ideal sampler, 0 for uniform noise. Mean of the two repeats.
+- R, secondary: observable / ideal (QAOA: sum <Z_i Z_j> over the cost terms; TFIM: sum of nearest-neighbour
+  <Z Z>; GHZ: P(all 0) + P(all 1)); not used where the ideal is below 0.1 per term.
+- XOR: M = mean over the four inputs of label x <Z0>, as Stage 2.
+
+### 3. Predictions
+
+| ID | Prediction | CONFIRMED | REFUTED (otherwise AMBIGUOUS) |
+|---|---|---|---|
+| H1 | Where the device's ESP predicts PSF >= 1.2 x QK3, the device agrees | PSF's F >= QK3's on more than half of those tests | on fewer than half |
+| H2 | ESP ranks the PSF/QK3 differences | rank correlation of the ESP ratio and the F ratio over the non-GHZ tests > 0 | < 0 |
+| H3 | The control shows no difference that ESP does not predict | GHZ: \|F ratio - ESP ratio\| <= 0.10 | otherwise NOT CONFIRMED |
+| H4 | (reported) F / ESP per arm: how much the idle-free ESP over- or under-states the real fidelity | -- | -- |
+| X1 | PSF-XOR: each arm classifies all four inputs correctly | 4 of 4 for R4 and C45 | -- |
+| X2 | PSF-XOR: observed M >= predicted M - 0.15 (Stage 2's S2 floor) | for each arm | -- |
+| X3 | PSF-XOR: R4's M >= Stage 2's chosen arm's M - 0.02 (two jobs minutes apart; reported with that caveat) | -- | -- |
+| P0 | Every step completes; the job uses at most 240 QPU seconds | -- | -- |
+
+**Two numbers to report:** display, the F ratio PSF / QK3 per test and pooled; essential, whether the ESP ratio
+predicted on the day ranks and sizes the real ratio (H2, and the pooled F ratio against the pooled ESP ratio).
+
+**Reserve (decided now):** if H1 is AMBIGUOUS, or the largest repeat difference exceeds |F_PSF - F_QK3| on more than
+half of H1's tests, the same circuit file (same QPY, same manifest) is submitted once more in a new job, if the
+allowance left is at least 4 minutes; both jobs are reported separately and pooled. Nothing else is resubmitted.
+
+### 4. What this will not establish
+
+- One device, one day, one calibration. Circuits up to 20 qubits.
+- XEB measures closeness to the ideal distribution, not a task's success; the problem observables are secondary.
+- Prototypes c45 and c47 are not releases. C45-VAL (Addendum to come) validated c45 on fake devices; c47 is
+  unvalidated beyond its tests (27 passed) and HW1's exactness checks.
+
+---
+
+<!-- ===== Addendum 455 (source: addendum_455.md) ===== -->
+
+> **Note added when merging:** The section 'Exploratory' was written after the scores were read.
+
+## Addendum 455 -- Results of HW1 and PSF-XOR (Addendum 454) on ibm_kingston: the PennyLane -> PSF-Zero -> IBM pipeline works on hardware (XOR 4 of 4 for release 2026-10-11.4 and c45), but ESP, the measure every recent gain was claimed in, mis-ranks PSF-Zero against Qiskit level 3 on the real device: where it predicted PSF-Zero 1.2-1.34 times better, the device gave 0.78-1.01 times; H1 and H2 refuted. An estimate with idling error from the day's calibration ranks the winners in 5 of 7 tests (exploratory) (2026-10-12)
+
+**Status: results of the predictions fixed in Addendum 454.** Scored by `hw1_real.py score` (the owner's machine,
+13:56 CEST, VPN on, no IBM connection); the section "Exploratory" was written after the scores were read.
+
+**Run** ([`data/2026-10-12/hw1/`](../../data/2026-10-12/hw1/), logs in
+[`data/2026-10-12/hw1_logs/`](../../data/2026-10-12/hw1_logs/), hashes as written on the owner's machine in
+[`data/2026-10-12/HW_SHA256SUMS.txt`](../../data/2026-10-12/HW_SHA256SUMS.txt); the text logs were redacted afterwards
+(home folder), so only their hashes differ):
+
+- **Device rule:** ibm_kingston operational (2 pending jobs) -> ibm_kingston; Target and calibration of 12:45:20 CEST.
+- **Prepare** 13:22:05-13:25:53 CEST: 52 circuits.
+  - C47's circuit differed from PSF's on qaoa_n20_p2, ba_n16, ba_n18 and tfim_n12 and was submitted there.
+  - Every circuit passed the ISA and failed-element checks.
+  - Every circuit was exact (largest difference 6e-16) except PSF's and C47's qaoa_n20_p2, which use 25 qubits, above
+    the 24 of the noiseless check; submitted as the design allows (`exact` n/a).
+- **Job** `db6c7i4vf2bc73d1004g`: created 13:26:00, running 13:26:11-13:27:45 CEST; **83 QPU seconds** (dashboard
+  1 min 23 s); dynamical decoupling and twirling off (confirmed in the job's input options on the dashboard).
+- Qiskit IBM Runtime 0.49 warns that different shot counts across PUBs are deprecated; the job ran as submitted.
+
+**HW1 (F: normalised linear XEB, mean of two repeats; SE about 0.003-0.03):**
+
+| test | ESP QK3 | ESP PSF | ESP ratio PSF/QK3 | F QK3 | F PSF | **F ratio** | largest repeat difference |
+|---|---|---|---|---|---|---|---|
+| qaoa_n12_p2 | 0.662 | 0.698 | 1.053 | 0.499 | 0.494 | 0.990 | 0.016 |
+| qaoa_n20_p2 | 0.455 | 0.479 | 1.053 | 0.354 | 0.425 | **1.202** | 0.001 |
+| ba_n14 | 0.374 | 0.481 | **1.286** | 0.263 | 0.205 | **0.780** | 0.008 |
+| ba_n16 | 0.298 | 0.398 | **1.339** | 0.280 | 0.284 | 1.014 | 0.023 |
+| ba_n18 | 0.242 | 0.254 | 1.048 | 0.105 | 0.078 | **0.744** | 0.017 |
+| ba_n20 | 0.177 | 0.217 | **1.224** | 0.174 | 0.141 | **0.808** | 0.021 |
+| tfim_n12 | 0.760 | 0.793 | 1.044 | 0.721 | 0.861 | **1.195** | 0.046 |
+| tfim_n16 | 0.678 | 0.724 | 1.069 | 1.268 | 1.275 | 1.006 | 0.066 |
+| ghz_n12 | 0.902 | 0.902 | 1.000 | 0.837 | 0.838 | 1.001 | 0.008 |
+
+C47 where submitted: F 0.379 (qaoa_n20_p2), 0.297 (ba_n16), 0.066 (ba_n18), 0.760 (tfim_n12), against PSF's 0.425,
+0.284, 0.078 and 0.861; its ESP was the higher in all four.
+
+| ID | prediction | result |
+|---|---|---|
+| H1 | where ESP predicts PSF >= 1.2 x QK3, PSF's F >= QK3's on more than half | **REFUTED**: 1 of 3 (ba_n14 0.78, ba_n16 1.01, ba_n20 0.81) |
+| H2 | rank correlation of ESP ratio and F ratio > 0 | **REFUTED**: -0.190 (8 tests) |
+| H3 | GHZ: \|F ratio - ESP ratio\| <= 0.10 | **CONFIRMED** (1.001 against 1.000; the two circuits are the same) |
+| H4 | F / ESP per arm (reported) | QK3 0.865, PSF 0.742, C47 0.605 |
+| X1 | PSF-XOR: 4 of 4 for each arm | **CONFIRMED** (R4 4 of 4, C45 4 of 4) |
+| X2 | PSF-XOR: observed M >= predicted M - 0.15 | **CONFIRMED** (R4 0.924, C45 0.916; predicted 0.980) |
+| X3 | R4's M >= Stage 2's chosen arm's M - 0.02 (another job, four minutes earlier; reported) | holds: 0.924 against 0.937 - 0.02 |
+| P0 | every step completes; at most 240 QPU seconds | **CONFIRMED** (83 s) |
+
+**Reserve:** not used. H1 is refuted, not ambiguous, and the repeat difference exceeds |F_PSF - F_QK3| on 1 of
+H1's 3 tests (ba_n16), not on more than half.
+
+**A limit of the measure, found in scoring:** on tfim_n16 both arms have F > 1 (1.27-1.28), and R > 1 as well. The
+circuit starts in |0...0> and stays close to it, and relaxation (T1) moves weight towards the ideal's most likely
+outcomes, which XEB and the ZZ observable both reward. F does not measure fidelity there; tfim_n16 is left out of the
+reading below (it was in H2 as fixed; H2 is refuted with or without it).
+
+**Exploratory, after scoring: an estimate with idling error.** ESP counts every gate's and measurement's reported error
+and nothing for time. The calibration exported from the dashboard at 13:15 CEST
+([`data/2026-10-12/hw_analysis/`](../../data/2026-10-12/hw_analysis/): the CSV, `idle_cal.py`, its output) gives each
+qubit's T1 and T2 and the gate lengths (single-qubit 32 ns, CZ 68 ns). Scheduling each circuit as soon as possible
+and charging every qubit, from its first gate to the end, -t (1/(4 T1) + 1/(2 T2)) (the Pauli-twirled relaxation and
+dephasing of that window):
+
+| test | ESP ratio | with idling | real F ratio | duration PSF / QK3 |
+|---|---|---|---|---|
+| qaoa_n12_p2 | 1.053 | 1.305 | 0.990 | 6.1 / 7.5 us |
+| qaoa_n20_p2 | 1.053 | 1.079 | **1.202** | 5.0 / 7.1 us |
+| ba_n14 | 1.286 | 1.050 | **0.780** | 16.2 / 17.6 us |
+| ba_n16 | 1.339 | 1.546 | 1.014 | 21.8 / 20.0 us |
+| ba_n18 | 1.048 | 0.625 | **0.744** | 26.6 / 23.0 us |
+| ba_n20 | 1.224 | 0.516 | **0.808** | 29.0 / 31.0 us |
+| tfim_n12 | 1.044 | 1.394 | **1.195** | 5.4 / 9.5 us |
+
+- Same winner as the device: ESP 3 of 7, with idling **5 of 7**.
+- Rank correlation with the real ratio: ESP -0.18, with idling **+0.64**. (T2 alone in place of the Pauli form: also
+  5 of 7, +0.64.)
+- Over all 20 circuits of both arms (sizes differ), every estimate ranks F well: ESP 0.92, with idling 0.95.
+- The idling term's size is not right: it is far too pessimistic (ba_n20: 0.007 estimated against 0.17 measured).
+  This tests direction only, on seven pairs, chosen after the fact.
+
+**Reading, two numbers.**
+
+- **Display:** PSF-Zero's own pipeline used 10-25% fewer two-qubit gates than Qiskit level 3 on these circuits and had
+  the higher ESP on every one (up to 1.34 times).
+- **Essential:**
+  - On the real device it won where its circuits were also shorter in time (3-regular QAOA n = 20 and TFIM n = 12,
+    1.20 times each).
+  - It lost on three of the four Barabasi-Albert QAOA circuits (0.74-0.81 times), whose depth had grown with
+    STEINER6's sequential gadgets while the gate count fell.
+  - ESP, with no idling term, ranked the pair wrongly more often than not, and overstated PSF-Zero's fidelity more than
+    Qiskit's (F / ESP 0.74 against 0.87).
+  - The pipeline itself works on hardware: a PennyLane-trained classifier, compiled by the public release and by c45
+    against the device's live Target, ran and classified every input.
+
+**What this changes.**
+
+- Gains claimed in ESP since Addendum ~300 are gains in gate errors only; on circuits where PSF-Zero's output is not
+  also shorter in time they may not exist on hardware.
+- The selection inside PSF-Zero (item 69's STEINER6-or-usual choice, item 80's level-3 candidate) uses the same
+  idle-free measure.
+- Next: an estimate with idling from the device's own Target (T1, T2, durations) in those choices. Its form is to be
+  fixed from physics, not fitted to these seven pairs, and its predictions are to be fixed before the next hardware
+  run.
+
+**Not established.** One device, one calibration, one day; nine tests; the size of the idling effect; why the pinned
+control of Stage 2 failed (Addendum 212).
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

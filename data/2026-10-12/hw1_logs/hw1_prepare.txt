@@ -1,0 +1,52 @@
+2026-10-12T11:21:59+00:00 (2026-10-12 13:21:59 CEST) | platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | python 3.12.13 | qiskit 2.5.2
+  qiskit_aer 0.17.2
+  qiskit_ibm_runtime 0.49.0
+  pennylane 0.45.1
+  psf_zero_core 2026-09-29.1
+SCRIPT <windows-home>/Desktop/psf_zero_project/day_2026-10-12/hw/hw1_real.py d3c6dabd3d579907455244b10098f9464f3c4634cafabf71311cbde6eb25a1b8
+FILE psf_compile.py 0e97c2e222d0fb3885be4ad4f30cf995d7d9fed7feb45005b9451be1b0169d6b
+FILE patches/psf_compile_c45_2026-10-12/psf_compile.py dc51b0492f01b4c431056d6c3a6dda740f07b0b56f9ea8530bef049076ed8859
+FILE patches/psf_compile_c47_2026-10-12/psf_compile.py ebb8a32b1dce1c913268c17a8156166b12a5562edf4b75f48b29cda70f3cdf9c
+FILE benchmarks/psf_smart_layout.py 824530703fbe091d70643d28b58a69315d2c1dcb6a334ec39a46d5a618602c24
+qiskit_runtime_service.__init__:WARNING:2026-10-12 13:22:03,395: Instance was not set at service instantiation. Free and trial plan instances will be prioritized. Based on the following filters: (tags: None, region: us-east, eu-de), and available plans: (open), the available account instances are: open-instance. If you need a specific instance set it explicitly either by using a saved account with a saved default instance or passing it in directly to QiskitRuntimeService(). Alternatively, pass instance='auto' or save it to your account for auto-selection without warning.
+qiskit_runtime_service.backends:WARNING:2026-10-12 13:22:03,395: Using instance: open-instance, plan: open
+qiskit_runtime_service.backends:WARNING:2026-10-12 13:22:04,633: Using instance: open-instance, plan: open
+device rule: [{'name': 'ibm_kingston', 'operational': True, 'status': 'active', 'pending': 2}, {'name': 'ibm_fez', 'operational': True, 'status': 'active', 'pending': 32}]
+2026-10-12T11:22:05+00:00 (2026-10-12 13:22:05 CEST) compiling on ibm_kingston
+  qaoa_n12_p2  C47 identical to PSF: not submitted
+  qaoa_n12_p2  QK3  2q   146 ESP 0.6624 active  12 exact 1.2e-16 isa True failed False (0.9 s)
+  qaoa_n12_p2  PSF  2q   136 ESP 0.6975 active  12 exact 5.2e-17 isa True failed False (0.3 s)
+  qaoa_n20_p2  QK3  2q   251 ESP 0.4546 active  21 exact 1.5e-17 isa True failed False (0.0 s)
+  qaoa_n20_p2  PSF  2q   215 ESP 0.4786 active  25 exact n/a isa True failed False (0.4 s)
+  qaoa_n20_p2  C47  2q   212 ESP 0.4869 active  25 exact n/a isa True failed False (0.7 s)
+  ba_n14       C47 identical to PSF: not submitted
+  ba_n14       QK3  2q   391 ESP 0.3742 active  15 exact 1.2e-17 isa True failed False (0.1 s)
+  ba_n14       PSF  2q   303 ESP 0.4811 active  14 exact 1.2e-17 isa True failed False (0.5 s)
+  ba_n16       QK3  2q   477 ESP 0.2976 active  16 exact 1.0e-17 isa True failed False (0.1 s)
+  ba_n16       PSF  2q   378 ESP 0.3983 active  16 exact 1.1e-17 isa True failed False (0.5 s)
+  ba_n16       C47  2q   380 ESP 0.4053 active  16 exact 1.4e-17 isa True failed False (0.8 s)
+  ba_n18       QK3  2q   584 ESP 0.2418 active  18 exact 1.6e-18 isa True failed False (0.1 s)
+  ba_n18       PSF  2q   531 ESP 0.2535 active  18 exact 2.2e-18 isa True failed False (0.6 s)
+  ba_n18       C47  2q   497 ESP 0.2702 active  18 exact 2.2e-18 isa True failed False (0.9 s)
+  ba_n20       C47 identical to PSF: not submitted
+  ba_n20       QK3  2q   668 ESP 0.1772 active  20 exact 3.5e-18 isa True failed False (0.0 s)
+  ba_n20       PSF  2q   595 ESP 0.2168 active  21 exact 3.4e-17 isa True failed False (0.6 s)
+  tfim_n12     QK3  2q    82 ESP 0.7598 active  12 exact 9.0e-17 isa True failed False (0.0 s)
+  tfim_n12     PSF  2q    64 ESP 0.7929 active  12 exact 5.8e-16 isa True failed False (0.2 s)
+  tfim_n12     C47  2q    62 ESP 0.7935 active  12 exact 6.2e-16 isa True failed False (0.4 s)
+  tfim_n16     C47 identical to PSF: not submitted
+  tfim_n16     QK3  2q   114 ESP 0.6779 active  16 exact 1.4e-16 isa True failed False (0.1 s)
+  tfim_n16     PSF  2q    88 ESP 0.7244 active  16 exact 3.6e-16 isa True failed False (0.3 s)
+  ghz_n12      C47 identical to PSF: not submitted
+  ghz_n12      QK3  2q    11 ESP 0.9023 active  12 exact 4.4e-16 isa True failed False (0.0 s)
+  ghz_n12      PSF  2q    11 ESP 0.9023 active  12 exact 4.4e-16 isa True failed False (0.1 s)
+  xor_00     R4   2q     9 ESP 0.9789 z_exact -0.9977557601066278 z_pred -0.979 isa True failed False
+  xor_01     R4   2q     9 ESP 0.9789 z_exact 0.9977572710780731 z_pred 0.9808 isa True failed False
+  xor_10     R4   2q     9 ESP 0.9789 z_exact 0.9977560581090318 z_pred 0.9807 isa True failed False
+  xor_11     R4   2q     9 ESP 0.9789 z_exact -0.9977575690805124 z_pred -0.979 isa True failed False
+  xor_00     C45  2q     9 ESP 0.9789 z_exact -0.9977557601066278 z_pred -0.979 isa True failed False
+  xor_01     C45  2q     9 ESP 0.9789 z_exact 0.9977572710780731 z_pred 0.9808 isa True failed False
+  xor_10     C45  2q     9 ESP 0.9789 z_exact 0.9977560581090318 z_pred 0.9807 isa True failed False
+  xor_11     C45  2q     9 ESP 0.9789 z_exact -0.9977575690805124 z_pred -0.979 isa True failed False
+52 circuits, 296000 shots; rough QPU estimate 200 s
+2026-10-12T11:25:53+00:00 (2026-10-12 13:25:53 CEST) manifest written before any submission: 52 circuits; device ibm_kingston; calibration 2026-10-12 12:45:20+02:00

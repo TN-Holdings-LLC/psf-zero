@@ -1,0 +1,32 @@
+qaoa_n12_p2  QK3  ESP 0.662 duration    9.8 us 2q-depth   71 idle -ln 0.970 ESP*idle 0.251  F 0.499
+qaoa_n12_p2  PSF  ESP 0.697 duration    8.4 us 2q-depth   56 idle -ln 0.586 ESP*idle 0.388  F 0.494
+qaoa_n20_p2  QK3  ESP 0.455 duration    9.4 us 2q-depth   68 idle -ln 1.087 ESP*idle 0.153  F 0.354
+qaoa_n20_p2  PSF  ESP 0.479 duration    7.3 us 2q-depth   46 idle -ln 1.015 ESP*idle 0.173  F 0.425
+qaoa_n20_p2  C47  ESP 0.487 duration    9.4 us 2q-depth   68 idle -ln 1.621 ESP*idle 0.096  F 0.379
+ba_n14       QK3  ESP 0.374 duration   19.8 us 2q-depth  167 idle -ln 1.588 ESP*idle 0.076  F 0.263
+ba_n14       PSF  ESP 0.481 duration   18.4 us 2q-depth  152 idle -ln 2.326 ESP*idle 0.047  F 0.205
+ba_n16       QK3  ESP 0.298 duration   22.3 us 2q-depth  194 idle -ln 3.174 ESP*idle 0.012  F 0.280
+ba_n16       PSF  ESP 0.398 duration   24.1 us 2q-depth  209 idle -ln 3.479 ESP*idle 0.012  F 0.284
+ba_n16       C47  ESP 0.405 duration   20.9 us 2q-depth  179 idle -ln 1.349 ESP*idle 0.105  F 0.297
+ba_n18       QK3  ESP 0.242 duration   25.3 us 2q-depth  226 idle -ln 2.200 ESP*idle 0.027  F 0.105
+ba_n18       PSF  ESP 0.253 duration   28.9 us 2q-depth  256 idle -ln 3.237 ESP*idle 0.010  F 0.078
+ba_n18       C47  ESP 0.270 duration   30.4 us 2q-depth  272 idle -ln 3.461 ESP*idle 0.008  F 0.066
+ba_n20       QK3  ESP 0.177 duration   33.3 us 2q-depth  302 idle -ln 4.157 ESP*idle 0.003  F 0.174
+ba_n20       PSF  ESP 0.217 duration   31.3 us 2q-depth  280 idle -ln 5.598 ESP*idle 0.001  F 0.141
+tfim_n12     QK3  ESP 0.760 duration   11.8 us 2q-depth   82 idle -ln 0.634 ESP*idle 0.403  F 0.721
+tfim_n12     PSF  ESP 0.793 duration    7.7 us 2q-depth   46 idle -ln 0.260 ESP*idle 0.611  F 0.861
+tfim_n12     C47  ESP 0.793 duration    9.6 us 2q-depth   62 idle -ln 0.406 ESP*idle 0.529  F 0.760
+tfim_n16     QK3  ESP 0.678 duration   15.5 us 2q-depth  114 idle -ln 2.082 ESP*idle 0.085  F 1.268
+tfim_n16     PSF  ESP 0.724 duration    9.6 us 2q-depth   62 idle -ln 0.928 ESP*idle 0.286  F 1.275
+ghz_n12      QK3  ESP 0.902 duration    3.4 us 2q-depth   11 idle -ln 0.107 ESP*idle 0.810  F 0.837
+ghz_n12      PSF  ESP 0.902 duration    3.4 us 2q-depth   11 idle -ln 0.107 ESP*idle 0.810  F 0.838
+
+ba_n14       ESP ratio 1.286  idle-aware ratio 0.615  F ratio 0.780  duration ratio 0.93
+ba_n16       ESP ratio 1.339  idle-aware ratio 0.986  F ratio 1.014  duration ratio 1.08
+ba_n18       ESP ratio 1.048  idle-aware ratio 0.372  F ratio 0.744  duration ratio 1.14
+ba_n20       ESP ratio 1.224  idle-aware ratio 0.290  F ratio 0.808  duration ratio 0.94
+ghz_n12      ESP ratio 1.000  idle-aware ratio 1.000  F ratio 1.001  duration ratio 1.00
+qaoa_n12_p2  ESP ratio 1.053  idle-aware ratio 1.547  F ratio 0.990  duration ratio 0.85
+qaoa_n20_p2  ESP ratio 1.053  idle-aware ratio 1.132  F ratio 1.202  duration ratio 0.78
+tfim_n12     ESP ratio 1.044  idle-aware ratio 1.516  F ratio 1.195  duration ratio 0.65
+tfim_n16     ESP ratio 1.069  idle-aware ratio 3.390  F ratio 1.006  duration ratio 0.62

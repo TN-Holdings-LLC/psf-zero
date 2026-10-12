@@ -1,0 +1,39 @@
+qubits with a missing T1 or T2: [146]
+test         arm  ESP(day) +idle(Pauli)  +idle(T2)  dur us  F real
+qaoa_n12_p2  QK3     0.662        0.341      0.210     7.5   0.499
+qaoa_n12_p2  PSF     0.697        0.445      0.327     6.1   0.494
+qaoa_n20_p2  QK3     0.455        0.184      0.108     7.1   0.354
+qaoa_n20_p2  PSF     0.479        0.199      0.107     5.0   0.425
+qaoa_n20_p2  C47     0.487        0.140      0.058     7.2   0.379
+ba_n14       QK3     0.374        0.098      0.043    17.6   0.263
+ba_n14       PSF     0.481        0.103      0.034    16.2   0.205
+ba_n16       QK3     0.298        0.025      0.005    20.0   0.280
+ba_n16       PSF     0.398        0.039      0.008    21.8   0.284
+ba_n16       C47     0.405        0.116      0.059    18.7   0.297
+ba_n18       QK3     0.242        0.032      0.009    23.0   0.105
+ba_n18       PSF     0.253        0.020      0.004    26.6   0.078
+ba_n18       C47     0.270        0.018      0.004    28.1   0.066
+ba_n20       QK3     0.177        0.007      0.001    31.0   0.174
+ba_n20       PSF     0.217        0.004      0.000    29.0   0.141
+tfim_n12     QK3     0.760        0.445      0.334     9.5   0.721
+tfim_n12     PSF     0.793        0.621      0.544     5.4   0.861
+tfim_n12     C47     0.793        0.560      0.464     7.3   0.760
+tfim_n16     QK3     0.678        0.167      0.070    13.3   1.268
+tfim_n16     PSF     0.724        0.378      0.250     7.3   1.275
+ghz_n12      QK3     0.902        0.824      0.781     1.1   0.837
+ghz_n12      PSF     0.902        0.824      0.781     1.1   0.838
+
+PSF/QK3 ratios (tfim_n16 left out: F > 1, the measure does not work there; GHZ: identical circuits)
+qaoa_n12_p2  ESP 1.053  +idle(Pauli) 1.305  +idle(T2) 1.555  real F 0.990
+qaoa_n20_p2  ESP 1.053  +idle(Pauli) 1.079  +idle(T2) 0.994  real F 1.202
+ba_n14       ESP 1.286  +idle(Pauli) 1.050  +idle(T2) 0.792  real F 0.780
+ba_n16       ESP 1.339  +idle(Pauli) 1.546  +idle(T2) 1.714  real F 1.014
+ba_n18       ESP 1.048  +idle(Pauli) 0.625  +idle(T2) 0.451  real F 0.744
+ba_n20       ESP 1.224  +idle(Pauli) 0.516  +idle(T2) 0.283  real F 0.808
+tfim_n12     ESP 1.044  +idle(Pauli) 1.394  +idle(T2) 1.630  real F 1.195
+rank correlation with the real F ratio: esp    -0.179; same winner in 3/7
+rank correlation with the real F ratio: pauli  +0.643; same winner in 5/7
+rank correlation with the real F ratio: t2     +0.643; same winner in 5/7
+over all 20 circuits, rank correlation of esp    with F: +0.923
+over all 20 circuits, rank correlation of pauli  with F: +0.946
+over all 20 circuits, rank correlation of t2     with F: +0.935

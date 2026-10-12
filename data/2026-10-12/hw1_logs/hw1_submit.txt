@@ -1,0 +1,15 @@
+2026-10-12T11:25:54+00:00 (2026-10-12 13:25:54 CEST) | platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | python 3.12.13 | qiskit 2.5.2
+  qiskit_aer 0.17.2
+  qiskit_ibm_runtime 0.49.0
+  pennylane 0.45.1
+  psf_zero_core 2026-09-29.1
+SCRIPT <windows-home>/Desktop/psf_zero_project/day_2026-10-12/hw/hw1_real.py d3c6dabd3d579907455244b10098f9464f3c4634cafabf71311cbde6eb25a1b8
+FILE psf_compile.py 0e97c2e222d0fb3885be4ad4f30cf995d7d9fed7feb45005b9451be1b0169d6b
+FILE patches/psf_compile_c45_2026-10-12/psf_compile.py dc51b0492f01b4c431056d6c3a6dda740f07b0b56f9ea8530bef049076ed8859
+FILE patches/psf_compile_c47_2026-10-12/psf_compile.py ebb8a32b1dce1c913268c17a8156166b12a5562edf4b75f48b29cda70f3cdf9c
+FILE benchmarks/psf_smart_layout.py 824530703fbe091d70643d28b58a69315d2c1dcb6a334ec39a46d5a618602c24
+qiskit_runtime_service.__init__:WARNING:2026-10-12 13:25:58,415: Instance was not set at service instantiation. Free and trial plan instances will be prioritized. Based on the following filters: (tags: None, region: us-east, eu-de), and available plans: (open), the available account instances are: open-instance. If you need a specific instance set it explicitly either by using a saved account with a saved default instance or passing it in directly to QiskitRuntimeService(). Alternatively, pass instance='auto' or save it to your account for auto-selection without warning.
+qiskit_runtime_service.backends:WARNING:2026-10-12 13:25:58,415: Using instance: open-instance, plan: open
+<windows-home>/Desktop/psf_zero_project/day_2026-10-12/hw/hw1_real.py:478: DeprecationWarning: Specifying different 'shots' across pubs is deprecated as of qiskit-ibm-runtime 0.48.0 and will be removed no sooner than 3 months after the release date. Submit one job for each desired shot count instead. To reduce overhead, Consider submitting these jobs inside a Batch execution mode.
+  job = sampler.run([(c, None, p["shots"]) for c, p in zip(circs, man["pubs"])])
+2026-10-12T11:26:01+00:00 (2026-10-12 13:26:01 CEST) submitted job db6c7i4vf2bc73d1004g (52 circuits, 296000 shots) to ibm_kingston. Results are not read here.

@@ -1,0 +1,374 @@
+{
+ "written_utc": "2026-10-12T11:21:56.776936+00:00",
+ "script_sha256": "1e013e6b100d26b0fa364596b7715c59a4577c40620c869b4b4e9d281f4c830c",
+ "device": "ibm_kingston",
+ "device_pending_at_choice": 2,
+ "calibration_time": "2026-10-12 12:45:20+02:00",
+ "chosen_arm": "M1",
+ "control_arm": "A",
+ "shots": 4000,
+ "pred_shots": 20000,
+ "pred_seed": 1000,
+ "m_pred": {
+  "A": 0.9686,
+  "B": 0.9731,
+  "M1": 0.979875,
+  "M4": 0.979875
+ },
+ "compile_s": {
+  "A": 0.03220101799524855,
+  "B": 0.05797580200305674,
+  "M1": 0.06070112099405378,
+  "M4": 0.42103012900042813
+ },
+ "candidates": [
+  {
+   "name": "ibm_fez",
+   "pending": 32,
+   "best_arm": "M4",
+   "m_pred": 0.9757250000000001,
+   "seconds": 30.344870040993555
+  },
+  {
+   "name": "ibm_kingston",
+   "pending": 2,
+   "best_arm": "M1",
+   "m_pred": 0.979875,
+   "seconds": 31.32679265299521
+  },
+  {
+   "name": "ibm_marrakesh",
+   "pending": 12,
+   "best_arm": "M1",
+   "m_pred": 0.978225,
+   "seconds": 32.23907568800496
+  }
+ ],
+ "circuits": [
+  {
+   "role": "chosen",
+   "arm": "M1",
+   "input": "00",
+   "label": -1,
+   "q0_physical": 93,
+   "z_pred": -0.979,
+   "layout": [
+    93,
+    79,
+    73,
+    74
+   ],
+   "twoq": 9
+  },
+  {
+   "role": "chosen",
+   "arm": "M1",
+   "input": "01",
+   "label": 1,
+   "q0_physical": 93,
+   "z_pred": 0.9808,
+   "layout": [
+    93,
+    79,
+    73,
+    74
+   ],
+   "twoq": 9
+  },
+  {
+   "role": "chosen",
+   "arm": "M1",
+   "input": "10",
+   "label": 1,
+   "q0_physical": 93,
+   "z_pred": 0.9807,
+   "layout": [
+    93,
+    79,
+    73,
+    74
+   ],
+   "twoq": 9
+  },
+  {
+   "role": "chosen",
+   "arm": "M1",
+   "input": "11",
+   "label": -1,
+   "q0_physical": 93,
+   "z_pred": -0.979,
+   "layout": [
+    93,
+    79,
+    73,
+    74
+   ],
+   "twoq": 9
+  },
+  {
+   "role": "control",
+   "arm": "A",
+   "input": "00",
+   "label": -1,
+   "q0_physical": 0,
+   "z_pred": -0.9674,
+   "layout": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "twoq": 9
+  },
+  {
+   "role": "control",
+   "arm": "A",
+   "input": "01",
+   "label": 1,
+   "q0_physical": 0,
+   "z_pred": 0.9689,
+   "layout": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "twoq": 9
+  },
+  {
+   "role": "control",
+   "arm": "A",
+   "input": "10",
+   "label": 1,
+   "q0_physical": 0,
+   "z_pred": 0.9677,
+   "layout": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "twoq": 9
+  },
+  {
+   "role": "control",
+   "arm": "A",
+   "input": "11",
+   "label": -1,
+   "q0_physical": 0,
+   "z_pred": -0.9704,
+   "layout": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "twoq": 9
+  }
+ ],
+ "calibration": {
+  "rz[73]": 0.0,
+  "sx[73]": 0.00022588703278106394,
+  "rz[74]": 0.0,
+  "sx[74]": 0.00023685198616935446,
+  "rz[79]": 0.0,
+  "sx[79]": 0.00012898553967311292,
+  "sx[93]": 0.0002315651541063095,
+  "rz[93]": 0.0,
+  "cz[93, 79]": 0.0012495864565733594,
+  "cz[79, 73]": 0.0013688967083854142,
+  "cz[73, 74]": 0.001313894485066941,
+  "measure[93]": 0.0032958984375,
+  "sx[0]": 0.0002439051958166951,
+  "rz[0]": 0.0,
+  "rz[1]": 0.0,
+  "sx[1]": 0.00015572823971898175,
+  "cz[0, 1]": 0.0009520056550851586,
+  "rz[2]": 0.0,
+  "sx[2]": 9.70114429558618e-05,
+  "cz[1, 2]": 0.00113127894725093,
+  "rz[3]": 0.0,
+  "sx[3]": 0.0005070968096983626,
+  "cz[2, 3]": 0.0015166492122993258,
+  "measure[0]": 0.0098876953125
+ },
+ "job_id": "db6c5lamb58s738binm0",
+ "submitted_utc": "2026-10-12T11:21:56.779074+00:00",
+ "scored_utc": "2026-10-12T11:28:21.488766+00:00",
+ "results": [
+  {
+   "role": "chosen",
+   "arm": "M1",
+   "input": "00",
+   "label": -1,
+   "q0_physical": 93,
+   "z_pred": -0.979,
+   "layout": [
+    93,
+    79,
+    73,
+    74
+   ],
+   "twoq": 9,
+   "z_obs": -0.933,
+   "shots_obs": 4000
+  },
+  {
+   "role": "chosen",
+   "arm": "M1",
+   "input": "01",
+   "label": 1,
+   "q0_physical": 93,
+   "z_pred": 0.9808,
+   "layout": [
+    93,
+    79,
+    73,
+    74
+   ],
+   "twoq": 9,
+   "z_obs": 0.957,
+   "shots_obs": 4000
+  },
+  {
+   "role": "chosen",
+   "arm": "M1",
+   "input": "10",
+   "label": 1,
+   "q0_physical": 93,
+   "z_pred": 0.9807,
+   "layout": [
+    93,
+    79,
+    73,
+    74
+   ],
+   "twoq": 9,
+   "z_obs": 0.9225,
+   "shots_obs": 4000
+  },
+  {
+   "role": "chosen",
+   "arm": "M1",
+   "input": "11",
+   "label": -1,
+   "q0_physical": 93,
+   "z_pred": -0.979,
+   "layout": [
+    93,
+    79,
+    73,
+    74
+   ],
+   "twoq": 9,
+   "z_obs": -0.936,
+   "shots_obs": 4000
+  },
+  {
+   "role": "control",
+   "arm": "A",
+   "input": "00",
+   "label": -1,
+   "q0_physical": 0,
+   "z_pred": -0.9674,
+   "layout": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "twoq": 9,
+   "z_obs": -0.6135,
+   "shots_obs": 4000
+  },
+  {
+   "role": "control",
+   "arm": "A",
+   "input": "01",
+   "label": 1,
+   "q0_physical": 0,
+   "z_pred": 0.9689,
+   "layout": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "twoq": 9,
+   "z_obs": -0.12,
+   "shots_obs": 4000
+  },
+  {
+   "role": "control",
+   "arm": "A",
+   "input": "10",
+   "label": 1,
+   "q0_physical": 0,
+   "z_pred": 0.9677,
+   "layout": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "twoq": 9,
+   "z_obs": -0.1455,
+   "shots_obs": 4000
+  },
+  {
+   "role": "control",
+   "arm": "A",
+   "input": "11",
+   "label": -1,
+   "q0_physical": 0,
+   "z_pred": -0.9704,
+   "layout": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "twoq": 9,
+   "z_obs": -0.5945,
+   "shots_obs": 4000
+  }
+ ],
+ "m_obs": {
+  "chosen": 0.937125,
+  "control": 0.23562500000000003
+ },
+ "m_pred_roles": {
+  "chosen": 0.979875,
+  "control": 0.9686
+ },
+ "se": {
+  "chosen": 0.002757262427435952,
+  "control": 0.007109211948679685
+ },
+ "metrics": {
+  "caller": "qiskit_ibm_runtime~sampler.py",
+  "qiskit_version": "qiskit_ibm_runtime-0.49.0,qiskit-2.5.2*,qiskit_aer-0.17.2*",
+  "timestamps": {
+   "created": "2026-10-12T11:21:57.440717Z",
+   "finished": "2026-10-12T11:22:20.478278Z",
+   "running": "2026-10-12T11:21:59.151141Z"
+  },
+  "usage": {
+   "qpu_charge_time_seconds": 11,
+   "value": 0.1682,
+   "unit": "resource_units",
+   "status": "complete",
+   "details": [
+    {
+     "value": 0.1682,
+     "unit": "resource_units",
+     "metric": {
+      "id": "caffe3ca-729c-5750-8777-df63bbf8bfd9",
+      "value": 11
+     }
+    }
+   ]
+  },
+  "circuits_execution_time_ns": 8375930368
+ }
+}

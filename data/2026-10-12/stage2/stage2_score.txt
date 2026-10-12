@@ -1,0 +1,26 @@
+platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | python 3.12.13 | qiskit 2.5.2
+  qiskit_aer 0.17.2
+  qiskit_ibm_runtime 0.49.0
+  pennylane 0.45.1
+SCRIPT /home/<user>/psf_zero_fresh_test/benchmarks/xor_stage2_real.py 1e013e6b100d26b0fa364596b7715c59a4577c40620c869b4b4e9d281f4c830c
+qiskit_runtime_service.__init__:WARNING:2026-10-12 13:28:19,349: Instance was not set at service instantiation. Free and trial plan instances will be prioritized. Based on the following filters: (tags: None, region: us-east, eu-de), and available plans: (open), the available account instances are: open-instance. If you need a specific instance set it explicitly either by using a saved account with a saved default instance or passing it in directly to QiskitRuntimeService(). Alternatively, pass instance='auto' or save it to your account for auto-selection without warning.
+job db6c5lamb58s738binm0 status DONE
+  chosen  M1 input 00 label -1 qubit   93: z_obs -0.9330  z_pred -0.9790
+  chosen  M1 input 01 label +1 qubit   93: z_obs +0.9570  z_pred +0.9808
+  chosen  M1 input 10 label +1 qubit   93: z_obs +0.9225  z_pred +0.9807
+  chosen  M1 input 11 label -1 qubit   93: z_obs -0.9360  z_pred -0.9790
+  control A  input 00 label -1 qubit    0: z_obs -0.6135  z_pred -0.9674
+  control A  input 01 label +1 qubit    0: z_obs -0.1200  z_pred +0.9689
+  control A  input 10 label +1 qubit    0: z_obs -0.1455  z_pred +0.9677
+  control A  input 11 label -1 qubit    0: z_obs -0.5945  z_pred -0.9704
+
+metrics: {"usage": {"qpu_charge_time_seconds": 11, "value": 0.1682, "unit": "resource_units", "status": "complete", "details": [{"value": 0.1682, "unit": "resource_units", "metric": {"id": "caffe3ca-729c-5750-8777-df63bbf8bfd9", "value": 11}}]}, "timestamps": {"created": "2026-10-12T11:21:57.440717Z", "finished": "2026-10-12T11:22:20.478278Z", "running": "2026-10-12T11:21:59.151141Z"}}
+
+=== predictions ===
+S1 chosen arm (M1): all four inputs correct (4/4) -> CONFIRMED
+S2 chosen arm: observed M >= predicted M - 0.15 (0.9371 vs 0.9799) -> CONFIRMED
+S3 chosen arm: observed M < predicted M + 3 SE (0.9371 vs 0.9881) -> CONFIRMED
+S4 chosen arm observed M >= control (A) observed M - 0.02 (0.9371 vs 0.2356) -> CONFIRMED
+P0 pipeline complete; QPU usage None s <= 60.0 s -> NOT CONFIRMED
+(control arm, not a prediction: observed M 0.2356, predicted 0.9686; sign flips 2/4)
+Wrote stage2_manifest_2026-09-28_scored.json
