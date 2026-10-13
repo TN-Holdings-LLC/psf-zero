@@ -7651,6 +7651,91 @@ Items 19 and 22 are safety improvements.
 
 ---
 
+<!-- ===== Addendum 467 (source: addendum_467.md) ===== -->
+
+> **Note added when merging:** Workplace deliverables for requests 6-10 of 2026-10-13, committed unchanged in data/2026-10-13/workplace/requests6-10/; the HW2 analysis script hw2_within_test.py is fixed by this commit, before HW2.
+
+## Addendum 467 -- Workplace records of 2026-10-13, requests 6-10 (no hardware data): the ESP check made reproducible (reproduced here exactly); the workplace's HW2 analysis script fixed before HW2 (SHA-256 889e1fc3...); a draft pre-registration of a T2-aware placement; a T2* / ZZ experiment design; a review of the HW3 kit that finds a selection loophole in D1 and D2 and a gap in the noise simulation (waiting after a qubit's last gate is not charged), both checked here (2026-10-13)
+
+**Status: written at the workplace by another session and committed here unchanged**, with this session's checks.
+Times in CEST. The package arrived at 08:12 CEST; all 20 files match its manifest.
+
+**Files.** [`data/2026-10-13/workplace/requests6-10/`](../../data/2026-10-13/workplace/requests6-10/) (`README.md`,
+`MANIFEST.tsv`, `check_intake.py`).
+
+| request | file | checked here |
+|---|---|---|
+| 6 | [`esp_check/`](../../data/2026-10-13/workplace/requests6-10/esp_check/): `esp_random_check.py`, its inputs and output | run here: output identical byte for byte |
+| 7 | [`t2-placement-preregistration-draft-2026-10-13.md`](../../data/2026-10-13/workplace/requests6-10/t2-placement-preregistration-draft-2026-10-13.md) | formula checked; a draft, nothing fixed |
+| 8 | [`hw2_analysis/`](../../data/2026-10-13/workplace/requests6-10/hw2_analysis/): `hw2_within_test.py` and its plan | **fixed now, before HW2** (below) |
+| 9 | [`t2star-zz-experiment-design-2026-10-13.md`](../../data/2026-10-13/workplace/requests6-10/t2star-zz-experiment-design-2026-10-13.md) | a design; no job without the owner's go-ahead |
+| 10 | [`hw3-kit-review-2026-10-13.md`](../../data/2026-10-13/workplace/requests6-10/hw3-kit-review-2026-10-13.md) | both findings confirmed here |
+
+[`data/2026-10-13/workplace/ns_sim-review-2026-10-13.md`](../../data/2026-10-13/workplace/ns_sim-review-2026-10-13.md)
+(Addendum 465) is replaced by the version with section 4 added, the correction. That section gives "about 08:40
+CEST" as its time, which is later than the package's arrival (08:12 CEST); the stated time is wrong, and the text was
+written before 08:12, before HW2.
+
+**Request 8, the HW2 analysis, fixed now.**
+
+- `hw2_within_test.py`, SHA-256 `889e1fc3b60cf8aacea0ec892b007cb246a42491ed029bc04700e23995c5f28f`, and its plan
+  `hw2_analysis_plan_2026-10-13.md` (written 07:54 CEST at the workplace).
+- It adds to HW2's own verdicts (Addendum 460) and HW2-PLUS's (Addendum 466), and replaces neither. For ESP, R3 and
+  P1-P4 it states: winners; Spearman with an exact permutation test; the within-test correlation with a sign-flip
+  test; Bayesian probabilities and a Bayes factor. "Strong" evidence needs a one-sided p <= 0.05 and BF+0 >= 3 on the
+  seven reading pairs.
+- Checked here:
+  - On the self-test (HW1 in HW2's format) it gives HW1's numbers: ESP 3 of 7, -0.18; a14 5 of 7, +0.75, p 0.033,
+    BF+0 3.2.
+  - It runs on the files HW2's rehearsal writes.
+- **One fault, left in the fixed file.** `--out` is read as a positional argument as well. Run it as the plan says,
+  with the predictors file first: `python hw2_within_test.py <hw2 dir> <predictors>/hw2_predictors.jsonl --out <file>`.
+  Without a predictors file, leave out `--out` (it then writes into the HW2 directory).
+
+**Request 10, the review of the HW3 kit.**
+
+- **Decoupling is placed only on active qubits; pad and dd share the same schedule.** Agreed.
+- **D1 and D2 select pairs on the same pad measurements they then compare.** Regression to the mean can therefore
+  confirm both. Correct; fixed in HW3's second version (Addendum 469) before any HW3 job.
+- **The noise simulation never charges a qubit's waiting from its last gate to the measurement.** Correct: in
+  `noisy_circuit` (`ns_sim.py`, `ns_sim2.py`) relaxation is applied only between two gates on the same qubit.
+- Measured here on HW1's circuits with Kingston's calibration (measured qubits, waiting from the first gate):
+
+| schedule | uncharged share of waiting | tfim_n12 PSF / QK3 | ba_n18 PSF / QK3 |
+|---|---|---|---|
+| as soon as possible | 7-36% (QAOA, BA, TFIM); 52% GHZ | 31% / 13% | 17% / 9% |
+| as late as possible | 0-11%, except tfim_n12/16 PSF 33% and GHZ 100% | 33% / 0% | 11% / 2% |
+
+- What this means:
+  - NS1 (Addendum 462), the ASAP exploration (Addendum 464) and the locked NS2 all leave this window out.
+  - NS2 and HW2-PLUS's P1 and P2 stay as fixed. Corrected variants P1c and P2c are pre-registered before HW2 in
+    Addendum 468.
+
+**Request 7, the T2-aware placement (draft).**
+
+- The idle charge t (1/(6 T1) + 1/(3 T2)) was checked here. It is the first-order average gate infidelity of thermal
+  relaxation, from the process fidelity (1 + 2 e^{-t/T2} + e^{-t/T1}) / 4. Its unit is that of ESP's terms, so there
+  is no free weight.
+- The window starts at the first gate under an as-soon-as-possible schedule. How the device times circuits is HW3's
+  D4, so the form may have to follow it.
+- It is to be built after HW2 as prototype c49 (item 84), with its predictions fixed with the code.
+
+**Request 9, the T2* / ZZ design.**
+
+- 42 circuits, about 25 QPU seconds by HW1's ratio.
+- With 1,000 shots and tau up to 20 us, the ZZ rate's standard error is about 0.4 kHz. E3's 1 kHz and its 3-standard-error
+  condition together need about 1.2 kHz, so more shots or a 30 us point would help.
+- Not scheduled. It runs only with the owner's go-ahead.
+
+**Reading.**
+
+- **Display:** five deliverables, all reproduced or checked here; one fixed analysis and two corrections made before
+  any of the data they concern exists.
+- **Essential:** none of this is new hardware evidence. The two corrections matter because they were found before HW2
+  and HW3 ran.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

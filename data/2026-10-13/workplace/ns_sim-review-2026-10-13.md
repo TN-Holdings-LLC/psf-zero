@@ -49,3 +49,10 @@ tests pass here (6/6, release 2026-10-11.4, qiskit 2.5.2, aer 0.17.2). Times in 
 The implementation does what its docstring says. Before NS1's verdict (Addendum 462) is used to accept or reject
 the Markovian model, points 1 and 2 should be addressed in NS2's design, because both act on idle time, the quantity
 under test; point 3 is a small, fixable bias.
+
+## 4. Correction (added 2026-10-13, about 08:40 CEST, before HW2's results)
+
+Section 1 accepted the docstring's "with ALAP no qubit waits after its last gate". That is not true in general, and
+the code charges no waiting at all from a qubit's last gate to the measurement (ns_sim.py and ns_sim2.py). Under ASAP
+this uncharged window is 7-52% of all idle time on HW1's circuits and differs between arms. Details and a suggested
+corrected variant (P1c, P2c) are in `hw3-kit-review-2026-10-13.md`, section 4.
