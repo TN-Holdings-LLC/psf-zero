@@ -1,0 +1,44 @@
+adder.qasm FakeFez QK3 0.7142 C45 0.7149 0.2s {'not_applicable': 1}  C46 0.7149 0.5s {'not_commuting': 1, 'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+adder_8.qasm FakeFez QK3 0.03157 C45 0.03983 0.6s {'not_applicable': 1}  C46 0.03983 2.6s {'not_commuting': 1, 'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+bigadder.qasm FakeFez QK3 0.395 C45 0.352 0.4s {'not_applicable': 1}  C46 0.352 1.2s {'not_commuting': 1, 'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+csla_mux_3.qasm FakeFez QK3 0.5344 C45 0.4805 0.4s {'not_applicable': 1}  C46 0.4805 0.9s {'not_commuting': 1, 'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+gf2^10_mult.qasm FakeFez QK3 0 C45 0.0003016 1.0s {'not_applicable': 1}  C46 0.0003016 10.7s {'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+gf2^16_mult.qasm FakeFez QK3 0 C45 1.399e-11 2.5s {'not_applicable': 1}  C46 1.399e-11 201.1s {'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+gf2^32_mult.qasm FakeFez QK3 0 C45 1.178e-50 8.6s {'not_applicable': 1}  C46 1.178e-50 11.1s {'too_large': 1, 'gate_level': 1, 'linear': 1} 
+gf2^4_mult.qasm FakeFez QK3 0.4497 C45 0.4267 0.2s {'not_applicable': 1}  C46 0.4267 0.6s {'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+gf2^5_mult.qasm FakeFez QK3 0.2398 C45 0.2382 0.2s {'not_applicable': 1}  C46 0.2382 0.8s {'fallback': 1, 'gate_level': 1, 'linear': 1, 'linear_unconnected': 1} 
+gf2^6_mult.qasm FakeFez QK3 0.06569 C45 0.112 0.2s {'not_applicable': 1}  C46 0.112 1.4s {'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+gf2^7_mult.qasm FakeFez QK3 0.03365 C45 0.03032 0.4s {'not_applicable': 1}  C46 0.03032 2.9s {'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+gf2^8_mult.qasm FakeFez QK3 0.004689 C45 0.004571 0.3s {'not_applicable': 1}  C46 0.004571 8.0s {'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+gf2^9_mult.qasm FakeFez QK3 0.001214 C45 0.001794 0.3s {'not_applicable': 1}  C46 0.001794 7.5s {'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+ham15-high.qasm FakeFez QK3 1.714e-08 C45 2.722e-08 1.6s {'not_applicable': 1}  C46 3.009e-08 11.9s {'not_commuting': 1, 'used': 1, 'chosen': 1, 'gate_level': 1, 'linear': 1} 
+ham15-low.qasm FakeFez QK3 0.03203 C45 0.02841 0.4s {'not_applicable': 1}  C46 0.02841 1.6s {'not_commuting': 1, 'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+ham15-med.qasm FakeFez QK3 0.01092 C45 0.01268 0.5s {'not_applicable': 1}  C46 0.01268 2.5s {'not_commuting': 1, 'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+hwb10.qasm FakeFez QK3 8.313e-173 C45 3.087e-171 33.2s {'not_applicable': 1}  C46 3.087e-171 33.2s {'too_large': 1, 'gate_level': 1, 'linear': 1} 
+hwb6.qasm FakeFez QK3 0.4777 C45 0.4867 0.1s {'not_applicable': 1}  C46 0.4867 0.4s {'not_commuting': 1, 'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+hwb8.qasm FakeFez QK3 4.374e-33 C45 5.13e-28 6.6s {'not_applicable': 1}  C46 5.13e-28 6.2s {'too_large': 1, 'gate_level': 1, 'linear': 1} 
+mod5_4.qasm FakeFez QK3 0.8375 C45 0.8372 0.1s {'not_applicable': 1}  C46 0.8552 0.1s {'used': 1, 'chosen': 1, 'gate_level': 1, 'linear': 1} 
+mod_adder_1024.qasm FakeFez QK3 1.35e-07 C45 1.119e-07 1.7s {'not_applicable': 1}  C46 1.119e-07 11.9s {'not_commuting': 1, 'fallback': 1, 'gate_level': 1, 'linear': 1, 'linear_unconnected': 1} 
+mod_mult_55.qasm FakeFez QK3 0.7202 C45 0.7184 0.1s {'not_applicable': 1}  C46 0.7184 0.2s {'not_commuting': 1, 'fallback': 1, 'gate_level': 1, 'linear': 1, 'linear_unconnected': 1} 
+mod_red_21.qasm FakeFez QK3 0.4652 C45 0.4777 0.1s {'not_applicable': 1}  C46 0.4777 0.5s {'not_commuting': 1, 'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+qcla_adder_10.qasm FakeFez QK3 0.0967 C45 0.05698 1.2s {'not_applicable': 1}  C46 0.05698 2.7s {'not_commuting': 1, 'fallback': 1, 'gate_level': 1, 'linear': 1, 'linear_unconnected': 1} 
+qcla_mod_7.qasm FakeFez QK3 0.02749 C45 0.02431 1.1s {'not_applicable': 1}  C46 0.02431 4.0s {'not_commuting': 1, 'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+rc_adder_6.qasm FakeFez QK3 0.5078 C45 0.5353 0.5s {'not_applicable': 1}  C46 0.5353 1.0s {'not_commuting': 1, 'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+vbe_adder_3.qasm FakeFez QK3 0.6761 C45 0.6877 0.2s {'not_applicable': 1}  C46 0.6877 0.4s {'not_commuting': 1, 'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+32.qasm FakeFez QK3 0 C45 1.102e-11 4.5s {'not_applicable': 1}  C46 1.102e-11 4.9s {'too_large': 1, 'gate_level': 1, 'linear': 1} 
+adder_n118.qasm FakeFez QK3 0 C45 9.285e-07 3.2s {'not_applicable': 1}  C46 9.285e-07 21.3s {'not_commuting': 1, 'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+adder_n28.qasm FakeFez QK3 0.2722 C45 0.1957 0.4s {'not_applicable': 1}  C46 0.1957 2.3s {'not_commuting': 1, 'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+adder_n64.qasm FakeFez QK3 0 C45 0.00146 2.7s {'not_applicable': 1}  C46 0.00146 9.2s {'not_commuting': 1, 'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+multiplier_n45.qasm FakeFez QK3 0 C45 1.079e-14 4.1s {'not_applicable': 1}  C46 5.112e-12 21.1s {'not_commuting': 1, 'used': 1, 'chosen': 1, 'gate_level': 1, 'linear': 1} 
+multiplier_n75.qasm FakeFez QK3 0 C45 3.688e-55 8.4s {'not_applicable': 1}  C46 3.688e-55 8.2s {'too_large': 1, 'gate_level': 1, 'linear': 1} 
+wstate_n118.qasm FakeFez QK3 0 C45 0.04098 32.9s {'not_applicable': 1}  C46 0.04098 35.7s {'not_commuting': 1, 'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+wstate_n36.qasm FakeFez QK3 0.5187 C45 0.4771 0.3s {'not_applicable': 1}  C46 0.4771 0.6s {'not_commuting': 1, 'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+wstate_n76.qasm FakeFez QK3 0.2042 C45 0.1881 0.4s {'not_applicable': 1}  C46 0.1881 1.6s {'not_commuting': 1, 'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+bigadder_n18.qasm FakeFez QK3 0.395 C45 0.352 0.3s {'not_applicable': 1}  C46 0.352 1.2s {'not_commuting': 1, 'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+multiplier_n15.qasm FakeFez QK3 0.191 C45 0.2233 0.3s {'not_applicable': 1}  C46 0.2673 1.0s {'not_commuting': 1, 'used': 1, 'chosen': 1, 'gate_level': 1, 'linear': 1} 
+multiply_n13.qasm FakeFez QK3 0.7168 C45 0.6898 0.2s {'not_applicable': 1}  C46 0.6898 0.3s {'fallback': 1, 'gate_level': 1, 'linear': 1, 'linear_unconnected': 1} 
+wstate_n27.qasm FakeFez QK3 0.6507 C45 0.5978 0.2s {'not_applicable': 1}  C46 0.5978 0.6s {'not_commuting': 1, 'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+adder_n10.qasm FakeFez QK3 0.7142 C45 0.7149 0.2s {'not_applicable': 1}  C46 0.7149 0.4s {'not_commuting': 1, 'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+basis_test_n4.qasm FakeFez QK3 0.9591 C45 0.9591 0.1s {'not_applicable': 1}  C46 0.9591 0.1s {'not_commuting': 1, 'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+basis_trotter_n4.qasm FakeFez QK3 0.4521 C45 0.4267 0.2s {'not_applicable': 1}  C46 0.4267 0.6s {'not_commuting': 1, 'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 
+vqe_n4.qasm FakeFez QK3 0.9479 C45 0.9479 0.0s {'not_applicable': 1}  C46 0.9479 0.1s {'not_commuting': 1, 'used': 1, 'kept_usual': 1, 'gate_level': 1, 'linear': 1} 

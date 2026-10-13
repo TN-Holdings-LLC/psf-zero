@@ -7042,6 +7042,105 @@ PSF-Zero against Qiskit level 3 on a real device; item 80's choice uses the same
 
 ---
 
+<!-- ===== Addendum 458 (source: addendum_458.md) ===== -->
+
+> **Note added when merging:** Development records of 2026-10-12, written on 2026-10-13; nothing here was predicted before it was measured. The phase-polynomial comparison was rerun on 2026-10-13 for this record.
+
+## Addendum 458 -- Development records of 2026-10-12, no predictions: prototype c46 (item 81: a measured final CNOT network as a parity network on the device) not adopted, gaining on 4 of 44 files it newly reads; a SWAP-free phase-polynomial compiler tried and dropped (ESP 0.13 times, 1.8 times the two-qubit gates); prototype c47 (item 82: repeated commuting layers mirrored), higher ESP than c45 on all four HW1 circuits where it differed and lower real-device fidelity on three (2026-10-12)
+
+**Status: development, not a validation.** Nothing here was predicted before it was measured. It is recorded so that
+the prototypes that HW1 (Addenda 454-455) and c48 (Addendum 459) build on, and the two that were dropped, are on file.
+
+### 1. Prototype c46, item 81: a final linear Clifford as a parity network (not adopted)
+
+**What it does.** [`patches/psf_compile_c46_2026-10-12/`](../../patches/psf_compile_c46_2026-10-12/) (`make_c46.py` and
+`lin_synth.py` on c45).
+
+- Item 73 reads circuits as Pauli rotations followed by a final Clifford. Until c45 that final Clifford had to act on
+  one qubit at a time, or be a permutation (item 76).
+- Item 81 also reads measured circuits whose final Clifford acts on several qubits at once, when every measured
+  qubit's Z, pulled back through it, is a product of Z's (a parity of the wires).
+- That Clifford is replaced by a CNOT network built on the device's coupling graph along error-weighted Steiner trees
+  (RowCol), which puts each measured parity on its own wire. The measured distribution is the input's.
+
+**Measured** ([`lin44_fez.txt`](../../data/2026-10-12/c46_dev/lin44_fez.txt), FakeFez): 44 Benchpress files are newly
+read (feynman arithmetic, QASMBench adders, multipliers, W states).
+
+- On 4 of them the output's ESP is higher than c45's: mod5_4 (0.837 to 0.855), multiplier_n15 (0.223 to 0.267),
+  ham15-high and multiplier_n45 (both below 1e-7). On 40 it is the same, because item 69's choice keeps the usual
+  output. None is lower.
+- The cost is time: the median compile is 3.2 times c45's, and the slowest is 80 times (gf2^16_mult: 201 s against
+  2.5 s).
+- 5 files fall back because their measured parities do not connect on the device's graph.
+
+**Not adopted:** too rare a gain for its time. The code stays on file.
+
+### 2. A SWAP-free phase-polynomial compiler (dropped)
+
+**What it does.** [`pp_synth.py`](../../data/2026-10-12/c46_dev/pp_synth.py) cuts a circuit into regions of
+{cx, swap, x, diagonal gates}. Each region is a phase polynomial plus a final linear map, synthesised in place on a
+connected set of physical qubits:
+
+- each term's parity is built along an error-weighted Steiner tree and kept;
+- the region's linear map is completed by RowCol up to a relabelling.
+
+**Measured** (rerun on 2026-10-13 for this record with
+[`cmp_pp.py`](../../data/2026-10-12/c46_dev/cmp_pp.py), eight feynman files on FakeFez and FakeTorino;
+[`cmp_pp_rerun_2026-10-13.txt`](../../data/2026-10-12/c46_dev/cmp_pp_rerun_2026-10-13.txt)):
+
+- below c46's ESP on 15 of 16 pairs;
+- geometric mean 0.13 times its ESP, with 1.8 times its two-qubit gates (adder_8: 2,090 against 782);
+- the one exception: barenco_tof_5 on FakeFez (0.705 against 0.658).
+
+**Why it loses.** Building every parity in place and never undoing it lets the parities spread over the region, and
+the final linear map then costs more than the routing it replaced. **Dropped.**
+
+### 3. Prototype c47, item 82: repeated commuting layers, mirrored
+
+**What it does.** [`patches/psf_compile_c47_2026-10-12/`](../../patches/psf_compile_c47_2026-10-12/) (committed with
+Addendum 455 as HW1's third arm). Changelog item 82 is in the file's header.
+
+- QAOA's cost layers, and the Trotter steps of a Hamiltonian whose multi-qubit terms commute, repeat one commuting set
+  p times.
+- STEINER6 scheduled all the terms at once, and its later layers cost more as the placement drifted. On
+  qaoa_barabasi_albert_N40 (FakeFez): 128, 134 and 193 SWAPs.
+- `_StMirror` schedules the first layer once and replays its events forwards and backwards. Both circuits are built and
+  the one with the lower summed -ln(1 - error) is kept.
+
+**Measured in development:**
+- QAOA on Barabasi-Albert graphs, N = 20 and 40: ESP up to 1.61 times c45's.
+- 3-regular QAOA, n = 40, three layers (FakeFez): 1,460 two-qubit gates down to 1,081.
+
+**Measured on hardware (Addendum 455).** C47 was submitted where its circuit differed from c45's: qaoa_n20_p2, ba_n16,
+ba_n18 and tfim_n12. **Its ESP was the higher in all four; its F was lower in three.**
+
+| test | C47 F | c45 F |
+|---|---|---|
+| qaoa_n20_p2 | 0.379 | 0.425 |
+| ba_n16 | 0.297 | 0.284 |
+| ba_n18 | 0.066 | 0.078 |
+| tfim_n12 | 0.760 | 0.861 |
+
+Across the arms, F / ESP was 0.605 for C47, against 0.742 for c45 and 0.865 for Qiskit level 3. Item 82 lowers the
+gate count and lengthens the schedule. It is not proposed for release; c48 (Addendum 459) is built on c47 with item 83
+switchable.
+
+### 4. Where STEINER6's two-qubit gates go
+
+[`brk.py`](../../data/2026-10-12/c47_dev/brk.py) counts, per test, the mover's gadget CNOTs, its SWAPs and the lower
+bound sum 2 (w - 1) over the terms.
+
+- **QAOA, N = 40:** 455 SWAPs against 632 gadget CNOTs. Routing is the larger part.
+- **chem_n12** (random weight-2 to weight-6 strings): STEINER6's 353 two-qubit gates against the usual path's 230.
+  Every term is its own gadget, so there is no cancellation between neighbouring gadgets.
+
+Addendum 459 measures the same circuits by time instead of gate count, which is what HW1 pointed to.
+
+**Not established.** Nothing in this Addendum was predicted. The hardware numbers are Addendum 455's (one device, one
+day).
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

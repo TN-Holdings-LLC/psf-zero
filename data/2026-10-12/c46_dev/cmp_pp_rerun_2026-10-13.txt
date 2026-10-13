@@ -1,0 +1,16 @@
+adder_8.qasm Fez QK3 0.0316 (762) C46 0.0398 (782) PP 0.000326 (2090) 1.7s
+adder_8.qasm Torino QK3 0.0133 (752) C46 0.0174 (746) PP 0.000262 (1494) 1.8s
+hwb6.qasm Fez QK3 0.478 (213) C46 0.487 (206) PP 0.338 (321) 0.2s
+hwb6.qasm Torino QK3 0.398 (200) C46 0.396 (204) PP 0.23 (383) 0.2s
+mod5_4.qasm Fez QK3 0.837 (48) C46 0.855 (40) PP 0.837 (46) 0.1s
+mod5_4.qasm Torino QK3 0.772 (45) C46 0.783 (51) PP 0.751 (52) 0.1s
+rc_adder_6.qasm Fez QK3 0.508 (155) C46 0.535 (152) PP 0.325 (278) 0.2s
+rc_adder_6.qasm Torino QK3 0.327 (148) C46 0.384 (157) PP 0.184 (273) 0.3s
+qcla_mod_7.qasm Fez QK3 0.0275 (861) C46 0.0243 (885) PP 6.78e-05 (2503) 2.6s
+qcla_mod_7.qasm Torino QK3 0.00579 (868) C46 0.00741 (777) PP 1.42e-07 (3672) 2.3s
+gf2^4_mult.qasm Fez QK3 0.45 (209) C46 0.427 (225) PP 0.167 (513) 0.3s
+gf2^4_mult.qasm Torino QK3 0.323 (213) C46 0.302 (213) PP 0.109 (485) 0.4s
+ham15-low.qasm Fez QK3 0.032 (777) C46 0.0284 (787) PP 0.0144 (1209) 0.6s
+ham15-low.qasm Torino QK3 0.0169 (764) C46 0.0155 (782) PP 0.00181 (1354) 0.8s
+barenco_tof_5.qasm Fez QK3 0.633 (119) C46 0.658 (104) PP 0.705 (88) 0.1s
+barenco_tof_5.qasm Torino QK3 0.521 (117) C46 0.538 (110) PP 0.472 (142) 0.2s
