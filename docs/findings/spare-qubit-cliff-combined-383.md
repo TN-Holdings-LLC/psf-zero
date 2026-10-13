@@ -7271,6 +7271,64 @@ gates gives a higher fidelity on a real device is the question of HW2, part S (A
 
 ---
 
+<!-- ===== Addendum 460 (source: addendum_460.md) ===== -->
+
+> **Note added when merging:** HW2's predictions were fixed in a local file at 02:25:47 CEST and delivered with the kit; committed here before the run.
+
+## Addendum 460 -- Pre-registration of HW2 (to run 2026-10-13 on ibm_fez or ibm_marrakesh): (R) HW1 repeated on a different IBM device, with the estimate with idling as a prediction and a replication rule fixed in advance; (S) the same gate blocks in two orders (prototype c48, item 83 off and on), to ask whether a shorter schedule of the same gates gives a higher fidelity (2026-10-13)
+
+**Status: predictions fixed before any real-device step and committed before the run.** The prestatement was written
+in a local file first, as for HW1, and is committed here with the kit.
+
+- **The file:** [`data/2026-10-13/hw2_kit/HW2_preregistration.md`](../../data/2026-10-13/hw2_kit/HW2_preregistration.md).
+  - Fixed at 02:25:47 CEST on 2026-10-13, sha256 `7b31f068...`.
+  - Delivered to the owner in the kit, sha256 `afaca9de...`.
+- **The kit:** [`data/2026-10-13/hw2_kit/`](../../data/2026-10-13/hw2_kit/): the script
+  [`hw2_real.py`](../../data/2026-10-13/hw2_kit/hw2_real.py), three run scripts and Benchpress's four QAOA files.
+- **Seen before the file:**
+  - HW1 (Addenda 454-455);
+  - C48-VAL (Addendum 459);
+  - two full rehearsals on FakeFez with a noiseless simulator. The first showed that only one reading test was clearly
+    shorter for PSF-Zero there, so the two tfimP tests were added to part R before the file was fixed.
+- No real-device data from ibm_fez or ibm_marrakesh.
+
+**Design** (details in the file).
+
+- **Device rule:** of ibm_fez and ibm_marrakesh, the operational one with fewer pending jobs; neither, nothing runs.
+  ibm_kingston is not used.
+- **Part R:** HW1's nine tests and tfimP_n12, tfimP_n16 (HW1's TFIM after a fixed random ry layer, so that XEB can
+  score it). Qiskit level 3 against prototype c45 with `level3_candidate=False`, as in HW1. The seven reading tests are
+  those of Addendum 455.
+- **Part S:** prototype c48 with item 83 off (S0, the mover's order) and on (S1), on tfimP_n12, tfimP_n16, qaoa_n12_p2
+  and qaoa_n20_p2. A pair is submitted only where the two circuits differ.
+- **Estimates written into the manifest before submission (every circuit), from the device's Target at `prepare`:**
+  ESP, the duration, and the estimate with idling. The last is ESP x exp(-sum over active qubits of
+  (T - t_first) (1/(4 T1) + 1/(2 T2))): the form of Addendum 455's exploratory estimate, not refitted.
+- **One job:** every circuit twice (the second repeat in reverse order), 6,000 shots each, dynamical decoupling and
+  twirling off. `prepare` refuses a rough estimate above 300 s.
+- **Measure:** F, the normalised linear cross-entropy, as in HW1.
+
+**Predictions.**
+
+| ID | prediction |
+|---|---|
+| R1 | of the reading tests whose ESP ratio PSF / QK3 is >= 1.2, PSF's F >= QK3's on at most half |
+| R2 | rank correlation of ESP ratio and F ratio over the reading tests <= 0.3 |
+| R3 | the estimate with idling picks the same winner as F on >= 5 of 7 reading tests, and its rank correlation with the F ratio is above ESP's |
+| R4 | on every test (the seven and the two tfimP) whose PSF duration is <= 0.8 x QK3's, PSF's F >= QK3's (at least two such tests) |
+| R5 | Barabasi-Albert: PSF's F <= 1.05 x QK3's on >= 3 of 4 |
+| R6 | GHZ control: \|F ratio - 1\| <= 0.10 |
+| S1 | tfimP: S1's F > S0's on every pair (both the other way: refuted; split: ambiguous) |
+| S2 | tfimP: geometric mean F ratio S1 / S0 >= 1.05 |
+| S3, S4 | reported: the QAOA pairs; which estimate picked the device's winner on each pair |
+
+**Replication rule, fixed now.** HW1's finding is replicated if R1, R3 and R4 are all confirmed. Only then does it go
+into the README or a paper as a finding. Otherwise HW1 stays a single-device observation and is written so.
+
+**Results:** Addendum 461 (number reserved).
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
