@@ -1,0 +1,27 @@
+qaoa_n12_p2      Kingston  QK3  2q   146 ESP 0.647 dur   7.45 idle-est 0.3345 | vs QK3 ESP 1.000 dur 1.000 idle 1.000 | 0.2s
+qaoa_n12_p2      Kingston  C47  2q   134 ESP 0.662 dur   6.92 idle-est 0.3596 | vs QK3 ESP 1.023 dur 0.929 idle 1.075 exact 4.9e-17 | 0.6s
+qaoa_n12_p2      Kingston  C48  2q   134 ESP 0.662 dur   6.92 idle-est 0.3596 | vs QK3 ESP 1.023 dur 0.929 idle 1.075 exact 4.9e-17 | 0.6s
+qaoa_n20_p2      Kingston  QK3  2q   251 ESP 0.425 dur   7.09 idle-est 0.1683 | vs QK3 ESP 1.000 dur 1.000 idle 1.000 | 0.1s
+qaoa_n20_p2      Kingston  C47  2q   202 ESP 0.473 dur   6.02 idle-est 0.1848 | vs QK3 ESP 1.113 dur 0.849 idle 1.098 exact 5.6e-18 | 18.5s
+qaoa_n20_p2      Kingston  C48  2q   192 ESP 0.484 dur   4.69 idle-est 0.2325 | vs QK3 ESP 1.139 dur 0.661 idle 1.381 exact 8.7e-18 | 15.6s
+ba_n14           Kingston  QK3  2q   391 ESP 0.352 dur  17.60 idle-est 0.1059 | vs QK3 ESP 1.000 dur 1.000 idle 1.000 | 0.1s
+ba_n14           Kingston  C47  2q   305 ESP 0.433 dur  18.66 idle-est 0.0923 | vs QK3 ESP 1.230 dur 1.060 idle 0.872 exact 1.4e-17 | 1.0s
+ba_n14           Kingston  C48  2q   303 ESP 0.435 dur  18.72 idle-est 0.0922 | vs QK3 ESP 1.236 dur 1.064 idle 0.871 exact 1.8e-17 | 1.0s
+ba_n16           Kingston  QK3  2q   477 ESP 0.291 dur  19.98 idle-est 0.0655 | vs QK3 ESP 1.000 dur 1.000 idle 1.000 | 0.1s
+ba_n16           Kingston  C47  2q   364 ESP 0.364 dur  17.80 idle-est 0.0427 | vs QK3 ESP 1.251 dur 0.891 idle 0.651 exact 1.3e-17 | 2.2s
+ba_n16           Kingston  C48  2q   360 ESP 0.366 dur  16.20 idle-est 0.0630 | vs QK3 ESP 1.258 dur 0.811 idle 0.962 exact 1.2e-17 | 2.2s
+tfim_n12         Kingston  QK3  2q    82 ESP 0.737 dur   9.54 idle-est 0.2964 | vs QK3 ESP 1.000 dur 1.000 idle 1.000 | 0.0s
+tfim_n12         Kingston  C47  2q    64 ESP 0.774 dur   5.43 idle-est 0.5152 | vs QK3 ESP 1.050 dur 0.569 idle 1.738 exact 5.5e-16 | 0.6s
+tfim_n12         Kingston  C48  2q    66 ESP 0.768 dur   1.46 idle-est 0.6690 | vs QK3 ESP 1.042 dur 0.153 idle 2.257 exact 6.7e-16 | 0.6s
+tfim_n16         Kingston  QK3  2q   114 ESP 0.647 dur  13.26 idle-est 0.1485 | vs QK3 ESP 1.000 dur 1.000 idle 1.000 | 0.0s
+tfim_n16         Kingston  C47  2q    88 ESP 0.696 dur   7.29 idle-est 0.3625 | vs QK3 ESP 1.076 dur 0.550 idle 2.442 exact 3.8e-16 | 1.3s
+tfim_n16         Kingston  C48  2q    90 ESP 0.690 dur   1.46 idle-est 0.5877 | vs QK3 ESP 1.067 dur 0.110 idle 3.959 exact 4.0e-16 | 1.4s
+ghz_n12          Kingston  QK3  2q    11 ESP 0.872 dur   1.13 idle-est 0.7830 | vs QK3 ESP 1.000 dur 1.000 idle 1.000 | 0.0s
+ghz_n12          Kingston  C47  2q    11 ESP 0.872 dur   1.13 idle-est 0.7830 | vs QK3 ESP 1.000 dur 1.000 idle 1.000 exact 2.8e-16 | 0.1s
+ghz_n12          Kingston  C48  2q    11 ESP 0.872 dur   1.13 idle-est 0.7830 | vs QK3 ESP 1.000 dur 1.000 idle 1.000 exact 2.8e-16 | 0.1s
+heis_n12_r2      Kingston  QK3  2q   135 ESP 0.643 dur  16.19 idle-est 0.1410 | vs QK3 ESP 1.000 dur 1.000 idle 1.000 | 0.0s
+heis_n12_r2      Kingston  C47  2q   135 ESP 0.643 dur  16.00 idle-est 0.1423 | vs QK3 ESP 0.999 dur 0.988 idle 1.009 exact 4.9e-15 | 0.4s
+heis_n12_r2      Kingston  C48  2q   135 ESP 0.643 dur  16.00 idle-est 0.1423 | vs QK3 ESP 0.999 dur 0.988 idle 1.009 exact 4.9e-15 | 0.4s
+chem_n12_r1      Kingston  QK3  2q   230 ESP 0.579 dur  24.76 idle-est 0.1638 | vs QK3 ESP 1.000 dur 1.000 idle 1.000 | 0.1s
+chem_n12_r1      Kingston  C47  2q   230 ESP 0.566 dur  24.95 idle-est 0.1585 | vs QK3 ESP 0.977 dur 1.008 idle 0.967 exact 7.1e-16 | 0.8s
+chem_n12_r1      Kingston  C48  2q   230 ESP 0.566 dur  24.95 idle-est 0.1585 | vs QK3 ESP 0.977 dur 1.008 idle 0.967 exact 7.1e-16 | 0.9s

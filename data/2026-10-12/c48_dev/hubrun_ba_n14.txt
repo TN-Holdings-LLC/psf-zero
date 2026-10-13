@@ -1,0 +1,3 @@
+ba_n14       Kingston hubs 0 k 0: 2q  303 ESP 0.405 dur  18.72 us idle-est 0.1428 | vs none: dur 1.000 idle 1.000 | exact 1.8e-17 | mover makespan 195 | none | 0.7s
+ba_n14       Kingston hubs 1 k 1: 2q  350 ESP 0.454 dur  20.03 us idle-est 0.0661 | vs none: dur 1.070 idle 0.462 | exact 2.8e-17 | mover makespan 215 | hub L3 (deg 24) -> 1 holders | 0.7s
+ba_n14       Kingston hubs 1 k 2: 2q  385 ESP 0.387 dur  19.43 us idle-est 0.0524 | vs none: dur 1.038 idle 0.367 | exact 1.7e-17 | mover makespan 230 | hub L3 (deg 24) -> 2 holders | 4.6s

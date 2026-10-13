@@ -7141,6 +7141,136 @@ day).
 
 ---
 
+<!-- ===== Addendum 459 (source: addendum_459.md) ===== -->
+
+> **Note added when merging:** C48-VAL ran on 2026-10-12 after HW1 (Addendum 455); its predictions were fixed in a local file before the run. Recorded here, on 2026-10-13, with the prototype, the development scripts (in their repository form) and the data.
+
+## Addendum 459 -- C48-VAL: prototype 2026-10-12.c48 (changelog item 83: STEINER6's blocks re-emitted by list scheduling, only commuting blocks changing places): the same gates, the transverse-field Ising Trotter circuits 4 to 27 times shorter (16 of 16), never longer by more than 2% (64 of 64), exact; V1 refuted (12 of 64 pairs outside +-5% two-qubit gates, 8 of them with fewer); the Barabasi-Albert QAOA circuits unchanged (2026-10-12)
+
+**Status: the predictions were fixed before the run in a local file, not committed first** (as in Addenda 456-457).
+
+- **The file:** [`data/2026-10-12/c48_val/C48-VAL_preregistration.md`](../../data/2026-10-12/c48_val/C48-VAL_preregistration.md).
+  - Written at 15:40 CEST on 2026-10-12, sha256 `1372c28b...`, unchanged.
+  - It names the prototype (`0400100f...`), the tests (`3d54d659...`) and the run script as run (`c48_val.py`,
+    sha256 in the file).
+- **The script as committed.** [`benchmarks/c48_val.py`](../../benchmarks/c48_val.py) is the run script with its
+  workspace paths replaced by repository paths (the first lines say so). Its hash therefore differs from the file's.
+- **Seen before the run:** the development measurements of section 1 on FakeKingston, FakeFez and FakeTorino, on
+  overlapping circuits. C48-VAL's tests are not new circuits; what is new is the four devices and the fixed
+  predictions.
+
+### 1. Why: time, not gate count (development, after Addendum 455)
+
+HW1 found on ibm_kingston that PSF-Zero won where its circuit was shorter in time, not where its ESP was higher. The
+circuits submitted in HW1 were measured by time, with the day's calibration
+([`tsub_hw1_kingston.txt`](../../data/2026-10-12/c48_dev/tsub_hw1_kingston.txt),
+[`tsub.py`](../../data/2026-10-12/c48_dev/tsub.py)):
+
+- **two-qubit depth against the most loaded qubit's two-qubit count** (a lower bound on that depth): 1.2-1.8 times for
+  QAOA, 3.8-7.1 for TFIM;
+- **durations:** PSF 5.4 against QK3 9.5 us on tfim_n12, and 16-30 us for both on the Barabasi-Albert circuits.
+
+Inside STEINER6's mover (FakeKingston; [`probe.py`](../../data/2026-10-12/c48_dev/probe.py),
+[`probe2.py`](../../data/2026-10-12/c48_dev/probe2.py)) there were two different wastes.
+
+- **The Ising staircase.**
+  - The mover emits terms in the given order. The ZZ terms of a chain then run one after another, although they
+    commute: mover makespan 49.2 CX units on tfim_n12, against 13.2 for its most loaded qubit.
+  - This is an ordering defect, and item 83 is its fix.
+- **Barabasi-Albert QAOA: the hub.**
+  - The most connected logical qubit (24-42 two-qubit terms, a lower bound of 48-84 CX units) carries 54-92 gadget CNOTs
+    and 45-90 CX units of SWAPs.
+  - The mover's makespan is 198-328, about 4 times the hub's bound.
+  - This is routing, and reordering does not change it.
+
+**Tried for the hub and not kept** (development only):
+- **A time penalty on SWAPs** ([`mover3.py`](../../data/2026-10-12/c48_dev/mover3.py)): -20% on one test, +11% on
+  another, depending on its weight. That is tuning, not a construction.
+- **Copies of the hub's Z value on spare qubits** inside its diagonal segments
+  ([`hub.py`](../../data/2026-10-12/c48_dev/hub.py), [`hubrun_ba_n14.txt`](../../data/2026-10-12/c48_dev/hubrun_ba_n14.txt)):
+  exact (distribution difference 1.8e-17), but 30-46% more SWAPs and a longer schedule.
+
+### 2. The prototype
+
+[`patches/psf_compile_c48_2026-10-12/`](../../patches/psf_compile_c48_2026-10-12/), built from c47 by `make_c48.py` with
+`sched_code.py`. Changelog item 83 is in the file's header.
+
+- The movers record their blocks: one gadget per term, exactly exp(-i t c P) on its terminals and the identity on its
+  Steiner qubits, and one block per SWAP. A SWAP that joins the last gadget on its pair stays fused to it, so that
+  Qiskit's merge of the two survives.
+- `_st_reorder` re-emits the blocks by list scheduling. A block is ready once every earlier block that shares a qubit
+  with it, and does not commute with it as a unitary, has gone. The ready block that can start earliest goes next
+  (ties: the longer chain of dependent work after it).
+- Every non-commuting pair keeps its order, so the circuit's action is unchanged, and the gates are the same.
+- The new order is kept when its as-soon-as-possible schedule, in CX units, is shorter. `ST_SCHEDULE = False` gives
+  c47's output.
+- **A bug found and fixed before the file was written.** The recorded blocks first had the same attribute name as item
+  82's layer list, which emptied the mirrored circuit. The exactness check caught it. A test now guards it.
+
+**Checks before the run.** `test_c48.py`: 36 passed. They are c47's 27, plus nine for item 83:
+
+- the blocks cover every op once;
+- the same ops and the same unitary on non-commuting inputs and with SWAPs;
+- random X/Y/Z Pauli sets;
+- the Ising staircase shortened, with the compiled output exact;
+- `ST_SCHEDULE = False` gives c47's output;
+- the order is kept only when shorter;
+- item 82's layers are untouched;
+- the same output on every call.
+
+### 3. Run
+
+- **When and where:** 15:40-15:52 CEST on 2026-10-12, in Claude's cloud workspace. **Data:**
+  [`data/2026-10-12/c48_val/`](../../data/2026-10-12/c48_val/).
+- **Scope:** 16 tests on FakeFez, FakeMarrakesh, FakeKingston and FakeTorino.
+- **Tests:**
+  - HW1's nine;
+  - tfim_n20_r3, tfim_n40_r2, heis_n12_r2, heis2d_n16_r1, chem_n12_r1, qaoa3reg_n20_r3 and qaoa3reg_n40_r3
+    ([`gens.py`](../../data/2026-10-12/c48_dev/gens.py)).
+- **Arms:** QK3 (Qiskit level 3); C47 (c48 with `ST_SCHEDULE = False`); C48. Both PSF arms use
+  `level3_candidate=False`.
+- **Duration:** every gate as soon as its qubits are free, on the Target's gate durations.
+
+**Scoring, as fixed:**
+
+| ID | prediction | result |
+|---|---|---|
+| V1 | C48's two-qubit count within 5% of C47's, and ESP >= 0.97 x C47's, on every pair | **REFUTED**: 52 of 64. Of the 12 outside, 8 have fewer gates (tfim_n20_r3 154 to 100; tfim_n40_r2 236-238 to 160; qaoa_n20_p2 on FakeTorino 286 to 267). 4 have 4 more (tfim_n12 on FakeFez, FakeMarrakesh and FakeTorino, tfim_n16 on FakeTorino: +4.7 to +6.5%), with ESP -0.8 to -1.5% |
+| V2 | C48's duration <= 1.02 x C47's on >= 90% of pairs | **CONFIRMED**: 64 of 64 |
+| V3 | every Ising test and device: C48's duration <= 0.5 x C47's | **CONFIRMED**: 16 of 16 (0.037-0.268) |
+| V4 | every C48 output with <= 20 active qubits reproduces the input's distribution within 1e-6 | **CONFIRMED**: 52 of 52; largest 1.5e-8. On tfim_n20_r3 (FakeKingston, checked) the mover's reordered output is exact to 4e-15 and the 1e-8 comes from Qiskit level 3's own synthesis after it |
+| V5 | duration C48 / C47 (reported) | median 0.959, geometric mean 0.556, from 0.037 to 1.003 |
+| V6 | durations at or below QK3's (reported) | C47 38 of 64, C48 41 of 64; ESP at or above QK3's: C48 52 of 64 |
+| V7 | compile time C48 <= 1.5 x C47 + 2 s | **CONFIRMED** |
+| V8 | the same output on a second call | **CONFIRMED**: 8 of 8 |
+
+**The reading fixed in the file:** item 83 is worth carrying if V1, V3 and V4 are confirmed. V1 is refuted, by its
+letter, mostly in the direction it did not guard against: fewer gates.
+
+**By family** (duration C48 / C47; [`c48_val_report.txt`](../../data/2026-10-12/c48_val/c48_val_report.txt)):
+
+| family | duration C48 / C47 | note |
+|---|---|---|
+| Ising | 0.04-0.27 | tfim_n40_r2 on FakeKingston: 27.7 to 1.06 us; QK3 36.5 us |
+| 3-regular QAOA | 0.77-1.00 | |
+| Barabasi-Albert QAOA | 0.91-1.00 | |
+| heis, heis2d, chem | 1.00 | the product formula's own order forces the sequence, and the reorder keeps every non-commuting pair |
+| GHZ | 1.00 | |
+
+**Reading, two numbers.**
+
+- **Display:** two-qubit gates and ESP unchanged within a few percent; 35% fewer gates on the larger Ising circuits.
+- **Essential:**
+  - The Ising Trotter circuits become 4 to 27 times shorter, and 6 to 36 times shorter than Qiskit level 3's.
+  - Elsewhere the change is small (median 0.96).
+  - C48 is at or below Qiskit's duration on only 41 of 64 pairs. The remaining long circuits are routing-bound (BA
+    QAOA, 3-regular QAOA on some devices, heis2d), and item 83 does not touch routing.
+
+**Not established.** Durations are computed from fake devices' gate lengths. Whether a shorter schedule of the same
+gates gives a higher fidelity on a real device is the question of HW2, part S (Addendum 460).
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

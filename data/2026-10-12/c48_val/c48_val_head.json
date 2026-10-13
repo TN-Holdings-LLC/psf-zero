@@ -1,0 +1,29 @@
+{
+ "started": "2026-10-12 15:40:15 CEST",
+ "c48_sha256": "0400100f416421dba36c921fa3801f75c37e9e15ea39c22a6639cbc9db976d39",
+ "script_sha256": "3c37dd3615683d59a5d7ce1a3072155c0208cfdc63354362958d90841396320c",
+ "devices": [
+  "FakeFez",
+  "FakeMarrakesh",
+  "FakeKingston",
+  "FakeTorino"
+ ],
+ "tests": [
+  "qaoa_n12_p2",
+  "qaoa_n20_p2",
+  "ba_n14",
+  "ba_n16",
+  "ba_n18",
+  "ba_n20",
+  "tfim_n12",
+  "tfim_n16",
+  "ghz_n12",
+  "tfim_n20_r3",
+  "heis_n12_r2",
+  "heis2d_n16_r1",
+  "chem_n12_r1",
+  "qaoa3reg_n20_r3",
+  "qaoa3reg_n40_r3",
+  "tfim_n40_r2"
+ ]
+}
