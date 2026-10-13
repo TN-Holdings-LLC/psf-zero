@@ -7603,6 +7603,54 @@ Items 19 and 22 are safety improvements.
 
 ---
 
+<!-- ===== Addendum 466 (source: addendum_466.md) ===== -->
+
+> **Note added when merging:** HW2-PLUS's predictions were fixed and committed on 2026-10-13 before HW2's job existed; the predictors are computed after the run.
+
+## Addendum 466 -- Pre-registration of four additional predictors for HW2 (HW2-PLUS), fixed before HW2 runs: the noise simulation as soon as possible with the preparation error not double-counted (P1), the same with T2 / 2 while waiting (P2), a14's exact estimate (P3) and the state-blind exposure (P4); a predictor is carried into PSF-Zero only if HW2 finds it useful (2026-10-13)
+
+**Status: predictions fixed and committed before HW2's job exists.** The file:
+[`data/2026-10-13/hw2_plus/HW2_PLUS_preregistration.md`](../../data/2026-10-13/hw2_plus/HW2_PLUS_preregistration.md).
+
+**Why.**
+
+- **The review of `ns_sim.py`** (Addendum 465) raised three points: idle relaxation with an echo T2, ALAP assumed, and
+  the preparation error counted twice.
+- **The workplace's BA diagnosis** pointed at low-T2 qubits and at a state-blind exposure.
+- **The ASAP variant of NS1** ranked HW1 better (Addendum 464).
+- HW2's own predictors (R3 in Addendum 460, NS2 in Addendum 462) stay as fixed. These four are added beside them.
+
+**Code** (fixed now; the snapshot's calibration is read after the run):
+
+- [`benchmarks/ns_sim2.py`](../../benchmarks/ns_sim2.py): `ns_sim.py` plus three options, the schedule, the T2 factor
+  while waiting and preparation error on measured qubits. With its defaults it gives `ns_sim.py`'s numbers
+  ([`test_ns_sim2.py`](../../benchmarks/test_ns_sim2.py)).
+- [`benchmarks/snapshot_target.py`](../../benchmarks/snapshot_target.py): a Target from the calibration snapshot, for
+  a14's estimate.
+- [`benchmarks/hw2_predictors.py`](../../benchmarks/hw2_predictors.py): P1-P4 and their scoring.
+
+| ID | predictor |
+|---|---|
+| P1 | simulation as soon as possible, no preparation error on measured qubits, reported T2 while waiting |
+| P2 | as P1, T2 / 2 while waiting |
+| P3 | a14's estimate with exact reduced states (`patches/psf_ai_compile_a14_2026-10-13/`) |
+| P4 | sum over used qubits of (end - first gate) / T2 |
+
+**Predictions** on HW2's seven reading pairs:
+
+- **Q1:** at least one of P1-P4 is useful, meaning the device's winner on >= 5 of 7 and a rank correlation >= 0.5.
+- **Q2:** P2 ranks at least as well as P1 (unechoed dephasing).
+- **Q3:** P4 ranks at least as well as P3 (state-blind against state-aware).
+- **Reported:** every predictor's numbers, and part S.
+
+**Reading, fixed now.**
+
+- Only a predictor found useful on HW2 is carried into PSF-Zero's choices. Its HW1 numbers are shown beside, never
+  instead.
+- Four predictors are tried at once, and the record will say so when one of them succeeds.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
