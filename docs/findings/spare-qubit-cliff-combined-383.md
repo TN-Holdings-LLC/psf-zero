@@ -7927,6 +7927,32 @@ plan-v2 script that was not delivered.
 
 ---
 
+<!-- ===== Addendum 472 (source: addendum_472.md) ===== -->
+
+> **Note added when merging:** Holm-corrected reading of HW2's nine predictors, fixed before HW2.
+
+## Addendum 472 -- HW2: one multiplicity-corrected reading of all nine predictors (Holm over ESP, R3, NS2, P1-P4, P1c, P2c), fixed before HW2 runs; with seven pairs a predictor "works" only with a Spearman correlation of about +0.93 or more (2026-10-13)
+
+**Status: fixed and committed before HW2's job exists.** Files:
+
+- [`data/2026-10-13/hw2_plus/HW2_HOLM.md`](../../data/2026-10-13/hw2_plus/HW2_HOLM.md);
+- [`benchmarks/hw2_holm.py`](../../benchmarks/hw2_holm.py).
+
+**Rule.**
+
+- For each predictor, the one-sided exact permutation p of the Spearman correlation between predicted and measured
+  PSF / QK3 ratios on the seven reading pairs, computed with the workplace's fixed `hw2_within_test.py`.
+- Holm over all nine. "Works" means an adjusted p <= 0.05.
+- Every tool's own verdicts are kept and reported beside this reading.
+
+**Why now.** Nine predictors on seven pairs make a chance success likely. The workplace was asked for a multiplicity
+rule (request 12) and did not deliver one before HW2.
+
+**What it means in advance.** Only a near-perfect ranking (Spearman about +0.93 or more) can pass. A weaker success of
+one predictor will be reported as a lead for a later test, not as a result.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
