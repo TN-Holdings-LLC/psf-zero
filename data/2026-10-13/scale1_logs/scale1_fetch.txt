@@ -1,0 +1,17 @@
+2026-10-13T10:45:14+00:00 (2026-10-13 12:45:14 CEST) | platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | python 3.12.13 | qiskit 2.5.2
+  qiskit_aer 0.17.2
+  qiskit_ibm_runtime 0.49.0
+  psf_zero_core 2026-09-29.1
+SCRIPT /home/<user>/psf_zero_fresh_test/data/2026-10-13/scale1_kit/scale1_real.py 4b18ab35f09bea8cd4e057cbd17adbf2f38c2c81953162945b799e51d6541a5b
+FILE psf_compile.py 0e97c2e222d0fb3885be4ad4f30cf995d7d9fed7feb45005b9451be1b0169d6b
+FILE data/2026-10-13/scale1_kit/scale1_circuits.py 645627d3e2922e9127eb78642d38c901e2a1904fb5b3be5b01fee12f12860d56
+FILE benchmarks/psf_smart_layout.py 824530703fbe091d70643d28b58a69315d2c1dcb6a334ec39a46d5a618602c24
+qiskit_runtime_service.__init__:WARNING:2026-10-13 12:45:17,184: Instance was not set at service instantiation. Free and trial plan instances will be prioritized. Based on the following filters: (tags: None, region: us-east, eu-de), and available plans: (open), the available account instances are: open-instance. If you need a specific instance set it explicitly either by using a saved account with a saved default instance or passing it in directly to QiskitRuntimeService(). Alternatively, pass instance='auto' or save it to your account for auto-selection without warning.
+2026-10-13T10:45:18+00:00 (2026-10-13 12:45:18 CEST) job main db70ndo4qg6s73c5i9v0 status RUNNING
+2026-10-13T10:45:48+00:00 (2026-10-13 12:45:48 CEST) job main db70ndo4qg6s73c5i9v0 status RUNNING
+2026-10-13T10:46:19+00:00 (2026-10-13 12:46:19 CEST) job main db70ndo4qg6s73c5i9v0 status RUNNING
+2026-10-13T10:46:49+00:00 (2026-10-13 12:46:49 CEST) job main db70ndo4qg6s73c5i9v0 status DONE
+2026-10-13T10:46:51+00:00 (2026-10-13 12:46:51 CEST) saved scale1_raw_counts_main.json (81 results); usage {'qpu_charge_time_seconds': 56, 'value': 0.9173, 'unit': 'resource_units', 'status': 'complete', 'details': [{'value': 0.9173, 'unit': 'resource_units', 'metric': {'id': 'caffe3ca-729c-5750-8777-df63bbf8bfd9', 'value': 56}}]}
+2026-10-13T10:46:51+00:00 (2026-10-13 12:46:51 CEST) job F db70neclf4us73db2vqg status DONE
+2026-10-13T10:46:53+00:00 (2026-10-13 12:46:53 CEST) saved scale1_raw_counts_F.json (4 results); usage {'qpu_charge_time_seconds': 7, 'value': 0.1006, 'unit': 'resource_units', 'status': 'complete', 'details': [{'value': 0.1006, 'unit': 'resource_units', 'metric': {'id': 'caffe3ca-729c-5750-8777-df63bbf8bfd9', 'value': 7}}]}
+2026-10-13T10:46:53+00:00 (2026-10-13 12:46:53 CEST) saved all scale1 results

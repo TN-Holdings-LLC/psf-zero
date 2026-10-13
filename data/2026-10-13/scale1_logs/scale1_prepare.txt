@@ -1,0 +1,103 @@
+2026-10-13T10:43:01+00:00 (2026-10-13 12:43:01 CEST) | platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | python 3.12.13 | qiskit 2.5.2
+  qiskit_aer 0.17.2
+  qiskit_ibm_runtime 0.49.0
+  psf_zero_core 2026-09-29.1
+SCRIPT /home/<user>/psf_zero_fresh_test/data/2026-10-13/scale1_kit/scale1_real.py 4b18ab35f09bea8cd4e057cbd17adbf2f38c2c81953162945b799e51d6541a5b
+FILE psf_compile.py 0e97c2e222d0fb3885be4ad4f30cf995d7d9fed7feb45005b9451be1b0169d6b
+FILE data/2026-10-13/scale1_kit/scale1_circuits.py 645627d3e2922e9127eb78642d38c901e2a1904fb5b3be5b01fee12f12860d56
+FILE benchmarks/psf_smart_layout.py 824530703fbe091d70643d28b58a69315d2c1dcb6a334ec39a46d5a618602c24
+qiskit_runtime_service.__init__:WARNING:2026-10-13 12:43:04,588: Instance was not set at service instantiation. Free and trial plan instances will be prioritized. Based on the following filters: (tags: None, region: us-east, eu-de), and available plans: (open), the available account instances are: open-instance. If you need a specific instance set it explicitly either by using a saved account with a saved default instance or passing it in directly to QiskitRuntimeService(). Alternatively, pass instance='auto' or save it to your account for auto-selection without warning.
+qiskit_runtime_service.backends:WARNING:2026-10-13 12:43:04,588: Using instance: open-instance, plan: open
+device rule: [{'name': 'ibm_marrakesh', 'operational': True, 'status': 'active', 'pending': 0}]
+2026-10-13T10:43:07+00:00 (2026-10-13 12:43:07 CEST) compiling on ibm_marrakesh; elements with error >= 0.5: 31
+  L_n12    i0 PSF  2q   22 (logical   22) failed  0 ESP 0.84 pred 0.806 readout-only 0.89 dur  1.38 us exact True isa True
+  L_n12    i0 QK3  2q   22 (logical   22) failed  0 ESP 0.84 pred 0.806 readout-only 0.89 dur  1.38 us exact True isa True
+  L_n12    i0 QK3F 2q   22 (logical   22) failed  0 ESP 0.84 pred 0.806 readout-only 0.89 dur  1.38 us exact True isa True
+  L_n12    i1 PSF  2q   22 (logical   22) failed  0 ESP 0.839 pred 0.807 readout-only 0.89 dur  1.34 us exact True isa True
+  L_n12    i1 QK3  2q   22 (logical   22) failed  0 ESP 0.839 pred 0.807 readout-only 0.89 dur  1.34 us exact True isa True
+  L_n12    i1 QK3F 2q   22 (logical   22) failed  0 ESP 0.839 pred 0.807 readout-only 0.89 dur  1.34 us exact True isa True
+  L_n12    i2 PSF  2q   22 (logical   22) failed  0 ESP 0.84 pred 0.806 readout-only 0.89 dur  1.38 us exact True isa True
+  L_n12    i2 QK3  2q   22 (logical   22) failed  0 ESP 0.84 pred 0.806 readout-only 0.89 dur  1.38 us exact True isa True
+  L_n12    i2 QK3F 2q   22 (logical   22) failed  0 ESP 0.84 pred 0.806 readout-only 0.89 dur  1.38 us exact True isa True
+  L_n24    i0 PSF  2q   46 (logical   46) failed  0 ESP 0.609 pred 0.457 readout-only 0.704 dur  2.64 us exact True isa True
+  L_n24    i0 QK3  2q   46 (logical   46) failed  0 ESP 0.642 pred 0.492 readout-only 0.746 dur  2.66 us exact True isa True
+  L_n24    i0 QK3F 2q   46 (logical   46) failed  0 ESP 0.642 pred 0.492 readout-only 0.746 dur  2.66 us exact True isa True
+  L_n24    i1 PSF  2q   46 (logical   46) failed  0 ESP 0.609 pred 0.457 readout-only 0.704 dur  2.64 us exact True isa True
+  L_n24    i1 QK3  2q   46 (logical   46) failed  0 ESP 0.641 pred 0.493 readout-only 0.746 dur  2.65 us exact True isa True
+  L_n24    i1 QK3F 2q   46 (logical   46) failed  0 ESP 0.641 pred 0.493 readout-only 0.746 dur  2.65 us exact True isa True
+  L_n24    i2 PSF  2q   46 (logical   46) failed  0 ESP 0.608 pred 0.454 readout-only 0.704 dur  2.68 us exact True isa True
+  L_n24    i2 QK3  2q   46 (logical   46) failed  0 ESP 0.642 pred 0.491 readout-only 0.746 dur  2.68 us exact True isa True
+  L_n24    i2 QK3F 2q   46 (logical   46) failed  0 ESP 0.642 pred 0.491 readout-only 0.746 dur  2.68 us exact True isa True
+  L_n48    i0 PSF  2q   94 (logical   94) failed  0 ESP 0.298 pred 0.0581 readout-only 0.439 dur  5.18 us exact True isa True
+  L_n48    i0 QK3  2q   94 (logical   94) failed  0 ESP 0.333 pred 0.0585 readout-only 0.468 dur  5.14 us exact True isa True
+  L_n48    i0 QK3F 2q   94 (logical   94) failed  0 ESP 0.333 pred 0.0585 readout-only 0.468 dur  5.14 us exact True isa True
+  L_n48    i1 PSF  2q   94 (logical   94) failed  0 ESP 0.299 pred 0.0574 readout-only 0.439 dur  5.22 us exact True isa True
+  L_n48    i1 QK3  2q   94 (logical   94) failed  0 ESP 0.333 pred 0.0577 readout-only 0.468 dur  5.18 us exact True isa True
+  L_n48    i1 QK3F 2q   94 (logical   94) failed  0 ESP 0.333 pred 0.0577 readout-only 0.468 dur  5.18 us exact True isa True
+  L_n48    i2 PSF  2q   94 (logical   94) failed  0 ESP 0.298 pred 0.0575 readout-only 0.439 dur  5.22 us exact True isa True
+  L_n48    i2 QK3  2q   94 (logical   94) failed  0 ESP 0.333 pred 0.0562 readout-only 0.468 dur  5.25 us exact True isa True
+  L_n48    i2 QK3F 2q   94 (logical   94) failed  0 ESP 0.333 pred 0.0562 readout-only 0.468 dur  5.25 us exact True isa True
+  R2_n24   i0 PSF  2q   24 (logical   24) failed  0 ESP 0.763 pred 0.739 readout-only 0.828 dur  0.48 us exact True isa True
+  R2_n24   i0 QK3  2q   24 (logical   24) failed  0 ESP 0.727 pred 0.706 readout-only 0.801 dur  0.47 us exact True isa True
+  R2_n24   i0 QK3F 2q   24 (logical   24) failed  0 ESP 0.751 pred 0.724 readout-only 0.819 dur  0.49 us exact True isa True
+  R2_n24   i1 PSF  2q   28 (logical   28) failed  0 ESP 0.759 pred 0.734 readout-only 0.827 dur  0.51 us exact True isa True
+  R2_n24   i1 QK3  2q   28 (logical   28) failed  0 ESP 0.763 pred 0.742 readout-only 0.826 dur  0.48 us exact True isa True
+  R2_n24   i1 QK3F 2q   28 (logical   28) failed  0 ESP 0.74 pred 0.716 readout-only 0.811 dur  0.48 us exact True isa True
+  R2_n24   i2 PSF  2q   22 (logical   22) failed  0 ESP 0.774 pred 0.75 readout-only 0.829 dur  0.48 us exact True isa True
+  R2_n24   i2 QK3  2q   22 (logical   22) failed  0 ESP 0.749 pred 0.726 readout-only 0.806 dur  0.48 us exact True isa True
+  R2_n24   i2 QK3F 2q   22 (logical   22) failed  0 ESP 0.765 pred 0.737 readout-only 0.825 dur  0.48 us exact True isa True
+  R2_n48   i0 PSF  2q   40 (logical   40) failed  0 ESP 0.501 pred 0.451 readout-only 0.571 dur  0.50 us exact True isa True
+  R2_n48   i0 QK3  2q   40 (logical   40) failed  0 ESP 0.467 pred 0.416 readout-only 0.565 dur  0.48 us exact True isa True
+  R2_n48   i0 QK3F 2q   40 (logical   40) failed  0 ESP 0.473 pred 0.419 readout-only 0.569 dur  0.48 us exact True isa True
+  R2_n48   i1 PSF  2q   42 (logical   42) failed  0 ESP 0.405 pred 0.368 readout-only 0.558 dur  0.52 us exact True isa True
+  R2_n48   i1 QK3  2q   42 (logical   42) failed  0 ESP 0.464 pred 0.414 readout-only 0.564 dur  0.49 us exact True isa True
+  R2_n48   i1 QK3F 2q   42 (logical   42) failed  0 ESP 0.461 pred 0.414 readout-only 0.566 dur  0.49 us exact True isa True
+  R2_n48   i2 PSF  2q   40 (logical   40) failed  0 ESP 0.496 pred 0.449 readout-only 0.567 dur  0.51 us exact True isa True
+  R2_n48   i2 QK3  2q   40 (logical   40) failed  0 ESP 0.459 pred 0.417 readout-only 0.587 dur  0.48 us exact True isa True
+  R2_n48   i2 QK3F 2q   40 (logical   40) failed  0 ESP 0.465 pred 0.424 readout-only 0.584 dur  0.49 us exact True isa True
+  R2_n96   i0 PSF  2q   98 (logical   98) failed  0 ESP 0.0657 pred 0.0517 readout-only 0.137 dur  0.56 us exact True isa True
+  R2_n96   i0 QK3  2q   98 (logical   98) failed  0 ESP 0.0693 pred 0.0545 readout-only 0.135 dur  0.56 us exact True isa True
+  R2_n96   i0 QK3F 2q   98 (logical   98) failed  0 ESP 0.0751 pred 0.0598 readout-only 0.134 dur  0.52 us exact True isa True
+  R2_n96   i1 PSF  2q  100 (logical  100) failed  0 ESP 0.0553 pred 0.0437 readout-only 0.132 dur  0.56 us exact True isa True
+  R2_n96   i1 QK3  2q  100 (logical  100) failed  0 ESP 0.0719 pred 0.0576 readout-only 0.135 dur  0.52 us exact True isa True
+  R2_n96   i1 QK3F 2q  100 (logical  100) failed  0 ESP 0.0681 pred 0.0561 readout-only 0.134 dur  0.50 us exact True isa True
+  R2_n96   i2 PSF  2q  108 (logical  108) failed  0 ESP 0.0547 pred 0.0444 readout-only 0.111 dur  0.52 us exact True isa True
+  R2_n96   i2 QK3  2q  108 (logical  108) failed  3 ESP 0 pred 0 readout-only 0.0766 dur  0.55 us exact True isa True
+  R2_n96   i2 QK3F 2q  108 (logical  108) failed  0 ESP 0.0676 pred 0.0546 readout-only 0.158 dur  0.55 us exact True isa True
+  R2_n144  i0 PSF  REFUSED by the compiler: FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'  -> NOT SUBMITTED
+  R2_n144  i0 QK3  2q  140 (logical  140) failed  7 ESP 0 pred 0 readout-only 0.0121 dur  0.51 us exact True isa True
+  R2_n144  i0 QK3F REFUSED by the compiler: TranspilerError: 'Unable to translate the operations in the circuit: {("x", 1), ("s", 1), ("h", 1), ("z", 1), ("y", 1), ("sdg", 1), ("measure", 1)} to the backend\'s (or manually specified) target basis: {"reset", "de  -> NOT SUBMITTED
+  R2_n144  i1 PSF  2q  231 (logical  162) failed  0 ESP 0.00979 pred 0.000547 readout-only 0.0456 dur  2.69 us exact True isa True
+  R2_n144  i1 QK3  2q  261 (logical  162) failed 13 ESP 0 pred 0 readout-only 0.00549 dur  2.58 us exact True isa True
+  R2_n144  i1 QK3F REFUSED by the compiler: TranspilerError: 'Unable to translate the operations in the circuit: {("x", 1), ("s", 1), ("z", 1), ("h", 1), ("sdg", 1), ("measure", 1)} to the backend\'s (or manually specified) target basis: {"reset", "delay", "res  -> NOT SUBMITTED
+  R2_n144  i2 PSF  REFUSED by the compiler: FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'  -> NOT SUBMITTED
+  R2_n144  i2 QK3  2q  128 (logical  130) failed  2 ESP 0 pred 0 readout-only 0.0186 dur  0.52 us exact True isa True
+  R2_n144  i2 QK3F 2q  128 (logical  130) failed  0 ESP 0.0126 pred 0.00878 readout-only 0.0303 dur  0.52 us exact True isa True
+  R4_n24   i0 PSF  2q  107 (logical   50) failed  0 ESP 0.403 pred 0.215 readout-only 0.609 dur  3.32 us exact True isa True
+  R4_n24   i0 QK3  2q  114 (logical   50) failed  0 ESP 0.433 pred 0.263 readout-only 0.647 dur  3.12 us exact True isa True
+  R4_n24   i0 QK3F 2q  108 (logical   50) failed  0 ESP 0.441 pred 0.248 readout-only 0.658 dur  3.41 us exact True isa True
+  R4_n24   i1 PSF  2q   95 (logical   50) failed  0 ESP 0.367 pred 0.262 readout-only 0.648 dur  2.25 us exact True isa True
+  R4_n24   i1 QK3  2q   98 (logical   50) failed  0 ESP 0.551 pred 0.404 readout-only 0.74 dur  2.88 us exact True isa True
+  R4_n24   i1 QK3F 2q  110 (logical   50) failed  0 ESP 0.517 pred 0.367 readout-only 0.736 dur  3.22 us exact True isa True
+  R4_n24   i2 PSF  2q  137 (logical   56) failed  0 ESP 0.366 pred 0.159 readout-only 0.611 dur  5.36 us exact True isa True
+  R4_n24   i2 QK3  2q  148 (logical   56) failed  0 ESP 0.353 pred 0.162 readout-only 0.637 dur  4.92 us exact True isa True
+  R4_n24   i2 QK3F 2q  149 (logical   56) failed  0 ESP 0.472 pred 0.213 readout-only 0.716 dur  5.85 us exact True isa True
+  R4_n48   i0 PSF  2q  324 (logical  100) failed  0 ESP 0.0534 pred 0.00973 readout-only 0.34 dur  5.30 us exact True isa True
+  R4_n48   i0 QK3  2q  283 (logical  100) failed  0 ESP 0.0569 pred 0.0143 readout-only 0.357 dur  4.78 us exact True isa True
+  R4_n48   i0 QK3F 2q  283 (logical  100) failed  0 ESP 0.0764 pred 0.00863 readout-only 0.28 dur  5.17 us exact True isa True
+  R4_n48   i1 PSF  2q  246 (logical  100) failed  0 ESP 0.0851 pred 0.00764 readout-only 0.372 dur  6.14 us exact True isa True
+  R4_n48   i1 QK3  2q  251 (logical  100) failed  0 ESP 0.118 pred 0.0253 readout-only 0.351 dur  4.44 us exact True isa True
+  R4_n48   i1 QK3F 2q  264 (logical  100) failed  0 ESP 0.107 pred 0.0194 readout-only 0.431 dur  5.54 us exact True isa True
+  R4_n48   i2 PSF  2q  330 (logical   98) failed  0 ESP 0.0497 pred 0.00677 readout-only 0.321 dur  6.49 us exact True isa True
+  R4_n48   i2 QK3  2q  312 (logical   98) failed  0 ESP 0.0565 pred 0.006 readout-only 0.412 dur  6.69 us exact True isa True
+  R4_n48   i2 QK3F 2q  356 (logical   98) failed  0 ESP 0.0377 pred 0.004 readout-only 0.378 dur  7.10 us exact True isa True
+  xor_00  R4   2q   9 ESP 0.973 z_exact -0.99776 z_pred -0.9717 isa True failed 0
+  xor_01  R4   2q   9 ESP 0.973 z_exact +0.99776 z_pred +0.9762 isa True failed 0
+  xor_10  R4   2q   9 ESP 0.973 z_exact +0.99776 z_pred +0.9719 isa True failed 0
+  xor_11  R4   2q   9 ESP 0.973 z_exact -0.99776 z_pred -0.9744 isa True failed 0
+  xor_00  QK3  2q   9 ESP 0.973 z_exact -0.99776 z_pred -0.9717 isa True failed 0
+  xor_01  QK3  2q   9 ESP 0.973 z_exact +0.99776 z_pred +0.9762 isa True failed 0
+  xor_10  QK3  2q   9 ESP 0.973 z_exact +0.99776 z_pred +0.9719 isa True failed 0
+  xor_11  QK3  2q   9 ESP 0.973 z_exact -0.99776 z_pred -0.9743 isa True failed 0
+81 circuits in the main job, 4 in part F; 214000 shots; rough QPU estimate 192 s
+2026-10-13T10:45:03+00:00 (2026-10-13 12:45:03 CEST) manifest written before any submission: 85 circuits; device ibm_marrakesh; calibration 2026-10-13 12:22:34+02:00

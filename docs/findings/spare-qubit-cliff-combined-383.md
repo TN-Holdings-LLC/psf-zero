@@ -8100,6 +8100,97 @@ PSF-Zero's circuits more than Qiskit's: optimizing a measure inflates it.
 
 ---
 
+<!-- ===== Addendum 475 (source: addendum_475.md) ===== -->
+
+> **Note added when merging:** Results of SCALE1 version 3 and part X, run on the owner's PC on 2026-10-13; data in data/2026-10-13/scale1/.
+
+## Addendum 475 -- Results of SCALE1 version 3 (Addenda 470, 473, 474) and of part X on ibm_marrakesh: no arm resolved its known answer at 144 qubits; at 96, all three did on most instances. C1 refuted: PSF-Zero's signal width in R2 is 48 against 96 for both Qiskit arms, because of one 96-qubit instance where PSF's signal vanished (0.03%) and two refusals at 144. C2 not testable: Qiskit's only 96-qubit circuit on failed elements still kept half of PSF's signal. C3a and C3b confirmed at the threshold. The PennyLane-trained XOR classifier was correct on 4 of 4 for both compilers (M 0.922), as on ibm_kingston the day before (2026-10-13)
+
+**Status: results of a pre-registered real-device test; Clifford mirror circuits with a known answer; no claim of
+quantum advantage.** Times in CEST.
+
+**Run.**
+
+- Device ibm_marrakesh, fixed in version 2. Calibration 12:22 CEST; 31 elements with error >= 0.5.
+- Jobs `db70ndo4qg6s73c5i9v0` (main, 81 circuits) and `db70neclf4us73db2vqg` (part F, 4 circuits), 56 + 7 QPU
+  seconds.
+- Files:
+  - [`data/2026-10-13/scale1/`](../../data/2026-10-13/scale1/);
+  - [`data/2026-10-13/scale1_logs/`](../../data/2026-10-13/scale1_logs/), with local paths redacted after hashing;
+  - [`data/2026-10-13/SCALE1_SHA256SUMS.txt`](../../data/2026-10-13/SCALE1_SHA256SUMS.txt), checked (12 of 12).
+
+**Signal width** (the largest n whose three instances are all resolved, S >= 5 standard errors):
+
+| family | PSF | QK3 | QK3F |
+|---|---|---|---|
+| L (GHZ mirror) | 24 | 24 | 24 |
+| R2 (placement) | 48 | 96 | 96 |
+| R4 (routing) | 24 | 24 | 24 |
+
+**Largest cells, S (share of shots on the known answer):**
+
+| cell | PSF | QK3 | QK3F | predicted (ESP x idle) |
+|---|---|---|---|---|
+| R2 n=96, i0 | **0.0003** (not resolved) | 0.0165 | 0.0155 | 0.052-0.060 |
+| R2 n=96, i1 | 0.0183 | 0.0090 | 0.0153 | 0.044-0.058 |
+| R2 n=96, i2 | 0.0165 | 0.0088 (part F, 3 failed-element gates) | 0.0280 | 0.044-0.055 |
+| R2 n=144, i0-i2 | refused, 0.0000, refused | 0.0003, 0.0000, 0.0018 (all part F) | refused, refused, 0.0018 | <= 0.009 |
+| L n=48, i0-i2 | 0.008, 0.011, 0.033 | 0.008, 0.011, 0.008 | 0.013, 0.010, 0.012 | 0.056-0.059 |
+
+**Verdicts.**
+
+| ID | result | verdict |
+|---|---|---|
+| C1 | signal width PSF >= QK3 in L, R2, R4: L and R4 equal; R2 48 against 96 | REFUTED |
+| C2 | pairs with QK3 on failed elements and PSF resolved: one (R2 n=96 i2: QK3 0.0088, PSF 0.0165, ratio 0.53); at least two needed | NOT TESTABLE |
+| C3a | PSF >= QK3 where QK3 used no failed element: 11 of 18 | CONFIRMED |
+| C3b | PSF >= QK3F: 10 of 20 (exactly at the threshold) | CONFIRMED |
+| C4 | ESP x idle picked the winner on 6 of 11 pairs it called outside 0.9-1.1 | AMBIGUOUS |
+| X1, X2 | the XOR classifier: R4 4 of 4, M 0.9220 (predicted 0.9736); QK3 4 of 4, M 0.9216 | CONFIRMED (both arms) |
+
+**Reported.**
+
+- **Refusals.**
+  - The release refused R2 n=144 i0 and i2 (`FailedElementsError`, item 58). It removes failed couplers from the map
+    but not failed qubits, and a large circuit was then routed onto a failed qubit.
+  - QK3F failed on R2 n=144 i0 and i1 (`TranspilerError`). **That is this kit's fault, not Qiskit's:** the QK3F
+    Target dropped the failed qubits' gates but kept the qubits, and the layout put circuit qubits on them. FakeFez has
+    no failed qubits, so the rehearsal did not show it.
+- **Failed elements are not dead.** QK3's R2 n=96 i2 used three elements reported at error >= 0.5 and still returned
+  its answer at half PSF's rate.
+- **The device was worse than its calibration.** At 48-96 qubits S was one-fifth to one-half of the ESP x idle
+  prediction, in every arm.
+- **PSF's R2 n=96 i0 is unexplained.** S was 0.0003 against 0.016 for both Qiskit arms, with nearly equal predicted
+  values. Its Hamming profile is centred further from the answer (mean distance 6.1 against 4.3-4.6). This is a lead
+  for a placement check (drift, or a qubit that is bad but not reported as failed).
+- **X3, X4:** R4's M on ibm_marrakesh 0.922, on ibm_kingston the day before 0.924 (HW1) and 0.937 (Stage 2). R4 and
+  QK3 are equal here (0.922 / 0.922; the same nine two-qubit gates).
+
+**Reading** (fixed in Addendum 470).
+
+- The README sentence "a measurable known-answer signal where Qiskit's default call had none" needs C1 and C2
+  confirmed. C1 is refuted and C2 is not testable, so **nothing is claimed for scale.**
+- C3a and C3b put PSF-Zero level with Qiskit on clean placement problems (half of the pairs each way).
+- The PennyLane -> PSF-Zero -> IBM pipeline is correct on a second device.
+
+**Two numbers.**
+
+- **Display:** at 96 qubits PSF-Zero's signal was 1.9 times that of Qiskit's default call on failed couplers. The XOR
+  classifier was 4 of 4 again.
+- **Essential:**
+  - The scale claim failed.
+  - One PSF circuit lost its answer where both Qiskit arms kept theirs.
+  - The release refused the 144-qubit circuits.
+  - The failed-element guard bought half a signal, not the whole of it.
+
+**For development.**
+
+- The release should take failed qubits off the map together with failed couplers.
+- Look into the placement of R2 n=96 i0.
+- Give QK3F a Target without the failed qubits themselves.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
