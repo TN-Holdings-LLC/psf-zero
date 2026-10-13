@@ -70,3 +70,39 @@ such pairs, D1 and D2 are not testable.
   example leakage, or crosstalk tied to the schedule). Shorter schedules then stay valuable with decoupling on.
 
 **QPU:** about 40-60 s expected, within the remaining allowance after HW2. Runs only with the owner's go-ahead.
+
+## Version 2 (Addendum 469), fixed before any HW3 job
+
+Fixed: 2026-10-13 08:34:26 CEST (Europe/Zurich). `hw3_real.py` version 2, SHA-256 `b1dcb301b92ae4a9788cc9c6232c5f9e4883fdd4c1e65cd34776ef8425bc68f6`; all files in `SHA256SUMS`.
+
+**Seen before this change:** the workplace's review of this kit (2026-10-13, section 3), and nothing else from HW3.
+No HW3 job exists.
+
+**Why.** Version 1 selected D1/D2's pairs on the same pad measurements that D1 and D2 then compare. A pair whose pad
+ratio was pushed up by noise then enters more easily, and its dd ratio does not share that noise. Regression to the
+mean could therefore confirm D1 and D2 with no effect of decoupling.
+
+**What changes** (only the scoring in `hw3_real.py`; circuits, variants, job, shots and D3-D5 are unchanged):
+
+- **Selection, on repeat 1 only.** A pair enters D1 and D2 if, under pad in repeat 1, the shorter circuit's F exceeds
+  the longer's by more than the pair's largest repeat difference of the plain variant. The plain variant is separate
+  circuits, independent of the pad measurements.
+- **D1 and D2 are judged on repeat 2 only.**
+  - D1 is signed: ln ratio(dd) < ln ratio(pad), the shorter circuit's advantage smaller with decoupling.
+  - Version 1's form, |ln ratio(dd)| < |ln ratio(pad)|, is reported beside it.
+  - D2 is unchanged in form: F_long(dd) / F_long(pad) > F_short(dd) / F_short(pad).
+- Counts as before: at least 2 of 3 selected pairs (all, if fewer than 3); not testable with fewer than two.
+- Each judged value now rests on one repeat of 6,000 shots instead of two. Power is lower; the selection is clean.
+
+**Also stated now** (from the review):
+
+- dd adds X pulses with their own error, and the longer circuit gets more of them. D2 can fail from that cost even if
+  waiting error is real.
+- ALAP does not remove all waiting after a qubit's last gate. pad leaves that window undecoupled and dd decouples it,
+  which is the intended contrast.
+
+Checked before fixing:
+
+- the rehearsal's noiseless results rescored (no pair selected, as expected);
+- a synthetic copy in which only the longer circuits' pad results were degraded (all three selected; D1, D2 and D3
+  confirmed, as built).

@@ -625,23 +625,43 @@ def score(a):
     for x in ok:
         out.append(f"| {x['test']} | {x['short']} / {x['long']} | {x['r']['plain']:.3f} | {x['r']['pad']:.3f} | "
                    f"{x['r']['dd']:.3f} | {x['gain_long']:.3f} | {x['gain_short']:.3f} | {x['drift']:.4f} |")
-    # D1, D2 read only the pairs where time mattered without decoupling: the shorter circuit's F above the longer's
-    # (pad) by more than the pair's largest repeat difference
-    eff = [x for x in ok if F[(x["test"], x["short"], "pad")]["f"] - F[(x["test"], x["long"], "pad")]["f"] > x["drift"]]
-    d1 = sum(1 for x in eff if abs(math.log(x["r"]["dd"])) < abs(math.log(x["r"]["pad"])))
-    d2 = sum(1 for x in eff if x["gain_long"] > x["gain_short"])
+    # Version 2 (Addendum 469): D1, D2 select on repeat 1 and are judged on repeat 2 only, so that the noise that lets
+    # a pair in is not the noise that is then compared (the workplace's review, section 3). A pair is selected if,
+    # under pad in repeat 1, the shorter circuit's F exceeds the longer's by more than the pair's largest repeat
+    # difference of the plain variant (separate circuits, independent of pad).
+    def rep(test, arm, k, i):
+        rs = F[(test, arm, k)]["reps"]
+        return rs[i] if len(rs) > i else float("nan")
+    for x in ok:
+        t_, s_, l_ = x["test"], x["short"], x["long"]
+        x["drift_plain"] = max(abs(rep(t_, arm, "plain", 0) - rep(t_, arm, "plain", 1)) for arm in (s_, l_))
+        x["sel"] = rep(t_, s_, "pad", 0) - rep(t_, l_, "pad", 0) > x["drift_plain"]
+        v2 = {(arm, k): rep(t_, arm, k, 1) for arm in (s_, l_) for k in ("pad", "dd")}
+        x["rep2_ok"] = all(val > 0 for val in v2.values())
+        if x["rep2_ok"]:
+            x["r2"] = {k: v2[(s_, k)] / v2[(l_, k)] for k in ("pad", "dd")}
+            x["gain2_long"], x["gain2_short"] = v2[(l_, "dd")] / v2[(l_, "pad")], v2[(s_, "dd")] / v2[(s_, "pad")]
+    eff = [x for x in ok if x["sel"] and x["rep2_ok"]]
+    d1 = sum(1 for x in eff if math.log(x["r2"]["dd"]) < math.log(x["r2"]["pad"]))
+    d1abs = sum(1 for x in eff if abs(math.log(x["r2"]["dd"])) < abs(math.log(x["r2"]["pad"])))
+    d2 = sum(1 for x in eff if x["gain2_long"] > x["gain2_short"])
     d3 = sum(1 for x in ok if x["gain_long"] > 1.0)
     need = len(eff) if len(eff) < 3 else 2
     v = dict(D1="NOT TESTABLE" if len(eff) < 2 else ("CONFIRMED" if d1 >= need else "REFUTED"),
              D2="NOT TESTABLE" if len(eff) < 2 else ("CONFIRMED" if d2 >= need else "REFUTED"),
              D3="NOT TESTABLE" if not ok else ("CONFIRMED" if d3 == len(ok) else "REFUTED"))
-    out += ["", "### Predictions", "",
-            f"- pairs where time mattered without decoupling (pad: shorter above longer by more than the repeat "
-            f"difference): {len(eff)} of {len(ok)} ({', '.join(x['test'] for x in eff) or 'none'})",
-            f"- D1 (on those pairs, decoupling shrinks the shorter circuit's advantage, |ln ratio dd| < |ln ratio pad|, "
-            f"on >= {need} of {len(eff)}): {d1} -> {v['D1']}",
-            f"- D2 (on those pairs, decoupling helps the longer circuit more than the shorter, on >= {need} of "
-            f"{len(eff)}): {d2} -> {v['D2']}",
+    out += ["", "### Predictions (version 2: selected on repeat 1, judged on repeat 2)", "",
+            f"- pairs where time mattered without decoupling (pad, repeat 1: shorter above longer by more than the "
+            f"plain variant's repeat difference): {len(eff)} of {len(ok)} "
+            f"({', '.join(x['test'] for x in eff) or 'none'})",
+            "- repeat 2 on those pairs: " + ("; ".join(
+                f"{x['test']} ratio pad {x['r2']['pad']:.3f}, dd {x['r2']['dd']:.3f}, DD gain longer "
+                f"{x['gain2_long']:.3f}, shorter {x['gain2_short']:.3f}" for x in eff) or "none"),
+            f"- D1 (on those pairs, decoupling shrinks the shorter circuit's advantage, ln ratio dd < ln ratio pad, "
+            f"repeat 2, on >= {need} of {len(eff)}): {d1} -> {v['D1']}",
+            f"- D1, reported (the first version's form, |ln ratio dd| < |ln ratio pad|, repeat 2): {d1abs} of {len(eff)}",
+            f"- D2 (on those pairs, decoupling helps the longer circuit more than the shorter, repeat 2, on >= {need} "
+            f"of {len(eff)}): {d2} -> {v['D2']}",
             f"- D3 (decoupling raises the longer circuit's F, every pair): {d3} of {len(ok)} -> {v['D3']}",
             "- D4 (reported): F plain / F pad per circuit (the device's own scheduling against ALAP): " + "; ".join(
                 f"{t} {arm} {F[(t, arm, 'plain')]['f'] / F[(t, arm, 'pad')]['f']:.3f}" for (t, arm, k) in F

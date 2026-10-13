@@ -7776,6 +7776,43 @@ written before 08:12, before HW2.
 
 ---
 
+<!-- ===== Addendum 469 (source: addendum_469.md) ===== -->
+
+> **Note added when merging:** HW3 version 2, fixed before any HW3 job: D1/D2 select on repeat 1 and are judged on repeat 2.
+
+## Addendum 469 -- HW3 version 2, fixed before any HW3 job: D1 and D2 select their pairs on repeat 1 and are judged on repeat 2, closing a regression-to-the-mean loophole the workplace's review found; D1 signed, with the first version's form reported (2026-10-13)
+
+**Status: fixed and committed before any HW3 job.** The run still waits for the owner's go-ahead. Files:
+
+- [`data/2026-10-13/hw3_kit/HW3_preregistration.md`](../../data/2026-10-13/hw3_kit/HW3_preregistration.md), section
+  "Version 2";
+- [`hw3_real.py`](../../data/2026-10-13/hw3_kit/hw3_real.py), the scoring only;
+- `SHA256SUMS`.
+
+**Why.** Version 1 (Addendum 463) entered a pair into D1 and D2 when, under pad, the shorter circuit beat the longer
+by more than the repeat difference, and then compared the same pad numbers with dd. Pairs whose pad ratio was
+inflated by noise enter more easily. So D1 (the advantage shrinks with decoupling) and D2 (decoupling helps the longer
+circuit more) are both favoured with no effect at all. The finding is the workplace's (Addendum 467) and is correct.
+
+**Change.**
+
+- **Selection on repeat 1:** pad, shorter above longer by more than the plain variant's largest repeat difference.
+  The plain variant is separate circuits, independent of pad.
+- **D1 and D2 judged on repeat 2 only.** D1 is signed (ln ratio dd < ln ratio pad); the absolute form of version 1
+  is reported beside it.
+- Circuits, variants, job, shots, D3-D5 and the counting rule are unchanged.
+
+**Checks.**
+
+- The rehearsal's noiseless results, rescored: no pair is selected, as expected.
+- A synthetic copy with only the longer circuits' pad results degraded: three pairs selected, and D1, D2 and D3
+  confirmed, as built.
+
+**Cost.** Each judged number rests on one repeat (6,000 shots), so power is lower. The price of a clean selection
+is stated now.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
