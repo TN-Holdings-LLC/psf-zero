@@ -1,0 +1,15 @@
+qaoa_n12_p2  QK3  active 12 traj  128 F_sim 0.6438 (0.0281) F_real 0.4990 ESP 0.6624 dur 7.5 us  4.6 s
+qaoa_n12_p2  PSF  active 12 traj  128 F_sim 0.6631 (0.0242) F_real 0.4939 ESP 0.6975 dur 6.1 us  4.0 s
+tfim_n12     QK3  active 12 traj   64 F_sim 0.8597 (0.0346) F_real 0.7208 ESP 0.7598 dur 9.5 us  2.0 s
+tfim_n12     PSF  active 12 traj   64 F_sim 0.8402 (0.0311) F_real 0.8611 ESP 0.7929 dur 5.4 us  1.3 s
+ghz_n12      QK3  active 12 traj   64 F_sim 0.8617 (0.0315) F_real 0.8373 ESP 0.9023 dur 1.1 us  0.3 s
+ghz_n12      PSF  active 12 traj   64 F_sim 0.8617 (0.0315) F_real 0.8384 ESP 0.9023 dur 1.1 us  0.3 s
+ba_n14       PSF  active 14 traj  384 F_sim 0.2746 (0.0131) F_real 0.2052 ESP 0.4811 dur 16.2 us  88.8 s
+ba_n14       QK3  active 15 traj  256 F_sim 0.3528 (0.0173) F_real 0.2632 ESP 0.3742 dur 17.6 us  23.8 s
+ba_n16       QK3  active 16 traj  192 F_sim 0.3821 (0.0156) F_real 0.2800 ESP 0.2976 dur 20.0 us  36.7 s
+ba_n16       PSF  active 16 traj  128 F_sim 0.4273 (0.0213) F_real 0.2840 ESP 0.3983 dur 21.8 us  22.1 s
+ba_n18       QK3  active 18 traj  448 F_sim 0.2050 (0.0101) F_real 0.1049 ESP 0.2418 dur 23.0 us  348.9 s
+ba_n18       PSF  active 18 traj  320 F_sim 0.1703 (0.0094) F_real 0.0780 ESP 0.2535 dur 26.6 us  246.9 s
+ba_n20       QK3  active 20 traj  192 F_sim 0.3011 (0.0147) F_real 0.1741 ESP 0.1772 dur 31.0 us  847.6 s
+qaoa_n20_p2  QK3  active 21 traj  192 F_sim 0.4542 (0.0217) F_real 0.3536 ESP 0.4546 dur 7.1 us  457.1 s
+ba_n20       PSF  active 21 traj  304 F_sim 0.3085 (0.0154) F_real 0.1407 ESP 0.2168 dur 29.0 us  1046.0 s

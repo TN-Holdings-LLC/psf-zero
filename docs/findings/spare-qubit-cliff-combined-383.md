@@ -7473,6 +7473,55 @@ hardware for a reason that decoupling removes.
 
 ---
 
+<!-- ===== Addendum 464 (source: addendum_464.md) ===== -->
+
+> **Note added when merging:** Exploratory, run on 2026-10-13 after NS1 was scored; not a test of predictions.
+
+## Addendum 464 -- Exploratory, after NS1 (Addendum 462): the same noise simulation with every gate as soon as possible (qubits wait at the end, before the common measurement) ranks HW1's pairs far better than as late as possible: rank correlation +0.75 against 0.00, the device's winner on 4 of 7 against 3; tfim_n12's 1.20 win still unexplained. The scheduling assumption decides most of the ranking (2026-10-13)
+
+**Status: exploratory.** The variant was chosen after NS1 was scored. Its verdict labels (NS1a-d) are printed by the
+same scorer, but they are not predictions for this variant.
+
+**Why it was run.** The workplace's estimate a14 charges dephasing up to the measurement (as soon as possible), and
+ranked HW1's pairs better (4 of 6, +0.77) than NS1's simulation (as late as possible, 3 of 7, 0.00). The run here
+checks whether the schedule, rather than the form of the estimate, makes the difference.
+
+**Run.** `ns_sim.py` unchanged, with `method="asap"`: [`ns_hw1_asap.py`](../../data/2026-10-13/ns1_asap/ns_hw1_asap.py),
+04:55-07:34 CEST on 2026-10-13.
+- The run was interrupted before its last circuit (qaoa_n20_p2, PSF, 25 qubits). That circuit was run again alone
+  by [`ns_one_asap.py`](../../data/2026-10-13/ns1_asap/ns_one_asap.py), and its result was added to the others
+  ([`ns_hw1_asap.jsonl`](../../data/2026-10-13/ns1_asap/ns_hw1_asap.jsonl),
+  [`ns_hw1_score.md`](../../data/2026-10-13/ns1_asap/ns_hw1_score.md)).
+
+| test | ESP ratio | simulated, ALAP (NS1) | simulated, ASAP | device |
+|---|---|---|---|---|
+| qaoa_n12_p2 | 1.053 | 1.096 | 1.030 | 0.990 |
+| qaoa_n20_p2 | 1.053 | 0.992 | **1.136** | 1.202 |
+| ba_n14 | 1.286 | 0.884 | 0.778 | 0.780 |
+| ba_n16 | 1.339 | 1.006 | 1.118 | 1.014 |
+| ba_n18 | 1.048 | 1.026 | **0.831** | 0.744 |
+| ba_n20 | 1.224 | 0.858 | 1.025 | 0.808 |
+| tfim_n12 | 1.044 | 0.972 | 0.977 | 1.195 |
+
+- **Ranking.** Same winner as the device: ASAP 4 of 7, ALAP 3 of 7, ESP 3 of 7. Rank correlation with the device's
+  ratios: ASAP +0.75, ALAP 0.00, ESP -0.18.
+- **Magnitudes.** Device / simulation per arm: QK3 0.729, PSF 0.708.
+- **Cross-check of the workplace's table.** a14's estimate on HW1 was rerun here from its kit and reproduced exactly:
+  4 of 6, +0.77. a14 itself is recorded separately, when its revised kit arrives.
+
+**What it suggests** (not established):
+
+- **Most of the ranking that the time-aware estimates get right comes from qubits waiting at the end of the circuit**,
+  before the common measurement. There T1 relaxation changes the measured outcomes. Whether the device runs the
+  circuits that way is not known; HW3 (Addendum 463) measures it directly (D4: as compiled against explicit ALAP).
+- **tfim_n12's 1.20 win is not explained by either schedule** (0.97-0.98). There the hypothesis of a waiting error
+  beyond T1/T2 remains, and HW3's D1-D3 test it.
+- **NS2 stays as fixed (ALAP).** The ASAP variant may be run on HW2's circuits too; it would be exploratory.
+
+**Not established.** One device, seven pairs, a variant chosen after the fact.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
