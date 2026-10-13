@@ -7522,6 +7522,87 @@ checks whether the schedule, rather than the form of the estimate, makes the dif
 
 ---
 
+<!-- ===== Addendum 465 (source: addendum_465.md) ===== -->
+
+> **Note added when merging:** Written at the workplace on 2026-10-13 by another session (kit v2, 20 files, hashes checked against its MANIFEST, kept as data/2026-10-13/workplace/a14_kit_v2_MANIFEST.tsv) and committed here unchanged; a14 is not adopted.
+
+## Addendum 465 -- Workplace records of 2026-10-13 (exploratory): candidate psf_ai_compile a14 (items 19-22, idle-aware estimate), not adopted; its estimate picks HW1's winner on 5 of 7 pairs (+0.75), qaoa_n20_p2 included; on the Barabasi-Albert circuits PSF-Zero lost where it kept a low-T2 qubit in the circuit; an independent review of ns_sim.py (no coding error; two modelling points on idle time); a literature check (the published T2 is a Hahn echo); ESP's within-test correlation with the device -0.40 (95% range up to +0.16) (2026-10-13)
+
+**Status: exploratory, written at the workplace by another session and committed here unchanged.** Times in CEST.
+Nothing here was pre-registered except a14's estimate's form and the light-cone rule, each fixed and saved before it
+was computed (the files say when).
+
+**Files.**
+
+- [`patches/psf_ai_compile_a14_2026-10-13/`](../../patches/psf_ai_compile_a14_2026-10-13/): the candidate
+  (`psf_ai_compile.py`, built from the adopted front end a12 by `make_a14.py`), its tests (`test_a14.py`, 9 passed at
+  the workplace and here), and the records:
+  - `a14-design-2026-10-13.md`, the form, fixed at 04:12 CEST; section 6 records the relabelling of items 18-21 to
+    19-22, because a13 used item 18 (Addendum 370);
+  - `a14-exploratory-2026-10-13.md`;
+  - `a14-lightcone-rule-2026-10-13.md`, the approximation rule R6/16, fixed at 05:40 CEST;
+  - `a14-hw1-seven-pairs-2026-10-13.md`, the seven pairs and the BA diagnosis;
+  - `heron-idle-literature-2026-10-13.md`;
+  - the scripts and outputs (`hw1_check.py`, `req1_*`, `est_lc.py`, `ba_diag.*`, `sim_check.py`, `a14_predict.py`).
+- [`data/2026-10-13/workplace/ns_sim-review-2026-10-13.md`](../../data/2026-10-13/workplace/ns_sim-review-2026-10-13.md).
+- [`data/2026-10-13/workplace/esp-vs-chance-2026-10-13.md`](../../data/2026-10-13/workplace/esp-vs-chance-2026-10-13.md).
+  Its script was not part of the delivery.
+
+**a14** (the AI front end, at most 8 qubits; a12 plus four items):
+
+- **19.** Device-aware candidates.
+- **20.** A first-order, state-aware idle term (amplitude damping and pure dephasing while a qubit waits, from the
+  ideal reduced state). The formula was checked here: 0 for \|0>, t/T1 for \|1>, t/(2 T2) for \|+>.
+- **21.** The shortest-duration candidates are scored.
+- **22.** A failed-element guarantee.
+
+In noisy simulation of small circuits a14 is level with a12 (F ratio 1.0001): no measured gain for the front end.
+Items 19 and 22 are safety improvements.
+
+**a14's estimate on HW1** (exact reduced states, Aer, also for the 25-qubit circuits):
+
+| estimate | same winner as the device (7 pairs) | rank correlation |
+|---|---|---|
+| ESP | 3 | -0.18 |
+| a14 without idle | 3 | -0.39 |
+| a14 with idle | 5 | +0.75 |
+| a14 with idle, rule R6/16 | 5 | +0.64 |
+
+- The first six pairs were reproduced here exactly from the kit (Addendum 464).
+- The misses are qaoa_n12_p2 (a tie on the device) and ba_n14.
+
+**BA diagnosis.**
+
+- Use-weighted T1, T2 and CZ errors do not separate the arms.
+- In the three BA tests PSF-Zero lost, its arm kept one more low-T2 qubit (qubit 88, T2 20 us) in the circuit for its
+  whole length, and its exposure (sum of window / T2) was higher.
+- Exposure orders the three arms by F in both tests where three arms ran. Four tests, after the fact.
+- ESP does not see T2. PSF-Zero's placement therefore has no reason to avoid such a qubit.
+
+**The review of ns_sim.py.**
+
+- No coding error in readout, scheduling or the Kraus form; checked numerically.
+- **Modelling point 1:** idle relaxation uses the published T2, an echo time.
+- **Modelling point 2:** ALAP is an assumption; the hardware's timing without decoupling is not documented.
+- **Smaller:** the preparation error is counted twice on measured qubits (a few tenths of a per cent per qubit).
+- Addendum 466 pre-registers predictors that address all three before HW2 runs.
+
+**ESP against chance.**
+
+- On HW1's 18 usable circuits, analysed within each test, ESP's correlation with the device is -0.40. The
+  permutation test's two-sided p is 0.18, and the 95% range runs to +0.16.
+- 88% of the within-test variance is real, not shot noise.
+- ESP was HW1's pre-specified predictor, so this is a fair test of it on one device and day. The time-aware measures
+  in the same note were chosen after the data.
+
+**Reading, two numbers.**
+
+- **Display:** a14's estimate ranks HW1's pairs at +0.75, against ESP's -0.18.
+- **Essential:** all of this is one device, one day and seven pairs, examined after the fact. The decisive tests are
+  HW2 (Addenda 460, 462, 466) and HW3 (Addendum 463).
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
