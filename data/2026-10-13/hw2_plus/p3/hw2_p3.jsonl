@@ -1,0 +1,22 @@
+{"part": "R", "test": "qaoa_n12_p2", "arm": "QK3", "active": 12, "f_real": 0.2983322878273701, "P3": [0.26276659799225466, null], "engine": "numpy (Aer agrees, max diff 2.8e-15)", "secs": 1.3}
+{"part": "R", "test": "qaoa_n12_p2", "arm": "PSF", "active": 12, "f_real": 0.4171956117556792, "P3": [0.4034541463608362, null], "engine": "numpy (Aer agrees, max diff 2.7e-15)", "secs": 1.5}
+{"part": "R", "test": "tfim_n12", "arm": "QK3", "active": 12, "f_real": 1.1146374346719776, "P3": [0.45770163995511975, null], "engine": "numpy (Aer agrees, max diff 2.2e-14)", "secs": 1.3}
+{"part": "R", "test": "tfim_n12", "arm": "PSF", "active": 12, "f_real": 1.2886562315837593, "P3": [0.6674482761871819, null], "engine": "numpy (Aer agrees, max diff 2.7e-14)", "secs": 1.2}
+{"part": "S", "test": "tfimP_n12", "arm": "S0", "active": 12, "f_real": 0.6431960787039404, "P3": [0.5482636821757039, null], "engine": "numpy (Aer agrees, max diff 3.6e-15)", "secs": 1.2}
+{"part": "S", "test": "tfimP_n12", "arm": "S1", "active": 12, "f_real": 0.8339507760415361, "P3": [0.7237325728675796, null], "engine": "numpy (Aer agrees, max diff 2.6e-15)", "secs": 1.3}
+{"part": "S", "test": "qaoa_n12_p2", "arm": "S0", "active": 12, "f_real": 0.40391666756261296, "P3": [0.4034541463608362, null], "engine": "numpy (Aer agrees, max diff 2.7e-15)", "secs": 1.3}
+{"part": "S", "test": "qaoa_n12_p2", "arm": "S1", "active": 12, "f_real": 0.40548275185884747, "P3": [0.43314867954605335, null], "engine": "numpy (Aer agrees, max diff 3.6e-15)", "secs": 1.2}
+{"part": "R", "test": "ba_n14", "arm": "QK3", "active": 15, "f_real": 0.2034616340541131, "P3": [0.0364916823470368, null], "engine": "numpy (Aer agrees, max diff 5.7e-14)", "secs": 16.4}
+{"part": "R", "test": "ba_n16", "arm": "QK3", "active": 16, "f_real": 0.21794535208056298, "P3": [0.020902756424419106, null], "engine": "numpy (Aer agrees, max diff 3.2e-14)", "secs": 49.7}
+{"part": "S", "test": "tfimP_n16", "arm": "S0", "active": 16, "f_real": 0.502697458314521, "P3": [0.40971924000971577, null], "engine": "numpy (Aer agrees, max diff 1.9e-14)", "secs": 19.4}
+{"part": "S", "test": "tfimP_n16", "arm": "S1", "active": 16, "f_real": 0.5855561897755387, "P3": [0.6309206974521854, null], "engine": "numpy (Aer agrees, max diff 1.7e-14)", "secs": 9.0}
+{"part": "R", "test": "ba_n14", "arm": "PSF", "active": 18, "f_real": 0.22636079590577354, "P3": [0.047179444473774104, null], "engine": "numpy (Aer agrees, max diff 2.4e-14)", "secs": 60.8}
+{"part": "R", "test": "ba_n18", "arm": "QK3", "active": 18, "f_real": 0.07618078887163954, "P3": [0.0007256038275822563, null], "engine": "numpy (Aer agrees, max diff 1.5e-13)", "secs": 114.5}
+{"part": "R", "test": "ba_n18", "arm": "PSF", "active": 18, "f_real": 0.04494543859122034, "P3": [0.003814605802339782, null], "engine": "numpy (Aer agrees, max diff 7.0e-14)", "secs": 109.9}
+{"part": "R", "test": "ba_n16", "arm": "PSF", "active": 19, "f_real": 0.2837849746883344, "P3": [0.0297673704225143, null], "engine": "numpy (Aer agrees, max diff 1.1e-13)", "secs": 128.3}
+{"part": "R", "test": "qaoa_n20_p2", "arm": "PSF", "active": 20, "f_real": 0.16175986920974772, "P3": [0.13151246403012729, null], "engine": "numpy (Aer agrees, max diff 3.8e-14)", "secs": 119.1}
+{"part": "R", "test": "ba_n20", "arm": "QK3", "active": 20, "f_real": 0.09371598488620755, "P3": [5.6677148088484326e-05, null], "engine": "numpy (Aer agrees, max diff 1.4e-13)", "secs": 352.4}
+{"part": "S", "test": "qaoa_n20_p2", "arm": "S0", "active": 20, "f_real": 0.15747510514608057, "P3": [0.13151246403012729, null], "engine": "numpy (Aer agrees, max diff 3.8e-14)", "secs": 117.4}
+{"part": "S", "test": "qaoa_n20_p2", "arm": "S1", "active": 20, "f_real": 0.1436824883108183, "P3": [0.10445783484696848, null], "engine": "numpy (Aer agrees, max diff 5.2e-14)", "secs": 116.1}
+{"part": "R", "test": "qaoa_n20_p2", "arm": "QK3", "active": 21, "f_real": 0.27657786007192603, "P3": [0.11170499727306817, null], "engine": "numpy (Aer agrees, max diff 1.5e-13)", "secs": 327.0}
+{"part": "R", "test": "ba_n20", "arm": "PSF", "active": 23, "f_real": 0.025840245001709106, "P3": [8.060076176376717e-06, null], "engine": "numpy (Aer not run: it crashes on this circuit)", "secs": 455.5}

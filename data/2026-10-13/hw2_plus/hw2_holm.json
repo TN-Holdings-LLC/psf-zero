@@ -1,0 +1,97 @@
+{
+ "rows": [
+  {
+   "predictor": "ESP",
+   "n": 7,
+   "winners": 4,
+   "spearman": 0.42857142857142866,
+   "p_one": 0.1767857142857143,
+   "p_holm": 0.907142857142857,
+   "works": false
+  },
+  {
+   "predictor": "R3",
+   "n": 7,
+   "winners": 4,
+   "spearman": 0.4642857142857144,
+   "p_one": 0.15119047619047618,
+   "p_holm": 0.907142857142857,
+   "works": false
+  },
+  {
+   "predictor": "NS2",
+   "n": 7,
+   "winners": 5,
+   "spearman": 0.642857142857143,
+   "p_one": 0.06944444444444445,
+   "p_holm": 0.625,
+   "works": false
+  },
+  {
+   "predictor": "P1",
+   "n": 7,
+   "winners": 4,
+   "spearman": 0.14285714285714288,
+   "p_one": 0.39126984126984127,
+   "p_holm": 0.907142857142857,
+   "works": false
+  },
+  {
+   "predictor": "P2",
+   "n": 7,
+   "winners": 4,
+   "spearman": 0.3214285714285715,
+   "p_one": 0.2488095238095238,
+   "p_holm": 0.907142857142857,
+   "works": false
+  },
+  {
+   "predictor": "P3",
+   "n": 7,
+   "winners": 5,
+   "spearman": 0.6071428571428572,
+   "p_one": 0.08333333333333333,
+   "p_holm": 0.6666666666666666,
+   "works": false
+  },
+  {
+   "predictor": "P4",
+   "n": 7,
+   "winners": 4,
+   "spearman": 0.39285714285714296,
+   "p_one": 0.1978174603174603,
+   "p_holm": 0.907142857142857,
+   "works": false
+  },
+  {
+   "predictor": "P1c",
+   "n": 7,
+   "winners": 6,
+   "spearman": 0.39285714285714296,
+   "p_one": 0.1978174603174603,
+   "p_holm": 0.907142857142857,
+   "works": false
+  },
+  {
+   "predictor": "P2c",
+   "n": 7,
+   "winners": 4,
+   "spearman": 0.6071428571428572,
+   "p_one": 0.08333333333333333,
+   "p_holm": 0.6666666666666666,
+   "works": false
+  }
+ ],
+ "alpha": 0.05,
+ "order": [
+  "ESP",
+  "R3",
+  "NS2",
+  "P1",
+  "P2",
+  "P3",
+  "P4",
+  "P1c",
+  "P2c"
+ ]
+}

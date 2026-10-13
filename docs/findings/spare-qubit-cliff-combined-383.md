@@ -8191,6 +8191,123 @@ quantum advantage.** Times in CEST.
 
 ---
 
+<!-- ===== Addendum 476 (source: addendum_476.md) ===== -->
+
+> **Note added when merging:** HW2's additional predictors scored on the owner's PC and here (P3); development direction recorded.
+
+## Addendum 476 -- HW2's additional predictors scored (Addenda 462, 466, 468, 472): on ibm_marrakesh the calibration-based simulation NS2 ranked the pairs best (rank correlation +0.64, NS2b confirmed), P3 (a14's state-aware idle estimate) is "useful" (5 of 7, +0.61) and Q1, Q2, Q4, Q2c are confirmed, Q3 refuted. No predictor reaches the Holm-corrected bar fixed before the run. On ibm_kingston the same kind of simulation ranked at 0.00: no predictor has held on both devices (2026-10-13)
+
+**Status: scoring of predictions fixed before HW2 ran.** Times in CEST.
+
+**How they were computed.**
+
+- **P1, P2, P4, P1c and P2c** were run on the owner's PC with the fixed scripts (`hw2_predictors.py --only P1,P2,P4`,
+  `hw2_predictors_c.py`), uninterrupted.
+  - Output: [`data/2026-10-13/hw2_plus/pred_home/`](../../data/2026-10-13/hw2_plus/pred_home/) and
+    [`predc_home/`](../../data/2026-10-13/hw2_plus/predc_home/), logs in
+    [`hw2_plus/logs/`](../../data/2026-10-13/hw2_plus/logs/).
+  - The work container restarted three times during its own runs (it is reclaimed when the session idles). The partial
+    rows computed there agree with the owner's PC on 37 of 48 values exactly and on the other 11 within 0.3%, well
+    inside each value's standard error.
+  - The difference comes from the trajectory simulation: with the same seeds, the split of trajectories over threads
+    depends on the machine. **Correction:** an earlier statement that a resumed run gives identical rows holds only on
+    the same machine.
+- **P3** was computed here with [`benchmarks/hw2_p3.py`](../../benchmarks/hw2_p3.py), output in
+  [`hw2_plus/p3/`](../../data/2026-10-13/hw2_plus/p3/).
+  - `hw2_predictors.py`'s P3 uses Aer density-matrix saves, which end with a segmentation fault on HW2's largest
+    circuit (ba_n20 PSF, 23 active qubits).
+  - The same exact reduced states were computed with a numpy statevector. On the other 21 circuits Aer and numpy agree
+    to 1.5e-13. a14's estimate (`est_lc.estimate`) is unchanged.
+- **NS2** was run on the owner's PC with the fixed `ns_hw2.py`, uninterrupted. Output:
+  [`data/2026-10-13/ns2/owner_pc/`](../../data/2026-10-13/ns2/owner_pc/). The 25 rows computed here before the container
+  restarts agree within 0.01 (14 exactly).
+
+**Results on HW2's seven reading pairs (PSF / QK3).**
+
+| predictor | same winner | rank correlation | "useful" (>= 5 of 7 and >= 0.5) |
+|---|---|---|---|
+| ESP (reference) | 4 | +0.43 | - |
+| **NS2 (ALAP simulation, Addendum 462)** | **5** | **+0.64** | - |
+| P1 (ASAP simulation) | 4 | +0.14 | no |
+| P2 (P1, T2 / 2 while waiting) | 4 | +0.32 | no |
+| **P3 (a14, state-aware idle)** | **5** | **+0.61** | **yes** |
+| P4 (state-blind exposure) | 4 | +0.39 | no |
+| P1c (P1 with the window before the measurement charged) | 6 | +0.39 | no |
+| P2c (P2 with that window) | 4 | +0.61 | no |
+| *after the fact: 1 / duration ratio* | *7* | *+0.61* | - |
+
+**Verdicts.**
+
+| ID | statement | verdict |
+|---|---|---|
+| Q1 | at least one of P1-P4 is useful | CONFIRMED (P3) |
+| Q2 | P2 ranks at least as well as P1 (+0.32 against +0.14) | CONFIRMED |
+| Q3 | P4 ranks at least as well as P3 (+0.39 against +0.61) | REFUTED |
+| Q4 | P1c ranks at least as well as P1 (+0.39 against +0.14) | CONFIRMED |
+| Q2c | P2c ranks at least as well as P1c (+0.61 against +0.39) | CONFIRMED |
+| NS2a | same winner on >= 6 of 7: 5 | REFUTED |
+| NS2b | rank correlation >= 0.6: +0.64 (ESP +0.43) | CONFIRMED |
+| NS2c | F_sim within 0.5-2 x F_real on >= 80%: 17 of 20 | CONFIRMED |
+| NS2d | no arm bias: F_real / F_sim QK3 0.785, PSF 0.711, gap 0.099 < 0.153 | CONFIRMED |
+| Holm (Addendum 472) | a predictor "works" at adjusted p <= 0.05: best NS2, one-sided p 0.069, adjusted 0.63; P3 and P2c 0.083, adjusted 0.67 | NONE WORKS |
+
+**Part S** (S1 / S0, predicted against the device):
+
+- On both TFIM pairs, P3 predicted 1.32 and 1.54 against 1.30 and 1.17 on the device.
+- Every simulation predictor also gave S1 the win on TFIM.
+- ESP did not: it predicted 0.99 on both.
+
+**Holm table:** [`data/2026-10-13/hw2_plus/hw2_holm.md`](../../data/2026-10-13/hw2_plus/hw2_holm.md). P3's rows come from
+`hw2_p3.py` merged into `pred_merged.jsonl`.
+
+**Correction of Addendum 465** (the workplace's ESP probabilities from HW1):
+
+- P(ESP's correlation > 0) 0.08 and P(a 25-pair replication shows r > 0) 0.13 treated HW1's one device and day as
+  the true value everywhere. They left out the variation between devices and days.
+- On HW2 ESP's rank correlation was +0.43.
+- Those numbers describe HW1's device and day only.
+
+**Reading.**
+
+- **Device dependence dominates.**
+  - On ibm_kingston (HW1) the simulation ranked at 0.00 and ESP at -0.18.
+  - On ibm_marrakesh (HW2) the simulation ranked at +0.64, P3 at +0.61, duration at +0.61 and ESP at +0.43.
+  - No predictor fixed in advance has ranked well on both. On both devices, the simulation ranked at least as well as
+    ESP.
+- Charging the waiting time by physics, rather than leaving it out as ESP does, ranked better on this device:
+  - P3 and P2c reached +0.61 against ESP's +0.43;
+  - the state-aware form beat the state-blind one (Q3 refuted).
+- Seven pairs are too few to prove it. Four predictors were tried, plus P1c and P2c; the Holm bar fixed in advance is
+  not reached.
+- Duration alone, a predictor chosen after seeing the data, ranks the pairs as well as the best fixed one. The next
+  pre-registered test should put duration, gate count and ESP against each other on a new device.
+
+**Two numbers.**
+
+- **Display:** an estimate with idling picks the device's winner where ESP does not, on a second device (P3 5 of 7,
+  +0.61).
+- **Essential:**
+  - No predictor survives the correction fixed in advance.
+  - None has held on two devices; the same simulation went from 0.00 to +0.64.
+  - Ranking compiled circuits that differ by tens of per cent is decided on hardware, not by an estimate.
+
+**Development direction, decided by the owner after HW1 and HW2 (2026-10-13 evening).**
+
+- **Formula first.** PSF-Zero's own constructive parts won on hardware: STEINER6 and item 83's time-aware order.
+  The parts that lost were search-based or estimate-based: placement search, failed qubits found late, routing on
+  Barabasi-Albert graphs. Constructive methods come first; search stays only as a recorded fallback.
+- **Estimates are not judges.** Simulation and ESP gains of a few per cent did not carry over from one device to
+  another. They are used for correctness and for order-of-magnitude differences. Which compilation is better is
+  decided on hardware, by pre-registered tests.
+- **Make the winning area overwhelming first.**
+  - On FakeFez, c48 (item 83) compiles TFIM chains at 0.08-0.15 times Qiskit level 3's duration at n = 12-16 and
+    2-8 Trotter steps. Its duration does not grow with n.
+  - On TFIM, placement is already optimal: PSF's chain equals the best of all 5,916 and 15,784 chains under the
+    gate and readout weights.
+  - The Barabasi-Albert QAOA routing problem is set aside until a constructive form is computed to beat Qiskit.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
