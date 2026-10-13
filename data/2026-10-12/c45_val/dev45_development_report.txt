@@ -1,0 +1,23 @@
+complete 162 runnable 137 errors 0
+FakeAachen     n= 26 C45n/C44 1.000 C45n/QK3 1.109 C45/C44 1.014 C45/QK3 1.124  C45<0.95QK3 0  C45n<0.95C44 0
+FakeBoston     n= 28 C45n/C44 1.000 C45n/QK3 0.805 C45/C44 1.321 C45/QK3 1.064  C45<0.95QK3 0  C45n<0.95C44 0
+FakeFez        n= 19 C45n/C44 1.000 C45n/QK3 1.194 C45/C44 1.021 C45/QK3 1.219  C45<0.95QK3 1  C45n<0.95C44 0
+FakeKingston   n= 25 C45n/C44 1.000 C45n/QK3 1.162 C45/C44 1.033 C45/QK3 1.200  C45<0.95QK3 1  C45n<0.95C44 0
+FakeMarrakesh  n= 21 C45n/C44 1.000 C45n/QK3 1.183 C45/C44 1.074 C45/QK3 1.270  C45<0.95QK3 1  C45n<0.95C44 0
+FakeTorino     n= 18 C45n/C44 1.000 C45n/QK3 1.282 C45/C44 1.017 C45/QK3 1.304  C45<0.95QK3 1  C45n<0.95C44 0
+all            n=137 C45n/C44 1.000 C45n/QK3 1.090 C45/C44 1.085 C45/QK3 1.182  C45<0.95QK3 4  C45n<0.95C44 0
+
+bv       n= 18 C45n/C44 1.000 C45n/QK3 1.027 C45/C44 1.073 C45/QK3 1.102
+ghz      n= 12 C45n/C44 1.000 C45n/QK3 0.925 C45/C44 1.057 C45/QK3 0.977
+qaoa     n= 25 C45n/C44 1.000 C45n/QK3 1.511 C45/C44 1.011 C45/QK3 1.527
+qft      n= 37 C45n/C44 1.000 C45n/QK3 1.225 C45/C44 1.026 C45/QK3 1.257
+qv       n= 18 C45n/C44 1.000 C45n/QK3 1.010 C45/C44 1.025 C45/QK3 1.036
+random   n= 27 C45n/C44 1.000 C45n/QK3 0.807 C45/C44 1.322 C45/QK3 1.067
+median time C45/C44 1.44 C45n/C44 0.98 max C45 14.064
+L3C {'tried': 174, 'kept_level3': 81, 'unverified': 81, 'kept_psf': 81, 'failed_elements': 12}
+worst vs QK3 ('gen_ghz_n80', 'FakeTorino') 0.714 {'tried': 1, 'failed_elements': 1}
+worst vs QK3 ('gen_ghz_n80', 'FakeKingston') 0.893 {'tried': 1, 'kept_level3': 1, 'unverified': 1}
+worst vs QK3 ('gen_ghz_n80', 'FakeMarrakesh') 0.927 {'tried': 1, 'kept_level3': 1, 'unverified': 1}
+worst vs QK3 ('gen_ghz_n80', 'FakeFez') 0.935 {'tried': 1, 'kept_psf': 1}
+worst vs QK3 ('gen_bv_n100', 'FakeAachen') 0.978 {'tried': 1, 'kept_level3': 1, 'unverified': 1}
+worst vs QK3 ('gen_ghz_n30', 'FakeKingston') 0.987 {'tried': 1, 'kept_level3': 1, 'unverified': 1}

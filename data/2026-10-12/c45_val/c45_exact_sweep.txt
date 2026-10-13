@@ -1,0 +1,71 @@
+feynman/W-state.qasm 3 same (max difference 1.7e-15) level3
+feynman/barenco_tof_3.qasm 5 same (max difference 3.3e-15) level3
+feynman/barenco_tof_4.qasm 7 same (max difference 2.1e-15) level3
+feynman/hwb6.qasm 7 same (max difference 3.7e-15) level3
+feynman/inverseqft1.qasm 4 skipped (classically controlled)
+feynman/inverseqft2.qasm 4 skipped (classically controlled)
+feynman/mod5_4.qasm 5 same (max difference 2.1e-15) level3
+feynman/qec.qasm 5 skipped (classically controlled)
+feynman/qft.qasm 4 same (max difference 1.1e-15) level3
+feynman/qft_4.qasm 5 same (max difference 3.2e-15) level3
+feynman/qpt.qasm 1 same (max difference 3.3e-16)
+feynman/rb.qasm 2 same (max difference 5.0e-16)
+feynman/teleport.qasm 3 skipped (classically controlled)
+feynman/teleportv2.qasm 3 skipped (classically controlled)
+feynman/tof_3.qasm 5 same (max difference 2.0e-15) level3
+feynman/tof_4.qasm 7 same (max difference 1.3e-15) level3
+qaoa/qaoa_barabasi_albert_N3_3reps.qasm 3 same (max difference 1.3e-15) level3
+qaoa/qaoa_barabasi_albert_N4_3reps.qasm 4 same (max difference 1.2e-15) level3
+qaoa/qaoa_barabasi_albert_N5_3reps.qasm 5 same (max difference 5.6e-16) level3
+qaoa/qaoa_barabasi_albert_N6_3reps.qasm 6 same (max difference 4.0e-16) level3
+qaoa/qaoa_barabasi_albert_N7_3reps.qasm 7 same (max difference 6.0e-16) level3
+qasmbench-small/adder_n4/adder_n4.qasm 4 same (max difference 8.9e-16) level3
+qasmbench-small/basis_change_n3/basis_change_n3.qasm 3 same (max difference 2.4e-15)
+qasmbench-small/basis_trotter_n4/basis_test_n4.qasm 4 same (max difference 5.2e-15) level3
+qasmbench-small/basis_trotter_n4/basis_trotter_n4.qasm 4 same (max difference 2.3e-12) level3
+qasmbench-small/bell_n4/bell_n4.qasm 4 same (max difference 7.5e-16) level3
+qasmbench-small/cat_state_n4/cat_state_n4.qasm 4 same (max difference 3.3e-16) level3
+qasmbench-small/deutsch_n2/deutsch_n2.qasm 2 same (max difference 3.9e-16)
+qasmbench-small/dnn_n2/dnn_n2.qasm 2 same (max difference 4.9e-15)
+qasmbench-small/error_correctiond3_n5/error_correctiond3_n5.qasm 5 same (max difference 3.9e-15) level3
+qasmbench-small/fredkin_n3/fredkin_n3.qasm 3 same (max difference 6.1e-16) level3
+qasmbench-small/grover_n2/grover_n2.qasm 2 same (max difference 2.2e-15)
+qasmbench-small/hhl_n7/hhl_n7.qasm 7 DIFFERENT (max difference 1.3e-06) level3
+qasmbench-small/hs4_n4/hs4_n4.qasm 4 same (max difference 2.1e-15)
+qasmbench-small/inverseqft_n4/inverseqft_n4.qasm 4 skipped (classically controlled)
+qasmbench-small/ipea_n2/ipea_n2.qasm 2 skipped (classically controlled)
+qasmbench-small/iswap_n2/iswap_n2.qasm 2 same (max difference 1.1e-15)
+qasmbench-small/linearsolver_n3/linearsolver_n3.qasm 3 same (max difference 1.7e-15) level3
+qasmbench-small/lpn_n5/lpn_n5.qasm 5 same (max difference 7.8e-16) level3
+qasmbench-small/pea_n5/pea_n5.qasm 5 same (max difference 9.4e-16) level3
+qasmbench-small/qaoa_n3/qaoa_n3.qasm 3 same (max difference 9.4e-16) level3
+qasmbench-small/qaoa_n6/qaoa_n6.qasm 6 same (max difference 1.4e-15) level3
+qasmbench-small/qec_en_n5/qec_en_n5.qasm 5 same (max difference 1.4e-15) level3
+qasmbench-small/qec_sm_n5/qec_sm_n5.qasm 5 skipped (classically controlled)
+qasmbench-small/qft_n4/qft_n4.qasm 4 same (max difference 1.1e-15) level3
+qasmbench-small/qrng_n4/qrng_n4.qasm 4 same (max difference 4.4e-16)
+qasmbench-small/quantumwalks_n2/quantumwalks_n2.qasm 2 same (max difference 1.4e-15)
+qasmbench-small/sat_n7/sat_n7.qasm 7 same (max difference 1.2e-15) level3
+qasmbench-small/shor_n5/shor_n5.qasm 5 skipped (classically controlled)
+qasmbench-small/simon_n6/simon_n6.qasm 6 same (max difference 3.5e-16) level3
+qasmbench-small/teleportation_n3/teleportation_n3.qasm 3 same (max difference 6.1e-16) level3
+qasmbench-small/toffoli_n3/toffoli_n3.qasm 3 same (max difference 1.1e-15) level3
+qasmbench-small/variational_n4/variational_n4.qasm 4 same (max difference 2.4e-15) level3
+qasmbench-small/vqe_n4/vqe_n4.qasm 4 same (max difference 7.8e-16) level3
+qasmbench-small/vqe_uccsd_n4/vqe_uccsd_n4.qasm 4 same (max difference 4.4e-15) level3
+qasmbench-small/vqe_uccsd_n6/vqe_uccsd_n6.qasm 6 same (max difference 1.1e-14) level3
+qasmbench-small/wstate_n3/wstate_n3.qasm 3 same (max difference 1.7e-15) level3
+qft/qft_N002.qasm 2 same (max difference 5.6e-16)
+qft/qft_N003.qasm 3 same (max difference 1.1e-15) level3
+qft/qft_N004.qasm 4 same (max difference 1.4e-15) level3
+qft/qft_N005.qasm 5 same (max difference 1.1e-15) level3
+qft/qft_N006.qasm 6 same (max difference 5.0e-16) level3
+qft/qft_N007.qasm 7 same (max difference 7.4e-15) level3
+qv/qv_N002_12345.qasm 2 same (max difference 1.7e-15)
+qv/qv_N003_12345.qasm 3 same (max difference 1.9e-15)
+qv/qv_N004_12345.qasm 4 same (max difference 3.9e-15) level3
+qv/qv_N005_12345.qasm 5 same (max difference 5.7e-15) level3
+qv/qv_N006_12345.qasm 6 same (max difference 1.3e-15) level3
+qv/qv_N007_12345.qasm 7 same (max difference 1.3e-15) level3
+square-heisenberg/square_heisenberg_N4.qasm 4 same (max difference 1.2e-15) level3
+same 60, different 1; level 3's output 48

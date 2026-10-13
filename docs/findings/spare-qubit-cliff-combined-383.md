@@ -6933,6 +6933,115 @@ Qiskit level 3, C44 is 1.093 times on all runnable tests (124), but 0.803 on Fak
 
 ---
 
+<!-- ===== Addendum 457 (source: addendum_457.md) ===== -->
+
+> **Note added when merging:** C45-VAL ran on 2026-10-12 after C44-VAL and before HW1; its predictions were fixed in a local file before the run. Recorded here, on 2026-10-13, with its data.
+
+## Addendum 457 -- C45-VAL: prototype 2026-10-12.c45 (changelog items 78-80: Qiskit level 3 as a candidate under PSF-Zero's deterministic re-placement, scored at the routing stage; basis gates from a Target given alone): ESP 1.241 times Qiskit level 3's with Qiskit's own output as a candidate, 1.217 without; level 3's output returned on 63 of 144; PSF-Zero's own pipeline unchanged (144 of 144 by value); the proposed rule is met (2026-10-12)
+
+**Status: the predictions were fixed before the run in a local file, not committed first** (as in Addendum 456).
+
+- **The file:** [`data/2026-10-12/c45_val/C45-VAL_preregistration.md`](../../data/2026-10-12/c45_val/C45-VAL_preregistration.md).
+  - Written at 05:41 CEST on 2026-10-12, sha256 `677f6262...`, unchanged.
+  - The hashes of the files it names are in [`SHA256SUMS.txt`](../../data/2026-10-12/c45_val/SHA256SUMS.txt).
+- **Seen before the run:**
+  - a smoke run of 4 jobs;
+  - development on C44-VAL's tests (already used: [`dev45_development.jsonl`](../../data/2026-10-12/c45_val/dev45_development.jsonl),
+    [`dev45_development_report.txt`](../../data/2026-10-12/c45_val/dev45_development_report.txt));
+  - gen_random_n48 and gen_bv_n100 (C43-VAL's and C44-VAL's).
+- No test of C45-VAL was used in C41-VAL to C44-VAL.
+
+**What was found before the file** (in the file, section "What was found before this file"):
+
+- **Why Qiskit wins big on some circuits.** On gen_random_n48 (FakeBoston), Qiskit level 3's ESP is 0.029 with its
+  own VF2PostLayout and 5.5e-8 without it. c44 gave 2.8e-5. Qiskit's whole gain there is its re-placement right after
+  routing. c44's replacement of that pass (item 75) gave up at the routing stage on almost every circuit (any gate the
+  device does not run natively).
+- **Tried, not kept: the same routing-stage re-placement in PSF-Zero's own pipeline.**
+  - ESP 0.996 times c44's on 118 runnable development tests, and 0.547 on gen_bv_n100 (FakeTorino).
+  - PSF-Zero's routed circuits rarely have an isomorphic copy on better qubits.
+- **Tried, not kept: error-aware regions.** gen_random_n48 ESP 0.012 on FakeBoston (QK3 0.029); 0.0054 on FakeAachen
+  (QK3 0.0035); 0.0004 on FakeKingston (QK3 0.0033); 5-90 s per compile.
+- **A bug in releases 2026-10-11.3 and .4.** `compile_for_hardware(qc, target=t)` without `backend=` left the output
+  untranslated, because basis gates were taken from the Target only with `backend=`. Fixed by item 79.
+- **Exactness of c45's full call** ([`c45_exact_sweep.txt`](../../data/2026-10-12/c45_val/c45_exact_sweep.txt),
+  [`benchmarks/c45_exact_sweep.py`](../../benchmarks/c45_exact_sweep.py)): 61 Benchpress files of <= 7 qubits.
+  - 60 give the input's distribution to 1e-6.
+  - hhl_n7 differs by 1.3e-6. The cause is Qiskit level 3's output: level 3 removes rotations of about 1e-6 rad even
+    with `approximation_degree=1.0`. PSF-Zero's own output differs by 6e-8.
+
+**The prototype.** [`patches/psf_compile_c45_2026-10-12/`](../../patches/psf_compile_c45_2026-10-12/) (committed with
+Addendum 455, where it was HW1's PSF arm), built from c44 by `make_c45.py`:
+
+| item | what it does |
+|---|---|
+| 78 | item 75's re-placement scores the routing stage's gates by their translated cost (swap 3 native two-qubit gates, cx-like 1, others 2; never on failed elements; capped trials and calls). Only inside item 80's level-3 compile; PSF-Zero's own pipeline is c44's |
+| 79 | basis gates from a Target given alone |
+| 80 | with the device and no caller's map or layout (`level3_candidate="auto"`), Qiskit's level-3 preset on the device's Target, under items 75/78's re-placement, is a candidate. It is returned when its summed -ln(1 - error) is lower (a tie keeps PSF-Zero's); refused if it uses a failed element; checked by `_implements` only without measurements and at most 16 qubits ("unverified" otherwise) |
+
+**Checks before the run.** `test_c45.py`: 23 tests passed. They are c44's 15 on c45, plus items 78-80, and
+`level3_candidate=False` gives c44's output by value.
+
+**Run.**
+
+- **When and where:** 05:52-06:18 CEST on 2026-10-12, in Claude's cloud workspace.
+- **Script:** [`benchmarks/c45_val.py`](../../benchmarks/c45_val.py). **Data:**
+  [`data/2026-10-12/c45_val/`](../../data/2026-10-12/c45_val/).
+- **Scope:** 144 jobs, 24 tests on six devices (FakeTorino, FakeKingston, FakeMarrakesh, FakeFez, FakeAachen,
+  FakeBoston); no errors.
+- **Tests:**
+  - Benchpress QFT N = 17-44 (5), QAOA N = 16-65 (5), quantum volume N = 13-26 (4) and clifford_20;
+  - generated with seeds "C45-VAL|...": random circuits n = 14-52 (5), Bernstein-Vazirani n = 50, 90 and GHZ
+    n = 40, 100.
+- **Arms:**
+  - QK3 (Qiskit level 3);
+  - R4 (release 2026-10-11.4);
+  - C44;
+  - C45, and C45n (`level3_candidate=False`);
+  - C45 again in the same process.
+
+**Scoring, as fixed** (runnable: best ESP of the five >= 0.01; ratios are geometric means):
+
+| ID | prediction | Torino | Kingston | Marrakesh | Fez | Aachen | Boston | result |
+|---|---|---|---|---|---|---|---|---|
+| X1 | C45 outputs on a failed element: 0 | 0 | 0 | 0 | 0 | 0 | 0 | **CONFIRMED** |
+| X2 | C45's second call gives the same output | 24/24 | 24/24 | 24/24 | 24/24 | 24/24 | 24/24 | **CONFIRMED** |
+| X3 | ESP C45 / QK3 >= 1.10 (refuted < 1.05); tests below 0.98 x QK3's <= 10% (refuted > 20%) | 1.229; 1/13 | 1.117; 2/17 | 1.511; 0/17 | 1.163; 1/14 | 1.100; 0/19 | 1.370; 0/20 | **CONFIRMED**: 1.241; 4 of 100 |
+| X4 | ESP C45 / C44 >= 1.03 (refuted < 1.00); complete tests where C45 is below C44: 0 | 1.021; 0 | 1.019; 0 | 1.013; 0 | 1.022; 0 | 1.034; 0 | 1.009; 0 | **ambiguous**: 1.019; the count 0 confirmed |
+| X5 | C45n's output equals C44's by value | 24/24 | 24/24 | 24/24 | 24/24 | 24/24 | 24/24 | **CONFIRMED** |
+| X6 | median time C45 / C44 <= 2.0 (refuted > 2.5) | 1.33 | 1.35 | 1.38 | 1.36 | 1.47 | 1.43 | **CONFIRMED**: 1.36 |
+| X7 | level 3 kept / tried (unverified), reported | 6/24 (6) | 14/24 (14) | 9/24 (9) | 10/24 (10) | 10/24 (10) | 14/24 (14) | 63 / 144 (63) |
+
+**The proposed rule** (X1, X2 and X5 on every device; X4's count 0; X3 and X6 not refuted) **is met.**
+
+**By family** (runnable; ESP C45 / QK3, C45 / C44, C45n / QK3):
+
+| family | C45 / QK3 | C45 / C44 | C45n / QK3 | tests |
+|---|---|---|---|---|
+| QAOA | 1.653 | 1.006 | 1.644 | 17 |
+| random | 1.322 | 1.022 | 1.293 | 26 |
+| QFT | 1.250 | 1.008 | 1.240 | 18 |
+| Bernstein-Vazirani | 1.128 | 1.024 | 1.101 | 12 |
+| quantum volume | 1.015 | 1.025 | 0.991 | 16 |
+| GHZ | 0.987 | 1.039 | 0.946 | 11 |
+
+**Reading, two numbers** (as fixed in the file).
+
+- **Display:** ESP C45 / QK3 1.241, with Qiskit's output as a candidate.
+- **Essential:**
+  - PSF-Zero's own pipeline against Qiskit, C45n / QK3: 1.217.
+  - Qiskit's output is returned on 63 of 144 compiles (44%). For those, a user gets level 3's circuit under PSF-Zero's
+    re-placement; every one of them is "unverified", since all C45-VAL inputs are measured.
+  - Item 80 adds only 2% over PSF-Zero alone (1.241 against 1.217). Its value is a floor: GHZ and quantum volume, where
+    PSF-Zero alone is below Qiskit, come back to Qiskit's level.
+
+**Read later the same day.** Every ratio here is ESP. Addendum 455 (HW1, ibm_kingston) found that ESP does not rank
+PSF-Zero against Qiskit level 3 on a real device; item 80's choice uses the same measure.
+
+**Not established.** No hardware for c45 beyond HW1's PSF arm (Addendum 455), which ran with `level3_candidate=False`.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
