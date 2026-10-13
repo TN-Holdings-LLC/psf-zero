@@ -7813,6 +7813,81 @@ is stated now.
 
 ---
 
+<!-- ===== Addendum 470 (source: addendum_470.md) ===== -->
+
+> **Note added when merging:** SCALE1 kit and pre-registration (workplace design, revised here after an offline check), fixed before any SCALE1 job; runs only with the owner's go-ahead.
+
+## Addendum 470 -- SCALE1 pre-registration and kit, fixed before any real-device step: Clifford mirror circuits at 12-144 qubits with a known answer, PSF-Zero against Qiskit level 3's default call (QK3) and against Qiskit given a Target without failed elements (QK3F); no claim of quantum advantage. Offline, QK3F matched or beat PSF wherever QK3's loss came from failed elements (2026-10-13)
+
+**Status: fixed and committed before any SCALE1 job.** The run waits for the owner's go-ahead, after HW2.
+
+**Files.**
+
+- [`data/2026-10-13/scale1_kit/`](../../data/2026-10-13/scale1_kit/):
+  - [`SCALE1_preregistration.md`](../../data/2026-10-13/scale1_kit/SCALE1_preregistration.md);
+  - `scale1_real.py`;
+  - `scale1_circuits.py` (the workplace's file, unchanged);
+  - `87_scale1_prep.sh` (VPN ON), `88_scale1_run.sh` (VPN OFF), `89_scale1_record.sh` (VPN ON);
+  - `SHA256SUMS`.
+- The workplace's draft, unchanged:
+  [`data/2026-10-13/workplace/scale1-design-2026-10-13.md`](../../data/2026-10-13/workplace/scale1-design-2026-10-13.md).
+
+**What it is.**
+
+- Three arms on the device's Target:
+  - PSF: release 2026-10-11.4, `seed_transpiler=0`;
+  - QK3: `transpile(..., target=backend.target, optimization_level=3, seed_transpiler=0)`;
+  - QK3F: the same call, given a Target without elements of error >= 0.5.
+- 27 logical circuits in three families: L (GHZ mirror), R2 and R4 (random CZ layers, mirrored).
+- 81 circuits, 198,000 shots. Rough estimate 180 s; about 70 s by HW1's ratio. Circuits on failed elements go in a
+  separate job.
+- Every compiled circuit is checked at every width by a noiseless matrix-product-state simulation; the ideal
+  bitstring only.
+- The measure is S, the share of shots on the ideal bitstring.
+
+**Changes from the workplace's draft**, found offline on FakeFez before fixing:
+
+- **QK3F added.** Where QK3 lost by using failed couplers (R2 at 96 and 144 qubits), Qiskit given a Target without
+  them was predicted level with or better than PSF: 0.187 against 0.144 at 96, 0.048 against 0.040 at 144.
+- **R2 is a placement test, not a routing test.** Its pair graph is disjoint chains, which embed without SWAPs
+  except in one of three instances at 144.
+- **Exactness is checked at all widths**, not only up to 24 qubits.
+- **PSF is seeded.** Unseeded, the release gave three different outputs in three calls.
+- **The collapse check is relaxed** to at least half the logical two-qubit count. The draft's rule rejected a correct
+  instance in which CZ pairs cancel inside one half.
+
+**Predictions** (thresholds from the draft, C3b added):
+
+- **C1:** signal width PSF >= QK3 in L, R2 and R4.
+- **C2:** on failed-element pairs, S_QK3 <= 0.2 S_PSF.
+- **C3a:** PSF >= QK3 where QK3 is clean.
+- **C3b:** PSF >= QK3F.
+- **C4:** the fixed ESP x idle predictor picks the winner.
+- **C5:** reported.
+
+The expectation, stated in advance: C1 confirmed through the failed elements; C3a and C3b ambiguous or refuted, with
+PSF a little lower. Much of that gap is readout: PSF places on qubits with higher readout error. In R4, PSF routes
+with more two-qubit gates.
+
+**Reading, fixed now.** A README sentence about "a signal where Qiskit's default call had none" needs C1 and C2
+confirmed. It must carry C3b's result in the same sentence and the words "Clifford mirror circuits".
+
+**Also found and recorded:**
+
+- **Item 75 does not hold at 144 qubits.** Even with a seed, the release returns different placements from call to
+  call at that size, with equal ESP. The 2-second placement time budget is the likely cause.
+- **HW3 kit fix (separate commit):** `96_hw3_run.sh` referred to a kit-local `patches/` that the repository copy
+  lacks.
+
+**Reading, two numbers.**
+
+- **Display:** a 144-qubit circuit compiled by PSF-Zero keeps its answer where Qiskit's default call puts gates on
+  failed couplers.
+- **Essential:** given a clean Target, Qiskit does as well or better on these circuits. SCALE1 measures the guard
+  against failed elements and PSF's placement quality, not a general compiler advantage.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
