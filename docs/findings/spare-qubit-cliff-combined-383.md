@@ -7329,6 +7329,97 @@ into the README or a paper as a finding. Otherwise HW1 stays a single-device obs
 
 ---
 
+<!-- ===== Addendum 462 (source: addendum_462.md) ===== -->
+
+> **Note added when merging:** NS1 ran on 2026-10-13 in Claude's cloud workspace on HW1's data; its predictions were fixed before the simulation ran. NS2's predictions are committed here before HW2 runs. Addendum 461 is reserved for HW2's results.
+
+## Addendum 462 -- NS1: a Markovian noise simulation from the day's calibration (gate errors, T1/T2 during gates and while waiting, preparation and readout) does not rank PSF-Zero against Qiskit on HW1 either: the device's winner on 3 of 7 reading tests, rank correlation 0.00; its magnitudes are right within a factor of 2 (14 of 16) and PSF-Zero and Qiskit fall short of it alike. The two clear hardware wins, both much shorter circuits, are not predicted. With NS2's pre-registration for HW2 (2026-10-13)
+
+**Status: NS1's predictions were fixed before the simulation was run** (a local file, committed here). HW1's data
+were known; the simulation's output on them was not. **NS2 is fixed and committed before HW2 runs.**
+
+- **Files.**
+  - Prestatements: [`NS1_preregistration.md`](../../data/2026-10-13/ns1/NS1_preregistration.md) (fixed at 03:35:22
+    CEST, sha256 `82e40853...`) and [`NS2_preregistration.md`](../../data/2026-10-13/ns2/NS2_preregistration.md).
+  - Model: [`benchmarks/ns_sim.py`](../../benchmarks/ns_sim.py), with checks
+    [`benchmarks/test_ns_sim.py`](../../benchmarks/test_ns_sim.py) (6 passed).
+  - Runners: [`benchmarks/ns_hw1.py`](../../benchmarks/ns_hw1.py) and [`benchmarks/ns_hw2.py`](../../benchmarks/ns_hw2.py).
+  - Snapshot: [`benchmarks/ns_snapshot.py`](../../benchmarks/ns_snapshot.py), with its home-machine wrapper in
+    [`data/2026-10-13/ns2_kit/`](../../data/2026-10-13/ns2_kit/).
+  - NS1's data: [`data/2026-10-13/ns1/`](../../data/2026-10-13/ns1/).
+
+**Why.** ESP ranked the compilers wrongly on hardware (Addendum 455). Before using any other measure inside PSF-Zero,
+the question is whether a standard model built from the same calibration, now with time in it, ranks them right.
+
+**The model** (`ns_sim.py`'s docstring; not fitted):
+
+- **Schedule:** the compiled circuit as late as possible before a common measurement.
+- **Gates:** each gate followed by relaxation for its duration (T1, T2 of its qubits) and by depolarizing noise making
+  up the rest of the reported error.
+- **Waiting:** relaxation between gates.
+- **Preparation and readout:** the reported preparation and readout errors.
+- **Estimate:** XEB by quantum trajectories (Aer, explicit Kraus channels), each trajectory's exact output
+  distribution scored. Stopping rule: at least 64 trajectories, then until the standard error is <= max(0.01, 0.05 F),
+  3,000 trajectories or 40 minutes.
+- **Aer 0.17.2:** with the same channels appended as QuantumError instructions, the run failed ("Kraus is empty") on
+  some circuits and once crashed. The Kraus form is the same channel.
+
+**Run.** 03:35-04:51 CEST on 2026-10-13 (Claude's cloud workspace, two cores). HW1's PSF and QK3 circuits on the seven
+reading tests and GHZ (16), with the calibration CSV of 13:15 CEST on 2026-10-12
+([`ns_hw1_score.md`](../../data/2026-10-13/ns1/ns_hw1_score.md)).
+
+| test | ESP ratio PSF / QK3 | simulated F ratio | device F ratio | durations PSF / QK3 (us) |
+|---|---|---|---|---|
+| qaoa_n12_p2 | 1.053 | 1.096 | 0.990 | 6.1 / 7.5 |
+| qaoa_n20_p2 | 1.053 | 0.992 | **1.202** | 5.0 / 7.1 |
+| ba_n14 | 1.286 | 0.884 | 0.780 | 16.2 / 17.6 |
+| ba_n16 | 1.339 | 1.006 | 1.014 | 21.8 / 20.0 |
+| ba_n18 | 1.048 | 1.026 | 0.744 | 26.6 / 23.0 |
+| ba_n20 | 1.224 | 0.858 | 0.808 | 29.0 / 31.0 |
+| tfim_n12 | 1.044 | 0.972 | **1.195** | 5.4 / 9.5 |
+
+| ID | prediction | result |
+|---|---|---|
+| NS1a | same winner as the device on >= 6 of 7 | **REFUTED**: 3 of 7 (ESP: 3 of 7) |
+| NS1b | rank correlation of simulated and device F ratios >= 0.6 | **REFUTED**: 0.00 (ESP: -0.18) |
+| NS1c | simulated F within 0.5-2 x the device's on >= 80% | **CONFIRMED**: 14 of 16 (outside: ba_n18, both arms, 2.3 and 3.2 times) |
+| NS1d | F_real / F_sim per arm: \|ln(PSF / QK3)\| < 0.153 | **CONFIRMED**: QK3 0.696, PSF 0.678 (gap 0.025) |
+
+**What it shows.**
+
+- **Magnitudes are roughly right.** The model is optimistic by about 30% on average (device / model 0.68-0.70) and by
+  2-3 times on ba_n18.
+- **The model does not separate PSF-Zero from Qiskit.** Unlike ESP, it does not overstate PSF-Zero more than Qiskit
+  (NS1d), but it ranks the pairs no better than ESP (NS1a, NS1b).
+- **The two clear hardware wins are the decisive cases.** qaoa_n20_p2 and tfim_n12 both won by 1.20 on the device.
+  Both circuits are much shorter than Qiskit's (0.70 and 0.57 of its duration), and the model gives them 0.99 and 0.97.
+  - In the model, a few microseconds less waiting is worth a few percent, at T1 and T2 of 100-300 us.
+  - On the device it was worth 20%.
+- **So the device is more sensitive to time than relaxation explains.** The run had dynamical decoupling and twirling
+  off. An error that grows with idle time faster than T1/T2 relaxation would do this: a coherent error while waiting,
+  such as residual ZZ coupling between neighbours or detuning. This is a hypothesis, not established here.
+
+**What it changes.**
+
+- **A Markovian model of the reported numbers is not used in PSF-Zero's choices.** ESP is not used either, as far as
+  ranking against Qiskit goes.
+- **The direction of item 83 (shorter schedules) is not undermined.** The cases it targets are those the model
+  underrates.
+- **The next hardware question is dynamical decoupling on against off** on the same circuits. If waiting errors are
+  coherent, decoupling should shrink the advantage of the shorter circuits. This is to be pre-registered separately; it
+  is not part of HW2.
+
+**NS2 (pre-registered here, run after HW2):**
+
+- The same code on HW2's circuits, with the device's calibration saved by `92s_ns_snapshot.sh` right after HW2's
+  `prepare` (VPN off, read-only, no QPU time).
+- The same four predictions (NS2a-d) and a reported NS2e on part S.
+- If NS2a and NS2b are refuted again, the conclusion above holds on two devices and two days.
+
+**Not established.** One device's data (HW1), seven pairs; the hypothesis about coherent waiting errors.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
