@@ -8011,6 +8011,95 @@ can be routed onto a failed qubit and then refused.
 
 ---
 
+<!-- ===== Addendum 461 (source: addendum_461.md) ===== -->
+
+> **Note added when merging:** Results of HW2 (Addendum 460), run on the owner's PC on 2026-10-13; data in data/2026-10-13/hw2/.
+
+## Addendum 461 -- Results of HW2 (Addendum 460) on ibm_marrakesh: HW1's finding is NOT replicated by the pre-registered rule (R4 confirmed; R1 and R3 refuted: ESP ranked the pairs reasonably on this device, +0.43). Where PSF-Zero's circuit was at least 20% shorter it won on every test, up to 2.34 times. Item 83 alone (the same gate blocks in a time-aware order) raised F by 1.30 and 1.17 times on the TFIM pairs (S1, S2 confirmed). In every reading pair the shorter circuit won (7 of 7, after the fact) (2026-10-13)
+
+**Status: results of a pre-registered real-device test.** Times in CEST.
+
+**Run.**
+
+- Device ibm_marrakesh, chosen by the fixed rule (pending jobs 2 against ibm_fez's 7). Calibration 2026-10-13
+  11:37 CEST.
+- Job `db702a2mb58s738chiqg`: 60 circuits, 360,000 shots, 102 QPU seconds (the rough estimate was 240 s).
+- Submitted 12:00:09 CEST; prestatement SHA-256 `7b31f068...`.
+- Files:
+  - [`data/2026-10-13/hw2/`](../../data/2026-10-13/hw2/): manifest, circuits, raw counts, score, calibration snapshot;
+  - [`data/2026-10-13/hw2_logs/`](../../data/2026-10-13/hw2_logs/), with local paths redacted after hashing;
+  - [`data/2026-10-13/HW2_SHA256SUMS.txt`](../../data/2026-10-13/HW2_SHA256SUMS.txt), checked on arrival (12 of 12).
+
+**Part R, PSF-Zero (c45) against Qiskit level 3**
+
+Ratios are PSF / QK3. Duration is as compiled on the live Target. F is the normalised linear XEB, mean of two
+repeats. HW1's F ratio is from ibm_kingston, 2026-10-12.
+
+| test | duration ratio | two-qubit ratio | ESP ratio | idle-est ratio | F ratio | HW1's F ratio |
+|---|---|---|---|---|---|---|
+| qaoa_n12_p2 | 0.982 | 0.966 | 1.156 | 1.429 | 1.398 | 0.990 |
+| qaoa_n20_p2 | 1.079 | 0.869 | 1.010 | 0.369 | 0.585 | 1.202 |
+| ba_n14 | 0.898 | 0.734 | 1.505 | 0.244 | 1.113 | 0.780 |
+| ba_n16 | 0.984 | 0.851 | 1.684 | 0.583 | 1.302 | 1.014 |
+| ba_n18 | 1.177 | 0.901 | 1.446 | 4.383 | 0.590 | 0.744 |
+| ba_n20 | 1.162 | 0.955 | 1.155 | 0.029 | 0.276 | 0.808 |
+| tfim_n12 | 0.565 | 0.780 | 1.056 | 1.873 | 1.156 | 1.195 |
+| tfimP_n12 | 0.565 | 0.780 | 1.052 | 1.766 | 1.353 | - |
+| tfimP_n16 | 0.552 | 0.772 | 1.078 | 2.105 | 2.344 | - |
+| ghz_n12 (control) | 1.000 | 1.000 | 1.000 | 1.000 | 0.995 | - |
+
+**Verdicts** (Addendum 460):
+
+| ID | result | verdict |
+|---|---|---|
+| R1 | of the 3 tests with ESP ratio >= 1.2, PSF won 2 | REFUTED |
+| R2 | ESP's rank correlation +0.43 (HW1: -0.18) | REFUTED |
+| R3 | the idle-aware estimate: same winner 4 of 7, rank correlation +0.46 | REFUTED |
+| R4 | the 3 tests with PSF's duration <= 0.8 x QK3's: PSF won all three (1.16, 1.35, 2.34) | CONFIRMED |
+| R5 | Barabasi-Albert: PSF <= 1.05 x QK3 on 2 of 4 | REFUTED |
+| R6 | GHZ control 0.995 | CONFIRMED |
+
+**Replication (R1, R3 and R4 all confirmed): NOT REPLICATED.** By the rule fixed before the run, HW1's statement
+stays a single-device observation: "ESP mis-ranks PSF-Zero against Qiskit, and an idle-aware estimate ranks better".
+It goes into neither the README nor a paper.
+
+**Part S, item 83 on (S1) against off (S0): the same gate blocks, only their order differs**
+
+| test | 2q S1 / S0 | duration ratio | ESP ratio | F S1 | F S0 | F ratio |
+|---|---|---|---|---|---|---|
+| tfimP_n12 | 66 / 62 | 0.207 | 0.992 | 0.834 | 0.643 | **1.297** |
+| tfimP_n16 | 90 / 86 | 0.157 | 0.990 | 0.586 | 0.503 | **1.165** |
+| qaoa_n12_p2 | 133 / 141 | 0.897 | 1.020 | 0.406 | 0.404 | 1.004 |
+| qaoa_n20_p2 | 208 / 218 | 0.983 | 1.025 | 0.144 | 0.158 | 0.912 |
+
+- S1 (S1 above S0 on every TFIM pair) and S2 (geometric mean 1.229 >= 1.05): **CONFIRMED.**
+- On both TFIM pairs S1 has slightly more two-qubit gates, so ESP favours S0. The device favoured S1.
+- On QAOA, item 83 hardly changes the duration and F does not move in its favour.
+
+**Reported.** F / ESP per arm (geometric mean): QK3 0.879, PSF 0.710, S0 0.672, S1 0.724. ESP overstates
+PSF-Zero's circuits more than Qiskit's: optimizing a measure inflates it.
+
+**After the fact (not pre-registered).**
+
+- Duration ratio < 1 picked the winner on all 7 reading pairs. Rank correlation of 1 / duration ratio with the F
+  ratio: +0.61 (one-sided permutation p 0.08). ESP: 4 of 7, +0.43.
+- qaoa_n20_p2 reversed from HW1, 1.20 to 0.59. On marrakesh PSF's circuit came out longer (8.04 against 7.46 us)
+  although it had 13% fewer two-qubit gates.
+- On this device, gate count did not rank the arms and duration did. This is a hypothesis for the next pre-registered
+  test, not a result.
+
+**Reading, two numbers.**
+
+- **Display:** PSF-Zero 2.34 times Qiskit on tfimP_n16. Item 83 alone gives 1.30 times with the same gates.
+- **Essential:**
+  - The pre-registered replication failed.
+  - Where PSF's circuit was longer it lost by 0.28-0.59 times.
+  - What held on both devices is narrower: where PSF-Zero's schedule is clearly shorter, it wins, and item 83's
+    reordering of the same gates raises F on TFIM.
+- The additional predictors (NS2, P1-P4, P1c/P2c, the workplace's analysis, Holm) are scored in Addendum 476.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

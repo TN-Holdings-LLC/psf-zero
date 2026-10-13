@@ -1,0 +1,15 @@
+2026-10-13T10:00:09+00:00 (2026-10-13 12:00:09 CEST) | platform Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43 | python 3.12.13 | qiskit 2.5.2
+  qiskit_aer 0.17.2
+  qiskit_ibm_runtime 0.49.0
+  psf_zero_core 2026-09-29.1
+SCRIPT <windows-home>/Desktop/psf_zero_project/day_2026-10-13/hw/hw2_real.py 80f356c4a6bb3061f5c315ca2312d8a71bc09ac2dd5987ed04e7b15ecc7e368d
+FILE patches/psf_compile_c45_2026-10-12/psf_compile.py dc51b0492f01b4c431056d6c3a6dda740f07b0b56f9ea8530bef049076ed8859
+FILE patches/psf_compile_c48_2026-10-12/psf_compile.py 0400100f416421dba36c921fa3801f75c37e9e15ea39c22a6639cbc9db976d39
+FILE benchmarks/psf_smart_layout.py 824530703fbe091d70643d28b58a69315d2c1dcb6a334ec39a46d5a618602c24
+qiskit_runtime_service.__init__:WARNING:2026-10-13 12:00:13,735: Instance was not set at service instantiation. Free and trial plan instances will be prioritized. Based on the following filters: (tags: None, region: us-east, eu-de), and available plans: (open), the available account instances are: open-instance. If you need a specific instance set it explicitly either by using a saved account with a saved default instance or passing it in directly to QiskitRuntimeService(). Alternatively, pass instance='auto' or save it to your account for auto-selection without warning.
+2026-10-13T10:00:15+00:00 (2026-10-13 12:00:15 CEST) job db702a2mb58s738chiqg status RUNNING
+2026-10-13T10:00:45+00:00 (2026-10-13 12:00:45 CEST) job db702a2mb58s738chiqg status RUNNING
+2026-10-13T10:01:15+00:00 (2026-10-13 12:01:15 CEST) job db702a2mb58s738chiqg status RUNNING
+2026-10-13T10:01:46+00:00 (2026-10-13 12:01:46 CEST) job db702a2mb58s738chiqg status RUNNING
+2026-10-13T10:02:16+00:00 (2026-10-13 12:02:16 CEST) job db702a2mb58s738chiqg status DONE
+2026-10-13T10:02:18+00:00 (2026-10-13 12:02:18 CEST) saved hw2_raw_counts.json (60 results); usage {'qpu_charge_time_seconds': 102, 'value': 1.6968, 'unit': 'resource_units', 'status': 'complete', 'details': [{'value': 1.6968, 'unit': 'resource_units', 'metric': {'id': 'caffe3ca-729c-5750-8777-df63bbf8bfd9', 'value': 102}}]}
