@@ -7953,6 +7953,37 @@ one predictor will be reported as a lead for a later test, not as a result.
 
 ---
 
+<!-- ===== Addendum 473 (source: addendum_473.md) ===== -->
+
+> **Note added when merging:** SCALE1 version 2 (device ibm_marrakesh, part X: PennyLane XOR), fixed before any SCALE1 job.
+
+## Addendum 473 -- SCALE1 version 2, fixed before any SCALE1 job: the device fixed to ibm_marrakesh (the owner's choice, HW2's device the same day) and part X added, the PennyLane-trained XOR classifier compiled by the release (HW1's exact call) and by Qiskit level 3; predictions X1-X2 as HW1's (2026-10-13)
+
+**Status: fixed and committed before any SCALE1 job.** Files:
+
+- [`data/2026-10-13/scale1_kit/SCALE1_preregistration.md`](../../data/2026-10-13/scale1_kit/SCALE1_preregistration.md),
+  section "Version 2";
+- `scale1_real.py`;
+- `SHA256SUMS`.
+
+**Seen before this change:** HW2's results (same evening; Addendum 461 to follow). C1-C5 are unchanged.
+
+**Changes.**
+
+- **Device:** ibm_marrakesh only. It replaces the rule "fewer pending jobs of ibm_fez and ibm_marrakesh".
+- **Part X:** Stage 2's four XOR circuits (PennyLane-trained, built by the locked Stage-1 code).
+  - Arms: R4 (release, `entangling_basis="cx"`, `layout_search=True`, `seed_transpiler=0`, as HW1's PSF-XOR) and
+    QK3 (level 3, HW1's call).
+  - 4,000 shots each, in the main job. Checked as in HW1.
+- **Predictions:**
+  - X1: 4 of 4 correct per arm.
+  - X2: observed M >= predicted M - 0.15.
+  - Reported: X3, R4's M against ibm_kingston's 0.9237 (HW1) and 0.937 (Stage 2); X4, R4 against QK3.
+- **Job:** 89 circuits, 230,000 shots. The rough estimate is 204 s, under the 220 s cap.
+- **Rehearsal on FakeFez:** end to end; all 8 XOR circuits exact.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

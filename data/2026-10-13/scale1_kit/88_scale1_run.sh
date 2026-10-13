@@ -22,7 +22,7 @@ OUT=data/$D/scale1; LG=data/$D/scale1_logs
 mkdir -p "$LG"
 echo "== 88 start $(date '+%F %T %Z'); SCALE1 prestatement $(sha256sum "$S/SCALE1_preregistration.md" | cut -c1-16)"
 STEP=1; if [ "$FROM" -le 1 ]; then
-  echo "== 1/3 prepare (device rule, compile 81 circuits on the device's Target now, checks, manifest before submission; a few minutes)"
+  echo "== 1/3 prepare (device rule, compile 89 circuits on the device's Target now, checks, manifest before submission; a few minutes)"
   timeout 3600 python -u "$S/scale1_real.py" prepare --out "$OUT" 2>&1 | tee "$LG/scale1_prepare.txt" | grep -E "device rule|compiling|NOT SUBMITTED|circuits in the main|manifest|STOP|Error|Traceback|not prepared|Neither"
   grep -q "manifest written before any submission" "$LG/scale1_prepare.txt" || stop "not prepared (nothing submitted)"
 fi

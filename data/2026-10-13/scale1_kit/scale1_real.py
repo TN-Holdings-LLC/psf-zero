@@ -2,7 +2,8 @@
 Heron device? Clifford mirror circuits (scale1_circuits.py, the workplace's file, unchanged); no claim of quantum
 advantage: a laptop simulates every circuit here instantly.
 
-Pre-registered in SCALE1_preregistration.md (fixed before any real-device step). Three arms on the device's Target:
+Pre-registered in SCALE1_preregistration.md (fixed before any real-device step; version 2 adds part X and fixes the
+device to ibm_marrakesh, the owner's choice). Three arms on the device's Target:
 
   PSF   PSF-Zero's release (psf_compile.py at the repository root): compile_for_hardware(qc, backend=backend,
         seed_transpiler=0)
@@ -10,6 +11,9 @@ Pre-registered in SCALE1_preregistration.md (fixed before any real-device step).
         seed_transpiler=0)
   QK3F  the same, given a copy of the Target without the elements whose reported error is >= 0.5 (what a careful user
         can do in a few lines; it separates "avoids failed elements" from everything else a compiler does)
+
+Part X (version 2): the PennyLane-trained XOR classifier (Stage 2's four circuits, built by the locked Stage-1 code),
+compiled by the release exactly as HW1's PSF-XOR (R4) and by Qiskit level 3 (QK3), 4,000 shots each, in the main job.
 
 Steps (only `submit` uses QPU time; `prepare`, `submit` and `fetch` need the IBM connection, the others do not):
 
@@ -56,7 +60,7 @@ for p in (KIT, os.path.join(REPO, "benchmarks"), REPO):
 
 import numpy as np  # noqa: E402
 
-DEVICES = ("ibm_fez", "ibm_marrakesh")  # the device rule: the operational one with fewer pending jobs (ties: this order)
+DEVICES = ("ibm_marrakesh",)  # version 2: the owner's choice (HW2's device, the same day); not operational: stop
 FAILED = 0.5
 ARMS = ("PSF", "QK3", "QK3F")
 CELLS = (("L", 12, 0), ("L", 24, 0), ("L", 48, 0),
@@ -70,6 +74,12 @@ MPS_SHOTS = 32
 RESOLVED_SE = 5.0
 MISSING_T_S = 1e-6
 PSF_FILE = os.path.join(REPO, "psf_compile.py")
+LAYOUT_FILE = os.path.join(REPO, "benchmarks", "psf_smart_layout.py")
+XOR_SHOTS = 4000
+XOR_ARMS = ("R4", "QK3")
+XOR_Z_EXACT = 0.99776  # |<Z0>| of every logical XOR circuit (Stage 1), as HW1's check
+HW1_R4_M = 0.9237  # HW1's PSF-XOR, R4, ibm_kingston 2026-10-12 (Addendum 455), reported beside part X
+STAGE2_M = 0.937  # Stage 2's chosen arm, ibm_kingston 2026-10-12 (Addendum 212)
 CIRC_FILE = os.path.join(KIT, "scale1_circuits.py")
 
 
@@ -115,7 +125,7 @@ def header():
         except Exception as exc:  # noqa: BLE001
             print(f"  {m} MISSING ({type(exc).__name__})")
     print("SCRIPT", os.path.abspath(__file__), sha256_file(os.path.abspath(__file__)))
-    for f in (PSF_FILE, CIRC_FILE):
+    for f in (PSF_FILE, CIRC_FILE, LAYOUT_FILE):
         print("FILE", os.path.relpath(f, REPO), sha256_file(f) if os.path.exists(f) else "MISSING")
 
 
@@ -278,15 +288,17 @@ def build_all(backend, out_dir, psf):
                          isa=isa, exact_mps=exact, compile_s=round(secs, 3), shots=shots_for(n), submitted=ok)
                 entries.append(e)
                 if ok:
-                    (part_f if part == "F" else main).append((len(entries) - 1, out))
+                    (part_f if part == "F" else main).append((dict(entry=len(entries) - 1, shots=e["shots"]), out))
                 print(f"  {cell:8s} i{inst} {arm:4s} 2q {n2:4d} (logical {n2_log:4d}) failed {used_bad:2d} ESP {esp:.3g} "
                       f"pred {pred:.3g} readout-only {ro:.3g} dur {dur:5.2f} us exact {exact} isa {isa}"
                       f"{'' if ok else '  -> NOT SUBMITTED'}", flush=True)
+    # part X: the XOR classifier, in the main job
+    xentries = build_xor(backend, psf, bad, main)
     # arms interleaved: the build order is already cell, instance, arm
     jobs = {"main": main, "F": part_f}
     pubs = {}
     for name, items in jobs.items():
-        pubs[name] = [dict(entry=k, shots=entries[k]["shots"]) for k, _ in items]
+        pubs[name] = [p for p, _ in items]
         if items:
             with open(os.path.join(out_dir, f"scale1_circuits_{name}.qpy"), "wb") as f:
                 qpy.dump([c for _, c in items], f)
@@ -298,7 +310,66 @@ def build_all(backend, out_dir, psf):
           f"{sum(p['shots'] for v in pubs.values() for p in v)} shots; rough QPU estimate {est:.0f} s")
     if est > USAGE_EST_CAP_S:
         raise SystemExit(f"rough QPU estimate {est:.0f} s > {USAGE_EST_CAP_S:.0f} s: not prepared")
-    return entries, pubs, len(bad)
+    return entries, pubs, len(bad), xentries
+
+
+def _z_exact(c):
+    """<Z> of the single measured qubit of a compiled circuit, by statevector on its active qubits."""
+    from qiskit.quantum_info import Statevector
+    body = active_circuit(c)
+    meas = [i for i in body.data if i.operation.name == "measure"]
+    if len(meas) != 1:
+        raise SystemExit("an XOR circuit must measure exactly one qubit")
+    q = body.find_bit(meas[0].qubits[0]).index
+    body.remove_final_measurements(inplace=True)
+    p = Statevector(body).probabilities([q])
+    return float(p[0] - p[1])
+
+
+def build_xor(backend, psf, bad, main):
+    """Part X: Stage 2's four logical circuits (logical qubit 0 measured), compiled by R4 (the release, exactly HW1's
+    call) and QK3 (Qiskit level 3, HW1's call); checked; appended to the main job."""
+    from qiskit.transpiler import generate_preset_pass_manager
+    import xor_prereg_stage1_sweep as S1
+    import xor_prereg_stage1b_sweep as S1b
+    load(LAYOUT_FILE, "psf_smart_layout")
+    xc = S1.build_logical_circuits()
+    S1.validate_circuits(xc)
+    labels = [int(x) for x in S1.R.XOR_LABELS]
+    inputs = ["".join(str(x) for x in b) for b in S1.R.XOR_INPUTS]
+    try:
+        from qiskit_aer import AerSimulator
+        sim = AerSimulator.from_backend(backend)
+    except Exception as exc:  # noqa: BLE001
+        sim = None
+        print("Aer noise model unavailable:", type(exc).__name__)
+    xentries = []
+    for arm in XOR_ARMS:
+        for i, lq in enumerate(xc):
+            mqc = S1b.with_z0_measure(lq)
+            t0 = time.perf_counter()
+            if arm == "R4":
+                with contextlib.redirect_stdout(io.StringIO()):
+                    out = psf.compile_for_hardware(mqc, backend=backend, entangling_basis="cx", layout_search=True,
+                                                   seed_transpiler=0)
+                out = out[0] if isinstance(out, tuple) else out
+            else:
+                out = generate_preset_pass_manager(3, backend, seed_transpiler=0).run(mqc)
+            secs = time.perf_counter() - t0
+            isa, used_bad, n2 = check(out, backend, bad)
+            esp, pred, ro, dur = estimate(out, backend.target)
+            z_exact = _z_exact(out)
+            z_pred = S1b.z_from_sim(sim, out, 20000, 1000) if sim is not None else None
+            ok = isa and not used_bad and abs(z_exact - labels[i] * XOR_Z_EXACT) <= 6e-5
+            xentries.append(dict(test="xor_" + inputs[i], arm=arm, label=labels[i], twoq=n2, esp=esp, pred=pred,
+                                 dur_us=dur, z_exact=z_exact, z_pred=z_pred, isa=isa, failed_used=used_bad,
+                                 compile_s=round(secs, 3), shots=XOR_SHOTS, submitted=ok))
+            print(f"  xor_{inputs[i]}  {arm:4s} 2q {n2:3d} ESP {esp:.3g} z_exact {z_exact:+.5f} z_pred "
+                  f"{'n/a' if z_pred is None else f'{z_pred:+.4f}'} isa {isa} failed {used_bad}"
+                  f"{'' if ok else '  -> NOT SUBMITTED'}", flush=True)
+            if ok:
+                main.append((dict(xor=len(xentries) - 1, shots=XOR_SHOTS), out))
+    return xentries
 
 
 # ------------------------------------------------------------------ steps
@@ -366,14 +437,14 @@ def prepare(a, fake=None):
         backend, rule = getattr(fake_provider, fake)(), [dict(name=fake, fake=True)]
     psf = load(PSF_FILE, "scale1_psf")
     psf.WARN_WITHOUT_TARGET = False
-    entries, pubs, nbad = build_all(backend, a.out, psf)
+    entries, pubs, nbad, xentries = build_all(backend, a.out, psf)
     man = dict(written=stamp(), device=backend.name, device_rule=rule, calibration_time=calibration_time(backend),
                failed_elements=nbad, script_sha256=sha256_file(os.path.abspath(__file__)),
-               files={os.path.relpath(f, REPO): sha256_file(f) for f in (PSF_FILE, CIRC_FILE)},
+               files={os.path.relpath(f, REPO): sha256_file(f) for f in (PSF_FILE, CIRC_FILE, LAYOUT_FILE)},
                psf_version=getattr(psf, "__version__", None),
                qpy_sha256={name: sha256_file(os.path.join(a.out, f"scale1_circuits_{name}.qpy"))
                            for name in pubs if pubs[name]},
-               entries=entries, pubs=pubs, job_ids={})
+               entries=entries, xor_entries=xentries, pubs=pubs, job_ids={})
     write_manifest(a.out, man)
     print(f"{stamp()} manifest written before any submission: {sum(len(v) for v in pubs.values())} circuits; "
           f"device {backend.name}; calibration {man['calibration_time']}")
@@ -485,6 +556,11 @@ def score(a):
             continue
         raw = json.load(open(path, encoding="utf-8"))
         for p, row in zip(plist, raw["rows"]):
+            if "xor" in p:
+                x = man["xor_entries"][p["xor"]]
+                n0, n1 = row["counts"].get("0", 0), row["counts"].get("1", 0)
+                x.update(z_obs=(n0 - n1) / max(n0 + n1, 1), shots_read=n0 + n1)
+                continue
             e = E[p["entry"]]
             s, se, hit, ham = _s(row["counts"], e["ideal"], sum(row["counts"].values()))
             e.update(S=s, S_se=se, hits=hit, hamming=dict(sorted(ham.items())), resolved=hit > 0 and s >= RESOLVED_SE * se)
@@ -598,11 +674,42 @@ def score(a):
                 f"{arm} {x['cell']} i{x['inst']} ({x['n']} qubits, {x['twoq']} two-qubit gates, {x['dur_us']:.2f} us, "
                 f"S {x['S']:.4f})" for arm, x in largest.items()),
             "- C5 (reported): S / predicted per circuit and Hamming profiles are in scale1_score.json."]
+    # part X: the PennyLane-trained XOR classifier
+    X = man.get("xor_entries") or []
+    xm = {}
+    out += ["", "## Part X: the PennyLane-trained XOR classifier", "",
+            "| arm | input | label | 2q | ESP | z observed | z predicted (Aer, the device's calibration) |",
+            "|---|---|---|---|---|---|---|"]
+    for arm in XOR_ARMS:
+        rows = [x for x in X if x["arm"] == arm and x["submitted"] and x.get("z_obs") is not None]
+        for x in rows:
+            zp = "n/a" if x["z_pred"] is None else f"{x['z_pred']:+.4f}"
+            out.append(f"| {arm} | {x['test'][4:]} | {x['label']:+d} | {x['twoq']} | {x['esp']:.3g} | "
+                       f"{x['z_obs']:+.4f} | {zp} |")
+        if rows:
+            m_obs = float(np.mean([x["label"] * x["z_obs"] for x in rows]))
+            m_pred = (float(np.mean([x["label"] * x["z_pred"] for x in rows]))
+                      if all(x["z_pred"] is not None for x in rows) else float("nan"))
+            xm[arm] = dict(m_obs=m_obs, m_pred=m_pred, correct=sum(1 for x in rows if x["label"] * x["z_obs"] > 0),
+                           n=len(rows))
+    for arm, x in xm.items():
+        v[f"X1_{arm}"] = "CONFIRMED" if x["correct"] == x["n"] == 4 else "REFUTED"
+        v[f"X2_{arm}"] = ("NOT TESTABLE" if math.isnan(x["m_pred"])
+                          else "CONFIRMED" if x["m_obs"] >= x["m_pred"] - 0.15 else "REFUTED")
+        out += [f"- X1 {arm} (all four inputs classified correctly): {x['correct']}/{x['n']} -> {v[f'X1_{arm}']}",
+                f"- X2 {arm} (observed M >= predicted M - 0.15): M {x['m_obs']:.4f} vs predicted {x['m_pred']:.4f} "
+                f"-> {v[f'X2_{arm}']}"]
+    if "R4" in xm:
+        out.append(f"- X3 (reported): R4's M on {man['device']} {xm['R4']['m_obs']:.4f}; on ibm_kingston 2026-10-12: "
+                   f"HW1's R4 {HW1_R4_M}, Stage 2's chosen arm {STAGE2_M}")
+    if "R4" in xm and "QK3" in xm:
+        out.append(f"- X4 (reported): M, R4 {xm['R4']['m_obs']:.4f} against QK3 {xm['QK3']['m_obs']:.4f}")
     txt = "\n".join(out) + "\n"
     with open(os.path.join(a.out, "scale1_score.md"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write(txt)
     with open(os.path.join(a.out, "scale1_score.json"), "w", encoding="utf-8") as fh:
-        json.dump(dict(entries=E, width=W, verdict=v, c2=c2, c3a=p3a, c3b=p3b, c4=c4, largest=largest), fh, indent=1,
+        json.dump(dict(entries=E, xor=X, xor_m=xm, width=W, verdict=v, c2=c2, c3a=p3a, c3b=p3b, c4=c4, largest=largest),
+                  fh, indent=1,
                   default=str)
     print(txt)
 

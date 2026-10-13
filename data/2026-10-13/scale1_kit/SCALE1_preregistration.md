@@ -146,3 +146,36 @@ gap is readout (PSF chooses qubits with higher readout error). In R4, PSF routes
 - One device, one day, one repeat.
 
 **QPU:** about 70 s expected. Runs only with the owner's go-ahead, after HW2. It is independent of HW3.
+
+## Version 2, fixed before any SCALE1 job
+
+Fixed: 2026-10-13 12:24:09 CEST (Europe/Zurich). `scale1_real.py` version 2, SHA-256 `c3bbd5dcbcd412053313987af3132d300763b3ef030441e7bbc717a389216b17`; every kit file in `SHA256SUMS`.
+
+**Seen before this change:** HW2's results on ibm_marrakesh (Addendum 461, to be written), the same evening. SCALE1's
+circuits, arms, checks and predictions C1-C5 are unchanged by them.
+
+**Device fixed to ibm_marrakesh, the owner's choice.** It replaces the rule "of ibm_fez and ibm_marrakesh, the one
+with fewer pending jobs".
+
+- The run uses the same device and calibration day as HW2.
+- If ibm_marrakesh is not operational at `prepare`, nothing is prepared.
+
+**Part X added: the PennyLane-trained XOR classifier.**
+
+- **Circuits:** Stage 2's four logical circuits, built by the locked Stage-1 code, logical qubit 0 measured.
+- **Arms:** R4, the release with HW1's exact call (`entangling_basis="cx"`, `layout_search=True`,
+  `seed_transpiler=0`), and QK3, Qiskit level 3 with HW1's call.
+- **Shots and job:** 4,000 shots each, in the main job.
+- **Check:** each circuit is checked as in HW1: |<Z0>| = 0.99776 x label within 6e-5 by statevector, ISA, no failed
+  element.
+- **Total:** 89 circuits, 230,000 shots. The rough estimate is 204 s, under the 220 s cap; about 85 s by HW1/HW2's
+  ratio.
+
+| ID | prediction (as HW1's X1, X2) |
+|---|---|
+| X1 | each arm classifies all four inputs correctly |
+| X2 | each arm's observed M >= its predicted M (Aer, the device's calibration) - 0.15 |
+| X3 | reported: R4's M here against ibm_kingston 2026-10-12 (HW1's R4 0.9237, Stage 2's chosen arm 0.937) |
+| X4 | reported: R4's M against QK3's |
+
+The rehearsal on FakeFez (noiseless) ran end to end: 8 XOR circuits exact; part X scored.
