@@ -7736,6 +7736,46 @@ written before 08:12, before HW2.
 
 ---
 
+<!-- ===== Addendum 468 (source: addendum_468.md) ===== -->
+
+> **Note added when merging:** HW2-PLUS amendment 2, fixed before HW2: P1c and P2c charge each measured qubit's waiting before the measurement; P1 and P2 unchanged.
+
+## Addendum 468 -- HW2-PLUS amendment 2, fixed before HW2 runs: corrected simulation predictors P1c and P2c that also charge each measured qubit's waiting from its last gate to the measurement; P1 and P2 stay as fixed (2026-10-13)
+
+**Status: predictions fixed and committed before HW2's job exists.** The file:
+[`data/2026-10-13/hw2_plus/HW2_PLUS_amendment_v2.md`](../../data/2026-10-13/hw2_plus/HW2_PLUS_amendment_v2.md).
+
+**Why.**
+
+- The workplace's review of the HW3 kit (Addendum 467) found that the noise simulation charges no waiting after a
+  qubit's last gate.
+- On HW1's circuits that window is 7-36% of the measured qubits' waiting as soon as possible (52% in GHZ). It differs
+  between arms: tfim_n12 PSF 31%, QK3 13%.
+
+**Code** (new files; `ns_sim2.py` and `hw2_predictors.py`, fixed in Addendum 466, are unchanged):
+
+- [`benchmarks/ns_tail.py`](../../benchmarks/ns_tail.py): `ns_sim2.py` plus one relaxation channel per measured qubit
+  for (total - end of its last gate).
+- [`benchmarks/test_ns_tail.py`](../../benchmarks/test_ns_tail.py) checks that the result is identical to
+  `ns_sim2.py` without a window, and the decay e^(-w / T1) against an exact density matrix.
+- [`benchmarks/hw2_predictors_c.py`](../../benchmarks/hw2_predictors_c.py): P1c and P2c, with `hw2_predictors.py`'s
+  selection and scoring.
+- Rehearsed end to end on the files HW2's rehearsal writes, with a FakeFez snapshot (8 trajectories, rehearsal only).
+
+**Predictions** on HW2's seven reading pairs:
+
+- **Q4:** P1c ranks at least as well as P1.
+- **Q2c:** P2c ranks at least as well as P1c.
+- **Reported:** P1c's and P2c's winners and rank correlation, whether each is "useful" as Q1 defines it, and part S.
+
+**Reading, fixed now.**
+
+- Q1 keeps its four predictors. Six simulation or exposure predictors are now scored on HW2, and the record says so.
+- NS2 (Addendum 462) has the same gap and is scored as fixed. Under ALAP its uncharged window is 0-11% of waiting on
+  HW1, except tfim_n12/16 PSF (33%) and GHZ.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
