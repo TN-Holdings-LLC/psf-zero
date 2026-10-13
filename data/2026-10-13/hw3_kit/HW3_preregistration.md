@@ -106,3 +106,10 @@ Checked before fixing:
 - the rehearsal's noiseless results rescored (no pair selected, as expected);
 - a synthetic copy in which only the longer circuits' pad results were degraded (all three selected; D1, D2 and D3
   confirmed, as built).
+
+**Kit fix, 2026-10-13 08:53:08 CEST (Europe/Zurich), before any HW3 job.** `96_hw3_run.sh` compared c48 with a copy in the kit's own
+`patches/`, which this repository copy of the kit does not have. Run from here, it would have stopped before
+`prepare`. It now checks c45 and c48 in the repository's `patches/` by SHA-256, as `95_hw3_prep.sh` does.
+
+- Dry run: the checks pass, then it stops cleanly at `prepare` without an IBM account.
+- Nothing else changed: `hw3_real.py`, the predictions and the circuits are as in version 2.

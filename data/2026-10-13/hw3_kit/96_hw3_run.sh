@@ -15,7 +15,9 @@ FROM=1; [ "$1" = from ] && FROM=$2
 cd "$R" || { echo "STOP: repository not found"; exit 1; }
 source "$V" || { echo "STOP: Python environment not found"; exit 1; }
 (cd "$S" && sha256sum -c --quiet SHA256SUMS) || { echo "STOP: the kit's files differ from SHA256SUMS"; exit 1; }
-cmp -s "$S/patches/psf_compile_c48_2026-10-12/psf_compile.py" patches/psf_compile_c48_2026-10-12/psf_compile.py || { echo "STOP: run 95 first (c48 not in patches/)"; exit 1; }
+for f in patches/psf_compile_c45_2026-10-12/psf_compile.py:dc51b0492f01b4c431056d6c3a6dda740f07b0b56f9ea8530bef049076ed8859 patches/psf_compile_c48_2026-10-12/psf_compile.py:0400100f416421dba36c921fa3801f75c37e9e15ea39c22a6639cbc9db976d39; do
+  [ "$(sha256sum "${f%%:*}" 2>/dev/null | cut -c1-64)" = "${f##*:}" ] || { echo "STOP: ${f%%:*} is missing or differs (run 95 first)"; exit 1; }
+done
 OUT=data/$D/hw3; LG=data/$D/hw3_logs
 mkdir -p "$LG"
 echo "== 96 start $(date '+%F %T %Z'); HW3 prestatement $(sha256sum "$S/HW3_preregistration.md" | cut -c1-16)"
