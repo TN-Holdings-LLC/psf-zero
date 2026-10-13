@@ -273,7 +273,17 @@ def build_all(backend, out_dir, psf):
         for inst in INSTANCES:
             qc, ideal, n2_log = logical(fam, n, d, inst)
             for arm in ARMS:
-                out, secs = compile_arm(arm, qc, backend, psf, tf)
+                try:
+                    out, secs = compile_arm(arm, qc, backend, psf, tf)
+                except Exception as exc:  # noqa: BLE001  version 3: a compiler that refuses is recorded, not fatal
+                    cell = cell_name(fam, n, d)
+                    msg = f"{type(exc).__name__}: {str(exc)[:200]}"
+                    entries.append(dict(cell=cell, fam=fam, n=n, d=d, inst=inst, arm=arm, ideal=ideal, twoq=0,
+                                        twoq_logical=n2_log, failed_used=0, part="none", esp=0.0, pred=0.0,
+                                        readout_only=0.0, dur_us=0.0, active=0, isa=False, exact_mps=False,
+                                        compile_s=None, shots=shots_for(n), submitted=False, refused=msg))
+                    print(f"  {cell:8s} i{inst} {arm:4s} REFUSED by the compiler: {msg}  -> NOT SUBMITTED", flush=True)
+                    continue
                 isa, used_bad, n2 = check(out, backend, bad)
                 esp, pred, ro, dur = estimate(out, t)
                 got = mps_outcomes(out, 4670 + len(entries))
@@ -326,6 +336,16 @@ def _z_exact(c):
     return float(p[0] - p[1])
 
 
+def _compile_xor(arm, mqc, backend, psf):
+    from qiskit.transpiler import generate_preset_pass_manager
+    if arm == "R4":
+        with contextlib.redirect_stdout(io.StringIO()):
+            out = psf.compile_for_hardware(mqc, backend=backend, entangling_basis="cx", layout_search=True,
+                                           seed_transpiler=0)
+        return out[0] if isinstance(out, tuple) else out
+    return generate_preset_pass_manager(3, backend, seed_transpiler=0).run(mqc)
+
+
 def build_xor(backend, psf, bad, main):
     """Part X: Stage 2's four logical circuits (logical qubit 0 measured), compiled by R4 (the release, exactly HW1's
     call) and QK3 (Qiskit level 3, HW1's call); checked; appended to the main job."""
@@ -348,13 +368,13 @@ def build_xor(backend, psf, bad, main):
         for i, lq in enumerate(xc):
             mqc = S1b.with_z0_measure(lq)
             t0 = time.perf_counter()
-            if arm == "R4":
-                with contextlib.redirect_stdout(io.StringIO()):
-                    out = psf.compile_for_hardware(mqc, backend=backend, entangling_basis="cx", layout_search=True,
-                                                   seed_transpiler=0)
-                out = out[0] if isinstance(out, tuple) else out
-            else:
-                out = generate_preset_pass_manager(3, backend, seed_transpiler=0).run(mqc)
+            try:
+                out = _compile_xor(arm, mqc, backend, psf)
+            except Exception as exc:  # noqa: BLE001  version 3: recorded, not fatal
+                msg = f"{type(exc).__name__}: {str(exc)[:200]}"
+                xentries.append(dict(test="xor_" + inputs[i], arm=arm, label=labels[i], submitted=False, refused=msg))
+                print(f"  xor_{inputs[i]}  {arm:4s} REFUSED by the compiler: {msg}  -> NOT SUBMITTED", flush=True)
+                continue
             secs = time.perf_counter() - t0
             isa, used_bad, n2 = check(out, backend, bad)
             esp, pred, ro, dur = estimate(out, backend.target)
@@ -673,7 +693,10 @@ def score(a):
             "- C5 (reported): largest resolved circuit per arm: " + "; ".join(
                 f"{arm} {x['cell']} i{x['inst']} ({x['n']} qubits, {x['twoq']} two-qubit gates, {x['dur_us']:.2f} us, "
                 f"S {x['S']:.4f})" for arm, x in largest.items()),
-            "- C5 (reported): S / predicted per circuit and Hamming profiles are in scale1_score.json."]
+            "- C5 (reported): S / predicted per circuit and Hamming profiles are in scale1_score.json.",
+            "- Refusals (version 3, reported; a refused circuit counts as not resolved for its arm): " + (
+                "; ".join(f"{e['cell']} i{e['inst']} {e['arm']}: {e['refused']}" for e in E if e.get("refused"))
+                or "none")]
     # part X: the PennyLane-trained XOR classifier
     X = man.get("xor_entries") or []
     xm = {}

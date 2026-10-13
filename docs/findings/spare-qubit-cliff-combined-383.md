@@ -7984,6 +7984,33 @@ one predictor will be reported as a lead for a later test, not as a result.
 
 ---
 
+<!-- ===== Addendum 474 (source: addendum_474.md) ===== -->
+
+> **Note added when merging:** SCALE1 version 3: compiler refusals recorded, not fatal; fixed before any SCALE1 job.
+
+## Addendum 474 -- SCALE1 version 3, fixed before any SCALE1 job: on ibm_marrakesh the release refused the first 144-qubit circuit (FailedElementsError, item 58) and the script stopped before submitting; a compiler's refusal is now recorded as "not resolved" for that arm and the run goes on; the device stays ibm_marrakesh (2026-10-13)
+
+**Status: fixed and committed before any SCALE1 job.** File:
+[`data/2026-10-13/scale1_kit/SCALE1_preregistration.md`](../../data/2026-10-13/scale1_kit/SCALE1_preregistration.md),
+section "Version 3".
+
+**What happened.** At `prepare` on ibm_marrakesh (12:30 CEST, 31 elements with error >= 0.5), the release compiled
+60 circuits. It then raised `FailedElementsError` on R2 n = 144, instance 0: "the circuit compiled on the map without
+the failed couplers still uses a failed qubit". Nothing was submitted.
+
+**Change.**
+
+- Any arm's compiler exception is recorded as a refusal: not submitted, and not resolved for C1 and X1.
+- Refusals are listed in the score.
+- The device is unchanged. Moving to another device after seeing PSF refuse would choose the device in PSF's favour.
+
+**Rehearsal.** Refusals injected on FakeFez were recorded and scored as stated.
+
+**For development.** The release takes failed couplers off the map but leaves failed qubits on it, so a large circuit
+can be routed onto a failed qubit and then refused.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

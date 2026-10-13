@@ -179,3 +179,29 @@ with fewer pending jobs".
 | X4 | reported: R4's M against QK3's |
 
 The rehearsal on FakeFez (noiseless) ran end to end: 8 XOR circuits exact; part X scored.
+
+## Version 3, fixed before any SCALE1 job
+
+Fixed: 2026-10-13 12:38:28 CEST (Europe/Zurich). `scale1_real.py` version 3, SHA-256 `4b18ab35f09bea8cd4e057cbd17adbf2f38c2c81953162945b799e51d6541a5b`; every kit file in `SHA256SUMS`.
+
+**What happened.** The first `prepare` on ibm_marrakesh (12:30 CEST; 31 elements with error >= 0.5) compiled the
+first 60 circuits. Then the release refused R2 n = 144, instance 0, with `FailedElementsError` ("the circuit compiled
+on the map without the failed couplers still uses a failed qubit", changelog item 58). The script stopped; nothing was
+submitted. No other result of that `prepare` was used to change anything.
+
+**Change.**
+
+- An exception from any arm's compiler is recorded as a **refusal** for that circuit and arm, and `prepare` goes on.
+- A refused circuit is not submitted and counts as **not resolved** for its arm. This affects C1, the signal width,
+  and X1, where a refused XOR input counts as not correctly classified.
+- Refusals are listed in the score.
+- Nothing else changes, and the device stays ibm_marrakesh. Moving to another device after seeing PSF refuse here
+  would choose the device for PSF's sake.
+
+**Reading, fixed now.** A refusal is the release's safety guard (item 58) working as designed. On a device whose failed
+qubits leave too little room, it also means PSF-Zero returns no circuit where Qiskit returns one. Both facts are
+reported. Whether the refusal could have been avoided (failed qubits are taken off the map only after failed couplers)
+goes on the development list.
+
+**Rehearsal** (FakeFez, refusals injected for PSF at n = 144 and for one R4 XOR input): `prepare` went on; the refused
+circuits were listed, counted as not resolved, and C1 and X1 were scored accordingly.
