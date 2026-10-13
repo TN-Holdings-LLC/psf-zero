@@ -7420,6 +7420,59 @@ reading tests and GHZ (16), with the calibration CSV of 13:15 CEST on 2026-10-12
 
 ---
 
+<!-- ===== Addendum 463 (source: addendum_463.md) ===== -->
+
+> **Note added when merging:** HW3's predictions were fixed in a local file at 05:56:13 CEST on 2026-10-13 and are committed here with the kit before any real-device step; the run waits for the owner's go-ahead. Addendum 461 stays reserved for HW2's results.
+
+## Addendum 463 -- Pre-registration of HW3 (run date open, with the owner's go-ahead): the same compiled circuits with and without dynamical decoupling, on the same schedule, to test whether the hardware's sensitivity to time (HW1: shorter circuits won by 1.20 where a Markovian model of the reported T1/T2 gives 0.97-0.99, Addendum 462) is a waiting error that decoupling removes (2026-10-13)
+
+**Status: predictions fixed before any real-device step and committed before the run.**
+
+- **The file:** [`data/2026-10-13/hw3_kit/HW3_preregistration.md`](../../data/2026-10-13/hw3_kit/HW3_preregistration.md),
+  fixed at 05:56:13 CEST, sha256 `121ff049...`.
+- **The kit:** [`data/2026-10-13/hw3_kit/`](../../data/2026-10-13/hw3_kit/): the script
+  [`hw3_real.py`](../../data/2026-10-13/hw3_kit/hw3_real.py) and the run scripts `95_hw3_prep.sh`, `96_hw3_run.sh`
+  and `97_hw3_record.sh`.
+- **Rehearsed** in a fresh clone with this bundle applied: the prototypes' hashes, c48's tests (36 passed) and the
+  full flow on FakeFez with a noiseless simulator.
+
+**The hypothesis.** IBM's reported T2 is an echo value. Without decoupling, a waiting qubit also suffers
+quasi-static noise (T2*) and residual ZZ coupling, which decoupling refocuses. If so, a shorter schedule wins on
+hardware for a reason that decoupling removes.
+
+**Design.**
+
+- **Device rule:** as HW2.
+- **Pairs** (a shorter and a longer circuit of the same test):
+  - tfimP_n12: c48 with item 83 on and off;
+  - tfim_n12 and qaoa_n20_p2: c45 against Qiskit level 3, HW1's two 1.20 wins.
+- **Variants of every compiled circuit:**
+  - plain: as compiled;
+  - pad: as late as possible on the Target, with delays;
+  - dd: the same schedule, with X-X decoupling on the circuit's active qubits.
+- **One job:** 18 circuits, each twice, 6,000 shots; the runtime's own decoupling and twirling off.
+- **Measure:** F (normalised linear XEB).
+
+**Predictions** (ratio = F of the shorter / F of the longer).
+
+- **Which pairs count for D1 and D2:** only those where, under pad, the shorter circuit wins by more than the pair's
+  repeat difference.
+- **D1:** decoupling shrinks the shorter circuit's advantage on at least 2 of 3 such pairs.
+- **D2:** decoupling helps the longer circuit more than the shorter, on the same count.
+- **D3:** decoupling raises every longer circuit's F.
+- **Reported:** plain against pad (D4), and whether the shorter circuit still wins with decoupling (D5).
+
+**Reading, fixed in the file.**
+
+- **D1 and D2 confirmed:** the time sensitivity is mostly a waiting error that decoupling removes. Item 83's gain is
+  then smaller for users who run with decoupling, and PSF-Zero should state the setting and consider inserting
+  decoupling itself.
+- **D1 refuted while time mattered:** shorter schedules keep their value with decoupling on.
+
+**QPU:** about 40-60 s expected. Runs only with the owner's go-ahead.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
