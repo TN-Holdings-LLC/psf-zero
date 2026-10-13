@@ -1,0 +1,35 @@
+{
+ "per_device": {
+  "FakeFez": {
+   "n": 27,
+   "v1_share": 1.0,
+   "v2_gmean_expo_ba": 1.0,
+   "n_ba": 20,
+   "v3_gmean_esp": 1.0,
+   "v3_min_esp": 1.0,
+   "v4_low_t2p": 19,
+   "v4_low_c48": 19,
+   "v5_q": 1.0,
+   "v5_dur": 1.0,
+   "v6_time": 1.0608614232209737
+  }
+ },
+ "pooled": {
+  "v5_q": 1.0,
+  "v5_dur": 1.0,
+  "v6_time": 1.0608614232209737
+ },
+ "verdict": {
+  "V0": "CONFIRMED (53 outputs, exactness checked on 53; failures: [])",
+  "V1": "CONFIRMED",
+  "V2": "REFUTED",
+  "V3": "CONFIRMED",
+  "V4": "REFUTED",
+  "V5": "CONFIRMED (pooled medians: 2q 1.000, duration 1.000)",
+  "V6": "CONFIRMED (pooled median 1.06)"
+ },
+ "h0": {
+  "n": 26,
+  "differ": []
+ }
+}

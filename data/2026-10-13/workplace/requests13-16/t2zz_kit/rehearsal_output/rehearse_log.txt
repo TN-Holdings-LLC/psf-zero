@@ -1,0 +1,33 @@
+2026-10-13T07:18:35+00:00 (2026-10-13 09:18:35 CEST) | platform Linux-6.18.44-fc-v114-x86_64-with-glibc2.39 | python 3.11.15 | qiskit 2.5.2
+  qiskit_aer 0.17.2
+  qiskit_ibm_runtime 0.50.0
+SCRIPT t2zz_real.py a492e9a0603ff3f8ee11b52b8b5a5ca2b403864460a91a02dac6edc79e700491
+qubit rule (a): target 140 (T2 27 us, T1 96 us), spectator 141 (T1 168 us)
+qubit rule (b): target 89 (T2 86 us, T1 175 us), spectator 88 (T1 115 us)
+qubit rule (c): target 1 (T2 303 us, T1 256 us), spectator 2 (T1 274 us)
+50 circuits, 100000 shots; rough QPU estimate 100 s (HW1's ratio 0.40: about 40 s)
+2026-10-13T07:18:36+00:00 (2026-10-13 09:18:36 CEST) manifest written before any submission: <kit>/rehearsal_output/t2zz_rehearsal/t2zz_manifest.json
+# T2*/ZZ v2 results (fake_fez, job rehearsal, scored 2026-10-13T07:19:50+00:00 (2026-10-13 09:19:50 CEST))
+
+| pair | target / spectator | T1, T2 reported (us) | C_echo(20), exp(-20/T2) | C_Ramsey(20) / C_echo(20) | zeta Ramsey (kHz) +- SE | d(0) (rad) +- SE | zeta, free intercept (kHz) | echo phase diff at 20 us (rad) | T_idle from Ramsey (us) | shots dropped by post-selection (spec 0 / 1) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| a | 140 / 141 | 96, 27 | 0.473, 0.480 | 0.770 | +3.75 +- 0.38 | -0.017 +- 0.032 | +3.63 +- 0.48 | -0.017 | 20 | 0.005 / 0.005 |
+| b | 89 / 88 | 175, 86 | 0.769, 0.793 | 0.975 | +1.70 +- 0.16 | +0.009 +- 0.033 | +1.70 +- 0.23 | +0.004 | 61 | 0.005 / 0.005 |
+| c | 1 / 2 | 256, 303 | 0.940, 0.936 | 1.010 | -0.11 +- 0.10 | +0.021 +- 0.033 | -0.22 +- 0.16 | -0.035 | 396 | 0.005 / 0.005 |
+
+| ID | verdict |
+|---|---|
+| E1 | CONFIRMED |
+| E2 | NOT DECIDED |
+| E3 | CONFIRMED (estimate used: a origin, b origin, c origin) |
+| E4 | CONFIRMED |
+| E5 | YES |
+| E6 | a: T_idle 20 us vs T2 27, T2/2 14; b: T_idle 61 us vs T2 86, T2/2 43; c: T_idle 396 us vs T2 303, T2/2 151 |
+
+Schedule returned for 0 of 50 circuits; spectator X before the wait in 0 of 0 spectator-|1> circuits; measurements aligned in 0.
+
+REHEARSAL truth check (injected -> recovered):
+  pair a: zeta injected 4.00 kHz, recovered +3.75 +- 0.38 kHz (-0.7 SE); C_R/C_E at 20 us 0.770, expected from the injected detunings about 0.775
+  pair b: zeta injected 1.50 kHz, recovered +1.70 +- 0.16 kHz (+1.2 SE); C_R/C_E at 20 us 0.975, expected from the injected detunings about 0.937
+  pair c: zeta injected 0.00 kHz, recovered -0.11 +- 0.10 kHz (-1.1 SE); C_R/C_E at 20 us 1.010, expected from the injected detunings about 1.000
+REHEARSAL DONE: truth recovered within 4 SE on every pair

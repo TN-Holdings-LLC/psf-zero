@@ -1,0 +1,501 @@
+{
+ "written": "2026-10-13T07:18:36+00:00 (2026-10-13 09:18:36 CEST)",
+ "device": "fake_fez",
+ "device_rule": [
+  {
+   "name": "FakeFez",
+   "fake": true
+  }
+ ],
+ "calibration_time": "2025-02-26 15:16:25-05:00",
+ "dt": 4e-09,
+ "pairs": [
+  {
+   "label": "a",
+   "target": 140,
+   "spectator": 141,
+   "t1_t": 9.564055019526409e-05,
+   "t2_t": 2.723830561991519e-05,
+   "t1_s": 0.00016824304089850796,
+   "ro_t": 0.008056640625,
+   "ro_s": 0.0048828125,
+   "t2_median": 8.671520349330843e-05
+  },
+  {
+   "label": "b",
+   "target": 89,
+   "spectator": 88,
+   "t1_t": 0.00017527670083835665,
+   "t2_t": 8.609875232119841e-05,
+   "t1_s": 0.0001148495942622816,
+   "ro_t": 0.016845703125,
+   "ro_s": 0.00439453125,
+   "t2_median": 8.671520349330843e-05
+  },
+  {
+   "label": "c",
+   "target": 1,
+   "spectator": 2,
+   "t1_t": 0.0002557051713972407,
+   "t2_t": 0.000302790873822133,
+   "t1_s": 0.00027439425564238564,
+   "ro_t": 0.01171875,
+   "ro_s": 0.0048828125,
+   "t2_median": 8.671520349330843e-05
+  }
+ ],
+ "pubs": [
+  {
+   "kind": "seq",
+   "seq": "RX",
+   "tau_us": 0,
+   "tau_prog_s": 0.0,
+   "spec": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "RX",
+   "tau_us": 0,
+   "tau_prog_s": 0.0,
+   "spec": 1,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "RX",
+   "tau_us": 5,
+   "tau_prog_s": 5e-06,
+   "spec": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "RX",
+   "tau_us": 5,
+   "tau_prog_s": 5e-06,
+   "spec": 1,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "RX",
+   "tau_us": 10,
+   "tau_prog_s": 1e-05,
+   "spec": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "RX",
+   "tau_us": 10,
+   "tau_prog_s": 1e-05,
+   "spec": 1,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "RX",
+   "tau_us": 20,
+   "tau_prog_s": 2e-05,
+   "spec": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "RX",
+   "tau_us": 20,
+   "tau_prog_s": 2e-05,
+   "spec": 1,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "RX",
+   "tau_us": 30,
+   "tau_prog_s": 3e-05,
+   "spec": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "RX",
+   "tau_us": 30,
+   "tau_prog_s": 3e-05,
+   "spec": 1,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "RX",
+   "tau_us": 40,
+   "tau_prog_s": 4e-05,
+   "spec": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "RX",
+   "tau_us": 40,
+   "tau_prog_s": 4e-05,
+   "spec": 1,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "RY",
+   "tau_us": 0,
+   "tau_prog_s": 0.0,
+   "spec": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "RY",
+   "tau_us": 0,
+   "tau_prog_s": 0.0,
+   "spec": 1,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "RY",
+   "tau_us": 5,
+   "tau_prog_s": 5e-06,
+   "spec": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "RY",
+   "tau_us": 5,
+   "tau_prog_s": 5e-06,
+   "spec": 1,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "RY",
+   "tau_us": 10,
+   "tau_prog_s": 1e-05,
+   "spec": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "RY",
+   "tau_us": 10,
+   "tau_prog_s": 1e-05,
+   "spec": 1,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "RY",
+   "tau_us": 20,
+   "tau_prog_s": 2e-05,
+   "spec": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "RY",
+   "tau_us": 20,
+   "tau_prog_s": 2e-05,
+   "spec": 1,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "RY",
+   "tau_us": 30,
+   "tau_prog_s": 3e-05,
+   "spec": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "RY",
+   "tau_us": 30,
+   "tau_prog_s": 3e-05,
+   "spec": 1,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "RY",
+   "tau_us": 40,
+   "tau_prog_s": 4e-05,
+   "spec": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "RY",
+   "tau_us": 40,
+   "tau_prog_s": 4e-05,
+   "spec": 1,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "EX",
+   "tau_us": 0,
+   "tau_prog_s": 0.0,
+   "spec": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "EX",
+   "tau_us": 0,
+   "tau_prog_s": 0.0,
+   "spec": 1,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "EX",
+   "tau_us": 5,
+   "tau_prog_s": 5e-06,
+   "spec": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "EX",
+   "tau_us": 5,
+   "tau_prog_s": 5e-06,
+   "spec": 1,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "EX",
+   "tau_us": 10,
+   "tau_prog_s": 1e-05,
+   "spec": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "EX",
+   "tau_us": 10,
+   "tau_prog_s": 1e-05,
+   "spec": 1,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "EX",
+   "tau_us": 20,
+   "tau_prog_s": 2e-05,
+   "spec": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "EX",
+   "tau_us": 20,
+   "tau_prog_s": 2e-05,
+   "spec": 1,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "EX",
+   "tau_us": 30,
+   "tau_prog_s": 3e-05,
+   "spec": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "EX",
+   "tau_us": 30,
+   "tau_prog_s": 3e-05,
+   "spec": 1,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "EX",
+   "tau_us": 40,
+   "tau_prog_s": 4e-05,
+   "spec": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "EX",
+   "tau_us": 40,
+   "tau_prog_s": 4e-05,
+   "spec": 1,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "EY",
+   "tau_us": 0,
+   "tau_prog_s": 0.0,
+   "spec": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "EY",
+   "tau_us": 0,
+   "tau_prog_s": 0.0,
+   "spec": 1,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "EY",
+   "tau_us": 5,
+   "tau_prog_s": 5e-06,
+   "spec": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "EY",
+   "tau_us": 5,
+   "tau_prog_s": 5e-06,
+   "spec": 1,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "EY",
+   "tau_us": 10,
+   "tau_prog_s": 1e-05,
+   "spec": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "EY",
+   "tau_us": 10,
+   "tau_prog_s": 1e-05,
+   "spec": 1,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "EY",
+   "tau_us": 20,
+   "tau_prog_s": 2e-05,
+   "spec": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "EY",
+   "tau_us": 20,
+   "tau_prog_s": 2e-05,
+   "spec": 1,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "EY",
+   "tau_us": 30,
+   "tau_prog_s": 3e-05,
+   "spec": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "EY",
+   "tau_us": 30,
+   "tau_prog_s": 3e-05,
+   "spec": 1,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "EY",
+   "tau_us": 40,
+   "tau_prog_s": 4e-05,
+   "spec": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "seq",
+   "seq": "EY",
+   "tau_us": 40,
+   "tau_prog_s": 4e-05,
+   "spec": 1,
+   "shots": 2000
+  },
+  {
+   "kind": "ref",
+   "ones": 0,
+   "shots": 2000
+  },
+  {
+   "kind": "ref",
+   "ones": 1,
+   "shots": 2000
+  }
+ ],
+ "shots": 2000,
+ "taus_us": [
+  0,
+  5,
+  10,
+  20,
+  30,
+  40
+ ],
+ "fit_max_us": 40,
+ "script_sha256": "a492e9a0603ff3f8ee11b52b8b5a5ca2b403864460a91a02dac6edc79e700491",
+ "qpy_sha256": "1e2090ab9b9eddd167b0737cdcc8e4b396bdf5a36dd3976c78e238aa6a938c29",
+ "qubits": {
+  "140": {
+   "t1": 9.564055019526409e-05,
+   "t2": 2.723830561991519e-05,
+   "ro": 0.008056640625,
+   "sx": 0.00016703821815420918,
+   "ok": true
+  },
+  "141": {
+   "t1": 0.00016824304089850796,
+   "t2": 9.144599425726836e-05,
+   "ro": 0.0048828125,
+   "sx": 0.00014303493954108718,
+   "ok": true
+  },
+  "89": {
+   "t1": 0.00017527670083835665,
+   "t2": 8.609875232119841e-05,
+   "ro": 0.016845703125,
+   "sx": 0.0001361595618621943,
+   "ok": true
+  },
+  "88": {
+   "t1": 0.0001148495942622816,
+   "t2": 0.00010900980839792325,
+   "ro": 0.00439453125,
+   "sx": 0.0002212010781023669,
+   "ok": true
+  },
+  "1": {
+   "t1": 0.0002557051713972407,
+   "t2": 0.000302790873822133,
+   "ro": 0.01171875,
+   "sx": 0.00017830158250577147,
+   "ok": true
+  },
+  "2": {
+   "t1": 0.00027439425564238564,
+   "t2": 9.998472093525107e-05,
+   "ro": 0.0048828125,
+   "sx": 0.00019759080931036193,
+   "ok": true
+  }
+ },
+ "rough_qpu_s": 100.0,
+ "job_id": "rehearsal"
+}

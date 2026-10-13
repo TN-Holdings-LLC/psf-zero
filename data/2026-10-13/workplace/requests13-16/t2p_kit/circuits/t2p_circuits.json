@@ -1,0 +1,234 @@
+{
+ "written": "2026-10-13T07:23:53+00:00 (2026-10-13 09:23:53 CEST)",
+ "seed_base": 4840000,
+ "networkx": "3.6.1",
+ "qiskit": "2.5.2",
+ "circuits": [
+  {
+   "name": "qaoa_n12_p2",
+   "family": "HW2",
+   "qubits": 12,
+   "sig": "4f04055acdf15ff6"
+  },
+  {
+   "name": "qaoa_n20_p2",
+   "family": "HW2",
+   "qubits": 20,
+   "sig": "2d083b2d29ea95b5"
+  },
+  {
+   "name": "ba_n14",
+   "family": "BA",
+   "qubits": 14,
+   "sig": "e9c6d4e3381b8ff4"
+  },
+  {
+   "name": "ba_n16",
+   "family": "BA",
+   "qubits": 16,
+   "sig": "a40bc5a841c9e2fa"
+  },
+  {
+   "name": "ba_n18",
+   "family": "BA",
+   "qubits": 18,
+   "sig": "78b238e5b4076021"
+  },
+  {
+   "name": "ba_n20",
+   "family": "BA",
+   "qubits": 20,
+   "sig": "2d96ee1409a11f77"
+  },
+  {
+   "name": "tfim_n12",
+   "family": "HW2",
+   "qubits": 12,
+   "sig": "a0a3ff383fdaadd4"
+  },
+  {
+   "name": "tfim_n16",
+   "family": "HW2",
+   "qubits": 16,
+   "sig": "1d1ef2504822e104"
+  },
+  {
+   "name": "ghz_n12",
+   "family": "HW2",
+   "qubits": 12,
+   "sig": "7bdadc315180f234"
+  },
+  {
+   "name": "tfimP_n12",
+   "family": "HW2",
+   "qubits": 12,
+   "sig": "6fc40a948bef7bb3"
+  },
+  {
+   "name": "tfimP_n16",
+   "family": "HW2",
+   "qubits": 16,
+   "sig": "644d062940500f0c"
+  },
+  {
+   "name": "nba_n14_s0",
+   "family": "BA",
+   "qubits": 14,
+   "sig": "19cd050c0c28ca91",
+   "seed": 4854000,
+   "edges": 24
+  },
+  {
+   "name": "nba_n14_s1",
+   "family": "BA",
+   "qubits": 14,
+   "sig": "80ccd068204cfffa",
+   "seed": 4854001,
+   "edges": 24
+  },
+  {
+   "name": "nba_n14_s2",
+   "family": "BA",
+   "qubits": 14,
+   "sig": "941b336a1001f1f7",
+   "seed": 4854002,
+   "edges": 24
+  },
+  {
+   "name": "nba_n14_s3",
+   "family": "BA",
+   "qubits": 14,
+   "sig": "59a101e696a97146",
+   "seed": 4854003,
+   "edges": 24
+  },
+  {
+   "name": "nba_n14_s4",
+   "family": "BA",
+   "qubits": 14,
+   "sig": "df9af470480fd84e",
+   "seed": 4854004,
+   "edges": 24
+  },
+  {
+   "name": "nba_n16_s0",
+   "family": "BA",
+   "qubits": 16,
+   "sig": "2ad9609db81efa7a",
+   "seed": 4856000,
+   "edges": 28
+  },
+  {
+   "name": "nba_n16_s1",
+   "family": "BA",
+   "qubits": 16,
+   "sig": "4974c618767c4103",
+   "seed": 4856001,
+   "edges": 28
+  },
+  {
+   "name": "nba_n16_s2",
+   "family": "BA",
+   "qubits": 16,
+   "sig": "9cde4c9dd61888b1",
+   "seed": 4856002,
+   "edges": 28
+  },
+  {
+   "name": "nba_n16_s3",
+   "family": "BA",
+   "qubits": 16,
+   "sig": "0af4644c1b95f9cf",
+   "seed": 4856003,
+   "edges": 28
+  },
+  {
+   "name": "nba_n16_s4",
+   "family": "BA",
+   "qubits": 16,
+   "sig": "77c1060e6927266e",
+   "seed": 4856004,
+   "edges": 28
+  },
+  {
+   "name": "nba_n18_s0",
+   "family": "BA",
+   "qubits": 18,
+   "sig": "3a92ab9e3d516c50",
+   "seed": 4858000,
+   "edges": 32
+  },
+  {
+   "name": "nba_n18_s1",
+   "family": "BA",
+   "qubits": 18,
+   "sig": "47da7458f74c7528",
+   "seed": 4858001,
+   "edges": 32
+  },
+  {
+   "name": "nba_n18_s2",
+   "family": "BA",
+   "qubits": 18,
+   "sig": "b08d1e7491c84f5e",
+   "seed": 4858002,
+   "edges": 32
+  },
+  {
+   "name": "nba_n18_s3",
+   "family": "BA",
+   "qubits": 18,
+   "sig": "eb61c360f0eedd30",
+   "seed": 4858003,
+   "edges": 32
+  },
+  {
+   "name": "nba_n18_s4",
+   "family": "BA",
+   "qubits": 18,
+   "sig": "300c4bb72d3cd7e3",
+   "seed": 4858004,
+   "edges": 32
+  },
+  {
+   "name": "nba_n20_s0",
+   "family": "BA",
+   "qubits": 20,
+   "sig": "203ebf781e560812",
+   "seed": 4860000,
+   "edges": 36
+  },
+  {
+   "name": "nba_n20_s1",
+   "family": "BA",
+   "qubits": 20,
+   "sig": "df2de23f9d299583",
+   "seed": 4860001,
+   "edges": 36
+  },
+  {
+   "name": "nba_n20_s2",
+   "family": "BA",
+   "qubits": 20,
+   "sig": "850363a7a39f7a01",
+   "seed": 4860002,
+   "edges": 36
+  },
+  {
+   "name": "nba_n20_s3",
+   "family": "BA",
+   "qubits": 20,
+   "sig": "7782ad24907e5386",
+   "seed": 4860003,
+   "edges": 36
+  },
+  {
+   "name": "nba_n20_s4",
+   "family": "BA",
+   "qubits": 20,
+   "sig": "99965a0547ecd2b4",
+   "seed": 4860004,
+   "edges": 36
+  }
+ ]
+}

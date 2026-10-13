@@ -7888,6 +7888,45 @@ confirmed. It must carry C3b's result in the same sentence and the words "Cliffo
 
 ---
 
+<!-- ===== Addendum 471 (source: addendum_471.md) ===== -->
+
+> **Note added when merging:** Workplace deliverables for requests 13-16 of 2026-10-13, committed unchanged in data/2026-10-13/workplace/requests13-16/.
+
+## Addendum 471 -- Workplace records of 2026-10-13, requests 13-16 (no hardware data): T2* / ZZ experiment v2 with power fixed (2,000 shots, tau 30 us; ZZ standard error about 0.16 kHz); the c49 evaluation harness and its fixed circuit list; a one-page HW2 result sheet; literature: no published Heron ZZ value, no official ASAP/ALAP statement (2026-10-13)
+
+**Status: written at the workplace and committed here unchanged.** The package was packed at 09:48:33 CEST; all 22
+files match its manifest. Files:
+[`data/2026-10-13/workplace/requests13-16/`](../../data/2026-10-13/workplace/requests13-16/).
+
+| request | content | checked here |
+|---|---|---|
+| 13 | `t2zz_kit/`: design v2, `t2zz_real.py`, power table, FakeFez rehearsal | tests 4 passed; the rehearsal is scored end to end |
+| 14 | `t2p_kit/`: `t2p_eval.py`, the c49 harness; 20 new BA circuits with seeds fixed (4,840,000 + 1000 n + i) | not rerun here; the workplace's rehearsal was partial (FakeFez, 26 circuits) |
+| 15 | `hw2_sheet/hw2_sheet.py`: reads HW2's tools' outputs into one sheet and flags any number that disagrees with a tool's own | to be used after HW2 |
+| 16 | `heron-zz-and-scheduling-2026-10-13.md` | read |
+
+**Request 13 (T2* / ZZ v2).**
+
+- Version 1 was underpowered: the ZZ standard error was 0.4-0.9 kHz.
+- Version 2 (2,000 shots, tau = 30 us added, fit up to 40 us) gives about 0.16 kHz at T2* = 60 us. Rough QPU 100 s,
+  about 40 s by HW1's ratio.
+- The workplace changed target rule (a) to T2 >= 25 us and added a d(0) rule; both are disclosed in the design.
+- It runs only with the owner's go-ahead.
+
+**Request 16.**
+
+- No measured residual-ZZ value has been published for Heron. The only primary number is an upper bound of 10 kHz
+  on the precursor architecture.
+- IBM's documentation states the schedule (ALAP by default) only for runs with decoupling on. Nothing is said for
+  runs with it off, which is how HW1-HW3 run.
+- HW3's D4 and the T2* / ZZ run are therefore the direct measurements.
+
+**Not in this package:** requests 11 (independent review of `ns_tail.py`, `hw2_predictors_c.py` and HW3 v2's
+scoring) and 12 (analysis plan v2 with a multiplicity correction). `hw2_sheet/verify_on_rehearsal.sh` refers to a
+plan-v2 script that was not delivered.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
