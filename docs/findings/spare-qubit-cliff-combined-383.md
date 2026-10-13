@@ -6825,6 +6825,114 @@ control of Stage 2 failed (Addendum 212).
 
 ---
 
+<!-- ===== Addendum 456 (source: addendum_456.md) ===== -->
+
+> **Note added when merging:** C44-VAL ran on 2026-10-12 before C45-VAL; its predictions were fixed in a local file before the run. Recorded here, on 2026-10-13, with its data.
+
+## Addendum 456 -- C44-VAL: prototype 2026-10-11.c44 (changelog items 75 revised and 77): no output on a failed element, the same output on every call (174 of 174), ESP 1.015 times release 2026-10-11.4's with no test below 0.95 of it, time 1.14 times; item 74 stays on (1.047 where it tried); the proposed rule is met (2026-10-12)
+
+**Status: the predictions were fixed before the run in a local file, not committed first** (as in Addenda 445-452).
+
+- **The file:** [`data/2026-10-12/c44_val/C44-VAL_preregistration.md`](../../data/2026-10-12/c44_val/C44-VAL_preregistration.md).
+  - Written at 03:38 CEST on 2026-10-12, sha256 `bfad46de...`, unchanged.
+  - The hashes of every file it names are in [`SHA256SUMS.txt`](../../data/2026-10-12/c44_val/SHA256SUMS.txt).
+- **Seen before the run:**
+  - a smoke run of 4 jobs;
+  - item 75's development cases (C43-VAL's gen_random_n48 on FakeAachen, FakeBoston and FakeKingston; gen_random_n32,
+    qaoa_N45 and qv_N28 on FakeTorino);
+  - RECHECK-17 and TIMING-PROBE (below).
+- No test of C44-VAL was used in C41-VAL to C43-VAL.
+
+**Why.**
+
+- **Item 75's search order (Addendum 452).** It was worse on the largest random circuit (n = 48) on three devices:
+  0.48, 0.90 and 0.78 of the release's ESP.
+- **Item 77.** The layout search's 2 s time budget made the output depend on the machine's speed.
+
+**The prototype.** [`patches/psf_compile_c44_2026-10-11/`](../../patches/psf_compile_c44_2026-10-11/) (committed with
+Addendum 455 as the base of c45), built from c43 (= release 2026-10-11.4) by `make_c44.py`:
+
+| item | what it does |
+|---|---|
+| 75 revised | the deterministic re-placement searches in three orders, each up to the trial limit, and keeps the lowest score: c43's index order; device qubits by their own error and circuit qubits by two-qubit gate count; rustworkx's own VF2 order |
+| 77 | `layout_search_time_budget_s` defaults to None: no time budget, call limits only |
+
+**Checks before the run.**
+
+- `test_c44.py`: 15 tests passed. They are c43's 13, plus: c44's re-placement never scores above c43's on the same
+  routed circuit, and the same output under a clock that jumps 10 s per reading.
+- Exactness sweep: 43 of 43 ([`c44_exact_sweep.txt`](../../data/2026-10-12/c44_val/c44_exact_sweep.txt)).
+- **RECHECK-17** ([`benchmarks/recheck17.py`](../../benchmarks/recheck17.py),
+  [`recheck17.jsonl`](../../data/2026-10-12/c44_val/recheck17.jsonl)) recompiled the 17 test-device pairs C42-VAL's
+  arms refused (Addendum 450).
+  - Release 2026-10-11.4 compiles 15 of them on no failed element.
+  - Release 2026-10-11.3 compiles the same 15 when only Qiskit's VF2PostLayout is removed. This confirms Addendum 452's
+    explanation one by one.
+  - The other 2 (cat_n130 on FakeTorino, cc_n151 on FakeKingston) cannot avoid failed elements. Qiskit level 3's
+    outputs use them, and every release refuses them.
+- **TIMING-PROBE** ([`benchmarks/timing_probe.py`](../../benchmarks/timing_probe.py),
+  [`probe2_*.jsonl`](../../data/2026-10-12/c44_val/)) timed 154 compiles with release 2026-10-11.4 (C42-VAL's tests on
+  FakeTorino, C43-VAL's on FakeFez). One of them (dtc_100) reached the 2 s budget.
+
+**Run.**
+
+- **When and where:** 03:39-03:55 CEST on 2026-10-12, in Claude's cloud workspace.
+- **Script:** [`benchmarks/c44_val.py`](../../benchmarks/c44_val.py). **Data:**
+  [`data/2026-10-12/c44_val/`](../../data/2026-10-12/c44_val/).
+- **Scope:** 174 jobs: 29 tests on FakeTorino, FakeKingston, FakeMarrakesh, FakeFez, FakeAachen and FakeBoston.
+- **Tests:**
+  - Benchpress QFT N = 11-36 (8), QAOA N = 14-55 (6) and quantum volume N = 7-22 (4);
+  - generated with seeds "C44-VAL|...": random circuits n = 10-56 (6), Bernstein-Vazirani n = 30, 60, 100 (3) and
+    GHZ n = 30, 80 (2).
+- **Arms:**
+  - QK3 (Qiskit level 3);
+  - R3 (release 2026-10-11.3) and R4 (release 2026-10-11.4);
+  - C44, and C44off (item 74 off);
+  - C44 again in the same process.
+- **Errors:** 13 records, all R3's `FailedElementsError` (Bernstein-Vazirani on four devices; gen_random_n56 on
+  FakeAachen).
+
+**Scoring, as fixed** (runnable: best ESP of the five arms >= 0.01; an output on a failed element has ESP 0; ratios
+are geometric means):
+
+| ID | prediction | Torino | Kingston | Marrakesh | Fez | Aachen | Boston | result |
+|---|---|---|---|---|---|---|---|---|
+| U1 | C44 outputs on a failed element: 0 | 0 | 0 | 0 | 0 | 0 | 0 | **CONFIRMED** |
+| U2 | C44's second call gives the same output | 29/29 | 29/29 | 29/29 | 29/29 | 29/29 | 29/29 | **CONFIRMED** |
+| U3 | runnable, pooled: ESP C44 / R4 >= 1.00 (refuted < 0.99) | 1.018 | 1.015 | 1.011 | 1.025 | 1.004 | 1.018 | **CONFIRMED**: 1.015 (125) |
+| U4 | runnable tests below 0.95 x R4's <= 5% (refuted > 10%) | 0/15 | 0/22 | 0/22 | 0/19 | 0/22 | 0/25 | **CONFIRMED**: 0 of 125 |
+| U5 | ESP C44 / R3; tests below 0.95 x R3's (reported) | 1.147; 1 | 1.062; 1 | 1.393; 1 | 1.244; 2 | 1.030; 0 | 1.053; 0 | 1.143; 5 |
+| U6 | median time C44 / R4 <= 1.5 (refuted > 2.0) | 1.17 | 1.13 | 1.19 | 1.17 | 1.11 | 1.12 | **CONFIRMED**: 1.14 |
+| U7 | R3 refused and C44 compiled (reported); C44 refused while QK3 avoided failed elements: 0 | 3; 0 | 3; 0 | 0; 0 | 0; 0 | 4; 0 | 3; 0 | **CONFIRMED**: 13; 0 |
+
+**Item 74's decision, as fixed.** Where item 74 tried (25 runnable of 53 test-device pairs), ESP C44 / C44off is 1.047
+(>= 1.03), with median time 1.37 (<= 1.6). **Item 74 stays on by default.**
+
+**The proposed rule** (U1 and U2 on every device, U3, U4 and U6 not refuted, U7's second part 0) **is met.**
+
+**By test.** C44 differs from R4 only where item 75's new orders found a lower score:
+
+- GHZ: up to +0.135 in log10 ESP, on FakeBoston n = 80;
+- Bernstein-Vazirani on FakeFez: +0.018 to +0.051;
+- random n = 56 on three devices: +0.043 to +0.101.
+
+On C44-VAL's own n = 48 random circuit (another seed than C43-VAL's) C44 and R4 are equal on every device. Against
+Qiskit level 3, C44 is 1.093 times on all runnable tests (124), but 0.803 on FakeBoston.
+
+**Reading, two numbers.**
+
+- **Display:** ESP 1.015 times the release's, 1.14 times the release before it, 1.09 times Qiskit level 3's.
+- **Essential:**
+  - Small but never negative: no test below 0.95 of the release's.
+  - The output no longer depends on the machine's speed (item 77).
+  - The cost is time, 1.14 times the release's.
+  - The largest change for users came earlier (release 2026-10-11.4 compiling what 2026-10-11.3 refused); C44 keeps
+    it.
+
+**Not established.** No hardware.
+
+---
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

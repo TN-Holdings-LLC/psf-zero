@@ -1,0 +1,118 @@
+{
+"gen_bv_n100": [
+"gen_bv",
+null
+],
+"gen_bv_n30": [
+"gen_bv",
+null
+],
+"gen_bv_n60": [
+"gen_bv",
+null
+],
+"gen_ghz_n30": [
+"gen_ghz",
+null
+],
+"gen_ghz_n80": [
+"gen_ghz",
+null
+],
+"gen_random_n10": [
+"gen_random",
+null
+],
+"gen_random_n20": [
+"gen_random",
+null
+],
+"gen_random_n30": [
+"gen_random",
+null
+],
+"gen_random_n40": [
+"gen_random",
+null
+],
+"gen_random_n48": [
+"gen_random",
+null
+],
+"gen_random_n56": [
+"gen_random",
+null
+],
+"qaoa_N14": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N14_3reps.qasm"
+],
+"qaoa_N19": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N19_3reps.qasm"
+],
+"qaoa_N24": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N24_3reps.qasm"
+],
+"qaoa_N32": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N32_3reps.qasm"
+],
+"qaoa_N38": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N38_3reps.qasm"
+],
+"qaoa_N55": [
+"qaoa_qasm",
+"qaoa/qaoa_barabasi_albert_N55_3reps.qasm"
+],
+"qft_N11": [
+"qft_qasm",
+"qft/qft_N011.qasm"
+],
+"qft_N13": [
+"qft_qasm",
+"qft/qft_N013.qasm"
+],
+"qft_N15": [
+"qft_qasm",
+"qft/qft_N015.qasm"
+],
+"qft_N18": [
+"qft_qasm",
+"qft/qft_N018.qasm"
+],
+"qft_N22": [
+"qft_qasm",
+"qft/qft_N022.qasm"
+],
+"qft_N26": [
+"qft_qasm",
+"qft/qft_N026.qasm"
+],
+"qft_N30": [
+"qft_qasm",
+"qft/qft_N030.qasm"
+],
+"qft_N36": [
+"qft_qasm",
+"qft/qft_N036.qasm"
+],
+"qv_N11": [
+"qv",
+"qv/qv_N011_12345.qasm"
+],
+"qv_N18": [
+"qv",
+"qv/qv_N018_12345.qasm"
+],
+"qv_N22": [
+"qv",
+"qv/qv_N022_12345.qasm"
+],
+"qv_N7": [
+"qv",
+"qv/qv_N007_12345.qasm"
+]
+}

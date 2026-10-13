@@ -1,0 +1,68 @@
+{"test": "gen_random_n40", "device": "FakeAachen", "arm": "QK3", "ok": true, "failed": false, "esp": 0.38051275661705564, "n2": 242, "t": 0.2}
+{"test": "gen_random_n40", "device": "FakeAachen", "arm": "R3", "ok": false, "error": "FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'", "t": 0.24}
+{"test": "gen_random_n40", "device": "FakeAachen", "arm": "R3-noVF2", "ok": true, "failed": false, "esp": 0.28048312578676, "n2": 232, "t": 0.12}
+{"test": "gen_random_n40", "device": "FakeAachen", "arm": "R4", "ok": true, "failed": false, "esp": 0.4325803974102712, "n2": 232, "t": 0.41}
+{"test": "gen_random_n40", "device": "FakeBoston", "arm": "QK3", "ok": true, "failed": false, "esp": 0.5181087029786152, "n2": 242, "t": 0.15}
+{"test": "gen_random_n40", "device": "FakeBoston", "arm": "R3", "ok": false, "error": "FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'", "t": 0.29}
+{"test": "gen_random_n40", "device": "FakeBoston", "arm": "R3-noVF2", "ok": true, "failed": false, "esp": 0.3337540335341352, "n2": 256, "t": 0.23}
+{"test": "gen_random_n40", "device": "FakeBoston", "arm": "R4", "ok": true, "failed": false, "esp": 0.5253289445416593, "n2": 256, "t": 0.38}
+{"test": "gen_random_n40", "device": "FakeKingston", "arm": "QK3", "ok": true, "failed": false, "esp": 0.2556152004758083, "n2": 242, "t": 0.1}
+{"test": "gen_random_n40", "device": "FakeKingston", "arm": "R3", "ok": false, "error": "FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'", "t": 0.24}
+{"test": "gen_random_n40", "device": "FakeKingston", "arm": "R3-noVF2", "ok": true, "failed": false, "esp": 0.146044540401242, "n2": 256, "t": 0.14}
+{"test": "gen_random_n40", "device": "FakeKingston", "arm": "R4", "ok": true, "failed": false, "esp": 0.2776353144589563, "n2": 256, "t": 0.61}
+{"test": "gen_random_n40", "device": "FakeTorino", "arm": "QK3", "ok": true, "failed": false, "esp": 0.09263650635859971, "n2": 220, "t": 0.11}
+{"test": "gen_random_n40", "device": "FakeTorino", "arm": "R3", "ok": false, "error": "FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'", "t": 0.21}
+{"test": "gen_random_n40", "device": "FakeTorino", "arm": "R3-noVF2", "ok": true, "failed": false, "esp": 0.043845244343322744, "n2": 253, "t": 0.13}
+{"test": "gen_random_n40", "device": "FakeTorino", "arm": "R4", "ok": true, "failed": false, "esp": 0.07348386843171349, "n2": 253, "t": 0.53}
+{"test": "qasmbench_bv_n140", "device": "FakeAachen", "arm": "QK3", "ok": true, "failed": false, "esp": 0.05572885350472087, "n2": 454, "t": 0.16}
+{"test": "qasmbench_bv_n140", "device": "FakeAachen", "arm": "R3", "ok": false, "error": "FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'", "t": 0.23}
+{"test": "qasmbench_bv_n140", "device": "FakeAachen", "arm": "R3-noVF2", "ok": true, "failed": false, "esp": 0.01350121254665001, "n2": 448, "t": 0.16}
+{"test": "qasmbench_bv_n140", "device": "FakeAachen", "arm": "R4", "ok": true, "failed": false, "esp": 0.06858139302638984, "n2": 511, "t": 1.5}
+{"test": "qasmbench_bv_n140", "device": "FakeBoston", "arm": "QK3", "ok": true, "failed": false, "esp": 0.005687985575586828, "n2": 454, "t": 0.24}
+{"test": "qasmbench_bv_n140", "device": "FakeBoston", "arm": "R3", "ok": false, "error": "FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'", "t": 0.14}
+{"test": "qasmbench_bv_n140", "device": "FakeBoston", "arm": "R3-noVF2", "ok": true, "failed": false, "esp": 0.004268895649044023, "n2": 476, "t": 0.11}
+{"test": "qasmbench_bv_n140", "device": "FakeBoston", "arm": "R4", "ok": true, "failed": false, "esp": 0.1771093953765321, "n2": 499, "t": 1.09}
+{"test": "qasmbench_bv_n140", "device": "FakeKingston", "arm": "QK3", "ok": true, "failed": false, "esp": 0.01120016463551829, "n2": 454, "t": 0.18}
+{"test": "qasmbench_bv_n140", "device": "FakeKingston", "arm": "R3", "ok": false, "error": "FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'", "t": 0.2}
+{"test": "qasmbench_bv_n140", "device": "FakeKingston", "arm": "R3-noVF2", "ok": true, "failed": false, "esp": 0.010189133652445734, "n2": 388, "t": 0.1}
+{"test": "qasmbench_bv_n140", "device": "FakeKingston", "arm": "R4", "ok": true, "failed": false, "esp": 0.024906808976075657, "n2": 388, "t": 1.88}
+{"test": "qasmbench_bv_n30", "device": "FakeAachen", "arm": "QK3", "ok": true, "failed": false, "esp": 0.699298152277905, "n2": 77, "t": 0.05}
+{"test": "qasmbench_bv_n30", "device": "FakeAachen", "arm": "R3", "ok": false, "error": "FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'", "t": 0.05}
+{"test": "qasmbench_bv_n30", "device": "FakeAachen", "arm": "R3-noVF2", "ok": true, "failed": false, "esp": 0.07004976512784072, "n2": 77, "t": 0.05}
+{"test": "qasmbench_bv_n30", "device": "FakeAachen", "arm": "R4", "ok": true, "failed": false, "esp": 0.7075308803662581, "n2": 77, "t": 0.1}
+{"test": "qasmbench_bv_n30", "device": "FakeBoston", "arm": "QK3", "ok": true, "failed": false, "esp": 0.787829999591544, "n2": 77, "t": 0.06}
+{"test": "qasmbench_bv_n30", "device": "FakeBoston", "arm": "R3", "ok": false, "error": "FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'", "t": 0.06}
+{"test": "qasmbench_bv_n30", "device": "FakeBoston", "arm": "R3-noVF2", "ok": true, "failed": false, "esp": 0.6296808202432869, "n2": 77, "t": 0.06}
+{"test": "qasmbench_bv_n30", "device": "FakeBoston", "arm": "R4", "ok": true, "failed": false, "esp": 0.7900933157268026, "n2": 77, "t": 0.11}
+{"test": "qasmbench_bv_n30", "device": "FakeKingston", "arm": "QK3", "ok": true, "failed": false, "esp": 0.6003399438981237, "n2": 77, "t": 0.13}
+{"test": "qasmbench_bv_n30", "device": "FakeKingston", "arm": "R3", "ok": false, "error": "FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'", "t": 0.06}
+{"test": "qasmbench_bv_n30", "device": "FakeKingston", "arm": "R3-noVF2", "ok": true, "failed": false, "esp": 0.41248404628889607, "n2": 77, "t": 0.07}
+{"test": "qasmbench_bv_n30", "device": "FakeKingston", "arm": "R4", "ok": true, "failed": false, "esp": 0.6159947771955652, "n2": 77, "t": 0.15}
+{"test": "qasmbench_bv_n30", "device": "FakeTorino", "arm": "QK3", "ok": true, "failed": false, "esp": 0.33909508623788415, "n2": 80, "t": 0.05}
+{"test": "qasmbench_bv_n30", "device": "FakeTorino", "arm": "R3", "ok": false, "error": "FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'", "t": 0.05}
+{"test": "qasmbench_bv_n30", "device": "FakeTorino", "arm": "R3-noVF2", "ok": true, "failed": false, "esp": 0.1901050538841753, "n2": 67, "t": 0.04}
+{"test": "qasmbench_bv_n30", "device": "FakeTorino", "arm": "R4", "ok": true, "failed": false, "esp": 0.4173413595895712, "n2": 69, "t": 0.28}
+{"test": "qasmbench_bv_n70", "device": "FakeAachen", "arm": "QK3", "ok": true, "failed": false, "esp": 0.447870658638027, "n2": 177, "t": 0.09}
+{"test": "qasmbench_bv_n70", "device": "FakeAachen", "arm": "R3", "ok": false, "error": "FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'", "t": 0.08}
+{"test": "qasmbench_bv_n70", "device": "FakeAachen", "arm": "R3-noVF2", "ok": true, "failed": false, "esp": 0.052569291716128605, "n2": 202, "t": 0.07}
+{"test": "qasmbench_bv_n70", "device": "FakeAachen", "arm": "R4", "ok": true, "failed": false, "esp": 0.39825055224736705, "n2": 202, "t": 0.24}
+{"test": "qasmbench_bv_n70", "device": "FakeBoston", "arm": "QK3", "ok": true, "failed": false, "esp": 0.5494311724594757, "n2": 177, "t": 0.1}
+{"test": "qasmbench_bv_n70", "device": "FakeBoston", "arm": "R3", "ok": false, "error": "FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'", "t": 0.28}
+{"test": "qasmbench_bv_n70", "device": "FakeBoston", "arm": "R3-noVF2", "ok": true, "failed": false, "esp": 0.3802034496921332, "n2": 177, "t": 0.06}
+{"test": "qasmbench_bv_n70", "device": "FakeBoston", "arm": "R4", "ok": true, "failed": false, "esp": 0.49860998506016574, "n2": 177, "t": 0.41}
+{"test": "qasmbench_bv_n70", "device": "FakeKingston", "arm": "QK3", "ok": true, "failed": false, "esp": 0.30927273981398834, "n2": 177, "t": 0.09}
+{"test": "qasmbench_bv_n70", "device": "FakeKingston", "arm": "R3", "ok": false, "error": "FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'", "t": 0.16}
+{"test": "qasmbench_bv_n70", "device": "FakeKingston", "arm": "R3-noVF2", "ok": true, "failed": false, "esp": 0.11000767008296806, "n2": 177, "t": 0.08}
+{"test": "qasmbench_bv_n70", "device": "FakeKingston", "arm": "R4", "ok": true, "failed": false, "esp": 0.29789830550337676, "n2": 177, "t": 0.44}
+{"test": "qasmbench_bv_n70", "device": "FakeTorino", "arm": "QK3", "ok": true, "failed": false, "esp": 0.0666265905532111, "n2": 194, "t": 0.08}
+{"test": "qasmbench_bv_n70", "device": "FakeTorino", "arm": "R3", "ok": false, "error": "FailedElementsError: 'the circuit compiled on the map without the failed couplers still uses a failed qubit (changelog item 58)'", "t": 0.08}
+{"test": "qasmbench_bv_n70", "device": "FakeTorino", "arm": "R3-noVF2", "ok": true, "failed": false, "esp": 0.017743818908460707, "n2": 179, "t": 0.09}
+{"test": "qasmbench_bv_n70", "device": "FakeTorino", "arm": "R4", "ok": true, "failed": false, "esp": 0.06872894699597087, "n2": 179, "t": 0.67}
+{"test": "qasmbench_cat_n130", "device": "FakeTorino", "arm": "QK3", "ok": true, "failed": true, "esp": 0.0, "n2": 437, "t": 23.24}
+{"test": "qasmbench_cat_n130", "device": "FakeTorino", "arm": "R3", "ok": false, "error": "FailedElementsError: \"no placement avoids the failed couplers and qubits ('A connected component of the DAGCircuit is too large for any of the connected compone", "t": 7.0}
+{"test": "qasmbench_cat_n130", "device": "FakeTorino", "arm": "R3-noVF2", "ok": false, "error": "FailedElementsError: \"no placement avoids the failed couplers and qubits ('A connected component of the DAGCircuit is too large for any of the connected compone", "t": 6.84}
+{"test": "qasmbench_cat_n130", "device": "FakeTorino", "arm": "R4", "ok": false, "error": "FailedElementsError: \"no placement avoids the failed couplers and qubits ('A connected component of the DAGCircuit is too large for any of the connected compone", "t": 7.57}
+{"test": "qasmbench_cc_n151", "device": "FakeKingston", "arm": "QK3", "ok": true, "failed": true, "esp": 0.0, "n2": 624, "t": 4.82}
+{"test": "qasmbench_cc_n151", "device": "FakeKingston", "arm": "R3", "ok": false, "error": "FailedElementsError: \"no placement avoids the failed couplers and qubits ('A connected component of the DAGCircuit is too large for any of the connected compone", "t": 1.57}
+{"test": "qasmbench_cc_n151", "device": "FakeKingston", "arm": "R3-noVF2", "ok": false, "error": "FailedElementsError: \"no placement avoids the failed couplers and qubits ('A connected component of the DAGCircuit is too large for any of the connected compone", "t": 1.35}
+{"test": "qasmbench_cc_n151", "device": "FakeKingston", "arm": "R4", "ok": false, "error": "FailedElementsError: \"no placement avoids the failed couplers and qubits ('A connected component of the DAGCircuit is too large for any of the connected compone", "t": 1.75}
