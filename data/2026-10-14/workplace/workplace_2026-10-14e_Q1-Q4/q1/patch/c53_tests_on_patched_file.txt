@@ -1,0 +1,123 @@
+F............F...................................F......F..........F.... [ 83%]
+....F.........                                                           [100%]
+=================================== FAILURES ===================================
+_________________________________ test_version _________________________________
+
+new = <module 'psf_compile_c51_87_88_test' from '<test dir>/psf_compile.py'>
+
+    def test_version(new):
+>       assert new.VERSION == "2026-10-14.c53"
+E       AssertionError: assert '2026-10-14.c53+91' == '2026-10-14.c53'
+E         
+E         - 2026-10-14.c53
+E         + 2026-10-14.c53+91
+E         ?               +++
+
+<test dir>/test_87_88.py:202: AssertionError
+_________________________________ test_version _________________________________
+
+mods = {'rel': <module 'psf_compile_rel_for_c48_test' from '<repo>/psf_compile.py'>, 'c40': <module 'psf_compile_c48_test' from '<test dir>/psf_compile.py'>}
+
+    def test_version(mods):
+>       assert mods["c40"].VERSION == "2026-10-14.c53"  # c48's tests on c50, items 84-85 switched off as for c49
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: assert '2026-10-14.c53+91' == '2026-10-14.c53'
+E         
+E         - 2026-10-14.c53
+E         + 2026-10-14.c53+91
+E         ?               +++
+
+<test dir>/test_c48_on_c49_for_c53.py:267: AssertionError
+_________________________________ test_version _________________________________
+
+c49 = <module 'psf_compile_c53_as_c49_test' from '<test dir>/psf_compile.py'>
+
+    def test_version(c49):
+>       assert c49.VERSION == "2026-10-14.c53"  # c49's tests on c50: no Target here offers rzz
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: assert '2026-10-14.c53+91' == '2026-10-14.c53'
+E         
+E         - 2026-10-14.c53
+E         + 2026-10-14.c53+91
+E         ?               +++
+
+<test dir>/test_c49_on_c53.py:84: AssertionError
+____________________________ test_ising_still_short ____________________________
+
+c49 = <module 'psf_compile_c53_as_c49_test' from '<test dir>/psf_compile.py'>
+torino = <qiskit_ibm_runtime.fake_provider.backends.torino.fake_torino.FakeTorino object at 0x7f84004b1e50>
+
+    def test_ising_still_short(c49, torino):
+        """Item 83's gain survives item 84: a TFIM chain stays at most half of c48 with item 83 off."""
+        t = torino.target
+        qc = _tfim(12, 4, 8350)
+        on = _call(c49, qc, backend=torino)
+        c49.ST_SCHEDULE = False
+        try:
+            off = _call(c49, qc, backend=torino)
+        finally:
+            c49.ST_SCHEDULE = True
+>       assert c49._duration_s(on, t) <= 0.5 * c49._duration_s(off, t)
+E       AssertionError: assert 3.384000000000001e-06 <= (0.5 * 4.944e-06)
+E        +  where 3.384000000000001e-06 = <function _duration_s at 0x7f84008b44a0>(<qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7f84016d53d0>, <qiskit.transpiler.target.Target object at 0x7f84009244c0>)
+E        +    where <function _duration_s at 0x7f84008b44a0> = <module 'psf_compile_c53_as_c49_test' from '<test dir>/psf_compile.py'>._duration_s
+E        +  and   4.944e-06 = <function _duration_s at 0x7f84008b44a0>(<qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7f84017bba10>, <qiskit.transpiler.target.Target object at 0x7f84009244c0>)
+E        +    where <function _duration_s at 0x7f84008b44a0> = <module 'psf_compile_c53_as_c49_test' from '<test dir>/psf_compile.py'>._duration_s
+
+<test dir>/test_c49_on_c53.py:199: AssertionError
+_________________________________ test_version _________________________________
+
+c50 = <module 'psf_compile_c53_as_c51_test' from '<test dir>/psf_compile.py'>
+
+    def test_version(c50):
+>       assert c50.VERSION == "2026-10-14.c53"
+E       AssertionError: assert '2026-10-14.c53+91' == '2026-10-14.c53'
+E         
+E         - 2026-10-14.c53
+E         + 2026-10-14.c53+91
+E         ?               +++
+
+<test dir>/test_c51_on_c53.py:94: AssertionError
+_________________________________ test_version _________________________________
+
+mods = {'c52': <module 'psf_compile_c53_as_c52_test' from '<test dir>...ile_c51_2026-10-14/psf_compile.py'>, 'hw1': <module 'hw1_for_c52_test' from '<repo>/benchmarks/hw1_real.py'>}
+
+    def test_version(mods):
+>       assert mods["c52"].VERSION == "2026-10-14.c53"
+E       AssertionError: assert '2026-10-14.c53+91' == '2026-10-14.c53'
+E         
+E         - 2026-10-14.c53
+E         + 2026-10-14.c53+91
+E         ?               +++
+
+<test dir>/test_c52_on_c53.py:75: AssertionError
+=============================== warnings summary ===============================
+test_c48_on_c49_for_c53.py: 16 warnings
+test_c49_on_c53.py: 3 warnings
+  /usr/local/lib/python3.11/dist-packages/qiskit/circuit/library/n_local/evolved_operator_ansatz.py:324: DeprecationWarning: The class ``qiskit.circuit.library.n_local.n_local.NLocal`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. This applies to NLocal subclasses too. Use the corresponding function from the module qiskit.circuit.library.n_local instead.
+    super().__init__(
+
+test_c48_on_c49_for_c53.py: 16 warnings
+test_c49_on_c53.py: 3 warnings
+  /usr/local/lib/python3.11/dist-packages/qiskit/circuit/library/n_local/n_local.py:379: DeprecationWarning: The class ``qiskit.circuit.library.blueprintcircuit.BlueprintCircuit`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. There is no direct replacement other than the QuantumCircuit class.
+    super().__init__(name=name)
+
+test_c48_on_c49_for_c53.py::test_chosen_output_is_exact_and_never_worse
+test_c49_on_c53.py::test_chosen_output_is_exact_and_never_longer
+  /usr/local/lib/python3.11/dist-packages/scipy/sparse/linalg/_dsolve/linsolve.py:606: SparseEfficiencyWarning: splu converted its input to CSC format
+    return splu(A).solve
+
+test_c48_on_c49_for_c53.py::test_chosen_output_is_exact_and_never_worse
+test_c49_on_c53.py::test_chosen_output_is_exact_and_never_longer
+  /usr/local/lib/python3.11/dist-packages/scipy/sparse/linalg/_matfuncs.py:707: SparseEfficiencyWarning: spsolve is more efficient when sparse b is in the CSC matrix format
+    return spsolve(Q, P)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../..<test dir>/test_87_88.py::test_version
+FAILED ../../..<test dir>/test_c48_on_c49_for_c53.py::test_version
+FAILED ../../..<test dir>/test_c49_on_c53.py::test_version
+FAILED ../../..<test dir>/test_c49_on_c53.py::test_ising_still_short
+FAILED ../../..<test dir>/test_c51_on_c53.py::test_version
+FAILED ../../..<test dir>/test_c52_on_c53.py::test_version
+6 failed, 80 passed, 42 warnings in 98.92s (0:01:38)

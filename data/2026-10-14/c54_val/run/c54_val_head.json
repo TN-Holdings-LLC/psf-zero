@@ -1,0 +1,43 @@
+{
+ "started": "2026-10-14 14:54:43 JST",
+ "c53_sha256": "81ef9beca7e0c5a6f2ff90813505d27c0df22328bbae223c9bc7eb659b8af1dd",
+ "c54_sha256": "5295733e388b91a6ae1c28c57210608c023875512b57b431c55da9eb4f10e63b",
+ "script_sha256": "933c54222c2231f371e05d2c8440f4bea206ff854f3c2dd1bf855b7c1ebbf612",
+ "devices": [
+  "FakeFez",
+  "FakeMarrakesh",
+  "FakeKingston",
+  "FakeTorino",
+  "snapshot_marrakesh"
+ ],
+ "tests": [
+  "qaoa_n12_p2",
+  "qaoa_n20_p2",
+  "ba_n14",
+  "ba_n16",
+  "ba_n18",
+  "ba_n20",
+  "tfim_n12",
+  "tfim_n16",
+  "ghz_n12",
+  "tfimP_n12",
+  "tfimP_n16",
+  "tfim_n20_r3",
+  "heis_n12_r2",
+  "heis2d_n16_r1",
+  "chem_n12_r1",
+  "qaoa3reg_n20_r3",
+  "qaoa3reg_n40_r3",
+  "tfim_n40_r2",
+  "clf_n4_L3",
+  "clf_n4_L5",
+  "clf_n4_L9",
+  "clf_n6_L3",
+  "clf_n6_L5",
+  "clf_n6_L9",
+  "hhI_n16",
+  "hhI_n20",
+  "ring12_tfim",
+  "hhtree_heis_n16"
+ ]
+}

@@ -1,0 +1,12 @@
+{"device": "FakeFez", "family": "hh_ising", "n": 40, "steps": 2, "target": "T", "max_diff": 1.667203181066057e-11, "observables": 81, "mps_s": 0.1}
+{"device": "FakeFez", "family": "tree_ising", "n": 40, "steps": 2, "target": "T", "max_diff": 5.942775309328882e-12, "observables": 79, "mps_s": 0.0}
+{"device": "FakeFez", "cell": "tree_ising 40 4", "result": "MPS did not finish in 400 s"}
+{"device": "FakeFez", "family": "hh_ising", "n": 80, "steps": 2, "target": "T", "max_diff": 1.2764394657352116e-11, "observables": 165, "mps_s": 0.1}
+{"device": "FakeFez", "family": "hh_ising", "n": 154, "steps": 2, "target": "T", "max_diff": 2.0470946239067758e-11, "observables": 323, "mps_s": 0.4}
+{"device": "FakeFez", "cell": "hh_ising 40 4", "result": "MPS did not finish in 400 s"}
+{"device": "FakeMarrakesh", "family": "hh_ising", "n": 40, "steps": 2, "target": "T", "max_diff": 1.0234675351235458e-11, "observables": 81, "mps_s": 0.1}
+{"device": "FakeMarrakesh", "family": "tree_ising", "n": 40, "steps": 2, "target": "T", "max_diff": 8.395724721455174e-12, "observables": 79, "mps_s": 0.0}
+{"device": "FakeMarrakesh", "cell": "tree_ising 40 4", "result": "MPS did not finish in 400 s"}
+{"device": "FakeMarrakesh", "family": "hh_ising", "n": 80, "steps": 2, "target": "T", "max_diff": 1.151601851037472e-11, "observables": 165, "mps_s": 0.2}
+{"device": "FakeMarrakesh", "family": "hh_ising", "n": 153, "steps": 2, "target": "T", "max_diff": 2.935569722148281e-11, "observables": 316, "mps_s": 0.4}
+{"device": "FakeMarrakesh", "cell": "hh_ising 40 4", "result": "MPS did not finish in 400 s"}

@@ -1,0 +1,2 @@
+FakeFez F 6 12 dropped 2 ['1.4e-05', '1.4e-05']
+TOTAL {'checked': 896, 'inexact_dropped': 2, 'unchecked': 0, 'largest_tvd_dropped': 1.3857133494518269e-05, 'all_inexact': 0} dropped tvd range (1.3857133494518269e-05, 1.3857133494518269e-05)

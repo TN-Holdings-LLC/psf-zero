@@ -1,0 +1,42 @@
+FakeFez hh_ising      n= 18 s=2 T | new     2.04 (   92) | c53     2.18 (   94) | c52     2.18 (   94) | QK3     3.17 (  106) | 91:1 kept 1/0 {} err 4.42165460985056e-15
+FakeFez hh_ising      n= 18 s=2 F | new     0.84 (   46) | c53     1.06 (   51) | c52     1.06 (   51) | QK3F     1.74 (   63) | 91:1 kept 1/0 {} err 6.727266377171756e-16
+FakeFez hh_ising      n= 18 s=4 T | new     3.65 (  160) | c53     3.82 (  162) | c52     3.82 (  162) | QK3     6.12 (  202) | 91:1 kept 1/0 {} err 8.539216463176164e-15
+FakeFez hh_ising      n= 18 s=4 F | new     1.49 (   80) | c53     1.63 (   85) | c52     1.63 (   85) | QK3F     3.44 (  121) | 91:1 kept 1/0 {} err 5.3590099854180855e-15
+FakeFez hh_ising      n= 40 s=2 T | new     2.06 (  220) | c53     2.21 (  214) | c52     2.21 (  214) | QK3     4.01 (  264) | 91:1 kept 1/0 {} err 5.038874040241836e-10
+FakeFez hh_ising      n= 40 s=2 F | new     0.86 (  110) | c53     1.08 (  123) | c52     1.08 (  123) | QK3F     2.27 (  154) | 91:1 kept 1/0 {} err 5.037355255144149e-10
+FakeFez hh_ising      n= 40 s=4 T | new     3.62 (  350) | c53     3.62 (  350) | c52     3.62 (  350) | QK3     7.75 (  508) | 91:1 kept 0/1 {} err None cliff 0.0
+FakeFez hh_ising      n= 40 s=4 F | new     1.51 (  192) | c53     1.68 (  205) | c52     1.68 (  205) | QK3F     4.40 (  298) | 91:1 kept 1/0 {} err None cliff 0.0
+FakeFez hh_ising      n= 80 s=2 T | new     2.09 (  452) | c53     2.40 (  442) | c52     2.40 (  442) | QK3     5.02 (  558) | 91:1 kept 1/0 {} err None cliff ValueError('rz angle 0.6180178595515939 is not a multiple of pi/2')
+FakeFez hh_ising      n= 80 s=2 F | new     0.86 (  226) | c53     1.10 (  255) | c52     1.10 (  255) | QK3F     2.41 (  319) | 91:1 kept 1/0 {} err None cliff 0.0
+FakeFez hh_ising      n= 80 s=4 T | new     3.67 (  792) | c53     3.79 (  724) | c52     3.79 (  724) | QK3     9.77 ( 1070) | 91:1 kept 1/0 {} err None cliff 0.0
+FakeFez hh_ising      n= 80 s=4 F | new     1.51 (  396) | c53     1.68 (  425) | c52     1.68 (  425) | QK3F     4.79 (  617) | 91:1 kept 1/0 {} err None cliff 0.0
+FakeFez hh_ising      n=154 s=2 T | new     2.09 (  902) | c53     7.34 ( 1150) | c52     7.34 ( 1150) | QK3     7.34 ( 1150) | 91:1 kept 1/0 {} err None cliff ValueError('rz angle -2.171036137012818 is not a multiple of pi/2')
+FakeFez hh_ising      n=154 s=2 F | new     0.86 (  451) | c53     3.42 (  644) | c52     3.42 (  644) | QK3F     3.71 (  644) | 91:1 kept 1/0 {} err None cliff 0.0
+FakeFez hh_ising      n=154 s=4 T | new     3.67 ( 1578) | c53    14.09 ( 2216) | c52    14.09 ( 2216) | QK3    14.09 ( 2216) | 91:1 kept 1/0 {} err None cliff ValueError('rz angle -2.171036137012818 is not a multiple of pi/2')
+FakeFez hh_ising      n=154 s=4 F | new     1.51 (  789) | c53     6.71 ( 1256) | c52     6.71 ( 1256) | QK3F     7.28 ( 1256) | 91:1 kept 1/0 {} err None cliff 0.0
+FakeFez tree_ising    n= 16 s=2 T | new     2.05 (   81) | c53     2.05 (   81) | c52     2.05 (   81) | QK3     5.40 (   98) | 91:1 kept 0/1 {} err 5.610313090441686e-15 cliff None
+FakeFez tree_ising    n= 16 s=2 F | new     0.84 (   41) | c53     1.06 (   45) | c52     1.06 (   45) | QK3F     2.99 (   56) | 91:1 kept 1/0 {} err 6.46743083342235e-16 cliff None
+FakeFez tree_ising    n= 16 s=4 T | new     3.65 (  142) | c53     3.68 (  137) | c52     3.68 (  137) | QK3    10.32 (  186) | 91:1 kept 1/0 {} err 7.63697352919757e-15 cliff None
+FakeFez tree_ising    n= 16 s=4 F | new     1.34 (   71) | c53     1.61 (   75) | c52     1.61 (   75) | QK3F     5.75 (  108) | 91:1 kept 1/0 {} err 5.868246953178011e-15 cliff None
+FakeFez tree_ising    n= 40 s=2 T | new     2.04 (  208) | c53     2.21 (  200) | c52     2.21 (  200) | QK3     4.01 (  242) | 91:1 kept 1/0 {} err None cliff ValueError('rz angle 0.334297698121762 is not a multiple of pi/2')
+FakeFez tree_ising    n= 40 s=2 F | new     0.84 (  104) | c53     1.08 (  117) | c52     1.08 (  117) | QK3F     2.08 (  145) | 91:1 kept 1/0 {} err None cliff 0.0
+FakeFez tree_ising    n= 40 s=4 T | new     3.58 (  364) | c53     3.77 (  332) | c52     3.77 (  332) | QK3     7.75 (  462) | 91:1 kept 1/0 {} err None cliff ValueError('rz angle 0.334297698121762 is not a multiple of pi/2')
+FakeFez tree_ising    n= 40 s=4 F | new     1.49 (  182) | c53     1.74 (  195) | c52     1.74 (  195) | QK3F     4.02 (  279) | 91:1 kept 1/0 {} err None cliff 0.0
+FakeFez hh_xyz        n= 18 s=1 T | new     2.26 (  102) | c53     2.26 (  102) | c52     2.26 (  102) | QK3     2.45 (  102) | 91:1 kept 0/1 {} err 8.16246794799941e-15 cliff None
+FakeFez hh_xyz        n= 18 s=1 F | new     0.97 (   51) | c53     1.03 (   51) | c52     1.03 (   51) | QK3F     1.20 (   51) | 91:1 kept 1/0 {} err 7.926190577685173e-16 cliff None
+FakeFez hh_xyz        n= 18 s=2 T | new     4.25 (  200) | c53     4.25 (  200) | c52     4.25 (  200) | QK3     4.51 (  204) | 91:1 kept 0/1 {} err 7.902236597575693e-15 cliff None
+FakeFez hh_xyz        n= 18 s=2 F | new     1.90 (  102) | c53     1.93 (  102) | c52     1.93 (  102) | QK3F     2.32 (  102) | 91:1 kept 1/0 {} err 1.6570025744140635e-15 cliff None
+FakeFez hh_xyz        n= 40 s=1 T | new     2.23 (  238) | c53     2.23 (  238) | c52     2.23 (  238) | QK3     2.69 (  246) | 91:1 kept 0/1 {} err None cliff None
+FakeFez hh_xyz        n= 40 s=1 F | new     0.92 (  123) | c53     1.06 (  123) | c52     1.06 (  123) | QK3F     1.33 (  123) | 91:1 kept 1/0 {} err None cliff None
+FakeFez hh_xyz        n= 40 s=2 T | new     4.42 (  482) | c53     4.42 (  482) | c52     4.42 (  482) | QK3     4.87 (  492) | 91:1 kept 0/1 {} err None cliff None
+FakeFez hh_xyz        n= 40 s=2 F | new     1.85 (  246) | c53     1.93 (  246) | c52     1.93 (  246) | QK3F     2.53 (  246) | 91:1 kept 1/0 {} err None cliff None
+FakeFez ring12_ising  n= 12 s=2 T | new     1.06 (   48) | c53     1.06 (   48) | c52     1.06 (   48) | QK3    10.90 (   90) | 91:1 kept 0/1 {} err 2.7859479233621794e-15 cliff None
+FakeFez ring12_ising  n= 12 s=2 F | new     0.56 (   30) | c53     0.67 (   36) | c52     0.67 (   36) | QK3F     4.78 (   47) | 91:1 kept 1/0 {} err 1.3968759534817495e-15 cliff None
+FakeFez ring12_xyz    n= 12 s=2 T | new     2.98 (  144) | c53     2.98 (  144) | c52     2.98 (  144) | QK3    17.52 (  144) | 91:1 kept 0/1 {} err 3.1479050130744272e-15 cliff None
+FakeFez ring12_xyz    n= 12 s=2 F | new     1.32 (   72) | c53     1.32 (   72) | c52     1.32 (   72) | QK3F     7.73 (   72) | 91:1 kept 1/0 {} err 9.199031222234171e-16 cliff None
+FakeFez heis2d_n16_r1 n= 16 s=1 T | new    22.27 (  429) | c53    22.27 (  429) | c52    22.27 (  429) | QK3    22.67 (  429) | 91:0 kept 0/0 {'degree': 1} err 2.5641814627452918e-14 cliff None
+FakeFez heis2d_n16_r1 n= 16 s=1 F | new    20.47 (  429) | c53    20.47 (  429) | c52    20.47 (  429) | QK3F    24.20 (  429) | 91:0 kept 0/0 {'degree': 1} err 2.6308345143518845e-14 cliff None
+FakeFez heis_n12_r2   n= 12 s=2 T | new    16.57 (  135) | c53    16.57 (  135) | c52    16.57 (  135) | QK3    16.69 (  135) | 91:1 kept 0/1 {} err 1.133499682055568e-14 cliff None
+FakeFez heis_n12_r2   n= 12 s=2 F | new    14.44 (  135) | c53    14.44 (  135) | c52    14.44 (  135) | QK3F    18.56 (  135) | 91:1 kept 0/1 {} err 1.4103083456910462e-14 cliff None
+FakeFez tfim_n12_r2   n= 12 s=2 T | new     1.06 (   48) | c53     1.06 (   48) | c52     1.06 (   48) | QK3    11.00 (   90) | 91:1 kept 0/1 {} err 8.815225552073034e-15 cliff None
+FakeFez tfim_n12_r2   n= 12 s=2 F | new     0.56 (   30) | c53     0.67 (   36) | c52     0.67 (   36) | QK3F     4.68 (   47) | 91:1 kept 1/0 {} err 1.6426190348127237e-15 cliff None

@@ -9088,4 +9088,132 @@ qaoa3reg_n20_r3 and the Barabasi-Albert circuits go to PSF-Zero.
 
 ---
 
+<!-- ===== Addendum 485 (source: addendum_485.md) ===== -->
+
+> **Note added when merging:** Workplace Q1-Q4; c54 (items 91, 93); C54-VAL (V4 refuted).
+
+## Addendum 485 -- Workplace records Q1-Q4 (2026-10-14): item 91 builds an interaction graph that embeds in heavy-hex by edge colouring; rings by N2's formula inside the compiler (item 92) are longer than c53 and not adopted; a ring schedule of CZ-depth 9 for any n; the inexactness found in a15 is Qiskit's two-qubit synthesis snapping a nearly degenerate block (1.4e-5 in distribution), fixed in a17. Prototype c54 (c53 + item 91 + item 93: every output checked exact at 1e-6, with fallbacks) and C54-VAL: V1-V3 and V5-V7 confirmed, 208 of 208 checked outputs exact with no fallback; V4 REFUTED, embeddable tests at 0.900 x c53 with fractional gates against <= 0.85 predicted (heavy-hex Ising 0.80-0.86, no gain on a Heisenberg tree) (2026-10-14)
+
+**Status:** workplace records committed unchanged; an offline validation fixed in a local prestatement before its run.
+Times in CEST.
+
+### 1. Workplace records (fifth delivery of 2026-10-14)
+
+The delivery is in
+[`data/2026-10-14/workplace/workplace_2026-10-14e_Q1-Q4/`](../../data/2026-10-14/workplace/workplace_2026-10-14e_Q1-Q4/),
+with an intake check of 52 of 52. It answers the fourth next-requests note.
+
+- **Q1, item 91.** An interaction graph of two-qubit terms that embeds in the device is placed by the first VF2 match,
+  without a score. Heavy-hex is bipartite with degree at most 3, so its edges take at most 3 colours (Koenig). One
+  Trotter step is one layer per colour plus a single-qubit layer, with item 88's rzz / rx Pauli frame when the Target
+  has them.
+  - The workplace's 84 cells (FakeFez, FakeMarrakesh) were never longer than c53. Heavy-hex Ising came out at
+    0.62-0.74 x c53's duration (geometric mean), and 0.23 x on the whole 154-qubit device with rzz.
+  - Exact up to n = 24; stabilizer twins up to 154 qubits.
+  - What does not embed: C52-VAL's heis2d (degree 4), random trees with adjacent degree-3 nodes, cycles of length
+    4-11.
+- **Q2, item 92.** Rings by N2's folded order inside the compiler are exact but longer than c53 for n >= 6, because
+  c53 already builds commuting ring terms with parity gadgets and no SWAP. Not adopted; the code is kept as a record.
+- **Q4.** A ring schedule for any n with CZ-depth 9 and about 3n CZ per layer (N2's needed 55 CZ at n = 7 and 203 at
+  n = 11).
+- **Q3, the inexactness found in a15.** Qiskit's `TwoQubitWeylDecomposition` snaps a nearly degenerate block when the
+  snap costs at most 1e-9 in gate fidelity, even at approximation_degree 1.0. Inside STEINER6's final level-3
+  transpile this gave a total variation of 1.4e-5 (FakeFez n = 6, L = 12). PSF-Zero's EXACT_TOL of 1e-6 in state
+  infidelity was too loose to see it.
+  - The workplace's fix is a17: every candidate is checked exact (distribution within 1e-9, or a unitary at 1e-12),
+    and the Q4 ring schedule is a second ring candidate. On W3's 64 cells a17 equals a16 and is exact; 2 of 896
+    candidates were dropped as inexact.
+  - It also proposed a compiler-side check, which is item 93 below.
+
+### 2. Prototype c54
+
+[`patches/psf_compile_c54_2026-10-14/`](../../patches/psf_compile_c54_2026-10-14/) is built from c53 in two steps.
+
+- `make_c54_91.py` is the workplace's `make_c53_91.py` with the version strings changed; its code is unchanged.
+- `make_c54.py` adds **item 93**: the outermost call checks its output exact where it can, meaning at most
+  RESYNTH_MAX_QUBITS active qubits and final measurements only.
+  - Measured circuits are compared by the largest difference of an outcome probability against the input's own
+    synthesis at level 0. Unmeasured circuits are compared by state infidelity. The tolerance is 1e-6 for both.
+  - If the output is not exact, the usual path is tried, then Qiskit's level-1 preset on the device (refused if it uses
+    a failed element). If neither is exact, TranspilerError is raised, so an inexact circuit is never returned
+    silently.
+  - The tolerance is 1e-6, not a17's 1e-9, because ordinary outputs keep differences of about 1e-7 (6.1e-7 on a TFIM
+    ring on FakeTorino). Where they come from is the workplace's next question.
+  - On the workplace's `bad_block.qpy`, Qiskit level 3 is off by 1.43e-5. c53's own output there is not exact either;
+    c54 falls back to the usual path and returns an exact one.
+- **Tests:** 102 passed. They are the workplace's item 91 tests, 6 new ones for item 93, and c53's, c52's, c51's,
+  c49's and c48's tests with items 87-93 off where outputs are compared. a17 is in
+  [`patches/psf_ai_compile_a17_2026-10-14/`](../../patches/psf_ai_compile_a17_2026-10-14/); its 13 tests pass on c54.
+
+### 3. C54-VAL
+
+Prestatement
+[`data/2026-10-14/c54_val/C54-VAL_preregistration.md`](../../data/2026-10-14/c54_val/C54-VAL_preregistration.md),
+fixed 07:54 CEST, SHA-256 `34c46d60...`. Data in [`data/2026-10-14/c54_val/run/`](../../data/2026-10-14/c54_val/run/).
+
+**Scope.** C53-VAL's 24 tests and 4 embeddable ones, on 5 devices. The new tests are:
+
+- hhI_n16 and hhI_n20: Ising on a 16- and 20-qubit heavy-hex patch of FakeFez's graph;
+- ring12_tfim;
+- hhtree_heis_n16: Heisenberg on a 16-qubit heavy-hex spanning tree.
+
+The arms are QK3, C53 and C54 without fractional gates, and C53F and C54F on the fractional Target. The run went from
+07:54 to 08:21 CEST in Claude's workspace (the head file's times are the container's JST). Three of the new cells had
+been dry-checked on FakeFez before the prestatement, as it says.
+
+| ID | prediction | result |
+|---|---|---|
+| V1 | C54 and C54F exact, no refusal | **CONFIRMED** (234 checked) |
+| V2 | C54 <= 1.02 x C53 on >= 95% | **CONFIRMED**: 140/140 |
+| V3 | C54F <= 1.02 x C53F on >= 95% | **CONFIRMED**: 140/140 |
+| V4 | embeddable tests: C54F / C53F geometric mean <= 0.85 | **REFUTED**: 0.900 (0.799-1.000) |
+| V5 | same output on a second call | **CONFIRMED**: 20/20 |
+| V6 | C54F native, every rzz in range | **CONFIRMED**: 140/140 |
+| V7 | compile time | **CONFIRMED**: 140/140 |
+
+**The embeddable tests** (C54F / C53F):
+
+| test | FakeFez | FakeMarrakesh | FakeKingston | FakeTorino | ibm_marrakesh snapshot |
+|---|---|---|---|---|---|
+| hhI_n16 | 0.859 | 0.818 | 0.827 | 1.000 | 0.799 |
+| hhI_n20 | 0.831 | 0.806 | 0.811 | 0.836 | 0.861 |
+| ring12_tfim | 0.902 | 0.903 | 0.903 | 1.000 | 0.903 |
+| hhtree_heis_n16 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
+
+- Without fractional gates, C54 / C53 is 0.999. Everything else, including tfim_n20_r3 (0.839 on FakeMarrakesh), is
+  in V8 of the report. Every family other than Ising and the embeddable tests is 1.000.
+- On FakeTorino item 91 ran (GRAPH_STATS counts it as used) for hhI_n16 and ring12_tfim, yet C54F's duration equals
+  C53F's. The cause was not examined.
+- On the Heisenberg tree item 91 gives nothing. Each edge carries three terms (XX, YY, ZZ), emitted separately.
+- `GRAPH_STATS`: tried 255, used 70 (2 colours 40, 3 colours 30), not embeddable 45, degree over 3 55, failed check 0.
+- `EXACT93_STATS`: 208 checked and 208 passed, with 92 not checkable (over 20 active qubits). There was no fallback
+  and nothing raised. The largest difference passed was 5.0e-14.
+
+**Rule fixed in advance:** V1, V2, V3, V5 and V6 are confirmed, so c54 becomes the base. V4 is refuted, so item 91 is
+not called a large gain in writing. Its measured effect is 0.80-0.86 x on heavy-hex Ising patches and about 0.90 x on
+a 12-ring, with fractional gates, and nothing without them. TIME1 and FRAC1 tonight are unchanged (c49 and c51).
+
+### 4. Reading
+
+- **Item 91 is real but smaller than the workplace's figure.** The workplace measured 0.62-0.74 x; C54-VAL measured
+  0.80-0.86 on Ising patches. The cells differ: different patches and Trotter steps, and C54-VAL compares against
+  c53 with item 87's chain brickwork already in place. The difference is not examined further. The prediction was
+  set from the workplace's figure and failed, and that stands.
+- **Item 93 found nothing inexact in 208 outputs.** The largest difference passed was 5e-14. Why it was so much
+  smaller than the 6.1e-7 seen while building, on cells outside this run, was not examined. Item 93's value is the
+  guarantee: a snapped block like Q3's can no longer leave the compiler unnoticed.
+- **Not established:** all of this is offline. The heavy-hex Ising gain needs hardware, after TIME1 and FRAC1.
+
+**Two numbers.**
+
+- **Display:** heavy-hex Ising 0.80 x c53 with fractional gates (0.03 x Qiskit level 3), and every checked output
+  exact with a hard error otherwise.
+- **Essential:**
+  - Embeddable tests at 0.90 x c53, against a prediction of 0.85 that failed.
+  - No change outside Ising-type graphs.
+  - 3-regular QAOA, where PSF-Zero is behind the user's best (Addendum 484), is untouched. It is the workplace's next
+    target.
+
+---
+
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
