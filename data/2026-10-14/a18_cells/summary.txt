@@ -1,0 +1,9 @@
+W3's 64 classifier cells, psf_compile c55 with item 94 off; a17 (workplace), a18 (home), Qiskit level 3 seed 0
+target T: a18/a17 duration geo 1.0020 (min 1.000, max 1.137); a18/QK3 geo 0.543 (max 0.667); a18 shorter than QK3 in 64/64
+   a17 chosen {'input+polish': 1, 'ring': 62, 'search': 1}; a18 chosen {'input+polish': 1, 'ring': 63}
+   cells where a18 differs from a17 in duration: [(('FakeTorino', 4, 1), 'search', 0.496, 'ring', 0.564)]
+   a18 max TVD 7.1e-14; every rzz in range True; compile seconds a17 284, a18 71
+target F: a18/a17 duration geo 1.0023 (min 1.000, max 1.157); a18/QK3 geo 0.531 (max 0.654); a18 shorter than QK3 in 64/64
+   a17 chosen {'input+polish': 1, 'ring': 62, 'search': 1}; a18 chosen {'input+polish': 1, 'ring': 63}
+   cells where a18 differs from a17 in duration: [(('FakeTorino', 4, 1), 'search', 0.432, 'ring', 0.5)]
+   a18 max TVD 4.6e-14; every rzz in range True; compile seconds a17 314, a18 90

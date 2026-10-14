@@ -9548,4 +9548,75 @@ The README states this scope, with the numbers above and the condition that the 
 
 ---
 
+<!-- ===== Addendum 489 (source: addendum_489.md) ===== -->
+
+> **Note added when merging:** AI front end a18 built at home after the scope declaration; offline only.
+
+## Addendum 489 -- AI front end a18 (home, after the scope declaration): a17 without a14's seed search (item 32), and every input it does not build by the ring formula handed on unchanged, to psf_compile's default call with a Target or to Qiskit level 3 without one (item 33). On W3's 64 classifier cells it equals a17 on 63 per Target and is 13-16% longer on the one cell where a17 returned the search (FakeTorino, n = 4, L = 1); 0.54 x Qiskit level 3's duration (0.53 x with fractional gates), shorter on 64 of 64; exact within 7.1e-14; compile time 0.25-0.29 x a17's. 20 tests pass. Not yet on a real device (2026-10-14)
+
+**Status:** exploratory offline evaluation, not pre-registered. Times in CEST.
+
+### 1. What a18 is
+
+[`patches/psf_ai_compile_a18_2026-10-14/`](../../patches/psf_ai_compile_a18_2026-10-14/) is built from the
+workplace's a17 by `make_a18.py`.
+
+- **Item 32: no search.** a14's searched routing is no longer a candidate (`SEARCH_FALLBACK = False`). It follows the
+  owner's scope declaration (Addendum 488).
+- **Item 33: hand-off.** Two kinds of input are handed on unchanged:
+  - an input that item 28's reader does not read as a ring classifier;
+  - every input a17 sent to a14 (no Target, more than SMALL_MAX_QUBITS qubits, no basis).
+
+  With a Target they go to psf_compile's default call, which builds chains and embeddable lattices by formula and
+  will apply the compiler's own scope (item 96, to come). Without a Target they go to Qiskit's level 3 with the
+  coupling map and basis.
+  - The handed-on output is checked exact as item 30 does. An inexact one is returned unchanged, with a warning, and
+    counted.
+  - `HAND_OFF = False` and `SEARCH_FALLBACK = True` restore a17.
+- **Tests:** 20 passed.
+  - 7 new: no search called on ring classifiers (T and fractional); a chain handed to the compiler and identical to
+    its default call; no Target handed to Qiskit level 3 and identical to it; a large input handed on; the switches
+    restore the workplace's a17 file exactly; deterministic.
+  - 13: a17's own tests on a18 with the switches set to a17.
+
+  Both run on psf_compile c55 with item 94 off.
+
+### 2. W3's 64 classifier cells
+
+The cells are those of the workplace's evaluation, unchanged: FakeFez and FakeTorino; n = 4, 6; L = 1-16; W3's
+angles. Script [`benchmarks/a18_cells.py`](../../benchmarks/a18_cells.py), data and summary in
+[`data/2026-10-14/a18_cells/`](../../data/2026-10-14/a18_cells/). The arms are a17, a18 and Qiskit level 3 (seed 0),
+on psf_compile c55 with item 94 off, without fractional gates (T) and with them (F).
+
+| | T | F |
+|---|---|---|
+| a18 / a17 duration, geometric mean | 1.0020 | 1.0023 |
+| cells where a18 differs from a17 | 1 (FakeTorino n 4 L 1: 0.564 against a17's searched 0.496 us) | 1 (the same cell: 0.500 against 0.432) |
+| a18 / Qiskit level 3, geometric mean (worst) | **0.543** (0.667) | **0.531** (0.654) |
+| a18 shorter than Qiskit level 3 | 64 / 64 | 64 / 64 |
+| a18 largest total variation from the input | 7.1e-14 | 4.6e-14 |
+| compile seconds over 64 cells, a17 / a18 | 284 / 71 | 314 / 90 |
+
+- a18 chose the ring formula on 63 cells and a15's polished construction on 1, on both Targets.
+- Every rzz angle was in range.
+
+### 3. Reading
+
+- **Dropping the search costs one cell.** The one-layer 4-qubit classifier on FakeTorino is 13-16% longer. Nowhere
+  else did a17 need the search. That is the price of the no-search rule in this family, and it is small.
+- **The ring formula is the whole margin.** a18 is 0.53-0.54 x Qiskit level 3 on every cell, and the compile is 4 x
+  faster because the search is gone.
+- **Not established:** a device. The classifiers' accuracy and margin on hardware against Qiskit level 3 is the next
+  test (RING1).
+
+**Two numbers.**
+
+- **Display:** ring classifiers at 0.54 x Qiskit level 3's duration, 64 of 64 shorter, with no search.
+- **Essential:**
+  - Offline, durations from the Targets' gate lengths.
+  - The one hardware run of a classifier so far (XOR, Addendum 475) was level with Qiskit. Whether the shorter ring
+    circuits classify better on a device is untested.
+
+---
+
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
