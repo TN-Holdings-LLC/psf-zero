@@ -8894,6 +8894,124 @@ workplace's items 87-88 are merged onto it. Tonight's TIME1 and FRAC1 keep c49 a
   - For the classifiers the workplace's ring formula (N2, 0.69-0.87 x the best other method at L = 16) is still
     ahead of what the reader-based path gives; a16 (P2) is where that goes.
 
+
+---
+
+<!-- ===== Addendum 483 (source: addendum_483.md) ===== -->
+
+> **Note added when merging:** Workplace P1-P2; c53 merged at home; C53-VAL.
+
+## Addendum 483 -- Workplace records P1 and P2 (2026-10-14): items 87 (chain Hamiltonians built by formula as a brickwork) and 88 (their terms as the device's rzz / rx with signs in a Pauli X frame undone inside the circuit), and a16 (the AI front end with the ring formula and rx in one pulse, at or below a15 on 64 of 64 classifier cells, 0.70 x a15 and 0.53-0.54 x Qiskit level 3). Merged at home onto c52 as prototype c53; C53-VAL confirmed on every prediction: Ising chains with fractional gates 0.79 x c52's duration and 0.032 x Qiskit level 3's, every other family unchanged (2026-10-14)
+
+**Status:** workplace records committed unchanged; a merge at home; an offline validation fixed in a local
+prestatement before its run. Times in CEST.
+
+### 1. Workplace records (fourth delivery)
+
+The delivery is in
+[`data/2026-10-14/workplace/workplace_2026-10-14d_P1-P2/`](../../data/2026-10-14/workplace/workplace_2026-10-14d_P1-P2/),
+with an intake check of 37 of 37, finished 04:57 CEST. It answers the second note's P1 and P2.
+
+**P1, items 87-88 on c51** (`make_c51_87_88.py`: exact substitutions, new code appended, c51's wrapper renamed).
+
+- **Item 87** is N1 (Addendum 481), with the brickwork compared with the inner compiler's output by item 84's rule.
+- **Item 88**, when the Target has rzz and rx:
+  - each two-qubit term becomes one rzz between basis changes, and each X term becomes rx;
+  - diagonal gates before the measurements are dropped;
+  - angles are reduced to (-pi, pi] and moved by pi with Z x Z where needed;
+  - a negative angle gets one x before the rzz, and the x after it is carried in a Pauli X frame (later
+    single-qubit gates conjugated, later rzz signs flipped);
+  - the frame is undone inside the circuit, by one x before the measurement or at the end of an unmeasured qubit. No
+    measured bit is flipped afterwards, and an unmeasured circuit is the same unitary, with its global phase.
+- **Tests:** 13 new tests pass, and c51's 63 pass except the version string.
+- **Workplace evaluation** (81 cells, every output exact and executable): TFIM chains at 0.66 (FakeFez) and 0.45
+  (FakeMarrakesh) x c51's duration. The output is at or below Qiskit level 3 given a hand-written brickwork and the
+  same fractional Target in 48 of 48.
+
+| case | c51 + 87-88 | Qiskit (fractional, brickwork) | c49 | c51 |
+|---|---|---|---|---|
+| n = 100, 10 steps, FakeFez | 2.00 us | 2.31 us | 471 us | 167 us |
+
+**P2, a16** = a15 plus:
+
+- item 28: N2's ring formula as a candidate, placed by item 87's rule;
+- item 29: single-qubit runs as one rx pulse, and every candidate's rzz angles folded or dropped.
+
+Results on W3's 64 cells:
+
+| | plain Target | fractional Target |
+|---|---|---|
+| at or below a15 | 64/64 | 64/64 |
+| a16 / a15 | 0.70 | 0.74 |
+| a16 / QK3 or QK3F | 0.54 | 0.53 |
+
+The ring is chosen in 61 cells; the three exceptions are at L = 1.
+
+**Side findings, taken up in the fourth note:**
+
+- a15's searched candidate can return rzz out of range. a16's guard fixes it, and a15 is superseded.
+- **One a15 output had a total variation distance of 1.4e-5** (FakeFez n = 6, L = 12). It is to be explained (Q3);
+  a16 uses a15's polish.
+- QK3F's raw outputs were out of range in 64 of 64 before folding.
+
+### 2. Prototype c53
+
+[`patches/psf_compile_c53_2026-10-14/`](../../patches/psf_compile_c53_2026-10-14/) is built from c52 by `make_c53.py`.
+That is the workplace's make script with only the version strings, the changelog anchor and a note changed. The
+code is the workplace's, unchanged.
+
+- **Tests:** 86 passed:
+  - the workplace's 13, with c52 as the inner compiler compared against;
+  - c52's, c51's, c49's and c48's tests on c53.
+- a16 is in [`patches/psf_ai_compile_a16_2026-10-14/`](../../patches/psf_ai_compile_a16_2026-10-14/). Its test now
+  reads c53, and its 10 tests pass.
+
+### 3. C53-VAL
+
+Prestatement
+[`data/2026-10-14/c53_val/C53-VAL_preregistration.md`](../../data/2026-10-14/c53_val/C53-VAL_preregistration.md),
+fixed 05:21 CEST, SHA-256 `553c43e3...`. Data in [`data/2026-10-14/c53_val/run/`](../../data/2026-10-14/c53_val/run/).
+
+The scope is C52-VAL's 24 tests on 5 devices, with arms QK3, C52, C53, C52F and C53F.
+
+| ID | prediction | result |
+|---|---|---|
+| V1 | exact, no refusal | **CONFIRMED** (194 checked) |
+| V2 | C53 <= 1.02 x C52 on >= 95% | **CONFIRMED** (120/120) |
+| V3 | C53F <= 1.02 x C52F on >= 95% | **CONFIRMED** (120/120) |
+| V4 | Ising chains, fractional: C53F / C52F geometric mean <= 0.85 | **CONFIRMED**: 0.788 (0.660-1.000) |
+| V5 | same output on a second call | **CONFIRMED** (20/20) |
+| V6 | native, every rzz in range | **CONFIRMED** (120/120) |
+| V7 | compile time | **CONFIRMED** (120/120) |
+
+**Reported.**
+
+| family | C53 / C52 | C53F / C52F | C53F / QK3 |
+|---|---|---|---|
+| Ising | 0.907 | 0.788 | 0.032 |
+| Barabasi-Albert QAOA | 1.000 | 1.000 | 0.62 |
+| 3-regular QAOA | 1.000 | 1.000 | 0.63 |
+| other | 1.000 | 1.000 | 0.85 |
+| odd classifiers | 1.000 | 1.000 | 0.46 |
+
+`CHAIN_STATS`: item 87 recognised 45 chains, all placed on the snake, and returned the brickwork every time; the Pauli
+frame was used 25 times.
+
+**Rule:** V1, V2, V3, V5 and V6 confirmed, so c53 is the base.
+
+### 4. Reading and two numbers
+
+- **The chain formula** is now the fastest form PSF-Zero has for chain Hamiltonians, with or without fractional
+  gates. Where its input does not apply (non-chains), nothing changes.
+- **The classifier side** (a16's rings) is ahead of everything else measured, at 0.53 x Qiskit level 3.
+- **Display:** Ising chains at 0.032 x Qiskit level 3's duration with fractional gates; n = 100 at 10 steps in 2 us,
+  against 471 us for c49.
+- **Essential:**
+  - Offline, from gate lengths.
+  - Against Qiskit given the same hand-written brickwork and fractional Target the margin is 0.76-0.96 x, not 30 x.
+  - Whether rzz holds up on the device is FRAC1's question, and whether the shorter circuit wins is TIME1's.
+  - One a15 exactness lapse (1.4e-5) is open.
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

@@ -1,0 +1,136 @@
+V1 exact: every C53 and C53F output with <= 20 active qubits within 1e-6, no refusal: CONFIRMED (194 checked; failures [])
+V2 C53 <= 1.02 x C52 duration on >= 95% of cells: CONFIRMED (120/120; above [])
+V3 C53F <= 1.02 x C52F duration on >= 95% of cells: CONFIRMED (120/120; above [])
+V4 Ising chains on the fractional Target: C53F / C52F geometric mean <= 0.85: CONFIRMED (0.788; 0.660-1.000)
+V5 same output on a second call (C53F): CONFIRMED (20/20)
+V6 every C53F output native to the fractional Target, every rzz angle in (0, pi/2]: CONFIRMED (120/120; failures [])
+V7 compile time C53F <= 1.5 x C52F + 2 s on >= 90% of cells: CONFIRMED (120/120)
+V8 reported, Ising: C53/C52 geo 0.907; C53F/C52F geo 0.788 (0.660-1.000); C53F/QK3 geo 0.032
+V8 reported, Barabasi-Albert: C53/C52 geo 1.000; C53F/C52F geo 1.000 (1.000-1.000); C53F/QK3 geo 0.624
+V8 reported, 3-regular QAOA: C53/C52 geo 1.000; C53F/C52F geo 1.000 (1.000-1.000); C53F/QK3 geo 0.631
+V8 reported, other: C53/C52 geo 1.000; C53F/C52F geo 1.000 (1.000-1.000); C53F/QK3 geo 0.851
+V8 reported, odd classifiers: C53/C52 geo 1.000; C53F/C52F geo 1.000 (1.000-1.000); C53F/QK3 geo 0.461
+V9 reported: CHAIN_STATS c53 {'tried': 260, 'not_chain': 215, 'not_cz': 0, 'no_path': 0, 'snake': 45, 'vf2_path': 0, 'common_length': 45, 'used': 45, 'failed_check': 0, 'kept': 45, 'kept_default': 0, 'frame': 25, 'frame_x_end': 0, 'frame_folded': 0}
+device     test                     dur us QK3 / C52 / C53 / C52F / C53F C53F/C52F
+FakeFez    qaoa_n12_p2          8.00 /    5.98 /    5.98 /    4.64 /    4.64     1.000
+FakeFez    qaoa_n20_p2          7.60 /    6.31 /    6.31 /    5.03 /    5.03     1.000
+FakeFez    ba_n14              18.84 /   15.29 /   15.29 /   12.66 /   12.66     1.000
+FakeFez    ba_n16              21.56 /   18.12 /   18.12 /   14.95 /   14.95     1.000
+FakeFez    ba_n18              24.74 /   23.59 /   23.59 /   19.01 /   19.01     1.000
+FakeFez    ba_n20              33.64 /   24.40 /   24.40 /   21.56 /   21.56     1.000
+FakeFez    tfim_n12             9.86 /    1.49 /    1.27 /    0.65 /    0.47     0.722
+FakeFez    tfim_n16            13.70 /    1.49 /    1.27 /    0.65 /    0.47     0.722
+FakeFez    ghz_n12              1.23 /    1.21 /    1.21 /    1.21 /    1.21     1.000
+FakeFez    tfimP_n12            9.89 /    1.51 /    1.30 /    0.65 /    0.49     0.759
+FakeFez    tfimP_n16           13.73 /    1.51 /    1.30 /    0.65 /    0.49     0.759
+FakeFez    tfim_n20_r3         27.77 /    1.32 /    1.32 /    0.89 /    0.89     1.000
+FakeFez    heis_n12_r2         16.69 /   16.57 /   16.57 /   14.44 /   14.44     1.000
+FakeFez    heis2d_n16_r1       22.67 /   22.27 /   22.27 /   20.47 /   20.47     1.000
+FakeFez    chem_n12_r1         26.14 /   26.14 /   26.14 /   21.30 /   21.30     1.000
+FakeFez    qaoa3reg_n20_r3     14.65 /   11.08 /   11.08 /    9.67 /    9.67     1.000
+FakeFez    qaoa3reg_n40_r3     24.55 /   23.83 /   23.83 /   21.54 /   21.54     1.000
+FakeFez    tfim_n40_r2         37.73 /    1.06 /    1.06 /    0.67 /    0.67     1.000
+FakeFez    clf_n4_L3            2.87 /    1.72 /    1.72 /    1.38 /    1.38     1.000
+FakeFez    clf_n4_L5            4.93 /    3.41 /    3.41 /    2.81 /    2.81     1.000
+FakeFez    clf_n4_L9            9.11 /    6.84 /    6.84 /    5.57 /    5.57     1.000
+FakeFez    clf_n6_L3            5.28 /    2.59 /    2.59 /    1.84 /    1.84     1.000
+FakeFez    clf_n6_L5            8.64 /    4.74 /    4.74 /    3.65 /    3.65     1.000
+FakeFez    clf_n6_L9           16.31 /   10.00 /   10.00 /    7.93 /    7.93     1.000
+eMarrakesh qaoa_n12_p2          7.85 /    4.34 /    4.34 /    3.32 /    3.32     1.000
+eMarrakesh qaoa_n20_p2          7.38 /    4.77 /    4.77 /    4.09 /    4.09     1.000
+eMarrakesh ba_n14              18.34 /   12.58 /   12.58 /   10.12 /   10.12     1.000
+eMarrakesh ba_n16              21.09 /   19.07 /   19.07 /   15.20 /   15.20     1.000
+eMarrakesh ba_n18              24.10 /   19.52 /   19.52 /   15.93 /   15.93     1.000
+eMarrakesh ba_n20              32.68 /   25.10 /   25.10 /   20.79 /   20.79     1.000
+eMarrakesh tfim_n12            10.33 /    1.54 /    1.33 /    0.62 /    0.41     0.660
+eMarrakesh tfim_n16            14.33 /    1.54 /    1.33 /    0.62 /    0.41     0.660
+eMarrakesh ghz_n12              1.22 /    1.18 /    1.18 /    1.18 /    1.18     1.000
+eMarrakesh tfimP_n12           10.45 /    1.57 /    1.36 /    0.62 /    0.45     0.718
+eMarrakesh tfimP_n16           14.40 /    1.57 /    1.36 /    0.62 /    0.45     0.718
+eMarrakesh tfim_n20_r3         28.89 /    1.40 /    1.40 /    0.87 /    0.87     1.000
+eMarrakesh heis_n12_r2         17.50 /   16.99 /   16.99 /   13.57 /   13.57     1.000
+eMarrakesh heis2d_n16_r1       22.78 /   22.20 /   22.20 /   19.72 /   19.72     1.000
+eMarrakesh chem_n12_r1         26.92 /   25.86 /   25.86 /   20.52 /   20.52     1.000
+eMarrakesh qaoa3reg_n20_r3     14.54 /   11.32 /   11.32 /    9.46 /    9.46     1.000
+eMarrakesh qaoa3reg_n40_r3     23.76 /   22.88 /   22.88 /   19.66 /   19.66     1.000
+eMarrakesh tfim_n40_r2         38.84 /    1.14 /    1.14 /    0.70 /    0.70     1.000
+eMarrakesh clf_n4_L3            2.66 /    1.70 /    1.70 /    1.35 /    1.35     1.000
+eMarrakesh clf_n4_L5            4.60 /    3.48 /    3.48 /    2.29 /    2.29     1.000
+eMarrakesh clf_n4_L9            8.47 /    6.85 /    6.85 /    4.47 /    4.47     1.000
+eMarrakesh clf_n6_L3            5.26 /    2.58 /    2.58 /    1.77 /    1.77     1.000
+eMarrakesh clf_n6_L5            8.53 /    5.21 /    5.21 /    3.95 /    3.95     1.000
+eMarrakesh clf_n6_L9           16.12 /    9.34 /    9.34 /    7.38 /    7.38     1.000
+keKingston qaoa_n12_p2          7.45 /    5.32 /    5.32 /    4.30 /    4.30     1.000
+keKingston qaoa_n20_p2          7.09 /    4.69 /    4.69 /    3.80 /    3.80     1.000
+keKingston ba_n14              17.60 /   14.17 /   14.17 /   11.61 /   11.61     1.000
+keKingston ba_n16              19.98 /   14.04 /   14.04 /   11.48 /   11.48     1.000
+keKingston ba_n18              22.98 /   18.94 /   18.94 /   15.14 /   15.14     1.000
+keKingston ba_n20              31.13 /   23.88 /   23.88 /   19.52 /   19.52     1.000
+keKingston tfim_n12             9.54 /    1.46 /    1.26 /    0.60 /    0.40     0.673
+keKingston tfim_n16            13.26 /    1.46 /    1.26 /    0.60 /    0.40     0.673
+keKingston ghz_n12              1.13 /    1.13 /    1.13 /    1.13 /    1.13     1.000
+keKingston tfimP_n12            9.61 /    1.49 /    1.29 /    0.60 /    0.44     0.727
+keKingston tfimP_n16           13.32 /    1.49 /    1.29 /    0.60 /    0.44     0.727
+keKingston tfim_n20_r3         26.90 /    1.32 /    1.32 /    0.83 /    0.83     1.000
+keKingston heis_n12_r2         16.19 /   16.00 /   16.00 /   13.34 /   13.34     1.000
+keKingston heis2d_n16_r1       21.15 /   20.12 /   20.12 /   18.14 /   18.14     1.000
+keKingston chem_n12_r1         24.76 /   24.76 /   24.76 /   19.73 /   19.73     1.000
+keKingston qaoa3reg_n20_r3     13.80 /    9.08 /    9.08 /    7.37 /    7.37     1.000
+keKingston qaoa3reg_n40_r3     22.91 /   20.68 /   20.68 /   18.74 /   18.74     1.000
+keKingston tfim_n40_r2         36.49 /    1.06 /    1.06 /    0.63 /    0.63     1.000
+keKingston clf_n4_L3            2.64 /    1.63 /    1.63 /    1.23 /    1.23     1.000
+keKingston clf_n4_L5            4.56 /    3.19 /    3.19 /    2.20 /    2.20     1.000
+keKingston clf_n4_L9            8.19 /    6.42 /    6.42 /    4.30 /    4.30     1.000
+keKingston clf_n6_L3            4.84 /    2.39 /    2.39 /    1.70 /    1.70     1.000
+keKingston clf_n6_L5            7.91 /    4.78 /    4.78 /    3.50 /    3.50     1.000
+keKingston clf_n6_L9           14.92 /    9.08 /    9.08 /    6.91 /    6.91     1.000
+FakeTorino qaoa_n12_p2          7.06 /    5.21 /    5.21 /    4.03 /    4.03     1.000
+FakeTorino qaoa_n20_p2          8.20 /    6.16 /    6.16 /    4.91 /    4.91     1.000
+FakeTorino ba_n14              21.83 /   12.54 /   12.54 /   10.01 /   10.01     1.000
+FakeTorino ba_n16              22.78 /   13.97 /   13.97 /   11.44 /   11.44     1.000
+FakeTorino ba_n18              24.58 /   20.03 /   20.03 /   15.97 /   15.97     1.000
+FakeTorino ba_n20              33.14 /   23.28 /   23.28 /   19.97 /   19.97     1.000
+FakeTorino tfim_n12             9.98 /    1.46 /    1.26 /    0.60 /    0.40     0.673
+FakeTorino tfim_n16            13.86 /    1.46 /    1.26 /    0.60 /    0.40     0.673
+FakeTorino ghz_n12              1.38 /    1.13 /    1.13 /    1.13 /    1.13     1.000
+FakeTorino tfimP_n12           10.01 /    1.49 /    1.29 /    0.60 /    0.44     0.727
+FakeTorino tfimP_n16           13.92 /    1.49 /    1.29 /    0.60 /    0.44     0.727
+FakeTorino tfim_n20_r3         29.17 /    1.81 /    1.81 /    1.06 /    1.06     1.000
+FakeTorino heis_n12_r2         16.83 /   16.33 /   16.33 /   13.42 /   13.42     1.000
+FakeTorino heis2d_n16_r1       19.76 /   20.80 /   20.80 /   18.75 /   18.75     1.000
+FakeTorino chem_n12_r1         26.04 /   24.70 /   24.70 /   19.73 /   19.73     1.000
+FakeTorino qaoa3reg_n20_r3     14.83 /   13.14 /   13.14 /   10.92 /   10.92     1.000
+FakeTorino qaoa3reg_n40_r3     29.97 /   23.44 /   23.44 /   21.74 /   21.74     1.000
+FakeTorino tfim_n40_r2         41.43 /    1.42 /    1.42 /    0.82 /    0.82     1.000
+FakeTorino clf_n4_L3            3.14 /    1.69 /    1.69 /    1.30 /    1.30     1.000
+FakeTorino clf_n4_L5            4.52 /    3.19 /    3.19 /    2.37 /    2.37     1.000
+FakeTorino clf_n4_L9            8.46 /    6.51 /    6.51 /    4.70 /    4.70     1.000
+FakeTorino clf_n6_L3            4.38 /    2.52 /    2.52 /    1.90 /    1.90     1.000
+FakeTorino clf_n6_L5            8.04 /    4.72 /    4.72 /    3.47 /    3.47     1.000
+FakeTorino clf_n6_L9           14.59 /    9.18 /    9.18 /    6.91 /    6.91     1.000
+_marrakesh qaoa_n12_p2          7.92 /    5.94 /    5.94 /    4.44 /    4.44     1.000
+_marrakesh qaoa_n20_p2          7.38 /    5.32 /    5.32 /    4.33 /    4.33     1.000
+_marrakesh ba_n14              18.38 /   14.87 /   14.87 /   12.02 /   12.02     1.000
+_marrakesh ba_n16              21.02 /   14.78 /   14.78 /   12.06 /   12.06     1.000
+_marrakesh ba_n18              24.32 /   19.86 /   19.86 /   15.62 /   15.62     1.000
+_marrakesh ba_n20              32.79 /   24.84 /   24.84 /   20.16 /   20.16     1.000
+_marrakesh tfim_n12            10.33 /    1.54 /    1.33 /    0.62 /    0.41     0.660
+_marrakesh tfim_n16            14.33 /    1.54 /    1.33 /    0.62 /    0.41     0.660
+_marrakesh ghz_n12              1.20 /    1.18 /    1.18 /    1.18 /    1.18     1.000
+_marrakesh tfimP_n12           10.40 /    1.57 /    1.36 /    0.66 /    0.45     0.679
+_marrakesh tfimP_n16           14.36 /    1.57 /    1.36 /    0.66 /    0.45     0.679
+_marrakesh tfim_n20_r3         28.89 /    1.40 /    1.40 /    0.87 /    0.87     1.000
+_marrakesh heis_n12_r2         17.53 /   16.92 /   16.92 /   13.75 /   13.75     1.000
+_marrakesh heis2d_n16_r1       22.78 /   21.01 /   21.01 /   18.78 /   18.78     1.000
+_marrakesh chem_n12_r1         27.05 /   25.97 /   25.97 /   20.52 /   20.52     1.000
+_marrakesh qaoa3reg_n20_r3     14.46 /    9.48 /    9.48 /    7.73 /    7.73     1.000
+_marrakesh qaoa3reg_n40_r3     23.80 /   21.51 /   21.51 /   19.30 /   19.30     1.000
+_marrakesh tfim_n40_r2         38.92 /    1.12 /    1.12 /    0.66 /    0.66     1.000
+_marrakesh clf_n4_L3            2.74 /    1.70 /    1.70 /    1.28 /    1.28     1.000
+_marrakesh clf_n4_L5            4.67 /    3.34 /    3.34 /    2.29 /    2.29     1.000
+_marrakesh clf_n4_L9            8.69 /    6.71 /    6.71 /    4.50 /    4.50     1.000
+_marrakesh clf_n6_L3            5.02 /    2.61 /    2.61 /    1.73 /    1.73     1.000
+_marrakesh clf_n6_L5            8.20 /    4.84 /    4.84 /    3.54 /    3.54     1.000
+_marrakesh clf_n6_L9           15.47 /    9.14 /    9.14 /    7.00 /    7.00     1.000
+
+finished 2026-10-14 12:39:25 JST

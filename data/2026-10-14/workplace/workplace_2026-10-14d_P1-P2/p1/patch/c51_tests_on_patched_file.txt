@@ -1,0 +1,70 @@
+F........F.................F...................................          [100%]
+=================================== FAILURES ===================================
+_________________________________ test_version _________________________________
+
+c50 = <module 'psf_compile_c51_test' from '<test dir>/psf_compile.py'>
+
+    def test_version(c50):
+>       assert c50.VERSION == "2026-10-14.c51"
+E       AssertionError: assert '2026-10-14.c51+87-88' == '2026-10-14.c51'
+E         
+E         - 2026-10-14.c51
+E         + 2026-10-14.c51+87-88
+E         ?               ++++++
+
+<test dir>/test_c51.py:92: AssertionError
+_________________________________ test_version _________________________________
+
+c49 = <module 'psf_compile_c51_as_c49_test' from '<test dir>/psf_compile.py'>
+
+    def test_version(c49):
+>       assert c49.VERSION == "2026-10-14.c51"  # c49's tests on c50: no Target here offers rzz
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: assert '2026-10-14.c51+87-88' == '2026-10-14.c51'
+E         
+E         - 2026-10-14.c51
+E         + 2026-10-14.c51+87-88
+E         ?               ++++++
+
+<test dir>/test_c49_on_c51.py:84: AssertionError
+_________________________________ test_version _________________________________
+
+mods = {'rel': <module 'psf_compile_rel_for_c48_test' from '<repo>/psf_compile.py'>, 'c40': <module 'psf_compile_c48_test' from '<test dir>/psf_compile.py'>}
+
+    def test_version(mods):
+>       assert mods["c40"].VERSION == "2026-10-14.c51"  # c48's tests on c50, items 84-85 switched off as for c49
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: assert '2026-10-14.c51+87-88' == '2026-10-14.c51'
+E         
+E         - 2026-10-14.c51
+E         + 2026-10-14.c51+87-88
+E         ?               ++++++
+
+<test dir>/test_c48_on_c49_for_c51.py:265: AssertionError
+=============================== warnings summary ===============================
+test_c49_on_c51.py: 3 warnings
+test_c48_on_c49_for_c51.py: 16 warnings
+  /usr/local/lib/python3.11/dist-packages/qiskit/circuit/library/n_local/evolved_operator_ansatz.py:324: DeprecationWarning: The class ``qiskit.circuit.library.n_local.n_local.NLocal`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. This applies to NLocal subclasses too. Use the corresponding function from the module qiskit.circuit.library.n_local instead.
+    super().__init__(
+
+test_c49_on_c51.py: 3 warnings
+test_c48_on_c49_for_c51.py: 16 warnings
+  /usr/local/lib/python3.11/dist-packages/qiskit/circuit/library/n_local/n_local.py:379: DeprecationWarning: The class ``qiskit.circuit.library.blueprintcircuit.BlueprintCircuit`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. There is no direct replacement other than the QuantumCircuit class.
+    super().__init__(name=name)
+
+test_c49_on_c51.py::test_chosen_output_is_exact_and_never_longer
+test_c48_on_c49_for_c51.py::test_chosen_output_is_exact_and_never_worse
+  /usr/local/lib/python3.11/dist-packages/scipy/sparse/linalg/_dsolve/linsolve.py:606: SparseEfficiencyWarning: splu converted its input to CSC format
+    return splu(A).solve
+
+test_c49_on_c51.py::test_chosen_output_is_exact_and_never_longer
+test_c48_on_c49_for_c51.py::test_chosen_output_is_exact_and_never_worse
+  /usr/local/lib/python3.11/dist-packages/scipy/sparse/linalg/_matfuncs.py:707: SparseEfficiencyWarning: spsolve is more efficient when sparse b is in the CSC matrix format
+    return spsolve(Q, P)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../..<test dir>/test_c51.py::test_version
+FAILED ../../..<test dir>/test_c49_on_c51.py::test_version
+FAILED ../../..<test dir>/test_c48_on_c49_for_c51.py::test_version
+3 failed, 60 passed, 42 warnings in 73.76s (0:01:13)

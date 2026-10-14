@@ -1,0 +1,81 @@
+FakeFez       tfim       n= 12 s= 2 | new    0.47 (   28) | c51    0.65 (   33) | c49    1.49 (   66) | QK3F    3.71 (   43) | BW    0.55 (   33) | err 3.1452859872015154e-15 {'kept': 1, 'frame': 1}
+FakeFez       tfim       n= 12 s= 4 | new    0.85 (   50) | c51    1.08 (   55) | c49    2.45 (  110) | QK3F    7.38 (   85) | BW    0.94 (   55) | err 9.003172806309621e-15 {'kept': 1, 'frame': 1}
+FakeFez       tfim       n= 12 s= 8 | new    1.62 (   94) | c51    1.94 (   99) | c49    4.51 (  198) | QK3F   14.72 (  169) | BW    1.70 (   99) | err 5.635188648854929e-15 {'kept': 1, 'frame': 1}
+FakeFez       tfim       n= 12 s=10 | new    2.00 (  116) | c51    2.16 (  121) | c49    5.52 (  242) | QK3F   18.40 (  211) | BW    2.09 (  121) | err 6.005708070917391e-15 {'kept': 1, 'frame': 1}
+FakeFez       tfim       n= 16 s= 2 | new    0.47 (   38) | c51    0.65 (   45) | c49    1.49 (   90) | QK3F    5.05 (   59) | BW    0.55 (   45) | err 6.102395911356815e-15 {'kept': 1, 'frame': 1}
+FakeFez       tfim       n= 16 s= 4 | new    0.85 (   68) | c51    1.08 (   75) | c49    2.45 (  150) | QK3F   10.07 (  117) | BW    0.94 (   75) | err 1.9132166410858012e-14 {'kept': 1, 'frame': 1}
+FakeFez       tfim       n= 16 s= 8 | new    1.62 (  128) | c51    1.94 (  135) | c49    4.51 (  270) | QK3F   20.10 (  233) | BW    1.70 (  135) | err 1.533027212820042e-14 {'kept': 1, 'frame': 1}
+FakeFez       tfim       n= 16 s=10 | new    2.00 (  158) | c51    2.38 (  165) | c49    5.52 (  330) | QK3F   25.12 (  291) | BW    2.09 (  165) | err 1.2493899364366942e-14 {'kept': 1, 'frame': 1}
+FakeFez       tfim       n= 24 s= 2 | new    0.47 (   58) | c51    0.71 (   69) | c49    1.49 (  138) | QK3F    7.74 (   91) | BW    0.55 (   69) | err 1.3233303342019553e-12 {'kept': 1, 'frame': 1}
+FakeFez       tfim       n= 24 s= 4 | new    0.85 (  104) | c51    1.08 (  115) | c49    2.45 (  230) | QK3F   15.44 (  181) | BW    0.94 (  115) | err 4.7356230048478665e-11 {'kept': 1, 'frame': 1}
+FakeFez       tfim       n= 24 s= 8 | new    1.62 (  196) | c51    1.94 (  207) | c49    4.51 (  414) | QK3F   30.85 (  361) | BW    1.70 (  207) | err 8.217437841295805e-11 {'kept': 1, 'frame': 1}
+FakeFez       tfim       n= 24 s=10 | new    2.00 (  242) | c51    2.38 (  253) | c49    5.52 (  506) | QK3F   38.56 (  451) | BW    2.09 (  253) | err 2.8321472944625725e-10 {'kept': 1, 'frame': 1}
+FakeFez       tfim       n= 32 s= 2 | new    0.47 (   78) | c51    0.65 (   93) | c49    1.49 (  186) | QK3F   10.49 (  123) | BW    0.61 (   93) | err 3.358130440389573e-11 {'kept': 1, 'frame': 1}
+FakeFez       tfim       n= 32 s= 4 | new    0.85 (  140) | c51    1.08 (  155) | c49    2.45 (  310) | QK3F   20.92 (  245) | BW    1.04 (  155) | err 1.1910661346092866e-10 {'kept': 1, 'frame': 1}
+FakeFez       tfim       n= 32 s= 8 | new    1.62 (  264) | c51    1.94 (  279) | c49    4.51 (  558) | QK3F   41.78 (  489) | BW    1.88 (  279) | err 2.769975360195076e-10 {'kept': 1, 'frame': 1}
+FakeFez       tfim       n= 32 s=10 | new    2.00 (  326) | c51    2.38 (  341) | c49    5.52 (  682) | QK3F   52.22 (  611) | BW    2.31 (  341) | err 7.560203574286106e-10 {'kept': 1, 'frame': 1}
+FakeFez       tfim       n= 50 s= 2 | new    0.47 (  123) | c51    0.65 (  147) | c49    1.49 (  294) | QK3F   16.56 (  195) | BW    0.55 (  147) | err 6.479333736209014e-11 {'kept': 1, 'frame': 1}
+FakeFez       tfim       n= 50 s= 4 | new    0.85 (  221) | c51    1.08 (  245) | c49    2.45 (  490) | QK3F   33.08 (  389) | BW    1.04 (  245) | err 2.1096069335868606e-10 {'kept': 1, 'frame': 1}
+FakeFez       tfim       n= 50 s= 8 | new    1.62 (  417) | c51    1.94 (  441) | c49    4.51 (  882) | QK3F   65.80 (  777) | BW    1.88 (  441) | err 2.9603608453498964e-10 {'kept': 1, 'frame': 1}
+FakeFez       tfim       n= 50 s=10 | new    2.00 (  515) | c51    2.38 (  539) | c49    5.52 ( 1078) | QK3F   82.24 (  971) | BW    2.09 (  539) | err 3.9238745586089863e-10 {'kept': 1, 'frame': 1}
+FakeFez       tfim       n=100 s= 2 | new    0.47 (  248) | c51    0.71 (  297) | c49    1.58 (  594) | QK3F   33.36 (  395) | BW    0.61 (  297) | err None {'kept': 1, 'frame': 1}
+FakeFez       tfim       n=100 s= 4 | new    0.85 (  446) | c51    1.18 (  495) | c49    2.62 (  990) | QK3F   66.68 (  789) | BW    1.04 (  495) | err None {'kept': 1, 'frame': 1}
+FakeFez       tfim       n=100 s= 8 | new    1.62 (  842) | c51    2.12 (  891) | c49    4.70 ( 1782) | QK3F  133.32 ( 1577) | BW    1.88 (  891) | err None {'kept': 1, 'frame': 1}
+FakeFez       tfim       n=100 s=10 | new    2.00 ( 1040) | c51  166.64 ( 1971) | c49  471.46 ( 3922) | QK3F  166.64 ( 1971) | BW    2.31 ( 1089) | err None {'kept': 1, 'frame': 1}
+FakeFez       heis       n= 12 s= 2 | new    1.32 (   66) | c51    1.32 (   66) | c49    1.54 (   66) | QK3F    1.32 (   66) | BW    err       | err 1.5758762817802979e-15 {'kept': 1, 'frame': 1}
+FakeFez       heis       n= 12 s= 4 | new    2.62 (  132) | c51    2.62 (  132) | c49    3.07 (  132) | QK3F    2.62 (  132) | BW    err       | err 2.360023691020222e-15 {'kept': 1, 'frame': 1}
+FakeFez       heis       n= 16 s= 2 | new    1.32 (   90) | c51    1.32 (   90) | c49    1.54 (   90) | QK3F    1.32 (   90) | BW    err       | err 1.1698000953340763e-15 {'kept': 1, 'frame': 1}
+FakeFez       heis       n= 16 s= 4 | new    2.62 (  180) | c51    2.62 (  180) | c49    3.07 (  180) | QK3F    2.62 (  180) | BW    err       | err 3.1668548753185993e-15 {'kept': 1, 'frame': 1}
+FakeFez       heis       n= 24 s= 2 | new    1.32 (  138) | c51    1.32 (  138) | c49    1.54 (  138) | QK3F    1.32 (  138) | BW    err       | err 4.2680026179908737e-11 {'kept': 1, 'frame': 1}
+FakeFez       heis       n= 24 s= 4 | new    2.62 (  276) | c51    2.62 (  276) | c49    3.07 (  276) | QK3F    2.62 (  276) | BW    err       | err 2.1391355700672854e-10 {'kept': 1, 'frame': 1}
+FakeFez       tfim_signs n= 12 s= 2 | new    0.56 (   28) | c51    0.67 (   33) | c49    1.51 (   66) | QK3F    4.28 (   43) | BW    err       | err 6.006555457712155e-16 {'kept': 1, 'frame': 1}
+FakeFez       tfim_signs n= 12 s= 4 | new    1.00 (   50) | c51    1.10 (   55) | c49    2.50 (  110) | QK3F    8.44 (   85) | BW    err       | err 1.4405257048511236e-15 {'kept': 1, 'frame': 1}
+FakeFez       tfim_signs n= 12 s= 8 | new    1.76 (   94) | c51    1.94 (   99) | c49    4.54 (  198) | QK3F   16.74 (  169) | BW    err       | err 1.2443557010189412e-15 {'kept': 1, 'frame': 1}
+FakeFez       tfim_signs n= 16 s= 2 | new    0.56 (   38) | c51    0.67 (   45) | c49    1.51 (   90) | QK3F    5.82 (   59) | BW    err       | err 5.747438389135588e-16 {'kept': 1, 'frame': 1}
+FakeFez       tfim_signs n= 16 s= 4 | new    1.00 (   68) | c51    1.10 (   75) | c49    2.52 (  150) | QK3F   11.65 (  117) | BW    err       | err 1.6373974133618225e-15 {'kept': 1, 'frame': 1}
+FakeFez       tfim_signs n= 16 s= 8 | new    1.79 (  128) | c51    1.97 (  135) | c49    4.51 (  270) | QK3F   22.88 (  233) | BW    err       | err 1.1497709896832187e-15 {'kept': 1, 'frame': 1}
+FakeFez       tfim_signs n= 24 s= 2 | new    0.56 (   58) | c51    0.69 (   69) | c49    1.51 (  138) | QK3F    8.80 (   91) | BW    err       | err 8.957889985339307e-12 {'kept': 1, 'frame': 1}
+FakeFez       tfim_signs n= 24 s= 4 | new    1.00 (  104) | c51    1.10 (  115) | c49    2.52 (  230) | QK3F   17.46 (  181) | BW    err       | err 6.222744541872771e-11 {'kept': 1, 'frame': 1}
+FakeFez       tfim_signs n= 24 s= 8 | new    1.84 (  196) | c51    1.97 (  207) | c49    4.54 (  414) | QK3F   34.79 (  361) | BW    err       | err 1.8284207481400472e-10 {'kept': 1, 'frame': 1}
+FakeFez       tfim_signs n= 50 s= 2 | new    0.56 (  123) | c51    0.67 (  147) | c49    1.51 (  294) | QK3F   19.05 (  195) | BW    err       | err 9.438405612627321e-11 {'kept': 1, 'frame': 1}
+FakeFez       tfim_signs n= 50 s= 4 | new    1.00 (  221) | c51    1.10 (  245) | c49    2.52 (  490) | QK3F   37.97 (  389) | BW    err       | err 5.296005300969853e-10 {'kept': 1, 'frame': 1}
+FakeFez       tfim_signs n= 50 s= 8 | new    1.84 (  417) | c51    1.97 (  441) | c49    4.54 (  882) | QK3F   75.49 (  777) | BW    err       | err 3.0822114305273374e-10 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim       n= 12 s= 2 | new    0.41 (   28) | c51    0.70 (   33) | c49    1.66 (   66) | QK3F    3.26 (   43) | BW    0.55 (   33) | err 3.1452859872015154e-15 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim       n= 12 s= 4 | new    0.76 (   50) | c51    1.16 (   55) | c49    2.73 (  110) | QK3F    6.43 (   85) | BW    0.94 (   55) | err 9.003172806309621e-15 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim       n= 12 s= 8 | new    1.44 (   94) | c51    2.09 (   99) | c49    4.94 (  198) | QK3F   12.86 (  169) | BW    1.73 (   99) | err 5.635188648854929e-15 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim       n= 12 s=10 | new    1.79 (  116) | c51    2.23 (  121) | c49    6.04 (  242) | QK3F   16.08 (  211) | BW    2.12 (  121) | err 6.005708070917391e-15 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim       n= 16 s= 2 | new    0.41 (   38) | c51    0.70 (   45) | c49    1.66 (   90) | QK3F    4.35 (   59) | BW    0.55 (   45) | err 6.102395911356815e-15 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim       n= 16 s= 4 | new    0.76 (   68) | c51    1.16 (   75) | c49    2.73 (  150) | QK3F    8.70 (  117) | BW    0.94 (   75) | err 1.9132166410858012e-14 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim       n= 16 s= 8 | new    1.44 (  128) | c51    2.09 (  135) | c49    4.94 (  270) | QK3F   17.40 (  233) | BW    1.73 (  135) | err 1.533027212820042e-14 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim       n= 16 s=10 | new    1.79 (  158) | c51    2.42 (  165) | c49    6.04 (  330) | QK3F   21.76 (  291) | BW    2.12 (  165) | err 1.2493899364366942e-14 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim       n= 24 s= 2 | new    0.41 (   58) | c51    0.70 (   69) | c49    1.66 (  138) | QK3F    6.57 (   91) | BW    0.55 (   69) | err 2.1371793224034263e-14 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim       n= 24 s= 4 | new    0.76 (  104) | c51    1.16 (  115) | c49    2.73 (  230) | QK3F   13.15 (  181) | BW    0.94 (  115) | err 5.5571547363797436e-11 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim       n= 24 s= 8 | new    1.44 (  196) | c51    2.09 (  207) | c49    4.90 (  414) | QK3F   26.11 (  361) | BW    1.73 (  207) | err 3.8482106390347326e-11 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim       n= 24 s=10 | new    1.79 (  242) | c51    2.32 (  253) | c49    5.99 (  506) | QK3F   32.64 (  451) | BW    2.12 (  253) | err 4.664724162495304e-11 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim       n= 32 s= 2 | new    0.41 (   78) | c51    0.70 (   93) | c49    1.68 (  186) | QK3F    8.75 (  123) | BW    0.55 (   93) | err 6.568967592102126e-11 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim       n= 32 s= 4 | new    0.76 (  140) | c51    1.16 (  155) | c49    2.75 (  310) | QK3F   17.50 (  245) | BW    0.94 (  155) | err 1.4709766738008057e-10 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim       n= 32 s= 8 | new    1.44 (  264) | c51    2.09 (  279) | c49    5.11 (  558) | QK3F   35.00 (  489) | BW    1.73 (  279) | err 5.867617502985922e-11 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim       n= 32 s=10 | new    1.79 (  326) | c51    2.32 (  341) | c49    6.26 (  682) | QK3F   43.76 (  611) | BW    2.12 (  341) | err 1.8878165697344684e-10 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim       n= 50 s= 2 | new    0.41 (  123) | c51    0.70 (  147) | c49    1.68 (  294) | QK3F   13.64 (  195) | BW    0.55 (  147) | err 6.568806609763556e-11 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim       n= 50 s= 4 | new    0.76 (  221) | c51    1.16 (  245) | c49    2.75 (  490) | QK3F   27.29 (  389) | BW    0.94 (  245) | err 1.470851218599023e-10 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim       n= 50 s= 8 | new    1.44 (  417) | c51    2.09 (  441) | c49    5.11 (  882) | QK3F   54.59 (  777) | BW    1.73 (  441) | err 5.863709517939242e-11 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim       n= 50 s=10 | new    1.79 (  515) | c51    2.32 (  539) | c49    6.26 ( 1078) | QK3F   68.24 (  971) | BW    2.12 (  539) | err 1.8877543972450894e-10 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim       n=100 s= 2 | new    0.47 (  248) | c51    4.54 (  515) | c49    6.57 (  748) | QK3F   27.34 (  395) | BW    0.55 (  297) | err None {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim       n=100 s= 4 | new    0.86 (  446) | c51    6.66 (  786) | c49    8.11 ( 1065) | QK3F   54.68 (  789) | BW    0.94 (  495) | err None {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim       n=100 s= 8 | new    1.65 (  842) | c51    7.10 ( 1110) | c49    9.28 ( 1317) | QK3F  109.37 ( 1577) | BW    1.73 (  891) | err None {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim       n=100 s=10 | new    2.04 ( 1040) | c51  416.17 ( 3922) | c49  482.88 ( 3922) | QK3F  136.72 ( 1971) | BW    2.12 ( 1089) | err None {'kept': 1, 'frame': 1}
+FakeMarrakesh heis       n= 12 s= 2 | new    1.28 (   66) | c51    1.39 (   66) | c49    1.72 (   66) | QK3F    1.39 (   66) | BW    err       | err 1.5758762817802979e-15 {'kept': 1, 'frame': 1}
+FakeMarrakesh heis       n= 12 s= 4 | new    2.53 (  132) | c51    2.78 (  132) | c49    3.40 (  132) | QK3F    2.78 (  132) | BW    err       | err 2.360023691020222e-15 {'kept': 1, 'frame': 1}
+FakeMarrakesh heis       n= 16 s= 2 | new    1.28 (   90) | c51    1.36 (   90) | c49    1.72 (   90) | QK3F    1.36 (   90) | BW    err       | err 1.1698000953340763e-15 {'kept': 1, 'frame': 1}
+FakeMarrakesh heis       n= 16 s= 4 | new    2.53 (  180) | c51    2.75 (  180) | c49    3.40 (  180) | QK3F    2.78 (  180) | BW    err       | err 3.1668548753185993e-15 {'kept': 1, 'frame': 1}
+FakeMarrakesh heis       n= 24 s= 2 | new    1.28 (  138) | c51    1.43 (  138) | c49    1.68 (  138) | QK3F    1.43 (  138) | BW    err       | err 4.2687464674173725e-11 {'kept': 1, 'frame': 1}
+FakeMarrakesh heis       n= 24 s= 4 | new    2.53 (  276) | c51    2.78 (  276) | c49    3.50 (  276) | QK3F    2.78 (  276) | BW    err       | err 2.1527269897236856e-10 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim_signs n= 12 s= 2 | new    0.56 (   28) | c51    0.68 (   33) | c49    1.67 (   66) | QK3F    4.12 (   43) | BW    err       | err 6.006555457712155e-16 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim_signs n= 12 s= 4 | new    0.97 (   50) | c51    1.14 (   55) | c49    2.75 (  110) | QK3F    8.01 (   85) | BW    err       | err 1.4405257048511236e-15 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim_signs n= 12 s= 8 | new    1.66 (   94) | c51    1.98 (   99) | c49    4.96 (  198) | QK3F   15.88 (  169) | BW    err       | err 1.2443557010189412e-15 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim_signs n= 16 s= 2 | new    0.56 (   38) | c51    0.70 (   45) | c49    1.66 (   90) | QK3F    5.50 (   59) | BW    err       | err 5.747438389135588e-16 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim_signs n= 16 s= 4 | new    0.97 (   68) | c51    1.15 (   75) | c49    2.76 (  150) | QK3F   11.08 (  117) | BW    err       | err 1.6373974133618225e-15 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim_signs n= 16 s= 8 | new    1.70 (  128) | c51    2.11 (  135) | c49    4.94 (  270) | QK3F   21.58 (  233) | BW    err       | err 1.1497709896832187e-15 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim_signs n= 24 s= 2 | new    0.56 (   58) | c51    0.70 (   69) | c49    1.66 (  138) | QK3F    8.16 (   91) | BW    err       | err 8.957445896129457e-12 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim_signs n= 24 s= 4 | new    0.97 (  104) | c51    1.15 (  115) | c49    2.76 (  230) | QK3F   16.17 (  181) | BW    err       | err 6.222966586477696e-11 {'kept': 1, 'frame': 1}
+FakeMarrakesh tfim_signs n= 24 s= 8 | new    1.77 (  196) | c51    2.12 (  207) | c49    4.86 (  414) | QK3F   32.01 (  361) | BW    err       | err 1.8284218583630718e-10 {'kept': 1, 'frame': 1}

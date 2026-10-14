@@ -1,0 +1,8 @@
+{"device": "FakeFez", "n": 100, "steps": 2, "err": 6.27886076465245e-11, "in_range": true, "isa": true, "secs": 7.6}
+{"device": "FakeFez", "n": 100, "steps": 4, "err": 4.214321114304198e-10, "in_range": true, "isa": true, "secs": 11.0}
+{"device": "FakeFez", "n": 100, "steps": 8, "err": 3.198149300942532e-09, "in_range": true, "isa": true, "secs": 18.4}
+{"device": "FakeFez", "n": 100, "steps": 10, "err": 3.550869265289691e-09, "in_range": true, "isa": true, "secs": 12.0}
+{"device": "FakeMarrakesh", "n": 100, "steps": 2, "err": 6.516426287461741e-11, "in_range": true, "isa": true, "secs": 16.9}
+{"device": "FakeMarrakesh", "n": 100, "steps": 4, "err": 2.807054588771507e-10, "in_range": true, "isa": true, "secs": 17.8}
+{"device": "FakeMarrakesh", "n": 100, "steps": 8, "err": 5.641616063201127e-10, "in_range": true, "isa": true, "secs": 22.4}
+{"device": "FakeMarrakesh", "n": 100, "steps": 10, "err": 1.9218884261817948e-09, "in_range": true, "isa": true, "secs": 14.1}
