@@ -8577,6 +8577,199 @@ The swap network is 1.2-1.7 times QK3's duration and 1.5-2.3 times c49's: a Bara
 network that brings every pair together. The idea is dropped, and no placement by tensor-network contraction order
 is pursued before requests N1 and N2.
 
+
+---
+
+<!-- ===== Addendum 480 (source: addendum_480.md) ===== -->
+
+> **Note added when merging:** Fractional gates: c50 refuted on V6, c51 confirmed (C50-VAL, C51-VAL).
+
+## Addendum 480 -- IBM Heron's native fractional gates (rzz in one CZ-length pulse, rx in one pulse): prototype c50 (item 86) refuted on its own V6 in C50-VAL (69 of 90 outputs carried rzz angles outside the executable range 0 < theta <= pi/2); revised in c51 (every rzz folded and checked), confirmed on every prediction in C51-VAL: the Ising circuits at 0.50 x c49's duration (geometric mean, 0.40-0.69), Barabasi-Albert 0.82 x, 3-regular QAOA 0.83 x, every output executable and exact. The gain comes from compiling on a Target that offers rzz; item 86's own re-synthesis was never kept (2026-10-14)
+
+**Status:** two offline validations, each fixed in a local prestatement before its run. No real device. Times in CEST.
+
+### 1. Why (verified before building)
+
+- ibm_marrakesh's properties of 2026-10-13 list rzz at 68 ns (a CZ's length) and rx at 36 ns (an sx's length) on
+  every coupler and qubit. They also list a faster readout, `measure_2`, at 1.88 us against 2.68 us. It is not used
+  here.
+- A ZZ rotation built from CZ takes two CZ and the single-qubit gates between them, about 0.2-0.28 us.
+- IBM's guide ([fractional gates](https://quantum.cloud.ibm.com/docs/en/guides/fractional-gates)) states:
+  - rzz needs 0 < theta <= pi/2, and qiskit-ibm-runtime's FoldRzzAngle folds fixed angles; rx takes any angle;
+  - the backend must be loaded with `use_fractional_gates=True`;
+  - Pauli twirling, PEC and PEA are not supported;
+  - the Target's errors for the fractional gates are copies of the non-fractional ones.
+- **First estimate.** On FakeFez with rzz and rx added, c49's outputs were re-synthesised by Qiskit's passes. tfim_n12
+  went from 1.49 to 0.82 us and qaoa_n20_p2 from 6.31 to 5.27 us.
+
+### 2. c50 and C50-VAL
+
+- **c50, item 86.** On a Target with rzz, the finished circuit is re-synthesised on its own qubits.
+  - The passes are ConsolidateBlocks and UnitarySynthesis on an error-free copy of the Target, merged single-qubit
+    runs, and FoldRzzAngle.
+  - The result is kept when shorter (item 84) and exact.
+  - `compile_for_hardware` wraps c49's function, so the step runs once.
+- **Tests:** 62 passed, c49's and c48's tests included.
+- **C50-VAL.** Prestatement
+  [`data/2026-10-14/c50_val/C50-VAL_preregistration.md`](../../data/2026-10-14/c50_val/C50-VAL_preregistration.md),
+  fixed 03:39 CEST, SHA-256 `7b607fda...`. Data in [`data/2026-10-14/c50_val/run/`](../../data/2026-10-14/c50_val/run/).
+- **Scope:** C49-VAL's 18 tests and 5 devices, each with a fractional copy of its Target. The arms are QK3, QK3F
+  (Qiskit level 3 on the fractional Target), C49 (today's call) and C50.
+- **Results:**
+  - V1, V2, V3, V4, V5 and V7 confirmed.
+  - **V6 REFUTED: 21 of 90 outputs executable.** 69 carried rzz angles outside (0, pi/2].
+  - Qiskit's own stages inside the compiler (routing, item 80's level-3 candidate, translation) emit rzz with any
+    angle when the Target offers it. Only a qiskit-ibm-runtime backend object folds them by itself.
+  - QK3F's outputs were out of range in 85 of 90 for the same reason. On the device, a backend object does the
+    folding.
+- **By the rule fixed in advance,** c50 does not go to hardware.
+
+### 3. c51 and C51-VAL
+
+- **c51.** Item 86 is revised in [`patches/psf_compile_c51_2026-10-14/`](../../patches/psf_compile_c51_2026-10-14/).
+  - Every circuit returned on a Target with rzz is folded (`_fold`: FoldRzzAngle, then single-qubit runs merged on
+    the error-free Target) and checked. An angle still out of range raises.
+  - The re-synthesis is compared with the folded circuit.
+  - `FRACTIONAL = False` turns off only the re-synthesis, because an unfolded rzz does not run.
+- **Tests:** 63 passed. The new `test_every_output_executable` guards V6 with the re-synthesis on and off.
+- **C51-VAL.** Prestatement
+  [`data/2026-10-14/c51_val/C51-VAL_preregistration.md`](../../data/2026-10-14/c51_val/C51-VAL_preregistration.md),
+  fixed 03:51 CEST, SHA-256 `63fc5bce...`. It uses C50-VAL's predictions and script, with c51 in place.
+  - Data in [`data/2026-10-14/c51_val/run/`](../../data/2026-10-14/c51_val/run/). The files keep the script's c50
+    names; the arm called C50 there is c51.
+
+| ID | prediction | result |
+|---|---|---|
+| V1 | exact, no refusal | **CONFIRMED** (66 checked) |
+| V2 | C51 <= 1.02 x C49 on >= 95% | **CONFIRMED** (90/90) |
+| V3 | Ising: geometric mean <= 0.70, every cell <= 0.95 | **CONFIRMED**: 0.501 (0.403-0.693) |
+| V4 | C51 <= 1.02 x QK3F on >= 90% | **CONFIRMED**: 89/90 (FakeTorino heis2d 1.10). QK3F unfolded, so this is optimistic for Qiskit |
+| V5 | same output on a second call | **CONFIRMED** (15/15) |
+| V6 | native and every rzz in range | **CONFIRMED** (90/90) |
+| V7 | compile time | **CONFIRMED** (90/90) |
+
+**Reported** (duration ratios, C51 / C49):
+
+| family | C51 / C49 | C51 / QK3 |
+|---|---|---|
+| Ising | 0.50 | 0.045 |
+| Barabasi-Albert | 0.82 | 0.65 |
+| 3-regular QAOA | 0.83 | 0.65 |
+| other | 0.88 | - |
+
+`FRAC_STATS`: the re-synthesis was tried 105 times and kept 0 times; 100 circuits were folded.
+
+### 4. Reading
+
+- **The whole gain comes from compiling on a Target that offers rzz.** c49's pipeline, with Qiskit's stages using
+  rzz, plus folding gives it. Item 86's own re-synthesis of a finished circuit never won after folding. That part is
+  dead weight, and the next version should drop it.
+- **The workplace's estimate is better** (03:49 CEST, recorded in Addendum 481). Chains built by formula directly
+  with rzz and rx reach 0.34-0.46 x of the current duration, with a Pauli frame for negative angles. That beats
+  C51's 0.50. A construction that emits rzz itself is the way forward (workplace request P1, items 87-88).
+- **Not established:**
+  - the device's own rzz and arbitrary-angle rx fidelity, which the Target's copied errors do not tell;
+  - whether the shorter circuits run better. FRAC1 (Addendum 481) is that test.
+
+**Two numbers.**
+
+- **Display:** Ising circuits at 0.045 x Qiskit level 3's duration without fractional gates, and half of c49's.
+- **Essential:**
+  - All of this is offline.
+  - Whether rzz is as good as CZ on the device is unknown.
+  - The construction that produced the gain is Qiskit's translation on a fractional Target, which a user can also
+    obtain by loading the backend with fractional gates. PSF-Zero's own contribution is the order and the folding.
+
+---
+
+<!-- ===== Addendum 481 (source: addendum_481.md) ===== -->
+
+> **Note added when merging:** FRAC1 fixed and committed before any FRAC1 job; workplace records (N1, N2, tensor check) and next requests.
+
+## Addendum 481 -- Pre-registration of FRAC1 (to run on TIME1's device the same evening, with the owner's go-ahead): the same inputs compiled by c49 without fractional gates and by c51 with them, to ask whether rzz's shorter circuits run better on the device. With the workplace's second delivery: chain Hamiltonians by formula (N1) meet or beat Qiskit given a hand-written brickwork in 46-48 of 48 cells and remove the n = 100 loss (471 to 5.3 us); a ring formula (N2) is the shortest on 61 of 64 classifier cells; spectral placement and swap networks give nothing; a quick estimate puts formula-built chains with rzz at 0.34-0.46 x today's duration (2026-10-14)
+
+**Status: pre-registration, committed before any FRAC1 job; workplace records committed unchanged.** Times in CEST.
+
+### 1. FRAC1
+
+**Kit.** [`data/2026-10-14/frac1_kit/`](../../data/2026-10-14/frac1_kit/).
+
+- The prestatement is
+  [`FRAC1_preregistration.md`](../../data/2026-10-14/frac1_kit/FRAC1_preregistration.md), fixed 04:05:56 CEST,
+  SHA-256 `54c48481...`.
+- The script is `frac1_real.py`, which reuses TIME1's `time1_real.py` (hash fixed in the script).
+- Run scripts: `64_frac1_prep.sh` (VPN on), `65_frac1_run.sh` (VPN off, right after TIME1's 62),
+  `66_frac1_record.sh` (VPN on). All are fixed by `SHA256SUMS`.
+
+**Design.**
+
+- **Device and job:** TIME1's device, read from its manifest; it must offer rzz. One job of 56 circuits on the
+  backend loaded with fractional gates, 4,000 shots per repeat, two repeats, no dynamical decoupling and no
+  twirling.
+- **Pairs:** C49 (no fractional gates) against C51 (fractional gates), on TIME1's six Ising chains and HW2's seven
+  tests, plus a ghz control.
+- **Predictions** (ratio = C51 / C49):
+  - FA: C51 has the higher F on at least 5/6 of the Ising pairs.
+  - FB: the Ising geometric mean F ratio is at least 1.10.
+  - FC: C51 is not worse on at least 75% of the pairs with duration ratio <= 0.9.
+  - FD (reported): the rank correlation of 1 / duration ratio with F ratio.
+  - FE: the control is within ±10%.
+- **Rule:** FA and FB both confirmed means item 86 is confirmed on the device.
+
+**QPU.** Both jobs together are expected at about 3 minutes from HW2's rate, out of the roughly 5.5 left: TIME1's
+420,000 shots and FRAC1's 224,000. FRAC1's shots were lowered from 6,000 to 4,000 for that reason, before the
+prestatement was fixed. The rehearsal had been run at 6,000.
+
+### 2. Workplace records, second delivery of 2026-10-14
+
+The delivery is in
+[`data/2026-10-14/workplace/workplace_2026-10-14b_N1-N2/`](../../data/2026-10-14/workplace/workplace_2026-10-14b_N1-N2/),
+with an intake check of 22 of 22. The workplace numbered N1 "item 86"; at home that number is fractional gates
+(Addendum 480), so N1 becomes **item 87**.
+
+**N1, chain brickwork by formula (patch proposal on c49).**
+
+- **Method:**
+  - Read the terms; when the two-qubit supports form one path, cut failed elements (W5).
+  - Place the chain on the longest surviving snake piece, couplers of the device's most common gate length first;
+    otherwise take the first VF2 path, with no score.
+  - Emit by level (even edges, odd edges, single-qubit terms), with no STEINER6 and no size limit.
+  - Keep the result unless c49's own output is shorter.
+- **Results on W2's 48 cells:**
+  - exact (largest error 3.8e-9);
+  - CZ at or below QK3 given a hand-written brickwork in 48 of 48;
+  - duration at or below it in 46 of 48;
+  - FakeFez n = 100 with 10 steps: 5.30 us, against c48's 471.
+- **The two misses** are FakeMarrakesh n = 100 at 8 and 10 steps, 0.2% and 1.6% longer, because every 100-qubit
+  path there crosses 80 ns couplers. Home ruled that no path is scored by duration, and these misses are accepted.
+
+**N2, rings on heavy-hex by formula.**
+
+- Heavy-hex has girth 12, so no 4- or 6-ring embeds.
+- The formula: a folded line order, interior odd-even SWAP rounds, and mirrored layers. A layer costs 7 CZ for
+  n = 4 and 15 CZ for n = 6.
+- It is the shortest of N2, a15, a14, c48 and QK3 on 61 of 64 of W3's cells; the exceptions are all L = 1.
+- At L = 16 it is 0.69-0.87 x the best other method. It is exact, with no even / odd effect.
+
+**Spectral (tensor-style) placement and swap networks on Barabasi-Albert QAOA and R4.** No gain over QK3, and c49 is
+further ahead. Stopped, as at home (Addendum 479).
+
+**Workplace estimate at 03:49 CEST** (reported in chat; the script and note are in the workplace's Project, not in
+this delivery).
+
+- Formula-built chains on one line, with rzz (as long as a CZ) and rx (as long as an sx):
+  - TFIM 0.34-0.46 x today's duration, Heisenberg 0.45-0.46 x;
+  - rx alone gives 0.85-0.90 x, and 0.93-0.97 x on the classifier rings.
+- A Pauli frame for negative rzz angles brings 0.44 to 0.37 x where signs vary.
+- Home's condition for the Pauli frame: the compiled circuit must give the input's distribution, so a carried X is
+  absorbed or applied as a pulse before measurement, never as a classical bit flip.
+
+**Home's next requests** ([`home_requests/`](../../data/2026-10-14/workplace/home_requests/), second note):
+
+- P1: items 87 (chain brickwork) and 88 (Pauli frame) on c51, emitting rzz and rx directly.
+- P2: a16, the AI front end with N2's ring formula and rx.
+- P3: N3 at low priority.
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

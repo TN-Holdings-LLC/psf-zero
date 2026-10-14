@@ -1,0 +1,33 @@
+{
+ "started": "2026-10-14 10:39:47 JST",
+ "c49_sha256": "5544d7c9f10d615c041eaf273af311573151a2548690b2192d866509bdaaa8d0",
+ "c50_sha256": "c57eba801373cd1993c21afe24b9375b5754d853073784875efc0958bf05e4a1",
+ "script_sha256": "3766f9daae8a3aa1ea6d6a8d76a930423d16d9ffeae28ceff29062ceafd28aa8",
+ "devices": [
+  "FakeFez",
+  "FakeMarrakesh",
+  "FakeKingston",
+  "FakeTorino",
+  "snapshot_marrakesh"
+ ],
+ "tests": [
+  "qaoa_n12_p2",
+  "qaoa_n20_p2",
+  "ba_n14",
+  "ba_n16",
+  "ba_n18",
+  "ba_n20",
+  "tfim_n12",
+  "tfim_n16",
+  "ghz_n12",
+  "tfimP_n12",
+  "tfimP_n16",
+  "tfim_n20_r3",
+  "heis_n12_r2",
+  "heis2d_n16_r1",
+  "chem_n12_r1",
+  "qaoa3reg_n20_r3",
+  "qaoa3reg_n40_r3",
+  "tfim_n40_r2"
+ ]
+}

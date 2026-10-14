@@ -1,0 +1,19 @@
+  /usr/local/lib/python3.11/dist-packages/scipy/sparse/linalg/_dsolve/linsolve.py:606: SparseEfficiencyWarning: splu converted its input to CSC format
+    return splu(A).solve
+
+patches/psf_compile_c49n1_2026-10-14/test_c49.py::test_chosen_output_is_exact_and_never_longer
+patches/psf_compile_c49n1_2026-10-14/test_c48_on_c49.py::test_chosen_output_is_exact_and_never_worse
+  /usr/local/lib/python3.11/dist-packages/scipy/sparse/linalg/_matfuncs.py:707: SparseEfficiencyWarning: spsolve is more efficient when sparse b is in the CSC matrix format
+    return spsolve(Q, P)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED test_c49.py::test_version - AssertionError: assert '2026-10-14.c49+n1'...
+FAILED test_c49.py::test_chosen_output_is_exact_and_never_longer - AssertionE...
+FAILED test_c48_on_c49.py::test_version - AssertionError: assert '2026-10-14....
+FAILED test_c48_on_c49.py::test_chosen_output_is_exact_and_never_worse - Asse...
+4 failed, 50 passed, 42 warnings in 48.00s
+
+real	0m48.845s
+user	0m52.230s
+sys	0m0.781s

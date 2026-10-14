@@ -1,0 +1,46 @@
+n=4: folded order [0, 3, 1, 2]; per layer 4 CZ + 1 SWAP = 7 CZ; rounds [([(0, 3), (1, 2)], [(1, 2)]), ([(0, 1), (3, 2)], [])]
+n=6: folded order [0, 5, 1, 4, 2, 3]; per layer 6 CZ + 3 SWAP = 15 CZ; rounds [([(0, 5), (2, 3)], [(1, 2), (3, 4)]), ([(0, 1), (4, 3)], [(2, 3)]), ([(1, 2), (5, 4)], [])]
+FakeFez n=4 L= 1 N2    7   0.59us | PSF-C    7   0.78 | QK3    7   0.76 | err 7.4e-16
+FakeFez n=4 L= 2 N2   14   1.18us | PSF-C   15   1.74 | QK3   17   1.84 | err 6.7e-16
+FakeFez n=4 L= 3 N2   21   1.76us | PSF-C   27   2.92 | QK3   27   2.92 | err 9.4e-16
+FakeFez n=4 L= 4 N2   28   2.33us | PSF-C   30   3.41 | QK3   37   3.95 | err 1.2e-15
+FakeFez n=4 L= 5 N2   35   2.92us | PSF-C   47   4.98 | QK3   47   5.03 | err 4.5e-14
+FakeFez n=4 L= 6 N2   42   3.48us | PSF-C   45   5.08 | QK3   57   6.04 | err 2.2e-15
+FakeFez n=4 L= 7 N2   49   4.07us | PSF-C   67   7.16 | QK3   67   7.19 | err 1.8e-15
+FakeFez n=4 L= 8 N2   56   4.58us | PSF-C   60   6.77 | QK3   77   8.20 | err 4.6e-15
+FakeFez n=4 L= 9 N2   63   5.20us | PSF-C   87   9.28 | QK3   87   9.32 | err 2.3e-15
+FakeFez n=4 L=10 N2   70   5.78us | PSF-C   75   8.51 | QK3   97  10.31 | err 7.9e-15
+FakeFez n=4 L=11 N2   77   6.32us | PSF-C  107  11.36 | QK3  107  11.41 | err 2.1e-14
+FakeFez n=4 L=12 N2   84   7.06us | PSF-C   90  10.15 | QK3  117  12.59 | err 9.9e-15
+FakeFez n=4 L=13 N2   91   7.55us | PSF-C  127  13.48 | QK3  127  13.52 | err 5.6e-15
+FakeFez n=4 L=14 N2   98   8.11us | PSF-C  105  11.87 | QK3  137  14.58 | err 1.4e-14
+FakeFez n=4 L=15 N2  105   8.75us | PSF-C  147  15.68 | QK3  147  15.71 | err 4.4e-15
+FakeFez n=4 L=16 N2  112   9.36us | PSF-C  120  13.42 | QK3  157  16.76 | err 1.0e-14
+FakeFez n=6 L= 1 N2   15   0.91us | PSF-C   13   0.89 | QK3   16   1.61 | err 2.1e-15
+FakeFez n=6 L= 2 N2   30   1.82us | PSF-C   34   3.08 | QK3   34   3.06 | err 8.3e-16
+FakeFez n=6 L= 3 N2   45   2.66us | PSF-C   52   5.40 | QK3   52   5.45 | err 1.9e-15
+FakeFez n=6 L= 4 N2   60   3.62us | PSF-C   70   7.00 | QK3   70   6.97 | err 3.2e-15
+FakeFez n=6 L= 5 N2   75   4.54us | PSF-C   87   8.90 | QK3   87   8.83 | err 1.0e-14
+FakeFez n=6 L= 6 N2   90   5.45us | PSF-C  108  11.10 | QK3  108  11.05 | err 4.8e-15
+FakeFez n=6 L= 7 N2  105   6.34us | PSF-C  124  12.88 | QK3  124  12.78 | err 4.0e-15
+FakeFez n=6 L= 8 N2  120   7.22us | PSF-C  142  15.10 | QK3  142  15.07 | err 7.1e-14
+FakeFez n=6 L= 9 N2  135   8.18us | PSF-C  160  17.40 | QK3  160  16.62 | err 8.0e-15
+FakeFez n=6 L=10 N2  150   9.07us | PSF-C  178  12.44 | QK3  179  18.84 | err 4.8e-15
+FakeFez n=6 L=11 N2  165  10.03us | PSF-C  196  20.89 | QK3  196  20.82 | err 1.6e-14
+FakeFez n=6 L=12 N2  180  10.85us | PSF-C  212  14.63 | QK3  214  22.40 | err 5.6e-15
+FakeFez n=6 L=13 N2  195  11.74us | PSF-C  232  24.79 | QK3  232  24.70 | err 1.1e-14
+FakeFez n=6 L=14 N2  210  12.72us | PSF-C  244  16.82 | QK3  250  26.29 | err 4.6e-15
+FakeFez n=6 L=15 N2  225  13.51us | PSF-C  267  28.30 | QK3  267  28.13 | err 1.0e-14
+FakeFez n=6 L=16 N2  240  14.52us | PSF-C  278  19.06 | QK3  286  30.44 | err 2.1e-14
+FakeTorino n=4 L= 1 N2    7   0.56us | PSF-C    7   0.83 | QK3    7   0.89 | err 7.4e-16
+FakeTorino n=4 L= 2 N2   14   1.13us | PSF-C   15   1.88 | QK3   17   2.04 | err 6.7e-16
+FakeTorino n=4 L= 3 N2   21   1.69us | PSF-C   27   3.20 | QK3   27   3.20 | err 9.4e-16
+FakeTorino n=4 L= 4 N2   28   2.22us | PSF-C   32   4.37 | QK3   37   3.70 | err 1.2e-15
+FakeTorino n=4 L= 5 N2   35   2.79us | PSF-C   47   4.65 | QK3   47   4.72 | err 4.5e-14
+FakeTorino n=4 L= 6 N2   42   3.32us | PSF-C   57   5.64 | QK3   57   5.64 | err 2.2e-15
+FakeTorino n=4 L= 7 N2   49   3.88us | PSF-C   67   6.72 | QK3   67   6.72 | err 1.8e-15
+FakeTorino n=4 L= 8 N2   56   4.35us | PSF-C   77   7.64 | QK3   77   7.70 | err 4.6e-15
+FakeTorino n=4 L= 9 N2   63   4.95us | PSF-C   87   8.68 | QK3   87   8.68 | err 2.3e-15
+FakeTorino n=4 L=10 N2   70   5.51us | PSF-C   97   9.57 | QK3   97   9.57 | err 7.9e-15
+FakeTorino n=4 L=11 N2   77   6.01us | PSF-C  107  10.62 | QK3  107  10.49 | err 2.1e-14
+FakeTorino n=4 L=12 N2   84   6.77us | PSF-C  117  11.83 | QK3  117 
