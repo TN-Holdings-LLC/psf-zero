@@ -1,0 +1,22 @@
+2026-10-14T10:33:43+00:00 (2026-10-14 12:33:43 CEST) | qiskit 2.5.2
+  qiskit_aer 0.17.2
+  qiskit_ibm_runtime 0.49.0
+  psf_zero_core 2026-09-29.1
+SCRIPT ~/psf_zero_fresh_test/data/2026-10-14/frac1_kit/frac1_real.py 3327bd055026cc318fc5cec0245c0a1c1319046402741d58d216fab7f7f6d5c4
+FILE data/2026-10-14/time1_kit/time1_real.py 171f8922446443bf8a27e1552f1ff604a4d243346759bc8f1c1fdad7b1025505
+FILE data/2026-10-13/hw2_kit/hw2_real.py 80f356c4a6bb3061f5c315ca2312d8a71bc09ac2dd5987ed04e7b15ecc7e368d
+FILE patches/psf_compile_c49_2026-10-14/psf_compile.py 5544d7c9f10d615c041eaf273af311573151a2548690b2192d866509bdaaa8d0
+FILE patches/psf_compile_c51_2026-10-14/psf_compile.py 556d312b493012eb310813ec8367e0c370ceb6df9316210b37d1473cc3e52f96
+FILE benchmarks/psf_smart_layout.py 824530703fbe091d70643d28b58a69315d2c1dcb6a334ec39a46d5a618602c24
+qiskit_runtime_service.__init__:WARNING:2026-10-14 12:33:46,254: Instance was not set at service instantiation. Free and trial plan instances will be prioritized. Based on the following filters: (tags: None, region: us-east, eu-de), and available plans: (open), the available account instances are: open-instance. If you need a specific instance set it explicitly either by using a saved account with a saved default instance or passing it in directly to QiskitRuntimeService(). Alternatively, pass instance='auto' or save it to your account for auto-selection without warning.
+2026-10-14T10:33:47+00:00 (2026-10-14 12:33:47 CEST) job db7ll1araffc73faqokg status QUEUED
+2026-10-14T10:34:17+00:00 (2026-10-14 12:34:17 CEST) job db7ll1araffc73faqokg status QUEUED
+2026-10-14T10:34:47+00:00 (2026-10-14 12:34:47 CEST) job db7ll1araffc73faqokg status QUEUED
+2026-10-14T10:35:18+00:00 (2026-10-14 12:35:18 CEST) job db7ll1araffc73faqokg status QUEUED
+2026-10-14T10:35:48+00:00 (2026-10-14 12:35:48 CEST) job db7ll1araffc73faqokg status QUEUED
+2026-10-14T10:36:19+00:00 (2026-10-14 12:36:19 CEST) job db7ll1araffc73faqokg status QUEUED
+2026-10-14T10:36:49+00:00 (2026-10-14 12:36:49 CEST) job db7ll1araffc73faqokg status RUNNING
+2026-10-14T10:37:19+00:00 (2026-10-14 12:37:19 CEST) job db7ll1araffc73faqokg status RUNNING
+2026-10-14T10:37:50+00:00 (2026-10-14 12:37:50 CEST) job db7ll1araffc73faqokg status RUNNING
+2026-10-14T10:38:20+00:00 (2026-10-14 12:38:20 CEST) job db7ll1araffc73faqokg status DONE
+2026-10-14T10:38:22+00:00 (2026-10-14 12:38:22 CEST) saved frac1_raw_counts.json (56 results); usage {'qpu_charge_time_seconds': 62, 'value': 1.0197, 'unit': 'resource_units', 'status': 'complete', 'details': [{'value': 1.0197, 'unit': 'resource_units', 'metric': {'id': 'caffe3ca-729c-5750-8777-df63bbf8bfd9', 'value': 62}}]}

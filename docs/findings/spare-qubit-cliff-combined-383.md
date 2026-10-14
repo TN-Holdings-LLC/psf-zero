@@ -9217,4 +9217,248 @@ a 12-ring, with fractional gates, and nothing without them. TIME1 and FRAC1 toni
 
 ---
 
+<!-- ===== Addendum 486 (source: addendum_486.md) ===== -->
+
+> **Note added when merging:** Workplace R1-R4; owner's decision A (no seed search); c55 (items 94, 95); C55-VAL pre-registered, two runs interrupted.
+
+## Addendum 486 -- Workplace records R1-R4 (2026-10-14): HW2's 3-regular QAOA "loss" (Addendum 484) is mostly the user's seed search over Qiskit's placement, which no fixed placement by formula reached; c54's output depends by up to 19% on the qubit order written in a symmetric rzz; the ~1e-7 differences come from Qiskit's two-qubit synthesis and CommutativeCancellation and sat outside item 93's 16-qubit reach; the Heisenberg length is the input's term order. Owner's decision: no seed search (option A). Prototype c55 (c54 + item 94: commuting ZZ runs re-layered by edge colouring, the shorter exact of two fixed inputs; + item 95: item 93's check up to 20 active qubits), 110 tests; C55-VAL pre-registered, its first two runs stopped by the workspace being reclaimed, to be run at the workplace (2026-10-14)
+
+**Status:** workplace records committed unchanged; a prototype and a prestatement, no validation result yet. Times in
+CEST.
+
+### 1. Workplace records (sixth delivery of 2026-10-14)
+
+The delivery is in
+[`data/2026-10-14/workplace/workplace_2026-10-14f_R1-R4/`](../../data/2026-10-14/workplace/workplace_2026-10-14f_R1-R4/),
+with an intake check of 30 of 30. It answers the fifth next-requests note. Everything below is the workplace's
+measurement on FakeFez unless stated; home has not repeated it.
+
+- **R1, HW2's 3-regular QAOA.**
+  - The hand-layered circuit through Qiskit level 3 at seed 0 alone beats c54 only on qaoa_n12_p2 (5.53 against
+    5.98 us without fractional gates). On qaoa_n20_p2 and qaoa3reg_n20_r3, c54 is at or below the user's seed 0; on
+    qaoa3reg_n20_r3 it beats even the user's five-seed best (11.08 against 11.70 us).
+  - Seeds 0-4 change SabreLayout's placement and the duration by up to 1.5 x (qaoa_n20_p2: 6.48 against 4.43 us).
+    So the margin Addendum 484 recorded is mostly that seed search.
+  - Four fixed placements by formula (a first Hamiltonian path or reverse Cuthill-McKee order, on a line or a
+    patch) came out 1.4-3.3 x c54. A random 3-regular graph does not embed in heavy-hex.
+  - **Item 94**, proposed: the input's runs of commuting ZZ terms re-layered by a first-fit edge colouring; c54
+    compiles both and returns the shorter exact output. Never longer on 22 cells, shorter on 6 (0.83-0.998).
+  - **c54's output depends on the written qubit order of a symmetric rzz,** by up to 19% (qaoa_n12_p2 with
+    fractional gates: 4.07 against 4.85 us). The placement inside c54 (SabreLayout, on the usual path and in item
+    80's level-3 candidate) follows the DAG's node order.
+- **R2, the ~1e-7 differences.**
+  - On C52-VAL's 240 cells on c54, only tfim_n20_r3's six outputs differ from the input's distribution by more than
+    1e-12 (1.5e-8 without fractional gates on all five devices, 3.2e-7 with them on FakeTorino). Every other cell
+    is within 5.1e-14.
+  - They have 20 active qubits, so item 93 (up to RESYNTH_MAX_QUBITS = 16) never checked them. That is also why
+    C54-VAL's largest difference passed was 5.0e-14 (Addendum 485, corrected there).
+  - The cause is inside STEINER6's final level-3 transpile. Qiskit's two-qubit synthesis snaps blocks whose exact
+    Weyl coordinates are (a, 2e-5, 2e-5) to (a, 0, 0), and CommutativeCancellation moves the result by another
+    3.3e-7.
+  - An exact synthesis that keeps Qiskit's structure and re-solves its single-qubit layers removes both (6.7e-16 on
+    Q3's block), at up to 13% in duration. At 1e-9, c54's own fallback (the usual path) is 17-21 x longer on these
+    circuits.
+- **R3, Heisenberg.** Fusing each edge's three terms changes nothing: level 3 already merges them into one 3-CZ
+  block. The length comes from the input's edge-by-edge term order, a serial staircase that every exact compiler
+  must keep. Reordering the terms is the input writer's choice, not the compiler's.
+- **R4, item 91 on FakeTorino.** No embedding of the test graphs exists on its 68 ns couplers alone, so item 91's
+  first match uses slower ones (up to 184 ns) and c53's duration-scored placement is kept. The workplace's
+  0.62-0.74 against C54-VAL's 0.80-0.86 comes from its large patches; on comparable cells the two agree (0.76-0.91).
+
+### 2. Owner's decision: no seed search
+
+Asked whether to allow a placement seed search as a last resort for graphs that do not embed, the owner chose **A:
+no**.
+
+- PSF-Zero is reported against two references:
+  - the user's single run;
+  - the user's five-seed search, named as such.
+- On HW2's 3-regular QAOA the honest pair is:
+  - **Display:** c54 at or below the user's single run on 4 of 6 cells.
+  - **Essential:** 15-30% behind a user who tries five seeds.
+
+### 3. Prototype c55
+
+[`patches/psf_compile_c55_2026-10-14/`](../../patches/psf_compile_c55_2026-10-14/) is built from c54 in two steps.
+
+- `make_c55_94.py` is the workplace's `make_c54_94.py` with the version strings changed.
+- `make_c55.py` adds **item 95**: item 93 checks a measured circuit up to EXACT_CHECK_MAX_QUBITS = 20 active qubits.
+  An unmeasured one stays at 16, since that check compares unitaries. The tolerance stays 1e-6; R2 shows what 1e-9
+  would cost today.
+- **Tests:** 110 passed. They are the workplace's 7 for item 94, item 93's with one new test for item 95, and c54's,
+  c53's, c52's, c51's, c49's and c48's suites with item 94 off where outputs are compared to older versions. a17's
+  13 pass on c55.
+
+### 4. C55-VAL
+
+Prestatement
+[`data/2026-10-14/c55_val/C55-VAL_preregistration.md`](../../data/2026-10-14/c55_val/C55-VAL_preregistration.md),
+fixed 09:27 CEST, SHA-256 `53254272...`.
+
+- C54-VAL's 28 tests on 5 devices, with arms QK3, C54, C55, C54F and C55F.
+- Predictions V1-V8, among them:
+  - V4: item 94 shortens at least 10% of cells by at least 1%;
+  - V7: compile time C55F <= 2.5 x C54F + 3 s;
+  - V8: item 93 now passes a difference between 1e-9 and 1e-6.
+
+**Runs so far.** Neither run has been scored.
+
+- **Run 1** (09:27) stopped after 169 of 700 rows. The workspace was reclaimed while idle, after 09:52. Its rows are
+  kept in [`run1_interrupted/`](../../data/2026-10-14/c55_val/run1_interrupted/).
+- **Run 2** (11:56) stopped the same way after 82 rows (last row 12:06). Its rows are kept in
+  [`run2_interrupted/`](../../data/2026-10-14/c55_val/run2_interrupted/).
+- Claude's workspace is reclaimed shortly after each reply, so a run of several hours cannot finish there. The run
+  goes to the workplace PC, unchanged, with the device recorded.
+
+**Seen in run 1's rows** (not scored). C55's compile time is 2-90 s where C54's is 1-3 s. For example, ba_n20 took
+88.9 s against 1.6 s. V7 is likely to fail. The cost comes from item 94's second compile and from item 93/95's
+statevector checks at 17-20 qubits; how it splits between them is not measured.
+
+### 5. Reading
+
+- **3-regular QAOA.** The gap is the price of the no-search rule, now decided. It is not a missing formula: none of
+  the four tried came near.
+- **The rzz qubit-order sensitivity is an ambiguity in PSF-Zero's own output.** The same circuit, written two ways,
+  compiles to durations 19% apart because a seeded heuristic (SabreLayout) reads the DAG's order. Removing it means
+  a canonical input order, a fixed rule rather than taking the better of two. That is the next request.
+- **Not established:** C55-VAL's result; whether item 94 is worth its compile time.
+
+---
+
+<!-- ===== Addendum 487 (source: addendum_487.md) ===== -->
+
+> **Note added when merging:** TIME1 and FRAC1 on ibm_fez, scored by the pre-registered scripts; neither release rule passed.
+
+## Addendum 487 -- TIME1 and FRAC1 on ibm_fez (2026-10-14, pre-registered, real device): a shorter order of the same gates raises F on 6 of 6 Ising pairs (1.18-1.51 x), and duration out-predicts two-qubit count and ESP (rank correlation +0.67 against -0.18 and -0.21), but duration as the choice rule is NOT CONFIRMED: the shorter circuit wins only 10 of 16 pairs, and c49's default call reaches 0.95 x Qiskit level 3's F on only 3 of 7 tests, losing on the deep Barabasi-Albert and 20-qubit QAOA circuits (0.35-0.61 x), where the chip region chosen dominates. Native rzz raises F (Ising geometric mean 1.12 x, Barabasi-Albert up to 2.7 x, 10 of 13 pairs) but item 86 is NOT CONFIRMED by its fixed rule (4 of 6 Ising pairs, two n = 16 ties). c49 is not released and the README makes no duration claim; item 86 stays off by default (2026-10-14)
+
+**Status:** pre-registered tests on a real device, scored by the pre-registered scripts; one reading after the fact,
+marked as such. Times in CEST.
+
+### 1. What ran
+
+| | TIME1 | FRAC1 |
+|---|---|---|
+| prestatement | [`TIME1_preregistration.md`](../../data/2026-10-14/time1_kit/TIME1_preregistration.md), SHA-256 `b049826d...` | [`FRAC1_preregistration.md`](../../data/2026-10-14/frac1_kit/FRAC1_preregistration.md), SHA-256 `54c48481...` |
+| published | before the runs, in commit 69674c7 | the same |
+| device | ibm_fez (device rule: operational, 3 pending jobs); calibration 11:49:52 | the same device and calibration, fractional gates on |
+| job | `db7lh1er6oqs7387ra9g`, submitted 12:25:10, done 12:27:47 | `db7ll1araffc73faqokg`, submitted 12:33:42, done 12:38:20 |
+| circuits | 70 (35 x 2 repeats), 6,000 shots each | 56 (28 x 2 repeats), 4,000 shots each |
+| QPU | 115 s | 62 s |
+
+- Both manifests were written before submission.
+- Every circuit passed the checks: native, no failed element, and exact within 1e-6 at up to 24 active qubits.
+- Results are in [`data/2026-10-14/time1_results/`](../../data/2026-10-14/time1_results/) and
+  [`frac1_results/`](../../data/2026-10-14/frac1_results/).
+  - Every file matched its SHA256SUMS on arrival.
+  - Three log lines per test had the home folder's path replaced by `~`, as their `REDACTED.md` says.
+- The two controls held: ghz_n12 0.801 / 0.799 in TIME1 and 0.805 / 0.806 in FRAC1.
+
+### 2. TIME1
+
+| ID | prediction | result |
+|---|---|---|
+| TA | item 83 on (S1) beats off (S0) on >= 5 of 6 Ising pairs | **CONFIRMED**: 6 of 6, F ratio 1.18-1.51 at duration ratio 0.34-0.52, two-qubit ratio 0.93-1.01, ESP ratio 0.99-1.04 |
+| TB | the shorter circuit has the higher F on >= 75% of pairs differing by >= 10% in duration | **REFUTED**: 10 of 16 |
+| TC | rank correlation of 1/duration with F >= +0.5 and above two-qubit count's and ESP's | **CONFIRMED**: +0.672, against -0.184 and -0.212 |
+| TD | C49's F >= 0.95 x QK3's on >= 6 of 7 | **REFUTED**: 3 of 7 |
+| TE | control within 0.90-1.10 | **CONFIRMED** |
+
+**Rule fixed in advance:** TA, TB and TC were all needed. TB is refuted, so **duration as the choice rule is not
+confirmed**. Item 84 is re-examined before any release or README claim.
+
+The six pairs TB lost:
+
+| pair | test | duration ratio | F ratio | F (shorter, longer) |
+|---|---|---|---|---|
+| C49 / C48 | ba_n14 | 0.901 | 0.741 | 0.129, 0.174 |
+| C49 / C48 | ba_n20 | 0.828 | 0.899 | 0.034, 0.038 |
+| C49 / C48 | tfim_n12 | 0.761 | 0.935 | 0.728, 0.778 (C49 has 66 two-qubit gates against 49) |
+| C49 / QK3 | qaoa_n20_p2 | 0.748 | 0.614 | 0.217, 0.353 |
+| C49 / QK3 | ba_n16 | 0.856 | 0.546 | 0.105, 0.192 |
+| C49 / QK3 | ba_n20 | 0.813 | 0.352 | 0.034, 0.097 |
+
+Two pairs fell inside the 10% band and are outside TB. ba_n16 C49 / C48 (duration 0.986) has F 0.105 against 0.309;
+ba_n18 C49 / QK3 (0.953) has F 0.024 against 0.045.
+
+### 3. FRAC1
+
+| ID | prediction | result |
+|---|---|---|
+| FA | C51 (rzz) beats C49 on >= 5 of 6 Ising pairs | **REFUTED**: 4 of 6. The two losses are n = 16, at 0.969 and 0.995, within one standard error. |
+| FB | Ising geometric mean F ratio >= 1.10 | **CONFIRMED**: 1.123 (0.97-1.36) |
+| FC | C51's F >= C49's on >= 75% of pairs with duration ratio <= 0.9 | **CONFIRMED**: 10 of 13 |
+| FD | reported: rank correlation of 1/duration ratio with F ratio | -0.269 |
+| FE | control within 0.90-1.10 | **CONFIRMED** |
+
+- **Rule fixed in advance:** FA and FB were both needed, so **item 86 is not confirmed on the device** and stays off
+  by default.
+- Outside the Ising part, rzz raised F on every Barabasi-Albert test: 1.14, 2.39, 1.73 and 2.66 x, at duration
+  0.81-0.85 x.
+- It also raised F on qaoa_n20_p2 (1.22 x) and tfim_n12 (1.41 x; C51's F of 1.10 is above 1, which the normalised
+  XEB allows).
+- It lowered F on qaoa_n12_p2 (0.93 x).
+- The gains are larger than the duration ratios predict, and FD is negative. Halving the two-qubit pulses is a
+  better account of them than the duration, but that is a reading, not a test.
+
+### 4. After the fact (not pre-registered; facts read from the submitted circuits and the scores)
+
+- **Repeatability across the two jobs.** Fourteen circuits ran unchanged in both jobs, about eight minutes apart:
+  - c49's Ising circuits;
+  - its HW2 tests;
+  - the control.
+
+  Their F agree within 0.056 (median |difference| 0.008). Differences far above that are not drift.
+- **The deep losses are placement, not order.**
+  - In the pairs C49 lost to QK3, the two circuits use nearly disjoint physical qubits (0-7 shared).
+  - ba_n16: C49 and C48 share 11 of 16 qubits, yet F is 0.105 against 0.309.
+  - The average number of two-qubit gates per two-qubit layer does not separate winners from losers (ba_n16: C49
+    2.25, QK3 2.46). Crosstalk from denser packing is not supported.
+- **Neither number predicts the region.**
+  - c49 and c48 share their placement candidates; item 75 still scores them by the Target's errors in both. They
+    differ in the final choice: c49 takes the shortest candidate (item 84) and cuts failed qubits first (item 85),
+    while c48 takes the highest ESP.
+  - QK3 (VF2PostLayout scores layouts by the Target's errors) won 4 of 7 against C49. C48 won 5 of 6 scored pairs.
+  - Yet the ESP ratio ranks the pairs negatively overall (-0.21). On ba_n16, C49's ESP is 1.69 x QK3's while its F
+    is 0.55 x.
+  - Choosing by ESP avoided whatever hurt C49's choice more often than not, but the ESP value itself did not
+    predict by how much.
+  - c52 onwards go further from calibration: items 33/60, 64 and 78 are off, and item 75 is scored by duration
+    (item 90). That is untested on a device. TIME1 is a warning about it.
+
+### 5. Reading
+
+- **Real, on a third device:**
+  - Shortening the same gates on the same qubits raises F, and by a lot: 18-51% (TA, and Part S of HW2 before it).
+  - Duration is the best single predictor of the three (TC).
+  - Native rzz raises F on most circuits (FB, FC).
+- **Not real as built:** "choose the shortest compilation" across different placements (TB, TD). On deep circuits
+  where F falls below 0.25, the chip region decides, and c49 chose regions worse than Qiskit's level 3 did. This is
+  the part the "time all-in" strategy did not cover. From c52 on, PSF-Zero's default call has no rule for region
+  other than cutting failed elements.
+- **Consequences, as fixed:**
+  - c49 is not released.
+  - The README does not say PSF-Zero chooses by duration.
+  - c51's item 86 stays off by default.
+  - Items 83 (order) and 86 (rzz) are the parts the device supported. Item 84 (duration across constructions) needs
+    a region rule before it can be claimed.
+- **Not established:**
+  - Why C49's regions were worse. The calibration in the manifest is a timestamp only, and this addendum did not
+    read error values.
+  - Whether a coarse calibration veto (avoiding the worst elements, beyond failed ones) would close the gap. The
+    owner decided on 2026-10-14 to put no effort into the calibration map. These data bear on that decision; the
+    decision is the owner's.
+
+**Two numbers.**
+
+- **Display:**
+  - Same circuit, shorter order: F 1.18-1.51 x (6/6).
+  - rzz: Barabasi-Albert F up to 2.7 x.
+  - Duration correlates with F at +0.67, where ESP is at -0.21.
+- **Essential:**
+  - On the deep circuits a user would actually run, c49's default call loses to Qiskit level 3 on 4 of 7 (F 0.35-0.61
+    x).
+  - Neither pre-registered release rule passed.
+
+---
+
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
