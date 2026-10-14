@@ -8515,6 +8515,68 @@ morning's correction note):
 **Cancelled:** the old W4 (96-qubit calibration analysis), the old W6, the T2* / ZZ experiment, and any work on
 predictors.
 
+
+---
+
+<!-- ===== Addendum 479 (source: addendum_479.md) ===== -->
+
+> **Note added when merging:** TIME1 fixed and committed before any TIME1 job.
+
+## Addendum 479 -- Pre-registration of TIME1 (owner's go-ahead, 2026-10-14): on a third IBM device, does a compiled circuit's duration pick which of two compilations the device runs better, ahead of the two-qubit count and ESP? Order-only pairs (item 83 on/off), c49 against c48 (choice by duration against choice by ESP) and c49 against Qiskit level 3; the rule fixed before the run decides whether c49's item 84 is proposed for release. With a quick check: a full linear swap network for the Barabasi-Albert QAOA loses to Qiskit level 3 and c49 in CZ and duration (2026-10-14)
+
+**Status: pre-registration, committed before any TIME1 job.** Times in CEST.
+
+**Kit.** [`data/2026-10-14/time1_kit/`](../../data/2026-10-14/time1_kit/).
+
+- The prestatement is
+  [`TIME1_preregistration.md`](../../data/2026-10-14/time1_kit/TIME1_preregistration.md), fixed 03:25:28 CEST, SHA-256
+  `b049826d...` (`PREREG_SHA256.txt`).
+- The script is `time1_real.py`, which reuses HW2's `hw2_real.py` (hash fixed in the script).
+- Run scripts:
+  - `61_time1_prep.sh` (VPN on): checks, c49's tests, rehearsal;
+  - `62_time1_run.sh` (VPN off): prepare, one job, fetch;
+  - `63_time1_record.sh` (VPN on): score and hashes.
+- All are fixed by `SHA256SUMS`.
+- The rehearsal on FakeFez (noiseless, as fixed) is in `rehearsal/`, with the manifest and the scores. The raw counts
+  and QPY file are left out because they can be regenerated.
+
+**Design** (in full in the prestatement):
+
+- **Device:** ibm_fez if operational. Otherwise the operational device with at least 127 qubits, other than
+  ibm_kingston and ibm_marrakesh, that has the fewest pending jobs.
+- **Job:** one job of 70 circuits, 6,000 shots per repeat, two repeats, dynamical decoupling and twirling off. The
+  rough estimate is at most 300 QPU s; HW2's rate suggests about 120 s.
+- **Pairs:**
+  - T1: TFIM chains n = 12, 16, 20 from a product state, 4 and 8 steps; c49's own pipeline with item 83 on and off.
+  - T2: HW2's seven tests, c49 against c48 (default calls).
+  - T3: the same seven, c49 against Qiskit level 3.
+  - Control: ghz_n12.
+- **F:** normalised linear XEB.
+
+| ID | prediction |
+|---|---|
+| TA | The shorter order wins on at least 5/6 of the T1 pairs. |
+| TB | Among pairs whose duration differs by at least 10%, the shorter circuit wins on at least 75%. |
+| TC | The rank correlation of 1 / duration with F is at least +0.5, and above those of 1 / two-qubit count and of ESP. |
+| TD | C49 >= 0.95 x QK3 on at least 6 of 7. |
+| TE | The control is within ±10%. |
+
+TA, TB and TC confirmed together mean that duration as the choice rule is confirmed, and c49 is proposed for release.
+Otherwise item 84 is re-examined.
+
+**Quick check recorded here (exploratory, before the workplace's tensor-network proposal was taken up).** HW2's
+Barabasi-Albert QAOA (3 repetitions) was built as a full odd-even swap network on a straight path of ibm_marrakesh's
+11:37 snapshot and compiled by Qiskit level 3 on that fixed layout:
+
+| test | swap network | QK3 | c49 |
+|---|---|---|---|
+| ba_n14 | 539 CZ, 24.7 us | 391 CZ, 18.4 us | 285 CZ, 15.1 us |
+| ba_n20 | 1,078 CZ, 38.1 us | 668 CZ, 32.6 us | 578 CZ, 25.6 us |
+
+The swap network is 1.2-1.7 times QK3's duration and 1.5-2.3 times c49's: a Barabasi-Albert graph is too sparse for a
+network that brings every pair together. The idea is dropped, and no placement by tensor-network contraction order
+is pursued before requests N1 and N2.
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
