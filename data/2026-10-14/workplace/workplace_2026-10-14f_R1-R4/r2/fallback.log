@@ -1,0 +1,9 @@
+tfim_n20_r3      FakeFez       c54 tol 1e-6                   dur 1.3199999999999992 exact 1.5448735068979147e-08 {}
+tfim_n20_r3      FakeFez       c54 tol 1e-9                   dur 27.62399999999988 exact 5.759281940243e-16 {'failed': 1, 'fallback_usual': 1}
+tfim_n20_r3      FakeFez       c54 tol 1e-9 + exact level 3   dur 1.451999999999999 exact 4.624772786954168e-14 {}
+tfim_n20_r3      FakeMarrakesh c54 tol 1e-6                   dur 1.3999999999999997 exact 1.5448788637240085e-08 {}
+tfim_n20_r3      FakeMarrakesh c54 tol 1e-9                   dur 28.16800000000011 exact 5.759281940243e-16 {'failed': 1, 'fallback_usual': 1}
+tfim_n20_r3      FakeMarrakesh c54 tol 1e-9 + exact level 3   dur 1.5399999999999996 exact 2.5757174171303632e-14 {}
+c48 _tfim(12,4)  FakeTorino    c54 tol 1e-6                   dur 1.8240000000000012 exact 6.097275214722586e-07 {}
+c48 _tfim(12,4)  FakeTorino    c54 tol 1e-9                   dur 23.783999999999946 exact 1.8457457784393227e-15 {'failed': 1, 'fallback_usual': 1}
+c48 _tfim(12,4)  FakeTorino    c54 tol 1e-9 + exact level 3   dur 23.783999999999946 exact 1.8457457784393227e-15 {'failed': 1, 'fallback_usual': 1}

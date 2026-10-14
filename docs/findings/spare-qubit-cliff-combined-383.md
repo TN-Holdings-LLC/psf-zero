@@ -9182,11 +9182,12 @@ been dry-checked on FakeFez before the prestatement, as it says.
 
 - Without fractional gates, C54 / C53 is 0.999. Everything else, including tfim_n20_r3 (0.839 on FakeMarrakesh), is
   in V8 of the report. Every family other than Ising and the embeddable tests is 1.000.
-- On FakeTorino item 91 ran (GRAPH_STATS counts it as used) for hhI_n16 and ring12_tfim, yet C54F's duration equals
-  C53F's. The cause was not examined.
+- On FakeTorino item 91 built an output (GRAPH_STATS counts built outputs as "used", not returned ones) for hhI_n16
+  and ring12_tfim, yet C54F's duration equals C53F's. The cause was not examined here (the workplace's R4, Addendum
+  486: c53's output was shorter and kept).
 - On the Heisenberg tree item 91 gives nothing. Each edge carries three terms (XX, YY, ZZ), emitted separately.
 - `GRAPH_STATS`: tried 255, used 70 (2 colours 40, 3 colours 30), not embeddable 45, degree over 3 55, failed check 0.
-- `EXACT93_STATS`: 208 checked and 208 passed, with 92 not checkable (over 20 active qubits). There was no fallback
+- `EXACT93_STATS`: 208 checked and 208 passed, with 92 not checkable (over 16 active qubits, item 93's limit RESYNTH_MAX_QUBITS; corrected in Addendum 486 from "over 20"). There was no fallback
   and nothing raised. The largest difference passed was 5.0e-14.
 
 **Rule fixed in advance:** V1, V2, V3, V5 and V6 are confirmed, so c54 becomes the base. V4 is refuted, so item 91 is
