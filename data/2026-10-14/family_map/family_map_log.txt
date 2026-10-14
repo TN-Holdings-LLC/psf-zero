@@ -1,0 +1,42 @@
+T tfim_n12         PSF    1.27 QK3    9.86 USER    1.75 (hand-layered, seed 0) LB 0.416 exact 4.579669976578771e-16
+F tfim_n12         PSF    0.47 QK3    3.71 USER    0.73 (hand-layered, seed 0) LB 0.208 exact 3.191891195797325e-16
+T tfimP_n16        PSF    1.30 QK3   13.73 USER    1.78 (hand-layered, seed 0) LB 0.76 exact 6.505213034913027e-17
+F tfimP_n16        PSF    0.49 QK3    5.08 USER    0.78 (hand-layered, seed 0) LB 0.38 exact 3.252606517456513e-17
+T tfim_n20_r3      PSF    1.32 QK3   27.77 USER    1.61 (hand-layered, seed 0) LB 0.76 exact 1.5448735068979147e-08
+F tfim_n20_r3      PSF    0.89 QK3   11.33 USER    1.24 (hand-layered, seed 0) LB 0.38 exact 3.234348413261312e-07
+T tfim_n40_r2      PSF    1.06 QK3   37.73 USER    1.08 (hand-layered, seed 0) LB 0.416 exact None
+F tfim_n40_r2      PSF    0.67 QK3   15.18 USER    0.82 (hand-layered, seed 0) LB 0.208 exact None
+T heis_n12_r2      PSF   16.57 QK3   16.69 USER   16.69 (as written, seed 0) LB 3.264 exact 5.447031714567174e-15
+F heis_n12_r2      PSF   14.44 QK3   18.56 USER   18.56 (as written, seed 0) LB 1.632 exact 1.0658141036401503e-14
+T heis2d_n16_r1    PSF   22.27 QK3   22.67 USER   19.69 (hand-layered, seed 2) LB 3.264 exact 1.5543122344752192e-15
+F heis2d_n16_r1    PSF   20.47 QK3   24.20 USER   20.96 (hand-layered, seed 2) LB 1.632 exact 1.609823385706477e-15
+T qaoa_n12_p2      PSF    5.98 QK3    8.00 USER    4.88 (hand-layered, seed 3) LB 1.032 exact 5.898059818321144e-17
+F qaoa_n12_p2      PSF    4.64 QK3    6.10 USER    3.89 (hand-layered, seed 1) LB 0.516 exact 9.8879238130678e-17
+T qaoa_n20_p2      PSF    6.31 QK3    7.60 USER    4.43 (hand-layered, seed 4) LB 1.032 exact None
+F qaoa_n20_p2      PSF    5.03 QK3    5.78 USER    3.56 (hand-layered, seed 4) LB 0.516 exact None
+T qaoa3reg_n20_r3  PSF   11.08 QK3   14.65 USER   11.70 (hand-layered, seed 1) LB 1.512 exact None
+F qaoa3reg_n20_r3  PSF    9.67 QK3   12.86 USER   10.22 (hand-layered, seed 1) LB 0.756 exact None
+T ba_n14           PSF   15.29 QK3   18.84 USER   16.81 (hand-layered, seed 4) LB 3.624 exact 1.5829351718288365e-17
+F ba_n14           PSF   12.66 QK3   15.61 USER   13.51 (hand-layered, seed 4) LB 1.812 exact 1.9949319973733282e-17
+T ba_n20           PSF   24.40 QK3   33.64 USER   30.53 (hand-layered, seed 1) LB 6.072 exact 3.0357660829594124e-18
+F ba_n20           PSF   21.56 QK3   30.08 USER   25.21 (hand-layered, seed 1) LB 3.036 exact 6.288372600415926e-18
+T clf_n4_L4        PSF    2.08 QK3    3.85 USER    2.98 (as written, seed 1) LB 0.904 exact 9.159339953157541e-16
+F clf_n4_L4        PSF    1.98 QK3    3.68 USER    2.88 (as written, seed 1) LB 0.724 exact 6.938893903907228e-16
+T clf_n4_L5        PSF    2.62 QK3    4.93 USER    3.82 (as written, seed 1) LB 1.112 exact 1.942890293094024e-15
+F clf_n4_L5        PSF    2.38 QK3    4.72 USER    3.70 (as written, seed 1) LB 0.896 exact 2.0816681711721685e-15
+T clf_n6_L8        PSF    6.83 QK3   14.74 USER   14.38 (as written, seed 3) LB 1.736 exact 1.2351231148954867e-15
+F clf_n6_L8        PSF    6.64 QK3   14.52 USER   14.11 (as written, seed 3) LB 1.412 exact 9.159339953157541e-16
+T clf_n6_L9        PSF    7.69 QK3   16.31 USER   16.31 (as written, seed 0) LB 1.944 exact 1.304512053934559e-15
+F clf_n6_L9        PSF    7.30 QK3   16.07 USER   16.07 (as written, seed 0) LB 1.584 exact 3.6637359812630166e-15
+| family | target | PSF / LB | PSF / QK3 | PSF / user's best | user's best / LB |
+|---|---|---|---|---|---|
+| Ising chain | T | 2.19 | 0.063 | 0.808 | 2.71 |
+| Ising chain | F | 2.17 | 0.081 | 0.699 | 3.10 |
+| Heisenberg chain / 2D | T | 5.89 | 0.988 | 1.060 | 5.55 |
+| Heisenberg chain / 2D | F | 10.53 | 0.811 | 0.871 | 12.09 |
+| 3-regular QAOA | T | 6.38 | 0.777 | 1.182 | 5.40 |
+| 3-regular QAOA | F | 10.39 | 0.793 | 1.169 | 8.89 |
+| Barabasi-Albert QAOA | T | 4.12 | 0.767 | 0.852 | 4.83 |
+| Barabasi-Albert QAOA | F | 7.04 | 0.763 | 0.895 | 7.87 |
+| classifier (ring) | T | 3.03 | 0.500 | 0.572 | 5.29 |
+| classifier (ring) | F | 3.54 | 0.487 | 0.554 | 6.39 |

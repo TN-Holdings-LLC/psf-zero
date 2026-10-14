@@ -9012,6 +9012,80 @@ frame was used 25 times.
   - Whether rzz holds up on the device is FRAC1's question, and whether the shorter circuit wins is TIME1's.
   - One a15 exactness lapse (1.4e-5) is open.
 
+
+---
+
+<!-- ===== Addendum 484 (source: addendum_484.md) ===== -->
+
+> **Note added when merging:** Exploratory family map (owner's question).
+
+## Addendum 484 -- Exploratory, not pre-registered: a map of where PSF-Zero stands, per circuit family, against a load lower bound and against the best a knowledgeable Qiskit user gets (Qiskit level 3, five seeds, the circuit as written or hand-layered by edge colouring). PSF-Zero (c53, a16) is ahead on classifier rings (0.55-0.57 x the user's best), Ising (0.70-0.81 x) and Barabasi-Albert QAOA (0.85-0.90 x); it is BEHIND on HW2's 3-regular QAOA (1.17-1.18 x: the user's edge-coloured layering with a seed search wins) and level on Heisenberg; the gap to the load bound is 2.2 x on Ising and 4-10 x elsewhere (2026-10-14)
+
+**Status: exploratory, after the owner's question "where can we win, and what is real".** Offline, on FakeFez
+without (T) and with (F) fractional gates. Script [`benchmarks/family_map.py`](../../benchmarks/family_map.py), data in
+[`data/2026-10-14/family_map/`](../../data/2026-10-14/family_map/). Times in CEST.
+
+**Three measures, kept apart.**
+
+1. Against Qiskit level 3's default call (the display number).
+2. Against the best a knowledgeable user gets with Qiskit. That is the minimum duration over five seeds (0-4), given
+   the circuit as written and, for Pauli-term programs, hand-layered: commuting ZZ terms between single-qubit
+   layers grouped by a greedy edge colouring into layers of disjoint pairs, written as rzz. Chains come out as
+   brickwork. This is whether PSF-Zero can do what a user cannot.
+3. On hardware, which is whether it is real. TIME1 and FRAC1 cover the Ising chains and HW2's seven tests tonight;
+   the rest needs further tests.
+
+**The load lower bound** is the busiest qubit's summed minimum time. Each two-qubit term costs 2 CZ on T (136 ns) or
+one rzz on F (68 ns); each X or Y rotation costs one sx pair on T (72 ns) or one rx on F (36 ns); Z rotations are
+free. It is computed after exact merging. A leading diagonal run on qubits still in |0> and a trailing diagonal run
+before a measurement of every qubit are not charged. No SWAP and no dependency are counted, so where routing is
+needed the bound cannot be reached. For the classifiers it is the circuit as written.
+
+**Result** (geometric means per family; c53's default call, a16 for the classifiers; every checked output exact):
+
+| family | target | PSF / bound | PSF / QK3 | PSF / user's best | user's best / bound |
+|---|---|---|---|---|---|
+| Ising (chains and rings) | T | 2.19 | 0.063 | **0.808** | 2.71 |
+| Ising (chains and rings) | F | 2.17 | 0.081 | **0.699** | 3.10 |
+| Heisenberg ring, 2D torus | T | 5.89 | 0.988 | 1.060 | 5.55 |
+| Heisenberg ring, 2D torus | F | 10.53 | 0.811 | 0.871 | 12.09 |
+| 3-regular QAOA | T | 6.38 | 0.777 | **1.182** | 5.40 |
+| 3-regular QAOA | F | 10.39 | 0.793 | **1.169** | 8.89 |
+| Barabasi-Albert QAOA | T | 4.12 | 0.767 | 0.852 | 4.83 |
+| Barabasi-Albert QAOA | F | 7.04 | 0.763 | 0.895 | 7.87 |
+| classifier (ring) | T | 3.03 | 0.500 | **0.572** | 5.29 |
+| classifier (ring) | F | 3.54 | 0.487 | **0.554** | 6.39 |
+
+**Per test, where the user wins.**
+
+| test | PSF (T, F) | user's best (T, F) |
+|---|---|---|
+| qaoa_n12_p2 | 5.98, 4.64 us | 4.88, 3.89 us |
+| qaoa_n20_p2 | 6.31, 5.03 us | 4.43, 3.56 us |
+| heis2d_n16_r1 (T) | 22.27 us | 19.69 us |
+
+All three of the user's best results came from the hand-layered form, with seed 3, 1, 4, 4 and 2 respectively.
+qaoa3reg_n20_r3 and the Barabasi-Albert circuits go to PSF-Zero.
+
+**Reading.**
+
+- **Win, and PSF-Zero's own: classifier rings.** The ring formula (N2, a16) has a structural reason (heavy-hex has
+  girth 12) that a user writing the circuit cannot easily reproduce: 0.55-0.57 x the user's best. Not yet run on
+  hardware.
+- **Win, moderate: Ising and Barabasi-Albert.**
+  - Ising: 0.70-0.81 x the user's best. The margin is the automatic brickwork, the dropped diagonal layers and rzz;
+    a user writing brickwork gets most of it.
+  - Barabasi-Albert: 0.85-0.90 x.
+- **Loss: HW2's 3-regular QAOA (n = 12, 20; p = 2).** A user who layers the cost terms by edge colouring and tries five
+  seeds beats PSF-Zero by 15-30%. STEINER6's construction is not the best form here. This is the most concrete
+  formula target the map shows: a construction for regular graphs, by edge colouring with a fixed routing rule.
+- **Largest gaps to the bound:** Heisenberg (6-10 x) and QAOA (5-10 x). Heisenberg has rings and a torus, so the
+  workplace's Q2 (ring Hamiltonians) applies.
+- **Not established:**
+  - The bound ignores routing, so a large gap may be unavoidable where a graph does not embed.
+  - The user's best includes a seed search that PSF-Zero does not do.
+  - All of this is offline. Column 3, the hardware, is open except tonight's TIME1 and FRAC1.
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
