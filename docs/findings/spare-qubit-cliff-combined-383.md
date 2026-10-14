@@ -8770,6 +8770,130 @@ this delivery).
 - P2: a16, the AI front end with N2's ring formula and rx.
 - P3: N3 at low priority.
 
+
+---
+
+<!-- ===== Addendum 482 (source: addendum_482.md) ===== -->
+
+> **Note added when merging:** Workplace records N3-N6; prototype c52 and C52-VAL.
+
+## Addendum 482 -- Workplace records N3-N6 and a fractional-gate estimate (2026-10-14): the classifiers' even / odd pattern is item 73's reader refusing a CZ ring left at the end; the remaining estimate-based defaults (items 33/60, 64, 78) change at most 3 of 32 outputs and never lengthen one by more than 0.3%; no pre-registered hardware compiler comparison found on a second search. Prototype c52 (item 89: a diagonal Clifford before the measurements dropped; item 90: those defaults off, item 75 scored by duration) and C52-VAL confirmed on every prediction: odd-layer classifiers at 0.64 x c49's duration (0.47 x with fractional gates), every other family 0.96-0.97 x with no estimate in the default call (2026-10-14)
+
+**Status:** workplace records committed unchanged; an offline validation fixed in a local prestatement before its run.
+Times in CEST.
+
+### 1. Workplace records (third delivery of 2026-10-14)
+
+The delivery is in
+[`data/2026-10-14/workplace/workplace_2026-10-14c_N3-N6_frac/`](../../data/2026-10-14/workplace/workplace_2026-10-14c_N3-N6_frac/),
+with an intake check of 13 of 13. It answers the first next-requests note.
+
+- **N3, the cause of the even / odd pattern.**
+  - At odd L one CZ ring is left at the end after item 73 carries the Cliffords through. It is entangling, so the
+    reader refuses (32 of 32 odd cells) and the circuit goes by the usual path. At even L the rings cancel and
+    STEINER6 applies.
+  - c48's step at n = 6, L = 10 was item 69's ESP choice ("kept_usual" up to L = 8). c49, choosing by duration,
+    takes STEINER6 from L = 2 (FakeFez n = 6, L = 8: 10.00 against 15.05 us).
+  - The workplace suggested dropping a diagonal Clifford left before the measurements. That is item 89 below.
+- **N4, structure-only placement (W5's variant B) against c49.** Equal or shorter only where an exact embedding
+  exists (up to 10% shorter on SCALE1's R2 at n = 96). Wherever routing is needed it loses (median 2.7 x on
+  C49-VAL). Not adopted.
+- **N5, each estimate-based default removed.** On C48-VAL's 16 tests, FakeFez and FakeTorino:
+
+| removed | outputs changed | duration |
+|---|---|---|
+| items 33/60 | 3 of 32 | never longer |
+| item 64 | 2 of 32 | the same |
+| item 78 | 2 of 32 | at most +0.3% |
+| item 75's score | 29 of 32 | 0.86-1.11 x, geometric mean 1.00 |
+
+  For item 75, the workplace suggested a duration score instead.
+- **N6.** A pre-registered compiler comparison on real hardware was still not found. The workplace scanned 52 works
+  citing Mills et al. 2021 and ran about 16 searches. Two near misses had a frozen protocol but no hardware; one of
+  them is this project's own TOQB work. Writing will say "to our knowledge".
+- **Fractional estimate** (`frac/`). Already recorded in Addendum 481.
+
+Home's reply is in [`home_requests/`](../../data/2026-10-14/workplace/home_requests/) (third note). P1 and P2 are
+unchanged; N3 is closed; items 89-90 are done at home.
+
+### 2. Prototype c52
+
+[`patches/psf_compile_c52_2026-10-14/`](../../patches/psf_compile_c52_2026-10-14/) is built from c51 by `make_c52.py`.
+
+- **Item 89.** When every qubit is measured at the end and each C^dagger Z_q C of the Clifford left at the end is a
+  single-qubit Pauli, the Clifford is L times a diagonal D. D cannot change the outcome distribution, so the reader
+  keeps L and drops D.
+  - The output reproduces the input's distribution, not its unitary.
+  - Without final measurements on every qubit, nothing changes.
+- **Item 90.** `MAP_FREE_DEFAULTS` turns off items 33/60, 64 (routing at level 1) and 78 by default.
+  `PLACE_SCORE = "duration"` makes item 75 score placements by the placed operations' durations instead of their
+  errors.
+- **Tests:** 73 passed. They are c51's, c49's and c48's tests with items 89-90 off where outputs are compared, and 10
+  new ones:
+  - odd-layer classifiers read, exact and shorter;
+  - refused without full measurement;
+  - the defaults;
+  - the usual path unchanged under rescaled errors;
+  - the switches restore c51;
+  - deterministic.
+
+### 3. C52-VAL
+
+Prestatement
+[`data/2026-10-14/c52_val/C52-VAL_preregistration.md`](../../data/2026-10-14/c52_val/C52-VAL_preregistration.md),
+fixed 04:16 CEST, SHA-256 `dbf98a90...`. Data in [`data/2026-10-14/c52_val/run/`](../../data/2026-10-14/c52_val/run/).
+
+**Scope.** C49-VAL's 18 tests plus six odd-layer classifiers (n = 4, 6; L = 3, 5, 9; seeds of their own), on 5
+devices.
+
+- Arms: QK3, C49 and C52 without fractional gates; C51F and C52F on the fractional Target.
+- Run 04:16-04:40 CEST in Claude's workspace.
+
+| ID | prediction | result |
+|---|---|---|
+| V1 | C52 and C52F exact, no refusal | **CONFIRMED** (194 checked) |
+| V2 | C52 <= 1.02 x C49 on >= 95% | **CONFIRMED**: 119/120 (FakeMarrakesh tfim_n40_r2 1.021) |
+| V3 | odd-layer classifiers: C52 / C49 geometric mean <= 0.85 | **CONFIRMED**: 0.644 (0.490-0.990) |
+| V4 | C52F <= 1.02 x C51F on >= 95% | **CONFIRMED**: 119/120 (the same cell, 1.055) |
+| V5 | same output on a second call | **CONFIRMED**: 20/20 |
+| V6 | C52F native, every rzz in range | **CONFIRMED**: 120/120 |
+| V7 | compile time | **CONFIRMED**: 120/120 |
+
+**Reported** (duration ratios):
+
+| family | C52 / C49 | C52F / C49 | C52 / QK3 |
+|---|---|---|---|
+| Ising | 0.958 | 0.451 | 0.086 |
+| Barabasi-Albert | 0.967 | 0.790 | 0.764 |
+| 3-regular QAOA | 0.970 | 0.804 | 0.761 |
+| other | 0.973 | 0.854 | - |
+| odd classifiers | 0.644 | 0.474 | 0.627 |
+
+`STEINER_STATS`: item 89 applied 65 times. `FRAC_STATS`: item 86's re-synthesis was tried 120 times and kept 0
+times; it is dead weight, as in C51-VAL.
+
+**Rule fixed in advance:** V1, V2, V3, V5 and V6 confirmed, so c52 is the base of the next prototypes, and the
+workplace's items 87-88 are merged onto it. Tonight's TIME1 and FRAC1 keep c49 and c51 as fixed.
+
+### 4. Reading
+
+- Turning the estimate-based defaults off did not cost duration anywhere. It shortened every family by 3-4% on
+  average, and the default call now reads no error value except to exclude failed elements. The exceptions are
+  STEINER6's error-distance construction and item 74's near-failed threshold, both left for later.
+- Item 89 is a formula, a Clifford split into a single-qubit part and a diagonal part, and it removes the classifier
+  parity: odd layers now go 0.49-0.99 x c49 (geometric mean 0.64).
+- **Not established:** all of this is offline. The hardware questions are TIME1 (does duration pick the winner?) and
+  FRAC1 (does rzz deliver?), tonight.
+
+**Two numbers.**
+
+- **Display:** odd-layer classifiers 0.47 x c49 with fractional gates, Ising 0.45 x, and an estimate-free default
+  call.
+- **Essential:**
+  - Offline, on durations from the Targets' gate lengths.
+  - For the classifiers the workplace's ring formula (N2, 0.69-0.87 x the best other method at L = 16) is still
+    ahead of what the reader-based path gives; a16 (P2) is where that goes.
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
