@@ -14,14 +14,13 @@ PSF-Zero is a Qiskit-compatible compiler with two layers.
   closed-form Cartan (KAK) decomposition in a small Rust core. It is deterministic (the same circuit for the same
   input, with no seed) and several times faster than Qiskit's `optimization_level=3` on circuits made of two-qubit
   blocks.
-- **`compile_for_hardware()`: compilation for a device.** It adds layout search, routing, and, given the device's
-  `Target`, error-aware placement and a choice among candidate circuits by a noise estimate. Up to 16 logical
-  qubits this recommended call is slower than Qiskit level 3, and in exchange gave lower simulated infidelity than
-  level 3 on every fake device tested (circuits of 4-10 qubits). Above 16 it returns the default call's circuit with
-  the error-aware placement, without building level 3 (since 2026-10-06.4). Its choice among candidates is only as
-  good as the calibration it reads: with one off by tens of per cent it stayed level with level 3, and its lead
-  over the simpler target-aware call on FakeAuckland ranged from a small loss to a small gain, depending on the data
-  (CALSPLIT and MARGIN, Addenda 403 and 406).
+- **`compile_for_hardware()`: compilation for a device.** Since 2026-10-14.1, given the device's `Target`, it
+  builds by formula every circuit whose two-qubit interaction graph embeds in the device: chains, lattices and
+  embeddable graphs, in a time-aware order, with IBM's native rzz where offered. It hands every other circuit to
+  Qiskit's level 3 unchanged. Every output it can check is checked exact. On the circuits it builds, its outputs are
+  0.20-0.23 times Qiskit level 3's duration on average (geometric mean, offline), and the time-aware order raised the fidelity on real devices
+  8 of 8 times. See [Scope](#scope-where-psf-zero-competes-declared-2026-10-14). The earlier error-aware placement
+  and noise-estimated choice, described in the release notes up to 2026-10-11.4, are not what decides any more.
 - **General circuits: about level with Qiskit level 2, and slower.** On all 880 Benchpress transpilation tests that
   no earlier test of this project had used (BP-FINAL, pre-registered, Addenda 407-408), the default call of
   2026-10-07.1 used 1.046 times Qiskit level 2's two-qubit gates (geometric mean, 95% interval 1.037-1.055; fewer on
@@ -54,8 +53,8 @@ compiled pair run on a real device between 2026-10-12 and 2026-10-14: 54 pairs, 
 - chains, rings and lattices that embed in the device;
 - the device's native fractional gates (rzz, rx).
 
-**Every other circuit is to be handed to Qiskit's level 3 unchanged**, so that PSF-Zero is no worse than Qiskit there.
-That hand-off is being built and is not in the current release yet.
+**Every other circuit is handed to Qiskit's level 3 unchanged**, so that PSF-Zero is no worse than Qiskit there.
+Since release 2026-10-14.1 this is the default (item 96; C57-VAL, Addendum 491).
 
 The other families are open to anyone who wants to work on them. Our losing data are published for that purpose:
 the family map (Addendum 484), TIME1 (Addendum 487) and the pooled pairs (Addendum 488).
@@ -64,16 +63,45 @@ What these numbers are not:
 
 - Many pairs repeat the same tests on different devices, so they are not independent trials.
 - Rings are built by formula but have not run on a device yet.
-- None of the prototypes behind the 2026-10-14 tests (c49-c55) is released.
+- The release 2026-10-14.1 (prototype c57) has not run on a device as a whole. Its order (item 83) and rzz have.
 
 ## Current version
 
-**`psf_compile.py` 2026-10-11.4** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 (its matching
-checks now in rustworkx, the same results) and the Rust core `CORE_VERSION` 2026-09-29.1, and optionally
-`psf_zero_core57` 2026-10-10.c30 (Part 10, Addenda 383-453). Every release and dated notice:
-[`docs/RELEASES.md`](docs/RELEASES.md).
+**`psf_compile.py` 2026-10-14.1** and the AI front end **a18**, with `psf_smart_layout` 2026-10-01.1 and the Rust
+core `CORE_VERSION` 2026-09-29.1, and optionally `psf_zero_core57` 2026-10-10.c30 (Part 10, Addenda 383-492). Every
+release and dated notice: [`docs/RELEASES.md`](docs/RELEASES.md).
 
-> **New in 2026-10-11.4: the same input gives the same output, and circuits the earlier releases refused
+> **New in 2026-10-14.1: PSF-Zero builds what it can build by formula, and hands everything else to Qiskit.** The
+> release is prototype c57 (C57-VAL, every prediction confirmed; Addenda 490-491) and the AI front end a18
+> (Addendum 489). See [Scope](#scope-where-psf-zero-competes-declared-2026-10-14) for why.
+>
+> - **The scope gate (item 96).** Given the device (`backend=` or `target=`), a circuit whose two-qubit interaction
+>   graph embeds in the device's working couplers is compiled by PSF-Zero. Every other circuit is handed to Qiskit's
+>   level 3 unchanged, with seed 0 by default; on a Target with IBM's fractional gates its rzz angles are folded into
+>   the executable range, as IBM's backend would do. Without the device, nothing changes.
+> - **Built by formula, inside the scope:**
+>   - the time-aware order of the same gates (item 83), which raised the fidelity on real devices 8 of 8 times;
+>   - chains, lattices and embeddable graphs as brickwork or by edge colouring (items 87, 91);
+>   - IBM's native rzz / rx with signs in a Pauli frame (item 88; item 86's fractional re-synthesis stays off by
+>     default);
+>   - a diagonal Clifford before the final measurements dropped (item 89);
+>   - failed qubits cut out first (item 85).
+> - **Every output checked exact** where it can be (items 93, 95: outcome distribution within 1e-6 up to 20 active
+>   qubits). An inexact one is never returned silently.
+> - **The AI front end a18:** ring classifiers built by formula (a16-a17), with no search (item 32); everything else
+>   handed on (item 33). On 64 classifier cells it is 0.54 x Qiskit level 3's duration, shorter on 64 of 64.
+> - **C57-VAL** (28 tests, 5 devices, offline):
+>   - in scope, 0.20-0.23 x Qiskit level 3's duration;
+>   - out of scope, Qiskit's own output (folded where IBM requires it);
+>   - every output native, exact and on no failed element.
+> - **What it costs:** out of scope, the outputs are 37-49% longer than the previous prototypes' own choices offline.
+>   That is on purpose: those choices lost on real devices (Addenda 487-488).
+> - **Not established:** a real-device test of this release as a whole. The order (item 83) and rzz have run on
+>   devices; the ring classifiers have not. 2026-10-11.4 is kept in
+>   [`patches/psf_compile_release_2026-10-11.4/`](patches/psf_compile_release_2026-10-11.4/), and a12 as
+>   `benchmarks/psf_ai_compile_a12.py`.
+
+> **In 2026-10-11.4: the same input gives the same output, and circuits the earlier releases refused
 > compile.** Items 74-76 (prototype c43), accepted in C43-VAL on circuits not used before (Part 10, Addenda 452-453):
 >
 > - **What changes.** Qiskit's VF2PostLayout, which returned a different layout from call to call with a fixed seed,

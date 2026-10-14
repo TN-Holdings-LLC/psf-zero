@@ -9,8 +9,12 @@ from this folder. The full record behind each entry is in Parts 9 and 10 of the 
 the earlier parts they link to. The README itself, as it was before the move, is kept as
 [`README_2026-10-05_before_restructure.md`](README_2026-10-05_before_restructure.md).
 
-> **In brief (as of 2026-10-10)**
+> **In brief (as of 2026-10-14)**
 >
+> 0. Release 2026-10-14.1 (prototype c57, C57-VAL, Addendum 491; AI front end a18, Addendum 489): PSF-Zero builds by
+>    formula every circuit whose two-qubit interaction graph embeds in the device, and hands every other circuit to
+>    Qiskit's level 3 unchanged (item 96), after real-device tests showed its gains there and its losses elsewhere
+>    (Addenda 487-488). Points 1-6 below describe the earlier releases and are kept as they were written.
 > 1. Release 2026-10-11.4: the same input gives the same output (Qiskit's VF2PostLayout replaced), and circuits the
 >    earlier releases refused compile (items 74-76; C43-VAL, Addendum 452: ESP 1.10 times 2026-10-11.3's, 1.18 times
 >    Qiskit level 3's). Release 2026-10-11.3: given the device, every input that reads as Pauli rotations (evolutions, QAOA, circuits
@@ -32,9 +36,48 @@ the earlier parts they link to. The README itself, as it was before the move, is
 > 4. With a fresh calibration the recommended call keeps a small lead over the guarded call; with a stale one the lead
 >    depends on the data (CALSPLIT, MARGIN; Addenda 402-406).
 > 5. Candidate c24 (item 51, a 5% switching margin) was tested and is not recommended (Addendum 406).
-> 6. The device layer has been tested only in noisy simulation on fake devices, not on hardware.
+> 6. The device layer has been tested only in noisy simulation on fake devices, not on hardware. (Since 2026-10-12 it
+>    has run on three real devices: HW1, HW2, TIME1, FRAC1; Addenda 455-488.)
 
-> **Current version (2026-10-11, fourth release): `psf_compile.py` 2026-10-11.4 and the AI front end a12, with
+> **Current version (2026-10-14, first release): `psf_compile.py` 2026-10-14.1 and the AI front end a18, with
+> `psf_smart_layout` 2026-10-01.1, the Rust core `CORE_VERSION` 2026-09-29.1 and the optional `psf_zero_core57`
+> 2026-10-10.c30 (all unchanged)** ([Part 10](findings/spare-qubit-cliff-combined-383.md), Addenda 454-492). The
+> compiler is prototype c57 ([`patches/psf_compile_c57_2026-10-14/`](../patches/psf_compile_c57_2026-10-14/)) with its
+> version lines changed; the AI front end is a18
+> ([`patches/psf_ai_compile_a18_2026-10-14/`](../patches/psf_ai_compile_a18_2026-10-14/)) with one loader path set for
+> `benchmarks/`. 2026-10-11.4 is kept as
+> [`patches/psf_compile_release_2026-10-11.4/`](../patches/psf_compile_release_2026-10-11.4/), and a12 as
+> `benchmarks/psf_ai_compile_a12.py`.
+>
+> - **Why.** Four pre-registered real-device tests (HW1, HW2, TIME1, FRAC1) on three devices, pooled after the fact
+>   (Addendum 488):
+>   - where PSF-Zero builds the circuit by formula (Ising chains), it won 19 of 23 pairs (F 1.21 x);
+>   - elsewhere its compiler choices alone won 9 of 25 (F 0.78 x).
+>
+>   TIME1 refuted choosing by duration across placements (Addendum 487). The owner declared the scope on 2026-10-14.
+> - **Item 96, the scope gate.** Given the device, a circuit whose two-qubit interaction graph embeds in the device's
+>   working couplers is compiled by PSF-Zero; every other one is handed to Qiskit's level 3 unchanged. The seed is 0
+>   by default. With IBM's fractional gates in the Target, rzz angles are folded into the executable range (c57, after
+>   C56-VAL refuted c56's V6; Addenda 490-491).
+> - **Since 2026-10-11.4, inside the scope:**
+>   - item 83: the time-aware order, F 1.17-1.51 x on real devices, 8 of 8;
+>   - items 87, 88, 91: chains and embeddable graphs by formula, IBM's rzz / rx in a Pauli frame;
+>   - item 89: a diagonal Clifford before measurement dropped;
+>   - item 85: failed qubits cut first;
+>   - items 93, 95: every output checked exact up to 20 active qubits;
+>   - items 84 and 90: choices by duration and no estimate-based defaults. Inside the scope only, since they lost
+>     outside it on TIME1;
+>   - item 86 revised: fractional re-synthesis, off by default, as FRAC1's rule left it;
+>   - item 94: dropped.
+> - **The AI front end a18:** ring classifiers built by formula; no search (item 32); everything else handed on (item
+>   33). 0.54 x Qiskit level 3 on 64 classifier cells.
+> - **C57-VAL** (offline; 28 tests, 5 devices; every prediction confirmed):
+>   - in scope, 0.20-0.23 x Qiskit level 3's duration;
+>   - out of scope, Qiskit's own output, folded where IBM requires it;
+>   - every output native, exact and on no failed element.
+> - **Not established:** this release as a whole on a real device. The ring classifiers have not run on one.
+
+> **Previous release (2026-10-11, fourth release): `psf_compile.py` 2026-10-11.4 and the AI front end a12, with
 > `psf_smart_layout` 2026-10-01.1, the Rust core `CORE_VERSION` 2026-09-29.1 and the optional `psf_zero_core57`
 > 2026-10-10.c30 (all unchanged)** ([Part 10](findings/spare-qubit-cliff-combined-383.md), Addenda 452-453). The
 > file is prototype c43 ([`patches/psf_compile_c43_2026-10-11/`](../patches/psf_compile_c43_2026-10-11/)) with its
@@ -54,7 +97,7 @@ the earlier parts they link to. The README itself, as it was before the move, is
 >   - worse on the largest random circuit (48 qubits) on three devices (0.48-0.90).
 > - **Not established:** hardware.
 
-> **Previous release (2026-10-11, third release): `psf_compile.py` 2026-10-11.3 and the AI front end a12, with
+> **Earlier release (2026-10-11, third release): `psf_compile.py` 2026-10-11.3 and the AI front end a12, with
 > `psf_smart_layout` 2026-10-01.1, the Rust core `CORE_VERSION` 2026-09-29.1 and the optional `psf_zero_core57`
 > 2026-10-10.c30 (all unchanged)** ([Part 10](findings/spare-qubit-cliff-combined-383.md), Addenda 447-451). The
 > file is prototype c41 ([`patches/psf_compile_c41_2026-10-11/`](../patches/psf_compile_c41_2026-10-11/)) with its

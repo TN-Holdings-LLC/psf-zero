@@ -24,9 +24,9 @@ for p in (HERE, REPO):
 def mods():
     import core_fix_c2_eval as H
     H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psf_smart_layout")
-    rel = H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile")
+    rel = H.load_module(os.path.join(REPO, "patches", "psf_compile_release_2026-10-11.4", "psf_compile.py"), "psf_compile")  # frozen with a12 since 2026-10-14
     a11 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile_a11.py"), "psf_ai_compile_a11_frozen_a12_test")
-    a12 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile.py"), "psf_ai_compile")
+    a12 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile_a12.py"), "psf_ai_compile")  # a12 frozen since 2026-10-14
     return dict(rel=rel, a11=a11, a12=a12)
 
 
@@ -83,7 +83,7 @@ def test_versions(mods):
 
 
 def test_adopted_file_is_the_candidate():
-    assert code(os.path.join(REPO, "benchmarks", "psf_ai_compile.py")) == \
+    assert code(os.path.join(REPO, "benchmarks", "psf_ai_compile_a12.py")) == \
         code(os.path.join(REPO, "patches", "psf_ai_compile_a12_2026-10-06", "psf_ai_compile.py"))
 
 

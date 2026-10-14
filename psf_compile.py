@@ -1,6 +1,6 @@
 """PSF-Zero -- the compiler. **This file is the latest version of it.**
 
-VERSION: 2026-10-11.4 -- release, adopted on 2026-10-11 from prototype 2026-10-11.c43, accepted in C43-VAL (Addendum 452) (previous release: 2026-10-11.3)
+VERSION: 2026-10-14.1 -- release, adopted on 2026-10-14 from prototype 2026-10-14.c57, accepted in C57-VAL (Addendum 491) (previous release: 2026-10-11.4; items 75 revised, 77-80, 82-91, 93, 95-96 since)
 
 Where to look for what
 ----------------------
@@ -960,6 +960,241 @@ adopted on 2026-10-06 after their pre-registered evaluations RECR and KRAUS, Add
 76. **ACCURACY: permutations left at the end (prototype c43).** Item 73 required the Clifford gates left at the end to
     act on each qubit alone. They may now also permute the qubits (as QFT's final swaps do): the permutation costs no
     gate, it is carried into the measurements and the output's final layout. Counts in `STEINER_STATS` ("permuted").
+    **Item 75 revised in prototype c44:** the search runs three times, each up to the trial limit: in c43's index order;
+    with the device's qubits ordered by their own error (sx and readout plus the mean of their couplers', best first)
+    and the circuit's by two-qubit gate count (busiest first); and in rustworkx's own VF2 order (`id_order=False`). The
+    lowest score of all is applied if below the current placement's. Each order finds placements the others miss. C43-VAL: with the index order alone, 2500
+    trials missed the placements Qiskit's pass found on a 48-qubit random circuit (0.48-0.90 of the release's ESP).
+77. **REPRODUCIBILITY: no time budget in the layout search (prototype c44).** `layout_search_time_budget_s` now defaults
+    to None: the layout search stops by its call limits only (`layout_search_call_limit` per ordering,
+    `layout_search_fallback_call_limit` for VF2's heuristic), so its result no longer depends on the machine's speed. A
+    number restores the time budget. Measured before the change: of 154 compiles, one (dtc_100 on FakeTorino) reached
+    the 2 s budget, without a layout either way (5.4 s without the budget). The packing search for paired and 3-qubit
+    path interactions (psf_smart_layout) keeps its own short time limit; it did not bind in those 154 compiles.
+78. **ACCURACY: item 75's re-placement at Qiskit's routing stage, for item 80 (prototype c45).** Qiskit's preset pass
+    managers re-place the routed circuit right after routing, before it is translated to the device's gates
+    (`strict_direction=False`). Item 75 gave up there whenever the circuit had a gate the device does not run natively
+    (swap, cx on a cz device, h, ...), that is, on almost every circuit. In item 80's level-3 compile
+    (`_DeterministicVF2(target, routing_stage=True)`) such gates are now scored by what they translate to: every
+    two-qubit gate as 1-3 native two-qubit gates on its coupler (swap 3, gates locally equivalent to cx 1, others 2:
+    `_NATIVE2_COUNT`), every single-qubit gate but measure as 0-2 sx gates on its qubit (`_SX_COUNT`); an element of
+    error >= `DET_FAILED_ERROR` (0.5) is never placed on, nor is any qubit with an operation placed on a qubit whose
+    sx, x or readout error is (a qubit with only rz and measure there gets sx gates later; found on FakeBoston, qubit
+    146). Qiskit's preset asks for up to 250,000 trials (30 million VF2 calls); scored in Python that took 38 s on a
+    100-qubit Bernstein-Vazirani circuit, so each search order is capped at `DET_TRIALS_CAP` = 25,000 trials and
+    `DET_CALL_CAP` = 3,000,000 calls (on five circuits: the same ESP as 250,000 trials, 4.8 s against 38 s on that
+    circuit; 2,500 trials lost 22% there).
+    Diagnosis: on gen_random_n48 and FakeBoston, Qiskit level 3's ESP is 0.029 with its own pass, 5.5e-8 without it,
+    and 0.029 with this one. **PSF-Zero's own pipeline keeps c44's behaviour** (the routing-stage call is skipped as
+    before): tried there, it did not help (ESP 0.996 times c44's on 118 runnable tests of C44-VAL, development data)
+    and lost 45% on one (Bernstein-Vazirani n = 100, FakeTorino): the proxy's best placement before translation
+    narrowed item 33's later search.
+79. **FIX: the basis gates from a Target given alone (prototype c45).** `basis_gates` was taken from the Target only
+    when `backend=` was given; with `target=` alone the output was routed but not translated (swap, h, cp, ... left in
+    it: not runnable on the device). It is now taken from the Target in both cases.
+80. **ACCURACY: Qiskit level 3 as a candidate, by ESP (prototype c45).** With the device (`backend=` or `target=`, and
+    no `coupling_map` or `initial_layout` of the caller's: `level3_candidate="auto"`), the input is also compiled by
+    Qiskit's level-3 preset on the device's Target, under item 75's deterministic re-placement, and that circuit is
+    returned when its summed -ln(1 - error) on the device is lower than PSF-Zero's (a tie keeps PSF-Zero's). It is
+    refused if it uses a failed element, or, where item 39's check can be made (at most `RESYNTH_MAX_QUBITS` qubits, no
+    measurement), if it does not implement the input; above that size Qiskit's circuit is not checked (counted as
+    "unverified" in `L3C_STATS`). `level3_candidate=False` turns it off. This is a stopgap, not a method: where it is
+    chosen, PSF-Zero's own pipeline lost to Qiskit's on this device, mostly by an error-blind layout (item 78's
+    diagnosis). Item 36's opt-in `compare_level3` (by `excitation_cost`, small circuits) is unchanged.
+82. **ACCURACY: repeated layers of commuting terms, mirrored (prototype c47).** QAOA's cost layers, and the Trotter steps
+    of a Hamiltonian whose multi-qubit terms commute (an Ising model in a transverse field, for example), repeat one
+    set of commuting terms p times, with single-qubit terms between. STEINER6 scheduled all the terms at once, and its
+    later layers cost more than the first: on qaoa_barabasi_albert_N40 (three layers, FakeFez) 128, 134 and 193
+    SWAPs, as the placement drifted. When the terms are p >= 2 such layers -- the k-th occurrence of every label in
+    layer k, every label p times, the first layer's multi-qubit terms commuting, and the order C_1 L_1 C_2 L_2 ...
+    keeping every anticommuting pair in its original order (so the reordering is exact) -- `_StMirror` schedules C_1
+    once with STEINER6's mover, from its own initial placement, and replays its events (terms and SWAPs) forwards in
+    odd layers and backwards in even ones: every layer costs what the first does, and every second one ends where the
+    first began. The single-qubit terms run where their qubits are. Both circuits are built and the one with the lower
+    summed -ln(1 - error) on the device is kept (STEINER6's own on a tie). Counts in `STEINER_STATS` ("mirror_tried",
+    "mirror_kept").
+83. **DURATION: STEINER6's blocks in a time-aware order (prototype c48).** STEINER6's mover emits one block per term (a
+    Steiner-tree gadget, exactly exp(-i t c P) on its terminals and the identity on its Steiner qubits) and one per
+    SWAP, and its emission order fixed the schedule: terms that commute but share qubits ran one after another in the
+    order given (in a transverse-field Ising Trotter circuit, a staircase over the chain). On the real device
+    (Addendum 455) the measure that ranked PSF-Zero against Qiskit was the duration, not the gate count. The mover now
+    records its blocks (a SWAP that joins the last gadget on its pair stays fused to it) and `_st_reorder` re-emits
+    them by list scheduling: a block is ready once every earlier block that shares a qubit with it and does not commute
+    with it as a unitary has been emitted, and the ready block that can start earliest goes next (ties: the longer
+    chain of dependent work after it). Every non-commuting pair keeps its order, so the action is unchanged, and so are
+    the gates. The new order is kept when its as-soon-as-possible schedule, in CX units (CX 1, SWAP 3, rz 0, other
+    single-qubit gates 0.3), is shorter. `ST_SCHEDULE = False` turns it off. Counts in `STEINER_STATS` ("reordered",
+    "reorder_kept_order").
+84. **DURATION: choices between compiled circuits by duration, not by the device's error table (prototype c49).**
+    On two IBM devices (Addenda 455, 461) the summed -ln(1 - error) of a circuit's operations (ESP) did not pick the
+    circuit the device ran better, and the same estimate ranked differently from one device and day to the next; the
+    as-soon-as-possible duration picked the winner on 7 of 7 of HW2's pairs (after the fact). Every place where c48
+    kept one of two compiled circuits by ESP now keeps the shorter one (`_better`): item 69 (STEINER6 against the
+    usual path), item 74 (the near-failed alternative), item 80 (Qiskit level 3 as a candidate), item 82 (the
+    mirrored layers) and STEINER6's choice among its constructions (by its own schedule in CX units after item 83's
+    order, then its CX count, in place of its error-weighted estimate). Duration is the makespan on the gate
+    durations the Target reports (rz 0 when not reported); when a duration is missing, both circuits are measured in
+    item 83's CX units. Equal durations (within 1e-12 s): fewer two-qubit gates; a full tie keeps the circuit c48
+    would have kept on a tie. A circuit with an operation the device does not offer, or reported at error >= 1, still
+    loses. Error values still shape the candidates themselves (placement by errors, items 60 and 75; STEINER6's
+    error-distance construction; Qiskit level 3's own passes); they no longer decide between them. `SELECT_BY = "esp"`
+    restores c48. Counts in `SELECT_STATS`.
+85. **SAFETY: the device's failed qubits are cut out before compiling (prototype c49).** Item 61 compiled on a
+    coupling map without the failed couplers, but kept every qubit, failed ones included, as isolated points: a
+    qubit of the circuit with no two-qubit gate could then be placed on a failed qubit, and item 58 refused the
+    output (SCALE1, Addendum 475: 144-qubit circuits on ibm_marrakesh). With the device given (`backend=` or
+    `target=`) and no `coupling_map`, `initial_layout` or layout error tables of the caller's, a Target without the
+    failed qubits (sx or readout error >= `prune_max_error`, item 58's rule) is built (`_working_target`), the
+    circuit is compiled on it, and the output is written back on the device's own qubit indices with its layout
+    (`_embed_working`); the cut qubits carry ancillas that nothing touches. When fewer working qubits remain than the
+    circuit has, "raise" raises `FailedElementsError` and "keep" compiles as c48 did. A device without failed qubits
+    is compiled exactly as by c48. `CUT_FAILED_QUBITS = False` restores c48. Counts in `CUT_STATS`.
+86. **DURATION: the device's native fractional gates (prototype c50).** IBM's Heron devices offer rzz(theta), a ZZ
+    rotation in one two-qubit pulse of a CZ's length (68 ns on ibm_marrakesh, 2026-10-13), and rx(theta) in one
+    single-qubit pulse (36 ns), when the backend is loaded with `use_fractional_gates=True`. A ZZ rotation built from
+    CZ gates takes two CZ and the single-qubit gates between them. When the Target offers rzz (`FRACTIONAL = "auto"`),
+    the finished circuit is re-synthesised on its own physical qubits and layout: two-qubit blocks consolidated and
+    re-synthesised (Qiskit's ConsolidateBlocks and UnitarySynthesis on a copy of the Target with every error removed,
+    so no reported error chooses), single-qubit runs merged, rzz angles folded into the executable range
+    0 < theta <= pi/2 (qiskit-ibm-runtime's FoldRzzAngle). The result is kept when it is shorter (item 84) and, where
+    item 39's check can be made (at most RESYNTH_MAX_QUBITS touched qubits), acts as the circuit before it; above that
+    size it is kept unverified (counted), as item 80 keeps Qiskit's circuit. The re-synthesis runs once, on the
+    outermost call (`compile_for_hardware` wraps c49's function, now `_compile_for_hardware_c49`). Without rzz in the
+    Target, the output is c49's. Counts in `FRAC_STATS`.
+    **Revised in prototype c51:** C50-VAL (Addendum 480) found rzz angles outside 0 < theta <= pi/2 in 69 of 90 of
+    c50's outputs: Qiskit's own stages inside the compiler (routing, item 80's level-3 candidate, translation) emit
+    rzz with any angle when the Target offers it; only a qiskit-ibm-runtime backend object folds them by itself.
+    Every circuit returned on a Target with rzz is now folded (`_fold`) and checked; the re-synthesis is compared with
+    the folded circuit. `FRACTIONAL = False` turns off the re-synthesis only; the folding stays, since an unfolded
+    rzz does not run.
+87. **DURATION: a chain Hamiltonian built by formula as a brickwork (workplace proposal N1, on c51).** W2
+    (2026-10-14) found that Qiskit level 3 given a hand-written brickwork circuit equals PSF-Zero on TFIM chains up to
+    n = 50, and beats it at n = 100 (item 70's size limit sent 10 Trotter steps to the usual path: 82 times longer; on
+    FakeMarrakesh STEINER6's placement around the failed couplers was not a clean path: 2.9-4.1 times longer). With the
+    device given (`steiner` "auto" true) and its two-qubit gate cz, an input whose terms (read by items 72-73, merged
+    where exact) act on one or two qubits, the two-qubit ones forming one path through all the circuit's qubits, is
+    compiled without STEINER6 and without item 70's limit: W5's cut (failed qubits and couplers removed, largest
+    connected component kept); the chain on the longest surviving piece of Heron's snake, centred, or else on the
+    first path rustworkx's VF2 finds with nodes in index order (no score) -- both tried first on the couplers of the
+    device's most common two-qubit gate length (gate lengths are fixed per device), then on all couplers; every term
+    at level 1 + the largest level of an earlier term that shares a qubit and does not commute with it, emitted by
+    level, even edges of the chain, then odd edges, then single-qubit terms (exact: every non-commuting pair keeps its
+    order); Qiskit's level-3 preset translates on that fixed layout with no routing, given the coupling map and basis
+    only. On W2's 48 cells (c49 + N1): CZ at or below the hand-written brickwork's in 48, duration in 46 (0.80-1.02 of
+    it); the two exceptions are FakeMarrakesh n = 100 (8 and 10 steps, +0.2% and +1.6%), where every 100-qubit path
+    uses 80 ns couplers (accepted by home: the path is not chosen by duration). The brickwork is compared with c51's
+    own output for the same call (c49, then item 86) by item 84's rule and returned unless c51's is shorter (a tie
+    keeps the brickwork). The comparison is made in the outermost wrapper (`compile_for_hardware`, which wraps c51's
+    `_compile_for_hardware_c51`); nested calls go straight to c51. Any other input, or a chain with no path of n
+    qubits, goes on as by c51. `CHAIN_BRICKWORK = False` restores c51. Counts in `CHAIN_STATS`.
+88. **DURATION: item 87's terms as the device's rzz / rx, the signs in a Pauli frame (workplace proposal, on
+    c51).** With rzz and rx in the Target (`CHAIN_FRAME`), item 87 emits each two-qubit term as one rzz between
+    single-qubit basis changes and each X term as rx, drops diagonal gates directly before measurements, and makes
+    every rzz angle executable (0 < theta <= pi/2) without a second rzz: angles reduced to (-pi, pi], those of size
+    above pi/2 moved by pi with Z x Z (two virtual rz(pi)), and a negative angle made positive by one x before the rzz
+    (merged into the single-qubit run before it) while the x after it is kept in a Pauli X frame (single-qubit gates
+    conjugated, later rzz signs flipped). The frame is undone inside the circuit, by one x before the measurement or
+    at the end of an unmeasured qubit, merged into the last single-qubit gate where there is one: the circuit outputs
+    the input's distribution, and acts as its unitary when not measured; no measured bit is flipped afterwards. Every
+    single-qubit run is merged into rz rx rz (one pulse). An angle left outside the range (none seen) goes through
+    item 86's `_fold`. Without rzz or rx in the Target, item 87's output is the CZ brickwork (N1). `CHAIN_FRAME =
+    False` gives the CZ brickwork on every Target.
+    **In prototype c53 (home's merge onto c52, Addendum 483):** "c51's own output" in items 87-88 is c52's
+    (`_compile_for_hardware_c51` wraps c52's body, items 89-90 included); the code is the workplace's, unchanged.
+89. **DURATION: a diagonal Clifford left before the measurements is dropped (prototype c52).** Item 73 reads a
+    circuit written as gates by carrying its Clifford gates to the end; it applied only when the Clifford left at the
+    end acts on each qubit alone (or permutes them, item 76). A layered classifier with an odd number of CZ rings
+    leaves one ring there and was not read (workplace N3, Addendum 482: 32 of 32 odd cells), so it went by the usual
+    path. When every qubit is measured at the end, only the images of the Z operators matter: if each C^dagger Z_q C
+    is a single-qubit Pauli, the Clifford is a single-qubit Clifford L times a diagonal Clifford D (C L^dagger
+    commutes with every Z), and D before measurements leaves every outcome probability unchanged. The reader then
+    keeps L and drops D. The output reproduces the input's outcome distribution, not its unitary; it applies only
+    when every qubit is measured at the end. `DROP_DIAGONAL_BEFORE_MEASURE = False` restores c51. Counts in
+    `STEINER_STATS` ("diag_dropped").
+90. **NO ESTIMATE AS JUDGE: estimate-based defaults off; item 75 scored by duration (prototype c52).** The
+    workplace's ablation (N5, Addendum 482) removed each remaining estimate-based part of c49's default call on
+    C48-VAL's 16 tests (FakeFez, FakeTorino): items 33/60 (re-placement by the Target's errors) changed 3 of 32
+    outputs and never lengthened one; item 64 (routing at level 3) 2 of 32, equal CZ and duration; item 78
+    (re-placement at Qiskit's routing stage) 2 of 32, at most +0.3%. With `MAP_FREE_DEFAULTS = True` (default):
+    `placement_refine="auto"` is off, `routing_optimization_level="auto"` is 1, and item 80's level-3 candidate runs
+    without item 78's routing-stage re-placement. Item 75's re-placement (in Qiskit's passes built here, item 33 when
+    asked for, item 68's relabel) scores placements by the summed duration of the placed operations on the Target
+    (`PLACE_SCORE = "duration"`); on a device whose gates all have one length per type every placement ties and the
+    current one is kept, and where lengths differ (FakeTorino) the shorter gates are taken. A failed element still
+    excludes. `MAP_FREE_DEFAULTS = False` and `PLACE_SCORE = "esp"` restore c51.
+91. **DURATION: an interaction graph that embeds in the device, built by edge colouring (workplace proposal Q1, on
+    c53).** Item 87 generalised from a path to any graph heavy-hex contains. With item 87's conditions (device given,
+    cz, none of the caller's coupling_map / initial_layout / final_resynthesis / compare_level3 / compare_floor) and an
+    input whose terms (items 72-73's reader, merged where exact) act on one or two qubits but are not one chain: the
+    interaction graph (max degree 3, bipartite) is placed by the first embedding rustworkx's VF2 finds in the cut
+    device (nodes in index order, no score), first on the couplers of the device's most common gate length, then on
+    all of them. Its edges are coloured with max-degree colours (Koenig; deterministic alternating-path colouring,
+    at most 3 on heavy-hex), each colour a matching. Every term keeps item 87's level (1 + the largest level of an
+    earlier term that shares a qubit and does not commute with it: exact); within a level the two-qubit terms go by
+    colour, one layer per colour, then the single-qubit terms. Emitted as item 87 (Qiskit level 3 on the fixed layout,
+    CZ) or, with rzz and rx in the Target, item 88 (rzz, rx, Pauli frame undone inside the circuit), and compared with
+    c53's own output by item 87's rule. Heavy-hex never has two degree-3 qubits side by side and has no cycle shorter
+    than 12, so a graph with adjacent degree-3 vertices (most random trees), a cycle of length 4-11, or a vertex of
+    degree 4 (a square lattice, C52-VAL's heis2d) does not embed: then nothing changes. `GRAPH_BRICKWORK = False`
+    turns it off. Counts in `GRAPH_STATS`.
+93. **CORRECTNESS: every output checked exact where it can be, with fallbacks (prototype c54).** The workplace's Q3
+    (Addendum 485) traced a total variation of 1.4e-5 in one AI-front-end output to Qiskit's two-qubit synthesis: its
+    Weyl decomposition snaps a nearly degenerate block when the snap costs at most 1e-9 in gate fidelity, even at
+    approximation_degree 1.0, here inside STEINER6's final level-3 transpile. Nothing checked whole outputs before.
+    On the outermost call, the output is now checked (`_exact93`): a measured circuit by its exact outcome
+    distribution against the input's own synthesis (largest probability difference at most EXACT_CHECK_TOL = 1e-6,
+    the tolerance every validation since C48-VAL has used), an unmeasured one by item 39's check at the same
+    tolerance against the input's own synthesis (a Pauli evolution's product formula, not its exact exponential); only with at most RESYNTH_MAX_QUBITS active qubits and final measurements, otherwise not checked
+    (counted). An output that fails is replaced by the usual path's (`steiner=False, level3_candidate=False`) or else
+    Qiskit's level-1 preset on the device (refused if it uses a failed element), whichever is first exact; if none is,
+    TranspilerError is raised. At 1e-9 the check refused ordinary outputs: the same synthesis leaves differences of
+    about 1e-7 (6.1e-7 on c48's 12-qubit TFIM ring on FakeTorino) in many outputs, which only a synthesis without the
+    snap would remove; the largest difference accepted is recorded (`EXACT93_STATS["largest_passed"]`).
+    `EXACT_CHECK = False` restores c53 + item 91. Counts in `EXACT93_STATS`.
+94. **DURATION: runs of commuting ZZ terms re-layered by edge colouring (workplace proposal R1, on c54; off by default since c56, dropped: Addendum 488).** The family
+    map (Addendum 484) found the user's best ahead on 3-regular QAOA, always from the hand-layered circuit. The
+    workplace's R1 separated the two effects with one fixed seed: the hand-layered circuit through Qiskit level 3 at
+    seed 0 alone beat c54 on qaoa_n12_p2 (5.53 against 5.98 us, F 4.07 against 4.64) but not on qaoa_n20_p2 or
+    qaoa3reg_n20_r3 (6.48 / 13.38 against 6.31 / 11.08), where the user's margin comes from trying seeds (placement).
+    No fixed placement tried by formula came near (a first Hamiltonian path on item 87's line, reverse Cuthill-McKee
+    on the line or on a compact patch: 1.5-3 times c54). On the outermost call, the input's maximal runs of pairwise
+    commuting ZZ terms (items 72-73's reader, in their order) are regrouped into layers of disjoint pairs by a
+    first-fit edge colouring in that order, written as rzz (other terms unchanged, as their own PauliEvolutionGate):
+    exact by construction (only commuting terms move). c54 compiles the rewrite too, and its output is returned when
+    item 84's rule prefers it and item 93's check against the input does not refuse it. No seed, placement or score
+    is searched: two fixed inputs, chosen by duration. `ZZ_RELAYER = False` restores c54. Counts in `ZZ94_STATS`.
+95. **CORRECTNESS: item 93's distribution check up to 20 active qubits (prototype c55).** The workplace's R2
+    (Addendum 486) scanned C52-VAL's 240 cells on c54: every output is within 5.1e-14 of its input's distribution
+    except tfim_n20_r3's six (1.5e-8 on the Target without fractional gates on every device, 3.2e-7 with them on
+    FakeTorino), left by Qiskit's two-qubit synthesis and CommutativeCancellation inside STEINER6's final level-3
+    transpile. They have 20 active qubits, so item 93, stopping at RESYNTH_MAX_QUBITS = 16, never saw them. A
+    measured circuit's check now goes up to EXACT_CHECK_MAX_QUBITS = 20 (a statevector of 16 MB); an unmeasured one
+    stays at RESYNTH_MAX_QUBITS (it compares unitaries). The tolerance stays 1e-6: at 1e-9 these six outputs would
+    fall back to the usual path, 17-21 times longer (R2), and the exact synthesis that removes them costs about 10%
+    and is not built into the compiler yet. `EXACT_CHECK_MAX_QUBITS = RESYNTH_MAX_QUBITS` restores c54's reach.
+96. **SCOPE: a circuit PSF-Zero does not build by formula is handed to Qiskit's level 3 unchanged (prototype c56).**
+    On real devices (HW1, HW2, TIME1, FRAC1; 54 pairs pooled after the fact, Addendum 488) PSF-Zero's construction
+    won 19 of 23 pairs on Ising chains (F 1.21 x) but its compiler choices alone won 9 of 25 on QAOA and
+    Barabasi-Albert circuits (F 0.78 x); TIME1 (Addendum 487) traced the losses to placement where routing is needed,
+    which needs search or calibration, which PSF-Zero does not use by design. The owner declared the scope the same
+    day: PSF-Zero competes only where it builds by formula. With the device's Target, the input's two-qubit
+    interaction graph -- the terms' supports when items 72-73's reader reads it as Pauli terms on one or two qubits
+    (item 91's `_graph_read`), else every two-qubit operation as written; an operation on more than two qubits is out
+    of scope -- is tested for an embedding in the device's working coupling graph (failed couplers and qubits
+    removed; rustworkx's first VF2 match, nodes in index order, no score; not found within 2,000,000 states counts as
+    none). Embeds, or no two-qubit operation: the call is c55's (item 94 off). Otherwise the input goes to Qiskit's
+    `generate_preset_pass_manager(3, target, seed_transpiler)` unchanged (seed 0 when none is given, so the output is
+    reproducible); if that output uses a failed element, Qiskit's level 3 on the device without its failed qubits
+    (item 85's working Target), written back on the device's indices; only if that fails too, c55's own path
+    (counted). The handed-on output is checked by item 93's test where it can be and returned with a warning if
+    inexact. Arguments such as `steiner=` or `level3_candidate=` do not apply to a handed-on circuit. Without a
+    Target nothing changes. `SCOPE_GATE = False` restores c55 with item 94 off. Counts in `SCOPE96_STATS`.
+    Revised in c57: C56-VAL (Addendum 490) refuted its V6. On a Target with IBM's fractional gates, Qiskit's level 3
+    emitted rzz angles outside the executable range 0 < theta <= pi/2 in 79 of the 80 handed-on outputs, because
+    only a qiskit-ibm-runtime backend object folds them by itself, not a Target. With rzz in the Target the handed-on
+    output is now folded by item 86's `_fold` (qiskit-ibm-runtime's FoldRzzAngle, then single-qubit runs merged), as
+    IBM's backend would do; if folding fails, c55's own path is used (counted as "fold_failed_fallback"). On a Target
+    without rzz nothing changes.
 """
 from __future__ import annotations
 
@@ -998,7 +1233,7 @@ except ImportError as exc:  # pragma: no cover - environment problem, not logic
         "in this project measure Qiskit against Qiskit."
     ) from exc
 
-VERSION = "2026-10-11.4"  # release (from prototype 2026-10-11.c43, C43-VAL): 2026-10-11.3 + items 74-76 (near-failed elements the output used; a deterministic re-placement; permutations left at the end)
+VERSION = "2026-10-14.1"  # release (from prototype 2026-10-14.c57, C57-VAL): item 96 revised (handed-on rzz folded into IBM's range) + item 96 (scope gate: a circuit that does not embed in the device handed to Qiskit level 3 unchanged) + item 94 off (dropped) + item 95 (item 93's check up to 20 active qubits) + item 94 (workplace: commuting ZZ runs re-layered by edge colouring) + item 93 (outputs checked exact at a tight tolerance) + item 91 (workplace: embeddable graphs by edge colouring) + items 87-88 (workplace: chain brickwork, rzz in a Pauli frame) + items 89 (diagonal Clifford before measurement dropped) and 90 (estimate-based defaults off, item 75 scored by duration) + item 86 revised (native fractional gates, every rzz folded) + items 84 (choices by duration) and 85 (failed qubits cut first) + item 83 (time-aware block order) + item 82 (mirrored layers) + release 2026-10-11.4 + item 75 revised (search order) + item 77 (no time budget in the layout search) + items 78-80 (re-placement at the routing stage, basis from the Target, Qiskit level 3 as a candidate)
 __version__ = VERSION
 
 # Changelog item 27: the version string of the loaded Rust core, for logs.
@@ -3367,6 +3602,16 @@ def _st_placement_cost(phys, terms, dist, par, edge_w):
 
 
 DET_STATS = {"calls": 0, "applied": 0, "trials": 0, "skipped": 0}  # item 75
+DET_TRIALS_CAP, DET_CALL_CAP = 25_000, 3_000_000  # item 78: per search order, whatever Qiskit's preset asks for
+DET_FAILED_ERROR = 0.5  # item 78: at the routing stage, an element at or above this error is never placed on
+
+# Item 78: at Qiskit's routing stage the circuit is not yet in the device's gates. A two-qubit gate is scored as this
+# many native two-qubit gates on its coupler (2 if not listed: a general two-qubit gate needs 3, most controlled
+# rotations 2); a single-qubit gate as this many sx gates on its qubit (2 if not listed; diagonal gates are free, as rz
+# is virtual on these devices).
+_NATIVE2_COUNT = {"swap": 3, "cx": 1, "cz": 1, "ecr": 1, "cy": 1, "ch": 1, "dcx": 2, "iswap": 2}
+_SX_COUNT = {"rz": 0, "p": 0, "u1": 0, "z": 0, "s": 0, "sdg": 0, "t": 0, "tdg": 0, "id": 0,
+             "x": 1, "sx": 1, "sxdg": 1, "h": 1, "y": 1, "u2": 1}
 
 
 class _DeterministicPostLayout(AnalysisPass):
@@ -3384,6 +3629,7 @@ class _DeterministicPostLayout(AnalysisPass):
         self.call_limit = call_limit
         self.max_trials = max_trials
         self.strict = strict_direction
+        self.proxy = False  # item 78: set by _DeterministicVF2(target, routing_stage=True) for the non-strict call
 
     def run(self, dag):
         import rustworkx as rx
@@ -3411,24 +3657,40 @@ class _DeterministicPostLayout(AnalysisPass):
             elif len(qs) == 1:
                 one[(name, qs[0])] = one.get((name, qs[0]), 0) + 1
         weights = {}
-        for name in {n for n, _ in one} | {n for n, _ in two}:
-            if name not in t.operation_names:
-                DET_STATS["skipped"] += 1
-                return
+        native2 = next((g for g in ("cz", "ecr", "cx") if g in t.operation_names), None)
+        proxy = {}  # item 78: names the device does not run, scored as what they translate to (non-strict only)
+        for name in {n for n, _ in one} | {n for n, _ in two} | ({n for n in (native2, "sx") if n in t.operation_names} if self.proxy else set()):
+            if name not in t.operation_names or self.proxy and name not in (native2, "sx", "measure"):
+                arity = 2 if any(n == name for n, _ in two) else 1
+                if not self.proxy or (arity == 2 and native2 is None) or (arity == 1 and "sx" not in t.operation_names):
+                    DET_STATS["skipped"] += 1
+                    return
+                proxy[name] = (native2, _NATIVE2_COUNT.get(name, 2)) if arity == 2 else ("sx", _SX_COUNT.get(name, 2))
+                continue
             table = {}
             for qargs, props in t[name].items():
                 e = props.error if props is not None and props.error is not None else 0.0
-                table[None if qargs is None else tuple(qargs)] = math.inf if e >= 1.0 else -math.log1p(-max(e, 0.0))
+                failed = e >= 1.0 or self.proxy and e >= DET_FAILED_ERROR  # item 78
+                if PLACE_SCORE == "duration":  # item 90: the placed operation's duration, not its error
+                    d = props.duration if props is not None and props.duration is not None else 0.0
+                    table[None if qargs is None else tuple(qargs)] = math.inf if failed else d
+                else:
+                    table[None if qargs is None else tuple(qargs)] = math.inf if failed else -math.log1p(-max(e, 0.0))
             weights[name] = table
 
         def w(name, qargs):
+            k = 1
+            if name in proxy:
+                name, k = proxy[name]
+                if k == 0:
+                    return 0.0
             table = weights[name]
             v = table.get(qargs)
             if v is None and not self.strict and len(qargs) == 2:
                 v = table.get(qargs[::-1])
             if v is None:
                 v = 0.0 if None in table else math.inf
-            return v
+            return k * v
 
         active = sorted({q for _, q in one} | {q for _, qs in two for q in qs})
         if not active:
@@ -3438,6 +3700,17 @@ class _DeterministicPostLayout(AnalysisPass):
             row = cost1.setdefault(q, [0.0] * N)
             for p in range(N):
                 row[p] += c * w(name, (p,))
+        if self.proxy:  # item 78: no qubit with any operation goes to a failed qubit (gates come with translation)
+            bad_p = set()
+            for name in [n for n in ("sx", "x", "measure") if n in t.operation_names]:
+                for qargs, props in t[name].items():
+                    if qargs is not None and props is not None and props.error is not None and \
+                            props.error >= DET_FAILED_ERROR:
+                        bad_p.add(qargs[0])
+            for q in active:
+                row = cost1.setdefault(q, [0.0] * N)
+                for p in bad_p:
+                    row[p] = math.inf
         zero = [0.0] * N
         conn = sorted({q for _, qs in two for q in qs})
         iso = [q for q in active if q not in set(conn)]
@@ -3475,29 +3748,60 @@ class _DeterministicPostLayout(AnalysisPass):
         if conn:
             dev_edges = None
             for name in names2:
+                name = proxy.get(name, (name, 1))[0]  # item 78
                 ok = {tuple(q) for q in t[name] if q is not None}
                 if not self.strict:
                     ok |= {(b, a) for a, b in ok}
                 dev_edges = ok if dev_edges is None else dev_edges & ok
-            dg, cg = rx.PyDiGraph(), rx.PyDiGraph()
-            dg.add_nodes_from(range(N))
-            dg.add_edges_from_no_data(sorted(dev_edges))
-            cg.add_nodes_from(conn)
-            cedges = {(pos[a], pos[b]) for _, (a, b) in two}
+            # item 75 (revised in c44): c43's index order, then the device's qubits best first and the circuit's
+            # busiest first, then VF2's own order; each up to the trial limit
+            own = {}
+            for name in [n for n in ("sx", "measure") if n in t.operation_names]:
+                for qargs, props in t[name].items():
+                    if qargs is None or props is None or props.error is None:
+                        continue
+                    e = props.error
+                    if PLACE_SCORE == "duration":  # item 90: search order by the qubit's own durations
+                        v = (props.duration or 0.0) if e < 1.0 else 1e3
+                    else:
+                        v = -math.log1p(-e) if e < 1.0 else 1e3
+                    own[qargs[0]] = own.get(qargs[0], 0.0) + v
+            nbr = {p: [] for p in range(N)}
+            for a, b in dev_edges:
+                v = w(names2[0], (a, b))
+                nbr[a].append(v if v < math.inf else 1e3)
+                nbr[b].append(v if v < math.inf else 1e3)
+            quality = sorted(range(N), key=lambda p: (own.get(p, 0.0) + (sum(nbr[p]) / len(nbr[p]) if nbr[p] else 1e3), p))
+            load = {}
+            for (_, (a, b)), c in two.items():
+                load[a] = load.get(a, 0) + c
+                load[b] = load.get(b, 0) + c
+            busy = sorted(conn, key=lambda q: (-load.get(q, 0), q))
+            cedges0 = {(a, b) for _, (a, b) in two}
             if not self.strict:
-                cedges |= {(b, a) for a, b in cedges}
-            cg.add_edges_from_no_data(sorted(cedges))
-            for mapping in rx.vf2_mapping(dg, cg, subgraph=True, induced=False, id_order=True,
-                                          call_limit=self.call_limit):
-                trials += 1
-                mc = {conn[cn]: dn for dn, cn in mapping.items()}
-                sc = score(mc)
-                if sc < best:
-                    mi, total = place_isolated(set(mc.values()), sc)
-                    if total < best - 1e-12:
-                        best, best_map = total, {**mc, **mi}
-                if trials >= self.max_trials:
-                    break
+                cedges0 |= {(b, a) for a, b in cedges0}
+            for phys_order, circ_order, id_order in ((list(range(N)), conn, True), (quality, busy, True),
+                                                     (list(range(N)), conn, False)):
+                at_d = {p: i for i, p in enumerate(phys_order)}
+                at_c = {q: i for i, q in enumerate(circ_order)}
+                dg, cg = rx.PyDiGraph(), rx.PyDiGraph()
+                dg.add_nodes_from(phys_order)
+                dg.add_edges_from_no_data(sorted((at_d[a], at_d[b]) for a, b in dev_edges))
+                cg.add_nodes_from(circ_order)
+                cg.add_edges_from_no_data(sorted((at_c[a], at_c[b]) for a, b in cedges0))
+                n_here = 0
+                for mapping in rx.vf2_mapping(dg, cg, subgraph=True, induced=False, id_order=id_order,
+                                              call_limit=self.call_limit):
+                    trials += 1
+                    n_here += 1
+                    mc = {circ_order[cn]: phys_order[dn] for dn, cn in mapping.items()}
+                    sc = score(mc)
+                    if sc < best:
+                        mi, total = place_isolated(set(mc.values()), sc)
+                        if total < best - 1e-12:
+                            best, best_map = total, {**mc, **mi}
+                    if n_here >= self.max_trials:
+                        break
         else:
             mi, total = place_isolated(set(), 0.0)
             if total < best - 1e-12:
@@ -3528,8 +3832,9 @@ class _DeterministicVF2:
     """Item 75: while active, Qiskit's preset pass managers built in this block get item 75's re-placement (scored on
     `target`, the device's own Target) or, without a Target, none, in place of VF2PostLayout."""
 
-    def __init__(self, target):
+    def __init__(self, target, routing_stage=False):
         self.target = target
+        self.routing_stage = routing_stage  # item 78: score the routing stage's gates by their translated cost
 
     def __enter__(self):
         import qiskit.transpiler.preset_passmanagers.builtin_plugins as plugins
@@ -3537,11 +3842,17 @@ class _DeterministicVF2:
         self.mods = (plugins, common)
         self.saved = [m.VF2PostLayout for m in self.mods]
         target = self.target
+        routing_stage = self.routing_stage
 
         def make(*args, call_limit=300_000, max_trials=2_500, strict_direction=False, **kw):
             if target is None:
                 return _NoPostLayout()
-            return _DeterministicPostLayout(target, call_limit or 300_000, max_trials or 2_500, strict_direction)
+            if not routing_stage:
+                return _DeterministicPostLayout(target, call_limit or 300_000, max_trials or 2_500, strict_direction)
+            p = _DeterministicPostLayout(target, min(call_limit or 300_000, DET_CALL_CAP),  # item 78
+                                         min(max_trials or 2_500, DET_TRIALS_CAP), strict_direction)
+            p.proxy = not strict_direction
+            return p
         for m in self.mods:
             m.VF2PostLayout = make
         return self
@@ -3553,6 +3864,39 @@ class _DeterministicVF2:
 
 
 NEAR_STATS = {"checked": 0, "tried": 0, "kept_alternative": 0, "kept_first": 0, "no_alternative": 0}  # item 74
+
+L3C_STATS = {"tried": 0, "kept_psf": 0, "kept_level3": 0, "failed_elements": 0, "not_exact": 0, "unverified": 0,
+             "error": 0}  # item 80
+
+
+def _level3_candidate(qc, out, target, max_error, seed_transpiler):
+    """Item 80: `out`, or Qiskit's level-3 preset on the device's Target when its summed -ln(1 - error) on the device
+    (item 69's measure) is lower. Qiskit's circuit is built under item 75's `_DeterministicVF2(target)`, so it is the
+    same on every call; it is refused if it uses a failed element, or, where item 39's check can be made, if it does
+    not implement the input. A tie keeps `out`."""
+    L3C_STATS["tried"] += 1
+    try:
+        with _DeterministicVF2(target, routing_stage=not MAP_FREE_DEFAULTS):  # item 78 (off by item 90)
+            pm = generate_preset_pass_manager(optimization_level=3, target=target, seed_transpiler=seed_transpiler)
+        l3 = pm.run(qc)
+    except (TranspilerError, QiskitError, ValueError):
+        L3C_STATS["error"] += 1
+        return out
+    edges, qubits = _failed_elements(target, max_error)
+    if _uses_failed(l3, edges, qubits):
+        L3C_STATS["failed_elements"] += 1
+        return out
+    if not _better(l3, out, target):  # item 84
+        L3C_STATS["kept_psf"] += 1
+        return out
+    if _checkable_logical(qc) and not any(i.operation.name == "measure" for i in qc.data):
+        if not _implements(qc, l3):
+            L3C_STATS["not_exact"] += 1
+            return out
+    else:
+        L3C_STATS["unverified"] += 1
+    L3C_STATS["kept_level3"] += 1
+    return l3
 
 
 def _near_used(circ, target, near, max_error):
@@ -3606,13 +3950,14 @@ def _near_alternative(out, call_args, target, near, max_error):
             duration=getattr(old, "duration", None), error=max_error))
     try:
         alt = compile_for_hardware(**dict(call_args, backend=None, target=marked, prune_max_error=max_error,
-                                          near_failed_error=None, steiner=False, on_failed_elements="raise"))
+                                          near_failed_error=None, steiner=False, on_failed_elements="raise",
+                                          level3_candidate=False))  # item 80 runs once, on the real Target
     except (FailedElementsError, TranspilerError, ValueError):
         alt = None
     if alt is None:
         NEAR_STATS["no_alternative"] += 1
         return out
-    if _st_cost(alt, target) < _st_cost(out, target):
+    if _better(alt, out, target):  # item 84
         NEAR_STATS["kept_alternative"] += 1
         return alt
     NEAR_STATS["kept_first"] += 1
@@ -3722,6 +4067,7 @@ class _StMover:
         self.stats = dict(swaps=0, merged_swaps=0, bridged_terms=0, bridge_excess=0, terms=0)
         self.order = []
         self.last2q = {}  # physical qubit -> the pair of the last two-qubit gate on it (single-qubit gates join blocks)
+        self.st_blocks, self._lastb = [], {}  # item 83: the emitted blocks; physical qubit -> its last block
 
     # costs ---------------------------------------------------------
     def cost(self, j, pi=None):
@@ -3777,6 +4123,8 @@ class _StMover:
     # emission ------------------------------------------------------
     def run_term(self, j):
         lb, c, t = self.triples[j]
+        first_op = len(self.ops)  # item 83
+        pauli = {self.pi[q]: ch for q, ch in enumerate(reversed(lb)) if ch != "I"}
         ex = self.excess(j)
         dist, par = (self.dist, self.par) if (self.err is None or ex == 0) else (self.err[0], self.err[1])
         for name, q, prm in _st_gadget_ops(lb, c, t, self.pi, dist, par):
@@ -3792,6 +4140,7 @@ class _StMover:
             self.stats["bridge_excess"] += ex
         self.stats["terms"] += 1
         self.order.append(j)
+        _st_record_term(self, first_op, pauli)  # item 83
 
     def mergeable(self, p, q):
         """A SWAP on (p, q) joins the block of the last two-qubit gates there: Qiskit's level 3 fuses them into one
@@ -3803,6 +4152,7 @@ class _StMover:
         if self.mergeable(p, q):
             self.stats["merged_swaps"] += 1
         self.ops.append(("swap", (p, q), ()))
+        _st_record_swap(self, len(self.ops) - 1, p, q)  # item 83
         self.last2q[p] = self.last2q[q] = frozenset((p, q))
         a, b = self.inv.get(p), self.inv.get(q)
         if a is not None:
@@ -4032,12 +4382,143 @@ class _StMover2(_StMover):
                 ex[k] = self.excess(k)
 
 
+# ------------------------------------------------------------------ item 83: time-aware order of STEINER6's blocks
+
+ST_SCHEDULE = True  # item 83: re-emit STEINER6's blocks by list scheduling when that shortens the schedule
+_ST_DUR = {"cx": 1.0, "swap": 3.0, "rz": 0.0}  # item 83: durations in CX units for the ordering (rz is virtual)
+_ST_DUR_1Q = 0.3
+_ST_REORDER_PAIRS = 5_000_000  # item 83: commutation checks allowed per circuit; beyond it the mover's order is kept
+
+
+def _st_record_term(mv, first_op, pauli):
+    """Item 83: record the gadget emitted at mv.ops[first_op:] as a block; pauli: its term on physical qubits."""
+    idx = list(range(first_op, len(mv.ops)))
+    mv.st_blocks.append(["g", idx, pauli])
+    k = len(mv.st_blocks) - 1
+    for i in idx:
+        for x in mv.ops[i][1]:
+            mv._lastb[x] = k
+
+
+def _st_record_swap(mv, first_op, p, q):
+    """Item 83: record the SWAP emitted at mv.ops[first_op:]. When the last block on both of its qubits is one gadget
+    on exactly that pair, the SWAP is fused to it (Qiskit merges the two into one two-qubit unitary; the fusion keeps
+    them together)."""
+    idx = list(range(first_op, len(mv.ops)))
+    k = mv._lastb.get(p)
+    if k is not None and mv._lastb.get(q) == k and mv.st_blocks[k][0] == "g":
+        touched = {x for i in mv.st_blocks[k][1] for x in mv.ops[i][1]}
+        if touched <= {p, q}:
+            mv.st_blocks[k] = ["f", mv.st_blocks[k][1] + idx, (p, q)]
+            return
+    mv.st_blocks.append(["s", idx, (p, q)])
+    mv._lastb[p] = mv._lastb[q] = len(mv.st_blocks) - 1
+
+
+def _st_blocks_commute(a, b):
+    """Item 83: True if blocks a and b (sharing a qubit) commute as unitaries. A gadget is exp(-i t c P) on its
+    terminals and the identity on its Steiner qubits; a fused block is taken to commute with nothing it touches."""
+    ka, kb = a[0], b[0]
+    if ka == "f" or kb == "f":
+        return False
+    if ka == "g" and kb == "g":
+        pa, pb = a[2], b[2]
+        anti = 0
+        for q, ch in pa.items():
+            o = pb.get(q)
+            if o is not None and o != ch:
+                anti ^= 1
+        return anti == 0
+    if ka == "s" and kb == "s":
+        return set(a[2]) == set(b[2])
+    g, s = (a, b) if ka == "g" else (b, a)
+    p, q = s[2]
+    return g[2].get(p, "I") == g[2].get(q, "I")
+
+
+def _st_op_dur(name):
+    return _ST_DUR.get(name, _ST_DUR_1Q)
+
+
+def _st_asap(ops):
+    """Item 83: the makespan of `ops` (in order, each as soon as its qubits are free) in CX units."""
+    clock = {}
+    for name, q, _ in ops:
+        s = max(clock.get(x, 0.0) for x in q)
+        for x in q:
+            clock[x] = s + _st_op_dur(name)
+    return max(clock.values()) if clock else 0.0
+
+
+def _st_reorder(ops, blocks):
+    """Item 83: `ops` re-emitted block by block by list scheduling, or None when the blocks do not cover the ops
+    exactly once. A block is ready once every earlier block (in the mover's order) that shares a qubit with it and does
+    not commute with it has been emitted; of the ready blocks, the one that can start earliest goes next (ties: the
+    longer chain of dependent work after it, then the mover's order). The blocks and their gates are unchanged, and
+    every pair that does not commute keeps its order, so the circuit's action is unchanged."""
+    if not blocks:
+        return None
+    B = len(blocks)
+    if sorted(i for b in blocks for i in b[1]) != list(range(len(ops))):
+        return None
+    touched = [tuple(sorted({x for i in b[1] for x in ops[i][1]})) for b in blocks]
+    dur = [sum(_st_op_dur(ops[i][0]) for i in b[1]) for b in blocks]
+    first = [min(b[1]) for b in blocks]
+    order0 = sorted(range(B), key=lambda i: first[i])
+    on = {}
+    for i in order0:
+        for x in touched[i]:
+            on.setdefault(x, []).append(i)
+    if sum(len(lst) * (len(lst) - 1) // 2 for lst in on.values()) > _ST_REORDER_PAIRS:
+        return None
+    preds = [set() for _ in range(B)]
+    for lst in on.values():
+        for k, i in enumerate(lst):
+            for h in range(k - 1, -1, -1):
+                j = lst[h]
+                if j not in preds[i] and not _st_blocks_commute(blocks[j], blocks[i]):
+                    preds[i].add(j)
+    succ = [[] for _ in range(B)]
+    indeg = [len(p) for p in preds]
+    for i in range(B):
+        for j in preds[i]:
+            succ[j].append(i)
+    blevel = [0.0] * B
+    for i in reversed(order0):
+        blevel[i] = dur[i] + max((blevel[k] for k in succ[i]), default=0.0)
+    clock = {}
+    ready = {i for i in range(B) if indeg[i] == 0}
+    out = []
+    while ready:
+        i = min(ready, key=lambda k: (max(clock.get(x, 0.0) for x in touched[k]), -blevel[k], first[k]))
+        ready.discard(i)
+        for k in sorted(blocks[i][1]):
+            name, q, _ = ops[k]
+            s = max(clock.get(x, 0.0) for x in q)
+            for x in q:
+                clock[x] = s + _st_op_dur(name)
+            out.append(ops[k])
+        for k in succ[i]:
+            indeg[k] -= 1
+            if indeg[k] == 0:
+                ready.add(k)
+    if len(out) != len(ops):  # a cycle cannot arise (edges go forwards in the mover's order); kept as a guard
+        return None
+    return out
+
+
+
 _ST_FAILED = 0.5  # set from prune_max_error by _st_compile
 _ST_VF2_CHECK, _ST_VF2_MAPS, _ST_KEEP = 20_000, 200, 6
 _ST_EMBED = 2  # STEINER5's VF2 embeddings added per distance mode as initial placements
 _ST_BIG_TERMS = 2000  # above this many terms: the error mode only, one greedy start and one embedding
 STEINER_STATS = {"not_applicable": 0, "not_commuting": 0, "used": 0, "fallback": 0, "too_large": 0, "chosen": 0,
-                 "kept_usual": 0, "gate_level": 0, "permuted": 0}  # changelog items 68-76
+                 "kept_usual": 0, "gate_level": 0, "permuted": 0, "mirror_tried": 0,
+                 "mirror_kept": 0, "reordered": 0, "reorder_kept_order": 0,
+                 "diag_dropped": 0}  # changelog items 68-76, 82, 83, 89
+DROP_DIAGONAL_BEFORE_MEASURE = True  # item 89
+MAP_FREE_DEFAULTS = True  # item 90: items 33/60, 64 and 78 off by default
+PLACE_SCORE = "duration"  # item 90: item 75 scored by the placed operations' durations ("esp": c51)
 _ST_MAX_TERMS = 2000  # item 70
 
 
@@ -4065,6 +4546,203 @@ def _st_cost(circ, target):
             return math.inf
         total += -math.log1p(-max(e, 0.0))
     return total
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Prototype c49: item 84 (choices by duration, not by the device's error table) and item 85 (failed qubits cut first)
+# ---------------------------------------------------------------------------------------------------------------------
+
+SELECT_BY = "duration"  # item 84: "duration" (c49) or "esp" (c48's summed -ln(1 - error))
+SELECT_STATS = {"duration": 0, "cx_units": 0, "tie_2q": 0, "tie_kept": 0}
+CUT_FAILED_QUBITS = True  # item 85: compile on the device without its failed qubits
+CUT_STATS = {"cut": 0, "qubits_cut": 0, "too_few": 0, "no_placement": 0}
+
+
+def _duration_s(circ, target):
+    """Item 84: the as-soon-as-possible makespan of `circ` in seconds on the durations `target` reports (each
+    operation starts when all its qubits are free; barriers take no time), or None when an operation has no reported
+    duration on its qubits (then both circuits are compared in CX units)."""
+    pos = {q: i for i, q in enumerate(circ.qubits)}
+    clock = {}
+    names = set(target.operation_names)
+    for ins in circ.data:
+        name = ins.operation.name
+        if name == "barrier":
+            continue
+        if name not in names:
+            return None
+        qargs = tuple(pos[q] for q in ins.qubits)
+        entries = target[name]
+        props = entries.get(qargs) if qargs in entries else entries.get(None)
+        d = getattr(props, "duration", None) if props is not None else None
+        if d is None:
+            if name == "rz":  # virtual on every IBM device
+                d = 0.0
+            else:
+                return None
+        s = max((clock.get(x, 0.0) for x in qargs), default=0.0)
+        for x in qargs:
+            clock[x] = s + d
+    return max(clock.values()) if clock else 0.0
+
+
+def _duration_cx(circ):
+    """Item 84: the same makespan in item 83's CX units (CX 1, SWAP 3, rz 0, any other single-qubit gate 0.3, any
+    other two-qubit gate 1), for a Target without durations."""
+    pos = {q: i for i, q in enumerate(circ.qubits)}
+    clock = {}
+    for ins in circ.data:
+        name = ins.operation.name
+        if name == "barrier":
+            continue
+        qargs = tuple(pos[q] for q in ins.qubits)
+        if name in _ST_DUR:
+            d = _ST_DUR[name]
+        else:
+            d = 1.0 if len(qargs) >= 2 else _ST_DUR_1Q
+        s = max((clock.get(x, 0.0) for x in qargs), default=0.0)
+        for x in qargs:
+            clock[x] = s + d
+    return max(clock.values()) if clock else 0.0
+
+
+def _better(a, b, target):
+    """Item 84: True if circuit `a` is to be returned instead of `b` (both compiled for `target`).
+
+    "duration" (default): a circuit with an operation the device does not offer, or one reported at error >= 1, loses
+    (item 69's safety, unchanged). Otherwise the shorter as-soon-as-possible schedule on the device's reported gate
+    durations wins; on equal durations (within 1e-12 s), fewer two-qubit gates; on a full tie, `b` (the caller's
+    default) is kept. No error value of the device is used beyond that. "esp" restores c48's choice (lower summed
+    -ln(1 - error))."""
+    ca, cb = _st_cost(a, target), _st_cost(b, target)
+    if SELECT_BY == "esp":
+        return ca < cb
+    fa, fb = math.isinf(ca), math.isinf(cb)
+    if fa != fb:
+        return fb
+    da, db = _duration_s(a, target), _duration_s(b, target)
+    if da is None or db is None:
+        da, db, tol = _duration_cx(a), _duration_cx(b), 1e-9
+        SELECT_STATS["cx_units"] += 1
+    else:
+        tol = 1e-12
+        SELECT_STATS["duration"] += 1
+    if abs(da - db) > tol:
+        return da < db
+    na, nb = _count_2q(a), _count_2q(b)
+    if na != nb:
+        SELECT_STATS["tie_2q"] += 1
+        return na < nb
+    SELECT_STATS["tie_kept"] += 1
+    return False
+
+
+def _working_target(target, cut):
+    """Item 85: (a Target of the device without the qubits in `cut`, renumbered in order, and the list of the
+    device's qubits it keeps). Every instruction, property (errors and durations as reported) and qubit property
+    of the kept qubits is copied; operations offered on all qubits stay global."""
+    from qiskit.transpiler import Target
+    keep = [q for q in range(target.num_qubits) if q not in cut]
+    idx = {q: i for i, q in enumerate(keep)}
+    qprops = None
+    if target.qubit_properties is not None:
+        qprops = [target.qubit_properties[q] for q in keep]
+    sub = Target(description=getattr(target, "description", None), num_qubits=len(keep), dt=target.dt,
+                 granularity=target.granularity, min_length=target.min_length,
+                 pulse_alignment=target.pulse_alignment, acquire_alignment=target.acquire_alignment,
+                 qubit_properties=qprops)
+    for name in target.operation_names:
+        op = target.operation_from_name(name)
+        if isinstance(op, type):  # variadic or control-flow operations: offered on every qubit
+            sub.add_instruction(op, name=name)
+            continue
+        props = {}
+        for qargs, p in target[name].items():
+            if qargs is None:
+                props[None] = p
+            elif all(q in idx for q in qargs):
+                props[tuple(idx[q] for q in qargs)] = p
+        if not props:
+            continue
+        if None in props and len(props) == 1:
+            sub.add_instruction(op, None, name=name)
+        else:
+            sub.add_instruction(op, props, name=name)
+    return sub, keep
+
+
+def _embed_working(o, keep, N):
+    """Item 85: circuit `o`, compiled on `_working_target`'s renumbered device, written on the device's own N qubits
+    (qubit i of `o` on keep[i]), with its layout carried over: the cut qubits hold fresh ancillas that no operation
+    touches and that do not move."""
+    from qiskit.circuit import AncillaRegister, QuantumRegister
+    from qiskit.transpiler import Layout, TranspileLayout
+    full = QuantumCircuit(QuantumRegister(N, "q"), *o.cregs, name=o.name, global_phase=o.global_phase,
+                          metadata=dict(o.metadata or {}))
+    loose = [c for c in o.clbits if not o.find_bit(c).registers]
+    if loose:
+        full.add_bits(loose)
+    qmap = {o.qubits[i]: full.qubits[keep[i]] for i in range(len(keep))}
+    for ins in o.data:
+        full.append(ins.operation, [qmap[q] for q in ins.qubits], ins.clbits, copy=False)
+    lay = getattr(o, "layout", None)
+    if lay is None:
+        return full
+    cut = [q for q in range(N) if q not in set(keep)]
+    anc = AncillaRegister(len(cut), "cut_failed") if cut else None
+    v2p = {v: keep[p] for v, p in lay.initial_layout.get_virtual_bits().items()}
+    if anc is not None:
+        v2p.update({anc[k]: cut[k] for k in range(len(cut))})
+    initial = Layout(v2p)
+    for reg in lay.initial_layout.get_registers():
+        initial.add_register(reg)
+    if anc is not None:
+        initial.add_register(anc)
+    mapping = dict(lay.input_qubit_mapping)
+    base = len(mapping)
+    if anc is not None:
+        mapping.update({anc[k]: base + k for k in range(len(cut))})
+    final = None
+    if lay.final_layout is not None:
+        opos = {q: i for i, q in enumerate(o.qubits)}
+        fl = {full.qubits[keep[opos[q]]]: keep[p] for q, p in lay.final_layout.get_virtual_bits().items()}
+        fl.update({full.qubits[c]: c for c in cut})
+        final = Layout(fl)
+    full._layout = TranspileLayout(initial_layout=initial, input_qubit_mapping=mapping, final_layout=final,
+                                   _input_qubit_count=lay._input_qubit_count, _output_qubit_list=list(full.qubits))
+    return full
+
+
+def _cut_failed_qubits(kw):
+    """Item 85: the output of compile_for_hardware(**kw) compiled on the device without its failed qubits and written
+    back on the device's own indices, or None when the device has no failed qubit (or too few working qubits and
+    on_failed_elements="keep": the call then goes on as in c48). `kw` is the call's arguments, the device's Target
+    resolved."""
+    target, qc = kw["target"], kw["qc"]
+    cut = sorted(_failed_elements(target, kw["prune_max_error"])[1])
+    if not cut:
+        return None
+    if target.num_qubits - len(cut) < qc.num_qubits:
+        CUT_STATS["too_few"] += 1
+        if kw["on_failed_elements"] == "raise":
+            raise FailedElementsError(
+                f"the device has {target.num_qubits - len(cut)} working qubits (failed: {cut}) and the circuit "
+                f"{qc.num_qubits} (changelog item 85)")
+        return None
+    sub, keep = _working_target(target, set(cut))
+    CUT_STATS["cut"] += 1
+    CUT_STATS["qubits_cut"] += len(cut)
+    try:
+        out = compile_for_hardware(**dict(kw, target=sub, backend=None))
+    except TranspilerError as exc:  # FailedElementsError included: no placement on the working qubits
+        if isinstance(exc, FailedElementsError):
+            raise
+        CUT_STATS["no_placement"] += 1
+        if kw["on_failed_elements"] == "raise":
+            raise FailedElementsError(f"no placement on the device's working qubits (failed: {cut}; changelog "
+                                      f"item 85): {exc}") from exc
+        return None
+    return _embed_working(out, keep, target.num_qubits)
 
 
 def _st_evolution(qc):
@@ -4118,7 +4796,8 @@ def _st_all_commute(triples):
 
 def _st_construct(n, triples, target, meas):
     """Item 68: STEINER6's construction (Addendum 444, run v6): candidates from the greedy placements (hop and error
-    distances, two starts each) and STEINER5's embeddings, each run by _StMover2; the lowest estimated -ln ESP kept.
+    distances, two starts each) and STEINER5's embeddings, each run by _StMover2; the shortest schedule kept (item 84;
+    the lowest estimated -ln ESP with SELECT_BY = "esp").
     (mover, initial placement) or None."""
     adj, _ = _st_working_graph(target)
     if len(adj) < n:
@@ -4156,12 +4835,21 @@ def _st_construct(n, triples, target, meas):
             if any(p not in adj for p in pi0):
                 continue
             m = _StMover2(n, triples, adj, dist, par, pi0, err=None if mode == "H" else (derr, perr, wedge)).build()
-            est = 0.0
-            for name, q, _ in m.ops:
-                if len(q) == 2:
-                    est += wedge.get((min(q), max(q)), w_med) * (1 if name == "cx" else 3)
-            est -= 2 * w_med * m.stats["merged_swaps"]
-            est += sum(readout.get(m.pi[q], 0.0) for q, _ in meas)
+            if SELECT_BY == "esp":
+                est = 0.0
+                for name, q, _ in m.ops:
+                    if len(q) == 2:
+                        est += wedge.get((min(q), max(q)), w_med) * (1 if name == "cx" else 3)
+                est -= 2 * w_med * m.stats["merged_swaps"]
+                est += sum(readout.get(m.pi[q], 0.0) for q, _ in meas)
+            else:  # item 84: the construction's own schedule (item 83's order when shorter), then its CX count
+                ops = m.ops
+                if ST_SCHEDULE:
+                    new = _st_reorder(m.ops, getattr(m, "st_blocks", None))
+                    if new is not None and _st_asap(new) < _st_asap(ops) - 1e-9:
+                        ops = new
+                ncx = sum(1 if name == "cx" else 3 for name, q, _ in m.ops if len(q) == 2)
+                est = (_st_asap(ops), ncx - 2 * m.stats["merged_swaps"])
             cands.append((est, mode, label, m, pi0))
     if not cands:
         return None
@@ -4531,6 +5219,21 @@ def _st_parse_gates(qc):
             return None
     if not terms:
         return None
+    if DROP_DIAGONAL_BEFORE_MEASURE and meas and {q for q, _ in meas} == set(range(n)):  # item 89
+        dropped = False
+        for q in range(n):
+            xi, zi = frame[q]
+            bz, bx = zi[0] | zi[1], xi[0] | xi[1]
+            if not bz or bz & (bz - 1):
+                continue  # Z's image is not a single-qubit Pauli: no single-qubit L exists
+            w = bz.bit_length() - 1
+            if bx and not bx & (bx - 1) and bx == bz:
+                continue  # already a single-qubit Clifford on that wire
+            # an X image on wire w that anticommutes with Z's image: Z_w if Z's image has an X part, else X_w
+            frame[q] = [(0, 1 << w, 0) if zi[0] & bz else (1 << w, 0, 0), zi]
+            dropped = True
+        if dropped:
+            STEINER_STATS["diag_dropped"] += 1
     suffix = []
     table = None
     perm = list(range(n))  # item 76: perm[q] is the wire whose state logical qubit q holds at the end
@@ -4571,6 +5274,147 @@ def _st_parse_gates(qc):
     return prefix, meas, terms, phase, suffix, perm
 
 
+class _StMirror:
+    """Item 82: repeated layers of commuting terms (QAOA's cost layers, an Ising or ZZ Hamiltonian's Trotter steps):
+    the term sequence is C_1 L_1 C_2 L_2 ... where every C_k is the same set of pairwise commuting terms on two or more
+    qubits (angles may differ) and every L_k holds single-qubit terms. C_1 is scheduled once by STEINER6's mover; C_2
+    replays C_1's events (terms and SWAPs) in reverse order, C_3 forwards again, and so on, so every layer costs what
+    the first does and every second layer ends where the first began. L_k's terms run where their qubits are. A fixed
+    construction, not a search."""
+
+    def __init__(self, n, triples, adj, dist, par, pi0, err, blocks):
+        self.n, self.adj, self.dist, self.par, self.err = n, adj, dist, par, err
+        self.triples = triples
+        self.blocks = blocks  # [("C", [term indices]) | ("L", [term indices])]
+        self.pi = list(pi0)
+        self.ops, self.gphase = [], 0.0
+        self.stats = dict(swaps=0, merged_swaps=0, bridged_terms=0, bridge_excess=0, terms=0)
+        self.st_blocks, self._lastb = [], {}  # item 83
+
+    def _term(self, j):
+        lb, c, t = self.triples[j]
+        first_op = len(self.ops)  # item 83
+        pauli = {self.pi[q]: ch for q, ch in enumerate(reversed(lb)) if ch != "I"}
+        sup = [k for k, ch in enumerate(reversed(lb)) if ch != "I"]
+        phys = [self.pi[k] for k in sup]
+        ex = 0
+        if len(phys) > 1:
+            r, p = _st_steiner_tree(phys, self.dist, self.par)
+            ex = _st_tree_cost(r, p, set(phys)) - 2 * (len(phys) - 1)
+        dist, par = (self.dist, self.par) if (self.err is None or ex == 0) else (self.err[0], self.err[1])
+        for name, q, prm in _st_gadget_ops(lb, c, t, self.pi, dist, par):
+            if name == "gphase":
+                self.gphase += prm[0]
+            else:
+                self.ops.append((name, q, prm))
+        self.stats["terms"] += 1
+        if ex > 0:
+            self.stats["bridged_terms"] += 1
+        _st_record_term(self, first_op, pauli)  # item 83
+
+    def _swap(self, p, q):
+        self.ops.append(("swap", (p, q), ()))
+        _st_record_swap(self, len(self.ops) - 1, p, q)  # item 83
+        a = self.pi.index(p) if p in self.pi else None
+        b = self.pi.index(q) if q in self.pi else None
+        if a is not None:
+            self.pi[a] = q
+        if b is not None:
+            self.pi[b] = p
+        self.stats["swaps"] += 1
+
+    def build(self, first, c1):
+        """first: STEINER6's mover run on C_1's terms alone (c1: their indices here) from the same initial placement;
+        its emission gives the events (a term per rz, SWAPs) that every layer replays."""
+        events = []
+        term_iter = iter(first.order)
+        for name, q, prm in first.ops:
+            if name == "swap":
+                events.append(("s", q[0], q[1]))
+            elif name == "rz":
+                events.append(("t", self.triples[c1[next(term_iter)]][0]))
+        c_index = 0
+        for kind, idx in self.blocks:
+            if kind == "L":
+                for j in idx:
+                    self._term(j)
+                continue
+            by_label = {self.triples[j][0]: j for j in idx}
+            for ev in (events if c_index % 2 == 0 else events[::-1]):
+                if ev[0] == "s":
+                    self._swap(ev[1], ev[2])
+                else:
+                    self._term(by_label[ev[1]])
+            c_index += 1
+        return self
+
+
+def _st_mirror_blocks(triples, limit=4000):
+    """Item 82: [("L", idx) | ("C", idx)] when the terms are p >= 2 layers of the same commuting set: the k-th
+    occurrence of each multi-qubit label goes to C_k (every multi-qubit label occurs p times; C_1's terms commute),
+    and each single-qubit term to the gap right after the last C layer it must follow (that of the latest earlier
+    term it anticommutes with; before C_1 if none); the order of the blocks keeps every pair of anticommuting terms in
+    its original order, so the reordering is exact. None otherwise."""
+    T = len(triples)
+    if T > limit:
+        return None
+    multi = [sum(ch != "I" for ch in lb) >= 2 for lb, _, _ in triples]
+    seen, layer = {}, [None] * T
+    for j, (lb, _, _) in enumerate(triples):
+        if multi[j]:
+            layer[j] = seen.get(lb, 0)
+            seen[lb] = layer[j] + 1
+    if not seen:
+        return None
+    p = max(seen.values())
+    if p < 2 or any(c != p for c in seen.values()):
+        return None
+    masks = [_st_term_masks(lb) for lb, _, _ in triples]
+    slot = [None] * T
+    for j in range(T):
+        if not multi[j]:
+            before = [layer[i] for i in range(j) if multi[i] and not _st_commute(masks[i], masks[j])]
+            slot[j] = max(before) if before else -1
+    blocks = []
+    lead = [j for j in range(T) if not multi[j] and slot[j] == -1]
+    if lead:
+        blocks.append(("L", lead))
+    for k in range(p):
+        blocks.append(("C", [j for j in range(T) if multi[j] and layer[j] == k]))
+        ls = [j for j in range(T) if not multi[j] and slot[j] == k]
+        if ls:
+            blocks.append(("L", ls))
+    c1 = blocks[1][1] if blocks[0][0] == "L" else blocks[0][1]
+    for a in range(len(c1)):
+        for b in range(a + 1, len(c1)):
+            if not _st_commute(masks[c1[a]], masks[c1[b]]):
+                return None
+    pos = {}
+    for kind, idx in blocks:
+        for j in idx:
+            pos[j] = len(pos)
+    for i in range(T):  # anticommuting pairs keep their order
+        for j in range(i + 1, T):
+            if pos[j] < pos[i] and not _st_commute(masks[i], masks[j]):
+                return None
+    return blocks
+
+
+def _st_mirror_construct(n, triples, target, blocks):
+    """Item 82: (mover-like, initial placement) of the mirrored layers, or None."""
+    c1 = next(idx for kind, idx in blocks if kind == "C")
+    got = _st_construct(n, [triples[j] for j in c1], target, [])
+    if got is None:
+        return None
+    first, pi0 = got
+    adj, _ = _st_working_graph(target)
+    dist, par = _st_bfs_all(adj)
+    err = None
+    if first.err is not None:
+        err = _st_error_distances(adj, target)
+    return _StMirror(n, triples, adj, dist, par, pi0, err, blocks).build(first, c1), pi0
+
+
 def _st_compile(qc, target, max_error, seed, call_limit, max_trials):
     """Item 68: the circuit compiled by STEINER6 with its layout, or None when the path does not apply (not one
     Pauli evolution, or its terms do not all commute) or its output would use a failed element (then the call goes on
@@ -4597,66 +5441,89 @@ def _st_compile(qc, target, max_error, seed, call_limit, max_trials):
     if got is None:
         STEINER_STATS["fallback"] += 1
         return None
-    m, pi0 = got
-    phys = QuantumCircuit(N, qc.num_clbits)
-    for op, q in prefix:  # item 72: the leading single-qubit gates, at the initial placement
-        phys.append(op, [pi0[q]])
-    at = list(range(N))  # at[p]: the physical qubit whose state is at p (SWAPs move idle qubits' states too)
-    for name, q, prm in m.ops:
-        if name == "cx":
-            phys.cx(*q)
-        elif name == "swap":
-            phys.swap(*q)
-            at[q[0]], at[q[1]] = at[q[1]], at[q[0]]
-        elif name == "rz":
-            phys.rz(prm[0], q[0])
-        else:
-            getattr(phys, name)(q[0])
-    phys.global_phase = extra_phase + m.gphase
-    for op, q in suffix:  # item 73: the Clifford gates left at the end, at the final places
-        phys.append(op, [m.pi[q]])
-    for q, cb in meas:
-        phys.measure(m.pi[perm[q]], cb)  # item 76: logical q's state is on wire perm[q]'s place
-    with _DeterministicVF2(target):  # item 75
-        out = transpile(phys, target=target, initial_layout=list(range(N)), routing_method="none",
-                        optimization_level=3, seed_transpiler=seed)
-    # Item 33's exact re-placement, as a renaming of the physical qubits
-    dag = circuit_to_dag(out)
-    vf2 = _DeterministicPostLayout(target, call_limit, max_trials, True)  # item 75
-    vf2.run(dag)
-    rel = list(range(N))
-    if vf2.property_set["VF2PostLayout_stop_reason"] == VF2PostLayoutStopReason.SOLUTION_FOUND:
-        post = vf2.property_set["post_layout"]
-        rel = [post[dag.qubits[i]] for i in range(N)]
-    final = QuantumCircuit(N, qc.num_clbits, global_phase=out.global_phase)
-    for ins in out.data:
-        final.append(ins.operation, [final.qubits[rel[out.find_bit(b).index]] for b in ins.qubits],
-                     [final.clbits[out.find_bit(c).index] for c in ins.clbits])
-    edges, bad = _failed_elements(target, max_error)
-    if _uses_failed(final, edges, bad):
+    def finish(m, pi0):  # item 82: the circuit of one construction, or None if it uses a failed element
+        phys = QuantumCircuit(N, qc.num_clbits)
+        for op, q in prefix:  # item 72: the leading single-qubit gates, at the initial placement
+            phys.append(op, [pi0[q]])
+        at = list(range(N))  # at[p]: the physical qubit whose state is at p (SWAPs move idle qubits' states too)
+        ops = m.ops
+        if ST_SCHEDULE:  # item 83
+            new = _st_reorder(m.ops, getattr(m, "st_blocks", None))
+            if new is not None and _st_asap(new) < _st_asap(m.ops) - 1e-9:
+                ops = new
+                STEINER_STATS["reordered"] += 1
+            else:
+                STEINER_STATS["reorder_kept_order"] += 1
+        for name, q, prm in ops:
+            if name == "cx":
+                phys.cx(*q)
+            elif name == "swap":
+                phys.swap(*q)
+                at[q[0]], at[q[1]] = at[q[1]], at[q[0]]
+            elif name == "rz":
+                phys.rz(prm[0], q[0])
+            else:
+                getattr(phys, name)(q[0])
+        phys.global_phase = extra_phase + m.gphase
+        for op, q in suffix:  # item 73: the Clifford gates left at the end, at the final places
+            phys.append(op, [m.pi[q]])
+        for q, cb in meas:
+            phys.measure(m.pi[perm[q]], cb)  # item 76: logical q's state is on wire perm[q]'s place
+        with _DeterministicVF2(target):  # item 75
+            out = transpile(phys, target=target, initial_layout=list(range(N)), routing_method="none",
+                            optimization_level=3, seed_transpiler=seed)
+        # Item 33's exact re-placement, as a renaming of the physical qubits
+        dag = circuit_to_dag(out)
+        vf2 = _DeterministicPostLayout(target, call_limit, max_trials, True)  # item 75
+        vf2.run(dag)
+        rel = list(range(N))
+        if vf2.property_set["VF2PostLayout_stop_reason"] == VF2PostLayoutStopReason.SOLUTION_FOUND:
+            post = vf2.property_set["post_layout"]
+            rel = [post[dag.qubits[i]] for i in range(N)]
+        final = QuantumCircuit(N, qc.num_clbits, global_phase=out.global_phase)
+        for ins in out.data:
+            final.append(ins.operation, [final.qubits[rel[out.find_bit(b).index]] for b in ins.qubits],
+                         [final.clbits[out.find_bit(c).index] for c in ins.clbits])
+        edges, bad = _failed_elements(target, max_error)
+        if _uses_failed(final, edges, bad):
+            return None
+        pos = [0] * N  # pos[p]: where the state that started at physical p ends
+        for p_now, p_start in enumerate(at):
+            pos[p_start] = p_now
+        if perm != list(range(n)):  # item 76: logical q started at pi0[q] and ends where wire perm[q]'s state ends
+            ends = [pos[pi0[w]] for w in range(n)]
+            for q in range(n):
+                pos[pi0[q]] = ends[perm[q]]
+        anc = QuantumRegister(N - n, "ancilla") if N > n else None
+        virt = list(qc.qubits) + (list(anc) if anc is not None else [])
+        used = set(pi0)
+        init_phys = list(pi0) + [p for p in range(N) if p not in used]
+        initial_layout = Layout({virt[k]: rel[init_phys[k]] for k in range(N)})
+        for reg in qc.qregs:
+            initial_layout.add_register(reg)
+        if anc is not None:
+            initial_layout.add_register(anc)
+        final_layout = Layout({final.qubits[rel[p]]: rel[pos[p]] for p in range(N)})
+        final._layout = TranspileLayout(initial_layout=initial_layout,
+                                        input_qubit_mapping={virt[k]: k for k in range(N)},
+                                        final_layout=final_layout, _input_qubit_count=qc.num_qubits,
+                                        _output_qubit_list=list(final.qubits))
+        return final
+
+    outs = [finish(*got)]
+    blocks = _st_mirror_blocks(triples)  # item 82
+    if blocks is not None:
+        STEINER_STATS["mirror_tried"] += 1
+        mir = _st_mirror_construct(n, triples, target, blocks)
+        if mir is not None:
+            outs.append(finish(*mir))
+    if outs[0] is None and (len(outs) == 1 or outs[1] is None):
         STEINER_STATS["fallback"] += 1
         return None
-    pos = [0] * N  # pos[p]: where the state that started at physical p ends
-    for p_now, p_start in enumerate(at):
-        pos[p_start] = p_now
-    if perm != list(range(n)):  # item 76: logical q started at pi0[q] and ends where wire perm[q]'s state ends
-        ends = [pos[pi0[w]] for w in range(n)]
-        for q in range(n):
-            pos[pi0[q]] = ends[perm[q]]
-    anc = QuantumRegister(N - n, "ancilla") if N > n else None
-    virt = list(qc.qubits) + (list(anc) if anc is not None else [])
-    used = set(pi0)
-    init_phys = list(pi0) + [p for p in range(N) if p not in used]
-    initial_layout = Layout({virt[k]: rel[init_phys[k]] for k in range(N)})
-    for reg in qc.qregs:
-        initial_layout.add_register(reg)
-    if anc is not None:
-        initial_layout.add_register(anc)
-    final_layout = Layout({final.qubits[rel[p]]: rel[pos[p]] for p in range(N)})
-    final._layout = TranspileLayout(initial_layout=initial_layout,
-                                    input_qubit_mapping={virt[k]: k for k in range(N)},
-                                    final_layout=final_layout, _input_qubit_count=qc.num_qubits,
-                                    _output_qubit_list=list(final.qubits))
+    final = outs[0]
+    if len(outs) == 2 and outs[1] is not None and (final is None or _better(outs[1], final, target)):  # item 84
+        final = outs[1]
+        STEINER_STATS["mirror_kept"] += 1
     STEINER_STATS["used"] += 1
     return final
 
@@ -4848,7 +5715,7 @@ class _AbsorbRoutingSwaps(TransformationPass):
         return new
 
 
-def compile_for_hardware(
+def _compile_for_hardware_c49(
     qc: QuantumCircuit,
     coupling_map: CouplingMap | None = None,
     basis_gates: list[str] | None = None,
@@ -4861,7 +5728,7 @@ def compile_for_hardware(
     on_unsupported: str = "keep",
     tol: float = 1e-5,
     layout_search: bool = False,
-    layout_search_time_budget_s: float = 2.0,
+    layout_search_time_budget_s: float | None = None,
     layout_search_call_limit: int = 50_000,
     layout_search_fallback_call_limit: int = 2_000_000,
     layout_search_use_fallback: bool = True,
@@ -4885,6 +5752,7 @@ def compile_for_hardware(
     backend=None,
     on_failed_elements: str = "raise",
     near_failed_error: float | None = 0.1,
+    level3_candidate: Union[bool, str] = "auto",
     _inner: bool = False,
 ) -> QuantumCircuit:
     """Compress with PSF-Zero, then route (and, if `basis_gates` is given,
@@ -5046,17 +5914,26 @@ def compile_for_hardware(
     """
     if steiner == "auto":  # item 68: decided before the device fills in the coupling map
         steiner = (backend is not None or target is not None) and coupling_map is None and initial_layout is None
+    if level3_candidate == "auto":  # item 80: as item 68's "auto"
+        level3_candidate = (backend is not None or target is not None) and coupling_map is None and \
+            initial_layout is None
     if backend is not None:  # item 58: the device, from which the Target, map and basis follow unless given
         if target is None:
             target = backend.target
-        if basis_gates is None:
-            basis_gates = [g for g in target.operation_names if g in _BACKEND_BASIS]
+    if (CUT_FAILED_QUBITS and not _inner and target is not None and coupling_map is None and initial_layout is None
+            and _refine_target is None and layout_edge_errors is None and layout_qubit_errors is None):  # item 85
+        out85 = _cut_failed_qubits(dict(locals()))
+        if out85 is not None:
+            return out85
+        del out85  # item 50 copies this call's locals as its arguments
+    if basis_gates is None and target is not None:  # item 79: also when the Target is given alone
+        basis_gates = [g for g in target.operation_names if g in _BACKEND_BASIS]
     if coupling_map is None:
         if target is None:
             raise ValueError("compile_for_hardware needs coupling_map, target or backend (changelog item 58)")
         coupling_map = target.build_coupling_map()
     if routing_optimization_level == "auto":  # item 64: level 3 with the device's Target, level 1 without
-        routing_optimization_level = 3 if target is not None else 1
+        routing_optimization_level = 3 if target is not None and not MAP_FREE_DEFAULTS else 1  # item 90
     if on_failed_elements not in ("raise", "keep"):
         raise ValueError('on_failed_elements must be "raise" or "keep" (changelog item 58)')
     if target is None and not _inner and WARN_WITHOUT_TARGET and not _WARNED["no_target"]:
@@ -5066,7 +5943,7 @@ def compile_for_hardware(
                       "noise (changelog item 58). This warning is given once per process.", UserWarning, stacklevel=2)
     call_args = dict(locals())  # item 50: this call's arguments, for the two runs of the pipeline
     if placement_refine == "auto":  # item 60: on with a Target, off without one
-        placement_refine = target is not None
+        placement_refine = target is not None and not MAP_FREE_DEFAULTS  # item 90
     if placement_refine and target is None:
         raise ValueError("placement_refine=True needs the device `target` (changelog item 33)")
     if steiner and target is None:
@@ -5097,7 +5974,7 @@ def compile_for_hardware(
                 usual = compile_for_hardware(**dict(call_args, steiner=False))
             except FailedElementsError:
                 usual = None
-            if usual is None or _st_cost(st, target) < _st_cost(usual, target):
+            if usual is None or _better(st, usual, target):  # item 84
                 STEINER_STATS["chosen"] += 1
                 return st
             STEINER_STATS["kept_usual"] += 1
@@ -5133,6 +6010,8 @@ def compile_for_hardware(
         out = _resynthesise(out, final_resynthesis, target, prune_max_error)
         if not _inner:  # item 74
             out = _near_alternative(out, call_args, target, near_failed_error, prune_max_error)
+        if not _inner and level3_candidate:  # item 80
+            out = _level3_candidate(qc, out, target, prune_max_error, seed_transpiler)
         if not compare_floor and candidate_score == "excitation":
             if compare_level3 and not _checkable_logical(qc):  # item 45
                 SKIP_STATS["level3"] += 1
@@ -5229,7 +6108,7 @@ def compile_for_hardware(
             sorted(pairs),
             qc_compressed.num_qubits,
             per_attempt_call_limit=layout_search_call_limit,
-            time_budget_s=layout_search_time_budget_s,
+            time_budget_s=1e9 if layout_search_time_budget_s is None else layout_search_time_budget_s,  # 77
             fallback_call_limit=layout_search_fallback_call_limit,
             use_fallback=layout_search_use_fallback,
             **({} if layout_edge_errors is None
@@ -5284,3 +6163,1187 @@ def compile_for_hardware(
         else:
             pm.optimization.append(refine)
     return pm.run(qc_compressed, callback=callback)
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Prototype c50: item 86 (the device's native fractional gates: rzz and rx); c51: item 86 revised (every rzz folded)
+# ---------------------------------------------------------------------------------------------------------------------
+
+FRACTIONAL = "auto"  # item 86: "auto" re-synthesises the output with rzz / rx when the Target offers rzz; False: never
+FRAC_STATS = {"tried": 0, "kept": 0, "longer": 0, "not_isa": 0, "not_exact": 0, "unverified": 0, "error": 0,
+              "folded": 0, "fold_failed": 0}
+_FRAC_DEPTH = [0]
+
+
+def _errorless(target):
+    """Item 86: a copy of `target` with every reported error removed (durations kept), so that Qiskit's synthesis
+    passes cannot choose by the device's error table."""
+    import copy
+    from qiskit.transpiler import InstructionProperties
+    t = copy.deepcopy(target)
+    for name in t.operation_names:
+        for qargs, p in list(t[name].items()):
+            if qargs is not None and p is not None and p.error is not None:
+                t.update_instruction_properties(name, qargs, InstructionProperties(duration=p.duration, error=None))
+    return t
+
+
+def _isa_ok(circ, target):
+    pos = {q: i for i, q in enumerate(circ.qubits)}
+    names = set(target.operation_names)
+    for ins in circ.data:
+        nm = ins.operation.name
+        if nm == "barrier":
+            continue
+        if nm not in names:
+            return False
+        qargs = tuple(pos[q] for q in ins.qubits)
+        if qargs not in target[nm] and None not in target[nm]:
+            return False
+    return True
+
+
+def _fractional(out, target):
+    """Item 86: `out` re-synthesised on the same physical qubits with the device's native fractional gates, or None.
+
+    Two-qubit blocks are consolidated and re-synthesised (Qiskit's ConsolidateBlocks and UnitarySynthesis on an
+    error-free copy of the Target, so no reported error chooses), single-qubit runs are merged (rx is one pulse), rzz
+    angles are folded into IBM's executable range 0 < theta <= pi/2 (qiskit-ibm-runtime's FoldRzzAngle). The placement
+    and the layout are those of `out`. None when qiskit-ibm-runtime's pass is unavailable or the result is not native
+    to the Target."""
+    try:
+        from qiskit.circuit.library import GlobalPhaseGate  # noqa: F401
+        from qiskit.transpiler.passes import (Collect2qBlocks, ConsolidateBlocks, Optimize1qGatesDecomposition,
+                                              UnitarySynthesis)
+        from qiskit_ibm_runtime.transpiler.passes import FoldRzzAngle
+    except Exception:  # noqa: BLE001 - the item needs qiskit-ibm-runtime's fold; without it nothing changes
+        FRAC_STATS["error"] += 1
+        return None
+    nt = _errorless(target)
+    pm = PassManager([Collect2qBlocks(), ConsolidateBlocks(target=nt), UnitarySynthesis(target=nt),
+                      Optimize1qGatesDecomposition(target=nt), FoldRzzAngle(),
+                      Optimize1qGatesDecomposition(target=nt)])
+    try:
+        new = pm.run(out)
+    except Exception:  # noqa: BLE001
+        FRAC_STATS["error"] += 1
+        return None
+    new = _strip_global_phase_gates(new)  # FoldRzzAngle may leave a GlobalPhaseGate: carried into the phase
+    new._layout = getattr(out, "_layout", None)
+    if not _isa_ok(new, target) or not _rzz_in_range(new):
+        FRAC_STATS["not_isa"] += 1
+        return None
+    return new
+
+
+def _strip_global_phase_gates(new):
+    phase, kept = 0.0, []
+    for ins in new.data:
+        if ins.operation.name == "global_phase":
+            phase += float(ins.operation.params[0])
+        else:
+            kept.append(ins)
+    if len(kept) != len(new.data):
+        new.data = kept
+        new.global_phase += phase
+    return new
+
+
+def _rzz_in_range(circ):
+    return all(0 < float(i.operation.params[0]) <= math.pi / 2 + 1e-12 for i in circ.data if i.operation.name == "rzz")
+
+
+def _fold(out, target):
+    """Item 86 revised (c51): `out` with every rzz angle folded into IBM's executable range 0 < theta <= pi/2
+    (qiskit-ibm-runtime's FoldRzzAngle, then single-qubit runs merged on an error-free copy of the Target). Qiskit's
+    own stages inside the compiler emit rzz when the Target offers it, with any angle; only a backend object of
+    qiskit-ibm-runtime folds them by itself. Raises TranspilerError if an angle stays outside the range."""
+    from qiskit.transpiler.passes import Optimize1qGatesDecomposition
+    from qiskit_ibm_runtime.transpiler.passes import FoldRzzAngle
+    new = PassManager([FoldRzzAngle(), Optimize1qGatesDecomposition(target=_errorless(target))]).run(out)
+    new = _strip_global_phase_gates(new)
+    new._layout = getattr(out, "_layout", None)
+    if not _rzz_in_range(new):
+        FRAC_STATS["fold_failed"] += 1
+        raise TranspilerError("an rzz angle is outside 0 < theta <= pi/2 after folding (changelog item 86)")
+    FRAC_STATS["folded"] += 1
+    return new
+
+
+def _fractional_choice(out, target):
+    """Item 86: the re-synthesised circuit when it is shorter (item 84's `_better`) and, where item 39's check can be
+    made, acts as `out` does; otherwise `out`."""
+    if target is None or "rzz" not in target.operation_names:
+        return out
+    if not _rzz_in_range(out):  # c51: whatever is returned on a Target with rzz is executable
+        out = _fold(out, target)
+    if FRACTIONAL is False:
+        return out
+    FRAC_STATS["tried"] += 1
+    new = _fractional(out, target)
+    if new is None:
+        return out
+    if not _better(new, out, target):
+        FRAC_STATS["longer"] += 1
+        return out
+    a = out.remove_final_measurements(inplace=False)
+    b = new.remove_final_measurements(inplace=False)
+    if len(_touched_qubits(a) | _touched_qubits(b)) <= RESYNTH_MAX_QUBITS:
+        if not _same_action(a, b):
+            FRAC_STATS["not_exact"] += 1
+            return out
+    else:
+        FRAC_STATS["unverified"] += 1
+    FRAC_STATS["kept"] += 1
+    return new
+
+
+def _compile_for_hardware_c51(qc, *args, **kwargs):
+    """Item 86 (prototype c50): `_compile_for_hardware_c49` (the compiler as in c49, unchanged), then, on the outermost
+    call only, the device's native fractional gates where they shorten the circuit (`_fractional_choice`).
+
+    """
+    _FRAC_DEPTH[0] += 1
+    try:
+        out = _compile_for_hardware_c49(qc, *args, **kwargs)
+    finally:
+        _FRAC_DEPTH[0] -= 1
+    if _FRAC_DEPTH[0] == 0 and not kwargs.get("_inner", False):
+        target = kwargs.get("target")
+        if target is None and kwargs.get("backend") is not None:
+            target = kwargs["backend"].target
+        out = _fractional_choice(out, target)
+    return out
+
+
+_compile_for_hardware_c51.__doc__ += _compile_for_hardware_c49.__doc__ or ""
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Workplace proposal on prototype c51 (2026-10-14): item 87, a chain Hamiltonian built by formula as a brickwork (N1);
+# item 88, on a Target with rzz and rx, its terms emitted as rzz / rx with the signs carried in a Pauli X frame
+# ---------------------------------------------------------------------------------------------------------------------
+
+import inspect as _inspect  # noqa: E402  (item 87)
+
+CHAIN_BRICKWORK = True  # item 87 (proposal): chain Pauli evolutions built as a brickwork on a path of the device
+CHAIN_FRAME = True  # item 88 (proposal): with rzz and rx in the Target, the chain's terms as rzz / rx, signs in a frame
+CHAIN_STATS = {"tried": 0, "not_chain": 0, "not_cz": 0, "no_path": 0, "snake": 0, "vf2_path": 0,
+               "common_length": 0, "used": 0, "failed_check": 0, "kept": 0, "kept_default": 0,
+               "frame": 0, "frame_x_end": 0, "frame_folded": 0}
+_CHAIN_DEPTH = [0]  # item 87: set while c51's own output is compiled for the comparison (no item 87 inside it)
+_CHAIN_VF2_CALLS = 5_000_000
+
+
+def _chain_support(lb):
+    n = len(lb)
+    return [(n - 1 - i, ch) for i, ch in enumerate(lb) if ch != "I"]
+
+
+def _chain_commute(a, b):
+    sa, sb = dict(_chain_support(a)), dict(_chain_support(b))
+    return sum(1 for q in set(sa) & set(sb) if sa[q] != sb[q]) % 2 == 0
+
+
+def _chain_read(qc):
+    """Item 87: (prefix, meas, terms [(label, angle)], phase, suffix, perm, path) when every term (read by items
+    72-73, merged where exact by `_st_merge`) acts on one or two qubits and the two-qubit supports form one path
+    through all the circuit's qubits; else None."""
+    ev = _st_parse(qc)
+    ev = ev + ([], None) if ev is not None else _st_parse_gates(qc)
+    if ev is None:
+        return None
+    prefix, meas, triples, phase, suffix, perm = ev
+    terms = [(lb, a * t) for lb, a, t in _st_merge(triples)]
+    n = qc.num_qubits
+    adj = {q: set() for q in range(n)}
+    for lb, _ in terms:
+        sup = [q for q, _ in _chain_support(lb)]
+        if len(sup) > 2:
+            return None
+        if len(sup) == 2:
+            adj[sup[0]].add(sup[1])
+            adj[sup[1]].add(sup[0])
+    if any(len(v) > 2 for v in adj.values()):
+        return None
+    ends = [q for q in range(n) if len(adj[q]) == 1]
+    if n < 2 or len(ends) != 2:
+        return None
+    path, prev, cur = [min(ends)], None, min(ends)
+    while True:
+        nxt = [v for v in adj[cur] if v != prev]
+        if not nxt:
+            break
+        prev, cur = cur, nxt[0]
+        path.append(cur)
+    if len(path) != n:
+        return None
+    return prefix, meas, terms, phase, suffix, perm or list(range(n)), path
+
+
+def _chain_lattice(target, max_error):
+    """Item 87: (K, its adjacency, the adjacency restricted to couplers of the device's most common two-qubit gate
+    length, the snake path) -- W5's cut: qubits with sx or readout error >= max_error and couplers with error >=
+    max_error removed, the largest connected component kept (ties: the smallest qubit)."""
+    N = target.num_qubits
+    err, dur = {}, {}
+    for qa, pr in target["cz"].items():
+        if qa is None:
+            continue
+        k = (min(qa), max(qa))
+        err[k] = max(err.get(k, 0.0), pr.error if pr is not None and pr.error is not None else 0.0)
+        dur[k] = max(dur.get(k, 0.0), pr.duration if pr is not None and pr.duration is not None else 0.0)
+    adj = {q: set() for q in range(N)}
+    for a, b in err:
+        adj[a].add(b)
+        adj[b].add(a)
+    bad = set()
+    for name in ("sx", "measure"):
+        if name in target.operation_names:
+            for qa, pr in target[name].items():
+                if qa is not None and pr is not None and pr.error is not None and pr.error >= max_error:
+                    bad.add(qa[0])
+    gadj = {q: set() for q in range(N) if q not in bad}
+    for (a, b), e in err.items():
+        if e < max_error and a not in bad and b not in bad:
+            gadj[a].add(b)
+            gadj[b].add(a)
+    seen, comps = set(), []
+    for q in sorted(gadj):
+        if q in seen:
+            continue
+        comp, fr = {q}, [q]
+        while fr:
+            u = fr.pop()
+            for v in gadj[u]:
+                if v not in comp:
+                    comp.add(v)
+                    fr.append(v)
+        seen |= comp
+        comps.append(comp)
+    if not comps:
+        return None
+    K = max(comps, key=lambda c: (len(c), -min(c)))
+    kadj = {q: {v for v in gadj[q] if v in K} for q in K}
+    lens = {}
+    for a in K:
+        for b in kadj[a]:
+            if a < b:
+                k = round(dur[(a, b)] * 1e12)
+                lens[k] = lens.get(k, 0) + 1
+    modal = max(lens, key=lambda x: (lens[x], -x)) if lens else None
+    fadj = {q: {v for v in kadj[q] if round(dur[(min(q, v), max(q, v))] * 1e12) == modal} for q in K}
+    return K, kadj, fadj, _chain_snake(N, adj)
+
+
+def _chain_snake(N, adj):
+    """Item 87: Heron's snake (W5): rows of consecutive qubits joined by couplers, row 0 left to right, the bridge
+    at the far end down, the next row back, and so on. A lattice that is not read as rows gives a shorter path."""
+    rows, cur = [], [0]
+    for q in range(1, N):
+        if q in adj[q - 1]:
+            cur.append(q)
+        else:
+            rows.append(cur)
+            cur = [q]
+    rows.append(cur)
+    rows = [r for r in rows if len(r) > 2]
+    inrow = {q: (i, j) for i, r in enumerate(rows) for j, q in enumerate(r)}
+    path, col = [], 0
+    for i, r in enumerate(rows):
+        leftward = i % 2 == 1
+        if i + 1 < len(rows):
+            br = [(inrow[a][1], b) for b in range(N) if b not in inrow for a in adj[b]
+                  if a in inrow and inrow[a][0] == i and any(c in inrow and inrow[c][0] == i + 1 for c in adj[b])]
+            if not br:
+                return path + list(r)
+            exit_col, bq = (min(br) if leftward else max(br))
+        else:
+            exit_col, bq = (0 if leftward else len(r) - 1), None
+        step = -1 if leftward else 1
+        start = col if i else 0
+        path += [r[j] for j in range(start, exit_col + step, step)]
+        if bq is not None:
+            path.append(bq)
+            below = next(c for c in adj[bq] if c in inrow and inrow[c][0] == i + 1)
+            col = inrow[below][1]
+    return path
+
+
+def _chain_place(n, K, kadj, snake):
+    """Item 87: n physical qubits forming a path in K: the longest surviving snake piece, centred; else the first
+    path rustworkx's VF2 finds with nodes in index order (no score). (path, how) or (None, None)."""
+    pieces, cur = [], []
+    for q in snake:
+        if q in K and (not cur or q in kadj[cur[-1]]):
+            cur.append(q)
+        else:
+            if cur:
+                pieces.append(cur)
+            cur = [q] if q in K else []
+    if cur:
+        pieces.append(cur)
+    if pieces:
+        best = max(pieces, key=lambda p: (len(p), -snake.index(p[0])))
+        if len(best) >= n:
+            s = (len(best) - n) // 2
+            return best[s:s + n], "snake"
+    import rustworkx as rx
+    kn = sorted(K)
+    ki = {q: i for i, q in enumerate(kn)}
+    G = rx.PyGraph()
+    G.add_nodes_from(kn)
+    G.add_edges_from_no_data([(ki[a], ki[b]) for a in kn for b in kadj[a] if a < b])
+    P = rx.PyGraph()
+    P.add_nodes_from(range(n))
+    P.add_edges_from_no_data([(i, i + 1) for i in range(n - 1)])
+    m = next(rx.vf2_mapping(G, P, subgraph=True, induced=False, id_order=True, call_limit=_CHAIN_VF2_CALLS), None)
+    if m is None:
+        return None, None
+    inv = {h: kn[g] for g, h in m.items()}
+    return [inv[i] for i in range(n)], "vf2_path"
+
+
+
+
+
+def _chain_rotation(qc, lb, a, frame=False):
+    """Item 87: exp(-i a P) on the circuit's own qubits; XX, YY, ZZ as Qiskit's rxx, ryy, rzz. Item 88 (`frame`):
+    every two-qubit term as rzz between single-qubit basis changes (X: h; Y: rx(pi/2) before, rx(-pi/2) after), so
+    that the device's one-pulse rzz carries it; single-qubit terms as rx / ry / rz."""
+    sup = _chain_support(lb)
+    if len(sup) == 1:
+        q, ch = sup[0]
+        getattr(qc, {"X": "rx", "Y": "ry", "Z": "rz"}[ch])(2 * a, q)
+        return
+    (q1, c1), (q2, c2) = sup
+    if c1 == c2 and not frame:
+        getattr(qc, {"X": "rxx", "Y": "ryy", "Z": "rzz"}[c1])(2 * a, q1, q2)
+        return
+    for q, ch in ((q1, c1), (q2, c2)):
+        if ch == "X":
+            qc.h(q)
+        elif ch == "Y":
+            qc.rx(math.pi / 2, q)
+    if frame:
+        qc.rzz(2 * a, q1, q2)
+    else:
+        qc.cx(q1, q2)
+        qc.rz(2 * a, q2)
+        qc.cx(q1, q2)
+    for q, ch in ((q1, c1), (q2, c2)):
+        if ch == "X":
+            qc.h(q)
+        elif ch == "Y":
+            qc.rx(-math.pi / 2, q)
+
+
+def _chain_frame(log):
+    """Item 88: `log` (single-qubit gates, rzz with any angle, measurements) rewritten so that every rzz angle lies in
+    IBM's executable range 0 < theta <= pi/2, with the same action (unitary, and outcome distribution when measured).
+
+    Each angle is reduced to (-pi, pi]; an angle of size above pi/2 is moved by pi with Z x Z (rz(pi) on both qubits,
+    the phase kept). A negative angle (after the frame's sign, below) is made positive by one x on the rzz's first
+    qubit before it, merged into the single-qubit run before it; the x that would follow it is not placed but kept in
+    a Pauli X frame: a single-qubit gate G on a qubit in the frame is placed as X G X (merged into one pulse with its
+    run), an rzz with exactly one of its qubits in the frame has its sign flipped, and the frame is undone inside the
+    circuit -- one x before the qubit's measurement, or at the end of an unmeasured qubit, merged into the last
+    single-qubit gate where there is one. No measured bit is flipped afterwards: the circuit itself outputs the
+    input's distribution, and acts as the input's unitary when it is not measured."""
+    n = log.num_qubits
+    out = QuantumCircuit(*log.qregs, *log.cregs, global_phase=log.global_phase)
+    f = [0] * n
+    for ins in log.data:
+        nm = ins.operation.name
+        qs = [log.find_bit(q).index for q in ins.qubits]
+        if nm == "barrier":
+            out.append(ins.operation, qs)
+            continue
+        if nm == "measure":
+            q = qs[0]
+            if f[q]:
+                out.x(q)
+                f[q] = 0
+            out.measure(q, log.find_bit(ins.clbits[0]).index)
+            continue
+        if nm == "rzz":
+            a, b = qs
+            th = float(ins.operation.params[0])
+            th = math.pi - (math.pi - th) % (2 * math.pi)  # (-pi, pi]
+            if abs(th) > math.pi / 2:  # rzz(th) = rzz(th - sign(th) pi) (rz(pi) x rz(pi)) e^{i pi/2} for th > 0
+                out.rz(math.pi, a)
+                out.rz(math.pi, b)
+                out.global_phase += math.copysign(math.pi / 2, th) + math.pi * (f[a] + f[b])  # X rz(pi) X = -rz(pi)
+                th -= math.copysign(math.pi, th)
+                CHAIN_STATS["frame_folded"] += 1
+            if abs(th) < 1e-12:
+                continue
+            eff = -th if f[a] != f[b] else th
+            if eff < 0:
+                out.x(a)
+                f[a] ^= 1
+                eff = -eff
+            out.rzz(eff, a, b)
+            continue
+        if len(qs) != 1:
+            raise TranspilerError(f"item 88: unexpected {nm} on {len(qs)} qubits")
+        q = qs[0]
+        if f[q]:
+            out.x(q)
+        out.append(ins.operation, [q])
+        if f[q]:
+            out.x(q)
+    for q in range(n):
+        if f[q]:
+            out.x(q)
+            CHAIN_STATS["frame_x_end"] += 1
+    return out
+
+
+def _chain_brickwork(qc, target, max_error, seed):
+    """Item 87 (workplace proposal, N1): a Pauli evolution whose two-qubit terms form one chain, compiled by formula.
+    The chain goes on a path of the device (`_chain_place`: first on couplers of the device's most common two-qubit
+    gate length, then on all of the cut device); every term gets a level, 1 + the largest level of an earlier term
+    that shares a qubit and does not commute with it; terms are emitted by level, two-qubit terms on even edges of the
+    chain, then odd edges, then single-qubit terms (every non-commuting pair keeps its order: exact). Without rzz in
+    the Target, Qiskit's level-3 preset then translates on that fixed layout without routing, given the coupling map
+    and basis only (no error value is read). Item 88: with rzz and rx in the Target (`CHAIN_FRAME`), the terms are
+    emitted as rzz between basis changes, diagonal gates directly before measurements are dropped (Qiskit's
+    RemoveDiagonalGatesBeforeMeasure), the signs are carried in a Pauli X frame (`_chain_frame`), Qiskit's level-0
+    preset places it on the fixed layout, and every single-qubit run is merged into rz rx rz (one pulse); an rzz angle
+    outside 0 < theta <= pi/2 would go through item 86's `_fold`. None when the input is not such a chain, the
+    device's two-qubit gate is not cz, no path of n qubits exists, or the output would use a failed element."""
+    CHAIN_STATS["tried"] += 1
+    if "cz" not in target.operation_names:
+        CHAIN_STATS["not_cz"] += 1
+        return None
+    got = _chain_read(qc)
+    if got is None:
+        CHAIN_STATS["not_chain"] += 1
+        return None
+    prefix, meas, terms, phase, suffix, perm, path = got
+    n, N = qc.num_qubits, target.num_qubits
+    lat = _chain_lattice(target, max_error)
+    if lat is None:
+        CHAIN_STATS["no_path"] += 1
+        return None
+    K, kadj, fadj, snake = lat
+    phys, how = _chain_place(n, K, fadj, snake)
+    if phys is not None:
+        CHAIN_STATS["common_length"] += 1
+    else:
+        phys, how = _chain_place(n, K, kadj, snake)
+    if phys is None:
+        CHAIN_STATS["no_path"] += 1
+        return None
+    CHAIN_STATS[how] += 1
+    rank = {path[i]: i for i in range(n)}
+    level, last = [], {}
+    for k, (lb, _) in enumerate(terms):
+        lv = 0
+        for q, _ in _chain_support(lb):
+            for j, lb2 in last.get(q, ()):
+                if not _chain_commute(lb, lb2):
+                    lv = max(lv, level[j] + 1)
+        level.append(lv)
+        for q, _ in _chain_support(lb):
+            last.setdefault(q, []).append((k, lb))
+
+    def key(k):
+        sup = [q for q, _ in _chain_support(terms[k][0])]
+        if len(sup) == 2:
+            lo = min(rank[q] for q in sup)
+            return (level[k], 0, lo % 2, lo, k)
+        return (level[k], 1, 0, rank[sup[0]], k)
+    frame = CHAIN_FRAME and "rzz" in target.operation_names and "rx" in target.operation_names
+    log = QuantumCircuit(*qc.qregs, *qc.cregs, global_phase=phase)
+    for op, q in prefix:
+        log.append(op, [q])
+    for k in sorted(range(len(terms)), key=key):
+        _chain_rotation(log, *terms[k], frame=frame)
+    for op, q in suffix:
+        log.append(op, [q])
+    for q, cb in meas:
+        log.measure(perm[q], cb)  # item 76: logical q's state is on wire perm[q]
+    cm = CouplingMap()
+    for q in range(N):
+        cm.add_physical_qubit(q)
+    for a in sorted(K):
+        for b in sorted(kadj[a]):
+            cm.add_edge(a, b)
+    layout = [phys[rank[q]] for q in range(n)]
+    if frame:
+        from qiskit.transpiler.passes import Optimize1qGatesDecomposition, RemoveDiagonalGatesBeforeMeasure
+        log = PassManager([RemoveDiagonalGatesBeforeMeasure()]).run(log)
+        low = _chain_frame(log)
+        pm = generate_preset_pass_manager(0, coupling_map=cm, basis_gates=["rzz", "rx", "rz", "sx", "x", "cz"],
+                                          initial_layout=layout, routing_method="none", seed_transpiler=seed)
+        placed = pm.run(low)
+        out = PassManager([Optimize1qGatesDecomposition(basis=["rz", "rx"])]).run(placed)
+        out._layout = placed._layout
+        if not _rzz_in_range(out):
+            out = _fold(out, target)
+        CHAIN_STATS["frame"] += 1
+    else:
+        pm = generate_preset_pass_manager(3, coupling_map=cm, basis_gates=["cz", "rz", "sx", "x"],
+                                          initial_layout=layout, routing_method="none", seed_transpiler=seed)
+        out = pm.run(log)
+    edges, bad = _failed_elements(target, max_error)
+    if _uses_failed(out, edges, bad):
+        CHAIN_STATS["failed_check"] += 1
+        return None
+    CHAIN_STATS["used"] += 1
+    return out
+
+
+_C49_SIGNATURE = _inspect.signature(_compile_for_hardware_c49)
+
+
+def _compile_for_hardware_c53g(qc, *args, **kwargs):
+    """Items 87-88 (workplace proposal on prototype c51): with the device given (`steiner` "auto" true) and no
+    `coupling_map`, `initial_layout`, `final_resynthesis`, `compare_level3` or `compare_floor` of the caller's, a chain
+    Pauli evolution is built by formula (`_chain_brickwork`) and compared with c51's own output for the same call
+    (`_compile_for_hardware_c51`: c49, then item 86) by item 84's rule (`_better`; a tie keeps the brickwork). Any
+    other input, and every nested call, is compiled exactly as by c51.
+
+    """
+    if _CHAIN_DEPTH[0] or _FRAC_DEPTH[0] or not CHAIN_BRICKWORK:
+        return _compile_for_hardware_c51(qc, *args, **kwargs)
+    try:
+        bound = _C49_SIGNATURE.bind(qc, *args, **kwargs)
+    except TypeError:
+        return _compile_for_hardware_c51(qc, *args, **kwargs)
+    bound.apply_defaults()
+    a = bound.arguments
+    target = a["target"] if a["target"] is not None else getattr(a["backend"], "target", None)
+    steiner = a["steiner"]
+    if steiner == "auto":  # item 68's "auto"
+        steiner = (a["backend"] is not None or a["target"] is not None) and a["coupling_map"] is None and \
+            a["initial_layout"] is None
+    out87 = None
+    if (steiner and not a["_inner"] and target is not None and a["coupling_map"] is None
+            and a["initial_layout"] is None
+            and not (a["final_resynthesis"] or a["compare_level3"] or a["compare_floor"])):
+        out87 = _chain_brickwork(qc, target, a["prune_max_error"], a["seed_transpiler"])
+        if out87 is None and GRAPH_BRICKWORK:  # item 91
+            out87 = _graph_brickwork(qc, target, a["prune_max_error"], a["seed_transpiler"])
+    if out87 is None:
+        return _compile_for_hardware_c51(qc, *args, **kwargs)
+    _CHAIN_DEPTH[0] += 1
+    try:
+        own = _compile_for_hardware_c51(qc, *args, **kwargs)
+    except FailedElementsError:
+        own = None
+    finally:
+        _CHAIN_DEPTH[0] -= 1
+    if own is not None and _better(own, out87, target):
+        CHAIN_STATS["kept_default"] += 1
+        return own
+    CHAIN_STATS["kept"] += 1
+    return out87
+
+
+_compile_for_hardware_c53g.__doc__ += _compile_for_hardware_c49.__doc__ or ""
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Workplace proposal on c53 (2026-10-14): item 91, a Pauli evolution whose interaction graph embeds in the device,
+# built by formula: first VF2 embedding (no score), edges coloured into at most 3 matchings (Koenig), one layer per
+# colour
+# ---------------------------------------------------------------------------------------------------------------------
+
+GRAPH_BRICKWORK = True  # item 91 (proposal): embeddable interaction graphs built by edge colouring
+GRAPH_STATS = {"tried": 0, "not_read": 0, "degree": 0, "not_cz": 0, "no_embedding": 0, "common_length": 0,
+               "used": 0, "colours": {}, "failed_check": 0, "frame": 0}
+_GRAPH_VF2_CALLS = 2_000_000
+
+
+def _graph_read(qc):
+    """Item 91: (prefix, meas, terms [(label, angle)], phase, suffix, perm, edges) when every term (items 72-73's
+    reader, merged where exact) acts on one or two qubits; edges: the sorted two-qubit supports. Else None."""
+    ev = _st_parse(qc)
+    ev = ev + ([], None) if ev is not None else _st_parse_gates(qc)
+    if ev is None:
+        return None
+    prefix, meas, triples, phase, suffix, perm = ev
+    terms = [(lb, a * t) for lb, a, t in _st_merge(triples)]
+    edges = set()
+    for lb, _ in terms:
+        sup = sorted(q for q, _ in _chain_support(lb))
+        if len(sup) > 2:
+            return None
+        if len(sup) == 2:
+            edges.add((sup[0], sup[1]))
+    if not edges:
+        return None
+    return prefix, meas, terms, phase, suffix, perm or list(range(qc.num_qubits)), sorted(edges)
+
+
+def _graph_colours(edges):
+    """Item 91: a proper edge colouring of a bipartite graph with max-degree colours (Koenig), deterministic: edges in
+    sorted order; an edge (u, v) takes the smallest colour a free at u; if a is used at v, the a/b path from v (b the
+    smallest colour free at v) is swapped first. {edge: colour} or None when the graph is not bipartite."""
+    deg = {}
+    for u, v in edges:
+        deg[u] = deg.get(u, 0) + 1
+        deg[v] = deg.get(v, 0) + 1
+    D = max(deg.values())
+    at = {x: {} for x in deg}  # node -> {colour: neighbour}
+    for u, v in edges:
+        a = min(c for c in range(D) if c not in at[u])
+        if a in at[v]:
+            b = min(c for c in range(D) if c not in at[v])
+            path, x, c, seen = [], v, a, {v}
+            while c in at[x]:
+                y = at[x][c]
+                path.append((x, y, c))
+                if y in seen or y == u:
+                    return None  # an odd cycle: not bipartite
+                seen.add(y)
+                x, c = y, (b if c == a else a)
+            for x, y, c in path:
+                del at[x][c]
+                del at[y][c]
+            for x, y, c in path:
+                d = b if c == a else a
+                at[x][d] = y
+                at[y][d] = x
+        at[u][a] = v
+        at[v][a] = u
+    col = {}
+    for x, m in at.items():
+        for c, y in m.items():
+            col[(min(x, y), max(x, y))] = c
+    return col
+
+
+def _graph_place(n, edges, K, kadj):
+    """Item 91: the first VF2 embedding (rustworkx, nodes in index order, no score) of the interaction graph into the
+    cut device K: {logical qubit: physical qubit} or None."""
+    import rustworkx as rx
+    kn = sorted(K)
+    ki = {q: i for i, q in enumerate(kn)}
+    G = rx.PyGraph()
+    G.add_nodes_from(kn)
+    G.add_edges_from_no_data([(ki[a], ki[b]) for a in kn for b in kadj[a] if a < b])
+    P = rx.PyGraph()
+    P.add_nodes_from(range(n))
+    P.add_edges_from_no_data(edges)
+    if n > len(kn):
+        return None
+    m = next(rx.vf2_mapping(G, P, subgraph=True, induced=False, id_order=True, call_limit=_GRAPH_VF2_CALLS), None)
+    if m is None:
+        return None
+    return {h: kn[g] for g, h in m.items()}
+
+
+def _graph_brickwork(qc, target, max_error, seed):
+    """Item 91 (workplace proposal on c53): a Pauli evolution whose terms act on one or two qubits and whose
+    interaction graph embeds in the cut device (max degree <= 3, bipartite), compiled by formula. Placement: the
+    first VF2 embedding, tried first on the couplers of the device's most common two-qubit gate length, then on all
+    of the cut device (item 87's lattice). Order: every term at level 1 + the largest level of an earlier term that
+    shares a qubit and does not commute with it (exact); within a level the two-qubit terms by colour of a proper
+    edge colouring with max-degree colours (each colour a matching: one layer), then the single-qubit terms.
+    Emission as item 87 (Qiskit level 3 on the fixed layout, CZ) or, with rzz and rx in the Target, item 88 (rzz,
+    rx, Pauli frame undone inside the circuit). None when not applicable."""
+    GRAPH_STATS["tried"] += 1
+    if "cz" not in target.operation_names:
+        GRAPH_STATS["not_cz"] += 1
+        return None
+    got = _graph_read(qc)
+    if got is None:
+        GRAPH_STATS["not_read"] += 1
+        return None
+    prefix, meas, terms, phase, suffix, perm, edges = got
+    n, N = qc.num_qubits, target.num_qubits
+    deg = {}
+    for u, v in edges:
+        deg[u] = deg.get(u, 0) + 1
+        deg[v] = deg.get(v, 0) + 1
+    if max(deg.values()) > 3:
+        GRAPH_STATS["degree"] += 1
+        return None
+    col = _graph_colours(edges)
+    if col is None:
+        GRAPH_STATS["no_embedding"] += 1
+        return None
+    lat = _chain_lattice(target, max_error)
+    if lat is None:
+        GRAPH_STATS["no_embedding"] += 1
+        return None
+    K, kadj, fadj, _ = lat
+    place = _graph_place(n, edges, K, fadj)
+    if place is not None:
+        GRAPH_STATS["common_length"] += 1
+    else:
+        place = _graph_place(n, edges, K, kadj)
+    if place is None:
+        GRAPH_STATS["no_embedding"] += 1
+        return None
+    ncol = max(col.values()) + 1
+    GRAPH_STATS["colours"][ncol] = GRAPH_STATS["colours"].get(ncol, 0) + 1
+    level, last = [], {}
+    for k, (lb, _) in enumerate(terms):
+        lv = 0
+        for q, _ in _chain_support(lb):
+            for j, lb2 in last.get(q, ()):
+                if not _chain_commute(lb, lb2):
+                    lv = max(lv, level[j] + 1)
+        level.append(lv)
+        for q, _ in _chain_support(lb):
+            last.setdefault(q, []).append((k, lb))
+
+    def key(k):
+        sup = sorted(q for q, _ in _chain_support(terms[k][0]))
+        if len(sup) == 2:
+            return (level[k], 0, col[(sup[0], sup[1])], k)
+        return (level[k], 1, 0, k)
+    frame = CHAIN_FRAME and "rzz" in target.operation_names and "rx" in target.operation_names
+    log = QuantumCircuit(*qc.qregs, *qc.cregs, global_phase=phase)
+    for op, q in prefix:
+        log.append(op, [q])
+    for k in sorted(range(len(terms)), key=key):
+        _chain_rotation(log, *terms[k], frame=frame)
+    for op, q in suffix:
+        log.append(op, [q])
+    for q, cb in meas:
+        log.measure(perm[q], cb)  # item 76
+    cm = CouplingMap()
+    for q in range(N):
+        cm.add_physical_qubit(q)
+    for a in sorted(K):
+        for b in sorted(kadj[a]):
+            cm.add_edge(a, b)
+    used = set(place.values())
+    free = [q for q in sorted(K) if q not in used]
+    layout = [place[q] if q in place else free.pop(0) for q in range(n)]  # qubits without a term: unused places
+    if frame:
+        from qiskit.transpiler.passes import Optimize1qGatesDecomposition, RemoveDiagonalGatesBeforeMeasure
+        log = PassManager([RemoveDiagonalGatesBeforeMeasure()]).run(log)
+        low = _chain_frame(log)
+        pm = generate_preset_pass_manager(0, coupling_map=cm, basis_gates=["rzz", "rx", "rz", "sx", "x", "cz"],
+                                          initial_layout=layout, routing_method="none", seed_transpiler=seed)
+        placed = pm.run(low)
+        out = PassManager([Optimize1qGatesDecomposition(basis=["rz", "rx"])]).run(placed)
+        out._layout = placed._layout
+        if not _rzz_in_range(out):
+            out = _fold(out, target)
+        GRAPH_STATS["frame"] += 1
+    else:
+        pm = generate_preset_pass_manager(3, coupling_map=cm, basis_gates=["cz", "rz", "sx", "x"],
+                                          initial_layout=layout, routing_method="none", seed_transpiler=seed)
+        out = pm.run(log)
+    edges_f, bad = _failed_elements(target, max_error)
+    if _uses_failed(out, edges_f, bad):
+        GRAPH_STATS["failed_check"] += 1
+        return None
+    GRAPH_STATS["used"] += 1
+    return out
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Prototype c54: item 93, every output checked exact at a tight tolerance where it can be (home, after the workplace's
+# Q3: Qiskit's two-qubit synthesis can snap a nearly degenerate block, 1.4e-5 in distribution, inside a level-3
+# transpile)
+# ---------------------------------------------------------------------------------------------------------------------
+
+EXACT_CHECK = True  # item 93
+EXACT_CHECK_TOL = 1e-6  # item 93: largest difference of an outcome probability (or state infidelity unmeasured)
+EXACT93_STATS = {"checked": 0, "passed": 0, "not_checkable": 0, "failed": 0, "fallback_usual": 0, "fallback_level1": 0,
+                 "raised": 0, "largest_passed": 0.0}
+_X93_DEPTH = [0]
+_X93_BASIS = ["cx", "cz", "rz", "sx", "x", "h", "rzz", "rx", "ry", "u", "measure"]  # standard names only (barriers kept)
+
+
+EXACT_CHECK_MAX_QUBITS = 20  # item 95: active qubits up to which item 93 checks a measured circuit
+
+
+def _dist93(circ, limit=None):
+    """Item 93: the exact outcome distribution over a circuit's classical bits ({bits: p}, clbit 0 rightmost) when every
+    measurement is final and at most `limit` qubits are active; None otherwise."""
+    from qiskit.quantum_info import Statevector
+    meas, body, done = {}, [], set()
+    for ins in circ.data:
+        nm = ins.operation.name
+        qs = [circ.find_bit(q).index for q in ins.qubits]
+        if nm == "measure":
+            meas[circ.find_bit(ins.clbits[0]).index] = qs[0]
+            done.add(qs[0])
+            continue
+        if nm in ("barrier", "delay"):
+            continue
+        if ins.clbits or any(q in done for q in qs) or getattr(ins.operation, "blocks", None) is not None:
+            return None
+        body.append((ins.operation, qs))
+    active = sorted({q for _, qs in body for q in qs} | set(meas.values()))
+    if limit is None:  # item 95
+        limit = EXACT_CHECK_MAX_QUBITS
+    if not meas or len(active) > limit:
+        return None
+    pos = {q: i for i, q in enumerate(active)}
+    small = QuantumCircuit(len(active))
+    for op, qs in body:
+        small.append(op, [pos[q] for q in qs])
+    try:
+        probs = Statevector(small).probabilities()
+    except Exception:  # noqa: BLE001 - an instruction without a matrix: not checkable
+        return None
+    nclb = circ.num_clbits
+    out = {}
+    for idx in np.nonzero(probs > 1e-15)[0]:
+        bits = ["0"] * nclb
+        for cb, q in meas.items():
+            if (int(idx) >> pos[q]) & 1:
+                bits[nclb - 1 - cb] = "1"
+        k = "".join(bits)
+        out[k] = out.get(k, 0.0) + float(probs[idx])
+    return out
+
+
+def _exact93(qc, out):
+    """Item 93: True if `out` gives `qc`'s outcome distribution within EXACT_CHECK_TOL (measured circuits), or implements
+    it within EXACT_CHECK_TOL in state infidelity (unmeasured ones, item 39's check); False if it does not; None when
+    the check cannot be made (more than RESYNTH_MAX_QUBITS active qubits, mid-circuit measurement, no matrix)."""
+    measured = any(i.operation.name == "measure" for i in qc.data)
+    if measured:
+        try:
+            ref_c = transpile(qc, basis_gates=_X93_BASIS, optimization_level=0)
+        except Exception:  # noqa: BLE001
+            return None
+        a, b = _dist93(ref_c), _dist93(out)
+        if a is None or b is None:
+            return None
+        diff = max(abs(a.get(k, 0.0) - b.get(k, 0.0)) for k in set(a) | set(b))
+        if diff <= EXACT_CHECK_TOL:
+            EXACT93_STATS["largest_passed"] = max(EXACT93_STATS["largest_passed"], diff)
+            return True
+        return False
+    if qc.num_qubits > RESYNTH_MAX_QUBITS or len(_touched_qubits(out)) > RESYNTH_MAX_QUBITS:
+        return None
+    try:  # the input's own synthesis (a Pauli evolution's product formula, not its exact exponential)
+        ref_u = transpile(qc, basis_gates=_X93_BASIS, optimization_level=0)
+    except Exception:  # noqa: BLE001
+        return None
+    if _ops_of(ref_u) is None or _ops_of(out) is None:
+        return None
+    return bool(_implements(ref_u, out, tol=EXACT_CHECK_TOL))
+
+
+def _compile_for_hardware_c54(qc, *args, **kwargs):
+    """Item 93 (prototype c54): `_compile_for_hardware_c53g` (items 87-91 and everything before them, unchanged), and
+    on the outermost call the output is checked exact at EXACT_CHECK_TOL where it can be (`_exact93`). If it is not
+    exact, the usual path (`steiner=False, level3_candidate=False`) and then Qiskit's level-1 preset on the device are
+    tried in that order, each checked the same way (and the second refused if it uses a failed element); the first
+    exact one is returned. If none is, TranspilerError is raised: an inexact circuit is never returned silently.
+
+    """
+    if _X93_DEPTH[0] or not EXACT_CHECK:
+        return _compile_for_hardware_c53g(qc, *args, **kwargs)
+    _X93_DEPTH[0] += 1
+    try:
+        out = _compile_for_hardware_c53g(qc, *args, **kwargs)
+    finally:
+        _X93_DEPTH[0] -= 1
+    verdict = _exact93(qc, out)
+    if verdict is None:
+        EXACT93_STATS["not_checkable"] += 1
+        return out
+    EXACT93_STATS["checked"] += 1
+    if verdict:
+        EXACT93_STATS["passed"] += 1
+        return out
+    EXACT93_STATS["failed"] += 1
+    _X93_DEPTH[0] += 1
+    try:
+        try:
+            alt = _compile_for_hardware_c53g(qc, *args, **dict(kwargs, steiner=False, level3_candidate=False))
+        except (TranspilerError, ValueError):
+            alt = None
+        if alt is not None and _exact93(qc, alt):
+            EXACT93_STATS["fallback_usual"] += 1
+            return alt
+        target = kwargs.get("target") or getattr(kwargs.get("backend"), "target", None)
+        if target is not None:
+            alt = generate_preset_pass_manager(1, target=target,
+                                               seed_transpiler=kwargs.get("seed_transpiler")).run(qc)
+            edges, bad = _failed_elements(target, kwargs.get("prune_max_error", 0.5))
+            if not _uses_failed(alt, edges, bad) and _exact93(qc, alt):
+                EXACT93_STATS["fallback_level1"] += 1
+                return alt
+    finally:
+        _X93_DEPTH[0] -= 1
+    EXACT93_STATS["raised"] += 1
+    raise TranspilerError("no exact output at the tight tolerance (changelog item 93)")
+
+
+_compile_for_hardware_c54.__doc__ += _compile_for_hardware_c53g.__doc__ or ""
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Workplace proposal on c54 (2026-10-14): item 94, runs of commuting ZZ terms re-layered by edge colouring before the
+# compile (R1: 3-regular QAOA)
+# ---------------------------------------------------------------------------------------------------------------------
+
+ZZ_RELAYER = False  # item 94 (proposal); off since c56: dropped (Addendum 488)
+ZZ94_STATS = {"tried": 0, "not_read": 0, "unchanged": 0, "kept_relayered": 0, "kept_input": 0, "inexact": 0,
+              "error": 0}
+_ZZ94_DEPTH = [0]
+
+
+def _zz_relayered(qc):
+    """Item 94: `qc` with every maximal run of pairwise commuting two-qubit ZZ terms (items 72-73's reader, in their
+    order) regrouped into layers of disjoint pairs by a first-fit edge colouring in that order, each layer written
+    as rzz gates; other terms as their own PauliEvolutionGate on their support; the reader's leading gates first,
+    its final gates and measurements last. Exact: only commuting terms change order. None when the circuit is not
+    read, permutes its qubits, or no run changes."""
+    from qiskit.circuit.library import PauliEvolutionGate
+    from qiskit.quantum_info import SparsePauliOp
+    ev = _st_parse(qc)
+    ev = ev + ([], None) if ev is not None else _st_parse_gates(qc)
+    if ev is None:
+        return None
+    prefix, meas, triples, phase, suffix, perm = ev
+    n = qc.num_qubits
+    if perm and list(perm) != list(range(n)):
+        return None
+    out = QuantumCircuit(*qc.qregs, *qc.cregs, global_phase=phase)
+    for op, q in prefix:
+        out.append(op, [q])
+    changed = [False]
+    run = []
+
+    def zz(lb):
+        sup = [n - 1 - i for i, ch in enumerate(lb) if ch != "I"]
+        return len(sup) == 2 and all(lb[n - 1 - q] == "Z" for q in sup) and tuple(sorted(sup))
+
+    def flush():
+        layers = []
+        for (a, b), ang in run:
+            for lay in layers:
+                if a not in lay[0] and b not in lay[0]:
+                    lay[1].append((a, b, ang))
+                    lay[0].update((a, b))
+                    break
+            else:
+                layers.append(({a, b}, [(a, b, ang)]))
+        flat = [g for lay in layers for g in lay[1]]
+        if [(a, b) for a, b, _ in flat] != [e for e, _ in run]:
+            changed[0] = True
+        for a, b, ang in flat:
+            out.rzz(2 * ang, a, b)
+        run.clear()
+
+    for lb, a, t in triples:
+        ang = a * t
+        e = zz(lb)
+        if e:
+            run.append((e, ang))
+            continue
+        flush()
+        sup = [n - 1 - i for i, ch in enumerate(lb) if ch != "I"]
+        out.append(PauliEvolutionGate(SparsePauliOp("".join(lb[n - 1 - q] for q in reversed(sup))), time=ang), sup)
+    flush()
+    for op, w in suffix:
+        out.append(op, [w])
+    for q, cb in meas:
+        out.measure(q, cb)
+    return out if changed[0] else None
+
+
+def _compile_for_hardware_c55(qc, *args, **kwargs):
+    """Item 94 (workplace proposal on c54; off by default since c56): `_compile_for_hardware_c54` (c54, item 93's exactness check included) on the
+    input, and on the outermost call also on its ZZ-relayered rewrite (`_zz_relayered`, exact by construction); the
+    rewrite's output is returned when item 84's rule (`_better`) prefers it and item 93's check against the input does
+    not refuse it.
+
+    """
+    out = _compile_for_hardware_c54(qc, *args, **kwargs)
+    if _ZZ94_DEPTH[0] or _X93_DEPTH[0] or _FRAC_DEPTH[0] or _CHAIN_DEPTH[0] or not ZZ_RELAYER or kwargs.get("_inner"):
+        return out
+    target = kwargs.get("target") or getattr(kwargs.get("backend"), "target", None)
+    if target is None:
+        return out
+    ZZ94_STATS["tried"] += 1
+    try:
+        hl = _zz_relayered(qc)
+    except Exception:  # noqa: BLE001
+        ZZ94_STATS["error"] += 1
+        return out
+    if hl is None:
+        ZZ94_STATS["unchanged"] += 1
+        return out
+    _ZZ94_DEPTH[0] += 1
+    try:
+        alt = _compile_for_hardware_c54(hl, *args, **kwargs)
+    except (TranspilerError, ValueError, FailedElementsError):
+        ZZ94_STATS["error"] += 1
+        return out
+    finally:
+        _ZZ94_DEPTH[0] -= 1
+    if not _better(alt, out, target):
+        ZZ94_STATS["kept_input"] += 1
+        return out
+    if _exact93(qc, alt) is False:
+        ZZ94_STATS["inexact"] += 1
+        return out
+    ZZ94_STATS["kept_relayered"] += 1
+    return alt
+
+
+_compile_for_hardware_c55.__doc__ += _compile_for_hardware_c54.__doc__ or ""
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Prototype c56: item 96, the scope gate (home, after the owner's scope declaration of 2026-10-14, Addendum 488):
+# PSF-Zero compiles a circuit only when its two-qubit interaction graph embeds in the device's working couplers;
+# every other circuit is handed to Qiskit's level 3 unchanged
+# ---------------------------------------------------------------------------------------------------------------------
+
+SCOPE_GATE = True  # item 96
+SCOPE96_STATS = {"calls": 0, "in_scope": 0, "handed": 0, "handed_working": 0, "handed_failed_fallback": 0,
+                 "reasons": {}, "handoff_exact": 0, "handoff_unchecked": 0, "handoff_inexact": 0}
+_S96_DEPTH = [0]
+_S96_VF2_CALLS = 2_000_000  # item 96: VF2 states tried before an embedding counts as not found (a count, not a time)
+
+
+def _scope96_edges(qc):
+    """Item 96: (sorted two-qubit interaction edges, None), or (None, reason) when the circuit cannot be in scope.
+    A circuit items 72-73's reader reads as Pauli terms on one or two qubits gives the terms' two-qubit supports
+    (item 91's `_graph_read`); otherwise every two-qubit operation as written gives an edge, and an operation on more
+    than two qubits puts the circuit out of scope."""
+    got = _graph_read(qc)
+    if got is not None:
+        return sorted(got[-1]), None
+    edges = set()
+    for ins in qc.data:
+        if ins.operation.name in ("barrier", "measure", "delay"):
+            continue
+        qs = [qc.find_bit(q).index for q in ins.qubits]
+        if len(qs) > 2:
+            return None, "multi_qubit_operation"
+        if len(qs) == 2:
+            edges.add((min(qs), max(qs)))
+    return sorted(edges), None
+
+
+def _scope96_embeds(edges, n, target, max_error):
+    """Item 96: True when the interaction graph `edges` (of an n-qubit circuit) embeds in the device's working
+    coupling graph -- couplers and qubits the Target reports failed (error >= max_error, either direction) removed --
+    by the first match of rustworkx's VF2 (subgraph monomorphism, nodes in index order, no score). Not finding one
+    within _S96_VF2_CALLS states counts as no embedding."""
+    import rustworkx as rx
+    cm = target.build_coupling_map()
+    if cm is None:  # all-to-all: every graph embeds
+        return True
+    fedges, fq = _failed_elements(target, max_error)
+    und = set()
+    for a, b in cm.get_edges():
+        if a in fq or b in fq or (a, b) in fedges or (b, a) in fedges:
+            continue
+        und.add((min(a, b), max(a, b)))
+    working = target.num_qubits - len(fq)
+    if n > working or not und:
+        return False
+    gn = sorted({q for e in und for q in e})
+    gi = {q: i for i, q in enumerate(gn)}
+    G = rx.PyGraph()
+    G.add_nodes_from(gn)
+    G.add_edges_from_no_data([(gi[a], gi[b]) for a, b in sorted(und)])
+    pn = sorted({q for e in edges for q in e})
+    pi = {q: i for i, q in enumerate(pn)}
+    P = rx.PyGraph()
+    P.add_nodes_from(pn)
+    P.add_edges_from_no_data([(pi[a], pi[b]) for a, b in edges])
+    if len(pn) > len(gn) or max(P.degree(i) for i in P.node_indices()) > max(G.degree(i) for i in G.node_indices()):
+        return False
+    m = next(rx.vf2_mapping(G, P, subgraph=True, induced=False, id_order=True, call_limit=_S96_VF2_CALLS), None)
+    return m is not None
+
+
+def _hand_off96(qc, target, seed, max_error):
+    """Item 96: (Qiskit level 3's output on the device, how), with the device's own Target; if that output uses a
+    failed element, Qiskit level 3 on the device without its failed qubits (item 85's `_working_target`), written back
+    on the device's indices; (None, "failed") if that too uses a failed element."""
+    fe, fq = _failed_elements(target, max_error)
+    out = generate_preset_pass_manager(3, target=target, seed_transpiler=seed).run(qc)
+    if not _uses_failed(out, fe, fq):
+        return out, "qiskit"
+    if fq and target.num_qubits - len(fq) >= qc.num_qubits:
+        sub, keep = _working_target(target, set(fq))
+        o = generate_preset_pass_manager(3, target=sub, seed_transpiler=seed).run(qc)
+        o = _embed_working(o, keep, target.num_qubits)
+        if not _uses_failed(o, fe, fq):
+            return o, "qiskit_working"
+    return None, "failed"
+
+
+def compile_for_hardware(qc, *args, **kwargs):
+    """Item 96 (prototype c56): the scope gate. With the device's Target (`target=` or `backend=`), the input's
+    two-qubit interaction graph (`_scope96_edges`) is tested against the device's working couplers
+    (`_scope96_embeds`): if it embeds -- or the input has no two-qubit operation -- the call is
+    `_compile_for_hardware_c55` (items 1-95 as before, item 94 off); otherwise the input is handed to Qiskit's level 3
+    on the device unchanged (seed `seed_transpiler`, 0 when none is given; on the working qubits if Qiskit's output
+    uses a failed element; PSF-Zero's own path only if that fails too, counted), checked by item 93's test where it
+    can be, and returned with a warning if inexact. Without a Target, or with positional arguments, nothing changes.
+    `SCOPE_GATE = False` restores c55 with item 94 off. Counts in `SCOPE96_STATS`.
+
+    """
+    target = kwargs.get("target") or getattr(kwargs.get("backend"), "target", None)
+    if _S96_DEPTH[0] or not SCOPE_GATE or args or target is None:
+        return _compile_for_hardware_c55(qc, *args, **kwargs)
+    SCOPE96_STATS["calls"] += 1
+    max_error = kwargs.get("prune_max_error", 0.5)
+    edges, reason = _scope96_edges(qc)
+    if reason is None:
+        in_scope = not edges or _scope96_embeds(edges, qc.num_qubits, target, max_error)
+        reason = ("no_two_qubit" if not edges else "embeds") if in_scope else "no_embedding"
+    else:
+        in_scope = False
+    SCOPE96_STATS["reasons"][reason] = SCOPE96_STATS["reasons"].get(reason, 0) + 1
+    if in_scope:
+        SCOPE96_STATS["in_scope"] += 1
+        _S96_DEPTH[0] += 1
+        try:
+            return _compile_for_hardware_c55(qc, **kwargs)
+        finally:
+            _S96_DEPTH[0] -= 1
+    seed = kwargs.get("seed_transpiler")
+    seed = 0 if seed is None else seed
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        out, how = _hand_off96(qc, target, seed, max_error)
+    if out is None:
+        SCOPE96_STATS["handed_failed_fallback"] += 1
+        _S96_DEPTH[0] += 1
+        try:
+            return _compile_for_hardware_c55(qc, **kwargs)
+        finally:
+            _S96_DEPTH[0] -= 1
+    if "rzz" in target.operation_names and not _rzz_in_range(out):  # item 96 revised (c57)
+        try:
+            out = _fold(out, target)
+            SCOPE96_STATS["folded"] = SCOPE96_STATS.get("folded", 0) + 1
+        except TranspilerError:
+            SCOPE96_STATS["fold_failed_fallback"] = SCOPE96_STATS.get("fold_failed_fallback", 0) + 1
+            _S96_DEPTH[0] += 1
+            try:
+                return _compile_for_hardware_c55(qc, **kwargs)
+            finally:
+                _S96_DEPTH[0] -= 1
+    SCOPE96_STATS["handed"] += 1
+    if how == "qiskit_working":
+        SCOPE96_STATS["handed_working"] += 1
+    verdict = _exact93(qc, out)
+    if verdict is None:
+        SCOPE96_STATS["handoff_unchecked"] += 1
+    elif verdict:
+        SCOPE96_STATS["handoff_exact"] += 1
+    else:
+        SCOPE96_STATS["handoff_inexact"] += 1
+        warnings.warn("psf_compile item 96: Qiskit level 3's output, handed on for a circuit outside PSF-Zero's scope, "
+                      f"is not exact within EXACT_CHECK_TOL = {EXACT_CHECK_TOL}; returned unchanged", RuntimeWarning,
+                      stacklevel=2)
+    return out
+
+
+compile_for_hardware.__doc__ += _compile_for_hardware_c55.__doc__ or ""

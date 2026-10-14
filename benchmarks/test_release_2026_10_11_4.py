@@ -23,7 +23,7 @@ REPO = os.path.abspath(os.path.join(HERE, ".."))
 for p in (os.path.join(REPO, "benchmarks"), REPO):
     sys.path.insert(0, p)
 
-REL = os.path.join(REPO, "psf_compile.py")
+REL = os.path.join(REPO, "patches", "psf_compile_release_2026-10-11.4", "psf_compile.py")  # frozen since release 2026-10-14.1
 C43 = os.path.join(REPO, "patches", "psf_compile_c43_2026-10-11", "psf_compile.py")
 PREV = os.path.join(REPO, "patches", "psf_compile_release_2026-10-11.3", "psf_compile.py")
 

@@ -1,784 +1,575 @@
-"""psf_ai_compile.py -- PSF-Zero front end for circuits written by a language model (prototype).
+"""psf_ai_compile.py -- PSF-Zero front end for circuits written by a language model, prototype 2026-10-14.a18
+(a17, the workplace's, + items 32-33 at home: no search; what is not built by formula is handed on).
 
-The compiler itself is not changed: this module only calls `psf_compile.compile_for_hardware()` (and its
-Rust core) and works around it. It is meant for what a model writes in the vLLM loop: small circuits
-(a handful of qubits), many SWAPs and redundant gates, often given as PennyLane-style `unitary` gates,
-compiled many times but each in milliseconds. Small circuits leave time for things a large-circuit path
-cannot afford:
+a16 is a15 (patches/psf_ai_compile_a15_2026-10-14) with two additions at or below SMALL_MAX_QUBITS when the device's
+Target is given. Without a Target, and above SMALL_MAX_QUBITS, it is a15's own fallback (a14).
 
-  1. a commutation-aware clean-up of the input (CommutativeCancellation) as a second starting point,
-  2. several routing seeds per starting point, keeping the circuit with the fewest 2-qubit gates,
-  3. a polish of the routed circuit: commutative cancellation plus re-synthesis (by the PSF-Zero core) of
-     every 2-qubit block whose optimal CX count is below what it holds, repeated while it helps.
+Why. W3 and N2 (2026-10-14): heavy-hex has no cycle shorter than 12, so any 4 or 6 qubits induce a forest and every
+layer of a CZ ring needs at least one SWAP or a CZ fused with one, whatever the placement. a15's constructions then
+lost to a14's searched routing on the 4-qubit classifier, and a15 returned the search. N2's formula -- the ring on a
+line in folded order, rounds of CZ and interior odd-even SWAPs, the next layer mirrored -- was shorter than every
+other method on 61 of W3's 64 cells.
 
-a1 (2026-10-01) adds, after the held-out test of a0 (Addendum TBD):
-  4. when the input has gates on 3 or more qubits (ccz, ccx, cswap, ...), two more starting points with those
-     gates decomposed (as written and commutatively cancelled), so the 2-qubit machinery sees them; a0's own
-     starting points are kept first, so a1's candidate set contains a0's;
-  5. a third starting point, only when the input has 2-qubit `unitary` gates: every 2-qubit gate re-expressed in
-     CX form by `psf_compile.compile` and then commutatively cancelled, so `unitary` gates no longer hide
-     commuting structure;
-  6. one more candidate per starting point that routes from the initial layout Qiskit's level-3 search picks
-     (only the layout is borrowed; synthesis and routing stay PSF-Zero's level-1 pipeline).
-
-a2 (2026-10-01) adds, after a noisy-simulation test showed that once 2-qubit counts are close the physical qubits
-chosen decide the fidelity (Addendum TBD), and only when a `target` with error rates is given:
-  7. each of the best candidates (fewest 2-qubit gates, within REMAP_EXTRA_2Q of the best, at most REMAP_TOP) is
-     re-placed on the device: every placement of its used qubits and couplers that preserves the couplings
-     (subgraph isomorphism, up to MAX_MAPPINGS) is scored by the target's own gate errors, and the best is kept
-     (like Qiskit's VF2PostLayout, applied to PSF-Zero's routed circuit);
-  8. the final choice is by estimated fidelity (sum of -log(1 - error) over the gates), not by 2-qubit count;
-  9. one more candidate per starting point routes from the initial layout Qiskit's level-3 search picks when it
-     is given the target (error-aware); again only the layout is borrowed.
-Without a target, a2 behaves exactly as a1.
-
-a3 (2026-10-01) changes only the error used in 7-8. A replay of model-written circuits showed both error-aware
-compilers (a2 and Qiskit level 3 with the target) behind error-blind Qiskit level 3 on FakeAuckland. The cause:
-on some qubits the reported gate error is LOWER than what the same snapshot's T1/T2 and gate duration allow (qubit
-24, T2 = 26 us: cx(24,25) reported 0.0055, decoherence limit 0.0089), so placing by reported error lures circuits
-onto those qubits. a3 uses, per gate, max(reported error, decoherence limit), the limit being the average gate
-infidelity of thermal relaxation (T1, T2 <= 2 T1) on each of the gate's qubits for the gate's duration.
-
-a4 (2026-10-01) replaces the score itself. Exploration on development circuits showed that the sum of average gate
-infidelities ranks the compiled candidates of one circuit no better than chance on FakeAuckland (63 of 117 pairs),
-because relaxation and dephasing hardly affect a qubit that sits in a basis state while depolarizing noise affects
-every state. a4 scores with a state-aware first-order estimate: every gate's error is split into Pauli components
-(Pauli-twirled thermal relaxation per qubit from T1, T2 and the gate duration, plus the depolarizing remainder up to
-the reported error), and each component P with probability p costs p * (1 - <P>^2), <P> taken on the ideal state of
-the routed circuit right after the gate (statevector of the used qubits). The expectation values do not depend on
-where the circuit is placed, so they are computed once per candidate and every placement is scored from
-precomputed sums. (109 of 117 pairs ranked correctly on the same development circuits.) The model behind the
-estimate makes the same physical assumptions as qiskit-aer's device noise model, so a noisy-simulation test is
-favourable to it by construction; hardware is the real test.
-
-a5 (2026-10-01) fixes a defect that only shows in long-running use: a3/a4 cached per-gate errors under the key
-id(target). Python reuses the id of a freed object, so a new Target (for example after a calibration update)
-could be served the old Target's numbers without any error (199 of 200 laps in a check that replaced the Target
-every lap). a5 keys every cache entry by the values it was computed from (gate error, duration, T1 and T2 of the
-gate's qubits), never by object identity, and bounds the caches' size. Results for one fixed Target are unchanged.
-
-a7 (2026-10-02, home) adds one candidate, only when a `target` is given:
-  12. Qiskit level 3's own output for the target (the transpile a2 already runs to borrow its layout) joins the
-      candidates that are re-placed and scored by the state-aware estimate, whenever its two-qubit count is within
-      REMAP_EXTRA_2Q of PSF-Zero's best (it does not count against REMAP_TOP). A diagnosis (Addendum 314) found a5 losing
-      to that output on every F3 Heisenberg-chain circuit on FakeAuckland, on the same six qubits and with the same
-      two-qubit count, while a5's own estimate ranked that output better in every case: a5's candidates never
-      included it. The output is used as Qiskit returns it (not polished). No extra compile is made. Without a target,
-      a7 behaves exactly as a5.
-
-a8 (2026-10-04, home; adopted 2026-10-04, Addenda 336-338) changes only what happens above `SMALL_MAX_QUBITS` when a `target` is given:
-  13. Until a7, such circuits went straight to `compile_for_hardware()` WITHOUT the target (the `target` argument
-      was consumed by this function and never forwarded), so the compile saw neither error rates nor failed
-      elements. WIDE (Addendum 335) measured the result at 9-10 logical qubits: 1.14-2.84 times the infidelity of
-      the release's recommended call, and failed directions or qubits used in 302 of 1,188 circuits. a8 hands such
-      circuits to the release's recommended call with the target (`target`, `placement_refine=True`,
-      `final_resynthesis="select"`, `compare_level3=True`; caller kwargs override), which used no failed element in
-      any test. Without a target, and at or below `SMALL_MAX_QUBITS`, a8 behaves exactly as a7.
-
-a9 (2026-10-05, home; adopted 2026-10-05, Addenda 342-344) checks the one circuit it takes from Qiskit whole:
-  14. Item 12 added Qiskit level 3's output for the target as a candidate without checking that it is equivalent to
-      the input. On cx devices that output is exposed to Qiskit issue #17057 (Addendum 294): a workplace probe
-      (Addendum 340) found level 3 wrong on 8 of 10 explicit near-boundary unitary circuits on FakeAuckland, the kind
-      of `unitary` gate a model writes. a9 uses that output only if the release's `_implements` (psf_compile item
-      39) confirms it; if the release has no such check, the output is not used. Everything else is a8's (its large-
-      circuit path calls the release, which checks its own Qiskit-made circuits from item 39 on).
-
-a10 (2026-10-05, workplace; adopted with a11 on 2026-10-06, Addenda 358-362) counts readout in the state-aware estimate:
-  15. The state-aware estimate (a4, `_state_weights` / `_score_weights`) skipped `measure`, so neither the choice among
-      candidates nor the state-aware re-placement saw readout error; model-written circuits are sampled, so their
-      measured qubits' readout enters every result. a10 records each measured circuit qubit once (weight 1) and charges
-      the Target's measure error of the physical qubit it is mapped to. A circuit without measurements gets exactly
-      a9's estimate (and output). The same blind spot in the release's item 38 is item 40 of candidate psf_compile
-      2026-10-05.c13 (workplace READOUT test, 2026-10-05).
-
-a11 (2026-10-05, workplace; adopted 2026-10-06, Addenda 358-362) keeps two-qubit gates in a direction the target provides:
-  16. On ecr (Eagle) devices each coupler supports one direction only. The state-aware re-placement relabels qubits on
-      an undirected graph, and the estimate looked a gate up in either direction, so a9/a10 returned ecr gates in the
-      unsupported direction (workplace ecr exploration, 2026-10-05: 224 and 346 such gates on FakeBrussels and
-      FakeStrasbourg over 56 circuits; Aer's noise model has no error for them, so they also looked better than they
-      are). a11: (a) the estimate charges an unsupported direction as infinite, so no placement or candidate that
-      needs one is chosen; (b) a final backstop: if the result still has an off-target two-qubit gate, Qiskit's
-      GateDirection with the target fixes it, kept only if it acts as the original (`_same_action`, release item 39)
-      and is fully on target; otherwise the release's recommended call is returned. On devices whose couplers work in
-      both directions (cx with both entries, cz) nothing changes.
-
-a12 (2026-10-06; adopted 2026-10-06, Addenda 364-367) makes the state-aware re-placement faster without changing its result:
-  17. The re-placement (a4, `best_placement_state_aware`) scores up to MAX_MAPPINGS placements of each of up to
-      REMAP_TOP + 1 candidates, and every score looked up each gate's error parameters in the target again: on cz
-      devices it was 53-62% of a11's time (exploratory profile, 2026-10-06). a12 (a) keeps, within one call, the
-      parameters of each (gate, device qubits) once computed, and (b) re-places a candidate only once when the same
-      circuit was produced from more than one starting point or seed. The scores are the same numbers, added in the
-      same order, so every comparison and the returned circuit are unchanged.
-
-Circuits above `SMALL_MAX_QUBITS` go to `compile_for_hardware()`: without a target unchanged (a7), with a target by
-the release's recommended call (a8, item 13).
-The layout of the routed circuit (initial and final) is preserved by every step.
+a16 (with a Target):
+  28. A circuit that reads as layers of single-qubit gates, each followed by CZ gates forming one cycle through all
+      its n >= 4 qubits (the same cycle every time; the CZs of a layer may come in any order, since they commute),
+      then single-qubit gates and measurements at the end, is also built by N2's formula: the cycle's qubits in folded
+      order (c0, c[n-1], c1, c[n-2], ...) on a line of the device placed by psf_compile's item 87 rule (W5's cut, the
+      longest piece of Heron's snake, centred, else the first VF2 path; couplers of the device's most common gate
+      length first), each layer's CZs done round by round with one odd-even transposition round of SWAPs on the
+      interior positions between rounds, the next layer running the rounds backwards. Qiskit's level-3 preset
+      translates it on that fixed layout without routing (coupling map and basis only). The result is one more
+      candidate of item 25, after a15's constructions and before a14's search (item 27, still last). An unmeasured
+      circuit with an odd number of ring layers (its qubits end permuted) is not built. Needs psf_compile with item
+      87 (`_chain_lattice`, `_chain_place`); without it the candidate is skipped (counted).
+  29. With rx in the Target (IBM's fractional gates: rx(theta) in one pulse), every candidate's single-qubit runs are
+      merged into rz rx rz (one pulse each; Qiskit's Optimize1qGatesDecomposition with basis rz, rx; exact) before
+      item 25 compares them. With rzz in the Target, a candidate with an rzz angle outside IBM's executable range
+      0 < theta <= pi/2 is folded by psf_compile's item 86 (`_fold`) and dropped if that fails: a14's searched
+      output is not folded by itself (W3 cells on a fractional FakeTorino, a15: 2 of 64 returned such a circuit).
+  30. (a17) Every candidate is checked against the input before item 25 compares them, and an inexact one is never
+      returned. Measured inputs: the outcome distribution over the input's classical bits, computed exactly
+      (statevector of the active qubits), within 1e-9 in total variation. Unmeasured inputs: psf_compile's item 39
+      check (`_implements`) at a state infidelity of 1e-12 instead of its EXACT_TOL = 1e-6. Why: a15 returned one
+      circuit 1.4e-5 away from the input in total variation (W3, FakeFez fractional, n = 6, L = 12; workplace Q3).
+      The cause is Qiskit's two-qubit synthesis, not a tolerance of PSF-Zero's: TwoQubitWeylDecomposition snaps a
+      block to a specialised form when the snap costs at most 1e-9 in average gate fidelity, and Qiskit's level 2/3
+      (TwoQubitPeepholeOptimization, also UnitarySynthesis) uses it even at approximation_degree = 1.0. A block with
+      Weyl coordinates (0.1489, 0.1489, 0) came back with infidelity 8.5e-10, an amplitude error of about 3e-5, and
+      item 39's state-infidelity bound (1e-6) cannot see that. A candidate that cannot be checked (more than
+      EXACT_MAX_ACTIVE = 20 active qubits, mid-circuit measurement, classical control) stands unchecked (counted).
+  31. (a17) A second ring schedule, as one more candidate after item 28's ("ring2"): the same folded order, then
+      three rounds with two SWAP layers -- the ring edges already adjacent, SWAPs SA = (1,2), (5,6), ...; the edges
+      made adjacent, then SA undone together with SB = (3,4), (7,8), ... (disjoint, one layer); the rest -- and the
+      next layer mirrored. Every ring of n >= 4 is covered (checked to n = 199) at CZ-depth 9 and about 3n CZ per
+      layer; N2's odd-even transposition rounds grow with n (55 CZ per layer at n = 7, 203 at n = 11). At n = 4 both
+      are the same; at n = 6 N2's is shorter (same CZ count), at n = 5, 7, 8 this one (n = 7, L = 8: 7.90 against
+      22.75 us). Both are built and item 25 takes the shorter.
+  32. (a18) a14's searched routing is no longer a candidate (SEARCH_FALLBACK = False). Why: the owner's scope
+      declaration of 2026-10-14 (Addendum 488) -- PSF-Zero competes only where it builds by formula, and does not
+      search. On W3's 64 cells a17 chose the search once per Target (FakeTorino, n = 4, L = 1).
+  33. (a18) Hand-off. An input that item 28's reader does not read as a ring classifier, and every input a17 sent to
+      a14 (no Target, more than SMALL_MAX_QUBITS qubits, no basis, a psf_compile without `_better`), is handed on
+      unchanged: with the device's Target to psf_compile's default call (`compile_for_hardware`, which builds chains
+      and embeddable lattices by formula itself and applies its own scope), without one to Qiskit's level 3 with the
+      coupling map and basis given (seed `seeds[0]`). The front end's own candidates (a15's starts and polish, the
+      rings, the rx merge) are made only for a ring classifier. The handed-on output is checked exact as item 30 does
+      where it can be; an inexact one is returned unchanged with a warning and counted (A18_STATS), since the
+      hand-off promises the receiver's own output. Why: on real devices PSF-Zero's own choices outside the circuits
+      it builds by formula lost on average (F 0.78 x over 25 pairs, Addendum 488). HAND_OFF = False restores a17.
+Everything else is a15's: candidates chosen by psf_compile's `_better` (duration, then two-qubit count), no seed or
+placement search, no error value or T1/T2 decides; failed elements never used (item 26); a11's direction backstop.
 """
 import contextlib
-import math
-
-import numpy as np
+import importlib.util
 import io
+import os
+import sys
 import warnings
 
-from qiskit.circuit.equivalence_library import SessionEquivalenceLibrary
-from qiskit.transpiler import PassManager
-from qiskit.transpiler.passes import (BasisTranslator, Collect2qBlocks, CommutativeCancellation,
-                                      ConsolidateBlocks, Optimize1qGatesDecomposition)
+from qiskit import QuantumCircuit
+from qiskit.transpiler import CouplingMap, PassManager, generate_preset_pass_manager
+from qiskit.transpiler.passes import Optimize1qGatesDecomposition
 
 import psf_compile as pc
 
-AI_COMPILE_VERSION = "2026-10-06.a12"  # adopted 2026-10-06 (Addenda 364-367): a11 + faster re-placement with the same result (item 17); a11 is psf_ai_compile_a11.py
-SMALL_MAX_QUBITS = 8
-DEFAULT_SEEDS = (0, 1, 2, 3)
-L3_LAYOUT_CANDIDATE = True
-EXPANDED_START = True
-REMAP_TOP = 6            # a2: candidates (fewest 2-qubit gates first) that are re-placed by error
-REMAP_EXTRA_2Q = 2       # a2: ... within this many 2-qubit gates of the best
-MAX_MAPPINGS = 5000      # a2: placements tried per candidate
-L3T_LAYOUT_CANDIDATE = True
-L3T_OUTPUT_CANDIDATE = True  # a7: level 3's own output (target given) is also a candidate
-DECOHERENCE_FLOOR = True  # a3: a gate cannot be better than T1/T2 allow during its duration
-STATE_AWARE = True  # a4: score placements and candidates by the state-aware first-order estimate  # a2: also route from Qiskit level 3's error-aware layout (target given)
-POLISH_ROUNDS = 3
-FAST_PATH_TARGET = True  # a8: above SMALL_MAX_QUBITS with a target, use the release's recommended call (item 13)
-FAST_PATH_RECOMMENDED = dict(placement_refine=True, final_resynthesis="select", compare_level3=True)
-L3T_CHECK_STATS = {"accepted": 0, "refused": 0, "unavailable": 0}  # a9 (item 14)
+_A15_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "patches",  # release: from benchmarks/
+                         "psf_ai_compile_a15_2026-10-14", "psf_ai_compile.py")
+if not os.path.exists(_A15_FILE):  # run from outside the repository's patches folder: the repository root as cwd
+    _A15_FILE = os.path.join(os.getcwd(), "patches", "psf_ai_compile_a15_2026-10-14", "psf_ai_compile.py")
 
 
-def _two_q(c):
-    return sum(1 for inst in c.data if len(inst.qubits) == 2)
+def _load_a15():
+    name = "psf_ai_compile_a15_for_a16"
+    if name in sys.modules:
+        return sys.modules[name]
+    spec = importlib.util.spec_from_file_location(name, _A15_FILE)
+    m = importlib.util.module_from_spec(spec)
+    sys.modules[name] = m
+    spec.loader.exec_module(m)
+    return m
 
 
-def _depth2q(c):
-    return c.depth(lambda inst: len(inst.qubits) == 2)
+a15 = _load_a15()
+a14 = a15.a14
+
+AI_COMPILE_VERSION = "2026-10-14.a18"  # adopted 2026-10-14 with psf_compile 2026-10-14.1 (Addendum 492); a12 is psf_ai_compile_a12.py; prototype: a17 (workplace: items 28-31) + items 32-33 (no search; hand-off outside the ring formula)
+SMALL_MAX_QUBITS = a15.SMALL_MAX_QUBITS
+DEFAULT_SEEDS = a15.DEFAULT_SEEDS
+CONSTRUCT_BY_DURATION = True  # items 23-29; False gives a14
+SEARCH_FALLBACK = False  # item 27; False since a18 (item 32)
+HAND_OFF = True  # item 33
+RING_FORMULA = True  # item 28
+RX_ONE_PULSE = True  # item 29
+EXACT_CHECK = True  # item 30
+EXACT_TVD = 1e-9  # item 30: largest total variation distance accepted between the candidate's and the input's outcomes
+EXACT_STATE = 1e-12  # item 30: largest state infidelity accepted for an unmeasured input (item 39's check)
+EXACT_MAX_ACTIVE = 20  # item 30: largest number of active qubits simulated for the check
+A17_STATS = {"checked": 0, "inexact_dropped": 0, "unchecked": 0, "largest_tvd_dropped": 0.0, "all_inexact": 0}
+A18_STATS = {"handed_compiler": 0, "handed_qiskit": 0, "handoff_exact": 0, "handoff_unchecked": 0, "handoff_inexact": 0}
+A16_STATS = {"calls": 0, "candidates": 0, "chosen_start": {}, "chosen_search": 0, "chosen_ring": 0,
+             "ring_built": 0, "ring_not_read": 0, "ring_no_path": 0, "ring_no_item87": 0, "ring_odd_unmeasured": 0,
+             "ring_failed": 0, "rx_merged": 0, "rzz_folded": 0, "rzz_dropped": 0, "failed_skipped": 0, "release_fallback": 0, "compile_failed": 0,
+             "search_failed": 0}
 
 
-def _resynthesize_blocks(circ, verify, tol, on_unsupported):
-    """Consolidate every 2-qubit block that costs more CX than its optimum and re-synthesise it with the
-    PSF-Zero core (CX basis). Returns a new circuit (layout not yet restored)."""
-    pm = PassManager([
-        Collect2qBlocks(filter_fn=lambda dag, block: pc._block_saves_cx(block)),
-        ConsolidateBlocks(kak_basis_gate=None, force_consolidate=True),
-    ])
-    blocked = pm.run(circ)
-    idx = [i for i, inst in enumerate(blocked.data)
-           if len(inst.qubits) == 2 and inst.operation.name == "unitary"]
-    if not idx:
-        return circ
-    synth = pc.SU4GeodesicPSFSynthesizer(
-        pc.GeodesicPSFHyper(tol=tol, on_unsupported=on_unsupported, entangling_basis="cx"), verify=verify)
-    done = dict(zip(idx, synth.synthesize_many([blocked.data[i].operation.to_matrix() for i in idx])))
-    out = blocked.copy_empty_like()
-    out.global_phase = blocked.global_phase
-    for i, inst in enumerate(blocked.data):
-        if i in done:
-            out.compose(done[i][0], inst.qubits, inplace=True)
+# --------------------------------------------------------------------------------------------- item 28: reading
+
+def _ring_read(qc):
+    """Item 28: (cycle, segments, tail, meas) when `qc` is layers of single-qubit gates each followed by CZ gates
+    forming one cycle through all its n >= 4 qubits (the same cycle each time), then single-qubit gates and final
+    measurements; else None. cycle: the qubits in cycle order from the smallest, toward its smaller neighbour;
+    segments: per layer, the single-qubit (operation, qubit) before its CZs; tail: those after the last layer;
+    meas: [(qubit, clbit)]."""
+    n = qc.num_qubits
+    if n < 4:
+        return None
+    segments, cur, block, blocks, tail_meas = [], [], set(), [], []
+    touched = set()
+    measured = set()
+    for ins in qc.data:
+        nm = ins.operation.name
+        qs = [qc.find_bit(q).index for q in ins.qubits]
+        if nm == "barrier":
+            continue
+        if getattr(ins.operation, "condition", None) is not None or ins.operation.num_clbits > (1 if nm == "measure" else 0):
+            return None
+        if nm == "measure":
+            if qs[0] in measured:
+                return None
+            measured.add(qs[0])
+            tail_meas.append((qs[0], qc.find_bit(ins.clbits[0]).index))
+            continue
+        if measured & set(qs):
+            return None
+        if len(qs) == 1:
+            if qs[0] in touched:  # the layer's CZs on this qubit are done: the layer must be complete
+                if len(block) != n:
+                    return None
+                blocks.append(frozenset(block))
+                segments.append(cur)
+                cur, block, touched = [], set(), set()
+            cur.append((ins.operation, qs[0]))
+            continue
+        if len(qs) != 2 or nm != "cz":
+            return None
+        e = (min(qs), max(qs))
+        if e in block:
+            return None
+        block.add(e)
+        touched |= set(qs)
+    if block:
+        if len(block) != n:
+            return None
+        blocks.append(frozenset(block))
+        segments.append(cur)
+        cur = []
+    if not blocks or len(set(blocks)) != 1:
+        return None
+    if measured and len(measured) != n:
+        return None
+    adj = {q: [] for q in range(n)}
+    for a, b in blocks[0]:
+        adj[a].append(b)
+        adj[b].append(a)
+    if any(len(v) != 2 for v in adj.values()):
+        return None
+    cycle = [0]
+    nxt = min(adj[0])
+    while nxt != 0:
+        cycle.append(nxt)
+        nxt = [v for v in adj[nxt] if v != cycle[-2]][0]
+        if len(cycle) > n:
+            return None
+    if len(cycle) != n:
+        return None
+    return cycle, segments, cur, tail_meas
+
+
+def ring_rounds(n):
+    """N2: (folded order of ring indices, rounds [(CZ pairs of ring indices, SWAPs (position p, p+1))])."""
+    order, lo, hi = [], 0, n - 1
+    while lo <= hi:
+        order.append(lo)
+        if hi != lo:
+            order.append(hi)
+        lo, hi = lo + 1, hi - 1
+    edges = {(min(i, (i + 1) % n), max(i, (i + 1) % n)) for i in range(n)}
+    occ, rounds, parity = list(order), [], 1
+    while True:
+        czs = []
+        for p in range(n - 1):
+            e = (min(occ[p], occ[p + 1]), max(occ[p], occ[p + 1]))
+            if e in edges:
+                czs.append((occ[p], occ[p + 1]))
+                edges.discard(e)
+        swaps = []
+        if edges:
+            for p in range(1 if parity else 2, n - 2, 2):
+                swaps.append((p, p + 1))
+                occ[p], occ[p + 1] = occ[p + 1], occ[p]
+            parity ^= 1
+        rounds.append((czs, swaps))
+        if not edges:
+            return order, rounds
+        if len(rounds) > 4 * n:
+            raise RuntimeError("N2: no schedule")
+
+
+# --------------------------------------------------------------------------------------------- item 28: building
+
+def ring_rounds_q4(n):
+    """Item 31: (folded order of ring indices, rounds [(CZ pairs, SWAPs (position p, p+1))]) in three rounds with two
+    SWAP layers: SA = (1,2), (5,6), ...; then SA undone together with SB = (3,4), (7,8), ... ."""
+    order, lo, hi = [], 0, n - 1
+    while lo <= hi:
+        order.append(lo)
+        if hi != lo:
+            order.append(hi)
+        lo, hi = lo + 1, hi - 1
+    edges = {(min(i, (i + 1) % n), max(i, (i + 1) % n)) for i in range(n)}
+    occ, rounds = list(order), []
+
+    def adjacent():
+        czs = []
+        for p in range(n - 1):
+            e = (min(occ[p], occ[p + 1]), max(occ[p], occ[p + 1]))
+            if e in edges:
+                czs.append((occ[p], occ[p + 1]))
+                edges.discard(e)
+        return czs
+    SA = [(p, p + 1) for p in range(1, n - 1, 4)]
+    SB = [(p, p + 1) for p in range(3, n - 1, 4)]
+    czs = adjacent()
+    for sw in (SA, SA + SB):
+        if not edges:
+            break
+        rounds.append((czs, sw))
+        for p, p1 in sw:
+            occ[p], occ[p1] = occ[p1], occ[p]
+        czs = adjacent()
+    rounds.append((czs, []))
+    if edges:
+        raise RuntimeError("item 31: no schedule")
+    return order, rounds
+
+
+def _ring_logical(qc, read, rounds_fn=None):
+    """Item 28: the formula as a circuit on qc's own wires, wire w bound to line position p_of_wire[w] for the whole
+    circuit (a SWAP moves states, not wires); (circuit, p_of_wire) or None (unmeasured, odd number of layers)."""
+    cycle, segments, tail, meas = read
+    n = qc.num_qubits
+    order, rounds = (rounds_fn or ring_rounds)(n)
+    L = len(segments)
+    if not meas and L % 2 == 1:
+        A16_STATS["ring_odd_unmeasured"] += 1
+        return None
+    ridx = {q: i for i, q in enumerate(cycle)}  # input qubit -> ring index
+    wire_at = [cycle[order[p]] for p in range(n)]  # position -> wire (fixed)
+    p_of_wire = {w: p for p, w in enumerate(wire_at)}
+    pos = {order[p]: p for p in range(n)}  # ring index -> current position
+    occ = list(order)
+    out = QuantumCircuit(*qc.qregs, *qc.cregs, global_phase=qc.global_phase)
+
+    def here(q):  # the wire currently holding input qubit q's state
+        return wire_at[pos[ridx[q]]]
+
+    def do_swaps(swaps):
+        for p, p1 in swaps:
+            out.swap(wire_at[p], wire_at[p1])
+            a, b = occ[p], occ[p1]
+            occ[p], occ[p1] = b, a
+            pos[a], pos[b] = p1, p
+
+    def do_czs(czs):
+        for a, b in czs:
+            out.cz(wire_at[pos[a]], wire_at[pos[b]])
+    for layer, seg in enumerate(segments):
+        for op, q in seg:
+            out.append(op, [here(q)])
+        if layer % 2 == 0:
+            for czs, swaps in rounds:
+                do_czs(czs)
+                do_swaps(swaps)
         else:
-            out.append(inst.operation, inst.qubits, inst.clbits)
+            for czs, swaps in reversed(rounds):
+                do_swaps(list(reversed(swaps)))
+                do_czs(czs)
+    for op, q in tail:
+        out.append(op, [here(q)])
+    for q, cb in meas:
+        out.measure(here(q), cb)
+    return out, p_of_wire
+
+
+def _ring_candidate(qc, target, basis_gates, seed, rounds_fn=None):
+    """Item 28: N2's formula on a line of the device, or None."""
+    if not RING_FORMULA:
+        return None
+    read = _ring_read(qc)
+    if read is None:
+        A16_STATS["ring_not_read"] += 1
+        return None
+    if not (hasattr(pc, "_chain_lattice") and hasattr(pc, "_chain_place")):
+        A16_STATS["ring_no_item87"] += 1
+        return None
+    n, N = qc.num_qubits, target.num_qubits
+    lat = pc._chain_lattice(target, a14.FAILED_MAX_ERROR)
+    if lat is None:
+        A16_STATS["ring_no_path"] += 1
+        return None
+    K, kadj, fadj, snake = lat
+    line, _ = pc._chain_place(n, K, fadj, snake)
+    if line is None:
+        line, _ = pc._chain_place(n, K, kadj, snake)
+    if line is None:
+        A16_STATS["ring_no_path"] += 1
+        return None
+    built = _ring_logical(qc, read, rounds_fn)
+    if built is None:
+        return None
+    logical, p_of_wire = built
+    cm = CouplingMap()
+    for q in range(N):
+        cm.add_physical_qubit(q)
+    for i in range(n - 1):
+        cm.add_edge(line[i], line[i + 1])
+        cm.add_edge(line[i + 1], line[i])
+    two = [g for g in basis_gates if g in ("cz", "cx", "ecr")] or ["cz"]
+    one = [g for g in basis_gates if g in ("rz", "sx", "x")]
+    try:
+        pm = generate_preset_pass_manager(3, coupling_map=cm, basis_gates=two[:1] + one,
+                                          initial_layout=[line[p_of_wire[w]] for w in range(n)],
+                                          routing_method="none", seed_transpiler=seed)
+        out = pm.run(logical)
+    except Exception:  # noqa: BLE001 - counted; the other candidates stand
+        A16_STATS["ring_failed"] += 1
+        return None
+    A16_STATS["ring_built"] += 1
     return out
 
 
-def polish(routed, basis_gates, rounds=POLISH_ROUNDS, verify=True, tol=1e-5, on_unsupported="keep"):
-    """Commutative cancellation + block re-synthesis + translation, repeated while the 2-qubit count drops.
-    Gates stay on the qubits they were routed to, so the result needs no re-routing."""
-    layout = routed._layout
-    tidy = PassManager([
-        BasisTranslator(SessionEquivalenceLibrary, list(basis_gates)),
-        Optimize1qGatesDecomposition(basis=list(basis_gates)),
-    ])
-    best = routed
-    for _ in range(rounds):
-        c = PassManager([CommutativeCancellation(basis_gates=list(basis_gates))]).run(best)
-        c = _resynthesize_blocks(c, verify, tol, on_unsupported)
-        c = tidy.run(c)
-        c._layout = layout
-        if _two_q(c) < _two_q(best):
-            best = c
-        else:
-            break
-    return best
-
-
-def _split_multi_qubit(qc, max_rounds=6):
-    """Decompose every gate acting on 3 or more qubits (repeatedly) into smaller gates."""
-    for _ in range(max_rounds):
-        names = sorted({inst.operation.name for inst in qc.data
-                        if len(inst.qubits) >= 3 and inst.operation.name not in ("barrier", "measure")})
-        if not names:
-            break
-        qc = qc.decompose(gates_to_decompose=names)
-    return qc
-
-
-def _decoherence_limit(target, qubits, duration):
-    """Average gate infidelity of thermal relaxation on `qubits` for `duration` (closed form; the process
-    fidelity of one qubit is (1 + 2 exp(-t/T2) + exp(-t/T1)) / 4, products over qubits, F_avg = (d F + 1)/(d + 1))."""
-    if not duration:
-        return 0.0
-    qp = getattr(target, "qubit_properties", None)
-    if not qp:
-        return 0.0
-    f = 1.0
-    for q in qubits:
-        p = qp[q] if q < len(qp) else None
-        t1 = getattr(p, "t1", None) if p is not None else None
-        t2 = getattr(p, "t2", None) if p is not None else None
-        if not t1:
-            return 0.0
-        t2 = min(t2, 2 * t1) if t2 else 2 * t1
-        f *= (1.0 + 2.0 * math.exp(-duration / t2) + math.exp(-duration / t1)) / 4.0
-    d = 2 ** len(qubits)
-    return 1.0 - (d * f + 1.0) / (d + 1.0)
-
-
-_COST_CACHE = {}
-_CACHE_LIMIT = 200_000  # a5: entries; a cache that grows past this is cleared (values only, never identities)
-
-
-def _props_of(target, name, qubits):
-    try:
-        props = target[name].get(tuple(qubits))
-        if props is None and len(qubits) == 2:
-            props = target[name].get((qubits[1], qubits[0]))
-    except KeyError:
-        props = None
-    return props
-
-
-def _qubit_times(target, qubits):
-    qp = getattr(target, "qubit_properties", None)
-    out = []
-    for q in qubits:
-        p = qp[q] if qp and q < len(qp) else None
-        out.append((getattr(p, "t1", None) if p is not None else None,
-                    getattr(p, "t2", None) if p is not None else None))
-    return tuple(out)
-
-
-def _gate_cost(target, name, qubits):
-    """-log(1 - error) of one gate from the target; 0 when the target has no error for it.
-    a3: error = max(reported error, decoherence limit) when DECOHERENCE_FLOOR is on."""
-    if name in ("rz", "barrier", "delay", "id", "measure", "reset"):
-        return 0.0
-    props = _props_of(target, name, qubits)
-    key = (name, len(qubits), DECOHERENCE_FLOOR,
-           getattr(props, "error", None) if props is not None else None,
-           getattr(props, "duration", None) if props is not None else None,
-           _qubit_times(target, qubits) if (DECOHERENCE_FLOOR and props is not None) else None)
-    if key in _COST_CACHE:
-        return _COST_CACHE[key]
-    if len(_COST_CACHE) > _CACHE_LIMIT:
-        _COST_CACHE.clear()
-    err = getattr(props, "error", None) if props is not None else None
-    err = err or 0.0
-    if DECOHERENCE_FLOOR and props is not None:
-        err = max(err, _decoherence_limit(target, list(qubits), getattr(props, "duration", None)))
-    cost = -math.log(max(1e-12, 1.0 - err)) if err else 0.0
-    _COST_CACHE[key] = cost
-    return cost
-
-
-def estimated_cost(circ, target):
-    """Sum of -log(1 - error) over the circuit's gates (lower is better)."""
-    total = 0.0
-    for inst in circ.data:
-        total += _gate_cost(target, inst.operation.name, [circ.find_bit(q).index for q in inst.qubits])
-    return total
-
-
-def _remap(out, perm):
-    """Relabel the physical qubits of a routed circuit by the permutation `perm` (old -> new) and carry the
-    initial and final layouts along."""
-    from qiskit.transpiler import Layout, TranspileLayout
-    new = out.copy_empty_like()
-    new.global_phase = out.global_phase
-    for inst in out.data:
-        new.append(inst.operation, [new.qubits[perm[out.find_bit(q).index]] for q in inst.qubits], inst.clbits)
-    L = out.layout
-    init = Layout({vq: perm[p] for vq, p in L.initial_layout.get_virtual_bits().items()})
-    fin = None
-    if L.final_layout is not None:
-        fin = Layout({perm[p]: new.qubits[perm[out.find_bit(q).index]]
-                      for p, q in L.final_layout.get_physical_bits().items()})
-    new._layout = TranspileLayout(init, L.input_qubit_mapping, fin, L._input_qubit_count, list(new.qubits))
+def _rx_merged(c, target):
+    """Item 29: single-qubit runs merged into rz rx rz when the Target offers rx (exact; layout kept)."""
+    if not RX_ONE_PULSE or target is None or "rx" not in target.operation_names:
+        return c
+    new = PassManager([Optimize1qGatesDecomposition(basis=["rz", "rx"])]).run(c)
+    new._layout = getattr(c, "_layout", None)
+    A16_STATS["rx_merged"] += 1
     return new
 
 
-def best_placement(out, target, coupling_map, max_mappings=MAX_MAPPINGS):
-    """Return (circuit, cost): `out` re-placed on the device where the target's gate errors are lowest."""
-    import rustworkx as rx
-    used, edges = set(), {}
-    one = {}
-    for inst in out.data:
-        qs = [out.find_bit(q).index for q in inst.qubits]
-        used.update(qs)
-        if len(qs) == 2:
-            e = (qs[0], qs[1])
-            edges[e] = edges.get(e, []) + [inst.operation.name]
-        elif len(qs) == 1:
-            one.setdefault(qs[0], []).append(inst.operation.name)
-    if not edges:
-        return out, estimated_cost(out, target)
-    n = coupling_map.size()
-    cg = rx.PyGraph()
-    cg.add_nodes_from(range(n))
-    seen = set()
-    for a, b in coupling_map.get_edges():
-        k = (min(a, b), max(a, b))
-        if a != b and k not in seen:
-            seen.add(k)
-            cg.add_edge(a, b, None)
-    U = sorted(used)
-    idx = {q: i for i, q in enumerate(U)}
-    pg = rx.PyGraph()
-    pg.add_nodes_from(range(len(U)))
-    pseen = set()
-    for (a, b) in edges:
-        k = (min(idx[a], idx[b]), max(idx[a], idx[b]))
-        if k not in pseen:
-            pseen.add(k)
-            pg.add_edge(k[0], k[1], None)
-    base = estimated_cost(out, target)
-    best_cost, best_map = base, None
-    count = 0
-    for mapping in rx.vf2_mapping(cg, pg, subgraph=True, induced=False, call_limit=200 * max_mappings):
-        inv = {pat: phys for phys, pat in mapping.items()}   # pattern node -> device qubit
-        m = {U[i]: inv[i] for i in range(len(U)) if i in inv}
-        if len(m) != len(U):
-            continue
-        c = 0.0
-        for q, names in one.items():
-            for nm in names:
-                c += _gate_cost(target, nm, [m[q]])
-        for (a, b), names in edges.items():
-            for nm in names:
-                c += _gate_cost(target, nm, [m[a], m[b]])
-        if c < best_cost - 1e-15:
-            best_cost, best_map = c, m
-        count += 1
-        if count >= max_mappings:
-            break
-    if best_map is None:
-        return out, base
-    perm = [None] * n
-    for q, p in best_map.items():
-        perm[q] = p
-    free_new = [p for p in range(n) if p not in set(best_map.values())]
-    it = iter(free_new)
-    for q in range(n):
-        if perm[q] is None:
-            perm[q] = next(it)
-    return _remap(out, perm), best_cost
-
-
-_PAULI = {"X": np.array([[0, 1], [1, 0]], dtype=complex), "Y": np.array([[0, -1j], [1j, 0]], dtype=complex),
-          "Z": np.array([[1, 0], [0, -1]], dtype=complex), "I": np.eye(2, dtype=complex)}
-
-
-def _thermal_pauli(target, q, duration):
-    """(p_x = p_y, p_z) of Pauli-twirled thermal relaxation of qubit q for `duration`."""
-    qp = getattr(target, "qubit_properties", None)
-    p = qp[q] if qp and q < len(qp) else None
-    t1 = getattr(p, "t1", None) if p is not None else None
-    if not t1 or not duration:
-        return 0.0, 0.0
-    t2 = getattr(p, "t2", None)
-    t2 = min(t2, 2 * t1) if t2 else 2 * t1
-    l1, l2 = math.exp(-duration / t1), math.exp(-duration / t2)
-    pxy = (1.0 - l1) / 4.0
-    return pxy, max(0.0, (1.0 - l2) / 2.0 - pxy)
-
-
-_PARAM_CACHE = {}
-
-
-def _gate_params(target, name, qubits):
-    """(p_dep per non-identity Pauli, [(p_xy, p_z) per qubit]) for a gate on device qubits, or None."""
-    props = _props_of(target, name, qubits)
-    if props is None:
-        return None
-    key = (len(qubits), getattr(props, "error", None), getattr(props, "duration", None),
-           _qubit_times(target, qubits))
-    if key in _PARAM_CACHE:
-        return _PARAM_CACHE[key]
-    if len(_PARAM_CACHE) > _CACHE_LIMIT:
-        _PARAM_CACHE.clear()
-    dur = getattr(props, "duration", None) or 0.0
-    rep = getattr(props, "error", None) or 0.0
-    th = [_thermal_pauli(target, q, dur) for q in qubits]
-    d = 2 ** len(qubits)
-    fp = 1.0
-    for pxy, pz in th:
-        fp *= 1.0 - (2 * pxy + pz)
-    e_th = 1.0 - (d * fp + 1.0) / (d + 1.0)
-    e_dep = max(0.0, rep - e_th)
-    out = (e_dep * (d + 1) / d / (d * d - 1), th)
-    _PARAM_CACHE[key] = out
-    return out
-
-
-def _state_weights(circ):
-    """Per (gate name, circuit qubits): summed weights of the state-aware estimate, from the ideal state after each
-    gate. Returns {(name, qubits): [W_dep, [(w_xy, w_z) per qubit]]} (rz/id/barrier/delay/measure excluded)."""
-    used = sorted({circ.find_bit(q).index for inst in circ.data for q in inst.qubits})
-    idx = {q: i for i, q in enumerate(used)}
-    m = len(used)
-    psi = np.zeros(2 ** m, dtype=complex)
-    psi[0] = 1.0
-    psi = psi.reshape([2] * m)
-    acc = {}
-    for inst in circ.data:
-        name = inst.operation.name
-        if name == "measure":  # a10 (item 15): each measured qubit once, weight 1
-            acc.setdefault(("measure", (circ.find_bit(inst.qubits[0]).index,)), [1.0, [[0.0, 0.0]]])
-            continue
-        if name in ("barrier", "delay", "reset"):
-            continue
-        qs = [circ.find_bit(q).index for q in inst.qubits]
-        k = len(qs)
-        U = inst.operation.to_matrix().reshape([2] * (2 * k))
-        in_axes = [idx[qs[j]] for j in reversed(range(k))]
-        psi = np.tensordot(U, psi, axes=(list(range(k, 2 * k)), in_axes))
-        psi = np.moveaxis(psi, list(range(k)), in_axes)
-        if name in ("rz", "id") or k > 2:
-            continue
-        v = np.moveaxis(psi, [idx[q] for q in qs], list(range(k))).reshape(2 ** k, -1)
-        rho = v @ v.conj().T  # qs[0] is the most significant index here
-        ent = acc.setdefault((name, tuple(qs)), [0.0, [[0.0, 0.0] for _ in qs]])
-        if k == 1:
-            ev = {pn: float(np.real(np.trace(rho @ _PAULI[pn]))) for pn in "XYZ"}
-            ent[0] += sum(1 - ev[pn] ** 2 for pn in "XYZ")
-            ent[1][0][0] += (1 - ev["X"] ** 2) + (1 - ev["Y"] ** 2)
-            ent[1][0][1] += 1 - ev["Z"] ** 2
-        else:
-            for a in "IXYZ":
-                for b in "IXYZ":
-                    if a == b == "I":
-                        continue
-                    ev = float(np.real(np.trace(rho @ np.kron(_PAULI[a], _PAULI[b]))))
-                    ent[0] += 1 - ev * ev
-                    if b == "I" and a != "I":
-                        ent[1][0][0 if a in "XY" else 1] += 1 - ev * ev
-                    if a == "I" and b != "I":
-                        ent[1][1][0 if b in "XY" else 1] += 1 - ev * ev
-    return acc
-
-
-_MISSING = object()
-_INF = object()
-
-
-def _score_weights_cached(weights, target, mapping, cache):
-    """a12 (item 17): `_score_weights` with the per-(gate, device qubits) terms kept in `cache` (one call's lifetime).
-    The same values are added in the same order, so the result is the same float."""
-    total = 0.0
-    for (name, qs), (wdep, wq) in weights.items():
-        if name == "measure":
-            p = mapping[qs[0]]
-            e = cache.get(("measure", p), _MISSING)
-            if e is _MISSING:
-                props = _props_of(target, "measure", [p])
-                e = float(props.error) if props is not None and getattr(props, "error", None) is not None else None
-                cache[("measure", p)] = e
-            if e is not None:
-                total += e * wdep
-            continue
-        mq = tuple(mapping[q] for q in qs)
-        key = (name, mq)
-        prm = cache.get(key, _MISSING)
-        if prm is _MISSING:
-            if len(mq) == 2 and name in target.operation_names and mq not in target[name]:
-                prm = _INF
-            else:
-                prm = _gate_params(target, name, list(mq))
-            cache[key] = prm
-        if prm is _INF:
-            return float("inf")
-        if prm is None:
-            continue
-        pdep, th = prm
-        total += pdep * wdep
-        for (pxy, pz), (wxy, wz) in zip(th, wq):
-            total += pxy * wxy + pz * wz
-    return total
-
-
-def _score_weights(weights, target, mapping):
-    total = 0.0
-    for (name, qs), (wdep, wq) in weights.items():
-        if name == "measure":  # a10 (item 15): the Target's measure error of the mapped qubit
-            props = _props_of(target, "measure", [mapping[qs[0]]])
-            if props is not None and getattr(props, "error", None) is not None:
-                total += float(props.error) * wdep
-            continue
-        mq = tuple(mapping[q] for q in qs)
-        if len(mq) == 2 and name in target.operation_names and mq not in target[name]:
-            return float("inf")  # a11 (item 16): a direction the target does not provide
-        prm = _gate_params(target, name, list(mq))
-        if prm is None:
-            continue
-        pdep, th = prm
-        total += pdep * wdep
-        for (pxy, pz), (wxy, wz) in zip(th, wq):
-            total += pxy * wxy + pz * wz
-    return total
-
-
-def state_aware_cost(circ, target):
-    """Estimated loss of fidelity of a routed circuit on the target (first order, state-aware)."""
-    used = {circ.find_bit(q).index for inst in circ.data for q in inst.qubits}
-    return _score_weights(_state_weights(circ), target, {q: q for q in used})
-
-
-def best_placement_state_aware(out, target, coupling_map, max_mappings=MAX_MAPPINGS, cache=None):
-    """Like best_placement, scored by the state-aware estimate (weights computed once, placements from sums).
-    a12 (item 17): `cache` keeps the scoring terms across placements and candidates of one call."""
-    import rustworkx as rx
-    if cache is None:
-        cache = {}
-    weights = _state_weights(out)
-    used = sorted({out.find_bit(q).index for inst in out.data for q in inst.qubits})
-    edges = {tuple(sorted(qs)) for (name, qs) in weights if len(qs) == 2}
-    base = _score_weights(weights, target, {q: q for q in used})
-    if not edges:
-        return out, base
-    n = coupling_map.size()
-    cg = rx.PyGraph()
-    cg.add_nodes_from(range(n))
-    seen = set()
-    for a, b in coupling_map.get_edges():
-        k = (min(a, b), max(a, b))
-        if a != b and k not in seen:
-            seen.add(k)
-            cg.add_edge(a, b, None)
-    U = used
-    pidx = {q: i for i, q in enumerate(U)}
-    pg = rx.PyGraph()
-    pg.add_nodes_from(range(len(U)))
-    for a, b in edges:
-        pg.add_edge(pidx[a], pidx[b], None)
-    best_cost, best_map, count = base, None, 0
-    for mapping in rx.vf2_mapping(cg, pg, subgraph=True, induced=False, call_limit=200 * max_mappings):
-        inv = {pat: phys for phys, pat in mapping.items()}
-        if len(inv) != len(U):
-            continue
-        mp = {U[i]: inv[i] for i in range(len(U))}
-        c = _score_weights_cached(weights, target, mp, cache)
-        if c < best_cost - 1e-15:
-            best_cost, best_map = c, mp
-        count += 1
-        if count >= max_mappings:
-            break
-    if best_map is None:
-        return out, base
-    perm = [None] * n
-    for q, p in best_map.items():
-        perm[q] = p
-    taken = set(best_map.values())
-    it = iter([p for p in range(n) if p not in taken])
-    for q in range(n):
-        if perm[q] is None:
-            perm[q] = next(it)
-    return _remap(out, perm), best_cost
-
-
-def _off_target_2q(circ, target):
-    """a11: two-qubit instructions whose (name, qubits) the target does not provide."""
-    bad = 0
+def _outcomes(circ):
+    """Item 30: the exact outcome distribution of `circ` over its classical bits (statevector of its active qubits;
+    measurements only at the end), or None when it cannot be computed."""
+    import numpy as np
+    from qiskit.quantum_info import Statevector
+    meas, body, done = {}, [], set()
     for ins in circ.data:
-        if len(ins.qubits) != 2 or ins.operation.name in ("barrier",):
+        nm = ins.operation.name
+        qs = [circ.find_bit(q).index for q in ins.qubits]
+        if nm in ("barrier", "delay"):
             continue
-        q = tuple(circ.find_bit(b).index for b in ins.qubits)
-        if ins.operation.name not in target.operation_names or q not in target[ins.operation.name]:
-            bad += 1
-    return bad
-
-
-DIRECTION_STATS = {"fixed": 0, "fallback": 0}
-
-
-def _keep_direction(out, target, release_call):
-    """a11 (item 16): return `out` if every two-qubit gate is on the target; else a GateDirection-fixed copy if it is
-    exact and on target; else the release's recommended call."""
-    if target is None or _off_target_2q(out, target) == 0:
-        return out
-    from qiskit.transpiler.passes import GateDirection, Optimize1qGatesDecomposition
+        if nm == "measure":
+            meas[circ.find_bit(ins.clbits[0]).index] = qs[0]
+            done.add(qs[0])
+            continue
+        if done & set(qs) or ins.operation.num_clbits or not hasattr(ins.operation, "to_matrix") and \
+                getattr(ins.operation, "definition", None) is None:
+            return None
+        body.append((ins.operation, qs))
+    if len(meas) != circ.num_clbits or not meas:
+        return None
+    active = sorted({q for _, qs in body for q in qs} | set(meas.values()))
+    if len(active) > EXACT_MAX_ACTIVE:
+        return None
+    pos = {q: i for i, q in enumerate(active)}
+    red = QuantumCircuit(len(active))
+    for op, qs in body:
+        red.append(op, [pos[q] for q in qs])
     try:
-        fixed = PassManager([GateDirection(None, target=target), Optimize1qGatesDecomposition(target=target)]).run(out)
-        fixed._layout = out._layout
-        same = getattr(pc, "_same_action", None)
-        if _off_target_2q(fixed, target) == 0 and same is not None and same(out, fixed):
-            DIRECTION_STATS["fixed"] += 1
-            return fixed
-    except Exception:
-        pass
-    DIRECTION_STATS["fallback"] += 1
-    return release_call()
+        return np.asarray(Statevector(red).probabilities([pos[meas[k]] for k in range(circ.num_clbits)]))
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _exact(qc, c, ref=None):
+    """Item 30: True if candidate `c` reproduces input `qc` (outcome distribution within EXACT_TVD, or for an
+    unmeasured input item 39's check at EXACT_STATE), False if it does not, None if the check cannot be made."""
+    if not EXACT_CHECK:
+        return None
+    if any(i.operation.name == "measure" for i in qc.data):
+        p0 = _outcomes(qc) if ref is None else ref
+        p1 = _outcomes(c)
+        if p0 is None or p1 is None or len(p0) != len(p1):
+            return None
+        tvd = 0.5 * float(abs(p0 - p1).sum())
+        if tvd > EXACT_TVD:
+            A17_STATS["largest_tvd_dropped"] = max(A17_STATS["largest_tvd_dropped"], tvd)
+            return False
+        return True
+    if qc.num_qubits > SMALL_MAX_QUBITS:
+        return None
+    try:
+        return bool(pc._implements(qc, c, tol=EXACT_STATE))
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _exact_filter(qc, cands):
+    """Item 30: the candidates that are exact or cannot be checked (counted); inexact ones dropped."""
+    if not EXACT_CHECK:
+        return cands
+    ref = _outcomes(qc) if any(i.operation.name == "measure" for i in qc.data) else None
+    kept = []
+    for lb, c in cands:
+        ok = _exact(qc, c, ref)
+        if ok is None:
+            A17_STATS["unchecked"] += 1
+            kept.append((lb, c))
+        elif ok:
+            A17_STATS["checked"] += 1
+            kept.append((lb, c))
+        else:
+            A17_STATS["checked"] += 1
+            A17_STATS["inexact_dropped"] += 1
+    return kept
+
+
+def _executable(c, target):
+    """Item 29: `c` with every rzz angle in 0 < theta <= pi/2 (psf_compile's item 86 `_fold` where needed), or None."""
+    if target is None or "rzz" not in target.operation_names:
+        return c
+    angles = [float(i.operation.params[0]) for i in c.data if i.operation.name == "rzz"]
+    if all(0 < a <= 1.5707963267948966 + 1e-12 for a in angles):
+        return c
+    try:
+        new = pc._fold(c, target)
+    except Exception:  # noqa: BLE001 - no item 86, or the fold failed: the candidate is not returned
+        A16_STATS["rzz_dropped"] += 1
+        return None
+    A16_STATS["rzz_folded"] += 1
+    return _rx_merged(new, target)
+
+
+def _hand_off(qc, coupling_map, basis_gates, target, seeds, entangling_basis, layout_search, return_info, kwargs):
+    """Item 33: `qc` handed on unchanged -- with a Target to psf_compile's default call, without one to Qiskit's level
+    3 (coupling map and basis given, seed seeds[0]) -- and checked exact as item 30 does where it can be."""
+    seed = seeds[0] if seeds else 0
+    with contextlib.redirect_stdout(io.StringIO()), warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        if target is not None:
+            out = pc.compile_for_hardware(qc, target=target, basis_gates=basis_gates, entangling_basis=entangling_basis,
+                                          layout_search=layout_search, seed_transpiler=seed, **kwargs)
+            label = "compiler"
+            A18_STATS["handed_compiler"] += 1
+        else:
+            from qiskit import transpile
+            cmap = coupling_map if coupling_map is None or isinstance(coupling_map, CouplingMap) else CouplingMap(coupling_map)
+            out = transpile(qc, coupling_map=cmap, basis_gates=basis_gates, optimization_level=3, seed_transpiler=seed)
+            label = "QK3"
+            A18_STATS["handed_qiskit"] += 1
+    verdict = _exact(qc, out)
+    if verdict is None:
+        A18_STATS["handoff_unchecked"] += 1
+    elif verdict:
+        A18_STATS["handoff_exact"] += 1
+    else:
+        A18_STATS["handoff_inexact"] += 1
+        warnings.warn(f"psf_ai_compile item 33: the handed-on output ({label}) is not exact within EXACT_TVD; returned "
+                      "unchanged", RuntimeWarning, stacklevel=3)
+    info = {"path": "hand-off", "chosen": label, "candidates": [label], "version": AI_COMPILE_VERSION,
+            "exact": verdict}
+    return (out, info) if return_info else out
 
 
 def compile_for_model_circuit(qc, coupling_map, basis_gates, entangling_basis="cx", seeds=DEFAULT_SEEDS,
                               commutation_start=True, do_polish=True, layout_search=True, return_info=False,
                               target=None, **kwargs):
-    """Best of several PSF-Zero compiles of a small circuit (fewest 2-qubit gates, then 2-qubit depth).
+    """a18: for a ring classifier (item 28's reader), a16's candidates -- a15's (items 23-26), N2's ring formula and
+    the second ring schedule (items 28, 31), single-qubit runs in one pulse with rx (item 29), every candidate checked
+    exact (item 30), no search (item 32) -- the shortest returned; every other input handed on unchanged (item 33)."""
+    if HAND_OFF and (not CONSTRUCT_BY_DURATION or target is None or basis_gates is None
+                     or qc.num_qubits > SMALL_MAX_QUBITS or not hasattr(pc, "_better") or _ring_read(qc) is None):
+        return _hand_off(qc, coupling_map, basis_gates, target, seeds, entangling_basis, layout_search, return_info,
+                         kwargs)
+    if (not CONSTRUCT_BY_DURATION or target is None or basis_gates is None or qc.num_qubits > SMALL_MAX_QUBITS
+            or not hasattr(pc, "_better")):
+        return a14.compile_for_model_circuit(qc, coupling_map, basis_gates, entangling_basis=entangling_basis,
+                                             seeds=seeds, commutation_start=commutation_start, do_polish=do_polish,
+                                             layout_search=layout_search, return_info=return_info, target=target,
+                                             **kwargs)
+    A16_STATS["calls"] += 1
+    seed = seeds[0] if seeds else 0
 
-    kwargs are forwarded to `psf_compile.compile_for_hardware()`."""
-    def cfh(circ, seed):
+    def device_call(circ):
         with contextlib.redirect_stdout(io.StringIO()), warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            return pc.compile_for_hardware(circ, coupling_map=coupling_map, basis_gates=basis_gates,
+            return pc.compile_for_hardware(circ, target=target, basis_gates=basis_gates,
                                            entangling_basis=entangling_basis, layout_search=layout_search,
                                            seed_transpiler=seed, **kwargs)
 
-    if qc.num_qubits > SMALL_MAX_QUBITS or basis_gates is None:
-        if target is not None and basis_gates is not None and qc.num_qubits > SMALL_MAX_QUBITS and FAST_PATH_TARGET:
-            # a8 (item 13): the release's recommended call with the target; caller kwargs override
-            fk = dict(FAST_PATH_RECOMMENDED, target=target)
-            fk.update(kwargs)
-            with contextlib.redirect_stdout(io.StringIO()), warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                out = pc.compile_for_hardware(qc, coupling_map=coupling_map, basis_gates=basis_gates,
-                                              entangling_basis=entangling_basis, layout_search=layout_search,
-                                              seed_transpiler=seeds[0] if seeds else None, **fk)
-            return (out, {"path": "fast-target", "version": AI_COMPILE_VERSION}) if return_info else out
-        out = cfh(qc, seeds[0] if seeds else None)
-        return (out, {"path": "fast"}) if return_info else out
-
-    # a0's starting points first (unchanged), so a1 never loses a candidate a0 had
-    starts = [("input", qc)]
-    if commutation_start:
-        cc = PassManager([CommutativeCancellation()]).run(qc)
-        if _two_q(cc) < _two_q(qc) or [i.operation.name for i in cc.data] != [i.operation.name for i in qc.data]:
-            starts.append(("commuted", cc))
-    split = _split_multi_qubit(qc)
-    if split is not qc:
-        starts.append(("split", split))
-        if commutation_start:
-            starts.append(("split+commuted", PassManager([CommutativeCancellation()]).run(split)))
-        qc = split
-    if EXPANDED_START and any(len(i.qubits) == 2 and i.operation.name == "unitary" for i in qc.data):
-        with contextlib.redirect_stdout(io.StringIO()), warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            ex = pc.compile(qc, entangling_basis="cx")
-        ex = PassManager([CommutativeCancellation()]).run(ex)
-        starts.append(("expanded", ex))
-    l3_layouts = []
-    l3t_out = None  # a7
-    if L3_LAYOUT_CANDIDATE:
-        from qiskit import transpile
-        try:
-            t = transpile(qc, coupling_map=coupling_map, basis_gates=basis_gates, optimization_level=3,
-                          seed_transpiler=0)
-            l3_layouts.append(("L3layout", list(t.layout.initial_index_layout()[:qc.num_qubits])))
-        except Exception:
-            pass
-        if target is not None and L3T_LAYOUT_CANDIDATE:
-            # a2: the layout Qiskit's level-3 search picks when it can see the error rates
-            try:
-                t = transpile(qc, target=target, optimization_level=3, seed_transpiler=0)
-                l3t_out = t
-                lay_t = list(t.layout.initial_index_layout()[:qc.num_qubits])
-                if all(lay_t != l for _, l in l3_layouts):
-                    l3_layouts.append(("L3Tlayout", lay_t))
-            except Exception:
-                pass
-    tried = []
-    cands = []
-    best, best_key = None, None
+    starts = a15._starts(qc) if commutation_start else [("input", qc)]
+    cands = []  # (label, circuit), in a fixed order: earlier wins a full tie
     for sname, circ in starts:
-        last = None
-        # a0's starting points get every seed; the extra a1 starting points get the first seed only
-        # (plus the level-3-layout candidate below), to bound the time
-        for seed in (seeds if sname in ("input", "commuted") else seeds[:1]):
-            out = cfh(circ, seed)
-            if do_polish:
-                out = polish(out, basis_gates)
-            key = (_two_q(out), _depth2q(out))
-            tried.append((sname, seed, key[0]))
-            cands.append((key, out))
-            if best_key is None or key < best_key:
-                best, best_key = out, key
-            # identical result from two seeds in a row: the layout search fixed the layout, stop early
-            sig = (key, tuple(out.layout.initial_index_layout()[:qc.num_qubits]))
-            if sig == last:
-                break
-            last = sig
-        for lname, l3_layout in l3_layouts:
+        try:
+            out = device_call(circ)
+        except pc.FailedElementsError:
+            raise
+        except Exception:  # noqa: BLE001
+            A16_STATS["compile_failed"] += 1
+            continue
+        cands.append((sname, out))
+        if do_polish:
+            cands.append((sname + "+polish", a14.polish(out, basis_gates)))
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        ring = _ring_candidate(qc, target, basis_gates, seed)
+    if ring is not None:
+        cands.append(("ring", ring))
+        with warnings.catch_warnings():  # item 31
+            warnings.simplefilter("ignore")
+            ring2 = _ring_candidate(qc, target, basis_gates, seed, ring_rounds_q4)
+        if ring2 is not None:
+            cands.append(("ring2", ring2))
+    if SEARCH_FALLBACK:  # item 27: last, so it loses every tie
+        try:
             with contextlib.redirect_stdout(io.StringIO()), warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                out = pc.compile_for_hardware(circ, coupling_map=coupling_map, basis_gates=basis_gates,
-                                              entangling_basis=entangling_basis, layout_search=False,
-                                              initial_layout=l3_layout, seed_transpiler=seeds[0] if seeds else 0,
-                                              **kwargs)
-            if do_polish:
-                out = polish(out, basis_gates)
-            key = (_two_q(out), _depth2q(out))
-            tried.append((sname, lname, key[0]))
-            cands.append((key, out))
-            if key < best_key:
-                best, best_key = out, key
-    if target is not None:
-        top = sorted(cands, key=lambda kc: kc[0])
-        top = [kc for kc in top if kc[0][0] <= top[0][0][0] + REMAP_EXTRA_2Q][:REMAP_TOP]
-        if l3t_out is not None and L3T_OUTPUT_CANDIDATE:
-            # a9 (item 14): only if the release confirms that level 3's output implements the input
-            check = getattr(pc, "_implements", None)
-            if check is None:
-                L3T_CHECK_STATS["unavailable"] += 1
-                l3t_out = None
-            elif not check(qc, l3t_out):
-                L3T_CHECK_STATS["refused"] += 1
-                l3t_out = None
-            else:
-                L3T_CHECK_STATS["accepted"] += 1
-        if l3t_out is not None and L3T_OUTPUT_CANDIDATE:
-            # a7: always scored when within REMAP_EXTRA_2Q of PSF-Zero's best, not subject to the REMAP_TOP cut
-            key = (_two_q(l3t_out), _depth2q(l3t_out))
-            tried.append(("L3T", "output", key[0]))
-            if key[0] <= top[0][0][0] + REMAP_EXTRA_2Q:
-                top.append((key, l3t_out))
-        scored = []
-        cache, done = {}, {}  # a12 (item 17): scoring terms of this call; re-placements of identical circuits
-        for key, out in top:
-            sg = None
-            if out is not l3t_out:
-                try:
-                    sg = tuple((i.operation.name, tuple(out.find_bit(q).index for q in i.qubits),
-                                tuple(out.find_bit(c).index for c in i.clbits),
-                                tuple(float(p) for p in i.operation.params)) for i in out.data)
-                    sg = (sg, out.global_phase, tuple(out.layout.initial_index_layout()),
-                          tuple(out.layout.final_index_layout()))
-                    hash(sg)
-                except Exception:  # an instruction whose parameters are not numbers: re-place it on its own
-                    sg = None
-            if sg is not None and sg in done:
-                placed, cost = done[sg]
-            elif STATE_AWARE:
-                placed, cost = best_placement_state_aware(out, target, coupling_map, cache=cache)
-            else:
-                placed, cost = best_placement(out, target, coupling_map)
-            if sg is not None:
-                done[sg] = (placed, cost)
-            scored.append((cost, key, placed, "L3T" if out is l3t_out else "PSF"))
-        scored.sort(key=lambda t: (t[0], t[1]))
-        best = scored[0][2]
-        best_key = scored[0][1]
-        chosen = scored[0][3]
-        tried.append(("placement", "cost", round(scored[0][0], 6)))
+                cands.append(("search", a14.compile_for_model_circuit(
+                    qc, coupling_map, basis_gates, entangling_basis=entangling_basis, seeds=seeds,
+                    commutation_start=commutation_start, do_polish=do_polish, layout_search=layout_search,
+                    target=target, **kwargs)))
+        except Exception:  # noqa: BLE001
+            A16_STATS["search_failed"] += 1
+    cands = [(lb, _executable(_rx_merged(c, target), target)) for lb, c in cands]  # item 29
+    cands = [(lb, c) for lb, c in cands if c is not None]
+    cands = _exact_filter(qc, cands)  # item 30
+    A16_STATS["candidates"] += len(cands)
+    edges, bad = pc._failed_elements(target, a14.FAILED_MAX_ERROR)
+    ok = [(lb, c) for lb, c in cands if not pc._uses_failed(c, edges, bad)]  # item 26
+    if len(ok) < len(cands):
+        A16_STATS["failed_skipped"] += len(cands) - len(ok)
+    if not ok:
+        A16_STATS["release_fallback"] += 1
+        best, label = _executable(_rx_merged(device_call(qc), target), target), "REL"
+        if best is not None and _exact(qc, best) is False:  # item 30: nothing exact was found; counted
+            A17_STATS["all_inexact"] += 1
     else:
-        chosen = "PSF"
-    info = {"path": "small", "tried": tried, "best": best_key, "version": AI_COMPILE_VERSION, "chosen": chosen}
-    if target is not None and basis_gates is not None:  # a11 (item 16)
-        def _release():
-            fk = dict(FAST_PATH_RECOMMENDED, target=target)
-            fk.update(kwargs)
-            with contextlib.redirect_stdout(io.StringIO()), warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                return pc.compile_for_hardware(qc, coupling_map=coupling_map, basis_gates=basis_gates,
-                                               entangling_basis=entangling_basis, layout_search=layout_search,
-                                               seed_transpiler=seeds[0] if seeds else None, **fk)
-        kept = _keep_direction(best, target, _release)
-        if kept is not best and return_info:
-            info = dict(info, direction_fix=True)
-        best = kept
-    return (best, info) if return_info else best
+        label, best = ok[0]
+        for lb, c in ok[1:]:
+            if pc._better(c, best, target):  # item 25
+                label, best = lb, c
+    A16_STATS["chosen_start"][label] = A16_STATS["chosen_start"].get(label, 0) + 1
+    if label == "search":
+        A16_STATS["chosen_search"] += 1
+    if label in ("ring", "ring2"):
+        A16_STATS["chosen_ring"] += 1
+
+    def _release():
+        return _rx_merged(device_call(qc), target)
+
+    kept = a14._keep_direction(best, target, _release)  # a11 (item 16)
+    info = {"path": "small-constructed", "chosen": label, "candidates": [lb for lb, _ in cands],
+            "version": AI_COMPILE_VERSION, "exact_check": dict(A17_STATS), "direction_fix": kept is not best}
+    return (kept, info) if return_info else kept

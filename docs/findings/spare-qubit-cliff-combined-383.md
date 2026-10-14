@@ -9790,4 +9790,71 @@ Outside the scope, the output is Qiskit level 3's, folded where IBM requires it.
 
 ---
 
+<!-- ===== Addendum 492 (source: addendum_492.md) ===== -->
+
+> **Note added when merging:** Release 2026-10-14.1 (c57) and a18, with the owner's go-ahead.
+
+## Addendum 492 -- Release psf_compile 2026-10-14.1 (prototype c57, accepted in C57-VAL) and the AI front end a18, with the owner's go-ahead: PSF-Zero builds by formula every circuit whose two-qubit interaction graph embeds in the device and hands every other circuit to Qiskit's level 3 unchanged; 2026-10-11.4 and a12 kept; 40 test files pass in Claude's workspace, the 16 others fail the same way on 2026-10-11.4 there (2026-10-14)
+
+**Status:** a release, with the owner's go-ahead given in chat on 2026-10-14 (about 16:40 CEST), after C57-VAL
+confirmed every prediction (Addendum 491). Times in CEST.
+
+### 1. What changed in the repository
+
+- **`psf_compile.py`** is prototype c57
+  ([`patches/psf_compile_c57_2026-10-14/`](../../patches/psf_compile_c57_2026-10-14/)) with its two version lines
+  changed to `2026-10-14.1`. The previous release is kept unchanged in
+  [`patches/psf_compile_release_2026-10-11.4/`](../../patches/psf_compile_release_2026-10-11.4/).
+- **`benchmarks/psf_ai_compile.py`** is a18
+  ([`patches/psf_ai_compile_a18_2026-10-14/`](../../patches/psf_ai_compile_a18_2026-10-14/)) with:
+  - its loader path for a15 set to work from `benchmarks/`;
+  - its version comment marked as adopted.
+
+  a12 is kept as `benchmarks/psf_ai_compile_a12.py`.
+- **Tests pinned to the previous release:**
+  - `test_release_2026_10_11_4.py` now reads the kept copy of 2026-10-11.4.
+  - `test_ai_compile_a12.py` reads the kept a12 and 2026-10-11.4, the pair it was written for.
+  - Five files that assert "the current release" (`test_release_2026_09_28.py`, `test_core_fix_c2.py`,
+    `test_ai_compile_a8.py`, `test_ai_compile_a9.py`, `test_ai_compile_a11.py`) now assert `2026-10-14.1`, as at
+    the earlier releases. They pass on it unchanged otherwise.
+- **New: `benchmarks/test_release_2026_10_14_1.py`** (4 tests).
+  - The installed compiler differs from c57 in its two version lines only.
+  - The installed files work from where they are.
+  - Inside the scope, the output is not longer than Qiskit level 3 and is exact.
+  - Outside it, the output is Qiskit level 3's, folded on a fractional Target.
+  - The AI front end builds a ring and hands a chain to the compiler.
+- **README:**
+  - the introduction's device-layer paragraph is rewritten for the release;
+  - the Scope section now says the hand-off is built;
+  - a "New in 2026-10-14.1" block opens Current version.
+- **`docs/RELEASES.md`:** the release block, and the "In brief" list (point 0 added; point 6 annotated).
+
+### 2. Tests
+
+- **The prototypes' own suites test the same code:**
+  - c57: 122 passed (Addendum 491);
+  - a18: 20 passed on c55 and on c56 (Addenda 489-490).
+- **Every `benchmarks/test_*.py` was run against the release in Claude's workspace:**
+  - 40 files passed, the new release file included.
+  - 16 files failed or ran no tests. Each was run again on 2026-10-11.4, by putting the previous state back, and
+    failed or ran no tests the same way. They need GPU, TKET, real-device access or modules this workspace does not
+    have, or they are scripts without tests.
+  - The release changes no file's outcome here.
+
+### 3. Reading
+
+**Two numbers.**
+
+- **Display:**
+  - Inside the scope, 0.20-0.23 x Qiskit level 3's duration (C57-VAL, geometric mean).
+  - Ring classifiers at 0.54 x.
+  - Outside the scope, Qiskit's own output, so never worse than Qiskit by construction.
+- **Essential:**
+  - Offline.
+  - On real devices, the time-aware order (8 of 8) and rzz (FB, FC) have run; this release as a whole and the ring
+    classifiers have not.
+  - The owner decided on 2026-10-14 that the release does not wait for a device test.
+
+---
+
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
