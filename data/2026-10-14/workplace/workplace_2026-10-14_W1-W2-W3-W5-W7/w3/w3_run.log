@@ -1,0 +1,194 @@
+2026-10-14 02:03:10 CEST SCRIPT 3c3bfdc09a31d3de5a9e1bfa5073c320870d20247d70766681593abb019681b0 | depth_eval 088443c897b04b16b56805d2df87e9c1cff6ae90b71d0185801924c67c05718e | c48 0400100f416421dba36c921fa3801f75c37e9e15ea39c22a6639cbc9db976d39
+FakeFez n=4 L= 1 PSF   CZ    7 dur   0.78 us err 7.2e-16 0.1s item80=psf
+FakeFez n=4 L= 1 PSF-C CZ    7 dur   0.78 us err 7.2e-16 0.1s
+FakeFez n=4 L= 1 QK3   CZ    7 dur   0.76 us err 5.4e-16 0.0s
+FakeFez n=4 L= 2 PSF   CZ   15 dur   1.74 us err 1.1e-15 0.4s item80=level3
+FakeFez n=4 L= 2 PSF-C CZ   15 dur   1.74 us err 1.1e-15 0.2s
+FakeFez n=4 L= 2 QK3   CZ   17 dur   1.84 us err 8.7e-16 0.0s
+FakeFez n=4 L= 3 PSF   CZ   27 dur   2.92 us err 4.1e-16 0.1s item80=level3
+FakeFez n=4 L= 3 PSF-C CZ   27 dur   2.92 us err 9.5e-16 0.1s
+FakeFez n=4 L= 3 QK3   CZ   27 dur   2.92 us err 8.9e-16 0.0s
+FakeFez n=4 L= 4 PSF   CZ   30 dur   3.41 us err 1.2e-15 0.4s item80=level3
+FakeFez n=4 L= 4 PSF-C CZ   30 dur   3.41 us err 1.2e-15 0.3s
+FakeFez n=4 L= 4 QK3   CZ   37 dur   3.95 us err 1.1e-15 0.0s
+FakeFez n=4 L= 5 PSF   CZ   47 dur   5.03 us err 3.6e-15 0.2s item80=level3
+FakeFez n=4 L= 5 PSF-C CZ   47 dur   4.98 us err 3.4e-15 0.1s
+FakeFez n=4 L= 5 QK3   CZ   47 dur   5.03 us err 3.6e-15 0.0s
+FakeFez n=4 L= 6 PSF   CZ   45 dur   5.08 us err 9.7e-14 0.6s item80=level3
+FakeFez n=4 L= 6 PSF-C CZ   45 dur   5.08 us err 9.7e-14 0.4s
+FakeFez n=4 L= 6 QK3   CZ   57 dur   6.04 us err 2.6e-15 0.0s
+FakeFez n=4 L= 7 PSF   CZ   67 dur   7.16 us err 1.3e-15 0.1s item80=level3
+FakeFez n=4 L= 7 PSF-C CZ   67 dur   7.16 us err 8.4e-16 0.1s
+FakeFez n=4 L= 7 QK3   CZ   67 dur   7.19 us err 9.9e-16 0.0s
+FakeFez n=4 L= 8 PSF   CZ   60 dur   6.77 us err 1.6e-15 0.6s item80=psf
+FakeFez n=4 L= 8 PSF-C CZ   60 dur   6.77 us err 1.6e-15 0.4s
+FakeFez n=4 L= 8 QK3   CZ   77 dur   8.20 us err 2.4e-15 0.0s
+FakeFez n=4 L= 9 PSF   CZ   87 dur   9.28 us err 1.7e-15 0.1s item80=psf
+FakeFez n=4 L= 9 PSF-C CZ   87 dur   9.28 us err 1.7e-15 0.1s
+FakeFez n=4 L= 9 QK3   CZ   87 dur   9.32 us err 2.2e-15 0.0s
+FakeFez n=4 L=10 PSF   CZ   75 dur   8.51 us err 4.3e-15 0.3s item80=level3
+FakeFez n=4 L=10 PSF-C CZ   75 dur   8.51 us err 4.3e-15 0.4s
+FakeFez n=4 L=10 QK3   CZ   97 dur  10.31 us err 3.1e-15 0.0s
+FakeFez n=4 L=11 PSF   CZ  107 dur  11.27 us err 1.4e-14 0.1s item80=level3
+FakeFez n=4 L=11 PSF-C CZ  107 dur  11.36 us err 2.3e-14 0.1s
+FakeFez n=4 L=11 QK3   CZ  107 dur  11.41 us err 2.3e-14 0.0s
+FakeFez n=4 L=12 PSF   CZ   90 dur  10.15 us err 6.6e-15 0.5s item80=level3
+FakeFez n=4 L=12 PSF-C CZ   90 dur  10.15 us err 6.6e-15 0.3s
+FakeFez n=4 L=12 QK3   CZ  117 dur  12.59 us err 1.5e-15 0.0s
+FakeFez n=4 L=13 PSF   CZ  127 dur  13.43 us err 5.9e-15 0.1s item80=level3
+FakeFez n=4 L=13 PSF-C CZ  127 dur  13.48 us err 6.4e-15 0.1s
+FakeFez n=4 L=13 QK3   CZ  127 dur  13.52 us err 6.3e-15 0.0s
+FakeFez n=4 L=14 PSF   CZ  105 dur  11.87 us err 2.7e-15 0.4s item80=level3
+FakeFez n=4 L=14 PSF-C CZ  105 dur  11.87 us err 2.7e-15 0.5s
+FakeFez n=4 L=14 QK3   CZ  137 dur  14.58 us err 2.1e-15 0.0s
+FakeFez n=4 L=15 PSF   CZ  147 dur  15.49 us err 3.1e-15 0.1s item80=level3
+FakeFez n=4 L=15 PSF-C CZ  147 dur  15.68 us err 3.4e-15 0.1s
+FakeFez n=4 L=15 QK3   CZ  147 dur  15.71 us err 3.8e-15 0.1s
+FakeFez n=4 L=16 PSF   CZ  120 dur  13.42 us err 3.2e-15 0.4s item80=level3
+FakeFez n=4 L=16 PSF-C CZ  120 dur  13.42 us err 3.2e-15 0.4s
+FakeFez n=4 L=16 QK3   CZ  157 dur  16.76 us err 2.4e-15 0.0s
+FakeFez n=6 L= 1 PSF   CZ   13 dur   0.89 us err 5.5e-16 0.1s item80=psf
+FakeFez n=6 L= 1 PSF-C CZ   13 dur   0.89 us err 5.5e-16 0.1s
+FakeFez n=6 L= 1 QK3   CZ   16 dur   1.61 us err 5.1e-16 0.0s
+FakeFez n=6 L= 2 PSF   CZ   34 dur   3.08 us err 1.3e-15 0.3s item80=psf
+FakeFez n=6 L= 2 PSF-C CZ   34 dur   3.08 us err 1.3e-15 0.2s
+FakeFez n=6 L= 2 QK3   CZ   34 dur   3.06 us err 1.3e-15 0.0s
+FakeFez n=6 L= 3 PSF   CZ   52 dur   5.40 us err 1.6e-15 0.1s item80=psf
+FakeFez n=6 L= 3 PSF-C CZ   52 dur   5.40 us err 1.6e-15 0.1s
+FakeFez n=6 L= 3 QK3   CZ   52 dur   5.45 us err 1.1e-15 0.0s
+FakeFez n=6 L= 4 PSF   CZ   70 dur   6.97 us err 2.1e-15 0.5s item80=level3
+FakeFez n=6 L= 4 PSF-C CZ   70 dur   7.00 us err 2.1e-15 0.3s
+FakeFez n=6 L= 4 QK3   CZ   70 dur   6.97 us err 2.1e-15 0.0s
+FakeFez n=6 L= 5 PSF   CZ   87 dur   8.83 us err 1.5e-15 0.2s item80=level3
+FakeFez n=6 L= 5 PSF-C CZ   87 dur   8.90 us err 1.6e-15 0.1s
+FakeFez n=6 L= 5 QK3   CZ   87 dur   8.83 us err 1.5e-15 0.0s
+FakeFez n=6 L= 6 PSF   CZ  108 dur  11.05 us err 2.1e-15 0.6s item80=level3
+FakeFez n=6 L= 6 PSF-C CZ  108 dur  11.10 us err 2.5e-15 0.5s
+FakeFez n=6 L= 6 QK3   CZ  108 dur  11.05 us err 2.3e-15 0.0s
+FakeFez n=6 L= 7 PSF   CZ  124 dur  12.78 us err 3.2e-15 0.2s item80=level3
+FakeFez n=6 L= 7 PSF-C CZ  124 dur  12.88 us err 3.0e-15 0.1s
+FakeFez n=6 L= 7 QK3   CZ  124 dur  12.78 us err 3.1e-15 0.1s
+FakeFez n=6 L= 8 PSF   CZ  142 dur  15.05 us err 2.3e-15 0.6s item80=level3
+FakeFez n=6 L= 8 PSF-C CZ  142 dur  15.10 us err 2.3e-15 0.7s
+FakeFez n=6 L= 8 QK3   CZ  142 dur  15.07 us err 2.0e-15 0.0s
+FakeFez n=6 L= 9 PSF   CZ  160 dur  16.62 us err 1.8e-14 0.2s item80=level3
+FakeFez n=6 L= 9 PSF-C CZ  160 dur  17.40 us err 1.8e-14 0.1s
+FakeFez n=6 L= 9 QK3   CZ  160 dur  16.62 us err 1.8e-14 0.1s
+FakeFez n=6 L=10 PSF   CZ  178 dur  12.44 us err 2.4e-15 0.5s item80=level3
+FakeFez n=6 L=10 PSF-C CZ  178 dur  12.44 us err 2.4e-15 0.4s
+FakeFez n=6 L=10 QK3   CZ  179 dur  18.84 us err 2.5e-15 0.0s
+FakeFez n=6 L=11 PSF   CZ  196 dur  20.82 us err 3.7e-15 0.2s item80=level3
+FakeFez n=6 L=11 PSF-C CZ  196 dur  20.89 us err 3.7e-15 0.1s
+FakeFez n=6 L=11 QK3   CZ  196 dur  20.82 us err 3.8e-15 0.0s
+FakeFez n=6 L=12 PSF   CZ  212 dur  14.63 us err 2.8e-15 0.9s item80=level3
+FakeFez n=6 L=12 PSF-C CZ  212 dur  14.63 us err 2.8e-15 0.6s
+FakeFez n=6 L=12 QK3   CZ  214 dur  22.40 us err 2.8e-15 0.1s
+FakeFez n=6 L=13 PSF   CZ  232 dur  24.70 us err 3.4e-15 0.2s item80=level3
+FakeFez n=6 L=13 PSF-C CZ  232 dur  24.79 us err 3.4e-15 0.1s
+FakeFez n=6 L=13 QK3   CZ  232 dur  24.70 us err 3.2e-15 0.1s
+FakeFez n=6 L=14 PSF   CZ  244 dur  16.82 us err 3.5e-15 0.9s item80=level3
+FakeFez n=6 L=14 PSF-C CZ  244 dur  16.82 us err 3.5e-15 0.6s
+FakeFez n=6 L=14 QK3   CZ  250 dur  26.29 us err 3.4e-15 0.0s
+FakeFez n=6 L=15 PSF   CZ  267 dur  28.10 us err 4.4e-15 0.1s item80=level3
+FakeFez n=6 L=15 PSF-C CZ  267 dur  28.30 us err 4.2e-15 0.1s
+FakeFez n=6 L=15 QK3   CZ  267 dur  28.13 us err 4.4e-15 0.0s
+FakeFez n=6 L=16 PSF   CZ  278 dur  19.06 us err 4.4e-15 0.8s item80=level3
+FakeFez n=6 L=16 PSF-C CZ  278 dur  19.06 us err 4.4e-15 0.9s
+FakeFez n=6 L=16 QK3   CZ  286 dur  30.44 us err 4.1e-15 0.1s
+FakeTorino n=4 L= 1 PSF   CZ    7 dur   0.83 us err 8.6e-16 0.1s item80=psf
+FakeTorino n=4 L= 1 PSF-C CZ    7 dur   0.83 us err 8.6e-16 0.0s
+FakeTorino n=4 L= 1 QK3   CZ    7 dur   0.89 us err 4.4e-16 0.0s
+FakeTorino n=4 L= 2 PSF   CZ   15 dur   1.88 us err 1.0e-15 0.2s item80=level3
+FakeTorino n=4 L= 2 PSF-C CZ   15 dur   1.88 us err 1.0e-15 0.1s
+FakeTorino n=4 L= 2 QK3   CZ   17 dur   2.04 us err 8.7e-16 0.0s
+FakeTorino n=4 L= 3 PSF   CZ   27 dur   3.20 us err 9.8e-16 0.1s item80=level3
+FakeTorino n=4 L= 3 PSF-C CZ   27 dur   3.20 us err 9.5e-16 0.0s
+FakeTorino n=4 L= 3 QK3   CZ   27 dur   3.20 us err 8.9e-16 0.0s
+FakeTorino n=4 L= 4 PSF   CZ   32 dur   4.37 us err 1.5e-15 0.2s item80=level3
+FakeTorino n=4 L= 4 PSF-C CZ   32 dur   4.37 us err 1.5e-15 0.2s
+FakeTorino n=4 L= 4 QK3   CZ   37 dur   3.70 us err 1.2e-15 0.0s
+FakeTorino n=4 L= 5 PSF   CZ   47 dur   4.65 us err 3.2e-15 0.1s item80=psf
+FakeTorino n=4 L= 5 PSF-C CZ   47 dur   4.65 us err 3.2e-15 0.1s
+FakeTorino n=4 L= 5 QK3   CZ   47 dur   4.72 us err 3.1e-15 0.0s
+FakeTorino n=4 L= 6 PSF   CZ   57 dur   5.57 us err 2.9e-15 0.5s item80=level3
+FakeTorino n=4 L= 6 PSF-C CZ   57 dur   5.64 us err 2.6e-15 0.4s
+FakeTorino n=4 L= 6 QK3   CZ   57 dur   5.64 us err 2.3e-15 0.0s
+FakeTorino n=4 L= 7 PSF   CZ   67 dur   6.65 us err 1.1e-15 0.1s item80=level3
+FakeTorino n=4 L= 7 PSF-C CZ   67 dur   6.72 us err 1.2e-15 0.0s
+FakeTorino n=4 L= 7 QK3   CZ   67 dur   6.72 us err 1.1e-15 0.0s
+FakeTorino n=4 L= 8 PSF   CZ   77 dur   7.64 us err 2.2e-15 0.3s item80=psf
+FakeTorino n=4 L= 8 PSF-C CZ   77 dur   7.64 us err 2.2e-15 0.2s
+FakeTorino n=4 L= 8 QK3   CZ   77 dur   7.70 us err 1.7e-15 0.0s
+FakeTorino n=4 L= 9 PSF   CZ   87 dur   8.68 us err 2.3e-15 0.1s item80=psf
+FakeTorino n=4 L= 9 PSF-C CZ   87 dur   8.68 us err 2.3e-15 0.0s
+FakeTorino n=4 L= 9 QK3   CZ   87 dur   8.68 us err 1.2e-15 0.0s
+FakeTorino n=4 L=10 PSF   CZ   97 dur   9.51 us err 2.3e-15 0.3s item80=level3
+FakeTorino n=4 L=10 PSF-C CZ   97 dur   9.57 us err 2.5e-15 0.4s
+FakeTorino n=4 L=10 QK3   CZ   97 dur   9.57 us err 3.3e-15 0.0s
+FakeTorino n=4 L=11 PSF   CZ  107 dur  10.43 us err 1.4e-14 0.2s item80=level3
+FakeTorino n=4 L=11 PSF-C CZ  107 dur  10.62 us err 2.3e-14 0.1s
+FakeTorino n=4 L=11 QK3   CZ  107 dur  10.49 us err 1.4e-14 0.0s
+FakeTorino n=4 L=12 PSF   CZ  117 dur  11.51 us err 1.1e-15 0.5s item80=level3
+FakeTorino n=4 L=12 PSF-C CZ  117 dur  11.83 us err 1.1e-15 0.3s
+FakeTorino n=4 L=12 QK3   CZ  117 dur  11.54 us err 1.6e-15 0.0s
+FakeTorino n=4 L=13 PSF   CZ  127 dur  12.46 us err 5.3e-15 0.2s item80=level3
+FakeTorino n=4 L=13 PSF-C CZ  127 dur  12.59 us err 6.1e-15 0.1s
+FakeTorino n=4 L=13 QK3   CZ  127 dur  12.52 us err 5.3e-15 0.0s
+FakeTorino n=4 L=14 PSF   CZ  137 dur  13.35 us err 1.8e-15 0.6s item80=level3
+FakeTorino n=4 L=14 PSF-C CZ  137 dur  13.64 us err 1.7e-15 0.5s
+FakeTorino n=4 L=14 QK3   CZ  137 dur  13.41 us err 2.0e-15 0.0s
+FakeTorino n=4 L=15 PSF   CZ  147 dur  14.36 us err 3.4e-15 0.2s item80=level3
+FakeTorino n=4 L=15 PSF-C CZ  147 dur  14.68 us err 3.5e-15 0.1s
+FakeTorino n=4 L=15 QK3   CZ  147 dur  14.43 us err 3.1e-15 0.0s
+FakeTorino n=4 L=16 PSF   CZ  157 dur  15.41 us err 2.8e-15 0.6s item80=level3
+FakeTorino n=4 L=16 PSF-C CZ  157 dur  15.67 us err 2.5e-15 0.4s
+FakeTorino n=4 L=16 QK3   CZ  157 dur  15.48 us err 2.9e-15 0.0s
+FakeTorino n=6 L= 1 PSF   CZ   16 dur   1.30 us err 7.6e-16 0.2s item80=psf
+FakeTorino n=6 L= 1 PSF-C CZ   16 dur   1.30 us err 7.6e-16 0.1s
+FakeTorino n=6 L= 1 QK3   CZ   18 dur   1.37 us err 2.9e-15 0.0s
+FakeTorino n=6 L= 2 PSF   CZ   33 dur   2.73 us err 1.4e-15 0.2s item80=level3
+FakeTorino n=6 L= 2 PSF-C CZ   34 dur   2.84 us err 1.1e-15 0.2s
+FakeTorino n=6 L= 2 QK3   CZ   33 dur   2.73 us err 1.7e-15 0.0s
+FakeTorino n=6 L= 3 PSF   CZ   52 dur   4.60 us err 1.1e-15 0.1s item80=level3
+FakeTorino n=6 L= 3 PSF-C CZ   52 dur   4.70 us err 1.0e-15 0.1s
+FakeTorino n=6 L= 3 QK3   CZ   52 dur   4.60 us err 1.1e-15 0.0s
+FakeTorino n=6 L= 4 PSF   CZ   70 dur   6.44 us err 2.1e-15 0.6s item80=level3
+FakeTorino n=6 L= 4 PSF-C CZ   73 dur   6.60 us err 2.5e-15 0.4s
+FakeTorino n=6 L= 4 QK3   CZ   70 dur   6.44 us err 2.5e-15 0.0s
+FakeTorino n=6 L= 5 PSF   CZ   89 dur   8.30 us err 2.2e-15 0.1s item80=level3
+FakeTorino n=6 L= 5 PSF-C CZ   89 dur   8.40 us err 1.5e-15 0.1s
+FakeTorino n=6 L= 5 QK3   CZ   89 dur   8.30 us err 2.2e-15 0.0s
+FakeTorino n=6 L= 6 PSF   CZ  106 dur  10.34 us err 2.3e-15 0.4s item80=psf
+FakeTorino n=6 L= 6 PSF-C CZ  106 dur  10.34 us err 2.3e-15 0.3s
+FakeTorino n=6 L= 6 QK3   CZ  108 dur  10.30 us err 2.5e-15 0.0s
+FakeTorino n=6 L= 7 PSF   CZ  123 dur  11.57 us err 2.5e-15 0.1s item80=level3
+FakeTorino n=6 L= 7 PSF-C CZ  124 dur  11.93 us err 2.7e-15 0.1s
+FakeTorino n=6 L= 7 QK3   CZ  123 dur  11.57 us err 2.5e-15 0.0s
+FakeTorino n=6 L= 8 PSF   CZ  142 dur  13.47 us err 2.5e-15 0.6s item80=level3
+FakeTorino n=6 L= 8 PSF-C CZ  144 dur  14.10 us err 2.4e-15 0.5s
+FakeTorino n=6 L= 8 QK3   CZ  142 dur  13.47 us err 2.3e-15 0.0s
+FakeTorino n=6 L= 9 PSF   CZ  161 dur  15.20 us err 7.2e-15 0.2s item80=level3
+FakeTorino n=6 L= 9 PSF-C CZ  163 dur  15.80 us err 7.2e-15 0.1s
+FakeTorino n=6 L= 9 QK3   CZ  161 dur  15.20 us err 7.2e-15 0.0s
+FakeTorino n=6 L=10 PSF   CZ  182 dur  14.23 us err 2.2e-15 0.6s item80=level3
+FakeTorino n=6 L=10 PSF-C CZ  182 dur  14.23 us err 2.2e-15 0.7s
+FakeTorino n=6 L=10 QK3   CZ  177 dur  16.84 us err 2.4e-15 0.1s
+FakeTorino n=6 L=11 PSF   CZ  196 dur  19.40 us err 3.0e-15 0.1s item80=level3
+FakeTorino n=6 L=11 PSF-C CZ  196 dur  19.53 us err 3.2e-15 0.1s
+FakeTorino n=6 L=11 QK3   CZ  196 dur  19.40 us err 3.2e-15 0.0s
+FakeTorino n=6 L=12 PSF   CZ  216 dur  16.55 us err 2.9e-15 0.7s item80=level3
+FakeTorino n=6 L=12 PSF-C CZ  216 dur  16.55 us err 2.9e-15 0.5s
+FakeTorino n=6 L=12 QK3   CZ  213 dur  20.73 us err 2.1e-15 0.1s
+FakeTorino n=6 L=13 PSF   CZ  232 dur  22.57 us err 3.4e-15 0.2s item80=level3
+FakeTorino n=6 L=13 PSF-C CZ  234 dur  23.03 us err 3.1e-15 0.2s
+FakeTorino n=6 L=13 QK3   CZ  232 dur  22.57 us err 3.6e-15 0.1s
+FakeTorino n=6 L=14 PSF   CZ  248 dur  18.78 us err 3.2e-15 0.7s item80=level3
+FakeTorino n=6 L=14 PSF-C CZ  248 dur  18.78 us err 3.2e-15 0.5s
+FakeTorino n=6 L=14 QK3   CZ  253 dur  24.60 us err 3.8e-15 0.0s
+FakeTorino n=6 L=15 PSF   CZ  269 dur  26.01 us err 3.9e-15 0.2s item80=level3
+FakeTorino n=6 L=15 PSF-C CZ  269 dur  26.34 us err 4.5e-15 0.1s
+FakeTorino n=6 L=15 QK3   CZ  269 dur  26.01 us err 4.0e-15 0.0s
+FakeTorino n=6 L=16 PSF   CZ  274 dur  18.93 us err 4.8e-15 0.8s item80=psf
+FakeTorino n=6 L=16 PSF-C CZ  274 dur  18.93 us err 4.8e-15 0.9s
+FakeTorino n=6 L=16 QK3   CZ  289 dur  27.81 us err 5.3e-15 0.1s
+2026-10-14 02:03:54 CEST done

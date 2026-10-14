@@ -1,0 +1,2054 @@
+{
+ "info": {
+  "snapshot": "2026-10-13 11:37:12+02:00",
+  "failed_qubits": [
+   82,
+   94,
+   113,
+   130
+  ],
+  "failed_couplers": [
+   [
+    82,
+    83
+   ],
+   [
+    95,
+    99
+   ],
+   [
+    112,
+    113
+   ],
+   [
+    113,
+    114
+   ],
+   [
+    113,
+    119
+   ],
+   [
+    129,
+    130
+   ],
+   [
+    130,
+    131
+   ]
+  ],
+  "component_sizes": [
+   1,
+   3,
+   148
+  ],
+  "K": 148,
+  "snake_length": 129,
+  "snake_pieces": [
+   66,
+   11,
+   22,
+   22
+  ]
+ },
+ "rows": [
+  {
+   "cell": "L_n12",
+   "inst": 0,
+   "n": 12,
+   "variant": "A",
+   "how": "snake interval",
+   "compiled": true,
+   "cz": 22,
+   "dur_us": 1.388,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.94,
+   "max_phys": 46,
+   "on_snake": 12,
+   "PSF": {
+    "cz": 22,
+    "dur_us": 1.38,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 22,
+    "dur_us": 1.38,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 22,
+    "dur_us": 1.38,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "L_n12",
+   "inst": 0,
+   "n": 12,
+   "variant": "B",
+   "how": "exact embedding (first VF2 match)",
+   "compiled": true,
+   "cz": 22,
+   "dur_us": 1.38,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.07,
+   "max_phys": 11,
+   "on_snake": 12,
+   "PSF": {
+    "cz": 22,
+    "dur_us": 1.38,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 22,
+    "dur_us": 1.38,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 22,
+    "dur_us": 1.38,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "L_n12",
+   "inst": 1,
+   "n": 12,
+   "variant": "A",
+   "how": "snake interval",
+   "compiled": true,
+   "cz": 22,
+   "dur_us": 1.352,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.08,
+   "max_phys": 46,
+   "on_snake": 12,
+   "PSF": {
+    "cz": 22,
+    "dur_us": 1.344,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 22,
+    "dur_us": 1.344,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 22,
+    "dur_us": 1.344,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "L_n12",
+   "inst": 1,
+   "n": 12,
+   "variant": "B",
+   "how": "exact embedding (first VF2 match)",
+   "compiled": true,
+   "cz": 22,
+   "dur_us": 1.344,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.08,
+   "max_phys": 11,
+   "on_snake": 12,
+   "PSF": {
+    "cz": 22,
+    "dur_us": 1.344,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 22,
+    "dur_us": 1.344,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 22,
+    "dur_us": 1.344,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "L_n12",
+   "inst": 2,
+   "n": 12,
+   "variant": "A",
+   "how": "snake interval",
+   "compiled": true,
+   "cz": 22,
+   "dur_us": 1.388,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.07,
+   "max_phys": 46,
+   "on_snake": 12,
+   "PSF": {
+    "cz": 22,
+    "dur_us": 1.38,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 22,
+    "dur_us": 1.38,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 22,
+    "dur_us": 1.38,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "L_n12",
+   "inst": 2,
+   "n": 12,
+   "variant": "B",
+   "how": "exact embedding (first VF2 match)",
+   "compiled": true,
+   "cz": 22,
+   "dur_us": 1.38,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.07,
+   "max_phys": 11,
+   "on_snake": 12,
+   "PSF": {
+    "cz": 22,
+    "dur_us": 1.38,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 22,
+    "dur_us": 1.38,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 22,
+    "dur_us": 1.38,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "L_n24",
+   "inst": 0,
+   "n": 24,
+   "variant": "A",
+   "how": "snake interval",
+   "compiled": true,
+   "cz": 46,
+   "dur_us": 2.6,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.11,
+   "max_phys": 52,
+   "on_snake": 24,
+   "PSF": {
+    "cz": 46,
+    "dur_us": 2.64,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 46,
+    "dur_us": 2.664,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 46,
+    "dur_us": 2.664,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "L_n24",
+   "inst": 0,
+   "n": 24,
+   "variant": "B",
+   "how": "exact embedding (first VF2 match)",
+   "compiled": true,
+   "cz": 46,
+   "dur_us": 2.616,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.11,
+   "max_phys": 35,
+   "on_snake": 24,
+   "PSF": {
+    "cz": 46,
+    "dur_us": 2.64,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 46,
+    "dur_us": 2.664,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 46,
+    "dur_us": 2.664,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "L_n24",
+   "inst": 1,
+   "n": 24,
+   "variant": "A",
+   "how": "snake interval",
+   "compiled": true,
+   "cz": 46,
+   "dur_us": 2.6,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.11,
+   "max_phys": 52,
+   "on_snake": 24,
+   "PSF": {
+    "cz": 46,
+    "dur_us": 2.64,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 46,
+    "dur_us": 2.648,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 46,
+    "dur_us": 2.648,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "L_n24",
+   "inst": 1,
+   "n": 24,
+   "variant": "B",
+   "how": "exact embedding (first VF2 match)",
+   "compiled": true,
+   "cz": 46,
+   "dur_us": 2.616,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.11,
+   "max_phys": 35,
+   "on_snake": 24,
+   "PSF": {
+    "cz": 46,
+    "dur_us": 2.64,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 46,
+    "dur_us": 2.648,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 46,
+    "dur_us": 2.648,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "L_n24",
+   "inst": 2,
+   "n": 24,
+   "variant": "A",
+   "how": "snake interval",
+   "compiled": true,
+   "cz": 46,
+   "dur_us": 2.636,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.11,
+   "max_phys": 52,
+   "on_snake": 24,
+   "PSF": {
+    "cz": 46,
+    "dur_us": 2.676,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 46,
+    "dur_us": 2.684,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 46,
+    "dur_us": 2.684,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "L_n24",
+   "inst": 2,
+   "n": 24,
+   "variant": "B",
+   "how": "exact embedding (first VF2 match)",
+   "compiled": true,
+   "cz": 46,
+   "dur_us": 2.652,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.13,
+   "max_phys": 35,
+   "on_snake": 24,
+   "PSF": {
+    "cz": 46,
+    "dur_us": 2.676,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 46,
+    "dur_us": 2.684,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 46,
+    "dur_us": 2.684,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "L_n48",
+   "inst": 0,
+   "n": 48,
+   "variant": "A",
+   "how": "snake interval",
+   "compiled": true,
+   "cz": 94,
+   "dur_us": 5.12,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.27,
+   "max_phys": 75,
+   "on_snake": 48,
+   "PSF": {
+    "cz": 94,
+    "dur_us": 5.184,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 94,
+    "dur_us": 5.144,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 94,
+    "dur_us": 5.144,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "L_n48",
+   "inst": 0,
+   "n": 48,
+   "variant": "B",
+   "how": "exact embedding (first VF2 match)",
+   "compiled": true,
+   "cz": 94,
+   "dur_us": 5.184,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.21,
+   "max_phys": 55,
+   "on_snake": 48,
+   "PSF": {
+    "cz": 94,
+    "dur_us": 5.184,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 94,
+    "dur_us": 5.144,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 94,
+    "dur_us": 5.144,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "L_n48",
+   "inst": 1,
+   "n": 48,
+   "variant": "A",
+   "how": "snake interval",
+   "compiled": true,
+   "cz": 94,
+   "dur_us": 5.156,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.22,
+   "max_phys": 75,
+   "on_snake": 48,
+   "PSF": {
+    "cz": 94,
+    "dur_us": 5.22,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 94,
+    "dur_us": 5.18,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 94,
+    "dur_us": 5.18,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "L_n48",
+   "inst": 1,
+   "n": 48,
+   "variant": "B",
+   "how": "exact embedding (first VF2 match)",
+   "compiled": true,
+   "cz": 94,
+   "dur_us": 5.22,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.28,
+   "max_phys": 55,
+   "on_snake": 48,
+   "PSF": {
+    "cz": 94,
+    "dur_us": 5.22,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 94,
+    "dur_us": 5.18,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 94,
+    "dur_us": 5.18,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "L_n48",
+   "inst": 2,
+   "n": 48,
+   "variant": "A",
+   "how": "snake interval",
+   "compiled": true,
+   "cz": 94,
+   "dur_us": 5.156,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.22,
+   "max_phys": 75,
+   "on_snake": 48,
+   "PSF": {
+    "cz": 94,
+    "dur_us": 5.22,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 94,
+    "dur_us": 5.252,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 94,
+    "dur_us": 5.252,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "L_n48",
+   "inst": 2,
+   "n": 48,
+   "variant": "B",
+   "how": "exact embedding (first VF2 match)",
+   "compiled": true,
+   "cz": 94,
+   "dur_us": 5.22,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.21,
+   "max_phys": 55,
+   "on_snake": 48,
+   "PSF": {
+    "cz": 94,
+    "dur_us": 5.22,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 94,
+    "dur_us": 5.252,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 94,
+    "dur_us": 5.252,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R2_n24",
+   "inst": 0,
+   "n": 24,
+   "variant": "A",
+   "how": "breadth-first order",
+   "compiled": true,
+   "cz": 150,
+   "dur_us": 3.648,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.13,
+   "max_phys": 45,
+   "on_snake": 20,
+   "PSF": {
+    "cz": 24,
+    "dur_us": 0.476,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 24,
+    "dur_us": 0.468,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 24,
+    "dur_us": 0.488,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R2_n24",
+   "inst": 0,
+   "n": 24,
+   "variant": "B",
+   "how": "exact embedding (first VF2 match)",
+   "compiled": true,
+   "cz": 24,
+   "dur_us": 0.476,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.11,
+   "max_phys": 37,
+   "on_snake": 21,
+   "PSF": {
+    "cz": 24,
+    "dur_us": 0.476,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 24,
+    "dur_us": 0.468,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 24,
+    "dur_us": 0.488,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R2_n24",
+   "inst": 1,
+   "n": 24,
+   "variant": "A",
+   "how": "breadth-first order",
+   "compiled": true,
+   "cz": 184,
+   "dur_us": 5.68,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.14,
+   "max_phys": 45,
+   "on_snake": 20,
+   "PSF": {
+    "cz": 28,
+    "dur_us": 0.512,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 28,
+    "dur_us": 0.476,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 28,
+    "dur_us": 0.476,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R2_n24",
+   "inst": 1,
+   "n": 24,
+   "variant": "B",
+   "how": "exact embedding (first VF2 match)",
+   "compiled": true,
+   "cz": 28,
+   "dur_us": 0.476,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.11,
+   "max_phys": 25,
+   "on_snake": 22,
+   "PSF": {
+    "cz": 28,
+    "dur_us": 0.512,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 28,
+    "dur_us": 0.476,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 28,
+    "dur_us": 0.476,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R2_n24",
+   "inst": 2,
+   "n": 24,
+   "variant": "A",
+   "how": "breadth-first order",
+   "compiled": true,
+   "cz": 151,
+   "dur_us": 4.088,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.12,
+   "max_phys": 45,
+   "on_snake": 20,
+   "PSF": {
+    "cz": 22,
+    "dur_us": 0.476,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 22,
+    "dur_us": 0.476,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 22,
+    "dur_us": 0.476,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R2_n24",
+   "inst": 2,
+   "n": 24,
+   "variant": "B",
+   "how": "exact embedding (first VF2 match)",
+   "compiled": true,
+   "cz": 22,
+   "dur_us": 0.476,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.11,
+   "max_phys": 37,
+   "on_snake": 21,
+   "PSF": {
+    "cz": 22,
+    "dur_us": 0.476,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 22,
+    "dur_us": 0.476,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 22,
+    "dur_us": 0.476,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R2_n48",
+   "inst": 0,
+   "n": 48,
+   "variant": "A",
+   "how": "breadth-first order",
+   "compiled": true,
+   "cz": 397,
+   "dur_us": 7.724,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.23,
+   "max_phys": 67,
+   "on_snake": 39,
+   "PSF": {
+    "cz": 40,
+    "dur_us": 0.5,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 40,
+    "dur_us": 0.476,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 40,
+    "dur_us": 0.476,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R2_n48",
+   "inst": 0,
+   "n": 48,
+   "variant": "B",
+   "how": "exact embedding (first VF2 match)",
+   "compiled": true,
+   "cz": 40,
+   "dur_us": 0.476,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.2,
+   "max_phys": 57,
+   "on_snake": 39,
+   "PSF": {
+    "cz": 40,
+    "dur_us": 0.5,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 40,
+    "dur_us": 0.476,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 40,
+    "dur_us": 0.476,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R2_n48",
+   "inst": 1,
+   "n": 48,
+   "variant": "A",
+   "how": "breadth-first order",
+   "compiled": true,
+   "cz": 330,
+   "dur_us": 6.656,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.26,
+   "max_phys": 67,
+   "on_snake": 39,
+   "PSF": {
+    "cz": 42,
+    "dur_us": 0.524,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 42,
+    "dur_us": 0.488,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 42,
+    "dur_us": 0.488,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R2_n48",
+   "inst": 1,
+   "n": 48,
+   "variant": "B",
+   "how": "exact embedding (first VF2 match)",
+   "compiled": true,
+   "cz": 42,
+   "dur_us": 0.5,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.21,
+   "max_phys": 57,
+   "on_snake": 39,
+   "PSF": {
+    "cz": 42,
+    "dur_us": 0.524,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 42,
+    "dur_us": 0.488,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 42,
+    "dur_us": 0.488,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R2_n48",
+   "inst": 2,
+   "n": 48,
+   "variant": "A",
+   "how": "breadth-first order",
+   "compiled": true,
+   "cz": 322,
+   "dur_us": 6.432,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.36,
+   "max_phys": 67,
+   "on_snake": 39,
+   "PSF": {
+    "cz": 40,
+    "dur_us": 0.512,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 40,
+    "dur_us": 0.484,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 40,
+    "dur_us": 0.488,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R2_n48",
+   "inst": 2,
+   "n": 48,
+   "variant": "B",
+   "how": "exact embedding (first VF2 match)",
+   "compiled": true,
+   "cz": 40,
+   "dur_us": 0.476,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.21,
+   "max_phys": 57,
+   "on_snake": 39,
+   "PSF": {
+    "cz": 40,
+    "dur_us": 0.512,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 40,
+    "dur_us": 0.484,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 40,
+    "dur_us": 0.488,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R2_n96",
+   "inst": 0,
+   "n": 96,
+   "variant": "A",
+   "how": "breadth-first order",
+   "compiled": true,
+   "cz": 1223,
+   "dur_us": 16.564,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.54,
+   "max_phys": 98,
+   "on_snake": 77,
+   "PSF": {
+    "cz": 98,
+    "dur_us": 0.56,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 98,
+    "dur_us": 0.556,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 98,
+    "dur_us": 0.524,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R2_n96",
+   "inst": 0,
+   "n": 96,
+   "variant": "B",
+   "how": "exact embedding (first VF2 match)",
+   "compiled": true,
+   "cz": 98,
+   "dur_us": 0.476,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.44,
+   "max_phys": 98,
+   "on_snake": 77,
+   "PSF": {
+    "cz": 98,
+    "dur_us": 0.56,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 98,
+    "dur_us": 0.556,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 98,
+    "dur_us": 0.524,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R2_n96",
+   "inst": 1,
+   "n": 96,
+   "variant": "A",
+   "how": "breadth-first order",
+   "compiled": true,
+   "cz": 1240,
+   "dur_us": 15.512,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.53,
+   "max_phys": 98,
+   "on_snake": 77,
+   "PSF": {
+    "cz": 100,
+    "dur_us": 0.56,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 100,
+    "dur_us": 0.52,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 100,
+    "dur_us": 0.5,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R2_n96",
+   "inst": 1,
+   "n": 96,
+   "variant": "B",
+   "how": "exact embedding (first VF2 match)",
+   "compiled": true,
+   "cz": 100,
+   "dur_us": 0.464,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.44,
+   "max_phys": 98,
+   "on_snake": 77,
+   "PSF": {
+    "cz": 100,
+    "dur_us": 0.56,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 100,
+    "dur_us": 0.52,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 100,
+    "dur_us": 0.5,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R2_n96",
+   "inst": 2,
+   "n": 96,
+   "variant": "A",
+   "how": "breadth-first order",
+   "compiled": true,
+   "cz": 1347,
+   "dur_us": 18.124,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.55,
+   "max_phys": 98,
+   "on_snake": 77,
+   "PSF": {
+    "cz": 108,
+    "dur_us": 0.524,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 108,
+    "dur_us": 0.548,
+    "failed": 3,
+    "submitted": true,
+    "part": "F"
+   },
+   "QK3F": {
+    "cz": 108,
+    "dur_us": 0.548,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R2_n96",
+   "inst": 2,
+   "n": 96,
+   "variant": "B",
+   "how": "exact embedding (first VF2 match)",
+   "compiled": true,
+   "cz": 108,
+   "dur_us": 0.508,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.46,
+   "max_phys": 98,
+   "on_snake": 77,
+   "PSF": {
+    "cz": 108,
+    "dur_us": 0.524,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 108,
+    "dur_us": 0.548,
+    "failed": 3,
+    "submitted": true,
+    "part": "F"
+   },
+   "QK3F": {
+    "cz": 108,
+    "dur_us": 0.548,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R2_n144",
+   "inst": 0,
+   "n": 144,
+   "variant": "A",
+   "how": "breadth-first order",
+   "compiled": true,
+   "cz": 2438,
+   "dur_us": 23.952,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.93,
+   "max_phys": 155,
+   "on_snake": 118,
+   "PSF": {
+    "cz": 0,
+    "dur_us": 0.0,
+    "failed": 0,
+    "submitted": false,
+    "part": "none"
+   },
+   "QK3": {
+    "cz": 140,
+    "dur_us": 0.512,
+    "failed": 7,
+    "submitted": true,
+    "part": "F"
+   },
+   "QK3F": {
+    "cz": 0,
+    "dur_us": 0.0,
+    "failed": 0,
+    "submitted": false,
+    "part": "none"
+   }
+  },
+  {
+   "cell": "R2_n144",
+   "inst": 0,
+   "n": 144,
+   "variant": "B",
+   "how": "exact embedding (first VF2 match)",
+   "compiled": true,
+   "cz": 140,
+   "dur_us": 0.508,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.92,
+   "max_phys": 155,
+   "on_snake": 118,
+   "PSF": {
+    "cz": 0,
+    "dur_us": 0.0,
+    "failed": 0,
+    "submitted": false,
+    "part": "none"
+   },
+   "QK3": {
+    "cz": 140,
+    "dur_us": 0.512,
+    "failed": 7,
+    "submitted": true,
+    "part": "F"
+   },
+   "QK3F": {
+    "cz": 0,
+    "dur_us": 0.0,
+    "failed": 0,
+    "submitted": false,
+    "part": "none"
+   }
+  },
+  {
+   "cell": "R2_n144",
+   "inst": 1,
+   "n": 144,
+   "variant": "A",
+   "how": "breadth-first order",
+   "compiled": true,
+   "cz": 3018,
+   "dur_us": 36.608,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.96,
+   "max_phys": 155,
+   "on_snake": 118,
+   "PSF": {
+    "cz": 231,
+    "dur_us": 2.688,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 261,
+    "dur_us": 2.576,
+    "failed": 13,
+    "submitted": true,
+    "part": "F"
+   },
+   "QK3F": {
+    "cz": 0,
+    "dur_us": 0.0,
+    "failed": 0,
+    "submitted": false,
+    "part": "none"
+   }
+  },
+  {
+   "cell": "R2_n144",
+   "inst": 1,
+   "n": 144,
+   "variant": "B",
+   "how": "breadth-first order (no exact embedding)",
+   "compiled": true,
+   "cz": 3018,
+   "dur_us": 36.608,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 3.53,
+   "max_phys": 155,
+   "on_snake": 118,
+   "PSF": {
+    "cz": 231,
+    "dur_us": 2.688,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 261,
+    "dur_us": 2.576,
+    "failed": 13,
+    "submitted": true,
+    "part": "F"
+   },
+   "QK3F": {
+    "cz": 0,
+    "dur_us": 0.0,
+    "failed": 0,
+    "submitted": false,
+    "part": "none"
+   }
+  },
+  {
+   "cell": "R2_n144",
+   "inst": 2,
+   "n": 144,
+   "variant": "A",
+   "how": "breadth-first order",
+   "compiled": true,
+   "cz": 2314,
+   "dur_us": 24.64,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 1.02,
+   "max_phys": 155,
+   "on_snake": 118,
+   "PSF": {
+    "cz": 0,
+    "dur_us": 0.0,
+    "failed": 0,
+    "submitted": false,
+    "part": "none"
+   },
+   "QK3": {
+    "cz": 128,
+    "dur_us": 0.524,
+    "failed": 2,
+    "submitted": true,
+    "part": "F"
+   },
+   "QK3F": {
+    "cz": 128,
+    "dur_us": 0.524,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R2_n144",
+   "inst": 2,
+   "n": 144,
+   "variant": "B",
+   "how": "exact embedding (first VF2 match)",
+   "compiled": true,
+   "cz": 130,
+   "dur_us": 0.508,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.74,
+   "max_phys": 155,
+   "on_snake": 118,
+   "PSF": {
+    "cz": 0,
+    "dur_us": 0.0,
+    "failed": 0,
+    "submitted": false,
+    "part": "none"
+   },
+   "QK3": {
+    "cz": 128,
+    "dur_us": 0.524,
+    "failed": 2,
+    "submitted": true,
+    "part": "F"
+   },
+   "QK3F": {
+    "cz": 128,
+    "dur_us": 0.524,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R4_n24",
+   "inst": 0,
+   "n": 24,
+   "variant": "A",
+   "how": "breadth-first order",
+   "compiled": true,
+   "cz": 374,
+   "dur_us": 12.436,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.16,
+   "max_phys": 45,
+   "on_snake": 20,
+   "PSF": {
+    "cz": 107,
+    "dur_us": 3.316,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 114,
+    "dur_us": 3.12,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 108,
+    "dur_us": 3.408,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R4_n24",
+   "inst": 0,
+   "n": 24,
+   "variant": "B",
+   "how": "breadth-first order (no exact embedding)",
+   "compiled": true,
+   "cz": 374,
+   "dur_us": 12.436,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.16,
+   "max_phys": 45,
+   "on_snake": 20,
+   "PSF": {
+    "cz": 107,
+    "dur_us": 3.316,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 114,
+    "dur_us": 3.12,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 108,
+    "dur_us": 3.408,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R4_n24",
+   "inst": 1,
+   "n": 24,
+   "variant": "A",
+   "how": "breadth-first order",
+   "compiled": true,
+   "cz": 302,
+   "dur_us": 7.036,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.16,
+   "max_phys": 45,
+   "on_snake": 20,
+   "PSF": {
+    "cz": 95,
+    "dur_us": 2.252,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 98,
+    "dur_us": 2.876,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 110,
+    "dur_us": 3.22,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R4_n24",
+   "inst": 1,
+   "n": 24,
+   "variant": "B",
+   "how": "breadth-first order (no exact embedding)",
+   "compiled": true,
+   "cz": 302,
+   "dur_us": 7.036,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.15,
+   "max_phys": 45,
+   "on_snake": 20,
+   "PSF": {
+    "cz": 95,
+    "dur_us": 2.252,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 98,
+    "dur_us": 2.876,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 110,
+    "dur_us": 3.22,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R4_n24",
+   "inst": 2,
+   "n": 24,
+   "variant": "A",
+   "how": "breadth-first order",
+   "compiled": true,
+   "cz": 383,
+   "dur_us": 9.672,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.18,
+   "max_phys": 45,
+   "on_snake": 20,
+   "PSF": {
+    "cz": 137,
+    "dur_us": 5.356,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 148,
+    "dur_us": 4.916,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 149,
+    "dur_us": 5.848,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R4_n24",
+   "inst": 2,
+   "n": 24,
+   "variant": "B",
+   "how": "breadth-first order (no exact embedding)",
+   "compiled": true,
+   "cz": 383,
+   "dur_us": 9.672,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.16,
+   "max_phys": 45,
+   "on_snake": 20,
+   "PSF": {
+    "cz": 137,
+    "dur_us": 5.356,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 148,
+    "dur_us": 4.916,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 149,
+    "dur_us": 5.848,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R4_n48",
+   "inst": 0,
+   "n": 48,
+   "variant": "A",
+   "how": "breadth-first order",
+   "compiled": true,
+   "cz": 910,
+   "dur_us": 14.096,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.36,
+   "max_phys": 67,
+   "on_snake": 39,
+   "PSF": {
+    "cz": 324,
+    "dur_us": 5.3,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 283,
+    "dur_us": 4.78,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 283,
+    "dur_us": 5.172,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R4_n48",
+   "inst": 0,
+   "n": 48,
+   "variant": "B",
+   "how": "breadth-first order (no exact embedding)",
+   "compiled": true,
+   "cz": 910,
+   "dur_us": 14.096,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.32,
+   "max_phys": 67,
+   "on_snake": 39,
+   "PSF": {
+    "cz": 324,
+    "dur_us": 5.3,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 283,
+    "dur_us": 4.78,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 283,
+    "dur_us": 5.172,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R4_n48",
+   "inst": 1,
+   "n": 48,
+   "variant": "A",
+   "how": "breadth-first order",
+   "compiled": true,
+   "cz": 916,
+   "dur_us": 17.508,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.31,
+   "max_phys": 67,
+   "on_snake": 39,
+   "PSF": {
+    "cz": 246,
+    "dur_us": 6.136,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 251,
+    "dur_us": 4.436,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 264,
+    "dur_us": 5.54,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R4_n48",
+   "inst": 1,
+   "n": 48,
+   "variant": "B",
+   "how": "breadth-first order (no exact embedding)",
+   "compiled": true,
+   "cz": 916,
+   "dur_us": 17.508,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.35,
+   "max_phys": 67,
+   "on_snake": 39,
+   "PSF": {
+    "cz": 246,
+    "dur_us": 6.136,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 251,
+    "dur_us": 4.436,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 264,
+    "dur_us": 5.54,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R4_n48",
+   "inst": 2,
+   "n": 48,
+   "variant": "A",
+   "how": "breadth-first order",
+   "compiled": true,
+   "cz": 785,
+   "dur_us": 12.524,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.29,
+   "max_phys": 67,
+   "on_snake": 39,
+   "PSF": {
+    "cz": 330,
+    "dur_us": 6.492,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 312,
+    "dur_us": 6.688,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 356,
+    "dur_us": 7.1,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  },
+  {
+   "cell": "R4_n48",
+   "inst": 2,
+   "n": 48,
+   "variant": "B",
+   "how": "breadth-first order (no exact embedding)",
+   "compiled": true,
+   "cz": 785,
+   "dur_us": 12.524,
+   "failed_used": 0,
+   "deterministic": true,
+   "correct": true,
+   "secs": 0.41,
+   "max_phys": 67,
+   "on_snake": 39,
+   "PSF": {
+    "cz": 330,
+    "dur_us": 6.492,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3": {
+    "cz": 312,
+    "dur_us": 6.688,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   },
+   "QK3F": {
+    "cz": 356,
+    "dur_us": 7.1,
+    "failed": 0,
+    "submitted": true,
+    "part": "main"
+   }
+  }
+ ]
+}

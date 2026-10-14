@@ -8308,6 +8308,213 @@ quantum advantage.** Times in CEST.
 
 ---
 
+
+---
+
+<!-- ===== Addendum 477 (source: addendum_477.md) ===== -->
+
+> **Note added when merging:** Owner's decision of 2026-10-14 (no calibration value decides), prototype c49 and C49-VAL, AI front end a15 (exploratory).
+
+## Addendum 477 -- C49-VAL: prototype 2026-10-14.c49 (item 84: every choice between compiled circuits by duration instead of the device's error table; item 85: failed qubits cut out of the device before compiling) confirmed on every prediction fixed before the run. It is at or below 1.02 x Qiskit level 3's duration on 89 of 90 cells (c48: 75), on all seven of HW2's reading tests on the marrakesh snapshot, and its own pipeline gives that on 88 of 90. Ising stays at 0.03-0.17 x. SCALE1's 144-qubit refusal is reproduced and removed (9 of 9 compile, exact; c48 refuses 7). The AI front end a15 is recorded as exploratory (2026-10-14)
+
+**Status:** predictions fixed in a local file before the run (as in Addenda 456-459), not committed first. Offline only;
+no real device. Times in CEST.
+
+### 1. Owner's decision (2026-10-14 morning) and why
+
+- **The decision.** The device's reported calibration (error rates, T1, T2, readout errors) decides nothing in
+  PSF-Zero's choices. Two things stay:
+  - the gate durations (fixed per device type);
+  - the list of failed elements, used only to cut them out.
+- **Search** is kept only as a recorded fallback.
+- **Basis** (Addenda 461, 476):
+  - The same estimate ranked the pairs at 0.00 on ibm_kingston and +0.64 on ibm_marrakesh.
+  - No predictor fixed in advance held on both devices.
+- **An exploratory check this morning, after the fact.** Predictions from the day's calibration against HW2's 28
+  measured F (tfim_n16 excluded):
+  - The median error per circuit is 31-35% for every predictor (ESP, NS2, P1/P2, P1c/P2c).
+  - Only 6-12 of 28 circuits fall within ±25%.
+  - ESP and NS2 overstate F by about 25% (measured / predicted 0.76 and 0.74).
+  - P2c, the variant with T2 halved while waiting, removes the bias (0.995) but not the scatter.
+  - The calibration file was measured about two hours before the run (T1/T2 09:55, readout 09:16, CZ 11:xx CEST). A
+    few entries were days to weeks old.
+  - Repeats inside one job agree within a median of 3%, so the 31% is not shot noise or drift over minutes.
+
+### 2. The prototype
+
+[`patches/psf_compile_c49_2026-10-14/`](../../patches/psf_compile_c49_2026-10-14/) is built from c48 by
+`make_c49.py` with `c49_code.py`. Changelog items 84-85 are in the file's header.
+
+- **Item 84 (`_better`).** Where c48 kept one of two compiled circuits by the summed -ln(1 - error), c49 keeps the
+  one with the shorter as-soon-as-possible schedule on the Target's gate durations.
+  - This applies to item 69 (STEINER6 against the usual path), item 74 (near-failed alternative), item 80 (Qiskit
+    level 3 as a candidate), item 82 (mirrored layers), and STEINER6's choice among its constructions (its own
+    schedule in CX units after item 83's order).
+  - On equal durations it takes fewer two-qubit gates; on a full tie, c48's tie choice.
+  - An operation the device does not offer, or one at error >= 1, still loses.
+  - Errors still shape the candidates themselves: items 33/60 and 75, STEINER6's error-distance construction, and
+    Qiskit's own passes. They no longer decide between candidates.
+  - `SELECT_BY = "esp"` restores c48.
+- **Item 85 (`_working_target`, `_embed_working`).**
+  - With the device given and no caller map or layout, a Target without the failed qubits is built (item 58's rule:
+    sx or readout error >= 0.5). The circuit is compiled on it and written back on the device's indices, with its
+    layout.
+  - Too few working qubits, or no placement on them, raises `FailedElementsError`.
+  - A device without failed qubits is compiled exactly as by c48.
+  - `CUT_FAILED_QUBITS = False` restores c48.
+- **Tests: 54 passed.**
+  - `test_c48_on_c49.py`: c48's 36 tests on c49 with both items switched off.
+  - `test_c49.py`: 18 tests, including the ones below.
+    - Duration by hand.
+    - `_better`'s rules.
+    - Invariance of the choice under rescaled errors.
+    - Outputs exact and never longer than the usual path or than PSF-Zero's own pipeline.
+    - Failed qubits never used, with measured bits read back correctly.
+    - Determinism.
+    - Too few working qubits, and no placement, both raising.
+    - The esp switch reproducing c48.
+  - With the items on, three of c48's tests fail by design: they assert a choice by ESP, or equality with c47. They
+    are restated by duration.
+
+### 3. C49-VAL
+
+- **Prestatement.**
+  [`data/2026-10-14/c49_val/C49-VAL_preregistration.md`](../../data/2026-10-14/c49_val/C49-VAL_preregistration.md),
+  02:16 CEST, SHA-256 `4d70b09f...`, unchanged.
+- **Run.** 02:16:39-02:56:28 CEST, in Claude's cloud workspace. The script prints the container's own time zone
+  (JST); the CEST times above are converted.
+- **Data:** [`data/2026-10-14/c49_val/run/`](../../data/2026-10-14/c49_val/run/).
+- **Script:** [`benchmarks/c49_val.py`](../../benchmarks/c49_val.py).
+- **Scope.**
+  - 18 tests: HW2's 11 and C48-VAL's 7 others.
+  - 5 devices: FakeFez, FakeMarrakesh, FakeKingston, FakeTorino, and ibm_marrakesh's HW2 snapshot (11:37 CEST, 4
+    failed qubits).
+  - 5 arms: QK3, C48, C49, and C48o / C49o, which are the same calls with `level3_candidate=False`.
+
+| ID | prediction | result |
+|---|---|---|
+| V1 | C49 and C49o exact (<= 20 active qubits, 1e-6), no refusal | **CONFIRMED**: 132 checked, 0 failures |
+| V2 | C49 <= 1.02 x C48 duration on >= 95%; C49o <= 1.02 x C48o on >= 95% | **CONFIRMED**: 87/90 and 87/90. Above: FakeTorino ba_n16 1.06, heis2d 1.08, qaoa3reg_n40 1.09; snapshot heis2d 1.03 (C49o) |
+| V3 | C49 <= 1.02 x QK3 duration on >= 90% | **CONFIRMED**: 89/90 (C48: 75/90). Above: FakeTorino heis2d_n16_r1 1.08 |
+| V4 | Ising: C49 <= 0.5 x QK3 on every cell | **CONFIRMED**: 30/30 (0.028-0.169) |
+| V5 | HW2's seven reading tests on the snapshot: C49 <= 1.02 x QK3 on 7/7 | **CONFIRMED**: 7/7 (0.72-0.82 on QAOA and Barabasi-Albert; 0.15 on tfim_n12) |
+| V6 | same output on a second call | **CONFIRMED**: 15/15 |
+| V7 | compile time C49 <= 1.5 x C48 + 2 s on >= 90% | **CONFIRMED**: 90/90 |
+| V8 | item 85: SCALE1's R2 n=144 on the snapshot with 6 more failed qubits (3 seeds x 3 instances): compiles, no failed qubit, MPS 20/20 on the known answer | **CONFIRMED**: 9/9. c48 refused 7/9 with SCALE1's message |
+| V9 (reported) | duration C49 / C48: median 1.000, geometric mean 0.915 (0.52-1.09). C49 / QK3: median 0.762, geometric mean 0.402. ESP C49 / C48: 0.929 | - |
+| V10 (reported) | item 80 returned Qiskit's circuit in 73 of 105 calls. C49's output is identical to the QK3 arm's in 10 of 90 cells. C49o (no Qiskit candidate) is <= 1.02 x QK3 on 88 of 90 | - |
+
+**On HW2's losses.** On the snapshot, c45 lost these HW2 pairs on hardware by being longer:
+
+| test | HW2 duration ratio (c45 / QK3) | C49 / QK3 on the snapshot |
+|---|---|---|
+| ba_n20 | 1.162 | 0.780 |
+| ba_n18 | 1.177 | 0.824 |
+| qaoa_n20_p2 | 1.079 | 0.720 |
+
+C49o gives the same values, so the gain comes from PSF-Zero's own pipeline choosing by duration (STEINER6's
+construction choice and item 82), not from returning Qiskit's circuit.
+
+**By family** (C49 / QK3 duration, all 5 devices):
+
+| family | C49 / QK3 | geometric mean | C48's worst |
+|---|---|---|---|
+| Ising | 0.028-0.169 | 0.090 | - |
+| Barabasi-Albert QAOA | 0.68-0.96 | 0.79 | 1.34 |
+| 3-regular QAOA | 0.58-0.97 | 0.78 | 1.67 |
+| Heisenberg, chemistry, GHZ | 0.95-1.08 | 1.00 | - |
+
+**Rule fixed in the prestatement.** V1, V2, V4, V6 and V8 are confirmed, so c49 is proposed as the next release.
+V3 and V5 are confirmed as well. The owner decides.
+
+### 4. The AI front end a15 (exploratory, not pre-registered)
+
+[`patches/psf_ai_compile_a15_2026-10-14/`](../../patches/psf_ai_compile_a15_2026-10-14/), items 23-27. With the
+device's Target and at most 8 qubits:
+
+- each deterministic starting point is compiled once by c49's default call, then polished;
+- the candidate is chosen by `_better` (duration, then two-qubit count);
+- a14's searched output is the last candidate (item 27, recorded fallback), so it is returned only where it is
+  strictly shorter;
+- a14's failed-element guarantee (item 22) and a11's direction backstop are kept;
+- without a Target, a15 is a14.
+
+`test_a15.py` passed 8 tests: exact; never longer than the input's own compile or than a14; deterministic; failed
+qubits never used; the choice unchanged under rescaled errors; a14 without a Target; constructions only with
+`SEARCH_FALLBACK = False`.
+
+PennyLane-style classifiers on FakeFez (one run, not pre-registered):
+
+| n | layers | duration QK3 / a14 / a15 (us) | a15 / a14 | chosen |
+|---|---|---|---|---|
+| 6 | 16 | 31.3 / 30.8 / 19.9 | 0.65 | a construction |
+| 6 | 8 | 16.3 / 16.2 / 11.1 | 0.68 | a construction |
+| 4 | every L | - | a14's | search (item 27) |
+
+At 4 qubits the CZ ring has no cycle of length 4 to sit on in heavy-hex, and a14's searched routing beats the
+constructions. That is a formula still to write (workplace request N2).
+
+### 5. Not established
+
+- **Hardware.** Durations are computed from Target gate lengths. That a shorter circuit has the higher fidelity was
+  observed after the fact on HW2 (7 of 7), and in part S with the same gates reordered. It is not yet a
+  pre-registered result. TIME1, a draft in
+  [`data/2026-10-14/time1/`](../../data/2026-10-14/time1/), is that test, on a third device, with the owner's
+  go-ahead.
+- **The TFIM margin over Qiskit** comes from the order in which Qiskit lays out a PauliEvolutionGate.
+  - The workplace (Addendum 478, W2) found that Qiskit level 3 given a hand-written brickwork circuit equals PSF-Zero
+    on CZ and duration up to n = 50.
+  - At n = 100, PSF-Zero lost: item 70's size limit (82 x) and a placement around failed couplers (2.9-4.1 x).
+
+### 6. Two numbers
+
+- **Display:**
+  - 0.40 x Qiskit level 3's duration (geometric mean over 90 cells);
+  - 0.09 x on Ising;
+  - HW2's three hardware losses now 0.72-0.82 x;
+  - the 144-qubit refusal gone.
+- **Essential:**
+  - All of this is computed, not measured on hardware.
+  - On Ising, a user who writes the brickwork by hand gets the same from Qiskit.
+  - The choice by duration rests on a hardware observation made after the fact (7 pairs) until TIME1 runs.
+
+---
+
+<!-- ===== Addendum 478 (source: addendum_478.md) ===== -->
+
+> **Note added when merging:** Workplace records of 2026-10-14 (W1, W2, W3, W5, W7) and home's next requests.
+
+## Addendum 478 -- Workplace records of 2026-10-14 (W1, W2, W3, W5, W7; offline, no estimates used). Qiskit level 3 given a hand-written brickwork TFIM circuit equals PSF-Zero's CZ and duration up to n = 50, so PSF-Zero's Ising margin is the order Qiskit gives a Pauli evolution; at n = 100 PSF-Zero loses (size limit, placement). The classifier gap opens only at even layer counts. Cutting failed qubits first removes SCALE1's 144-qubit refusals (as c49's item 85). No pre-registered hardware compiler comparison was found in the literature (2026-10-14)
+
+**Status: workplace records, committed unchanged.** They are in
+[`data/2026-10-14/workplace/workplace_2026-10-14_W1-W2-W3-W5-W7/`](../../data/2026-10-14/workplace/workplace_2026-10-14_W1-W2-W3-W5-W7/).
+The intake check was 16 of 16; the workplace packed them at 02:25 CEST. They answer the revised requests of the
+morning: no search, no sweeps, no seed variation, no choice by ESP or simulation, and only correctness, CZ count and
+duration measured.
+
+| request | finding (workplace) | home's reading |
+|---|---|---|
+| W2, TFIM at scale (n 12-100, 2-10 steps; FakeFez, FakeMarrakesh) | c48 is 0.012-0.16 x QK3's duration. Given a hand-written brickwork circuit, QK3 has the same CZ in 43 of 48 cells and a duration within 0.93-1.06 up to n = 50. At n = 100 c48 loses: 82 x at 10 steps (over the 2000-term limit of item 70, so the usual path), and 2.9-4.1 x on FakeMarrakesh (the placement is not a clean path). | Taken as the premise from now on: the Ising margin is automatic brickwork ordering, not a circuit the user cannot write. The record language changes accordingly. The n = 100 losses are construction gaps (request N1). |
+| W3, classifier depth (n 4, 6; L 1-16) | No general growth with depth. Level at odd L; the gap opens only at even L (FakeFez n = 4 to 0.80; n = 6 to 0.63 / 0.68 from L = 10). | Consistent with item 82's mirrored layers; cause to be isolated (N3). |
+| W5, placement by structure | Cutting failed qubits and couplers first leaves 148 connected qubits on the 11:37 snapshot. All 27 SCALE1 circuits compile, with 0 failed elements, correct and deterministic. A snake interval equals QK3 on chains. Non-chains need an exact-embedding step (first VF2 match, no score); circuits that need routing still lose 2.5-13 x in CZ. | The exact-embedding step is accepted as structural (an embedding exists or not; no score). Cutting first agrees with c49's item 85 (Addendum 477). |
+| W7, feature inventory | Item 83 is the only feature with direct hardware support. The estimate-only features in the default call are 33/60, 64, 69, 74, 75's score, 78 and 80. | c49 replaces the ESP choice in 69, 74, 80 and 82 by duration. 33/60, 64, 75's score and 78 remain (N5 measures each one switched off). |
+| W1, literature | (1) A pre-registered hardware compiler comparison scored on every case: not found; the closest is Mills et al., *Quantum* 5, 415 (2021), hardware with full data, not pre-registered. (2) Same-gate reordering raising hardware fidelity: partly known (Murali et al. 2020, crosstalk scheduling; Liu et al. 2026, idle H placement), with no Trotter / Pauli-block case. (3) The cliff: partly known (VF2PostLayout runtime). | (1) will be re-checked before any "first" is written (N6). |
+
+**Home's replies and next requests** ([`home_requests/`](../../data/2026-10-14/workplace/home_requests/), replacing section 3 of the
+morning's correction note):
+
+- N1: chain Hamiltonians built directly as brickwork on the longest clean snake path, with no STEINER6 and no size
+  limit. Target: QK3-BW or better in every W2 cell.
+- N2: rings on heavy-hex by formula. This covers the 4-qubit classifier, where a15 loses to search, and the n = 6
+  step at L = 10.
+- N3: the even / odd layer pattern, c48 against c49.
+- N4: W5's exact-embedding placement against c49's default call.
+- N5: each estimate-based default feature switched off, CZ and duration only.
+- N6: re-check W1 (1).
+
+**Cancelled:** the old W4 (96-qubit calibration analysis), the old W6, the T2* / ZZ experiment, and any work on
+predictors.
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
