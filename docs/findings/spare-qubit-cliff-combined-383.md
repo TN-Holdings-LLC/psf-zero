@@ -9619,4 +9619,175 @@ on psf_compile c55 with item 94 off, without fractional gates (T) and with them 
 
 ---
 
+<!-- ===== Addendum 490 (source: addendum_490.md) ===== -->
+
+> **Note added when merging:** Prototype c56 (scope gate, item 96) and C56-VAL; V6 refuted.
+
+## Addendum 490 -- Prototype c56 (item 94 off; item 96, the scope gate: a circuit whose two-qubit interaction graph does not embed in the device's working couplers is handed to Qiskit's level 3 unchanged) and C56-VAL: the scope reads as declared (12 tests in, 16 out, on all five devices), in-scope outputs are identical to c55's (120 of 120), out-of-scope outputs are identical to Qiskit's (158 of 160; the other 2 avoid a failed element Qiskit used), every output exact, none on a failed element -- but V6 is REFUTED: on the fractional Target, 79 of 80 handed-on outputs carried rzz angles IBM cannot run, so c56 is not a release candidate (2026-10-14)
+
+**Status:** an offline validation fixed in a local prestatement before its run. Times in CEST.
+
+### 1. Prototype c56
+
+[`patches/psf_compile_c56_2026-10-14/`](../../patches/psf_compile_c56_2026-10-14/) is built from c55 by `make_c56.py`.
+
+- **Item 94 is off by default** (`ZZ_RELAYER = False`); it was dropped (Addendum 488).
+- **Item 96, the scope gate.** With the device's Target, the input's two-qubit interaction graph is read:
+  - from the terms' supports when items 72-73's reader reads the input as Pauli terms on one or two qubits;
+  - otherwise from every two-qubit operation as written. An operation on more than two qubits puts the input out
+    of scope.
+
+  The graph is then tested for an embedding in the device's working coupling graph. Failed couplers and qubits are
+  removed, and the test is rustworkx's first VF2 match, with nodes in index order and no score.
+  - **Embeds, or no two-qubit operation:** c55's path.
+  - **Otherwise:** `generate_preset_pass_manager(3, target, seed)` unchanged, with seed 0 when none is given. If that
+    output uses a failed element, Qiskit runs on the working qubits. Only if that fails too is c55's path used.
+
+  This is the boundary between formula and search. Where the graph embeds, placement is an exact embedding and no
+  routing is needed. Where it does not, routing decides, and routing is search territory.
+- **Tests:** 120 passed.
+  - Item 96's 10 new tests: the scope reading; out of scope equals Qiskit level 3; in scope equals c55; the switch;
+    no Target; a failed qubit avoided; an inexact hand-off warns; deterministic; seed 0 by default.
+  - The carried-over suites, with the gate off.
+  - a18's 20 tests also pass on c56.
+
+### 2. C56-VAL
+
+Prestatement [`data/2026-10-14/c56_val/C56-VAL_preregistration.md`](../../data/2026-10-14/c56_val/C56-VAL_preregistration.md),
+fixed 14:44 CEST, SHA-256 `7eda6d9b...`. Data in [`data/2026-10-14/c56_val/run/`](../../data/2026-10-14/c56_val/run/).
+The run went from 14:44 to 15:39 in Claude's workspace, kept alive by polling within one reply.
+
+- **Scope:** C55-VAL's 28 tests on 5 devices.
+- **Arms:** QK3, QK3F, C55 and C55F (item 94 off), C56 and C56F.
+
+| ID | prediction | result |
+|---|---|---|
+| V1 | C56 and C56F exact, no refusal | **CONFIRMED** (248 checked) |
+| V2 | in scope: identical to C55 / C55F | **CONFIRMED**: 120 / 120 |
+| V3 | out of scope: identical to Qiskit level 3, except failed-element cases | **CONFIRMED**: 158 identical; 2 exceptions (FakeFez qaoa3reg_n40_r3, T and F: Qiskit's output used a failed element, Qiskit on the working qubits did too, and c55's path was used) |
+| V4 | scope as predicted (12 in, 16 out) on every device | **CONFIRMED** |
+| V5 | same output on a second call | **CONFIRMED**: 20 / 20 |
+| V6 | every C56F output native, every rzz in range | **REFUTED**: 61 / 140 |
+| V7 | compile time | **CONFIRMED**: 132 / 140 |
+| V8 | no output on a failed element | **CONFIRMED** |
+
+**Why V6 failed.**
+
+- On the fractional Target, Qiskit's level 3 emits rzz with any angle. IBM executes only 0 < theta <= pi/2.
+- A qiskit-ibm-runtime backend object folds the angles by itself; a bare Target does not.
+- So 79 of the 80 handed-on outputs could not run on the device. Qiskit's own QK3F arm failed the same check on 135
+  of 140 cells.
+- c51 had fixed this for PSF-Zero's own outputs (item 86 revised). The new hand-off path bypassed it.
+
+**Reported.** The duration ratios, geometric means:
+
+| | in scope (60 cells) | out of scope (80 cells) |
+|---|---|---|
+| C56 / C55 | 1.000 | **1.368** |
+| C56F / C55F | 1.000 | **1.489** |
+| C56 / QK3 | 0.197 | 1.000 |
+| C56F / QK3F | 0.230 | 1.000 |
+
+- Out of scope, c56 is 37-49% longer than c55 offline. This is the price the scope accepts: on the devices, c55's
+  own choices there lost on average (Addendum 488).
+- `SCOPE96_STATS`: 300 calls; 125 in scope, 173 handed on, 2 fell back to c55's path.
+- Every handed-on output that could be checked was exact (148), and 25 could not be checked.
+- The report's last table has a header in the wrong order. The columns are QK3, QK3F, C55, C56, C55F, C56F, in the
+  order of `ARMS`.
+
+**Rule fixed in advance:** V6 is refuted, so c56 is not a release candidate. The fix is c57 (Addendum 491).
+
+### 3. Reading
+
+- The gate does what the scope says: the right circuits in and out on every device, identical outputs on both sides.
+- Handing a circuit on is not enough when the receiver's output cannot run. "Qiskit's output" has to mean what
+  IBM's own backend would run, folded rzz included.
+
+---
+
+<!-- ===== Addendum 491 (source: addendum_491.md) ===== -->
+
+> **Note added when merging:** Prototype c57 (item 96 revised) and C57-VAL; every prediction confirmed; release candidate pending the owner's go-ahead.
+
+## Addendum 491 -- Prototype c57 (item 96 revised: on a Target with rzz, the output handed to Qiskit's level 3 is folded into IBM's executable range by item 86's _fold) and C57-VAL: every prediction confirmed. Every output native with every rzz angle in range (140 of 140), exact (248 checked), on no failed element; identical to c56 on the plain Target (140 of 140) and in scope on the fractional one (60 of 60); out of scope identical to Qiskit level 3 folded (79 of 80; the 80th avoids a failed element). c57 with a18 is the release candidate, pending the owner's go-ahead (2026-10-14)
+
+**Status:** an offline validation fixed in a local prestatement before its run. Times in CEST.
+
+### 1. Prototype c57
+
+[`patches/psf_compile_c57_2026-10-14/`](../../patches/psf_compile_c57_2026-10-14/) is built from c56 by `make_c57.py`.
+It changes one thing, after C56-VAL's V6 (Addendum 490).
+
+- On a Target with rzz, a handed-on output with an angle outside 0 < theta <= pi/2 is folded by item 86's `_fold`:
+  qiskit-ibm-runtime's FoldRzzAngle, then single-qubit runs merged. That is what IBM's own backend object would do.
+- If folding fails, c55's own path is used (counted).
+- On a Target without rzz nothing changes.
+
+**Tests:** 122 passed. They are c56's 120 and 2 new ones:
+
+- on a fractional FakeFez, the handed-on output is folded, native, identical to Qiskit level 3 folded by `_fold`, and
+  exact;
+- a plain Target's hand-off is unchanged.
+
+### 2. C57-VAL
+
+Prestatement [`data/2026-10-14/c57_val/C57-VAL_preregistration.md`](../../data/2026-10-14/c57_val/C57-VAL_preregistration.md),
+fixed 15:43 CEST, SHA-256 `98d8a2e2...`. Data in [`data/2026-10-14/c57_val/run/`](../../data/2026-10-14/c57_val/run/).
+The run went from 15:43 to 16:20.
+
+- **Scope:** C56-VAL's 28 tests on 5 devices.
+- **Arms:** QK3F (with its output folded, recorded as QK3F+fold), C57, C57F. C56's and C56F's outputs come from
+  C56-VAL's rows, fixed by SHA-256 in the prestatement.
+
+| ID | prediction | result |
+|---|---|---|
+| V1 | C57 and C57F exact, no refusal | **CONFIRMED** (248 checked) |
+| V2 | C57 identical to C56 | **CONFIRMED**: 140 / 140 |
+| V3 | in scope: C57F identical to C56F | **CONFIRMED**: 60 / 60 |
+| V4 | out of scope: C57F identical to QK3F+fold, except failed-element cases | **CONFIRMED**: 79 identical; 1 exception (FakeFez qaoa3reg_n40_r3, as in C56-VAL) |
+| V5 | same output on a second call | **CONFIRMED**: 20 / 20 |
+| V6 | every C57F output native, every rzz in range | **CONFIRMED**: 140 / 140 |
+| V7 | no output on a failed element | **CONFIRMED** |
+| V8 | compile time | **CONFIRMED**: 140 / 140 |
+
+**Reported** (duration, geometric mean):
+
+| | in scope (60 cells) | out of scope (80 cells) |
+|---|---|---|
+| C57F / QK3F (Qiskit unfolded) | 0.230 | 1.001 |
+| C57F / C55F | 1.000 | 1.490 |
+
+- Folding lengthens Qiskit's output by 0.1% on average.
+- `SCOPE96_STATS` records 94 folded hand-offs, of which no fold failed.
+
+**Rule fixed in advance:** V1-V7 are confirmed, so **c57 with a18 is the release candidate**. It is released after
+the owner's go-ahead. No real-device test is required for it, as the owner decided on 2026-10-14.
+
+### 3. Reading
+
+**What the candidate is.** psf_compile c57 and the AI front end a18. Together they carry since release 2026-10-11.4:
+
+- the time-aware order (item 83), confirmed on two devices, 8 of 8;
+- chains, lattices and embeddable graphs built by formula (items 87, 88, 91);
+- the device's native fractional gates (item 86 revised; off by default, as FRAC1's rule left it);
+- the diagonal Clifford dropped before measurement (item 89);
+- failed qubits cut first (item 85);
+- every output checked exact (items 93, 95);
+- the scope gate (item 96);
+- in the AI front end, the ring formula with no search (a16-a18).
+
+Outside the scope, the output is Qiskit level 3's, folded where IBM requires it.
+
+**Two numbers.**
+
+- **Display:** in scope, 0.20-0.23 x Qiskit level 3's duration. Out of scope, Qiskit's own output, so never worse
+  than Qiskit on a device by construction.
+- **Essential:**
+  - Offline.
+  - On real devices, only the order (item 83) and rzz have been run.
+  - Out of scope, c57 gives up 37-49% of c55's offline duration on purpose, because c55's choices there lost on the
+    devices.
+
+---
+
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

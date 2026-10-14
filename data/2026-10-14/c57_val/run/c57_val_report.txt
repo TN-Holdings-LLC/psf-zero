@@ -1,0 +1,13 @@
+V1 exact: every C57 and C57F output with <= 20 active qubits within 1e-6, no refusal: CONFIRMED (248 checked; failures [])
+V2 C57 identical to C56 (C56-VAL's rows) on every cell: CONFIRMED (140/140; differing [])
+V3 in scope: C57F identical to C56F (C56-VAL's rows): CONFIRMED (60/60; differing [])
+V4 out of scope: C57F identical to Qiskit level 3 folded by _fold, except where Qiskit's output uses a failed element (C56-VAL's record) and C57F's does not: CONFIRMED (identical 79; failed-element exceptions [('FakeFez', 'qaoa3reg_n40_r3')]; other [])
+V5 same output on a second call (C57F): CONFIRMED (20/20)
+V6 every C57F output native to the fractional Target, every rzz angle in (0, pi/2]: CONFIRMED (140/140; failures [])
+V7 no C57 / C57F output uses a failed element: CONFIRMED ([])
+V8 compile time C57F <= 1.5 x C56F (C56-VAL's) + 2 s on >= 90% of cells: CONFIRMED (140/140)
+reported, in scope (60 cells): C57F/QK3F (unfolded) geo 0.230; C57F/C55F geo 1.000
+reported, out of scope (80 cells): C57F/QK3F (unfolded) geo 1.001; C57F/C55F geo 1.490
+reported: SCOPE96_STATS {'calls': 300, 'in_scope': 125, 'handed': 173, 'handed_working': 0, 'handed_failed_fallback': 2, 'reasons': {'no_embedding': 165, 'embeds': 125, 'multi_qubit_operation': 10}, 'handoff_exact': 148, 'handoff_unchecked': 25, 'handoff_inexact': 0, 'folded': 94}; EXACT93_STATS c57 {'checked': 115, 'passed': 115, 'not_checkable': 12, 'failed': 0, 'fallback_usual': 0, 'fallback_level1': 0, 'raised': 0, 'largest_passed': 3.234348373293283e-07}
+
+finished 2026-10-14 23:20:45 JST

@@ -1,0 +1,994 @@
+FakeFez    qaoa_n12_p2      QK3  out 2q   146 rzz    0 dur    8.00 exact None 0.1s
+FakeFez    qaoa_n12_p2      QK3F out 2q   115 rzz   49 dur    6.05 exact None 0.1s
+FakeFez    qaoa_n12_p2      C55  out 2q   148 rzz    0 dur    5.98 exact None 0.7s
+FakeFez    qaoa_n12_p2      C56  out 2q   146 rzz    0 dur    8.00 exact 1.1796119636642288e-16 0.1s
+FakeFez    qaoa_n12_p2      C55F out 2q   121 rzz   49 dur    4.64 exact None 0.7s
+FakeFez    qaoa_n12_p2      C56F out 2q   115 rzz   49 dur    6.05 exact 6.245004513516506e-17 0.1s
+FakeFez    qaoa_n20_p2      QK3  out 2q   251 rzz    0 dur    7.60 exact None 0.1s
+FakeFez    qaoa_n20_p2      QK3F out 2q   199 rzz   79 dur    5.78 exact None 0.1s
+FakeFez    qaoa_n20_p2      C55  out 2q   215 rzz    0 dur    6.31 exact None 6.0s
+FakeFez    qaoa_n20_p2      C56  out 2q   251 rzz    0 dur    7.60 exact None 4.6s
+FakeFez    qaoa_n20_p2      C55F out 2q   173 rzz   80 dur    5.03 exact None 6.1s
+FakeFez    qaoa_n20_p2      C56F out 2q   199 rzz   79 dur    5.78 exact None 4.9s
+FakeFez    ba_n14           QK3  out 2q   391 rzz    0 dur   18.84 exact None 0.1s
+FakeFez    ba_n14           QK3F out 2q   332 rzz  113 dur   14.89 exact None 0.1s
+FakeFez    ba_n14           C55  out 2q   285 rzz    0 dur   15.29 exact None 3.7s
+FakeFez    ba_n14           C56  out 2q   391 rzz    0 dur   18.84 exact 1.3444106938820255e-17 0.8s
+FakeFez    ba_n14           C55F out 2q   235 rzz  106 dur   12.66 exact None 3.0s
+FakeFez    ba_n14           C56F out 2q   332 rzz  113 dur   14.89 exact 3.0791341698588326e-17 0.7s
+FakeFez    ba_n16           QK3  out 2q   477 rzz    0 dur   21.56 exact None 0.1s
+FakeFez    ba_n16           QK3F out 2q   408 rzz  138 dur   17.61 exact None 0.1s
+FakeFez    ba_n16           C55  out 2q   386 rzz    0 dur   18.12 exact None 2.5s
+FakeFez    ba_n16           C56  out 2q   477 rzz    0 dur   21.56 exact 1.22514845490862e-17 1.8s
+FakeFez    ba_n16           C55F out 2q   305 rzz  119 dur   14.95 exact None 2.4s
+FakeFez    ba_n16           C56F out 2q   408 rzz  138 dur   17.61 exact 1.8431436932253575e-17 1.6s
+FakeFez    ba_n18           QK3  out 2q   584 rzz    0 dur   24.74 exact None 0.1s
+FakeFez    ba_n18           QK3F out 2q   496 rzz  136 dur   20.18 exact None 0.1s
+FakeFez    ba_n18           C55  out 2q   531 rzz    0 dur   23.59 exact None 12.1s
+FakeFez    ba_n18           C56  out 2q   584 rzz    0 dur   24.74 exact 1.6805133673525319e-18 7.3s
+FakeFez    ba_n18           C55F out 2q   453 rzz  168 dur   19.01 exact None 9.6s
+FakeFez    ba_n18           C56F out 2q   496 rzz  136 dur   20.18 exact 3.198396408832238e-18 6.2s
+FakeFez    ba_n20           QK3  out 2q   668 rzz    0 dur   33.64 exact None 0.1s
+FakeFez    ba_n20           QK3F out 2q   577 rzz  172 dur   28.92 exact None 0.1s
+FakeFez    ba_n20           C55  out 2q   564 rzz    0 dur   24.40 exact None 28.7s
+FakeFez    ba_n20           C56  out 2q   668 rzz    0 dur   33.64 exact 2.439454888092385e-18 30.8s
+FakeFez    ba_n20           C55F out 2q   483 rzz  180 dur   21.56 exact None 28.3s
+FakeFez    ba_n20           C56F out 2q   577 rzz  172 dur   28.92 exact 9.0801931945661e-18 27.6s
+FakeFez    tfim_n12         QK3  IN  2q    82 rzz    0 dur    9.86 exact None 0.0s
+FakeFez    tfim_n12         QK3F IN  2q    43 rzz   43 dur    3.71 exact None 0.0s
+FakeFez    tfim_n12         C55  IN  2q    56 rzz    0 dur    1.27 exact None 0.6s
+FakeFez    tfim_n12         C56  IN  2q    56 rzz    0 dur    1.27 exact 4.579669976578771e-16 0.6s
+FakeFez    tfim_n12         C55F IN  2q    28 rzz   28 dur    0.47 exact None 0.9s
+FakeFez    tfim_n12         C56F IN  2q    28 rzz   28 dur    0.47 exact 3.191891195797325e-16 0.8s
+FakeFez    tfim_n16         QK3  IN  2q   114 rzz    0 dur   13.70 exact None 0.0s
+FakeFez    tfim_n16         QK3F IN  2q    59 rzz   59 dur    5.05 exact None 0.0s
+FakeFez    tfim_n16         C55  IN  2q    76 rzz    0 dur    1.27 exact None 1.3s
+FakeFez    tfim_n16         C56  IN  2q    76 rzz    0 dur    1.27 exact 3.3306690738754696e-16 1.4s
+FakeFez    tfim_n16         C55F IN  2q    38 rzz   38 dur    0.47 exact None 1.4s
+FakeFez    tfim_n16         C56F IN  2q    38 rzz   38 dur    0.47 exact 2.255140518769849e-16 1.4s
+FakeFez    ghz_n12          QK3  IN  2q    11 rzz    0 dur    1.23 exact None 0.0s
+FakeFez    ghz_n12          QK3F IN  2q    11 rzz    0 dur    1.23 exact None 0.0s
+FakeFez    ghz_n12          C55  IN  2q    11 rzz    0 dur    1.21 exact None 0.1s
+FakeFez    ghz_n12          C56  IN  2q    11 rzz    0 dur    1.21 exact 2.7755575615628914e-16 0.1s
+FakeFez    ghz_n12          C55F IN  2q    11 rzz    0 dur    1.21 exact None 0.3s
+FakeFez    ghz_n12          C56F IN  2q    11 rzz    0 dur    1.21 exact 2.7755575615628914e-16 0.1s
+FakeFez    tfimP_n12        QK3  IN  2q    82 rzz    0 dur    9.89 exact None 0.0s
+FakeFez    tfimP_n12        QK3F IN  2q    43 rzz   43 dur    3.73 exact None 0.0s
+FakeFez    tfimP_n12        C55  IN  2q    56 rzz    0 dur    1.30 exact None 0.6s
+FakeFez    tfimP_n12        C56  IN  2q    56 rzz    0 dur    1.30 exact 2.185751579730777e-16 0.6s
+FakeFez    tfimP_n12        C55F IN  2q    28 rzz   28 dur    0.49 exact None 0.7s
+FakeFez    tfimP_n12        C56F IN  2q    28 rzz   28 dur    0.49 exact 1.0755285551056204e-16 0.7s
+FakeFez    tfimP_n16        QK3  IN  2q   114 rzz    0 dur   13.73 exact None 0.0s
+FakeFez    tfimP_n16        QK3F IN  2q    59 rzz   59 dur    5.08 exact None 0.0s
+FakeFez    tfimP_n16        C55  IN  2q    76 rzz    0 dur    1.30 exact None 1.6s
+FakeFez    tfimP_n16        C56  IN  2q    76 rzz    0 dur    1.30 exact 6.505213034913027e-17 1.4s
+FakeFez    tfimP_n16        C55F IN  2q    38 rzz   38 dur    0.49 exact None 1.4s
+FakeFez    tfimP_n16        C56F IN  2q    38 rzz   38 dur    0.49 exact 3.252606517456513e-17 1.2s
+FakeFez    tfim_n20_r3      QK3  IN  2q   230 rzz    0 dur   27.77 exact None 0.1s
+FakeFez    tfim_n20_r3      QK3F IN  2q   118 rzz  118 dur    9.98 exact None 0.1s
+FakeFez    tfim_n20_r3      C55  IN  2q   100 rzz    0 dur    1.32 exact None 14.3s
+FakeFez    tfim_n20_r3      C56  IN  2q   100 rzz    0 dur    1.32 exact 1.5448735068979147e-08 13.8s
+FakeFez    tfim_n20_r3      C55F IN  2q    70 rzz   70 dur    0.76 exact None 10.3s
+FakeFez    tfim_n20_r3      C56F IN  2q    70 rzz   70 dur    0.76 exact 1.1102230246251565e-15 10.0s
+FakeFez    heis_n12_r2      QK3  IN  2q   135 rzz    0 dur   16.69 exact None 0.1s
+FakeFez    heis_n12_r2      QK3F IN  2q   135 rzz  135 dur   14.39 exact None 0.0s
+FakeFez    heis_n12_r2      C55  IN  2q   135 rzz    0 dur   16.57 exact None 0.7s
+FakeFez    heis_n12_r2      C56  IN  2q   135 rzz    0 dur   16.57 exact 5.447031714567174e-15 0.5s
+FakeFez    heis_n12_r2      C55F IN  2q   135 rzz  135 dur   14.44 exact None 0.7s
+FakeFez    heis_n12_r2      C56F IN  2q   135 rzz  135 dur   14.44 exact 1.0658141036401503e-14 0.7s
+FakeFez    heis2d_n16_r1    QK3  out 2q   429 rzz    0 dur   22.67 exact None 0.1s
+FakeFez    heis2d_n16_r1    QK3F out 2q   429 rzz  198 dur   20.92 exact None 0.1s
+FakeFez    heis2d_n16_r1    C55  out 2q   429 rzz    0 dur   22.27 exact None 2.5s
+FakeFez    heis2d_n16_r1    C56  out 2q   429 rzz    0 dur   22.67 exact 1.863093013199091e-15 1.8s
+FakeFez    heis2d_n16_r1    C55F out 2q   429 rzz  195 dur   20.47 exact None 2.7s
+FakeFez    heis2d_n16_r1    C56F out 2q   429 rzz  198 dur   20.92 exact 1.4363510381087963e-15 1.7s
+FakeFez    chem_n12_r1      QK3  out 2q   230 rzz    0 dur   26.14 exact None 0.1s
+FakeFez    chem_n12_r1      QK3F out 2q   197 rzz   88 dur   21.30 exact None 0.1s
+FakeFez    chem_n12_r1      C55  out 2q   230 rzz    0 dur   26.14 exact None 0.9s
+FakeFez    chem_n12_r1      C56  out 2q   230 rzz    0 dur   26.14 exact 6.591949208711867e-16 0.2s
+FakeFez    chem_n12_r1      C55F out 2q   197 rzz   88 dur   21.30 exact None 0.9s
+FakeFez    chem_n12_r1      C56F out 2q   197 rzz   88 dur   21.30 exact 6.140921104957897e-16 0.2s
+FakeFez    qaoa3reg_n20_r3  QK3  out 2q   517 rzz    0 dur   14.65 exact None 0.1s
+FakeFez    qaoa3reg_n20_r3  QK3F out 2q   437 rzz  113 dur   12.53 exact None 0.1s
+FakeFez    qaoa3reg_n20_r3  C55  out 2q   386 rzz    0 dur   11.08 exact None 6.0s
+FakeFez    qaoa3reg_n20_r3  C56  out 2q   517 rzz    0 dur   14.65 exact 9.147955830346444e-20 26.1s
+FakeFez    qaoa3reg_n20_r3  C55F out 2q   326 rzz  107 dur    9.67 exact None 6.2s
+FakeFez    qaoa3reg_n20_r3  C56F out 2q   437 rzz  113 dur   12.53 exact 6.098637220230962e-20 22.1s
+FakeFez    qaoa3reg_n40_r3  QK3  out 2q  1320 rzz    0 dur   24.55 exact None 0.2s
+FakeFez    qaoa3reg_n40_r3  QK3F out 2q  1161 rzz  240 dur   21.72 exact None 0.3s
+FakeFez    qaoa3reg_n40_r3  C55  out 2q  1171 rzz    0 dur   23.83 exact None 3.8s
+FakeFez    qaoa3reg_n40_r3  C56  out 2q  1171 rzz    0 dur   23.83 exact None 3.7s
+FakeFez    qaoa3reg_n40_r3  C55F out 2q  1028 rzz  305 dur   21.54 exact None 3.9s
+FakeFez    qaoa3reg_n40_r3  C56F out 2q  1028 rzz  305 dur   21.54 exact None 3.8s
+FakeFez    tfim_n40_r2      QK3  IN  2q   314 rzz    0 dur   37.73 exact None 0.4s
+FakeFez    tfim_n40_r2      QK3F IN  2q   159 rzz  159 dur   13.40 exact None 0.3s
+FakeFez    tfim_n40_r2      C55  IN  2q   160 rzz    0 dur    1.06 exact None 3.4s
+FakeFez    tfim_n40_r2      C56  IN  2q   160 rzz    0 dur    1.06 exact None 3.2s
+FakeFez    tfim_n40_r2      C55F IN  2q   100 rzz  100 dur    0.56 exact None 4.1s
+FakeFez    tfim_n40_r2      C56F IN  2q   100 rzz  100 dur    0.56 exact None 3.4s
+FakeFez    clf_n4_L3        QK3  out 2q    27 rzz    0 dur    2.87 exact None 0.0s
+FakeFez    clf_n4_L3        QK3F out 2q    27 rzz    5 dur    2.68 exact None 0.0s
+FakeFez    clf_n4_L3        C55  out 2q    15 rzz    0 dur    1.72 exact None 0.1s
+FakeFez    clf_n4_L3        C56  out 2q    27 rzz    0 dur    2.87 exact 9.71445146547012e-16 0.0s
+FakeFez    clf_n4_L3        C55F out 2q    13 rzz   10 dur    1.38 exact None 0.2s
+FakeFez    clf_n4_L3        C56F out 2q    27 rzz    5 dur    2.68 exact 7.216449660063518e-16 0.0s
+FakeFez    clf_n4_L5        QK3  out 2q    47 rzz    0 dur    4.93 exact None 0.0s
+FakeFez    clf_n4_L5        QK3F out 2q    47 rzz    7 dur    4.67 exact None 0.0s
+FakeFez    clf_n4_L5        C55  out 2q    30 rzz    0 dur    3.41 exact None 0.4s
+FakeFez    clf_n4_L5        C56  out 2q    47 rzz    0 dur    4.93 exact 1.8318679906315083e-15 0.0s
+FakeFez    clf_n4_L5        C55F out 2q    26 rzz   18 dur    2.81 exact None 0.4s
+FakeFez    clf_n4_L5        C56F out 2q    47 rzz    7 dur    4.67 exact 1.8318679906315083e-15 0.0s
+FakeFez    clf_n4_L9        QK3  out 2q    87 rzz    0 dur    9.11 exact None 0.0s
+FakeFez    clf_n4_L9        QK3F out 2q    87 rzz   13 dur    8.68 exact None 0.0s
+FakeFez    clf_n4_L9        C55  out 2q    60 rzz    0 dur    6.84 exact None 0.5s
+FakeFez    clf_n4_L9        C56  out 2q    87 rzz    0 dur    9.11 exact 2.6645352591003757e-15 0.0s
+FakeFez    clf_n4_L9        C55F out 2q    52 rzz   32 dur    5.57 exact None 0.5s
+FakeFez    clf_n4_L9        C56F out 2q    87 rzz   13 dur    8.68 exact 2.7755575615628914e-15 0.0s
+FakeFez    clf_n6_L3        QK3  out 2q    52 rzz    0 dur    5.28 exact None 0.0s
+FakeFez    clf_n6_L3        QK3F out 2q    52 rzz   14 dur    5.21 exact None 0.0s
+FakeFez    clf_n6_L3        C55  out 2q    34 rzz    0 dur    2.59 exact None 0.2s
+FakeFez    clf_n6_L3        C56  out 2q    52 rzz    0 dur    5.28 exact 2.609024107869118e-15 0.1s
+FakeFez    clf_n6_L3        C55F out 2q    28 rzz   17 dur    1.84 exact None 0.3s
+FakeFez    clf_n6_L3        C56F out 2q    52 rzz   14 dur    5.21 exact 1.7763568394002505e-15 0.0s
+FakeFez    clf_n6_L5        QK3  out 2q    87 rzz    0 dur    8.64 exact None 0.0s
+FakeFez    clf_n6_L5        QK3F out 2q    87 rzz   28 dur    8.52 exact None 0.0s
+FakeFez    clf_n6_L5        C55  out 2q    73 rzz    0 dur    4.74 exact None 0.3s
+FakeFez    clf_n6_L5        C56  out 2q    87 rzz    0 dur    8.64 exact 6.175615574477433e-16 0.1s
+FakeFez    clf_n6_L5        C55F out 2q    61 rzz   30 dur    3.65 exact None 0.5s
+FakeFez    clf_n6_L5        C56F out 2q    87 rzz   28 dur    8.52 exact 6.453171330633722e-16 0.1s
+FakeFez    clf_n6_L9        QK3  out 2q   160 rzz    0 dur   16.31 exact None 0.0s
+FakeFez    clf_n6_L9        QK3F out 2q   160 rzz   44 dur   16.07 exact None 0.0s
+FakeFez    clf_n6_L9        C55  out 2q   143 rzz    0 dur   10.00 exact None 0.5s
+FakeFez    clf_n6_L9        C56  out 2q   160 rzz    0 dur   16.31 exact 1.4710455076283324e-15 0.1s
+FakeFez    clf_n6_L9        C55F out 2q   119 rzz   62 dur    7.93 exact None 0.7s
+FakeFez    clf_n6_L9        C56F out 2q   160 rzz   44 dur   16.07 exact 1.2906342661267445e-15 0.1s
+FakeFez    hhI_n16          QK3  IN  2q   164 rzz    0 dur    6.05 exact None 0.1s
+FakeFez    hhI_n16          QK3F IN  2q    94 rzz   94 dur    2.56 exact None 0.1s
+FakeFez    hhI_n16          C55  IN  2q   120 rzz    0 dur    3.22 exact None 2.1s
+FakeFez    hhI_n16          C56  IN  2q   120 rzz    0 dur    3.22 exact 7.619810520401171e-10 1.8s
+FakeFez    hhI_n16          C55F IN  2q    71 rzz   71 dur    1.44 exact None 1.5s
+FakeFez    hhI_n16          C56F IN  2q    71 rzz   71 dur    1.44 exact 4.90059381963448e-17 1.6s
+FakeFez    hhI_n20          QK3  IN  2q   248 rzz    0 dur    7.97 exact None 0.0s
+FakeFez    hhI_n20          QK3F IN  2q   140 rzz  140 dur    3.37 exact None 0.0s
+FakeFez    hhI_n20          C55  IN  2q   178 rzz    0 dur    3.53 exact None 19.7s
+FakeFez    hhI_n20          C56  IN  2q   178 rzz    0 dur    3.53 exact 7.448468924975415e-17 19.4s
+FakeFez    hhI_n20          C55F IN  2q    89 rzz   89 dur    1.44 exact None 14.6s
+FakeFez    hhI_n20          C56F IN  2q    89 rzz   89 dur    1.44 exact 2.233456475320139e-17 14.2s
+FakeFez    ring12_tfim      QK3  IN  2q   178 rzz    0 dur   21.57 exact None 0.0s
+FakeFez    ring12_tfim      QK3F IN  2q    93 rzz   93 dur    8.18 exact None 0.0s
+FakeFez    ring12_tfim      C55  IN  2q    72 rzz    0 dur    1.61 exact None 0.5s
+FakeFez    ring12_tfim      C56  IN  2q    72 rzz    0 dur    1.61 exact 3.2361266444347336e-15 0.6s
+FakeFez    ring12_tfim      C55F IN  2q    54 rzz   54 dur    1.00 exact None 0.6s
+FakeFez    ring12_tfim      C56F IN  2q    54 rzz   54 dur    1.00 exact 1.7694179454963432e-16 0.7s
+FakeFez    hhtree_heis_n16  QK3  IN  2q   147 rzz    0 dur    6.44 exact None 0.0s
+FakeFez    hhtree_heis_n16  QK3F IN  2q   147 rzz  147 dur    5.46 exact None 0.0s
+FakeFez    hhtree_heis_n16  C55  IN  2q   147 rzz    0 dur    6.23 exact None 2.1s
+FakeFez    hhtree_heis_n16  C56  IN  2q   147 rzz    0 dur    6.23 exact 1.4233406120389702e-15 2.0s
+FakeFez    hhtree_heis_n16  C55F IN  2q   147 rzz  147 dur    5.51 exact None 2.0s
+FakeFez    hhtree_heis_n16  C56F IN  2q   147 rzz  147 dur    5.51 exact 1.5295924249425497e-15 2.1s
+eMarrakesh qaoa_n12_p2      QK3  out 2q   146 rzz    0 dur    7.85 exact None 0.0s
+eMarrakesh qaoa_n12_p2      QK3F out 2q   115 rzz   46 dur    5.74 exact None 0.0s
+eMarrakesh qaoa_n12_p2      C55  out 2q   136 rzz    0 dur    4.34 exact None 0.7s
+eMarrakesh qaoa_n12_p2      C56  out 2q   146 rzz    0 dur    7.85 exact 8.673617379884035e-17 0.1s
+eMarrakesh qaoa_n12_p2      C55F out 2q   102 rzz   48 dur    3.32 exact None 0.8s
+eMarrakesh qaoa_n12_p2      C56F out 2q   115 rzz   46 dur    5.74 exact 4.336808689942018e-17 0.1s
+eMarrakesh qaoa_n20_p2      QK3  out 2q   251 rzz    0 dur    7.38 exact None 0.1s
+eMarrakesh qaoa_n20_p2      QK3F out 2q   199 rzz   79 dur    5.44 exact None 0.0s
+eMarrakesh qaoa_n20_p2      C55  out 2q   210 rzz    0 dur    4.77 exact None 5.1s
+eMarrakesh qaoa_n20_p2      C56  out 2q   251 rzz    0 dur    7.38 exact None 4.4s
+eMarrakesh qaoa_n20_p2      C55F out 2q   175 rzz   85 dur    4.09 exact None 5.4s
+eMarrakesh qaoa_n20_p2      C56F out 2q   199 rzz   79 dur    5.44 exact None 4.5s
+eMarrakesh ba_n14           QK3  out 2q   391 rzz    0 dur   18.34 exact None 0.0s
+eMarrakesh ba_n14           QK3F out 2q   332 rzz  113 dur   14.19 exact None 0.0s
+eMarrakesh ba_n14           C55  out 2q   294 rzz    0 dur   12.58 exact None 1.2s
+eMarrakesh ba_n14           C56  out 2q   391 rzz    0 dur   18.34 exact 1.5829351718288365e-17 0.7s
+eMarrakesh ba_n14           C55F out 2q   242 rzz  116 dur   10.12 exact None 1.3s
+eMarrakesh ba_n14           C56F out 2q   332 rzz  113 dur   14.19 exact 2.0816681711721685e-17 0.6s
+eMarrakesh ba_n16           QK3  out 2q   477 rzz    0 dur   21.09 exact None 0.1s
+eMarrakesh ba_n16           QK3F out 2q   408 rzz  135 dur   17.01 exact None 0.2s
+eMarrakesh ba_n16           C55  out 2q   408 rzz    0 dur   19.07 exact None 2.9s
+eMarrakesh ba_n16           C56  out 2q   477 rzz    0 dur   21.09 exact 1.5178830414797062e-17 1.8s
+eMarrakesh ba_n16           C55F out 2q   347 rzz  131 dur   15.20 exact None 2.4s
+eMarrakesh ba_n16           C56F out 2q   408 rzz  135 dur   17.01 exact 1.8865117801247777e-17 1.9s
+eMarrakesh ba_n18           QK3  out 2q   584 rzz    0 dur   24.10 exact None 0.1s
+eMarrakesh ba_n18           QK3F out 2q   496 rzz  133 dur   19.42 exact None 0.1s
+eMarrakesh ba_n18           C55  out 2q   428 rzz    0 dur   19.52 exact None 7.8s
+eMarrakesh ba_n18           C56  out 2q   584 rzz    0 dur   24.10 exact 1.6263032587282567e-18 7.3s
+eMarrakesh ba_n18           C55F out 2q   365 rzz  152 dur   15.93 exact None 7.2s
+eMarrakesh ba_n18           C56F out 2q   496 rzz  133 dur   19.42 exact 3.144186300207963e-18 6.3s
+eMarrakesh ba_n20           QK3  out 2q   668 rzz    0 dur   32.68 exact None 0.1s
+eMarrakesh ba_n20           QK3F out 2q   577 rzz  175 dur   27.57 exact None 0.1s
+eMarrakesh ba_n20           C55  out 2q   617 rzz    0 dur   25.10 exact None 32.4s
+eMarrakesh ba_n20           C56  out 2q   668 rzz    0 dur   32.68 exact 3.5236570605778894e-18 31.9s
+eMarrakesh ba_n20           C55F out 2q   523 rzz  172 dur   20.79 exact None 29.0s
+eMarrakesh ba_n20           C56F out 2q   577 rzz  175 dur   27.57 exact 9.0801931945661e-18 28.0s
+eMarrakesh tfim_n12         QK3  IN  2q    82 rzz    0 dur   10.33 exact None 0.0s
+eMarrakesh tfim_n12         QK3F IN  2q    43 rzz   43 dur    3.26 exact None 0.0s
+eMarrakesh tfim_n12         C55  IN  2q    56 rzz    0 dur    1.33 exact None 0.5s
+eMarrakesh tfim_n12         C56  IN  2q    56 rzz    0 dur    1.33 exact 4.579669976578771e-16 0.8s
+eMarrakesh tfim_n12         C55F IN  2q    28 rzz   28 dur    0.41 exact None 0.9s
+eMarrakesh tfim_n12         C56F IN  2q    28 rzz   28 dur    0.41 exact 3.191891195797325e-16 0.6s
+eMarrakesh tfim_n16         QK3  IN  2q   114 rzz    0 dur   14.33 exact None 0.0s
+eMarrakesh tfim_n16         QK3F IN  2q    59 rzz   59 dur    4.35 exact None 0.0s
+eMarrakesh tfim_n16         C55  IN  2q    76 rzz    0 dur    1.33 exact None 1.5s
+eMarrakesh tfim_n16         C56  IN  2q    76 rzz    0 dur    1.33 exact 3.3306690738754696e-16 1.5s
+eMarrakesh tfim_n16         C55F IN  2q    38 rzz   38 dur    0.41 exact None 1.1s
+eMarrakesh tfim_n16         C56F IN  2q    38 rzz   38 dur    0.41 exact 2.255140518769849e-16 1.2s
+eMarrakesh ghz_n12          QK3  IN  2q    11 rzz    0 dur    1.22 exact None 0.0s
+eMarrakesh ghz_n12          QK3F IN  2q    11 rzz    0 dur    1.22 exact None 0.0s
+eMarrakesh ghz_n12          C55  IN  2q    11 rzz    0 dur    1.18 exact None 0.1s
+eMarrakesh ghz_n12          C56  IN  2q    11 rzz    0 dur    1.18 exact 2.7755575615628914e-16 0.1s
+eMarrakesh ghz_n12          C55F IN  2q    11 rzz    0 dur    1.18 exact None 0.2s
+eMarrakesh ghz_n12          C56F IN  2q    11 rzz    0 dur    1.18 exact 2.7755575615628914e-16 0.1s
+eMarrakesh tfimP_n12        QK3  IN  2q    82 rzz    0 dur   10.45 exact None 0.0s
+eMarrakesh tfimP_n12        QK3F IN  2q    43 rzz   43 dur    3.30 exact None 0.0s
+eMarrakesh tfimP_n12        C55  IN  2q    56 rzz    0 dur    1.36 exact None 0.6s
+eMarrakesh tfimP_n12        C56  IN  2q    56 rzz    0 dur    1.36 exact 2.185751579730777e-16 0.5s
+eMarrakesh tfimP_n12        C55F IN  2q    28 rzz   28 dur    0.45 exact None 0.7s
+eMarrakesh tfimP_n12        C56F IN  2q    28 rzz   28 dur    0.45 exact 1.0755285551056204e-16 0.8s
+eMarrakesh tfimP_n16        QK3  IN  2q   114 rzz    0 dur   14.40 exact None 0.0s
+eMarrakesh tfimP_n16        QK3F IN  2q    59 rzz   59 dur    4.38 exact None 0.0s
+eMarrakesh tfimP_n16        C55  IN  2q    76 rzz    0 dur    1.36 exact None 1.3s
+eMarrakesh tfimP_n16        C56  IN  2q    76 rzz    0 dur    1.36 exact 6.505213034913027e-17 1.5s
+eMarrakesh tfimP_n16        C55F IN  2q    38 rzz   38 dur    0.45 exact None 1.3s
+eMarrakesh tfimP_n16        C56F IN  2q    38 rzz   38 dur    0.45 exact 3.252606517456513e-17 1.1s
+eMarrakesh tfim_n20_r3      QK3  IN  2q   230 rzz    0 dur   28.89 exact None 0.0s
+eMarrakesh tfim_n20_r3      QK3F IN  2q   118 rzz  118 dur    8.42 exact None 0.0s
+eMarrakesh tfim_n20_r3      C55  IN  2q   100 rzz    0 dur    1.40 exact None 14.1s
+eMarrakesh tfim_n20_r3      C56  IN  2q   100 rzz    0 dur    1.40 exact 1.5448788637240085e-08 13.9s
+eMarrakesh tfim_n20_r3      C55F IN  2q    70 rzz   70 dur    0.73 exact None 9.9s
+eMarrakesh tfim_n20_r3      C56F IN  2q    70 rzz   70 dur    0.73 exact 1.3600232051658168e-15 10.9s
+eMarrakesh heis_n12_r2      QK3  IN  2q   135 rzz    0 dur   17.50 exact None 0.0s
+eMarrakesh heis_n12_r2      QK3F IN  2q   135 rzz  135 dur   13.93 exact None 0.0s
+eMarrakesh heis_n12_r2      C55  IN  2q   135 rzz    0 dur   16.99 exact None 0.5s
+eMarrakesh heis_n12_r2      C56  IN  2q   135 rzz    0 dur   16.99 exact 4.718447854656915e-15 0.5s
+eMarrakesh heis_n12_r2      C55F IN  2q   135 rzz  135 dur   13.57 exact None 0.6s
+eMarrakesh heis_n12_r2      C56F IN  2q   135 rzz  135 dur   13.57 exact 1.3711254354120683e-14 0.7s
+eMarrakesh heis2d_n16_r1    QK3  out 2q   429 rzz    0 dur   22.78 exact None 0.0s
+eMarrakesh heis2d_n16_r1    QK3F out 2q   429 rzz  192 dur   20.22 exact None 0.1s
+eMarrakesh heis2d_n16_r1    C55  out 2q   429 rzz    0 dur   22.20 exact None 2.7s
+eMarrakesh heis2d_n16_r1    C56  out 2q   429 rzz    0 dur   22.78 exact 1.4432899320127035e-15 1.8s
+eMarrakesh heis2d_n16_r1    C55F out 2q   429 rzz  192 dur   19.72 exact None 2.6s
+eMarrakesh heis2d_n16_r1    C56F out 2q   429 rzz  192 dur   20.22 exact 1.1622647289044608e-15 1.7s
+eMarrakesh chem_n12_r1      QK3  out 2q   230 rzz    0 dur   26.92 exact None 0.1s
+eMarrakesh chem_n12_r1      QK3F out 2q   197 rzz   96 dur   21.42 exact None 0.1s
+eMarrakesh chem_n12_r1      C55  out 2q   230 rzz    0 dur   25.86 exact None 1.0s
+eMarrakesh chem_n12_r1      C56  out 2q   230 rzz    0 dur   26.92 exact 7.251144129583054e-16 0.2s
+eMarrakesh chem_n12_r1      C55F out 2q   197 rzz   96 dur   20.52 exact None 1.3s
+eMarrakesh chem_n12_r1      C56F out 2q   197 rzz   96 dur   21.42 exact 6.800116025829084e-16 0.2s
+eMarrakesh qaoa3reg_n20_r3  QK3  out 2q   517 rzz    0 dur   14.54 exact None 0.1s
+eMarrakesh qaoa3reg_n20_r3  QK3F out 2q   437 rzz  113 dur   12.14 exact None 0.1s
+eMarrakesh qaoa3reg_n20_r3  C55  out 2q   457 rzz    0 dur   11.32 exact None 6.5s
+eMarrakesh qaoa3reg_n20_r3  C56  out 2q   517 rzz    0 dur   14.54 exact 8.385626177817573e-20 25.1s
+eMarrakesh qaoa3reg_n20_r3  C55F out 2q   399 rzz  126 dur    9.46 exact None 7.6s
+eMarrakesh qaoa3reg_n20_r3  C56F out 2q   437 rzz  113 dur   12.14 exact 6.268043809681823e-20 20.9s
+eMarrakesh qaoa3reg_n40_r3  QK3  out 2q  1320 rzz    0 dur   23.76 exact None 0.2s
+eMarrakesh qaoa3reg_n40_r3  QK3F out 2q  1161 rzz  246 dur   20.75 exact None 0.2s
+eMarrakesh qaoa3reg_n40_r3  C55  out 2q  1087 rzz    0 dur   22.88 exact None 4.2s
+eMarrakesh qaoa3reg_n40_r3  C56  out 2q  1320 rzz    0 dur   23.76 exact None 0.3s
+eMarrakesh qaoa3reg_n40_r3  C55F out 2q   979 rzz  244 dur   19.66 exact None 4.8s
+eMarrakesh qaoa3reg_n40_r3  C56F out 2q  1161 rzz  246 dur   20.75 exact None 0.2s
+eMarrakesh tfim_n40_r2      QK3  IN  2q   314 rzz    0 dur   38.84 exact None 0.4s
+eMarrakesh tfim_n40_r2      QK3F IN  2q   159 rzz  159 dur   10.88 exact None 0.4s
+eMarrakesh tfim_n40_r2      C55  IN  2q   160 rzz    0 dur    1.14 exact None 4.2s
+eMarrakesh tfim_n40_r2      C56  IN  2q   160 rzz    0 dur    1.14 exact None 4.0s
+eMarrakesh tfim_n40_r2      C55F IN  2q   100 rzz  100 dur    0.56 exact None 4.1s
+eMarrakesh tfim_n40_r2      C56F IN  2q   100 rzz  100 dur    0.56 exact None 3.7s
+eMarrakesh clf_n4_L3        QK3  out 2q    27 rzz    0 dur    2.66 exact None 0.0s
+eMarrakesh clf_n4_L3        QK3F out 2q    27 rzz    7 dur    2.45 exact None 0.0s
+eMarrakesh clf_n4_L3        C55  out 2q    15 rzz    0 dur    1.70 exact None 0.1s
+eMarrakesh clf_n4_L3        C56  out 2q    27 rzz    0 dur    2.66 exact 9.71445146547012e-16 0.0s
+eMarrakesh clf_n4_L3        C55F out 2q    13 rzz   10 dur    1.35 exact None 0.2s
+eMarrakesh clf_n4_L3        C56F out 2q    27 rzz    7 dur    2.45 exact 9.992007221626409e-16 0.0s
+eMarrakesh clf_n4_L5        QK3  out 2q    47 rzz    0 dur    4.60 exact None 0.0s
+eMarrakesh clf_n4_L5        QK3F out 2q    47 rzz   10 dur    4.28 exact None 0.0s
+eMarrakesh clf_n4_L5        C55  out 2q    30 rzz    0 dur    3.48 exact None 0.3s
+eMarrakesh clf_n4_L5        C56  out 2q    47 rzz    0 dur    4.60 exact 2.0539125955565396e-15 0.0s
+eMarrakesh clf_n4_L5        C55F out 2q    22 rzz   20 dur    2.29 exact None 0.4s
+eMarrakesh clf_n4_L5        C56F out 2q    47 rzz   10 dur    4.28 exact 1.3877787807814457e-15 0.0s
+eMarrakesh clf_n4_L9        QK3  out 2q    87 rzz    0 dur    8.47 exact None 0.0s
+eMarrakesh clf_n4_L9        QK3F out 2q    87 rzz   17 dur    7.97 exact None 0.0s
+eMarrakesh clf_n4_L9        C55  out 2q    60 rzz    0 dur    6.85 exact None 0.4s
+eMarrakesh clf_n4_L9        C56  out 2q    87 rzz    0 dur    8.47 exact 2.9976021664879227e-15 0.1s
+eMarrakesh clf_n4_L9        C55F out 2q    44 rzz   39 dur    4.47 exact None 0.5s
+eMarrakesh clf_n4_L9        C56F out 2q    87 rzz   17 dur    7.97 exact 2.886579864025407e-15 0.1s
+eMarrakesh clf_n6_L3        QK3  out 2q    52 rzz    0 dur    5.26 exact None 0.0s
+eMarrakesh clf_n6_L3        QK3F out 2q    52 rzz   16 dur    5.04 exact None 0.0s
+eMarrakesh clf_n6_L3        C55  out 2q    34 rzz    0 dur    2.58 exact None 0.2s
+eMarrakesh clf_n6_L3        C56  out 2q    52 rzz    0 dur    5.26 exact 2.4424906541753444e-15 0.0s
+eMarrakesh clf_n6_L3        C55F out 2q    28 rzz   16 dur    1.77 exact None 0.3s
+eMarrakesh clf_n6_L3        C56F out 2q    52 rzz   16 dur    5.04 exact 1.3877787807814457e-15 0.1s
+eMarrakesh clf_n6_L5        QK3  out 2q    87 rzz    0 dur    8.53 exact None 0.0s
+eMarrakesh clf_n6_L5        QK3F out 2q    87 rzz   22 dur    8.35 exact None 0.0s
+eMarrakesh clf_n6_L5        C55  out 2q    73 rzz    0 dur    5.21 exact None 0.4s
+eMarrakesh clf_n6_L5        C56  out 2q    87 rzz    0 dur    8.53 exact 4.996003610813204e-16 0.1s
+eMarrakesh clf_n6_L5        C55F out 2q    60 rzz   33 dur    3.95 exact None 0.4s
+eMarrakesh clf_n6_L5        C56F out 2q    87 rzz   22 dur    8.35 exact 7.216449660063518e-16 0.1s
+eMarrakesh clf_n6_L9        QK3  out 2q   160 rzz    0 dur   16.12 exact None 0.0s
+eMarrakesh clf_n6_L9        QK3F out 2q   160 rzz   33 dur   15.69 exact None 0.0s
+eMarrakesh clf_n6_L9        C55  out 2q   143 rzz    0 dur    9.34 exact None 0.5s
+eMarrakesh clf_n6_L9        C56  out 2q   160 rzz    0 dur   16.12 exact 1.6237011735142914e-15 0.1s
+eMarrakesh clf_n6_L9        C55F out 2q   119 rzz   72 dur    7.38 exact None 0.6s
+eMarrakesh clf_n6_L9        C56F out 2q   160 rzz   33 dur   15.69 exact 1.2490009027033011e-15 0.1s
+eMarrakesh hhI_n16          QK3  IN  2q   164 rzz    0 dur    6.17 exact None 0.2s
+eMarrakesh hhI_n16          QK3F IN  2q    94 rzz   94 dur    2.15 exact None 0.0s
+eMarrakesh hhI_n16          C55  IN  2q   120 rzz    0 dur    3.35 exact None 1.8s
+eMarrakesh hhI_n16          C56  IN  2q   120 rzz    0 dur    3.35 exact 7.619813757828858e-10 2.2s
+eMarrakesh hhI_n16          C55F IN  2q    71 rzz   71 dur    1.35 exact None 1.8s
+eMarrakesh hhI_n16          C56F IN  2q    71 rzz   71 dur    1.35 exact 5.074066167232161e-17 1.8s
+eMarrakesh hhI_n20          QK3  IN  2q   248 rzz    0 dur    8.32 exact None 0.0s
+eMarrakesh hhI_n20          QK3F IN  2q   140 rzz  140 dur    2.91 exact None 0.0s
+eMarrakesh hhI_n20          C55  IN  2q   160 rzz    0 dur    3.62 exact None 18.6s
+eMarrakesh hhI_n20          C56  IN  2q   160 rzz    0 dur    3.62 exact 9.215718466126788e-17 18.7s
+eMarrakesh hhI_n20          C55F IN  2q    89 rzz   89 dur    1.35 exact None 14.3s
+eMarrakesh hhI_n20          C56F IN  2q    89 rzz   89 dur    1.35 exact 1.951563910473908e-17 15.2s
+eMarrakesh ring12_tfim      QK3  IN  2q   178 rzz    0 dur   22.36 exact None 0.0s
+eMarrakesh ring12_tfim      QK3F IN  2q    93 rzz   93 dur    7.01 exact None 0.0s
+eMarrakesh ring12_tfim      C55  IN  2q    72 rzz    0 dur    1.72 exact None 0.7s
+eMarrakesh ring12_tfim      C56  IN  2q    72 rzz    0 dur    1.72 exact 3.3523531173251797e-15 0.6s
+eMarrakesh ring12_tfim      C55F IN  2q    54 rzz   54 dur    0.97 exact None 0.8s
+eMarrakesh ring12_tfim      C56F IN  2q    54 rzz   54 dur    0.97 exact 1.7694179454963432e-16 0.9s
+eMarrakesh hhtree_heis_n16  QK3  IN  2q   147 rzz    0 dur    6.85 exact None 0.0s
+eMarrakesh hhtree_heis_n16  QK3F IN  2q   147 rzz  147 dur    5.41 exact None 0.0s
+eMarrakesh hhtree_heis_n16  C55  IN  2q   147 rzz    0 dur    6.42 exact None 2.1s
+eMarrakesh hhtree_heis_n16  C56  IN  2q   147 rzz    0 dur    6.42 exact 1.0503750647039567e-15 2.1s
+eMarrakesh hhtree_heis_n16  C55F IN  2q   147 rzz  147 dur    5.30 exact None 2.2s
+eMarrakesh hhtree_heis_n16  C56F IN  2q   147 rzz  147 dur    5.30 exact 1.3409412469300719e-15 1.8s
+keKingston qaoa_n12_p2      QK3  out 2q   146 rzz    0 dur    7.45 exact None 0.0s
+keKingston qaoa_n12_p2      QK3F out 2q   115 rzz   49 dur    5.54 exact None 0.0s
+keKingston qaoa_n12_p2      C55  out 2q   128 rzz    0 dur    5.32 exact None 0.6s
+keKingston qaoa_n12_p2      C56  out 2q   146 rzz    0 dur    7.45 exact 1.1796119636642288e-16 0.1s
+keKingston qaoa_n12_p2      C55F out 2q   121 rzz   46 dur    4.30 exact None 0.8s
+keKingston qaoa_n12_p2      C56F out 2q   115 rzz   49 dur    5.54 exact 3.8163916471489756e-17 0.1s
+keKingston qaoa_n20_p2      QK3  out 2q   251 rzz    0 dur    7.09 exact None 0.1s
+keKingston qaoa_n20_p2      QK3F out 2q   199 rzz   76 dur    5.21 exact None 0.1s
+keKingston qaoa_n20_p2      C55  out 2q   192 rzz    0 dur    4.69 exact None 18.5s
+keKingston qaoa_n20_p2      C56  out 2q   251 rzz    0 dur    7.09 exact None 5.1s
+keKingston qaoa_n20_p2      C55F out 2q   156 rzz   87 dur    3.80 exact None 16.7s
+keKingston qaoa_n20_p2      C56F out 2q   199 rzz   76 dur    5.21 exact None 6.0s
+keKingston ba_n14           QK3  out 2q   391 rzz    0 dur   17.60 exact None 0.1s
+keKingston ba_n14           QK3F out 2q   332 rzz  113 dur   13.55 exact None 0.1s
+keKingston ba_n14           C55  out 2q   305 rzz    0 dur   14.17 exact None 1.1s
+keKingston ba_n14           C56  out 2q   391 rzz    0 dur   17.60 exact 9.974659986866641e-18 0.7s
+keKingston ba_n14           C55F out 2q   250 rzz  118 dur   11.61 exact None 1.2s
+keKingston ba_n14           C56F out 2q   332 rzz  113 dur   13.55 exact 2.688821387764051e-17 0.6s
+keKingston ba_n16           QK3  out 2q   477 rzz    0 dur   19.98 exact None 0.1s
+keKingston ba_n16           QK3F out 2q   408 rzz  138 dur   16.24 exact None 0.1s
+keKingston ba_n16           C55  out 2q   393 rzz    0 dur   14.04 exact None 2.6s
+keKingston ba_n16           C56  out 2q   477 rzz    0 dur   19.98 exact 1.2034644114589099e-17 1.7s
+keKingston ba_n16           C55F out 2q   332 rzz  137 dur   11.48 exact None 2.9s
+keKingston ba_n16           C56F out 2q   408 rzz  138 dur   16.24 exact 1.8865117801247777e-17 1.5s
+keKingston ba_n18           QK3  out 2q   584 rzz    0 dur   22.98 exact None 0.1s
+keKingston ba_n18           QK3F out 2q   496 rzz  139 dur   18.52 exact None 0.1s
+keKingston ba_n18           C55  out 2q   495 rzz    0 dur   18.94 exact None 3.2s
+keKingston ba_n18           C56  out 2q   584 rzz    0 dur   22.98 exact 1.734723475976807e-18 7.9s
+keKingston ba_n18           C55F out 2q   419 rzz  131 dur   15.14 exact None 3.1s
+keKingston ba_n18           C56F out 2q   496 rzz  139 dur   18.52 exact 3.0086610286472748e-18 6.8s
+keKingston ba_n20           QK3  out 2q   668 rzz    0 dur   31.13 exact None 0.1s
+keKingston ba_n20           QK3F out 2q   577 rzz  178 dur   26.32 exact None 0.1s
+keKingston ba_n20           C55  out 2q   578 rzz    0 dur   23.88 exact None 9.2s
+keKingston ba_n20           C56  out 2q   668 rzz    0 dur   31.13 exact 2.656295322589486e-18 31.6s
+keKingston ba_n20           C55F out 2q   529 rzz  158 dur   19.52 exact None 8.6s
+keKingston ba_n20           C56F out 2q   577 rzz  178 dur   26.32 exact 1.0164395367051604e-17 26.2s
+keKingston tfim_n12         QK3  IN  2q    82 rzz    0 dur    9.54 exact None 0.0s
+keKingston tfim_n12         QK3F IN  2q    43 rzz   43 dur    3.05 exact None 0.0s
+keKingston tfim_n12         C55  IN  2q    56 rzz    0 dur    1.26 exact None 0.7s
+keKingston tfim_n12         C56  IN  2q    56 rzz    0 dur    1.26 exact 6.800116025829084e-16 0.6s
+keKingston tfim_n12         C55F IN  2q    28 rzz   28 dur    0.40 exact None 0.7s
+keKingston tfim_n12         C56F IN  2q    28 rzz   28 dur    0.40 exact 3.469446951953614e-16 0.8s
+keKingston tfim_n16         QK3  IN  2q   114 rzz    0 dur   13.26 exact None 0.0s
+keKingston tfim_n16         QK3F IN  2q    59 rzz   59 dur    4.14 exact None 0.0s
+keKingston tfim_n16         C55  IN  2q    76 rzz    0 dur    1.26 exact None 1.7s
+keKingston tfim_n16         C56  IN  2q    76 rzz    0 dur    1.26 exact 3.5041414214731503e-16 1.4s
+keKingston tfim_n16         C55F IN  2q    38 rzz   38 dur    0.40 exact None 1.5s
+keKingston tfim_n16         C56F IN  2q    38 rzz   38 dur    0.40 exact 2.498001805406602e-16 1.4s
+keKingston ghz_n12          QK3  IN  2q    11 rzz    0 dur    1.13 exact None 0.0s
+keKingston ghz_n12          QK3F IN  2q    11 rzz    0 dur    1.13 exact None 0.0s
+keKingston ghz_n12          C55  IN  2q    11 rzz    0 dur    1.13 exact None 0.1s
+keKingston ghz_n12          C56  IN  2q    11 rzz    0 dur    1.13 exact 2.7755575615628914e-16 0.1s
+keKingston ghz_n12          C55F IN  2q    11 rzz    0 dur    1.13 exact None 0.2s
+keKingston ghz_n12          C56F IN  2q    11 rzz    0 dur    1.13 exact 2.7755575615628914e-16 0.2s
+keKingston tfimP_n12        QK3  IN  2q    82 rzz    0 dur    9.61 exact None 0.0s
+keKingston tfimP_n12        QK3F IN  2q    43 rzz   43 dur    3.08 exact None 0.0s
+keKingston tfimP_n12        C55  IN  2q    56 rzz    0 dur    1.29 exact None 0.6s
+keKingston tfimP_n12        C56  IN  2q    56 rzz    0 dur    1.29 exact 2.2724877535296173e-16 0.6s
+keKingston tfimP_n12        C55F IN  2q    28 rzz   28 dur    0.44 exact None 0.7s
+keKingston tfimP_n12        C56F IN  2q    28 rzz   28 dur    0.44 exact 1.2836953722228372e-16 0.7s
+keKingston tfimP_n16        QK3  IN  2q   114 rzz    0 dur   13.32 exact None 0.0s
+keKingston tfimP_n16        QK3F IN  2q    59 rzz   59 dur    4.17 exact None 0.0s
+keKingston tfimP_n16        C55  IN  2q    76 rzz    0 dur    1.29 exact None 1.3s
+keKingston tfimP_n16        C56  IN  2q    76 rzz    0 dur    1.29 exact 7.025630077706069e-17 1.6s
+keKingston tfimP_n16        C55F IN  2q    38 rzz   38 dur    0.44 exact None 1.5s
+keKingston tfimP_n16        C56F IN  2q    38 rzz   38 dur    0.44 exact 3.165870343657673e-17 1.3s
+keKingston tfim_n20_r3      QK3  IN  2q   230 rzz    0 dur   26.90 exact None 0.1s
+keKingston tfim_n20_r3      QK3F IN  2q   118 rzz  118 dur    8.12 exact None 0.1s
+keKingston tfim_n20_r3      C55  IN  2q   100 rzz    0 dur    1.32 exact None 14.4s
+keKingston tfim_n20_r3      C56  IN  2q   100 rzz    0 dur    1.32 exact 1.5448785722904645e-08 14.5s
+keKingston tfim_n20_r3      C55F IN  2q    70 rzz   70 dur    0.70 exact None 9.0s
+keKingston tfim_n20_r3      C56F IN  2q    70 rzz   70 dur    0.70 exact 1.1934897514720433e-15 9.0s
+keKingston heis_n12_r2      QK3  IN  2q   135 rzz    0 dur   16.19 exact None 0.0s
+keKingston heis_n12_r2      QK3F IN  2q   135 rzz  135 dur   13.12 exact None 0.0s
+keKingston heis_n12_r2      C55  IN  2q   135 rzz    0 dur   16.00 exact None 0.5s
+keKingston heis_n12_r2      C56  IN  2q   135 rzz    0 dur   16.00 exact 4.85722573273506e-15 0.5s
+keKingston heis_n12_r2      C55F IN  2q   135 rzz  135 dur   13.34 exact None 0.7s
+keKingston heis_n12_r2      C56F IN  2q   135 rzz  135 dur   13.34 exact 1.2295719997723609e-14 0.5s
+keKingston heis2d_n16_r1    QK3  out 2q   429 rzz    0 dur   21.15 exact None 0.0s
+keKingston heis2d_n16_r1    QK3F out 2q   429 rzz  192 dur   18.91 exact None 0.1s
+keKingston heis2d_n16_r1    C55  out 2q   423 rzz    0 dur   20.12 exact None 2.4s
+keKingston heis2d_n16_r1    C56  out 2q   429 rzz    0 dur   21.15 exact 1.5681900222830336e-15 1.9s
+keKingston heis2d_n16_r1    C55F out 2q   423 rzz  189 dur   18.14 exact None 2.6s
+keKingston heis2d_n16_r1    C56F out 2q   429 rzz  192 dur   18.91 exact 9.97465998686664e-16 1.6s
+keKingston chem_n12_r1      QK3  out 2q   230 rzz    0 dur   24.76 exact None 0.1s
+keKingston chem_n12_r1      QK3F out 2q   197 rzz  110 dur   19.73 exact None 0.1s
+keKingston chem_n12_r1      C55  out 2q   230 rzz    0 dur   24.76 exact None 0.9s
+keKingston chem_n12_r1      C56  out 2q   230 rzz    0 dur   24.76 exact 7.251144129583054e-16 0.2s
+keKingston chem_n12_r1      C55F out 2q   197 rzz  110 dur   19.73 exact None 1.0s
+keKingston chem_n12_r1      C56F out 2q   197 rzz  110 dur   19.73 exact 3.642919299551295e-16 0.2s
+keKingston qaoa3reg_n20_r3  QK3  out 2q   517 rzz    0 dur   13.80 exact None 0.1s
+keKingston qaoa3reg_n20_r3  QK3F out 2q   437 rzz  116 dur   11.51 exact None 0.1s
+keKingston qaoa3reg_n20_r3  C55  out 2q   377 rzz    0 dur    9.08 exact None 5.8s
+keKingston qaoa3reg_n20_r3  C56  out 2q   517 rzz    0 dur   13.80 exact 9.994988777600744e-20 25.1s
+keKingston qaoa3reg_n20_r3  C55F out 2q   318 rzz  114 dur    7.37 exact None 6.4s
+keKingston qaoa3reg_n20_r3  C56F out 2q   437 rzz  116 dur   11.51 exact 6.606856988583543e-20 21.5s
+keKingston qaoa3reg_n40_r3  QK3  out 2q  1320 rzz    0 dur   22.91 exact None 0.2s
+keKingston qaoa3reg_n40_r3  QK3F out 2q  1161 rzz  243 dur   19.98 exact None 0.2s
+keKingston qaoa3reg_n40_r3  C55  out 2q  1231 rzz    0 dur   20.68 exact None 3.3s
+keKingston qaoa3reg_n40_r3  C56  out 2q  1320 rzz    0 dur   22.91 exact None 0.3s
+keKingston qaoa3reg_n40_r3  C55F out 2q  1092 rzz  278 dur   18.74 exact None 4.2s
+keKingston qaoa3reg_n40_r3  C56F out 2q  1161 rzz  243 dur   19.98 exact None 0.2s
+keKingston tfim_n40_r2      QK3  IN  2q   314 rzz    0 dur   36.49 exact None 0.4s
+keKingston tfim_n40_r2      QK3F IN  2q   159 rzz  159 dur   10.88 exact None 0.3s
+keKingston tfim_n40_r2      C55  IN  2q   160 rzz    0 dur    1.06 exact None 3.7s
+keKingston tfim_n40_r2      C56  IN  2q   160 rzz    0 dur    1.06 exact None 4.0s
+keKingston tfim_n40_r2      C55F IN  2q   100 rzz  100 dur    0.53 exact None 3.5s
+keKingston tfim_n40_r2      C56F IN  2q   100 rzz  100 dur    0.53 exact None 4.0s
+keKingston clf_n4_L3        QK3  out 2q    27 rzz    0 dur    2.64 exact None 0.0s
+keKingston clf_n4_L3        QK3F out 2q    27 rzz    5 dur    2.45 exact None 0.0s
+keKingston clf_n4_L3        C55  out 2q    15 rzz    0 dur    1.63 exact None 0.1s
+keKingston clf_n4_L3        C56  out 2q    27 rzz    0 dur    2.64 exact 8.604228440844963e-16 0.0s
+keKingston clf_n4_L3        C55F out 2q    12 rzz   10 dur    1.23 exact None 0.2s
+keKingston clf_n4_L3        C56F out 2q    27 rzz    5 dur    2.45 exact 9.020562075079397e-16 0.0s
+keKingston clf_n4_L5        QK3  out 2q    47 rzz    0 dur    4.56 exact None 0.0s
+keKingston clf_n4_L5        QK3F out 2q    47 rzz    6 dur    4.12 exact None 0.0s
+keKingston clf_n4_L5        C55  out 2q    30 rzz    0 dur    3.19 exact None 0.4s
+keKingston clf_n4_L5        C56  out 2q    47 rzz    0 dur    4.56 exact 1.942890293094024e-15 0.0s
+keKingston clf_n4_L5        C55F out 2q    22 rzz   18 dur    2.20 exact None 0.4s
+keKingston clf_n4_L5        C56F out 2q    47 rzz    6 dur    4.12 exact 1.609823385706477e-15 0.0s
+keKingston clf_n4_L9        QK3  out 2q    87 rzz    0 dur    8.19 exact None 0.0s
+keKingston clf_n4_L9        QK3F out 2q    87 rzz    9 dur    7.61 exact None 0.0s
+keKingston clf_n4_L9        C55  out 2q    60 rzz    0 dur    6.42 exact None 0.3s
+keKingston clf_n4_L9        C56  out 2q    87 rzz    0 dur    8.19 exact 2.55351295663786e-15 0.0s
+keKingston clf_n4_L9        C55F out 2q    44 rzz   36 dur    4.30 exact None 0.5s
+keKingston clf_n4_L9        C56F out 2q    87 rzz    9 dur    7.61 exact 3.0531133177191805e-15 0.0s
+keKingston clf_n6_L3        QK3  out 2q    52 rzz    0 dur    4.84 exact None 0.0s
+keKingston clf_n6_L3        QK3F out 2q    52 rzz   14 dur    4.74 exact None 0.0s
+keKingston clf_n6_L3        C55  out 2q    34 rzz    0 dur    2.39 exact None 0.2s
+keKingston clf_n6_L3        C56  out 2q    52 rzz    0 dur    4.84 exact 2.1649348980190553e-15 0.0s
+keKingston clf_n6_L3        C55F out 2q    28 rzz   17 dur    1.70 exact None 0.4s
+keKingston clf_n6_L3        C56F out 2q    52 rzz   14 dur    4.74 exact 2.0539125955565396e-15 0.1s
+keKingston clf_n6_L5        QK3  out 2q    87 rzz    0 dur    7.91 exact None 0.0s
+keKingston clf_n6_L5        QK3F out 2q    87 rzz   23 dur    7.72 exact None 0.0s
+keKingston clf_n6_L5        C55  out 2q    64 rzz    0 dur    4.78 exact None 0.4s
+keKingston clf_n6_L5        C56  out 2q    87 rzz    0 dur    7.91 exact 5.967448757360216e-16 0.0s
+keKingston clf_n6_L5        C55F out 2q    52 rzz   30 dur    3.50 exact None 0.6s
+keKingston clf_n6_L5        C56F out 2q    87 rzz   23 dur    7.72 exact 5.898059818321144e-16 0.1s
+keKingston clf_n6_L9        QK3  out 2q   160 rzz    0 dur   14.92 exact None 0.0s
+keKingston clf_n6_L9        QK3F out 2q   160 rzz   37 dur   14.54 exact None 0.0s
+keKingston clf_n6_L9        C55  out 2q   147 rzz    0 dur    9.08 exact None 0.5s
+keKingston clf_n6_L9        C56  out 2q   160 rzz    0 dur   14.92 exact 1.8735013540549517e-15 0.1s
+keKingston clf_n6_L9        C55F out 2q   123 rzz   57 dur    6.91 exact None 0.7s
+keKingston clf_n6_L9        C56F out 2q   160 rzz   37 dur   14.54 exact 1.4016565685892601e-15 0.1s
+keKingston hhI_n16          QK3  IN  2q   164 rzz    0 dur    5.86 exact None 0.2s
+keKingston hhI_n16          QK3F IN  2q    94 rzz   94 dur    2.13 exact None 0.2s
+keKingston hhI_n16          C55  IN  2q   120 rzz    0 dur    3.14 exact None 1.9s
+keKingston hhI_n16          C56  IN  2q   120 rzz    0 dur    3.14 exact 7.619815666024682e-10 1.8s
+keKingston hhI_n16          C55F IN  2q    71 rzz   71 dur    1.30 exact None 1.7s
+keKingston hhI_n16          C56F IN  2q    71 rzz   71 dur    1.30 exact 5.074066167232161e-17 1.6s
+keKingston hhI_n20          QK3  IN  2q   248 rzz    0 dur    7.72 exact None 0.1s
+keKingston hhI_n20          QK3F IN  2q   140 rzz  140 dur    2.87 exact None 0.0s
+keKingston hhI_n20          C55  IN  2q   160 rzz    0 dur    3.45 exact None 17.6s
+keKingston hhI_n20          C56  IN  2q   160 rzz    0 dur    3.45 exact 4.380176776841438e-17 18.9s
+keKingston hhI_n20          C55F IN  2q    89 rzz   89 dur    1.30 exact None 15.5s
+keKingston hhI_n20          C56F IN  2q    89 rzz   89 dur    1.30 exact 2.233456475320139e-17 16.3s
+keKingston ring12_tfim      QK3  IN  2q   178 rzz    0 dur   20.74 exact None 0.0s
+keKingston ring12_tfim      QK3F IN  2q    93 rzz   93 dur    6.68 exact None 0.0s
+keKingston ring12_tfim      C55  IN  2q    72 rzz    0 dur    1.62 exact None 0.5s
+keKingston ring12_tfim      C56  IN  2q    72 rzz    0 dur    1.62 exact 3.570060913560269e-15 0.6s
+keKingston ring12_tfim      C55F IN  2q    54 rzz   54 dur    0.93 exact None 0.7s
+keKingston ring12_tfim      C56F IN  2q    54 rzz   54 dur    0.93 exact 1.7694179454963432e-16 0.8s
+keKingston hhtree_heis_n16  QK3  IN  2q   147 rzz    0 dur    6.38 exact None 0.0s
+keKingston hhtree_heis_n16  QK3F IN  2q   147 rzz  147 dur    5.07 exact None 0.0s
+keKingston hhtree_heis_n16  C55  IN  2q   147 rzz    0 dur    6.09 exact None 2.4s
+keKingston hhtree_heis_n16  C56  IN  2q   147 rzz    0 dur    6.09 exact 2.0220370516854658e-16 2.5s
+keKingston hhtree_heis_n16  C55F IN  2q   147 rzz  147 dur    5.10 exact None 2.0s
+keKingston hhtree_heis_n16  C56F IN  2q   147 rzz  147 dur    5.10 exact 1.5421691701433815e-15 2.0s
+FakeTorino qaoa_n12_p2      QK3  out 2q   151 rzz    0 dur    7.06 exact None 0.0s
+FakeTorino qaoa_n12_p2      QK3F out 2q   119 rzz   44 dur    5.18 exact None 0.0s
+FakeTorino qaoa_n12_p2      C55  out 2q   123 rzz    0 dur    5.21 exact None 0.7s
+FakeTorino qaoa_n12_p2      C56  out 2q   151 rzz    0 dur    7.06 exact 9.71445146547012e-17 0.2s
+FakeTorino qaoa_n12_p2      C55F out 2q    99 rzz   48 dur    4.03 exact None 0.8s
+FakeTorino qaoa_n12_p2      C56F out 2q   119 rzz   44 dur    5.18 exact 3.8163916471489756e-17 0.2s
+FakeTorino qaoa_n20_p2      QK3  out 2q   268 rzz    0 dur    8.20 exact None 0.1s
+FakeTorino qaoa_n20_p2      QK3F out 2q   212 rzz   68 dur    5.82 exact None 0.1s
+FakeTorino qaoa_n20_p2      C55  out 2q   220 rzz    0 dur    6.16 exact None 6.1s
+FakeTorino qaoa_n20_p2      C56  out 2q   268 rzz    0 dur    8.20 exact None 4.3s
+FakeTorino qaoa_n20_p2      C55F out 2q   196 rzz   78 dur    4.91 exact None 6.0s
+FakeTorino qaoa_n20_p2      C56F out 2q   212 rzz   68 dur    5.82 exact None 5.4s
+FakeTorino ba_n14           QK3  out 2q   386 rzz    0 dur   21.83 exact None 0.1s
+FakeTorino ba_n14           QK3F out 2q   322 rzz   97 dur   18.44 exact None 0.1s
+FakeTorino ba_n14           C55  out 2q   341 rzz    0 dur   12.54 exact None 1.5s
+FakeTorino ba_n14           C56  out 2q   386 rzz    0 dur   21.83 exact 2.1250362580715887e-17 3.0s
+FakeTorino ba_n14           C55F out 2q   287 rzz  122 dur   10.01 exact None 1.3s
+FakeTorino ba_n14           C56F out 2q   322 rzz   97 dur   18.44 exact 1.9949319973733282e-17 2.2s
+FakeTorino ba_n16           QK3  out 2q   466 rzz    0 dur   22.78 exact None 0.1s
+FakeTorino ba_n16           QK3F out 2q   398 rzz  134 dur   18.88 exact None 0.1s
+FakeTorino ba_n16           C55  out 2q   393 rzz    0 dur   13.97 exact None 2.3s
+FakeTorino ba_n16           C56  out 2q   466 rzz    0 dur   22.78 exact 1.3010426069826053e-17 4.1s
+FakeTorino ba_n16           C55F out 2q   332 rzz  137 dur   11.44 exact None 2.4s
+FakeTorino ba_n16           C56F out 2q   398 rzz  134 dur   18.88 exact 1.691355389077387e-17 3.8s
+FakeTorino ba_n18           QK3  out 2q   547 rzz    0 dur   24.58 exact None 0.1s
+FakeTorino ba_n18           QK3F out 2q   470 rzz  155 dur   20.44 exact None 0.1s
+FakeTorino ba_n18           C55  out 2q   495 rzz    0 dur   20.03 exact None 2.9s
+FakeTorino ba_n18           C56  out 2q   547 rzz    0 dur   24.58 exact 2.4936649967166602e-18 7.0s
+FakeTorino ba_n18           C55F out 2q   419 rzz  131 dur   15.97 exact None 2.9s
+FakeTorino ba_n18           C56F out 2q   470 rzz  155 dur   20.44 exact 2.6020852139652106e-18 6.0s
+FakeTorino ba_n20           QK3  out 2q   647 rzz    0 dur   33.14 exact None 0.1s
+FakeTorino ba_n20           QK3F out 2q   568 rzz  199 dur   28.48 exact None 0.1s
+FakeTorino ba_n20           C55  out 2q   543 rzz    0 dur   23.28 exact None 33.1s
+FakeTorino ba_n20           C56  out 2q   647 rzz    0 dur   33.14 exact 2.032879073410321e-18 33.1s
+FakeTorino ba_n20           C55F out 2q   473 rzz  178 dur   19.97 exact None 27.6s
+FakeTorino ba_n20           C56F out 2q   568 rzz  199 dur   28.48 exact 2.0626946331536722e-17 27.9s
+FakeTorino tfim_n12         QK3  IN  2q    82 rzz    0 dur    9.98 exact None 0.0s
+FakeTorino tfim_n12         QK3F IN  2q    43 rzz   43 dur    4.00 exact None 0.0s
+FakeTorino tfim_n12         C55  IN  2q    56 rzz    0 dur    1.26 exact None 0.7s
+FakeTorino tfim_n12         C56  IN  2q    56 rzz    0 dur    1.26 exact 4.579669976578771e-16 0.6s
+FakeTorino tfim_n12         C55F IN  2q    28 rzz   28 dur    0.40 exact None 0.7s
+FakeTorino tfim_n12         C56F IN  2q    28 rzz   28 dur    0.40 exact 3.191891195797325e-16 0.7s
+FakeTorino tfim_n16         QK3  IN  2q   114 rzz    0 dur   13.86 exact None 0.0s
+FakeTorino tfim_n16         QK3F IN  2q    59 rzz   59 dur    5.13 exact None 0.0s
+FakeTorino tfim_n16         C55  IN  2q    76 rzz    0 dur    1.26 exact None 1.3s
+FakeTorino tfim_n16         C56  IN  2q    76 rzz    0 dur    1.26 exact 2.914335439641036e-16 1.4s
+FakeTorino tfim_n16         C55F IN  2q    38 rzz   38 dur    0.40 exact None 1.2s
+FakeTorino tfim_n16         C56F IN  2q    38 rzz   38 dur    0.40 exact 2.3592239273284576e-16 1.2s
+FakeTorino ghz_n12          QK3  IN  2q    11 rzz    0 dur    1.38 exact None 0.0s
+FakeTorino ghz_n12          QK3F IN  2q    11 rzz    0 dur    1.38 exact None 0.0s
+FakeTorino ghz_n12          C55  IN  2q    11 rzz    0 dur    1.13 exact None 0.2s
+FakeTorino ghz_n12          C56  IN  2q    11 rzz    0 dur    1.13 exact 0.0 0.2s
+FakeTorino ghz_n12          C55F IN  2q    11 rzz    0 dur    1.13 exact None 0.2s
+FakeTorino ghz_n12          C56F IN  2q    11 rzz    0 dur    1.13 exact 2.7755575615628914e-16 0.2s
+FakeTorino tfimP_n12        QK3  IN  2q    82 rzz    0 dur   10.01 exact None 0.0s
+FakeTorino tfimP_n12        QK3F IN  2q    43 rzz   43 dur    4.04 exact None 0.0s
+FakeTorino tfimP_n12        C55  IN  2q    56 rzz    0 dur    1.29 exact None 0.7s
+FakeTorino tfimP_n12        C56  IN  2q    56 rzz    0 dur    1.29 exact 2.185751579730777e-16 0.7s
+FakeTorino tfimP_n12        C55F IN  2q    28 rzz   28 dur    0.44 exact None 0.7s
+FakeTorino tfimP_n12        C56F IN  2q    28 rzz   28 dur    0.44 exact 1.0755285551056204e-16 0.6s
+FakeTorino tfimP_n16        QK3  IN  2q   114 rzz    0 dur   13.92 exact None 0.0s
+FakeTorino tfimP_n16        QK3F IN  2q    59 rzz   59 dur    5.16 exact None 0.0s
+FakeTorino tfimP_n16        C55  IN  2q    76 rzz    0 dur    1.29 exact None 1.5s
+FakeTorino tfimP_n16        C56  IN  2q    76 rzz    0 dur    1.29 exact 6.548581121812447e-17 1.5s
+FakeTorino tfimP_n16        C55F IN  2q    38 rzz   38 dur    0.44 exact None 1.3s
+FakeTorino tfimP_n16        C56F IN  2q    38 rzz   38 dur    0.44 exact 3.382710778154774e-17 1.3s
+FakeTorino tfim_n20_r3      QK3  IN  2q   230 rzz    0 dur   29.17 exact None 0.1s
+FakeTorino tfim_n20_r3      QK3F IN  2q   118 rzz  118 dur    9.44 exact None 0.0s
+FakeTorino tfim_n20_r3      C55  IN  2q   100 rzz    0 dur    1.81 exact None 13.6s
+FakeTorino tfim_n20_r3      C56  IN  2q   100 rzz    0 dur    1.81 exact 1.5448779838722615e-08 13.7s
+FakeTorino tfim_n20_r3      C55F IN  2q    77 rzz   77 dur    1.06 exact None 10.6s
+FakeTorino tfim_n20_r3      C56F IN  2q    77 rzz   77 dur    1.06 exact 3.234348373293283e-07 10.8s
+FakeTorino heis_n12_r2      QK3  IN  2q   135 rzz    0 dur   16.83 exact None 0.0s
+FakeTorino heis_n12_r2      QK3F IN  2q   135 rzz  135 dur   13.69 exact None 0.0s
+FakeTorino heis_n12_r2      C55  IN  2q   135 rzz    0 dur   16.33 exact None 0.5s
+FakeTorino heis_n12_r2      C56  IN  2q   135 rzz    0 dur   16.33 exact 6.050715484207103e-15 0.7s
+FakeTorino heis_n12_r2      C55F IN  2q   135 rzz  135 dur   13.42 exact None 0.7s
+FakeTorino heis_n12_r2      C56F IN  2q   135 rzz  135 dur   13.42 exact 1.426636586643326e-14 0.6s
+FakeTorino heis2d_n16_r1    QK3  out 2q   384 rzz    0 dur   19.76 exact None 0.0s
+FakeTorino heis2d_n16_r1    QK3F out 2q   384 rzz  189 dur   17.64 exact None 0.1s
+FakeTorino heis2d_n16_r1    C55  out 2q   438 rzz    0 dur   20.80 exact None 2.9s
+FakeTorino heis2d_n16_r1    C56  out 2q   384 rzz    0 dur   19.76 exact 1.2455314557513475e-15 1.7s
+FakeTorino heis2d_n16_r1    C55F out 2q   438 rzz  189 dur   18.75 exact None 2.8s
+FakeTorino heis2d_n16_r1    C56F out 2q   384 rzz  189 dur   17.64 exact 1.4814538484841933e-15 1.7s
+FakeTorino chem_n12_r1      QK3  out 2q   230 rzz    0 dur   26.04 exact None 0.1s
+FakeTorino chem_n12_r1      QK3F out 2q   197 rzz   93 dur   20.81 exact None 0.1s
+FakeTorino chem_n12_r1      C55  out 2q   230 rzz    0 dur   24.70 exact None 1.0s
+FakeTorino chem_n12_r1      C56  out 2q   230 rzz    0 dur   26.04 exact 6.591949208711867e-16 0.2s
+FakeTorino chem_n12_r1      C55F out 2q   197 rzz   93 dur   19.73 exact None 1.0s
+FakeTorino chem_n12_r1      C56F out 2q   197 rzz   93 dur   20.81 exact 6.696032617270475e-16 0.2s
+FakeTorino qaoa3reg_n20_r3  QK3  out 2q   538 rzz    0 dur   14.83 exact None 0.1s
+FakeTorino qaoa3reg_n20_r3  QK3F out 2q   464 rzz  122 dur   12.00 exact None 0.1s
+FakeTorino qaoa3reg_n20_r3  C55  out 2q   428 rzz    0 dur   13.14 exact None 24.6s
+FakeTorino qaoa3reg_n20_r3  C56  out 2q   538 rzz    0 dur   14.83 exact None 5.1s
+FakeTorino qaoa3reg_n20_r3  C55F out 2q   375 rzz  174 dur   10.92 exact None 22.8s
+FakeTorino qaoa3reg_n20_r3  C56F out 2q   464 rzz  122 dur   12.00 exact None 5.1s
+FakeTorino qaoa3reg_n40_r3  QK3  out 2q  1294 rzz    0 dur   29.97 exact None 0.2s
+FakeTorino qaoa3reg_n40_r3  QK3F out 2q  1139 rzz  248 dur   26.04 exact None 0.2s
+FakeTorino qaoa3reg_n40_r3  C55  out 2q  1080 rzz    0 dur   23.44 exact None 3.2s
+FakeTorino qaoa3reg_n40_r3  C56  out 2q  1294 rzz    0 dur   29.97 exact None 0.2s
+FakeTorino qaoa3reg_n40_r3  C55F out 2q   956 rzz  297 dur   21.74 exact None 3.7s
+FakeTorino qaoa3reg_n40_r3  C56F out 2q  1139 rzz  248 dur   26.04 exact None 0.3s
+FakeTorino tfim_n40_r2      QK3  IN  2q   314 rzz    0 dur   41.43 exact None 0.4s
+FakeTorino tfim_n40_r2      QK3F IN  2q   159 rzz  159 dur   12.49 exact None 0.4s
+FakeTorino tfim_n40_r2      C55  IN  2q   160 rzz    0 dur    1.42 exact None 3.7s
+FakeTorino tfim_n40_r2      C56  IN  2q   160 rzz    0 dur    1.42 exact None 3.4s
+FakeTorino tfim_n40_r2      C55F IN  2q   116 rzz  116 dur    0.82 exact None 3.9s
+FakeTorino tfim_n40_r2      C56F IN  2q   116 rzz  116 dur    0.82 exact None 3.5s
+FakeTorino clf_n4_L3        QK3  out 2q    27 rzz    0 dur    3.14 exact None 0.0s
+FakeTorino clf_n4_L3        QK3F out 2q    27 rzz    5 dur    2.88 exact None 0.0s
+FakeTorino clf_n4_L3        C55  out 2q    15 rzz    0 dur    1.69 exact None 0.1s
+FakeTorino clf_n4_L3        C56  out 2q    27 rzz    0 dur    3.14 exact 9.71445146547012e-16 0.0s
+FakeTorino clf_n4_L3        C55F out 2q    13 rzz   10 dur    1.30 exact None 0.2s
+FakeTorino clf_n4_L3        C56F out 2q    27 rzz    5 dur    2.88 exact 7.216449660063518e-16 0.0s
+FakeTorino clf_n4_L5        QK3  out 2q    47 rzz    0 dur    4.52 exact None 0.0s
+FakeTorino clf_n4_L5        QK3F out 2q    47 rzz   10 dur    4.24 exact None 0.0s
+FakeTorino clf_n4_L5        C55  out 2q    30 rzz    0 dur    3.19 exact None 0.3s
+FakeTorino clf_n4_L5        C56  out 2q    47 rzz    0 dur    4.52 exact 1.3877787807814457e-15 0.0s
+FakeTorino clf_n4_L5        C55F out 2q    24 rzz   22 dur    2.37 exact None 0.4s
+FakeTorino clf_n4_L5        C56F out 2q    47 rzz   10 dur    4.24 exact 1.7208456881689926e-15 0.0s
+FakeTorino clf_n4_L9        QK3  out 2q    87 rzz    0 dur    8.46 exact None 0.0s
+FakeTorino clf_n4_L9        QK3F out 2q    87 rzz    9 dur    7.76 exact None 0.0s
+FakeTorino clf_n4_L9        C55  out 2q    60 rzz    0 dur    6.51 exact None 0.4s
+FakeTorino clf_n4_L9        C56  out 2q    87 rzz    0 dur    8.46 exact 2.3314683517128287e-15 0.0s
+FakeTorino clf_n4_L9        C55F out 2q    48 rzz   44 dur    4.70 exact None 0.4s
+FakeTorino clf_n4_L9        C56F out 2q    87 rzz    9 dur    7.76 exact 3.608224830031759e-15 0.0s
+FakeTorino clf_n6_L3        QK3  out 2q    52 rzz    0 dur    4.38 exact None 0.0s
+FakeTorino clf_n6_L3        QK3F out 2q    52 rzz   15 dur    4.31 exact None 0.0s
+FakeTorino clf_n6_L3        C55  out 2q    40 rzz    0 dur    2.52 exact None 0.2s
+FakeTorino clf_n6_L3        C56  out 2q    52 rzz    0 dur    4.38 exact 3.164135620181696e-15 0.0s
+FakeTorino clf_n6_L3        C55F out 2q    34 rzz   12 dur    1.90 exact None 0.2s
+FakeTorino clf_n6_L3        C56F out 2q    52 rzz   15 dur    4.31 exact 1.7763568394002505e-15 0.0s
+FakeTorino clf_n6_L5        QK3  out 2q    89 rzz    0 dur    8.04 exact None 0.0s
+FakeTorino clf_n6_L5        QK3F out 2q    89 rzz   23 dur    7.69 exact None 0.0s
+FakeTorino clf_n6_L5        C55  out 2q    76 rzz    0 dur    4.72 exact None 0.3s
+FakeTorino clf_n6_L5        C56  out 2q    89 rzz    0 dur    8.04 exact 6.106226635438361e-16 0.1s
+FakeTorino clf_n6_L5        C55F out 2q    64 rzz   32 dur    3.47 exact None 0.5s
+FakeTorino clf_n6_L5        C56F out 2q    89 rzz   23 dur    7.69 exact 5.689893001203927e-16 0.1s
+FakeTorino clf_n6_L9        QK3  out 2q   161 rzz    0 dur   14.59 exact None 0.0s
+FakeTorino clf_n6_L9        QK3F out 2q   161 rzz   34 dur   14.05 exact None 0.0s
+FakeTorino clf_n6_L9        C55  out 2q   147 rzz    0 dur    9.18 exact None 0.5s
+FakeTorino clf_n6_L9        C56  out 2q   161 rzz    0 dur   14.59 exact 1.9012569296705806e-15 0.1s
+FakeTorino clf_n6_L9        C55F out 2q   123 rzz   74 dur    6.91 exact None 0.7s
+FakeTorino clf_n6_L9        C56F out 2q   161 rzz   34 dur   14.05 exact 1.6792123247455493e-15 0.1s
+FakeTorino hhI_n16          QK3  IN  2q   164 rzz    0 dur    7.20 exact None 0.1s
+FakeTorino hhI_n16          QK3F IN  2q    94 rzz   94 dur    2.91 exact None 0.0s
+FakeTorino hhI_n16          C55  IN  2q   120 rzz    0 dur    3.14 exact None 1.9s
+FakeTorino hhI_n16          C56  IN  2q   120 rzz    0 dur    3.14 exact 7.619814640369427e-10 1.9s
+FakeTorino hhI_n16          C55F IN  2q    70 rzz   70 dur    1.53 exact None 1.5s
+FakeTorino hhI_n16          C56F IN  2q    70 rzz   70 dur    1.53 exact 7.619809913247955e-10 2.0s
+FakeTorino hhI_n20          QK3  IN  2q   248 rzz    0 dur    9.45 exact None 0.0s
+FakeTorino hhI_n20          QK3F IN  2q   140 rzz  140 dur    3.81 exact None 0.0s
+FakeTorino hhI_n20          C55  IN  2q   160 rzz    0 dur    3.67 exact None 19.7s
+FakeTorino hhI_n20          C56  IN  2q   160 rzz    0 dur    3.67 exact 8.847089727481716e-17 17.6s
+FakeTorino hhI_n20          C55F IN  2q    89 rzz   89 dur    1.60 exact None 15.7s
+FakeTorino hhI_n20          C56F IN  2q    89 rzz   89 dur    1.60 exact 2.233456475320139e-17 14.6s
+FakeTorino ring12_tfim      QK3  IN  2q   178 rzz    0 dur   21.64 exact None 0.0s
+FakeTorino ring12_tfim      QK3F IN  2q    93 rzz   93 dur    7.12 exact None 0.0s
+FakeTorino ring12_tfim      C55  IN  2q    72 rzz    0 dur    1.86 exact None 0.7s
+FakeTorino ring12_tfim      C56  IN  2q    72 rzz    0 dur    1.86 exact 3.2552086026704785e-15 0.7s
+FakeTorino ring12_tfim      C55F IN  2q    60 rzz   60 dur    1.20 exact None 0.9s
+FakeTorino ring12_tfim      C56F IN  2q    60 rzz   60 dur    1.20 exact 6.435824095873954e-16 0.6s
+FakeTorino hhtree_heis_n16  QK3  IN  2q   147 rzz    0 dur    6.32 exact None 0.0s
+FakeTorino hhtree_heis_n16  QK3F IN  2q   147 rzz  147 dur    5.15 exact None 0.0s
+FakeTorino hhtree_heis_n16  C55  IN  2q   147 rzz    0 dur    6.09 exact None 2.0s
+FakeTorino hhtree_heis_n16  C56  IN  2q   147 rzz    0 dur    6.09 exact 2.0220370516854658e-16 2.3s
+FakeTorino hhtree_heis_n16  C55F IN  2q   147 rzz  147 dur    5.10 exact None 2.5s
+FakeTorino hhtree_heis_n16  C56F IN  2q   147 rzz  147 dur    5.10 exact 1.7541306948642976e-15 2.1s
+_marrakesh qaoa_n12_p2      QK3  out 2q   146 rzz    0 dur    7.92 exact None 0.0s
+_marrakesh qaoa_n12_p2      QK3F out 2q   115 rzz   49 dur    5.74 exact None 0.0s
+_marrakesh qaoa_n12_p2      C55  out 2q   138 rzz    0 dur    5.94 exact None 0.8s
+_marrakesh qaoa_n12_p2      C56  out 2q   146 rzz    0 dur    7.92 exact 1.1796119636642288e-16 0.1s
+_marrakesh qaoa_n12_p2      C55F out 2q   121 rzz   49 dur    4.44 exact None 0.7s
+_marrakesh qaoa_n12_p2      C56F out 2q   115 rzz   49 dur    5.74 exact 3.8163916471489756e-17 0.1s
+_marrakesh qaoa_n20_p2      QK3  out 2q   251 rzz    0 dur    7.38 exact None 0.1s
+_marrakesh qaoa_n20_p2      QK3F out 2q   199 rzz   79 dur    5.44 exact None 0.0s
+_marrakesh qaoa_n20_p2      C55  out 2q   224 rzz    0 dur    5.32 exact None 5.7s
+_marrakesh qaoa_n20_p2      C56  out 2q   251 rzz    0 dur    7.38 exact None 4.4s
+_marrakesh qaoa_n20_p2      C55F out 2q   184 rzz   85 dur    4.33 exact None 5.5s
+_marrakesh qaoa_n20_p2      C56F out 2q   199 rzz   79 dur    5.44 exact None 4.3s
+_marrakesh ba_n14           QK3  out 2q   391 rzz    0 dur   18.38 exact None 0.1s
+_marrakesh ba_n14           QK3F out 2q   332 rzz  110 dur   14.00 exact None 0.1s
+_marrakesh ba_n14           C55  out 2q   305 rzz    0 dur   14.87 exact None 1.2s
+_marrakesh ba_n14           C56  out 2q   391 rzz    0 dur   18.38 exact 1.3010426069826053e-17 0.7s
+_marrakesh ba_n14           C55F out 2q   250 rzz  112 dur   12.02 exact None 1.3s
+_marrakesh ba_n14           C56F out 2q   332 rzz  110 dur   14.00 exact 2.6020852139652106e-17 0.6s
+_marrakesh ba_n16           QK3  out 2q   477 rzz    0 dur   21.02 exact None 0.1s
+_marrakesh ba_n16           QK3F out 2q   408 rzz  135 dur   16.86 exact None 0.1s
+_marrakesh ba_n16           C55  out 2q   393 rzz    0 dur   14.78 exact None 2.5s
+_marrakesh ba_n16           C56  out 2q   477 rzz    0 dur   21.02 exact 1.1167282376600696e-17 1.8s
+_marrakesh ba_n16           C55F out 2q   332 rzz  137 dur   12.06 exact None 2.5s
+_marrakesh ba_n16           C56F out 2q   408 rzz  135 dur   16.86 exact 5.5294310796760726e-18 1.6s
+_marrakesh ba_n18           QK3  out 2q   584 rzz    0 dur   24.32 exact None 0.1s
+_marrakesh ba_n18           QK3F out 2q   496 rzz  136 dur   19.41 exact None 0.1s
+_marrakesh ba_n18           C55  out 2q   495 rzz    0 dur   19.86 exact None 2.8s
+_marrakesh ba_n18           C56  out 2q   584 rzz    0 dur   24.32 exact 2.2497195079074217e-18 7.5s
+_marrakesh ba_n18           C55F out 2q   419 rzz  133 dur   15.62 exact None 2.9s
+_marrakesh ba_n18           C56F out 2q   496 rzz  136 dur   19.41 exact 3.577867169202165e-18 6.7s
+_marrakesh ba_n20           QK3  out 2q   668 rzz    0 dur   32.79 exact None 0.1s
+_marrakesh ba_n20           QK3F out 2q   577 rzz  169 dur   27.60 exact None 0.1s
+_marrakesh ba_n20           C55  out 2q   578 rzz    0 dur   24.84 exact None 8.7s
+_marrakesh ba_n20           C56  out 2q   668 rzz    0 dur   32.79 exact 2.8189256484623115e-18 30.2s
+_marrakesh ba_n20           C55F out 2q   529 rzz  165 dur   20.16 exact None 8.5s
+_marrakesh ba_n20           C56F out 2q   577 rzz  169 dur   27.60 exact 1.5287250632045613e-17 26.7s
+_marrakesh tfim_n12         QK3  IN  2q    82 rzz    0 dur   10.33 exact None 0.0s
+_marrakesh tfim_n12         QK3F IN  2q    43 rzz   43 dur    3.16 exact None 0.0s
+_marrakesh tfim_n12         C55  IN  2q    56 rzz    0 dur    1.33 exact None 0.6s
+_marrakesh tfim_n12         C56  IN  2q    56 rzz    0 dur    1.33 exact 4.579669976578771e-16 0.6s
+_marrakesh tfim_n12         C55F IN  2q    28 rzz   28 dur    0.41 exact None 0.6s
+_marrakesh tfim_n12         C56F IN  2q    28 rzz   28 dur    0.41 exact 3.191891195797325e-16 0.7s
+_marrakesh tfim_n16         QK3  IN  2q   114 rzz    0 dur   14.33 exact None 0.0s
+_marrakesh tfim_n16         QK3F IN  2q    59 rzz   59 dur    4.35 exact None 0.0s
+_marrakesh tfim_n16         C55  IN  2q    76 rzz    0 dur    1.33 exact None 1.4s
+_marrakesh tfim_n16         C56  IN  2q    76 rzz    0 dur    1.33 exact 3.3306690738754696e-16 1.4s
+_marrakesh tfim_n16         C55F IN  2q    38 rzz   38 dur    0.41 exact None 1.3s
+_marrakesh tfim_n16         C56F IN  2q    38 rzz   38 dur    0.41 exact 2.1163626406917047e-16 1.2s
+_marrakesh ghz_n12          QK3  IN  2q    11 rzz    0 dur    1.20 exact None 0.0s
+_marrakesh ghz_n12          QK3F IN  2q    11 rzz    0 dur    1.20 exact None 0.0s
+_marrakesh ghz_n12          C55  IN  2q    11 rzz    0 dur    1.18 exact None 0.1s
+_marrakesh ghz_n12          C56  IN  2q    11 rzz    0 dur    1.18 exact 2.7755575615628914e-16 0.1s
+_marrakesh ghz_n12          C55F IN  2q    11 rzz    0 dur    1.18 exact None 0.2s
+_marrakesh ghz_n12          C56F IN  2q    11 rzz    0 dur    1.18 exact 2.7755575615628914e-16 0.2s
+_marrakesh tfimP_n12        QK3  IN  2q    82 rzz    0 dur   10.40 exact None 0.0s
+_marrakesh tfimP_n12        QK3F IN  2q    43 rzz   43 dur    3.20 exact None 0.0s
+_marrakesh tfimP_n12        C55  IN  2q    56 rzz    0 dur    1.36 exact None 0.6s
+_marrakesh tfimP_n12        C56  IN  2q    56 rzz    0 dur    1.36 exact 2.185751579730777e-16 0.5s
+_marrakesh tfimP_n12        C55F IN  2q    28 rzz   28 dur    0.45 exact None 0.7s
+_marrakesh tfimP_n12        C56F IN  2q    28 rzz   28 dur    0.45 exact 1.0755285551056204e-16 0.6s
+_marrakesh tfimP_n16        QK3  IN  2q   114 rzz    0 dur   14.36 exact None 0.0s
+_marrakesh tfimP_n16        QK3F IN  2q    59 rzz   59 dur    4.38 exact None 0.0s
+_marrakesh tfimP_n16        C55  IN  2q    76 rzz    0 dur    1.36 exact None 1.3s
+_marrakesh tfimP_n16        C56  IN  2q    76 rzz    0 dur    1.36 exact 6.635317295611287e-17 1.6s
+_marrakesh tfimP_n16        C55F IN  2q    38 rzz   38 dur    0.45 exact None 1.4s
+_marrakesh tfimP_n16        C56F IN  2q    38 rzz   38 dur    0.45 exact 3.252606517456513e-17 1.3s
+_marrakesh tfim_n20_r3      QK3  IN  2q   230 rzz    0 dur   28.89 exact None 0.1s
+_marrakesh tfim_n20_r3      QK3F IN  2q   118 rzz  118 dur    8.42 exact None 0.0s
+_marrakesh tfim_n20_r3      C55  IN  2q   100 rzz    0 dur    1.40 exact None 13.1s
+_marrakesh tfim_n20_r3      C56  IN  2q   100 rzz    0 dur    1.40 exact 1.544878228121327e-08 13.4s
+_marrakesh tfim_n20_r3      C55F IN  2q    70 rzz   70 dur    0.73 exact None 11.4s
+_marrakesh tfim_n20_r3      C56F IN  2q    70 rzz   70 dur    0.73 exact 1.3600232051658168e-15 11.0s
+_marrakesh heis_n12_r2      QK3  IN  2q   135 rzz    0 dur   17.53 exact None 0.0s
+_marrakesh heis_n12_r2      QK3F IN  2q   135 rzz  135 dur   14.15 exact None 0.0s
+_marrakesh heis_n12_r2      C55  IN  2q   135 rzz    0 dur   16.92 exact None 0.5s
+_marrakesh heis_n12_r2      C56  IN  2q   135 rzz    0 dur   16.92 exact 4.003741782554471e-15 0.6s
+_marrakesh heis_n12_r2      C55F IN  2q   135 rzz  135 dur   13.75 exact None 0.5s
+_marrakesh heis_n12_r2      C56F IN  2q   135 rzz  135 dur   13.75 exact 1.6431300764452317e-14 0.7s
+_marrakesh heis2d_n16_r1    QK3  out 2q   429 rzz    0 dur   22.78 exact None 0.1s
+_marrakesh heis2d_n16_r1    QK3F out 2q   429 rzz  192 dur   20.08 exact None 0.1s
+_marrakesh heis2d_n16_r1    C55  out 2q   432 rzz    0 dur   21.01 exact None 2.7s
+_marrakesh heis2d_n16_r1    C56  out 2q   429 rzz    0 dur   22.78 exact 1.3322676295501878e-15 1.9s
+_marrakesh heis2d_n16_r1    C55F out 2q   408 rzz  192 dur   18.78 exact None 2.8s
+_marrakesh heis2d_n16_r1    C56F out 2q   429 rzz  192 dur   20.08 exact 2.0573820425084932e-15 1.7s
+_marrakesh chem_n12_r1      QK3  out 2q   230 rzz    0 dur   27.05 exact None 0.0s
+_marrakesh chem_n12_r1      QK3F out 2q   197 rzz  145 dur   21.33 exact None 0.1s
+_marrakesh chem_n12_r1      C55  out 2q   230 rzz    0 dur   25.97 exact None 0.8s
+_marrakesh chem_n12_r1      C56  out 2q   230 rzz    0 dur   27.05 exact 6.973588373426765e-16 0.2s
+_marrakesh chem_n12_r1      C55F out 2q   197 rzz  145 dur   20.52 exact None 1.0s
+_marrakesh chem_n12_r1      C56F out 2q   197 rzz  145 dur   21.33 exact 9.679756995950584e-16 0.3s
+_marrakesh qaoa3reg_n20_r3  QK3  out 2q   517 rzz    0 dur   14.46 exact None 0.1s
+_marrakesh qaoa3reg_n20_r3  QK3F out 2q   437 rzz  113 dur   11.96 exact None 0.1s
+_marrakesh qaoa3reg_n20_r3  C55  out 2q   377 rzz    0 dur    9.48 exact None 6.3s
+_marrakesh qaoa3reg_n20_r3  C56  out 2q   517 rzz    0 dur   14.46 exact 9.571472303973594e-20 24.6s
+_marrakesh qaoa3reg_n20_r3  C55F out 2q   318 rzz  117 dur    7.73 exact None 6.5s
+_marrakesh qaoa3reg_n20_r3  C56F out 2q   437 rzz  113 dur   11.96 exact 1.2959604092990795e-19 20.4s
+_marrakesh qaoa3reg_n40_r3  QK3  out 2q  1320 rzz    0 dur   23.80 exact None 0.2s
+_marrakesh qaoa3reg_n40_r3  QK3F out 2q  1161 rzz  240 dur   20.78 exact None 0.2s
+_marrakesh qaoa3reg_n40_r3  C55  out 2q  1231 rzz    0 dur   21.51 exact None 3.5s
+_marrakesh qaoa3reg_n40_r3  C56  out 2q  1320 rzz    0 dur   23.80 exact None 0.3s
+_marrakesh qaoa3reg_n40_r3  C55F out 2q  1092 rzz  279 dur   19.30 exact None 4.2s
+_marrakesh qaoa3reg_n40_r3  C56F out 2q  1161 rzz  240 dur   20.78 exact None 0.2s
+_marrakesh tfim_n40_r2      QK3  IN  2q   314 rzz    0 dur   38.92 exact None 0.3s
+_marrakesh tfim_n40_r2      QK3F IN  2q   159 rzz  159 dur   11.17 exact None 0.3s
+_marrakesh tfim_n40_r2      C55  IN  2q   160 rzz    0 dur    1.12 exact None 3.7s
+_marrakesh tfim_n40_r2      C56  IN  2q   160 rzz    0 dur    1.12 exact None 3.6s
+_marrakesh tfim_n40_r2      C55F IN  2q   100 rzz  100 dur    0.56 exact None 3.5s
+_marrakesh tfim_n40_r2      C56F IN  2q   100 rzz  100 dur    0.56 exact None 3.4s
+_marrakesh clf_n4_L3        QK3  out 2q    27 rzz    0 dur    2.74 exact None 0.0s
+_marrakesh clf_n4_L3        QK3F out 2q    27 rzz    5 dur    2.45 exact None 0.0s
+_marrakesh clf_n4_L3        C55  out 2q    15 rzz    0 dur    1.70 exact None 0.1s
+_marrakesh clf_n4_L3        C56  out 2q    27 rzz    0 dur    2.74 exact 8.187894806610529e-16 0.0s
+_marrakesh clf_n4_L3        C55F out 2q    12 rzz   11 dur    1.28 exact None 0.2s
+_marrakesh clf_n4_L3        C56F out 2q    27 rzz    5 dur    2.45 exact 6.800116025829084e-16 0.1s
+_marrakesh clf_n4_L5        QK3  out 2q    47 rzz    0 dur    4.67 exact None 0.0s
+_marrakesh clf_n4_L5        QK3F out 2q    47 rzz    7 dur    4.28 exact None 0.0s
+_marrakesh clf_n4_L5        C55  out 2q    30 rzz    0 dur    3.34 exact None 0.3s
+_marrakesh clf_n4_L5        C56  out 2q    47 rzz    0 dur    4.67 exact 1.7208456881689926e-15 0.0s
+_marrakesh clf_n4_L5        C55F out 2q    22 rzz   20 dur    2.29 exact None 0.4s
+_marrakesh clf_n4_L5        C56F out 2q    47 rzz    7 dur    4.28 exact 1.942890293094024e-15 0.0s
+_marrakesh clf_n4_L9        QK3  out 2q    87 rzz    0 dur    8.69 exact None 0.0s
+_marrakesh clf_n4_L9        QK3F out 2q    87 rzz   13 dur    8.18 exact None 0.0s
+_marrakesh clf_n4_L9        C55  out 2q    60 rzz    0 dur    6.71 exact None 0.3s
+_marrakesh clf_n4_L9        C56  out 2q    87 rzz    0 dur    8.69 exact 2.6645352591003757e-15 0.1s
+_marrakesh clf_n4_L9        C55F out 2q    44 rzz   41 dur    4.50 exact None 0.4s
+_marrakesh clf_n4_L9        C56F out 2q    87 rzz   13 dur    8.18 exact 3.191891195797325e-15 0.0s
+_marrakesh clf_n6_L3        QK3  out 2q    52 rzz    0 dur    5.02 exact None 0.0s
+_marrakesh clf_n6_L3        QK3F out 2q    52 rzz   13 dur    4.80 exact None 0.0s
+_marrakesh clf_n6_L3        C55  out 2q    34 rzz    0 dur    2.61 exact None 0.2s
+_marrakesh clf_n6_L3        C56  out 2q    52 rzz    0 dur    5.02 exact 2.7200464103316335e-15 0.1s
+_marrakesh clf_n6_L3        C55F out 2q    28 rzz   16 dur    1.73 exact None 0.3s
+_marrakesh clf_n6_L3        C56F out 2q    52 rzz   13 dur    4.80 exact 2.3314683517128287e-15 0.0s
+_marrakesh clf_n6_L5        QK3  out 2q    87 rzz    0 dur    8.20 exact None 0.0s
+_marrakesh clf_n6_L5        QK3F out 2q    87 rzz   22 dur    7.99 exact None 0.0s
+_marrakesh clf_n6_L5        C55  out 2q    73 rzz    0 dur    4.84 exact None 0.4s
+_marrakesh clf_n6_L5        C56  out 2q    87 rzz    0 dur    8.20 exact 6.453171330633722e-16 0.0s
+_marrakesh clf_n6_L5        C55F out 2q    61 rzz   28 dur    3.54 exact None 0.5s
+_marrakesh clf_n6_L5        C56F out 2q    87 rzz   22 dur    7.99 exact 6.245004513516506e-16 0.0s
+_marrakesh clf_n6_L9        QK3  out 2q   160 rzz    0 dur   15.47 exact None 0.0s
+_marrakesh clf_n6_L9        QK3F out 2q   160 rzz   44 dur   15.11 exact None 0.0s
+_marrakesh clf_n6_L9        C55  out 2q   148 rzz    0 dur    9.14 exact None 0.5s
+_marrakesh clf_n6_L9        C56  out 2q   160 rzz    0 dur   15.47 exact 1.6237011735142914e-15 0.1s
+_marrakesh clf_n6_L9        C55F out 2q   124 rzz   64 dur    7.00 exact None 0.5s
+_marrakesh clf_n6_L9        C56F out 2q   160 rzz   44 dur   15.11 exact 1.4016565685892601e-15 0.1s
+_marrakesh hhI_n16          QK3  IN  2q   164 rzz    0 dur    6.27 exact None 0.0s
+_marrakesh hhI_n16          QK3F IN  2q    94 rzz   94 dur    2.25 exact None 0.0s
+_marrakesh hhI_n16          C55  IN  2q   120 rzz    0 dur    3.32 exact None 1.8s
+_marrakesh hhI_n16          C56  IN  2q   120 rzz    0 dur    3.32 exact 7.619814766136879e-10 1.9s
+_marrakesh hhI_n16          C55F IN  2q    71 rzz   71 dur    1.35 exact None 1.8s
+_marrakesh hhI_n16          C56F IN  2q    71 rzz   71 dur    1.35 exact 5.421010862427522e-17 1.4s
+_marrakesh hhI_n20          QK3  IN  2q   248 rzz    0 dur    8.22 exact None 0.0s
+_marrakesh hhI_n20          QK3F IN  2q   140 rzz  140 dur    2.91 exact None 0.0s
+_marrakesh hhI_n20          C55  IN  2q   160 rzz    0 dur    3.62 exact None 19.0s
+_marrakesh hhI_n20          C56  IN  2q   160 rzz    0 dur    3.62 exact 8.928404890418129e-17 18.7s
+_marrakesh hhI_n20          C55F IN  2q    89 rzz   89 dur    1.35 exact None 15.3s
+_marrakesh hhI_n20          C56F IN  2q    89 rzz   89 dur    1.35 exact 1.951563910473908e-17 14.2s
+_marrakesh ring12_tfim      QK3  IN  2q   178 rzz    0 dur   22.36 exact None 0.0s
+_marrakesh ring12_tfim      QK3F IN  2q    93 rzz   93 dur    7.01 exact None 0.0s
+_marrakesh ring12_tfim      C55  IN  2q    72 rzz    0 dur    1.72 exact None 0.6s
+_marrakesh ring12_tfim      C56  IN  2q    72 rzz    0 dur    1.72 exact 3.35755728775311e-15 0.6s
+_marrakesh ring12_tfim      C55F IN  2q    54 rzz   54 dur    0.97 exact None 0.7s
+_marrakesh ring12_tfim      C56F IN  2q    54 rzz   54 dur    0.97 exact 1.7694179454963432e-16 1.0s
+_marrakesh hhtree_heis_n16  QK3  IN  2q   147 rzz    0 dur    6.85 exact None 0.0s
+_marrakesh hhtree_heis_n16  QK3F IN  2q   147 rzz  147 dur    5.45 exact None 0.0s
+_marrakesh hhtree_heis_n16  C55  IN  2q   147 rzz    0 dur    6.42 exact None 2.2s
+_marrakesh hhtree_heis_n16  C56  IN  2q   147 rzz    0 dur    6.42 exact 2.0220370516854658e-16 2.4s
+_marrakesh hhtree_heis_n16  C55F IN  2q   147 rzz  147 dur    5.30 exact None 2.0s
+_marrakesh hhtree_heis_n16  C56F IN  2q   147 rzz  147 dur    5.30 exact 2.1783790049578755e-15 1.9s
+V1 exact: every C56 and C56F output with <= 20 active qubits within 1e-6, no refusal: CONFIRMED (248 checked; failures [])
+V2 in scope: C56 / C56F identical to C55 / C55F on every cell: CONFIRMED (120/120; differing [])
+V3 out of scope: C56 / C56F identical to Qiskit level 3 (QK3 / QK3F), except where Qiskit's output uses a failed element and C56's does not: CONFIRMED (identical 158; failed-element exceptions [('FakeFez', 'qaoa3reg_n40_r3', 'C56'), ('FakeFez', 'qaoa3reg_n40_r3', 'C56F')]; other [])
+V4 scope as predicted (12 tests in, 16 out) on every device: CONFIRMED (mismatches [])
+V5 same output on a second call (C56F): CONFIRMED (20/20)
+V6 every C56F output native to the fractional Target, every rzz angle in (0, pi/2]: REFUTED (61/140; failures [('FakeFez', 'qaoa_n12_p2'), ('FakeFez', 'qaoa_n20_p2'), ('FakeFez', 'ba_n14'), ('FakeFez', 'ba_n16'), ('FakeFez', 'ba_n18'), ('FakeFez', 'ba_n20'), ('FakeFez', 'heis2d_n16_r1'), ('FakeFez', 'chem_n12_r1'), ('FakeFez', 'qaoa3reg_n20_r3'), ('FakeFez', 'clf_n4_L3'), ('FakeFez', 'clf_n4_L5'), ('FakeFez', 'clf_n4_L9'), ('FakeFez', 'clf_n6_L3'), ('FakeFez', 'clf_n6_L5'), ('FakeFez', 'clf_n6_L9'), ('FakeMarrakesh', 'qaoa_n12_p2'), ('FakeMarrakesh', 'qaoa_n20_p2'), ('FakeMarrakesh', 'ba_n14'), ('FakeMarrakesh', 'ba_n16'), ('FakeMarrakesh', 'ba_n18'), ('FakeMarrakesh', 'ba_n20'), ('FakeMarrakesh', 'heis2d_n16_r1'), ('FakeMarrakesh', 'chem_n12_r1'), ('FakeMarrakesh', 'qaoa3reg_n20_r3'), ('FakeMarrakesh', 'qaoa3reg_n40_r3'), ('FakeMarrakesh', 'clf_n4_L3'), ('FakeMarrakesh', 'clf_n4_L5'), ('FakeMarrakesh', 'clf_n4_L9'), ('FakeMarrakesh', 'clf_n6_L3'), ('FakeMarrakesh', 'clf_n6_L5'), ('FakeMarrakesh', 'clf_n6_L9'), ('FakeKingston', 'qaoa_n12_p2'), ('FakeKingston', 'qaoa_n20_p2'), ('FakeKingston', 'ba_n14'), ('FakeKingston', 'ba_n16'), ('FakeKingston', 'ba_n18'), ('FakeKingston', 'ba_n20'), ('FakeKingston', 'heis2d_n16_r1'), ('FakeKingston', 'chem_n12_r1'), ('FakeKingston', 'qaoa3reg_n20_r3'), ('FakeKingston', 'qaoa3reg_n40_r3'), ('FakeKingston', 'clf_n4_L3'), ('FakeKingston', 'clf_n4_L5'), ('FakeKingston', 'clf_n4_L9'), ('FakeKingston', 'clf_n6_L3'), ('FakeKingston', 'clf_n6_L5'), ('FakeKingston', 'clf_n6_L9'), ('FakeTorino', 'qaoa_n12_p2'), ('FakeTorino', 'qaoa_n20_p2'), ('FakeTorino', 'ba_n14'), ('FakeTorino', 'ba_n16'), ('FakeTorino', 'ba_n18'), ('FakeTorino', 'ba_n20'), ('FakeTorino', 'heis2d_n16_r1'), ('FakeTorino', 'chem_n12_r1'), ('FakeTorino', 'qaoa3reg_n20_r3'), ('FakeTorino', 'qaoa3reg_n40_r3'), ('FakeTorino', 'clf_n4_L3'), ('FakeTorino', 'clf_n4_L5'), ('FakeTorino', 'clf_n4_L9'), ('FakeTorino', 'clf_n6_L3'), ('FakeTorino', 'clf_n6_L5'), ('FakeTorino', 'clf_n6_L9'), ('snapshot_marrakesh', 'qaoa_n12_p2'), ('snapshot_marrakesh', 'qaoa_n20_p2'), ('snapshot_marrakesh', 'ba_n14'), ('snapshot_marrakesh', 'ba_n16'), ('snapshot_marrakesh', 'ba_n18'), ('snapshot_marrakesh', 'ba_n20'), ('snapshot_marrakesh', 'heis2d_n16_r1'), ('snapshot_marrakesh', 'chem_n12_r1'), ('snapshot_marrakesh', 'qaoa3reg_n20_r3'), ('snapshot_marrakesh', 'qaoa3reg_n40_r3'), ('snapshot_marrakesh', 'clf_n4_L3'), ('snapshot_marrakesh', 'clf_n4_L5'), ('snapshot_marrakesh', 'clf_n4_L9'), ('snapshot_marrakesh', 'clf_n6_L3'), ('snapshot_marrakesh', 'clf_n6_L5'), ('snapshot_marrakesh', 'clf_n6_L9')])
+V7 compile time C56F <= 1.5 x C55F + 2 s on >= 90% of cells: CONFIRMED (132/140)
+V8 no C56 / C56F output uses a failed element: CONFIRMED ([])
+reported, in scope (60 cells): C56/C55 geo 1.000; C56F/C55F geo 1.000; C56/QK3 geo 0.197; C56F/QK3F geo 0.230
+reported, out of scope (80 cells): C56/C55 geo 1.368; C56F/C55F geo 1.489; C56/QK3 geo 1.000; C56F/QK3F geo 1.000
+reported: SCOPE96_STATS {'calls': 300, 'in_scope': 125, 'handed': 173, 'handed_working': 0, 'handed_failed_fallback': 2, 'reasons': {'no_embedding': 165, 'embeds': 125, 'multi_qubit_operation': 10}, 'handoff_exact': 148, 'handoff_unchecked': 25, 'handoff_inexact': 0}; EXACT93_STATS c56 {'checked': 115, 'passed': 115, 'not_checkable': 12, 'failed': 0, 'fallback_usual': 0, 'fallback_level1': 0, 'raised': 0, 'largest_passed': 3.234348373293283e-07}
+device     test             scope          dur us QK3 / C55 / C56 / QK3F / C55F / C56F
+FakeFez    qaoa_n12_p2      out       8.00 /    6.05 /    5.98 /    8.00 /    4.64 /    6.05
+FakeFez    qaoa_n20_p2      out       7.60 /    5.78 /    6.31 /    7.60 /    5.03 /    5.78
+FakeFez    ba_n14           out      18.84 /   14.89 /   15.29 /   18.84 /   12.66 /   14.89
+FakeFez    ba_n16           out      21.56 /   17.61 /   18.12 /   21.56 /   14.95 /   17.61
+FakeFez    ba_n18           out      24.74 /   20.18 /   23.59 /   24.74 /   19.01 /   20.18
+FakeFez    ba_n20           out      33.64 /   28.92 /   24.40 /   33.64 /   21.56 /   28.92
+FakeFez    tfim_n12         IN        9.86 /    3.71 /    1.27 /    1.27 /    0.47 /    0.47
+FakeFez    tfim_n16         IN       13.70 /    5.05 /    1.27 /    1.27 /    0.47 /    0.47
+FakeFez    ghz_n12          IN        1.23 /    1.23 /    1.21 /    1.21 /    1.21 /    1.21
+FakeFez    tfimP_n12        IN        9.89 /    3.73 /    1.30 /    1.30 /    0.49 /    0.49
+FakeFez    tfimP_n16        IN       13.73 /    5.08 /    1.30 /    1.30 /    0.49 /    0.49
+FakeFez    tfim_n20_r3      IN       27.77 /    9.98 /    1.32 /    1.32 /    0.76 /    0.76
+FakeFez    heis_n12_r2      IN       16.69 /   14.39 /   16.57 /   16.57 /   14.44 /   14.44
+FakeFez    heis2d_n16_r1    out      22.67 /   20.92 /   22.27 /   22.67 /   20.47 /   20.92
+FakeFez    chem_n12_r1      out      26.14 /   21.30 /   26.14 /   26.14 /   21.30 /   21.30
+FakeFez    qaoa3reg_n20_r3  out      14.65 /   12.53 /   11.08 /   14.65 /    9.67 /   12.53
+FakeFez    qaoa3reg_n40_r3  out      24.55 /   21.72 /   23.83 /   23.83 /   21.54 /   21.54
+FakeFez    tfim_n40_r2      IN       37.73 /   13.40 /    1.06 /    1.06 /    0.56 /    0.56
+FakeFez    clf_n4_L3        out       2.87 /    2.68 /    1.72 /    2.87 /    1.38 /    2.68
+FakeFez    clf_n4_L5        out       4.93 /    4.67 /    3.41 /    4.93 /    2.81 /    4.67
+FakeFez    clf_n4_L9        out       9.11 /    8.68 /    6.84 /    9.11 /    5.57 /    8.68
+FakeFez    clf_n6_L3        out       5.28 /    5.21 /    2.59 /    5.28 /    1.84 /    5.21
+FakeFez    clf_n6_L5        out       8.64 /    8.52 /    4.74 /    8.64 /    3.65 /    8.52
+FakeFez    clf_n6_L9        out      16.31 /   16.07 /   10.00 /   16.31 /    7.93 /   16.07
+FakeFez    hhI_n16          IN        6.05 /    2.56 /    3.22 /    3.22 /    1.44 /    1.44
+FakeFez    hhI_n20          IN        7.97 /    3.37 /    3.53 /    3.53 /    1.44 /    1.44
+FakeFez    ring12_tfim      IN       21.57 /    8.18 /    1.61 /    1.61 /    1.00 /    1.00
+FakeFez    hhtree_heis_n16  IN        6.44 /    5.46 /    6.23 /    6.23 /    5.51 /    5.51
+eMarrakesh qaoa_n12_p2      out       7.85 /    5.74 /    4.34 /    7.85 /    3.32 /    5.74
+eMarrakesh qaoa_n20_p2      out       7.38 /    5.44 /    4.77 /    7.38 /    4.09 /    5.44
+eMarrakesh ba_n14           out      18.34 /   14.19 /   12.58 /   18.34 /   10.12 /   14.19
+eMarrakesh ba_n16           out      21.09 /   17.01 /   19.07 /   21.09 /   15.20 /   17.01
+eMarrakesh ba_n18           out      24.10 /   19.42 /   19.52 /   24.10 /   15.93 /   19.42
+eMarrakesh ba_n20           out      32.68 /   27.57 /   25.10 /   32.68 /   20.79 /   27.57
+eMarrakesh tfim_n12         IN       10.33 /    3.26 /    1.33 /    1.33 /    0.41 /    0.41
+eMarrakesh tfim_n16         IN       14.33 /    4.35 /    1.33 /    1.33 /    0.41 /    0.41
+eMarrakesh ghz_n12          IN        1.22 /    1.22 /    1.18 /    1.18 /    1.18 /    1.18
+eMarrakesh tfimP_n12        IN       10.45 /    3.30 /    1.36 /    1.36 /    0.45 /    0.45
+eMarrakesh tfimP_n16        IN       14.40 /    4.38 /    1.36 /    1.36 /    0.45 /    0.45
+eMarrakesh tfim_n20_r3      IN       28.89 /    8.42 /    1.40 /    1.40 /    0.73 /    0.73
+eMarrakesh heis_n12_r2      IN       17.50 /   13.93 /   16.99 /   16.99 /   13.57 /   13.57
+eMarrakesh heis2d_n16_r1    out      22.78 /   20.22 /   22.20 /   22.78 /   19.72 /   20.22
+eMarrakesh chem_n12_r1      out      26.92 /   21.42 /   25.86 /   26.92 /   20.52 /   21.42
+eMarrakesh qaoa3reg_n20_r3  out      14.54 /   12.14 /   11.32 /   14.54 /    9.46 /   12.14
+eMarrakesh qaoa3reg_n40_r3  out      23.76 /   20.75 /   22.88 /   23.76 /   19.66 /   20.75
+eMarrakesh tfim_n40_r2      IN       38.84 /   10.88 /    1.14 /    1.14 /    0.56 /    0.56
+eMarrakesh clf_n4_L3        out       2.66 /    2.45 /    1.70 /    2.66 /    1.35 /    2.45
+eMarrakesh clf_n4_L5        out       4.60 /    4.28 /    3.48 /    4.60 /    2.29 /    4.28
+eMarrakesh clf_n4_L9        out       8.47 /    7.97 /    6.85 /    8.47 /    4.47 /    7.97
+eMarrakesh clf_n6_L3        out       5.26 /    5.04 /    2.58 /    5.26 /    1.77 /    5.04
+eMarrakesh clf_n6_L5        out       8.53 /    8.35 /    5.21 /    8.53 /    3.95 /    8.35
+eMarrakesh clf_n6_L9        out      16.12 /   15.69 /    9.34 /   16.12 /    7.38 /   15.69
+eMarrakesh hhI_n16          IN        6.17 /    2.15 /    3.35 /    3.35 /    1.35 /    1.35
+eMarrakesh hhI_n20          IN        8.32 /    2.91 /    3.62 /    3.62 /    1.35 /    1.35
+eMarrakesh ring12_tfim      IN       22.36 /    7.01 /    1.72 /    1.72 /    0.97 /    0.97
+eMarrakesh hhtree_heis_n16  IN        6.85 /    5.41 /    6.42 /    6.42 /    5.30 /    5.30
+keKingston qaoa_n12_p2      out       7.45 /    5.54 /    5.32 /    7.45 /    4.30 /    5.54
+keKingston qaoa_n20_p2      out       7.09 /    5.21 /    4.69 /    7.09 /    3.80 /    5.21
+keKingston ba_n14           out      17.60 /   13.55 /   14.17 /   17.60 /   11.61 /   13.55
+keKingston ba_n16           out      19.98 /   16.24 /   14.04 /   19.98 /   11.48 /   16.24
+keKingston ba_n18           out      22.98 /   18.52 /   18.94 /   22.98 /   15.14 /   18.52
+keKingston ba_n20           out      31.13 /   26.32 /   23.88 /   31.13 /   19.52 /   26.32
+keKingston tfim_n12         IN        9.54 /    3.05 /    1.26 /    1.26 /    0.40 /    0.40
+keKingston tfim_n16         IN       13.26 /    4.14 /    1.26 /    1.26 /    0.40 /    0.40
+keKingston ghz_n12          IN        1.13 /    1.13 /    1.13 /    1.13 /    1.13 /    1.13
+keKingston tfimP_n12        IN        9.61 /    3.08 /    1.29 /    1.29 /    0.44 /    0.44
+keKingston tfimP_n16        IN       13.32 /    4.17 /    1.29 /    1.29 /    0.44 /    0.44
+keKingston tfim_n20_r3      IN       26.90 /    8.12 /    1.32 /    1.32 /    0.70 /    0.70
+keKingston heis_n12_r2      IN       16.19 /   13.12 /   16.00 /   16.00 /   13.34 /   13.34
+keKingston heis2d_n16_r1    out      21.15 /   18.91 /   20.12 /   21.15 /   18.14 /   18.91
+keKingston chem_n12_r1      out      24.76 /   19.73 /   24.76 /   24.76 /   19.73 /   19.73
+keKingston qaoa3reg_n20_r3  out      13.80 /   11.51 /    9.08 /   13.80 /    7.37 /   11.51
+keKingston qaoa3reg_n40_r3  out      22.91 /   19.98 /   20.68 /   22.91 /   18.74 /   19.98
+keKingston tfim_n40_r2      IN       36.49 /   10.88 /    1.06 /    1.06 /    0.53 /    0.53
+keKingston clf_n4_L3        out       2.64 /    2.45 /    1.63 /    2.64 /    1.23 /    2.45
+keKingston clf_n4_L5        out       4.56 /    4.12 /    3.19 /    4.56 /    2.20 /    4.12
+keKingston clf_n4_L9        out       8.19 /    7.61 /    6.42 /    8.19 /    4.30 /    7.61
+keKingston clf_n6_L3        out       4.84 /    4.74 /    2.39 /    4.84 /    1.70 /    4.74
+keKingston clf_n6_L5        out       7.91 /    7.72 /    4.78 /    7.91 /    3.50 /    7.72
+keKingston clf_n6_L9        out      14.92 /   14.54 /    9.08 /   14.92 /    6.91 /   14.54
+keKingston hhI_n16          IN        5.86 /    2.13 /    3.14 /    3.14 /    1.30 /    1.30
+keKingston hhI_n20          IN        7.72 /    2.87 /    3.45 /    3.45 /    1.30 /    1.30
+keKingston ring12_tfim      IN       20.74 /    6.68 /    1.62 /    1.62 /    0.93 /    0.93
+keKingston hhtree_heis_n16  IN        6.38 /    5.07 /    6.09 /    6.09 /    5.10 /    5.10
+FakeTorino qaoa_n12_p2      out       7.06 /    5.18 /    5.21 /    7.06 /    4.03 /    5.18
+FakeTorino qaoa_n20_p2      out       8.20 /    5.82 /    6.16 /    8.20 /    4.91 /    5.82
+FakeTorino ba_n14           out      21.83 /   18.44 /   12.54 /   21.83 /   10.01 /   18.44
+FakeTorino ba_n16           out      22.78 /   18.88 /   13.97 /   22.78 /   11.44 /   18.88
+FakeTorino ba_n18           out      24.58 /   20.44 /   20.03 /   24.58 /   15.97 /   20.44
+FakeTorino ba_n20           out      33.14 /   28.48 /   23.28 /   33.14 /   19.97 /   28.48
+FakeTorino tfim_n12         IN        9.98 /    4.00 /    1.26 /    1.26 /    0.40 /    0.40
+FakeTorino tfim_n16         IN       13.86 /    5.13 /    1.26 /    1.26 /    0.40 /    0.40
+FakeTorino ghz_n12          IN        1.38 /    1.38 /    1.13 /    1.13 /    1.13 /    1.13
+FakeTorino tfimP_n12        IN       10.01 /    4.04 /    1.29 /    1.29 /    0.44 /    0.44
+FakeTorino tfimP_n16        IN       13.92 /    5.16 /    1.29 /    1.29 /    0.44 /    0.44
+FakeTorino tfim_n20_r3      IN       29.17 /    9.44 /    1.81 /    1.81 /    1.06 /    1.06
+FakeTorino heis_n12_r2      IN       16.83 /   13.69 /   16.33 /   16.33 /   13.42 /   13.42
+FakeTorino heis2d_n16_r1    out      19.76 /   17.64 /   20.80 /   19.76 /   18.75 /   17.64
+FakeTorino chem_n12_r1      out      26.04 /   20.81 /   24.70 /   26.04 /   19.73 /   20.81
+FakeTorino qaoa3reg_n20_r3  out      14.83 /   12.00 /   13.14 /   14.83 /   10.92 /   12.00
+FakeTorino qaoa3reg_n40_r3  out      29.97 /   26.04 /   23.44 /   29.97 /   21.74 /   26.04
+FakeTorino tfim_n40_r2      IN       41.43 /   12.49 /    1.42 /    1.42 /    0.82 /    0.82
+FakeTorino clf_n4_L3        out       3.14 /    2.88 /    1.69 /    3.14 /    1.30 /    2.88
+FakeTorino clf_n4_L5        out       4.52 /    4.24 /    3.19 /    4.52 /    2.37 /    4.24
+FakeTorino clf_n4_L9        out       8.46 /    7.76 /    6.51 /    8.46 /    4.70 /    7.76
+FakeTorino clf_n6_L3        out       4.38 /    4.31 /    2.52 /    4.38 /    1.90 /    4.31
+FakeTorino clf_n6_L5        out       8.04 /    7.69 /    4.72 /    8.04 /    3.47 /    7.69
+FakeTorino clf_n6_L9        out      14.59 /   14.05 /    9.18 /   14.59 /    6.91 /   14.05
+FakeTorino hhI_n16          IN        7.20 /    2.91 /    3.14 /    3.14 /    1.53 /    1.53
+FakeTorino hhI_n20          IN        9.45 /    3.81 /    3.67 /    3.67 /    1.60 /    1.60
+FakeTorino ring12_tfim      IN       21.64 /    7.12 /    1.86 /    1.86 /    1.20 /    1.20
+FakeTorino hhtree_heis_n16  IN        6.32 /    5.15 /    6.09 /    6.09 /    5.10 /    5.10
+_marrakesh qaoa_n12_p2      out       7.92 /    5.74 /    5.94 /    7.92 /    4.44 /    5.74
+_marrakesh qaoa_n20_p2      out       7.38 /    5.44 /    5.32 /    7.38 /    4.33 /    5.44
+_marrakesh ba_n14           out      18.38 /   14.00 /   14.87 /   18.38 /   12.02 /   14.00
+_marrakesh ba_n16           out      21.02 /   16.86 /   14.78 /   21.02 /   12.06 /   16.86
+_marrakesh ba_n18           out      24.32 /   19.41 /   19.86 /   24.32 /   15.62 /   19.41
+_marrakesh ba_n20           out      32.79 /   27.60 /   24.84 /   32.79 /   20.16 /   27.60
+_marrakesh tfim_n12         IN       10.33 /    3.16 /    1.33 /    1.33 /    0.41 /    0.41
+_marrakesh tfim_n16         IN       14.33 /    4.35 /    1.33 /    1.33 /    0.41 /    0.41
+_marrakesh ghz_n12          IN        1.20 /    1.20 /    1.18 /    1.18 /    1.18 /    1.18
+_marrakesh tfimP_n12        IN       10.40 /    3.20 /    1.36 /    1.36 /    0.45 /    0.45
+_marrakesh tfimP_n16        IN       14.36 /    4.38 /    1.36 /    1.36 /    0.45 /    0.45
+_marrakesh tfim_n20_r3      IN       28.89 /    8.42 /    1.40 /    1.40 /    0.73 /    0.73
+_marrakesh heis_n12_r2      IN       17.53 /   14.15 /   16.92 /   16.92 /   13.75 /   13.75
+_marrakesh heis2d_n16_r1    out      22.78 /   20.08 /   21.01 /   22.78 /   18.78 /   20.08
+_marrakesh chem_n12_r1      out      27.05 /   21.33 /   25.97 /   27.05 /   20.52 /   21.33
+_marrakesh qaoa3reg_n20_r3  out      14.46 /   11.96 /    9.48 /   14.46 /    7.73 /   11.96
+_marrakesh qaoa3reg_n40_r3  out      23.80 /   20.78 /   21.51 /   23.80 /   19.30 /   20.78
+_marrakesh tfim_n40_r2      IN       38.92 /   11.17 /    1.12 /    1.12 /    0.56 /    0.56
+_marrakesh clf_n4_L3        out       2.74 /    2.45 /    1.70 /    2.74 /    1.28 /    2.45
+_marrakesh clf_n4_L5        out       4.67 /    4.28 /    3.34 /    4.67 /    2.29 /    4.28
+_marrakesh clf_n4_L9        out       8.69 /    8.18 /    6.71 /    8.69 /    4.50 /    8.18
+_marrakesh clf_n6_L3        out       5.02 /    4.80 /    2.61 /    5.02 /    1.73 /    4.80
+_marrakesh clf_n6_L5        out       8.20 /    7.99 /    4.84 /    8.20 /    3.54 /    7.99
+_marrakesh clf_n6_L9        out      15.47 /   15.11 /    9.14 /   15.47 /    7.00 /   15.11
+_marrakesh hhI_n16          IN        6.27 /    2.25 /    3.32 /    3.32 /    1.35 /    1.35
+_marrakesh hhI_n20          IN        8.22 /    2.91 /    3.62 /    3.62 /    1.35 /    1.35
+_marrakesh ring12_tfim      IN       22.36 /    7.01 /    1.72 /    1.72 /    0.97 /    0.97
+_marrakesh hhtree_heis_n16  IN        6.85 /    5.45 /    6.42 /    6.42 /    5.30 /    5.30
+
+finished 2026-10-14 22:38:19 JST
