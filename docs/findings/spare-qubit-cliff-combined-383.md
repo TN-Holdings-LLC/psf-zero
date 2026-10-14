@@ -9461,4 +9461,91 @@ ba_n18 C49 / QK3 (0.953) has F 0.024 against 0.045.
 
 ---
 
+<!-- ===== Addendum 488 (source: addendum_488.md) ===== -->
+
+> **Note added when merging:** Exploratory pooled real-device pairs; the owner's scope declaration; item 94 dropped, C55-VAL withdrawn.
+
+## Addendum 488 -- Exploratory, after the fact: every pair run on a real IBM device so far (HW1, HW2, TIME1, FRAC1; 54 pairs), split by circuit family. Where PSF-Zero builds the circuit by formula (Ising chains) its construction won 19 of 23 pairs (F 1.21 x geometric mean, worst 0.935); elsewhere its compiler choices alone won 9 of 25 (F 0.78 x), while the device's native rzz won 5 of 6 there too. The owner's scope declaration follows from it: PSF-Zero competes only where it builds by formula (and with native rzz / rx), and is to hand every other circuit to Qiskit level 3 unchanged. Item 94 is dropped and C55-VAL is withdrawn unrun (2026-10-14)
+
+**Status:** exploratory, not pre-registered; the scope is the owner's decision. Times in CEST.
+
+### 1. The pooled pairs
+
+Script [`benchmarks/hw_pairs_by_family.py`](../../benchmarks/hw_pairs_by_family.py); output in
+[`data/2026-10-14/hw_pairs_by_family/`](../../data/2026-10-14/hw_pairs_by_family/).
+
+- **What was pooled.** Every pair scored in four real-device runs:
+  - HW1 (ibm_kingston, 2026-10-12): PSF / QK3.
+  - HW2 (ibm_marrakesh, 2026-10-13): part R PSF / QK3, part S S1 / S0.
+  - TIME1 (ibm_fez, today): S1 / S0, C49 / C48, C49 / QK3.
+  - FRAC1 (ibm_fez, today): C51 with rzz / C49.
+
+  A ratio is always the PSF-Zero construction under test over its alternative. The GHZ control is left out.
+- **Families.**
+  - "Formula" is the Ising chains (tfim*), which PSF-Zero builds by formula.
+  - "Other" is the QAOA and Barabasi-Albert circuits, whose placement no formula gives.
+
+| group | pairs | PSF-Zero side won | F ratio, geometric mean (range) |
+|---|---|---|---|
+| formula, all | 23 | 19 | **1.211** (0.935-2.344) |
+| formula, compiler only | 16 | 14 | 1.234 (0.935-2.344) |
+| formula, rzz | 7 | 5 | 1.160 (0.969-1.408) |
+| formula, against Qiskit level 3 only | 7 | 6 | 1.243 (0.952-2.344) |
+| other, all | 31 | 14 | 0.894 (0.276-2.664) |
+| other, compiler only | 25 | 9 | **0.783** (0.276-1.398) |
+| other, rzz | 6 | 5 | 1.556 (0.932-2.664) |
+| other, against Qiskit level 3 only | 18 | 7 | 0.776 (0.276-1.398) |
+
+- **The formula family's four losses are all small:** 0.952, 0.935, 0.969 and 0.995.
+- **Within the formula family, the rank correlation of 1/duration with F is weak (+0.21).** Every formula pair is
+  much shorter (duration ratio 0.16-0.76), so the family wins as a level, not in proportion.
+- **Outside it, PSF-Zero's compiler choices lose on average.** Wins and losses scatter on all four devices, as
+  TIME1's placement reading said (Addendum 487).
+- **The device's rzz wins in both families.** It is a gate-level formula (one pulse for two CZ), not a search.
+
+**Not established.**
+
+- The analysis is after the fact. Many pairs are the same tests on other devices, so the 23 and 25 are not
+  independent trials.
+- HW1's durations were recomputed on FakeKingston's Target, because the day's real Target was not stored.
+- Rings (a16, a17) have never run on a device and are not in the pool.
+
+### 2. Scope (the owner's decision, 2026-10-14)
+
+PSF-Zero competes only where it builds by formula:
+
+- chains, rings and lattices that embed in the device;
+- the device's native fractional gates (rzz, rx).
+
+Every other circuit is to be handed to Qiskit's level 3 unchanged, so that PSF-Zero is no worse than Qiskit there.
+That hand-off is not built yet; it is the next item. Work on the other families is left open to anyone; the losing
+data stay published (Addenda 484, 487 and this one).
+
+The README states this scope, with the numbers above and the condition that the hand-off is still to be built.
+
+### 3. What changes now
+
+- **Item 94 is dropped.** Re-layering commuting ZZ runs was aimed at 3-regular QAOA, outside the scope, and it
+  compiled every such input twice (2-90 s against 1-3 s in C55-VAL's interrupted rows).
+- **C55-VAL is withdrawn unrun.** Its prestatement and two interrupted runs stay as recorded (Addendum 486); no
+  verdict is drawn from them.
+- **Item 95** (item 93's check up to 20 active qubits) is about correctness, not scope. It is kept for the next
+  prototype and will be validated there.
+- **The workplace's sixth note is revised** to the scope:
+  - the hand-off and its check, which is that the output is identical to Qiskit level 3's outside the formula
+    families;
+  - the canonical direction of symmetric two-qubit gates (W2).
+
+  Measurement outside the scope is limited to that identity check.
+
+**Two numbers.**
+
+- **Display:** inside the scope, 19 wins and 4 narrow losses on real devices, F +21% on average.
+- **Essential:**
+  - After the fact, from dependent pairs.
+  - Outside the scope, PSF-Zero's own choices cost about 22% of F on average.
+  - The scope's promise of "no worse than Qiskit" outside it holds only once the hand-off is built and checked.
+
+---
+
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

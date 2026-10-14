@@ -31,6 +31,41 @@ PSF-Zero is a Qiskit-compatible compiler with two layers.
 Everything is pre-registered and self-audited: predictions are locked in git before a scored run, and results,
 including the failures, are recorded in [`docs/findings/`](docs/findings/).
 
+## Scope: where PSF-Zero competes (declared 2026-10-14)
+
+**On real IBM devices, PSF-Zero's gains are concentrated where it builds the circuit by formula.** We pooled every
+compiled pair run on a real device between 2026-10-12 and 2026-10-14: 54 pairs, four runs, three devices
+(ibm_kingston, ibm_marrakesh, ibm_fez). The pooling was done after the fact
+([Addendum 488](docs/findings/spare-qubit-cliff-combined-383.md)).
+
+| | pairs | PSF-Zero's side won | F ratio (geometric mean) |
+| :--- | :---: | :---: | :---: |
+| Ising chains, built by formula | 23 | 19 | **1.21** (worst 0.94) |
+| QAOA and Barabasi-Albert, compiler choices only | 25 | 9 | **0.78** |
+| QAOA and Barabasi-Albert, with the device's native rzz | 6 | 5 | 1.56 |
+
+- **Where the formula applies, PSF-Zero wins.** Two pre-registered tests on two devices showed the same gates in a
+  time-aware order raising the fidelity by 1.17-1.51 times, 8 of 8 (HW2 part S, TIME1).
+- **Elsewhere it does not.** Placement there decides the result, and placement needs search or calibration, which
+  PSF-Zero does not use by design. In TIME1 its choice by duration lost to Qiskit level 3 on deep circuits.
+
+**So PSF-Zero competes only where it can build by formula:**
+
+- chains, rings and lattices that embed in the device;
+- the device's native fractional gates (rzz, rx).
+
+**Every other circuit is to be handed to Qiskit's level 3 unchanged**, so that PSF-Zero is no worse than Qiskit there.
+That hand-off is being built and is not in the current release yet.
+
+The other families are open to anyone who wants to work on them. Our losing data are published for that purpose:
+the family map (Addendum 484), TIME1 (Addendum 487) and the pooled pairs (Addendum 488).
+
+What these numbers are not:
+
+- Many pairs repeat the same tests on different devices, so they are not independent trials.
+- Rings are built by formula but have not run on a device yet.
+- None of the prototypes behind the 2026-10-14 tests (c49-c55) is released.
+
 ## Current version
 
 **`psf_compile.py` 2026-10-11.4** and the AI front end **a12**, with `psf_smart_layout` 2026-10-01.1 (its matching
@@ -416,6 +451,8 @@ Current version); with 2026-10-06.4 it took a median of 31 s for Hamiltonians of
 
 **On real IBM hardware** (15 qubits, 10 jobs on `ibm_marrakesh` and `ibm_fez`, `compile()` path): fidelity was
 indistinguishable from Qiskit L3 (0.0919 ± 0.0016 against 0.0925 ± 0.0016), and compile time 14-16x shorter.
+The device layer has since run in four pre-registered tests on three devices (2026-10-12 to 2026-10-14). See
+[Scope](#scope-where-psf-zero-competes-declared-2026-10-14) and Addenda 454-488.
 
 **Numerical accuracy of the core:** worst infidelity 1.1e-15 over 500 Haar-random SU(4), 2.6e-14 near CNOT, no
 fallbacks. Repeated recompilation drifts linearly (6.1e-11 after 1,000 laps). See
@@ -464,8 +501,11 @@ Full account: [`spare-qubit-cliff.md`](docs/findings/spare-qubit-cliff.md) (summ
 
 ## Known limits and open questions
 
-- **Hardware:** the device layer (error-aware placement, noise-estimated choice, AI front end) has been tested only in
-  noisy simulation.
+- **Hardware:** the device layer ran on real devices in four pre-registered tests (HW1, HW2, TIME1, FRAC1;
+  2026-10-12 to 2026-10-14). The noise estimate (ESP) that the release chooses by misranked the pairs on HW1. It
+  ranked them reasonably on HW2, but no predictor held on both devices (Addenda 455, 461, 476). Choosing by duration
+  was not confirmed either (TIME1). Building by formula and the time-aware order were (HW2 part S, TIME1
+  part T1). See [Scope](#scope-where-psf-zero-competes-declared-2026-10-14).
 - **ecr devices:** the release has not been tested on them in a pre-registered test. A workplace exploration found it
   working there. It also found the AI front end defect noted above.
 - **Above 16 touched qubits** the noise estimates and the equivalence checks are not made, and the release keeps its

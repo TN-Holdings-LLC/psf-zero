@@ -1,0 +1,642 @@
+{
+ "pairs": [
+  {
+   "run": "HW1 ibm_kingston",
+   "test": "qaoa_n12_p2",
+   "pair": "PSF/QK3",
+   "dur_ratio": 0.8055113937466878,
+   "f_ratio": 0.9897752455825763,
+   "f_alt": 0.4990133996110671,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "HW1 ibm_kingston",
+   "test": "qaoa_n20_p2",
+   "pair": "PSF/QK3",
+   "dur_ratio": 0.7121896162528217,
+   "f_ratio": 1.2021117393440224,
+   "f_alt": 0.3535563352826022,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "HW1 ibm_kingston",
+   "test": "ba_n14",
+   "pair": "PSF/QK3",
+   "dur_ratio": 0.9200637667957194,
+   "f_ratio": 0.7796807619685346,
+   "f_alt": 0.26317106850065547,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "HW1 ibm_kingston",
+   "test": "ba_n16",
+   "pair": "PSF/QK3",
+   "dur_ratio": 1.0876247504990006,
+   "f_ratio": 1.0140176412088977,
+   "f_alt": 0.2800293580413056,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "HW1 ibm_kingston",
+   "test": "ba_n18",
+   "pair": "PSF/QK3",
+   "dur_ratio": 1.155370177267986,
+   "f_ratio": 0.7436014798029886,
+   "f_alt": 0.10494888320877314,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "HW1 ibm_kingston",
+   "test": "ba_n20",
+   "pair": "PSF/QK3",
+   "dur_ratio": 0.9362580645161287,
+   "f_ratio": 0.807904689165848,
+   "f_alt": 0.17409293978306842,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "HW1 ibm_kingston",
+   "test": "tfim_n12",
+   "pair": "PSF/QK3",
+   "dur_ratio": 0.5691533948030164,
+   "f_ratio": 1.194666708776469,
+   "f_alt": 0.7208080243314172,
+   "rzz": false,
+   "family": "formula"
+  },
+  {
+   "run": "HW1 ibm_kingston",
+   "test": "tfim_n16",
+   "pair": "PSF/QK3",
+   "dur_ratio": 0.5497887748943849,
+   "f_ratio": 1.005567129714108,
+   "f_alt": 1.2683518694062812,
+   "rzz": false,
+   "family": "formula"
+  },
+  {
+   "run": "HW2 ibm_marrakesh",
+   "test": "qaoa_n12_p2",
+   "pair": "PSF/QK3",
+   "dur_ratio": 0.9816607233825778,
+   "f_ratio": 1.3984259457598145,
+   "f_alt": 0.2983322878273701,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "HW2 ibm_marrakesh",
+   "test": "qaoa_n20_p2",
+   "pair": "PSF/QK3",
+   "dur_ratio": 1.0788626609442054,
+   "f_ratio": 0.5848619595497663,
+   "f_alt": 0.27657786007192603,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "HW2 ibm_marrakesh",
+   "test": "ba_n14",
+   "pair": "PSF/QK3",
+   "dur_ratio": 0.8983456682629498,
+   "f_ratio": 1.11254781255502,
+   "f_alt": 0.2034616340541131,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "HW2 ibm_marrakesh",
+   "test": "ba_n16",
+   "pair": "PSF/QK3",
+   "dur_ratio": 0.9837152054535117,
+   "f_ratio": 1.302092345531801,
+   "f_alt": 0.21794535208056298,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "HW2 ibm_marrakesh",
+   "test": "ba_n18",
+   "pair": "PSF/QK3",
+   "dur_ratio": 1.176809210526317,
+   "f_ratio": 0.5899838956374021,
+   "f_alt": 0.07618078887163954,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "HW2 ibm_marrakesh",
+   "test": "ba_n20",
+   "pair": "PSF/QK3",
+   "dur_ratio": 1.1618989653073601,
+   "f_ratio": 0.27572932230382063,
+   "f_alt": 0.09371598488620755,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "HW2 ibm_marrakesh",
+   "test": "tfim_n12",
+   "pair": "PSF/QK3",
+   "dur_ratio": 0.5654531371030226,
+   "f_ratio": 1.156121435992317,
+   "f_alt": 1.1146374346719776,
+   "rzz": false,
+   "family": "formula"
+  },
+  {
+   "run": "HW2 ibm_marrakesh",
+   "test": "tfim_n16",
+   "pair": "PSF/QK3",
+   "dur_ratio": 0.5522054718034645,
+   "f_ratio": 0.9520269800252927,
+   "f_alt": 0.617741792578296,
+   "rzz": false,
+   "family": "formula"
+  },
+  {
+   "run": "HW2 ibm_marrakesh",
+   "test": "tfimP_n12",
+   "pair": "PSF/QK3",
+   "dur_ratio": 0.5650000000000016,
+   "f_ratio": 1.3527902559660392,
+   "f_alt": 0.5385209286492951,
+   "rzz": false,
+   "family": "formula"
+  },
+  {
+   "run": "HW2 ibm_marrakesh",
+   "test": "tfimP_n16",
+   "pair": "PSF/QK3",
+   "dur_ratio": 0.5519444444444472,
+   "f_ratio": 2.343756753904836,
+   "f_alt": 0.23990256455546716,
+   "rzz": false,
+   "family": "formula"
+  },
+  {
+   "run": "HW2 ibm_marrakesh",
+   "test": "tfimP_n12",
+   "pair": "S1/S0",
+   "dur_ratio": 0.20747097425542627,
+   "f_ratio": 1.2965731658718633,
+   "f_alt": 0.6431960787039404,
+   "rzz": false,
+   "family": "formula"
+  },
+  {
+   "run": "HW2 ibm_marrakesh",
+   "test": "tfimP_n16",
+   "pair": "S1/S0",
+   "dur_ratio": 0.15708531673379741,
+   "f_ratio": 1.1648282283718567,
+   "f_alt": 0.502697458314521,
+   "rzz": false,
+   "family": "formula"
+  },
+  {
+   "run": "HW2 ibm_marrakesh",
+   "test": "qaoa_n12_p2",
+   "pair": "S1/S0",
+   "dur_ratio": 0.8967306694343542,
+   "f_ratio": 1.0038772460311798,
+   "f_alt": 0.40391666756261296,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "HW2 ibm_marrakesh",
+   "test": "qaoa_n20_p2",
+   "pair": "S1/S0",
+   "dur_ratio": 0.9830929885629044,
+   "f_ratio": 0.9124139855473178,
+   "f_alt": 0.15747510514608057,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "TIME1 ibm_fez",
+   "test": "tfimP_n12_r4",
+   "pair": "S1/S0",
+   "dur_ratio": 0.442,
+   "f_ratio": 1.199,
+   "f_alt": 0.578,
+   "rzz": false,
+   "family": "formula"
+  },
+  {
+   "run": "TIME1 ibm_fez",
+   "test": "tfimP_n12_r8",
+   "pair": "S1/S0",
+   "dur_ratio": 0.515,
+   "f_ratio": 1.181,
+   "f_alt": 0.5575,
+   "rzz": false,
+   "family": "formula"
+  },
+  {
+   "run": "TIME1 ibm_fez",
+   "test": "tfimP_n16_r4",
+   "pair": "S1/S0",
+   "dur_ratio": 0.368,
+   "f_ratio": 1.186,
+   "f_alt": 0.6147,
+   "rzz": false,
+   "family": "formula"
+  },
+  {
+   "run": "TIME1 ibm_fez",
+   "test": "tfimP_n16_r8",
+   "pair": "S1/S0",
+   "dur_ratio": 0.442,
+   "f_ratio": 1.187,
+   "f_alt": 0.4688,
+   "rzz": false,
+   "family": "formula"
+  },
+  {
+   "run": "TIME1 ibm_fez",
+   "test": "tfimP_n20_r4",
+   "pair": "S1/S0",
+   "dur_ratio": 0.338,
+   "f_ratio": 1.48,
+   "f_alt": 0.4035,
+   "rzz": false,
+   "family": "formula"
+  },
+  {
+   "run": "TIME1 ibm_fez",
+   "test": "tfimP_n20_r8",
+   "pair": "S1/S0",
+   "dur_ratio": 0.421,
+   "f_ratio": 1.508,
+   "f_alt": 0.3143,
+   "rzz": false,
+   "family": "formula"
+  },
+  {
+   "run": "TIME1 ibm_fez",
+   "test": "qaoa_n20_p2",
+   "pair": "C49/C48",
+   "dur_ratio": 0.945,
+   "f_ratio": 0.947,
+   "f_alt": 0.2288,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "TIME1 ibm_fez",
+   "test": "ba_n14",
+   "pair": "C49/C48",
+   "dur_ratio": 0.901,
+   "f_ratio": 0.741,
+   "f_alt": 0.1737,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "TIME1 ibm_fez",
+   "test": "ba_n16",
+   "pair": "C49/C48",
+   "dur_ratio": 0.986,
+   "f_ratio": 0.339,
+   "f_alt": 0.3086,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "TIME1 ibm_fez",
+   "test": "ba_n18",
+   "pair": "C49/C48",
+   "dur_ratio": 0.873,
+   "f_ratio": 1.095,
+   "f_alt": 0.0219,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "TIME1 ibm_fez",
+   "test": "ba_n20",
+   "pair": "C49/C48",
+   "dur_ratio": 0.828,
+   "f_ratio": 0.899,
+   "f_alt": 0.0379,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "TIME1 ibm_fez",
+   "test": "tfim_n12",
+   "pair": "C49/C48",
+   "dur_ratio": 0.761,
+   "f_ratio": 0.935,
+   "f_alt": 0.7777,
+   "rzz": false,
+   "family": "formula"
+  },
+  {
+   "run": "TIME1 ibm_fez",
+   "test": "qaoa_n12_p2",
+   "pair": "C49/QK3",
+   "dur_ratio": 0.705,
+   "f_ratio": 1.22,
+   "f_alt": 0.5468,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "TIME1 ibm_fez",
+   "test": "qaoa_n20_p2",
+   "pair": "C49/QK3",
+   "dur_ratio": 0.748,
+   "f_ratio": 0.614,
+   "f_alt": 0.3532,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "TIME1 ibm_fez",
+   "test": "ba_n14",
+   "pair": "C49/QK3",
+   "dur_ratio": 0.816,
+   "f_ratio": 1.238,
+   "f_alt": 0.104,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "TIME1 ibm_fez",
+   "test": "ba_n16",
+   "pair": "C49/QK3",
+   "dur_ratio": 0.856,
+   "f_ratio": 0.546,
+   "f_alt": 0.1915,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "TIME1 ibm_fez",
+   "test": "ba_n18",
+   "pair": "C49/QK3",
+   "dur_ratio": 0.953,
+   "f_ratio": 0.532,
+   "f_alt": 0.045,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "TIME1 ibm_fez",
+   "test": "ba_n20",
+   "pair": "C49/QK3",
+   "dur_ratio": 0.813,
+   "f_ratio": 0.352,
+   "f_alt": 0.0968,
+   "rzz": false,
+   "family": "other"
+  },
+  {
+   "run": "TIME1 ibm_fez",
+   "test": "tfim_n12",
+   "pair": "C49/QK3",
+   "dur_ratio": 0.161,
+   "f_ratio": 1.091,
+   "f_alt": 0.6667,
+   "rzz": false,
+   "family": "formula"
+  },
+  {
+   "run": "FRAC1 ibm_fez",
+   "test": "tfimP_n12_r4",
+   "pair": "C51/C49",
+   "dur_ratio": 0.438,
+   "f_ratio": 1.11,
+   "f_alt": 0.6839,
+   "rzz": true,
+   "family": "formula"
+  },
+  {
+   "run": "FRAC1 ibm_fez",
+   "test": "tfimP_n12_r8",
+   "pair": "C51/C49",
+   "dur_ratio": 0.464,
+   "f_ratio": 1.126,
+   "f_alt": 0.6589,
+   "rzz": true,
+   "family": "formula"
+  },
+  {
+   "run": "FRAC1 ibm_fez",
+   "test": "tfimP_n16_r4",
+   "pair": "C51/C49",
+   "dur_ratio": 0.438,
+   "f_ratio": 0.969,
+   "f_alt": 0.692,
+   "rzz": true,
+   "family": "formula"
+  },
+  {
+   "run": "FRAC1 ibm_fez",
+   "test": "tfimP_n16_r8",
+   "pair": "C51/C49",
+   "dur_ratio": 0.442,
+   "f_ratio": 0.995,
+   "f_alt": 0.5512,
+   "rzz": true,
+   "family": "formula"
+  },
+  {
+   "run": "FRAC1 ibm_fez",
+   "test": "tfimP_n20_r4",
+   "pair": "C51/C49",
+   "dur_ratio": 0.428,
+   "f_ratio": 1.224,
+   "f_alt": 0.569,
+   "rzz": true,
+   "family": "formula"
+  },
+  {
+   "run": "FRAC1 ibm_fez",
+   "test": "tfimP_n20_r8",
+   "pair": "C51/C49",
+   "dur_ratio": 0.442,
+   "f_ratio": 1.363,
+   "f_alt": 0.4187,
+   "rzz": true,
+   "family": "formula"
+  },
+  {
+   "run": "FRAC1 ibm_fez",
+   "test": "qaoa_n12_p2",
+   "pair": "C51/C49",
+   "dur_ratio": 0.829,
+   "f_ratio": 0.932,
+   "f_alt": 0.6121,
+   "rzz": true,
+   "family": "other"
+  },
+  {
+   "run": "FRAC1 ibm_fez",
+   "test": "qaoa_n20_p2",
+   "pair": "C51/C49",
+   "dur_ratio": 0.831,
+   "f_ratio": 1.223,
+   "f_alt": 0.2249,
+   "rzz": true,
+   "family": "other"
+  },
+  {
+   "run": "FRAC1 ibm_fez",
+   "test": "ba_n14",
+   "pair": "C51/C49",
+   "dur_ratio": 0.83,
+   "f_ratio": 1.135,
+   "f_alt": 0.1375,
+   "rzz": true,
+   "family": "other"
+  },
+  {
+   "run": "FRAC1 ibm_fez",
+   "test": "ba_n16",
+   "pair": "C51/C49",
+   "dur_ratio": 0.813,
+   "f_ratio": 2.391,
+   "f_alt": 0.0986,
+   "rzz": true,
+   "family": "other"
+  },
+  {
+   "run": "FRAC1 ibm_fez",
+   "test": "ba_n18",
+   "pair": "C51/C49",
+   "dur_ratio": 0.814,
+   "f_ratio": 1.725,
+   "f_alt": 0.0298,
+   "rzz": true,
+   "family": "other"
+  },
+  {
+   "run": "FRAC1 ibm_fez",
+   "test": "ba_n20",
+   "pair": "C51/C49",
+   "dur_ratio": 0.847,
+   "f_ratio": 2.664,
+   "f_alt": 0.0285,
+   "rzz": true,
+   "family": "other"
+  },
+  {
+   "run": "FRAC1 ibm_fez",
+   "test": "tfim_n12",
+   "pair": "C51/C49",
+   "dur_ratio": 0.44,
+   "f_ratio": 1.408,
+   "f_alt": 0.7822,
+   "rzz": true,
+   "family": "formula"
+  }
+ ],
+ "summary": [
+  {
+   "label": "formula, all",
+   "pairs": 23,
+   "new_side_won": 19,
+   "f_ratio_geomean": 1.2107562465100188,
+   "f_ratio_min": 0.935,
+   "f_ratio_max": 2.343756753904836,
+   "decided_by_duration": 23,
+   "shorter_won": 19,
+   "spearman_inv_duration_f": 0.21352568738721353,
+   "spearman_p": 0.32794046961769185
+  },
+  {
+   "label": "formula, compiler only (no rzz)",
+   "pairs": 16,
+   "new_side_won": 14,
+   "f_ratio_geomean": 1.2335337113928666,
+   "f_ratio_min": 0.935,
+   "f_ratio_max": 2.343756753904836,
+   "decided_by_duration": 16,
+   "shorter_won": 14,
+   "spearman_inv_duration_f": 0.2119205871738937,
+   "spearman_p": 0.4307361874085342
+  },
+  {
+   "label": "formula, rzz (FRAC1)",
+   "pairs": 7,
+   "new_side_won": 5,
+   "f_ratio_geomean": 1.1602603489280465,
+   "f_ratio_min": 0.969,
+   "f_ratio_max": 1.408,
+   "decided_by_duration": 7,
+   "shorter_won": 5,
+   "spearman_inv_duration_f": -0.10910894511799621,
+   "spearman_p": 0.8158714843641037
+  },
+  {
+   "label": "other, all",
+   "pairs": 31,
+   "new_side_won": 14,
+   "f_ratio_geomean": 0.8944455879210015,
+   "f_ratio_min": 0.27572932230382063,
+   "f_ratio_max": 2.664,
+   "decided_by_duration": 21,
+   "shorter_won": 14,
+   "spearman_inv_duration_f": 0.395806030845036,
+   "spearman_p": 0.027518035012163093
+  },
+  {
+   "label": "other, compiler only (no rzz)",
+   "pairs": 25,
+   "new_side_won": 9,
+   "f_ratio_geomean": 0.7830999988597743,
+   "f_ratio_min": 0.27572932230382063,
+   "f_ratio_max": 1.3984259457598145,
+   "decided_by_duration": 15,
+   "shorter_won": 9,
+   "spearman_inv_duration_f": 0.3046153846153846,
+   "spearman_p": 0.1387265498307695
+  },
+  {
+   "label": "other, rzz (FRAC1)",
+   "pairs": 6,
+   "new_side_won": 5,
+   "f_ratio_geomean": 1.5564082391390663,
+   "f_ratio_min": 0.932,
+   "f_ratio_max": 2.664,
+   "decided_by_duration": 6,
+   "shorter_won": 5,
+   "spearman_inv_duration_f": -0.08571428571428573,
+   "spearman_p": 0.8717434402332361
+  },
+  {
+   "label": "formula, against Qiskit level 3 only",
+   "pairs": 7,
+   "new_side_won": 6,
+   "f_ratio_geomean": 1.242583179851455,
+   "f_ratio_min": 0.9520269800252927,
+   "f_ratio_max": 2.343756753904836,
+   "decided_by_duration": 7,
+   "shorter_won": 6,
+   "spearman_inv_duration_f": -0.3214285714285715,
+   "spearman_p": 0.48207203829967776
+  },
+  {
+   "label": "other, against Qiskit level 3 only",
+   "pairs": 18,
+   "new_side_won": 7,
+   "f_ratio_geomean": 0.7756531751419695,
+   "f_ratio_min": 0.27572932230382063,
+   "f_ratio_max": 1.3984259457598145,
+   "decided_by_duration": 11,
+   "shorter_won": 7,
+   "spearman_inv_duration_f": 0.25696594427244585,
+   "spearman_p": 0.30330908061762435
+  }
+ ]
+}
