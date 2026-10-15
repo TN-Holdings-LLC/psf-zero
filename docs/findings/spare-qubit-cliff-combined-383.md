@@ -10657,6 +10657,50 @@ after a22's template, bit for bit. So the result holds for them too.
 - **For the hardware candidates:** candidate 2 (hardware evaluation of trained classifiers) is dropped. There is no
   accuracy difference to confirm.
 
+## Addendum 502 -- The TOQB loop runs had no time limit; the long run (5 x 100,000 iterations) stopped by the owner at about 70,000 with no compounding; a hard 2-minute QPU budget added and tried on 20 seeds (no accuracy difference; margin larger with PSF-Zero); workplace note 9: the rest of C63-VAL and C63A-VAL (2026-10-16)
+
+**Status:** records of the night and the morning. Nothing ran on a device. Times in CEST.
+
+**What was wrong with the loop runs.**
+
+- TOQB's loop asks what a fixed amount of QPU time buys. The owner's real budget is about 2 minutes of QPU time, about
+  50 iterations of the task.
+- No loop run had a hard limit.
+  - Runs 1 and 2 compared after a fixed number of iterations.
+  - The "budget" (the reference arm's own spend + 5%) never binds.
+  - The scoring scripts written for the scored runs compared at the last iteration and dropped the budget cut. They
+    did so without saying it.
+- Run 2 also changed SPSA's settings (and so the money per model, 6.7 x) without asking.
+- The long run was built to "5 seeds x 100,000 iterations" without pointing out that this removes the limit entirely:
+  about 67 QPU hours per model.
+- These were the authors' (Claude's) decisions, not the owner's. From now on, the experiment's design is confirmed
+  before anything is built.
+
+**The long run** (TOQB pre-registration `013bb48`; started 2026-10-15 18:16:48; stopped by the owner on 2026-10-16
+at about 70,000 iterations; not scored; TOQB [`results/loop-n6-long-2026-10-15/`](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/loop-n6-long-2026-10-15)):
+
+- The noiseless difference moved between -0.05 and +0.07, with no trend: -0.021 at 70,000.
+- Both arms reached 0.76-0.78 by about 10,000 iterations.
+- No compounding.
+
+**A hard budget** (TOQB `997722b`, `evaluation.stop_budget_usd`): training stops before the job that would pass the
+budget, and the model it bought is evaluated there.
+
+**Short test at 2 minutes ($192)** (20 seeds, 9101-9120, unscored):
+
+- PSF-Zero: 50 iterations, $188.78. Qiskit level 2: 49 iterations, $189.72.
+- Noisy accuracy 0.520 against 0.524; noiseless 0.549 against 0.555.
+- Margin 0.027 against 0.008 (PSF-Zero larger in 15 of 20).
+- Within 2 minutes, no accuracy difference is visible. The signal is larger with PSF-Zero.
+- The owner decides the next step: a scored run at the budget, or a task that uses the value, not the sign.
+
+**Workplace note 9**
+([`data/2026-10-16/workplace/home_requests/`](../../data/2026-10-16/workplace/home_requests/)):
+
+- **W1:** the rest of C63-VAL (part R's 9 remaining tests and part D), with its fixed criteria.
+- **W2:** C63A-VAL, the validation of option A (c63a). Its criteria are proposed with the duration at most 1.05 x
+  c62's on F (W3 measured up to 1.044), and zero shape changes on part K's walk.
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
