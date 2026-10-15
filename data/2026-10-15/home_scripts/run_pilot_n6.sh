@@ -5,7 +5,7 @@
 set -u
 TOQB=~/toqb_push_2026-10-15
 PSF=~/psf_zero_fresh_test
-DAY=/mnt/c/Users/Administrator/Desktop/psf_zero_project/day_2026-10-15
+DAY=${DAY:?set DAY to the day folder on the home PC}
 OUT=results/loop-pilot-n6-2026-10-15
 cd "$TOQB" || { echo "STOP: no $TOQB"; exit 1; }
 git log --oneline -1 | grep -q '^e7527cc' || { echo "STOP: TOQB is not at e7527cc"; exit 1; }

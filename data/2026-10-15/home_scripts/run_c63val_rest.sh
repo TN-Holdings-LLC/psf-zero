@@ -6,7 +6,7 @@
 # Never overwrites: refuses an existing output folder.
 set -u
 PSF=~/psf_zero_fresh_test
-DAY=/mnt/c/Users/Administrator/Desktop/psf_zero_project/day_2026-10-15
+DAY=${DAY:?set DAY to the day folder on the home PC}
 W=data/2026-10-15/workplace/workplace_2026-10-15c_W1-W3/w34
 OUT="$DAY/c63val_home"
 cd "$PSF" || { echo "STOP: no $PSF"; exit 1; }
