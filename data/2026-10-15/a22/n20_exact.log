@@ -1,0 +1,5 @@
+# 2026-10-15 ~08:20 CEST, home workspace: item 93's check on a22's outputs for the 20-qubit embedded rings (benchmarks/a22_n20_exact.py)
+{"fam": "clf", "n": 20, "target": "T", "path": "hand-off:compiler", "exact": true, "check_s": 25.7}
+{"fam": "clf", "n": 20, "target": "F", "path": "hand-off:compiler", "exact": true, "check_s": 20.6}
+{"fam": "qaoa", "n": 20, "target": "T", "path": "hand-off:compiler", "exact": true, "check_s": 19.7}
+{"fam": "qaoa", "n": 20, "target": "F", "path": "hand-off:compiler", "exact": true, "check_s": 14.9}

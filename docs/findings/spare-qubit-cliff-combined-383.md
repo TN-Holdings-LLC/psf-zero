@@ -10376,4 +10376,94 @@ the files' SHA-256 are fixed in the pre-registrations.
 
 ---
 
+<!-- ===== Addendum 498 (source: addendum_498.md) ===== -->
+
+> **Note added when merging:** AI front end a22 built at home on 2026-10-15 on the workplace's c60/c61.
+
+## Addendum 498 -- AI front end a22 (items 42-43): an embeddable ring goes to psf_compile's item 99, and `model_template` picks the template by the same rule. On FakeFez, the 12- and 20-qubit rings are 0.45-0.63 x a21 and 0.24-0.51 x Qiskit level 3, with one two-qubit gate per edge and layer; every ring that does not embed is identical to a21 (28 of 28 cells); every output checked is exact (2026-10-15)
+
+**Status:** an offline prototype with its tests and one measurement. Nothing is on a device. Times in CEST.
+
+### 1. Prototype a22
+
+[`patches/psf_ai_compile_a22_2026-10-15/`](../../patches/psf_ai_compile_a22_2026-10-15/) is built from a21 by
+`make_a22.py`.
+
+- **c60 and c61** (Addendum 497) are placed at
+  [`patches/psf_compile_c60_2026-10-15/`](../../patches/psf_compile_c60_2026-10-15/) and
+  [`patches/psf_compile_c61_2026-10-15/`](../../patches/psf_compile_c61_2026-10-15/), with their build scripts. They
+  are copied unchanged from the workplace delivery.
+- **Item 42, an embeddable ring to item 99.**
+  - **The rule:** a ring whose interaction graph embeds in the device's working couplers is handed to psf_compile.
+    Item 96's test decides: the first VF2 match, no score.
+  - **Where it goes:** psf_compile's item 99 (c60 on) builds it on the embedded ring. Commuting gates are layered by
+    edge colouring, and no SWAP is needed.
+  - **A ring that does not embed** (on heavy-hex, every ring shorter than 12, and 16 on FakeFez) keeps the ring
+    formula, which folds it onto a line with SWAPs.
+  - It is a rule, not a comparison. `EMBED_RINGS = False` restores a21.
+  - With a psf_compile that has no item 99, a22 is a21.
+- **Item 43, `model_template(qc, target)`.**
+  - **Which template:** an embeddable ring, and every other in-scope input, gets psf_compile's `compile_template`
+    (item 100, c61), wrapped as `ModelTemplate` with a structure check and the start `layout`. A ring that does not
+    embed gets item 35's ring template.
+  - **Otherwise:** None.
+- **Tests:** 25 passed. 9 are new in `test_a22.py` (on c61). 16 are a21's suite on a22 with c59
+  (`test_a21_on_a22.py`), where a22 must behave as a21.
+
+### 2. Measurement (FakeFez, T and F; [`data/2026-10-15/a22/`](../../data/2026-10-15/a22/))
+
+`benchmarks/a22_rings.py` ran the CZ ring classifier (4 layers) and an rzz QAOA ring (p = 2) at n = 4, 6, 8, 9, 10,
+11, 12, 16 and 20. That is 36 cells. a21 and a22 both used psf_compile c61, so only the front end differs.
+
+**Embeddable rings** (n = 12 and 20):
+
+| cell | a22 | a21 | Qiskit level 3 | a22 / a21 | 2q: a22, a21, QK3 |
+|---|---|---|---|---|---|
+| CZ classifier n12 T / F | 2.47 / 2.35 µs | 5.40 / 5.28 | 5.91 / 5.79 | 0.458 / 0.445 | 48, 138, 48 |
+| CZ classifier n20 T / F | 2.47 / 2.35 | 5.40 / 5.28 | 8.52 / 8.40 | 0.458 / 0.445 | 80, 230, 80 |
+| rzz ring n12 T / F | 2.64 / 2.02 | 4.20 / 3.50 | 7.45 / 3.98 | 0.629 / 0.575 | 48 / 24, 88 / 72, 48 / 24 |
+| rzz ring n20 T / F | 2.64 / 2.02 | 4.20 / 3.48 | 11.21 / 5.47 | 0.629 / 0.579 | 80 / 40, 148 / 124, 80 / 40 |
+
+- a22 uses one two-qubit gate per edge and layer, as many as Qiskit.
+- Its duration does not grow from 12 to 20 qubits, because the layers are coloured.
+- Against Qiskit level 3, these cells are 0.24-0.51.
+
+**Rings that do not embed:** 28 of 28 cells identical to a21.
+
+**Checks.** Every output was native with every rzz in range. Item 93 found every checked output exact:
+
+- n = 4, 6, 9, 12 and 16 in the main run;
+- the four 20-qubit embedded cells separately (`benchmarks/a22_n20_exact.py`, 15-26 s each).
+
+**Templates** (`model_template`, CZ classifier, FakeFez T):
+
+| ring | template | build | median bind (50 sets) | bind identical to the front end's compile |
+|---|---|---|---|---|
+| n = 12 | the compiler's (item 100) | 30 ms | 2.62 ms | 50 of 50 |
+| n = 4-11, 16 | the ring template (item 35) | 24-148 ms | 0.76-2.43 ms | 0 of 50 |
+
+- The ring template is not identical to the formula path. Addendum 494 found it 1-3% longer.
+- The first three binds of each template were checked exact.
+
+### 3. TOQB
+
+TOQB's PSF-Zero loop arm (`toqb/task_loop.py`) now uses `model_template` when the front end has it, and defaults to
+a22. With the release's psf_compile, a22 behaves as a21. With c61 as `PSF_COMPILE_FILE`, it uses items 99-100.
+
+TOQB's tests pass both ways: 54 with the release, and the 15 loop tests with c61.
+
+### 4. Reading
+
+- **Display number:** the 12- and 20-qubit rings are now 0.45-0.63 x a21 and down to 0.24 x Qiskit level 3.
+- **Essential number:**
+  - The front end now gives the shortest circuit PSF-Zero has for every ring it reads.
+  - The ring formula covers the rings heavy-hex cannot hold, and item 99 covers those it can.
+  - Nothing is compared and nothing is searched: whether the ring embeds decides.
+- **Not done:**
+  - a ring of cx, which does not commute;
+  - a template for diagonal rings that do not embed;
+  - no hardware.
+
+---
+
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
