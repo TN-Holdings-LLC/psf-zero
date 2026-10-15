@@ -1,0 +1,28 @@
+V1: native outputs 0 (parts R and D); cells with a difference [] -> CONFIRMED
+V2: F outputs 11010 (exactness not checked: 3081; largest difference 2.3e-15); failing 0 [] -> CONFIRMED
+V3: T outputs 11010 (exactness not checked: 3081; largest difference 8.8e-15); failing 0 [] -> CONFIRMED
+V4: part D outputs 0 (chain/graph exactness not checked: 0; largest difference 0.0e+00); failing 0 [] -> CONFIRMED
+S1 (bind_median_ms): 16 of 20 cells within the limit; misses [('heis_n12_r2', 'T', 2.412), ('hhI_n16', 'T', 2.139), ('hhI_n20', 'T', 2.67), ('hhI_n20', 'F', 2.047)] -> REFUTED
+S2 (bind_tight_median_ms): 20 of 20 cells within the limit; misses [] -> CONFIRMED
+
+Reported, per cell (part R, FakeFez): bind interleaved / back to back, values_of, own assign_parameters, Qiskit's alternative assign (ms); rebuilt + switched; build / c62 compile (ms); T cells: duration vs c62 (median ratio, largest, share <= c62), 2q equal share; non-native: outputs identical to c62
+  tfim_n12         T chain  bind  1.077 /  0.588  values_of  1.370  assign  0.153  qiskit   -     shape changes    0  build   16.0 c62   20.1  dur/c62 1.0000 max 1.0000 <= 1101/1101 2q= 1101/1101 identical 5
+  tfim_n12         F chain  bind  0.932 /  0.468  values_of  1.405  assign  0.149  qiskit   -     shape changes  101  build   15.7 c62   33.3  dur/c62 1.0000 max 1.0000 <= 1101/1101 2q= 1101/1101 identical 0
+  tfim_n16         T chain  bind  1.419 /  0.734  values_of  1.796  assign  0.214  qiskit   -     shape changes    0  build   20.4 c62   17.4  dur/c62 1.0000 max 1.0000 <= 1101/1101 2q= 1101/1101 identical 1
+  tfim_n16         F chain  bind  1.100 /  0.549  values_of  1.831  assign  0.194  qiskit   -     shape changes  101  build   18.1 c62   30.5  dur/c62 1.0000 max 1.0000 <= 1101/1101 2q= 1101/1101 identical 0
+  tfimP_n12        T chain  bind  1.266 /  0.668  values_of  1.499  assign  0.198  qiskit   -     shape changes    0  build   18.2 c62   15.5  dur/c62 1.0000 max 1.0000 <= 1101/1101 2q= 1101/1101 identical 6
+  tfimP_n12        F chain  bind  1.098 /  0.550  values_of  1.514  assign  0.189  qiskit   -     shape changes  101  build   17.5 c62   32.2  dur/c62 1.0000 max 1.0000 <= 1101/1101 2q= 1101/1101 identical 0
+  tfimP_n16        T chain  bind  1.471 /  0.909  values_of  1.941  assign  0.265  qiskit   -     shape changes    0  build   21.5 c62   18.7  dur/c62 1.0000 max 1.0000 <= 1101/1101 2q= 1101/1101 identical 1
+  tfimP_n16        F chain  bind  1.229 /  0.649  values_of  1.985  assign  0.266  qiskit   -     shape changes  101  build   19.9 c62   33.0  dur/c62 1.0000 max 1.0000 <= 1101/1101 2q= 1101/1101 identical 0
+  tfim_n20_r3      T graph  bind  1.994 /  1.120  values_of  2.712  assign  0.369  qiskit   -     shape changes    0  build   39.2 c62   32.2  dur/c62 1.0000 max 1.0000 <= 1101/1101 2q= 1101/1101 identical 0
+  tfim_n20_r3      F graph  bind  1.511 /  0.825  values_of  2.756  assign  0.322  qiskit   -     shape changes  101  build   43.8 c62   77.7  dur/c62 1.0000 max 1.0000 <= 1101/1101 2q= 1101/1101 identical 0
+  heis_n12_r2      T graph  bind  2.412 /  1.340  values_of  1.848  assign  0.533  qiskit   -     shape changes    0  build   45.7 c62   51.2  dur/c62 1.0029 max 1.0236 <= 366/1101 2q= 1101/1101 identical 0
+  heis_n12_r2      F graph  bind  1.235 /  0.611  values_of  1.795  assign  0.238  qiskit   -     shape changes  101  build   62.3 c62   59.9  dur/c62 1.0000 max 1.0000 <= 1101/1101 2q= 1101/1101 identical 0
+  tfim_n40_r2      T graph  bind  2.447 /  1.619  values_of  5.304  assign  0.528  qiskit   -     shape changes    0  build   84.7 c62   82.0  dur/c62 1.0000 max 1.0000 <= 1101/1101 2q= 1101/1101 identical 0
+  tfim_n40_r2      F graph  bind  1.959 /  1.043  values_of  5.398  assign  0.380  qiskit   -     shape changes  101  build  100.4 c62  107.6  dur/c62 1.0000 max 1.0000 <= 1101/1101 2q= 1101/1101 identical 0
+  hhI_n16          T graph  bind  2.139 /  1.246  values_of  2.672  assign  0.458  qiskit   -     shape changes    0  build   34.6 c62   31.4  dur/c62 1.0000 max 1.0000 <= 1101/1101 2q= 1101/1101 identical 15
+  hhI_n16          F graph  bind  1.836 /  1.012  values_of  2.766  assign  0.412  qiskit   -     shape changes  101  build   41.7 c62   65.7  dur/c62 1.0000 max 1.0000 <= 1101/1101 2q= 1101/1101 identical 0
+  hhI_n20          T graph  bind  2.670 /  1.445  values_of  3.358  assign  0.506  qiskit   -     shape changes    0  build   49.3 c62   40.3  dur/c62 1.0000 max 1.0000 <= 1101/1101 2q= 1101/1101 identical 6
+  hhI_n20          F graph  bind  2.047 /  1.110  values_of  3.432  assign  0.443  qiskit   -     shape changes  101  build   55.5 c62  110.5  dur/c62 1.0000 max 1.0000 <= 1101/1101 2q= 1101/1101 identical 0
+  ring12_tfim      T graph  bind  1.763 /  1.074  values_of  2.057  assign  0.355  qiskit   -     shape changes    0  build   29.8 c62   28.6  dur/c62 1.0000 max 1.0000 <= 1101/1101 2q= 1101/1101 identical 4
+  ring12_tfim      F graph  bind  1.480 /  0.809  values_of  2.064  assign  0.289  qiskit   -     shape changes  101  build   36.7 c62   55.9  dur/c62 1.0000 max 1.0000 <= 1101/1101 2q= 1101/1101 identical 0

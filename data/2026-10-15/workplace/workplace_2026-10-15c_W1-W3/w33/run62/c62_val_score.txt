@@ -1,0 +1,24 @@
+P1: 330 outputs (not checkable, > 20 active qubits: 10); failing [] -> CONFIRMED
+P2: Ising T cells 45; geometric mean 0.7995; range [0.740, 0.874]; cells > c60: [] -> CONFIRMED
+P3: Heisenberg T cells 10; ratios [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.9975, 1.0, 1.0]; over 1.01: [] -> CONFIRMED
+P4: cells required identical 275: different []; refusal mismatches [] -> CONFIRMED
+P5: second call identical in 330 of 330 -> CONFIRMED
+
+Reported: per device, Ising T geometric mean; two-qubit counts; compile times
+  FakeFez              Ising T geomean 0.8049  range [0.764, 0.856]
+  FakeKingston         Ising T geomean 0.7967  range [0.752, 0.844]
+  FakeMarrakesh        Ising T geomean 0.7947  range [0.749, 0.842]
+  FakeTorino           Ising T geomean 0.8066  range [0.740, 0.874]
+  snapshot_marrakesh   Ising T geomean 0.7947  range [0.749, 0.842]
+  tfim_n12         0.790 [0.789, 0.792]
+  tfim_n16         0.790 [0.789, 0.792]
+  tfimP_n12        0.795 [0.795, 0.796]
+  tfimP_n16        0.795 [0.795, 0.796]
+  tfim_n20_r3      0.794 [0.784, 0.809]
+  tfim_n40_r2      0.750 [0.740, 0.764]
+  hhI_n16          0.818 [0.806, 0.848]
+  hhI_n20          0.815 [0.808, 0.826]
+  ring12_tfim      0.851 [0.842, 0.874]
+  two-qubit count (Ising + Heisenberg T): {'fewer': 45, 'equal': 10}
+  C62 compile on the CZ-path cells: median 32.8 ms, max 176.1 ms
+  C60 compile on the CZ-path cells: median 59.0 ms, max 269.0 ms
