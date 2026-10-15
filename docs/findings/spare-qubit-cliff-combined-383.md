@@ -9857,4 +9857,131 @@ confirmed every prediction (Addendum 491). Times in CEST.
 
 ---
 
+<!-- ===== Addendum 493 (source: addendum_493.md) ===== -->
+
+> **Note added when merging:** Morning measurements of 2026-10-15 and the formula-only prototypes c58 / a19 (C58-VAL).
+
+## Addendum 493 -- Speed and the formula-only prototype (2026-10-15). The release 2026-10-14.1 takes 0.1-37 s per in-scope call, mostly item 93/95's state-vector checks (up to 30 s at 20 qubits) and candidates that lose; the AI front end a18 takes 0.17-1.2 s per classifier, about 70% of it item 30's checks. Prototype c58 (item 97: formula only inside the scope) and a19 (item 34: formula only for ring classifiers), C58-VAL: every output exact (376 checked), native, on no failed element, deterministic, and identical to the release outside the scope; in scope 4.6-357 x faster (median 45 ms per call; geometric mean 33 x), classifiers 18 x faster with the same duration on 63 of 64 cells per Target; but P3 and P4 refuted: 16 of 120 cells gained less than 10 x, and durations without fractional gates are up to 1.85 x the release's on FakeTorino and 1.25-1.45 x on three tests elsewhere (2026-10-15)
+
+**Status:** measurements (exploratory) and a prototype validation fixed in a local prestatement before its run. Times in
+CEST.
+
+### 1. The morning's measurements (exploratory)
+
+- **PennyLane XOR classifier, release 2026-10-14.1, offline.**
+  - 4 of 4 correct on FakeKingston, FakeMarrakesh and FakeFez: exact, native, the same two-qubit count (9), duration
+    equal or shorter.
+  - In Aer's noisy simulation from the fake devices' calibration, |z| fell to 0.92-0.97 against 0.97-0.98 for
+    2026-10-11.4 and for Qiskit.
+  - The release places the 4-qubit chain on qubits 0-3 every time. On FakeFez their CZ errors are up to 0.010,
+    against 0.002-0.003 on the qubits 2026-10-11.4 chose.
+  - The owner set placement aside for now.
+- **Time per training iteration** (FakeFez classifiers, n = 4 and 6, L = 2-16):
+  - Qiskit level 3 compiles in 20-40 ms. A Qiskit user who transpiles once with parameters and binds them takes
+    0.3-0.6 ms per iteration.
+  - a18 takes 170-1,223 ms. Its circuits are 0.47-0.62 x Qiskit's duration (0.43-0.56 x Qiskit's parametric one).
+- **QPU time per shot.**
+  - TIME1: 115 s for 420,000 shots. FRAC1: 62 s for 224,000 shots, with shorter circuits. Both are about 0.27 ms per
+    shot.
+  - A circuit's duration (1-30 us) hardly changes the device's time per shot. Its gain is fidelity, so fewer shots
+    for the same precision (1 / F^2, an estimate).
+- **Where a18's time goes** (one call, n = 6, L = 16, profiled):
+  - item 30's simulation checks of six candidates, about 70%;
+  - candidates that lose, about 20%;
+  - the ring formula itself, about 5%.
+- **Where the release's time goes** (seven in-scope tests, FakeFez): the full call took 0.6-37 s. The formula alone
+  took 27-73 ms; with one item 93/95 check it took 0.1-30 s. At 20 qubits one state-vector check takes 17-30 s.
+  Item 95 (Addendum 486), which extended the check from 16 to 20 qubits, is the main cost there. C56-VAL's and
+  C57-VAL's compile-time predictions compared against c55, which already had it, so they did not show it.
+
+### 2. Prototypes c58 and a19
+
+- **c58** ([`patches/psf_compile_c58_2026-10-15/`](../../patches/psf_compile_c58_2026-10-15/)) is the release plus
+  **item 97**.
+  - Inside item 96's scope, with the device's Target, the output of item 87's `_chain_brickwork` or item 91's
+    `_graph_brickwork` is returned as it is. Nothing else is built or compared, and nothing is simulated.
+  - `FORMULA_CHECK = True` adds item 93's check.
+  - If neither formula builds, the input goes to Qiskit's level 3, as item 96 hands it on.
+- **a19** ([`patches/psf_ai_compile_a19_2026-10-15/`](../../patches/psf_ai_compile_a19_2026-10-15/)) is a18 plus
+  **item 34**. For a ring classifier only the two ring schedules are built, with item 29's rx merge and rzz fold, and
+  the shorter is returned. There are no a15 starts, no polish, and no per-candidate check.
+
+### 3. C58-VAL
+
+Prestatement [`data/2026-10-15/c58_val/C58-VAL_preregistration.md`](../../data/2026-10-15/c58_val/C58-VAL_preregistration.md),
+fixed 02:24 CEST, SHA-256 `7a938ecb...`. Data in [`data/2026-10-15/c58_val/run/`](../../data/2026-10-15/c58_val/run/).
+
+- **Part A:** C57-VAL's 28 tests x 5 devices x T and F (280 cells), against C57-VAL's rows for the release.
+- **Part B:** W3's 64 classifier cells x T and F (128), against a18's rows.
+
+| ID | prediction | result |
+|---|---|---|
+| P1 | every c58 and a19 output exact, native, rzz in range, on no failed element | **CONFIRMED** (376 checked exact; largest difference about 1e-14) |
+| P2 | out of scope: identical to the release | **CONFIRMED**: 160 / 160 |
+| P3 | in scope: compile time <= 0.1 x the release's on >= 90% | **REFUTED**: 104 / 120 (the 16 others gained 4.6-10 x) |
+| P4 | in scope: duration F <= 1.01 x on >= 90%, T <= 1.5 x everywhere | **REFUTED**: F 44 / 60; T 1.504 (FakeTorino tfim_n20_r3) and 1.853 (FakeTorino ring12_tfim) |
+| P5 | a19: duration equal to a18's on >= 62 of 64 per Target, time <= 0.2 x on >= 90% | **CONFIRMED**: 63 and 63; 127 / 128 |
+| P6 | same output on a second call | **CONFIRMED**: 50 / 50 |
+
+**Speed, in scope (120 cells).**
+
+- c58 takes a median of 45 ms per call, 156 ms at most. The release took 0.11-20 s.
+- The speed-up is 4.6-357 x (median 29 x, geometric mean 33 x).
+- Classifiers: a19 takes a median of 62 ms (165 ms at most), 18 x faster than a18 (geometric mean).
+
+**Duration, in scope.**
+
+- Where the release's own output was the formula's, c58's is identical:
+  - tfim and tfimP chains, T and F, every device: 1.000;
+  - with fractional gates, outside FakeTorino: hhI_n16, hhI_n20, ring12_tfim, tfim_n20_r3 and tfim_n40_r2, 1.000.
+- Longer, by test:
+
+| test | T | F |
+|---|---|---|
+| ring12_tfim | 1.43-1.45 x (FakeTorino 1.85) | FakeTorino 1.25 |
+| tfim_n20_r3 | 1.40 x (FakeTorino 1.50) | FakeTorino 1.06 |
+| tfim_n40_r2 | 1.22-1.25 x (FakeTorino 1.40) | 1.00 |
+| hhI_n16 | 1.08-1.09 x (FakeTorino 1.39) | FakeTorino 1.24 |
+| hhtree_heis_n16 | 1.02 x | 1.08 x |
+| heis_n12_r2 | 1.00-1.01 x (FakeTorino 1.18) | 1.01-1.03 x (FakeTorino 1.23) |
+
+- Without fractional gates, the release's other candidates (STEINER6, with CX shared between commuting ZZ terms)
+  beat the formula's 2-CZ-per-term emission on these tests.
+- On FakeTorino, whose CZ lengths differ by coupler, the formula's first embedding uses slow couplers (the
+  workplace's R4).
+- **Heisenberg is in scope but the formula does not beat Qiskit:** 0.95-1.21 x Qiskit level 3. The input's term
+  order sets its length (the workplace's R3).
+- ghz_n12 (10 cells) is in scope but not read by either formula, so it is handed to Qiskit (path "not_built").
+- In-scope with fractional gates overall: c58 is 0.236 x Qiskit level 3's duration (geometric mean).
+
+**Outside the scope.** The release's hand-off took a median of 442 ms and up to 64 s per call here, also for item
+93/95's check of Qiskit's output. Its timing against C57-VAL's rows (0.7 x) was not examined.
+
+### 4. Reading
+
+- **Reliability:** the formula outputs needed no check here. Every one of 376 checked outputs was exact to about
+  1e-14, native and on no failed element, and the same on a second call. The per-call simulation that cost 70-95%
+  of the time found nothing. Still, it is 376 outputs, not a proof. The emission without fractional gates goes
+  through Qiskit's level-3 translation on a fixed layout, where the snap of Addendum 485 can occur. A sample check
+  (for example the first call of a template) keeps a net.
+- **Speed:** formula only brings PSF-Zero's in-scope compile to tens of milliseconds, the same order as Qiskit level 3
+  (20-460 ms on these tests), from seconds.
+- **The cost is duration in two places:** without fractional gates (up to 1.45 x the release, 1.85 x on FakeTorino),
+  and on devices with mixed gate lengths. With fractional gates, outside FakeTorino, only the Heisenberg tests lose
+  (1.01-1.08 x).
+
+**Two numbers.**
+
+- **Display:**
+  - In scope, 33 x faster than the release (median 45 ms per call). Classifiers 18 x faster.
+  - Every output exact, deterministic, and 0.24 x Qiskit's duration with fractional gates.
+- **Essential:**
+  - P3 and P4 were refuted at their thresholds.
+  - Without fractional gates, formula only gives up to 45% duration on rings and long chains (85% on FakeTorino).
+  - Heisenberg gains nothing over Qiskit.
+  - Per training iteration it is still about 100 x slower than a Qiskit user who binds parameters (0.3-0.6 ms). A
+    template that rebinds angles is the next step for that.
+
+---
+
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

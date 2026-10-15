@@ -1,0 +1,12 @@
+P1 every c58 and a19 output exact (<= 1e-6 where checkable), native, rzz in range, on no failed element: CONFIRMED (376 checked exact; failures [])
+P2 out of scope: c58 identical to the release (C57-VAL's rows): CONFIRMED (160/160; differing [])
+P3 in scope: compile time <= 0.1 x the release's on >= 90% of cells: REFUTED (104/120)
+P4 in scope: duration F <= 1.01 x the release's on >= 90% (44/60) and T <= 1.5 x on every cell ([('FakeTorino', 'tfim_n20_r3', 1.504), ('FakeTorino', 'ring12_tfim', 1.853)]): REFUTED
+P5 a19: duration equal to a18's on >= 62 of 64 per Target (T 63, F 63) and compile time <= 0.2 x a18's on >= 90% (127/128): CONFIRMED
+P6 same output on a second call: CONFIRMED (50/50)
+reported, in scope (120 cells): release secs / c58 secs geo 33.1; c58 secs median 45 ms (max 156); duration c58 / release geo 1.068
+reported, out of scope (160 cells): release secs / c58 secs geo 0.7; c58 secs median 442 ms (max 64038); duration c58 / release geo 1.000
+reported, classifiers: a18 secs / a19 secs geo 18.0; a19 secs median 62 ms (max 165); largest tvd 7.1e-14; chosen {'ring': 128}
+reported: FORMULA97_STATS {'calls': 150, 'chain': 60, 'graph': 80, 'not_built': 10, 'checked': 0, 'check_failed': 0}; paths {'chain': 40, 'graph': 70, 'not_built': 10, 'c57': 160}
+
+finished 2026-10-15 10:25:06 JST
