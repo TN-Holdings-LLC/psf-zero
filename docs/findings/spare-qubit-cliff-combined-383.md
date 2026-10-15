@@ -10466,4 +10466,102 @@ TOQB's tests pass both ways: 54 with the release, and the 15 loop tests with c61
 
 ---
 
+<!-- ===== Addendum 499 (source: addendum_499.md) ===== -->
+
+> **Note added when merging:** Workplace delivery 2026-10-15c checked at home on the evening of 2026-10-15; W3 decided; hardware candidates listed.
+
+## Addendum 499 -- Workplace delivery 2026-10-15c checked at home: c62 (item 101), c63 and c63a rebuild byte for byte and their tests pass; c62 on FakeFez is 0.88-0.90 x c60 with measurements counted (0.80 without, as the workplace measured); W3 decided: in a template, item 88's frame is fixed (option A), the default call is unchanged; the rest of C63-VAL deferred to a home run; hardware candidates listed for the last 2 QPU minutes (2026-10-15)
+
+**Status:** home checks of a workplace delivery, one decision, and two plans. Nothing ran on a device. Times in CEST.
+
+### 1. The delivery
+
+[`data/2026-10-15/workplace/workplace_2026-10-15c_W1-W3/`](../../data/2026-10-15/workplace/workplace_2026-10-15c_W1-W3/):
+`check_intake.py` 47 of 47.
+
+**c62, item 101** (C62-VAL, pre-registration fixed 08:21:36, SHA-256 `04ca019a...`):
+
+- Items 87 and 91's CZ path is now PSF-Zero's own output:
+  - a single interaction becomes a local Clifford around RZZ;
+  - other blocks use the Weyl closed form.
+- So no Qiskit pass manager runs inside the scope.
+- P1-P5 were all confirmed. Ising T cells: geometric mean **0.7995 x c60** (0.740-0.874), with fewer two-qubit gates
+  in all 45 cells. Heisenberg cells were equal to c60.
+
+**c63, faster binds** (C63-VAL, pre-registration fixed 08:52:23, SHA-256 `19a72319...`):
+
+- Part R stopped after 20 of 38 cells. No verdicts.
+- In those 20 cells every output was correct, and the back-to-back bind was within 2 ms.
+
+**W3, item 88's frame in a training loop** (100,000 binds, tfim_n12, fractional Target):
+
+| option | shape changes | median bind | peak memory | duration |
+|---|---|---|---|---|
+| A, frame fixed in the template | 0 | 0.75 ms | 221 MB | up to +4.4% over c62 |
+| B, cache of 32 shapes | 76,885 | 2.86 ms | 418 MB | equal |
+| C, c63 as validated | 76,885 | 2.86 ms | 734 MB | equal |
+
+### 2. Home checks
+
+**Rebuilds.**
+
+- `make_c62.py` on c60, `make_c63.py` on c62 and `make_c63a.py` on c63 reproduce the delivered files byte for byte.
+- The c62 copied into `w34/` is identical to `w33/`'s.
+- Both pre-registrations hash to the SHA-256 they fix.
+
+**Tests.**
+
+- `test_c63.py`: 8 passed.
+- c61's suite on c63 and c62: 7 passed. The one failure is the version string.
+- c60's suite on c62: 4 passed. Two failures, both expected:
+  - the version string;
+  - "formula outputs unchanged against c59", which item 101 changes on purpose (the CZ path).
+
+**Spot check** (FakeFez T, home's own script):
+
+| test | c62 / c60 | two-qubit gates, c62 / c60 | exact |
+|---|---|---|---|
+| tfim_n20_r3 | 0.894 | 120 / 140 | yes |
+| hhI_n16 | 0.877 | 120 / 134 | yes |
+| tfim_n12_r4 | 0.896 | 96 / 108 | yes |
+
+- Compile time was 19-29 ms.
+- Home's duration includes the final measurements; C62-VAL's leaves them out. Without them the same cells give the
+  workplace's values: tfim_n20_r3 1.488 against 1.848 µs (0.805), hhI_n16 2.880 against 3.504 µs (0.822).
+
+### 3. Decision: W3
+
+- **In a template, the frame is fixed: option A** (c63a's `TEMPLATE_FRAME_FIXED = True`, with a 32-shape cache for
+  what remains). The default call, `compile_for_hardware`, is unchanged.
+- **Why A.** In a training loop the angles cross zero all the time.
+  - A is the only option that keeps one shape: a bind 4 x faster, and memory flat.
+  - Its cost is one extra single-qubit pulse where a run would have been empty. That is up to +4.4% duration (median
+    1.000), with no extra two-qubit gate.
+  - B saves memory only.
+- **Not yet validated.** A was checked exact in 100 checks but has no pre-registered validation. That comes with the
+  rest of C63-VAL, in the next prototype.
+
+### 4. Deferred: the rest of C63-VAL
+
+- **Why deferred:** the remaining 18 cells of part R and all of part D are estimated at about 1.5 hours. The workplace
+  needed about 67 minutes for 20 cells on a shared machine.
+- **The script:** `data/2026-10-15/home_scripts/run_c63val_rest.sh` runs them at home with the workplace's script and
+  criteria. It then scores all cells.
+- **Comparability:** speed figures from home's machine are reported as from another machine, as the workplace's
+  report asks.
+
+### 5. Hardware candidates
+
+[`data/2026-10-15/hw_candidates/実機候補_2026-10-15.md`](../../data/2026-10-15/hw_candidates/実機候補_2026-10-15.md)
+lists four candidates for the last ~120 QPU seconds, in priority order:
+
+1. RING1-lite, the ring classifier on hardware (a22 against Qiskit level 3), about 60-70 s;
+2. hardware evaluation of TOQB's trained models, only if the 6-qubit pilot shows a difference;
+3. c62's chains;
+4. a PennyLane end-to-end demo.
+
+No date is set. Each is pre-registered before it runs.
+
+---
+
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

@@ -1,0 +1,54 @@
+{
+ "name": "TOQB loop pilot n6 L8 (seed 11)",
+ "note": "Pilot, not scored: does the compiler change what the loop learns at 6 qubits and 8 layers? Task chosen before any compiler ran, on a noiseless SPSA check (teacher 4 learned 0.375 -> 0.708 in 60 iterations; L = 4 did not learn). Qiskit level 3's template was left out: at this size it gave the same 2q count as level 2. Front end Qiskit: the template arms give identical results through PennyLane (smoke b).",
+ "device": "fake:FakeFez",
+ "frontend": "qiskit",
+ "task": {
+  "n": 6,
+  "layers": 8,
+  "enc": 1.5707963267948966,
+  "teacher_seed": 4,
+  "teacher_gap": 0.2,
+  "n_train": 64,
+  "n_test": 48
+ },
+ "optimizer": {
+  "name": "SPSA",
+  "iterations": 60,
+  "batch": 8,
+  "a": 3.0,
+  "c": 0.2,
+  "A": 2,
+  "init": 0.5,
+  "loop_seed": 11
+ },
+ "evaluation": {
+  "shots": 400,
+  "shot_seed": 20261015,
+  "every": 10,
+  "target_accuracy": 0.7
+ },
+ "qpu_cost": {
+  "per_shot_s": 0.00027,
+  "per_circuit_s": 0.036,
+  "usd_per_s": 1.6
+ },
+ "energy": {
+  "qpu_system_kw": [
+   10.0,
+   25.0
+  ],
+  "cpu_w": [
+   10.0,
+   50.0
+  ]
+ },
+ "budget_usd": null,
+ "budget_tolerance": 0.05,
+ "reference": "qiskit:2:target:template",
+ "budget_floor_s": 1.0,
+ "arms": [
+  "qiskit:2:target:template",
+  "psfai:template"
+ ]
+}
