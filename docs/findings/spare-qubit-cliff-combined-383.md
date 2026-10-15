@@ -10605,6 +10605,58 @@ No date is set. Each is pre-registered before it runs.
 **Versions.** psf_compile c62, c63 and c63a give circuits identical to c61's on this task. 40 circuits were compared
 after a22's template, bit for bit. So the result holds for them too.
 
+## Addendum 501 -- TOQB: a fast engine for the loop's noise model, and loop standard run 2 (200 seeds, pre-registered): with SPSA calibrated so that the models learn, PSF-Zero's shorter circuits do not train a more accurate classifier (0.702 against 0.701; refuted); the difference does not grow with training (refuted); the signal is 1.32 x larger (confirmed), for 2.5% less money (2026-10-15)
+
+**Status:** TOQB work, in simulation. Nothing ran on a device. Times in CEST.
+
+**The fast engine** (TOQB `3e7a0a0`, [`results/fast-engine-check-2026-10-15/`](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/fast-engine-check-2026-10-15)):
+
+- **What it is:** the same noise model as Aer's path, evolved exactly with numpy. It is scheduled once per circuit
+  structure and batched, and the shots of clbit 0 are drawn from the exact probability.
+- **Checked:**
+  - against an exact `qiskit.quantum_info` evolution: 8.7e-15;
+  - against Aer: 8.1e-8 in p1 (Aer itself is off the exact value by up to 4.7e-9 per element).
+- **Speed:** about 15 x faster per run.
+- **The PennyLane front end** runs on it and gives identical results.
+- **What its re-run of standard run 1 showed:** run 1's noisy difference moved with the shot stream (+0.039 against
+  +0.078). The noiseless one did not (+0.040).
+
+**Loop standard run 2** (TOQB pre-registration `eedcb50`, fixed 16:02:41 and pushed before the run; run
+16:03:46-17:45:15 at home; results
+[`results/loop-n6-standard-2-2026-10-15/`](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/loop-n6-standard-2-2026-10-15)):
+
+- **SPSA's settings:** calibrated on noiseless runs without any compiler: 200 iterations, batch 16, a = 10, c = 0.4.
+  Without noise they reach 0.726.
+- **Seeds:** 1001-1200.
+
+| ID | prediction | verdict |
+|---|---|---|
+| M1 | 400 arm runs valid | confirmed |
+| M2 (primary) | noiseless final accuracy higher with PSF-Zero | **refuted**: -0.0004, 95% interval +-0.014 |
+| M3 | noisy final accuracy higher | not decided: +0.0009, p = 0.45 |
+| M4 | noisy margin higher | **confirmed**: +0.050, 0.206 against 0.156 (1.32 x), p < 1e-5 |
+| M5 | the difference grows from iteration 60 to 200 | **refuted**: +0.010 then -0.000 |
+| M6 | PSF-Zero spends no more | confirmed: $1,510 against $1,549 |
+
+**The two numbers.**
+
+- **Display:** 0.702 against 0.701.
+- **Essential:**
+  - For a classifier trained this way, the compiler does not matter. PSF-Zero was better in 91 of 200 seeds and
+    worse in 102.
+  - 114 seeds of each arm reached 0.7.
+
+**Reading.**
+
+- Addendum 500's "a better model for the same money" held only where neither model learned. It does not survive
+  calibrated training.
+- What PSF-Zero's shorter circuits keep is signal: <Z0> about a third larger.
+- That can matter where the value is used (regression, probabilities, energies, gradients), or as fewer shots for the
+  same precision (about 0.57 x if precision scales as signal^2). That is untested and a candidate for the next
+  pre-registration.
+- **For the hardware candidates:** candidate 2 (hardware evaluation of trained classifiers) is dropped. There is no
+  accuracy difference to confirm.
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
