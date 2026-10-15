@@ -10562,6 +10562,49 @@ lists four candidates for the last ~120 QPU seconds, in priority order:
 
 No date is set. Each is pre-registered before it runs.
 
+## Addendum 500 -- TOQB loop standard run (6 qubits, 8 layers, 20 seeds, pre-registered): for the same money, the model trained through PSF-Zero (a22 + c61) is more accurate on the noisy device than through Qiskit level 2, 0.549 against 0.471, better in 16 of 20 seeds (confirmed); that the training itself went further is not decided (+0.040 noiseless, p = 0.059); the pilot overstated the effect; both models are weak (2026-10-15)
+
+**Status:** a scored TOQB run, in simulation (FakeFez with TOQB's noise). Nothing ran on a device. Times in CEST.
+
+**The run.**
+
+- **Pre-registration:** TOQB `prereg/2026-10-15-loop-n6-standard.md` (SHA-256 `e584bbcd...f8da`). It was fixed at
+  13:24:01 and pushed (TOQB `393995e`) before the run.
+- **What ran:** the pilot's run unchanged, on seeds 101-120. The run took 13:27:53-14:00:28 at home.
+- **Results:** TOQB [`results/loop-n6-standard-2026-10-15/`](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/loop-n6-standard-2026-10-15).
+
+**Verdicts.**
+
+| ID | prediction | verdict |
+|---|---|---|
+| L1 | all 40 arm runs valid | confirmed |
+| L2 (primary) | noiseless final accuracy higher with PSF-Zero | **not decided**: +0.040, p = 0.059 (threshold 0.01), 14 of 20 |
+| L3 | noisy final accuracy higher | **confirmed**: +0.078, p = 0.0013, 16 of 20, worst seed -0.135 |
+| L4 | noisy margin higher | confirmed: +0.038, p = 0.00056 |
+| L5 | noiseless effect >= 0.10 | **refuted**: 0.040 |
+| L6 | PSF-Zero spends no more | confirmed: $226.54 against $232.31, every seed |
+
+**The two numbers.**
+
+- **Display:** 0.549 against 0.471, for the same money.
+- **Essential:**
+  - The better model in 16 of 20 seeds, a worse one in 3.
+  - But neither arm reached 0.7 in any seed. The classical models reach 0.73-0.77.
+
+**Reading.**
+
+- About half of the noisy difference comes from the training: 0.040 noiseless.
+- The other half comes from the evaluation. Noise takes 0.003 from PSF-Zero's accuracy and 0.042 from Qiskit's,
+  because the circuits are 0.48 x as long.
+- "Shorter circuits give a better model for the same money" holds on this task. "The compiler compounds through
+  training" is not established.
+- The pilot's two seeds (+0.208, +0.167 noiseless) overstated the effect.
+- **For the hardware candidates:** candidate 2 (hardware evaluation of trained models) would test the evaluation half
+  only. With models near chance on 48 points, it is not worth QPU seconds now.
+
+**Versions.** psf_compile c62, c63 and c63a give circuits identical to c61's on this task. 40 circuits were compared
+after a22's template, bit for bit. So the result holds for them too.
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
