@@ -9984,4 +9984,110 @@ fixed 02:24 CEST, SHA-256 `7a938ecb...`. Data in [`data/2026-10-15/c58_val/run/`
 
 ---
 
+<!-- ===== Addendum 494 (source: addendum_494.md) ===== -->
+
+> **Note added when merging:** The owner's decisions of 2026-10-15 (template; gate closed, nothing handed to Qiskit); prototypes c59 and a20.
+
+## Addendum 494 -- The owner's decisions of 2026-10-15: the ring template (item 35) and the gate closed, with no circuit handed to Qiskit (compiler item 98, AI front end item 36). Prototypes c59 and a20. The ring template is built once by PSF-Zero itself, with no Qiskit pass manager, and binds new angles in 0.18-1.6 ms. That is 2-5 x Qiskit's own parameter binding (0.09-0.47 ms), for circuits 0.41-0.60 x as long. On W3's 64 cells its duration is 0.987 x a19's (T) and 1.012 x (F). 100,000 binds: median 0.66 ms, worst check 5.3e-15, no memory growth (2026-10-15)
+
+**Status:** exploratory prototypes, not pre-registered. Times in CEST.
+
+### 1. The owner's decisions
+
+After C58-VAL (Addendum 493) the owner chose:
+
+- the template, so that a training loop recompiles only angles;
+- "close the gate, send them out, stop outsourcing". PSF-Zero no longer hands any circuit to Qiskit's level 3. An
+  input outside its formulas is refused with the reason, and the caller compiles it with Qiskit themselves.
+
+### 2. Prototypes
+
+- **c59** ([`patches/psf_compile_c59_2026-10-15/`](../../patches/psf_compile_c59_2026-10-15/)) is c58 plus **item
+  98, the gate closed**. `compile_for_hardware` builds an in-scope input by formula (item 97). It refuses every other
+  call with `OutOfScopeError`, a TranspilerError, naming one of four reasons:
+  - no device Target;
+  - an operation on more than two qubits;
+  - an interaction graph that does not embed in the device's working couplers;
+  - an in-scope input neither formula reads.
+
+  `GATE_CLOSED = False` restores c58.
+- **a20** ([`patches/psf_ai_compile_a20_2026-10-15/`](../../patches/psf_ai_compile_a20_2026-10-15/)) is a19 plus two
+  items.
+  - **Item 36, the gate closed.** Without a Target the front end raises `OutOfScopeError`. Any other non-ring input
+    goes to psf_compile's own call, which builds it by formula or refuses it.
+  - **Item 35, the ring template.** `ring_template(qc, target)` builds the ring formula once, with the shorter of
+    N2's and item 31's schedules, as a19 chooses.
+    - The CZ / SWAP blocks are decomposed once and checked to 1e-12. This uses Qiskit's two-qubit decomposer on the
+      constant blocks only.
+    - Each single-qubit run between CZs becomes a product of the input's rotations and fixed matrices.
+    - Runs of fixed matrices only are synthesised at build time with the fewest pulses. Runs with an input rotation
+      become three parameters: rz sx rz sx rz, or rz rx rz with rx in the Target.
+    - `bind_values(values)` computes those angles in closed form (ZYZ, plain Python on 2 x 2 tuples) and assigns
+      them with Qiskit's assign_parameters. `values` are the input's rz / ry / rx angles in its order.
+    - `bind(qc)` does the same from a circuit, after checking its structure.
+- **Tests:** 9 passed (`test_a20_c59.py`).
+  - c59 refuses out of scope, without a Target, and a GHZ chain, and builds a chain exact on T and F.
+  - The template is exact on random angles (n = 4-7), native, and at most 1.05 x a19's duration.
+  - It rejects another structure, and the front end refuses without a Target.
+
+### 3. Measurements
+
+**Bind time against Qiskit** (FakeFez and FakeTorino, T and F, n = 4 and 6, L = 3-16; median of 50):
+
+- template `bind_values`: 0.18-1.6 ms;
+- Qiskit level 3 transpiled once with parameters, then `assign_parameters`: 0.09-0.47 ms.
+
+**Duration of the same circuit:**
+
+- template / a19: 0.97-1.03;
+- Qiskit's parametric output, against the template: 1.7-2.4 x, so the template is 0.41-0.60 x Qiskit's.
+
+**W3's 64 cells** ([`data/2026-10-15/template_100k/cells64_summary.txt`](../../data/2026-10-15/template_100k/cells64_summary.txt)):
+
+| Target | template / a19 duration (geo, range) | longer by more than 1% | build | first bind |
+|---|---|---|---|---|
+| T | 0.987 (0.953-1.057) | 6 of 64 | 30 ms | 0.60 ms |
+| F | 1.012 (1.002-1.064) | 23 of 64 | 30 ms | 0.76 ms |
+
+- On T the template is often shorter, because fixed runs get one pulse where Qiskit used two.
+- On F it is up to 6% longer. Qiskit's level 3 also moves Z rotations through CZs, and the template does not.
+
+**100,000 binds** ([`benchmarks/template_100k.py`](../../benchmarks/template_100k.py), data in
+[`data/2026-10-15/template_100k/run/`](../../data/2026-10-15/template_100k/run/)):
+
+- The circuit was a 6-qubit, 8-layer classifier on FakeFez with rzz / rx, 162 parameters, its angles on a random
+  walk.
+- One bind took a median of 0.656 ms (p99 2.1 ms, max 18.5 ms).
+- The first 10% had a median of 0.642 ms and the last 10% one of 0.662 ms.
+- Every 1,000th bind was checked against the input's exact distribution: the worst of 100 checks was 5.3e-15.
+- RSS stayed at 222 MB throughout. The whole run took 79 s.
+- An earlier run on the template before the two-schedule choice gave the same figures (median 0.647 ms; worst
+  5.3e-15). It is not kept.
+
+### 4. Reading
+
+- **Speed:** with the template, compiling a training step costs about the same as Qiskit's own binding: sub-ms to
+  1.6 ms, against 0.09-0.47 ms. QPU time per iteration (about 0.27 ms per shot; 1,000 shots is about 270 ms) is
+  100 x either. Compiling is no longer what limits a training loop.
+- **What PSF-Zero adds** is a circuit 0.41-0.60 x as long as Qiskit's parametric one, every iteration. Whether that
+  becomes fewer shots or better accuracy on a device is untested for the rings.
+- **Reliability:** exact to about 5e-15 over 100,000 binds, with no growth in time or memory.
+- **The gate:** PSF-Zero now compiles only what it builds by formula. Everything else is refused with the reason,
+  including GHZ chains (gates that neither formula reads), 3-regular QAOA and any call without a device Target.
+  Nothing is handed to Qiskit's level 3.
+
+**Two numbers.**
+
+- **Display:**
+  - Template bind 0.66 ms (median, 100,000 binds), exact to 5e-15.
+  - Circuits 0.41-0.60 x Qiskit's parametric output.
+  - No circuit handed to Qiskit.
+- **Essential:**
+  - Binding is still 2-5 x slower than Qiskit's own.
+  - With fractional gates the template is up to 6% longer than a19.
+  - The gate now refuses inputs the release compiled before, GHZ chains among them.
+  - None of this is on a device.
+
+---
+
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
