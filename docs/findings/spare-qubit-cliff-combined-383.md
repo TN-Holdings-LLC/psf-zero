@@ -10177,4 +10177,96 @@ orientations, on prototype c59 (FakeFez, T and F).
 
 ---
 
+<!-- ===== Addendum 496 (source: addendum_496.md) ===== -->
+
+> **Note added when merging:** AI front end a21 built at home on 2026-10-15 from the workplace's review of a18.
+
+## Addendum 496 -- AI front end a21 (items 37-41): the workplace's review of a18 taken up. The hand-off no longer simulates the input as written: on a 20-qubit chain a20 was killed for memory after 3 minutes, a21 takes 47-96 ms. The ring formula now covers rings up to 20 qubits and rings of any commuting diagonal gate (rzz, cp, crz, ...). On 36 cells (FakeFez) every output was built by formula, was native, and was exact where checked (24 of 24); duration against Qiskit level 3 was 0.26-0.91 (2026-10-15)
+
+**Status:** an offline prototype with its tests and one measurement. Nothing is on a device. Times in CEST.
+
+### 1. Prototype a21
+
+[`patches/psf_ai_compile_a21_2026-10-15/`](../../patches/psf_ai_compile_a21_2026-10-15/) is built from a20 by
+`make_a21.py` (exact substitutions).
+
+- **Item 37, one exactness check.** `_exact` is psf_compile's item 93: the input is first unrolled to its own
+  synthesis (a PauliEvolutionGate to its product formula), and the tolerance is item 93's (1e-6). Workplace findings A
+  and B.
+  - The old check exponentiated a PauliEvolutionGate exactly. It then compared that exact exponential with the
+    product formula the compiler builds.
+  - **On a correct output:**
+    - chem_n12_r1, under the release: 0.6 s and "exact". The workplace measured 960 s and "not exact".
+    - pe_chain(8): the old check says "not exact" (a test keeps that).
+- **Item 38, no second simulation of the hand-off's output** (`HANDOFF_CHECK = False`).
+  - psf_compile answers for its own output. The release checks it by item 93; the formula-only prototypes return
+    their formula unsimulated, by the owner's choice (item 97), as this front end does for its ring (item 34).
+  - With the fixed check on, a call takes 15-40 s at 20 qubits (FakeFez, tfim_n20_r3 and hhI_n20, all "exact"). With
+    it off, a call takes 47-96 ms.
+- **Item 39.** `seed_transpiler=` given as a keyword is the seed. Before, it raised a TypeError. Workplace finding E.
+- **Item 40.** The ring path runs up to `RING_MAX_QUBITS = 20` instead of 8. Workplace finding C.
+- **Item 41, rings of commuting diagonal gates.** A layer's ring may be any of cz, rzz, cp, crz, cs, csdg.
+  - Item 28's schedule needs only that the ring gates commute.
+  - On a Target with rzz, the device's own rzz is used.
+  - CZ rings are emitted exactly as a20 emits them (identical outputs, 6 of 6 cells checked).
+  - The template (item 35) stays CZ-only.
+  - A ring of cx does not commute and is still not read. Workplace finding F, in part.
+- **Finding D:** the hand-off's docstring is corrected; its behaviour is unchanged.
+- **Tests:** 25 passed in 9 s. 16 are new in `test_a21.py`; 9 are a20's suite run on a21 (`test_a20_on_a21.py`).
+
+### 2. Measurements (FakeFez, T and F; [`data/2026-10-15/a21/`](../../data/2026-10-15/a21/))
+
+**Hand-off time** (`benchmarks/a21_handoff_time.py`; tfim_n20_r3, hhI_n20, tfim_n40_r2, and the ring classifier at
+n = 4, 6 and 8).
+
+- a20 did not finish its first case (tfim_n20_r3, T). The process was killed for memory (exit 137) after 3 min 16 s.
+- a21 handled all 12 cells:
+  - 47-96 ms on the chains and lattices (handed to c59, built by its formula);
+  - 42-87 ms on the rings.
+
+**Rings** (`benchmarks/a21_rings.py`).
+
+- **Inputs:** the CZ ring classifier (4 layers) and a QAOA-like ring of rzz with signed angles (p = 2). For each:
+  n = 4, 6, 8, 9, 10, 11, 12, 16 and 20, on T and on F. That is 36 cells.
+- **Every cell:** built by the ring formula, native to the device, every rzz in range.
+- **Exactness:** item 93 checked n = 4, 6, 9, 12, 16 and 20, and all 24 checked cells were exact.
+- **Against a20:** CZ rings at n <= 8 are identical to a20's output (6 of 6).
+- **Duration against Qiskit level 3** (seed 0, rzz folded on F), geometric means:
+
+| family | Target | n <= 8 | n > 8 | range |
+|---|---|---|---|---|
+| CZ classifier | T | 0.612 | 0.571 | 0.37-0.91 |
+| CZ classifier | F | 0.608 | 0.567 | 0.37-0.91 |
+| rzz ring | T | 0.596 | 0.408 | 0.26-0.68 |
+| rzz ring | F | 0.693 | 0.526 | 0.29-0.88 |
+
+- **Compile time:** 46-158 ms on T and 50-474 ms on F. The rzz rings on F are the slowest, with rzz in the basis.
+- **Before a21:**
+  - The rzz rings, and CZ rings above 8 qubits, were handed to psf_compile.
+  - Under the closed gate c59 refuses them. A ring that does not embed is out of scope. A ring that embeds is read by
+    neither formula.
+- **The template** (`benchmarks/a21_template_sizes.py`), CZ rings of 8-20 qubits:
+  - build: 43-235 ms;
+  - median bind: 0.33-0.84 ms;
+  - duration: 1.027-1.031 times the formula path's;
+  - exact at n <= 16.
+
+### 3. Reading
+
+- **Workplace finding A was real and worse at 20 qubits.** The process died, so it was not just slow. a21 removes both
+  the cost and the false verdict.
+- **The ring formula is the in-scope builder for small rings,** 4-11 qubits, which cannot embed in heavy-hex.
+- **Where the ring embeds** (12, 16 and 20 here), Qiskit level 3 used one two-qubit gate per edge and layer (48-80).
+  The line formula used 138-230 two-qubit gates, with SWAPs. It was still shorter in duration (0.36-0.91), because
+  Qiskit runs the ring's gates in written order.
+  - An embedded emission with the edges re-coloured (the workplace's item 99, c60) should beat both. That is
+    expected, not measured.
+  - When c60 exists, an embeddable ring should go to it. That is a rule (embeds or not), not a comparison.
+- **Not done:**
+  - cx rings, which need a formula of their own;
+  - a template for diagonal rings;
+  - no hardware.
+
+---
+
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

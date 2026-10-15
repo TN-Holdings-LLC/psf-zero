@@ -1,0 +1,13 @@
+tfim_n20_r3 T 74 ms ('hand-off', 'compiler', None, 3.408)
+tfim_n20_r3 F 70 ms ('hand-off', 'compiler', None, 2.316)
+hhI_n20 T 57 ms ('hand-off', 'compiler', None, 5.088)
+hhI_n20 F 48 ms ('hand-off', 'compiler', None, 3.0)
+tfim_n40_r2 T 91 ms ('hand-off', 'compiler', None, 2.88)
+tfim_n40_r2 F 93 ms ('hand-off', 'compiler', None, 2.124)
+clf_n4 T 42 ms ('formula', 'ring', None, 3.768)
+clf_n4 F 44 ms ('formula', 'ring', None, 3.648)
+clf_n6 T 49 ms ('formula', 'ring', None, 5.064)
+clf_n6 F 52 ms ('formula', 'ring', None, 4.944)
+clf_n8 T 56 ms ('formula', 'ring2', None, 5.4)
+clf_n8 F 60 ms ('formula', 'ring2', None, 5.28)
+A18_STATS {'handed_compiler': 6, 'handed_qiskit': 0, 'handoff_exact': 0, 'handoff_unchecked': 6, 'handoff_inexact': 0}

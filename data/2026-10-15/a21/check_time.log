@@ -1,0 +1,10 @@
+# 2026-10-15 ~04:35 CEST, home workspace, FakeFez. Columns: psf_compile folder (empty: the release at the root), test,
+# Target, seconds per call including the check, (path, chosen, verdict).
+psf_compile_c59_2026-10-15 tfim_n20_r3 T 28.07 s ('hand-off', 'compiler', True)
+psf_compile_c59_2026-10-15 tfim_n20_r3 F 15.4 s ('hand-off', 'compiler', True)
+psf_compile_c59_2026-10-15 hhI_n20 T 39.59 s ('hand-off', 'compiler', True)
+psf_compile_c59_2026-10-15 hhI_n20 F 22.55 s ('hand-off', 'compiler', True)
+ chem_n12_r1 T 0.58 s ('hand-off', 'compiler', True)
+ chem_n12_r1 F 0.67 s ('hand-off', 'compiler', True)
+ qaoa_n12_p2 T 0.31 s ('hand-off', 'compiler', True)
+ qaoa_n12_p2 F 0.3 s ('hand-off', 'compiler', True)

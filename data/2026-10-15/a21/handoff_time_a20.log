@@ -1,0 +1,4 @@
+# a20 (with c59), the same script with AFILE unset, 2026-10-15 ~04:30 CEST, home workspace.
+# The first case (tfim_n20_r3, FakeFez T) did not finish: the process was killed by the system (exit 137, out of
+# memory) after 3 min 16 s, before printing any line. a20's hand-off check (item 30) builds the state vector of the
+# input as written, so the 20-qubit PauliEvolutionGate is exponentiated as a 2^20 x 2^20 matrix (workplace W1, A).

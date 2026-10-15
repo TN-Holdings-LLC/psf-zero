@@ -1,0 +1,4 @@
+8 build ms 43 bind median ms 0.33 dur tpl/formula 1.031 exact True
+12 build ms 72 bind median ms 0.53 dur tpl/formula 1.027 exact True
+16 build ms 235 bind median ms 0.67 dur tpl/formula 1.027 exact True
+20 build ms 187 bind median ms 0.84 dur tpl/formula 1.027 exact skipped
