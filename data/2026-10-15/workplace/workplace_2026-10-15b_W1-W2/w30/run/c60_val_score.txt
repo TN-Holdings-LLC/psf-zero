@@ -1,0 +1,56 @@
+V1: 210 cells; failing 0 []; largest difference 6.66e-16 -> CONFIRMED
+V2: second call identical in 210 of 210 -> CONFIRMED
+V3: C60 / C57 over 210 cells (C57 without output: 0): geometric mean 0.8033; largest 1.2770 (FakeTorino, hh_cz_n16, F); cells > 1.05: 2 [('FakeTorino', 'hh_cz_n16', 'T', 1.2484), ('FakeTorino', 'hh_cz_n16', 'F', 1.277)] -> REFUTED
+V4: c59 builds 190 cells: c60 identical in 190 []; c59 refuses as out of scope in 160: c60 refuses too in 160 [] -> CONFIRMED
+V5: c59 'neither formula reads' in 30 cells; c60 builds 30 (not checkable: 0); failing 0 [] -> CONFIRMED
+
+Reported:
+- C60 / QK3: geometric mean 0.7074; largest 1.0057 (FakeTorino, hh_cz_n16, F); cells > 1: 2
+- C60 / C57 per test (10 cells each; geometric mean, range):
+    chain_cz_n12   0.521  [0.465, 0.576]
+    chain_cz_n16   0.438  [0.398, 0.485]
+    ring_cz_n12    0.367  [0.288, 0.655]
+    hh_cz_n16      0.926  [0.848, 1.277]
+    hh_cz_n20      0.876  [0.848, 0.969]
+    cx_chain_n12   1.000  [1.000, 1.000]
+    cx_chain_n16   1.000  [1.000, 1.000]
+    ra_n8_r2       1.000  [1.000, 1.000]
+    ra_n8_r4       1.000  [1.000, 1.000]
+    ra_n12_r2      1.000  [1.000, 1.000]
+    ra_n12_r4      1.000  [1.000, 1.000]
+    ra_n16_r2      1.000  [1.000, 1.000]
+    ra_n16_r4      1.000  [1.000, 1.000]
+    su2_n8_r2      1.000  [1.000, 1.000]
+    su2_n8_r4      1.000  [1.000, 1.000]
+    su2_n12_r2     1.000  [1.000, 1.000]
+    su2_n12_r4     1.000  [1.000, 1.000]
+    su2_n16_r2     1.000  [1.000, 1.000]
+    su2_n16_r4     1.000  [1.000, 1.000]
+    clf_ring12_L4  0.386  [0.301, 0.672]
+    clf_ring12_L8  0.384  [0.310, 0.680]
+- C60: compile time median 29.4 ms, max 151.4 ms; two-qubit gates total 9320
+- C57: compile time median 773.0 ms, max 39413.0 ms; two-qubit gates total 10680
+- QK3: compile time median 62.0 ms, max 159.0 ms; two-qubit gates total 9320
+- two-qubit count C60 against C57: {'equal': 180, 'fewer': 30}
+- part B, cells c59 builds: compile median c59 45.1 ms, c60 43.7 ms
+- part C (FakeFez, c60): test target: as written / reversed / random / runs reversed (us); distinct outputs
+    chain_rzz_n12    T 2.064 / 2.064 / 2.064 / 2.064  spread 1.0000; distinct 1
+    chain_rzz_n12    F 0.864 / 0.864 / 0.864 / 0.864  spread 1.0000; distinct 1
+    chain_rzz_n16    T 2.064 / 2.064 / 2.064 / 2.064  spread 1.0000; distinct 1
+    chain_rzz_n16    F 0.888 / 0.888 / 0.888 / 0.888  spread 1.0000; distinct 1
+    chain_rzz_n20    T 2.064 / 2.064 / 2.064 / 2.064  spread 1.0000; distinct 1
+    chain_rzz_n20    F 0.864 / 0.864 / 0.864 / 0.864  spread 1.0000; distinct 1
+    ring_rzz_n12     T 2.136 / 2.136 / 2.136 / 2.136  spread 1.0000; distinct 1
+    ring_rzz_n12     F 0.888 / 0.888 / 0.888 / 0.888  spread 1.0000; distinct 1
+    hh_rzz_n16       T 3.024 / 3.024 / 3.024 / 3.024  spread 1.0000; distinct 1
+    hh_rzz_n16       F 1.224 / 1.224 / 1.224 / 1.224  spread 1.0000; distinct 1
+    hh_rzz_n20       T 3.048 / 3.048 / 3.048 / 3.048  spread 1.0000; distinct 1
+    hh_rzz_n20       F 1.320 / 1.320 / 1.320 / 1.320  spread 1.0000; distinct 1
+    hhtree_heis_n16  T 3.048 / 3.048 / 3.048 / 3.048  spread 1.0000; distinct 1
+    hhtree_heis_n16  F 2.592 / 2.592 / 2.592 / 2.592  spread 1.0000; distinct 1
+    chain_cz_n12     T 0.864 / 0.864 / 0.864 / 0.864  spread 1.0000; distinct 4
+    chain_cz_n12     F 0.768 / 0.768 / 0.768 / 0.768  spread 1.0000; distinct 4
+    chain_cz_n16     T 0.864 / 0.864 / 0.864 / 0.864  spread 1.0000; distinct 4
+    chain_cz_n16     F 0.768 / 0.768 / 0.768 / 0.768  spread 1.0000; distinct 4
+    chain_pe_n12     T 2.064 / 2.064 / 2.064 / 2.064  spread 1.0000; distinct 1
+    chain_pe_n12     F 0.816 / 0.816 / 0.816 / 0.816  spread 1.0000; distinct 1

@@ -10269,4 +10269,111 @@ n = 4, 6 and 8).
 
 ---
 
+<!-- ===== Addendum 497 (source: addendum_497.md) ===== -->
+
+> **Note added when merging:** Workplace delivery 2026-10-15b (c60, c61) read and spot-checked at home; next requests note 8.
+
+## Addendum 497 -- Workplace delivery 2026-10-15b: prototype c60 (item 99, native-gate circuits on an embeddable graph built by formula; C60-VAL: exact in 210 of 210 cells, 0.80 x the release and 0.71 x Qiskit level 3, one prediction refuted by FakeTorino's couplers) and c61 (item 100, the compile template; C61-VAL: 49,590 bound outputs, none wrong; the CZ-path and 2 ms predictions refuted). Home checks: both rebuild identically and their 14 tests pass; a 12-qubit CZ ring classifier is 0.46 x a21's ring formula under c60 (2026-10-15)
+
+**Status:** a workplace delivery with two pre-registered offline validations, read and spot-checked at home. Times in
+CEST.
+
+### 1. The delivery
+
+[`data/2026-10-15/workplace/workplace_2026-10-15b_W1-W2/`](../../data/2026-10-15/workplace/workplace_2026-10-15b_W1-W2/),
+finished 08:06 CEST. `check_intake.py`: 39 of 39. `w30/` is note 7's W1 and `w31/` its W2. The folder names are kept:
+the files' SHA-256 are fixed in the pre-registrations.
+
+**c60, item 99** (pre-registration fixed 04:29:52, SHA-256 `de525a3e...`).
+
+- **What it builds:** CZ / CX chains and lattices, `real_amplitudes`, `efficient_su2` and CZ-ring classifiers, as
+  written. c59 refused all of these.
+- **The formula:**
+  - item 91's first VF2 placement;
+  - commuting diagonal gates layered by item 91's edge colouring;
+  - fixed native forms, each multiplied out and checked;
+  - closed-form ZYZ single-qubit runs written by PSF-Zero itself.
+- **C60-VAL** (21 tests x 5 devices x T/F = 210 cells):
+
+  | ID | result |
+  |---|---|
+  | V1 | **CONFIRMED** (exact, native, rzz in range) |
+  | V2 | **CONFIRMED** (deterministic) |
+  | V4 | **CONFIRMED** (identical to c59 where c59 builds, 190 / 190; refusals kept, 160 / 160) |
+  | V5 | **CONFIRMED** (c59's 30 former "neither formula" refusals are exact) |
+  | V3 | **REFUTED** |
+
+- **V3 in detail:** the geometric mean against c57 was 0.803, but two FakeTorino cells (hh_cz_n16, T 1.248 and F
+  1.277) exceeded the 1.05 bound.
+  - No embedding of that patch fits FakeTorino's fast couplers, so the first match uses slow ones (R4's finding).
+  - Within the rules (first match, no score) this stands. It is the known cost of the rules on devices with mixed
+    coupler lengths.
+- **Reported:**
+  - 0.707 x Qiskit level 3;
+  - chains and rings at 0.37-0.52 x c57;
+  - CX staircases identical to Qiskit's;
+  - compile median 29 ms, against 773 ms for c57.
+- **One scoring correction was made before any result was read:** the match on c59's refusal message. It is
+  described in the report.
+
+**c61, item 100: the compile template** (pre-registration fixed 05:50:12, SHA-256 `bb90ad8d...`).
+
+- **What it does:** `compile_template` / `CompileTemplate` follows c60's path. It is built once and binds in closed
+  form. A shape signature catches every value-dependent branch, with a cache of up to 256 shapes.
+- **C61-VAL:**
+
+  | ID | result |
+  |---|---|
+  | T1 | **CONFIRMED**: item 99 templates identical to c60, 17,616 of 17,616 |
+  | T2 | **CONFIRMED**: the frame path equals c60 in duration and 2q |
+  | T5 | **CONFIRMED**: build within 2 x c60's compile |
+  | T6 | **CONFIRMED**: correct on 4 more devices |
+  | T7 | **CONFIRMED**: 100,000 binds exact |
+  | T3 | **REFUTED** |
+  | T4 | **REFUTED** |
+
+  - **T3:** on the Heisenberg tests the template's own CZ-path emission was up to 1.6% and 2.7% longer than c60's in
+    part of the draws. The 2q count was never higher.
+  - **T4:** 13 of 38 cells bind in 2.0-6.9 ms against the 2 ms target.
+- **No bound output was wrong:** 49,590 in all, rebuilds included.
+- **Reported:**
+  - The template's own CZ-path emission is 0.76-0.83 x c60 (Qiskit level 3's stage) on Ising models. The workplace
+    proposes it for items 87 / 91's default call.
+  - In a random-walk loop on the fractional Target, item 88's frame changed shape on 64,766 of 100,000 binds, and peak
+    memory rose from 307 MB to 1,142 MB (bounded by the cache).
+- **A missing file:** the report names probe scripts (`probe2.py` to `probe4.py`) that are not in the delivery. Only
+  `canon_search.py` is.
+
+### 2. Home checks
+
+**Rebuilds.** `make_c60.py` on c59 and `make_c61.py` on c60 reproduce the delivered files byte for byte.
+
+**Tests.** `test_99.py` and `test_c61.py`: 14 passed at home.
+
+**Spot check** (FakeFez; home's own script, not the workplace's):
+
+| input | target | c60 | a21's ring formula | Qiskit level 3 |
+|---|---|---|---|---|
+| CZ ring classifier, n = 12, L = 4 | T | 2.47 µs (exact, 30 ms) | 5.40 | 5.91 |
+| CZ ring classifier, n = 12, L = 4 | F | 2.35 µs | 5.28 | 5.79 |
+| CZ chain, n = 16, L = 4 | T | 2.42 µs (exact) | - | 3.52 |
+| CZ chain, n = 16, L = 4 | F | 2.33 µs | - | 3.42 |
+
+- **The template:** c61 on a 12-qubit CZ chain was identical to c60 in 50 of 50 random draws, with a median bind of
+  1.26 ms.
+- **A 16-qubit ring** does not embed in FakeFez, and c60 refuses it as out of scope. a21's ring formula builds it.
+
+### 3. Reading
+
+- **c60 closes the gap of Addendum 495.** The hardware-efficient CZ / CX ansatz is now built, exact, in about 30 ms.
+- **The ring at 12 qubits:**
+  - c60's embedded emission is 0.46 x a21's line formula, which the line formula's SWAPs explain. Addendum 496
+    expected this but had not measured it.
+  - The front end should therefore hand an embeddable ring to c60, and keep the ring formula for rings that do not
+    embed. That is a rule (embeds or not), not a comparison. It is a22's first item.
+- **The template is correct and nearly fast enough.** Its open points are the bind speed (Python per gate) and item
+  88's sign-dependent frame in training loops.
+
+---
+
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

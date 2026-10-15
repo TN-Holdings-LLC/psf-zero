@@ -1,0 +1,27 @@
+T1 (native identical to c60): 17616 outputs over 16 cells; not identical 0 {} -> CONFIRMED
+T2 (frame path: exact, native, duration and 2q equal to c60): 1101 outputs (exactness checked on 1101); failing 0 {} -> CONFIRMED
+T3 (CZ path: exact, native, 2q <= c60, duration <= c60): 1101 outputs (exactness checked on 1101); failing {'hhtree_heis_n16': {'longer': 317}} -> REFUTED
+    hhtree_heis_n16: template / c60 duration over its 1101 outputs: median 0.9962, max 1.0271, min 0.9633
+T4 (bind median <= 2 ms, n = 40: <= 5 ms): 12 of 18 cells; missing [('hhtree_heis_n16', 'T', 6.931), ('hhtree_heis_n16', 'F', 5.436), ('cx_chain_n12', 'T', 2.028), ('cx_chain_n12', 'F', 2.254), ('cx_chain_n16', 'T', 2.754), ('cx_chain_n16', 'F', 3.299)] -> REFUTED
+T5 (build <= 2 x c60 compile): 18 of 18; over [] -> CONFIRMED
+T6 (other 4 devices, correctness): 0 outputs over 0 cells; failing {} -> NOT TESTED
+
+Per cell (FakeFez): kind | bind median ms (values_of ms) | build ms / c60 ms | Qiskit assign ms | rebuilt, switched | template/c60 duration (median, max) | 2q template/c60
+  hhtree_heis_n16  T graph  |  6.931 ( 3.248) |   53.3 /   68.1 | - | 570, 525 | 0.9962, 1.0271 | 1.000
+  hhtree_heis_n16  F graph  |  5.436 ( 3.228) |   75.1 /   89.1 | - | 15, 76 | 1.0000, 1.0000 | 1.000
+  ghz_n12          T native |  0.621 ( 0.433) |    8.2 /   15.3 | 0.072 | 0, 0 | 1.0000, 1.0000 | 1.000
+  ghz_n12          F native |  0.768 ( 0.466) |   13.6 /   13.9 | 0.104 | 0, 0 | 1.0000, 1.0000 | 1.000
+  chain_cz_n12     T native |  1.214 ( 0.757) |   29.3 /   30.8 | 0.337 | 0, 0 | 1.0000, 1.0000 | 1.000
+  chain_cz_n12     F native |  1.189 ( 0.766) |   23.0 /   16.1 | 0.331 | 0, 0 | 1.0000, 1.0000 | 1.000
+  chain_cz_n16     T native |  1.522 ( 0.982) |   36.1 /   22.7 | 0.435 | 0, 0 | 1.0000, 1.0000 | 1.000
+  chain_cz_n16     F native |  1.608 ( 1.040) |   21.3 /   20.1 | 0.399 | 0, 0 | 1.0000, 1.0000 | 1.000
+  ring_cz_n12      T native |  1.176 ( 0.758) |   20.7 /   25.2 | 0.343 | 0, 0 | 1.0000, 1.0000 | 1.000
+  ring_cz_n12      F native |  1.098 ( 0.733) |   18.2 /   18.4 | 0.332 | 0, 0 | 1.0000, 1.0000 | 1.000
+  hh_cz_n16        T native |  1.524 ( 0.984) |   22.8 /   20.5 | 0.436 | 0, 0 | 1.0000, 1.0000 | 1.000
+  hh_cz_n16        F native |  1.445 ( 0.991) |   22.5 /   21.9 | 0.423 | 0, 0 | 1.0000, 1.0000 | 1.000
+  hh_cz_n20        T native |  1.771 ( 1.147) |   29.0 /   28.6 | 0.554 | 0, 0 | 1.0000, 1.0000 | 1.000
+  hh_cz_n20        F native |  1.721 ( 1.206) |   30.7 /   44.4 | 0.444 | 0, 0 | 1.0000, 1.0000 | 1.000
+  cx_chain_n12     T native |  2.028 ( 1.643) |   46.3 /   48.7 | 0.338 | 0, 0 | 1.0000, 1.0000 | 1.000
+  cx_chain_n12     F native |  2.254 ( 1.709) |   33.5 /   43.5 | 0.327 | 0, 0 | 1.0000, 1.0000 | 1.000
+  cx_chain_n16     T native |  2.754 ( 2.180) |   56.4 /   70.5 | 0.407 | 0, 0 | 1.0000, 1.0000 | 1.000
+  cx_chain_n16     F native |  3.299 ( 2.465) |   60.1 /   61.9 | 0.528 | 0, 0 | 1.0000, 1.0000 | 1.000

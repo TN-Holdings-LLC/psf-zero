@@ -1,0 +1,173 @@
+D akeMarrakesh tfim_n12         T chain  same 0/51 exact 51/51 dur<= 51 bind 1.110 ms build 14.2 c60 30.3 rebuilt 0 switched 0
+D akeMarrakesh tfim_n12         F chain  same 0/51 exact 51/51 dur<= 51 bind 0.691 ms build 14.3 c60 30.0 rebuilt 0 switched 0
+D akeMarrakesh tfim_n16         T chain  same 0/51 exact 51/51 dur<= 51 bind 1.995 ms build 19.0 c60 38.2 rebuilt 0 switched 0
+D akeMarrakesh tfim_n16         F chain  same 0/51 exact 51/51 dur<= 51 bind 1.145 ms build 18.9 c60 31.3 rebuilt 0 switched 0
+D akeMarrakesh tfimP_n12        T chain  same 0/51 exact 51/51 dur<= 51 bind 1.227 ms build 15.5 c60 34.0 rebuilt 0 switched 0
+D akeMarrakesh tfimP_n12        F chain  same 0/51 exact 51/51 dur<= 51 bind 0.806 ms build 16.5 c60 30.0 rebuilt 0 switched 0
+D akeMarrakesh tfimP_n16        T chain  same 0/51 exact 51/51 dur<= 51 bind 2.001 ms build 20.1 c60 37.8 rebuilt 0 switched 0
+D akeMarrakesh tfimP_n16        F chain  same 0/51 exact 51/51 dur<= 51 bind 1.792 ms build 28.6 c60 35.0 rebuilt 0 switched 0
+D akeMarrakesh tfim_n20_r3      T graph  same 0/51 exact 6/51 dur<= 51 bind 2.816 ms build 31.9 c60 49.3 rebuilt 0 switched 0
+D akeMarrakesh tfim_n20_r3      F graph  same 0/51 exact 6/51 dur<= 51 bind 1.732 ms build 38.9 c60 48.2 rebuilt 0 switched 0
+D akeMarrakesh heis_n12_r2      T graph  same 0/51 exact 51/51 dur<= 19 bind 3.240 ms build 37.4 c60 58.5 rebuilt 0 switched 0
+D akeMarrakesh heis_n12_r2      F graph  same 0/51 exact 51/51 dur<= 51 bind 3.940 ms build 53.9 c60 56.3 rebuilt 0 switched 0
+D akeMarrakesh tfim_n40_r2      T graph  same 0/51 exact 0/51 dur<= 51 bind 3.730 ms build 69.1 c60 82.7 rebuilt 0 switched 0
+D akeMarrakesh tfim_n40_r2      F graph  same 0/51 exact 0/51 dur<= 51 bind 2.406 ms build 73.5 c60 79.1 rebuilt 0 switched 0
+D akeMarrakesh hhI_n16          T graph  same 0/51 exact 51/51 dur<= 51 bind 5.560 ms build 31.9 c60 49.0 rebuilt 0 switched 0
+D akeMarrakesh hhI_n16          F graph  same 0/51 exact 51/51 dur<= 51 bind 1.948 ms build 44.4 c60 46.7 rebuilt 0 switched 0
+D akeMarrakesh hhI_n20          T graph  same 0/51 exact 6/51 dur<= 51 bind 3.204 ms build 39.7 c60 62.0 rebuilt 0 switched 0
+D akeMarrakesh hhI_n20          F graph  same 0/51 exact 6/51 dur<= 51 bind 2.333 ms build 46.9 c60 58.2 rebuilt 0 switched 0
+D akeMarrakesh ring12_tfim      T graph  same 0/51 exact 51/51 dur<= 51 bind 2.190 ms build 27.4 c60 44.9 rebuilt 0 switched 0
+D akeMarrakesh ring12_tfim      F graph  same 0/51 exact 51/51 dur<= 51 bind 1.402 ms build 25.9 c60 38.4 rebuilt 0 switched 0
+D akeMarrakesh hhtree_heis_n16  T graph  same 0/51 exact 51/51 dur<= 36 bind 0.000 ms build 60.6 c60 65.7 rebuilt 43 switched 7
+D akeMarrakesh hhtree_heis_n16  F graph  same 0/51 exact 51/51 dur<= 51 bind 5.707 ms build 70.0 c60 76.1 rebuilt 0 switched 0
+D akeMarrakesh ghz_n12          T native same 51/51 exact 51/51 dur<= 51 bind 0.683 ms build 8.5 c60 13.2 rebuilt 0 switched 0
+D akeMarrakesh ghz_n12          F native same 51/51 exact 51/51 dur<= 51 bind 0.729 ms build 8.4 c60 12.6 rebuilt 0 switched 0
+D akeMarrakesh chain_cz_n12     T native same 51/51 exact 51/51 dur<= 51 bind 1.313 ms build 23.2 c60 22.4 rebuilt 0 switched 0
+D akeMarrakesh chain_cz_n12     F native same 51/51 exact 51/51 dur<= 51 bind 1.189 ms build 30.6 c60 16.8 rebuilt 0 switched 0
+D akeMarrakesh chain_cz_n16     T native same 51/51 exact 51/51 dur<= 51 bind 1.449 ms build 24.9 c60 22.0 rebuilt 0 switched 0
+D akeMarrakesh chain_cz_n16     F native same 51/51 exact 51/51 dur<= 51 bind 1.402 ms build 24.2 c60 21.2 rebuilt 0 switched 0
+D akeMarrakesh ring_cz_n12      T native same 51/51 exact 51/51 dur<= 51 bind 1.246 ms build 21.1 c60 27.0 rebuilt 0 switched 0
+D akeMarrakesh ring_cz_n12      F native same 51/51 exact 51/51 dur<= 51 bind 1.208 ms build 19.9 c60 18.3 rebuilt 0 switched 0
+D akeMarrakesh hh_cz_n16        T native same 51/51 exact 51/51 dur<= 51 bind 1.387 ms build 22.4 c60 20.5 rebuilt 0 switched 0
+D akeMarrakesh hh_cz_n16        F native same 51/51 exact 51/51 dur<= 51 bind 1.465 ms build 22.8 c60 21.6 rebuilt 0 switched 0
+D akeMarrakesh hh_cz_n20        T native same 51/51 exact 6/51 dur<= 51 bind 1.749 ms build 28.6 c60 26.5 rebuilt 0 switched 0
+D akeMarrakesh hh_cz_n20        F native same 51/51 exact 6/51 dur<= 51 bind 1.674 ms build 28.2 c60 24.2 rebuilt 0 switched 0
+D akeMarrakesh cx_chain_n12     T native same 51/51 exact 51/51 dur<= 51 bind 2.174 ms build 28.0 c60 43.1 rebuilt 0 switched 0
+D akeMarrakesh cx_chain_n12     F native same 51/51 exact 51/51 dur<= 51 bind 2.000 ms build 24.4 c60 41.5 rebuilt 0 switched 0
+D akeMarrakesh cx_chain_n16     T native same 51/51 exact 51/51 dur<= 51 bind 2.520 ms build 30.8 c60 51.8 rebuilt 0 switched 0
+D akeMarrakesh cx_chain_n16     F native same 51/51 exact 51/51 dur<= 51 bind 2.622 ms build 29.5 c60 54.1 rebuilt 0 switched 0
+D FakeKingston tfim_n12         T chain  same 0/51 exact 51/51 dur<= 51 bind 1.224 ms build 14.5 c60 35.2 rebuilt 0 switched 0
+D FakeKingston tfim_n12         F chain  same 0/51 exact 51/51 dur<= 51 bind 0.787 ms build 15.6 c60 29.1 rebuilt 0 switched 0
+D FakeKingston tfim_n16         T chain  same 0/51 exact 51/51 dur<= 51 bind 1.661 ms build 21.6 c60 50.3 rebuilt 0 switched 0
+D FakeKingston tfim_n16         F chain  same 0/51 exact 51/51 dur<= 51 bind 0.964 ms build 20.4 c60 40.6 rebuilt 0 switched 0
+D FakeKingston tfimP_n12        T chain  same 0/51 exact 51/51 dur<= 51 bind 1.429 ms build 17.0 c60 39.6 rebuilt 0 switched 0
+D FakeKingston tfimP_n12        F chain  same 0/51 exact 51/51 dur<= 51 bind 0.911 ms build 16.8 c60 30.9 rebuilt 0 switched 0
+D FakeKingston tfimP_n16        T chain  same 0/51 exact 51/51 dur<= 51 bind 1.791 ms build 25.5 c60 46.4 rebuilt 0 switched 0
+D FakeKingston tfimP_n16        F chain  same 0/51 exact 51/51 dur<= 51 bind 1.086 ms build 25.2 c60 33.7 rebuilt 0 switched 0
+D FakeKingston tfim_n20_r3      T graph  same 0/51 exact 6/51 dur<= 51 bind 2.736 ms build 38.3 c60 54.2 rebuilt 0 switched 0
+D FakeKingston tfim_n20_r3      F graph  same 0/51 exact 6/51 dur<= 51 bind 1.577 ms build 31.2 c60 43.1 rebuilt 0 switched 0
+D FakeKingston heis_n12_r2      T graph  same 0/51 exact 51/51 dur<= 23 bind 3.111 ms build 43.1 c60 65.6 rebuilt 0 switched 0
+D FakeKingston heis_n12_r2      F graph  same 0/51 exact 51/51 dur<= 51 bind 4.131 ms build 50.1 c60 64.1 rebuilt 0 switched 0
+D FakeKingston tfim_n40_r2      T graph  same 0/51 exact 0/51 dur<= 51 bind 3.749 ms build 131.4 c60 144.5 rebuilt 0 switched 0
+D FakeKingston tfim_n40_r2      F graph  same 0/51 exact 0/51 dur<= 51 bind 2.156 ms build 148.5 c60 159.3 rebuilt 0 switched 0
+D FakeKingston hhI_n16          T graph  same 0/51 exact 51/51 dur<= 51 bind 2.680 ms build 32.4 c60 51.3 rebuilt 0 switched 0
+D FakeKingston hhI_n16          F graph  same 0/51 exact 51/51 dur<= 51 bind 1.851 ms build 38.8 c60 44.0 rebuilt 0 switched 0
+D FakeKingston hhI_n20          T graph  same 0/51 exact 6/51 dur<= 51 bind 3.321 ms build 40.2 c60 64.3 rebuilt 0 switched 0
+D FakeKingston hhI_n20          F graph  same 0/51 exact 6/51 dur<= 51 bind 2.378 ms build 44.4 c60 58.8 rebuilt 0 switched 0
+D FakeKingston ring12_tfim      T graph  same 0/51 exact 51/51 dur<= 51 bind 2.454 ms build 28.8 c60 56.0 rebuilt 0 switched 0
+D FakeKingston ring12_tfim      F graph  same 0/51 exact 51/51 dur<= 51 bind 1.483 ms build 27.5 c60 44.9 rebuilt 0 switched 0
+D FakeKingston hhtree_heis_n16  T graph  same 0/51 exact 51/51 dur<= 38 bind 7.102 ms build 56.3 c60 69.0 rebuilt 39 switched 10
+D FakeKingston hhtree_heis_n16  F graph  same 0/51 exact 51/51 dur<= 51 bind 5.249 ms build 81.6 c60 84.0 rebuilt 0 switched 0
+D FakeKingston ghz_n12          T native same 51/51 exact 51/51 dur<= 51 bind 0.733 ms build 9.1 c60 13.9 rebuilt 0 switched 0
+D FakeKingston ghz_n12          F native same 51/51 exact 51/51 dur<= 51 bind 0.820 ms build 8.3 c60 12.6 rebuilt 0 switched 0
+D FakeKingston chain_cz_n12     T native same 51/51 exact 51/51 dur<= 51 bind 1.218 ms build 20.5 c60 18.3 rebuilt 0 switched 0
+D FakeKingston chain_cz_n12     F native same 51/51 exact 51/51 dur<= 51 bind 1.233 ms build 17.3 c60 16.9 rebuilt 0 switched 0
+D FakeKingston chain_cz_n16     T native same 51/51 exact 51/51 dur<= 51 bind 1.493 ms build 25.6 c60 24.6 rebuilt 0 switched 0
+D FakeKingston chain_cz_n16     F native same 51/51 exact 51/51 dur<= 51 bind 1.436 ms build 22.6 c60 20.6 rebuilt 0 switched 0
+D FakeKingston ring_cz_n12      T native same 51/51 exact 51/51 dur<= 51 bind 1.256 ms build 19.3 c60 17.0 rebuilt 0 switched 0
+D FakeKingston ring_cz_n12      F native same 51/51 exact 51/51 dur<= 51 bind 1.185 ms build 19.0 c60 19.2 rebuilt 0 switched 0
+D FakeKingston hh_cz_n16        T native same 51/51 exact 51/51 dur<= 51 bind 1.476 ms build 24.8 c60 23.1 rebuilt 0 switched 0
+D FakeKingston hh_cz_n16        F native same 51/51 exact 51/51 dur<= 51 bind 1.495 ms build 23.6 c60 21.0 rebuilt 0 switched 0
+D FakeKingston hh_cz_n20        T native same 51/51 exact 6/51 dur<= 51 bind 1.783 ms build 27.8 c60 24.9 rebuilt 0 switched 0
+D FakeKingston hh_cz_n20        F native same 51/51 exact 6/51 dur<= 51 bind 1.789 ms build 26.7 c60 24.4 rebuilt 0 switched 0
+D FakeKingston cx_chain_n12     T native same 51/51 exact 51/51 dur<= 51 bind 2.056 ms build 26.4 c60 40.8 rebuilt 0 switched 0
+D FakeKingston cx_chain_n12     F native same 51/51 exact 51/51 dur<= 51 bind 2.198 ms build 25.0 c60 39.9 rebuilt 0 switched 0
+D FakeKingston cx_chain_n16     T native same 51/51 exact 51/51 dur<= 51 bind 2.680 ms build 37.7 c60 77.2 rebuilt 0 switched 0
+D FakeKingston cx_chain_n16     F native same 51/51 exact 51/51 dur<= 51 bind 2.631 ms build 31.2 c60 59.0 rebuilt 0 switched 0
+D FakeTorino   tfim_n12         T chain  same 0/51 exact 51/51 dur<= 51 bind 1.182 ms build 13.8 c60 34.6 rebuilt 0 switched 0
+D FakeTorino   tfim_n12         F chain  same 0/51 exact 51/51 dur<= 51 bind 0.729 ms build 14.5 c60 27.7 rebuilt 0 switched 0
+D FakeTorino   tfim_n16         T chain  same 0/51 exact 51/51 dur<= 51 bind 1.571 ms build 19.6 c60 38.9 rebuilt 0 switched 0
+D FakeTorino   tfim_n16         F chain  same 0/51 exact 51/51 dur<= 51 bind 0.883 ms build 17.3 c60 29.0 rebuilt 0 switched 0
+D FakeTorino   tfimP_n12        T chain  same 0/51 exact 51/51 dur<= 51 bind 1.346 ms build 14.5 c60 32.8 rebuilt 0 switched 0
+D FakeTorino   tfimP_n12        F chain  same 0/51 exact 51/51 dur<= 51 bind 0.870 ms build 17.7 c60 30.0 rebuilt 0 switched 0
+D FakeTorino   tfimP_n16        T chain  same 0/51 exact 51/51 dur<= 51 bind 1.752 ms build 19.2 c60 43.2 rebuilt 0 switched 0
+D FakeTorino   tfimP_n16        F chain  same 0/51 exact 51/51 dur<= 51 bind 1.003 ms build 20.4 c60 30.1 rebuilt 0 switched 0
+D FakeTorino   tfim_n20_r3      T graph  same 0/51 exact 6/51 dur<= 51 bind 2.685 ms build 32.3 c60 49.7 rebuilt 0 switched 0
+D FakeTorino   tfim_n20_r3      F graph  same 0/51 exact 6/51 dur<= 51 bind 1.690 ms build 31.8 c60 39.9 rebuilt 0 switched 0
+D FakeTorino   heis_n12_r2      T graph  same 0/51 exact 51/51 dur<= 16 bind 3.416 ms build 42.8 c60 69.0 rebuilt 0 switched 0
+D FakeTorino   heis_n12_r2      F graph  same 0/51 exact 51/51 dur<= 51 bind 4.151 ms build 51.2 c60 55.0 rebuilt 0 switched 0
+D FakeTorino   tfim_n40_r2      T graph  same 0/51 exact 0/51 dur<= 51 bind 3.643 ms build 86.2 c60 100.1 rebuilt 0 switched 0
+D FakeTorino   tfim_n40_r2      F graph  same 0/51 exact 0/51 dur<= 51 bind 2.287 ms build 102.9 c60 98.9 rebuilt 0 switched 0
+D FakeTorino   hhI_n16          T graph  same 0/51 exact 51/51 dur<= 51 bind 2.814 ms build 33.5 c60 46.0 rebuilt 0 switched 0
+D FakeTorino   hhI_n16          F graph  same 0/51 exact 51/51 dur<= 51 bind 1.857 ms build 33.5 c60 45.9 rebuilt 0 switched 0
+D FakeTorino   hhI_n20          T graph  same 0/51 exact 6/51 dur<= 51 bind 3.350 ms build 39.1 c60 60.2 rebuilt 0 switched 0
+D FakeTorino   hhI_n20          F graph  same 0/51 exact 6/51 dur<= 51 bind 2.742 ms build 41.1 c60 50.3 rebuilt 0 switched 0
+D FakeTorino   ring12_tfim      T graph  same 0/51 exact 51/51 dur<= 51 bind 2.523 ms build 28.9 c60 50.1 rebuilt 0 switched 0
+D FakeTorino   ring12_tfim      F graph  same 0/51 exact 51/51 dur<= 51 bind 1.523 ms build 28.9 c60 41.2 rebuilt 0 switched 0
+D FakeTorino   hhtree_heis_n16  T graph  same 0/51 exact 51/51 dur<= 41 bind 0.000 ms build 63.0 c60 70.1 rebuilt 44 switched 6
+D FakeTorino   hhtree_heis_n16  F graph  same 0/51 exact 51/51 dur<= 51 bind 5.141 ms build 77.1 c60 85.2 rebuilt 0 switched 0
+D FakeTorino   ghz_n12          T native same 51/51 exact 51/51 dur<= 51 bind 0.674 ms build 8.3 c60 13.1 rebuilt 0 switched 0
+D FakeTorino   ghz_n12          F native same 51/51 exact 51/51 dur<= 51 bind 0.698 ms build 7.7 c60 12.2 rebuilt 0 switched 0
+D FakeTorino   chain_cz_n12     T native same 51/51 exact 51/51 dur<= 51 bind 1.241 ms build 17.8 c60 16.4 rebuilt 0 switched 0
+D FakeTorino   chain_cz_n12     F native same 51/51 exact 51/51 dur<= 51 bind 1.174 ms build 18.4 c60 16.7 rebuilt 0 switched 0
+D FakeTorino   chain_cz_n16     T native same 51/51 exact 51/51 dur<= 51 bind 1.557 ms build 25.5 c60 20.9 rebuilt 0 switched 0
+D FakeTorino   chain_cz_n16     F native same 51/51 exact 51/51 dur<= 51 bind 1.450 ms build 26.1 c60 21.9 rebuilt 0 switched 0
+D FakeTorino   ring_cz_n12      T native same 51/51 exact 51/51 dur<= 51 bind 1.340 ms build 19.1 c60 18.3 rebuilt 0 switched 0
+D FakeTorino   ring_cz_n12      F native same 51/51 exact 51/51 dur<= 51 bind 1.251 ms build 22.6 c60 20.6 rebuilt 0 switched 0
+D FakeTorino   hh_cz_n16        T native same 51/51 exact 51/51 dur<= 51 bind 1.532 ms build 29.4 c60 28.1 rebuilt 0 switched 0
+D FakeTorino   hh_cz_n16        F native same 51/51 exact 51/51 dur<= 51 bind 1.445 ms build 23.3 c60 25.2 rebuilt 0 switched 0
+D FakeTorino   hh_cz_n20        T native same 51/51 exact 6/51 dur<= 51 bind 1.993 ms build 29.1 c60 25.2 rebuilt 0 switched 0
+D FakeTorino   hh_cz_n20        F native same 51/51 exact 6/51 dur<= 51 bind 1.890 ms build 27.2 c60 26.7 rebuilt 0 switched 0
+D FakeTorino   cx_chain_n12     T native same 51/51 exact 51/51 dur<= 51 bind 2.104 ms build 26.2 c60 43.1 rebuilt 0 switched 0
+D FakeTorino   cx_chain_n12     F native same 51/51 exact 51/51 dur<= 51 bind 2.307 ms build 26.0 c60 40.8 rebuilt 0 switched 0
+D FakeTorino   cx_chain_n16     T native same 51/51 exact 51/51 dur<= 51 bind 2.687 ms build 32.2 c60 54.8 rebuilt 0 switched 0
+D FakeTorino   cx_chain_n16     F native same 51/51 exact 51/51 dur<= 51 bind 2.736 ms build 33.0 c60 65.8 rebuilt 0 switched 0
+D ot_marrakesh tfim_n12         T chain  same 0/51 exact 51/51 dur<= 51 bind 1.229 ms build 16.5 c60 39.4 rebuilt 0 switched 0
+D ot_marrakesh tfim_n12         F chain  same 0/51 exact 51/51 dur<= 51 bind 0.844 ms build 15.9 c60 29.6 rebuilt 0 switched 0
+D ot_marrakesh tfim_n16         T chain  same 0/51 exact 51/51 dur<= 51 bind 1.560 ms build 20.1 c60 44.0 rebuilt 0 switched 0
+D ot_marrakesh tfim_n16         F chain  same 0/51 exact 51/51 dur<= 51 bind 0.837 ms build 19.7 c60 40.4 rebuilt 0 switched 0
+D ot_marrakesh tfimP_n12        T chain  same 0/51 exact 51/51 dur<= 51 bind 1.324 ms build 16.8 c60 36.9 rebuilt 0 switched 0
+D ot_marrakesh tfimP_n12        F chain  same 0/51 exact 51/51 dur<= 51 bind 0.845 ms build 16.6 c60 40.8 rebuilt 0 switched 0
+D ot_marrakesh tfimP_n16        T chain  same 0/51 exact 51/51 dur<= 51 bind 1.671 ms build 29.6 c60 64.6 rebuilt 0 switched 0
+D ot_marrakesh tfimP_n16        F chain  same 0/51 exact 51/51 dur<= 51 bind 1.067 ms build 19.2 c60 32.9 rebuilt 0 switched 0
+D ot_marrakesh tfim_n20_r3      T graph  same 0/51 exact 6/51 dur<= 51 bind 2.781 ms build 33.3 c60 52.2 rebuilt 0 switched 0
+D ot_marrakesh tfim_n20_r3      F graph  same 0/51 exact 6/51 dur<= 51 bind 1.640 ms build 36.3 c60 47.9 rebuilt 0 switched 0
+D ot_marrakesh heis_n12_r2      T graph  same 0/51 exact 51/51 dur<= 17 bind 3.260 ms build 37.5 c60 58.0 rebuilt 0 switched 0
+D ot_marrakesh heis_n12_r2      F graph  same 0/51 exact 51/51 dur<= 51 bind 3.940 ms build 53.8 c60 57.8 rebuilt 0 switched 0
+D ot_marrakesh tfim_n40_r2      T graph  same 0/51 exact 0/51 dur<= 51 bind 3.720 ms build 162.7 c60 163.1 rebuilt 0 switched 0
+D ot_marrakesh tfim_n40_r2      F graph  same 0/51 exact 0/51 dur<= 51 bind 2.330 ms build 138.9 c60 150.3 rebuilt 0 switched 0
+D ot_marrakesh hhI_n16          T graph  same 0/51 exact 51/51 dur<= 51 bind 2.637 ms build 31.6 c60 51.0 rebuilt 0 switched 0
+D ot_marrakesh hhI_n16          F graph  same 0/51 exact 51/51 dur<= 51 bind 1.782 ms build 33.3 c60 43.4 rebuilt 0 switched 0
+D ot_marrakesh hhI_n20          T graph  same 0/51 exact 6/51 dur<= 51 bind 3.410 ms build 41.5 c60 57.7 rebuilt 0 switched 0
+D ot_marrakesh hhI_n20          F graph  same 0/51 exact 6/51 dur<= 51 bind 2.370 ms build 43.3 c60 52.3 rebuilt 0 switched 0
+D ot_marrakesh ring12_tfim      T graph  same 0/51 exact 51/51 dur<= 51 bind 2.289 ms build 32.5 c60 48.3 rebuilt 0 switched 0
+D ot_marrakesh ring12_tfim      F graph  same 0/51 exact 51/51 dur<= 51 bind 1.394 ms build 27.8 c60 46.9 rebuilt 0 switched 0
+D ot_marrakesh hhtree_heis_n16  T graph  same 0/51 exact 51/51 dur<= 35 bind 0.000 ms build 62.4 c60 67.1 rebuilt 44 switched 6
+D ot_marrakesh hhtree_heis_n16  F graph  same 0/51 exact 51/51 dur<= 51 bind 5.292 ms build 68.1 c60 74.9 rebuilt 0 switched 0
+D ot_marrakesh ghz_n12          T native same 51/51 exact 51/51 dur<= 51 bind 0.737 ms build 11.5 c60 16.0 rebuilt 0 switched 0
+D ot_marrakesh ghz_n12          F native same 51/51 exact 51/51 dur<= 51 bind 0.789 ms build 9.7 c60 13.9 rebuilt 0 switched 0
+D ot_marrakesh chain_cz_n12     T native same 51/51 exact 51/51 dur<= 51 bind 1.209 ms build 20.7 c60 18.0 rebuilt 0 switched 0
+D ot_marrakesh chain_cz_n12     F native same 51/51 exact 51/51 dur<= 51 bind 1.144 ms build 18.2 c60 19.1 rebuilt 0 switched 0
+D ot_marrakesh chain_cz_n16     T native same 51/51 exact 51/51 dur<= 51 bind 1.554 ms build 22.5 c60 31.8 rebuilt 0 switched 0
+D ot_marrakesh chain_cz_n16     F native same 51/51 exact 51/51 dur<= 51 bind 1.554 ms build 23.5 c60 21.9 rebuilt 0 switched 0
+D ot_marrakesh ring_cz_n12      T native same 51/51 exact 51/51 dur<= 51 bind 1.264 ms build 28.8 c60 25.2 rebuilt 0 switched 0
+D ot_marrakesh ring_cz_n12      F native same 51/51 exact 51/51 dur<= 51 bind 1.160 ms build 20.8 c60 19.1 rebuilt 0 switched 0
+D ot_marrakesh hh_cz_n16        T native same 51/51 exact 51/51 dur<= 51 bind 1.517 ms build 24.5 c60 23.4 rebuilt 0 switched 0
+D ot_marrakesh hh_cz_n16        F native same 51/51 exact 51/51 dur<= 51 bind 1.450 ms build 29.7 c60 22.4 rebuilt 0 switched 0
+D ot_marrakesh hh_cz_n20        T native same 51/51 exact 6/51 dur<= 51 bind 1.884 ms build 32.1 c60 25.4 rebuilt 0 switched 0
+D ot_marrakesh hh_cz_n20        F native same 51/51 exact 6/51 dur<= 51 bind 1.870 ms build 28.0 c60 26.2 rebuilt 0 switched 0
+D ot_marrakesh cx_chain_n12     T native same 51/51 exact 51/51 dur<= 51 bind 2.062 ms build 25.5 c60 41.1 rebuilt 0 switched 0
+D ot_marrakesh cx_chain_n12     F native same 51/51 exact 51/51 dur<= 51 bind 2.219 ms build 24.3 c60 39.8 rebuilt 0 switched 0
+D ot_marrakesh cx_chain_n16     T native same 51/51 exact 51/51 dur<= 51 bind 2.749 ms build 32.0 c60 54.8 rebuilt 0 switched 0
+D ot_marrakesh cx_chain_n16     F native same 51/51 exact 51/51 dur<= 51 bind 2.612 ms build 33.8 c60 52.3 rebuilt 0 switched 0
+K T lap 10000: median 0.838 ms; last check 8.0e-17; RSS 307 MB; 12 s
+K T lap 20000: median 0.828 ms; last check 1.1e-16; RSS 307 MB; 22 s
+K T lap 30000: median 0.824 ms; last check 2.1e-16; RSS 307 MB; 33 s
+K T lap 40000: median 0.831 ms; last check 2.9e-16; RSS 307 MB; 43 s
+K T lap 50000: median 0.823 ms; last check 1.1e-16; RSS 307 MB; 54 s
+K T lap 60000: median 0.851 ms; last check 2.6e-16; RSS 307 MB; 64 s
+K T lap 70000: median 0.813 ms; last check 5.2e-17; RSS 307 MB; 74 s
+K T lap 80000: median 0.841 ms; last check 2.4e-16; RSS 307 MB; 85 s
+K T lap 90000: median 0.834 ms; last check 1.2e-16; RSS 307 MB; 96 s
+K T lap 100000: median 0.812 ms; last check 4.3e-17; RSS 307 MB; 106 s
+K F lap 10000: median 2.312 ms; last check 2.3e-17; RSS 1142 MB; 22 s
+K F lap 20000: median 2.396 ms; last check 2.4e-17; RSS 1142 MB; 45 s
+K F lap 30000: median 2.410 ms; last check 4.3e-17; RSS 1142 MB; 69 s
+K F lap 40000: median 2.640 ms; last check 2.2e-16; RSS 1142 MB; 99 s
+K F lap 50000: median 2.518 ms; last check 1.3e-16; RSS 1142 MB; 124 s
+K F lap 60000: median 2.595 ms; last check 1.3e-16; RSS 1142 MB; 150 s
+K F lap 70000: median 2.579 ms; last check 6.2e-17; RSS 1142 MB; 176 s
+K F lap 80000: median 2.581 ms; last check 8.3e-17; RSS 1142 MB; 201 s
+K F lap 90000: median 2.574 ms; last check 1.4e-16; RSS 1142 MB; 227 s
+K F lap 100000: median 2.564 ms; last check 1.3e-16; RSS 1142 MB; 253 s
+C61-VAL DONE

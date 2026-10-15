@@ -1,0 +1,611 @@
+A FakeFez      chain_cz_n12   T C60  0.864 (  27.1 ms) C57  1.620 QK3  1.716 exact 6.661338147750939e-16
+A FakeFez      chain_cz_n12   F C60  0.768 (  16.8 ms) C57  1.572 QK3  1.572 exact 5.967448757360216e-16
+A FakeFez      chain_cz_n16   T C60  0.864 (  21.4 ms) C57  1.956 QK3  2.076 exact 7.676151381197371e-17
+A FakeFez      chain_cz_n16   F C60  0.768 (  30.2 ms) C57  1.932 QK3  1.932 exact 7.24247051220317e-17
+A FakeFez      ring_cz_n12    T C60  0.864 (  17.9 ms) C57  2.832 QK3  4.424 exact 1.9255430583342559e-16
+A FakeFez      ring_cz_n12    F C60  0.768 (  15.5 ms) C57  1.968 QK3  4.280 exact 1.7867651802561113e-16
+A FakeFez      hh_cz_n16      T C60  1.200 (  19.7 ms) C57  1.392 QK3  1.392 exact 2.5370330836160804e-17
+A FakeFez      hh_cz_n16      F C60  1.104 (  21.5 ms) C57  1.296 QK3  1.296 exact 2.3418766925686896e-17
+A FakeFez      hh_cz_n20      T C60  1.200 (  25.1 ms) C57  1.392 QK3  1.416 exact 1.5287250632045613e-17
+A FakeFez      hh_cz_n20      F C60  1.104 (  29.5 ms) C57  1.296 QK3  1.296 exact 1.5395670849294163e-17
+A FakeFez      cx_chain_n12   T C60  1.956 (  54.0 ms) C57  1.956 QK3  1.956 exact 2.7755575615628914e-17
+A FakeFez      cx_chain_n12   F C60  1.860 (  41.0 ms) C57  1.860 QK3  1.860 exact 3.642919299551295e-17
+A FakeFez      cx_chain_n16   T C60  2.388 (  52.4 ms) C57  2.388 QK3  2.388 exact 2.710505431213761e-18
+A FakeFez      cx_chain_n16   F C60  2.292 (  59.8 ms) C57  2.292 QK3  2.292 exact 3.0357660829594124e-18
+A FakeFez      ra_n8_r2       T C60  1.068 (  22.7 ms) C57  1.068 QK3  1.068 exact 2.3592239273284576e-16
+A FakeFez      ra_n8_r2       F C60  0.996 (  27.4 ms) C57  0.996 QK3  0.996 exact 2.3592239273284576e-16
+A FakeFez      ra_n8_r4       T C60  1.548 (  53.9 ms) C57  1.548 QK3  1.548 exact 7.632783294297951e-17
+A FakeFez      ra_n8_r4       F C60  1.428 (  27.8 ms) C57  1.428 QK3  1.428 exact 1.1102230246251565e-16
+A FakeFez      ra_n12_r2      T C60  1.500 (  22.8 ms) C57  1.500 QK3  1.500 exact 2.7755575615628914e-17
+A FakeFez      ra_n12_r2      F C60  1.428 (  23.1 ms) C57  1.428 QK3  1.428 exact 6.591949208711867e-17
+A FakeFez      ra_n12_r4      T C60  1.980 (  39.1 ms) C57  1.980 QK3  1.980 exact 2.2551405187698492e-17
+A FakeFez      ra_n12_r4      F C60  1.860 (  39.7 ms) C57  1.860 QK3  1.860 exact 3.382710778154774e-17
+A FakeFez      ra_n16_r2      T C60  1.932 (  29.4 ms) C57  1.932 QK3  1.932 exact 1.1275702593849246e-17
+A FakeFez      ra_n16_r2      F C60  1.860 (  29.3 ms) C57  1.860 QK3  1.860 exact 9.974659986866641e-18
+A FakeFez      ra_n16_r4      T C60  2.412 (  60.6 ms) C57  2.412 QK3  2.412 exact 1.691355389077387e-17
+A FakeFez      ra_n16_r4      F C60  2.292 (  62.4 ms) C57  2.292 QK3  2.292 exact 2.42861286636753e-17
+A FakeFez      su2_n8_r2      T C60  1.068 (  19.8 ms) C57  1.068 QK3  1.068 exact 6.591949208711867e-17
+A FakeFez      su2_n8_r2      F C60  0.996 (  16.6 ms) C57  0.996 QK3  0.996 exact 4.5102810375396984e-17
+A FakeFez      su2_n8_r4      T C60  1.548 (  29.9 ms) C57  1.548 QK3  1.548 exact 1.249000902703301e-16
+A FakeFez      su2_n8_r4      F C60  1.428 (  29.0 ms) C57  1.428 QK3  1.428 exact 1.3183898417423734e-16
+A FakeFez      su2_n12_r2     T C60  1.500 (  26.7 ms) C57  1.500 QK3  1.500 exact 1.734723475976807e-17
+A FakeFez      su2_n12_r2     F C60  1.428 (  23.9 ms) C57  1.428 QK3  1.428 exact 1.3877787807814457e-17
+A FakeFez      su2_n12_r4     T C60  1.980 (  42.7 ms) C57  1.980 QK3  1.980 exact 2.0816681711721685e-17
+A FakeFez      su2_n12_r4     F C60  1.860 (  41.5 ms) C57  1.860 QK3  1.860 exact 4.423544863740858e-17
+A FakeFez      su2_n16_r2     T C60  1.932 (  32.7 ms) C57  1.932 QK3  1.932 exact 8.456776945386935e-18
+A FakeFez      su2_n16_r2     F C60  1.860 (  48.9 ms) C57  1.860 QK3  1.860 exact 1.0408340855860843e-17
+A FakeFez      su2_n16_r4     T C60  2.412 (  61.4 ms) C57  2.412 QK3  2.412 exact 4.336808689942018e-18
+A FakeFez      su2_n16_r4     F C60  2.292 (  55.2 ms) C57  2.292 QK3  2.292 exact 2.8189256484623115e-18
+A FakeFez      clf_ring12_L4  T C60  0.912 (  18.3 ms) C57  2.832 QK3  4.496 exact 2.0296264668928643e-16
+A FakeFez      clf_ring12_L4  F C60  0.792 (  20.4 ms) C57  1.968 QK3  4.376 exact 1.8908485888147197e-16
+A FakeFez      clf_ring12_L8  T C60  1.776 (  33.5 ms) C57  5.568 QK3  8.944 exact 2.6020852139652106e-16
+A FakeFez      clf_ring12_L8  F C60  1.560 (  43.4 ms) C57  3.888 QK3  8.776 exact 2.5500435096859064e-16
+A akeMarrakesh chain_cz_n12   T C60  0.832 (  15.8 ms) C57  1.444 QK3  1.636 exact 6.661338147750939e-16
+A akeMarrakesh chain_cz_n12   F C60  0.688 (  16.2 ms) C57  1.408 QK3  1.516 exact 5.967448757360216e-16
+A akeMarrakesh chain_cz_n16   T C60  0.832 (  20.9 ms) C57  1.716 QK3  1.980 exact 7.676151381197371e-17
+A akeMarrakesh chain_cz_n16   F C60  0.688 (  20.4 ms) C57  1.644 QK3  1.752 exact 7.24247051220317e-17
+A akeMarrakesh ring_cz_n12    T C60  0.832 (  17.4 ms) C57  2.892 QK3  3.840 exact 1.9255430583342559e-16
+A akeMarrakesh ring_cz_n12    F C60  0.688 (  17.3 ms) C57  1.908 QK3  3.588 exact 1.7867651802561113e-16
+A akeMarrakesh hh_cz_n16      T C60  1.104 (  22.6 ms) C57  1.276 QK3  1.324 exact 2.5370330836160804e-17
+A akeMarrakesh hh_cz_n16      F C60  0.960 (  20.6 ms) C57  1.132 QK3  1.192 exact 2.3418766925686896e-17
+A akeMarrakesh hh_cz_n20      T C60  1.104 (  24.4 ms) C57  1.276 QK3  1.288 exact 1.5287250632045613e-17
+A akeMarrakesh hh_cz_n20      F C60  0.960 (  45.9 ms) C57  1.132 QK3  1.144 exact 1.5395670849294163e-17
+A akeMarrakesh cx_chain_n12   T C60  1.948 (  52.0 ms) C57  1.948 QK3  2.068 exact 2.7755575615628914e-17
+A akeMarrakesh cx_chain_n12   F C60  1.804 (  42.2 ms) C57  1.804 QK3  1.924 exact 3.642919299551295e-17
+A akeMarrakesh cx_chain_n16   T C60  2.364 (  53.1 ms) C57  2.364 QK3  2.484 exact 2.710505431213761e-18
+A akeMarrakesh cx_chain_n16   F C60  2.220 (  63.9 ms) C57  2.220 QK3  2.340 exact 3.0357660829594124e-18
+A akeMarrakesh ra_n8_r2       T C60  1.080 (  16.7 ms) C57  1.080 QK3  1.140 exact 2.3592239273284576e-16
+A akeMarrakesh ra_n8_r2       F C60  0.972 (  47.1 ms) C57  0.972 QK3  1.032 exact 2.3592239273284576e-16
+A akeMarrakesh ra_n8_r4       T C60  1.568 (  28.9 ms) C57  1.568 QK3  1.676 exact 7.632783294297951e-17
+A akeMarrakesh ra_n8_r4       F C60  1.388 (  28.0 ms) C57  1.388 QK3  1.496 exact 1.1102230246251565e-16
+A akeMarrakesh ra_n12_r2      T C60  1.496 (  23.2 ms) C57  1.496 QK3  1.568 exact 2.7755575615628914e-17
+A akeMarrakesh ra_n12_r2      F C60  1.388 (  24.1 ms) C57  1.388 QK3  1.460 exact 6.591949208711867e-17
+A akeMarrakesh ra_n12_r4      T C60  1.984 (  40.5 ms) C57  1.984 QK3  2.104 exact 2.2551405187698492e-17
+A akeMarrakesh ra_n12_r4      F C60  1.804 (  43.5 ms) C57  1.804 QK3  1.924 exact 3.382710778154774e-17
+A akeMarrakesh ra_n16_r2      T C60  1.912 (  31.7 ms) C57  1.912 QK3  1.984 exact 1.1275702593849246e-17
+A akeMarrakesh ra_n16_r2      F C60  1.804 (  29.0 ms) C57  1.804 QK3  1.876 exact 9.974659986866641e-18
+A akeMarrakesh ra_n16_r4      T C60  2.400 (  51.7 ms) C57  2.400 QK3  2.520 exact 1.691355389077387e-17
+A akeMarrakesh ra_n16_r4      F C60  2.220 (  50.4 ms) C57  2.220 QK3  2.340 exact 2.42861286636753e-17
+A akeMarrakesh su2_n8_r2      T C60  1.080 (  17.4 ms) C57  1.080 QK3  1.140 exact 6.591949208711867e-17
+A akeMarrakesh su2_n8_r2      F C60  0.972 (  17.1 ms) C57  0.972 QK3  1.032 exact 4.5102810375396984e-17
+A akeMarrakesh su2_n8_r4      T C60  1.568 (  27.8 ms) C57  1.568 QK3  1.676 exact 1.249000902703301e-16
+A akeMarrakesh su2_n8_r4      F C60  1.388 (  28.3 ms) C57  1.388 QK3  1.496 exact 1.3183898417423734e-16
+A akeMarrakesh su2_n12_r2     T C60  1.496 (  23.6 ms) C57  1.496 QK3  1.568 exact 1.734723475976807e-17
+A akeMarrakesh su2_n12_r2     F C60  1.388 (  24.8 ms) C57  1.388 QK3  1.460 exact 1.3877787807814457e-17
+A akeMarrakesh su2_n12_r4     T C60  1.984 (  40.3 ms) C57  1.984 QK3  2.104 exact 2.0816681711721685e-17
+A akeMarrakesh su2_n12_r4     F C60  1.804 (  45.1 ms) C57  1.804 QK3  1.924 exact 4.423544863740858e-17
+A akeMarrakesh su2_n16_r2     T C60  1.912 (  30.4 ms) C57  1.912 QK3  1.984 exact 8.456776945386935e-18
+A akeMarrakesh su2_n16_r2     F C60  1.804 (  34.1 ms) C57  1.804 QK3  1.876 exact 1.0408340855860843e-17
+A akeMarrakesh su2_n16_r4     T C60  2.400 (  58.6 ms) C57  2.400 QK3  2.520 exact 4.336808689942018e-18
+A akeMarrakesh su2_n16_r4     F C60  2.220 (  54.2 ms) C57  2.220 QK3  2.340 exact 2.8189256484623115e-18
+A akeMarrakesh clf_ring12_L4  T C60  0.904 (  20.0 ms) C57  3.000 QK3  4.056 exact 2.0296264668928643e-16
+A akeMarrakesh clf_ring12_L4  F C60  0.724 (  18.9 ms) C57  1.908 QK3  3.660 exact 1.8908485888147197e-16
+A akeMarrakesh clf_ring12_L8  T C60  1.736 (  32.4 ms) C57  5.608 QK3  8.328 exact 2.6020852139652106e-16
+A akeMarrakesh clf_ring12_L8  F C60  1.412 (  32.6 ms) C57  3.744 QK3  7.608 exact 2.5500435096859064e-16
+A FakeKingston chain_cz_n12   T C60  0.800 (  16.0 ms) C57  1.412 QK3  1.476 exact 6.661338147750939e-16
+A FakeKingston chain_cz_n12   F C60  0.672 (  16.5 ms) C57  1.348 QK3  1.348 exact 5.967448757360216e-16
+A FakeKingston chain_cz_n16   T C60  0.800 (  20.4 ms) C57  1.684 QK3  1.844 exact 7.676151381197371e-17
+A FakeKingston chain_cz_n16   F C60  0.672 (  19.9 ms) C57  1.556 QK3  1.684 exact 7.24247051220317e-17
+A FakeKingston ring_cz_n12    T C60  0.800 (  17.1 ms) C57  2.752 QK3  3.648 exact 1.9255430583342559e-16
+A FakeKingston ring_cz_n12    F C60  0.672 (  16.3 ms) C57  1.800 QK3  3.456 exact 1.7867651802561113e-16
+A FakeKingston hh_cz_n16      T C60  1.072 (  19.2 ms) C57  1.240 QK3  1.240 exact 2.5370330836160804e-17
+A FakeKingston hh_cz_n16      F C60  0.944 (  20.4 ms) C57  1.112 QK3  1.112 exact 2.3418766925686896e-17
+A FakeKingston hh_cz_n20      T C60  1.072 (  24.3 ms) C57  1.264 QK3  1.272 exact 1.5287250632045613e-17
+A FakeKingston hh_cz_n20      F C60  0.944 (  29.6 ms) C57  1.112 QK3  1.112 exact 1.5395670849294163e-17
+A FakeKingston cx_chain_n12   T C60  1.860 (  44.8 ms) C57  1.860 QK3  1.860 exact 2.7755575615628914e-17
+A FakeKingston cx_chain_n12   F C60  1.732 (  41.9 ms) C57  1.732 QK3  1.732 exact 3.642919299551295e-17
+A FakeKingston cx_chain_n16   T C60  2.260 (  54.5 ms) C57  2.260 QK3  2.260 exact 2.710505431213761e-18
+A FakeKingston cx_chain_n16   F C60  2.132 (  56.5 ms) C57  2.132 QK3  2.132 exact 3.0357660829594124e-18
+A FakeKingston ra_n8_r2       T C60  1.028 (  17.3 ms) C57  1.028 QK3  1.028 exact 2.3592239273284576e-16
+A FakeKingston ra_n8_r2       F C60  0.932 (  16.5 ms) C57  0.932 QK3  0.932 exact 2.3592239273284576e-16
+A FakeKingston ra_n8_r4       T C60  1.492 (  26.2 ms) C57  1.492 QK3  1.492 exact 7.632783294297951e-17
+A FakeKingston ra_n8_r4       F C60  1.332 (  26.6 ms) C57  1.332 QK3  1.332 exact 1.1102230246251565e-16
+A FakeKingston ra_n12_r2      T C60  1.428 (  22.1 ms) C57  1.428 QK3  1.428 exact 2.7755575615628914e-17
+A FakeKingston ra_n12_r2      F C60  1.332 (  22.2 ms) C57  1.332 QK3  1.332 exact 6.591949208711867e-17
+A FakeKingston ra_n12_r4      T C60  1.892 (  37.8 ms) C57  1.892 QK3  1.892 exact 2.2551405187698492e-17
+A FakeKingston ra_n12_r4      F C60  1.732 (  37.7 ms) C57  1.732 QK3  1.732 exact 3.382710778154774e-17
+A FakeKingston ra_n16_r2      T C60  1.828 (  28.7 ms) C57  1.828 QK3  1.828 exact 1.1275702593849246e-17
+A FakeKingston ra_n16_r2      F C60  1.732 (  30.8 ms) C57  1.732 QK3  1.732 exact 9.974659986866641e-18
+A FakeKingston ra_n16_r4      T C60  2.292 (  50.7 ms) C57  2.292 QK3  2.292 exact 1.691355389077387e-17
+A FakeKingston ra_n16_r4      F C60  2.132 (  50.6 ms) C57  2.132 QK3  2.132 exact 2.42861286636753e-17
+A FakeKingston su2_n8_r2      T C60  1.028 (  19.0 ms) C57  1.028 QK3  1.028 exact 6.591949208711867e-17
+A FakeKingston su2_n8_r2      F C60  0.932 (  18.4 ms) C57  0.932 QK3  0.932 exact 4.5102810375396984e-17
+A FakeKingston su2_n8_r4      T C60  1.492 (  30.4 ms) C57  1.492 QK3  1.492 exact 1.249000902703301e-16
+A FakeKingston su2_n8_r4      F C60  1.332 (  29.6 ms) C57  1.332 QK3  1.332 exact 1.3183898417423734e-16
+A FakeKingston su2_n12_r2     T C60  1.428 ( 135.0 ms) C57  1.428 QK3  1.428 exact 1.734723475976807e-17
+A FakeKingston su2_n12_r2     F C60  1.332 (  23.3 ms) C57  1.332 QK3  1.332 exact 1.3877787807814457e-17
+A FakeKingston su2_n12_r4     T C60  1.892 (  60.1 ms) C57  1.892 QK3  1.892 exact 2.0816681711721685e-17
+A FakeKingston su2_n12_r4     F C60  1.732 (  52.9 ms) C57  1.732 QK3  1.732 exact 4.423544863740858e-17
+A FakeKingston su2_n16_r2     T C60  1.828 (  33.4 ms) C57  1.828 QK3  1.828 exact 8.456776945386935e-18
+A FakeKingston su2_n16_r2     F C60  1.732 (  31.7 ms) C57  1.732 QK3  1.732 exact 1.0408340855860843e-17
+A FakeKingston su2_n16_r4     T C60  2.292 (  54.0 ms) C57  2.292 QK3  2.292 exact 4.336808689942018e-18
+A FakeKingston su2_n16_r4     F C60  2.132 (  55.6 ms) C57  2.132 QK3  2.132 exact 2.8189256484623115e-18
+A FakeKingston clf_ring12_L4  T C60  0.864 (  20.3 ms) C57  2.720 QK3  3.776 exact 2.0296264668928643e-16
+A FakeKingston clf_ring12_L4  F C60  0.704 ( 100.1 ms) C57  1.832 QK3  3.552 exact 1.8908485888147197e-16
+A FakeKingston clf_ring12_L8  T C60  1.664 (  32.5 ms) C57  5.340 QK3  7.552 exact 2.6020852139652106e-16
+A FakeKingston clf_ring12_L8  F C60  1.376 (  32.3 ms) C57  3.568 QK3  7.168 exact 2.5500435096859064e-16
+A FakeTorino   chain_cz_n12   T C60  0.800 (  15.9 ms) C57  1.476 QK3  1.624 exact 6.661338147750939e-16
+A FakeTorino   chain_cz_n12   F C60  0.672 (  16.7 ms) C57  1.444 QK3  1.960 exact 5.967448757360216e-16
+A FakeTorino   chain_cz_n16   T C60  0.800 (  33.6 ms) C57  1.812 QK3  2.424 exact 7.676151381197371e-17
+A FakeTorino   chain_cz_n16   F C60  0.672 (  98.3 ms) C57  1.684 QK3  2.232 exact 7.24247051220317e-17
+A FakeTorino   ring_cz_n12    T C60  1.328 (  16.3 ms) C57  2.800 QK3  3.872 exact 1.9255430583342559e-16
+A FakeTorino   ring_cz_n12    F C60  1.200 (  16.9 ms) C57  1.832 QK3  3.712 exact 1.7867651802561113e-16
+A FakeTorino   hh_cz_n16      T C60  1.548 (  23.2 ms) C57  1.240 QK3  1.540 exact 2.5370330836160804e-17
+A FakeTorino   hh_cz_n16      F C60  1.420 (  20.4 ms) C57  1.112 QK3  1.412 exact 2.3418766925686896e-17
+A FakeTorino   hh_cz_n20      T C60  1.388 (  25.0 ms) C57  1.432 QK3  1.672 exact 1.5287250632045613e-17
+A FakeTorino   hh_cz_n20      F C60  1.260 (  28.9 ms) C57  1.304 QK3  1.512 exact 1.5395670849294163e-17
+A FakeTorino   cx_chain_n12   T C60  1.860 (  43.9 ms) C57  1.860 QK3  2.040 exact 2.7755575615628914e-17
+A FakeTorino   cx_chain_n12   F C60  1.732 (  43.7 ms) C57  1.732 QK3  1.912 exact 3.642919299551295e-17
+A FakeTorino   cx_chain_n16   T C60  2.260 (  52.8 ms) C57  2.260 QK3  2.904 exact 2.710505431213761e-18
+A FakeTorino   cx_chain_n16   F C60  2.132 (  51.9 ms) C57  2.132 QK3  2.776 exact 3.0357660829594124e-18
+A FakeTorino   ra_n8_r2       T C60  1.028 (  17.8 ms) C57  1.028 QK3  1.352 exact 2.3592239273284576e-16
+A FakeTorino   ra_n8_r2       F C60  0.932 (  15.1 ms) C57  0.932 QK3  1.256 exact 2.3592239273284576e-16
+A FakeTorino   ra_n8_r4       T C60  1.492 (  26.3 ms) C57  1.492 QK3  1.572 exact 7.632783294297951e-17
+A FakeTorino   ra_n8_r4       F C60  1.332 (  25.5 ms) C57  1.332 QK3  1.412 exact 1.1102230246251565e-16
+A FakeTorino   ra_n12_r2      T C60  1.428 (  34.5 ms) C57  1.428 QK3  1.808 exact 2.7755575615628914e-17
+A FakeTorino   ra_n12_r2      F C60  1.332 (  21.8 ms) C57  1.332 QK3  1.712 exact 6.591949208711867e-17
+A FakeTorino   ra_n12_r4      T C60  1.892 (  37.7 ms) C57  1.892 QK3  2.072 exact 2.2551405187698492e-17
+A FakeTorino   ra_n12_r4      F C60  1.732 (  40.9 ms) C57  1.732 QK3  1.912 exact 3.382710778154774e-17
+A FakeTorino   ra_n16_r2      T C60  1.828 (  28.6 ms) C57  1.828 QK3  2.208 exact 1.1275702593849246e-17
+A FakeTorino   ra_n16_r2      F C60  1.732 (  29.8 ms) C57  1.732 QK3  2.112 exact 9.974659986866641e-18
+A FakeTorino   ra_n16_r4      T C60  2.292 (  52.0 ms) C57  2.292 QK3  2.936 exact 1.691355389077387e-17
+A FakeTorino   ra_n16_r4      F C60  2.132 (  52.7 ms) C57  2.132 QK3  2.776 exact 2.42861286636753e-17
+A FakeTorino   su2_n8_r2      T C60  1.028 (  17.0 ms) C57  1.028 QK3  1.352 exact 6.591949208711867e-17
+A FakeTorino   su2_n8_r2      F C60  0.932 (  17.3 ms) C57  0.932 QK3  1.256 exact 4.5102810375396984e-17
+A FakeTorino   su2_n8_r4      T C60  1.492 (  29.6 ms) C57  1.492 QK3  1.572 exact 1.249000902703301e-16
+A FakeTorino   su2_n8_r4      F C60  1.332 (  40.4 ms) C57  1.332 QK3  1.412 exact 1.3183898417423734e-16
+A FakeTorino   su2_n12_r2     T C60  1.428 (  25.1 ms) C57  1.428 QK3  1.808 exact 1.734723475976807e-17
+A FakeTorino   su2_n12_r2     F C60  1.332 (  35.8 ms) C57  1.332 QK3  1.712 exact 1.3877787807814457e-17
+A FakeTorino   su2_n12_r4     T C60  1.892 (  41.8 ms) C57  1.892 QK3  2.072 exact 2.0816681711721685e-17
+A FakeTorino   su2_n12_r4     F C60  1.732 (  40.9 ms) C57  1.732 QK3  1.912 exact 4.423544863740858e-17
+A FakeTorino   su2_n16_r2     T C60  1.828 (  31.4 ms) C57  1.828 QK3  2.208 exact 8.456776945386935e-18
+A FakeTorino   su2_n16_r2     F C60  1.732 (  30.1 ms) C57  1.732 QK3  2.112 exact 1.0408340855860843e-17
+A FakeTorino   su2_n16_r4     T C60  2.292 (  53.5 ms) C57  2.292 QK3  2.936 exact 4.336808689942018e-18
+A FakeTorino   su2_n16_r4     F C60  2.132 (  55.2 ms) C57  2.132 QK3  2.776 exact 2.8189256484623115e-18
+A FakeTorino   clf_ring12_L4  T C60  1.392 (  19.3 ms) C57  2.800 QK3  4.000 exact 2.0296264668928643e-16
+A FakeTorino   clf_ring12_L4  F C60  1.232 (  19.5 ms) C57  1.832 QK3  3.744 exact 1.8908485888147197e-16
+A FakeTorino   clf_ring12_L8  T C60  2.720 (  39.0 ms) C57  5.652 QK3  8.064 exact 2.6020852139652106e-16
+A FakeTorino   clf_ring12_L8  F C60  2.432 (  34.6 ms) C57  3.576 QK3  7.648 exact 2.5500435096859064e-16
+A ot_marrakesh chain_cz_n12   T C60  0.832 (  18.3 ms) C57  1.444 QK3  1.576 exact 6.661338147750939e-16
+A ot_marrakesh chain_cz_n12   F C60  0.688 (  24.4 ms) C57  1.408 QK3  1.456 exact 5.967448757360216e-16
+A ot_marrakesh chain_cz_n16   T C60  0.832 (  22.6 ms) C57  1.716 QK3  1.944 exact 7.676151381197371e-17
+A ot_marrakesh chain_cz_n16   F C60  0.688 (  20.8 ms) C57  1.644 QK3  1.728 exact 7.24247051220317e-17
+A ot_marrakesh ring_cz_n12    T C60  0.832 (  31.5 ms) C57  2.892 QK3  3.876 exact 1.9255430583342559e-16
+A ot_marrakesh ring_cz_n12    F C60  0.688 ( 151.4 ms) C57  1.872 QK3  3.624 exact 1.7867651802561113e-16
+A ot_marrakesh hh_cz_n16      T C60  1.104 (  20.7 ms) C57  1.276 QK3  1.324 exact 2.5370330836160804e-17
+A ot_marrakesh hh_cz_n16      F C60  0.960 (  20.7 ms) C57  1.132 QK3  1.192 exact 2.3418766925686896e-17
+A ot_marrakesh hh_cz_n20      T C60  1.104 (  24.2 ms) C57  1.276 QK3  1.288 exact 1.5287250632045613e-17
+A ot_marrakesh hh_cz_n20      F C60  0.960 (  31.9 ms) C57  1.132 QK3  1.156 exact 1.5395670849294163e-17
+A ot_marrakesh cx_chain_n12   T C60  1.948 (  46.8 ms) C57  1.948 QK3  2.008 exact 2.7755575615628914e-17
+A ot_marrakesh cx_chain_n12   F C60  1.804 (  47.0 ms) C57  1.804 QK3  1.864 exact 3.642919299551295e-17
+A ot_marrakesh cx_chain_n16   T C60  2.364 (  62.5 ms) C57  2.364 QK3  2.484 exact 2.710505431213761e-18
+A ot_marrakesh cx_chain_n16   F C60  2.220 (  65.1 ms) C57  2.220 QK3  2.340 exact 3.0357660829594124e-18
+A ot_marrakesh ra_n8_r2       T C60  1.080 (  17.2 ms) C57  1.080 QK3  1.104 exact 2.3592239273284576e-16
+A ot_marrakesh ra_n8_r2       F C60  0.972 (  24.8 ms) C57  0.972 QK3  0.996 exact 2.3592239273284576e-16
+A ot_marrakesh ra_n8_r4       T C60  1.568 (  26.4 ms) C57  1.568 QK3  1.616 exact 7.632783294297951e-17
+A ot_marrakesh ra_n8_r4       F C60  1.388 (  26.0 ms) C57  1.388 QK3  1.436 exact 1.1102230246251565e-16
+A ot_marrakesh ra_n12_r2      T C60  1.496 (  24.5 ms) C57  1.496 QK3  1.532 exact 2.7755575615628914e-17
+A ot_marrakesh ra_n12_r2      F C60  1.388 (  22.3 ms) C57  1.388 QK3  1.424 exact 6.591949208711867e-17
+A ot_marrakesh ra_n12_r4      T C60  1.984 (  37.6 ms) C57  1.984 QK3  2.044 exact 2.2551405187698492e-17
+A ot_marrakesh ra_n12_r4      F C60  1.804 (  37.3 ms) C57  1.804 QK3  1.864 exact 3.382710778154774e-17
+A ot_marrakesh ra_n16_r2      T C60  1.912 (  29.0 ms) C57  1.912 QK3  1.984 exact 1.1275702593849246e-17
+A ot_marrakesh ra_n16_r2      F C60  1.804 (  43.8 ms) C57  1.804 QK3  1.876 exact 9.974659986866641e-18
+A ot_marrakesh ra_n16_r4      T C60  2.400 (  51.7 ms) C57  2.400 QK3  2.520 exact 1.691355389077387e-17
+A ot_marrakesh ra_n16_r4      F C60  2.220 (  77.1 ms) C57  2.220 QK3  2.340 exact 2.42861286636753e-17
+A ot_marrakesh su2_n8_r2      T C60  1.080 (  22.7 ms) C57  1.080 QK3  1.104 exact 6.591949208711867e-17
+A ot_marrakesh su2_n8_r2      F C60  0.972 (  18.3 ms) C57  0.972 QK3  0.996 exact 4.5102810375396984e-17
+A ot_marrakesh su2_n8_r4      T C60  1.568 (  28.9 ms) C57  1.568 QK3  1.616 exact 1.249000902703301e-16
+A ot_marrakesh su2_n8_r4      F C60  1.388 (  29.2 ms) C57  1.388 QK3  1.436 exact 1.3183898417423734e-16
+A ot_marrakesh su2_n12_r2     T C60  1.496 (  25.0 ms) C57  1.496 QK3  1.532 exact 1.734723475976807e-17
+A ot_marrakesh su2_n12_r2     F C60  1.388 (  24.3 ms) C57  1.388 QK3  1.424 exact 1.3877787807814457e-17
+A ot_marrakesh su2_n12_r4     T C60  1.984 (  42.8 ms) C57  1.984 QK3  2.044 exact 2.0816681711721685e-17
+A ot_marrakesh su2_n12_r4     F C60  1.804 (  43.1 ms) C57  1.804 QK3  1.864 exact 4.423544863740858e-17
+A ot_marrakesh su2_n16_r2     T C60  1.912 (  30.7 ms) C57  1.912 QK3  1.984 exact 8.456776945386935e-18
+A ot_marrakesh su2_n16_r2     F C60  1.804 (  34.0 ms) C57  1.804 QK3  1.876 exact 1.0408340855860843e-17
+A ot_marrakesh su2_n16_r4     T C60  2.400 (  57.5 ms) C57  2.400 QK3  2.520 exact 4.336808689942018e-18
+A ot_marrakesh su2_n16_r4     F C60  2.220 (  93.9 ms) C57  2.220 QK3  2.340 exact 2.8189256484623115e-18
+A ot_marrakesh clf_ring12_L4  T C60  0.904 (  20.6 ms) C57  2.856 QK3  4.020 exact 2.0296264668928643e-16
+A ot_marrakesh clf_ring12_L4  F C60  0.724 (  20.3 ms) C57  1.908 QK3  3.732 exact 1.8908485888147197e-16
+A ot_marrakesh clf_ring12_L8  T C60  1.736 (  32.9 ms) C57  5.608 QK3  7.896 exact 2.6020852139652106e-16
+A ot_marrakesh clf_ring12_L8  F C60  1.412 (  42.3 ms) C57  3.708 QK3  7.680 exact 2.5500435096859064e-16
+B FakeFez      C57VAL qaoa_n12_p2      T both refuse
+B FakeFez      C57VAL qaoa_n12_p2      F both refuse
+B FakeFez      C57VAL qaoa_n20_p2      T both refuse
+B FakeFez      C57VAL qaoa_n20_p2      F both refuse
+B FakeFez      C57VAL ba_n14           T both refuse
+B FakeFez      C57VAL ba_n14           F both refuse
+B FakeFez      C57VAL ba_n16           T both refuse
+B FakeFez      C57VAL ba_n16           F both refuse
+B FakeFez      C57VAL ba_n18           T both refuse
+B FakeFez      C57VAL ba_n18           F both refuse
+B FakeFez      C57VAL ba_n20           T both refuse
+B FakeFez      C57VAL ba_n20           F both refuse
+B FakeFez      C57VAL tfim_n12         T identical
+B FakeFez      C57VAL tfim_n12         F identical
+B FakeFez      C57VAL tfim_n16         T identical
+B FakeFez      C57VAL tfim_n16         F identical
+B FakeFez      C57VAL ghz_n12          T NEW (c59 refused)
+B FakeFez      C57VAL ghz_n12          F NEW (c59 refused)
+B FakeFez      C57VAL tfimP_n12        T identical
+B FakeFez      C57VAL tfimP_n12        F identical
+B FakeFez      C57VAL tfimP_n16        T identical
+B FakeFez      C57VAL tfimP_n16        F identical
+B FakeFez      C57VAL tfim_n20_r3      T identical
+B FakeFez      C57VAL tfim_n20_r3      F identical
+B FakeFez      C57VAL heis_n12_r2      T identical
+B FakeFez      C57VAL heis_n12_r2      F identical
+B FakeFez      C57VAL heis2d_n16_r1    T both refuse
+B FakeFez      C57VAL heis2d_n16_r1    F both refuse
+B FakeFez      C57VAL chem_n12_r1      T both refuse
+B FakeFez      C57VAL chem_n12_r1      F both refuse
+B FakeFez      C57VAL qaoa3reg_n20_r3  T both refuse
+B FakeFez      C57VAL qaoa3reg_n20_r3  F both refuse
+B FakeFez      C57VAL qaoa3reg_n40_r3  T both refuse
+B FakeFez      C57VAL qaoa3reg_n40_r3  F both refuse
+B FakeFez      C57VAL tfim_n40_r2      T identical
+B FakeFez      C57VAL tfim_n40_r2      F identical
+B FakeFez      C57VAL clf_n4_L3        T both refuse
+B FakeFez      C57VAL clf_n4_L3        F both refuse
+B FakeFez      C57VAL clf_n4_L5        T both refuse
+B FakeFez      C57VAL clf_n4_L5        F both refuse
+B FakeFez      C57VAL clf_n4_L9        T both refuse
+B FakeFez      C57VAL clf_n4_L9        F both refuse
+B FakeFez      C57VAL clf_n6_L3        T both refuse
+B FakeFez      C57VAL clf_n6_L3        F both refuse
+B FakeFez      C57VAL clf_n6_L5        T both refuse
+B FakeFez      C57VAL clf_n6_L5        F both refuse
+B FakeFez      C57VAL clf_n6_L9        T both refuse
+B FakeFez      C57VAL clf_n6_L9        F both refuse
+B FakeFez      C57VAL hhI_n16          T identical
+B FakeFez      C57VAL hhI_n16          F identical
+B FakeFez      C57VAL hhI_n20          T identical
+B FakeFez      C57VAL hhI_n20          F identical
+B FakeFez      C57VAL ring12_tfim      T identical
+B FakeFez      C57VAL ring12_tfim      F identical
+B FakeFez      C57VAL hhtree_heis_n16  T identical
+B FakeFez      C57VAL hhtree_heis_n16  F identical
+B FakeFez      W4     chain_rzz_n12    T identical
+B FakeFez      W4     chain_rzz_n12    F identical
+B FakeFez      W4     chain_rzz_n16    T identical
+B FakeFez      W4     chain_rzz_n16    F identical
+B FakeFez      W4     chain_rzz_n20    T identical
+B FakeFez      W4     chain_rzz_n20    F identical
+B FakeFez      W4     ring_rzz_n12     T identical
+B FakeFez      W4     ring_rzz_n12     F identical
+B FakeFez      W4     hh_rzz_n16       T identical
+B FakeFez      W4     hh_rzz_n16       F identical
+B FakeFez      W4     hh_rzz_n20       T identical
+B FakeFez      W4     hh_rzz_n20       F identical
+B FakeFez      W4     hhtree_heis_n16  T identical
+B FakeFez      W4     hhtree_heis_n16  F identical
+B FakeFez      W4     chain_cz_n12     T NEW (c59 refused)
+B FakeFez      W4     chain_cz_n12     F NEW (c59 refused)
+B FakeFez      W4     chain_cz_n16     T NEW (c59 refused)
+B FakeFez      W4     chain_cz_n16     F NEW (c59 refused)
+B FakeFez      W4     chain_pe_n12     T identical
+B FakeFez      W4     chain_pe_n12     F identical
+B akeMarrakesh C57VAL qaoa_n12_p2      T both refuse
+B akeMarrakesh C57VAL qaoa_n12_p2      F both refuse
+B akeMarrakesh C57VAL qaoa_n20_p2      T both refuse
+B akeMarrakesh C57VAL qaoa_n20_p2      F both refuse
+B akeMarrakesh C57VAL ba_n14           T both refuse
+B akeMarrakesh C57VAL ba_n14           F both refuse
+B akeMarrakesh C57VAL ba_n16           T both refuse
+B akeMarrakesh C57VAL ba_n16           F both refuse
+B akeMarrakesh C57VAL ba_n18           T both refuse
+B akeMarrakesh C57VAL ba_n18           F both refuse
+B akeMarrakesh C57VAL ba_n20           T both refuse
+B akeMarrakesh C57VAL ba_n20           F both refuse
+B akeMarrakesh C57VAL tfim_n12         T identical
+B akeMarrakesh C57VAL tfim_n12         F identical
+B akeMarrakesh C57VAL tfim_n16         T identical
+B akeMarrakesh C57VAL tfim_n16         F identical
+B akeMarrakesh C57VAL ghz_n12          T NEW (c59 refused)
+B akeMarrakesh C57VAL ghz_n12          F NEW (c59 refused)
+B akeMarrakesh C57VAL tfimP_n12        T identical
+B akeMarrakesh C57VAL tfimP_n12        F identical
+B akeMarrakesh C57VAL tfimP_n16        T identical
+B akeMarrakesh C57VAL tfimP_n16        F identical
+B akeMarrakesh C57VAL tfim_n20_r3      T identical
+B akeMarrakesh C57VAL tfim_n20_r3      F identical
+B akeMarrakesh C57VAL heis_n12_r2      T identical
+B akeMarrakesh C57VAL heis_n12_r2      F identical
+B akeMarrakesh C57VAL heis2d_n16_r1    T both refuse
+B akeMarrakesh C57VAL heis2d_n16_r1    F both refuse
+B akeMarrakesh C57VAL chem_n12_r1      T both refuse
+B akeMarrakesh C57VAL chem_n12_r1      F both refuse
+B akeMarrakesh C57VAL qaoa3reg_n20_r3  T both refuse
+B akeMarrakesh C57VAL qaoa3reg_n20_r3  F both refuse
+B akeMarrakesh C57VAL qaoa3reg_n40_r3  T both refuse
+B akeMarrakesh C57VAL qaoa3reg_n40_r3  F both refuse
+B akeMarrakesh C57VAL tfim_n40_r2      T identical
+B akeMarrakesh C57VAL tfim_n40_r2      F identical
+B akeMarrakesh C57VAL clf_n4_L3        T both refuse
+B akeMarrakesh C57VAL clf_n4_L3        F both refuse
+B akeMarrakesh C57VAL clf_n4_L5        T both refuse
+B akeMarrakesh C57VAL clf_n4_L5        F both refuse
+B akeMarrakesh C57VAL clf_n4_L9        T both refuse
+B akeMarrakesh C57VAL clf_n4_L9        F both refuse
+B akeMarrakesh C57VAL clf_n6_L3        T both refuse
+B akeMarrakesh C57VAL clf_n6_L3        F both refuse
+B akeMarrakesh C57VAL clf_n6_L5        T both refuse
+B akeMarrakesh C57VAL clf_n6_L5        F both refuse
+B akeMarrakesh C57VAL clf_n6_L9        T both refuse
+B akeMarrakesh C57VAL clf_n6_L9        F both refuse
+B akeMarrakesh C57VAL hhI_n16          T identical
+B akeMarrakesh C57VAL hhI_n16          F identical
+B akeMarrakesh C57VAL hhI_n20          T identical
+B akeMarrakesh C57VAL hhI_n20          F identical
+B akeMarrakesh C57VAL ring12_tfim      T identical
+B akeMarrakesh C57VAL ring12_tfim      F identical
+B akeMarrakesh C57VAL hhtree_heis_n16  T identical
+B akeMarrakesh C57VAL hhtree_heis_n16  F identical
+B akeMarrakesh W4     chain_rzz_n12    T identical
+B akeMarrakesh W4     chain_rzz_n12    F identical
+B akeMarrakesh W4     chain_rzz_n16    T identical
+B akeMarrakesh W4     chain_rzz_n16    F identical
+B akeMarrakesh W4     chain_rzz_n20    T identical
+B akeMarrakesh W4     chain_rzz_n20    F identical
+B akeMarrakesh W4     ring_rzz_n12     T identical
+B akeMarrakesh W4     ring_rzz_n12     F identical
+B akeMarrakesh W4     hh_rzz_n16       T identical
+B akeMarrakesh W4     hh_rzz_n16       F identical
+B akeMarrakesh W4     hh_rzz_n20       T identical
+B akeMarrakesh W4     hh_rzz_n20       F identical
+B akeMarrakesh W4     hhtree_heis_n16  T identical
+B akeMarrakesh W4     hhtree_heis_n16  F identical
+B akeMarrakesh W4     chain_cz_n12     T NEW (c59 refused)
+B akeMarrakesh W4     chain_cz_n12     F NEW (c59 refused)
+B akeMarrakesh W4     chain_cz_n16     T NEW (c59 refused)
+B akeMarrakesh W4     chain_cz_n16     F NEW (c59 refused)
+B akeMarrakesh W4     chain_pe_n12     T identical
+B akeMarrakesh W4     chain_pe_n12     F identical
+B FakeKingston C57VAL qaoa_n12_p2      T both refuse
+B FakeKingston C57VAL qaoa_n12_p2      F both refuse
+B FakeKingston C57VAL qaoa_n20_p2      T both refuse
+B FakeKingston C57VAL qaoa_n20_p2      F both refuse
+B FakeKingston C57VAL ba_n14           T both refuse
+B FakeKingston C57VAL ba_n14           F both refuse
+B FakeKingston C57VAL ba_n16           T both refuse
+B FakeKingston C57VAL ba_n16           F both refuse
+B FakeKingston C57VAL ba_n18           T both refuse
+B FakeKingston C57VAL ba_n18           F both refuse
+B FakeKingston C57VAL ba_n20           T both refuse
+B FakeKingston C57VAL ba_n20           F both refuse
+B FakeKingston C57VAL tfim_n12         T identical
+B FakeKingston C57VAL tfim_n12         F identical
+B FakeKingston C57VAL tfim_n16         T identical
+B FakeKingston C57VAL tfim_n16         F identical
+B FakeKingston C57VAL ghz_n12          T NEW (c59 refused)
+B FakeKingston C57VAL ghz_n12          F NEW (c59 refused)
+B FakeKingston C57VAL tfimP_n12        T identical
+B FakeKingston C57VAL tfimP_n12        F identical
+B FakeKingston C57VAL tfimP_n16        T identical
+B FakeKingston C57VAL tfimP_n16        F identical
+B FakeKingston C57VAL tfim_n20_r3      T identical
+B FakeKingston C57VAL tfim_n20_r3      F identical
+B FakeKingston C57VAL heis_n12_r2      T identical
+B FakeKingston C57VAL heis_n12_r2      F identical
+B FakeKingston C57VAL heis2d_n16_r1    T both refuse
+B FakeKingston C57VAL heis2d_n16_r1    F both refuse
+B FakeKingston C57VAL chem_n12_r1      T both refuse
+B FakeKingston C57VAL chem_n12_r1      F both refuse
+B FakeKingston C57VAL qaoa3reg_n20_r3  T both refuse
+B FakeKingston C57VAL qaoa3reg_n20_r3  F both refuse
+B FakeKingston C57VAL qaoa3reg_n40_r3  T both refuse
+B FakeKingston C57VAL qaoa3reg_n40_r3  F both refuse
+B FakeKingston C57VAL tfim_n40_r2      T identical
+B FakeKingston C57VAL tfim_n40_r2      F identical
+B FakeKingston C57VAL clf_n4_L3        T both refuse
+B FakeKingston C57VAL clf_n4_L3        F both refuse
+B FakeKingston C57VAL clf_n4_L5        T both refuse
+B FakeKingston C57VAL clf_n4_L5        F both refuse
+B FakeKingston C57VAL clf_n4_L9        T both refuse
+B FakeKingston C57VAL clf_n4_L9        F both refuse
+B FakeKingston C57VAL clf_n6_L3        T both refuse
+B FakeKingston C57VAL clf_n6_L3        F both refuse
+B FakeKingston C57VAL clf_n6_L5        T both refuse
+B FakeKingston C57VAL clf_n6_L5        F both refuse
+B FakeKingston C57VAL clf_n6_L9        T both refuse
+B FakeKingston C57VAL clf_n6_L9        F both refuse
+B FakeKingston C57VAL hhI_n16          T identical
+B FakeKingston C57VAL hhI_n16          F identical
+B FakeKingston C57VAL hhI_n20          T identical
+B FakeKingston C57VAL hhI_n20          F identical
+B FakeKingston C57VAL ring12_tfim      T identical
+B FakeKingston C57VAL ring12_tfim      F identical
+B FakeKingston C57VAL hhtree_heis_n16  T identical
+B FakeKingston C57VAL hhtree_heis_n16  F identical
+B FakeKingston W4     chain_rzz_n12    T identical
+B FakeKingston W4     chain_rzz_n12    F identical
+B FakeKingston W4     chain_rzz_n16    T identical
+B FakeKingston W4     chain_rzz_n16    F identical
+B FakeKingston W4     chain_rzz_n20    T identical
+B FakeKingston W4     chain_rzz_n20    F identical
+B FakeKingston W4     ring_rzz_n12     T identical
+B FakeKingston W4     ring_rzz_n12     F identical
+B FakeKingston W4     hh_rzz_n16       T identical
+B FakeKingston W4     hh_rzz_n16       F identical
+B FakeKingston W4     hh_rzz_n20       T identical
+B FakeKingston W4     hh_rzz_n20       F identical
+B FakeKingston W4     hhtree_heis_n16  T identical
+B FakeKingston W4     hhtree_heis_n16  F identical
+B FakeKingston W4     chain_cz_n12     T NEW (c59 refused)
+B FakeKingston W4     chain_cz_n12     F NEW (c59 refused)
+B FakeKingston W4     chain_cz_n16     T NEW (c59 refused)
+B FakeKingston W4     chain_cz_n16     F NEW (c59 refused)
+B FakeKingston W4     chain_pe_n12     T identical
+B FakeKingston W4     chain_pe_n12     F identical
+B FakeTorino   C57VAL qaoa_n12_p2      T both refuse
+B FakeTorino   C57VAL qaoa_n12_p2      F both refuse
+B FakeTorino   C57VAL qaoa_n20_p2      T both refuse
+B FakeTorino   C57VAL qaoa_n20_p2      F both refuse
+B FakeTorino   C57VAL ba_n14           T both refuse
+B FakeTorino   C57VAL ba_n14           F both refuse
+B FakeTorino   C57VAL ba_n16           T both refuse
+B FakeTorino   C57VAL ba_n16           F both refuse
+B FakeTorino   C57VAL ba_n18           T both refuse
+B FakeTorino   C57VAL ba_n18           F both refuse
+B FakeTorino   C57VAL ba_n20           T both refuse
+B FakeTorino   C57VAL ba_n20           F both refuse
+B FakeTorino   C57VAL tfim_n12         T identical
+B FakeTorino   C57VAL tfim_n12         F identical
+B FakeTorino   C57VAL tfim_n16         T identical
+B FakeTorino   C57VAL tfim_n16         F identical
+B FakeTorino   C57VAL ghz_n12          T NEW (c59 refused)
+B FakeTorino   C57VAL ghz_n12          F NEW (c59 refused)
+B FakeTorino   C57VAL tfimP_n12        T identical
+B FakeTorino   C57VAL tfimP_n12        F identical
+B FakeTorino   C57VAL tfimP_n16        T identical
+B FakeTorino   C57VAL tfimP_n16        F identical
+B FakeTorino   C57VAL tfim_n20_r3      T identical
+B FakeTorino   C57VAL tfim_n20_r3      F identical
+B FakeTorino   C57VAL heis_n12_r2      T identical
+B FakeTorino   C57VAL heis_n12_r2      F identical
+B FakeTorino   C57VAL heis2d_n16_r1    T both refuse
+B FakeTorino   C57VAL heis2d_n16_r1    F both refuse
+B FakeTorino   C57VAL chem_n12_r1      T both refuse
+B FakeTorino   C57VAL chem_n12_r1      F both refuse
+B FakeTorino   C57VAL qaoa3reg_n20_r3  T both refuse
+B FakeTorino   C57VAL qaoa3reg_n20_r3  F both refuse
+B FakeTorino   C57VAL qaoa3reg_n40_r3  T both refuse
+B FakeTorino   C57VAL qaoa3reg_n40_r3  F both refuse
+B FakeTorino   C57VAL tfim_n40_r2      T identical
+B FakeTorino   C57VAL tfim_n40_r2      F identical
+B FakeTorino   C57VAL clf_n4_L3        T both refuse
+B FakeTorino   C57VAL clf_n4_L3        F both refuse
+B FakeTorino   C57VAL clf_n4_L5        T both refuse
+B FakeTorino   C57VAL clf_n4_L5        F both refuse
+B FakeTorino   C57VAL clf_n4_L9        T both refuse
+B FakeTorino   C57VAL clf_n4_L9        F both refuse
+B FakeTorino   C57VAL clf_n6_L3        T both refuse
+B FakeTorino   C57VAL clf_n6_L3        F both refuse
+B FakeTorino   C57VAL clf_n6_L5        T both refuse
+B FakeTorino   C57VAL clf_n6_L5        F both refuse
+B FakeTorino   C57VAL clf_n6_L9        T both refuse
+B FakeTorino   C57VAL clf_n6_L9        F both refuse
+B FakeTorino   C57VAL hhI_n16          T identical
+B FakeTorino   C57VAL hhI_n16          F identical
+B FakeTorino   C57VAL hhI_n20          T identical
+B FakeTorino   C57VAL hhI_n20          F identical
+B FakeTorino   C57VAL ring12_tfim      T identical
+B FakeTorino   C57VAL ring12_tfim      F identical
+B FakeTorino   C57VAL hhtree_heis_n16  T identical
+B FakeTorino   C57VAL hhtree_heis_n16  F identical
+B FakeTorino   W4     chain_rzz_n12    T identical
+B FakeTorino   W4     chain_rzz_n12    F identical
+B FakeTorino   W4     chain_rzz_n16    T identical
+B FakeTorino   W4     chain_rzz_n16    F identical
+B FakeTorino   W4     chain_rzz_n20    T identical
+B FakeTorino   W4     chain_rzz_n20    F identical
+B FakeTorino   W4     ring_rzz_n12     T identical
+B FakeTorino   W4     ring_rzz_n12     F identical
+B FakeTorino   W4     hh_rzz_n16       T identical
+B FakeTorino   W4     hh_rzz_n16       F identical
+B FakeTorino   W4     hh_rzz_n20       T identical
+B FakeTorino   W4     hh_rzz_n20       F identical
+B FakeTorino   W4     hhtree_heis_n16  T identical
+B FakeTorino   W4     hhtree_heis_n16  F identical
+B FakeTorino   W4     chain_cz_n12     T NEW (c59 refused)
+B FakeTorino   W4     chain_cz_n12     F NEW (c59 refused)
+B FakeTorino   W4     chain_cz_n16     T NEW (c59 refused)
+B FakeTorino   W4     chain_cz_n16     F NEW (c59 refused)
+B FakeTorino   W4     chain_pe_n12     T identical
+B FakeTorino   W4     chain_pe_n12     F identical
+B ot_marrakesh C57VAL qaoa_n12_p2      T both refuse
+B ot_marrakesh C57VAL qaoa_n12_p2      F both refuse
+B ot_marrakesh C57VAL qaoa_n20_p2      T both refuse
+B ot_marrakesh C57VAL qaoa_n20_p2      F both refuse
+B ot_marrakesh C57VAL ba_n14           T both refuse
+B ot_marrakesh C57VAL ba_n14           F both refuse
+B ot_marrakesh C57VAL ba_n16           T both refuse
+B ot_marrakesh C57VAL ba_n16           F both refuse
+B ot_marrakesh C57VAL ba_n18           T both refuse
+B ot_marrakesh C57VAL ba_n18           F both refuse
+B ot_marrakesh C57VAL ba_n20           T both refuse
+B ot_marrakesh C57VAL ba_n20           F both refuse
+B ot_marrakesh C57VAL tfim_n12         T identical
+B ot_marrakesh C57VAL tfim_n12         F identical
+B ot_marrakesh C57VAL tfim_n16         T identical
+B ot_marrakesh C57VAL tfim_n16         F identical
+B ot_marrakesh C57VAL ghz_n12          T NEW (c59 refused)
+B ot_marrakesh C57VAL ghz_n12          F NEW (c59 refused)
+B ot_marrakesh C57VAL tfimP_n12        T identical
+B ot_marrakesh C57VAL tfimP_n12        F identical
+B ot_marrakesh C57VAL tfimP_n16        T identical
+B ot_marrakesh C57VAL tfimP_n16        F identical
+B ot_marrakesh C57VAL tfim_n20_r3      T identical
+B ot_marrakesh C57VAL tfim_n20_r3      F identical
+B ot_marrakesh C57VAL heis_n12_r2      T identical
+B ot_marrakesh C57VAL heis_n12_r2      F identical
+B ot_marrakesh C57VAL heis2d_n16_r1    T both refuse
+B ot_marrakesh C57VAL heis2d_n16_r1    F both refuse
+B ot_marrakesh C57VAL chem_n12_r1      T both refuse
+B ot_marrakesh C57VAL chem_n12_r1      F both refuse
+B ot_marrakesh C57VAL qaoa3reg_n20_r3  T both refuse
+B ot_marrakesh C57VAL qaoa3reg_n20_r3  F both refuse
+B ot_marrakesh C57VAL qaoa3reg_n40_r3  T both refuse
+B ot_marrakesh C57VAL qaoa3reg_n40_r3  F both refuse
+B ot_marrakesh C57VAL tfim_n40_r2      T identical
+B ot_marrakesh C57VAL tfim_n40_r2      F identical
+B ot_marrakesh C57VAL clf_n4_L3        T both refuse
+B ot_marrakesh C57VAL clf_n4_L3        F both refuse
+B ot_marrakesh C57VAL clf_n4_L5        T both refuse
+B ot_marrakesh C57VAL clf_n4_L5        F both refuse
+B ot_marrakesh C57VAL clf_n4_L9        T both refuse
+B ot_marrakesh C57VAL clf_n4_L9        F both refuse
+B ot_marrakesh C57VAL clf_n6_L3        T both refuse
+B ot_marrakesh C57VAL clf_n6_L3        F both refuse
+B ot_marrakesh C57VAL clf_n6_L5        T both refuse
+B ot_marrakesh C57VAL clf_n6_L5        F both refuse
+B ot_marrakesh C57VAL clf_n6_L9        T both refuse
+B ot_marrakesh C57VAL clf_n6_L9        F both refuse
+B ot_marrakesh C57VAL hhI_n16          T identical
+B ot_marrakesh C57VAL hhI_n16          F identical
+B ot_marrakesh C57VAL hhI_n20          T identical
+B ot_marrakesh C57VAL hhI_n20          F identical
+B ot_marrakesh C57VAL ring12_tfim      T identical
+B ot_marrakesh C57VAL ring12_tfim      F identical
+B ot_marrakesh C57VAL hhtree_heis_n16  T identical
+B ot_marrakesh C57VAL hhtree_heis_n16  F identical
+B ot_marrakesh W4     chain_rzz_n12    T identical
+B ot_marrakesh W4     chain_rzz_n12    F identical
+B ot_marrakesh W4     chain_rzz_n16    T identical
+B ot_marrakesh W4     chain_rzz_n16    F identical
+B ot_marrakesh W4     chain_rzz_n20    T identical
+B ot_marrakesh W4     chain_rzz_n20    F identical
+B ot_marrakesh W4     ring_rzz_n12     T identical
+B ot_marrakesh W4     ring_rzz_n12     F identical
+B ot_marrakesh W4     hh_rzz_n16       T identical
+B ot_marrakesh W4     hh_rzz_n16       F identical
+B ot_marrakesh W4     hh_rzz_n20       T identical
+B ot_marrakesh W4     hh_rzz_n20       F identical
+B ot_marrakesh W4     hhtree_heis_n16  T identical
+B ot_marrakesh W4     hhtree_heis_n16  F identical
+B ot_marrakesh W4     chain_cz_n12     T NEW (c59 refused)
+B ot_marrakesh W4     chain_cz_n12     F NEW (c59 refused)
+B ot_marrakesh W4     chain_cz_n16     T NEW (c59 refused)
+B ot_marrakesh W4     chain_cz_n16     F NEW (c59 refused)
+B ot_marrakesh W4     chain_pe_n12     T identical
+B ot_marrakesh W4     chain_pe_n12     F identical
+C chain_rzz_n12    T {'as_written': 2.0639999999999987, 'reversed': 2.0639999999999987, 'random': 2.0639999999999987, 'runs_reversed': 2.0639999999999987} distinct 1
+C chain_rzz_n12    F {'as_written': 0.8639999999999999, 'reversed': 0.8639999999999999, 'random': 0.8639999999999999, 'runs_reversed': 0.8639999999999999} distinct 1
+C chain_rzz_n16    T {'as_written': 2.0639999999999987, 'reversed': 2.0639999999999987, 'random': 2.0639999999999987, 'runs_reversed': 2.0639999999999987} distinct 1
+C chain_rzz_n16    F {'as_written': 0.8879999999999999, 'reversed': 0.8879999999999999, 'random': 0.8879999999999999, 'runs_reversed': 0.8879999999999999} distinct 1
+C chain_rzz_n20    T {'as_written': 2.0639999999999987, 'reversed': 2.0639999999999987, 'random': 2.0639999999999987, 'runs_reversed': 2.0639999999999987} distinct 1
+C chain_rzz_n20    F {'as_written': 0.8639999999999999, 'reversed': 0.8639999999999999, 'random': 0.8639999999999999, 'runs_reversed': 0.8639999999999999} distinct 1
+C ring_rzz_n12     T {'as_written': 2.135999999999999, 'reversed': 2.135999999999999, 'random': 2.135999999999999, 'runs_reversed': 2.135999999999999} distinct 1
+C ring_rzz_n12     F {'as_written': 0.8879999999999999, 'reversed': 0.8879999999999999, 'random': 0.8879999999999999, 'runs_reversed': 0.8879999999999999} distinct 1
+C hh_rzz_n16       T {'as_written': 3.0239999999999996, 'reversed': 3.0239999999999996, 'random': 3.0239999999999996, 'runs_reversed': 3.0239999999999996} distinct 1
+C hh_rzz_n16       F {'as_written': 1.2239999999999995, 'reversed': 1.2239999999999995, 'random': 1.2239999999999995, 'runs_reversed': 1.2239999999999995} distinct 1
+C hh_rzz_n20       T {'as_written': 3.048, 'reversed': 3.048, 'random': 3.048, 'runs_reversed': 3.048} distinct 1
+C hh_rzz_n20       F {'as_written': 1.3199999999999994, 'reversed': 1.3199999999999994, 'random': 1.3199999999999994, 'runs_reversed': 1.3199999999999994} distinct 1
+C hhtree_heis_n16  T {'as_written': 3.048, 'reversed': 3.048, 'random': 3.048, 'runs_reversed': 3.048} distinct 1
+C hhtree_heis_n16  F {'as_written': 2.591999999999999, 'reversed': 2.591999999999999, 'random': 2.591999999999999, 'runs_reversed': 2.591999999999999} distinct 1
+C chain_cz_n12     T {'as_written': 0.8639999999999998, 'reversed': 0.8639999999999998, 'random': 0.8639999999999998, 'runs_reversed': 0.8639999999999998} distinct 4
+C chain_cz_n12     F {'as_written': 0.7679999999999999, 'reversed': 0.7679999999999999, 'random': 0.7679999999999999, 'runs_reversed': 0.7679999999999999} distinct 4
+C chain_cz_n16     T {'as_written': 0.8639999999999998, 'reversed': 0.8639999999999998, 'random': 0.8639999999999998, 'runs_reversed': 0.8639999999999998} distinct 4
+C chain_cz_n16     F {'as_written': 0.7679999999999999, 'reversed': 0.7679999999999999, 'random': 0.7679999999999999, 'runs_reversed': 0.7679999999999999} distinct 4
+C chain_pe_n12     T {'as_written': 2.0639999999999987, 'reversed': 2.0639999999999987, 'random': 2.0639999999999987, 'runs_reversed': 2.0639999999999987} distinct 1
+C chain_pe_n12     F {'as_written': 0.816, 'reversed': 0.816, 'random': 0.816, 'runs_reversed': 0.816} distinct 1
+C60-VAL DONE

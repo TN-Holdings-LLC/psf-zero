@@ -1,0 +1,21 @@
+R FakeFez      tfim_n12         T chain  same 0/1101 exact 1101/1101 dur<= 1101 bind 1.145 ms build 14.3 c60 32.5 rebuilt 0 switched 0
+R FakeFez      tfim_n12         F chain  same 0/1101 exact 1101/1101 dur<= 1101 bind 0.654 ms build 14.6 c60 31.4 rebuilt 96 switched 3
+R FakeFez      tfim_n16         T chain  same 0/1101 exact 1101/1101 dur<= 1101 bind 1.448 ms build 17.7 c60 36.8 rebuilt 0 switched 0
+R FakeFez      tfim_n16         F chain  same 0/1101 exact 1101/1101 dur<= 1101 bind 0.810 ms build 18.8 c60 33.8 rebuilt 100 switched 0
+R FakeFez      tfimP_n12        T chain  same 0/1101 exact 1101/1101 dur<= 1101 bind 1.282 ms build 15.4 c60 35.3 rebuilt 0 switched 0
+R FakeFez      tfimP_n12        F chain  same 0/1101 exact 1101/1101 dur<= 1101 bind 0.861 ms build 19.2 c60 31.5 rebuilt 96 switched 4
+R FakeFez      tfimP_n16        T chain  same 0/1101 exact 1101/1101 dur<= 1101 bind 1.737 ms build 22.2 c60 66.6 rebuilt 0 switched 0
+R FakeFez      tfimP_n16        F chain  same 0/1101 exact 1101/1101 dur<= 1101 bind 1.094 ms build 21.2 c60 35.8 rebuilt 100 switched 0
+R FakeFez      tfim_n20_r3      T graph  same 0/1101 exact 111/1101 dur<= 1101 bind 2.801 ms build 32.1 c60 48.7 rebuilt 0 switched 0
+R FakeFez      tfim_n20_r3      F graph  same 0/1101 exact 111/1101 dur<= 1101 bind 1.801 ms build 33.0 c60 39.9 rebuilt 100 switched 0
+R FakeFez      heis_n12_r2      T graph  same 0/1101 exact 1101/1101 dur<= 411 bind 3.103 ms build 40.5 c60 55.1 rebuilt 0 switched 0
+R FakeFez      heis_n12_r2      F graph  same 0/1101 exact 1101/1101 dur<= 1101 bind 4.037 ms build 76.6 c60 77.7 rebuilt 3 switched 70
+R FakeFez      tfim_n40_r2      T graph  same 0/1101 exact 0/1101 dur<= 1101 bind 3.576 ms build 80.1 c60 104.6 rebuilt 0 switched 0
+R FakeFez      tfim_n40_r2      F graph  same 0/1101 exact 0/1101 dur<= 1101 bind 2.139 ms build 81.2 c60 98.1 rebuilt 100 switched 0
+R FakeFez      hhI_n16          T graph  same 0/1101 exact 1101/1101 dur<= 1101 bind 2.849 ms build 56.7 c60 73.3 rebuilt 0 switched 0
+R FakeFez      hhI_n16          F graph  same 0/1101 exact 1101/1101 dur<= 1101 bind 1.898 ms build 34.1 c60 57.7 rebuilt 100 switched 0
+R FakeFez      hhI_n20          T graph  same 0/1101 exact 111/1101 dur<= 1101 bind 3.655 ms build 43.2 c60 61.4 rebuilt 0 switched 0
+R FakeFez      hhI_n20          F graph  same 0/1101 exact 111/1101 dur<= 1101 bind 2.262 ms build 51.6 c60 52.7 rebuilt 100 switched 0
+R FakeFez      ring12_tfim      T graph  same 0/1101 exact 1101/1101 dur<= 1101 bind 2.105 ms build 26.5 c60 49.5 rebuilt 0 switched 0
+R FakeFez      ring12_tfim      F graph  same 0/1101 exact 1101/1101 dur<= 1101 bind 1.416 ms build 28.1 c60 42.8 rebuilt 98 switched 2
+C61-VAL DONE

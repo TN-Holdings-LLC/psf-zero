@@ -1,0 +1,19 @@
+R FakeFez      hhtree_heis_n16  T graph  same 0/1101 exact 1101/1101 dur<= 784 bind 6.931 ms build 53.3 c60 68.1 rebuilt 570 switched 525
+R FakeFez      hhtree_heis_n16  F graph  same 0/1101 exact 1101/1101 dur<= 1101 bind 5.436 ms build 75.1 c60 89.1 rebuilt 15 switched 76
+R FakeFez      ghz_n12          T native same 1101/1101 exact 1101/1101 dur<= 1101 bind 0.621 ms build 8.2 c60 15.3 rebuilt 0 switched 0
+R FakeFez      ghz_n12          F native same 1101/1101 exact 1101/1101 dur<= 1101 bind 0.768 ms build 13.6 c60 13.9 rebuilt 0 switched 0
+R FakeFez      chain_cz_n12     T native same 1101/1101 exact 1101/1101 dur<= 1101 bind 1.214 ms build 29.3 c60 30.8 rebuilt 0 switched 0
+R FakeFez      chain_cz_n12     F native same 1101/1101 exact 1101/1101 dur<= 1101 bind 1.189 ms build 23.0 c60 16.1 rebuilt 0 switched 0
+R FakeFez      chain_cz_n16     T native same 1101/1101 exact 1101/1101 dur<= 1101 bind 1.522 ms build 36.1 c60 22.7 rebuilt 0 switched 0
+R FakeFez      chain_cz_n16     F native same 1101/1101 exact 1101/1101 dur<= 1101 bind 1.608 ms build 21.3 c60 20.1 rebuilt 0 switched 0
+R FakeFez      ring_cz_n12      T native same 1101/1101 exact 1101/1101 dur<= 1101 bind 1.176 ms build 20.7 c60 25.2 rebuilt 0 switched 0
+R FakeFez      ring_cz_n12      F native same 1101/1101 exact 1101/1101 dur<= 1101 bind 1.098 ms build 18.2 c60 18.4 rebuilt 0 switched 0
+R FakeFez      hh_cz_n16        T native same 1101/1101 exact 1101/1101 dur<= 1101 bind 1.524 ms build 22.8 c60 20.5 rebuilt 0 switched 0
+R FakeFez      hh_cz_n16        F native same 1101/1101 exact 1101/1101 dur<= 1101 bind 1.445 ms build 22.5 c60 21.9 rebuilt 0 switched 0
+R FakeFez      hh_cz_n20        T native same 1101/1101 exact 111/1101 dur<= 1101 bind 1.771 ms build 29.0 c60 28.6 rebuilt 0 switched 0
+R FakeFez      hh_cz_n20        F native same 1101/1101 exact 111/1101 dur<= 1101 bind 1.721 ms build 30.7 c60 44.4 rebuilt 0 switched 0
+R FakeFez      cx_chain_n12     T native same 1101/1101 exact 1101/1101 dur<= 1101 bind 2.028 ms build 46.3 c60 48.7 rebuilt 0 switched 0
+R FakeFez      cx_chain_n12     F native same 1101/1101 exact 1101/1101 dur<= 1101 bind 2.254 ms build 33.5 c60 43.5 rebuilt 0 switched 0
+R FakeFez      cx_chain_n16     T native same 1101/1101 exact 1101/1101 dur<= 1101 bind 2.754 ms build 56.4 c60 70.5 rebuilt 0 switched 0
+R FakeFez      cx_chain_n16     F native same 1101/1101 exact 1101/1101 dur<= 1101 bind 3.299 ms build 60.1 c60 61.9 rebuilt 0 switched 0
+C61-VAL DONE
