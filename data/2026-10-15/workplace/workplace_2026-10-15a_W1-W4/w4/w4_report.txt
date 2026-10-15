@@ -1,0 +1,61 @@
+in-scope cells 100; out-of-scope (not measured) 0: []
+outputs failing a check: []
+largest exactness diff: 2.104374270657603e-07
+cells with all four outputs: 100
+C57 spread over the three orientations: >1 in 18 cells; largest 1.0973
+C57+97 on 'reversed' identical to C57 on 'as written' (the canonical form): 100 of 100
+FakeFez: C57+97 gives one circuit for all three orientations in 20 of 20 cells
+(cell, orientation) where the rule is longer: 16 of 300; shorter: 15
+  longer ('FakeTorino', 'F', 'chain_cz_n12') vs reversed: x1.0973
+  longer ('FakeMarrakesh', 'F', 'chain_cz_n12') vs random: x1.0831
+  longer ('FakeTorino', 'F', 'chain_cz_n12') vs random: x1.0712
+  longer ('FakeTorino', 'F', 'chain_cz_n16') vs reversed: x1.0605
+  longer ('FakeTorino', 'F', 'chain_cz_n16') vs random: x1.0605
+  longer ('FakeTorino', 'T', 'chain_cz_n16') vs random: x1.0559
+  longer ('FakeMarrakesh', 'F', 'chain_cz_n12') vs reversed: x1.0539
+  longer ('snapshot_marrakesh', 'F', 'chain_cz_n12') vs reversed: x1.0539
+  longer ('snapshot_marrakesh', 'F', 'chain_cz_n12') vs random: x1.0539
+  longer ('FakeKingston', 'F', 'chain_cz_n12') vs random: x1.0498
+  longer ('FakeTorino', 'T', 'chain_cz_n16') vs reversed: x1.0366
+  longer ('FakeFez', 'F', 'chain_cz_n16') vs reversed: x1.0255
+  longer ('FakeMarrakesh', 'F', 'chain_cz_n16') vs reversed: x1.0224
+  longer ('FakeTorino', 'T', 'chain_cz_n12') vs random: x1.0222
+  longer ('FakeTorino', 'F', 'hhtree_heis_n16') vs reversed: x1.0132
+  longer ('FakeFez', 'F', 'chain_cz_n16') vs random: x1.0126
+  shorter ('FakeTorino', 'F', 'hh_rzz_n16') vs random: x0.9527
+  shorter ('FakeKingston', 'F', 'chain_cz_n16') vs random: x0.9605
+  shorter ('FakeTorino', 'T', 'hhtree_heis_n16') vs reversed: x0.9694
+  shorter ('FakeTorino', 'T', 'hhtree_heis_n16') vs random: x0.9798
+  shorter ('FakeKingston', 'F', 'chain_cz_n16') vs reversed: x0.9798
+  shorter ('FakeTorino', 'F', 'hh_rzz_n16') vs reversed: x0.9837
+  shorter ('FakeFez', 'F', 'chain_cz_n12') vs reversed: x0.9850
+  shorter ('FakeMarrakesh', 'T', 'hhtree_heis_n16') vs reversed: x0.9884
+  shorter ('FakeMarrakesh', 'T', 'hhtree_heis_n16') vs random: x0.9884
+  shorter ('snapshot_marrakesh', 'T', 'hhtree_heis_n16') vs reversed: x0.9884
+  shorter ('snapshot_marrakesh', 'T', 'hhtree_heis_n16') vs random: x0.9884
+  shorter ('FakeKingston', 'T', 'hhtree_heis_n16') vs reversed: x0.9891
+  shorter ('FakeKingston', 'T', 'hhtree_heis_n16') vs random: x0.9891
+  shorter ('FakeFez', 'T', 'hhtree_heis_n16') vs reversed: x0.9920
+  shorter ('FakeFez', 'T', 'hhtree_heis_n16') vs random: x0.9920
+per test (T/F): cells with spread > 1, largest spread
+  chain_cz_n12     F: 5 of 5; largest 1.0973
+  chain_cz_n12     T: 1 of 5; largest 1.0222
+  chain_cz_n16     F: 4 of 5; largest 1.0605
+  chain_cz_n16     T: 1 of 5; largest 1.0559
+  chain_pe_n12     F: 0 of 5; largest 1.0000
+  chain_pe_n12     T: 0 of 5; largest 1.0000
+  chain_rzz_n12    F: 0 of 5; largest 1.0000
+  chain_rzz_n12    T: 0 of 5; largest 1.0000
+  chain_rzz_n16    F: 0 of 5; largest 1.0000
+  chain_rzz_n16    T: 0 of 5; largest 1.0000
+  chain_rzz_n20    F: 0 of 5; largest 1.0000
+  chain_rzz_n20    T: 0 of 5; largest 1.0000
+  hh_rzz_n16       F: 1 of 5; largest 1.0497
+  hh_rzz_n16       T: 0 of 5; largest 1.0000
+  hh_rzz_n20       F: 0 of 5; largest 1.0000
+  hh_rzz_n20       T: 0 of 5; largest 1.0000
+  hhtree_heis_n16  F: 1 of 5; largest 1.0132
+  hhtree_heis_n16  T: 5 of 5; largest 1.0316
+  ring_rzz_n12     F: 0 of 5; largest 1.0000
+  ring_rzz_n12     T: 0 of 5; largest 1.0000
+compile time, mean s: {'C57': 14.93, 'C57+97': 15.47}

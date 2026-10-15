@@ -1,0 +1,21 @@
+# 2026-10-15 ~04:00 CEST, home workspace. Columns: test, Target, [(duration us, compile ms) for as_written, reversed, random].
+chain_rzz_n12 T [(3.624, 83), (3.624, 39), (3.624, 37)] one circuit
+chain_rzz_n12 F [(2.424, 40), (2.424, 47), (2.424, 39)] one circuit
+chain_rzz_n16 T [(3.624, 61), (3.624, 44), (3.624, 43)] one circuit
+chain_rzz_n16 F [(2.448, 36), (2.448, 35), (2.448, 35)] one circuit
+chain_rzz_n20 T [(3.624, 44), (3.624, 43), (3.624, 42)] one circuit
+chain_rzz_n20 F [(2.424, 39), (2.424, 42), (2.424, 41)] one circuit
+ring_rzz_n12 T [(3.696, 36), (3.696, 38), (3.696, 36)] one circuit
+ring_rzz_n12 F [(2.448, 35), (2.448, 34), (2.448, 33)] one circuit
+hh_rzz_n16 T [(4.584, 41), (4.584, 40), (4.584, 40)] one circuit
+hh_rzz_n16 F [(2.784, 37), (2.784, 37), (2.784, 37)] one circuit
+hh_rzz_n20 T [(4.608, 50), (4.608, 46), (4.608, 48)] one circuit
+hh_rzz_n20 F [(2.88, 43), (2.88, 42), (2.88, 41)] one circuit
+hhtree_heis_n16 T [(4.608, 44), (4.608, 43), (4.608, 44)] one circuit
+hhtree_heis_n16 F [(4.152, 55), (4.152, 46), (4.152, 46)] one circuit
+chain_cz_n12 T [('REFUSED', 0), ('REFUSED', 0), ('REFUSED', 0)] one circuit
+chain_cz_n12 F [('REFUSED', 0), ('REFUSED', 0), ('REFUSED', 0)] one circuit
+chain_cz_n16 T [('REFUSED', 0), ('REFUSED', 0), ('REFUSED', 0)] one circuit
+chain_cz_n16 F [('REFUSED', 0), ('REFUSED', 0), ('REFUSED', 0)] one circuit
+chain_pe_n12 T [(3.624, 45), (3.624, 47), (3.624, 55)] one circuit
+chain_pe_n12 F [(2.376, 65), (2.376, 64), (2.376, 54)] one circuit

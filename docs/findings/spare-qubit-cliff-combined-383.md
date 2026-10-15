@@ -10090,4 +10090,91 @@ After C58-VAL (Addendum 493) the owner chose:
 
 ---
 
+<!-- ===== Addendum 495 (source: addendum_495.md) ===== -->
+
+> **Note added when merging:** Workplace delivery 2026-10-15a read at home, with one offline check on c59; next requests note 7.
+
+## Addendum 495 -- Workplace delivery 2026-10-15a (W1 a18 review, W2 RING1 kit, W4 orientation rule) and a home check on c59: the in-scope formula path is already insensitive to the written orientation (16 of 16 built cells on FakeFez), but c59 refuses the CZ-chain ansatz, an embeddable circuit no formula reads. Next requests note 7 gives the workplace the compiler's two next items (99 and 100) (2026-10-15)
+
+**Status:** a delivery from the workplace, read at home, with one offline check. Times in CEST.
+
+### 1. The delivery
+
+[`data/2026-10-15/workplace/workplace_2026-10-15a_W1-W4/`](../../data/2026-10-15/workplace/workplace_2026-10-15a_W1-W4/),
+finished 04:00 CEST. `check_intake.py`: 38 of 38 files match. Offline only; nothing was committed or submitted.
+Base: release 2026-10-14.1 (bundle n, 460cc77).
+
+**W1, a review of a18.**
+
+- Outside the scope, a18's output was identical to Qiskit level 3's in 16 of 16 cells (rzz folded on fractional
+  Targets, as c57 does).
+- **Main finding:**
+  - The hand-off's exactness check (`_exact`, item 30) builds the state vector from the input as written.
+  - On a PauliEvolutionGate input, `to_matrix` exponentiates the exact Hamiltonian. The check took 960 s at 12 qubits
+    (chem_n12_r1) and said "not exact", because the compiled circuit implements the gate's product formula.
+  - Unrolled first, as item 93 does, the same check takes 0.2 s and passes.
+  - a20 still calls `_exact` after psf_compile's call, so the finding applies to it as well.
+- **Smaller findings:**
+  - Two tolerances: 1e-9 in item 30 against 1e-6 in item 93.
+  - The ring path stops at 8 qubits.
+  - `seed_transpiler` passed in kwargs raises a TypeError.
+  - The ring reader accepts only CZ rings.
+  - The docstring calls a18's defaults psf_compile's.
+- These go to the AI front end's next prototype, a21, at home.
+
+**W2, the RING1 kit.**
+
+- **What it compares:** a18 against Qiskit level 3 on the ring classifier (n = 4 and 6; L = 4 and 8; 24 test points
+  each), with a GHZ control submitted twice.
+- **Size:** 388 circuits, 800 shots each, two repeats. The QPU estimate is 98-132 s.
+- **On FakeFez:** a18's circuits are 0.48-0.59 times as long as Qiskit level 3's, and every check passed.
+- **The prestatement is a draft.** It names its own limits: the margin is read on one physical qubit, which differs
+  between the arms, and the four configurations are about two placements per arm.
+- The owner does not want the hardware test hurried. The kit is kept as delivered; it is fixed and run only when the
+  owner decides.
+
+**W4, the orientation rule.**
+
+- Every symmetric two-qubit gate is written with the smaller qubit index first. The rule applies only in scope.
+- **c57 without the rule:** depended on the written orientation in 18 of 100 in-scope cells, by up to 9.7%. Every one
+  of these cells went through Qiskit level 3 inside c57.
+- **c57 with the rule:** one output per circuit, and neutral on average (+0.2%). The rule was longer than some
+  orientation in 16 of 300 (cell, orientation) pairs.
+- **The item number clashes.** Note 6 called this rule item 97, but item 97 is home's formula-only path (c58). The rule
+  gets no number, because it is not adopted. See section 2.
+
+### 2. The home check: c59 and the orientation
+
+[`data/2026-10-15/workplace/home_checks/`](../../data/2026-10-15/workplace/home_checks/) runs W4's tests, in all three
+orientations, on prototype c59 (FakeFez, T and F).
+
+- **Built cells:** in 16 of 16, the three orientations gave one circuit. These are the rzz chains, the 12-ring, the
+  heavy-hex patches, the heavy-hex tree Heisenberg model and the ZZ PauliEvolution chain.
+  - Item 87's and item 91's formulas build their graphs from sorted edges, and c59 no longer compares them with Qiskit
+    level 3 inside the scope.
+  - So the dependence W4 found does not reach c59's path. The rule is not adopted.
+- **Refused cells:** the CZ-chain ansatz (chain_cz_n12, chain_cz_n16) is refused by c59 in every orientation, as "inside
+  the scope, but neither formula reads this circuit".
+  - Its interaction graph is a chain and embeds.
+  - Items 87 and 91 read only ZZ-type terms.
+  - So the gate closed (item 98) shuts out the hardware-efficient CZ ansatz. That is a common circuit in quantum machine
+    learning, and a20 hands such circuits to psf_compile when they are not rings.
+- **Compile time** was 33-83 ms per call.
+- Only FakeFez was checked.
+
+### 3. Next (note 7, `data/2026-10-15/workplace/home_requests/`)
+
+- **Home:** a21, which takes up W1's findings.
+- **Workplace:**
+  - **Item 99:** circuits made of native two-qubit gates on an embedded graph, read as written. Commuting diagonal gates
+    are re-layered by edge colouring, and single-qubit runs are merged in closed form.
+  - **Item 100:** the compiler's template. A chain, lattice or item 99 circuit is built once, and new angles are bound
+    in closed form.
+
+  Item 100's reason, measured at home today: c59's formula path took 93 ms per call on tfim_n40_r2 (fractional
+  Target, median of 5, no profiler). Of that time, 4-13% is spent inside Qiskit's pass managers and the rest in
+  PSF-Zero's own reading and building.
+
+---
+
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

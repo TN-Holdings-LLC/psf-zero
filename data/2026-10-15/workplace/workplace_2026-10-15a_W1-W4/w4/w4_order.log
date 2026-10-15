@@ -1,0 +1,14 @@
+chain_rzz_n12  T: as written 2.064 us, runs reversed 2.064 us, identical True
+chain_rzz_n12  F: as written 0.864 us, runs reversed 0.864 us, identical True
+chain_rzz_n16  T: as written 2.064 us, runs reversed 2.064 us, identical True
+chain_rzz_n16  F: as written 0.888 us, runs reversed 0.888 us, identical True
+ring_rzz_n12   T: as written 1.368 us, runs reversed 1.368 us, identical False
+ring_rzz_n12   F: as written 0.888 us, runs reversed 0.888 us, identical False
+hh_rzz_n16     T: as written 2.760 us, runs reversed 2.712 us, identical False
+hh_rzz_n16     F: as written 1.224 us, runs reversed 1.224 us, identical True
+chain_cz_n12   T: as written 1.620 us, runs reversed 1.620 us, identical False
+chain_cz_n12   F: as written 1.572 us, runs reversed 1.548 us, identical False
+chain_cz_n16   T: as written 1.956 us, runs reversed 1.980 us, identical False
+chain_cz_n16   F: as written 1.932 us, runs reversed 1.884 us, identical False
+chain_pe_n12   T: as written 2.064 us, runs reversed 2.064 us, identical True
+chain_pe_n12   F: as written 0.816 us, runs reversed 0.816 us, identical True

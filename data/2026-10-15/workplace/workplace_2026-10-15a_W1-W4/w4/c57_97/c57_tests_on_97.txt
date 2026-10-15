@@ -1,0 +1,135 @@
+# c57's 122 tests (patches/psf_compile_c57_2026-10-14/test_*.py) run on the item 97 file, copied to a scratch folder <repo>/patches/psf_compile_c57_97_check/ with c57's fixtures. Warnings lines removed.
+F............F.........F......F......F.................................. [ 59%]
+.F.................F........F.........F...........                       [100%]
+=================================== FAILURES ===================================
+_________________________________ test_version _________________________________
+
+new = <module 'psf_compile_c51_87_88_test' from '<repo>/patches/psf_compile_c57_97_check/psf_compile.py'>
+
+    def test_version(new):
+>       assert new.VERSION == "2026-10-14.c57"
+E       AssertionError: assert '2026-10-14.c57+97' == '2026-10-14.c57'
+E         
+E         - 2026-10-14.c57
+E         + 2026-10-14.c57+97
+E         ?               +++
+
+patches/psf_compile_c57_97_check/test_87_88_on_c57.py:204: AssertionError
+_________________________________ test_version _________________________________
+
+new = <module 'psf_compile_c53_91_test' from '<repo>/patches/psf_compile_c57_97_check/psf_compile.py'>
+
+    def test_version(new):
+>       assert new.VERSION == "2026-10-14.c57"  # home: merged as c54, carried to c55
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: assert '2026-10-14.c57+97' == '2026-10-14.c57'
+E         
+E         - 2026-10-14.c57
+E         + 2026-10-14.c57+97
+E         ?               +++
+
+patches/psf_compile_c57_97_check/test_91_on_c57.py:185: AssertionError
+_________________________________ test_version _________________________________
+
+m = <module 'psf_compile_c55_93_test' from '<repo>/patches/psf_compile_c57_97_check/psf_compile.py'>
+
+    def test_version(m):
+>       assert m.VERSION == "2026-10-14.c57"
+E       AssertionError: assert '2026-10-14.c57+97' == '2026-10-14.c57'
+E         
+E         - 2026-10-14.c57
+E         + 2026-10-14.c57+97
+E         ?               +++
+
+patches/psf_compile_c57_97_check/test_93_on_c57.py:52: AssertionError
+_________________________________ test_version _________________________________
+
+new = <module 'psf_compile_c54_94_test' from '<repo>/patches/psf_compile_c57_97_check/psf_compile.py'>
+
+    def test_version(new):
+>       assert new.VERSION == "2026-10-14.c57"
+E       AssertionError: assert '2026-10-14.c57+97' == '2026-10-14.c57'
+E         
+E         - 2026-10-14.c57
+E         + 2026-10-14.c57+97
+E         ?               +++
+
+patches/psf_compile_c57_97_check/test_94_on_c57.py:96: AssertionError
+_________________________________ test_version _________________________________
+
+mods = {'rel': <module 'psf_compile_rel_for_c48_test' from '<repo>/psf_compile.py'>, 'c40': <module 'psf_compile_c48_test' from '<repo>/patches/psf_compile_c57_97_check/psf_compile.py'>}
+
+    def test_version(mods):
+>       assert mods["c40"].VERSION == "2026-10-14.c57"  # c48's tests on c50, items 84-85 switched off as for c49
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: assert '2026-10-14.c57+97' == '2026-10-14.c57'
+E         
+E         - 2026-10-14.c57
+E         + 2026-10-14.c57+97
+E         ?               +++
+
+patches/psf_compile_c57_97_check/test_c48_on_c49_for_c57.py:269: AssertionError
+_________________________________ test_version _________________________________
+
+c49 = <module 'psf_compile_c54_as_c49_test' from '<repo>/patches/psf_compile_c57_97_check/psf_compile.py'>
+
+    def test_version(c49):
+>       assert c49.VERSION == "2026-10-14.c57"  # c49's tests on c50: no Target here offers rzz
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: assert '2026-10-14.c57+97' == '2026-10-14.c57'
+E         
+E         - 2026-10-14.c57
+E         + 2026-10-14.c57+97
+E         ?               +++
+
+patches/psf_compile_c57_97_check/test_c49_on_c57.py:86: AssertionError
+_________________________________ test_version _________________________________
+
+c50 = <module 'psf_compile_c54_as_c51_test' from '<repo>/patches/psf_compile_c57_97_check/psf_compile.py'>
+
+    def test_version(c50):
+>       assert c50.VERSION == "2026-10-14.c57"
+E       AssertionError: assert '2026-10-14.c57+97' == '2026-10-14.c57'
+E         
+E         - 2026-10-14.c57
+E         + 2026-10-14.c57+97
+E         ?               +++
+
+patches/psf_compile_c57_97_check/test_c51_on_c57.py:96: AssertionError
+_________________________________ test_version _________________________________
+
+mods = {'c52': <module 'psf_compile_c54_as_c52_test' from '<repo>/patches/psf_compile_c57_97_check/psf_compile.py'>...ile_c51_2026-10-14/psf_compile.py'>, 'hw1': <module 'hw1_for_c52_test' from '<repo>/benchmarks/hw1_real.py'>}
+
+    def test_version(mods):
+>       assert mods["c52"].VERSION == "2026-10-14.c57"
+E       AssertionError: assert '2026-10-14.c57+97' == '2026-10-14.c57'
+E         
+E         - 2026-10-14.c57
+E         + 2026-10-14.c57+97
+E         ?               +++
+
+patches/psf_compile_c57_97_check/test_c52_on_c57.py:76: AssertionError
+__________________________ test_version_and_defaults ___________________________
+
+m = <module 'psf_compile_c56_test' from '<repo>/patches/psf_compile_c57_97_check/psf_compile.py'>
+
+    def test_version_and_defaults(m):
+>       assert m.VERSION == "2026-10-14.c57"
+E       AssertionError: assert '2026-10-14.c57+97' == '2026-10-14.c57'
+E         
+E         - 2026-10-14.c57
+E         + 2026-10-14.c57+97
+E         ?               +++
+
+patches/psf_compile_c57_97_check/test_c57.py:82: AssertionError
+=========================== short test summary info ============================
+FAILED patches/psf_compile_c57_97_check/test_87_88_on_c57.py::test_version - ...
+FAILED patches/psf_compile_c57_97_check/test_91_on_c57.py::test_version - Ass...
+FAILED patches/psf_compile_c57_97_check/test_93_on_c57.py::test_version - Ass...
+FAILED patches/psf_compile_c57_97_check/test_94_on_c57.py::test_version - Ass...
+FAILED patches/psf_compile_c57_97_check/test_c48_on_c49_for_c57.py::test_version
+FAILED patches/psf_compile_c57_97_check/test_c49_on_c57.py::test_version - As...
+FAILED patches/psf_compile_c57_97_check/test_c51_on_c57.py::test_version - As...
+FAILED patches/psf_compile_c57_97_check/test_c52_on_c57.py::test_version - As...
+FAILED patches/psf_compile_c57_97_check/test_c57.py::test_version_and_defaults
+9 failed, 113 passed in 341.49s (0:05:41)

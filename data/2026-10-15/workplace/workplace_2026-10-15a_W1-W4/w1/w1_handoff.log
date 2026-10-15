@@ -1,0 +1,23 @@
+a18 EXACT_CHECK False
+built qaoa_n12_p2 in 0.0 s
+built ba_n14 in 0.0 s
+built qaoa3reg_n20_r3 in 0.0 s
+built heis2d_n16_r1 in 0.0 s
+built chem_n12_r1 in 0.0 s
+qft6             T path hand-off/compiler: identical to ['QK3']; exact None; 0.3 s
+qft6             F path hand-off/compiler: identical to ['QK3+fold']; exact None; 0.2 s
+allpairs_cx7     T path hand-off/compiler: identical to ['QK3']; exact None; 0.1 s
+allpairs_cx7     F path hand-off/compiler: identical to ['QK3+fold']; exact None; 0.2 s
+wheel5           T path hand-off/compiler: identical to ['QK3']; exact None; 0.1 s
+wheel5           F path hand-off/compiler: identical to ['QK3+fold']; exact None; 0.2 s
+qaoa_n12_p2      T path hand-off/compiler: identical to ['QK3']; exact None; 0.2 s
+qaoa_n12_p2      F path hand-off/compiler: identical to ['QK3+fold']; exact None; 0.3 s
+ba_n14           T path hand-off/compiler: identical to ['QK3']; exact None; 13.0 s
+ba_n14           F path hand-off/compiler: identical to ['QK3+fold']; exact None; 4.3 s
+qaoa3reg_n20_r3  T path hand-off/compiler: identical to ['QK3']; exact None; 112.0 s
+qaoa3reg_n20_r3  F path hand-off/compiler: identical to ['QK3+fold']; exact None; 112.2 s
+heis2d_n16_r1    T path hand-off/compiler: identical to ['QK3']; exact None; 12.5 s
+heis2d_n16_r1    F path hand-off/compiler: identical to ['QK3+fold']; exact None; 9.5 s
+chem_n12_r1      T path hand-off/compiler: identical to ['QK3']; exact None; 0.4 s
+chem_n12_r1      F path hand-off/compiler: identical to ['QK3+fold']; exact None; 0.6 s
+A18_STATS {'handed_compiler': 16, 'handed_qiskit': 0, 'handoff_exact': 0, 'handoff_unchecked': 16, 'handoff_inexact': 0}
