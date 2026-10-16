@@ -1,0 +1,62 @@
+C4: cells 190 (part R 38, part D 152); cells with a shape change [] -> CONFIRMED
+C5: inputs 49590, different 0; refusals 29, different 0 -> CONFIRMED
+C6: laps 100000, shape changes 0; largest difference at the checks 3.0e-16 -> CONFIRMED
+
+Reported: F cells (chain/graph), duration over c62's per input (median, largest, share above c62); bind interleaved / back to back (ms)
+  D FakeKingston       heis_n12_r2      median 0.9953 largest 0.9953 above 0/51  bind 2.073 / 1.311
+  D FakeKingston       hhI_n16          median 0.8528 largest 0.8528 above 0/51  bind 0.955 / 0.600
+  D FakeKingston       hhI_n20          median 0.8528 largest 0.8528 above 0/51  bind 1.032 / 0.700
+  D FakeKingston       hhtree_heis_n16  median 1.0000 largest 1.0000 above 0/51  bind 2.774 / 1.660
+  D FakeKingston       ring12_tfim      median 0.9657 largest 0.9657 above 0/51  bind 0.764 / 0.521
+  D FakeKingston       tfimP_n12        median 1.0000 largest 1.0000 above 0/51  bind 0.525 / 0.346
+  D FakeKingston       tfimP_n16        median 1.0000 largest 1.0000 above 0/51  bind 0.670 / 0.436
+  D FakeKingston       tfim_n12         median 1.0000 largest 1.0000 above 0/51  bind 0.465 / 0.279
+  D FakeKingston       tfim_n16         median 1.0000 largest 1.0000 above 0/51  bind 0.533 / 0.471
+  D FakeKingston       tfim_n20_r3      median 0.9086 largest 0.9086 above 0/51  bind 0.787 / 0.528
+  D FakeKingston       tfim_n40_r2      median 0.8195 largest 0.8195 above 0/51  bind 0.925 / 0.643
+  D FakeMarrakesh      heis_n12_r2      median 0.9949 largest 0.9949 above 0/51  bind 2.136 / 1.333
+  D FakeMarrakesh      hhI_n16          median 0.8398 largest 0.8398 above 0/51  bind 0.961 / 0.627
+  D FakeMarrakesh      hhI_n20          median 0.8398 largest 0.8398 above 0/51  bind 1.071 / 0.687
+  D FakeMarrakesh      hhtree_heis_n16  median 1.0000 largest 1.0000 above 0/51  bind 2.773 / 1.702
+  D FakeMarrakesh      ring12_tfim      median 0.9630 largest 0.9630 above 0/51  bind 0.789 / 0.521
+  D FakeMarrakesh      tfimP_n12        median 1.0000 largest 1.0000 above 0/51  bind 0.512 / 0.413
+  D FakeMarrakesh      tfimP_n16        median 1.0000 largest 1.0000 above 0/51  bind 0.668 / 0.414
+  D FakeMarrakesh      tfim_n12         median 1.0000 largest 1.0000 above 0/51  bind 0.449 / 0.383
+  D FakeMarrakesh      tfim_n16         median 1.0000 largest 1.0000 above 0/51  bind 0.544 / 0.324
+  D FakeMarrakesh      tfim_n20_r3      median 0.9011 largest 0.9011 above 0/51  bind 0.780 / 0.536
+  D FakeMarrakesh      tfim_n40_r2      median 0.8058 largest 0.8058 above 0/51  bind 0.917 / 0.617
+  D FakeTorino         heis_n12_r2      median 0.9961 largest 0.9961 above 0/51  bind 2.058 / 1.338
+  D FakeTorino         hhI_n16          median 0.8987 largest 0.8987 above 0/51  bind 0.982 / 0.605
+  D FakeTorino         hhI_n20          median 0.9198 largest 0.9198 above 0/51  bind 1.057 / 0.678
+  D FakeTorino         hhtree_heis_n16  median 1.0000 largest 1.0000 above 0/51  bind 2.836 / 1.728
+  D FakeTorino         ring12_tfim      median 0.9521 largest 0.9521 above 0/51  bind 0.792 / 0.533
+  D FakeTorino         tfimP_n12        median 1.0000 largest 1.0000 above 0/51  bind 0.513 / 0.349
+  D FakeTorino         tfimP_n16        median 1.0000 largest 1.0000 above 0/51  bind 0.645 / 0.414
+  D FakeTorino         tfim_n12         median 1.0000 largest 1.0000 above 0/51  bind 0.456 / 0.273
+  D FakeTorino         tfim_n16         median 1.0000 largest 1.0000 above 0/51  bind 0.544 / 0.339
+  D FakeTorino         tfim_n20_r3      median 0.9537 largest 0.9537 above 0/51  bind 0.775 / 0.505
+  D FakeTorino         tfim_n40_r2      median 0.9372 largest 0.9372 above 0/51  bind 0.910 / 0.603
+  D snapshot_marrakesh heis_n12_r2      median 0.9949 largest 0.9949 above 0/51  bind 2.140 / 1.354
+  D snapshot_marrakesh hhI_n16          median 0.8398 largest 0.8398 above 0/51  bind 0.943 / 0.627
+  D snapshot_marrakesh hhI_n20          median 0.8398 largest 0.8398 above 0/51  bind 1.029 / 0.693
+  D snapshot_marrakesh hhtree_heis_n16  median 1.0000 largest 1.0000 above 0/51  bind 2.983 / 1.981
+  D snapshot_marrakesh ring12_tfim      median 0.9630 largest 0.9630 above 0/51  bind 0.888 / 0.555
+  D snapshot_marrakesh tfimP_n12        median 1.0000 largest 1.0000 above 0/51  bind 0.536 / 0.329
+  D snapshot_marrakesh tfimP_n16        median 1.0000 largest 1.0000 above 0/51  bind 0.677 / 0.419
+  D snapshot_marrakesh tfim_n12         median 1.0000 largest 1.0000 above 0/51  bind 0.482 / 0.293
+  D snapshot_marrakesh tfim_n16         median 1.0000 largest 1.0000 above 0/51  bind 0.557 / 0.342
+  D snapshot_marrakesh tfim_n20_r3      median 0.9011 largest 0.9011 above 0/51  bind 0.814 / 0.548
+  D snapshot_marrakesh tfim_n40_r2      median 0.8058 largest 0.8058 above 0/51  bind 0.925 / 0.677
+  R FakeFez            heis_n12_r2      median 0.9967 largest 1.0000 above 0/1101  bind 2.189 / 1.309
+  R FakeFez            hhI_n16          median 0.9000 largest 0.9818 above 0/1101  bind 0.922 / 0.564
+  R FakeFez            hhI_n20          median 0.9000 largest 0.9643 above 0/1101  bind 1.037 / 0.673
+  R FakeFez            hhtree_heis_n16  median 1.0000 largest 1.0000 above 0/1101  bind 2.806 / 1.744
+  R FakeFez            ring12_tfim      median 0.9759 largest 1.0519 above 15/1101  bind 0.760 / 0.501
+  R FakeFez            tfimP_n12        median 1.0000 largest 1.0000 above 0/1101  bind 0.514 / 0.331
+  R FakeFez            tfimP_n16        median 1.0000 largest 1.0000 above 0/1101  bind 0.666 / 0.397
+  R FakeFez            tfim_n12         median 1.0000 largest 1.0000 above 0/1101  bind 0.478 / 0.272
+  R FakeFez            tfim_n16         median 1.0000 largest 1.0000 above 0/1101  bind 0.569 / 0.330
+  R FakeFez            tfim_n20_r3      median 0.9365 largest 1.0000 above 0/1101  bind 0.786 / 0.513
+  R FakeFez            tfim_n40_r2      median 0.8723 largest 0.9111 above 0/1101  bind 1.016 / 0.625
+  largest ratio over every F cell: 1.0519
+Walk: bind median 0.277 ms, p99 0.608 ms; peak memory 221 MB; duration over c62's median 0.8298, largest 0.8667

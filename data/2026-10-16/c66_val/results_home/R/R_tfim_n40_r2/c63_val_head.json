@@ -1,0 +1,13 @@
+{
+ "only": [
+  "tfim_n40_r2"
+ ],
+ "ex20_every": 10,
+ "free": 100,
+ "c63_sha256": "fdf497478c0f89523b859122d483da9ba5fa48d1e04299b8cedbff01253b7d61",
+ "c62_sha256": "28de2c381a8e9e748eb35a4291d374a8826e56749c923999adc9f86f31001c8a",
+ "script_sha256": "ee9e4cc5bb98830b4ba7e7df44d2b6814931a2a05bb7f38d244f7efb7a4c783e",
+ "sets": 1000,
+ "dsets": 50,
+ "version": "2026-10-16.c66"
+}

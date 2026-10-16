@@ -1,0 +1,3 @@
+R FakeFez      chain_cz_n12     T native same 1101/1101 exact 1101/1101 dur<= 1101 bind 0.516 ms tight 0.336 ms build 11.0 c62 9.2 rebuilt 0 switched 0
+R FakeFez      chain_cz_n12     F native same 1101/1101 exact 1101/1101 dur<= 1101 bind 0.531 ms tight 0.340 ms build 10.5 c62 9.6 rebuilt 0 switched 0
+C63-VAL DONE

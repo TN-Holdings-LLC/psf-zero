@@ -4876,6 +4876,61 @@ made again, complete, into a new folder.
 of many candidates in simulation and few on the device, reshaped to fit the QPU budget; not built, waiting for three
 decisions.
 
+## Addendum 513 -- C66-VAL (pre-registered): prototype c66 passes every criterion -- exact, native, no shape change in 190 cells or in 100,000 binds, and its default call is release 2026-10-16.1's bit for bit on 49,590 inputs; on fractional targets its templates are 0.81-1.00 x c62's median duration where option A's were up to 1.21 x (FakeFez) and 1.35 x (Marrakesh) (2026-10-17)
+
+**Status:** results of a pre-registered run. Nothing ran on a device. Times in CEST.
+
+**The run.** Pre-registration `data/2026-10-16/c66_val/C66-VAL_preregistration.md` (SHA-256 `ef249a23...`, pushed in
+`061f30c` before any run); c66 `fdf49747...`. After the three runs that died in the authors' cloud (Addendum 512), the
+first complete run was made on the owner's home machine (WSL), 2026-10-17 00:38:32-01:35:23, by the same
+`run_c66_val.sh`; the SHA-256 of every file it used, written by the run, match the committed files. **One deviation:**
+the pre-registration names the authors' cloud (2 CPUs, Qiskit 2.5.2, Aer 0.17.2) as the machine; the home machine's
+package versions are not recorded in the results. No criterion depends on the machine; the bind times do (reported
+only). Record:
+[`data/2026-10-16/c66_val/results_home/`](../../data/2026-10-16/c66_val/results_home/).
+
+| ID | criterion | verdict | numbers |
+|---|---|---|---|
+| C1 | native templates identical to c62's | CONFIRMED | 20,880 outputs (parts R and D), 0 different |
+| C2 | item 88's frame (F): exact, native, rzz in range, two-qubit count = c62's | CONFIRMED | 12,111 outputs in part R (9,030 checked exactly, largest difference 2.4e-15; tfim_n40_r2 not checked); part D in the next row |
+| C3 | the CZ path (T): exact, native | CONFIRMED | 12,111 outputs in part R (largest difference 8.8e-15); part D: 4,488 F and T outputs, 0 failing |
+| C4 | shape changes | CONFIRMED | 0 in 190 cells (part R 38, part D 152) |
+| C5 | default call = release 2026-10-16.1, bit for bit | CONFIRMED | 49,590 inputs, 0 different; 29 refusals, 0 different |
+| C6 | the walk | CONFIRMED | 100,000 binds, 0 shape changes; every 1,000th exact (largest difference 3.0e-16) |
+
+**Reported, not criteria (the owner's decision):**
+
+- **Duration over c62's, F cells** (display: per-cell median; essential: the largest single input and how many inputs
+  are above c62). Part R (FakeFez, 1,101 inputs per cell), c66 against option A (C63A-VAL, the same inputs):
+
+  | test | c66 median / largest / above c62 | option A median / largest / above c62 |
+  |---|---|---|
+  | tfim_n12, tfim_n16 | 1.000 / 1.000 / 0 | 1.205 / 1.205 / 1,053, 1,030 |
+  | tfimP_n12, tfimP_n16 | 1.000 / 1.000 / 0 | 1.146 / 1.146 / 1,028, 1,015 |
+  | tfim_n20_r3 | 0.937 / 1.000 / 0 | 1.032 / 1.102 / 1,048 |
+  | heis_n12_r2 | 0.997 / 1.000 / 0 | 1.002 / 1.005 / 1,101 |
+  | tfim_n40_r2 | 0.872 / 0.911 / 0 | 1.000 / 1.044 / 7 |
+  | hhI_n16, hhI_n20 | 0.900 / 0.982, 0.964 / 0 | 1.067 / 1.164, 1.143 / 1,088, 1,082 |
+  | ring12_tfim | 0.976 / **1.052** / **15** | 1.000 / 1.078 / 46 |
+  | hhtree_heis_n16 | 1.000 / 1.000 / 0 | 1.004 / 1.004 / 1,101 |
+
+  Part D (4 devices, 51 inputs per cell): every cell's median 0.81-1.00, none above c62. The walk: median 0.830,
+  largest 0.867 (option A: 1.000, 1.044). The authors' stated expectation, no F cell's median above 1.00 x c62, holds.
+  **The one place c66 is above c62:** ring12_tfim, 15 of 1,101 inputs, up to 1.052 x; the ring is a cycle, and its
+  closing rzz keeps option A's pinned form, the likely cause (not traced input by input; fewer and smaller than option A's 46 and 1.078 x).
+- **T cells:** the CZ path is the release's code; its ratios are option A's to the last digit (heis_n12_r2 T 1.003,
+  hhtree_heis_n16 T 1.019, as in C63A-VAL). Unchanged by c66, not improved.
+- **Bind times** (this machine; not comparable with the workplace's or the cloud's): interleaved medians 0.10-1.04 ms
+  except the Heisenberg F cells, heis_n12_r2 2.19 and hhtree_heis_n16 2.81 ms (above C63-VAL's 2.0 ms limit, which is
+  not a criterion here; the same two cells were above it with option A, at 2.96 and 3.81 ms on the workplace machine).
+  The walk: median 0.277 ms, p99 0.608 ms, peak memory 221 MB. **Not checked:** the expectation "about 1.5 x option
+  A's bind", because option A was never timed on this machine.
+
+**Reading.** c66 keeps option A's fixed shape and its correctness, and removes option A's cost: on fractional targets
+the templates are now as short as c62's or shorter, without c62's (and option B's) shape changes. Default calls and CZ
+targets are bit for bit the release's. A release 2026-10-16.2 = c66 needs the owner's go-ahead.
+
+
 ---
 
 **End of Part 11 of 11 (end of document, for now).** Back to [Part 10](spare-qubit-cliff-combined-383.md), [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

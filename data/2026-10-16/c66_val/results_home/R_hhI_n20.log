@@ -1,0 +1,3 @@
+R FakeFez      hhI_n20          T graph  same 25/1101 exact 111/1101 dur<= 1101 bind 1.062 ms tight 0.677 ms build 22.2 c62 20.1 rebuilt 0 switched 0
+R FakeFez      hhI_n20          F graph  same 0/1101 exact 111/1101 dur<= 1101 bind 1.037 ms tight 0.673 ms build 22.6 c62 29.7 rebuilt 0 switched 0
+C63-VAL DONE

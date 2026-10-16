@@ -1,0 +1,3 @@
+R FakeFez      ghz_n12          T native same 1101/1101 exact 1101/1101 dur<= 1101 bind 0.099 ms tight 0.050 ms build 4.2 c62 4.2 rebuilt 0 switched 0
+R FakeFez      ghz_n12          F native same 1101/1101 exact 1101/1101 dur<= 1101 bind 0.104 ms tight 0.048 ms build 4.0 c62 4.4 rebuilt 0 switched 0
+C63-VAL DONE
