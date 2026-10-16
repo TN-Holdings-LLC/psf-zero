@@ -4824,6 +4824,28 @@ no tests: GPU, TKET, device access), and the new file passes.
 **Also checked:** TOQB's default front end (a22) builds its ring templates on the new root release (6 and 12 qubits).
 TOQB's pre-registered runs pin c61 and a22 by SHA-256 and are not affected.
 
+
+## Addendum 511 -- Prototype c66 (item 103): option A's fixed shape without its pulses -- the frame by segments, solved over GF(2); in a first, exploratory measurement, same-sign templates on fractional targets go from 1.15-1.35 x c62's duration to 0.81-1.00 x, with no shape change (2026-10-16)
+
+**Status:** development record, no predictions yet. Nothing ran on a device. Times in CEST. The owner asked for the
+improvement of option A first (2026-10-16 evening).
+
+- **Cause, counted:** on tfim_n12 (FakeFez, F) c62 emits 24 rx pulses, option A 50; 20 of the extra 26 sit between two
+  rzz (every negative rzz is X RZZ X with both runs pinned), 6 after the last rzz.
+- **A correction to the authors' first sketch** (given to the owner the same evening): "absorb the leftover X at the
+  end" is not enough, because one of the two X's of a negative rzz must sit next to it.
+- **Item 103** ([`patches/psf_compile_c66_2026-10-16/`](../../patches/psf_compile_c66_2026-10-16/)): the non-diagonal
+  runs ("anchors") cut each qubit into segments; conjugating an inner segment by X is free and flips its rzz signs; the
+  choice is a GF(2) system (one equation per rzz) solved by a spanning forest found at build. An rzz closing a cycle
+  keeps option A's pinned form; an rzz on basis states, or before measurements only, needs no sign.
+- **First measurement** (exploratory; 5 devices, F, the 11 F-path tests of C63-VAL, 21 inputs per cell from a label
+  C63-VAL does not use): duration over c62's 0.81-1.00 (option A 1.00-1.35); 0 shape changes; exact wherever checked
+  (12 qubits: every input; 16 and 20 qubits: 3 inputs per cell); native, rzz in range. The 100,000-bind walk: 0 shape
+  changes, exact, 0.83-0.87 x c62's duration, bind median 0.64 ms (option A 0.39 ms).
+- **Not done:** the pre-registered validation (C63-VAL's inputs and criteria), the 40-qubit cell's exactness, the
+  bind-time criteria. The first version changed shape on the Heisenberg cells (anchors chosen by single gates); fixed
+  before these numbers by choosing anchors by whole runs.
+
 ---
 
 **End of Part 11 of 11 (end of document, for now).** Back to [Part 10](spare-qubit-cliff-combined-383.md), [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
