@@ -8,16 +8,21 @@
 [![DOI (Paper 1)](https://zenodo.org/badge/DOI/10.5281/zenodo.22977930.svg)](https://doi.org/10.5281/zenodo.22977930)
 [![DOI (Paper 2)](https://zenodo.org/badge/DOI/10.5281/zenodo.22978090.svg)](https://doi.org/10.5281/zenodo.22978090)
 
-PSF-Zero is a Qiskit-compatible compiler with two layers.
+PSF-Zero is a Qiskit-compatible compiler that builds circuits for a device by formula, with no search.
 
-- **`compile()`: fast, exact two-qubit synthesis.** It replaces heuristic two-qubit unitary synthesis with a
-  closed-form Cartan (KAK) decomposition in a small Rust core. It is deterministic (the same circuit for the same
-  input, with no seed) and several times faster than Qiskit's `optimization_level=3` on circuits made of two-qubit
-  blocks.
-- **`compile_for_hardware()`: compilation for a device.** Since 2026-10-14.1, given the device's `Target`, it
-  builds by formula every circuit whose two-qubit interaction graph embeds in the device: chains, lattices and
-  embeddable graphs, in a time-aware order, with IBM's native rzz where offered. It hands every other circuit to
-  Qiskit's level 3 unchanged. Every output it can check is checked exact. On the circuits it builds, its outputs are
+- **`compile_for_hardware()` and `compile_template()`: compilation for a device.** Since 2026-10-16.1, given the
+  device's `Target` (a CZ device: IBM Heron), it builds by formula every circuit whose two-qubit interaction graph
+  embeds in the device: chains, lattices and embeddable graphs, in a time-aware order, with IBM's native rzz where
+  offered. **Every other circuit, and every call without the device, is refused with `OutOfScopeError`:** compile
+  those with Qiskit yourself (until 2026-10-14.1 they were handed to Qiskit's level 3; the owner closed that path,
+  Addenda 494 and 510). `compile_template(qc, target)` builds once and binds new angles in about a millisecond, for
+  training loops.
+- **`compile()`: fast, exact two-qubit synthesis**, with a closed-form Cartan (KAK) decomposition in a small Rust
+  core. It is not in 2026-10-16.1, whose default calls never used it; it remains in the previous release,
+  [`patches/psf_compile_release_2026-10-14.1/psf_compile.py`](patches/psf_compile_release_2026-10-14.1/psf_compile.py)
+  (see [Quick start](#quick-start)).
+- **Earlier (2026-10-14.1):** the formula path above, with every other circuit handed to Qiskit's level 3
+  unchanged. Every output it can check is checked exact. On the circuits it builds, its outputs are
   0.20-0.23 times Qiskit level 3's duration on average (geometric mean, offline), and the time-aware order raised the fidelity on real devices
   8 of 8 times. See [Scope](#scope-where-psf-zero-competes-declared-2026-10-14). The earlier error-aware placement
   and noise-estimated choice, described in the release notes up to 2026-10-11.4, are not what decides any more.
@@ -67,9 +72,28 @@ What these numbers are not:
 
 ## Current version
 
-**`psf_compile.py` 2026-10-14.1** and the AI front end **a18**, with `psf_smart_layout` 2026-10-01.1 and the Rust
-core `CORE_VERSION` 2026-09-29.1, and optionally `psf_zero_core57` 2026-10-10.c30 (Parts 10-11, Addenda 383-492). Every
-release and dated notice: [`docs/RELEASES.md`](docs/RELEASES.md).
+**`psf_compile.py` 2026-10-16.1** and the AI front end **a23** (Part 11, Addenda 503-510). The changelog of
+`psf_compile` is [`docs/psf_compile_CHANGELOG.md`](docs/psf_compile_CHANGELOG.md). Every release and dated notice:
+[`docs/RELEASES.md`](docs/RELEASES.md).
+
+> **New in 2026-10-16.1: no search and no check is left on the default path, and the file is a third of its size.**
+> The release is prototype c65 (Addenda 504-508): c63a (validated in C63-VAL and C63A-VAL), with the code its default
+> calls never reach removed by the workplace (c64: 9,240 lines to 3,045, the same output on 49,590 inputs), and
+> item 96's embedding test decided by formula before VF2 (item 102). The AI front end a23 replaces a22's
+> compare-and-choose by a rule on the ring size (the same output, bit for bit).
+>
+> - **What changes for a user:** circuits that do not embed in the device, devices without CZ, and calls without
+>   the device are refused with `OutOfScopeError` instead of being handed to Qiskit. `compile()` and the other
+>   functions the default calls never used are not in this file (they remain in 2026-10-14.1, kept in `patches/`).
+>   Only `target=`/`backend=`, `prune_max_error=` and `seed_transpiler=` are read; other options are ignored.
+> - **Time:** against 2026-10-14.1 + a18, the compile of the same circuits takes 0.023 x (C63-VAL's tests) and
+>   0.063 x (TOQB's ring circuits) per call (median, offline; Addendum 505).
+> - **Known cost (option A, Addendum 508):** in `compile_template` on fractional (rzz) targets, inputs whose signs
+>   match the build's are up to 1.21-1.35 x c62's duration; on mixed signs the median is 1.000.
+> - Not run on a device as a whole.
+
+**Earlier: `psf_compile.py` 2026-10-14.1** and the AI front end **a18**, with `psf_smart_layout` 2026-10-01.1 and the
+Rust core `CORE_VERSION` 2026-09-29.1, and optionally `psf_zero_core57` 2026-10-10.c30 (Parts 10-11, Addenda 383-492).
 
 > **New in 2026-10-14.1: PSF-Zero builds what it can build by formula, and hands everything else to Qiskit.** The
 > release is prototype c57 (C57-VAL, every prediction confirmed; Addenda 490-491) and the AI front end a18
@@ -310,7 +334,11 @@ release and dated notice: [`docs/RELEASES.md`](docs/RELEASES.md).
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import UnitaryGate
 from qiskit.quantum_info import random_unitary
-from psf_compile import compile as psf_compile
+import importlib.util  # compile() is in the previous release, kept in patches/
+spec = importlib.util.spec_from_file_location("psf_compile_2026_10_14_1",
+                                              "patches/psf_compile_release_2026-10-14.1/psf_compile.py")
+rel = importlib.util.module_from_spec(spec); spec.loader.exec_module(rel)
+psf_compile = rel.compile
 
 qc = QuantumCircuit(2)
 qc.append(UnitaryGate(random_unitary(4)), [0, 1])
@@ -330,8 +358,11 @@ from qiskit_ibm_runtime.fake_provider import FakeTorino
 from psf_compile import compile_for_hardware
 
 backend = FakeTorino()
-out = compile_for_hardware(qc, backend=backend, entangling_basis="cx", layout_search=True)
+out = compile_for_hardware(qc, backend=backend)   # 2026-10-16.1: OutOfScopeError if qc does not embed in the device
 ```
+
+Since 2026-10-16.1 the call reads only `backend=`/`target=`, `prune_max_error=` and `seed_transpiler=`; the options
+below were 2026-10-14.1's and are ignored.
 
 The earlier recommended options (`placement_refine=True, final_resynthesis="select", compare_level3=True,
 compare_floor=True, candidate_score="hybrid"`) still work with `backend=`. In C35-VAL they gave about 1-2% more ESP at

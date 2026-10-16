@@ -4787,6 +4787,43 @@ Nothing ran on a device. Times in CEST. TOQB record:
   budget, the shorter circuit (8.7 us against 18.1 us) and the one extra iteration show.
 - **Scope:** one task, one device model, in simulation.
 
+
+## Addendum 510 -- Release: psf_compile 2026-10-16.1 = prototype c65, and the AI front end a23; what is not built by formula is refused, and `compile()` stays in the kept 2026-10-14.1 (2026-10-16)
+
+**Status:** release, with the owner's go-ahead (2026-10-16, about 14:38 CEST). Nothing ran on a device. Times in CEST.
+
+**What was released.**
+
+- `psf_compile.py` at the repository root = prototype c65 (Addenda 504-505), with its module docstring and version line
+  changed (`VERSION = "2026-10-16.1"`). The changelog of items 1-102 moved to
+  [`docs/psf_compile_CHANGELOG.md`](../psf_compile_CHANGELOG.md).
+- `benchmarks/psf_ai_compile.py` = a23 (Addendum 503), with its version comment changed.
+- Kept: 2026-10-14.1 as
+  [`patches/psf_compile_release_2026-10-14.1/psf_compile.py`](../../patches/psf_compile_release_2026-10-14.1/psf_compile.py),
+  a18 as `benchmarks/psf_ai_compile_a18.py`.
+
+**Two decisions the owner made before the release was built** (both were asked, not assumed):
+
+- **Out of scope is refused.** A circuit that does not embed in the device, a device without CZ, and a call without
+  the device raise `OutOfScopeError`; 2026-10-14.1 handed such circuits to Qiskit's level 3 (item 98, Addendum 494).
+- **The removed functions stay removed.** `compile()`, `prune_coupling_map`, `edge_errors_from_target`, the cost
+  models and 65 other public names the default calls never used are only in the kept 2026-10-14.1; the README's quick
+  start loads `compile()` from there.
+
+**Validation behind it:** c63a passed C63-VAL and C63A-VAL (Addenda 506-507); c64 and c65 return c63a's output bit for
+bit (Addenda 504-505); a23 returns a22's (Addendum 503). Option A kept (Addendum 508), with its known cost on
+fractional targets.
+
+**Tests.** New [`benchmarks/test_release_2026_10_16_1.py`](../../benchmarks/test_release_2026_10_16_1.py) (7 tests:
+versions; the installed files are the prototypes; GHZ exact and native on T and F; out-of-scope and no-Target refusals;
+a23's recompile and template on 6- and 12-qubit rings, exact and native). The 20 earlier test files that used the root
+release or a18 now load the kept copies (`benchmarks/_frozen_release.py` installs 2026-10-14.1 as `psf_compile`).
+All 57 test files were run before and after: the same result in every earlier file (40 pass; the same 16 fail or have
+no tests: GPU, TKET, device access), and the new file passes.
+
+**Also checked:** TOQB's default front end (a22) builds its ring templates on the new root release (6 and 12 qubits).
+TOQB's pre-registered runs pin c61 and a22 by SHA-256 and are not affected.
+
 ---
 
 **End of Part 11 of 11 (end of document, for now).** Back to [Part 10](spare-qubit-cliff-combined-383.md), [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

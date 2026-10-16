@@ -11,6 +11,8 @@ import numpy as np
 from qiskit import QuantumCircuit, transpile
 from qiskit.circuit.library import UnitaryGate
 from qiskit.quantum_info import random_unitary, Operator
+from _frozen_release import use as _use_frozen_release  # noqa: E402 - psf_compile 2026-10-14.1, frozen since 2026-10-16
+_use_frozen_release()
 import psf_compile
 
 N_QUBITS = 15

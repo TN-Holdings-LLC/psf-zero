@@ -20,7 +20,7 @@ sys.path.insert(0, REPO)
 @pytest.fixture(scope="module")
 def mods():
     import core_fix_c2_eval as H
-    rel = H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile")
+    rel = H.load_module(os.path.join(REPO, "patches", "psf_compile_release_2026-10-14.1", "psf_compile.py"), "psf_compile")
     lay = H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psl_a8_release_test")
     sys.modules["psf_smart_layout"] = lay
     a7 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile_a7.py"), "psf_ai_compile_a7_frozen_test")

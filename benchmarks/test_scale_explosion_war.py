@@ -176,6 +176,8 @@ from pytket.passes import FullPeepholeOptimise
 
 # Our finalized master engine
 
+from _frozen_release import use as _use_frozen_release  # noqa: E402 - psf_compile 2026-10-14.1, frozen since 2026-10-16
+_use_frozen_release()
 from psf_compile import compile as psf_compile
 
 BASIS_GATES = {"rx", "ry", "rz", "cx", "u", "u1", "u2", "u3", "id"}

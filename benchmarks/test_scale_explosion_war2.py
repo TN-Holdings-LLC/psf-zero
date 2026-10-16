@@ -11,6 +11,8 @@ from qiskit.quantum_info import random_unitary
 from pytket.extensions.qiskit import qiskit_to_tk, tk_to_qiskit
 from pytket.passes import FullPeepholeOptimise
 
+from _frozen_release import use as _use_frozen_release  # noqa: E402 - psf_compile 2026-10-14.1, frozen since 2026-10-16
+_use_frozen_release()
 from psf_compile import compile as psf_compile
 
 FULL = os.environ.get("PSF_MAX_LOAD_FULL") == "1"

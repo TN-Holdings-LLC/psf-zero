@@ -15,6 +15,8 @@ for _p in (_HERE, os.path.dirname(_HERE)):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
+from _frozen_release import use as _use_frozen_release  # noqa: E402 - psf_compile 2026-10-14.1, frozen since 2026-10-16
+_use_frozen_release()
 import psf_compile as pc  # noqa: E402
 import psf_smart_layout as psl  # noqa: E402
 from qiskit import QuantumCircuit  # noqa: E402
@@ -62,7 +64,7 @@ def _routed_equiv(qc, out, seed=3):
 
 
 def test_versions():
-    assert pc.VERSION == "2026-10-14.1"  # current release (2026-10-01.1 was the release of candidate 2026-10-01.c2)
+    assert pc.VERSION == "2026-10-14.1"  # the frozen 2026-10-14.1 (current release until 2026-10-16; 2026-10-01.1 was the release of candidate 2026-10-01.c2)
     assert psl.LAYOUT_VERSION == "2026-10-01.1"
 
 

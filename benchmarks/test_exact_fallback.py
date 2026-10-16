@@ -6,6 +6,8 @@ import pytest
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Operator, random_unitary
 
+from _frozen_release import use as _use_frozen_release  # noqa: E402 - psf_compile 2026-10-14.1, frozen since 2026-10-16
+_use_frozen_release()
 import psf_compile as pc
 
 

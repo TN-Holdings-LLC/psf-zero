@@ -80,6 +80,8 @@ from qiskit.quantum_info import Operator
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from pytket.extensions.qiskit import qiskit_to_tk, tk_to_qiskit
 from pytket.passes import FullPeepholeOptimise
+from _frozen_release import use as _use_frozen_release  # noqa: E402 - psf_compile 2026-10-14.1, frozen since 2026-10-16
+_use_frozen_release()
 from psf_compile import compile as psf_compile
 # PSF_Zero_v6_cx added alongside the original PSF_Zero_v6 so a single run
 # shows the before/after of the entangling_basis="cx" fix side by side,

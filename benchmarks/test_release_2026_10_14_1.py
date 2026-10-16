@@ -27,9 +27,9 @@ for p in (HERE, REPO):
 def mods():
     import core_fix_c2_eval as H
     H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psf_smart_layout")
-    rel = H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile")
+    rel = H.load_module(os.path.join(REPO, "patches", "psf_compile_release_2026-10-14.1", "psf_compile.py"), "psf_compile")
     rel.WARN_WITHOUT_TARGET = False
-    ai = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile.py"), "psf_ai_compile_release_test")
+    ai = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile_a18.py"), "psf_ai_compile_release_test")
     return dict(rel=rel, ai=ai)
 
 
@@ -113,7 +113,7 @@ def test_versions(mods):
 
 
 def test_release_file_is_c57_with_version_lines_changed():
-    rel = open(os.path.join(REPO, "psf_compile.py"), encoding="utf-8").read().splitlines()
+    rel = open(os.path.join(REPO, "patches", "psf_compile_release_2026-10-14.1", "psf_compile.py"), encoding="utf-8").read().splitlines()
     c57 = open(os.path.join(REPO, "patches", "psf_compile_c57_2026-10-14", "psf_compile.py"),
                encoding="utf-8").read().splitlines()
     assert len(rel) == len(c57)

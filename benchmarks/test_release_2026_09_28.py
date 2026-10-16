@@ -12,12 +12,14 @@ for _p in (_HERE, os.path.dirname(_HERE)):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
+from _frozen_release import use as _use_frozen_release  # noqa: E402 - psf_compile 2026-10-14.1, frozen since 2026-10-16
+_use_frozen_release()
 import psf_compile as pc  # noqa: E402
 import psf_zero_core  # noqa: E402
 
 
 def test_version():
-    assert pc.VERSION == "2026-10-14.1"  # current release (this file was written for 2026-09-28.1)
+    assert pc.VERSION == "2026-10-14.1"  # the frozen 2026-10-14.1 (current release until 2026-10-16; this file was written for 2026-09-28.1)
     assert pc.__version__ == pc.VERSION
 
 

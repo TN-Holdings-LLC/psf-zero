@@ -141,6 +141,8 @@ from qiskit.transpiler import CouplingMap
 # loudly right here -- it does NOT fall back to guessing at a different
 # API with hasattr() and quietly measuring nothing, which is exactly how
 # the previous version of this test went wrong.
+from _frozen_release import use as _use_frozen_release  # noqa: E402 - psf_compile 2026-10-14.1, frozen since 2026-10-16
+_use_frozen_release()
 from psf_compile import compile as psf_compile_only
 from psf_compile import compile_for_hardware
 

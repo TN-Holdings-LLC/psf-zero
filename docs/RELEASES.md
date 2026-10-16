@@ -10,8 +10,12 @@ from this folder. The full record behind each entry is in Parts 9-11 of the find
 the earlier parts they link to. The README itself, as it was before the move, is kept as
 [`README_2026-10-05_before_restructure.md`](README_2026-10-05_before_restructure.md).
 
-> **In brief (as of 2026-10-14)**
+> **In brief (as of 2026-10-16)**
 >
+> 00. Release 2026-10-16.1 (prototype c65, Addenda 504-508; AI front end a23, Addendum 503): no search and no check on
+>     the default path. What embeds in a CZ device is built by formula; every other circuit, and every call without
+>     the device, is refused with `OutOfScopeError` (item 98; nothing is handed to Qiskit any more). The same output as
+>     the validated c63a, bit for bit; 0.023-0.063 x 2026-10-14.1's compile time per call (Addendum 505).
 > 0. Release 2026-10-14.1 (prototype c57, C57-VAL, Addendum 491; AI front end a18, Addendum 489): PSF-Zero builds by
 >    formula every circuit whose two-qubit interaction graph embeds in the device, and hands every other circuit to
 >    Qiskit's level 3 unchanged (item 96), after real-device tests showed its gains there and its losses elsewhere
@@ -40,7 +44,29 @@ the earlier parts they link to. The README itself, as it was before the move, is
 > 6. The device layer has been tested only in noisy simulation on fake devices, not on hardware. (Since 2026-10-12 it
 >    has run on three real devices: HW1, HW2, TIME1, FRAC1; Addenda 455-488.)
 
-> **Current version (2026-10-14, first release): `psf_compile.py` 2026-10-14.1 and the AI front end a18, with
+> **Current version (2026-10-16, first release): `psf_compile.py` 2026-10-16.1 and the AI front end a23**
+> ([Part 11](findings/spare-qubit-cliff-combined-450.md), Addenda 503-510). The compiler is prototype c65
+> ([`patches/psf_compile_c65_2026-10-16/`](../patches/psf_compile_c65_2026-10-16/)) with its docstring and version line
+> changed; the AI front end is a23 ([`patches/psf_ai_compile_a23_2026-10-16/`](../patches/psf_ai_compile_a23_2026-10-16/))
+> with its version comment changed. 2026-10-14.1 is kept as
+> [`patches/psf_compile_release_2026-10-14.1/psf_compile.py`](../patches/psf_compile_release_2026-10-14.1/psf_compile.py)
+> and a18 as [`benchmarks/psf_ai_compile_a18.py`](../benchmarks/psf_ai_compile_a18.py). The changelog moved to
+> [`psf_compile_CHANGELOG.md`](psf_compile_CHANGELOG.md).
+>
+> - **c65** = c64 (the workplace's c63a without the code its default calls never reach: 9,240 lines to 3,045, every
+>   switch fixed at its default, the same output on all 49,590 C63-VAL inputs) + item 102 (item 96's embedding test by
+>   formula before VF2). c63a passed C63-VAL and C63A-VAL (correctness everywhere; the bind-time criteria S1 and S2
+>   missed by a few cells, as for c63); option A was kept by the owner (Addendum 508).
+> - **a23** = a22 with compare-and-choose replaced by a rule on the ring size, and its checks, switches and a15/a14
+>   removed: the same output as a22 on 588 of 588 calls.
+> - **For users:** circuits that do not embed in the device, devices without CZ, and calls without the device raise
+>   `OutOfScopeError`; `compile()` and the other functions the default calls never used are only in 2026-10-14.1;
+>   only `target=`/`backend=`, `prune_max_error=` and `seed_transpiler=` are read.
+> - **Known cost:** `compile_template` on fractional targets, same-sign inputs: up to 1.21-1.35 x c62's duration.
+> - Tests: [`benchmarks/test_release_2026_10_16_1.py`](../benchmarks/test_release_2026_10_16_1.py); tests pinned to
+>   2026-10-14.1 or a18 read the kept copies. Not run on a device as a whole.
+
+> **Previous release (2026-10-14, first release): `psf_compile.py` 2026-10-14.1 and the AI front end a18, with
 > `psf_smart_layout` 2026-10-01.1, the Rust core `CORE_VERSION` 2026-09-29.1 and the optional `psf_zero_core57`
 > 2026-10-10.c30 (all unchanged)** ([Part 11](findings/spare-qubit-cliff-combined-450.md), Addenda 454-492). The
 > compiler is prototype c57 ([`patches/psf_compile_c57_2026-10-14/`](../patches/psf_compile_c57_2026-10-14/)) with its

@@ -23,7 +23,7 @@ def mods():
     import core_fix_c2_eval as H
     lay = H.load_module(os.path.join(REPO, "benchmarks", "psf_smart_layout.py"), "psl_a9_release_test")
     sys.modules["psf_smart_layout"] = lay
-    c12 = H.load_module(os.path.join(REPO, "psf_compile.py"), "psf_compile")  # the release (item 39 from 2026-10-05.1)
+    c12 = H.load_module(os.path.join(REPO, "patches", "psf_compile_release_2026-10-14.1", "psf_compile.py"), "psf_compile")  # the release (item 39 from 2026-10-05.1)
     a8 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile_a8.py"), "psf_ai_compile_a8_frozen_a9_test")
     a9 = H.load_module(os.path.join(REPO, "benchmarks", "psf_ai_compile_a9.py"), "psf_ai_compile")  # a9, frozen at a11's adoption
     return dict(c12=c12, a8=a8, a9=a9)
