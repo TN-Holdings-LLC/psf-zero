@@ -10701,6 +10701,56 @@ budget, and the model it bought is evaluated there.
 - **W2:** C63A-VAL, the validation of option A (c63a). Its criteria are proposed with the duration at most 1.05 x
   c62's on F (W3 measured up to 1.044), and zero shape changes on part K's walk.
 
+
+## Addendum 503 -- a23: the AI front end without compare-and-choose, checks or switches, bit for bit a22's output; the search survey; workplace note 10 (c64), and the workplace's corrections to it; the budget run stopped at work (2026-10-16)
+
+**Status:** records of the morning. Nothing ran on a device. Times in CEST.
+
+**The owner's rule** (2026-10-16): what costs no time may stay; what costs time is deleted first, and put back if
+something breaks, with a check; switches are not kept.
+
+**The search survey**
+([`data/2026-10-16/workplace/home_requests/search_survey_2026-10-16.md`](../../data/2026-10-16/workplace/home_requests/search_survey_2026-10-16.md)):
+every call into c63a and a22 was recorded while they compiled C63-VAL's tests and TOQB's model circuits.
+
+- c63a: 9,240 lines; 69 functions ran (2,709 lines). Search still on its default path: VF2's first match (placement,
+  no score) and Qiskit's level-0 pass manager on the F path (translation on a fixed placement).
+- a22: compare-and-choose on its default path (two ring formulas built, the shorter kept).
+- **Limit, found by the workplace:** "never run" means "not run on the survey's inputs", not "unreachable".
+  Some of those functions are called by kept code on branches that depend on values (see note 10 below).
+
+**a23** ([`patches/psf_ai_compile_a23_2026-10-16/`](../../patches/psf_ai_compile_a23_2026-10-16/), items 44-45):
+
+- **Rule instead of comparison:** N2's ring schedule for n = 4 and 6, item 31's otherwise. a22's comparison chose
+  exactly this on all 272 cases measured (4 devices, n = 4-20, L = 1, 2, 4, 8).
+- **Removed:** a15 and a14 (their two constants written in), the exactness checks, and 13 switches (with 5 constants of the checks and of a15's path). Unreferenced
+  private helpers are removed by reference, not by the survey.
+- **Display:** 1,200 lines to 953.
+- **Essential:** the same circuit as a22, bit for bit (operations, angles as a float's hex, global phase, initial and
+  final layout), on 548 ring calls (recompile and template, and refusals without a Target) and 40 handed-on inputs:
+  588 of 588 (`check_same_a22.py`, `check_same_a22_result.txt`). Speed not measured.
+- TOQB sets none of a22's switches. TOQB's runs keep a22 (their pre-registrations fix its SHA-256).
+
+**Workplace note 10**
+([`data/2026-10-16/workplace/home_requests/`](../../data/2026-10-16/workplace/home_requests/)): c64, c63a with
+what the default calls never reach and every switch removed, the changelog moved to its own file. The owner chose the
+base (c63a), the changelog's place (a separate file) and the order (W1, c64, then W2).
+
+- **The workplace's corrections, before starting** (checked at home, all three correct):
+  - The note's delete list came from the survey and included names that kept code calls on value-dependent branches
+    (`_fold`, `_errorless`, `_strip_global_phase_gates`, `_duration_cx`, `_T100Mat`, `_T100NotHere`,
+    `OutOfScopeError`, `_st_cliff1q`). Deleting them would raise NameError on inputs the tests do not cover. The rule
+    becomes: after the switches are fixed, everything kept code references stays.
+  - D1 (same output as c63a) over every C63-VAL input (49,590, about 2.6 hours), on five devices including part D's
+    Marrakesh snapshot; D5 (time) on each cell's build input.
+  - D4 on the workplace's `test_c63.py`.
+- The note also listed W1 as pending; it had been delivered (`workplace_2026-10-16a_W1.zip`: V1-V4 confirmed, S1
+  32/38, S2 37/38).
+
+**The budget run at work** (TOQB pre-registration `0e35edcf...`): started 2026-10-16 02:18:03 CEST, 12 processes on
+the workplace PC; stopped at 240 finished arm runs of 2,000 (the PC was slower than estimated, and an editor update
+ended the run). Not scored. By the pre-registration's interruption rule, it is run again into a new folder.
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

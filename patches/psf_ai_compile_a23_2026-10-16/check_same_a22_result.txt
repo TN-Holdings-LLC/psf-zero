@@ -1,0 +1,3 @@
+ring: identical 548, different 0
+handoff: identical 40, different 0
+differences: []
