@@ -1,0 +1,11 @@
+{
+ "only": [],
+ "ex20_every": 10,
+ "free": 100,
+ "c63_sha256": "9d0fecbd09c4745d5384324fc66fea644deca95b2b07a8e06df74aad5b209492",
+ "c62_sha256": "28de2c381a8e9e748eb35a4291d374a8826e56749c923999adc9f86f31001c8a",
+ "script_sha256": "ee9e4cc5bb98830b4ba7e7df44d2b6814931a2a05bb7f38d244f7efb7a4c783e",
+ "sets": 1000,
+ "dsets": 50,
+ "version": "2026-10-15.c63a"
+}

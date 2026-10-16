@@ -1,0 +1,11 @@
+W3 A lap 10000: median 0.380 ms; changes 0; last check 1.8e-17; RSS 207 MB; 5 s
+W3 A lap 20000: median 0.386 ms; changes 0; last check 2.9e-17; RSS 208 MB; 10 s
+W3 A lap 30000: median 0.387 ms; changes 0; last check 4.5e-17; RSS 210 MB; 16 s
+W3 A lap 40000: median 0.377 ms; changes 0; last check 2.2e-16; RSS 214 MB; 21 s
+W3 A lap 50000: median 0.389 ms; changes 0; last check 4.9e-17; RSS 215 MB; 26 s
+W3 A lap 60000: median 0.406 ms; changes 0; last check 1.7e-16; RSS 215 MB; 31 s
+W3 A lap 70000: median 0.396 ms; changes 0; last check 5.6e-17; RSS 215 MB; 37 s
+W3 A lap 80000: median 0.402 ms; changes 0; last check 9.5e-17; RSS 216 MB; 42 s
+W3 A lap 90000: median 0.406 ms; changes 0; last check 1.7e-16; RSS 217 MB; 47 s
+W3 A lap 100000: median 0.413 ms; changes 0; last check 1.3e-16; RSS 217 MB; 53 s
+W3 DONE A

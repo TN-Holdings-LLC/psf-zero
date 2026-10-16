@@ -1,0 +1,47 @@
+A-V1 (part D): native outputs 3264; cells with a difference [] -> CONFIRMED
+A-V4: part D outputs 7752 (chain/graph exactness not checked: 1128; largest difference 5.8e-15); failing 0 [] -> CONFIRMED
+Reported: F cells (chain/graph), duration over c62's (median, max), two-qubit count equal, shape changes
+  FakeMarrakesh      tfim_n12         dur/c62 1.3495 max 1.3495  2q= 51/51  shape changes 0
+  FakeMarrakesh      tfim_n16         dur/c62 1.3495 max 1.3495  2q= 51/51  shape changes 0
+  FakeMarrakesh      tfimP_n12        dur/c62 1.2411 max 1.2411  2q= 51/51  shape changes 0
+  FakeMarrakesh      tfimP_n16        dur/c62 1.2411 max 1.2411  2q= 51/51  shape changes 0
+  FakeMarrakesh      tfim_n20_r3      dur/c62 1.0495 max 1.0495  2q= 51/51  shape changes 0
+  FakeMarrakesh      heis_n12_r2      dur/c62 1.0026 max 1.0026  2q= 51/51  shape changes 0
+  FakeMarrakesh      tfim_n40_r2      dur/c62 1.0000 max 1.0000  2q= 51/51  shape changes 0
+  FakeMarrakesh      hhI_n16          dur/c62 1.1068 max 1.1068  2q= 51/51  shape changes 0
+  FakeMarrakesh      hhI_n20          dur/c62 1.1068 max 1.1068  2q= 51/51  shape changes 0
+  FakeMarrakesh      ring12_tfim      dur/c62 1.0000 max 1.0000  2q= 51/51  shape changes 0
+  FakeMarrakesh      hhtree_heis_n16  dur/c62 1.0063 max 1.0063  2q= 51/51  shape changes 0
+  FakeKingston       tfim_n12         dur/c62 1.3168 max 1.3168  2q= 51/51  shape changes 0
+  FakeKingston       tfim_n16         dur/c62 1.3168 max 1.3168  2q= 51/51  shape changes 0
+  FakeKingston       tfimP_n12        dur/c62 1.2202 max 1.2202  2q= 51/51  shape changes 0
+  FakeKingston       tfimP_n16        dur/c62 1.2202 max 1.2202  2q= 51/51  shape changes 0
+  FakeKingston       tfim_n20_r3      dur/c62 1.0457 max 1.0457  2q= 51/51  shape changes 0
+  FakeKingston       heis_n12_r2      dur/c62 1.0024 max 1.0024  2q= 51/51  shape changes 0
+  FakeKingston       tfim_n40_r2      dur/c62 1.0000 max 1.0000  2q= 51/51  shape changes 0
+  FakeKingston       hhI_n16          dur/c62 1.0982 max 1.0982  2q= 51/51  shape changes 0
+  FakeKingston       hhI_n20          dur/c62 1.0982 max 1.0982  2q= 51/51  shape changes 0
+  FakeKingston       ring12_tfim      dur/c62 1.0000 max 1.0000  2q= 51/51  shape changes 0
+  FakeKingston       hhtree_heis_n16  dur/c62 1.0058 max 1.0058  2q= 51/51  shape changes 0
+  FakeTorino         tfim_n12         dur/c62 1.3168 max 1.3168  2q= 51/51  shape changes 0
+  FakeTorino         tfim_n16         dur/c62 1.3168 max 1.3168  2q= 51/51  shape changes 0
+  FakeTorino         tfimP_n12        dur/c62 1.2202 max 1.2202  2q= 51/51  shape changes 0
+  FakeTorino         tfimP_n16        dur/c62 1.2202 max 1.2202  2q= 51/51  shape changes 0
+  FakeTorino         tfim_n20_r3      dur/c62 1.0961 max 1.0961  2q= 51/51  shape changes 0
+  FakeTorino         heis_n12_r2      dur/c62 1.0019 max 1.0019  2q= 51/51  shape changes 0
+  FakeTorino         tfim_n40_r2      dur/c62 1.0918 max 1.0918  2q= 51/51  shape changes 0
+  FakeTorino         hhI_n16          dur/c62 1.0675 max 1.0675  2q= 51/51  shape changes 0
+  FakeTorino         hhI_n20          dur/c62 1.0702 max 1.0702  2q= 51/51  shape changes 0
+  FakeTorino         ring12_tfim      dur/c62 1.0372 max 1.0372  2q= 51/51  shape changes 0
+  FakeTorino         hhtree_heis_n16  dur/c62 1.0054 max 1.0054  2q= 51/51  shape changes 0
+  snapshot_marrakesh tfim_n12         dur/c62 1.3495 max 1.3495  2q= 51/51  shape changes 0
+  snapshot_marrakesh tfim_n16         dur/c62 1.3495 max 1.3495  2q= 51/51  shape changes 0
+  snapshot_marrakesh tfimP_n12        dur/c62 1.2411 max 1.2411  2q= 51/51  shape changes 0
+  snapshot_marrakesh tfimP_n16        dur/c62 1.2411 max 1.2411  2q= 51/51  shape changes 0
+  snapshot_marrakesh tfim_n20_r3      dur/c62 1.0495 max 1.0495  2q= 51/51  shape changes 0
+  snapshot_marrakesh heis_n12_r2      dur/c62 1.0026 max 1.0026  2q= 51/51  shape changes 0
+  snapshot_marrakesh tfim_n40_r2      dur/c62 1.0000 max 1.0000  2q= 51/51  shape changes 0
+  snapshot_marrakesh hhI_n16          dur/c62 1.1068 max 1.1068  2q= 51/51  shape changes 0
+  snapshot_marrakesh hhI_n20          dur/c62 1.1068 max 1.1068  2q= 51/51  shape changes 0
+  snapshot_marrakesh ring12_tfim      dur/c62 1.0000 max 1.0000  2q= 51/51  shape changes 0
+  snapshot_marrakesh hhtree_heis_n16  dur/c62 1.0063 max 1.0063  2q= 51/51  shape changes 0

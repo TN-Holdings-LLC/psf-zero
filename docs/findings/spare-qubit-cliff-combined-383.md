@@ -10830,6 +10830,40 @@ devices, n = 4-20, L = 1, 2, 4, 8: 272):
 - The release arm ran partly beside other work on the second CPU (about 15 minutes); its times are seconds against
   milliseconds, so the ratios stand.
 
+
+## Addendum 506 -- C63A-VAL, the home part: option A's template is up to 1.35 x c62's duration on fractional targets (A-V2's bound reported only, the owner's decision before the runs); part D, A-D and A-K confirmed (2026-10-16)
+
+**Status:** home, afternoon. Nothing ran on a device. Times in CEST.
+
+**Split** (the owner's decision; the workplace had two hours left): the workplace runs part R (FakeFez, with the
+bind-time criteria) under its own pre-registration; home runs part D, A-D and A-K
+([`data/2026-10-16/c63a_val_home/`](../../data/2026-10-16/c63a_val_home/); pre-registration SHA-256 `3ca0445a...`,
+fixed 08:19:12, before any of these runs; `a_d.py` `43b82525...`).
+
+**The pre-study that changed A-V2** (FakeFez, F, 11 tests x 20 same-sign inputs from a label C63-VAL does not use):
+c63a's template is 1.205 x c62's duration on tfim_n12 and n16, 1.146 x on tfimP, 1.067 x on hhI, at most 1.032 x on
+the rest; the same two-qubit count everywhere; constant over inputs, the build input included. c63's template and
+c63a's default call are as long as c62's. W3's "at most 1.044 x" came from part K's random walk, where signs mix and
+c62 needs the extra pulses as well (A-K below: median 1.000, max 1.044). The owner made A-V2's duration bound
+report-only before the runs; the two-qubit count stays a criterion; option A or B is decided on the results.
+
+**Results (home part; 08:19-09:03):**
+
+| ID | result |
+|---|---|
+| A-V1 (part D) | CONFIRMED: 3,264 native outputs identical by value to c62's |
+| A-V4 | CONFIRMED: 7,752 part D outputs exact (largest difference 5.8e-15; 1,128 not checkable), native, no failed element, rzz in range |
+| A-D | CONFIRMED: c63a's default call equals c63's, bit for bit, on all 49,590 C63-VAL inputs and 29 refusals |
+| A-K | CONFIRMED: 0 shape changes in 100,000 binds (median bind 0.39 ms, peak memory 217 MB) |
+
+**Reported -- the cost of option A on fractional (F) targets, part D:** duration over c62's, constant per cell:
+tfim_n12 and n16 1.32-1.35 x, tfimP 1.22-1.24 x, hhI 1.07-1.11 x, tfim_n20_r3 1.05-1.10 x, tfim_n40_r2 and ring12
+up to 1.09 x on FakeTorino, the others at most 1.006 x. Two-qubit counts equal in every input. CZ (T) targets, and
+therefore TOQB's loop, are not affected.
+
+**What it means for c64 and c65:** both are option A (c63a's output, bit for bit). Their templates on F targets carry
+this cost; their default calls do not. The choice between A and B waits for the workplace's part R.
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
