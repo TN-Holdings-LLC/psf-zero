@@ -1,0 +1,3 @@
+D2: python c64/make_c64.py <c63a> <scratch dir>, then compare byte for byte
+psf_compile.py identical (8b07e98e9811e19d...)
+CHANGELOG_c63a.md identical (0b7dc61dc024a1d3...)

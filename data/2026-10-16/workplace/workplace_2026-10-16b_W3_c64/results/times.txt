@@ -1,0 +1,4 @@
+D1 start 2026-10-16 03:59:04 CEST
+D1 killed by a machine restart at about 04:06 CEST after 4 part-R cells (kept in run_d1_killed); rerun from the start in segments
+D1 rerun start 2026-10-16 04:07:42 CEST
+D1 segments all done 2026-10-16 05:52:24 CEST

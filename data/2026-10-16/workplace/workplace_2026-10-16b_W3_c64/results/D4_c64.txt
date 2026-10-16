@@ -1,0 +1,9 @@
+PASSED c63/test_c63.py::test_canonical_identity
+PASSED c63/test_c63.py::test_native_template_identical_to_c62
+PASSED c63/test_c63.py::test_formula_templates_exact
+PASSED c63/test_c63.py::test_structure_mismatch_raises
+PASSED c63/test_c63.py::test_refusals
+PASSED c63/test_c63.py::test_default_call_unchanged
+FAILED c63/test_c63.py::test_version - AssertionError: assert False
+FAILED c63/test_c63.py::test_rebuild_on_sign_change_and_still_exact - ...
+2 failed, 6 passed in 2.34s

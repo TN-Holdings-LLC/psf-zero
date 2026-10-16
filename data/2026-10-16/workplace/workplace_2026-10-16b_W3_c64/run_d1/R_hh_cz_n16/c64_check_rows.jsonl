@@ -1,0 +1,2 @@
+{"part": "R", "device": "FakeFez", "test": "hh_cz_n16", "target": "T", "inputs": 1101, "unequal": 0, "sig_unequal": 0, "details": [], "t_c63a": 0.01674718800040864, "t_c64": 0.016879951000191795}
+{"part": "R", "device": "FakeFez", "test": "hh_cz_n16", "target": "F", "inputs": 1101, "unequal": 0, "sig_unequal": 0, "details": [], "t_c63a": 0.01608117100022355, "t_c64": 0.01596397400044225}

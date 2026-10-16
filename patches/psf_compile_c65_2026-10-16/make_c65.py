@@ -2,9 +2,9 @@
 
     python patches/psf_compile_c65_2026-10-16/make_c65.py <base psf_compile.py> <output psf_compile.py>
 
-The base is c63a (the workplace's 2026-10-15c delivery) until c64 (c63a with the unreached code removed) is
-delivered; then c65 is made again from c64 with this same script. Only `_scope96_embeds` is replaced, and the version
-line rewritten. Prototype B (2026-10-16) measured it: the same output, bit for bit, on 924 calls.
+The base is c64 (data/2026-10-16/workplace/workplace_2026-10-16b_W3_c64/c64/psf_compile.py: c63a with the unreached
+code removed); c65 was first made from c63a with this same script, before c64 arrived. Only `_scope96_embeds` is
+replaced, and the version line rewritten. Prototype B (2026-10-16) measured it: the same output, bit for bit.
 """
 import re
 import sys

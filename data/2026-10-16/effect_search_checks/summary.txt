@@ -1,0 +1,20 @@
+== c63val: 190 cases
+  rel    compile total   503.58 s, median   998.8 ms, max  15.74 s; 2q mean   74.7; duration mean  2.42 us; isa 190/190; rzz ok 190; exact (tvd<1e-6) 80/80 checked; errors 0
+  before compile total     4.36 s, median    18.4 ms, max   0.12 s; 2q mean   72.5; duration mean  2.26 us; isa 190/190; rzz ok 190; exact (tvd<1e-6) 80/80 checked; errors 0
+         template build total 4.21 s (190), bind median 1.76 ms
+  now    compile total     4.90 s, median    20.1 ms, max   0.12 s; 2q mean   72.5; duration mean  2.26 us; isa 190/190; rzz ok 190; exact (tvd<1e-6) 80/80 checked; errors 0
+         template build total 4.89 s (190), bind median 1.84 ms
+  qk3    compile total     8.90 s, median    25.9 ms, max   0.38 s; 2q mean   97.5; duration mean  7.23 us; isa 190/190; rzz ok 100; exact (tvd<1e-6) 80/80 checked; errors 0
+  now vs rel: time ratio median 0.023 (10% 0.003, 90% 0.061); 2q: now fewer 38, same 136, more 16; duration: now shorter 81, same 73, longer 36; mean duration 2.42 -> 2.26 us
+  now vs before: time ratio median 1.098 (10% 0.959, 90% 1.396); 2q: now fewer 0, same 190, more 0; duration: now shorter 0, same 190, longer 0; mean duration 2.26 -> 2.26 us
+  now vs qk3: time ratio median 0.730 (10% 0.328, 90% 1.311); 2q: now fewer 90, same 95, more 5; duration: now shorter 166, same 10, longer 14; mean duration 7.23 -> 2.26 us
+== toqb: 272 cases
+  rel    compile total   680.42 s, median   398.7 ms, max  37.37 s; 2q mean  116.5; duration mean  9.34 us; isa 272/272; rzz ok 272; exact (tvd<1e-6) 116/116 checked; errors 0
+  before compile total    23.65 s, median    52.7 ms, max   0.58 s; 2q mean  111.4; duration mean  3.20 us; isa 272/272; rzz ok 272; exact (tvd<1e-6) 144/144 checked; errors 0
+         template build total 23.32 s (272), bind median 1.00 ms
+  now    compile total     7.65 s, median    24.4 ms, max   0.08 s; 2q mean  111.4; duration mean  3.20 us; isa 272/272; rzz ok 272; exact (tvd<1e-6) 144/144 checked; errors 0
+         template build total 5.25 s (272), bind median 1.06 ms
+  qk3    compile total    15.79 s, median    40.6 ms, max   0.55 s; 2q mean  111.4; duration mean 10.40 us; isa 272/272; rzz ok 272; exact (tvd<1e-6) 116/116 checked; errors 0
+  now vs rel: time ratio median 0.063 (10% 0.004, 90% 0.212); 2q: now fewer 110, same 81, more 81; duration: now shorter 192, same 67, longer 13; mean duration 9.34 -> 3.20 us
+  now vs before: time ratio median 0.484 (10% 0.179, 90% 0.975); 2q: now fewer 0, same 272, more 0; duration: now shorter 0, same 272, longer 0; mean duration 3.20 -> 3.20 us
+  now vs qk3: time ratio median 0.615 (10% 0.313, 90% 0.961); 2q: now fewer 132, same 43, more 97; duration: now shorter 259, same 0, longer 13; mean duration 10.40 -> 3.20 us

@@ -1,0 +1,12 @@
+{
+ "c63a_sha256": "9d0fecbd09c4745d5384324fc66fea644deca95b2b07a8e06df74aad5b209492",
+ "c64_sha256": "8b07e98e9811e19d71fe9ef11e104d33964b298cc09b22c7074a2757faa34aeb",
+ "script_sha256": "efe3f032380aacf3391a50f5e73e0f58c93cd14cf16a5458b6ea70d46b49007d",
+ "versions": [
+  "2026-10-15.c63a",
+  "2026-10-16.c64"
+ ],
+ "sets": 1000,
+ "free": 100,
+ "dsets": 50
+}

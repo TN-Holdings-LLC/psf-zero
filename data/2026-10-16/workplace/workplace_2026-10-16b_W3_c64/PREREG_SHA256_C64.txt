@@ -1,0 +1,2 @@
+fixed 2026-10-16 03:50:14 CEST
+daadd26b72ce9b9941d3e7f89422deed166ebf89a869bc09acae9ea9fef5d468  C64-PREREG.md

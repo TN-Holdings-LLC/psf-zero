@@ -1,0 +1,3 @@
+D1: cells 190 (part R 38, part D 152); inputs 49590; cells with an unequal output []; refusal checks 58 (no Target 19 tests, ccx 10 device-targets), unequal [] -> CONFIRMED
+   value_sig (repr-exact) also equal in every input: True (inputs with a difference: 0)
+D5: 190 cells; median of c64 / c63a 0.9958 (largest 1.2725, smallest 0.6020) -> CONFIRMED

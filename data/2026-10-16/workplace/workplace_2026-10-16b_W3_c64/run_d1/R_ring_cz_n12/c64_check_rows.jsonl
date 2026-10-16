@@ -1,0 +1,2 @@
+{"part": "R", "device": "FakeFez", "test": "ring_cz_n12", "target": "T", "inputs": 1101, "unequal": 0, "sig_unequal": 0, "details": [], "t_c63a": 0.01589950699963083, "t_c64": 0.013216971000474587}
+{"part": "R", "device": "FakeFez", "test": "ring_cz_n12", "target": "F", "inputs": 1101, "unequal": 0, "sig_unequal": 0, "details": [], "t_c63a": 0.012383133000184898, "t_c64": 0.012493218999225064}

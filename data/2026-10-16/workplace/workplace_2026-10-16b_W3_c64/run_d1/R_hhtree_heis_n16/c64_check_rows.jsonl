@@ -1,0 +1,2 @@
+{"part": "R", "device": "FakeFez", "test": "hhtree_heis_n16", "target": "T", "inputs": 1101, "unequal": 0, "sig_unequal": 0, "details": [], "t_c63a": 0.045288787000117736, "t_c64": 0.04441441299968574}
+{"part": "R", "device": "FakeFez", "test": "hhtree_heis_n16", "target": "F", "inputs": 1101, "unequal": 0, "sig_unequal": 0, "details": [], "t_c63a": 0.0660507789998519, "t_c64": 0.06610017599996354}

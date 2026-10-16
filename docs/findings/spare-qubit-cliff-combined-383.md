@@ -10781,6 +10781,55 @@ decision): `_scope96_embeds` decides by formula first.
 - **Not done:** a formula for long rings (a 40-qubit ring still costs VF2 about 35 ms twice); `_chain_lattice` is
   rebuilt on every call (about 5%).
 
+
+## Addendum 505 -- c64 from the workplace (c63a without unreachable code: 9,240 lines to 3,045, the same output on 49,590 inputs); c65 made again on c64; the effect of removing search and checks, measured (2026-10-16)
+
+**Status:** home, afternoon. Nothing ran on a device. Times in CEST.
+
+**c64** (workplace delivery 2026-10-16b,
+[`data/2026-10-16/workplace/workplace_2026-10-16b_W3_c64/`](../../data/2026-10-16/workplace/workplace_2026-10-16b_W3_c64/);
+pre-registration fixed 03:50:14, SHA-256 `daadd26b...`; intake 98/98):
+
+- D1-D5 all confirmed: the same output as c63a on every C63-VAL input (49,590, five devices, T and F) and 58
+  refusals; rebuilt byte for byte; pyflakes clean; `test_c63.py` as predicted; compile time c64 / c63a median 0.996.
+- 9,240 lines to 3,045: 136 definitions removed (4,306 lines), every switch fixed at c63a's default;
+  `NATIVE_BRICKWORK` kept as a constant for a23.
+- **Checked at home:** a23 on c64 against a23 on c63a, and the 47 tests on five devices: 1,244 of 1,244 calls the
+  same, bit for bit; time unchanged (-0.2%, +0.1%).
+
+**c65 on c64** ([`patches/psf_compile_c65_2026-10-16/`](../../patches/psf_compile_c65_2026-10-16/)): `make_c65.py`
+applied to c64 (3,162 lines). Against c64: 1,244 of 1,244 calls the same, bit for bit; TOQB's rings -12.4%, the tests
+-0.1% (alternating, 5 rounds).
+
+**The effect of removing search and checks** (the owner's request;
+[`data/2026-10-16/effect_search_checks/`](../../data/2026-10-16/effect_search_checks/)). Four arms, one process each,
+one after another, medians of 3, on C63-VAL's 19 tests (5 devices, T and F: 190) and TOQB's ring circuits (4
+devices, n = 4-20, L = 1, 2, 4, 8: 272):
+
+- **release:** psf_compile 2026-10-14.1 + a18 (compare-and-choose, every candidate checked exact, Qiskit level 3 for
+  what does not embed);
+- **this morning:** c63a + a22; **now:** c65 + a23; **Qiskit:** level 3, seed 0.
+
+| | release | this morning | now | Qiskit L3 |
+|---|---|---|---|---|
+| tests: compile, total | 503.6 s | 4.36 s | 4.90 s | 8.90 s |
+| tests: two-qubit gates / duration, mean | 74.7 / 2.42 us | 72.5 / 2.26 us | 72.5 / 2.26 us | 97.5 / 7.23 us |
+| TOQB rings: compile, total | 680.4 s | 23.65 s | 7.65 s | 15.79 s |
+| TOQB rings: template build, total | (none) | 23.3 s | 5.25 s | (none) |
+| TOQB rings: two-qubit gates / duration, mean | 116.5 / 9.34 us | 111.4 / 3.20 us | 111.4 / 3.20 us | 111.4 / 10.40 us |
+
+- Every output native (ISA) in every arm. Exact where checkable (12 active qubits or fewer: 80 tests and 116-144
+  rings per arm), in every arm. Qiskit's rzz is outside IBM's range on 90 of the 95 F-target tests (not executable as returned).
+- **Today's deletions** (this morning against now) change no output. On TOQB's rings they take compile time to 0.48 x
+  (median per call; template build 0.23 x), almost all from a23's single ring schedule (a22 built two and kept the
+  shorter). On the tests, c64 and item 102 change nothing measurable (alternating: -0.2%, -0.1%; the separate-process
+  +12% here is between-process noise).
+- **Since the release:** compile time per call median 0.023 x (tests) and 0.063 x (rings); mean duration 2.42 to 2.26
+  us and 9.34 to 3.20 us. This includes the new formulas since the release (items 97-102), not only the removals.
+- **Not separated:** how much of the release's time was search and how much was checking.
+- The release arm ran partly beside other work on the second CPU (about 15 minutes); its times are seconds against
+  milliseconds, so the ratios stand.
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

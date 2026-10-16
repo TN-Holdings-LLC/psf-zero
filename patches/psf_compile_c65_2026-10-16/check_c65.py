@@ -128,7 +128,7 @@ def main():
         print(f"{part}: {len(rs)} calls, total {A:.2f} s -> {B:.2f} s ({100 * (B / A - 1):+.1f}%); per call median "
               f"{statistics.median(rat):.3f}, 10% {rat[len(rat) // 10]:.3f}, 90% {rat[9 * len(rat) // 10]:.3f}, "
               f"min {rat[0]:.3f}, max {rat[-1]:.3f}")
-    print("item 102 decisions (c65):", M1.S96_FORMULA_STATS)
+    print("item 102 decisions (second file):", getattr(M1, "S96_FORMULA_STATS", None))
     return 1 if diff else 0
 
 

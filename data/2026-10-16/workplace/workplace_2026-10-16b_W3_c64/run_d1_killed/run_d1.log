@@ -1,0 +1,5 @@
+X done
+R FakeFez      tfim_n12         T inputs 1101 unequal 0 sig 0 time 0.982 (83 s)
+R FakeFez      tfim_n12         F inputs 1101 unequal 0 sig 0 time 0.973 (193 s)
+R FakeFez      tfim_n16         T inputs 1101 unequal 0 sig 0 time 0.986 (292 s)
+R FakeFez      tfim_n16         F inputs 1101 unequal 0 sig 0 time 0.985 (418 s)

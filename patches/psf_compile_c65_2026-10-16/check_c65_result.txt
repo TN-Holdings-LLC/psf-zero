@@ -1,4 +1,4 @@
 calls 1244: identical 1244, different 0 []
-C63-VAL and c55_val tests: 700 calls, total 9.68 s -> 9.70 s (+0.3%); per call median 0.989, 10% 0.890, 90% 1.052, min 0.660, max 1.281
-TOQB rings: 544 calls, total 12.79 s -> 11.33 s (-11.4%); per call median 0.945, 10% 0.677, 90% 1.037, min 0.265, max 1.394
-item 102 decisions (c65): {'not_bipartite': 2496, 'short_cycle': 1608, 'path_on_snake': 1080, 'vf2': 2544}
+C63-VAL and c55_val tests: 700 calls, total 9.69 s -> 9.68 s (-0.1%); per call median 0.990, 10% 0.861, 90% 1.046, min 0.631, max 1.582
+TOQB rings: 544 calls, total 12.89 s -> 11.29 s (-12.4%); per call median 0.947, 10% 0.662, 90% 1.029, min 0.273, max 1.334
+item 102 decisions (second file): {'not_bipartite': 2496, 'short_cycle': 1608, 'path_on_snake': 1080, 'vf2': 2544}

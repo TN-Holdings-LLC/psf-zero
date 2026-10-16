@@ -1,0 +1,3 @@
+R FakeFez      chain_cz_n12     T inputs 1101 unequal 0 sig 0 time 0.848 (72 s)
+R FakeFez      chain_cz_n12     F inputs 1101 unequal 0 sig 0 time 0.979 (139 s)
+C64 CHECK DONE
