@@ -4753,6 +4753,19 @@ part (Addendum 506) by the workplace's `c63a_score.py`, which agrees with the ho
 - **Not built:** a variant that keeps A's fixed shape but drops the pinned pulse where the sign matches the build's.
   It would need its own validation.
 
+
+## Addendum 508 -- Decision: option A (the frame fixed in the template) is kept; c64 and c65 stay as built (2026-10-16)
+
+**Status:** the owner's decision, 2026-10-16 about 10:04 CEST, on Addendum 507's comparison.
+
+- **Kept:** option A (c63a, and c64 and c65, which return its output bit for bit): no shape change, fast binds and
+  flat memory in a training loop, correct everywhere.
+- **Accepted cost:** on fractional (F) targets, templates bound with inputs whose signs match the build's are up to
+  1.21 x (FakeFez) and 1.35 x (Marrakesh) c62's duration; on mixed signs the median is 1.000. Default calls and CZ
+  targets are unaffected.
+- **Open:** the variant that drops the pinned pulse where the sign matches the build's (Addendum 507) is not built.
+- **Next:** releasing c65 + a23 needs the owner's go-ahead.
+
 ---
 
 **End of Part 11 of 11 (end of document, for now).** Back to [Part 10](spare-qubit-cliff-combined-383.md), [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
