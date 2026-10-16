@@ -1,0 +1,47 @@
+part R: 38 cells finished (19 of 19 tests); not run: []
+A-V1: native outputs 20880; cells with a difference [] -> CONFIRMED (on the cells run)
+A-V2: F outputs 12111 (exactness not checked: 3081; largest difference 2.4e-15); failing 0 [] -> CONFIRMED (on the cells run)
+A-V3: T outputs 12111 (exactness not checked: 3081; largest difference 8.8e-15); failing 0 [] -> CONFIRMED (on the cells run)
+A-V4 (part D, chain/graph): 4488 outputs; failing 0 [] -> CONFIRMED (on the cells run)
+A-S1 (bind_median_ms): 34 of 38 cells within the limit; misses [('hhtree_heis_n16', 'T', 3.312), ('hhtree_heis_n16', 'F', 3.811), ('hhI_n20', 'F', 2.206), ('heis_n12_r2', 'F', 2.956)] -> REFUTED
+A-S2 (bind_tight_median_ms): 36 of 38 cells within the limit; misses [('hhtree_heis_n16', 'T', 2.235), ('hhtree_heis_n16', 'F', 2.822)] -> REFUTED
+
+Reported (part R): per cell bind interleaved / back to back (ms); shape changes on same-sign / free draws; F and T cells: duration vs c62 (median ratio, largest, share above c62), 2q equal share
+  tfim_n12         F chain  bind  1.038 /  0.483  shape changes same    0 free   0  dur/c62 median 1.2051 max 1.2051 above 1053/1101  2q= 1101/1101
+  tfim_n12         T chain  bind  0.831 /  0.428  shape changes same    0 free   0  dur/c62 median 1.0000 max 1.0000 above 0/1101  2q= 1101/1101
+  tfim_n16         F chain  bind  1.121 /  0.616  shape changes same    0 free   0  dur/c62 median 1.2051 max 1.2051 above 1030/1101  2q= 1101/1101
+  tfim_n16         T chain  bind  0.991 /  0.508  shape changes same    0 free   0  dur/c62 median 1.0000 max 1.0000 above 0/1101  2q= 1101/1101
+  tfimP_n12        F chain  bind  0.927 /  0.499  shape changes same    0 free   0  dur/c62 median 1.1463 max 1.1463 above 1028/1101  2q= 1101/1101
+  tfimP_n12        T chain  bind  0.867 /  0.465  shape changes same    0 free   0  dur/c62 median 1.0000 max 1.0000 above 0/1101  2q= 1101/1101
+  tfimP_n16        F chain  bind  1.127 /  0.599  shape changes same    0 free   0  dur/c62 median 1.1463 max 1.1463 above 1015/1101  2q= 1101/1101
+  tfimP_n16        T chain  bind  1.103 /  0.587  shape changes same    0 free   0  dur/c62 median 1.0000 max 1.0000 above 0/1101  2q= 1101/1101
+  tfim_n20_r3      F graph  bind  1.732 /  0.962  shape changes same    0 free   0  dur/c62 median 1.0317 max 1.1017 above 1048/1101  2q= 1101/1101
+  tfim_n20_r3      T graph  bind  1.260 /  0.816  shape changes same    0 free   0  dur/c62 median 1.0000 max 1.0000 above 0/1101  2q= 1101/1101
+  heis_n12_r2      F graph  bind  2.956 /  1.666  shape changes same    0 free   0  dur/c62 median 1.0016 max 1.0050 above 1101/1101  2q= 1101/1101
+  heis_n12_r2      T graph  bind  1.619 /  1.089  shape changes same    0 free   0  dur/c62 median 1.0029 max 1.0236 above 735/1101  2q= 1101/1101
+  tfim_n40_r2      F graph  bind  2.391 /  1.228  shape changes same    0 free   0  dur/c62 median 1.0000 max 1.0444 above 7/1101  2q= 1101/1101
+  tfim_n40_r2      T graph  bind  1.487 /  0.989  shape changes same    0 free   0  dur/c62 median 1.0000 max 1.0000 above 0/1101  2q= 1101/1101
+  hhI_n16          F graph  bind  1.839 /  0.968  shape changes same    0 free   0  dur/c62 median 1.0667 max 1.1636 above 1088/1101  2q= 1101/1101
+  hhI_n16          T graph  bind  1.366 /  0.955  shape changes same    0 free   0  dur/c62 median 1.0000 max 1.0000 above 0/1101  2q= 1101/1101
+  hhI_n20          F graph  bind  2.206 /  1.130  shape changes same    0 free   0  dur/c62 median 1.0667 max 1.1429 above 1082/1101  2q= 1101/1101
+  hhI_n20          T graph  bind  1.432 /  1.065  shape changes same    0 free   0  dur/c62 median 1.0000 max 1.0000 above 0/1101  2q= 1101/1101
+  ring12_tfim      F graph  bind  1.431 /  0.810  shape changes same    0 free   0  dur/c62 median 1.0000 max 1.0779 above 46/1101  2q= 1101/1101
+  ring12_tfim      T graph  bind  1.258 /  0.681  shape changes same    0 free   0  dur/c62 median 1.0000 max 1.0000 above 0/1101  2q= 1101/1101
+  hhtree_heis_n16  F graph  bind  3.811 /  2.822  shape changes same    0 free   0  dur/c62 median 1.0040 max 1.0040 above 1101/1101  2q= 1101/1101
+  hhtree_heis_n16  T graph  bind  3.312 /  2.235  shape changes same    0 free   0  dur/c62 median 1.0188 max 1.0505 above 1101/1101  2q= 1101/1101
+  ghz_n12          F native bind  0.196 /  0.071  shape changes same    0 free   0
+  ghz_n12          T native bind  0.205 /  0.073  shape changes same    0 free   0
+  chain_cz_n12     F native bind  0.814 /  0.495  shape changes same    0 free   0
+  chain_cz_n12     T native bind  0.807 /  0.449  shape changes same    0 free   0
+  chain_cz_n16     F native bind  1.162 /  0.610  shape changes same    0 free   0
+  chain_cz_n16     T native bind  1.071 /  0.583  shape changes same    0 free   0
+  ring_cz_n12      F native bind  0.973 /  0.453  shape changes same    0 free   0
+  ring_cz_n12      T native bind  0.772 /  0.471  shape changes same    0 free   0
+  hh_cz_n16        F native bind  1.046 /  0.605  shape changes same    0 free   0
+  hh_cz_n16        T native bind  1.040 /  0.613  shape changes same    0 free   0
+  hh_cz_n20        F native bind  1.141 /  0.739  shape changes same    0 free   0
+  hh_cz_n20        T native bind  1.100 /  0.736  shape changes same    0 free   0
+  cx_chain_n12     F native bind  1.182 /  0.636  shape changes same    0 free   0
+  cx_chain_n12     T native bind  1.191 /  0.590  shape changes same    0 free   0
+  cx_chain_n16     F native bind  1.434 /  0.790  shape changes same    0 free   0
+  cx_chain_n16     T native bind  1.400 /  0.713  shape changes same    0 free   0

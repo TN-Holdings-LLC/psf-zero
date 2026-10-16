@@ -4717,6 +4717,42 @@ therefore TOQB's loop, are not affected.
 **What it means for c64 and c65:** both are option A (c63a's output, bit for bit). Their templates on F targets carry
 this cost; their default calls do not. The choice between A and B waits for the workplace's part R.
 
+
+## Addendum 507 -- C63A-VAL complete (workplace part R + home part): option A is correct everywhere and never changes shape, but its templates are up to 1.21 x (FakeFez) and 1.35 x (Marrakesh) c62's duration on fractional targets for same-sign inputs; bind-time criteria S1 and S2 refuted, as they were for c63; the choice between options A and B is the owner's (2026-10-16)
+
+**Status:** records of the afternoon. Nothing ran on a device. Times in CEST.
+
+**Part R** (workplace delivery 2026-10-16c,
+[`data/2026-10-16/workplace/workplace_2026-10-16c_W2_C63A-VAL_R/`](../../data/2026-10-16/workplace/workplace_2026-10-16c_W2_C63A-VAL_R/);
+pre-registration fixed 08:20:11, SHA-256 `bf184f28...`; run 08:20-09:55; intake 65/65). Scored together with the home
+part (Addendum 506) by the workplace's `c63a_score.py`, which agrees with the home scorer on part D:
+
+| ID | option A (c63a) | C63-VAL, option B's code (c63) |
+|---|---|---|
+| A-V1, A-V3, A-V4 | CONFIRMED | V1, V3, V4 CONFIRMED |
+| A-V2 (two-qubit count equal to c62's; duration reported only) | CONFIRMED | V2 (duration equal too) CONFIRMED |
+| A-D, A-K | CONFIRMED (home) | - |
+| A-S1 bind interleaved | REFUTED, 34 of 38 (hhtree_heis_n16 T 3.31 and F 3.81, heis_n12_r2 F 2.96, hhI_n20 F 2.21 ms) | REFUTED, 32 of 38 |
+| A-S2 bind back to back | REFUTED, 36 of 38 (hhtree_heis_n16 T 2.24 and F 2.82 ms) | REFUTED, 37 of 38 |
+
+**Option A against option B, all measured:**
+
+| | A (c63a; c64 and c65 are A) | B (c63) |
+|---|---|---|
+| F duration, same-sign inputs (C63-VAL) | 1.205 x c62 (tfim), 1.146 x (tfimP), 1.07 x (hhI), FakeFez; up to 1.35 x on Marrakesh | equal to c62 |
+| F duration, random walk (W3, part K) | median 1.000, largest 1.044 | equal to c62 |
+| shape changes, C63-VAL F cells | 0 | 101 per cell |
+| shape changes, 100,000-bind walk | 0 | 76,885 |
+| bind median, walk | 0.39-0.75 ms | 2.86 ms |
+| peak memory, walk | 217-221 MB | 418 MB (cache 32) / 734 MB (256) |
+| F bind, Heisenberg cells (interleaved) | 2.96 / 3.81 ms | 1.24 / 2.05 ms |
+
+- CZ (T) targets are the same code in both, so TOQB's loop (CZ) is not affected either way.
+- **Why A costs time on same-sign inputs:** the frame fixed at build always carries the pinned single-qubit pulses,
+  even where the input's signs are the build's. c62 (and B) need them only where a sign is negative.
+- **Not built:** a variant that keeps A's fixed shape but drops the pinned pulse where the sign matches the build's.
+  It would need its own validation.
+
 ---
 
 **End of Part 11 of 11 (end of document, for now).** Back to [Part 10](spare-qubit-cliff-combined-383.md), [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

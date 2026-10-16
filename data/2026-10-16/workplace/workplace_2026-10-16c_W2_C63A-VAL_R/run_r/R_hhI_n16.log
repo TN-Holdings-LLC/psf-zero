@@ -1,0 +1,3 @@
+R FakeFez      hhI_n16          T graph  same 15/1101 exact 1101/1101 dur<= 1101 bind 1.366 ms tight 0.955 ms build 26.8 c62 23.9 rebuilt 0 switched 0
+R FakeFez      hhI_n16          F graph  same 0/1101 exact 1101/1101 dur<= 13 bind 1.839 ms tight 0.968 ms build 29.6 c62 37.6 rebuilt 0 switched 0
+C63-VAL DONE
