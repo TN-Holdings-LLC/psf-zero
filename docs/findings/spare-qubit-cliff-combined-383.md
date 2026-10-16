@@ -10751,6 +10751,36 @@ base (c63a), the changelog's place (a separate file) and the order (W1, c64, the
 the workplace PC; stopped at 240 finished arm runs of 2,000 (the PC was slower than estimated, and an editor update
 ended the run). Not scored. By the pre-registration's interruption rule, it is run again into a new folder.
 
+
+## Addendum 504 -- Prototype B (formula against VF2 in the placement): VF2 kept for placement; c65 = item 102, the embedding test by formula before VF2, bit for bit c63a's output and 11% faster on TOQB's rings (2026-10-16)
+
+**Status:** home, morning. Nothing ran on a device. Times in CEST.
+
+**Prototype B** ([`patches/psf_compile_c65_2026-10-16/prototype_b/`](../../patches/psf_compile_c65_2026-10-16/prototype_b/)),
+by the owner's rule: build the alternative, keep the one that costs less time.
+
+- **VF2 for placement stays.** Placing a path on the snake instead saved no time (VF2 took about 3 ms) and moved 92
+  placements (same two-qubit count and duration).
+- **VF2 proving that a ring does not embed was the cost.** On TOQB's rings, item 96's test took 19% of all compile
+  time, mostly proving that rings of 4-11 qubits, or of odd length, do not embed in heavy-hex.
+
+**c65** ([`patches/psf_compile_c65_2026-10-16/`](../../patches/psf_compile_c65_2026-10-16/), item 102; the owner's
+decision): `_scope96_embeds` decides by formula first.
+
+- An odd cycle does not embed in a bipartite device (heavy-hex is); a cycle shorter than the device's shortest (12)
+  does not embed. Both are necessary conditions, so the answer is VF2's.
+- A path on the snake's longest working piece embeds.
+- Otherwise VF2, as before.
+- **Base:** c63a, for now. c64 (the workplace's deletion) is under way; c65 is then made again from c64 with the same
+  script (`make_c65.py`, which replaces one function and the version line).
+- **Display:** TOQB's ring circuits through a23, -11.4% in total (per call down to 0.27 x); C63-VAL's and c55_val's
+  tests +0.3% (noise).
+- **Essential:** the same output as c63a, bit for bit, on 1,244 of 1,244 calls (47 tests on 5 devices, T and F,
+  compile and template; 544 ring calls) (`check_c65.py`, `check_c65_result.txt`). Rebuilt byte for byte by
+  `make_c65.py`.
+- **Not done:** a formula for long rings (a 40-qubit ring still costs VF2 about 35 ms twice); `_chain_lattice` is
+  rebuilt on every call (about 5%).
+
 ---
 
 **End of Part 10 of 10 (end of document, for now).** Back to [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
