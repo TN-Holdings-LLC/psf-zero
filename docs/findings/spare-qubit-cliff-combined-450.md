@@ -4846,6 +4846,36 @@ improvement of option A first (2026-10-16 evening).
   bind-time criteria. The first version changed shape on the Heisenberg cells (anchors chosen by single gates); fixed
   before these numbers by choosing anchors by whole runs.
 
+
+## Addendum 512 -- TOQB loop reach run (200 seeds, 1,000 iterations, pre-registered): every prediction confirmed -- the model trained through PSF-Zero reaches a noisy test accuracy of 0.65 in a median 200 iterations against 250 ($755 against $968), 0.70 in 300 against 400; C66-VAL interrupted three times by the authors' cloud; an idea memo (S2R) (2026-10-17)
+
+**Status:** results of a pre-registered run, and records of the night. Nothing ran on a device. Times in CEST.
+
+**The reach run** (TOQB pre-registration `prereg/2026-10-16-loop-n6-reach.md`, SHA-256 `f880a674...`, pushed as
+`e42b6b3` before the run; the owner's home machine, 2026-10-16 18:15-21:07; TOQB record
+[`results/loop-n6-reach-2026-10-16/`](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/loop-n6-reach-2026-10-16)):
+
+- **R1-R4 all confirmed.** Iterations to 0.65: Qiskit minus PSF-Zero +73 (95% +27 to +120), p = 0.0011; to 0.70:
+  +82, p = 0.0028; dollars to 0.65: +$311, p = 0.0003.
+- **Display:** median iterations to 0.65, 200 against 250; to 0.70, 300 against 400. Median dollars $755 against $968,
+  and $1,133 against $1,549.
+- **Essential:** sooner in 103 of 200 seeds, the same in 33, later in 64; the mean curve is above Qiskit's at every
+  evaluation from 50 to 1,000 iterations, 0.724 against 0.704 at the end; both below classical models (0.73-0.77).
+- **Corrects the authors' reading of the long run** (Addendum 502 and the evening's message): from 5 seeds they read
+  that the difference vanishes by 1,000 iterations; with 200 seeds it is +0.020 there.
+- **Reading:** together with the budget run (Addendum 509), PSF-Zero does not make a better final model on this task;
+  it reaches the same model sooner and for about a quarter less QPU money, at IBM's price model.
+
+**C66-VAL** (pre-registration `data/2026-10-16/c66_val/C66-VAL_preregistration.md`, `ef249a23...`): started three
+times in the authors' cloud (15:34, 16:51, 17:15 CEST); each time the cloud container was restarted while the session
+was idle and the run died (the third after all of part R and the walk, during part D and the default-call check).
+None is scored. The three partial folders are kept outside the repository. By the interruption rule, the run is to be
+made again, complete, into a new folder.
+
+**Idea memo:** [`docs/ideas/s2r-sim-to-real-2026-10-16.md`](../ideas/s2r-sim-to-real-2026-10-16.md): the owner's idea
+of many candidates in simulation and few on the device, reshaped to fit the QPU budget; not built, waiting for three
+decisions.
+
 ---
 
 **End of Part 11 of 11 (end of document, for now).** Back to [Part 10](spare-qubit-cliff-combined-383.md), [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
