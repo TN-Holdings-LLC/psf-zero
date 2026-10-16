@@ -4766,6 +4766,27 @@ part (Addendum 506) by the workplace's `c63a_score.py`, which agrees with the ho
 - **Open:** the variant that drops the pinned pulse where the sign matches the build's (Addendum 507) is not built.
 - **Next:** releasing c65 + a23 needs the owner's go-ahead.
 
+
+## Addendum 509 -- TOQB loop budget run (1,000 seeds, a hard 2 minutes of QPU, pre-registered): every prediction confirmed -- at the owner's real budget, the model trained through PSF-Zero (a22 + c61) is better than through Qiskit level 2, noisy 0.533 against 0.494, better in 624 of 1,000 seeds; both models are weak against classical ones (2026-10-16)
+
+**Status:** results of a pre-registered run (TOQB `prereg/2026-10-16-loop-n6-budget.md`, SHA-256 `0e35edcf...`).
+Nothing ran on a device. Times in CEST. TOQB record:
+[`results/loop-n6-budget-2026-10-16b/`](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/loop-n6-budget-2026-10-16b).
+
+- **Run:** the first start at the workplace stopped after 240 of 2,000 arm runs (kept unscored); by the interruption
+  rule, the run was made again at home into a new folder, 12:55-13:57, every fixed hash checked first. Scored again by
+  the authors from the raw records: the same verdicts.
+- **Verdicts:** B1-B5 all confirmed. Noiseless accuracy +0.026 (95% +0.020 to +0.032), noisy +0.039 (+0.033 to
+  +0.045), noisy margin +0.023; PSF-Zero trains 50 iterations against 49 for the same $192.
+- **Display:** noisy accuracy at 2 minutes of QPU, PSF-Zero 0.533, Qiskit level 2 0.494.
+- **Essential:** better in 624 of 1,000 seeds, worse in 325. At this budget neither model is useful: 54 and 23 of 1,000
+  reached 0.7; the classical models reach 0.73-0.77 on the same task.
+- **The authors' expectation, stated before the run, was wrong:** they expected the accuracy predictions refuted or not
+  decided, from a 20-seed short test (-0.006). That test was too small.
+- **How it fits run 2 (Addendum 501):** with calibrated SPSA and 200 iterations, accuracy did not differ. Under the real
+  budget, the shorter circuit (8.7 us against 18.1 us) and the one extra iteration show.
+- **Scope:** one task, one device model, in simulation.
+
 ---
 
 **End of Part 11 of 11 (end of document, for now).** Back to [Part 10](spare-qubit-cliff-combined-383.md), [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
