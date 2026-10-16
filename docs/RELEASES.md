@@ -3,9 +3,10 @@
 Every release block, update and correctness notice that the README carried until 2026-10-05, newest first and
 unchanged in wording, followed by those since (from 2026-10-05.1 on, each release is added here and the README
 keeps only the current one). They were moved here from the README on 2026-10-05; only links were adjusted so that they work
-from this folder. The full record behind each entry is in Parts 9 and 10 of the findings
+from this folder. The full record behind each entry is in Parts 9-11 of the findings
 ([`findings/spare-qubit-cliff-combined-248.md`](findings/spare-qubit-cliff-combined-248.md), Addenda 248-382;
-[`findings/spare-qubit-cliff-combined-383.md`](findings/spare-qubit-cliff-combined-383.md), from Addendum 383) and
+[`findings/spare-qubit-cliff-combined-383.md`](findings/spare-qubit-cliff-combined-383.md), Addenda 383-449;
+[`findings/spare-qubit-cliff-combined-450.md`](findings/spare-qubit-cliff-combined-450.md), from Addendum 450) and
 the earlier parts they link to. The README itself, as it was before the move, is kept as
 [`README_2026-10-05_before_restructure.md`](README_2026-10-05_before_restructure.md).
 
@@ -41,7 +42,7 @@ the earlier parts they link to. The README itself, as it was before the move, is
 
 > **Current version (2026-10-14, first release): `psf_compile.py` 2026-10-14.1 and the AI front end a18, with
 > `psf_smart_layout` 2026-10-01.1, the Rust core `CORE_VERSION` 2026-09-29.1 and the optional `psf_zero_core57`
-> 2026-10-10.c30 (all unchanged)** ([Part 10](findings/spare-qubit-cliff-combined-383.md), Addenda 454-492). The
+> 2026-10-10.c30 (all unchanged)** ([Part 11](findings/spare-qubit-cliff-combined-450.md), Addenda 454-492). The
 > compiler is prototype c57 ([`patches/psf_compile_c57_2026-10-14/`](../patches/psf_compile_c57_2026-10-14/)) with its
 > version lines changed; the AI front end is a18
 > ([`patches/psf_ai_compile_a18_2026-10-14/`](../patches/psf_ai_compile_a18_2026-10-14/)) with one loader path set for
@@ -79,7 +80,7 @@ the earlier parts they link to. The README itself, as it was before the move, is
 
 > **Previous release (2026-10-11, fourth release): `psf_compile.py` 2026-10-11.4 and the AI front end a12, with
 > `psf_smart_layout` 2026-10-01.1, the Rust core `CORE_VERSION` 2026-09-29.1 and the optional `psf_zero_core57`
-> 2026-10-10.c30 (all unchanged)** ([Part 10](findings/spare-qubit-cliff-combined-383.md), Addenda 452-453). The
+> 2026-10-10.c30 (all unchanged)** ([Part 11](findings/spare-qubit-cliff-combined-450.md), Addenda 452-453). The
 > file is prototype c43 ([`patches/psf_compile_c43_2026-10-11/`](../patches/psf_compile_c43_2026-10-11/)) with its
 > version lines changed; 2026-10-11.3 is kept as
 > [`patches/psf_compile_release_2026-10-11.3/`](../patches/psf_compile_release_2026-10-11.3/).
@@ -99,7 +100,7 @@ the earlier parts they link to. The README itself, as it was before the move, is
 
 > **Earlier release (2026-10-11, third release): `psf_compile.py` 2026-10-11.3 and the AI front end a12, with
 > `psf_smart_layout` 2026-10-01.1, the Rust core `CORE_VERSION` 2026-09-29.1 and the optional `psf_zero_core57`
-> 2026-10-10.c30 (all unchanged)** ([Part 10](findings/spare-qubit-cliff-combined-383.md), Addenda 447-451). The
+> 2026-10-10.c30 (all unchanged)** ([Part 10](findings/spare-qubit-cliff-combined-383.md) and [Part 11](findings/spare-qubit-cliff-combined-450.md), Addenda 447-451). The
 > file is prototype c41 ([`patches/psf_compile_c41_2026-10-11/`](../patches/psf_compile_c41_2026-10-11/)) with its
 > version lines changed; 2026-10-11.2 is kept as
 > [`patches/psf_compile_release_2026-10-11.2/`](../patches/psf_compile_release_2026-10-11.2/).

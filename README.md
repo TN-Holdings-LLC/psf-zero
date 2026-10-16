@@ -35,7 +35,7 @@ including the failures, are recorded in [`docs/findings/`](docs/findings/).
 **On real IBM devices, PSF-Zero's gains are concentrated where it builds the circuit by formula.** We pooled every
 compiled pair run on a real device between 2026-10-12 and 2026-10-14: 54 pairs, four runs, three devices
 (ibm_kingston, ibm_marrakesh, ibm_fez). The pooling was done after the fact
-([Addendum 488](docs/findings/spare-qubit-cliff-combined-383.md)).
+([Addendum 488](docs/findings/spare-qubit-cliff-combined-450.md)).
 
 | | pairs | PSF-Zero's side won | F ratio (geometric mean) |
 | :--- | :---: | :---: | :---: |
@@ -68,7 +68,7 @@ What these numbers are not:
 ## Current version
 
 **`psf_compile.py` 2026-10-14.1** and the AI front end **a18**, with `psf_smart_layout` 2026-10-01.1 and the Rust
-core `CORE_VERSION` 2026-09-29.1, and optionally `psf_zero_core57` 2026-10-10.c30 (Part 10, Addenda 383-492). Every
+core `CORE_VERSION` 2026-09-29.1, and optionally `psf_zero_core57` 2026-10-10.c30 (Parts 10-11, Addenda 383-492). Every
 release and dated notice: [`docs/RELEASES.md`](docs/RELEASES.md).
 
 > **New in 2026-10-14.1: PSF-Zero builds what it can build by formula, and hands everything else to Qiskit.** The
@@ -102,7 +102,7 @@ release and dated notice: [`docs/RELEASES.md`](docs/RELEASES.md).
 >   `benchmarks/psf_ai_compile_a12.py`.
 
 > **In 2026-10-11.4: the same input gives the same output, and circuits the earlier releases refused
-> compile.** Items 74-76 (prototype c43), accepted in C43-VAL on circuits not used before (Part 10, Addenda 452-453):
+> compile.** Items 74-76 (prototype c43), accepted in C43-VAL on circuits not used before (Part 11, Addenda 452-453):
 >
 > - **What changes.** Qiskit's VF2PostLayout, which returned a different layout from call to call with a fixed seed,
 >   is replaced by a deterministic re-placement scored on the device's own errors (item 75). With the device, that
@@ -121,7 +121,7 @@ release and dated notice: [`docs/RELEASES.md`](docs/RELEASES.md).
 
 > **In 2026-10-11.3: every circuit that reads as Pauli rotations is also tried by construction, and the
 > better on the device is kept.** Items 69-73 (prototype c41), accepted in three tests on circuits they were not
-> developed on (C39-VAL, C40-VAL, C41-VAL; Part 10, Addenda 447-451):
+> developed on (C39-VAL, C40-VAL, C41-VAL; Parts 10-11, Addenda 447-451):
 >
 > - **What changes.** With `backend=` (or `target=`), an input that can be read as a sequence of Pauli rotations is
 >   compiled twice, by STEINER6's construction and by the usual path, and the output with the higher ESP on the
@@ -567,7 +567,8 @@ Full account: [`spare-qubit-cliff.md`](docs/findings/spare-qubit-cliff.md) (summ
 | | |
 | :--- | :--- |
 | [`docs/RELEASES.md`](docs/RELEASES.md) | Every release, update and correctness notice, newest first |
-| [`docs/findings/spare-qubit-cliff-combined-383.md`](docs/findings/spare-qubit-cliff-combined-383.md) | Part 10 of the full record (Addenda 383 on: the Benchpress tests and release 2026-10-07.1); earlier parts are linked from it |
+| [`docs/findings/spare-qubit-cliff-combined-450.md`](docs/findings/spare-qubit-cliff-combined-450.md) | Part 11 of the full record (Addenda 450 on: releases 2026-10-11.4 and 2026-10-14.1, the TOQB loop runs, the search removal); earlier parts are linked from it |
+| [`docs/findings/spare-qubit-cliff-combined-383.md`](docs/findings/spare-qubit-cliff-combined-383.md) | Part 10 (Addenda 383-449: the Benchpress tests and release 2026-10-07.1); earlier parts are linked from it |
 | [`docs/findings/spare-qubit-cliff-combined-248.md`](docs/findings/spare-qubit-cliff-combined-248.md) | Part 9 (Addenda 248-382) |
 | [`docs/findings/compile-time.md`](docs/findings/compile-time.md) | The compile-time arc: three retractions, the `verify` split, and what survives |
 | [`docs/findings/spare-qubit-cliff.md`](docs/findings/spare-qubit-cliff.md) | The Qiskit coupling-map cliff |
