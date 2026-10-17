@@ -93,9 +93,36 @@ fn nearest(l: &Lattice, j: usize, c: i64, left: bool) -> Option<(i64, usize)> {
     best
 }
 
-/// The ring of shape (top band i0, height h, left bridge li and right bridge ri of band i0), as a cycle of qubits;
-/// None when the shape does not close on this lattice.
-pub fn ring_shape(l: &Lattice, i0: usize, h: usize, li: usize, ri: usize) -> Option<Vec<usize>> {
+/// How a ring's side steps from band to band: always outward (away from the other side), always inward,
+/// alternating (outward first, or inward first: a straight side), or once one way and then the other (a bulge or a
+/// waist).
+#[derive(Clone, Copy, Debug)]
+pub enum Step {
+    Out,
+    In,
+    OutIn,
+    InOut,
+    OnceOut,
+    OnceIn,
+}
+
+impl Step {
+    /// Whether the k-th step (k = 1 for the step into the second band) goes outward.
+    fn outward(self, k: usize) -> bool {
+        match self {
+            Step::Out => true,
+            Step::In => false,
+            Step::OutIn => k % 2 == 1,
+            Step::InOut => k % 2 == 0,
+            Step::OnceOut => k == 1,
+            Step::OnceIn => k != 1,
+        }
+    }
+}
+
+/// The ring of shape (top band i0, height h, left bridge li and right bridge ri of band i0, and how each side steps
+/// between bands), as a cycle of qubits; None when the shape does not close on this lattice.
+pub fn ring_shape(l: &Lattice, i0: usize, h: usize, li: usize, ri: usize, ls: Step, rs: Step) -> Option<Vec<usize>> {
     let bands = l.bridges.len();
     if i0 + h > bands || li >= ri || ri >= l.bridges[i0].len() {
         return None;
@@ -103,8 +130,9 @@ pub fn ring_shape(l: &Lattice, i0: usize, h: usize, li: usize, ri: usize) -> Opt
     let mut left = vec![l.bridges[i0][li]];
     let mut right = vec![l.bridges[i0][ri]];
     for j in i0 + 1..i0 + h {
-        left.push(nearest(l, j, left.last().unwrap().0, true)?);
-        right.push(nearest(l, j, right.last().unwrap().0, false)?);
+        let k = j - i0;
+        left.push(nearest(l, j, left.last().unwrap().0, ls.outward(k))?);
+        right.push(nearest(l, j, right.last().unwrap().0, !rs.outward(k))?);
     }
     // the sides stay apart on every intermediate row
     for k in 1..h {
@@ -143,9 +171,9 @@ pub fn ring_shape(l: &Lattice, i0: usize, h: usize, li: usize, ri: usize) -> Opt
     Some(cyc)
 }
 
-/// n physical qubits forming a cycle: shapes in the order (height, top band, left bridge, right bridge); the first
-/// of length n whose qubits and couplers all work, first among couplers of the most common duration. Every cycle in
-/// a heavy-hex lattice has even length.
+/// n physical qubits forming a cycle: shapes in the order (height, the sides' steps, top band, left bridge, right
+/// bridge); the first of length n whose qubits and couplers all work, first among couplers of the most common
+/// duration. Every cycle in a heavy-hex lattice has even length.
 pub fn ring(d: &Device, l: &Lattice, n: usize) -> Option<Vec<usize>> {
     ring_on(d, l, n, d.modal_ps()).or_else(|| ring_on(d, l, n, None))
 }
@@ -153,16 +181,28 @@ pub fn ring(d: &Device, l: &Lattice, n: usize) -> Option<Vec<usize>> {
 fn ring_on(d: &Device, l: &Lattice, n: usize, modal: Option<i64>) -> Option<Vec<usize>> {
     let bands = l.bridges.len();
     for h in 1..=bands {
-        for i0 in 0..bands {
-            if i0 + h > bands {
-                continue;
+        let all = [Step::Out, Step::In, Step::OutIn, Step::InOut, Step::OnceOut, Step::OnceIn];
+        let mut steps = Vec::new();
+        for &a in &all {
+            for &b in &all {
+                steps.push((a, b));
             }
-            let nb = l.bridges[i0].len();
-            for li in 0..nb {
-                for ri in li + 1..nb {
-                    if let Some(c) = ring_shape(l, i0, h, li, ri) {
-                        if c.len() == n && (0..n).all(|k| d.usable(c[k], c[(k + 1) % n], modal)) {
-                            return Some(c);
+        }
+        if h == 1 {
+            steps.truncate(1); // one band: no step
+        }
+        for &(ls, rs) in &steps {
+            for i0 in 0..bands {
+                if i0 + h > bands {
+                    continue;
+                }
+                let nb = l.bridges[i0].len();
+                for li in 0..nb {
+                    for ri in li + 1..nb {
+                        if let Some(c) = ring_shape(l, i0, h, li, ri, ls, rs) {
+                            if c.len() == n && (0..n).all(|k| d.usable(c[k], c[(k + 1) % n], modal)) {
+                                return Some(c);
+                            }
                         }
                     }
                 }

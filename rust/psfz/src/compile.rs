@@ -15,7 +15,11 @@
 //! 5. ZZ(theta) on the device: none for theta = 0, Z Z for theta = pi, one CZ and phases for theta = +-pi/2, else
 //!    H CZ RX(theta) CZ H; XX or YY alone: ZZ between basis changes; two or three kinds: the 3-CZ canonical form
 //!    (Vatan and Williams' circuit, its signs fixed for these conventions and checked in the tests). On an ECR device
-//!    each CZ is the coupler's ECR with fixed single-qubit gates (item 104).
+//!    each CZ is the coupler's ECR with fixed single-qubit gates (item 104). Where a form puts its basis changes on
+//!    one qubit of the pair: in the general ZZ form, the input's higher-numbered qubit (as items 87/91 order a term's
+//!    support), on an ECR device the coupler's ECR control; in the canonical form, the qubit whose pending single-qubit run already needs pulses
+//!    (so they merge for free), else the one free earlier on the schedule so far (ties: the lower index). Rules on
+//!    the circuit built so far, not comparisons of alternatives.
 //! 6. Single-qubit runs merged into one matrix and written as rz, sx, x in closed form (ZYZ); the last rz before a
 //!    measurement is dropped.
 
@@ -375,6 +379,57 @@ fn lower_can(a: usize, b: usize, ang: [f64; 3], out: &mut Vec<Nat>) {
     out.push(Nat::U(a, rz(PI / 2.0)));
 }
 
+/// The schedule of the native operations emitted so far (as the final merge will run them): per qubit the end of
+/// its last two-qubit gate and its pending single-qubit run.
+struct Track<'a> {
+    d: &'a Device,
+    clock: BTreeMap<usize, f64>,
+    pend: BTreeMap<usize, M2>,
+}
+
+fn pulses(m: &M2) -> usize {
+    zsx(m).iter().filter(|(n, _)| *n != "rz").count()
+}
+
+impl<'a> Track<'a> {
+    fn apply(&mut self, op: &Nat) {
+        match op {
+            Nat::U(q, m) => {
+                let cur = self.pend.get(q).copied().unwrap_or_else(eye);
+                self.pend.insert(*q, mul2(m, &cur));
+            }
+            Nat::Two(_, a, b) => {
+                let s = self.ready(*a).max(self.ready(*b));
+                let dur = self.d.dur_ps(*a, *b).unwrap_or(0) as f64 * 1e-12;
+                self.clock.insert(*a, s + dur);
+                self.clock.insert(*b, s + dur);
+                self.pend.remove(a);
+                self.pend.remove(b);
+            }
+        }
+    }
+    fn busy(&self, q: usize) -> bool {
+        self.pend.get(&q).map_or(false, |m| pulses(m) > 0)
+    }
+    fn ready(&self, q: usize) -> f64 {
+        self.clock.get(&q).copied().unwrap_or(0.0)
+            + self.pend.get(&q).map_or(0, pulses) as f64 * self.d.sx_dur.get(q).copied().unwrap_or(0.0)
+    }
+    /// (the qubit that takes the form's basis changes, the other)
+    fn pick(&self, p: usize, q: usize) -> (usize, usize) {
+        let (bp, bq) = (self.busy(p), self.busy(q));
+        if bp != bq {
+            return if bp { (p, q) } else { (q, p) };
+        }
+        let (rp, rq) = (self.ready(p), self.ready(q));
+        if rp < rq || (rp == rq && p < q) {
+            (p, q)
+        } else {
+            (q, p)
+        }
+    }
+}
+
 /// Item 104's form: CZ(x, y) = [rz(3pi/4), sx, rz(pi/2) on y] ECR(x, y) [sx, sx, rz(-pi/2) on x; rz(pi/2), sx,
 /// rz(-pi/4) on y], up to a global phase.
 fn cz_as_ecr(x_: usize, y_: usize, out: &mut Vec<Nat>) {
@@ -432,10 +487,36 @@ pub fn compile(c: &Circuit, d: &Device, l: &Lattice) -> Result<Output, String> {
     }
     // step 5
     let mut nat = Vec::new();
+    let mut track = Track { d, clock: BTreeMap::new(), pend: BTreeMap::new() };
     for op in &blocks {
+        let start = nat.len();
         match op {
             Blk::U(q, m) => nat.push(Nat::U(layout[*q], *m)),
-            Blk::Can(a, b, ang) => lower_can(layout[*a], layout[*b], *ang, &mut nat),
+            Blk::Can(a, b, ang) => {
+                let (pa, pb) = (layout[*a], layout[*b]);
+                let several = ang.iter().filter(|t| wrap(**t).abs() > TOL).count() > 1;
+                if several {
+                    let (role, other) = track.pick(pa, pb);
+                    lower_can(role, other, *ang, &mut nat); // the form's basis changes are on its first qubit
+                } else {
+                    // ZZ's general form changes basis on its second qubit
+                    let later_b = if d.gate2 == "ecr" {
+                        // on ECR the form's basis changes go to the coupler's ECR control (a rule taken from the
+                        // exploratory comparison: there it saved one pulse per edge on FakeBrisbane's Ising chains)
+                        !d.couplers.contains_key(&(pa, pb))
+                    } else {
+                        *b > *a // the input's higher-numbered qubit, as items 87/91 order a term's support
+                    };
+                    if later_b {
+                        lower_can(pa, pb, *ang, &mut nat);
+                    } else {
+                        lower_can(pb, pa, *ang, &mut nat);
+                    }
+                }
+            }
+        }
+        for op in &nat[start..] {
+            track.apply(op);
         }
     }
     if d.gate2 == "ecr" {

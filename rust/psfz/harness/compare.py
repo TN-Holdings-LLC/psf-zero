@@ -83,7 +83,8 @@ def device_json(t, name):
     qs = []
     for q in range(t.num_qubits):
         sx, m = t["sx"].get((q,)), t["measure"].get((q,))
-        qs.append(dict(sx_error=None if sx is None else sx.error, meas_error=None if m is None else m.error))
+        qs.append(dict(sx_error=None if sx is None else sx.error, sx_duration=None if sx is None else sx.duration,
+                       meas_error=None if m is None else m.error))
     cps = [[a, b, None if p is None else p.error, None if p is None else p.duration] for (a, b), p in t[g2].items()]
     return dict(name=name, num_qubits=t.num_qubits, two_qubit_gate=g2, qubits=qs, couplers=cps)
 
@@ -125,6 +126,9 @@ for d in DEVICES:
     dj = os.path.join(work, f"{d}.json")
     json.dump(device_json(t, d), open(dj, "w"))
     for name in CHAINS + RINGS:
+        only = os.environ.get("PSFZ_ONLY")
+        if only and f"{d}:{name}" not in only.split(","):
+            continue
         qc0 = build(name)
         rng = random.Random(f"PSFZ|{d}|{name}")
         for k in range(-1, DRAWS):

@@ -5107,6 +5107,38 @@ the circuit itself):
 the remaining 1.4%.
 
 
+## Addendum 519 -- psfz r2: the remaining gap to release 2026-10-17.1 closed but for two inputs -- on the same exploratory set, longer in 2 of 350 inputs (by 0.06% and 0.23%, Heisenberg on FakeBrisbane), 0.971 x on the geometric mean; three rules found on that set, so a fresh validation is still needed (2026-10-17)
+
+**Status:** development record, exploratory numbers, no predictions. Nothing ran on a device. The owner's request
+(2026-10-17 about 14:30 CEST): remove the remaining 1.4% and meet the bar (never longer than the release).
+
+**What was longer, and why** (traced on single inputs, `rust/psfz/harness/compare.py` with `PSFZ_ONLY`):
+
+- **tfim_n40_r2 on FakeMarrakesh (1.013 x):** no 40-qubit ring of r1's shapes avoided the device's 80 ns couplers; the
+  release's ring (found by VF2) has sides that step out once and then in. r2 adds ring sides that step always out,
+  always in, alternately (a straight side), or once one way and then the other: 36 side patterns, still generated in
+  a fixed order; the first ring of the most common coupler duration is now found.
+- **Heisenberg rings (up to 1.014 x):** one extra pulse before the measurements on a critical qubit. r2 gives the
+  canonical form's basis changes to the qubit whose pending single-qubit run already needs pulses (they merge for
+  free), else to the one free earlier on the schedule built so far.
+- **Ising rings and chains:** the general ZZ form's basis changes go to the input's higher-numbered qubit of the
+  pair (as items 87/91 order a term's support); on an ECR device to the coupler's ECR control.
+
+**Result** (the same 350 inputs as Addendum 518; [`data/2026-10-17/psfz_r2/`](../../data/2026-10-17/psfz_r2/)):
+
+- 350 of 350 compiled, native, exact wherever checked (325; largest difference 1.0e-14).
+- **Display:** duration 0.971 x the release's (geometric mean), two-qubit gates 0.94 x, compile time 0.68 ms against
+  17.6 ms (median).
+- **Essential:** longer in 2 of 350 (r1: 39), heis_n12_r2 on FakeBrisbane by 0.06% and 0.23%. psfz's duration there
+  does not depend on the angles; the release's does (its Weyl decomposition sometimes saves a pulse for particular
+  angles). Three variants for ECR devices were tried and were worse (`ecr`-control or -target for the canonical form,
+  the ECR target counted as busy); not kept.
+- **Not to be over-read:** the three rules above were chosen while looking at this set, so this set no longer tests
+  them. A pre-registered validation on new draws (and devices) is what would.
+
+**Not done:** that validation; graphs other than chains and rings; fractional gates; templates.
+
+
 ---
 
 **End of Part 11 of 11 (end of document, for now).** Back to [Part 10](spare-qubit-cliff-combined-383.md), [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

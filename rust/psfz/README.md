@@ -1,4 +1,4 @@
-# psfz -- PSF-Zero in Rust, prototype r1 (2026-10-17)
+# psfz -- PSF-Zero in Rust, prototype r2 (2026-10-17)
 
 A new compiler with a different structure from `psf_compile.py`: one Rust program, no outside crate, no Qiskit. It reads
 a gate-level OpenQASM 3 circuit and a device file (JSON), and writes OpenQASM 3 on the device's qubits with the
@@ -18,7 +18,11 @@ canonical form, CZ on ECR, single-qubit runs as rz/sx/x) is a closed form, check
 
 Exit 0: compiled; 2: refused (out of scope; the reason on stderr and in the report); 1: an input error.
 
-**Scope (r1):** every qubit in one chain or one even ring of two-qubit gates; gates id x y z h s sdg t tdg sx sxdg rx
+**r2 (Addendum 519):** rings of more shapes (straight, bulging and narrowing sides), and a rule for which qubit of a
+pair takes a form's basis changes; on the exploratory set, longer than release 2026-10-17.1 in 2 of 350 inputs (by
+0.06% and 0.23%).
+
+**Scope (r1, r2):** every qubit in one chain or one even ring of two-qubit gates; gates id x y z h s sdg t tdg sx sxdg rx
 ry rz p u1 u2 u3 u, cx cz cp crz rzz rxx ryy; measurements only at the end. Not yet: other graphs, fractional
 gates (rzz/rx natives), templates, mid-circuit measurement.
 

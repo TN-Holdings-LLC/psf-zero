@@ -1,4 +1,4 @@
-//! psfz -- PSF-Zero in Rust, prototype r1 (2026-10-17): circuits whose two-qubit interaction graph is a chain or a
+//! psfz -- PSF-Zero in Rust, prototype r2 (2026-10-17): circuits whose two-qubit interaction graph is a chain or a
 //! ring, compiled for an IBM heavy-hex device (CZ: Heron; ECR: Eagle) by formula only. OpenQASM 3 in and out; the
 //! device from a JSON file. No search, no estimate of noise, no simulation, no check at run time: placement by
 //! coordinates, order by commutation levels, every rewrite a closed form tested once in the unit tests.
@@ -35,14 +35,14 @@ fn run(args: &[String]) -> Result<i32, String> {
     };
     let t2 = Instant::now();
     let mut rep = BTreeMap::new();
-    rep.insert("version".into(), J::Str("psfz r1 (2026-10-17)".into()));
+    rep.insert("version".into(), J::Str("psfz r2 (2026-10-17)".into()));
     rep.insert("device".into(), J::Str(d.name.clone()));
     rep.insert("device_s".into(), J::Num((t1 - t0).as_secs_f64()));
     rep.insert("compile_s".into(), J::Num((t2 - t1).as_secs_f64()));
     let code = match res {
         Ok(out) => {
             let text = qasm::write(out.nc, &out.ops, &out.meas,
-                                   &format!("psfz r1: {} on {}, layout {:?}", out.kind, d.name, out.layout));
+                                   &format!("psfz r2: {} on {}, layout {:?}", out.kind, d.name, out.layout));
             std::fs::write(&args[3], text).map_err(|e| format!("{}: {}", args[3], e))?;
             rep.insert("ok".into(), J::Bool(true));
             rep.insert("kind".into(), J::Str(out.kind.clone()));

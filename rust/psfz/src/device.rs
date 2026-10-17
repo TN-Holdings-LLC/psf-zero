@@ -1,7 +1,7 @@
 //! The device: qubits, couplers and the coordinates of IBM's heavy-hex lattice, all read from the device file.
 //!
 //! Device file (JSON): {"name", "num_qubits", "two_qubit_gate": "cz" | "ecr",
-//!   "qubits": [{"sx_error", "meas_error"}, ...] (null allowed; other keys are ignored),
+//!   "qubits": [{"sx_error", "sx_duration", "meas_error"}, ...] (null allowed; other keys are ignored),
 //!   "couplers": [[a, b, error, duration], ...] (as the device offers them; ECR is directed)}.
 //! A qubit or coupler whose reported error is 0.5 or more is failed (PSF-Zero's item 31); a coupler is working when
 //! it and both its qubits are.
@@ -21,6 +21,8 @@ pub struct Device {
     pub couplers: BTreeMap<(usize, usize), (Option<f64>, Option<f64>)>,
     /// undirected adjacency over all couplers
     pub adj: Vec<BTreeSet<usize>>,
+    /// single-qubit pulse length (sx), seconds; 0 when not reported
+    pub sx_dur: Vec<f64>,
 }
 
 impl Device {
@@ -37,9 +39,11 @@ impl Device {
         }
         let f = |q: &J, k: &str| q.get(k).and_then(J::num);
         let mut qubit_ok = Vec::with_capacity(n);
+        let mut sx_dur = Vec::with_capacity(n);
         for q in qs {
             let bad = f(q, "sx_error").map_or(false, |e| e >= FAILED) || f(q, "meas_error").map_or(false, |e| e >= FAILED);
             qubit_ok.push(!bad);
+            sx_dur.push(f(q, "sx_duration").unwrap_or(0.0));
         }
         let mut couplers = BTreeMap::new();
         let mut adj = vec![BTreeSet::new(); n];
@@ -51,7 +55,7 @@ impl Device {
             adj[a].insert(b);
             adj[b].insert(a);
         }
-        Ok(Device { name, n, gate2, qubit_ok, couplers, adj })
+        Ok(Device { name, n, gate2, qubit_ok, couplers, adj, sx_dur })
     }
 
     /// The coupler's duration in picoseconds (the longer direction), if reported.
