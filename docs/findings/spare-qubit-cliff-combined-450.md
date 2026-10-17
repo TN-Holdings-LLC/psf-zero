@@ -5064,6 +5064,49 @@ device.
   device as a whole.
 
 
+## Addendum 518 -- psfz r1: a new compiler in Rust (no Qiskit, no outside crate, no search) for chains and rings -- exploratory: 350 of 350 inputs on five devices compiled, native and exact; 0.97 x release 2026-10-17.1's duration (geometric mean), longer in 39 inputs by at most 1.4%; compiled in 0.6 ms against 19 ms (2026-10-17)
+
+**Status:** development record, exploratory numbers, no predictions. Nothing ran on a device. Times in CEST.
+
+**The owner's request** (2026-10-17 about 13:43): a prototype of a new mechanism with a different structure, with
+search and prediction excluded, the Rust core at its heart. Decided before it was built (about 13:47): chains and rings
+first; one Rust program with OpenQASM 3 in and out; placement by coordinates only, refusing what the formula cannot
+place (no VF2); judged by exactness and by duration not above the current release.
+
+**psfz r1** ([`rust/psfz/`](../../rust/psfz/), 1,861 lines; no dependency, so it builds without a network):
+
+- reads OpenQASM 3 at gate level and a device file (JSON: qubits' and couplers' errors and durations);
+- rewrites every gate as single-qubit matrices and two-qubit Pauli rotations; drops diagonal operations that only
+  precede measurements; orders by commutation levels (items 87/91's rule), even edges before odd ones; merges
+  rotations on the same pair;
+- places by the heavy-hex lattice's coordinates (rows, column offsets, bridges): a chain on the snake's longest
+  working piece, a ring on the boundary of a band of hexagons (lengths 12, 20, ... in one band, 24, 32, 40, ... in
+  two); first among couplers of the most common duration; refuses otherwise;
+- writes ZZ as 0, 1 or 2 CZ by its angle, XX/YY/ZZ together as the 3-CZ canonical form, CZ on ECR as item 104, and
+  every single-qubit run as rz/sx/x in closed form.
+
+The closed forms are checked by 9 unit tests (4 x 4 matrices); the program does no check at run time.
+
+**Exploratory comparison** ([`data/2026-10-17/psfz_r1/`](../../data/2026-10-17/psfz_r1/); `rust/psfz/harness/compare.py`;
+C63-VAL's 9 chain and 5 ring tests, the build input and 4 draws each, on FakeFez, FakeMarrakesh, FakeTorino (CZ) and
+FakeSherbrooke, FakeBrisbane (ECR); 350 inputs; psfz reads the input written as gate-level OpenQASM, the release reads
+the circuit itself):
+
+- 350 of 350 compiled; native; exact wherever checked (325 inputs up to 20 qubits, largest difference 9.7e-15).
+- **Display:** duration 0.974 x the release's (geometric mean); two-qubit gates 0.94 x (fewer in 75 inputs: the
+  native CZ chains and rings, where a diagonal layer before the measurements is dropped); compile time 0.61 ms
+  against the release's 18.6 ms (median; psfz's own clock, without starting the process).
+- **Essential:** longer than the release in 39 of 350 inputs, by at most 1.4% (heis_n12_r2 1.014, tfim_n40_r2
+  1.013, tfim_n12/n16 1.008), so the owner's bar (never above the release) is not met yet. Not traced; the release's
+  time-aware order (item 83) and mirrored layers (item 82) are not in r1.
+- **A correction during the work:** the first version placed chains on any working couplers; on FakeTorino and the
+  Eagle devices that cost up to 1.22 x (`compare_result_before_modal.json`). Preferring couplers of the most common
+  duration, as item 87 does, brought the largest ratio to 1.014.
+
+**Not done:** graphs other than chains and rings; fractional gates (rzz/rx); templates; a pre-registered validation;
+the remaining 1.4%.
+
+
 ---
 
 **End of Part 11 of 11 (end of document, for now).** Back to [Part 10](spare-qubit-cliff-combined-383.md), [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

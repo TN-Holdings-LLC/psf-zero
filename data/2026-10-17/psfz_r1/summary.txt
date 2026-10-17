@@ -1,0 +1,20 @@
+inputs 350; psfz compiled 350, refused 0 []
+native: 350 of 350; exact (1e-6): 325 of 325 checked; largest 9.708801453445804e-15
+duration over the release's: geometric mean 0.9737, median 1.0000, longer in 39 of 350, largest 1.0140, smallest 0.8043
+two-qubit gates over the release's: geometric mean 0.9402, more in 0, fewer in 75
+compile time, median ms: psfz 0.608, release 18.55
+per test: duration over the release's (geometric mean / largest), two-qubit gates psfz / release (first input)
+  tfim_n12       1.0016 / 1.0079   q2 44 / 44
+  tfim_n16       1.0016 / 1.0079   q2 60 / 60
+  tfimP_n12      1.0000 / 1.0000   q2 44 / 44
+  tfimP_n16      1.0000 / 1.0000   q2 60 / 60
+  ghz_n12        0.9974 / 1.0000   q2 11 / 11
+  chain_cz_n12   0.8869 / 0.9602   q2 33 / 44
+  chain_cz_n16   0.8869 / 0.9602   q2 45 / 60
+  cx_chain_n12   0.9982 / 1.0000   q2 44 / 44
+  cx_chain_n16   0.9979 / 1.0000   q2 60 / 60
+  ring12_tfim    1.0000 / 1.0000   q2 96 / 96
+  heis_n12_r2    1.0054 / 1.0140   q2 135 / 135
+  tfim_n20_r3    0.9974 / 1.0000   q2 120 / 120
+  tfim_n40_r2    0.9946 / 1.0132   q2 160 / 160
+  ring_cz_n12    0.8802 / 0.9602   q2 36 / 48

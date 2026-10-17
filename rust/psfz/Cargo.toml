@@ -1,0 +1,10 @@
+[package]
+name = "psfz"
+version = "0.1.0"
+edition = "2021"
+description = "PSF-Zero in Rust (prototype r1): chains and rings compiled by formula, OpenQASM 3 in and out, no search"
+
+[dependencies]
+
+[profile.release]
+opt-level = 3
