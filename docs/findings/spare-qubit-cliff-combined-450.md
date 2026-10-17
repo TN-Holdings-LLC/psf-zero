@@ -4966,6 +4966,47 @@ targets are bit for bit the release's. A release 2026-10-16.2 = c66 needs the ow
   C63-VAL does.
 
 
+## Addendum 515 -- Prototype c67 (item 104): ECR devices (IBM Eagle) by a CZ view -- in a first, exploratory comparison on four Eagle fake devices, exact and native on 76 of 76 calls, 0.31 x Qiskit level 3's duration (geometric mean), never more than 1.07 x; and TOQB's S2R stage 0 pre-registered (2026-10-17)
+
+**Status:** development record and exploratory numbers, no predictions. Nothing ran on a device. Times in CEST. The
+owner asked for every open item (2026-10-17 about 02:23) and chose ECR devices as the first widening of the scope.
+
+**Item 104** ([`patches/psf_compile_c67_2026-10-17/`](../../patches/psf_compile_c67_2026-10-17/)): CZ(a, b) is ECR(a, b)
+with fixed single-qubit gates around it (checked at import). On a device whose two-qubit gate is ECR, the CZ path runs
+on a CZ view of the device (CZ on every ECR coupler, with its error and duration), then every CZ is written as the
+coupler's ECR in its direction and the single-qubit runs are merged into rz, sx and x (Qiskit's one-qubit synthesis, a
+closed form per run). No search is added. `compile_template` on ECR devices is not covered (refused, as before). c67
+also drops option A's unreachable `_frame_items` (Addendum 514).
+
+**Checks.**
+
+- **CZ devices unchanged:** `check_c67_cz.py` bound C63-VAL's 49,590 inputs through c67's templates and
+  2026-10-16.2's, and compared 2,090 default calls: 0 different, bit for bit (`check_c67_cz_result.txt`).
+- **Exploratory, ECR** (`data/2026-10-17/ecr_explore/`; C63-VAL's 19 tests, build inputs, on FakeSherbrooke,
+  FakeBrisbane, FakeKyiv and FakeOsaka; Qiskit level 3 with seed 0 on the same inputs): 76 of 76 compiled (2026-10-16.2
+  refused all 76); every output native; exact wherever checked (up to 20 active qubits; largest difference 2.2e-14;
+  tfim_n40_r2 not checked).
+  - **Display:** duration 0.31 x Qiskit level 3's (geometric mean; median 0.44 x); two-qubit gates 0.76 x.
+  - **Essential:** longer than level 3 in 18 of 76: GHZ by 5-7% (four devices), CX chains by 1-2%, the Heisenberg
+    tests by 0.1-1%; never more than 1.072 x. Compile time: median 28 ms against level 3's 17 ms (the CZ path plus
+    the rewriting; slower, unlike on CZ devices).
+- **Not done:** the pre-registered validation (C67-VAL), templates on ECR devices, a direct CX/ECR form for GHZ and CX
+  chains.
+
+**TOQB S2R stage 0** (TOQB `prereg/2026-10-17-s2r-stage0.md`, SHA-256 `9fa868b7...`, commit `2ee90c8`; the idea memo
+[`docs/ideas/s2r-sim-to-real-2026-10-16.md`](../ideas/s2r-sim-to-real-2026-10-16.md)): the owner's three decisions
+(the classifier; a stand-in on ibm_marrakesh's calibration with T1/T2 +-30%, 1% over-rotation and 10 kHz ZZ, magnitudes
+confirmed by the owner; N = 10,000, k = 16, $192, 20 seeds). In the exploratory pilot (one seed, N = 1,000) S2R reached
+a stand-in test accuracy of 0.78-0.80 against device-only SPSA's 0.41-0.48 for the same money, with the two compilers
+close in the chosen setting. To be run on the owner's home machine.
+
+**Also looked at:** the 17 test files that do not pass here (Addendum 514) are not dead: 7 stop at once on pandas or
+matplotlib, which the authors' cloud lacks; 3 need a GPU or device access; 6 are scripts without tests; one imports a
+module that is not in the repository under that name
+(`psf_synthesis`, kept only as `test_psf_synthesis.py`). Whether the first 7 pass with those packages was not checked.
+None was removed.
+
+
 ---
 
 **End of Part 11 of 11 (end of document, for now).** Back to [Part 10](spare-qubit-cliff-combined-383.md), [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
