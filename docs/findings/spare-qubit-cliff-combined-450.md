@@ -5007,6 +5007,37 @@ module that is not in the repository under that name
 None was removed.
 
 
+## Addendum 516 -- C67-VAL (pre-registered): prototype c67 passes every criterion on four Eagle (ECR) fake devices -- 3,876 of 3,876 inputs compiled, native, exact, deterministic, never above 1.072 x Qiskit level 3's duration; 0.31 x on the geometric mean (2026-10-17)
+
+**Status:** results of a pre-registered run. Nothing ran on a device. Times in CEST.
+
+**The run.** Pre-registration `data/2026-10-17/c67_val/C67-VAL_preregistration.md` (SHA-256 `fd145dc7...`, commit
+`35c1cb9`, fixed and given to the owner before the run; the design confirmed by the owner, about 07:44); c67
+`266014ff...`. The authors' cloud, two processes, 2026-10-17 07:48:34-09:43:29; the SHA-256 of every file the run used
+are in its record. Record: [`data/2026-10-17/c67_val/results/`](../../data/2026-10-17/c67_val/results/) (`score.txt`).
+
+| ID | criterion | verdict | numbers |
+|---|---|---|---|
+| E1 | every input compiled | CONFIRMED | 3,876 of 3,876 (2026-10-16.2 refuses all of them) |
+| E2 | native, no failed element | CONFIRMED | 0 failing |
+| E3 | exact up to 20 active qubits (1e-6) | CONFIRMED | 3,672 checked, largest difference 3.6e-13; 204 not checked (tfim_n40_r2) |
+| E4 | the same output twice | CONFIRMED | 0 different |
+| E5 | never above 1.10 x Qiskit level 3's duration | CONFIRMED | largest 1.072 (ghz_n12) |
+
+**Reported, not criteria:**
+
+- **Display:** duration 0.31 x Qiskit level 3's (geometric mean; median 0.43 x); two-qubit gates 0.76 x, never more
+  than level 3's. Per test (geometric mean): the Ising evolutions 0.03-0.12 x, rings 0.10-0.21 x, hhI 0.39-0.44 x,
+  native CZ chains 0.44-0.53 x, heavy-hex CZ 0.86 x.
+- **Essential:** longer than level 3 in 883 of 3,876 inputs, all in five tests: GHZ (1.06 x on the geometric mean,
+  at most 1.072 x), CX chains (1.01-1.03 x), and the Heisenberg tests (1.00-1.03 x). In these five tests the two-qubit
+  count is level 3's on every input, so the difference lies in the single-qubit gates or the order (not traced). Compile time:
+  median 24 ms against level 3's 17.5 ms (slower, unlike on CZ devices).
+- **The authors' expectation** (E1-E4 confirmed, E5 likely) held.
+
+**Not covered:** templates on ECR devices; real devices. A release with c67 needs the owner's go-ahead.
+
+
 ---
 
 **End of Part 11 of 11 (end of document, for now).** Back to [Part 10](spare-qubit-cliff-combined-383.md), [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

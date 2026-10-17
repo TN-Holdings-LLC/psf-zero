@@ -1,0 +1,30 @@
+rows 3876 of 3876; devices ['FakeBrisbane', 'FakeKyiv', 'FakeOsaka', 'FakeSherbrooke']
+E1 every input compiled: 3876 of 3876; refused 0 [] -> CONFIRMED
+E2 native, no failed element: failing 0 [] -> CONFIRMED
+E3 exact within 1e-6 (up to 20 active qubits): checked 3672, not checked 204; largest 3.6214705258093815e-13; failing 0 -> CONFIRMED
+E4 the same output twice: failing 0 -> CONFIRMED
+E5 duration at most 1.10 x Qiskit level 3's on every input: largest 1.0717; above 0 [] -> CONFIRMED
+
+Reported: duration over Qiskit level 3's -- geometric mean 0.306, median 0.431, longer than level 3 in 883 of 3876, largest 1.072
+Reported: two-qubit gates over level 3's -- geometric mean 0.755, more than level 3 in 0 of 3876
+Reported: compile time (median ms) -- c67 24.1, Qiskit level 3 17.5
+Per test (all devices): duration over level 3, geometric mean / largest
+  chain_cz_n12      0.527 / 0.534
+  chain_cz_n16      0.437 / 0.446
+  cx_chain_n12      1.011 / 1.021
+  cx_chain_n16      1.017 / 1.032
+  ghz_n12           1.063 / 1.072
+  heis_n12_r2       1.001 / 1.014
+  hhI_n16           0.443 / 0.508
+  hhI_n20           0.387 / 0.402
+  hh_cz_n16         0.857 / 0.877
+  hh_cz_n20         0.857 / 0.869
+  hhtree_heis_n16   1.005 / 1.025
+  ring12_tfim       0.104 / 0.107
+  ring_cz_n12       0.205 / 0.209
+  tfimP_n12         0.122 / 0.124
+  tfimP_n16         0.089 / 0.111
+  tfim_n12          0.123 / 0.125
+  tfim_n16          0.089 / 0.091
+  tfim_n20_r3       0.063 / 0.064
+  tfim_n40_r2       0.033 / 0.051
