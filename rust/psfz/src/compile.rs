@@ -271,33 +271,105 @@ pub fn order(ir: Vec<Ir>, nq: usize, walk: &[usize]) -> Vec<Ir> {
     idx.into_iter().map(|k| ir[k].clone()).collect()
 }
 
-/// Rotations on one pair, merged: (a, b, [x, y, z]) for exp(-i/2 (x XX + y YY + z ZZ)).
+/// A merged block on one pair: one rotation kind set (`Can`: exp(-i/2 (x XX + y YY + z ZZ))), or several two-qubit
+/// rotations with the single-qubit operations between them (`Gen`, kept as its parts).
 #[derive(Clone, Debug)]
 pub enum Blk {
     U(usize, M2),
     Can(usize, usize, [f64; 3]),
+    Gen(usize, usize, Vec<Ir>),
 }
 
-/// Step 3's merge: Pauli rotations on the same pair next to each other in the order become one block.
+/// Step 3's merge (as items 99-101): consecutive two-qubit rotations on one pair, in the order of step 3, become one
+/// block; single-qubit operations on the pair's qubits between two of its rotations are taken into the block, those
+/// after its last rotation stay outside. A block of commuting rotations alone is `Can`; anything else is `Gen`.
 pub fn merge(ir: Vec<Ir>) -> Vec<Blk> {
-    let mut out: Vec<Blk> = Vec::new();
-    for op in ir {
-        match op {
-            Ir::U(q, m) => out.push(Blk::U(q, m)),
-            Ir::Pr(a, b, k, t) => {
-                if let Some(Blk::Can(c, d, ang)) = out.last_mut() {
-                    if (*c, *d) == (a, b) || (*c, *d) == (b, a) {
-                        ang[k as usize] += t;
-                        continue;
+    struct Open {
+        pair: (usize, usize),
+        parts: Vec<Ir>,
+        tail: Vec<Ir>,
+        slot: usize,
+    }
+    let mut out: Vec<Option<Blk>> = Vec::new();
+    let mut opens: Vec<Option<Open>> = Vec::new();
+    let mut open_of: BTreeMap<usize, usize> = BTreeMap::new(); // qubit -> index into opens
+    fn close(k: usize, opens: &mut Vec<Option<Open>>, open_of: &mut BTreeMap<usize, usize>, out: &mut Vec<Option<Blk>>) {
+        if let Some(o) = opens[k].take() {
+            for q in [o.pair.0, o.pair.1] {
+                if open_of.get(&q) == Some(&k) {
+                    open_of.remove(&q);
+                }
+            }
+            let terms: Vec<&Ir> = o.parts.iter().filter(|p| matches!(p, Ir::Pr(..))).collect();
+            let commuting = o.parts.iter().all(|p| matches!(p, Ir::Pr(..)));
+            out[o.slot] = Some(if terms.len() == 1 || commuting {
+                let mut ang = [0.0; 3];
+                for p in &o.parts {
+                    if let Ir::Pr(_, _, k, t) = p {
+                        ang[*k as usize] += t;
                     }
                 }
-                let mut ang = [0.0; 3];
-                ang[k as usize] = t;
-                out.push(Blk::Can(a, b, ang));
+                Blk::Can(o.pair.0, o.pair.1, ang)
+            } else {
+                Blk::Gen(o.pair.0, o.pair.1, o.parts)
+            });
+            for t in o.tail {
+                if let Ir::U(q, m) = t {
+                    out.push(Some(Blk::U(q, m)));
+                }
             }
         }
     }
-    out
+    for op in ir {
+        match op {
+            Ir::Pr(a, b, _, _) => {
+                let ka = open_of.get(&a).copied();
+                if ka.is_some() && ka == open_of.get(&b).copied() {
+                    let o = opens[ka.unwrap()].as_mut().unwrap();
+                    let tail = std::mem::take(&mut o.tail);
+                    o.parts.extend(tail);
+                    o.parts.push(op);
+                    continue;
+                }
+                for q in [a, b] {
+                    if let Some(k) = open_of.get(&q).copied() {
+                        close(k, &mut opens, &mut open_of, &mut out);
+                    }
+                }
+                out.push(None);
+                opens.push(Some(Open { pair: (a, b), parts: vec![op], tail: vec![], slot: out.len() - 1 }));
+                let k = opens.len() - 1;
+                open_of.insert(a, k);
+                open_of.insert(b, k);
+            }
+            Ir::U(q, m) => {
+                if let Some(k) = open_of.get(&q).copied() {
+                    opens[k].as_mut().unwrap().tail.push(Ir::U(q, m));
+                } else {
+                    out.push(Some(Blk::U(q, m)));
+                }
+            }
+        }
+    }
+    let rest: Vec<usize> = (0..opens.len()).filter(|&k| opens[k].is_some()).collect();
+    for k in rest {
+        close(k, &mut opens, &mut open_of, &mut out);
+    }
+    out.into_iter().flatten().collect()
+}
+
+/// The 4 x 4 matrix of a block's parts on (a, b), a first.
+fn block_matrix(a: usize, parts: &[Ir]) -> crate::kak::M4 {
+    use crate::kak::{lift, mul4, pp, id4};
+    let mut m = id4();
+    for p in parts {
+        let g = match p {
+            Ir::U(q, u) => lift(u, if *q == a { 0 } else { 1 }),
+            Ir::Pr(_, _, k, t) => pp(*k as usize, *t),
+        };
+        m = mul4(&g, &m);
+    }
+    m
 }
 
 #[derive(Clone, Debug)]
@@ -358,6 +430,29 @@ fn lower_can(a: usize, b: usize, ang: [f64; 3], out: &mut Vec<Nat>) {
             out.push(Nat::U(a, post));
             out.push(Nat::U(b, post));
         }
+        return;
+    }
+    if nz.len() == 2 {
+        // two kinds: CX (X_a I) CX = XX, CX (I Z_b) CX = ZZ, so Can(x, 0, z) = CX (RX_a(x) RZ_b(z)) CX, 2 CZ; the
+        // other pairs of kinds by a local Clifford on both qubits (S: X -> Y; RX(-pi/2): Z -> Y), checked in the tests
+        let (l, lx, lz): (M2, f64, f64) = match (nz[0], nz[1]) {
+            (0, 2) => (eye(), ang[0], ang[2]),
+            (1, 2) => (phase(PI / 2.0), ang[1], ang[2]),
+            _ => (rx(-PI / 2.0), ang[0], ang[1]),
+        };
+        let ld = dag2(&l);
+        out.push(Nat::U(a, ld));
+        out.push(Nat::U(b, ld));
+        out.push(Nat::U(b, h()));
+        out.push(Nat::Two("cz", a, b));
+        out.push(Nat::U(b, h()));
+        out.push(Nat::U(a, rx(lx)));
+        out.push(Nat::U(b, rz(lz)));
+        out.push(Nat::U(b, h()));
+        out.push(Nat::Two("cz", a, b));
+        out.push(Nat::U(b, h()));
+        out.push(Nat::U(a, l));
+        out.push(Nat::U(b, l));
         return;
     }
     // Vatan and Williams' 3-CNOT circuit for exp(i(al XX + be YY + ga ZZ)), al = -x/2, be = -y/2, ga = -z/2, its
@@ -492,6 +587,37 @@ pub fn compile(c: &Circuit, d: &Device, l: &Lattice) -> Result<Output, String> {
         let start = nat.len();
         match op {
             Blk::U(q, m) => nat.push(Nat::U(layout[*q], *m)),
+            Blk::Gen(a, b, parts) => {
+                let (pa, pb) = (layout[*a], layout[*b]);
+                match crate::kak::kak(&block_matrix(*a, parts)) {
+                    Some(k) => {
+                        nat.push(Nat::U(pa, k.b1));
+                        nat.push(Nat::U(pb, k.b2));
+                        let (role, other) = track.pick(pa, pb);
+                        // Can(x, y, z) is the same for either order of its qubits
+                        if (role, other) == (pa, pb) {
+                            lower_can(pa, pb, k.ang, &mut nat);
+                        } else {
+                            lower_can(pb, pa, k.ang, &mut nat);
+                        }
+                        nat.push(Nat::U(pa, k.a1));
+                        nat.push(Nat::U(pb, k.a2));
+                    }
+                    None => {
+                        // the decomposition did not hold: the parts one by one (exact, more CZ)
+                        for p in parts {
+                            match p {
+                                Ir::U(q, m) => nat.push(Nat::U(layout[*q], *m)),
+                                Ir::Pr(x_, y_, k, t) => {
+                                    let mut ang = [0.0; 3];
+                                    ang[*k as usize] = *t;
+                                    lower_can(layout[*x_], layout[*y_], ang, &mut nat);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             Blk::Can(a, b, ang) => {
                 let (pa, pb) = (layout[*a], layout[*b]);
                 let several = ang.iter().filter(|t| wrap(**t).abs() > TOL).count() > 1;
@@ -733,13 +859,38 @@ mod tests {
     #[test]
     fn canonical_form() {
         for ang in [[0.3, -0.7, 1.1], [0.0, 0.4, 0.0], [1.2, 0.0, 0.0], [0.5, 0.5, 0.5], [-2.0, 1.0, 0.0],
-                    [PI / 2.0, PI / 2.0, 0.3], [0.0, 0.0, PI / 2.0]] {
+                    [PI / 2.0, PI / 2.0, 0.3], [0.0, 0.0, PI / 2.0], [0.7, 0.0, -0.4], [0.0, 1.3, 0.6], [0.9, -0.2, 0.0]] {
             let mut v = Vec::new();
             lower_can(0, 1, ang, &mut v);
             let want = mul4(&pauli4(0, ang[0]), &mul4(&pauli4(1, ang[1]), &pauli4(2, ang[2])));
             assert!(eq4(&mat(&v), &want), "{:?}", ang);
-            assert!(v.iter().filter(|o| matches!(o, Nat::Two(..))).count() <= 3);
+            let kinds = ang.iter().filter(|t| wrap(**t).abs() > TOL).count();
+            assert!(v.iter().filter(|o| matches!(o, Nat::Two(..))).count() <= kinds.max(1).min(3).max(if kinds == 1 { 2 } else { kinds }));
         }
+    }
+
+    #[test]
+    fn general_block() {
+        // ZZ, a field, XX, YY on one pair: one block, decomposed, lowered: equal to the parts' product
+        let parts = vec![Ir::Pr(0, 1, 2, 0.4), Ir::U(0, rz(0.3)), Ir::Pr(0, 1, 0, -0.9), Ir::U(1, rx(1.1)),
+                         Ir::Pr(1, 0, 1, 0.25)];
+        let m = block_matrix(0, &parts);
+        let k = crate::kak::kak(&m).expect("kak");
+        let mut v = vec![Nat::U(0, k.b1), Nat::U(1, k.b2)];
+        lower_can(0, 1, k.ang, &mut v);
+        v.push(Nat::U(0, k.a1));
+        v.push(Nat::U(1, k.a2));
+        let mut want = [[ZERO; 4]; 4];
+        for i in 0..4 {
+            for j in 0..4 {
+                want[i][j] = m[i][j];
+            }
+        }
+        assert!(eq4(&mat(&v), &want));
+        assert!(v.iter().filter(|o| matches!(o, Nat::Two(..))).count() <= 3);
+        let b = merge(parts.clone());
+        assert_eq!(b.len(), 1);
+        assert!(matches!(b[0], Blk::Gen(..)));
     }
 
     #[test]
