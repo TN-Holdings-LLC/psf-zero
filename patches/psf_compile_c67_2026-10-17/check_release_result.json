@@ -1,0 +1,1535 @@
+{
+ "inputs": 49590,
+ "different": [],
+ "default_inputs": 2090,
+ "default_different": [],
+ "counters_different": [],
+ "cells": {
+  "R|FakeFez|tfim_n12|T": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|tfim_n12|F": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|tfim_n16|T": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|tfim_n16|F": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|tfimP_n12|T": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|tfimP_n12|F": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|tfimP_n16|T": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|tfimP_n16|F": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|tfim_n20_r3|T": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|tfim_n20_r3|F": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|heis_n12_r2|T": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|heis_n12_r2|F": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|tfim_n40_r2|T": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|tfim_n40_r2|F": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|hhI_n16|T": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|hhI_n16|F": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|hhI_n20|T": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|hhI_n20|F": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|ring12_tfim|T": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|ring12_tfim|F": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|hhtree_heis_n16|T": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|hhtree_heis_n16|F": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|ghz_n12|T": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|ghz_n12|F": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|chain_cz_n12|T": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|chain_cz_n12|F": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|chain_cz_n16|T": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|chain_cz_n16|F": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|ring_cz_n12|T": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|ring_cz_n12|F": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|hh_cz_n16|T": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|hh_cz_n16|F": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|hh_cz_n20|T": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|hh_cz_n20|F": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|cx_chain_n12|T": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|cx_chain_n12|F": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|cx_chain_n16|T": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "R|FakeFez|cx_chain_n16|F": [
+   1101,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|tfim_n12|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|tfim_n12|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|tfim_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|tfim_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|tfimP_n12|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|tfimP_n12|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|tfimP_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|tfimP_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|tfim_n20_r3|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|tfim_n20_r3|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|heis_n12_r2|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|heis_n12_r2|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|tfim_n40_r2|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|tfim_n40_r2|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|hhI_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|hhI_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|hhI_n20|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|hhI_n20|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|ring12_tfim|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|ring12_tfim|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|hhtree_heis_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|hhtree_heis_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|ghz_n12|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|ghz_n12|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|chain_cz_n12|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|chain_cz_n12|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|chain_cz_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|chain_cz_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|ring_cz_n12|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|ring_cz_n12|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|hh_cz_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|hh_cz_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|hh_cz_n20|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|hh_cz_n20|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|cx_chain_n12|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|cx_chain_n12|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|cx_chain_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeMarrakesh|cx_chain_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|tfim_n12|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|tfim_n12|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|tfim_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|tfim_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|tfimP_n12|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|tfimP_n12|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|tfimP_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|tfimP_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|tfim_n20_r3|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|tfim_n20_r3|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|heis_n12_r2|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|heis_n12_r2|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|tfim_n40_r2|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|tfim_n40_r2|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|hhI_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|hhI_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|hhI_n20|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|hhI_n20|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|ring12_tfim|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|ring12_tfim|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|hhtree_heis_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|hhtree_heis_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|ghz_n12|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|ghz_n12|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|chain_cz_n12|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|chain_cz_n12|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|chain_cz_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|chain_cz_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|ring_cz_n12|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|ring_cz_n12|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|hh_cz_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|hh_cz_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|hh_cz_n20|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|hh_cz_n20|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|cx_chain_n12|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|cx_chain_n12|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|cx_chain_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeKingston|cx_chain_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|tfim_n12|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|tfim_n12|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|tfim_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|tfim_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|tfimP_n12|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|tfimP_n12|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|tfimP_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|tfimP_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|tfim_n20_r3|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|tfim_n20_r3|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|heis_n12_r2|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|heis_n12_r2|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|tfim_n40_r2|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|tfim_n40_r2|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|hhI_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|hhI_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|hhI_n20|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|hhI_n20|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|ring12_tfim|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|ring12_tfim|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|hhtree_heis_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|hhtree_heis_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|ghz_n12|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|ghz_n12|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|chain_cz_n12|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|chain_cz_n12|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|chain_cz_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|chain_cz_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|ring_cz_n12|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|ring_cz_n12|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|hh_cz_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|hh_cz_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|hh_cz_n20|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|hh_cz_n20|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|cx_chain_n12|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|cx_chain_n12|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|cx_chain_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|FakeTorino|cx_chain_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|tfim_n12|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|tfim_n12|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|tfim_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|tfim_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|tfimP_n12|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|tfimP_n12|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|tfimP_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|tfimP_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|tfim_n20_r3|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|tfim_n20_r3|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|heis_n12_r2|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|heis_n12_r2|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|tfim_n40_r2|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|tfim_n40_r2|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|hhI_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|hhI_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|hhI_n20|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|hhI_n20|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|ring12_tfim|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|ring12_tfim|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|hhtree_heis_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|hhtree_heis_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|ghz_n12|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|ghz_n12|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|chain_cz_n12|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|chain_cz_n12|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|chain_cz_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|chain_cz_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|ring_cz_n12|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|ring_cz_n12|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|hh_cz_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|hh_cz_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|hh_cz_n20|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|hh_cz_n20|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|cx_chain_n12|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|cx_chain_n12|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|cx_chain_n16|T": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ],
+  "D|snapshot_marrakesh|cx_chain_n16|F": [
+   51,
+   0,
+   [
+    0,
+    0
+   ]
+  ]
+ },
+ "ecr_inputs": 3876,
+ "ecr_different": [],
+ "ecr_template_different": [],
+ "verdict": "SAME",
+ "release_version": "2026-10-17.1",
+ "c67_version": "2026-10-17.c67"
+}

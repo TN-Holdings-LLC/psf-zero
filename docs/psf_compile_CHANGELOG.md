@@ -1,6 +1,7 @@
-# psf_compile changelog (items 1-103)
+# psf_compile changelog (items 1-104)
 
-Release 2026-10-16.2 is prototype c66 (release 2026-10-16.1 = c65, plus item 103). Its module docstring is short; the
+Release 2026-10-17.1 is prototype c67 (release 2026-10-16.2 = c66, plus item 104; option A's unreachable code
+removed). Its module docstring is short; the
 changelog lives here.
 
 - **Items 1-101:** c63a's module docstring, moved unchanged by the workplace's c64 (below).
@@ -21,6 +22,11 @@ changelog lives here.
   two fixed segments, keeps option A's pinned form; folds are a Z frame carried to the next anchor. The template's
   shape is fixed as in option A, without its pulses: on fractional targets 0.81-1.00 x c62's median duration
   (C66-VAL, Addendum 513). Default calls and CZ targets unchanged, bit for bit.
+- **Item 104 (c67, 2026-10-17; release 2026-10-17.1):** devices whose two-qubit gate is ECR (IBM Eagle). CZ(a, b) is
+  ECR(a, b) with fixed single-qubit gates around it (checked at import). The default call runs the CZ path on a CZ view
+  of the device (CZ on every ECR coupler, with its error and duration), writes every CZ as the coupler's ECR in its
+  direction, and merges the single-qubit runs into rz, sx and x. Templates on ECR devices are refused. C67-VAL
+  (Addendum 516): every criterion confirmed; 0.31 x Qiskit level 3's duration (geometric mean), at most 1.072 x.
 
 ---
 

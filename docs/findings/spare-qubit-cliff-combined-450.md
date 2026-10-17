@@ -5038,6 +5038,32 @@ are in its record. Record: [`data/2026-10-17/c67_val/results/`](../../data/2026-
 **Not covered:** templates on ECR devices; real devices. A release with c67 needs the owner's go-ahead.
 
 
+## Addendum 517 -- Release: psf_compile 2026-10-17.1 = prototype c67 (item 104): IBM Eagle devices (ECR) by formula; CZ devices unchanged, bit for bit (2026-10-17)
+
+**Status:** the owner's decision ("67 release", 2026-10-17 about 13:00 CEST), on Addendum 516. Nothing ran on a
+device.
+
+- **Installed:** `psf_compile.py` 2026-10-17.1 = prototype c67 made by
+  [`patches/psf_compile_c67_2026-10-17/make_release.py`](../../patches/psf_compile_c67_2026-10-17/make_release.py)
+  (the module docstring and the version line). The AI front end is unchanged (a23).
+- **Kept:** 2026-10-16.2 as
+  [`patches/psf_compile_release_2026-10-16.2/psf_compile.py`](../../patches/psf_compile_release_2026-10-16.2/psf_compile.py)
+  (moved, unchanged); its tests now load it from there.
+- **The release is c67:** [`check_release.py`](../../patches/psf_compile_c67_2026-10-17/check_release.py): CZ devices,
+  C63-VAL's 49,590 inputs through both templates (0 different, the same rebuilt and switched counts) and 2,090 default
+  calls (0 different); ECR devices, C67-VAL's 3,876 inputs through both default calls (0 different) and both templates'
+  refusals (the same). So on CZ devices the release is 2026-10-16.2, bit for bit (Addendum 515), and TOQB's loop arms
+  are unaffected.
+- **Tests.** New [`benchmarks/test_release_2026_10_17_1.py`](../../benchmarks/test_release_2026_10_17_1.py) (12 tests:
+  2026-10-16.2's eight on the new file, and item 104 on FakeSherbrooke: GHZ, a TFIM chain and a ring exact and native,
+  ECR only; a template refused). All 58 earlier test files run before and after: the same result in every file (41
+  pass; the same 17 do not, as in Addendum 515), and the new file passes.
+- **For users:** `compile_for_hardware(qc, backend=<an Eagle device>)` now compiles what embeds in the device instead
+  of refusing it. Display: 0.31 x Qiskit level 3's duration (geometric mean, C67-VAL). Essential: on GHZ, CX chains
+  and Heisenberg circuits level 3 is up to 7% shorter, and level 3 compiles faster on these devices. Not run on a
+  device as a whole.
+
+
 ---
 
 **End of Part 11 of 11 (end of document, for now).** Back to [Part 10](spare-qubit-cliff-combined-383.md), [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

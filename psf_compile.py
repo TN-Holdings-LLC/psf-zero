@@ -1,15 +1,17 @@
-"""PSF-Zero compiler -- VERSION: 2026-10-16.2 -- release, adopted on 2026-10-17 from prototype 2026-10-16.c66
-(previous release: 2026-10-16.1, kept in patches/psf_compile_release_2026-10-16.1/).
+"""PSF-Zero compiler -- VERSION: 2026-10-17.1 -- release, adopted on 2026-10-17 from prototype 2026-10-17.c67
+(previous release: 2026-10-16.2, kept in patches/psf_compile_release_2026-10-16.2/).
 
 Two entry points: `compile_for_hardware(qc, target=...)` and `compile_template(qc, target)`. A circuit whose
 two-qubit interaction graph embeds in the device's working couplers is built by formula (items 87-101), placed by the
 first VF2 match with no score; every other circuit, and every call without the device's Target, is refused with
 `OutOfScopeError`: nothing is handed to a search (item 98). Item 96's embedding test decides by formula before VF2
 (item 102). In a template on a fractional-gate target, item 88's frame is applied by segments, solved over GF(2)
-(item 103): the template's shape never changes with the values, without option A's extra pulses. 2026-10-16.2 is
-2026-10-16.1 plus item 103; validated in C66-VAL (Addendum 513): its default calls are 2026-10-16.1's bit for bit.
+(item 103). On a device whose two-qubit gate is ECR (IBM Eagle), the default call builds on a CZ view of the device and
+writes every CZ as the coupler's ECR (item 104); templates on ECR devices are refused. 2026-10-17.1 is 2026-10-16.2
+plus item 104, without option A's unreachable code; validated in C67-VAL (Addendum 516); on CZ devices its outputs are
+2026-10-16.2's bit for bit (Addendum 515).
 
-The changelog of items 1-103 is docs/psf_compile_CHANGELOG.md. The functions of earlier releases that the default
+The changelog of items 1-104 is docs/psf_compile_CHANGELOG.md. The functions of earlier releases that the default
 calls never used (`compile()`, `prune_coupling_map`, `edge_errors_from_target`, the cost models, ...) are not in this
 release; they remain in patches/psf_compile_release_2026-10-14.1/psf_compile.py."""
 
@@ -21,7 +23,7 @@ from qiskit.transpiler import CouplingMap, PassManager, generate_preset_pass_man
 from qiskit.transpiler.exceptions import TranspilerError
 
 
-VERSION = "2026-10-16.2"  # release, adopted on 2026-10-17 from prototype 2026-10-16.c66 (item 103 on release 2026-10-16.1)
+VERSION = "2026-10-17.1"  # release, adopted on 2026-10-17 from prototype 2026-10-17.c67 (item 104 on release 2026-10-16.2)
 
 
 def qubit_errors_from_target(target, gate_name: str = "sx") -> dict:
@@ -2553,53 +2555,6 @@ class _T100Formula:
                      if log.data[i].clbits else None, src[i], self.fixed_m.get(i), self.fixed_mc.get(i))
                     for i in keep]
 
-    def _frame_items(self, values):
-        """W3 option A (c63a): item 88's frame fixed at build. A negative rzz angle becomes X RZZ(|theta|) X on its first
-        qubit, locally; a fold (|theta| crossing pi/2) is Rz(pi) on both qubits; the items on both sides of every rzz are
-        pinned (`_t63_emit`), so a sign change or a fold alters angles only, never the shape."""
-        X = _N99_X
-        t0 = self.term0
-        for op, qs, cb, s, fm, fmc in self.log:
-            nm = op.name
-            if nm == "measure":
-                yield ("meas", qs[0], cb)
-                continue
-            if s[0] == "term":
-                prm = 2 * values[t0 + s[1]]
-            elif s[0] == "pre" or s[0] == "suf":
-                sl = (self.pre_sl if s[0] == "pre" else self.suf_sl)[s[1]]
-                prm = None if sl is None else values[sl[0]:sl[1]]
-            else:
-                prm = None
-            if nm == "rzz":
-                a, b = qs
-                th = math.pi - (math.pi - prm) % (2 * math.pi)
-                fold = abs(th) > math.pi / 2
-                if fold:
-                    th -= math.copysign(math.pi, th)
-                if abs(th) < 1e-12 and not fold:
-                    continue
-                # new tuple objects (never constant): the sign and the fold may change from bind to bind. Time order on
-                # qubit a: the fold's Rz(pi), then X if theta < 0; on qubit b: the fold's Rz(pi). All pinned.
-                Z = _T100_RZPI if fold else _T63A_I
-                Pa = _n99_mul((X[0], X[1], X[2], X[3]), Z) if th < 0 else (Z[0], Z[1], Z[2], Z[3])
-                yield ("1", a, Pa, 1)
-                yield ("1", b, (Z[0], Z[1], Z[2], Z[3]), 1)
-                yield ("rzz", a, b, abs(th))
-                Q = X if th < 0 else _T63A_I
-                yield ("1", a, (Q[0], Q[1], Q[2], Q[3]), 1)  # built anew: a literal tuple would be one kept object
-                continue
-            q = qs[0]
-            if fm is not None:
-                yield ("1", q, fm)
-                continue
-            if s[0] == "term":
-                yield ("1", q, _t100_rot1({"rx": "X", "ry": "Y", "rz": "Z"}[nm], prm / 2))
-            elif prm is None:
-                yield ("1", q, _n99_t(op))
-            else:
-                yield ("1", q, _n99_t(_T100Op(op, prm)))
-        yield ("end",)
     # -- the CZ path: PSF-Zero's own blocks ---------------------------------------------------------------------------
     def _build_blocks(self):
         """The logical program: prefix gates, terms in items 87/91's order, suffix gates, measurements; diagonal
@@ -3168,7 +3123,6 @@ def compile_template(qc, target, seed_transpiler=0, prune_max_error=0.5):
         return tpl
     raise OutOfScopeError("item 100: inside the scope, but no formula reads this circuit (changelog items 98-99)")
 
-_T63A_I = (1 + 0j, 0j, 0j, 1 + 0j)  # W3 option A (c63a): the identity, copied into new tuples by _frame_items
 
 # ======================================================================================================================
 # Item 103 (prototype c66, home, 2026-10-16; release 2026-10-16.2): item 88's frame in a template by segments, solved over GF(2).
@@ -3438,3 +3392,116 @@ def _t103_frame_items(self, values):
 
 
 _T100Formula._frame_items = _t103_frame_items  # item 103 (release 2026-10-16.2)
+
+# ======================================================================================================================
+# Item 104 (prototype c67, home, 2026-10-17; release 2026-10-17.1): devices whose two-qubit gate is ECR (IBM Eagle), by formula.
+#
+# Every formula path (items 87, 91, 99) builds circuits from CZ. CZ and ECR are the same two-qubit class: CZ(a, b) is
+# ECR(a, b) with fixed single-qubit gates around it (below; checked at import). So on an ECR device the call is made on
+# a CZ view of the device (`_e104_view`: CZ on every coupler that has ECR in either direction, with that ECR's error
+# and duration; every other instruction as the device gives it), and every CZ of the output is written as the ECR the
+# coupler has, in its direction, with its fixed gates; the single-qubit runs are then merged into rz, sx and x by
+# Qiskit's one-qubit synthesis (a closed form per run, no search). Placement, scope and refusals are the CZ path's, on
+# the view. Templates (compile_template) on ECR devices are not covered: OutOfScopeError as before.
+# ----------------------------------------------------------------------------------------------------------------------
+ECR104_STATS = {"calls": 0, "views": 0, "cz_written": 0}
+_E104_VIEWS = {}
+
+
+def _e104_cz_as_ecr():
+    """CZ(x, y) as [(gate, qubit index in (x, y))...] around ECR(x, y), and the global phase: verified at import."""
+    from qiskit.circuit.library import ECRGate, RZGate, SXGate
+    pi = math.pi
+    before = [(RZGate(3 * pi / 4), 1), (SXGate(), 1), (RZGate(pi / 2), 1)]
+    after = [(SXGate(), 0), (SXGate(), 0), (RZGate(-pi / 2), 0), (RZGate(pi / 2), 1), (SXGate(), 1),
+             (RZGate(-pi / 4), 1)]
+    phase = pi / 4
+    from qiskit.quantum_info import Operator
+    c = QuantumCircuit(2, global_phase=phase)
+    for g, q in before:
+        c.append(g, [q])
+    c.append(ECRGate(), [0, 1])
+    for g, q in after:
+        c.append(g, [q])
+    cz = np.diag([1, 1, 1, -1]).astype(complex)
+    if not np.allclose(Operator(c).data, cz, atol=1e-12):
+        raise RuntimeError("item 104: the CZ-as-ECR form does not multiply out to CZ")
+    return before, after, phase
+
+
+_E104_FORM = _e104_cz_as_ecr()
+
+
+def _e104_view(target):
+    """The CZ view of an ECR device (see above), cached per Target object."""
+    key = id(target)
+    hit = _E104_VIEWS.get(key)
+    if hit is not None and hit[0] is target:
+        return hit[1]
+    from qiskit.circuit.library import CZGate
+    from qiskit.transpiler import InstructionProperties, Target
+    view = Target(num_qubits=target.num_qubits, dt=target.dt, qubit_properties=target.qubit_properties,
+                  description="item 104: CZ view of an ECR device")
+    for name in target.operation_names:
+        if name in ("ecr", "switch_case", "for_loop", "if_else", "while_loop"):
+            continue
+        view.add_instruction(target.operation_from_name(name), dict(target[name]))
+    cz = {}
+    for (a, b), p in target["ecr"].items():
+        pr = None if p is None else InstructionProperties(error=p.error, duration=p.duration)
+        for qa in ((a, b), (b, a)):
+            if qa not in cz:
+                cz[qa] = pr
+    view.add_instruction(CZGate(), cz)
+    _E104_VIEWS[key] = (target, view)
+    ECR104_STATS["views"] += 1
+    return view
+
+
+def _e104_write(out, target):
+    """`out` (built on the CZ view) with every cz written as the device's ECR, single-qubit runs merged."""
+    from qiskit.circuit.library import ECRGate
+    from qiskit.transpiler import PassManager
+    from qiskit.transpiler.passes import Optimize1qGatesDecomposition
+    before, after, phase = _E104_FORM
+    ecr = target["ecr"]
+    new = out.copy_empty_like()
+    for ins in out.data:
+        if ins.operation.name != "cz":
+            new.append(ins.operation, ins.qubits, ins.clbits)
+            continue
+        qa, qb = ins.qubits
+        a, b = out.find_bit(qa).index, out.find_bit(qb).index
+        if (a, b) in ecr:
+            x, y = qa, qb
+        elif (b, a) in ecr:
+            x, y = qb, qa
+        else:
+            raise TranspilerError(f"item 104: no ECR on the coupler ({a}, {b})")
+        pair = (x, y)
+        for g, k in before:
+            new.append(g, [pair[k]])
+        new.append(ECRGate(), [x, y])
+        for g, k in after:
+            new.append(g, [pair[k]])
+        new.global_phase += phase
+        ECR104_STATS["cz_written"] += 1
+    merged = PassManager([Optimize1qGatesDecomposition(basis=["rz", "sx", "x"])]).run(new)
+    merged._layout = getattr(out, "_layout", None)
+    return merged
+
+
+_e104_compile_cz = compile_for_hardware
+
+
+def compile_for_hardware(qc, *args, **kwargs):  # noqa: F811  (item 104 wraps the CZ path)
+    """Item 104 on items 97-99: on a device whose two-qubit gate is ECR (and not CZ), the CZ path on its CZ view, each
+    CZ then written as the coupler's ECR (see the item's comment). Every other call is the CZ path unchanged."""
+    target = kwargs.get("target") or getattr(kwargs.get("backend"), "target", None)
+    if target is None or args or "cz" in target.operation_names or "ecr" not in target.operation_names:
+        return _e104_compile_cz(qc, *args, **kwargs)
+    ECR104_STATS["calls"] += 1
+    kw = dict(kwargs)
+    kw.pop("backend", None)
+    kw["target"] = _e104_view(target)
+    return _e104_write(_e104_compile_cz(qc, **kw), target)

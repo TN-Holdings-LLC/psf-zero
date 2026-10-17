@@ -1,7 +1,7 @@
 # Prototype c67 (home, 2026-10-17): item 104, devices whose two-qubit gate is ECR (IBM Eagle)
 
 `make_c67.py` = release 2026-10-16.2 (`psf_compile.py`) + `item104_ecr_code.py` -> `psf_compile.py`, with option A's
-`_T100Formula._frame_items` and `_T63A_I` removed (unreachable since 2026-10-16.2). Not validated; not a release.
+`_T100Formula._frame_items` and `_T63A_I` removed (unreachable since 2026-10-16.2). **Validated in C67-VAL (Addendum 516) and released as 2026-10-17.1 (Addendum 517):** `make_release.py` changes the docstring and the version line; `check_release.py` compares the installed release with this prototype, bit for bit (`check_release_result.txt`).
 
 **Why.** Every formula path builds from CZ, so 2026-10-16.2 refuses every ECR device (`OutOfScopeError`: "the
 device's two-qubit gate is not cz").

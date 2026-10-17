@@ -12,6 +12,10 @@ the earlier parts they link to. The README itself, as it was before the move, is
 
 > **In brief (as of 2026-10-17)**
 >
+> 0000. Release 2026-10-17.1 (prototype c67, item 104, Addenda 515-517): IBM Eagle devices (ECR) by formula: the
+>       default call builds on a CZ view and writes each CZ as the coupler's ECR. C67-VAL: 3,876 of 3,876 inputs
+>       compiled, exact and native, 0.31 x Qiskit level 3's duration (geometric mean), at most 1.072 x. CZ devices
+>       unchanged, bit for bit; templates on ECR devices refused.
 > 000. Release 2026-10-16.2 (prototype c66, item 103, Addenda 511-514): in `compile_template` on fractional targets,
 >      item 88's frame by segments (GF(2)); templates keep a fixed shape and are 0.81-1.00 x c62's median duration
 >      (option A: up to 1.21-1.35 x). Default calls and CZ targets are 2026-10-16.1's, bit for bit (C66-VAL).
@@ -47,7 +51,23 @@ the earlier parts they link to. The README itself, as it was before the move, is
 > 6. The device layer has been tested only in noisy simulation on fake devices, not on hardware. (Since 2026-10-12 it
 >    has run on three real devices: HW1, HW2, TIME1, FRAC1; Addenda 455-488.)
 
-> **Current version (2026-10-17): `psf_compile.py` 2026-10-16.2 and the AI front end a23**
+> **Current version (2026-10-17, second release): `psf_compile.py` 2026-10-17.1 and the AI front end a23**
+> ([Part 11](findings/spare-qubit-cliff-combined-450.md), Addenda 515-517). The compiler is prototype c67
+> ([`patches/psf_compile_c67_2026-10-17/`](../patches/psf_compile_c67_2026-10-17/)) with its docstring and version
+> line changed by `make_release.py` there; `check_release.py` there found the installed file equal to c67, bit for
+> bit, on CZ devices (C63-VAL's inputs, templates and default calls) and on ECR devices (C67-VAL's inputs). 2026-10-16.2
+> is kept as
+> [`patches/psf_compile_release_2026-10-16.2/psf_compile.py`](../patches/psf_compile_release_2026-10-16.2/psf_compile.py).
+>
+> - **Item 104:** CZ(a, b) is ECR(a, b) with fixed single-qubit gates around it; on an ECR device the CZ path runs on a
+>   CZ view of the device, every CZ is written as the coupler's ECR, single-qubit runs are merged into rz, sx, x.
+> - **C67-VAL (pre-registered, Addendum 516):** E1-E5 confirmed on FakeSherbrooke, FakeBrisbane, FakeKyiv, FakeOsaka.
+> - **Known:** longer than Qiskit level 3 on GHZ (up to 1.072 x), CX chains and Heisenberg tests (up to 1.03 x);
+>   compile time slower than level 3 on ECR devices (24 ms against 17.5 ms, median). Option A's unreachable code removed.
+> - Tests: [`benchmarks/test_release_2026_10_17_1.py`](../benchmarks/test_release_2026_10_17_1.py); the 2026-10-16.2
+>   tests read the kept copy. Not run on a device as a whole.
+
+> **Previous release (2026-10-17, first release): `psf_compile.py` 2026-10-16.2 and the AI front end a23**
 > ([Part 11](findings/spare-qubit-cliff-combined-450.md), Addenda 511-514). The compiler is prototype c66
 > ([`patches/psf_compile_c66_2026-10-16/`](../patches/psf_compile_c66_2026-10-16/)) with its docstring and version
 > line changed and its prototype switch (`TEMPLATE_FRAME_SEGMENTS`, run at True in C66-VAL) removed, by

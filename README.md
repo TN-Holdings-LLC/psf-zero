@@ -11,7 +11,7 @@
 PSF-Zero is a Qiskit-compatible compiler that builds circuits for a device by formula, with no search.
 
 - **`compile_for_hardware()` and `compile_template()`: compilation for a device.** Since 2026-10-16.1, given the
-  device's `Target` (a CZ device: IBM Heron), it builds by formula every circuit whose two-qubit interaction graph
+  device's `Target` (a CZ device: IBM Heron; since 2026-10-17.1 also an ECR device, IBM Eagle, for the default call), it builds by formula every circuit whose two-qubit interaction graph
   embeds in the device: chains, lattices and embeddable graphs, in a time-aware order, with IBM's native rzz where
   offered. **Every other circuit, and every call without the device, is refused with `OutOfScopeError`:** compile
   those with Qiskit yourself (until 2026-10-14.1 they were handed to Qiskit's level 3; the owner closed that path,
@@ -72,10 +72,18 @@ What these numbers are not:
 
 ## Current version
 
-**`psf_compile.py` 2026-10-16.2** and the AI front end **a23** (Part 11, Addenda 503-514). The changelog of
+**`psf_compile.py` 2026-10-17.1** and the AI front end **a23** (Part 11, Addenda 503-517). The changelog of
 `psf_compile` is [`docs/psf_compile_CHANGELOG.md`](docs/psf_compile_CHANGELOG.md). Every release and dated notice:
 [`docs/RELEASES.md`](docs/RELEASES.md).
 
+> **New in 2026-10-17.1: IBM Eagle devices (ECR) are compiled by formula too.** The release is prototype c67
+> (item 104, Addendum 515; C67-VAL, Addendum 516): on a device whose two-qubit gate is ECR, `compile_for_hardware`
+> builds on a CZ view of the device and writes every CZ as the coupler's ECR. In C67-VAL (four Eagle fake devices,
+> 3,876 inputs) every input compiled, native and exact, at 0.31 x Qiskit level 3's duration (geometric mean); longer
+> than level 3 in 883 inputs of five tests (GHZ, CX chains, Heisenberg), at most 1.072 x; compile time 24 ms against
+> level 3's 17.5 ms (median). `compile_template` on ECR devices is still refused. CZ devices: 2026-10-16.2's outputs,
+> bit for bit. Not run on a device as a whole. 2026-10-16.2 is kept in `patches/psf_compile_release_2026-10-16.2/`.
+>
 > **New in 2026-10-16.2: templates on fractional (rzz) targets lose option A's extra pulses.** The release is
 > prototype c66 (item 103, Addendum 511; C66-VAL, Addendum 513): in `compile_template`, item 88's frame is applied by
 > segments, solved over GF(2), so a template still never changes its shape with the values, and on fractional targets

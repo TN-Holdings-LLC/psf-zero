@@ -1,6 +1,7 @@
 """Release checks for psf_compile 2026-10-16.2 (prototype c66: item 103, item 88's frame in a template by segments;
 C66-VAL, Addendum 513) and the AI front end a23 (Addendum 503), as installed: psf_compile.py at the repository root and
-benchmarks/psf_ai_compile.py. The prototype's validation (data/2026-10-16/c66_val/) and the release's bit-for-bit check
+benchmarks/psf_ai_compile.py. Since release 2026-10-17.1 (Addendum 517), 2026-10-16.2 is kept in
+patches/psf_compile_release_2026-10-16.2/psf_compile.py and these tests load it from there. The prototype's validation (data/2026-10-16/c66_val/) and the release's bit-for-bit check
 against it (patches/psf_compile_c66_2026-10-16/check_release.py) test the same code; these check that the installed
 file is the prototype with its switch removed (make_release.py), that it works from where it is installed, the
 release's scope, and item 103's promise on a fractional-gate target: exact, native, and the same shape for every value.
@@ -25,6 +26,7 @@ for p in (HERE, REPO):
         sys.path.insert(0, p)
 
 C66_DIR = os.path.join(REPO, "patches", "psf_compile_c66_2026-10-16")
+REL = os.path.join(REPO, "patches", "psf_compile_release_2026-10-16.2", "psf_compile.py")  # kept since 2026-10-17.1
 A23 = os.path.join(REPO, "patches", "psf_ai_compile_a23_2026-10-16", "psf_ai_compile.py")
 
 
@@ -40,7 +42,7 @@ def _load(path, name):
 @pytest.fixture(scope="module")
 def mods():
     with contextlib.redirect_stdout(io.StringIO()):
-        rel = _load(os.path.join(REPO, "psf_compile.py"), "psf_compile")
+        rel = _load(REL, "psf_compile")
         rel.WARN_WITHOUT_TARGET = False
         ai = _load(os.path.join(HERE, "psf_ai_compile.py"), "psf_ai_compile_release_test")
     return dict(rel=rel, ai=ai)
@@ -145,7 +147,7 @@ def _ring(n, layers, seed):
 
 
 def test_versions(mods):
-    assert mods["rel"].VERSION == "2026-10-16.2"  # current release
+    assert mods["rel"].VERSION == "2026-10-16.2"  # the kept release
     assert mods["ai"].AI_COMPILE_VERSION == "2026-10-16.a23"
 
 
@@ -154,7 +156,7 @@ def test_installed_files_are_the_prototypes(tmp_path):
     out = tmp_path / "psf_compile.py"
     subprocess.run([sys.executable, os.path.join(C66_DIR, "make_release.py"), os.path.join(C66_DIR, "psf_compile.py"),
                     str(out)], check=True, capture_output=True)
-    assert open(os.path.join(REPO, "psf_compile.py"), encoding="utf-8").read() == out.read_text(encoding="utf-8")
+    assert open(REL, encoding="utf-8").read() == out.read_text(encoding="utf-8")
     assert _code(os.path.join(HERE, "psf_ai_compile.py"), r'^AI_COMPILE_VERSION = .*$') == \
         _code(A23, r'^AI_COMPILE_VERSION = .*$')
 
