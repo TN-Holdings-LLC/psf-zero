@@ -1,0 +1,20 @@
+start 2026-10-17 16:39:25 CEST
+0325f0cdc761453e8641c164d89d2c0e9c79e97de33c516a7decf4fd697f37b2  rust/psfz/Cargo.toml
+d916420cba2e0962b95b23ad213d45f63440e6683ac3d6dd46c8646761f7adbb  rust/psfz/src/compile.rs
+ccfe1d9b4e32d953ca06edfd2dc4206e479413d1c82c245d44676b4cfd36d5f3  rust/psfz/src/device.rs
+3f5962e982ee4eafb8bc19bcac594288e4333ef90a759319645b4b1e4803b2b8  rust/psfz/src/json.rs
+05137a8292c0dcc6c58c3de25cdb353c3ac70f4fa09181ba9104bf12f61691ff  rust/psfz/src/kak.rs
+73cf540e2ca794502c87caf6e29979c96817ba606b81baeb641164a460c1f0f5  rust/psfz/src/linalg.rs
+2e34b56acb72c6b6325f0fdceb4eaf89acb1c48958c3ed4666b5622ab1888887  rust/psfz/src/main.rs
+ed69e6c5365ca6d73cd1218b9b66851a725c0be96fa446601eb0252ed8f45623  rust/psfz/src/place.rs
+b907d0deaf37b4ab0747243d361a4b35e1241de709c84ad2476844bec015630b  rust/psfz/src/qasm.rs
+81c74fd602073f8bd8d43dbf7b24a2107dada3327dad34a81d2b3f3328905aab  rust/psfz/target/release/psfz
+fc4cab4c5cc306e69161dfd2c8ecfa7a7b43736c50b60054a9f1f42ec3be23fb  psf_compile.py
+854b33029cf14726bf9fc93ea272d2cb77d4a75ec6b0cd0543450da5468cdc72  data/2026-10-17/psfz_val/psfz_val.py
+33b98a92ddce65282e4aaf12033f322f8ea547676d3435e8dc13e6919addd71a  data/2026-10-17/psfz_val/score_psfz_val.py
+0b3c4341123e78963c7d21290f73bf4db8e1d91199e461322aef06f360e34154  data/2026-10-17/psfz_val/PSFZ-VAL_preregistration.md
+qiskit 2.5.2 aer 0.17.2 runtime 0.49.0
+cargo 1.95.0 (f2d3ce0bd 2026-03-21)
+process b end 2026-10-17 17:03:38 CEST
+process a end 2026-10-17 17:04:53 CEST
+end 2026-10-17 17:04:53 CEST

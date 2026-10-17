@@ -5139,6 +5139,51 @@ the remaining 1.4%.
 **Not done:** that validation; graphs other than chains and rings; fractional gates; templates.
 
 
+## Addendum 520 -- PSFZ-VAL (pre-registered): psfz r3 is exact, native and deterministic on 2,860 of 2,860 inputs on 13 devices and compiles 27 x faster, but the owner's bar (never longer than release 2026-10-17.1) is refuted -- longer in 110 inputs, by up to 0.7% on the 8 unseen devices and up to 18.9% on FakeTorino's long chains (2026-10-17)
+
+**Status:** results of a pre-registered run. Nothing ran on a device. Times in CEST.
+
+**psfz r3** (commit `56803c6`): r2 plus blocks of several two-qubit rotations on one pair (with the single-qubit
+operations between them) multiplied into one 4 x 4 matrix and written by a Weyl (KAK) decomposition in closed form,
+in Rust with no outside crate (`rust/psfz/src/kak.rs`: magic basis, Jacobi on Re M and then on Im M within groups of
+equal eigenvalues; a block whose decomposition does not multiply back is written term by term), and a 2-CZ form for
+two rotation kinds. Built after a dry run of this validation's script showed r2 longer on a new Heisenberg chain (177
+two-qubit gates against 171), developed on other seeds and the development devices (disclosed in the
+pre-registration).
+
+**The run.** Pre-registration `data/2026-10-17/psfz_val/PSFZ-VAL_preregistration.md` (SHA-256 `0b3c4341...`, commit
+`56803c6`, fixed and given to the owner before the run; the design confirmed by the owner); the authors' cloud,
+2026-10-17 16:39:25-17:04:53; psfz built from its committed sources at the start (SHA-256 of sources and binary in
+the record). Record: [`data/2026-10-17/psfz_val/results/`](../../data/2026-10-17/psfz_val/results/) (`score.txt`).
+
+| ID | criterion | verdict | numbers |
+|---|---|---|---|
+| V1 | every input compiled | CONFIRMED | 2,860 of 2,860 |
+| V2 | native, no failed element | CONFIRMED | 0 failing |
+| V3 | exact where checked | CONFIRMED | 2,015 checked, largest difference 1.2e-14 |
+| V4 | the same output twice | CONFIRMED | 0 different |
+| V5 | **never longer than the release** | **REFUTED** | longer in 110 of 2,860; largest 1.189 x |
+| V6 | median compile time below the release's | CONFIRMED | 0.78 ms against 20.9 ms |
+
+**Where V5 fails** (the authors' expectation, stated before the run: refuted, on ECR Heisenberg inputs, by 0.1-0.2%):
+
+- **FakeTorino's long chains (seen device):** the Ising chain of 24 (1.189 x), the CX chain of 20 (1.112 x), GHZ of
+  20 (1.075 x), on every input. Not traced; the likely cause is placement: no piece of the snake on couplers of the
+  most common duration is long enough on FakeTorino, so psfz falls back to any working couplers, where the release's
+  VF2 finds a path of the common duration off the snake.
+- **ECR devices' Heisenberg tests** (Kyiv, Osaka, Kawasaki, Quebec, Brisbane, Sherbrooke): 55 inputs, up to 1.006 x;
+  psfz's duration does not depend on the angles, the release's sometimes saves a pulse.
+- **FakeQuebec's GHZ and CX chains of 12:** 22 inputs, up to 1.007 x. Not traced.
+- **Display:** duration 0.978 x the release's on the unseen devices and 0.982 x on the seen ones (geometric mean);
+  two-qubit gates 0.958 x. **Essential:** on the 8 unseen devices psfz was never more than 0.7% longer (64 of 1,760
+  inputs), and it was shorter or equal on the other 1,696.
+- **Reading:** psfz is correct everywhere it was checked and much faster to compile, but the owner's bar is not met.
+  It does not replace the release.
+
+**Next, if wanted:** placement of long chains off the snake by a formula (FakeTorino), and a closer look at the ECR
+Heisenberg and Quebec cases; then a new pre-registered validation on fresh draws.
+
+
 ---
 
 **End of Part 11 of 11 (end of document, for now).** Back to [Part 10](spare-qubit-cliff-combined-383.md), [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

@@ -1,0 +1,31 @@
+rows 2860 of 2860
+V1 every input compiled: 2860 of 2860; refused [] -> CONFIRMED
+V2 native, no failed element: failing 0 -> CONFIRMED
+V3 exact (1e-6) where checked: 2015 checked, largest 1.2047424535348772e-14, failing 0 -> CONFIRMED
+V4 the same output twice: failing 0 -> CONFIRMED
+V5 never longer than release 2026-10-17.1: longer in 110 of 2860 (the release refused 0); largest 1.1890; [('FakeTorino', 'tfim_chain_n24', -1, 1.189), ('FakeTorino', 'tfim_chain_n24', 0, 1.189), ('FakeTorino', 'tfim_chain_n24', 1, 1.189), ('FakeTorino', 'tfim_chain_n24', 2, 1.189), ('FakeTorino', 'tfim_chain_n24', 3, 1.189), ('FakeTorino', 'tfim_chain_n24', 4, 1.189), ('FakeTorino', 'tfim_chain_n24', 5, 1.189), ('FakeTorino', 'tfim_chain_n24', 6, 1.189)] -> REFUTED
+V6 compile time, median: psfz 0.783 ms, release 20.86 ms -> CONFIRMED
+
+Reported (unseen devices): duration over the release's -- geometric mean 0.9779, longer in 64 of 1760, largest 1.0070; two-qubit gates 0.9578
+Reported (seen devices, new draws): duration over the release's -- geometric mean 0.9820, longer in 46 of 1100, largest 1.1890; two-qubit gates 0.9578
+Per test (all devices): duration over the release's, geometric mean / largest / inputs longer
+  tfim_n12        0.9969 / 1.0000 / 0
+  tfim_n16        0.9969 / 1.0000 / 0
+  tfimP_n12       1.0000 / 1.0000 / 0
+  tfimP_n16       1.0000 / 1.0000 / 0
+  ghz_n12         0.9971 / 1.0070 / 11
+  chain_cz_n12    0.8801 / 0.9602 / 0
+  chain_cz_n16    0.8801 / 0.9602 / 0
+  cx_chain_n12    0.9980 / 1.0047 / 11
+  cx_chain_n16    0.9978 / 1.0000 / 0
+  ring12_tfim     1.0000 / 1.0000 / 0
+  heis_n12_r2     0.9834 / 1.0040 / 11
+  tfim_n20_r3     0.9964 / 1.0000 / 0
+  tfim_n40_r2     0.9940 / 1.0000 / 0
+  ring_cz_n12     0.8775 / 0.9602 / 0
+  tfim_chain_n24  1.0134 / 1.1890 / 11
+  tfim_ring_n28   0.9965 / 1.0000 / 0
+  heis_chain_n16  0.9925 / 1.0057 / 44
+  cz_ring_n20     1.0000 / 1.0000 / 0
+  cx_chain_n20    1.0064 / 1.1124 / 11
+  ghz_n20         1.0030 / 1.0745 / 11
