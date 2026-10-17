@@ -72,10 +72,18 @@ What these numbers are not:
 
 ## Current version
 
-**`psf_compile.py` 2026-10-16.1** and the AI front end **a23** (Part 11, Addenda 503-510). The changelog of
+**`psf_compile.py` 2026-10-16.2** and the AI front end **a23** (Part 11, Addenda 503-514). The changelog of
 `psf_compile` is [`docs/psf_compile_CHANGELOG.md`](docs/psf_compile_CHANGELOG.md). Every release and dated notice:
 [`docs/RELEASES.md`](docs/RELEASES.md).
 
+> **New in 2026-10-16.2: templates on fractional (rzz) targets lose option A's extra pulses.** The release is
+> prototype c66 (item 103, Addendum 511; C66-VAL, Addendum 513): in `compile_template`, item 88's frame is applied by
+> segments, solved over GF(2), so a template still never changes its shape with the values, and on fractional targets
+> it is now 0.81-1.00 x c62's median duration (option A in 2026-10-16.1: up to 1.21-1.35 x). Its default calls
+> (`compile_for_hardware`) and CZ targets are 2026-10-16.1's, bit for bit (49,590 inputs). One known exception to
+> "never above c62": a ring (a cycle) keeps option A's pinned form on its closing coupler, up to 1.05 x on 15 of 1,101
+> inputs (ring12_tfim). Not run on a device as a whole. 2026-10-16.1 is kept in `patches/psf_compile_release_2026-10-16.1/`.
+>
 > **New in 2026-10-16.1: no search and no check is left on the default path, and the file is a third of its size.**
 > The release is prototype c65 (Addenda 504-508): c63a (validated in C63-VAL and C63A-VAL), with the code its default
 > calls never reach removed by the workplace (c64: 9,240 lines to 3,045, the same output on 49,590 inputs), and
@@ -88,8 +96,9 @@ What these numbers are not:
 >   Only `target=`/`backend=`, `prune_max_error=` and `seed_transpiler=` are read; other options are ignored.
 > - **Time:** against 2026-10-14.1 + a18, the compile of the same circuits takes 0.023 x (C63-VAL's tests) and
 >   0.063 x (TOQB's ring circuits) per call (median, offline; Addendum 505).
-> - **Known cost (option A, Addendum 508):** in `compile_template` on fractional (rzz) targets, inputs whose signs
->   match the build's are up to 1.21-1.35 x c62's duration; on mixed signs the median is 1.000.
+> - **Known cost (option A, Addendum 508; removed in 2026-10-16.2):** in `compile_template` on fractional (rzz)
+>   targets, inputs whose signs match the build's are up to 1.21-1.35 x c62's duration; on mixed signs the median is
+>   1.000.
 > - Not run on a device as a whole.
 
 **Earlier: `psf_compile.py` 2026-10-14.1** and the AI front end **a18**, with `psf_smart_layout` 2026-10-01.1 and the

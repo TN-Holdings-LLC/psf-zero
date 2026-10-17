@@ -1,7 +1,10 @@
 # Prototype c66 (home, 2026-10-16): item 103, item 88's frame in a template by segments
 
 `make_c66.py` = release 2026-10-16.1 (`psf_compile.py`, c65) + `item103_frame_code.py` -> `psf_compile.py`.
-Not validated yet; not a release. `TEMPLATE_FRAME_SEGMENTS = False` gives back option A (c63a's template).
+**Validated in C66-VAL (Addendum 513) and released as 2026-10-16.2 (Addendum 514).** `make_release.py` makes the
+release from this prototype (docstring, version line, and the prototype switch `TEMPLATE_FRAME_SEGMENTS` removed: here,
+`False` gives back option A, c63a's template); `check_release.py` compares the installed release with this prototype,
+bit for bit, on C63-VAL's inputs (`check_release_result.txt`: 49,590 template binds and 2,090 default calls, 0 different).
 
 **Why.** Option A (kept by the owner, Addendum 508) fixes a template's shape by writing every negative rzz as
 X RZZ(|theta|) X with both runs pinned to the full form; on fractional targets, same-sign inputs then cost 1.15-1.35 x

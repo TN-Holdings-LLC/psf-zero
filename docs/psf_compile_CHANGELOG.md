@@ -1,6 +1,7 @@
-# psf_compile changelog (items 1-102)
+# psf_compile changelog (items 1-103)
 
-Release 2026-10-16.1 is prototype c65. Its module docstring is short; the changelog lives here.
+Release 2026-10-16.2 is prototype c66 (release 2026-10-16.1 = c65, plus item 103). Its module docstring is short; the
+changelog lives here.
 
 - **Items 1-101:** c63a's module docstring, moved unchanged by the workplace's c64 (below).
 - **c63a (W3 option A, 2026-10-15):** in a template, item 88's frame is fixed at build (`TEMPLATE_FRAME_FIXED`), so a
@@ -12,6 +13,14 @@ Release 2026-10-16.1 is prototype c65. Its module docstring is short; the change
 - **Item 102 (c65, 2026-10-16):** item 96's embedding test decides by formula before VF2: an odd cycle cannot embed
   in a bipartite device, nor a cycle shorter than the device's shortest; a path on the snake's longest working piece
   embeds; otherwise VF2. The same output, bit for bit; TOQB's ring circuits 11-12% faster (Addenda 504-505).
+- **Item 103 (c66, 2026-10-16; release 2026-10-16.2):** in a template, item 88's frame by segments. The non-diagonal
+  single-qubit runs ("anchors") cut each qubit's timeline into segments; conjugating an inner segment by X merges into
+  the anchors' runs and flips the sign of every rzz in it on that qubit. Which segments to conjugate so that every rzz
+  angle is positive is a GF(2) system (one equation per rzz), solved by a spanning forest found at build. An rzz on
+  basis states, or after the last anchors in a measured circuit, needs no sign; an rzz closing a cycle, or joining
+  two fixed segments, keeps option A's pinned form; folds are a Z frame carried to the next anchor. The template's
+  shape is fixed as in option A, without its pulses: on fractional targets 0.81-1.00 x c62's median duration
+  (C66-VAL, Addendum 513). Default calls and CZ targets unchanged, bit for bit.
 
 ---
 

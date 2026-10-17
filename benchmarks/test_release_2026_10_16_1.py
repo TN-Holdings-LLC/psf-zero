@@ -1,5 +1,7 @@
 """Release checks for psf_compile 2026-10-16.1 (prototype c65; C63-VAL and C63A-VAL, Addenda 505-508) and the AI
-front end a23 (Addendum 503), as installed: psf_compile.py at the repository root and benchmarks/psf_ai_compile.py.
+front end a23 (Addendum 503). Since release 2026-10-16.2 (Addendum 514), 2026-10-16.1 is kept in
+patches/psf_compile_release_2026-10-16.1/psf_compile.py and these tests load it from there; a23 is still
+benchmarks/psf_ai_compile.py.
 The prototypes' own checks (patches/psf_compile_c65_2026-10-16/check_c65.py, patches/psf_ai_compile_a23_2026-10-16/
 check_same_a22.py) test the same code; these check that the installed files are those prototypes, that they work from
 where they are installed, and the release's scope: what does not embed in the device is refused.
@@ -25,6 +27,7 @@ for p in (HERE, REPO):
 
 C65 = os.path.join(REPO, "patches", "psf_compile_c65_2026-10-16", "psf_compile.py")
 A23 = os.path.join(REPO, "patches", "psf_ai_compile_a23_2026-10-16", "psf_ai_compile.py")
+REL = os.path.join(REPO, "patches", "psf_compile_release_2026-10-16.1", "psf_compile.py")  # kept since 2026-10-16.2
 
 
 def _load(path, name):
@@ -39,7 +42,7 @@ def _load(path, name):
 @pytest.fixture(scope="module")
 def mods():
     with contextlib.redirect_stdout(io.StringIO()):
-        rel = _load(os.path.join(REPO, "psf_compile.py"), "psf_compile")
+        rel = _load(REL, "psf_compile")
         rel.WARN_WITHOUT_TARGET = False
         ai = _load(os.path.join(HERE, "psf_ai_compile.py"), "psf_ai_compile_release_test")
     return dict(rel=rel, ai=ai)
@@ -144,12 +147,12 @@ def _ring(n, layers, seed):
 
 
 def test_versions(mods):
-    assert mods["rel"].VERSION == "2026-10-16.1"  # current release
+    assert mods["rel"].VERSION == "2026-10-16.1"  # the kept release
     assert mods["ai"].AI_COMPILE_VERSION == "2026-10-16.a23"
 
 
 def test_installed_files_are_the_prototypes():
-    assert _code(os.path.join(REPO, "psf_compile.py"), r'^VERSION = .*$') == _code(C65, r'^VERSION = .*$')
+    assert _code(REL, r'^VERSION = .*$') == _code(C65, r'^VERSION = .*$')
     assert _code(os.path.join(HERE, "psf_ai_compile.py"), r'^AI_COMPILE_VERSION = .*$') == \
         _code(A23, r'^AI_COMPILE_VERSION = .*$')
 

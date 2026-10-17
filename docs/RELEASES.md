@@ -10,8 +10,11 @@ from this folder. The full record behind each entry is in Parts 9-11 of the find
 the earlier parts they link to. The README itself, as it was before the move, is kept as
 [`README_2026-10-05_before_restructure.md`](README_2026-10-05_before_restructure.md).
 
-> **In brief (as of 2026-10-16)**
+> **In brief (as of 2026-10-17)**
 >
+> 000. Release 2026-10-16.2 (prototype c66, item 103, Addenda 511-514): in `compile_template` on fractional targets,
+>      item 88's frame by segments (GF(2)); templates keep a fixed shape and are 0.81-1.00 x c62's median duration
+>      (option A: up to 1.21-1.35 x). Default calls and CZ targets are 2026-10-16.1's, bit for bit (C66-VAL).
 > 00. Release 2026-10-16.1 (prototype c65, Addenda 504-508; AI front end a23, Addendum 503): no search and no check on
 >     the default path. What embeds in a CZ device is built by formula; every other circuit, and every call without
 >     the device, is refused with `OutOfScopeError` (item 98; nothing is handed to Qiskit any more). The same output as
@@ -44,7 +47,27 @@ the earlier parts they link to. The README itself, as it was before the move, is
 > 6. The device layer has been tested only in noisy simulation on fake devices, not on hardware. (Since 2026-10-12 it
 >    has run on three real devices: HW1, HW2, TIME1, FRAC1; Addenda 455-488.)
 
-> **Current version (2026-10-16, first release): `psf_compile.py` 2026-10-16.1 and the AI front end a23**
+> **Current version (2026-10-17): `psf_compile.py` 2026-10-16.2 and the AI front end a23**
+> ([Part 11](findings/spare-qubit-cliff-combined-450.md), Addenda 511-514). The compiler is prototype c66
+> ([`patches/psf_compile_c66_2026-10-16/`](../patches/psf_compile_c66_2026-10-16/)) with its docstring and version
+> line changed and its prototype switch (`TEMPLATE_FRAME_SEGMENTS`, run at True in C66-VAL) removed, by
+> `make_release.py` there; `check_release.py` there found the installed file's templates and default calls equal to
+> c66's, bit for bit, on C63-VAL's inputs. 2026-10-16.1 is kept as
+> [`patches/psf_compile_release_2026-10-16.1/psf_compile.py`](../patches/psf_compile_release_2026-10-16.1/psf_compile.py).
+> The AI front end is unchanged (a23).
+>
+> - **Item 103:** the non-diagonal single-qubit runs cut each qubit into segments; conjugating an inner segment by X
+>   flips the signs of its rzz at no cost; which segments to conjugate is a GF(2) system solved by a spanning forest
+>   found at build. An rzz closing a cycle keeps option A's pinned form.
+> - **C66-VAL (pre-registered, Addendum 513):** C1-C6 confirmed: exact, native, no shape change in 190 cells and in
+>   100,000 binds, the default call equal to 2026-10-16.1's on 49,590 inputs and 29 refusals.
+> - **For users:** nothing changes in the calls; `compile_template` on fractional targets returns shorter circuits.
+> - **Known:** ring12_tfim F, 15 of 1,101 inputs up to 1.052 x c62 (a cycle's closing coupler); bind times on the
+>   Heisenberg cells 2.2-2.8 ms (interleaved, the owner's home machine).
+> - Tests: [`benchmarks/test_release_2026_10_16_2.py`](../benchmarks/test_release_2026_10_16_2.py); the 2026-10-16.1
+>   tests read the kept copy. Not run on a device as a whole.
+
+> **Previous release (2026-10-16, first release): `psf_compile.py` 2026-10-16.1 and the AI front end a23**
 > ([Part 11](findings/spare-qubit-cliff-combined-450.md), Addenda 503-510). The compiler is prototype c65
 > ([`patches/psf_compile_c65_2026-10-16/`](../patches/psf_compile_c65_2026-10-16/)) with its docstring and version line
 > changed; the AI front end is a23 ([`patches/psf_ai_compile_a23_2026-10-16/`](../patches/psf_ai_compile_a23_2026-10-16/))

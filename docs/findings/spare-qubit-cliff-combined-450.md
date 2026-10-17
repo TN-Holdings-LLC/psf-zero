@@ -4931,6 +4931,41 @@ the templates are now as short as c62's or shorter, without c62's (and option B'
 targets are bit for bit the release's. A release 2026-10-16.2 = c66 needs the owner's go-ahead.
 
 
+## Addendum 514 -- Release: psf_compile 2026-10-16.2 = prototype c66 (item 103): templates on fractional targets keep a fixed shape without option A's extra pulses; default calls and CZ targets unchanged, bit for bit (2026-10-17)
+
+**Status:** the owner's decision ("release", 2026-10-17 about 01:52 CEST), on Addendum 513. Nothing ran on a device.
+
+- **Installed:** `psf_compile.py` 2026-10-16.2 = prototype c66 made by
+  [`patches/psf_compile_c66_2026-10-16/make_release.py`](../../patches/psf_compile_c66_2026-10-16/make_release.py):
+  the module docstring, the version line, and the prototype switch `TEMPLATE_FRAME_SEGMENTS` (run at True in C66-VAL)
+  replaced by the assignment it made. Option A's `_T100Formula._frame_items` (48 lines) stays in the file but is no
+  longer called; a later clean-up could remove it. The AI front end is unchanged (a23).
+- **Kept:** 2026-10-16.1 as
+  [`patches/psf_compile_release_2026-10-16.1/psf_compile.py`](../../patches/psf_compile_release_2026-10-16.1/psf_compile.py)
+  (moved, unchanged); its tests (`benchmarks/test_release_2026_10_16_1.py`) now load it from there.
+- **The release is c66:** [`check_release.py`](../../patches/psf_compile_c66_2026-10-16/check_release.py) bound every
+  one of C63-VAL's 49,590 inputs through the installed file's templates and c66's: 0 different, bit for bit, and the
+  same rebuilt and switched counts (0); the default call on 2,090 of them (the build input and the first 10 draws of
+  every cell): 0 different. With C66-VAL's C5, the release's default calls are 2026-10-16.1's.
+- **Tests.** New [`benchmarks/test_release_2026_10_16_2.py`](../../benchmarks/test_release_2026_10_16_2.py) (8 tests:
+  versions; the installed file is `make_release.py`'s output from c66; GHZ exact and native on T and F; the refusals;
+  a23 on 6- and 12-qubit rings; and item 103 on a fractional target: one template of an 8-qubit TFIM chain bound with
+  same-sign and mixed-sign couplings, exact against the Trotter circuit, native, the build's shape every time, never
+  rebuilt or switched). All 57 earlier test files were run before and after
+  the change (Qiskit 2.5.2, the authors' cloud): the same result in every file (40 pass; the same 17 fail, error or
+  have no tests: GPU, TKET, device access, modules not installed here), and the new file passes.
+- **TOQB:** its default PSF-Zero loop arm (a22, template mode, FakeFez, CZ) gives the same circuits, bit for bit, on
+  2026-10-16.2 as on 2026-10-16.1 (ring models n = 6 and 12, L = 2 and 8, 50 angle sets each). TOQB's pre-registered
+  runs pin their files by SHA-256 and are not affected.
+- **For users:** nothing changes in the calls. `compile_template` on fractional (rzz) targets returns circuits
+  0.81-1.00 x c62's median duration (option A: up to 1.21-1.35 x); the known exception is a cycle's closing coupler
+  (ring12_tfim: 15 of 1,101 inputs, up to 1.052 x). Not run on a device as a whole.
+- **One correction during the work:** the new item-103 test first compared the template with the exact evolution of
+  the `PauliEvolutionGate` and failed (total variation 0.006-0.068); 2026-10-16.1's template and the default call gave
+  the same circuits, so the reference was wrong, not the compiler. The test compares with the Trotter circuit, as
+  C63-VAL does.
+
+
 ---
 
 **End of Part 11 of 11 (end of document, for now).** Back to [Part 10](spare-qubit-cliff-combined-383.md), [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
