@@ -5186,4 +5186,74 @@ Heisenberg and Quebec cases; then a new pre-registered validation on fresh draws
 
 ---
 
+<!-- ===== Addendum 521 ===== -->
+
+## Addendum 521 -- psfz r4 (exploratory): FakeTorino's long chains placed off the snake by a computed longest row-and-bridge path, and on ECR devices each CZ written in the ECR form that starts earliest; on PSFZ-VAL's 2,860 inputs (now seen) never longer than release 2026-10-17.1 and 0.96 x on the geometric mean -- a fresh pre-registered validation is needed before anything is claimed (2026-10-18)
+
+**Status:** exploratory. r4 was built by looking at PSFZ-VAL's failures (Addendum 520), and it was run on the same
+inputs; nothing here is a verdict. Nothing ran on a device. Times in CEST.
+
+**Why r3 was longer (traced, 2026-10-18).**
+
+- **FakeTorino's long chains.** 108 of its couplers take 68 ns and the rest 72-184 ns. No piece of the snake on 68 ns
+  couplers holds 20 or 24 qubits, so r3 fell back to a piece with couplers of 120, 160 and 164 ns (the Ising chain of
+  24: 3.624 us). The release's VF2 path, 0-12, 18, 31, 30, 29, 36, 48-43, is all 68 ns (3.048 us): it leaves row 1 by
+  a bridge in the middle, not at the row's end.
+- **ECR devices (Eagle).** Not placement: on FakeQuebec's GHZ of 12 the 54 windows and orientations of the longest
+  snake piece gave 8.576, 8.636 or 8.697 us, by the pattern of coupler directions (the counts of forward couplers
+  did not predict it); the release's VF2 path happened to be one of the shorter. The difference is one or two sx
+  pulses, left by item 104's single form for CZ on ECR (`[rz, sx, rz on y] ECR [sx, sx, rz on x; rz, sx, rz on y]`)
+  on the qubit that then waits.
+
+**r4** (`rust/psfz`, README's r4 paragraph):
+
+1. **Row-and-bridge paths** (`place::row_bridge_path`). The family: along a stretch of one row, across a bridge, along a
+   stretch of the next row in either direction, and so on downward; the snake is the member that always turns at the
+   row's end, and every member is a simple path. The longest member on couplers of the most common duration is
+   computed exactly, row by row from the bottom (the most qubits of a member entering row r at column c), in
+   O(rows x columns x bridges): a computation, not a search (nothing is matched and nothing backtracks). Order of use:
+   the snake's piece on common-duration couplers (unchanged), then this path on them, then the snake on every working
+   coupler, then this path on every working coupler. On FakeTorino it gives 2-12, 18, 31, 30, 29, 36, 48-41 for 24
+   qubits, all 68 ns.
+2. **The ECR form chosen per gate** (`compile::ecr_forms`, `compile::ecr_adaptive`). There are 64 forms
+   CZ = (A x B) ECR (C x D) with C and D single-qubit Cliffords (A and B follow; item 104's form is one of them;
+   unit test `ecr_forms_are_cz`). Each CZ, in program order, takes the form that lets its ECR start earliest given the
+   single-qubit runs pending on its two qubits as the final merge will run them (ties: fewer pulses after it, then
+   the first). This is a choice by a computed schedule, of the same kind as r2's rule for which qubit takes a form's
+   basis changes; nothing is revisited. On CZ devices the same idea changed nothing (tried on five FakeFez inputs:
+   no form saves a pulse there), so CZ devices are unchanged.
+
+**On PSFZ-VAL's inputs** (the same 2,860, the same script and scorer; record
+[`data/2026-10-18/psfz_r4/`](../../data/2026-10-18/psfz_r4/), whose README says which build made which rows and that
+both match the committed r4 on every input):
+
+| | r3 (Addendum 520) | r4 (exploratory) |
+|---|---|---|
+| compiled, native, no failed element, deterministic | 2,860 of 2,860 | 2,860 of 2,860 |
+| exact where checked (2,015) | largest 1.2e-14 | largest 1.5e-13 |
+| **longer than the release** | **110** (up to 1.189 x) | **0** |
+| duration over the release's, geometric mean (8 unseen / 5 seen devices) | 0.978 / 0.982 | 0.959 / 0.963 |
+| the same on CZ devices / ECR devices | | 0.989 (0.907-1.000) / 0.928 (0.795-1.000) |
+| two-qubit gates over the release's | 0.958 | 0.958 |
+| median compile time | 0.78 ms | 1.75 ms (release 20.6 ms) |
+
+r4 is shorter than or equal to r3 on every one of the 2,860 inputs (0.981 x on the geometric mean). On the FakeTorino
+chains it now equals the release (3.048, 4.020, 3.492 us); FakeQuebec's GHZ of 12 went from 8.636 to 7.730 us (the
+release: 8.576).
+
+- **Display:** never longer than the release on 2,860 inputs, 4% shorter on the geometric mean, 12 x faster to compile.
+- **Essential:** these inputs taught r4 its two changes, so the zero is not evidence; the ECR gain (7% on the
+  geometric mean, up to 20% on one input) is the larger finding and has not been seen on any input r4 was not built on.
+  Unseen fake devices with CZ or ECR (Qiskit IBM Runtime 0.49.0), on the 20 build inputs: FakeBrussels and
+  FakeStrasbourg (Eagle): psfz compiles all 20; FakeCusco: 18 (the two longest rings are refused by psfz and by the
+  release); FakeKyoto and FakeCairoV2: psfz and the release refuse all 20 (no working path long enough);
+  FakePeekskill (27 qubits): psfz cannot read its lattice ("a row is not joined to row 0") where the release compiles
+  -- a gap in psfz's scope; FakeBerlin, FakeMiami, FakeNighthawk and FakePrague: refused as not heavy-hex. So a
+  fresh validation has three unseen Eagles and can test CZ devices on new draws only.
+
+**Next, if wanted:** a new pre-registered validation (PSFZ-VAL2) on those unseen devices and new draws on the 13 known
+ones, its design confirmed by the owner before it is built.
+
+---
+
 **End of Part 11 of 11 (end of document, for now).** Back to [Part 10](spare-qubit-cliff-combined-383.md), [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

@@ -1,4 +1,4 @@
-# psfz -- PSF-Zero in Rust, prototype r3 (2026-10-17)
+# psfz -- PSF-Zero in Rust, prototype r4 (2026-10-18)
 
 A new compiler with a different structure from `psf_compile.py`: one Rust program, no outside crate, no Qiskit. It reads
 a gate-level OpenQASM 3 circuit and a device file (JSON), and writes OpenQASM 3 on the device's qubits with the
@@ -6,7 +6,7 @@ device's gates only (rz, sx, x and cz on IBM Heron; ecr on IBM Eagle). The owner
 chains and rings only; OpenQASM in and out; placement by the lattice's coordinates only (no VF2); judged by
 exactness and by duration against release 2026-10-17.1.
 
-**No search, no estimate.** Placement: the heavy-hex lattice is read as rows, column offsets and bridges; a chain goes
+**No search, no estimate** (r1-r3; r4 adds a computed longest path and a per-gate choice of the ECR form, below). Placement: the heavy-hex lattice is read as rows, column offsets and bridges; a chain goes
 on the longest working piece of the snake (centred), a ring on the boundary of a band of hexagons; candidates come in
 a fixed order and the first whose qubits and couplers all work (first among couplers of the most common duration) is
 used. Nothing is scored, matched or simulated. Every rewrite (diagonal gates as ZZ and phases, ZZ on CZ, the 3-CZ
@@ -26,7 +26,18 @@ pair takes a form's basis changes; on the exploratory set, longer than release 2
 block, multiplied out and written by a Weyl (KAK) decomposition in closed form (`src/kak.rs`, no outside crate),
 3 CZ at most (2 for two rotation kinds); validated in PSFZ-VAL (`data/2026-10-17/psfz_val/`).
 
-**Scope (r1-r3):** every qubit in one chain or one even ring of two-qubit gates; gates id x y z h s sdg t tdg sx sxdg rx
+**r4 (Addendum 521):** two changes, both found on PSFZ-VAL's inputs (so exploratory until a fresh validation).
+(1) A chain whose snake has no long enough piece on couplers of the most common duration goes on the longest
+*row-and-bridge path* on them (`place::row_bridge_path`): along a stretch of a row, across a bridge, along a stretch of
+the next row in either direction, and so on; the snake is the member that always turns at the row's end. The longest
+member is computed exactly, row by row (dynamic programming over columns and bridges), not searched for; inputs whose
+snake suffices are placed as before. (2) On ECR devices each CZ becomes an ECR in one of the 64 forms
+CZ = (A x B) ECR (C x D) with C and D single-qubit Cliffords (`compile::ecr_forms`), the one that lets the ECR start
+earliest given what is pending on its two qubits (`compile::ecr_adaptive`; ties: fewer pulses after it), one gate at a
+time in program order. This is a choice by a computed schedule, as r2's rule for a form's basis changes already was;
+nothing is revisited. On PSFZ-VAL's 2,860 inputs: never longer than release 2026-10-17.1, 0.96 x on the geometric mean.
+
+**Scope (r1-r4):** every qubit in one chain or one even ring of two-qubit gates; gates id x y z h s sdg t tdg sx sxdg rx
 ry rz p u1 u2 u3 u, cx cz cp crz rzz rxx ryy; measurements only at the end. Not yet: other graphs, fractional
 gates (rzz/rx natives), templates, mid-circuit measurement.
 

@@ -525,8 +525,113 @@ impl<'a> Track<'a> {
     }
 }
 
+/// r4: the forms CZ(x, y) = (A on x, B on y) ECR(x, y) (C on x, D on y), up to a global phase, with C and D
+/// single-qubit Cliffords: 64 of them (A and B follow from C and D). Built in a fixed order: the 24 Cliffords by
+/// closure under H and S, then every (C, D) whose CZ (ECR (C x D))^dag is a product A x B. Item 104's form is one
+/// way of writing one of them; tested in `ecr_forms_are_cz`.
+fn ecr_forms() -> Vec<(M2, M2, M2, M2)> {
+    use crate::kak::{dag4, eq4, id4, kron, mul4, M4};
+    let mut cl: Vec<M2> = vec![eye()];
+    let mut i = 0;
+    while i < cl.len() {
+        for g in [h(), phase(PI / 2.0)] {
+            let n = mul2(&g, &cl[i]);
+            if !cl.iter().any(|m| eq_phase(m, &n, 1e-9)) {
+                cl.push(n);
+            }
+        }
+        i += 1;
+    }
+    // Qiskit's ECRGate on (x, y), x the high bit of the index
+    let r = 1.0 / 2f64.sqrt();
+    let q = [
+        [ZERO, C::new(r, 0.0), ZERO, C::new(0.0, r)],
+        [C::new(r, 0.0), ZERO, C::new(0.0, -r), ZERO],
+        [ZERO, C::new(0.0, r), ZERO, C::new(r, 0.0)],
+        [C::new(0.0, -r), ZERO, C::new(r, 0.0), ZERO],
+    ];
+    let p = [0usize, 2, 1, 3];
+    let mut ecr: M4 = [[ZERO; 4]; 4];
+    for i in 0..4 {
+        for j in 0..4 {
+            ecr[p[i]][p[j]] = q[i][j];
+        }
+    }
+    let mut cz: M4 = id4();
+    cz[3][3] = C::new(-1.0, 0.0);
+    let mut out = Vec::new();
+    for c_ in &cl {
+        for d_ in &cl {
+            let m = mul4(&cz, &dag4(&mul4(&ecr, &kron(c_, d_))));
+            // m = A (x) B read from the rows and columns through its largest entry
+            let (mut bi, mut bj) = (0, 0);
+            for i in 0..4 {
+                for j in 0..4 {
+                    if m[i][j].abs() > m[bi][bj].abs() {
+                        bi = i;
+                        bj = j;
+                    }
+                }
+            }
+            let (yi, yj, xi, xj) = (bi & 1, bj & 1, bi >> 1, bj >> 1);
+            let am: M2 = [m[yi][yj], m[yi][2 + yj], m[2 + yi][yj], m[2 + yi][2 + yj]];
+            let bm: M2 = [m[2 * xi][2 * xj], m[2 * xi][2 * xj + 1], m[2 * xi + 1][2 * xj], m[2 * xi + 1][2 * xj + 1]];
+            if eq4(&kron(&am, &bm), &m, 1e-9) {
+                let unit = |u: &M2| u.map(|z| z.scale(1.0 / (u[0] * u[3] - u[1] * u[2]).abs().sqrt()));
+                out.push((unit(&am), unit(&bm), *c_, *d_));
+            }
+        }
+    }
+    out
+}
+
+/// r4: each CZ of the CZ-level list becomes an ECR in the form (of `ecr_forms`) that lets the ECR start earliest,
+/// given the single-qubit runs pending on its two qubits as the final merge will run them; ties: fewer pulses after
+/// it, then the earlier form. One gate at a time, in program order, nothing revisited. (Release 2026-10-17.1 and
+/// psfz r1-r3 use item 104's form for every CZ; in the exploratory comparison of 2026-10-18 the extra pulse it leaves
+/// on one qubit was what made psfz longer than the release on some Eagle inputs.)
+fn ecr_adaptive(d: &Device, nat: Vec<Nat>) -> Vec<Nat> {
+    let forms = ecr_forms();
+    let mut tr = Track { d, clock: BTreeMap::new(), pend: BTreeMap::new() };
+    let mut e = Vec::new();
+    let after = |tr: &Track, q: usize, u: &M2| -> f64 {
+        let cur = tr.pend.get(&q).copied().unwrap_or_else(eye);
+        tr.clock.get(&q).copied().unwrap_or(0.0) + pulses(&mul2(u, &cur)) as f64 * d.sx_dur.get(q).copied().unwrap_or(0.0)
+    };
+    for op in nat {
+        match op {
+            Nat::Two(_, a, b) => {
+                let (x_, y_) = if d.couplers.contains_key(&(a, b)) { (a, b) } else { (b, a) };
+                let mut best: Option<(f64, usize, usize)> = None;
+                for (i, (am, bm, cm, dm)) in forms.iter().enumerate() {
+                    let s = after(&tr, x_, cm).max(after(&tr, y_, dm));
+                    let post = pulses(am) + pulses(bm);
+                    let better = match best {
+                        None => true,
+                        Some((bs, bp, _)) => s < bs - 1e-15 || ((s - bs).abs() <= 1e-15 && post < bp),
+                    };
+                    if better {
+                        best = Some((s, post, i));
+                    }
+                }
+                let (am, bm, cm, dm) = forms[best.unwrap().2];
+                for o in [Nat::U(x_, cm), Nat::U(y_, dm), Nat::Two("ecr", x_, y_), Nat::U(x_, am), Nat::U(y_, bm)] {
+                    tr.apply(&o);
+                    e.push(o);
+                }
+            }
+            u => {
+                tr.apply(&u);
+                e.push(u);
+            }
+        }
+    }
+    e
+}
+
 /// Item 104's form: CZ(x, y) = [rz(3pi/4), sx, rz(pi/2) on y] ECR(x, y) [sx, sx, rz(-pi/2) on x; rz(pi/2), sx,
-/// rz(-pi/4) on y], up to a global phase.
+/// rz(-pi/4) on y], up to a global phase. (r4: kept for its test; the compiler now chooses among `ecr_forms`.)
+#[cfg(test)]
 fn cz_as_ecr(x_: usize, y_: usize, out: &mut Vec<Nat>) {
     out.push(Nat::U(y_, rz(3.0 * PI / 4.0)));
     out.push(Nat::U(y_, sx()));
@@ -646,20 +751,7 @@ pub fn compile(c: &Circuit, d: &Device, l: &Lattice) -> Result<Output, String> {
         }
     }
     if d.gate2 == "ecr" {
-        let mut e = Vec::new();
-        for op in nat {
-            match op {
-                Nat::Two(_, a, b) => {
-                    if d.couplers.contains_key(&(a, b)) {
-                        cz_as_ecr(a, b, &mut e)
-                    } else {
-                        cz_as_ecr(b, a, &mut e)
-                    }
-                }
-                u => e.push(u),
-            }
-        }
-        nat = e;
+        nat = ecr_adaptive(d, nat);
     } else {
         nat = nat
             .into_iter()
@@ -898,6 +990,16 @@ mod tests {
         let mut v = Vec::new();
         cz_as_ecr(0, 1, &mut v);
         assert!(eq4(&mat(&v), &cz4()));
+    }
+
+    #[test]
+    fn ecr_forms_are_cz() {
+        let f = ecr_forms();
+        assert_eq!(f.len(), 64);
+        for (am, bm, cm, dm) in f {
+            let v = vec![Nat::U(0, cm), Nat::U(1, dm), Nat::Two("ecr", 0, 1), Nat::U(0, am), Nat::U(1, bm)];
+            assert!(eq4(&mat(&v), &cz4()));
+        }
     }
 
     #[test]
