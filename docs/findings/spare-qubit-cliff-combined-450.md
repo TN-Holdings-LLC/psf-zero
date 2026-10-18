@@ -5345,4 +5345,48 @@ before starting (`benchmarks/check_core_build.py`); start detached (`setsid nohu
 
 ---
 
+<!-- ===== Addendum 524 ===== -->
+
+## Addendum 524 -- C68-VAL (pre-registered): prototype c68 (item 105, chains and rings by psfz r4) meets every criterion -- on 4,400 inputs psfz's own output where psfz takes the input (3,498), release 2026-10-17.1 bit for bit elsewhere (902) and on every input without the psfz program, exact, native, deterministic, never longer; 0.956 x the release's duration where psfz is used (2026-10-18)
+
+**Status:** results of a pre-registered run. Nothing ran on a device. Times in CEST.
+
+**Prototype c68** (`patches/psf_compile_c68_2026-10-18/`, commit `254b3de`): release 2026-10-17.1 + item 105. The
+default call hands the circuit to psfz r4's program (a separate process, found by `$PSFZ_BIN` or under
+`rust/psfz/target/release/`) and returns its output, with a TranspileLayout, when psfz compiles it and reports r4;
+in every other case (no program, another version, psfz refuses, an option given) the call is the release's path.
+The owner's decisions (about 03:59): automatically for chains and rings, psfz's output as it is, prototype and
+pre-registered validation before a release. Tried before the pre-registration on four build inputs (FakeTorino's
+Ising chain of 24: 3.048 us as the release; FakeQuebec's GHZ of 12: 7.730 against 8.576 us; FakeFez's Heisenberg ring
+of 12: 17.748 against 18.180 us; a 4-qubit star: refused by psfz, the release's output bit for bit).
+
+**The run.** Pre-registration `data/2026-10-18/c68_val/C68-VAL_preregistration.md` (SHA-256 `4e5c55c0...`, commit
+`b52d64a`, fixed and given to the owner at 04:04; the design confirmed by the owner at about 04:01); the authors'
+cloud, 04:04:54-04:41:41; psfz built from its sources at the start. Record:
+[`data/2026-10-18/c68_val/results/`](../../data/2026-10-18/c68_val/results/) (`score.txt`).
+
+| ID | criterion | verdict | numbers |
+|---|---|---|---|
+| G1 | psfz's inputs get psfz's own output | CONFIRMED | 3,498 inputs, 0 failing |
+| G2 | every other input: the release's output or refusal, bit for bit | CONFIRMED | 902 inputs (22 refused by both), 0 failing |
+| G3 | psfz's outputs native, no failed element, exact where checked | CONFIRMED | 2,480 checked, largest difference 3.9e-14 |
+| G4 | **never longer than the release**, never refusing what it compiles | **CONFIRMED** | 4,378 compared, 0 longer |
+| G5 | without the psfz program, the release bit for bit | CONFIRMED | 0 failing |
+| G6 | the same output twice | CONFIRMED | 0 failing |
+
+The authors' expectation held: psfz took the 20 chain and ring tests (FakeCusco's two longest rings excepted: both
+refuse them) and refused the five heavy-hex graph tests, which went to the release's path unchanged.
+
+- **Display:** where psfz was used, 0.956 x the release's duration (geometric mean), shorter on 2,276 and equal on
+  1,222 inputs; over every compared input 0.992 x on Heron (CZ) and 0.944 x on Eagle (ECR). Median compile time 22.3
+  ms against the release's 24.2 ms (19.0 ms where psfz was used: writing the circuit as OpenQASM 3 and starting the
+  program cost more than psfz itself, whose median in PSFZ-VAL2 was 3.4 ms).
+- **Essential:** item 105 changes the output only where psfz compiles the circuit, and there it was never longer and
+  always exact where checked; everywhere else, and wherever the psfz program is missing, the output is the release's
+  bit for bit. What c68 adds is the psfz program as a dependency (built from `rust/psfz`, no network), and a slower
+  call on circuits psfz refuses (it tries psfz first).
+- **Next:** per the owner's plan, the release (2026-10-18.1), Addendum 525.
+
+---
+
 **End of Part 11 of 11 (end of document, for now).** Back to [Part 10](spare-qubit-cliff-combined-383.md), [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
