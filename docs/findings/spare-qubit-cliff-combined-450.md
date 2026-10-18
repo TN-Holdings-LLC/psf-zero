@@ -5256,4 +5256,51 @@ ones, its design confirmed by the owner before it is built.
 
 ---
 
+<!-- ===== Addendum 522 ===== -->
+
+## Addendum 522 -- PSFZ-VAL2 (pre-registered): psfz r4 meets every criterion, the owner's strict bar included -- on 3,238 inputs (3 unseen Eagles and new draws on 13 known devices) never longer than release 2026-10-17.1, exact, native and deterministic; 0.956 x the release's duration on the geometric mean, 0.937 x on the unseen Eagles (2026-10-18)
+
+**Status:** results of a pre-registered run. Nothing ran on a device. Times in CEST.
+
+**The run.** Pre-registration `data/2026-10-18/psfz_val2/PSFZ-VAL2_preregistration.md` (SHA-256 `486a0f38...`, commit
+`7fa5bd8`, fixed and given to the owner at 03:13 before the run; the design confirmed by the owner at about 03:05);
+psfz r4 as of commit `4a5768f` (Addendum 521), built from its sources at the start (SHA-256 of sources and binary in
+the record); the authors' cloud, 2026-10-18 03:13:23-03:37:45. Record:
+[`data/2026-10-18/psfz_val2/results/`](../../data/2026-10-18/psfz_val2/results/) (`score.txt`).
+
+| ID | criterion | verdict | numbers |
+|---|---|---|---|
+| V1 | every input compiled | CONFIRMED | 3,238 of 3,238 |
+| V2 | native, no failed element | CONFIRMED | 0 failing |
+| V3 | exact where checked | CONFIRMED | 2,259 checked, largest difference 5.0e-13 |
+| V4 | the same output twice | CONFIRMED | 0 different |
+| V5 | **never longer than the release** | **CONFIRMED** | longer in 0 of 3,238 (the release refused none) |
+| V6 | median compile time below the release's | CONFIRMED | 3.4 ms against 20.7 ms |
+
+The authors' expectation (V1-V6 confirmed; V5 less sure on the unseen Eagles) held.
+
+**Reported** (duration over the release's):
+
+| devices | inputs | geometric mean | shorter / equal / longer | best |
+|---|---|---|---|---|
+| unseen Eagles (FakeBrussels 0.931, FakeStrasbourg 0.931, FakeCusco 0.950) | 638 | 0.937 | 605 / 33 / 0 | 0.810 |
+| known Eagles, new draws | 1,200 | 0.928 | 1,140 / 60 / 0 | 0.795 |
+| known Herons (CZ), new draws | 1,400 | 0.989 | 380 / 1,020 / 0 | 0.907 |
+| all | 3,238 | 0.956 | 2,125 / 1,113 / 0 | |
+
+Two-qubit gates: 0.956 x (unseen) and 0.958 x (known) the release's. By test the geometric mean runs from 0.868 (the
+CZ ring and chains) to 1.000 (the CZ ring of 20).
+
+- **Display:** never longer than the release on 3,238 inputs on 16 devices; 4.4% shorter on the geometric mean, 6.3%
+  on the unseen Eagles; about 6 x faster to compile (r4's form choice made it slower than r3's 27 x).
+- **Essential:** the owner's bar holds where it was tested: chains and rings of 12-40 qubits from 20 test families on
+  IBM heavy-hex fakes. On Heron (CZ) the gain is small (1.1%) and r4 equals the release on 73% of inputs; on Eagle
+  (ECR) it is 6-7%, from the per-gate choice of the CZ-on-ECR form (Addendum 521). Not tested: other graphs (psfz
+  refuses them), FakePeekskill's 27-qubit lattice (psfz cannot read it), real devices, and whether shorter schedules
+  give better results on hardware.
+- **Reading:** for its scope psfz r4 now replaces the release's chain and ring path by the owner's bar, with a
+  smaller and faster program. Whether to ship it (a release, or a call from `psf_compile.py`) is the owner's decision.
+
+---
+
 **End of Part 11 of 11 (end of document, for now).** Back to [Part 10](spare-qubit-cliff-combined-383.md), [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
