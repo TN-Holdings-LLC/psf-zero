@@ -5303,4 +5303,46 @@ CZ ring and chains) to 1.000 (the CZ ring of 20).
 
 ---
 
+<!-- ===== Addendum 523 ===== -->
+
+## Addendum 523 -- TOQB S2R stage 0 (pre-registered, in simulation): choosing parameter vectors in a simulator and sending only the best to a mismatched stand-in device beats device-only SPSA by 0.23-0.24 test accuracy for the same $192 (confirmed); whether PSF-Zero's circuits add to that is not decided (+0.015, p = 0.21; ranking agreement +0.036, p = 0.043) -- stage 1 is not proposed (2026-10-18)
+
+**Status:** results of a run pre-registered in TOQB (`prereg/2026-10-17-s2r-stage0.md`, SHA-256 `9fa868b7...`, TOQB
+commit `2ee90c8`, its `run.sh` fixed in `133be56`). Nothing ran on a device: the "device" is a stand-in, ibm_marrakesh's
+calibration with T1/T2 x U[0.7, 1.3], a 1% over-rotation of sx and x, and a 10 kHz static ZZ (the magnitudes the owner
+confirmed), simulated by Aer. Record: TOQB `results/s2r-stage0-2026-10-17/` (commit `d388841`; its README gives the
+run's history). Times in CEST.
+
+| ID | prediction | verdict | numbers (20 seeds, one-sided sign-flip test, alpha 0.01) |
+|---|---|---|---|
+| S1 | every run valid | CONFIRMED | 80 of 80 |
+| S2 | (primary) with S2R, PSF-Zero's model more accurate on the stand-in than Qiskit level 2's | NOT DECIDED | 0.727 against 0.712; +0.015 (95% -0.020 to 0.050), 11 better / 2 equal / 7 worse, p = 0.21 |
+| S3 | the simulator's ranking of the 16 candidates agrees better with the stand-in's for PSF-Zero | NOT DECIDED | Spearman 0.371 against 0.336; +0.036 (-0.003 to 0.074), 13 / 0 / 7, p = 0.043 |
+| S4 | S2R beats device-only SPSA at $192, each compiler | CONFIRMED | PSF-Zero 0.727 against 0.496 (18 / 0 / 2, p = 1.6e-5); Qiskit 0.712 against 0.470 (20 / 0 / 0, p = 9.5e-7) |
+
+The authors' expectation (S1 and S4 confirmed, S2 and S3 open, NOT DECIDED likely) held.
+
+- **Display:** for the same $192 of (simulated) device time, the simulator-guided loop reaches 0.71-0.73 test
+  accuracy on the stand-in, device-only SPSA 0.47-0.50; PSF-Zero's model is the more accurate on average.
+- **Essential:** the S2R method works in this simulation; PSF-Zero's share in it is not shown. Its mean lead is 1.5
+  points with 7 of 20 seeds worse, two of them by 0.12-0.16 where training itself stalled (the simulator's own test
+  accuracy was as low), not where simulator and stand-in disagreed. Both compilers had six loops for the money
+  (per-circuit charge and shots dominate the price), so circuit length could only act through noise, and here that
+  did not separate them. Per the pre-registration, stage 1 (N = 100,000 on a rented GPU) is not proposed.
+
+**How the run went (deviations, recorded in TOQB's README):** started on the owner's home PC with ten processes at
+2026-10-17 07:39; the PC froze under the load at about 18:00 with 30 of 80 runs complete (the pre-registration's
+7-8 hours was wrong: about 25 were needed); resumed on a rented pod under the interruption rule
+(`prereg/s2r-stage0-2026-10-17/resume.sh`, TOQB `da98f90`); the pod's first resume ran without PSF-Zero's Rust core
+built, so its 25 PSF-Zero runs stopped at import and were run again into a second folder after building it (the same
+CORE_VERSION as at home). The 80 scored records: 30 from the home PC, 50 from the pod, all with the pre-registered
+code, plans and versions. The 15 complete seeds were looked at once before the end at the owner's question (S2
++0.022, S3 +0.042), when nothing could change any more.
+
+**Lessons for the next heavy run:** estimate time from a timed run on the target machine, not the cloud; use a pod
+for anything that would load the home PC, as the owner had asked; build and check PSF-Zero's core on a fresh machine
+before starting (`benchmarks/check_core_build.py`); start detached (`setsid nohup`).
+
+---
+
 **End of Part 11 of 11 (end of document, for now).** Back to [Part 10](spare-qubit-cliff-combined-383.md), [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).
