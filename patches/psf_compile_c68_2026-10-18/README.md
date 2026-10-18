@@ -1,7 +1,7 @@
 # Prototype c68 (2026-10-18): item 105, chains and rings by psfz r4
 
 `make_c68.py` = release 2026-10-17.1 (`psf_compile.py`) + `item105_psfz_code.py` -> `psf_compile.py` (the version
-line changed to 2026-10-18.c68). Not validated yet; not released.
+line changed to 2026-10-18.c68). Validated in C68-VAL (Addendum 524); released as 2026-10-18.1 (Addendum 525): `make_release.py` changes the docstring, the version line and item 105's heading; `check_release.py` compares the installed release with this prototype on C68-VAL's 4,400 inputs, with and without the psfz program (`check_release_result.txt`).
 
 **Why.** psfz r4 (`rust/psfz/`, Addenda 518-522) met the owner's bar in PSFZ-VAL2 (Addendum 522): on 3,238 chain and
 ring inputs exact, native, deterministic and never longer than release 2026-10-17.1, 0.956 x its duration on the

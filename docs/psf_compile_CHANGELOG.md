@@ -1,7 +1,7 @@
-# psf_compile changelog (items 1-104)
+# psf_compile changelog (items 1-105)
 
-Release 2026-10-17.1 is prototype c67 (release 2026-10-16.2 = c66, plus item 104; option A's unreachable code
-removed). Its module docstring is short; the
+Release 2026-10-18.1 is prototype c68 (release 2026-10-17.1 = c67, plus item 105). Release 2026-10-17.1 was prototype
+c67 (release 2026-10-16.2 = c66, plus item 104; option A's unreachable code removed). Its module docstring is short; the
 changelog lives here.
 
 - **Items 1-101:** c63a's module docstring, moved unchanged by the workplace's c64 (below).
@@ -27,6 +27,14 @@ changelog lives here.
   of the device (CZ on every ECR coupler, with its error and duration), writes every CZ as the coupler's ECR in its
   direction, and merges the single-qubit runs into rz, sx and x. Templates on ECR devices are refused. C67-VAL
   (Addendum 516): every criterion confirmed; 0.31 x Qiskit level 3's duration (geometric mean), at most 1.072 x.
+- **Item 105 (c68, 2026-10-18; release 2026-10-18.1):** chains and even rings by psfz r4, PSF-Zero's compiler in Rust
+  (`rust/psfz/`, Addenda 518-522; PSFZ-VAL2: 3,238 inputs exact and never longer than 2026-10-17.1). The default call
+  (no option but `seed_transpiler` and the default `prune_max_error`) first writes the circuit as gate-level OpenQASM 3
+  and runs psfz's program (`$PSFZ_BIN`, else `rust/psfz/target/release/psfz`); when psfz compiles it and reports r4,
+  its output is returned with a TranspileLayout (the global phase is not carried). In every other case the call is
+  2026-10-17.1's. `PSFZ105 = False` turns it off; counts in `PSFZ105_STATS`. C68-VAL (Addendum 524): psfz's own
+  output on 3,498 of 4,400 inputs, 2026-10-17.1's bit for bit on the rest and on every input without the program,
+  never longer; 0.956 x 2026-10-17.1's duration where psfz is used.
 
 ---
 

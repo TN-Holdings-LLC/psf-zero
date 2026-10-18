@@ -1,0 +1,1 @@
+release 2026-10-18.1 against prototype 2026-10-18.c68: 4400 inputs; the same output (or refusal) with the psfz program 4400 of 4400 (psfz used on 3498); without it 4400 of 4400

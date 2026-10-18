@@ -1,0 +1,17 @@
+FakeAachen 275 275 275
+FakeBoston 550 550 550
+FakeKingston 825 825 825
+FakePittsburgh 1100 1100 1100
+FakeFez 1375 1375 1375
+FakeMarrakesh 1650 1650 1650
+FakeTorino 1925 1925 1925
+FakeCusco 2200 2200 2200
+FakeBrussels 2475 2475 2475
+FakeStrasbourg 2750 2750 2750
+FakeKyiv 3025 3025 3025
+FakeOsaka 3300 3300 3300
+FakeKawasaki 3575 3575 3575
+FakeQuebec 3850 3850 3850
+FakeSherbrooke 4125 4125 4125
+FakeBrisbane 4400 4400 4400
+release 2026-10-18.1 against prototype 2026-10-18.c68: 4400 inputs; the same output (or refusal) with the psfz program 4400 of 4400 (psfz used on 3498); without it 4400 of 4400

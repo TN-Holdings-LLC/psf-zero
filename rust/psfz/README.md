@@ -1,5 +1,10 @@
 # psfz -- PSF-Zero in Rust, prototype r4 (2026-10-18)
 
+**Used by `psf_compile.py` since release 2026-10-18.1 (item 105, Addendum 525):** the default call runs this program
+on every circuit first and returns its output when it compiles the circuit. Build it once with
+`cargo build --release` here; `psf_compile.py` finds `target/release/psfz` (or `$PSFZ_BIN`). Validated in PSFZ-VAL2
+(Addendum 522) and, through `psf_compile.py`, in C68-VAL (Addendum 524).
+
 A new compiler with a different structure from `psf_compile.py`: one Rust program, no outside crate, no Qiskit. It reads
 a gate-level OpenQASM 3 circuit and a device file (JSON), and writes OpenQASM 3 on the device's qubits with the
 device's gates only (rz, sx, x and cz on IBM Heron; ecr on IBM Eagle). The owner's decisions (2026-10-17, Addendum 518):

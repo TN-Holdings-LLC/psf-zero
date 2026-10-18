@@ -11,7 +11,7 @@
 PSF-Zero is a Qiskit-compatible compiler that builds circuits for a device by formula, with no search.
 
 - **`compile_for_hardware()` and `compile_template()`: compilation for a device.** Since 2026-10-16.1, given the
-  device's `Target` (a CZ device: IBM Heron; since 2026-10-17.1 also an ECR device, IBM Eagle, for the default call), it builds by formula every circuit whose two-qubit interaction graph
+  device's `Target` (a CZ device: IBM Heron; since 2026-10-17.1 also an ECR device, IBM Eagle, for the default call; since 2026-10-18.1 chains and rings through psfz, its Rust compiler, when built), it builds by formula every circuit whose two-qubit interaction graph
   embeds in the device: chains, lattices and embeddable graphs, in a time-aware order, with IBM's native rzz where
   offered. **Every other circuit, and every call without the device, is refused with `OutOfScopeError`:** compile
   those with Qiskit yourself (until 2026-10-14.1 they were handed to Qiskit's level 3; the owner closed that path,
@@ -72,10 +72,20 @@ What these numbers are not:
 
 ## Current version
 
-**`psf_compile.py` 2026-10-17.1** and the AI front end **a23** (Part 11, Addenda 503-517). The changelog of
+**`psf_compile.py` 2026-10-18.1** and the AI front end **a23** (Part 11, Addenda 503-525). The changelog of
 `psf_compile` is [`docs/psf_compile_CHANGELOG.md`](docs/psf_compile_CHANGELOG.md). Every release and dated notice:
 [`docs/RELEASES.md`](docs/RELEASES.md).
 
+> **New in 2026-10-18.1: chains and rings go through psfz, PSF-Zero's compiler in Rust.** The release is prototype
+> c68 (item 105, Addendum 524; C68-VAL): `compile_for_hardware` first hands the circuit to psfz r4 (`rust/psfz/`, a
+> separate program, Addendum 522), and returns its output when psfz compiles it -- circuits whose two-qubit graph is
+> one chain or one even ring, on heavy-hex CZ (Heron) and ECR (Eagle) devices. In C68-VAL (16 devices, 4,400 inputs)
+> psfz took 3,498 inputs: never longer than 2026-10-17.1, exact where checked, 0.956 x its duration (geometric mean;
+> 0.944 x on Eagle, 0.992 x on Heron). Every other circuit, and every call where the program is missing, gets
+> 2026-10-17.1's output bit for bit. **To use it, build psfz once:** `cd rust/psfz && cargo build --release` (Rust,
+> no dependencies, no network). Not run on a device as a whole. 2026-10-17.1 is kept in
+> `patches/psf_compile_release_2026-10-17.1/`.
+>
 > **New in 2026-10-17.1: IBM Eagle devices (ECR) are compiled by formula too.** The release is prototype c67
 > (item 104, Addendum 515; C67-VAL, Addendum 516): on a device whose two-qubit gate is ECR, `compile_for_hardware`
 > builds on a CZ view of the device and writes every CZ as the coupler's ECR. In C67-VAL (four Eagle fake devices,

@@ -5389,4 +5389,33 @@ refuse them) and refused the five heavy-hex graph tests, which went to the relea
 
 ---
 
+<!-- ===== Addendum 525 ===== -->
+
+## Addendum 525 -- release psf_compile 2026-10-18.1 = prototype c68 (item 105): chains and rings by psfz r4, PSF-Zero's compiler in Rust; every other call, and every call without the psfz program, 2026-10-17.1's output bit for bit; 2026-10-17.1 kept in patches/ (2026-10-18)
+
+**Status:** a release, by the owner's plan of 2026-10-18 (about 03:59 CEST: prototype, pre-registered validation, then
+the release); C68-VAL met every criterion (Addendum 524).
+
+- **The release** is prototype c68 with three changes to its text, made by `patches/psf_compile_c68_2026-10-18/
+  make_release.py`: the module docstring, the version line (`2026-10-18.1`) and item 105's heading comment.
+  2026-10-17.1 is kept as `patches/psf_compile_release_2026-10-17.1/psf_compile.py`.
+- **Checked against the prototype** (`check_release.py`, result in `check_release_result.txt`): on C68-VAL's 4,400
+  inputs the installed release gives c68's output, or its refusal, on 4,400 of 4,400 with the psfz program (psfz used
+  on 3,498) and on 4,400 of 4,400 without it.
+- **Tests:** `benchmarks/test_release_2026_10_18_1.py` (2026-10-17.1's checks on the new file, plus item 105: a GHZ
+  chain by psfz on FakeFez and FakeSherbrooke, exact, native and no longer than 2026-10-17.1; a star refused by psfz and
+  every call without the program or with `PSFZ105 = False` equal to 2026-10-17.1, bit for bit);
+  `benchmarks/test_release_2026_10_17_1.py` now reads the kept copy. Both files: 29 passed (the authors' cloud, with
+  psfz built).
+- **Docs:** README's current version, `docs/RELEASES.md`, `docs/psf_compile_CHANGELOG.md` (item 105),
+  `rust/psfz/README.md`.
+- **What a user must do:** build psfz once (`cd rust/psfz && cargo build --release`; Rust, no dependencies, no
+  network). Without it the release behaves as 2026-10-17.1. On Windows outside WSL the program is `psfz.exe` in the
+  same folder (found too), but it has not been built or tested there.
+- **Display / essential:** 0.956 x 2026-10-17.1's duration on the chain and ring inputs psfz takes (0.944 x on Eagle,
+  0.992 x on Heron over all compared inputs), never longer, in C68-VAL. Not run on a device as a whole; what shorter
+  schedules buy on hardware is untested.
+
+---
+
 **End of Part 11 of 11 (end of document, for now).** Back to [Part 10](spare-qubit-cliff-combined-383.md), [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

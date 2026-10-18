@@ -10,8 +10,12 @@ from this folder. The full record behind each entry is in Parts 9-11 of the find
 the earlier parts they link to. The README itself, as it was before the move, is kept as
 [`README_2026-10-05_before_restructure.md`](README_2026-10-05_before_restructure.md).
 
-> **In brief (as of 2026-10-17)**
+> **In brief (as of 2026-10-18)**
 >
+> 00000. Release 2026-10-18.1 (prototype c68, item 105, Addenda 518-525): chains and even rings are compiled by psfz
+>        r4, PSF-Zero's compiler in Rust (`rust/psfz/`, a separate program; build it with `cargo build --release`).
+>        C68-VAL: psfz's own output on 3,498 of 4,400 inputs, never longer than 2026-10-17.1, 0.956 x its duration
+>        there; 2026-10-17.1's output bit for bit on every other input and whenever the program is missing.
 > 0000. Release 2026-10-17.1 (prototype c67, item 104, Addenda 515-517): IBM Eagle devices (ECR) by formula: the
 >       default call builds on a CZ view and writes each CZ as the coupler's ECR. C67-VAL: 3,876 of 3,876 inputs
 >       compiled, exact and native, 0.31 x Qiskit level 3's duration (geometric mean), at most 1.072 x. CZ devices
@@ -51,7 +55,24 @@ the earlier parts they link to. The README itself, as it was before the move, is
 > 6. The device layer has been tested only in noisy simulation on fake devices, not on hardware. (Since 2026-10-12 it
 >    has run on three real devices: HW1, HW2, TIME1, FRAC1; Addenda 455-488.)
 
-> **Current version (2026-10-17, second release): `psf_compile.py` 2026-10-17.1 and the AI front end a23**
+> **Current version (2026-10-18): `psf_compile.py` 2026-10-18.1 and the AI front end a23**
+> ([Part 11](findings/spare-qubit-cliff-combined-450.md), Addenda 518-525). The compiler is prototype c68
+> ([`patches/psf_compile_c68_2026-10-18/`](../patches/psf_compile_c68_2026-10-18/)) with its docstring, version line
+> and item 105's heading changed by `make_release.py` there; `check_release.py` there compared the installed file with
+> c68 on C68-VAL's 4,400 inputs, with and without the psfz program (`check_release_result.txt`). 2026-10-17.1 is kept as
+> [`patches/psf_compile_release_2026-10-17.1/psf_compile.py`](../patches/psf_compile_release_2026-10-17.1/psf_compile.py).
+>
+> - **Item 105:** the default call first runs psfz r4 ([`rust/psfz/`](../rust/psfz/), PSF-Zero's compiler in Rust;
+>   build it with `cargo build --release`) and returns its output when psfz compiles the circuit: one chain or one even
+>   ring on a heavy-hex CZ or ECR device. Otherwise, and without the program, 2026-10-17.1's call.
+> - **PSFZ-VAL2 (pre-registered, Addendum 522):** psfz r4 alone, 3,238 inputs, never longer than 2026-10-17.1.
+>   **C68-VAL (pre-registered, Addendum 524):** G1-G6 confirmed on 16 devices, 4,400 inputs.
+> - **Known:** the global phase of psfz's outputs is not carried; a call on a circuit psfz refuses is slower (psfz is
+>   tried first); psfz cannot read FakePeekskill's 27-qubit lattice (the release's path is used there).
+> - Tests: [`benchmarks/test_release_2026_10_18_1.py`](../benchmarks/test_release_2026_10_18_1.py); the 2026-10-17.1
+>   tests read the kept copy. Not run on a device as a whole.
+
+> **Previous release (2026-10-17, second release): `psf_compile.py` 2026-10-17.1 and the AI front end a23**
 > ([Part 11](findings/spare-qubit-cliff-combined-450.md), Addenda 515-517). The compiler is prototype c67
 > ([`patches/psf_compile_c67_2026-10-17/`](../patches/psf_compile_c67_2026-10-17/)) with its docstring and version
 > line changed by `make_release.py` there; `check_release.py` there found the installed file equal to c67, bit for

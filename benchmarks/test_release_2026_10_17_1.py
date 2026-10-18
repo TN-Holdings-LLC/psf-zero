@@ -4,7 +4,8 @@ and benchmarks/psf_ai_compile.py. The prototype's validation (data/2026-10-17/c6
 check against it (patches/psf_compile_c67_2026-10-17/check_release.py) test the same code; these check that the
 installed file is the prototype with its docstring and version line changed (make_release.py), that it works from
 where it is installed, the release's scope, item 103's promise on a fractional-gate target, and item 104 on an ECR
-device: exact and native, templates refused.
+device: exact and native, templates refused. Since release 2026-10-18.1 (Addendum 525), 2026-10-17.1 is kept in
+patches/psf_compile_release_2026-10-17.1/psf_compile.py and these tests load it from there.
 
 Run from the repository root:  python -m pytest benchmarks/test_release_2026_10_17_1.py -q
 """
@@ -26,6 +27,7 @@ for p in (HERE, REPO):
         sys.path.insert(0, p)
 
 C67_DIR = os.path.join(REPO, "patches", "psf_compile_c67_2026-10-17")
+REL = os.path.join(REPO, "patches", "psf_compile_release_2026-10-17.1", "psf_compile.py")  # kept since 2026-10-18.1
 A23 = os.path.join(REPO, "patches", "psf_ai_compile_a23_2026-10-16", "psf_ai_compile.py")
 
 
@@ -41,7 +43,7 @@ def _load(path, name):
 @pytest.fixture(scope="module")
 def mods():
     with contextlib.redirect_stdout(io.StringIO()):
-        rel = _load(os.path.join(REPO, "psf_compile.py"), "psf_compile")
+        rel = _load(REL, "psf_compile")
         rel.WARN_WITHOUT_TARGET = False
         ai = _load(os.path.join(HERE, "psf_ai_compile.py"), "psf_ai_compile_release_test")
     return dict(rel=rel, ai=ai)
@@ -155,7 +157,7 @@ def test_installed_files_are_the_prototypes(tmp_path):
     out = tmp_path / "psf_compile.py"
     subprocess.run([sys.executable, os.path.join(C67_DIR, "make_release.py"), os.path.join(C67_DIR, "psf_compile.py"),
                     str(out)], check=True, capture_output=True)
-    assert open(os.path.join(REPO, "psf_compile.py"), encoding="utf-8").read() == out.read_text(encoding="utf-8")
+    assert open(REL, encoding="utf-8").read() == out.read_text(encoding="utf-8")
     assert _code(os.path.join(HERE, "psf_ai_compile.py"), r'^AI_COMPILE_VERSION = .*$') == \
         _code(A23, r'^AI_COMPILE_VERSION = .*$')
 
