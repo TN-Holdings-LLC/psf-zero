@@ -8,3 +8,10 @@ description = "PSF-Zero in Rust (prototype r1): chains and rings compiled by for
 
 [profile.release]
 opt-level = 3
+
+[features]
+# Off by default: psfz builds and runs as pure Rust with no outside library. On (`cargo build --release --features
+# lapack`, for the pod), the MPS twin's SVD calls LAPACK's zgesdd from a system library chosen at build time
+# (PSFZ_LAPACK_LIB, default the file liblapack.so.3; PSFZ_LAPACK_DIR adds a search folder). The compiler itself
+# (compile, template, bind) never uses it.
+lapack = []

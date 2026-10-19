@@ -8,12 +8,88 @@
 //! no outside crate) that drops only numerically zero singular values (below 1e-12 of the largest); the dropped
 //! weight is summed and reported, so the result is exact up to that weight. Single-qubit gates (and, later, the
 //! single-qubit noise of trajectories) never change a bond dimension, so the bound holds for noisy trajectories too.
+//!
+//! The SVD is pure Rust by default (one-sided Jacobi). With the `lapack` feature (Cargo.toml) it is LAPACK's zgesdd
+//! from a system library: the same factorisation, much faster at large bond dimensions.
 
 use crate::linalg::*;
 
+/// The SVD used by the MPS: LAPACK's zgesdd with the `lapack` feature, else the pure-Rust Jacobi method. Same
+/// contract as `svd_jacobi`.
+pub fn svd(a: Vec<Vec<C>>) -> (Vec<Vec<C>>, Vec<f64>, Vec<Vec<C>>) {
+    #[cfg(feature = "lapack")]
+    {
+        svd_lapack(&a)
+    }
+    #[cfg(not(feature = "lapack"))]
+    {
+        svd_jacobi(a)
+    }
+}
+
+pub fn svd_backend() -> &'static str {
+    if cfg!(feature = "lapack") {
+        "lapack zgesdd"
+    } else {
+        "pure Rust one-sided Jacobi"
+    }
+}
+
+#[cfg(feature = "lapack")]
+extern "C" {
+    #[allow(clippy::too_many_arguments)]
+    fn zgesdd_(jobz: *const u8, m: *const i32, n: *const i32, a: *mut f64, lda: *const i32, s: *mut f64,
+               u: *mut f64, ldu: *const i32, vt: *mut f64, ldvt: *const i32, work: *mut f64, lwork: *const i32,
+               rwork: *mut f64, iwork: *mut i32, info: *mut i32, jobz_len: usize);
+}
+
+/// LAPACK's zgesdd (jobz 'S') on the m x k matrix with columns `a[j]`; same contract as `svd_jacobi` (min(m, k)
+/// singular values).
+#[cfg(feature = "lapack")]
+pub fn svd_lapack(a: &[Vec<C>]) -> (Vec<Vec<C>>, Vec<f64>, Vec<Vec<C>>) {
+    let k = a.len();
+    let m = if k > 0 { a[0].len() } else { 0 };
+    let mn = m.min(k);
+    // column-major, complex as interleaved (re, im)
+    let mut buf = Vec::with_capacity(2 * m * k);
+    for col in a {
+        for z in col {
+            buf.push(z.re);
+            buf.push(z.im);
+        }
+    }
+    let (mi, ki, mni) = (m as i32, k as i32, mn as i32);
+    let mut s = vec![0.0f64; mn];
+    let mut u = vec![0.0f64; 2 * m * mn];
+    let mut vt = vec![0.0f64; 2 * mn * k];
+    let mx = m.max(k);
+    let lrwork = (mn * (5 * mn + 7)).max(mn * (2 * mx + 2 * mn + 1)).max(1);
+    let mut rwork = vec![0.0f64; lrwork];
+    let mut iwork = vec![0i32; 8 * mn.max(1)];
+    let mut info = 0i32;
+    let mut wq = [0.0f64; 2];
+    let query = -1i32;
+    unsafe {
+        zgesdd_(b"S".as_ptr(), &mi, &ki, buf.as_mut_ptr(), &mi, s.as_mut_ptr(), u.as_mut_ptr(), &mi,
+                vt.as_mut_ptr(), &mni, wq.as_mut_ptr(), &query, rwork.as_mut_ptr(), iwork.as_mut_ptr(), &mut info, 1);
+    }
+    let lwork = (wq[0] as i32).max(1);
+    let mut work = vec![0.0f64; 2 * lwork as usize];
+    unsafe {
+        zgesdd_(b"S".as_ptr(), &mi, &ki, buf.as_mut_ptr(), &mi, s.as_mut_ptr(), u.as_mut_ptr(), &mi,
+                vt.as_mut_ptr(), &mni, work.as_mut_ptr(), &lwork, rwork.as_mut_ptr(), iwork.as_mut_ptr(), &mut info, 1);
+    }
+    assert!(info == 0, "zgesdd failed: info {}", info);
+    let uc: Vec<Vec<C>> = (0..mn).map(|r| (0..m).map(|i| C::new(u[2 * (r * m + i)], u[2 * (r * m + i) + 1])).collect()).collect();
+    // V[i][r] = conj(VT[r][i]); VT is mn x k, column-major
+    let vc: Vec<Vec<C>> = (0..mn).map(|r| (0..k).map(|i| C::new(vt[2 * (i * mn + r)], -vt[2 * (i * mn + r) + 1])).collect()).collect();
+    (uc, s, vc)
+}
+
 /// One-sided Jacobi SVD of an m x k complex matrix (column-major columns `a[j]`): returns (U columns, sigma, V
 /// columns) with A = U diag(sigma) V^H, sigma in decreasing order.
-pub fn svd(mut a: Vec<Vec<C>>) -> (Vec<Vec<C>>, Vec<f64>, Vec<Vec<C>>) {
+#[cfg_attr(feature = "lapack", allow(dead_code))]
+pub fn svd_jacobi(mut a: Vec<Vec<C>>) -> (Vec<Vec<C>>, Vec<f64>, Vec<Vec<C>>) {
     let k = a.len();
     let m = if k > 0 { a[0].len() } else { 0 };
     let mut v: Vec<Vec<C>> = (0..k).map(|j| (0..k).map(|i| if i == j { ONE } else { ZERO }).collect()).collect();
@@ -302,7 +378,7 @@ mod tests {
             seed = seed.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
             ((seed >> 11) as f64 / (1u64 << 53) as f64) - 0.5
         };
-        for (m, k) in [(4, 4), (6, 3), (3, 7), (8, 8)] {
+        for (m, k) in [(4, 4), (6, 3), (3, 7), (8, 8), (40, 24)] {
             let a: Vec<Vec<C>> = (0..k).map(|_| (0..m).map(|_| C::new(rnd(), rnd())).collect()).collect();
             let (u, s, v) = svd(a.clone());
             for j in 0..k {
@@ -314,6 +390,22 @@ mod tests {
                     assert!((x - a[j][i]).abs() < 1e-10, "({}, {})", m, k);
                 }
             }
+        }
+    }
+
+    #[cfg(feature = "lapack")]
+    #[test]
+    fn lapack_matches_jacobi() {
+        let mut seed = 777u64;
+        let mut rnd = || {
+            seed = seed.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
+            ((seed >> 11) as f64 / (1u64 << 53) as f64) - 0.5
+        };
+        let a: Vec<Vec<C>> = (0..16).map(|_| (0..32).map(|_| C::new(rnd(), rnd())).collect()).collect();
+        let (_, s1, _) = svd_lapack(&a);
+        let (_, s2, _) = svd_jacobi(a);
+        for (x, y) in s1.iter().zip(&s2) {
+            assert!((x - y).abs() < 1e-10);
         }
     }
 

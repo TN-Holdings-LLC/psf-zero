@@ -100,6 +100,7 @@ fn run_twin(args: &[String]) -> Result<i32, String> {
     let bmax = bound.iter().copied().max().unwrap_or(0);
     let mut rep = Map::new();
     rep.insert("version".into(), J::Str("psfz twin prototype (2026-10-19), MPS, noiseless".into()));
+    rep.insert("svd".into(), J::Str(mps::svd_backend().into()));
     rep.insert("sites".into(), J::Num(n as f64));
     rep.insert("bound_log2".into(), J::Arr(bound.iter().map(|&b| J::Num(b as f64)).collect()));
     rep.insert("compile_s".into(), J::Num((t1 - t0).as_secs_f64()));

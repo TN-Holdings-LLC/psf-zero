@@ -27,3 +27,18 @@ TFIM chains (rzz between neighbours, rx fields, u at the end), FakeFez:
     needed for real use (a dependency decision for the owner).
   - Chains only (rings refused: the closing edge spans every cut); noiseless; FakeFez's longest working chain for
     psfz is 80-89 qubits (90 and 100 were refused by `compile`).
+
+**With the `lapack` feature (owner decision of 2026-10-19: pure Rust by default, an outside library switched on for
+the pod).** Same harness and seed, about 15:55 CEST, psfz built with `cargo build --release --features lapack`
+against the workspace's system `liblapack.so.3` (single-threaded; which LAPACK build it is was not checked). Raw rows:
+`twin_check_lapack.json`.
+
+| n | steps | simulate, pure Rust | simulate, LAPACK | speed-up |
+|---|---|---|---|---|
+| 50 | 4 / 6 | 0.31 / 26.0 s | 0.047 / 5.9 s | 6.6 x / 4.4 x |
+| 80 | 4 / 6 | 0.46 / 42.3 s | 0.088 / 11.6 s | 5.2 x / 3.6 x |
+
+Exactness unchanged (<Z> within 6.4e-15 of the state vector up to 20 qubits; dropped weight at most 3e-23). The
+SVD still dominates at bond dimension 64: every rzz is applied as two CZ, so each split is done at twice the bond
+dimension it ends with. Applying the two CZ and the rotation between them as one two-site gate (one split per rzz,
+at the final bond dimension), a threaded LAPACK, or the GPU are the next steps; none was tried.

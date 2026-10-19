@@ -31,7 +31,9 @@ therefore cannot reach the output, by construction, not by filtering.
 ## 3. The intent IR (v0)
 
 A closed set of families: the places where PSF-Zero builds by formula and has won on devices (README, "Scope",
-2026-10-14). One record per request. Draft:
+2026-10-14). One record per request. **Owner decision (2026-10-19, 15:45 CEST): IR v0 has three families, the TFIM
+chain, the ring classifier and the rzz fractional-gate layer** (the Heisenberg chain of the first draft is left out).
+Draft:
 
 ```json
 {
@@ -47,7 +49,6 @@ A closed set of families: the places where PSF-Zero builds by formula and has wo
 |---|---|---|
 | `ring_classifier` | n (even, >= 12 to embed on heavy-hex), layers, encoding, readout | TOQB's model circuit: ry / rz per qubit, CZ around the ring |
 | `tfim_chain` | n, J, h, dt, steps, Trotter order (1 or 2) | Trotter steps of the transverse-field Ising chain |
-| `heisenberg_chain` | n, Jx, Jy, Jz, dt, steps | the same for XYZ couplings |
 | `rzz_layer` | graph (chain or even ring), angles as slots | fractional rzz natives where the device offers them |
 
 - **Angles are slots, not numbers,** when `output` is `template`: the IR names which parameters are trainable.
@@ -154,7 +155,9 @@ the user meant, and how many of those the echo caught.
 
 ## 11. Open decisions for the owner
 
-- The families of IR v0 (the four above, or fewer).
+- ~~The families of IR v0~~ decided 2026-10-19: TFIM chain, ring classifier, rzz layer.
+- ~~Dependencies~~ decided 2026-10-19: psfz builds as pure Rust by default; an outside library is switched on by a
+  Cargo feature for the pod (`lapack`, the twin's SVD).
 - Ring classifiers need n >= 12 on heavy-hex to use psfz; at n = 12 Qiskit level 2 also finds the ring with no SWAP
   (2026-10-19, FakeFez, L 8: 96 CZ on 12 qubits for both). The compression gap to Qiskit then lies in compile time,
   bind time and single-qubit counts, not in two-qubit gates. Which comparison should TOQB show for this design `[ ]`.
