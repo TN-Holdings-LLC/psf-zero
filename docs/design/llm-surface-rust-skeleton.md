@@ -82,6 +82,9 @@ is not available in Rust, and GPU simulators lose their batching by structure. r
   affine map. `bind(slots)` evaluates these functions only: O(number of runs), no compilation.
 - **S3. Slot map in the output:** for every output angle, the slots it depends on and its function, so that a
   simulator (traj2, CUDA-Q) can rebind without psfz.
+- **Prototype (2026-10-19, same day, exploratory):** `psfz template` / `psfz bind` meet S1-S3 on the ring classifier
+  and TFIM chains (FakeFez, FakeTorino; exact to 2.4e-16; bind 0.28 ms at n = 12, L = 16); TFIM templates write 16-19 %
+  more sx than r4 (`data/2026-10-19/psfz_r5_template_check/`).
 - **S4. Speed target:** bind at most `[ ]` ms for n = 12, L = 16 (the Python template's 4.7 ms as the reference).
 
 ## 6. The certificate: equivalence by random bindings, with a stated bound

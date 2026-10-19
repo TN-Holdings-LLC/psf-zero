@@ -22,6 +22,16 @@
 //!    the circuit built so far, not comparisons of alternatives.
 //! 6. Single-qubit runs merged into one matrix and written as rz, sx, x in closed form (ZYZ); the last rz before a
 //!    measurement is dropped.
+//!
+//! Templates (r5 prototype, 2026-10-19; `compile(.., true)`, `psfz template`): every single-qubit gate of the input
+//! with parameters is a slot. A slot is carried through steps 1-6 as a factor (never multiplied into a fixed matrix
+//! early), every decision above that reads a value is taken from the structure instead (a slot is diagonal when its
+//! gate is diagonal for every value: rz, p, u1; a block with a slot is lowered part by part, not by KAK; a pending run
+//! with a slot counts as two pulses), and a run with a slot is always written in the general form rz sx rz sx rz
+//! (the last rz dropped before a measurement). So the output's gate list depends on the input's structure and the
+//! device only, and each run's three angles are a closed-form function (ZYZ of the product of its factors) of the
+//! slots in it: `template::bind` evaluates only that. Two-qubit gates with parameters are not slots (their values
+//! are fixed in the template); ECR devices are refused. Without templates every path is r4's, unchanged.
 
 use crate::device::{Device, Lattice};
 use crate::linalg::*;
@@ -36,11 +46,38 @@ pub const KNOWN: &[&str] = &[
     "cx", "CX", "cz", "cp", "cphase", "crz", "rzz", "rxx", "ryy",
 ];
 
-/// A single-qubit matrix, or a two-qubit Pauli rotation exp(-i theta/2 P P) with P = X, Y, Z (0, 1, 2).
+/// A single-qubit matrix, or a two-qubit Pauli rotation exp(-i theta/2 P P) with P = X, Y, Z (0, 1, 2); in a
+/// template, `S` is a single-qubit operation that depends on slots: its matrix at the given values and its factors.
 #[derive(Clone, Debug)]
 pub enum Ir {
     U(usize, M2),
     Pr(usize, usize, u8, f64),
+    S(usize, M2, Vec<Fac>),
+}
+
+/// A factor of a template run (time order within the run): a fixed matrix, or input slot k (`bool`: its gate is
+/// diagonal for every value).
+#[derive(Clone, Debug)]
+pub enum Fac {
+    M(M2),
+    S(usize, bool),
+}
+
+/// An input gate with parameters, made a slot in a template.
+#[derive(Clone, Debug)]
+pub struct Slot {
+    pub gate: String,
+    pub qubit: usize,
+    pub nparams: usize,
+}
+
+/// A run of a template written in the general form: its qubit, its factors, the indices of its rz operations in
+/// `Output::ops` (3, or 2 before a measurement).
+#[derive(Clone, Debug)]
+pub struct RunMap {
+    pub qubit: usize,
+    pub facs: Vec<Fac>,
+    pub rz: Vec<usize>,
 }
 
 #[derive(Clone, Debug)]
@@ -50,9 +87,11 @@ pub struct Output {
     pub ops: Vec<(String, Vec<usize>, Vec<f64>)>,
     pub meas: Vec<(usize, usize)>,
     pub nc: usize,
+    pub slots: Vec<Slot>,
+    pub runs: Vec<RunMap>,
 }
 
-fn one(name: &str, p: &[f64]) -> Option<M2> {
+pub fn one(name: &str, p: &[f64]) -> Option<M2> {
     let s = |k: usize| p.get(k).copied().unwrap_or(0.0);
     Some(match name {
         "id" => eye(),
@@ -88,8 +127,9 @@ fn diag2(a: usize, b: usize, phi: [[f64; 2]; 2], out: &mut Vec<Ir>) {
     out.push(Ir::U(b, phase(r(0, 1) - r(0, 0))));
 }
 
-/// Step 1.
-pub fn lower_input(c: &Circuit) -> Result<(Vec<Ir>, Vec<(usize, usize)>), String> {
+/// Step 1 (with `template`, every single-qubit gate with parameters becomes a slot).
+pub fn lower_input(c: &Circuit, template: bool) -> Result<(Vec<Ir>, Vec<(usize, usize)>, Vec<Slot>), String> {
+    let mut slots = Vec::new();
     let mut ir = Vec::new();
     let mut meas = Vec::new();
     let mut measured = vec![false; c.nq];
@@ -112,7 +152,14 @@ pub fn lower_input(c: &Circuit) -> Result<(Vec<Ir>, Vec<(usize, usize)>), String
                 }
                 let p = |k: usize| params.get(k).copied().unwrap_or(0.0);
                 if qubits.len() == 1 {
-                    ir.push(Ir::U(qubits[0], one(name, params).unwrap()));
+                    let m = one(name, params).unwrap();
+                    if template && !params.is_empty() {
+                        let k = slots.len();
+                        slots.push(Slot { gate: name.clone(), qubit: qubits[0], nparams: params.len() });
+                        ir.push(Ir::S(qubits[0], m, vec![Fac::S(k, matches!(name.as_str(), "rz" | "p" | "u1"))]));
+                    } else {
+                        ir.push(Ir::U(qubits[0], m));
+                    }
                     continue;
                 }
                 if qubits.len() != 2 {
@@ -136,19 +183,23 @@ pub fn lower_input(c: &Circuit) -> Result<(Vec<Ir>, Vec<(usize, usize)>), String
             }
         }
     }
-    Ok((ir, meas))
+    Ok((ir, meas, slots))
 }
 
 fn is_diagonal(op: &Ir) -> bool {
     match op {
         Ir::U(_, m) => is_diag(m, TOL),
         Ir::Pr(_, _, k, _) => *k == 2,
+        Ir::S(_, _, f) => f.iter().all(|x| match x {
+            Fac::M(m) => is_diag(m, TOL),
+            Fac::S(_, d) => *d,
+        }),
     }
 }
 
 fn qubits(op: &Ir) -> Vec<usize> {
     match op {
-        Ir::U(q, _) => vec![*q],
+        Ir::U(q, _) | Ir::S(q, _, _) => vec![*q],
         Ir::Pr(a, b, _, _) => vec![*a, *b],
     }
 }
@@ -263,7 +314,7 @@ pub fn order(ir: Vec<Ir>, nq: usize, walk: &[usize]) -> Vec<Ir> {
                 let pos = if (ra + 1) % n == rb { ra } else { rb };
                 (level[k], 0, pos % 2, pos, k)
             }
-            Ir::U(q, _) => (level[k], 1, 0, rank[*q], k),
+            Ir::U(q, _) | Ir::S(q, _, _) => (level[k], 1, 0, rank[*q], k),
         }
     };
     let mut idx: Vec<usize> = (0..ir.len()).collect();
@@ -276,6 +327,7 @@ pub fn order(ir: Vec<Ir>, nq: usize, walk: &[usize]) -> Vec<Ir> {
 #[derive(Clone, Debug)]
 pub enum Blk {
     U(usize, M2),
+    S(usize, M2, Vec<Fac>),
     Can(usize, usize, [f64; 3]),
     Gen(usize, usize, Vec<Ir>),
 }
@@ -314,8 +366,10 @@ pub fn merge(ir: Vec<Ir>) -> Vec<Blk> {
                 Blk::Gen(o.pair.0, o.pair.1, o.parts)
             });
             for t in o.tail {
-                if let Ir::U(q, m) = t {
-                    out.push(Some(Blk::U(q, m)));
+                match t {
+                    Ir::U(q, m) => out.push(Some(Blk::U(q, m))),
+                    Ir::S(q, m, f) => out.push(Some(Blk::S(q, m, f))),
+                    _ => {}
                 }
             }
         }
@@ -349,6 +403,13 @@ pub fn merge(ir: Vec<Ir>) -> Vec<Blk> {
                     out.push(Some(Blk::U(q, m)));
                 }
             }
+            Ir::S(q, m, f) => {
+                if let Some(k) = open_of.get(&q).copied() {
+                    opens[k].as_mut().unwrap().tail.push(Ir::S(q, m, f));
+                } else {
+                    out.push(Some(Blk::S(q, m, f)));
+                }
+            }
         }
     }
     let rest: Vec<usize> = (0..opens.len()).filter(|&k| opens[k].is_some()).collect();
@@ -364,7 +425,7 @@ fn block_matrix(a: usize, parts: &[Ir]) -> crate::kak::M4 {
     let mut m = id4();
     for p in parts {
         let g = match p {
-            Ir::U(q, u) => lift(u, if *q == a { 0 } else { 1 }),
+            Ir::U(q, u) | Ir::S(q, u, _) => lift(u, if *q == a { 0 } else { 1 }),
             Ir::Pr(_, _, k, t) => pp(*k as usize, *t),
         };
         m = mul4(&g, &m);
@@ -376,6 +437,7 @@ fn block_matrix(a: usize, parts: &[Ir]) -> crate::kak::M4 {
 enum Nat {
     U(usize, M2),
     Two(&'static str, usize, usize),
+    S(usize, M2, Vec<Fac>),
 }
 
 /// Step 5 for one ZZ(theta) on physical qubits a, b.
@@ -480,6 +542,7 @@ struct Track<'a> {
     d: &'a Device,
     clock: BTreeMap<usize, f64>,
     pend: BTreeMap<usize, M2>,
+    slot: BTreeSet<usize>, // qubits whose pending run has a slot (template): two pulses, whatever the values
 }
 
 fn pulses(m: &M2) -> usize {
@@ -493,6 +556,11 @@ impl<'a> Track<'a> {
                 let cur = self.pend.get(q).copied().unwrap_or_else(eye);
                 self.pend.insert(*q, mul2(m, &cur));
             }
+            Nat::S(q, m, _) => {
+                let cur = self.pend.get(q).copied().unwrap_or_else(eye);
+                self.pend.insert(*q, mul2(m, &cur));
+                self.slot.insert(*q);
+            }
             Nat::Two(_, a, b) => {
                 let s = self.ready(*a).max(self.ready(*b));
                 let dur = self.d.dur_ps(*a, *b).unwrap_or(0) as f64 * 1e-12;
@@ -500,15 +568,24 @@ impl<'a> Track<'a> {
                 self.clock.insert(*b, s + dur);
                 self.pend.remove(a);
                 self.pend.remove(b);
+                self.slot.remove(a);
+                self.slot.remove(b);
             }
         }
     }
+    fn npulses(&self, q: usize) -> usize {
+        if self.slot.contains(&q) {
+            2
+        } else {
+            self.pend.get(&q).map_or(0, pulses)
+        }
+    }
     fn busy(&self, q: usize) -> bool {
-        self.pend.get(&q).map_or(false, |m| pulses(m) > 0)
+        self.npulses(q) > 0
     }
     fn ready(&self, q: usize) -> f64 {
         self.clock.get(&q).copied().unwrap_or(0.0)
-            + self.pend.get(&q).map_or(0, pulses) as f64 * self.d.sx_dur.get(q).copied().unwrap_or(0.0)
+            + self.npulses(q) as f64 * self.d.sx_dur.get(q).copied().unwrap_or(0.0)
     }
     /// (the qubit that takes the form's basis changes, the other)
     fn pick(&self, p: usize, q: usize) -> (usize, usize) {
@@ -592,7 +669,7 @@ fn ecr_forms() -> Vec<(M2, M2, M2, M2)> {
 /// on one qubit was what made psfz longer than the release on some Eagle inputs.)
 fn ecr_adaptive(d: &Device, nat: Vec<Nat>) -> Vec<Nat> {
     let forms = ecr_forms();
-    let mut tr = Track { d, clock: BTreeMap::new(), pend: BTreeMap::new() };
+    let mut tr = Track { d, clock: BTreeMap::new(), pend: BTreeMap::new(), slot: BTreeSet::new() };
     let mut e = Vec::new();
     let after = |tr: &Track, q: usize, u: &M2| -> f64 {
         let cur = tr.pend.get(&q).copied().unwrap_or_else(eye);
@@ -672,8 +749,22 @@ pub fn zsx(m: &M2) -> Vec<(&'static str, Vec<f64>)> {
         .collect()
 }
 
-pub fn compile(c: &Circuit, d: &Device, l: &Lattice) -> Result<Output, String> {
-    let (ir, meas) = lower_input(c)?;
+/// A run with a slot in the general form rz(l) sx rz(t + pi) sx rz(p + pi) (ZYZ angles p, t, l of its matrix); before
+/// a measurement (`last`) without the final rz. No angle is dropped, whatever its value.
+pub fn zsx_general(m: &M2, last: bool) -> Vec<(&'static str, Vec<f64>)> {
+    let (p, t, l) = zyz(m);
+    let mut v = vec![("rz", vec![wrap(l)]), ("sx", vec![]), ("rz", vec![wrap(t + PI)]), ("sx", vec![])];
+    if !last {
+        v.push(("rz", vec![wrap(p + PI)]));
+    }
+    v
+}
+
+pub fn compile(c: &Circuit, d: &Device, l: &Lattice, template: bool) -> Result<Output, String> {
+    if template && d.gate2 == "ecr" {
+        return Err("templates are built for CZ devices only (r5 prototype)".into());
+    }
+    let (ir, meas, slots) = lower_input(c, template)?;
     let (kind, walk) = read_graph(&ir, c.nq)?;
     let ir = drop_final_diagonal(ir, c.nq);
     let blocks = merge(order(ir, c.nq, &walk));
@@ -687,14 +778,21 @@ pub fn compile(c: &Circuit, d: &Device, l: &Lattice) -> Result<Output, String> {
     }
     // step 5
     let mut nat = Vec::new();
-    let mut track = Track { d, clock: BTreeMap::new(), pend: BTreeMap::new() };
+    let mut track = Track { d, clock: BTreeMap::new(), pend: BTreeMap::new(), slot: BTreeSet::new() };
     for op in &blocks {
         let start = nat.len();
         match op {
             Blk::U(q, m) => nat.push(Nat::U(layout[*q], *m)),
+            Blk::S(q, m, f) => nat.push(Nat::S(layout[*q], *m, f.clone())),
             Blk::Gen(a, b, parts) => {
                 let (pa, pb) = (layout[*a], layout[*b]);
-                match crate::kak::kak(&block_matrix(*a, parts)) {
+                // a block with a slot is lowered part by part (its KAK form would depend on the values)
+                let kak = if parts.iter().any(|p| matches!(p, Ir::S(..))) {
+                    None
+                } else {
+                    crate::kak::kak(&block_matrix(*a, parts))
+                };
+                match kak {
                     Some(k) => {
                         nat.push(Nat::U(pa, k.b1));
                         nat.push(Nat::U(pb, k.b2));
@@ -713,6 +811,7 @@ pub fn compile(c: &Circuit, d: &Device, l: &Lattice) -> Result<Output, String> {
                         for p in parts {
                             match p {
                                 Ir::U(q, m) => nat.push(Nat::U(layout[*q], *m)),
+                                Ir::S(q, m, f) => nat.push(Nat::S(layout[*q], *m, f.clone())),
                                 Ir::Pr(x_, y_, k, t) => {
                                     let mut ang = [0.0; 3];
                                     ang[*k as usize] = *t;
@@ -761,12 +860,28 @@ pub fn compile(c: &Circuit, d: &Device, l: &Lattice) -> Result<Output, String> {
             })
             .collect();
     }
-    // step 6
-    let mut pend: BTreeMap<usize, M2> = BTreeMap::new();
+    // step 6 (a pending run: its matrix, its factors, whether it has a slot)
+    type Pend = (M2, Vec<Fac>, bool);
+    let mut pend: BTreeMap<usize, Pend> = BTreeMap::new();
     let mut ops: Vec<(String, Vec<usize>, Vec<f64>)> = Vec::new();
-    let flush = |q: usize, pend: &mut BTreeMap<usize, M2>, ops: &mut Vec<(String, Vec<usize>, Vec<f64>)>| {
-        if let Some(m) = pend.remove(&q) {
-            for (n, a) in zsx(&m) {
+    let mut runs: Vec<RunMap> = Vec::new();
+    let emit = |q: usize, run: Pend, last: bool, ops: &mut Vec<(String, Vec<usize>, Vec<f64>)>, runs: &mut Vec<RunMap>| {
+        let (m, facs, has_slot) = run;
+        if has_slot {
+            let mut rz = Vec::new();
+            for (n, a) in zsx_general(&m, last) {
+                if n == "rz" {
+                    rz.push(ops.len());
+                }
+                ops.push((n.to_string(), vec![q], a));
+            }
+            runs.push(RunMap { qubit: q, facs, rz });
+        } else {
+            let mut seq = zsx(&m);
+            if last && seq.last().map_or(false, |(n, _)| *n == "rz") {
+                seq.pop();
+            }
+            for (n, a) in seq {
                 ops.push((n.to_string(), vec![q], a));
             }
         }
@@ -774,15 +889,28 @@ pub fn compile(c: &Circuit, d: &Device, l: &Lattice) -> Result<Output, String> {
     for op in nat {
         match op {
             Nat::U(q, m) => {
-                let cur = pend.get(&q).copied().unwrap_or_else(eye);
-                pend.insert(q, mul2(&m, &cur));
+                let cur = pend.remove(&q).unwrap_or_else(|| (eye(), Vec::new(), false));
+                let mut f = cur.1;
+                if template {
+                    f.push(Fac::M(m));
+                }
+                pend.insert(q, (mul2(&m, &cur.0), f, cur.2));
+            }
+            Nat::S(q, m, sf) => {
+                let cur = pend.remove(&q).unwrap_or_else(|| (eye(), Vec::new(), false));
+                let mut f = cur.1;
+                f.extend(sf);
+                pend.insert(q, (mul2(&m, &cur.0), f, true));
             }
             Nat::Two(g, a, b) => {
                 if !d.working(a, b) {
                     return Err(format!("internal: {} on ({}, {}) is not a working coupler", g, a, b));
                 }
-                flush(a, &mut pend, &mut ops);
-                flush(b, &mut pend, &mut ops);
+                for q in [a, b] {
+                    if let Some(run) = pend.remove(&q) {
+                        emit(q, run, false, &mut ops, &mut runs);
+                    }
+                }
                 ops.push((g.to_string(), vec![a, b], vec![]));
             }
         }
@@ -790,17 +918,11 @@ pub fn compile(c: &Circuit, d: &Device, l: &Lattice) -> Result<Output, String> {
     // the last run before a measurement: its final rz is dropped (diagonal before a Z measurement)
     let rest: Vec<usize> = pend.keys().copied().collect();
     for q in rest {
-        let m = pend.remove(&q).unwrap();
-        let mut seq = zsx(&m);
-        if seq.last().map_or(false, |(n, _)| *n == "rz") {
-            seq.pop();
-        }
-        for (n, a) in seq {
-            ops.push((n.to_string(), vec![q], a));
-        }
+        let run = pend.remove(&q).unwrap();
+        emit(q, run, true, &mut ops, &mut runs);
     }
     let meas = meas.into_iter().map(|(q, cb)| (layout[q], cb)).collect();
-    Ok(Output { kind, layout, ops, meas, nc: c.nc })
+    Ok(Output { kind, layout, ops, meas, nc: c.nc, slots, runs })
 }
 
 #[cfg(test)]
@@ -922,7 +1044,7 @@ mod tests {
             let mut m = id4();
             for op in &ir {
                 let g = match op {
-                    Ir::U(q, u) => lift(u, *q),
+                    Ir::U(q, u) | Ir::S(q, u, _) => lift(u, *q),
                     Ir::Pr(_, _, _, t) => zz4(*t),
                 };
                 m = mul4(&g, &m);

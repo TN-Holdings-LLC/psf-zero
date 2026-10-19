@@ -42,6 +42,14 @@ earliest given what is pending on its two qubits (`compile::ecr_adaptive`; ties:
 time in program order. This is a choice by a computed schedule, as r2's rule for a form's basis changes already was;
 nothing is revisited. On PSFZ-VAL's 2,860 inputs: never longer than release 2026-10-17.1, 0.96 x on the geometric mean.
 
+**r5 prototype, templates (2026-10-19, exploratory; `psfz template`, `psfz bind`):** every single-qubit gate of
+the input with parameters becomes a slot, carried through the compiler as a factor; every decision that read a value
+reads the structure instead, and every run with a slot is written in the general form rz sx rz sx rz. So the gate list
+depends on the input's structure and the device only, and `bind` recomputes each run's three angles in closed form
+(ZYZ of the product of its factors): 0.28 ms for a 12-qubit, 16-layer ring classifier. `compile` is r4's, unchanged
+(96 of 96 outputs identical). Checked in `data/2026-10-19/psfz_r5_template_check/` (exact to 2.4e-16; TFIM templates
+16-19 % more sx than r4). Two-qubit gates with parameters are not slots; ECR devices are refused.
+
 **Scope (r1-r4):** every qubit in one chain or one even ring of two-qubit gates; gates id x y z h s sdg t tdg sx sxdg rx
 ry rz p u1 u2 u3 u, cx cz cp crz rzz rxx ryy; measurements only at the end. Not yet: other graphs, fractional
 gates (rzz/rx natives), templates, mid-circuit measurement.
