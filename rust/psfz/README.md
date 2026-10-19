@@ -50,6 +50,11 @@ depends on the input's structure and the device only, and `bind` recomputes each
 (96 of 96 outputs identical). Checked in `data/2026-10-19/psfz_r5_template_check/` (exact to 2.4e-16; TFIM templates
 16-19 % more sx than r4). Two-qubit gates with parameters are not slots; ECR devices are refused.
 
+**MPS twin prototype (2026-10-19, exploratory; `psfz twin`):** the chain output simulated as a matrix product
+state, noiseless, every bond dimension bounded by a formula before the run (CZ crossing each cut); exact SVD splits.
+80-qubit TFIM chains, 6 steps: 42 s on one core, dropped weight 1e-23; <Z> within 6.5e-15 of a state vector up to 20
+qubits (`data/2026-10-19/psfz_mps_twin_check/`). The dependency-free SVD is the bottleneck; rings and noise not yet.
+
 **Scope (r1-r4):** every qubit in one chain or one even ring of two-qubit gates; gates id x y z h s sdg t tdg sx sxdg rx
 ry rz p u1 u2 u3 u, cx cz cp crz rzz rxx ryy; measurements only at the end. Not yet: other graphs, fractional
 gates (rzz/rx natives), templates, mid-circuit measurement.
