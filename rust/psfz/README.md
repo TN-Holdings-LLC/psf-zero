@@ -69,3 +69,11 @@ gates (rzz/rx natives), templates, mid-circuit measurement.
 
 **Checking (`harness/`, Python, not part of the compiler):** `compare.py` runs psfz and release 2026-10-17.1 on
 C63-VAL's 14 chain and ring tests on five fake devices (exactness against Qiskit's state vector); `summarize.py`.
+
+**Gate 1 (P0, 2026-10-20).** `psfz gate RECORD.json CONFIG.json OUT.json` checks an IR v0 record (IR r2,
+`docs/design/IR_v0_spec_r2_2026-10-20.md`) in the fixed order of the spec: strict JSON, version, finite numbers, the
+schema (written as code; cross-checked with Python `jsonschema` on 986 records, 0 disagreements), the decline record,
+the device file (by SHA-256 when given), then the family's formulas and psfz's own placement, and last psfz's build.
+It refuses with one of the 19 codes, declines, or passes with the built counts. On the fixed N2 set it passes
+milestone M0: 23 of 23 refusal records, the fault injection R19 and the 6 controls
+(`data/2026-10-20/gate1_m0/`). `compile` is unchanged.

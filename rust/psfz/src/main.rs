@@ -7,6 +7,8 @@
 //!     psfz template DEVICE.json IN.qasm OUT.json          (r5 prototype: every single-qubit gate with parameters is a
 //!                                                          slot; the gate list never depends on the values)
 //!     psfz bind TEMPLATE.json VALUES.json OUT.qasm        (VALUES: one list of parameters per slot, in input order)
+//!     psfz gate RECORD.json CONFIG.json OUT.json          (P0, 2026-10-20: gate 1 on an IR v0 record, IR r2; exit 0
+//!                                                          passed or declined, 2 refused with one code)
 //!     psfz twin DEVICE.json IN.qasm OUT.json [CHI_MAX]     (prototype: compile, then simulate the chain output as an
 //!                                                          MPS, noiseless; <Z> per classical bit; refused before it
 //!                                                          starts if the formula bound exceeds CHI_MAX, default 4096)
@@ -16,12 +18,14 @@
 
 mod compile;
 mod device;
+mod gate;
 mod json;
 mod kak;
 mod linalg;
 mod mps;
 mod place;
 mod qasm;
+mod sha256;
 mod template;
 
 use json::J;
@@ -141,6 +145,9 @@ fn run_twin(args: &[String]) -> Result<i32, String> {
 }
 
 fn run(args: &[String]) -> Result<i32, String> {
+    if args.len() == 4 && args[0] == "gate" {
+        return gate::run(args);
+    }
     if (args.len() == 4 || args.len() == 5) && args[0] == "twin" {
         return run_twin(args);
     }
