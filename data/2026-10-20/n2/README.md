@@ -1,7 +1,7 @@
 # N2: the adversarial set for milestone M0
 
-**Status: candidate, not yet fixed** (2026-10-20, about 04:00 CEST). The owner decided that N2 is fixed before any
-gate-1 code is written. Fixing means: the owner's OK, then the SHA-256 of `n2.json` and the CEST time written below
+**Status: FIXED** on 2026-10-20 at 06:35 CEST, with the owner's OK (06:35 CEST) to the home additions below. Prepared
+at about 04:00 CEST; the owner decided that N2 is fixed before any gate-1 code is written, and none exists. Fixing means: the owner's OK, then the SHA-256 of `n2.json` and the CEST time written below
 in one commit. After that, `n2.json` is never edited; a change is a new file with a new name.
 
 - **Source:** the workplace's W3 (`docs/design/W3_N2_adversarial_set_2026-10-20.md`) with the owner's decisions of
@@ -15,7 +15,7 @@ in one commit. After that, `n2.json` is never edited; a change is a new file wit
 **Contents:** 23 refusal records (R01-R18 with R04b, R08b, R09b; R20 and R21), one fault injection (R19), six controls
 (K1-K6), 34 requests with the expected stop and what must never happen.
 
-**Home additions to W3, following the decline decision** (to be confirmed by the owner before fixing):
+**Home additions to W3, following the decline decision** (confirmed by the owner, 06:35 CEST):
 
 - R20: a decline record with another field → `SCHEMA_INVALID`.
 - R21: a decline record with an unknown reason → `SCHEMA_INVALID`.
@@ -32,4 +32,6 @@ expected code; every other record and every control passes those checks; K6 is a
 **Files:** `make_fixtures.py` (writes `fixtures/F1-F4.json`, reproducible: two runs, same SHA-256), `make_n2.py`
 (writes `n2.json`, reproducible), `n2.json`.
 
-Fixed: (not yet)
+Fixed: 2026-10-20 06:35 CEST. SHA-256 of `n2.json`:
+`458e53df0d3df9f869a1beb4958994ecf802ee30b7719104322c30f991d781ef`. All pins were rechecked against the files at
+fixing (IR r2 text, r2 schema, F1-F4: all equal). From here `n2.json` is never edited; a change is a new file.
