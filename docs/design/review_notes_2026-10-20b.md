@@ -145,4 +145,6 @@ synthetic and test-only. 7 The owner fixes the set, before gate-1 code exists.
 - **W2 §6.3, χ_max of the noisy twin:** 128 to start (about 0.4 s per trajectory at that bond, measured above).
 - **W3 §4.4, the decline record:** adopted. `{"ir": "psf-intent/0", "decline": "out_of_family"}` ends out-of-family
   requests at the model's own record (stop D) instead of the echo (stop E).
-- Not yet decided: stage C templates (W1 §9.2), the §0 corrections of W3, and when N2 is fixed.
+- **W1 §9.2, stage C templates:** stopped (`CERT_NO_BOUND`) (03:47 CEST).
+- **W3 §0:** all four corrections adopted (03:47 CEST); applied in `IR_v0_spec_r2_2026-10-20.md`.
+- **N2 is fixed before gate-1 code is written** (03:47 CEST). Candidate: `data/2026-10-20/n2/`.

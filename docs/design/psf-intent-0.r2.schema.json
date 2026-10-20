@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "psf-intent/0",
+  "title": "psf-intent IR v0 (r2, 2026-10-20)",
+  "oneOf": [{"$ref": "#/$defs/intent"}, {"$ref": "#/$defs/decline"}],
+  "$defs": {
+    "decline": {
+      "type": "object", "additionalProperties": false,
+      "required": ["ir", "decline"],
+      "properties": {
+        "ir": {"const": "psf-intent/0"},
+        "decline": {"enum": ["out_of_family"]}
+      }
+    },
+    "intent": {
+      "type": "object", "additionalProperties": false,
+      "required": ["ir", "family", "params", "output", "device"],
+      "properties": {
+        "ir": {"const": "psf-intent/0"},
+        "family": {"enum": ["tfim_chain", "ring_classifier", "rzz_layer"]},
+        "output": {"enum": ["template", "circuit"]},
+        "device": {"type": "string",
+                   "pattern": "^file:[A-Za-z0-9._-][A-Za-z0-9._/-]{0,254}$",
+                   "not": {"pattern": "\\.\\."}},
+        "device_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "twin": {"type": "object", "additionalProperties": false,
+                 "required": ["requested"], "properties": {"requested": {"type": "boolean"}}},
+        "params": {"type": "object"}
+      },
+      "oneOf": [
+        {"properties": {"family": {"const": "ring_classifier"}, "params": {"$ref": "#/$defs/ring_classifier"}}},
+        {"properties": {"family": {"const": "tfim_chain"},      "params": {"$ref": "#/$defs/tfim_chain"}}},
+        {"properties": {"family": {"const": "rzz_layer"},       "params": {"$ref": "#/$defs/rzz_layer"}}}
+      ]
+    },
+    "angle": {"type": "number", "minimum": -6.283185307179586, "maximum": 6.283185307179586},
+    "ring_classifier": {
+      "type": "object", "additionalProperties": false,
+      "required": ["n", "layers", "encoding", "encoding_scale", "readout"],
+      "properties": {
+        "n":              {"type": "integer", "minimum": 2, "maximum": 64},
+        "layers":         {"type": "integer", "minimum": 1, "maximum": 64},
+        "encoding":       {"enum": ["ry"]},
+        "encoding_scale": {"type": "number", "exclusiveMinimum": 0, "maximum": 3.141592653589793},
+        "readout":        {"type": "string", "pattern": "^z[0-9]{1,2}$"}
+      }
+    },
+    "tfim_chain": {
+      "type": "object", "additionalProperties": false,
+      "required": ["n", "J", "h", "dt", "steps", "order"],
+      "properties": {
+        "n":     {"type": "integer", "minimum": 2, "maximum": 100},
+        "J":     {"type": "number", "minimum": -10, "maximum": 10},
+        "h":     {"type": "number", "minimum": -10, "maximum": 10},
+        "dt":    {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+        "steps": {"type": "integer", "minimum": 1, "maximum": 64},
+        "order": {"enum": [1, 2]},
+        "slots": {"enum": ["field", "none"], "default": "field"}
+      }
+    },
+    "rzz_layer": {
+      "type": "object", "additionalProperties": false,
+      "required": ["graph", "n", "angles"],
+      "properties": {
+        "graph":  {"enum": ["chain", "ring"]},
+        "n":      {"type": "integer", "minimum": 2, "maximum": 100},
+        "angles": {"oneOf": [
+          {"const": "slots"},
+          {"type": "array", "items": {"$ref": "#/$defs/angle"}, "minItems": 1, "maxItems": 100}
+        ]}
+      }
+    }
+  }
+}
