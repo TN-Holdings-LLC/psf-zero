@@ -96,13 +96,17 @@ fn run_twin(args: &[String]) -> Result<i32, String> {
     let walk = mps::chain_order(&out.ops)?;
     let site: Map<usize, usize> = walk.iter().enumerate().map(|(i, &q)| (q, i)).collect();
     let n = walk.len();
-    let bound = mps::bound_log2(&out.ops, &site, n);
+    let plan = mps::plan_ops(&out.ops, &site)?;
+    let bound_cz = mps::bound_log2(&out.ops, &site, n);
+    let bound = mps::bound_log2_blocks(&plan, n);
     let bmax = bound.iter().copied().max().unwrap_or(0);
     let mut rep = Map::new();
-    rep.insert("version".into(), J::Str("psfz twin prototype (2026-10-19), MPS, noiseless".into()));
+    rep.insert("version".into(), J::Str("psfz twin prototype (2026-10-20), MPS, noiseless, one split per CZ-rotation-CZ block".into()));
     rep.insert("svd".into(), J::Str(mps::svd_backend().into()));
     rep.insert("sites".into(), J::Num(n as f64));
     rep.insert("bound_log2".into(), J::Arr(bound.iter().map(|&b| J::Num(b as f64)).collect()));
+    rep.insert("bound_log2_cz_count".into(), J::Arr(bound_cz.iter().map(|&b| J::Num(b as f64)).collect()));
+    rep.insert("two_site_gates".into(), J::Num(plan.iter().filter(|o| matches!(o, mps::TwinOp::Two(..))).count() as f64));
     rep.insert("compile_s".into(), J::Num((t1 - t0).as_secs_f64()));
     if bmax >= 63 || (1usize << bmax) > chi_max {
         rep.insert("ok".into(), J::Bool(false));
@@ -112,16 +116,10 @@ fn run_twin(args: &[String]) -> Result<i32, String> {
         return Ok(2);
     }
     let mut st = mps::Mps::zero(n);
-    for (g, q, p) in &out.ops {
-        if g == "cz" {
-            let (a, b) = (site[&q[0]], site[&q[1]]);
-            if a.max(b) - a.min(b) != 1 {
-                return Err("twin: a CZ between sites that are not neighbours".into());
-            }
-            st.cz(a.min(b));
-        } else {
-            let m = mps::gate1(g, p).ok_or(format!("twin: gate {} is not read", g))?;
-            st.apply1(site[&q[0]], &m);
+    for op in &plan {
+        match op {
+            mps::TwinOp::One(s_, m) => st.apply1(*s_, m),
+            mps::TwinOp::Two(s_, w, _) => st.apply2(*s_, w),
         }
     }
     let z = st.z_all();

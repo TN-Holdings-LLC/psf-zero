@@ -55,12 +55,106 @@ pub enum Ir {
     S(usize, M2, Vec<Fac>),
 }
 
-/// A factor of a template run (time order within the run): a fixed matrix, or input slot k (`bool`: its gate is
-/// diagonal for every value).
+/// A factor of a template run (time order within the run): a fixed matrix, or input slot k with its gate's rotation
+/// axis (`AX_X`, `AX_Y`, `AX_Z`: rx, ry, rz / p / u1; `AX_NONE`: u, u2, u3, which have no single axis).
 #[derive(Clone, Debug)]
 pub enum Fac {
     M(M2),
-    S(usize, bool),
+    S(usize, u8),
+}
+
+pub const AX_X: u8 = 0;
+pub const AX_Y: u8 = 1;
+pub const AX_Z: u8 = 2;
+pub const AX_NONE: u8 = 3;
+
+fn slot_axis(name: &str) -> u8 {
+    match name {
+        "rx" => AX_X,
+        "ry" => AX_Y,
+        "rz" | "p" | "u1" => AX_Z,
+        _ => AX_NONE,
+    }
+}
+
+/// Class Z (r5, workplace proposal of 2026-10-20 §1): a run F_0 S_1 F_1 ... S_m F_m (time order) equals
+/// G · T_m ··· T_1 with G = F_m ··· F_0 and T_k = A_k^† S_k A_k, A_k = F_(k-1) ··· F_0. When every slot's axis, turned by
+/// A_k, is ±z (to TOL), the T_k are rz(±θ_k) and the run is G · rz(φ), φ = Σ s_k θ_k, for every value. Reads only the
+/// slots' axes and the fixed factors. Returns (G, [(slot, sign)]) or None. `class_z_left` is the mirror image.
+pub fn class_z(facs: &[Fac]) -> Option<(M2, Vec<(usize, f64)>)> {
+    let mut a = eye();
+    let mut terms = Vec::new();
+    for f in facs {
+        match f {
+            Fac::M(m) => a = mul2(m, &a),
+            Fac::S(k, ax) => {
+                let sig = match *ax {
+                    AX_X => x(),
+                    AX_Y => y(),
+                    AX_Z => z(),
+                    _ => return None,
+                };
+                // A^† σ A = a_x X + a_y Y + a_z Z; a_z = Re(entry 00)
+                let b = mul2(&mul2(&dag2(&a), &sig), &a);
+                let az = b[0].re;
+                if az.abs() < 1.0 - TOL {
+                    return None;
+                }
+                terms.push((*k, az.signum()));
+            }
+        }
+    }
+    Some((a, terms))
+}
+
+/// Class Z on the left (home, 2026-10-20): with B_k = F_m ··· F_k the fixed product after slot k, the run equals
+/// U_m ··· U_1 · G with U_k = B_k S_k B_k^†; when every slot's axis turned by B_k is ±z, the run is rz(φ) · G for every
+/// value. Tried when `class_z` does not hold (a fixed order, not a comparison).
+pub fn class_z_left(facs: &[Fac]) -> Option<(M2, Vec<(usize, f64)>)> {
+    let mut b = eye();
+    let mut terms = Vec::new();
+    for f in facs.iter().rev() {
+        match f {
+            Fac::M(m) => b = mul2(&b, m),
+            Fac::S(k, ax) => {
+                let sig = match *ax {
+                    AX_X => x(),
+                    AX_Y => y(),
+                    AX_Z => z(),
+                    _ => return None,
+                };
+                let c = mul2(&mul2(&b, &sig), &dag2(&b));
+                let az = c[0].re;
+                if az.abs() < 1.0 - TOL {
+                    return None;
+                }
+                terms.push((*k, az.signum()));
+            }
+        }
+    }
+    terms.reverse();
+    Some((b, terms))
+}
+
+/// A class-Z run: (G, terms, true when φ stands on the left of G).
+pub fn class_z_any(facs: &[Fac]) -> Option<(M2, Vec<(usize, f64)>, bool)> {
+    if let Some((g, t)) = class_z(facs) {
+        return Some((g, t, false));
+    }
+    class_z_left(facs).map(|(g, t)| (g, t, true))
+}
+
+/// The fixed ZYZ angle t of G decides the form of a class-Z run: rz only (t = 0), rz x rz (t = π), rz sx rz (t = π/2),
+/// else the general form. Returns the number of pulses.
+fn class_z_pulses(g: &M2) -> usize {
+    let (_, t, _) = zyz(g);
+    if t.abs() < TOL {
+        0
+    } else if (t - PI).abs() < TOL || (t - PI / 2.0).abs() < TOL {
+        1
+    } else {
+        2
+    }
 }
 
 /// An input gate with parameters, made a slot in a template.
@@ -71,13 +165,15 @@ pub struct Slot {
     pub nparams: usize,
 }
 
-/// A run of a template written in the general form: its qubit, its factors, the indices of its rz operations in
-/// `Output::ops` (3, or 2 before a measurement).
+/// A run of a template with slots: its qubit, its factors and, either in the general form the indices of its rz
+/// operations in `Output::ops` (3, or 2 before a measurement), or for a class-Z run (`zform`) the one rz whose angle is
+/// base + Σ sign · θ_slot (None when the run vanishes before a measurement).
 #[derive(Clone, Debug)]
 pub struct RunMap {
     pub qubit: usize,
     pub facs: Vec<Fac>,
     pub rz: Vec<usize>,
+    pub zform: Option<(Option<usize>, f64, Vec<(usize, f64)>)>,
 }
 
 #[derive(Clone, Debug)]
@@ -156,7 +252,7 @@ pub fn lower_input(c: &Circuit, template: bool) -> Result<(Vec<Ir>, Vec<(usize, 
                     if template && !params.is_empty() {
                         let k = slots.len();
                         slots.push(Slot { gate: name.clone(), qubit: qubits[0], nparams: params.len() });
-                        ir.push(Ir::S(qubits[0], m, vec![Fac::S(k, matches!(name.as_str(), "rz" | "p" | "u1"))]));
+                        ir.push(Ir::S(qubits[0], m, vec![Fac::S(k, slot_axis(name))]));
                     } else {
                         ir.push(Ir::U(qubits[0], m));
                     }
@@ -192,7 +288,7 @@ fn is_diagonal(op: &Ir) -> bool {
         Ir::Pr(_, _, k, _) => *k == 2,
         Ir::S(_, _, f) => f.iter().all(|x| match x {
             Fac::M(m) => is_diag(m, TOL),
-            Fac::S(_, d) => *d,
+            Fac::S(_, ax) => *ax == AX_Z,
         }),
     }
 }
@@ -542,7 +638,8 @@ struct Track<'a> {
     d: &'a Device,
     clock: BTreeMap<usize, f64>,
     pend: BTreeMap<usize, M2>,
-    slot: BTreeSet<usize>, // qubits whose pending run has a slot (template): two pulses, whatever the values
+    slot: BTreeSet<usize>, // qubits whose pending run has a slot (template): pulses by class, not by values
+    facs: BTreeMap<usize, Vec<Fac>>, // the pending run's factors (template)
 }
 
 fn pulses(m: &M2) -> usize {
@@ -555,10 +652,19 @@ impl<'a> Track<'a> {
             Nat::U(q, m) => {
                 let cur = self.pend.get(q).copied().unwrap_or_else(eye);
                 self.pend.insert(*q, mul2(m, &cur));
+                if self.slot.contains(q) {
+                    self.facs.entry(*q).or_default().push(Fac::M(*m));
+                } else {
+                    self.facs.insert(*q, vec![Fac::M(mul2(m, &cur))]);
+                }
             }
-            Nat::S(q, m, _) => {
+            Nat::S(q, m, f) => {
                 let cur = self.pend.get(q).copied().unwrap_or_else(eye);
                 self.pend.insert(*q, mul2(m, &cur));
+                if !self.slot.contains(q) {
+                    self.facs.insert(*q, vec![Fac::M(cur)]);
+                }
+                self.facs.entry(*q).or_default().extend(f.iter().cloned());
                 self.slot.insert(*q);
             }
             Nat::Two(_, a, b) => {
@@ -570,12 +676,17 @@ impl<'a> Track<'a> {
                 self.pend.remove(b);
                 self.slot.remove(a);
                 self.slot.remove(b);
+                self.facs.remove(a);
+                self.facs.remove(b);
             }
         }
     }
     fn npulses(&self, q: usize) -> usize {
         if self.slot.contains(&q) {
-            2
+            match self.facs.get(&q).and_then(|f| class_z_any(f)) {
+                Some((g, _, _)) => class_z_pulses(&g),
+                None => 2,
+            }
         } else {
             self.pend.get(&q).map_or(0, pulses)
         }
@@ -669,7 +780,7 @@ fn ecr_forms() -> Vec<(M2, M2, M2, M2)> {
 /// on one qubit was what made psfz longer than the release on some Eagle inputs.)
 fn ecr_adaptive(d: &Device, nat: Vec<Nat>) -> Vec<Nat> {
     let forms = ecr_forms();
-    let mut tr = Track { d, clock: BTreeMap::new(), pend: BTreeMap::new(), slot: BTreeSet::new() };
+    let mut tr = Track { d, clock: BTreeMap::new(), pend: BTreeMap::new(), slot: BTreeSet::new(), facs: BTreeMap::new() };
     let mut e = Vec::new();
     let after = |tr: &Track, q: usize, u: &M2| -> f64 {
         let cur = tr.pend.get(&q).copied().unwrap_or_else(eye);
@@ -778,7 +889,7 @@ pub fn compile(c: &Circuit, d: &Device, l: &Lattice, template: bool) -> Result<O
     }
     // step 5
     let mut nat = Vec::new();
-    let mut track = Track { d, clock: BTreeMap::new(), pend: BTreeMap::new(), slot: BTreeSet::new() };
+    let mut track = Track { d, clock: BTreeMap::new(), pend: BTreeMap::new(), slot: BTreeSet::new(), facs: BTreeMap::new() };
     for op in &blocks {
         let start = nat.len();
         match op {
@@ -865,17 +976,56 @@ pub fn compile(c: &Circuit, d: &Device, l: &Lattice, template: bool) -> Result<O
     let mut pend: BTreeMap<usize, Pend> = BTreeMap::new();
     let mut ops: Vec<(String, Vec<usize>, Vec<f64>)> = Vec::new();
     let mut runs: Vec<RunMap> = Vec::new();
-    let emit = |q: usize, run: Pend, last: bool, ops: &mut Vec<(String, Vec<usize>, Vec<f64>)>, runs: &mut Vec<RunMap>| {
+    let emit = |q: usize, run: Pend, last: bool, ops: &mut Vec<(String, Vec<usize>, Vec<f64>)>, runs: &mut Vec<RunMap>| -> Result<(), String> {
         let (m, facs, has_slot) = run;
         if has_slot {
-            let mut rz = Vec::new();
-            for (n, a) in zsx_general(&m, last) {
-                if n == "rz" {
-                    rz.push(ops.len());
+            if let Some((g, terms, left)) = class_z_any(&facs) {
+                // the run is G · rz(φ) (or rz(φ) · G) for every value; φ at these values from G^† M (or M G^†)
+                let d = if left { mul2(&m, &dag2(&g)) } else { mul2(&dag2(&g), &m) };
+                if d[1].abs() > 1e-9 || d[2].abs() > 1e-9 {
+                    return Err("internal: a class-Z run is not G · rz(φ)".into());
                 }
-                ops.push((n.to_string(), vec![q], a));
+                let phi = (d[3].div(d[0])).arg();
+                let (p, t, l) = zyz(&g);
+                // (name, angle, depends on φ): the forms of zsx with l -> l + φ (right) or p -> p + φ (left)
+                let (r, lf) = (!left, left);
+                let mut seq: Vec<(&str, f64, bool)> = if t.abs() < TOL {
+                    vec![("rz", p + l, true)]
+                } else if (t - PI / 2.0).abs() < TOL {
+                    vec![("rz", l - PI / 2.0, r), ("sx", 0.0, false), ("rz", p + PI / 2.0, lf)]
+                } else if (t - PI).abs() < TOL {
+                    vec![("rz", l + PI, r), ("x", 0.0, false), ("rz", p, lf)]
+                } else {
+                    vec![("rz", l, r), ("sx", 0.0, false), ("rz", t + PI, false), ("sx", 0.0, false), ("rz", p + PI, lf)]
+                };
+                if last && seq.last().map_or(false, |o| o.0 == "rz") {
+                    seq.pop();
+                }
+                let mut zidx = None;
+                let mut base = 0.0;
+                for (n, a, dep) in seq {
+                    if n != "rz" {
+                        ops.push((n.to_string(), vec![q], vec![]));
+                    } else if dep {
+                        zidx = Some(ops.len());
+                        base = a;
+                        ops.push((n.to_string(), vec![q], vec![wrap(a + phi)]));
+                    } else if wrap(a).abs() >= TOL {
+                        // a fixed angle: dropped when zero (structural: it depends on G only)
+                        ops.push((n.to_string(), vec![q], vec![wrap(a)]));
+                    }
+                }
+                runs.push(RunMap { qubit: q, facs, rz: Vec::new(), zform: Some((zidx, base, terms)) });
+            } else {
+                let mut rz = Vec::new();
+                for (n, a) in zsx_general(&m, last) {
+                    if n == "rz" {
+                        rz.push(ops.len());
+                    }
+                    ops.push((n.to_string(), vec![q], a));
+                }
+                runs.push(RunMap { qubit: q, facs, rz, zform: None });
             }
-            runs.push(RunMap { qubit: q, facs, rz });
         } else {
             let mut seq = zsx(&m);
             if last && seq.last().map_or(false, |(n, _)| *n == "rz") {
@@ -885,6 +1035,7 @@ pub fn compile(c: &Circuit, d: &Device, l: &Lattice, template: bool) -> Result<O
                 ops.push((n.to_string(), vec![q], a));
             }
         }
+        Ok(())
     };
     for op in nat {
         match op {
@@ -908,7 +1059,7 @@ pub fn compile(c: &Circuit, d: &Device, l: &Lattice, template: bool) -> Result<O
                 }
                 for q in [a, b] {
                     if let Some(run) = pend.remove(&q) {
-                        emit(q, run, false, &mut ops, &mut runs);
+                        emit(q, run, false, &mut ops, &mut runs)?;
                     }
                 }
                 ops.push((g.to_string(), vec![a, b], vec![]));
@@ -919,7 +1070,7 @@ pub fn compile(c: &Circuit, d: &Device, l: &Lattice, template: bool) -> Result<O
     let rest: Vec<usize> = pend.keys().copied().collect();
     for q in rest {
         let run = pend.remove(&q).unwrap();
-        emit(q, run, true, &mut ops, &mut runs);
+        emit(q, run, true, &mut ops, &mut runs)?;
     }
     let meas = meas.into_iter().map(|(q, cb)| (layout[q], cb)).collect();
     Ok(Output { kind, layout, ops, meas, nc: c.nc, slots, runs })
@@ -1140,6 +1291,37 @@ mod tests {
                 back = mul2(&g, &back);
             }
             assert!(eq_phase(m, &back, 1e-9), "{:?}", zsx(m));
+        }
+    }
+
+    #[test]
+    fn class_z_rules() {
+        let s_ = phase(PI / 2.0);
+        // H rx H = rz: class Z, sign +1
+        let f = vec![Fac::M(h()), Fac::S(0, AX_X), Fac::M(h())];
+        let (g, t) = class_z(&f).expect("H rx H is class Z");
+        assert!(eq_phase(&g, &eye(), 1e-12) && t == vec![(0, 1.0)]);
+        // S rx S^dag turns x into y: not class Z
+        assert!(class_z(&[Fac::M(dag2(&s_)), Fac::S(0, AX_X), Fac::M(s_)]).is_none());
+        // rx rz rx: not class Z; a chain of rz is; u3 never is
+        assert!(class_z(&[Fac::S(0, AX_X), Fac::S(1, AX_Z), Fac::S(2, AX_X)]).is_none());
+        assert!(class_z(&[Fac::S(0, AX_Z), Fac::M(z()), Fac::S(1, AX_Z)]).is_some());
+        assert!(class_z(&[Fac::S(0, AX_NONE)]).is_none());
+        // M · rx with M x M^dag = z: class Z on the left only
+        // (rz(0.4) H) · rx: right axis H x H = z turned by nothing is x (not right); left: rz(.4) H x H rz(-.4) = z
+        let fm = mul2(&rz(0.4), &h());
+        assert!(class_z(&[Fac::S(0, AX_X), Fac::M(fm)]).is_none());
+        let (g, t, left) = class_z_any(&[Fac::S(0, AX_X), Fac::M(fm)]).unwrap();
+        assert!(left);
+        let m = mul2(&fm, &rx(1.1));
+        assert!(eq_phase(&m, &mul2(&rz(t[0].1 * 1.1), &g), 1e-12));
+        // X rz X = rz(-θ): sign -1
+        assert_eq!(class_z(&[Fac::M(x()), Fac::S(0, AX_Z), Fac::M(x())]).unwrap().1, vec![(0, -1.0)]);
+        // the identity G · rz(φ) at random values
+        for th in [0.3, -1.7, 2.9] {
+            let m = mul2(&h(), &mul2(&rx(th), &h()));
+            let (g, _) = class_z(&[Fac::M(h()), Fac::S(0, AX_X), Fac::M(h())]).unwrap();
+            assert!(eq_phase(&m, &mul2(&g, &rz(th)), 1e-12));
         }
     }
 

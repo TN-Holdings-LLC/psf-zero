@@ -176,7 +176,18 @@ impl Mps {
     }
 
     /// CZ on sites s, s + 1 (diagonal: phase -1 on |11>), then the exact split.
+    #[allow(dead_code)]
     pub fn cz(&mut self, s: usize) {
+        let mut w = [ZERO; 16];
+        for i in 0..4 {
+            w[i * 4 + i] = if i == 3 { -ONE } else { ONE };
+        }
+        self.apply2(s, &w);
+    }
+
+    /// A two-site gate W on sites s, s + 1 (row-major 4 x 4, index 2 p + q with p the left site's bit), then one exact
+    /// split.
+    pub fn apply2(&mut self, s: usize, w: &[C; 16]) {
         let (l, m, r) = (self.chi[s], self.chi[s + 1], self.chi[s + 2]);
         // theta[(a, p), (q, b)]
         let mut th = vec![ZERO; l * 2 * 2 * r];
@@ -196,12 +207,22 @@ impl Mps {
                 }
             }
         }
+        let mut th2 = vec![ZERO; l * 4 * r];
         for a in 0..l {
             for b in 0..r {
-                let k = ((a * 2 + 1) * 2 + 1) * r + b;
-                th[k] = -th[k];
+                for i in 0..4 {
+                    let mut acc = ZERO;
+                    for j in 0..4 {
+                        let wij = w[i * 4 + j];
+                        if wij.abs() != 0.0 {
+                            acc = acc + wij * th[(a * 4 + j) * r + b];
+                        }
+                    }
+                    th2[(a * 4 + i) * r + b] = acc;
+                }
             }
         }
+        let th = th2;
         // columns of the (l*2) x (2*r) matrix
         let rows = l * 2;
         let cols = 2 * r;
@@ -233,16 +254,18 @@ impl Mps {
         self.max_chi = self.max_chi.max(keep);
     }
 
-    /// <Z> of every site (environments from both ends; the state's norm divided out).
+    /// <Z> of every site (environments from both ends; the state's norm divided out). Each environment step is two
+    /// contractions of order chi^3 (2026-10-20: was one of order chi^4).
     pub fn z_all(&self) -> Vec<f64> {
         let n = self.n;
-        // left[s]: (chi[s] x chi[s]) environment of sites < s
+        // left[s][a * l + a2]: environment of sites < s (bra index a, ket index a2)
         let mut left: Vec<Vec<C>> = vec![vec![ONE]];
         for s in 0..n {
             let (l, r) = (self.chi[s], self.chi[s + 1]);
             let e = &left[s];
-            let mut ne = vec![ZERO; r * r];
             let t = &self.t[s];
+            // tmp[(a, p), b2] = sum_a2 e[a, a2] t[a2, p, b2]
+            let mut tmp = vec![ZERO; l * 2 * r];
             for a in 0..l {
                 for a2 in 0..l {
                     let w = e[a * l + a2];
@@ -250,36 +273,56 @@ impl Mps {
                         continue;
                     }
                     for p in 0..2 {
-                        for b in 0..r {
-                            let x = t[(a * 2 + p) * r + b].conj() * w;
-                            for b2 in 0..r {
-                                ne[b * r + b2] = ne[b * r + b2] + x * t[(a2 * 2 + p) * r + b2];
-                            }
+                        for b2 in 0..r {
+                            tmp[(a * 2 + p) * r + b2] = tmp[(a * 2 + p) * r + b2] + w * t[(a2 * 2 + p) * r + b2];
                         }
+                    }
+                }
+            }
+            // ne[b, b2] = sum_(a, p) conj(t[a, p, b]) tmp[(a, p), b2]
+            let mut ne = vec![ZERO; r * r];
+            for ap in 0..l * 2 {
+                for b in 0..r {
+                    let x = t[ap * r + b].conj();
+                    if x.abs() == 0.0 {
+                        continue;
+                    }
+                    for b2 in 0..r {
+                        ne[b * r + b2] = ne[b * r + b2] + x * tmp[ap * r + b2];
                     }
                 }
             }
             left.push(ne);
         }
+        // right[s][b * r + b2]: environment of sites >= s
         let mut right: Vec<Vec<C>> = vec![vec![ZERO]; n + 1];
         right[n] = vec![ONE];
         for s in (0..n).rev() {
             let (l, r) = (self.chi[s], self.chi[s + 1]);
-            let e = right[s + 1].clone();
-            let mut ne = vec![ZERO; l * l];
+            let e = &right[s + 1];
             let t = &self.t[s];
-            for b in 0..r {
-                for b2 in 0..r {
-                    let w = e[b * r + b2];
-                    if w.abs() == 0.0 {
-                        continue;
+            // tmp[(a2, p), b] = sum_b2 t[a2, p, b2] e[b, b2]
+            let mut tmp = vec![ZERO; l * 2 * r];
+            for a2p in 0..l * 2 {
+                for b in 0..r {
+                    let mut acc = ZERO;
+                    for b2 in 0..r {
+                        acc = acc + t[a2p * r + b2] * e[b * r + b2];
                     }
-                    for p in 0..2 {
-                        for a in 0..l {
-                            let x = t[(a * 2 + p) * r + b].conj() * w;
-                            for a2 in 0..l {
-                                ne[a * l + a2] = ne[a * l + a2] + x * t[(a2 * 2 + p) * r + b2];
-                            }
+                    tmp[a2p * r + b] = acc;
+                }
+            }
+            // ne[a, a2] = sum_(p, b) conj(t[a, p, b]) tmp[(a2, p), b]
+            let mut ne = vec![ZERO; l * l];
+            for a in 0..l {
+                for p in 0..2 {
+                    for b in 0..r {
+                        let x = t[(a * 2 + p) * r + b].conj();
+                        if x.abs() == 0.0 {
+                            continue;
+                        }
+                        for a2 in 0..l {
+                            ne[a * l + a2] = ne[a * l + a2] + x * tmp[(a2 * 2 + p) * r + b];
                         }
                     }
                 }
@@ -290,21 +333,37 @@ impl Mps {
         (0..n).map(|s| {
             let (l, r) = (self.chi[s], self.chi[s + 1]);
             let t = &self.t[s];
-            let mut acc = ZERO;
+            let e = &left[s];
+            // tmp[(a, p), b2] = sum_a2 e[a, a2] t[a2, p, b2]; then sum conj(t[a, p, b]) sign(p) tmp right[b, b2]
+            let mut tmp = vec![ZERO; l * 2 * r];
             for a in 0..l {
                 for a2 in 0..l {
-                    let w = left[s][a * l + a2];
+                    let w = e[a * l + a2];
                     if w.abs() == 0.0 {
                         continue;
                     }
                     for p in 0..2 {
-                        let sgn = if p == 0 { 1.0 } else { -1.0 };
-                        for b in 0..r {
-                            let x = t[(a * 2 + p) * r + b].conj() * w;
-                            for b2 in 0..r {
-                                acc = acc + (x * t[(a2 * 2 + p) * r + b2] * right[s + 1][b * r + b2]).scale(sgn);
-                            }
+                        for b2 in 0..r {
+                            tmp[(a * 2 + p) * r + b2] = tmp[(a * 2 + p) * r + b2] + w * t[(a2 * 2 + p) * r + b2];
                         }
+                    }
+                }
+            }
+            let rt = &right[s + 1];
+            let mut acc = ZERO;
+            for a in 0..l {
+                for p in 0..2 {
+                    let sgn = if p == 0 { 1.0 } else { -1.0 };
+                    for b in 0..r {
+                        let x = t[(a * 2 + p) * r + b].conj();
+                        if x.abs() == 0.0 {
+                            continue;
+                        }
+                        let mut inner = ZERO;
+                        for b2 in 0..r {
+                            inner = inner + tmp[(a * 2 + p) * r + b2] * rt[b * r + b2];
+                        }
+                        acc = acc + (x * inner).scale(sgn);
                     }
                 }
             }
@@ -353,6 +412,165 @@ pub fn bound_log2(ops: &[(String, Vec<usize>, Vec<f64>)], site: &std::collection
         if g == "cz" {
             let (a, b) = (site[&q[0]], site[&q[1]]);
             c[a.min(b)] += 1;
+        }
+    }
+    (0..n.saturating_sub(1)).map(|i| c[i].min(i + 1).min(n - i - 1)).collect()
+}
+
+/// One operation of the twin: a single-qubit matrix on a site, or a two-site gate on (s, s + 1) with its operator
+/// Schmidt rank.
+pub enum TwinOp {
+    One(usize, M2),
+    Two(usize, [C; 16], usize),
+}
+
+/// The operator Schmidt rank of a 4 x 4 two-qubit gate (singular values of its realignment above 1e-12 of the largest).
+pub fn schmidt_rank(w: &[C; 16]) -> usize {
+    // R[(p, p'), (q, q')] = W[(p, q), (p', q')]
+    let cols: Vec<Vec<C>> = (0..4).map(|qq| (0..4).map(|pp| {
+        let (p, p2, q, q2) = (pp >> 1, pp & 1, qq >> 1, qq & 1);
+        w[(2 * p + q) * 4 + (2 * p2 + q2)]
+    }).collect()).collect();
+    let (_, sig, _) = svd_jacobi(cols);
+    let smax = sig.iter().cloned().fold(0.0, f64::max);
+    sig.iter().filter(|&&x| x > 1e-12 * smax).count()
+}
+
+/// The twin's operations from a compiled chain circuit (workplace proposal of 2026-10-20 §2): two CZ on the same
+/// edge with, between them, only single-qubit operations on one end and only rz on the other become one two-site gate
+/// W = CZ (D ⊗ U) CZ, applied with one split at its final bond dimension. Read from the gate list (structural).
+pub fn plan_ops(ops: &[(String, Vec<usize>, Vec<f64>)], site: &std::collections::BTreeMap<usize, usize>) -> Result<Vec<TwinOp>, String> {
+    let mut used = vec![false; ops.len()];
+    let mut out = Vec::new();
+    let czm = {
+        let mut w = [ZERO; 16];
+        for i in 0..4 {
+            w[i * 4 + i] = if i == 3 { -ONE } else { ONE };
+        }
+        w
+    };
+    let m1 = |k: usize| -> Result<M2, String> {
+        gate1(&ops[k].0, &ops[k].2).ok_or(format!("twin: gate {} is not read", ops[k].0))
+    };
+    for i in 0..ops.len() {
+        if used[i] {
+            continue;
+        }
+        used[i] = true;
+        let (g, q, _) = &ops[i];
+        if g != "cz" {
+            out.push(TwinOp::One(site[&q[0]], m1(i)?));
+            continue;
+        }
+        let (a, b) = (q[0], q[1]);
+        // look for CZ (ops on one end) CZ on the same edge; try both ends as the one with general operations
+        let mut found: Option<(usize, Vec<usize>, Vec<usize>, usize)> = None; // (j, on x, on y, x)
+        for x_ in [b, a] {
+            let (mut on_x, mut on_y) = (Vec::new(), Vec::new());
+            let mut ok = false;
+            let mut jj = 0;
+            for k in (i + 1)..ops.len() {
+                if used[k] {
+                    continue;
+                }
+                let (gk, qk, _) = &ops[k];
+                let touches = qk.contains(&a) || qk.contains(&b);
+                if !touches {
+                    continue;
+                }
+                if gk == "cz" {
+                    if (qk[0] == a && qk[1] == b) || (qk[0] == b && qk[1] == a) {
+                        ok = true;
+                        jj = k;
+                    }
+                    break;
+                }
+                if qk.len() != 1 {
+                    break;
+                }
+                if qk[0] == x_ {
+                    on_x.push(k);
+                } else if gk == "rz" {
+                    on_y.push(k);
+                } else {
+                    break;
+                }
+            }
+            if ok {
+                found = Some((jj, on_x, on_y, x_));
+                break;
+            }
+        }
+        let (sa, sb) = (site[&a], site[&b]);
+        if sa.max(sb) - sa.min(sb) != 1 {
+            return Err("twin: a CZ between sites that are not neighbours".into());
+        }
+        let left_is_a = sa < sb;
+        let w = match found {
+            None => czm,
+            Some((j, on_x, on_y, x_)) => {
+                let mut ux = eye();
+                for k in &on_x {
+                    ux = mul2(&m1(*k)?, &ux);
+                    used[*k] = true;
+                }
+                let mut dy = eye();
+                for k in &on_y {
+                    dy = mul2(&m1(*k)?, &dy);
+                    used[*k] = true;
+                }
+                used[j] = true;
+                // W on (a, b): CZ · (op on a ⊗ op on b) · CZ
+                let (ua, ub) = if x_ == a { (ux, dy) } else { (dy, ux) };
+                let mut mid = [ZERO; 16];
+                for pa in 0..2 {
+                    for pb in 0..2 {
+                        for qa in 0..2 {
+                            for qb in 0..2 {
+                                mid[(2 * pa + pb) * 4 + (2 * qa + qb)] = ua[2 * pa + qa] * ub[2 * pb + qb];
+                            }
+                        }
+                    }
+                }
+                let sgn = |i: usize| if i == 3 { -ONE } else { ONE };
+                let mut w = [ZERO; 16];
+                for r in 0..4 {
+                    for c in 0..4 {
+                        w[r * 4 + c] = sgn(r) * mid[r * 4 + c] * sgn(c);
+                    }
+                }
+                w
+            }
+        };
+        // to (left site, right site) order
+        let w = if left_is_a {
+            w
+        } else {
+            let mut v = [ZERO; 16];
+            for p in 0..2 {
+                for q in 0..2 {
+                    for p2 in 0..2 {
+                        for q2 in 0..2 {
+                            v[(2 * q + p) * 4 + (2 * q2 + p2)] = w[(2 * p + q) * 4 + (2 * p2 + q2)];
+                        }
+                    }
+                }
+            }
+            v
+        };
+        let r = schmidt_rank(&w);
+        out.push(TwinOp::Two(sa.min(sb), w, r));
+    }
+    Ok(out)
+}
+
+/// The formula bound of every cut's bond dimension (log2) from the twin's own operations: min(i + 1, n - i - 1,
+/// Σ over two-site gates on cut i of ceil(log2 rank)). Gate 1 (IR T3) must use the same count.
+pub fn bound_log2_blocks(plan: &[TwinOp], n: usize) -> Vec<usize> {
+    let mut c = vec![0usize; n.saturating_sub(1)];
+    for op in plan {
+        if let TwinOp::Two(s, _, r) = op {
+            c[*s] += (*r as f64).log2().ceil() as usize;
         }
     }
     (0..n.saturating_sub(1)).map(|i| c[i].min(i + 1).min(n - i - 1)).collect()

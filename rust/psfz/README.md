@@ -57,6 +57,12 @@ qubits (`data/2026-10-19/psfz_mps_twin_check/`). The SVD is pure Rust by default
 lapack` links a system LAPACK (zgesdd) instead, for the pod (`PSFZ_LAPACK_LIB`, default `liblapack.so.3`;
 `PSFZ_LAPACK_DIR`): 3.6-6.6 x faster on the same check. The compiler itself never uses it. Rings and noise not yet.
 
+**M1 (2026-10-20, exploratory):** templates write class-Z runs (slots that turn into ±z rotations, on either side of
+the fixed factors) in short forms, so TFIM templates cost no more sx than r4. The twin applies CZ-rotation-CZ blocks
+as one two-site gate with one split, and bounds each cut by the blocks' operator Schmidt ranks; the bound equals the
+bond dimension reached on TFIM. Expectation values are now chi^3 per site. With `lapack`, an 80-qubit 6-step TFIM
+chain takes 0.71 s on one core (`data/2026-10-20/psfz_m1_check/`).
+
 **Scope (r1-r4):** every qubit in one chain or one even ring of two-qubit gates; gates id x y z h s sdg t tdg sx sxdg rx
 ry rz p u1 u2 u3 u, cx cz cp crz rzz rxx ryy; measurements only at the end. Not yet: other graphs, fractional
 gates (rzz/rx natives), templates, mid-circuit measurement.

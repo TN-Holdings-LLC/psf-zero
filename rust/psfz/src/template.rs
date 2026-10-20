@@ -4,6 +4,8 @@
 //! ZYZ angles written in the general form. No compilation, no decision, no search.
 
 use crate::compile::{one, zsx_general, Fac, Output};
+#[allow(unused_imports)]
+use crate::linalg::wrap;
 use crate::json::J;
 use crate::linalg::*;
 use std::collections::BTreeMap;
@@ -60,6 +62,14 @@ pub fn to_json(out: &Output, device: &str) -> J {
             let mut o = BTreeMap::new();
             o.insert("qubit".into(), J::Num(r.qubit as f64));
             o.insert("rz".into(), J::Arr(r.rz.iter().map(|&k| J::Num(k as f64)).collect()));
+            if let Some((idx, base, terms)) = &r.zform {
+                // class Z: ops[idx] = rz(base + Σ sign · θ_slot); idx null when the run vanished before a measurement
+                let mut z = BTreeMap::new();
+                z.insert("rz".into(), idx.map_or(J::Null, |k| J::Num(k as f64)));
+                z.insert("base".into(), J::Num(*base));
+                z.insert("terms".into(), J::Arr(terms.iter().map(|(k, sg)| J::Arr(vec![J::Num(*k as f64), J::Num(*sg)])).collect()));
+                o.insert("zform".into(), J::Obj(z));
+            }
             o.insert("factors".into(), J::Arr(r.facs.iter().map(|f| match f {
                 Fac::S(k, _) => J::Num(*k as f64),
                 Fac::M(m) => m2_json(m),
@@ -96,6 +106,18 @@ pub fn bind(t: &J, values: &[Vec<f64>]) -> Result<Vec<(String, Vec<usize>, Vec<f
     }
     let runs = t.get("runs").and_then(|v| v.arr()).ok_or("template: no runs")?;
     for r in runs {
+        if let Some(z) = r.get("zform") {
+            if let Some(k) = z.get("rz").and_then(|v| v.num()) {
+                let mut a = z.get("base").and_then(|v| v.num()).ok_or("template: zform base")?;
+                for t in z.get("terms").and_then(|v| v.arr()).ok_or("template: zform terms")? {
+                    let t = t.arr().ok_or("template: zform term")?;
+                    let slot = t[0].num().ok_or("template: zform slot")? as usize;
+                    a += t[1].num().ok_or("template: zform sign")? * values[slot][0];
+                }
+                ops[k as usize].2 = vec![wrap(a)];
+            }
+            continue;
+        }
         let rz: Vec<usize> = r.get("rz").and_then(|v| v.arr()).ok_or("template: run rz")?
             .iter().map(|x| x.num().unwrap_or(0.0) as usize).collect();
         let mut m = eye();

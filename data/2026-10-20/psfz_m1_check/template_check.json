@@ -1,0 +1,366 @@
+[
+ {
+  "device": "FakeFez",
+  "family": "ring_classifier",
+  "n": 12,
+  "L": 1,
+  "slots": 48,
+  "runs": 24,
+  "ops": 132,
+  "s1_fixed_shape": true,
+  "max_prob_diff": 4.163336342344337e-17,
+  "max_angle_diff": 3.469446951953614e-18,
+  "template_counts": {
+   "sx": 48,
+   "x": 0,
+   "cz": 12,
+   "rz": 72
+  },
+  "r4_counts": {
+   "sx": 48,
+   "x": 0,
+   "cz": 12,
+   "rz": 60
+  },
+  "bind_s": 5.5e-05,
+  "build_s": 0.000543147
+ },
+ {
+  "device": "FakeFez",
+  "family": "ring_classifier",
+  "n": 12,
+  "L": 2,
+  "slots": 84,
+  "runs": 36,
+  "ops": 216,
+  "s1_fixed_shape": true,
+  "max_prob_diff": 5.551115123125783e-17,
+  "max_angle_diff": 4.0892098500626155e-18,
+  "template_counts": {
+   "sx": 72,
+   "x": 0,
+   "cz": 24,
+   "rz": 120
+  },
+  "r4_counts": {
+   "sx": 72,
+   "x": 0,
+   "cz": 24,
+   "rz": 100
+  },
+  "bind_s": 5.8e-05,
+  "build_s": 0.000705999
+ },
+ {
+  "device": "FakeFez",
+  "family": "ring_classifier",
+  "n": 12,
+  "L": 8,
+  "slots": 300,
+  "runs": 108,
+  "ops": 720,
+  "s1_fixed_shape": true,
+  "max_prob_diff": 2.42861286636753e-17,
+  "max_angle_diff": 6.938893903907228e-18,
+  "template_counts": {
+   "sx": 216,
+   "x": 0,
+   "cz": 96,
+   "rz": 408
+  },
+  "r4_counts": {
+   "sx": 216,
+   "x": 0,
+   "cz": 96,
+   "rz": 347
+  },
+  "bind_s": 0.000253,
+  "build_s": 0.002052685
+ },
+ {
+  "device": "FakeFez",
+  "family": "ring_classifier",
+  "n": 12,
+  "L": 16,
+  "slots": 588,
+  "runs": 204,
+  "ops": 1392,
+  "s1_fixed_shape": true,
+  "max_prob_diff": 1.3444106938820255e-17,
+  "max_angle_diff": 6.938893903907228e-18,
+  "template_counts": {
+   "sx": 408,
+   "x": 0,
+   "cz": 192,
+   "rz": 792
+  },
+  "r4_counts": {
+   "sx": 408,
+   "x": 0,
+   "cz": 192,
+   "rz": 682
+  },
+  "bind_s": 0.000343,
+  "build_s": 0.005604181
+ },
+ {
+  "device": "FakeFez",
+  "family": "tfim_chain",
+  "n": 6,
+  "steps": 3,
+  "slots": 24,
+  "runs": 18,
+  "ops": 210,
+  "s1_fixed_shape": true,
+  "max_prob_diff": 1.6653345369377348e-16,
+  "max_angle_diff": 2.220446049250313e-16,
+  "template_counts": {
+   "sx": 69,
+   "x": 0,
+   "cz": 30,
+   "rz": 111
+  },
+  "r4_counts": {
+   "sx": 69,
+   "x": 0,
+   "cz": 30,
+   "rz": 111
+  },
+  "bind_s": 5.4e-05,
+  "build_s": 0.00054404
+ },
+ {
+  "device": "FakeFez",
+  "family": "tfim_chain",
+  "n": 10,
+  "steps": 4,
+  "slots": 50,
+  "runs": 40,
+  "ops": 493,
+  "s1_fixed_shape": true,
+  "max_prob_diff": 2.3852447794681098e-17,
+  "max_angle_diff": 4.440892098500626e-16,
+  "template_counts": {
+   "sx": 159,
+   "x": 0,
+   "cz": 72,
+   "rz": 262
+  },
+  "r4_counts": {
+   "sx": 159,
+   "x": 0,
+   "cz": 72,
+   "rz": 262
+  },
+  "bind_s": 7.7e-05,
+  "build_s": 0.00053499
+ },
+ {
+  "device": "FakeFez",
+  "family": "tfim_chain",
+  "n": 16,
+  "steps": 3,
+  "slots": 64,
+  "runs": 48,
+  "ops": 625,
+  "s1_fixed_shape": true,
+  "max_prob_diff": 4.9873299934333204e-18,
+  "max_angle_diff": 2.220446049250313e-16,
+  "template_counts": {
+   "sx": 204,
+   "x": 0,
+   "cz": 90,
+   "rz": 331
+  },
+  "r4_counts": {
+   "sx": 204,
+   "x": 0,
+   "cz": 90,
+   "rz": 331
+  },
+  "bind_s": 0.000108,
+  "build_s": 0.000910993
+ },
+ {
+  "device": "FakeTorino",
+  "family": "ring_classifier",
+  "n": 12,
+  "L": 1,
+  "slots": 48,
+  "runs": 24,
+  "ops": 132,
+  "s1_fixed_shape": true,
+  "max_prob_diff": 4.163336342344337e-17,
+  "max_angle_diff": 0.0,
+  "template_counts": {
+   "sx": 48,
+   "x": 0,
+   "cz": 12,
+   "rz": 72
+  },
+  "r4_counts": {
+   "sx": 48,
+   "x": 0,
+   "cz": 12,
+   "rz": 60
+  },
+  "bind_s": 5e-05,
+  "build_s": 0.003189167
+ },
+ {
+  "device": "FakeTorino",
+  "family": "ring_classifier",
+  "n": 12,
+  "L": 2,
+  "slots": 84,
+  "runs": 36,
+  "ops": 216,
+  "s1_fixed_shape": true,
+  "max_prob_diff": 3.8163916471489756e-17,
+  "max_angle_diff": 1.821580299874833e-18,
+  "template_counts": {
+   "sx": 72,
+   "x": 0,
+   "cz": 24,
+   "rz": 120
+  },
+  "r4_counts": {
+   "sx": 72,
+   "x": 0,
+   "cz": 24,
+   "rz": 104
+  },
+  "bind_s": 7e-05,
+  "build_s": 0.004663962
+ },
+ {
+  "device": "FakeTorino",
+  "family": "ring_classifier",
+  "n": 12,
+  "L": 8,
+  "slots": 300,
+  "runs": 108,
+  "ops": 720,
+  "s1_fixed_shape": true,
+  "max_prob_diff": 1.6479873021779667e-17,
+  "max_angle_diff": 6.938893903907228e-18,
+  "template_counts": {
+   "sx": 216,
+   "x": 0,
+   "cz": 96,
+   "rz": 408
+  },
+  "r4_counts": {
+   "sx": 216,
+   "x": 0,
+   "cz": 96,
+   "rz": 355
+  },
+  "bind_s": 0.000153,
+  "build_s": 0.005188275
+ },
+ {
+  "device": "FakeTorino",
+  "family": "ring_classifier",
+  "n": 12,
+  "L": 16,
+  "slots": 588,
+  "runs": 204,
+  "ops": 1392,
+  "s1_fixed_shape": true,
+  "max_prob_diff": 3.903127820947816e-17,
+  "max_angle_diff": 4.0892098500626155e-18,
+  "template_counts": {
+   "sx": 408,
+   "x": 0,
+   "cz": 192,
+   "rz": 792
+  },
+  "r4_counts": {
+   "sx": 408,
+   "x": 0,
+   "cz": 192,
+   "rz": 684
+  },
+  "bind_s": 0.00033,
+  "build_s": 0.008851643
+ },
+ {
+  "device": "FakeTorino",
+  "family": "tfim_chain",
+  "n": 6,
+  "steps": 3,
+  "slots": 24,
+  "runs": 18,
+  "ops": 210,
+  "s1_fixed_shape": true,
+  "max_prob_diff": 1.0061396160665481e-16,
+  "max_angle_diff": 2.220446049250313e-16,
+  "template_counts": {
+   "sx": 69,
+   "x": 0,
+   "cz": 30,
+   "rz": 111
+  },
+  "r4_counts": {
+   "sx": 69,
+   "x": 0,
+   "cz": 30,
+   "rz": 111
+  },
+  "bind_s": 3.1e-05,
+  "build_s": 0.000514092
+ },
+ {
+  "device": "FakeTorino",
+  "family": "tfim_chain",
+  "n": 10,
+  "steps": 4,
+  "slots": 50,
+  "runs": 40,
+  "ops": 493,
+  "s1_fixed_shape": true,
+  "max_prob_diff": 6.765421556309548e-17,
+  "max_angle_diff": 2.220446049250313e-16,
+  "template_counts": {
+   "sx": 159,
+   "x": 0,
+   "cz": 72,
+   "rz": 262
+  },
+  "r4_counts": {
+   "sx": 159,
+   "x": 0,
+   "cz": 72,
+   "rz": 262
+  },
+  "bind_s": 0.000141,
+  "build_s": 0.00059628
+ },
+ {
+  "device": "FakeTorino",
+  "family": "tfim_chain",
+  "n": 16,
+  "steps": 3,
+  "slots": 64,
+  "runs": 48,
+  "ops": 625,
+  "s1_fixed_shape": true,
+  "max_prob_diff": 2.2768245622195593e-18,
+  "max_angle_diff": 2.220446049250313e-16,
+  "template_counts": {
+   "sx": 204,
+   "x": 0,
+   "cz": 90,
+   "rz": 331
+  },
+  "r4_counts": {
+   "sx": 204,
+   "x": 0,
+   "cz": 90,
+   "rz": 331
+  },
+  "bind_s": 9.2e-05,
+  "build_s": 0.000777893
+ }
+]
