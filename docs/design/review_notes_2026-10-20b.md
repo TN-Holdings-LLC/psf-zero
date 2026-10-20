@@ -136,3 +136,13 @@ Then the gate is built to the specification, not to the test set, as with the ow
 is 19. 4 The decline record: yes. Stop E relies on a person noticing the mismatch, which is the weakest of the stops.
 5 Gate 1 enforces the ranges whatever the decoder does; decoder enforcement is optional. 6 F4 accepted, labelled
 synthetic and test-only. 7 The owner fixes the set, before gate-1 code exists.
+
+## Owner decisions (2026-10-20, 03:44 CEST)
+
+- **W1 §5, the binding seed:** drawn after the template is fixed. The template and reference hashes are recorded
+  first, then a fresh 256-bit nonce from the operating system; seed = SHA-256(template ‖ reference ‖ nonce), and the
+  nonce is written into the certificate.
+- **W2 §6.3, χ_max of the noisy twin:** 128 to start (about 0.4 s per trajectory at that bond, measured above).
+- **W3 §4.4, the decline record:** adopted. `{"ir": "psf-intent/0", "decline": "out_of_family"}` ends out-of-family
+  requests at the model's own record (stop D) instead of the echo (stop E).
+- Not yet decided: stage C templates (W1 §9.2), the §0 corrections of W3, and when N2 is fixed.
