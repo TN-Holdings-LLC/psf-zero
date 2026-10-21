@@ -1,0 +1,11 @@
+[package]
+name = "psfbind"
+version = "0.1.0"
+edition = "2021"
+description = "PSF-Zero template binding in Rust: the closed-form angles of a compiled template for many slot values at once (C ABI, no dependencies)"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[profile.release]
+opt-level = 3
