@@ -9,6 +9,10 @@
 //! line (the same order of products), so the results agree to rounding (checked in TOQB's tests).
 
 use std::f64::consts::PI;
+use std::ffi::{c_char, CStr, CString};
+
+pub mod json;
+pub mod ring;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct C {
@@ -29,9 +33,21 @@ impl C {
     fn sub(self, o: C) -> C {
         C::new(self.re - o.re, self.im - o.im)
     }
+    /// Division as CPython's `_Py_c_quot` (Smith's method), so that the results are Python's to the last bit.
     fn div(self, o: C) -> C {
-        let d = o.re * o.re + o.im * o.im;
-        C::new((self.re * o.re + self.im * o.im) / d, (self.im * o.re - self.re * o.im) / d)
+        let (abr, abi) = (o.re.abs(), o.im.abs());
+        if abr >= abi {
+            if abr == 0.0 {
+                return C::new(0.0, 0.0);
+            }
+            let ratio = o.im / o.re;
+            let denom = o.re + o.im * ratio;
+            C::new((self.re + self.im * ratio) / denom, (self.im - self.re * ratio) / denom)
+        } else {
+            let ratio = o.re / o.im;
+            let denom = o.re * ratio + o.im;
+            C::new((self.re * ratio + self.im) / denom, (self.im * ratio - self.re) / denom)
+        }
     }
     fn abs(self) -> f64 {
         self.re.hypot(self.im)
@@ -39,18 +55,25 @@ impl C {
     fn phase(self) -> f64 {
         self.im.atan2(self.re)
     }
-    /// Principal square root, as Python's cmath.sqrt.
+    /// Principal square root, as CPython's cmath.sqrt (finite, non-tiny arguments).
     fn sqrt(self) -> C {
         if self.re == 0.0 && self.im == 0.0 {
             return C::new(0.0, self.im);
         }
-        let r = self.abs();
-        let a = ((r + self.re.abs()) / 2.0).sqrt();
-        if self.re >= 0.0 {
-            C::new(a, self.im / (2.0 * a))
+        let (ax, ay) = (self.re.abs(), self.im.abs());
+        let s = if ax < f64::MIN_POSITIVE && ay < f64::MIN_POSITIVE {
+            // CM_SCALE_UP = 2 * (DBL_MANT_DIG / 2) + 1 = 53, CM_SCALE_DOWN = -27
+            let ax = ax * 2f64.powi(53);
+            (ax + ax.hypot(ay * 2f64.powi(53))).sqrt() * 2f64.powi(-27)
         } else {
-            let b = self.im.abs() / (2.0 * a);
-            C::new(b, if self.im >= 0.0 { a } else { -a })
+            let ax = ax / 8.0;
+            2.0 * (ax + ax.hypot(ay / 8.0)).sqrt()
+        };
+        let d = ay / (2.0 * s);
+        if self.re >= 0.0 {
+            C::new(s, d.copysign(self.im))
+        } else {
+            C::new(d, s.copysign(self.im))
         }
     }
     fn expi(t: f64) -> C {
@@ -160,6 +183,25 @@ pub unsafe extern "C" fn psfbind_angles(
         }
     }
     0
+}
+
+/// C ABI: the ring template (`ring::build`) from a JSON string; the answer is a JSON string the caller frees with
+/// `psfbind_free`.
+#[no_mangle]
+pub unsafe extern "C" fn psfbind_ring_template(input: *const c_char) -> *mut c_char {
+    let s = match CStr::from_ptr(input).to_str() {
+        Ok(s) => ring::build(s),
+        Err(_) => "{\"status\":\"refused\",\"reason\":\"the input is not UTF-8\"}".to_string(),
+    };
+    CString::new(s).unwrap_or_default().into_raw()
+}
+
+/// Frees a string returned by `psfbind_ring_template`.
+#[no_mangle]
+pub unsafe extern "C" fn psfbind_free(p: *mut c_char) {
+    if !p.is_null() {
+        drop(CString::from_raw(p));
+    }
 }
 
 #[cfg(test)]
