@@ -12,8 +12,9 @@ PSF-Zero's ring template in Rust, through a C ABI (no dependencies; Python calls
   and item 84's choice between the two schedules (`_better`: a missing operation or error >= 1 loses, then the
   as-soon-as-possible duration, then the CZ count). JSON in (the device's Target entries, the input circuit, the fixed
   CZ / SWAP blocks as a22's `_block_ops` decomposes them), JSON out (the template; or "none", the Python's None; or
-  "refused" with the reason, for a case not ported: VF2 placement, a ring that embeds, a circuit that is not a CZ
-  ring), freed with `psfbind_free`.
+  "refused" with the reason, for a case not ported: a ring that embeds, a circuit that is not a CZ ring; or
+  "out_of_scope" where the Python would place the ring by VF2's search: outside the scope by the owner's rule of
+  2026-10-21, formula only, never built), freed with `psfbind_free`.
 
     cargo build --release     # target/release/libpsfbind.so
     cargo test                # ZYZ, the principal square root, the special cases, the schedules
@@ -25,5 +26,5 @@ difference). Checked there, 2026-10-21:
 - binding: bit-identical to the Python on random points (L 8; before the CPython division and square root: 1.8e-15);
   63 times faster per point (0.14 ms against 8.8 ms on the cloud CPU, L 8);
 - building: bit-identical templates on the stand-in (L 2, 8, 16; both schedules alone too), 146 of 150 cases identical
-  over five devices with random failed elements, 4 refused (VF2 placement), none different; a device-style run gives
+  over five devices with random failed elements, none different (the other 4 would need VF2's search: out of scope); a device-style run gives
   the same record and the same QPY (circuit names aside); 0.04 s against 0.15 s per template (L 8, one per run).

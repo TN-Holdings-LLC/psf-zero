@@ -13,12 +13,13 @@
 //! cz / swap, computed and checked in Python: constants given to the builder, not chosen by it), max_error, and
 //! optionally the one schedule to build ("n2" or "q4").
 //!
-//! Output: {"status": "built" | "none" | "refused", ...}. "none" is the Python's None (no line, no schedule).
-//! "refused" names what is not ported, and the caller then builds with the Python: a circuit not read as a CZ ring
-//! classifier (item 41's other diagonal ring gates; the compile template of item 100), a ring that embeds in the
-//! working couplers (item 42; decided here on the written CZ edges by an exact cycle search, where the Python uses item
-//! 91's reader and VF2 -- they agree on the tested inputs), a device without cz, a placement that needs VF2 (no snake
-//! piece long enough), a block missing from the table, an ambiguous bridge in the snake.
+//! Output: {"status": "built" | "none" | "refused" | "out_of_scope", ...}. "none" is the Python's None (no line, no
+//! schedule). "refused" names what is not ported, and the caller then builds with the Python: a circuit not read as a
+//! CZ ring classifier (item 41's other diagonal ring gates; the compile template of item 100), a ring that embeds in
+//! the working couplers (item 42; decided here on the written CZ edges by an exact cycle search, where the Python uses
+//! item 91's reader and VF2 -- they agree on the tested inputs), a device without cz, a block missing from the table,
+//! an ambiguous bridge in the snake. "out_of_scope" (owner, 2026-10-21: formula only): no snake piece holds the ring,
+//! so the Python would place it by VF2's search; the template is not built, and the caller does not fall back.
 
 use crate::json::{self, J};
 use crate::{mul, zyz, C, M};
@@ -26,11 +27,14 @@ use std::collections::{BTreeMap, BTreeSet};
 
 const PI: f64 = std::f64::consts::PI;
 
-/// Why a build stops: Python's None, or something not ported.
+/// Why a build stops: Python's None, something not ported, or a case outside the declared scope.
 #[derive(Debug)]
 pub enum Stop {
     None(String),
     Refused(String),
+    /// The owner's rule of 2026-10-21 (formula only): a ring the snake piece cannot hold would need VF2's search;
+    /// it is outside the scope, never placed by search.
+    OutOfScope(String),
 }
 
 fn refused<T>(s: &str) -> Result<T, Stop> {
@@ -659,7 +663,8 @@ pub fn chain_snake(nq: usize, adj: &[BTreeSet<usize>]) -> Result<Vec<usize>, Sto
     Ok(path)
 }
 
-/// `_chain_place`: the longest surviving snake piece, centred; a placement that needs VF2 is refused.
+/// `_chain_place`: the longest surviving snake piece, centred. Where the Python would fall back to VF2's search, this
+/// stops with OutOfScope (the owner's rule of 2026-10-21: formula only, no search).
 pub fn chain_place(n: usize, k: &BTreeSet<usize>, kadj: &BTreeMap<usize, BTreeSet<usize>>, snake: &[usize])
     -> Result<Vec<usize>, Stop> {
     let mut pieces: Vec<Vec<usize>> = Vec::new();
@@ -693,7 +698,7 @@ pub fn chain_place(n: usize, k: &BTreeSet<usize>, kadj: &BTreeMap<usize, BTreeSe
             return Ok(best[s..s + n].to_vec());
         }
     }
-    refused("no snake piece long enough: the placement needs VF2 (not ported)")
+    Err(Stop::OutOfScope("no snake piece long enough: the placement would need VF2's search (outside the scope)".into()))
 }
 
 // ------------------------------------------------------------------------------------------------ item 42: embedding
@@ -1264,6 +1269,7 @@ pub fn build(input: &str) -> String {
         Ok(j) => j,
         Err(Stop::Refused(r)) => obj(vec![("status", J::Str("refused".into())), ("reason", J::Str(r))]),
         Err(Stop::None(r)) => obj(vec![("status", J::Str("none".into())), ("reason", J::Str(r))]),
+        Err(Stop::OutOfScope(r)) => obj(vec![("status", J::Str("out_of_scope".into())), ("reason", J::Str(r))]),
     })
 }
 
