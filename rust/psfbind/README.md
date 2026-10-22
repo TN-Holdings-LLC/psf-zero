@@ -1,4 +1,4 @@
-# psfbind (2026-10-21)
+# psfbind (2026-10-21; ring r2, 2026-10-22)
 
 PSF-Zero's ring template in Rust, through a C ABI (no dependencies; Python calls it with ctypes):
 
@@ -15,6 +15,16 @@ PSF-Zero's ring template in Rust, through a C ABI (no dependencies; Python calls
   "refused" with the reason, for a case not ported: a ring that embeds, a circuit that is not a CZ ring; or
   "out_of_scope" where the Python would place the ring by VF2's search: outside the scope by the owner's rule of
   2026-10-21, formula only, never built), freed with `psfbind_free`.
+
+**Ring r2 (2026-10-22, for the AI front end a24, Addendum 526):**
+
+- the zipper schedule (`ring_rounds_zip`, the workplace's prototype P1; "zip", even n >= 4) beside N2 ("n2") and item
+  31's ("q4"); the request may name the schedules to build, in order (`"schedules": [...]`; the choice among them as
+  before, a full tie keeping the earlier); without it, "n2" then "q4" as in r1;
+- the placement (E5, owner 2026-10-22): the snake piece on the couplers of the most common gate length, else the
+  snake piece on every working coupler; "out_of_scope" only where neither holds the ring (r1 stopped after the
+  first);
+- `psfbind_version()`: "psfbind ring r2 (2026-10-22): n2 q4 zip", which a24 checks before use.
 
     cargo build --release     # target/release/libpsfbind.so
     cargo test                # ZYZ, the principal square root, the special cases, the schedules

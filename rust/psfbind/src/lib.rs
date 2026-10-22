@@ -196,6 +196,13 @@ pub unsafe extern "C" fn psfbind_ring_template(input: *const c_char) -> *mut c_c
     CString::new(s).unwrap_or_default().into_raw()
 }
 
+/// The ring builder's capabilities, a static string (never freed): "psfbind ring r2 (2026-10-22): n2 q4 zip".
+/// AI front end a24 (item 46) checks it, so that a library built before the zipper schedule is not used unnoticed.
+#[no_mangle]
+pub extern "C" fn psfbind_version() -> *const c_char {
+    b"psfbind ring r2 (2026-10-22): n2 q4 zip\0".as_ptr() as *const c_char
+}
+
 /// Frees a string returned by `psfbind_ring_template`.
 #[no_mangle]
 pub unsafe extern "C" fn psfbind_free(p: *mut c_char) {

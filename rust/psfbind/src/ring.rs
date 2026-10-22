@@ -11,7 +11,10 @@
 //! error, duration), the input circuit (name, qubits, clbits, the angle of rz / ry / rx, the 2 x 2 matrix of any other
 //! single-qubit operation), the fixed two-qubit blocks (Qiskit's `TwoQubitBasisDecomposer(CZ)` of each sequence of
 //! cz / swap, computed and checked in Python: constants given to the builder, not chosen by it), max_error, and
-//! optionally the one schedule to build ("n2" or "q4").
+//! optionally the schedules to build: "schedule" (one of "n2", "q4", "zip") or "schedules" (a list, in order; the
+//! choice among them as item 84's, a full tie keeping the earlier). Without either, "n2" then "q4" (a22's choice).
+//! "zip" (2026-10-22, AI front end a24's item 48) is the workplace's zipper schedule (prototype P1, TOQB's
+//! `ring_zip.py`), even n >= 4 only.
 //!
 //! Output: {"status": "built" | "none" | "refused" | "out_of_scope", ...}. "none" is the Python's None (no line, no
 //! schedule). "refused" names what is not ported, and the caller then builds with the Python: a circuit not read as a
@@ -19,7 +22,8 @@
 //! the working couplers (item 42; decided here on the written CZ edges by an exact cycle search, where the Python uses
 //! item 91's reader and VF2 -- they agree on the tested inputs), a device without cz, a block missing from the table,
 //! an ambiguous bridge in the snake. "out_of_scope" (owner, 2026-10-21: formula only): no snake piece holds the ring,
-//! so the Python would place it by VF2's search; the template is not built, and the caller does not fall back.
+//! neither on the couplers of the most common gate length nor on every working coupler (owner, 2026-10-22), so the
+//! Python would place it by VF2's search; the template is not built, and the caller does not fall back.
 
 use crate::json::{self, J};
 use crate::{mul, zyz, C, M};
@@ -357,6 +361,83 @@ pub fn ring_rounds_q4(n: usize) -> Result<(Vec<usize>, Rounds), String> {
     Ok((order, rounds))
 }
 
+/// `ring_rounds_zip` (the zipper, AI front end a24's item 48; TOQB's `ring_zip.py`, the workplace's prototype P1):
+/// start order 0, 1, 2, n-1, n-2, 3, 4, ... (pairs from the two arcs, alternating); round A CZ on positions (1,2),
+/// (3,4), ..., (n-3,n-2); round B CZ then SWAP on (0,1) and (n-2,n-1); round C SWAP on (2,3), (4,5), ..., (n-4,n-3);
+/// round D CZ as round A. 5n/2 - 4 CZ per layer once each CZ + SWAP is merged (the block rule). Even n >= 4 only.
+pub fn ring_rounds_zip(n: usize) -> Result<(Vec<usize>, Rounds), String> {
+    if n < 4 || n % 2 == 1 {
+        return Err("zipper: n must be even and >= 4".into());
+    }
+    let top: Vec<usize> = (1..n).collect();
+    let bot: Vec<usize> = (1..n).rev().collect();
+    let mut order = vec![0usize];
+    let mut used: BTreeSet<usize> = BTreeSet::new();
+    used.insert(0);
+    let (mut t, mut b, mut from_top) = (0usize, 0usize, true);
+    while order.len() < n {
+        let src = if from_top { &top } else { &bot };
+        let mut k = 0;
+        while k < 2 && order.len() < n {
+            let mut i = if from_top { t } else { b };
+            while used.contains(&src[i]) {
+                i += 1;
+            }
+            order.push(src[i]);
+            used.insert(src[i]);
+            if from_top {
+                t = i + 1;
+            } else {
+                b = i + 1;
+            }
+            k += 1;
+        }
+        from_top = !from_top;
+    }
+    let mut occ = order.clone();
+    let mut edges = ring_edges(n);
+    fn take(occ: &[usize], edges: &mut BTreeSet<(usize, usize)>, p: usize) -> Result<(usize, usize), String> {
+        let (a, b) = (occ[p], occ[p + 1]);
+        if !edges.remove(&(a.min(b), a.max(b))) {
+            return Err(format!("zipper: positions ({}, {}) hold {}, {}, not a ring edge", p, p + 1, a, b));
+        }
+        Ok((a, b))
+    }
+    let mut rounds: Rounds = Vec::new();
+    let odd: Vec<usize> = (1..n - 2).step_by(2).collect();
+    let a: Result<Vec<_>, _> = odd.iter().map(|&p| take(&occ, &mut edges, p)).collect();
+    rounds.push((a?, Vec::new()));
+    let ends = [0usize, n - 2];
+    let czb: Result<Vec<_>, _> = ends.iter().map(|&p| take(&occ, &mut edges, p)).collect();
+    rounds.push((czb?, ends.iter().map(|&p| (p, p + 1)).collect()));
+    for &p in &ends {
+        occ.swap(p, p + 1);
+    }
+    let mid: Vec<(usize, usize)> = (2..n - 3).step_by(2).map(|p| (p, p + 1)).collect();
+    if !mid.is_empty() {
+        for &(p, p1) in &mid {
+            occ.swap(p, p1);
+        }
+        rounds.push((Vec::new(), mid));
+    }
+    let d: Result<Vec<_>, _> = odd.iter().map(|&p| take(&occ, &mut edges, p)).collect();
+    rounds.push((d?, Vec::new()));
+    if !edges.is_empty() {
+        return Err(format!("zipper: edges left {:?}", edges));
+    }
+    Ok((order, rounds))
+}
+
+/// The rounds of a schedule by name.
+pub fn rounds_of(sched: &str, n: usize) -> Result<(Vec<usize>, Rounds), String> {
+    match sched {
+        "n2" => ring_rounds(n),
+        "q4" => ring_rounds_q4(n),
+        "zip" => ring_rounds_zip(n),
+        other => Err(format!("unknown schedule {:?}", other)),
+    }
+}
+
 // ------------------------------------------------------------------------------------------------ item 28: logical
 
 #[derive(Clone, Debug, PartialEq)]
@@ -406,8 +487,8 @@ impl Lines {
 
 /// `_ring_logical`: (the logical circuit on the input's wires, p_of_wire), Ok(None) for an unmeasured ring with an
 /// odd number of layers; Err when the schedule fails (the Python's RuntimeError).
-pub fn ring_logical(n: usize, ops: &[Op], read: &Read, q4: bool) -> Result<Option<(Vec<L>, Vec<usize>)>, String> {
-    let (order, rounds) = if q4 { ring_rounds_q4(n)? } else { ring_rounds(n)? };
+pub fn ring_logical(n: usize, ops: &[Op], read: &Read, sched: &str) -> Result<Option<(Vec<L>, Vec<usize>)>, String> {
+    let (order, rounds) = rounds_of(sched, n)?;
     if read.meas.is_empty() && read.segments.len() % 2 == 1 {
         return Ok(None);
     }
@@ -840,9 +921,9 @@ fn op(name: &'static str, qs: Vec<usize>, param: Param) -> OutOp {
 }
 
 /// `_ring_template_one` for a circuit already read as a ring (`read`), on the device's line `line`.
-pub fn template_one(dev: &Device, n: usize, ops: &[Op], read: &Read, line: &[usize], blocks: &Blocks, q4: bool)
-    -> Result<Template, Stop> {
-    let built = ring_logical(n, ops, read, q4).map_err(Stop::None)?;
+pub fn template_one(dev: &Device, n: usize, ops: &[Op], read: &Read, line: &[usize], blocks: &Blocks,
+                    sched: &'static str) -> Result<Template, Stop> {
+    let built = ring_logical(n, ops, read, sched).map_err(Stop::None)?;
     let (logical, p_of_wire) = match built {
         Some(b) => b,
         None => return Err(Stop::None("an unmeasured ring with an odd number of layers".into())),
@@ -1014,7 +1095,7 @@ pub fn template_one(dev: &Device, n: usize, ops: &[Op], read: &Read, line: &[usi
         }
     }
     Ok(Template {
-        schedule: if q4 { "q4" } else { "n2" },
+        schedule: sched,
         num_qubits: dev.n,
         ops: out,
         var_runs,
@@ -1131,8 +1212,9 @@ pub struct Candidate {
     pub cost_inf: bool,
 }
 
-/// `model_template` for a ring that does not embed (else refused), `ring_template`'s choice between N2 and item 31.
-pub fn model_template(dev: &Device, n: usize, ops: &[Op], blocks: &Blocks, max_error: f64, only: Option<&str>)
+/// `model_template` for a ring that does not embed (else refused), `ring_template`'s choice among `scheds` (a22: N2
+/// then item 31; a24: item 44's rule's schedule, then the zipper when asked).
+pub fn model_template(dev: &Device, n: usize, ops: &[Op], blocks: &Blocks, max_error: f64, scheds: &[&'static str])
     -> Result<(Option<Template>, Vec<Candidate>), Stop> {
     let read = match ring_read(n, ops) {
         Some(r) => r,
@@ -1145,15 +1227,17 @@ pub fn model_template(dev: &Device, n: usize, ops: &[Op], blocks: &Blocks, max_e
         Some(l) => l,
         None => return Ok((None, Vec::new())),
     };
-    let line = chain_place(n, &lat.k, &lat.fadj, &lat.snake)?;
+    // E5 (owner, 2026-10-21; scope settled 2026-10-22): the snake piece on the couplers of the most common gate
+    // length, else the snake piece on every working coupler -- both by formula; never VF2's search.
+    let line = match chain_place(n, &lat.k, &lat.fadj, &lat.snake) {
+        Ok(l) => l,
+        Err(Stop::OutOfScope(_)) => chain_place(n, &lat.k, &lat.kadj, &lat.snake)?,
+        Err(e) => return Err(e),
+    };
     let mut best: Option<Template> = None;
     let mut cands = Vec::new();
-    for q4 in [false, true] {
-        let name = if q4 { "q4" } else { "n2" };
-        if only.map_or(false, |o| o != name) {
-            continue;
-        }
-        match template_one(dev, n, ops, &read, &line, blocks, q4) {
+    for &name in scheds {
+        match template_one(dev, n, ops, &read, &line, blocks, name) {
             Ok(t) => {
                 cands.push(Candidate {
                     schedule: name,
@@ -1239,13 +1323,34 @@ pub fn build(input: &str) -> String {
         let (n, ops) = input_from(j.get("input").ok_or(Stop::Refused("no input".into()))?).map_err(Stop::Refused)?;
         let blocks = blocks_from(j.get("blocks").ok_or(Stop::Refused("no blocks".into()))?).map_err(Stop::Refused)?;
         let max_error = j.get("max_error").and_then(|v| v.num()).unwrap_or(0.5);
-        let only = j.get("schedule").and_then(|v| v.str());
+        let known = |s: &str| -> Result<&'static str, Stop> {
+            match s {
+                "n2" => Ok("n2"),
+                "q4" => Ok("q4"),
+                "zip" => Ok("zip"),
+                other => Err(Stop::Refused(format!("unknown schedule {:?}", other))),
+            }
+        };
+        let scheds: Vec<&'static str> = if let Some(J::Arr(list)) = j.get("schedules") {
+            let mut v = Vec::new();
+            for s in list {
+                v.push(known(s.str().ok_or(Stop::Refused("a schedule that is not a string".into()))?)?);
+            }
+            if v.is_empty() {
+                return Err(Stop::Refused("an empty list of schedules".into()));
+            }
+            v
+        } else if let Some(s) = j.get("schedule").and_then(|v| v.str()) {
+            vec![known(s)?]
+        } else {
+            vec!["n2", "q4"]
+        };
         for o in &ops {
             if o.qs.iter().any(|&q| q >= n) {
                 return Err(Stop::Refused("an input qubit out of range".into()));
             }
         }
-        let (best, cands) = model_template(&dev, n, &ops, &blocks, max_error, only)?;
+        let (best, cands) = model_template(&dev, n, &ops, &blocks, max_error, &scheds)?;
         let cj = J::Arr(
             cands
                 .iter()
@@ -1286,6 +1391,24 @@ mod tests {
         }
         let (_, r) = ring_rounds_q4(10).unwrap();
         assert_eq!(r.iter().map(|(c, _)| c.len()).sum::<usize>(), 10);
+    }
+
+    #[test]
+    fn zipper_covers_the_ring() {
+        for n in (4..=40).step_by(2) {
+            let (order, r) = ring_rounds_zip(n).unwrap();
+            let mut o = order.clone();
+            o.sort();
+            assert_eq!(o, (0..n).collect::<Vec<_>>());
+            assert_eq!(r.iter().map(|(c, _)| c.len()).sum::<usize>(), n);
+            // CZ per layer once each CZ + SWAP pair is merged into 2 CZ: n - 2 + 2 * 2 + 3 * (n / 2 - 2)
+            let swaps: usize = r.iter().map(|(_, s)| s.len()).sum();
+            assert_eq!(swaps, 2 + (n / 2 - 2));
+            assert_eq!((n - 2) + 2 * 2 + 3 * (n / 2 - 2), 5 * n / 2 - 4);
+        }
+        assert_eq!(ring_rounds_zip(10).unwrap().0, vec![0, 1, 2, 9, 8, 3, 4, 7, 6, 5]);
+        assert!(ring_rounds_zip(5).is_err());
+        assert!(ring_rounds_zip(2).is_err());
     }
 
     #[test]
