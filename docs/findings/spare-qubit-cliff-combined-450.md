@@ -5418,4 +5418,47 @@ the release); C68-VAL met every criterion (Addendum 524).
 
 ---
 
+<!-- ===== Addendum 526 ===== -->
+
+## Addendum 526 -- AI front end a24: the ring template built in Rust (psfbind ring r2) by default, the ring placed by formula only (E5: the snake piece, else the snake on every working coupler, else refused), and the workplace's zipper schedule as an option (PSF_RING_ZIP=1); a23's output elsewhere, bit for bit; psf_compile unchanged (2026-10-22)
+
+**Status:** a release of the AI front end, by the owner's decision of 2026-10-22 (about 15:50 CEST: "release the
+compiler's Rust port, the zipper and E5"; choices at about 15:52: the zipper as an option, E5 = no VF2 placement,
+Rust by default and stop without it; at about 16:10: E5 also takes the snake on every working coupler). psf_compile
+stays 2026-10-18.1. Files: `patches/psf_ai_compile_a24_2026-10-22/` (`make_a24.py` builds it from a23).
+
+- **Item 46.** `model_template` / `ring_template` for a ring that does not embed is built by `rust/psfbind` (ring r2,
+  `ring.rs`: a22's builder ported line by line, CPython-exact complex arithmetic), through ctypes, into a23's
+  RingTemplate class. No library, or one older than ring r2: RuntimeError. `PSF_RUST_TEMPLATE=check` builds the
+  Python template beside it and stops on any difference. A ring the Rust does not port (item 41's other diagonal
+  gates) is built by the Python, counted.
+- **Item 47 (E5).** The ring's line: the snake piece on the couplers of the most common gate length, else the snake
+  piece on every working coupler (the owner's answer to the workplace's V1 observation 3); else OutOfScopeError.
+  a23 tried VF2's first path between the two; a24 never searches. In the template and the default call.
+- **Item 48.** With `PSF_RING_ZIP=1`, an even ring of n >= 4 also gets the zipper (the workplace's P1: 5n/2 - 4 CZ per
+  layer, 21 against item 31's 28 at n = 10) and item 84's rule chooses. Off by default, because the evidence is
+  report-only and on TOQB's twin: in TOQB's depth sweep (results/zip-depth-2026-10-22) the zipper's undamped
+  stand-in CE was better at 3 of 4 depths by the fixed rule, but its shrink lam fell to 0.113 at 20 layers (4.8 x the
+  shots to undo it), and it has not run on a device.
+- **Checked** (`check_a24.py`, result in `check_a24_result.txt`; psf_compile 2026-10-18.1 for both; every Rust template
+  also compared with the Python's, 603 of 603 identical):
+  - A, no switch, a23's 272 ring cases (two calls each), 4 refusals without a Target and 40 handed-on inputs: 532 + 38
+    identical; 18 placed by the second snake where a23 took VF2's path (16 ring cases and two 30-qubit rings);
+    no other difference.
+  - B, 120 rings on the four devices with seeded failed couplers (two calls each): 222 identical, 16 on the second
+    snake where a23 searched, 2 refused (no snake holds the ring; a23 searched); no other difference.
+  - C, the switch on, the same 272 cases against TOQB's `ring_zip.ring_template_z` (the template of the 2026-10-22
+    comparison): 232 identical templates, 32 embedded rings identical, 8 placed by the second snake where TOQB's a22 took VF2's path (the same schedule chosen); the default call built all 240 rings; no other difference. The zipper was chosen for every even ring (n = 4-18), item 31's for every odd one.
+  - Tests: `test_a24.py`, 5 passed (the zipper's order, the Rust template and the switch, a missing library, item 47's
+    refusal and its second snake). psfbind's own tests: 9 passed.
+- **TOQB:** its tests were changed to the new scope (`test_second_snake_is_used`; `test_vf2_placement_is_out_of_scope`
+  now on a device where neither snake holds the ring). TOQB's check mode compares with a22's Python, which searches
+  before the second snake: on such a device it now stops with Mismatch (noted in `toqb/ringport.py`).
+- **Display / essential:** the default output is a23's wherever a23 did not search (no new claim of speed or quality);
+  the Rust template is about 4 x faster to build (0.04 against 0.15 s, TOQB, L 8). What a24 changes for a user: a
+  built `rust/psfbind` is required for ring templates; rings that only VF2 could place are refused. The zipper is not
+  claimed: report-only, on a twin.
+
+---
+
 **End of Part 11 of 11 (end of document, for now).** Back to [Part 10](spare-qubit-cliff-combined-383.md), [Part 9](spare-qubit-cliff-combined-248.md), [Part 8](spare-qubit-cliff-combined-135.md), [Part 7](spare-qubit-cliff-combined-108.md), [Part 6](spare-qubit-cliff-combined-88.md), [Part 5](spare-qubit-cliff-combined-51.md), [Part 4](spare-qubit-cliff-combined-41.md), [Part 3](spare-qubit-cliff-combined-27.md), [Part 2](spare-qubit-cliff-combined-17.md) or [Part 1](spare-qubit-cliff-combined.md).

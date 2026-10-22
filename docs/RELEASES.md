@@ -10,8 +10,13 @@ from this folder. The full record behind each entry is in Parts 9-11 of the find
 the earlier parts they link to. The README itself, as it was before the move, is kept as
 [`README_2026-10-05_before_restructure.md`](README_2026-10-05_before_restructure.md).
 
-> **In brief (as of 2026-10-18)**
+> **In brief (as of 2026-10-22)**
 >
+> 000000. AI front end a24 (2026-10-22, Addendum 526; psf_compile stays 2026-10-18.1): ring templates are built by
+>         `rust/psfbind` (ring r2; build it with `cargo build --release --manifest-path rust/psfbind/Cargo.toml`,
+>         required), rings are placed by formula only (the snake piece, else the snake on every working coupler, else
+>         `OutOfScopeError`; no VF2), and the workplace's zipper schedule is an option (`PSF_RING_ZIP=1`, off by
+>         default). a23's output, bit for bit, wherever a23 did not search.
 > 00000. Release 2026-10-18.1 (prototype c68, item 105, Addenda 518-525): chains and even rings are compiled by psfz
 >        r4, PSF-Zero's compiler in Rust (`rust/psfz/`, a separate program; build it with `cargo build --release`).
 >        C68-VAL: psfz's own output on 3,498 of 4,400 inputs, never longer than 2026-10-17.1, 0.956 x its duration
@@ -55,7 +60,20 @@ the earlier parts they link to. The README itself, as it was before the move, is
 > 6. The device layer has been tested only in noisy simulation on fake devices, not on hardware. (Since 2026-10-12 it
 >    has run on three real devices: HW1, HW2, TIME1, FRAC1; Addenda 455-488.)
 
-> **Current version (2026-10-18): `psf_compile.py` 2026-10-18.1 and the AI front end a23**
+> **AI front end a24 (2026-10-22), with `psf_compile.py` 2026-10-18.1** ([Part 11](findings/spare-qubit-cliff-combined-450.md),
+> Addendum 526). `patches/psf_ai_compile_a24_2026-10-22/` (a23 with items 46-48, built by `make_a24.py`).
+>
+> - **Item 46:** the ring template (`model_template` / `ring_template` for a ring that does not embed) built by
+>   `rust/psfbind` ring r2; without the library, `RuntimeError`. `PSF_RUST_TEMPLATE=check` also builds the Python's
+>   and stops on any difference.
+> - **Item 47 (E5):** the ring's line is the snake piece on the couplers of the most common gate length, else on every
+>   working coupler; otherwise `OutOfScopeError` (a23 searched with VF2).
+> - **Item 48:** `PSF_RING_ZIP=1` adds the zipper schedule (5n/2 - 4 CZ per layer) for even rings, chosen by item 84's
+>   rule. Off by default: report-only evidence on TOQB's twin, not run on a device.
+> - **Checked** (`check_a24.py`): a23's output on every case where a23 did not search; every Rust template equal to the
+>   Python's (603 of 603); the zipper's templates equal to TOQB's of the 2026-10-22 comparison. Tests: `test_a24.py`.
+
+> **Current version until 2026-10-22 (2026-10-18): `psf_compile.py` 2026-10-18.1 and the AI front end a23**
 > ([Part 11](findings/spare-qubit-cliff-combined-450.md), Addenda 518-525). The compiler is prototype c68
 > ([`patches/psf_compile_c68_2026-10-18/`](../patches/psf_compile_c68_2026-10-18/)) with its docstring, version line
 > and item 105's heading changed by `make_release.py` there; `check_release.py` there compared the installed file with

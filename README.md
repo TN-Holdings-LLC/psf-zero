@@ -72,10 +72,18 @@ What these numbers are not:
 
 ## Current version
 
-**`psf_compile.py` 2026-10-18.1** and the AI front end **a23** (Part 11, Addenda 503-525). The changelog of
+**`psf_compile.py` 2026-10-18.1** and the AI front end **a24** (Part 11, Addenda 503-526). The changelog of
 `psf_compile` is [`docs/psf_compile_CHANGELOG.md`](docs/psf_compile_CHANGELOG.md). Every release and dated notice:
 [`docs/RELEASES.md`](docs/RELEASES.md).
 
+> **New on 2026-10-22: the AI front end a24** (`patches/psf_ai_compile_a24_2026-10-22/`, Addendum 526). Ring
+> templates are built in Rust by `rust/psfbind` (build it once: `cargo build --release --manifest-path
+> rust/psfbind/Cargo.toml`; without it the template call stops). Rings are placed by formula only: the snake piece,
+> else the snake on every working coupler, else `OutOfScopeError` (no VF2 search). The workplace's zipper schedule
+> (5n/2 - 4 CZ per layer) is an option, `PSF_RING_ZIP=1`, off by default (report-only evidence on a twin). Elsewhere
+> a23's output, bit for bit. Not run on a device as a whole (its ring template ran on ibm_marrakesh on 2026-10-22,
+> through TOQB).
+>
 > **New in 2026-10-18.1: chains and rings go through psfz, PSF-Zero's compiler in Rust.** The release is prototype
 > c68 (item 105, Addendum 524; C68-VAL): `compile_for_hardware` first hands the circuit to psfz r4 (`rust/psfz/`, a
 > separate program, Addendum 522), and returns its output when psfz compiles it -- circuits whose two-qubit graph is

@@ -1,0 +1,7 @@
+a24 2026-10-22.a24 | psf_compile 2026-10-18.1 | psfbind psfbind ring r2 (2026-10-22): n2 q4 zip
+A (no switch): {'identical': 532, 'item 47 second snake': 16, 'handed on: identical': 38, 'handed on: item 47 second snake': 2} | differences: []
+B (failed couplers, 120 cases x 2 calls): {'identical': 222, 'item 47 second snake': 16, 'item 47 refusal': 2} | other differences: []
+C (PSF_RING_ZIP=1) against TOQB's ring_template_z: {'identical': 232, 'default call built': 240, 'embeds: identical': 32, 'item 47 second snake (same schedule)': 8} | differences: []
+C schedule chosen per ring size: [((4, 'zip'), 16), ((5, 'q4'), 16), ((6, 'zip'), 16), ((7, 'q4'), 16), ((8, 'zip'), 16), ((9, 'q4'), 16), ((10, 'zip'), 16), ((11, 'q4'), 16), ((13, 'q4'), 16), ((14, 'zip'), 16), ((15, 'q4'), 16), ((16, 'zip'), 16), ((17, 'q4'), 16), ((18, 'zip'), 16), ((19, 'q4'), 16)]
+A24_STATS {'rust_built': 603, 'rust_none': 0, 'rust_refused': 0, 'checked': 603, 'out_of_scope': 2, 'zip_chosen': 112}
+RESULT PASS
