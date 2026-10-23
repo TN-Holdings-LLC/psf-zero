@@ -7,6 +7,7 @@
 [![PyO3 Binding](https://img.shields.io/badge/FFI-PyO3-blue.svg)](https://pyo3.rs/)
 [![DOI (Paper 1)](https://zenodo.org/badge/DOI/10.5281/zenodo.22977930.svg)](https://doi.org/10.5281/zenodo.22977930)
 [![DOI (Paper 2)](https://zenodo.org/badge/DOI/10.5281/zenodo.22978090.svg)](https://doi.org/10.5281/zenodo.22978090)
+[![DOI (Paper 3)](https://zenodo.org/badge/DOI/10.5281/zenodo.23600812.svg)](https://doi.org/10.5281/zenodo.23600812)
 
 PSF-Zero is a Qiskit-compatible compiler that builds circuits for a device by formula, with no search.
 
@@ -586,6 +587,11 @@ Full account: [`spare-qubit-cliff.md`](docs/findings/spare-qubit-cliff.md) (summ
   Qiskit's `VF2Layout`.
 - [**Paper 2 — PSF-Zero: An Analytic Two-Qubit Gate Synthesizer Combined with a Verified, Ordering-Aware Layout
   Search**](docs/papers/psf_zero_paper.pdf) ([DOI: 10.5281/zenodo.22978090](https://doi.org/10.5281/zenodo.22978090)).
+- [**Paper 3 — When a Quantum Compiler Looks Like a Better Learner: Confounds in Quantum Machine Learning
+  Comparisons**](docs/papers/qml_compiler_confounds.pdf) ([DOI: 10.5281/zenodo.23600812](https://doi.org/10.5281/zenodo.23600812);
+  all versions: [10.5281/zenodo.23600811](https://doi.org/10.5281/zenodo.23600811)). PSF-Zero's formula-built ring
+  against Qiskit's search through a trained noisy classifier, and the four confounds that decide such comparisons
+  (2026-10-23).
 - [**Technical overview slides**](docs/papers/psf_zero_technical_overview.pptx) (8 slides).
 
 **Versions.** Both papers are at version 2 (2026-09-26). Version 1 remains citable:
@@ -683,6 +689,16 @@ conversation.
   doi    = {10.5281/zenodo.22978090},
   url    = {https://doi.org/10.5281/zenodo.22978090},
   note   = {Preprint, revised 26 September 2026; version 1: 10.5281/zenodo.22870141}
+}
+
+@misc{qml_compiler_confounds_2026,
+  author = {{TN Holdings}},
+  title  = {When a Quantum Compiler Looks Like a Better Learner:
+            Confounds in Quantum Machine Learning Comparisons},
+  year   = {2026},
+  doi    = {10.5281/zenodo.23600812},
+  url    = {https://doi.org/10.5281/zenodo.23600812},
+  note   = {Preprint, version 1, 23 October 2026}
 }
 ```
 
