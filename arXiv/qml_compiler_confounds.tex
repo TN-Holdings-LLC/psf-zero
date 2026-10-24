@@ -20,7 +20,7 @@ Confounds in Quantum Machine Learning Comparisons}
 \texttt{love.os.architect@proton.me}\\
 \texttt{https://github.com/TN-Holdings-LLC/psf-zero}}
 
-\date{Version 1 --- 23 October 2026}
+\date{Version 1.1 --- 24 October 2026}
 
 \begin{document}
 \maketitle
@@ -131,9 +131,11 @@ pairs alternate between its two arcs; the two end SWAPs of each layer then fall 
 CZ into one two-CZ block, and odd layers run the rounds backwards to undo the permutation. It costs $5n/2 - 4$ CZ per
 layer. An exhaustive search over schedules starting from minimal-length layouts found no cheaper schedule for
 $n = 4, 6, 8$; for $n = 10$ the search did not finish and $21$ is not proven minimal. Both PSF-Zero arms are built by
-formula, without search; the only device data they read are the gate durations. On the device day item 31 was built
-by PSF-Zero's Python front end (a22); in the far-teacher tests both arms were built by a24's Rust ring builder
-(\texttt{psfbind} ring r2), checked identical to a22's output at build time. The Qiskit arm is TOQB's
+formula, without search; the only device data they read are the gate durations. On the device day item 31 was built by PSF-Zero's Python front end (a22); in the far-teacher tests item 31 was
+built by a24's Rust ring builder (\texttt{psfbind} ring r2), checked identical to a22's output at build time, and the
+zipper by TOQB's Python implementation on a22. PSF-Zero a24 (with \texttt{PSF\_RING\_ZIP=1}) builds the same
+zipper circuits instruction for instruction (checked for $n = 10, 12, 14, 16$ and $L = 8, 16, 24, 32$; TOQB
+\path{results/a24-identity-2026-10-24}). The Qiskit arm is TOQB's
 reference: the parameterised circuit transpiled once at level 2 with the device's \texttt{Target} and bound per
 evaluation (\texttt{qiskit:2:target:template}).
 
@@ -480,6 +482,10 @@ data test \path{results/data-grad-2026-10-23}; depth sweep \path{results/zip-dep
 compilers are Qiskit 2.5.2 and PSF-Zero \texttt{9f0d44e} for the far-teacher tests (\texttt{6269c4f} for the device
 day, the depth sweep and the noise-source runs). The figures are computed from those records by
 \path{docs/papers/qml_confounds_figures.py}.
+
+\paragraph{Changes in version 1.1.} Section 2.2 now states how the zipper arm was built (TOQB's Python
+implementation, identical to PSF-Zero a24's circuits); version 1 said both PSF-Zero arms were built by a24's Rust
+builder. No number or verdict changes.
 
 \begin{thebibliography}{99}
 
