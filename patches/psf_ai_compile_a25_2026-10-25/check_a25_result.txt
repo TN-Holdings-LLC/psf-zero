@@ -1,0 +1,6 @@
+a25 2026-10-25.a25 | a24 2026-10-22.a24 | psf_compile 2026-10-18.1 | psfbind psfbind ring r3 (2026-10-25): n2 q4 zip (even and odd n)
+A (no switch) {'identical': 544} | differences: []
+B/C (PSF_RING_ZIP=1) {'identical': 288, 'odd: built': 256} | differences: []
+odd n, schedule chosen per ring size: [((5, 'zip'), 16), ((7, 'zip'), 16), ((9, 'zip'), 16), ((11, 'zip'), 16), ((13, 'zip'), 16), ((15, 'zip'), 16), ((17, 'zip'), 16), ((19, 'zip'), 16)] | zipper CZ count off: []
+A25_STATS {'rust_built': 608, 'rust_none': 0, 'rust_refused': 0, 'checked': 608, 'out_of_scope': 0, 'zip_chosen': 368}
+RESULT PASS

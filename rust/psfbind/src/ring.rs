@@ -14,7 +14,8 @@
 //! optionally the schedules to build: "schedule" (one of "n2", "q4", "zip") or "schedules" (a list, in order; the
 //! choice among them as item 84's, a full tie keeping the earlier). Without either, "n2" then "q4" (a22's choice).
 //! "zip" (2026-10-22, AI front end a24's item 48) is the workplace's zipper schedule (prototype P1, TOQB's
-//! `ring_zip.py`), even n >= 4 only.
+//! `ring_zip.py`), even n >= 4; since ring r3 (2026-10-25, AI front end a25's item 49) also odd n >= 5 (TOQB
+//! `results/zipper-odd-2026-10-25`).
 //!
 //! Output: {"status": "built" | "none" | "refused" | "out_of_scope", ...}. "none" is the Python's None (no line, no
 //! schedule). "refused" names what is not ported, and the caller then builds with the Python: a circuit not read as a
@@ -364,10 +365,12 @@ pub fn ring_rounds_q4(n: usize) -> Result<(Vec<usize>, Rounds), String> {
 /// `ring_rounds_zip` (the zipper, AI front end a24's item 48; TOQB's `ring_zip.py`, the workplace's prototype P1):
 /// start order 0, 1, 2, n-1, n-2, 3, 4, ... (pairs from the two arcs, alternating); round A CZ on positions (1,2),
 /// (3,4), ..., (n-3,n-2); round B CZ then SWAP on (0,1) and (n-2,n-1); round C SWAP on (2,3), (4,5), ..., (n-4,n-3);
-/// round D CZ as round A. 5n/2 - 4 CZ per layer once each CZ + SWAP is merged (the block rule). Even n >= 4 only.
+/// round D CZ as round A. 5n/2 - 4 CZ per layer once each CZ + SWAP is merged (the block rule). Odd n (ring r3,
+/// 2026-10-25): the same start; round A CZ on (1,2), ..., (n-2,n-1); round B CZ then SWAP on (0,1) only; round C SWAP on
+/// (2,3), ..., (n-3,n-2); round D as round A: (5n - 7)/2 CZ per layer. Even rounds are unchanged. n >= 4.
 pub fn ring_rounds_zip(n: usize) -> Result<(Vec<usize>, Rounds), String> {
-    if n < 4 || n % 2 == 1 {
-        return Err("zipper: n must be even and >= 4".into());
+    if n < 4 {
+        return Err("zipper: n must be >= 4".into());
     }
     let top: Vec<usize> = (1..n).collect();
     let bot: Vec<usize> = (1..n).rev().collect();
@@ -404,16 +407,16 @@ pub fn ring_rounds_zip(n: usize) -> Result<(Vec<usize>, Rounds), String> {
         Ok((a, b))
     }
     let mut rounds: Rounds = Vec::new();
-    let odd: Vec<usize> = (1..n - 2).step_by(2).collect();
+    let odd: Vec<usize> = (1..n - 1).step_by(2).collect(); // even n: up to n-3; odd n: up to n-2
     let a: Result<Vec<_>, _> = odd.iter().map(|&p| take(&occ, &mut edges, p)).collect();
     rounds.push((a?, Vec::new()));
-    let ends = [0usize, n - 2];
+    let ends: Vec<usize> = if n % 2 == 0 { vec![0, n - 2] } else { vec![0] };
     let czb: Result<Vec<_>, _> = ends.iter().map(|&p| take(&occ, &mut edges, p)).collect();
     rounds.push((czb?, ends.iter().map(|&p| (p, p + 1)).collect()));
     for &p in &ends {
         occ.swap(p, p + 1);
     }
-    let mid: Vec<(usize, usize)> = (2..n - 3).step_by(2).map(|p| (p, p + 1)).collect();
+    let mid: Vec<(usize, usize)> = (2..n - 3 + n % 2).step_by(2).map(|p| (p, p + 1)).collect();
     if !mid.is_empty() {
         for &(p, p1) in &mid {
             occ.swap(p, p1);
@@ -1407,8 +1410,24 @@ mod tests {
             assert_eq!((n - 2) + 2 * 2 + 3 * (n / 2 - 2), 5 * n / 2 - 4);
         }
         assert_eq!(ring_rounds_zip(10).unwrap().0, vec![0, 1, 2, 9, 8, 3, 4, 7, 6, 5]);
-        assert!(ring_rounds_zip(5).is_err());
+        assert!(ring_rounds_zip(3).is_err());
         assert!(ring_rounds_zip(2).is_err());
+    }
+
+    #[test]
+    fn zipper_odd_covers_the_ring() {
+        // ring r3 (2026-10-25): odd n, one end block, (n - 3)/2 interior SWAPs, (5n - 7)/2 CZ per layer
+        for n in (5..=41).step_by(2) {
+            let (order, r) = ring_rounds_zip(n).unwrap();
+            let mut o = order.clone();
+            o.sort();
+            assert_eq!(o, (0..n).collect::<Vec<_>>());
+            assert_eq!(r.iter().map(|(c, _)| c.len()).sum::<usize>(), n);
+            let swaps: usize = r.iter().map(|(_, s)| s.len()).sum();
+            assert_eq!(swaps, 1 + (n - 3) / 2);
+            assert_eq!((n - 1) + 2 + 3 * ((n - 3) / 2), (5 * n - 7) / 2);
+        }
+        assert_eq!(ring_rounds_zip(9).unwrap().0, vec![0, 1, 2, 8, 7, 3, 4, 6, 5]);
     }
 
     #[test]

@@ -60,6 +60,14 @@ the earlier parts they link to. The README itself, as it was before the move, is
 > 6. The device layer has been tested only in noisy simulation on fake devices, not on hardware. (Since 2026-10-12 it
 >    has run on three real devices: HW1, HW2, TIME1, FRAC1; Addenda 455-488.)
 
+> **AI front end a25 (2026-10-25), with `psf_compile.py` 2026-10-18.1 and `rust/psfbind` ring r3.**
+> `patches/psf_ai_compile_a25_2026-10-25/` (a24 with item 49, built by `make_a25.py`).
+>
+> - **Item 49:** with `PSF_RING_ZIP=1`, the zipper schedule also for odd n >= 5: one CZ + SWAP block at the left end,
+>   (n - 3)/2 interior SWAPs, (5n - 7)/2 CZ per layer, the least found by exhaustive search (TOQB
+>   `results/zipper-odd-2026-10-25`). Even n and calls without the switch: a24's output, bit for bit (`check_a25.py`,
+>   544 + 288 calls). Not run on a device.
+
 > **AI front end a24 (2026-10-22), with `psf_compile.py` 2026-10-18.1** ([Part 11](findings/spare-qubit-cliff-combined-450.md),
 > Addendum 526). `patches/psf_ai_compile_a24_2026-10-22/` (a23 with items 46-48, built by `make_a24.py`).
 >

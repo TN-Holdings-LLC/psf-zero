@@ -77,6 +77,10 @@ What these numbers are not:
 `psf_compile` is [`docs/psf_compile_CHANGELOG.md`](docs/psf_compile_CHANGELOG.md). Every release and dated notice:
 [`docs/RELEASES.md`](docs/RELEASES.md).
 
+> **New on 2026-10-25: the AI front end a25** (`patches/psf_ai_compile_a25_2026-10-25/`): the zipper schedule
+> (`PSF_RING_ZIP=1`) also for odd n, (5n - 7)/2 CZ per layer; needs `rust/psfbind` ring r3 (rebuild it). Otherwise
+> a24's output, bit for bit.
+>
 > **New on 2026-10-22: the AI front end a24** (`patches/psf_ai_compile_a24_2026-10-22/`, Addendum 526). Ring
 > templates are built in Rust by `rust/psfbind` (build it once: `cargo build --release --manifest-path
 > rust/psfbind/Cargo.toml`; without it the template call stops). Rings are placed by formula only: the snake piece,
