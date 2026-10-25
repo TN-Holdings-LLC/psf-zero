@@ -43,8 +43,7 @@ apart: on stand-in accuracy the zipper won on one of three teachers at each budg
 three, and on the trained model itself neither arm won on any teacher. Formula placement could not be told apart from the search while using a third fewer entangling gates and a
 quarter of the duration; it did not beat it. In one preliminary hardware job on \texttt{ibm\_kingston}, the zipper's
 circuits followed a twin built from that day's calibration (scale $1.00$, correlation $0.98$), while Qiskit's lost most
-of their signal and came out inverted on the read-out qubit; the cause is not known. Exhaustive searches find no ring schedule cheaper than the zipper's $5n/2 - 4$ CZ per
-layer (from every start layout up to $n = 10$, from the minimum-length ones at $n = 12$ and $14$). We give the vanity and the essential number side by side throughout, mark what was
+of their signal and came out inverted on the read-out qubit; the cause is not known. We give the vanity and the essential number side by side throughout, mark what was
 declared before the data and what was found after, and close with a checklist for compiler comparisons through
 trained quantum models.
 \end{abstract}
@@ -132,11 +131,9 @@ durations on that Target; CZ counts are from the compiled circuits.}
 qubits and its far edges are brought together by plain SWAPs (3 CZ each). The \emph{zipper} lays the ring out so that
 pairs alternate between its two arcs; the two end SWAPs of each layer then fall on ring edges and merge with their
 CZ into one two-CZ block, and odd layers run the rounds backwards to undo the permutation. It costs $5n/2 - 4$ CZ per
-layer. In the cost model of one CZ per ring edge per layer, with CZ, CZ+SWAP and plain SWAP on adjacent qubits as
-the moves, exhaustive searches (IDA*) found no cheaper schedule: from every start layout for $n = 4$ to $10$
-($91{,}296$ layouts up to symmetry at $n = 10$), and from every start layout of minimum ring length for $n = 12$ and
-$14$ ($4{,}096$ at $n = 14$). In every case only the zipper's start layout and its mirror image reach $5n/2 - 4$
-(TOQB \path{results/zipper-bound-2026-10-24}). This is a search up to $n = 14$, not a proof for every $n$. Both PSF-Zero arms are built by
+layer. Exhaustive search found no cheaper schedule from any start layout for $n = 4$ to $10$, with the zipper's
+start layout the only one (up to symmetry) that reaches $5n/2 - 4$ (TOQB \path{results/zipper-bound-2026-10-24}); we
+do not claim a proof for every even $n$. Both PSF-Zero arms are built by
 formula, without search; the only device data they read are the gate durations. On the device day item 31 was built by PSF-Zero's Python front end (a22); in the far-teacher tests item 31 was
 built by a24's Rust ring builder (\texttt{psfbind} ring r2), checked identical to a22's output at build time, and the
 zipper by TOQB's Python implementation on a22. PSF-Zero a24 (with \texttt{PSF\_RING\_ZIP=1}) builds the same
@@ -555,8 +552,8 @@ day, the depth sweep and the noise-source runs). The figures are computed from t
 
 \paragraph{Changes in version 1.2.} New: Section~\ref{sec:kingston} (the zipper's first hardware job, preliminary);
 the declared decaying-step test (Section~\ref{sec:nearstart}); the source of the stand-in's offset
-(Section~\ref{sec:offset}); the schedule searches up to $n = 14$ (Section 2.2, which in version 1.1 said the search at
-$n = 10$ had not finished). Two sentences in the abstract; the limitation on hardware updated. No earlier number or
+(Section~\ref{sec:offset}); one sentence on the schedule search (Section 2.2, which in version 1.1 said the search at
+$n = 10$ had not finished). One sentence in the abstract; the limitation on hardware updated. No earlier number or
 verdict changes.
 
 \paragraph{Changes in version 1.1.} Section 2.2 now states how the zipper arm was built (TOQB's Python
