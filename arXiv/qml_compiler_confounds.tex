@@ -20,7 +20,7 @@ Confounds in Quantum Machine Learning Comparisons}
 \texttt{love.os.architect@proton.me}\\
 \texttt{https://github.com/TN-Holdings-LLC/psf-zero}}
 
-\date{Version 1.1 --- 24 October 2026}
+\date{Version 1.2 --- 25 October 2026}
 
 \begin{document}
 \maketitle
@@ -41,7 +41,10 @@ rules fixed before each run, PSF-Zero's newest ring schedule (the \emph{zipper},
 layers) and Qiskit ($506$ CZ, $48.2\,\mu$s, $14$ active qubits) gave classifiers that the declared tests could not tell
 apart: on stand-in accuracy the zipper won on one of three teachers at each budget, below the declared two of
 three, and on the trained model itself neither arm won on any teacher. Formula placement could not be told apart from the search while using a third fewer entangling gates and a
-quarter of the duration; it did not beat it. We give the vanity and the essential number side by side throughout, mark what was
+quarter of the duration; it did not beat it. In one preliminary hardware job on \texttt{ibm\_kingston}, the zipper's
+circuits followed a twin built from that day's calibration (scale $1.00$, correlation $0.98$), while Qiskit's lost most
+of their signal and came out inverted on the read-out qubit; the cause is not known. Exhaustive searches find no ring schedule cheaper than the zipper's $5n/2 - 4$ CZ per
+layer (from every start layout up to $n = 10$, from the minimum-length ones at $n = 12$ and $14$). We give the vanity and the essential number side by side throughout, mark what was
 declared before the data and what was found after, and close with a checklist for compiler comparisons through
 trained quantum models.
 \end{abstract}
@@ -129,8 +132,11 @@ durations on that Target; CZ counts are from the compiled circuits.}
 qubits and its far edges are brought together by plain SWAPs (3 CZ each). The \emph{zipper} lays the ring out so that
 pairs alternate between its two arcs; the two end SWAPs of each layer then fall on ring edges and merge with their
 CZ into one two-CZ block, and odd layers run the rounds backwards to undo the permutation. It costs $5n/2 - 4$ CZ per
-layer. An exhaustive search over schedules starting from minimal-length layouts found no cheaper schedule for
-$n = 4, 6, 8$; for $n = 10$ the search did not finish and $21$ is not proven minimal. Both PSF-Zero arms are built by
+layer. In the cost model of one CZ per ring edge per layer, with CZ, CZ+SWAP and plain SWAP on adjacent qubits as
+the moves, exhaustive searches (IDA*) found no cheaper schedule: from every start layout for $n = 4$ to $10$
+($91{,}296$ layouts up to symmetry at $n = 10$), and from every start layout of minimum ring length for $n = 12$ and
+$14$ ($4{,}096$ at $n = 14$). In every case only the zipper's start layout and its mirror image reach $5n/2 - 4$
+(TOQB \path{results/zipper-bound-2026-10-24}). This is a search up to $n = 14$, not a proof for every $n$. Both PSF-Zero arms are built by
 formula, without search; the only device data they read are the gate durations. On the device day item 31 was built by PSF-Zero's Python front end (a22); in the far-teacher tests item 31 was
 built by a24's Rust ring builder (\texttt{psfbind} ring r2), checked identical to a22's output at build time, and the
 zipper by TOQB's Python implementation on a22. PSF-Zero a24 (with \texttt{PSF\_RING\_ZIP=1}) builds the same
@@ -242,6 +248,15 @@ to $0.53$--$0.59$. The noiseless training accuracy stayed at $0.80$--$1.00$ whil
 grow extreme. One reading, not tested: the loss $(1 - yz)/2$ rewards a large $|z|$ and does not penalise a confident
 wrong answer.
 
+A decaying step does not change this picture on teachers far from the start (declared, TOQB
+\path{prereg/drafts-2026-10-24/flow_b_note.md}; the zipper, $L = 16$, teachers 20--22 at angle $1.0$, 4{,}000 loops,
+the constant step $0.4$ against $0.4\,((A+1)/(k+A))^{0.602}$ with $A = 1{,}000$, sharing every random draw). By the
+declared rule (the trained model's noiseless accuracy at 4{,}000 loops, exact McNemar, Holm, 2 of 3) the decaying step
+is not the better: $0.620$/$0.630$, $0.618$/$0.652$ and $0.638$/$0.642$ (decaying/constant), no difference
+significant. On these teachers the constant step did not drift either: its accuracy was highest at 4{,}000 loops on
+two teachers and within $0.002$ of its best on the third. The drift above is a property of tasks whose answer sits
+near the start, and the standard remedy had nothing to fix on far ones.
+
 The declared rule of that run (noiseless test cross-entropy, Wilcoxon) found the zipper's trained model better in 3 of
 3 teachers at 16{,}000 loops. That is a difference between trained models, but on such a task ``better'' means
 ``degraded less'': both arms were worse at 16{,}000 loops than at 500 on every measure. Separately, the zipper's
@@ -278,6 +293,14 @@ its noise acts as one uniform shrink.}
 The offset points toward $|0\rangle$ (label $+1$). For item 31, switching off relaxation in the twin lowers $\delta$
 from $0.046$ to $0.028$: relaxation toward $|0\rangle$ is part of it, consistent with the non-unital bias studied
 in~\cite{nguyen2026}; the rest is not attributed. No single noise source makes item 31's noise a uniform shrink.
+
+The stand-in's additions are not the source (declared report, TOQB \path{results/flow-b-2026-10-24}). The stand-in
+adds three things to the twin's noise: T1 and T2 scaled per qubit, a $1\,\%$ over-rotation of single-qubit gates, and a
+10\,kHz static ZZ. Switching off any one of them, or all three, changes the share of $+1$ answers below by at most
+$0.04$ and $\delta$ by at most $0.004$ (item 31 and the zipper, teachers 17--19, at $\theta = 0$ and after 2{,}000
+loops); with all three off the stand-in is the twin. The large shares below are the twin's own offset acting on small
+outputs: the twin's $\delta$ is $+0.027$ to $+0.076$ for item 31 and $0.000$ to $+0.016$ for the zipper on these
+teachers.
 
 On the stand-in the effect is large. At $\theta = 0$, where all arms run the same logical model, the share of $+1$
 answers on balanced test points is (teachers 17, 18, 19 at angle 1.0): item 31 0.93, 0.92, 0.85; Qiskit 0.93, 0.94,
@@ -428,6 +451,50 @@ shot-fragile; teacher 17 hard for every arm), two held in part (Qiskit's $+1$ sh
 twin at least 0.02 off on Qiskit's circuit: at $\theta = 0$, in 2 of 3 teachers at 500 loops, not at 2{,}000), and one failed: the zipper did not win raw accuracy at
 2{,}000 loops in 2 of 3 teachers.
 
+\subsection{A first hardware run of the zipper (preliminary; declared, report only)}
+\label{sec:kingston}
+
+After the tests above, the trained far-teacher models of both arms (2{,}000 loops, teachers 17--19) were sent to
+hardware without retraining: one job on \texttt{ibm\_kingston} on 24 October 2026, the first 90 test points per
+teacher and arm, 540 circuits of 250 shots, 42\,s of QPU time. Declared before submission as a report without a rule
+(TOQB \path{prereg/drafts-2026-10-24/flow_c_note.md} and its amendment, which moved the job from
+\texttt{ibm\_marrakesh}, paused for maintenance, to \texttt{ibm\_kingston}, chosen by queue length alone). Each arm was
+compiled for the calibration fetched 36 minutes before submission, and its prediction was made with a twin built
+from that calibration; the device recalibrated once in between, with unchanged values on all qubits of both arms.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{p{5.6cm}p{3.6cm}p{4.6cm}}
+\toprule
+ & zipper (336 CZ, $10.8\,\mu$s) & Qiskit ($506$ CZ, $45.8\,\mu$s) \\
+\midrule
+device against the day's twin: scale / correlation & $1.00$ / $0.98$ & $-0.16$ / $-0.53$ \\
+per measured qubit (teacher 17): correlation with the noiseless values & all 10: $0.81$--$0.99$ & 5: about 0; 3: $0.37$--$0.44$; 2 inverted \\
+share of $+1$ answers, device / noiseless & $0.85$ / $0.79$--$0.83$ & $0.39$ / $0.83$--$0.87$ \\
+\bottomrule
+\end{tabular}
+\caption{One job on \texttt{ibm\_kingston}, 90 points per teacher and arm. Scale and correlation: least-squares fit of
+the device's $\langle Z\rangle$ per point on the twin's. The read-out qubit of Qiskit's circuits is one of the two
+inverted ($-0.55$).}
+\label{tab:kingston}
+\end{table}
+
+\begin{itemize}
+\item \textbf{Vanity:} the device's ``accuracy'' is $0.85$--$0.87$ for the zipper and $0.37$--$0.47$ for Qiskit. It is
+not an accuracy here: the test sets are ordered by label and the first 90 points are all of one class, an error in our
+declaration found after the job. The column is the share of $+1$ answers and is not read.
+\item \textbf{Essential:} the zipper's circuits ran as the twin of the day's calibration said, on every measured qubit;
+on the device day (Section~\ref{sec:device}, \texttt{ibm\_marrakesh} with a twin from a 9-day-old calibration) the
+twin had been off by up to $2.3\times$. Qiskit's circuits, on the same job, lost most of their signal and were inverted on the read-out
+qubit. Not a software error as far as checked: Qiskit's own statevector of the submitted circuits agrees with the twin
+(correlation $0.995$). A uniform static ZZ of 10\,kHz added to the twin does not reproduce the inversion; the cause is
+not found.
+\item \textbf{Not claimed:} one job, one device, 90 points of one label per cell, no arm comparison tested. Qiskit's
+layout may have met a fault of that device and day; whether formula placement avoids such faults more often than a
+calibration-aware search is a question for many jobs, not this one.
+\end{itemize}
+
 \section{Discussion}
 
 \paragraph{What the formula buys.} On this classifier at $L = 16$, formula placement without calibration
@@ -465,8 +532,8 @@ values.
 
 \begin{itemize}
 \item One training seed; three teachers per test; $n = 10$; $L = 16$ for the declared far-teacher tests.
-\item All learning results are on simulators. The stand-in shares the twin's calibration base. The zipper has never run
-on hardware; the device day ran item 31 and Qiskit only.
+\item All learning results are on simulators. The stand-in shares the twin's calibration base. The zipper has run on
+hardware in one job only (Section~\ref{sec:kingston}), with 90 points of one label per cell.
 \item The post hoc analyses were guided by earlier results; their $p$-values are descriptive.
 \item The twin's scale was off by up to $2.3\times$ on hardware for PSF-Zero; shot costs derived from the twin's
 $\lambda$ are therefore uncertain on hardware.
@@ -478,10 +545,19 @@ All runs, records and scores are in the TOQB test bench (\url{https://github.com
 \path{results/device-2026-10-22} (with \path{theta0_home}); long training \path{results/zip-long-2026-10-23};
 data test \path{results/data-grad-2026-10-23}; depth sweep \path{results/zip-depth-2026-10-22}; noise sources
 \path{results/lam-ablate-2026-10-22}; far teachers \path{results/far-teacher-2026-10-23} (declared in
-\texttt{f5ed070}); zipper against Qiskit \path{results/far-qiskit-2026-10-23} (declared in \texttt{fe488cb}). The
+\texttt{f5ed070}); zipper against Qiskit \path{results/far-qiskit-2026-10-23} (declared in \texttt{fe488cb}); the
+\texttt{ibm\_kingston} job \path{results/flow-c-2026-10-24} (declared in \texttt{8f95fdd} and \texttt{f1a2575}, every
+point in \path{points.csv}); the decaying step and the offset's source \path{results/flow-b-2026-10-24} (declared in
+\texttt{4fe51cd}); the schedule searches \path{results/zipper-bound-2026-10-24}. The
 compilers are Qiskit 2.5.2 and PSF-Zero \texttt{9f0d44e} for the far-teacher tests (\texttt{6269c4f} for the device
 day, the depth sweep and the noise-source runs). The figures are computed from those records by
 \path{docs/papers/qml_confounds_figures.py}.
+
+\paragraph{Changes in version 1.2.} New: Section~\ref{sec:kingston} (the zipper's first hardware job, preliminary);
+the declared decaying-step test (Section~\ref{sec:nearstart}); the source of the stand-in's offset
+(Section~\ref{sec:offset}); the schedule searches up to $n = 14$ (Section 2.2, which in version 1.1 said the search at
+$n = 10$ had not finished). Two sentences in the abstract; the limitation on hardware updated. No earlier number or
+verdict changes.
 
 \paragraph{Changes in version 1.1.} Section 2.2 now states how the zipper arm was built (TOQB's Python
 implementation, identical to PSF-Zero a24's circuits); version 1 said both PSF-Zero arms were built by a24's Rust
