@@ -8,6 +8,7 @@
 [![DOI (Paper 1)](https://zenodo.org/badge/DOI/10.5281/zenodo.22977930.svg)](https://doi.org/10.5281/zenodo.22977930)
 [![DOI (Paper 2)](https://zenodo.org/badge/DOI/10.5281/zenodo.22978090.svg)](https://doi.org/10.5281/zenodo.22978090)
 [![DOI (Paper 3)](https://zenodo.org/badge/DOI/10.5281/zenodo.23630904.svg)](https://doi.org/10.5281/zenodo.23630904)
+[![DOI (Paper 4)](https://zenodo.org/badge/DOI/10.5281/zenodo.23665575.svg)](https://doi.org/10.5281/zenodo.23665575)
 
 PSF-Zero is a Qiskit-compatible compiler for IBM devices that builds a circuit by formula: no layout search, no
 routing search, and no choice by the day's error values. What it cannot build by formula it refuses with a reason.
@@ -40,7 +41,7 @@ need it; predictions are locked in git before each scored run, and losses are pu
 | The zipper's CZ count | no cheaper schedule found: from every start layout for n = 4-10, from the minimum-length ones at n = 12, 14 | an exhaustive search, not a proof for every n ([TOQB](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/zipper-bound-2026-10-24)) |
 | A trained ring classifier, zipper (formula) against Qiskit (search), Paper 3 | a third fewer CZ, a quarter of the duration (336 against 506 CZ, 11.7 against 48.2 us at 16 layers) | the declared tests could not tell the two classifiers apart: no win either way |
 | Ring folded onto a device cycle against the zipper (declared matches on TOQB's twins, n = 13-18, 16 layers, four random models each) | WIN at every n on both twins; about half the zipper's two-qubit gates, shorter | on the twin of a real day's calibration (ibm_kingston, 2026-10-24) the lead is 1.07-1.28 x the zipper's signal at n = 13-17 (1.15-1.6 x fewer shots) and about even at 18 ([flow G](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/flow-g-2026-10-26)); an older snapshot's twin had shown 1.5-8.2 x, mostly its pessimism for the zipper ([flow F](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/flow-f-2026-10-26)) |
-| The folded ring's first device job (ibm_kingston, 2026-10-26, n = 13, 64 inputs x 250 shots, 7 s) | kept its signal as the day's twin predicted: 0.90 +- 0.12 against 0.77 | one job, one random model; a coarse test that rules out a large loss, not a difference of 0.1; no zipper on the device ([D1](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/device-d1-2026-10-26)) |
+| The folded ring's first device jobs (2026-10-26, n = 13, 64 inputs x 250 shots, 7 s each) | kept its signal as each day's twin predicted: ibm_kingston 0.90 +- 0.12 against 0.77, ibm_fez 0.50 +- 0.10 against 0.59 | one job per device, one random model; coarse tests that rule out a large loss, not a difference of 0.1; no zipper on a device ([D1](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/device-d1-2026-10-26), [D2](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/device-d2-2026-10-26)) |
 | One hardware job, ibm_kingston, 2026-10-24 | the zipper's circuits followed a twin of that day's calibration: scale 1.00, correlation 0.98 | one job, 90 points of one label; Qiskit's circuits in the same job lost most of their signal and came out inverted, cause not found |
 
 Details: [Scope](#scope-where-psf-zero-competes), [Where it is weaker](#where-it-is-weaker), and the test bench
@@ -170,6 +171,11 @@ CX-basis synthesis returns wrong circuits near a boundary ([Qiskit #17057](https
   version 1.2, 2026-10-25; all versions: [10.5281/zenodo.23600811](https://doi.org/10.5281/zenodo.23600811)).
   PSF-Zero's formula-built ring against Qiskit's search through a trained noisy classifier, the four confounds that
   decide such comparisons, and the zipper's first hardware job.
+- [**Paper 4 — Folding a Ring onto Heavy-Hex: Formula-Built Schedules with Provable Gate Counts, and What Their
+  Signal Shows on Twins and Devices**](docs/papers/folded_rings_heavy_hex.pdf)
+  ([DOI: 10.5281/zenodo.23665575](https://doi.org/10.5281/zenodo.23665575), version 1, 2026-10-26). The zipper, holes
+  and pendants on heavy-hex, their gate counts and lower bounds, a26's count rule, declared matches on two twins, and
+  the folded ring's first two device jobs.
 - [**Technical overview slides**](docs/papers/psf_zero_technical_overview.pptx) (8 slides).
 
 ## How these numbers were produced
