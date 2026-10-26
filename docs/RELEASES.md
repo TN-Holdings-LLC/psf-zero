@@ -60,6 +60,19 @@ the earlier parts they link to. The README itself, as it was before the move, is
 > 6. The device layer has been tested only in noisy simulation on fake devices, not on hardware. (Since 2026-10-12 it
 >    has run on three real devices: HW1, HW2, TIME1, FRAC1; Addenda 455-488.)
 
+> **AI front end a26 (2026-10-26), with `psf_compile.py` 2026-10-18.1 and `rust/psfbind` ring r3.**
+> `patches/psf_ai_compile_a26_2026-10-26/` (a25 with item 50, built by `make_a26.py`).
+>
+> - **Item 50, the default:** a ring classifier that does not embed is folded onto one of the device's own heavy-hex
+>   cycles by formula: its extra nodes hung off a shorter cycle (n + (n - m) two-qubit gates per layer, on exactly n
+>   qubits) or a longer cycle's spare qubits moved as |0> holes (n + 2 (m - n)); of those and the zipper the fewest
+>   extra gates decides. On Heron: holes at n = 8-11 and 18-19, pendants at n = 13-17; n = 4-7, embeddable rings and
+>   ECR devices keep a25's path. `PSF_RING_FOLD=0` gives a25's output (680 of 680 calls identical, `check_a26.py`);
+>   by default 176 folded cases exact on every clbit and every other call a25's (RESULT PASS).
+> - **Evidence, models only (TOQB, a 2026-10-13 calibration of ibm_marrakesh):** in a declared match against the
+>   zipper at n = 13-18, L = 16, four random models, WIN at every n (24 of 24 models); the rule's signal lam 0.51-0.76
+>   against the zipper's 0.09-0.46 (TOQB `results/flow-f-2026-10-26`). Not run on a device.
+
 > **AI front end a25 (2026-10-25), with `psf_compile.py` 2026-10-18.1 and `rust/psfbind` ring r3.**
 > `patches/psf_ai_compile_a25_2026-10-25/` (a24 with item 49, built by `make_a25.py`).
 >

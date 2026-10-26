@@ -22,10 +22,12 @@ need it; predictions are locked in git before each scored run, and losses are pu
   Every other circuit, and every call without the device, raises `OutOfScopeError`.
 - **`compile_template(qc, target)`** builds once and binds new angles in about a millisecond, for training loops
   (CZ devices).
-- **Ring classifiers that do not embed** (the AI front end, `patches/psf_ai_compile_a25_2026-10-25/`): the ring is laid
-  on a line of the device by formula and its far edges brought together by a fixed schedule. With `PSF_RING_ZIP=1`,
-  the **zipper**: 5n/2 - 4 CZ per layer for even n, (5n - 7)/2 for odd n (21 at n = 10, against 28 for the earlier
-  template).
+- **Ring classifiers that do not embed** (the AI front end, `patches/psf_ai_compile_a26_2026-10-26/`): the ring is
+  folded onto one of the device's own cycles (12, 20, 24, ... qubits) by formula, its extra nodes hung off a shorter
+  cycle (**n + (n - m) two-qubit gates per layer, on exactly n qubits**; 14 at n = 13) or a longer cycle's spare
+  qubits moved as holes (n + 2 (m - n)); the fewest extra gates decides, and for small rings (n = 4-7) the ring is
+  laid on a line with a fixed schedule (with `PSF_RING_ZIP=1` the **zipper**, 5n/2 - 4 or (5n - 7)/2 CZ per layer).
+  `PSF_RING_FOLD=0` gives the earlier front end a25.
 
 ## Results
 
@@ -37,21 +39,21 @@ need it; predictions are locked in git before each scored run, and losses are pu
 | General circuits (880 Benchpress tests, release 2026-10-07.1) | about level with Qiskit level 2: 1.046 x its two-qubit gates | 3.5 x its compile time; out of scope since 2026-10-16.1 |
 | The zipper's CZ count | no cheaper schedule found: from every start layout for n = 4-10, from the minimum-length ones at n = 12, 14 | an exhaustive search, not a proof for every n ([TOQB](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/zipper-bound-2026-10-24)) |
 | A trained ring classifier, zipper (formula) against Qiskit (search), Paper 3 | a third fewer CZ, a quarter of the duration (336 against 506 CZ, 11.7 against 48.2 us at 16 layers) | the declared tests could not tell the two classifiers apart: no win either way |
+| Ring folded onto a device cycle against the zipper (a declared match on TOQB's models, n = 13-18, 16 layers, four random models) | WIN at every n, 24 of 24 models; about half the zipper's two-qubit gates | on models of one device's calibration, not a device; the rule's signal 0.51-0.76 against the zipper's 0.09-0.46, so 2.3-67 times fewer shots for the same precision ([TOQB](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/flow-f-2026-10-26)) |
 | One hardware job, ibm_kingston, 2026-10-24 | the zipper's circuits followed a twin of that day's calibration: scale 1.00, correlation 0.98 | one job, 90 points of one label; Qiskit's circuits in the same job lost most of their signal and came out inverted, cause not found |
 
 Details: [Scope](#scope-where-psf-zero-competes), [Where it is weaker](#where-it-is-weaker), and the test bench
 [TOQB](https://github.com/TN-Holdings-LLC/TOQB) for every ring and training result.
 
-**In progress (in TOQB, not in this compiler):** laying a ring on one of the device's own cycles (12, 20, 24, ...
-qubits) with its spare qubits as moving holes: n + 2(holes) two-qubit gates per layer, the fewest and shortest of the
-three arms in every cell. On TOQB's noise models, with 1-4 spare qubits it keeps the most signal of the arms run in
-13 of 14 cells; with 6-7, at 16 layers, it falls below the zipper in 3 of 4 values
-([flow D](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/flow-d-2026-10-25)). Not run on a device.
+**Not yet known:** the folded rings' signal above n = 18 (their gate counts, 0.42-0.47 of the zipper's at n = 20-30,
+are; [TOQB](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/rule-big-2026-10-26)), and any of it on a
+device.
 
 ## Current version
 
 **`psf_compile.py` 2026-10-18.1** (chains and even rings through psfz, PSF-Zero's compiler in Rust, when built) and
-the AI front end **a25** (2026-10-25: the zipper also for odd n; otherwise a24's output, bit for bit). Every release
+the AI front end **a26** (2026-10-26: rings folded onto device cycles by default; `PSF_RING_FOLD=0` gives a25's
+output, bit for bit). Every release
 and dated notice, newest first: [`docs/RELEASES.md`](docs/RELEASES.md). The changelog of `psf_compile`:
 [`docs/psf_compile_CHANGELOG.md`](docs/psf_compile_CHANGELOG.md).
 
@@ -67,7 +69,7 @@ cd psf-zero
 pip install -e .            # the Python package (psf_compile.py), numpy, scipy, networkx, qiskit==2.5.2
 maturin develop --release   # the Rust core (src/lib.rs, psf_zero_core) -- must run LAST
 cargo build --release --manifest-path rust/psfz/Cargo.toml      # psfz: chains and rings in Rust (optional)
-cargo build --release --manifest-path rust/psfbind/Cargo.toml   # psfbind ring r3: needed by the AI front end a25
+cargo build --release --manifest-path rust/psfbind/Cargo.toml   # psfbind ring r3: needed by the AI front end (a25, a26)
 python benchmarks/check_core_build.py   # prints RESULT: OK if the core has every function the Python code calls
 ```
 
@@ -95,10 +97,10 @@ A ring classifier that does not embed (the AI front end, from the repository fol
 
 ```python
 import importlib.util, os
-spec = importlib.util.spec_from_file_location("psf_ai_compile", "patches/psf_ai_compile_a25_2026-10-25/psf_ai_compile.py")
+spec = importlib.util.spec_from_file_location("psf_ai_compile", "patches/psf_ai_compile_a26_2026-10-26/psf_ai_compile.py")
 ai = importlib.util.module_from_spec(spec); spec.loader.exec_module(ai)
-os.environ["PSF_RING_ZIP"] = "1"                   # the zipper as a candidate (off by default)
-tpl = ai.model_template(qc, backend.target)        # a template of the ring classifier, or None
+os.environ["PSF_RING_ZIP"] = "1"                   # small rings (n = 4-7): the zipper as a candidate (off by default)
+tpl = ai.model_template(qc, backend.target)        # folded onto a device cycle where the rule says so, or None
 out = tpl.bind(qc)
 ```
 

@@ -1,0 +1,8 @@
+a26 2026-10-26.a26 | a25 2026-10-25.a25 | psf_compile 2026-10-18.1 | psfbind psfbind ring r3 (2026-10-25): n2 q4 zip (even and odd n)
+A (PSF_RING_FOLD=0) {'identical': 680} | differences: []
+B (default) {'not folded, identical to a25': 328, 'folded, checked': 176} | problems: [] | differences: []
+holes: two-qubit gates minus L (n + 2 (m - n)): {0: 88, 2: 8}
+folded per device, schedule, cycle (ring sizes): [(('FakeFez', 'holes', 12), 4), (('FakeFez', 'holes', 20), 2), (('FakeFez', 'pend', 12), 5), (('FakeKingston', 'holes', 12), 4), (('FakeKingston', 'holes', 20), 2), (('FakeKingston', 'pend', 12), 5), (('FakeMarrakesh', 'holes', 12), 4), (('FakeMarrakesh', 'holes', 20), 2), (('FakeMarrakesh', 'pend', 12), 5), (('FakeTorino', 'holes', 12), 4), (('FakeTorino', 'holes', 20), 2), (('FakeTorino', 'pend', 12), 5)]
+ring sizes folded: [(8, 'holes'), (9, 'holes'), (10, 'holes'), (11, 'holes'), (13, 'pend'), (14, 'pend'), (15, 'pend'), (16, 'pend'), (17, 'pend'), (18, 'holes'), (19, 'holes')]
+A26_STATS {'fold_pend': 160, 'fold_holes': 192, 'fold_zipper_fewer': 192, 'fold_no_cycle': 0, 'fold_not_ring': 0, 'fold_off': 340, 'fold_permuted': 0}
+RESULT PASS
