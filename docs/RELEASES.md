@@ -69,9 +69,13 @@ the earlier parts they link to. The README itself, as it was before the move, is
 >   extra gates decides. On Heron: holes at n = 8-11 and 18-19, pendants at n = 13-17; n = 4-7, embeddable rings and
 >   ECR devices keep a25's path. `PSF_RING_FOLD=0` gives a25's output (680 of 680 calls identical, `check_a26.py`);
 >   by default 176 folded cases exact on every clbit and every other call a25's (RESULT PASS).
-> - **Evidence, models only (TOQB, a 2026-10-13 calibration of ibm_marrakesh):** in a declared match against the
->   zipper at n = 13-18, L = 16, four random models, WIN at every n (24 of 24 models); the rule's signal lam 0.51-0.76
->   against the zipper's 0.09-0.46 (TOQB `results/flow-f-2026-10-26`). Not run on a device.
+> - **Evidence (TOQB):** in declared matches against the zipper at n = 13-18, L = 16, four random models, WIN at every
+>   n on the twin of ibm_marrakesh's 2026-10-13 snapshot (24 of 24 models; lam 0.51-0.76 against 0.09-0.46,
+>   `results/flow-f-2026-10-26`) and on the twin of ibm_kingston's 2026-10-24 calibration, the kind that matched the
+>   device (23 of 24; **1.07-1.28 x the zipper's lam at n = 13-17, about even at 18**, `results/flow-g-2026-10-26`):
+>   the snapshot overstated the lead. On a device (2026-10-26, ibm_kingston, n = 13, one job, 7 s) the folded ring kept
+>   lam 0.90 +- 0.12 against its twin's 0.77: as predicted (`results/device-d1-2026-10-26`); no zipper on the device.
+>   (Corrected 2026-10-26 evening: this entry first quoted flow F's numbers alone.)
 
 > **AI front end a25 (2026-10-25), with `psf_compile.py` 2026-10-18.1 and `rust/psfbind` ring r3.**
 > `patches/psf_ai_compile_a25_2026-10-25/` (a24 with item 49, built by `make_a25.py`).

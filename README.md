@@ -39,15 +39,16 @@ need it; predictions are locked in git before each scored run, and losses are pu
 | General circuits (880 Benchpress tests, release 2026-10-07.1) | about level with Qiskit level 2: 1.046 x its two-qubit gates | 3.5 x its compile time; out of scope since 2026-10-16.1 |
 | The zipper's CZ count | no cheaper schedule found: from every start layout for n = 4-10, from the minimum-length ones at n = 12, 14 | an exhaustive search, not a proof for every n ([TOQB](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/zipper-bound-2026-10-24)) |
 | A trained ring classifier, zipper (formula) against Qiskit (search), Paper 3 | a third fewer CZ, a quarter of the duration (336 against 506 CZ, 11.7 against 48.2 us at 16 layers) | the declared tests could not tell the two classifiers apart: no win either way |
-| Ring folded onto a device cycle against the zipper (a declared match on TOQB's models, n = 13-18, 16 layers, four random models) | WIN at every n, 24 of 24 models; about half the zipper's two-qubit gates | on models of one device's calibration, not a device; the rule's signal 0.51-0.76 against the zipper's 0.09-0.46, so 2.3-67 times fewer shots for the same precision ([TOQB](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/flow-f-2026-10-26)) |
+| Ring folded onto a device cycle against the zipper (declared matches on TOQB's twins, n = 13-18, 16 layers, four random models each) | WIN at every n on both twins; about half the zipper's two-qubit gates, shorter | on the twin of a real day's calibration (ibm_kingston, 2026-10-24) the lead is 1.07-1.28 x the zipper's signal at n = 13-17 (1.15-1.6 x fewer shots) and about even at 18 ([flow G](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/flow-g-2026-10-26)); an older snapshot's twin had shown 1.5-8.2 x, mostly its pessimism for the zipper ([flow F](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/flow-f-2026-10-26)) |
+| The folded ring's first device job (ibm_kingston, 2026-10-26, n = 13, 64 inputs x 250 shots, 7 s) | kept its signal as the day's twin predicted: 0.90 +- 0.12 against 0.77 | one job, one random model; a coarse test that rules out a large loss, not a difference of 0.1; no zipper on the device ([D1](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/device-d1-2026-10-26)) |
 | One hardware job, ibm_kingston, 2026-10-24 | the zipper's circuits followed a twin of that day's calibration: scale 1.00, correlation 0.98 | one job, 90 points of one label; Qiskit's circuits in the same job lost most of their signal and came out inverted, cause not found |
 
 Details: [Scope](#scope-where-psf-zero-competes), [Where it is weaker](#where-it-is-weaker), and the test bench
 [TOQB](https://github.com/TN-Holdings-LLC/TOQB) for every ring and training result.
 
 **Not yet known:** the folded rings' signal above n = 18 (their gate counts, 0.42-0.47 of the zipper's at n = 20-30,
-are; [TOQB](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/rule-big-2026-10-26)), and any of it on a
-device.
+are; [TOQB](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/rule-big-2026-10-26)), and the folded ring
+against the zipper on a device (one folded-ring job so far, above).
 
 ## Current version
 
