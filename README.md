@@ -42,14 +42,18 @@ need it; predictions are locked in git before each scored run, and losses are pu
 | A trained ring classifier, zipper (formula) against Qiskit (search), Paper 3 | a third fewer CZ, a quarter of the duration (336 against 506 CZ, 11.7 against 48.2 us at 16 layers) | the declared tests could not tell the two classifiers apart: no win either way |
 | Ring folded onto a device cycle against the zipper (declared matches on TOQB's twins, n = 13-18, 16 layers, four random models each) | WIN at every n on both twins; about half the zipper's two-qubit gates, shorter | on the twin of a real day's calibration (ibm_kingston, 2026-10-24) the lead is 1.07-1.28 x the zipper's signal at n = 13-17 (1.15-1.6 x fewer shots) and about even at 18 ([flow G](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/flow-g-2026-10-26)); an older snapshot's twin had shown 1.5-8.2 x, mostly its pessimism for the zipper ([flow F](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/flow-f-2026-10-26)) |
 | The folded ring's first device jobs (2026-10-26, n = 13, 64 inputs x 250 shots, 7 s each) | kept its signal as each day's twin predicted: ibm_kingston 0.90 +- 0.12 against 0.77, ibm_fez 0.50 +- 0.10 against 0.59 | one job per device, one random model; coarse tests that rule out a large loss, not a difference of 0.1; no zipper on a device ([D1](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/device-d1-2026-10-26), [D2](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/device-d2-2026-10-26)) |
+| Folded ring against Qiskit's search (level 2 on the day's Target, the same twin and models, n = 13-16 and 18) | WIN on every model (20 of 20); 1.8-3.0 x fewer two-qubit gates, 5-10 x shorter | the rule kept 0.61-0.82 of the signal, Qiskit's circuits -0.05-0.64 (below 0.3 on 14 of 20 models); 1.6-57 x fewer shots where Qiskit's signal is positive; one Qiskit setting, twin only ([flow I](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/flow-i-2026-10-26)) |
+| Same classifiers, same qubits, only the schedule changed (n = 18, 20) | the rule against the zipper laid on the same qubits: WIN 4/4 at both n | the bare ring kept 1.44-1.81 x the zipper's signal, two holes 1.13-1.20 x; twin only ([flow K](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/flow-k-2026-10-27)) |
+| Larger rings (the rule alone, n = 20, 22, 24) | 320, 384, 384 two-qubit gates (the zipper's: 736, 816, 896) | kept 0.78-0.86, 0.75-0.84, 0.81-0.83 of the signal; on one 20-cycle two pendants kept nearly what the bare ring kept and more than two holes (0.61-0.68); twin only ([flow J](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/flow-j-2026-10-27)) |
 | One hardware job, ibm_kingston, 2026-10-24 | the zipper's circuits followed a twin of that day's calibration: scale 1.00, correlation 0.98 | one job, 90 points of one label; Qiskit's circuits in the same job lost most of their signal and came out inverted, cause not found |
 
 Details: [Scope](#scope-where-psf-zero-competes), [Where it is weaker](#where-it-is-weaker), and the test bench
 [TOQB](https://github.com/TN-Holdings-LLC/TOQB) for every ring and training result.
 
-**Not yet known:** the folded rings' signal above n = 18 (their gate counts, 0.42-0.47 of the zipper's at n = 20-30,
+**Not yet known:** the folded rings' signal above n = 24 (their gate counts, 0.42-0.47 of the zipper's at n = 20-30,
 are; [TOQB](https://github.com/TN-Holdings-LLC/TOQB/tree/main/results/rule-big-2026-10-26)), and the folded ring
-against the zipper on a device (one folded-ring job so far, above).
+against the zipper on a device (one folded-ring job per device so far, above). All signal comparisons above are on
+noise models of one day's calibration with random classifiers.
 
 ## Current version
 
@@ -138,7 +142,8 @@ four runs, three devices (ibm_kingston, ibm_marrakesh, ibm_fez); the pooling was
 - **Without the device**, no call can avoid failed elements: in BP-FINAL the default call, which did not read the
   Target, placed gates on failed elements in 62 of 105 FakeTorino tests.
 - **Rings:** the zipper's minimality is an exhaustive search up to n = 14, not a proof; on hardware it has run in one
-  job.
+  job. The pendants' bound is proved only for layered schedules on the cycle and its leaves, the holes' only within
+  their class (Paper 4); the signal results are on twins, not devices.
 
 ## Earlier: two-qubit synthesis, `compile()` (release 2026-10-14.1)
 
@@ -251,6 +256,17 @@ is implied on either side.
   doi    = {10.5281/zenodo.23630904},
   url    = {https://doi.org/10.5281/zenodo.23630904},
   note   = {Preprint, version 1.2, 25 October 2026; version 1.0: 10.5281/zenodo.23600812}
+}
+
+@misc{folded_rings_heavy_hex_2026,
+  author = {{TN Holdings}},
+  title  = {Folding a Ring onto Heavy-Hex: Formula-Built Schedules with
+            Provable Gate Counts, and What Their Signal Shows on Twins
+            and Devices},
+  year   = {2026},
+  doi    = {10.5281/zenodo.23706881},
+  url    = {https://doi.org/10.5281/zenodo.23706881},
+  note   = {Preprint, version 1.1, 28 October 2026; version 1: 10.5281/zenodo.23665575}
 }
 ```
 
