@@ -8,7 +8,7 @@
 [![DOI (Paper 1)](https://zenodo.org/badge/DOI/10.5281/zenodo.22977930.svg)](https://doi.org/10.5281/zenodo.22977930)
 [![DOI (Paper 2)](https://zenodo.org/badge/DOI/10.5281/zenodo.22978090.svg)](https://doi.org/10.5281/zenodo.22978090)
 [![DOI (Paper 3)](https://zenodo.org/badge/DOI/10.5281/zenodo.23630904.svg)](https://doi.org/10.5281/zenodo.23630904)
-[![DOI (Paper 4)](https://zenodo.org/badge/DOI/10.5281/zenodo.23665575.svg)](https://doi.org/10.5281/zenodo.23665575)
+[![DOI (Paper 4)](https://zenodo.org/badge/DOI/10.5281/zenodo.23706881.svg)](https://doi.org/10.5281/zenodo.23706881)
 
 PSF-Zero is a Qiskit-compatible compiler for IBM devices that builds a circuit by formula: no layout search, no
 routing search, and no choice by the day's error values. What it cannot build by formula it refuses with a reason.
@@ -173,9 +173,11 @@ CX-basis synthesis returns wrong circuits near a boundary ([Qiskit #17057](https
   decide such comparisons, and the zipper's first hardware job.
 - [**Paper 4 — Folding a Ring onto Heavy-Hex: Formula-Built Schedules with Provable Gate Counts, and What Their
   Signal Shows on Twins and Devices**](docs/papers/folded_rings_heavy_hex.pdf)
-  ([DOI: 10.5281/zenodo.23665575](https://doi.org/10.5281/zenodo.23665575), version 1, 2026-10-26). The zipper, holes
-  and pendants on heavy-hex, their gate counts and lower bounds, a26's count rule, declared matches on two twins, and
-  the folded ring's first two device jobs.
+  ([DOI: 10.5281/zenodo.23706881](https://doi.org/10.5281/zenodo.23706881), version 1.1, 2026-10-28; version 1:
+  [10.5281/zenodo.23665575](https://doi.org/10.5281/zenodo.23665575)). The zipper, holes and pendants on heavy-hex,
+  their gate counts and lower bounds, a26's count rule, declared matches on two twins (against the zipper and, in 1.1,
+  against Qiskit), larger rings (n = 20-24) and a same-qubits comparison of schedules, and the folded ring's first two
+  device jobs.
 - [**Technical overview slides**](docs/papers/psf_zero_technical_overview.pptx) (8 slides).
 
 ## How these numbers were produced
