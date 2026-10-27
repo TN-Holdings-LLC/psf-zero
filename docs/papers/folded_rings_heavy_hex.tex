@@ -1,7 +1,8 @@
 \documentclass[11pt]{article}
 
 \usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
+\input{glyphtounicode}
+\pdfgentounicode=1
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{booktabs}
 \usepackage{hyperref}
@@ -21,7 +22,7 @@ Formula-Built Schedules with Provable Gate Counts, and What Their Signal Shows o
 \texttt{love.os.architect@proton.me}\\
 \texttt{https://github.com/TN-Holdings-LLC/psf-zero}}
 
-\date{Version 1 --- 26 October 2026}
+\date{Version 1.1 --- 28 October 2026}
 
 \begin{document}
 \maketitle
@@ -33,7 +34,7 @@ qubits only. We compare three schedules that a compiler can build by formula, wi
 reading the day's calibration: the \emph{zipper} (the ring folded onto a line; $5n/2-4$ two-qubit gates per layer for
 even $n$, $(5n-7)/2$ for odd $n$), \emph{holes} (the ring on a longer cycle, its spare qubits moved as $|0\rangle$;
 $n + 2(m-n)$), and \emph{pendants} (the ring on a shorter cycle, its extra nodes hung off it; $n + (n-m)$, on exactly
-$n$ qubits). We prove that the pendant schedule's count is the least possible for layered schedules in a stated routing
+$n$ qubits). We prove that the pendant schedule's count is the least possible for layered schedules on the cycle and its leaves in a stated routing
 model (exhaustive search finds the same for interleaved ones in small cases), that the hole schedule's count is least
 within its class but not in general, and recall that no cheaper schedule than the zipper
 was found by exhaustive searches at $n = 4$--$12$ and $14$. A rule that takes the fewest extra gates picks pendants at $n = 13$--$17$
@@ -44,7 +45,12 @@ snapshot and only $1.07$--$1.28\times$ (about even at $n = 18$) on the twin of a
 had predicted the zipper on hardware: the old snapshot was pessimistic for the zipper. On two devices
 (\texttt{ibm\_kingston}, \texttt{ibm\_fez}) the pendant schedule kept the signal its day's twin predicted
 ($0.90 \pm 0.12$ against $0.77$; $0.50 \pm 0.10$ against $0.59$), in two jobs of 7\,s each; these are coarse tests and
-no device comparison with the zipper was made. Error-product estimates of the kept signal did not rank the schedules.
+no device comparison with the zipper was made. Against Qiskit's search (level 2 on the same twin) the rule won on every
+classifier at every $n$ simulated ($n = 13$--$16$, $18$): Qiskit's circuits kept $-0.05$--$0.64$ of the signal against
+0.61--0.82. The bare ring kept 0.78--0.86 at $n = 20$ and 0.81--0.83 at $n = 24$. On one 20-qubit cycle, two pendants kept nearly what
+the bare ring kept (0.75--0.84 against 0.78--0.86) and
+clearly more than two holes (0.61--0.68); with the classifiers and qubits fixed and only the schedule changed, the
+bare ring kept 1.44--1.81 times the zipper's signal and two holes 1.13--1.20 times. Error-product estimates of the kept signal did not rank the schedules.
 We give the benchmark number and the device user's number side by side throughout.
 \end{abstract}
 
@@ -64,13 +70,29 @@ rule that chooses among the three, proofs or exhaustive checks of their counts, 
 the runs, and the first device runs of the new schedule. All runs, declarations and records are in TOQB
 \cite{toqb}; the compiler is PSF-Zero's AI front end a26.
 
+\paragraph{Related work and what is new here.} Laying the qubits of a structured circuit along a path of the
+device and swapping qubits off that path in and out is known: IBM's swap strategies for QAOA on heavy-hex use the
+longest line and periodic swaps with qubits beside it \cite{weidenfeller2022}, and a linear-depth QFT has been mapped
+onto a main line with qubits hung off it \cite{gao2024}. Merging a CZ with the SWAP that follows it, and swapping with a
+qubit known to be in $|0\rangle$ by two CX, are known building blocks \cite{ogorman2019,liu2021rpo}. That compiled
+circuits are not ranked well by their two-qubit gate count or by error-product estimates has been shown on hardware
+\cite{nishio2020,hopf2025}, and that a schedule's timing changes the error on the same qubits and gates
+\cite{murali2020}. The slope of the noisy on the noiseless expectation value is the rescaling factor of error
+mitigation \cite{vovrosh2021,czarnik2021}, and noise outside an observable's backward light cone does not affect it
+\cite{tran2023}. What we add is narrower: the ring problem on heavy-hex cycles, the exact per-layer counts of three
+schedules with lower bounds in stated models, and comparisons that hold the classifier, the inputs and the qubits fixed
+and change only the schedule, with the kept-signal slope as the measure and every comparison declared before it ran.
+Our ``folding'' is a placement of the ring on a cycle; it is unrelated to the gate folding of zero-noise
+extrapolation \cite{giurgica2020}.
+
 \section{Heavy-hex cycles}
 \label{sec:cycles}
 
 Heavy-hex is the honeycomb lattice with every edge subdivided by one qubit \cite{chamberland2020}. A cycle in it is a
-cycle of the honeycomb with every edge doubled, so its length is twice a honeycomb cycle length. Honeycomb cycles have
-lengths $6, 10, 12, 14, \dots$ (one hexagon; two adjacent; three around a vertex; three in a row; \dots) and, being
-bipartite with girth 6, none of length 8.
+cycle of the honeycomb with every edge subdivided, which doubles its length. Honeycomb cycles have length 6 (one
+hexagon) and every even length from 10 on (outlines of clusters of hexagons: two adjacent, 10; three around a vertex,
+12; three in a row, 14; four with one inner vertex, 16; \dots), and, the lattice being bipartite with girth 6, none of
+length 8.
 Heavy-hex cycles therefore have lengths $12, 20, 24, 28, \dots$, with none between 12 and 20. We checked this on the
 coupling graphs of four Heron fake devices by listing every simple cycle up to length 22: only 12 and 20 occur (21 and
 44 cycles on \texttt{FakeMarrakesh}, \texttt{FakeFez} and \texttt{FakeKingston}; 18 and 37 on \texttt{FakeTorino}).
@@ -85,7 +107,11 @@ indices are not consecutive), \emph{rows} (the components left without them) and
 bridges of a row pair). A cycle is the outline of a fixed shape of cells: $k$ cells side by side in a row pair
 ($8k+4$ qubits: 12, 20, 28), or $k$ cells plus $k_2$ cells in the next row pair down (24, 32, 36, \dots). The first
 shape in a fixed order (row pairs top to bottom, cells left to right) whose qubits and couplers all work is used. No
-search over mappings and no error value decides; elements at error $\ge 0.5$ are never used.
+search over mappings and no error value decides; failed elements are never used. The compiler (a26) treats a qubit or
+coupler at error $\ge 0.5$ as failed; TOQB's analysis arm, which built every circuit run in this paper, uses error
+$\ge 1$. On the marrakesh snapshot and on the \texttt{ibm\_kingston} Target of 24 October no element has an error in
+$[0.5, 1)$, so the two give the same circuits there (on the snapshot this was also checked instruction for
+instruction, $n = 8$--$19$).
 
 \paragraph{Zipper.} The ring laid on a line in folded order ($0, 1, 2, n-1, n-2, 3, 4, \dots$); each layer a fixed
 sequence of CZ rounds, CZ+SWAP blocks at the line's ends and interior SWAPs; the next layer runs backwards. Two-qubit
@@ -146,10 +172,12 @@ $|0\rangle$.
 $\alpha|0\rangle|\varphi\rangle + \beta|1\rangle Z|\varphi\rangle$; if $Z|\varphi\rangle \propto |\varphi\rangle$ the
 state stays on the first qubit, otherwise the output is entangled for generic $\alpha,\beta$. Hence an operation that
 moves states has extra at least 1 (CZ+SWAP, which also applies a ring edge), 2 (a move onto an empty qubit, two CX) or
-3 (a SWAP).
+3 (a SWAP). An operation that only exchanges two nodes is a SWAP: an exchange in two CZ is CZ+SWAP, which also applies a
+CZ between the two nodes, allowed only when it is their ring edge not yet applied in the layer.
 
 \begin{lemma}[pendants]
-Let the hardware be a cycle $C_m$ plus $k < m$ leaves, each attached to a distinct hub, no two hubs adjacent, every
+Let the hardware be a cycle $C_m$ plus $k$ leaves, each attached to a distinct hub, no two hubs adjacent (so
+$k \le \lfloor m/2 \rfloor$), every
 qubit holding a ring node ($n = m+k$). In the routing model every layer of a layered schedule costs at least $n + k$
 two-qubit gates. The pendant schedule is layered and meets the bound.
 \end{lemma}
@@ -158,7 +186,8 @@ Fix a layer and a leaf $\ell$ with hub $h$; let $x$ be the node on $\ell$ when t
 during the layer, an operation that moves states acts on $(h,\ell)$, the leaf's only coupler. Otherwise both ring edges
 of $x$, with $x-1$ and $x+1$, are applied across $(h,\ell)$ in this layer, so $h$ holds $x-1$ at one time and $x+1$ at
 another; since no qubit is empty and $x$ stays on $\ell$, the node on $h$ changes through an operation that moves states
-on a cycle edge at $h$. Name that operation $\ell$'s. Operations named for different leaves are different: one on a leaf
+on a cycle edge at $h$; it lies between two operations of this layer, so in a layered schedule it belongs to this
+layer. Name that operation $\ell$'s. Operations named for different leaves are different: one on a leaf
 edge belongs to one leaf, and a cycle edge at $h$ is a cycle edge at another hub $h'$ only if $h$ and $h'$ are adjacent,
 which is excluded. The layer thus holds at least $k$ distinct state-moving operations, each with extra $\ge 1$, besides
 the $n$ ring edges; its cost is at least $n+k$. The pendant schedule finishes each layer before the next, with one
@@ -177,16 +206,21 @@ bound for interleaved schedules in general.
 
 \begin{lemma}[holes, within their class]
 On a cycle $C_m$ with $h$ empty qubits and $n = m-h \ge 3$ nodes, among schedules in which nodes move only onto empty
-qubits (never exchange, so their cyclic order is kept), every layer costs at least $n + 2h$.
+qubits (never exchange, so their cyclic order is kept), every layer of a layered schedule costs at least $n + 2h$.
 \end{lemma}
 \begin{proof}
-Let $q$ be a qubit empty at the start of a layer. If no node enters $q$ during the layer, no node passes it, so with
-the cyclic order kept the two nodes beside it stay the same ring-consecutive pair $x$, $x+1$; they are separated by $q$
+Since nodes never pass each other, two nodes that are not consecutive in the cyclic order never become adjacent; for
+every ring edge to be applicable, each node's two ring neighbours must therefore be its two cyclic neighbours ($n \ge
+3$), and the cyclic order is the ring order or its reverse. Let $q$ be a qubit empty at the start of a layer. If no node
+enters $q$ during the layer, no node passes it, so the two nodes beside it stay the same ring-consecutive pair $x$,
+$x+1$; they are separated by $q$
 on one arc and by the other $n-2 \ge 1$ nodes on the other, so they are never adjacent and their ring edge cannot be
 applied. Hence each of the $h$ qubits empty at the start is entered during the layer, by distinct operations (each
 enters one qubit) that cost 2 and apply no ring edge (a CZ with an empty qubit does nothing); the $n$ ring edges need
 $n$ more.
 \end{proof}
+\noindent The bound does not rest on excluding operations that spread a state over two qubits: bridging an edge across
+$r$ empty qubits (CX, \dots, CZ, \dots, CX) costs $2r + 1$, again 2 extra per empty qubit, in every layer.
 \noindent The hole schedule meets the bound when no two holes meet (counted at $n = 9, 10, 18$: $15$, $14$, $22$ per
 layer); at $n = 8$, where moved holes meet, it uses 4 more over 16 layers. Outside the class the bound fails when holes
 are many. The same search, for a single layer from the best start on a bare cycle, finds 6 for $m = 6, 7$ with
@@ -203,8 +237,8 @@ $n = 5$--$11$ and from every start for $n = 5, 7, 9$ \cite{toqb}.
 
 \paragraph{Measure.} One random classifier of TOQB's ring family (single-qubit rotations per layer, a CZ ring, 16
 layers, $\langle Z\rangle$ of qubit 0), 24 random inputs, 256 noise trajectories; the kept signal $\lambda$ is the slope
-of the noisy $\langle Z\rangle$ on the noiseless one, $z \approx \lambda z_0 + \delta$. Shots for a fixed precision
-scale as $1/\lambda^2$. Two twins: one built from \texttt{ibm\_marrakesh}'s published calibration of 13 October 2026
+of the noisy $\langle Z\rangle$ on the noiseless one, $z \approx \lambda z_0 + \delta$ (the rescaling factor of
+error mitigation \cite{vovrosh2021,czarnik2021}). Shots for a fixed precision scale as $1/\lambda^2$. Two twins: one built from \texttt{ibm\_marrakesh}'s published calibration of 13 October 2026
 (the \emph{snapshot}), one from \texttt{ibm\_kingston}'s calibration of 24 October 2026 (the \emph{day twin}), which on
 that day had predicted the zipper on hardware (the device's slope on the twin's prediction $1.00$, $0.95$--$1.02$ per
 classifier) \cite{paper3}.
@@ -255,6 +289,99 @@ $0.45$--$0.68$ and ordered $82$--$93\,\%$ of clearly different pairs; both faile
 ($0.8$ and $90\,\%$ at both depths). The noise reaching the read-out depends on the circuit's shape, not only on how many
 errors it contains.
 
+\paragraph{Larger rings, one cycle.} At $n = 20$ and $22$ the rule's signal was simulated on the day twin too, rule only
+(declared; four models; the zipper would need 736 and 816 two-qubit gates). On this Target the rule uses the same
+20-qubit cycle at $n = 18$, $20$ and $22$, so three placements can be compared on the same qubits
+(Table~\ref{tab:onecycle}). Two pendants, with the most two-qubit gates, kept nearly what the bare ring kept and clearly
+more than two holes: on the same qubits the placement, not the gate count, decided most of the difference. The random
+classifiers differ between $n$, so the comparison mixes the placement with the classifier; the ranges of four
+classifiers do not overlap between the holes and the other two.
+At $n = 24$ (declared separately; the ring itself on a 24-cycle, 384 two-qubit gates, 5.6\,$\mu$s) the rule kept
+0.81--0.83 on four classifiers (prediction $\ge 0.61$ held), the level of the bare ring on the 20-cycle: going from 20
+to 24 qubits on a cycle cost no measurable signal here, though the place and the classifiers changed with $n$.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lcccc}
+\toprule
+$n$ & placement on the 20-cycle & two-qubit gates per layer & duration & $\lambda$ (four classifiers) \\
+\midrule
+18 & two holes, moved every layer & 22 & 6.7\,$\mu$s & 0.61--0.68 \\
+20 & the ring itself & 20 & 5.6\,$\mu$s & 0.78--0.86 \\
+22 & two pendants & 24 & 9.2\,$\mu$s & 0.75--0.84 \\
+\bottomrule
+\end{tabular}
+\caption{The rule on one 20-qubit cycle of the \texttt{ibm\_kingston} day twin, $L = 16$ (standard errors of each
+$\lambda$ 0.01--0.03). Predictions declared for $n = 20$ ($\ge 0.61$) and $n = 22$ (0.50--0.86) held.}
+\label{tab:onecycle}
+\end{table}
+
+\paragraph{Same classifier, same qubits, two schedules.} The comparison above mixes the placement with the
+classifier. A declared match removed that: at $n = 18$ and $20$, the same four classifiers and inputs ran with the
+zipper laid along the same cycle's qubits (a path of 18 or 20 of them), against the rule's rows. The rule won on every
+classifier at both $n$ (Table~\ref{tab:samequbits}); the $n = 20$ prediction (WIN) held, no direction had been
+predicted at $n = 18$. With everything but the schedule fixed, the bare ring kept 1.44--1.81 times the zipper's signal
+and two holes 1.13--1.20 times; the zipper's output was also noisier (correlation with the noiseless output down to
+0.89). The place matters as well: at $n = 18$ the zipper placed by PSF-Zero elsewhere on the device kept 0.63--0.66
+with the same classifiers, 0.06--0.10 more than on this cycle.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lcccccc}
+\toprule
+$n$ & rule's schedule & gates / $\mu$s & zipper on the same qubits: gates / $\mu$s & rule's $\lambda$ & zipper's $\lambda$ & verdict \\
+\midrule
+18 & two holes & 352 / 6.7 & 656 / 10.6 & 0.61--0.68 & 0.54--0.59 & WIN 4/4 \\
+20 & the ring itself & 320 / 5.6 & 736 / 10.6 & 0.78--0.86 & 0.44--0.60 & WIN 4/4 \\
+\bottomrule
+\end{tabular}
+\caption{Only the schedule changed: same classifiers, inputs and qubits (\texttt{ibm\_kingston} day twin, $L = 16$,
+four classifiers; standard errors 0.01--0.05).}
+\label{tab:samequbits}
+\end{table}
+
+\section{Against Qiskit's search}
+
+\paragraph{Design.} Qiskit (optimization level 2 on the day's Target, its default seed) ran on the same twin, classifiers and
+inputs as Table~\ref{tab:match}, with the declared rule of that table (the rule's and the zipper's rows were reused after
+a declared check that they reproduce exactly). Its circuits were simulated up to 24 active qubits; $n = 17$ was stopped
+for cost (about 3.5\,h a classifier at 24 active qubits) and is reported as not run.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lccccc}
+\toprule
+$n$ & 13 & 14 & 15 & 16 & 18 \\
+\midrule
+Qiskit's active qubits & 20 & 20 & 24 & 16 & 22 \\
+two-qubit gates, rule / Qiskit & 224 / 571 & 256 / 530 & 288 / 699 & 320 / 968 & 352 / 639 \\
+duration ($\mu$s), rule / Qiskit & 9.2 / 53.7 & 9.2 / 49.1 & 9.3 / 65.5 & 9.3 / 94.7 & 6.7 / 53.0 \\
+rule's $\lambda$ & 0.76--0.81 & 0.73--0.82 & 0.78--0.81 & 0.77--0.80 & 0.61--0.68 \\
+Qiskit's $\lambda$ & 0.24--0.59 & 0.19--0.64 & 0.21--0.47 & 0.10--0.38 & $-0.05$--0.28 \\
+rule vs Qiskit & WIN 4/4 & WIN 4/4 & WIN 4/4 & WIN 4/4 & WIN 4/4 \\
+\bottomrule
+\end{tabular}
+\caption{The rule against Qiskit on the \texttt{ibm\_kingston} day twin, $L = 16$, four random classifiers. The zipper
+also kept more than Qiskit on every classifier. The prediction (WIN at every $n$ run) held.}
+\label{tab:qiskit}
+\end{table}
+
+\paragraph{Reading.} Qiskit's circuits spread a ring of 13--18 over 16--24 active qubits, with 1.8--3.0 times the rule's
+two-qubit gates and 5.3--10 times its duration. They kept $-0.05$--$0.64$ of the signal, below 0.3 on 14 of 20
+classifiers, against 0.61--0.82 for the rule; where Qiskit's $\lambda$ is positive the rule keeps 1.3--7.6 times as
+much, so a user needs 1.6--57 times fewer shots for the same precision. At $n = 18$ one classifier kept no measurable
+signal ($-0.05 \pm 0.26$). Qiskit's circuit is the same for the four classifiers, yet its $\lambda$ spans 0.19--0.64 at
+$n = 14$ and its correlation with the noiseless output is 0.28--0.90 (the rule's 0.99): its long circuits leave the
+output noisy as well as damped. Spreading the ring over more qubits also widens the read-out's backward light cone,
+the only region whose noise reaches it \cite{tran2023}; we offer this as a qualitative reading, since an error product
+over that cone did not rank the schedules (Section~5). Beyond $n = 18$ Qiskit's circuits use 22--28 or more active qubits, which our trajectory
+simulation could not afford; this is a limit of our method, not a measurement of Qiskit. These are one setting of
+Qiskit on one day's twin with random classifiers; Paper~3 \cite{paper3} compared Qiskit and the zipper through trained
+classifiers and on a device.
+
 \section{On devices}
 
 \paragraph{Design.} With 18\,s of free device time left, a two-arm comparison was rehearsed on the day twin first: the
@@ -288,10 +415,11 @@ device beside them.
 
 \section{Limitations}
 
-The lower bound for pendants is proved for layered schedules in a routing model that excludes measurement,
+The lower bound for pendants is proved for layered schedules on exactly the cycle and its leaves (a schedule that
+borrows nearby empty qubits is outside it) in a routing model that excludes measurement,
 feed-forward and ancilla-mediated gates, and checked by search only for small interleaved cases; the hole bound holds within a class; the zipper's is a search result. The signal results are on noise models of
 two calibrations and one device family, with random rather than trained classifiers, one placement per $n$, and four
-classifiers per cell. The device tests are one job each, at a precision of about $0.1$. Count-optimal is not
+classifiers per cell; Qiskit ran at one optimization level with its default seed. The device tests are one job each, at a precision of about $0.1$. Qiskit's structured swap strategies \cite{weidenfeller2022} were not among the arms. Count-optimal is not
 signal-optimal: duration and where the read-out sits also matter.
 
 \section{Reproducibility}
@@ -301,9 +429,9 @@ signal-optimal: duration and where the read-out sits also matter.
 \item Compiler: PSF-Zero AI front end a26, \path{patches/psf_ai_compile_a26_2026-10-26/} (checks \path{check_a26.py},
 \path{test_a26.py}).
 \item Runs, each with its declaration fixed by SHA-256 and time before the run (\path{prereg/drafts-2026-10-25/},
-\path{prereg/drafts-2026-10-26/}): TOQB \cite{toqb} \path{results/}\ \path{flow-d-2026-10-25}, and, all dated
+\path{prereg/drafts-2026-10-26/}, \path{prereg/drafts-2026-10-27/}): TOQB \cite{toqb} \path{results/}\ \path{flow-d-2026-10-25}, and, all dated
 \path{2026-10-26}, \path{flow-e}, \path{flow-f}, \path{flow-g}, \path{flow-h}, \path{rule-big}, \path{esp-check},
-\path{lam-rehearse}, \path{device-d1}, \path{device-d2}, and the searches and cycle counts of Sections 2 and 4, \path{lemma-check} (scripts and outputs; no declaration); the separate review of the pendant code,
+\path{lam-rehearse}, \path{device-d1}, \path{device-d2}, \path{flow-i} (Qiskit), \path{flow-j-2026-10-27} (larger rings), \path{flow-k-2026-10-27} (same qubits, two schedules), and the searches and cycle counts of Sections 2 and 4, \path{lemma-check} (scripts and outputs; no declaration); the separate review of the pendant code,
 \path{pend-review-2026-10-26}.
 \item Device jobs: \path{dbfivq0m94ac738tldc0} (\texttt{ibm\_kingston}) and \path{dbfjtvvsstms73fe0jc0}
 (\texttt{ibm\_fez}); circuits, manifests and raw counts are in the two device folders.
@@ -335,6 +463,37 @@ universal quantum classifier'', Quantum 4, 226 (2020).
 
 \bibitem{shende2004} V. V. Shende, I. L. Markov, S. S. Bullock, ``Minimal universal two-qubit controlled-NOT-based
 circuits'', Physical Review A 69, 062321 (2004).
+
+\bibitem{weidenfeller2022} J. Weidenfeller, L. C. Valor, J. Gacon, C. Tornow, L. Bello, S. Woerner, D. J. Egger,
+``Scaling of the quantum approximate optimization algorithm on superconducting qubit based hardware'', Quantum 6, 870
+(2022).
+
+\bibitem{gao2024} X. Gao, Y. Jin, M. Guo, H. Chen, E. Z. Zhang, ``Linear depth QFT over IBM heavy-hex architecture'',
+arXiv:2402.09705 (2024).
+
+\bibitem{liu2021rpo} J. Liu, L. Bello, H. Zhou, ``Relaxed peephole optimization: a novel compiler optimization for
+quantum circuits'', arXiv:2012.07711 (2020).
+
+\bibitem{nishio2020} S. Nishio, Y. Pan, T. Satoh, H. Amano, R. Van Meter, ``Extracting success from IBM's 20-qubit
+machines using error-aware compilation'', doi:10.1145/3386162 (2020).
+
+\bibitem{hopf2025} P. Hopf, N. Quetschlich, L. Schulz, R. Wille, ``Improving figures of merit for quantum circuit
+compilation'', arXiv:2501.13155 (2025).
+
+\bibitem{murali2020} P. Murali, D. C. McKay, M. Martonosi, A. Javadi-Abhari, ``Software mitigation of crosstalk on noisy
+intermediate-scale quantum computers'', arXiv:2001.02826 (2020).
+
+\bibitem{vovrosh2021} J. Vovrosh, K. E. Khosla, S. Greenaway, C. Self, M. S. Kim, J. Knolle, ``Simple mitigation of
+global depolarizing errors in quantum simulations'', arXiv:2101.01690 (2021).
+
+\bibitem{czarnik2021} P. Czarnik, A. Arrasmith, P. J. Coles, L. Cincio, ``Error mitigation with Clifford quantum-circuit
+data'', arXiv:2005.10189 (2020).
+
+\bibitem{tran2023} M. C. Tran, K. Sharma, K. Temme, ``Locality and error mitigation of quantum circuits'',
+arXiv:2303.06496 (2023).
+
+\bibitem{giurgica2020} T. Giurgica-Tiron, Y. Hindy, R. LaRose, A. Mari, W. J. Zeng, ``Digital zero noise extrapolation
+for quantum error mitigation'', arXiv:2005.10921 (2020).
 
 \bibitem{ogorman2019} B. O'Gorman, W. J. Huggins, E. G. Rieffel, K. B. Whaley, ``Generalized swap networks for
 near-term quantum computing'', arXiv:1905.05118 (2019).
