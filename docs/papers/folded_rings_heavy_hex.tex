@@ -22,7 +22,7 @@ Formula-Built Schedules with Provable Gate Counts, and What Their Signal Shows o
 \texttt{love.os.architect@proton.me}\\
 \texttt{https://github.com/TN-Holdings-LLC/psf-zero}}
 
-\date{Version 1.1 --- 28 October 2026}
+\date{Version 1.2 --- 28 October 2026}
 
 \begin{document}
 \maketitle
@@ -49,7 +49,7 @@ no device comparison with the zipper was made. Against Qiskit's search (level 2 
 classifier at every $n$ simulated ($n = 13$--$16$, $18$): Qiskit's circuits kept $-0.05$--$0.64$ of the signal against
 0.61--0.82. The bare ring kept 0.78--0.86 at $n = 20$ and 0.81--0.83 at $n = 24$. On one 20-qubit cycle, two pendants kept nearly what
 the bare ring kept (0.75--0.84 against 0.78--0.86) and
-clearly more than two holes (0.61--0.68); with the classifiers and qubits fixed and only the schedule changed, the
+clearly more than two holes (0.61--0.68), with different $n$ and classifiers; in a separate test with the classifiers and qubits fixed and only the schedule changed, the
 bare ring kept 1.44--1.81 times the zipper's signal and two holes 1.13--1.20 times. Error-product estimates of the kept signal did not rank the schedules.
 We give the benchmark number and the device user's number side by side throughout.
 \end{abstract}
@@ -75,13 +75,16 @@ device and swapping qubits off that path in and out is known: IBM's swap strateg
 longest line and periodic swaps with qubits beside it \cite{weidenfeller2022}, and a linear-depth QFT has been mapped
 onto a main line with qubits hung off it \cite{gao2024}. Merging a CZ with the SWAP that follows it, and swapping with a
 qubit known to be in $|0\rangle$ by two CX, are known building blocks \cite{ogorman2019,liu2021rpo}. That compiled
-circuits are not ranked well by their two-qubit gate count or by error-product estimates has been shown on hardware
-\cite{nishio2020,hopf2025}, and that a schedule's timing changes the error on the same qubits and gates
+circuits are ranked only imperfectly by their two-qubit gate count or by error-product estimates has been shown on
+hardware \cite{nishio2020,hopf2025}, and that a schedule's timing changes the error on the same qubits and gates
 \cite{murali2020}. The slope of the noisy on the noiseless expectation value is the rescaling factor of error
 mitigation \cite{vovrosh2021,czarnik2021}, and noise outside an observable's backward light cone does not affect it
-\cite{tran2023}. What we add is narrower: the ring problem on heavy-hex cycles, the exact per-layer counts of three
-schedules with lower bounds in stated models, and comparisons that hold the classifier, the inputs and the qubits fixed
-and change only the schedule, with the kept-signal slope as the measure and every comparison declared before it ran.
+\cite{tran2023}. How transpiling a ring ansatz onto heavy-hex changes its expressibility and gradient variance has been
+studied in noiseless simulation \cite{kashif2026}; we study the signal kept under noise, with exact gate counts. What
+we add is narrower: the ring problem on heavy-hex cycles, the exact per-layer counts of three
+schedules, with lower bounds in stated models for two of them and exhaustive searches for the third; the kept-signal
+slope as the measure of schedules; one test that holds the classifier, the inputs and the qubits fixed and changes only
+the schedule; and every match declared, with its decision rule, before it ran.
 Our ``folding'' is a placement of the ring on a cycle; it is unrelated to the gate folding of zero-noise
 extrapolation \cite{giurgica2020}.
 
@@ -491,6 +494,9 @@ data'', arXiv:2005.10189 (2020).
 
 \bibitem{tran2023} M. C. Tran, K. Sharma, K. Temme, ``Locality and error mitigation of quantum circuits'',
 arXiv:2303.06496 (2023).
+
+\bibitem{kashif2026} M. Kashif, M. Shafique, ``Beyond logical circuits: hardware-aware analysis of expressibility and
+trainability in variational quantum algorithms'', arXiv:2605.25552 (2026).
 
 \bibitem{giurgica2020} T. Giurgica-Tiron, Y. Hindy, R. LaRose, A. Mari, W. J. Zeng, ``Digital zero noise extrapolation
 for quantum error mitigation'', arXiv:2005.10921 (2020).
