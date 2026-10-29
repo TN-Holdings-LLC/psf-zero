@@ -6,6 +6,7 @@
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
 \usepackage{xcolor}
+\usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage[margin=1in]{geometry}
 \usepackage{url}
@@ -23,7 +24,7 @@ Formula Placement on Heavy-Hex Devices, Measured by a Circuit's Own Conserved Ch
 \texttt{love.os.architect@proton.me}\\
 \texttt{https://github.com/TN-Holdings-LLC/psf-zero}}
 
-\date{Draft 0.1 --- 29 October 2026 (skeleton; not for release)}
+\date{Draft 0.2 --- 29 October 2026 (skeleton; not for release)}
 
 \begin{document}
 \maketitle
@@ -62,6 +63,11 @@ and duration predict (2.2--2.4). We report these failures with the results. \tod
   with the failed ones reported. What is not new: reading noise from conserved quantities
   \cite{maruyoshi2023,oliva2026}, layer fidelity and size-independent layer errors \cite{mckay2023}, the noisy
   free-fermion solution \cite{pocklington2026}, and the $J=\pi/4$ kicked Ising circuit on IBM devices \cite{fischer2024}.
+\item A picture from underwater acoustics guides the reading (Section~\ref{sec:acoustic}). Sound in the ocean fades
+  with distance at a rate set by its frequency and by the water; low tones in the deep sound channel carry for
+  thousands of kilometres. Here the depth of a circuit plays the distance, the Pauli weight of what is read plays the
+  frequency, the placement plays the water, and a conserved charge plays the sound channel. It is an analogy for the
+  reader, not a physical identity.
 \item Companion work: the formula schedules and their gate counts \cite{paper4}.
 \end{itemize}
 
@@ -99,6 +105,43 @@ $\rho(L)=(1-4p/3)^{2L}$.
 $L^*$ is the $1/e$ decay length of a one-parameter fit $\rho(L)=e^{-L/L^*}$ over $L=24,50,100$ (weighted least squares
 on the $\rho$ scale). $\Delta L_X=L^*_{\mathrm{rule}}-L^*_X$ and $\kappa_X=L^*_{\mathrm{rule}}/L^*_X$, the ratio of
 per-step decay rates. $L^*$ is a property of a weight-2 quantity; wider outputs decay faster (Section~\ref{sec:p2}).
+
+\subsection{An acoustic reading of the decay}\label{sec:acoustic}
+Under uniform depolarizing noise of rate $p$ per qubit and step, a Pauli string of weight $w$ is multiplied by
+$(1-4p/3)^{w}$ at every step. The attenuation per step therefore grows with the weight, as the absorption of sound in
+sea water grows with frequency \cite{francois1982}. Table~\ref{tab:acoustic} lists the correspondence we use.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{p{0.36\textwidth}p{0.58\textwidth}}
+\toprule
+sound in the ocean & a circuit on a device\\
+\midrule
+distance travelled & depth $L$ (steps)\\
+absorption coefficient; attenuation length & per-step decay rate; $L^*$\\
+frequency (higher tones fade sooner) & Pauli weight of the observable (wider observables fade sooner)\\
+the water (temperature, salinity) & the placement (the zipper absorbs about 3.6 times as much as the rule)\\
+geometric spreading loss & operator spreading: a local output grows in weight before the noise acts on it\\
+the deep sound (SOFAR) channel & a conserved charge: the circuit does not spread it; only the noise damps it\\
+sonar equation and detection range & signal against shot noise; the readable depth at a shot budget\\
+\bottomrule
+\end{tabular}
+\caption{The analogy used in this paper. Where it fails: sea-water absorption grows roughly as the square of the
+frequency, with relaxation peaks, and is an empirical formula; the weight dependence here is linear in the exponent
+and follows from the noise model.}\label{tab:acoustic}
+\end{table}
+
+In the language of the sonar equation \cite{urick1983}, a reading at depth $L$ is detected when the signal exceeds
+twice its shot-noise standard error. With $\rho(L)=e^{-L/L^*}$ and a per-shot spread $\sigma_1$ (so that
+$\mathrm{SE}=\sigma_1/\sqrt{S}$ at $S$ shots),
+\[
+L_{\mathrm{read}}(S)=L^*\,\ln\frac{\sqrt{S}}{2\sigma_1}.
+\]
+For probe P1, $\sigma_1\approx0.2$--$0.26$, so $L_{\mathrm{read}}(1000)\approx4L^*$. That lies beyond the depths we
+measured and is not claimed; we report $L^*$, which needs no budget and no threshold. The formula does show why the
+gain matters: $\Delta L$ in $L^*$ becomes about four times as many steps of detection range at 1000 shots, and a
+placement that absorbs $\kappa$ times as much reaches $\kappa$ times fewer steps with the same shots.
 
 \subsection{Declarations}
 Every device test was declared (SHA-256 and CET time) before its calibration was fetched; the declarations, records
@@ -142,16 +185,54 @@ rule wins on $\rho$ & 6/6 & 6/6 & 6/6 & 6/6\\
 
 \section{Declared predictions that failed}
 \begin{itemize}
-\item \textbf{One depolarizing rate.} Neither device followed $\rho=(1-4p/3)^{2L}$ with one $p$: marrakesh against its
-  own $p$ from $L=24$ (1 of 5 inside 2 SE), kingston against $p=0.0051$ from the previous day (1 of 6). Both decay
-  more slowly at depth than at the start.
+\item \textbf{One depolarizing rate.} Neither device followed $\rho=(1-4p/3)^{2L}$ with one $p$ within 2 shot-noise
+  SE: marrakesh against its own $p$ from $L=24$ (1 of 5 inside), kingston against $p=0.0051$ from the previous day
+  (1 of 6). The per-segment decay rates scatter by 10--20\,\% with no common direction, and kingston's rate had
+  improved since the previous day; the declared tolerance (shot noise only, about 1\,\%) left no room for either.
 \item \textbf{Size independence of the rule.} SAME at all three depths on marrakesh; DIFFERENT at $L=24$ and 50 on
   kingston, where the $n=36$ ring was better than the $n=20$ ring.
 \item \textbf{The structure bracket.} The zipper's $\kappa$ was declared to lie between its gate ratio and its
   duration ratio (2.2--2.4). It was 3.5--3.7 on both devices.
 \item \textbf{Probe P2} ($\langle X_0\rangle$, 250 shots) was at the noise floor on both devices.
 \end{itemize}
-\todo{Observed but not declared: $\kappa_{\text{zipper}}\approx3.6$ on both devices; declare and test}
+
+\section{The formula fixed after the run}\label{sec:fixed}
+The following changes were made after seeing the results. They are fitted to the same data and are evidence only once
+they predict a later run; they are declared for the next stage.
+\begin{enumerate}
+\item \textbf{Self-reference with a model band.} The rule's rate is read from its own $L=24$ point; deeper points are
+  predicted with the rate $\pm20$\,\% (the observed scatter), plus 2 SE of shot noise.
+\item \textbf{A constant zipper penalty.} $L^*_{\text{zipper}}=L^*_{\text{rule}}/3.6$, with $\kappa\in[3.3,3.9]$,
+  in place of the structure bracket.
+\item \textbf{Map-aware, for reference only (special condition).} $1/L^*=c\times$ the median CZ error of the rule's
+  couplers on the day's calibration.
+\end{enumerate}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{p{0.48\textwidth}p{0.2\textwidth}p{0.24\textwidth}}
+\toprule
+fixed formula & on its own data & fitted on one device, applied to the other\\
+\midrule
+1. own $L=24$ point, rate $\pm20$\,\% & 8/8 & (no device constant)\\
+1b. $n=20$ ring's $L=24$ point to the $n=36$ ring & 6/6 & (no device constant)\\
+2. zipper $\kappa=3.6\pm0.3$ & 4/4 & 4/4\\
+3. map-aware: $1/L^*=c\times$ median CZ error & fits by construction & 1/4 ($-27$ to $+37$\,\%)\\
+\bottomrule
+\end{tabular}
+\caption{The fixed formulas on 29 October 2026 (post-hoc). Formula 3 reads the calibration and failed across devices:
+the day's error map did not predict the readable depth better than the circuit's own short-depth point.}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/readable_depth_declared_vs_fixed.png}
+\caption{Declared predictions (dashed) against the formula fixed after the run (solid, with bands), for the rule (blue)
+and the zipper (orange) on both devices and both sizes. Points: measured $\rho$, $\pm2$ SE. The largest miss of the
+declared predictions is the zipper's: its structure ratio (about 2.3) underestimated its penalty (about 3.6) on all
+four panels. Fitted to the same day's data; script \texttt{readable\_depth\_figures.py}.}\label{fig:fixed}
+\end{figure}
 
 \section{Output probe P2}\label{sec:p2}
 \todo{P2 tables; the contrast between a ring-averaged weight-2 charge and a single-site output}
@@ -195,6 +276,9 @@ Letters 24, 377--380 (1987).
 \bibitem{mckay2023} D. C. McKay et al., ``Benchmarking quantum processor performance at scale'', arXiv:2311.05933
 (2023). \todo{check title}
 \bibitem{pocklington2026} A. Pocklington and A. A. Clerk, arXiv:2604.18996 (2026). \todo{full reference}
+\bibitem{francois1982} R. E. Francois and G. R. Garrison, ``Sound absorption based on ocean measurements. Part II:
+Boric acid contribution and equation for total absorption'', J. Acoust. Soc. Am. 72(6), 1879--1890 (1982).
+\bibitem{urick1983} R. J. Urick, \emph{Principles of Underwater Sound}, 3rd ed., McGraw-Hill (1983).
 \bibitem{fischer2024} L. E. Fischer et al., arXiv:2411.00765 (2024). \todo{full reference}
 \end{thebibliography}
 
