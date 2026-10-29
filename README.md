@@ -15,6 +15,25 @@ routing search, and no choice by the day's error values. What it cannot build by
 Every result below is given twice, as the benchmark custom would quote it and as someone running it on a device would
 need it; predictions are locked in git before each scored run, and losses are published next to wins.
 
+## Headline: on the device, without the calibration map (2026-10-28)
+
+![Kept signal per ring size on ibm_kingston, no arm reading the calibration map](docs/figures/d6_kingston_no_map.png)
+
+On ibm_kingston, ring classifiers of n = 13-24 qubits (16 layers) were compiled three ways, and no compiler was given
+the day's error rates; each was told only which elements had failed. The device then measured how much of each
+circuit's noiseless output survived (λ).
+
+- **Benchmark number:** PSF-Zero's formula ring beat Qiskit level 2 at 11 of 12 sizes (1 tie, 0 losses), and the
+  zipper on the same qubits at 3 of 6 (3 ties, 0 losses).
+- **Device user's number:**
+  - Without the map, Qiskit kept no usable signal at 8 of 12 sizes. Its circuits ran 22-108 µs, against 5.6-9.3 µs.
+  - Given the day's map, a special condition run as a separate job at n = 20, Qiskit came within error of the formula
+    ring: 0.77 against 0.94, not decided.
+  - The formula reads no map, so its result does not age as the calibration does.
+
+One classifier per size, one device, one day; predictions were locked before the run, and both missed in part (see the
+records). Records: TOQB `results/device-d6-2026-10-28` and `results/device-d5a-2026-10-28`.
+
 ## What it does
 
 - **`compile_for_hardware(qc, backend=...)`** builds every circuit whose two-qubit interaction graph embeds in the
