@@ -1,0 +1,201 @@
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\input{glyphtounicode}
+\pdfgentounicode=1
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage[margin=1in]{geometry}
+\usepackage{url}
+\def\UrlBreaks{\do\/\do-\do_}
+
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}
+\setlength{\tabcolsep}{4pt}
+% Open items of this draft are marked in red; none of them is a result.
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+
+\title{Readable Depth Without the Calibration Map:\\
+Formula Placement on Heavy-Hex Devices, Measured by a Circuit's Own Conserved Charge}
+
+\author{TN Holdings\\
+\texttt{love.os.architect@proton.me}\\
+\texttt{https://github.com/TN-Holdings-LLC/psf-zero}}
+
+\date{Draft 0.1 --- 29 October 2026 (skeleton; not for release)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Compilers for today's quantum processors choose a layout by reading the day's calibration: error rates per qubit
+and per coupler. A classical computer offers no such map, and a map is stale as soon as it is read. We ask how deep a
+circuit stays readable when no placement reads a quality number. We place a ring of CZ gates on IBM's heavy-hex
+devices in three ways that see only the coupling graph, the basis and which elements have failed: a formula that puts
+the ring on a lattice cycle (the \emph{rule}), the ring folded onto the same qubits (\emph{zipper}), and Qiskit's
+level-2 search given the coupling map without error rates (\emph{blind Qiskit}). As the workload we use the kicked
+Ising ring at $J=\pi/4$, whose exact answer is known at any size, and as the probe a weight-2 charge conserved by the
+circuit itself: its decay, read with a four-input combination that cancels readout and first-order relaxation, gives
+the per-step damping without any calibration data. In declared tests on \texttt{ibm\_marrakesh} and
+\texttt{ibm\_kingston} (29 October 2026; $n=20$ and $36$; $L=24$, $50$, $100$ steps, up to 3600 CZ per circuit) the
+rule kept more of the charge than both other placements in all 24 comparisons. Its readable depth, the $1/e$ decay
+length $L^*$, was 56--57 steps on marrakesh and 81--90 on kingston, against 15--26 for the others: 30--73 steps
+deeper. In an earlier test with a 16-layer classifier at $n=13$--$24$ the rule beat blind Qiskit at 11 of 12 sizes
+and tied one. The noise model we declared did not hold: one depolarizing rate did not describe the decay on either
+device, and the zipper's penalty, 3.5--3.7 times the rule's decay rate on both devices, was larger than its gate count
+and duration predict (2.2--2.4). We report these failures with the results. \todo{sizes above 36 (ring extension,
+30 Oct.); a declared test of the zipper penalty}
+\end{abstract}
+
+\section{Introduction}
+
+\begin{itemize}
+\item Map-aware placement is the default (Qiskit's VF2 post-layout and noise-aware routing read error rates). Its
+  gains are measured against the same map that chose the layout; the selection is optimistic by construction (the
+  optimizer's curse \cite{smith2006}), and the map ages.
+\item The question here: without any quality number, how deep can a circuit be read, and does the placement change
+  that depth? We call a placement \emph{map-free} if it reads only the coupling graph, the basis and the failed
+  elements. Map-aware placement is a special condition and is always labelled so.
+\item What is new: (i) a map-free comparison of placements by a calibration-free decay measurement on the circuit
+  itself; (ii) the readable depth $L^*$ and the gain $\Delta L$ as the reported quantity; (iii) declared predictions,
+  with the failed ones reported. What is not new: reading noise from conserved quantities
+  \cite{maruyoshi2023,oliva2026}, layer fidelity and size-independent layer errors \cite{mckay2023}, the noisy
+  free-fermion solution \cite{pocklington2026}, and the $J=\pi/4$ kicked Ising circuit on IBM devices \cite{fischer2024}.
+\item Companion work: the formula schedules and their gate counts \cite{paper4}.
+\end{itemize}
+
+\section{Setting}
+
+\subsection{Workload}
+The kicked Ising ring, one step $S=(R_X(2h)\,Z)^{\otimes n}\,\mathrm{CZ}_{\mathrm{ring}}$, $J=\pi/4$, $h=0.6$. It is a
+free-fermion circuit; its outputs are computed exactly at any $n$ by a recursion, which also gives the outputs under
+uniform depolarizing noise exactly \cite{pocklington2026}. \todo{one paragraph with the recursion, from toqb.kising}
+
+\subsection{Placements (no quality number read)}
+\begin{itemize}
+\item \textbf{Rule} (\texttt{fold:rule}): the ring on a cycle of the heavy-hex lattice, built by formula from the
+  lattice's cells \cite{paper4}; $n$ CZ per layer.
+\item \textbf{Zipper} (\texttt{fold:zipcyc}): the ring folded onto the same cycle's qubits; $5n/2-4$ CZ per layer.
+\item \textbf{Blind Qiskit} (\texttt{qiskit:2:blind:template}): Qiskit level 2, \texttt{seed\_transpiler}=0, given the
+  working couplers in both directions and the basis only.
+\item Failed elements (error $=1$) are removed for every placement; nothing else of the calibration is used.
+\end{itemize}
+
+\subsection{Probe P1: the circuit's own conserved charge}
+\[
+Q=\sum_j \bigl(Z_jZ_{j+1}+b\,Y_jZ_{j+1}+c\,Z_jY_{j+1}\bigr),\qquad b=c=-1.28608\ (h=0.6),
+\]
+the weight-2 conserved charge with the largest $ZZ$ share (a noiseless criterion; the same coefficients for
+$n=6$--$40$). Inputs $|0\cdots0\rangle$, $|1\cdots1\rangle$ and the two N\'eel states; three measurement settings;
+every record carries its own readout reference on the physical qubits it measures. The four-input ratio
+\[
+\rho(L)=\frac{[Q(0\cdots0)+Q(1\cdots1)-Q(\text{N\'eel})-Q(\overline{\text{N\'eel}})]_L}{[\,\cdot\,]_{\mathrm{ref}}}
+\]
+cancels readout within a record and the first-order relaxation bias. Under uniform depolarizing noise
+$\rho(L)=(1-4p/3)^{2L}$.
+
+\subsection{Readable depth}
+$L^*$ is the $1/e$ decay length of a one-parameter fit $\rho(L)=e^{-L/L^*}$ over $L=24,50,100$ (weighted least squares
+on the $\rho$ scale). $\Delta L_X=L^*_{\mathrm{rule}}-L^*_X$ and $\kappa_X=L^*_{\mathrm{rule}}/L^*_X$, the ratio of
+per-step decay rates. $L^*$ is a property of a weight-2 quantity; wider outputs decay faster (Section~\ref{sec:p2}).
+
+\subsection{Declarations}
+Every device test was declared (SHA-256 and CET time) before its calibration was fetched; the declarations, records
+and raw counts are in TOQB \cite{toqb}. \todo{table of declarations and job ids}
+
+\section{Classifier test without the map (D6)}
+TOQB's ring classifier, $L=16$, $n=13$--$24$, 64 inputs $\times$ 250 shots, \texttt{ibm\_kingston}, 28 October 2026;
+no arm read a quality number and no simulator was used. Rule against blind Qiskit: 11 wins, 1 tie (at $n=23$), no
+loss. Rule against the zipper on the same qubits (even $n$): 3 wins, 3 ties, no loss. Blind Qiskit kept no measurable
+signal at 8 of 12 sizes; its circuits ran 22--108\,\textmu s against the rule's 5.6--9.3\,\textmu s.
+For reference, with the map (D5 part A, $n=20$, a different hour): rule $0.943\pm0.044$, zipper $0.600\pm0.044$,
+map-aware Qiskit $0.765\pm0.099$ (rule $-$ Qiskit within 2 SE). \todo{table of D6 from TOQB results/device-d6}
+
+\section{The noise wall on two devices}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lcccc}
+\toprule
+ & marrakesh $n=20$ & marrakesh $n=36$ & kingston $n=20$ & kingston $n=36$\\
+\midrule
+$L^*$ rule & $56.5\pm0.9$ & $56.6\pm0.7$ & $81.3\pm1.3$ & $89.7\pm1.1$\\
+$L^*$ zipper & $15.1\pm0.4$ & $15.7\pm0.3$ & $22.6\pm0.4$ & $25.6\pm0.3$\\
+$L^*$ blind Qiskit & $26.4\pm0.5$ & $15.7\pm0.3$ & $22.0\pm0.4$ & $17.0\pm0.3$\\
+$\Delta L$ vs zipper & $+41.3$ & $+40.9$ & $+58.7$ & $+64.1$\\
+$\Delta L$ vs blind Qiskit & $+30.1$ & $+40.9$ & $+59.3$ & $+72.7$\\
+$\kappa$ zipper ($g$, $t$) & 3.73 (2.30, 2.27) & 3.60 (2.39, 2.25) & 3.60 (2.30, 2.24) & 3.50 (2.39, 2.22)\\
+rule wins on $\rho$ & 6/6 & 6/6 & 6/6 & 6/6\\
+\bottomrule
+\end{tabular}
+\caption{Probe P1 on two devices, 29 October 2026. $g$, $t$: the zipper's gate and duration ratios to the rule. 1000 shots per circuit; jobs of 92 and 90\,s.
+\todo{full $\rho$ tables in an appendix}}
+\end{table}
+
+\begin{itemize}
+\item \textbf{Benchmark number:} the rule won all 24 charge comparisons; $\Delta L=+30$ to $+73$ steps.
+\item \textbf{Device user's number:} at $n=36$, $L=100$ (3600 CZ) the rule's charge was $0.178\pm0.006$ (marrakesh)
+  and $0.314\pm0.006$ (kingston); the zipper's and blind Qiskit's were zero within 2 SE.
+\end{itemize}
+
+\section{Declared predictions that failed}
+\begin{itemize}
+\item \textbf{One depolarizing rate.} Neither device followed $\rho=(1-4p/3)^{2L}$ with one $p$: marrakesh against its
+  own $p$ from $L=24$ (1 of 5 inside 2 SE), kingston against $p=0.0051$ from the previous day (1 of 6). Both decay
+  more slowly at depth than at the start.
+\item \textbf{Size independence of the rule.} SAME at all three depths on marrakesh; DIFFERENT at $L=24$ and 50 on
+  kingston, where the $n=36$ ring was better than the $n=20$ ring.
+\item \textbf{The structure bracket.} The zipper's $\kappa$ was declared to lie between its gate ratio and its
+  duration ratio (2.2--2.4). It was 3.5--3.7 on both devices.
+\item \textbf{Probe P2} ($\langle X_0\rangle$, 250 shots) was at the noise floor on both devices.
+\end{itemize}
+\todo{Observed but not declared: $\kappa_{\text{zipper}}\approx3.6$ on both devices; declare and test}
+
+\section{Output probe P2}\label{sec:p2}
+\todo{P2 tables; the contrast between a ring-averaged weight-2 charge and a single-site output}
+
+\section{Discussion}
+\begin{itemize}
+\item \textbf{Selection and prediction.} The rule's schedules are fixed by formula; nothing is chosen as the best of
+  several candidates by a calibration- or simulation-based score. For a selection of the best of $K$ candidates by an
+  estimate with error scale $\sigma$, the prediction is optimistic by up to $\sigma\sqrt{2\ln K}$
+  \cite{smith2006}; the analogy with the Occam bound \cite{blumer1987} is structural. This concerns the reliability of
+  a prediction, not which placement keeps more signal, which we measured separately.
+\item \textbf{Why the duration matters.} Blind Qiskit placed the bare ring at equal gate count, yet its charge decayed
+  2--5 times faster per step than the rule's, with 5--9 times the duration. \todo{idle decoherence, scheduling}
+\item \textbf{What a map buys.} D5 part A suggests about 0.3 in the classifier's slope at $n=20$; between jobs, not
+  declared. \todo{a declared non-inferiority test with a stale map}
+\end{itemize}
+
+\section{Limitations}
+\begin{itemize}
+\item One day per device, one ring per size, two sizes. \todo{sizes above 36}
+\item The charge is a weight-2 quantity; $L^*$ is not the depth at which an arbitrary output stays readable.
+\item The four-input ratio leaves a second-order relaxation bias.
+\item Every reference here is classically computable; no classical-hardness claim is made.
+\end{itemize}
+
+\section{Reproducibility}
+TOQB \cite{toqb}: \texttt{results/device-d6-2026-10-28}, \texttt{results/noise-wall-1-marrakesh-2026-10-29},
+\texttt{results/noise-wall-1-kingston-2026-10-29}; declarations in \texttt{prereg/}. Circuit files over GitHub's size
+limit are kept off the repository with their SHA-256.
+
+\begin{thebibliography}{99}
+\bibitem{paper4} TN Holdings, ``Folding a Ring onto Heavy-Hex: Formula-Built Schedules with Provable Gate Counts, and
+What Their Signal Shows on Twins and Devices'', version 1.2 (2026).
+\bibitem{toqb} TN Holdings, TOQB, the test bench for PSF-Zero's training and device runs (2026).
+\bibitem{smith2006} J. E. Smith and R. L. Winkler, ``The optimizer's curse: Skepticism and postdecision surprise in
+decision analysis'', Management Science 52(3), 311--322 (2006).
+\bibitem{blumer1987} A. Blumer, A. Ehrenfeucht, D. Haussler and M. K. Warmuth, ``Occam's razor'', Information Processing
+Letters 24, 377--380 (1987).
+\bibitem{maruyoshi2023} K. Maruyoshi et al., arXiv:2208.00576 (2023). \todo{full reference}
+\bibitem{oliva2026} Oliva del Moral et al., arXiv:2603.13060 (2026). \todo{full reference}
+\bibitem{mckay2023} D. C. McKay et al., ``Benchmarking quantum processor performance at scale'', arXiv:2311.05933
+(2023). \todo{check title}
+\bibitem{pocklington2026} A. Pocklington and A. A. Clerk, arXiv:2604.18996 (2026). \todo{full reference}
+\bibitem{fischer2024} L. E. Fischer et al., arXiv:2411.00765 (2024). \todo{full reference}
+\end{thebibliography}
+
+\end{document}
