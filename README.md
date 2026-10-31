@@ -7,7 +7,7 @@
 [![PyO3 Binding](https://img.shields.io/badge/FFI-PyO3-blue.svg)](https://pyo3.rs/)
 [![DOI (Paper 1)](https://zenodo.org/badge/DOI/10.5281/zenodo.22977930.svg)](https://doi.org/10.5281/zenodo.22977930)
 [![DOI (Paper 2)](https://zenodo.org/badge/DOI/10.5281/zenodo.22978090.svg)](https://doi.org/10.5281/zenodo.22978090)
-[![DOI (Paper 3)](https://zenodo.org/badge/DOI/10.5281/zenodo.23630904.svg)](https://doi.org/10.5281/zenodo.23630904)
+[![DOI (Paper 3)](https://zenodo.org/badge/DOI/10.5281/zenodo.23826596.svg)](https://doi.org/10.5281/zenodo.23826596)
 [![DOI (Paper 4)](https://zenodo.org/badge/DOI/10.5281/zenodo.23706881.svg)](https://doi.org/10.5281/zenodo.23706881)
 [![DOI (Paper 5)](https://zenodo.org/badge/DOI/10.5281/zenodo.23826351.svg)](https://doi.org/10.5281/zenodo.23826351)
 
@@ -192,15 +192,16 @@ CX-basis synthesis returns wrong circuits near a boundary ([Qiskit #17057](https
   version 2, 2026-09-26; version 1: [10.5281/zenodo.22870141](https://doi.org/10.5281/zenodo.22870141)). It predates
   the device layer of `compile_for_hardware()` (October 2026).
 - [**Paper 3 — When a Quantum Compiler Looks Like a Better Learner: Confounds in Quantum Machine Learning
-  Comparisons**](docs/papers/qml_compiler_confounds.pdf) ([DOI: 10.5281/zenodo.23630904](https://doi.org/10.5281/zenodo.23630904),
-  version 1.2, 2026-10-25; all versions: [10.5281/zenodo.23600811](https://doi.org/10.5281/zenodo.23600811); the PDF
-  here is version 1.3, 2026-10-31, until its Zenodo record is published).
+  Comparisons**](docs/papers/qml_compiler_confounds.pdf) ([DOI: 10.5281/zenodo.23826596](https://doi.org/10.5281/zenodo.23826596),
+  version 1.3, 2026-10-31; version 1.2: [10.5281/zenodo.23630904](https://doi.org/10.5281/zenodo.23630904); all
+  versions: [10.5281/zenodo.23600811](https://doi.org/10.5281/zenodo.23600811)).
   PSF-Zero's formula-built ring against Qiskit's search through a trained noisy classifier, the four confounds that
   decide such comparisons, the zipper's first hardware job, and (1.3) a classifier without training on hardware.
 - [**Paper 4 — Folding a Ring onto Heavy-Hex: Formula-Built Schedules with Provable Gate Counts, and What Their
   Signal Shows on Twins and Devices**](docs/papers/folded_rings_heavy_hex.pdf)
   ([DOI: 10.5281/zenodo.23706881](https://doi.org/10.5281/zenodo.23706881), version 1.1, 2026-10-28; version 1:
-  [10.5281/zenodo.23665575](https://doi.org/10.5281/zenodo.23665575)). The zipper, holes and pendants on heavy-hex,
+  [10.5281/zenodo.23665575](https://doi.org/10.5281/zenodo.23665575); the PDF here is version 1.3, 2026-10-31, with
+  the IBM Quantum acknowledgment, until its Zenodo record is published). The zipper, holes and pendants on heavy-hex,
   their gate counts and lower bounds, a26's count rule, declared matches on two twins (against the zipper and, in 1.1,
   against Qiskit), larger rings (n = 20-24) and a same-qubits comparison of schedules, and the folded ring's first two
   device jobs.
@@ -281,9 +282,9 @@ is implied on either side.
   title  = {When a Quantum Compiler Looks Like a Better Learner:
             Confounds in Quantum Machine Learning Comparisons},
   year   = {2026},
-  doi    = {10.5281/zenodo.23630904},
-  url    = {https://doi.org/10.5281/zenodo.23630904},
-  note   = {Preprint, version 1.2, 25 October 2026; version 1.0: 10.5281/zenodo.23600812}
+  doi    = {10.5281/zenodo.23826596},
+  url    = {https://doi.org/10.5281/zenodo.23826596},
+  note   = {Preprint, version 1.3, 31 October 2026; version 1.2: 10.5281/zenodo.23630904; version 1.0: 10.5281/zenodo.23600812}
 }
 
 @misc{folded_rings_heavy_hex_2026,
