@@ -207,7 +207,8 @@ CX-basis synthesis returns wrong circuits near a boundary ([Qiskit #17057](https
   device jobs.
 - [**Paper 5 — Readable Depth Without the Calibration Map: Formula Placement on Heavy-Hex Devices, and a Defect the
   Calibration Does Not Show**](docs/papers/readable_depth_map_free.pdf)
-  ([DOI: 10.5281/zenodo.23826351](https://doi.org/10.5281/zenodo.23826351), version 1.0, 2026-10-31). How deep a
+  ([DOI: 10.5281/zenodo.23826351](https://doi.org/10.5281/zenodo.23826351), version 1.0, 2026-10-31; the PDF here is
+  version 1.1, with the ibm_fez run, until its Zenodo record is published). How deep a
   circuit stays readable when no placement reads a quality number, measured on the circuit itself (a conserved
   charge, a non-integrable mirror echo, the global parity) on ibm_marrakesh and ibm_kingston, sizes up to n = 72;
   the declared predictions that failed; and an 18-site defect on ibm_kingston that the calibration does not show,

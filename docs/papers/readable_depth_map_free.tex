@@ -24,7 +24,7 @@ Formula Placement on Heavy-Hex Devices, and a Defect the Calibration Does Not Sh
 \texttt{love.os.architect@proton.me}\\
 \texttt{https://github.com/TN-Holdings-LLC/psf-zero}}
 
-\date{Version 1.0 --- 31 October 2026}
+\date{Version 1.1 --- 31 October 2026}
 
 \begin{document}
 \maketitle
@@ -54,7 +54,8 @@ inverted, the same 18 sites in three runs of the byte-identical circuit over thr
 nothing there and the same qubits were healthy on the $n=20$ ring. Gate twirling, which leaves the ideal circuit
 unchanged, turned the inverted part random: the cause is on the device, not in the circuit. These sites set the
 readable depth at $n\ge40$ (13--16 steps against 22--26 at $n=20$, 36) and erased the parity at $n=40$. A map read
-from the calibration could not have avoided them.
+from the calibration could not have avoided them. On \texttt{ibm\_fez} the next day, the byte-identical $n=20$
+circuit, healthy in three runs on kingston, lost 11 of its 20 sites: the dead runs follow the chip, not the circuit.
 \end{abstract}
 
 \section{Introduction}
@@ -176,6 +177,7 @@ test 2 (both, 30 Oct) & \texttt{echo\_hz\_note} (1308cf9b), addendum 1 (a206c81a
 test 3 (both, 30 Oct) & \texttt{test3\_note} (8b13773f), addenda 1, 2 (1c484fa8, 78986cf3) & marrakesh \texttt{dbi7qg6ne4hc73be2nf0}, \texttt{dbi7qig1h92s7382ucn0}, \texttt{dbi7qkmne4hc73be2njg}; kingston \texttt{dbi7rtene4hc73be2p8g}, \texttt{dbi7rvune4hc73be2pcg}, \texttt{dbi7s1tep8hs73anb72g}\\
 rule-only rerun (kingston, 30 Oct) & \texttt{rerun\_rule\_only\_note} (1f883a77) & \texttt{dbi9fhene4hc73be4u50}\\
 options test (kingston, 30 Oct) & \texttt{options\_test\_note} (2ebd84e2) & \texttt{dbiah1ghoj4c73b5qkrg} (off), \texttt{dbiah38hoj4c73b5qku0} (DD), \texttt{dbiah581h92s73832mh0} (twirling)\\
+rule-only echo (fez, 31 Oct) & \texttt{fez\_rule\_only\_note} (6011c240) & \texttt{dbilc0ghoj4c73b6fkq0}\\
 \bottomrule
 \end{tabular}
 \caption{Declarations, fixed before each test's calibration fetch, and the IBM job identifiers.}\label{tab:decl}
@@ -329,11 +331,14 @@ rule's $L^*$ (P3, steps) & $n=20$ & $n=36$ & $n=40$ & $n=72$\\
 kingston, 12:22 CET & 22.8--23.7 & 23.0--23.6 & 12.8--16.1 & 14.2--15.3\\
 kingston, 14:12 CET (rule only, rerun) & 21.9--22.3 & 24.5--26.2 & 13.0--16.0 & 14.6--16.0\\
 marrakesh, 12:17 CET & 14.6--14.8 & 14.9--15.8 & 14.1--15.3 & 14.3--15.5\\
+fez, 31 Oct 03:44 CET (rule only) & 11.2--12.1 & 16.0--16.8 & 12.5--13.8 & 12.8--13.9\\
 \bottomrule
 \end{tabular}
 \caption{The rule's echo decay length over $h_z=0$, 0.1, 0.3. On kingston it halves from $n=36$ to $n=40$; on
-marrakesh it does not depend on $n$. The rerun's declared reproduction test failed at 2 SE (12 of 21 cells agreed;
-differences of 0.02--0.05 in $\rho_E$), while the pattern over $n$ and over sites repeated.}\label{tab:echo}
+marrakesh it does not depend on $n$; on fez it is short at every $n$. The rerun's declared reproduction test failed at
+2 SE (12 of 21 cells agreed; differences of 0.02--0.05 in $\rho_E$), while the pattern over $n$ and over sites
+repeated. Fez's declared test (no wall if $L^*$ at $n=40$, 72 lies within $\pm20\,\%$ of the mean at 20, 36): no wall at
+all three $h_z$, because dead runs appear at every size there (Section~\ref{sec:defect}).}\label{tab:echo}
 \end{table}
 
 \section{A defect the calibration does not show}\label{sec:defect}
@@ -347,9 +352,10 @@ $h_z=0$ for three runs of the byte-identical $n=40$ circuit (QPY SHA-256 \texttt
 \begin{figure}[h]
 \centering
 \includegraphics[width=\textwidth]{figures/defect_map_kingston_2026-10-30.png}
-\caption{Per-site echo signal along the rule's ring, \texttt{ibm\_kingston}, 30 October 2026, $D=24$, $h_z=0$.
-Top: $n=40$, three runs of the same circuit; the shaded run of 18 sites is the same in all three. Bottom: the $n=20$
-ring, which uses qubits 3--7, 16, 17, 27 of the same region and shows no such run. Script
+\caption{Per-site echo signal along the rule's ring, $D=24$, $h_z=0$. Top: $n=40$ on \texttt{ibm\_kingston},
+30 October 2026, three runs of the same circuit; the shaded run of 18 sites is the same in all three. Bottom: the
+$n=20$ circuit, which uses qubits 3--7, 16, 17, 27 of the same region: no such run in three runs on kingston, and on
+\texttt{ibm\_fez} (31 October, the byte-identical circuit) 11 of 20 sites below 0.12. Script
 \texttt{figures/defect\_map\_figure.py} on TOQB's records.}\label{fig:defect}
 \end{figure}
 
@@ -363,6 +369,12 @@ ring, which uses qubits 3--7, 16, 17, 27 of the same region and shows no such ru
 \item \textbf{Context-dependent.} Qubits 3--7, 16, 17, 27 are healthy on the $n=20$ ring and qubits 27--29 on the
   $n=36$ ring. The run appears when the ring passes 17--27--28--29--38. Which element or combination causes it is not
   known.
+\item \textbf{Chip-specific.} The $n=20$ circuit is byte-identical on kingston and on \texttt{ibm\_fez} (QPY SHA-256
+  \texttt{671db9e3\ldots}; same qubits, same gates). On kingston it had no dead site in three runs ($\rho_E=0.34$--0.40
+  at $D=24$); on fez the next day (job \texttt{dbilc0ghoj4c73b6fkq0}, calibration 03:25 CET) 11 of its 20 sites were
+  dead ($\rho_E=0.12$--0.14), and fez's rings of 36, 40 and 72 sites carried 6, 11 and 36. The $n=72$ circuit is also
+  identical on both chips; its dead runs lie mostly in different places. The dead runs follow the chip, not the
+  circuit: a second argument, independent of Lemma~1 below, that the circuit is not the cause.
 \end{itemize}
 
 Two statements about these runs can be proved rather than estimated.
@@ -449,8 +461,8 @@ too, but its mirror undoes the spreading, and it was readable to $D=24$--50.
 
 \section{Limitations}
 \begin{itemize}
-\item Two days; one ring per size and placement. The defect was seen on one device and one day (three runs); whether
-  it persists is open.
+\item Four device days (28--31 October); one ring per size and placement. Dead runs were seen on kingston (one day, three runs) and on fez
+  (one run); whether they persist over days, and how often they appear on other chips, is open.
 \item The charge is a weight-2 quantity; $L^*$ is not the depth at which an arbitrary output stays readable.
 \item The four-input ratio leaves a second-order relaxation bias.
 \item Every reference here is classically computable; no classical-hardness claim is made.
@@ -464,8 +476,13 @@ too, but its mirror undoes the spreading, and it was readable to $D=24$--50.
 \section{Reproducibility}
 TOQB \cite{toqb}: \texttt{results/device-d6-2026-10-28}, \texttt{results/noise-wall-1-marrakesh-2026-10-29},
 \texttt{results/noise-wall-1-kingston-2026-10-29}, \texttt{results/device-2026-10-30} (tests 2 and 3, the rule-only
-rerun with the post-hoc masking, the options test); declarations in \texttt{prereg/}. Circuit files over GitHub's size
-limit are kept off the repository with their SHA-256.
+rerun with the post-hoc masking, the options test), \texttt{results/device-2026-10-31-fez}; declarations in
+\texttt{prereg/}. Circuit files over GitHub's size limit are kept off the repository with their SHA-256.
+
+\paragraph{Changes in version 1.1.} The rule-only echo on \texttt{ibm\_fez} (31 October, declared before its fetch):
+a row in Table~\ref{tab:echo}, the item ``Chip-specific'' in Section~\ref{sec:defect}, the fez curve in
+Figure~\ref{fig:defect}, its declaration in Table~\ref{tab:decl}, one sentence in the abstract, the limitation
+updated. No earlier number or verdict changes.
 
 \section*{Acknowledgments}
 We acknowledge the use of IBM Quantum services for this work. The views expressed are those of the authors, and do

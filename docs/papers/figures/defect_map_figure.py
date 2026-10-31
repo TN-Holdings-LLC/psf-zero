@@ -1,5 +1,6 @@
-"""Figure for Paper 5 (draft 0.3): per-site echo signal along the rule's ring on ibm_kingston, 30 October 2026, in the
-three runs of the same circuit (n = 40) and of the control ring (n = 20). Reads TOQB's committed records.
+"""Figure for Paper 5 (version 1.1): per-site echo signal along the rule's ring on ibm_kingston, 30 October 2026, in the
+three runs of the same circuit (n = 40) and of the control ring (n = 20), and the byte-identical n = 20 circuit on
+ibm_fez, 31 October 2026. Reads TOQB's committed records.
 
     python defect_map_figure.py TOQB_DIR OUT.png
 """
@@ -62,7 +63,14 @@ def main(tq, out):
             job, rr = (os.path.join(R, morning, "job"), os.path.join(R, morning, "runs")) if src is None else \
                 (os.path.join(R, src[0]), os.path.join(R, src[1]))
             a, phys = site_signal(job, rr, name)
-            ax.plot(range(n), a, color=col, lw=2, marker=mk, ms=6, label=lab)
+            ax.plot(range(n), a, color=col, lw=2, marker=mk, ms=6, label="kingston " + lab)
+        if n == 20:
+            fz = os.path.join(tq, "results", "device-2026-10-31-fez")
+            a, _ = site_signal(os.path.join(fz, "job"), os.path.join(fz, "runs"), name)
+            ax.plot(range(n), a, color="#eda100", lw=2, marker="D", ms=6, label="fez 2026-10-31 03:44 CET (same circuit)")
+            ax.text(n - 0.5, a[-1] - 0.08, "fez", ha="right", fontsize=9, color="#3d3d3a")
+            ax.text(n - 0.5, 0.47, "kingston", ha="right", fontsize=9, color="#3d3d3a")
+            ax.legend(fontsize=8, frameon=False, loc="lower left", ncol=2)
         if n == 40:
             dead = {3, 4, 5, 6, 7, 17, 27, 28, 29, 38, 49, 50, 51, 52, 53, 54, 55, 59}
             idx = [j for j, q in enumerate(phys) if q in dead]
@@ -75,7 +83,8 @@ def main(tq, out):
         ax.set_xlim(-0.6, n - 0.4)
         ax.set_ylim(-0.4, 0.75)
         ax.set_ylabel("per-site echo signal")
-        ax.set_title(f"n = {n}" + (" (control: no dead sites)" if n == 20 else ""), fontsize=10, loc="left")
+        ax.set_title(f"n = {n}" + (": the same circuit on two chips (kingston, three runs; fez, one run)" if n == 20
+                                    else ", ibm_kingston, three runs of the same circuit"), fontsize=10, loc="left")
         ax.grid(axis="y", color="#e6e5df", lw=0.8)
         for s in ("top", "right"):
             ax.spines[s].set_visible(False)
