@@ -8,7 +8,7 @@
 [![DOI (Paper 1)](https://zenodo.org/badge/DOI/10.5281/zenodo.22977930.svg)](https://doi.org/10.5281/zenodo.22977930)
 [![DOI (Paper 2)](https://zenodo.org/badge/DOI/10.5281/zenodo.22978090.svg)](https://doi.org/10.5281/zenodo.22978090)
 [![DOI (Paper 3)](https://zenodo.org/badge/DOI/10.5281/zenodo.23826596.svg)](https://doi.org/10.5281/zenodo.23826596)
-[![DOI (Paper 4)](https://zenodo.org/badge/DOI/10.5281/zenodo.23706881.svg)](https://doi.org/10.5281/zenodo.23706881)
+[![DOI (Paper 4)](https://zenodo.org/badge/DOI/10.5281/zenodo.23826764.svg)](https://doi.org/10.5281/zenodo.23826764)
 [![DOI (Paper 5)](https://zenodo.org/badge/DOI/10.5281/zenodo.23826351.svg)](https://doi.org/10.5281/zenodo.23826351)
 
 PSF-Zero is a Qiskit-compatible compiler for IBM devices that builds a circuit by formula: no layout search, no
@@ -199,9 +199,9 @@ CX-basis synthesis returns wrong circuits near a boundary ([Qiskit #17057](https
   decide such comparisons, the zipper's first hardware job, and (1.3) a classifier without training on hardware.
 - [**Paper 4 — Folding a Ring onto Heavy-Hex: Formula-Built Schedules with Provable Gate Counts, and What Their
   Signal Shows on Twins and Devices**](docs/papers/folded_rings_heavy_hex.pdf)
-  ([DOI: 10.5281/zenodo.23706881](https://doi.org/10.5281/zenodo.23706881), version 1.1, 2026-10-28; version 1:
-  [10.5281/zenodo.23665575](https://doi.org/10.5281/zenodo.23665575); the PDF here is version 1.3, 2026-10-31, with
-  the IBM Quantum acknowledgment, until its Zenodo record is published). The zipper, holes and pendants on heavy-hex,
+  ([DOI: 10.5281/zenodo.23826764](https://doi.org/10.5281/zenodo.23826764), version 1.3, 2026-10-31; version 1.1:
+  [10.5281/zenodo.23706881](https://doi.org/10.5281/zenodo.23706881); version 1:
+  [10.5281/zenodo.23665575](https://doi.org/10.5281/zenodo.23665575)). The zipper, holes and pendants on heavy-hex,
   their gate counts and lower bounds, a26's count rule, declared matches on two twins (against the zipper and, in 1.1,
   against Qiskit), larger rings (n = 20-24) and a same-qubits comparison of schedules, and the folded ring's first two
   device jobs.
@@ -293,9 +293,9 @@ is implied on either side.
             Provable Gate Counts, and What Their Signal Shows on Twins
             and Devices},
   year   = {2026},
-  doi    = {10.5281/zenodo.23706881},
-  url    = {https://doi.org/10.5281/zenodo.23706881},
-  note   = {Preprint, version 1.1, 28 October 2026; version 1: 10.5281/zenodo.23665575}
+  doi    = {10.5281/zenodo.23826764},
+  url    = {https://doi.org/10.5281/zenodo.23826764},
+  note   = {Preprint, version 1.3, 31 October 2026; version 1.1: 10.5281/zenodo.23706881; version 1: 10.5281/zenodo.23665575}
 }
 
 @misc{readable_depth_map_free_2026,
