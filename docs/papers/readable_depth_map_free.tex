@@ -18,13 +18,13 @@
 \newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
 
 \title{Readable Depth Without the Calibration Map:\\
-Formula Placement on Heavy-Hex Devices, Measured by a Circuit's Own Conserved Charge}
+Formula Placement on Heavy-Hex Devices, and a Defect the Calibration Does Not Show}
 
 \author{TN Holdings\\
 \texttt{love.os.architect@proton.me}\\
 \texttt{https://github.com/TN-Holdings-LLC/psf-zero}}
 
-\date{Draft 0.3 --- 31 October 2026 (not for release)}
+\date{Version 1.0 --- 31 October 2026}
 
 \begin{document}
 \maketitle
@@ -86,7 +86,12 @@ from the calibration could not have avoided them.
 \subsection{Workload}
 The kicked Ising ring, one step $S=(R_X(2h)\,Z)^{\otimes n}\,\mathrm{CZ}_{\mathrm{ring}}$, $J=\pi/4$, $h=0.6$. It is a
 free-fermion circuit; its outputs are computed exactly at any $n$ by a recursion, which also gives the outputs under
-uniform depolarizing noise exactly \cite{pocklington2026}. \todo{one paragraph with the recursion, from toqb.kising}
+uniform depolarizing noise exactly \cite{pocklington2026}. With the Jordan--Wigner transformation in the $X$ basis,
+one step is a Gaussian unitary of the $2n$ Majorana operators: their covariance matrix $\Gamma$ evolves as
+$\Gamma\mapsto R\,\Gamma R^{\mathsf T}$ with a fixed orthogonal $2n\times2n$ matrix $R$, so any quadratic quantity after
+$L$ steps costs $O(n^3)$ and no state vector is needed at any $n$ (TOQB's \texttt{toqb.kising}, checked against a state
+vector at small $n$). The probes below need even less: P1 uses only that the charge is conserved, and P3
+(Section~\ref{sec:echo}) only that its circuit is the identity up to a known flip.
 
 \subsection{Placements (no quality number read)}
 \begin{itemize}
@@ -155,7 +160,26 @@ placement that absorbs $\kappa$ times as much reaches $\kappa$ times fewer steps
 
 \subsection{Declarations}
 Every device test was declared (SHA-256 and CET time) before its calibration was fetched; the declarations, records
-and raw counts are in TOQB \cite{toqb}. \todo{table of declarations and job ids}
+and raw counts are in TOQB \cite{toqb}; Table~\ref{tab:decl} lists them.
+
+\begin{table}[h]
+\centering
+\footnotesize
+\begin{tabular}{p{0.19\textwidth}p{0.3\textwidth}p{0.45\textwidth}}
+\toprule
+test (device, date) & declaration (SHA-256) & jobs\\
+\midrule
+D6 (kingston, 28 Oct) & \texttt{device\_d6\_note} (85b358b7) & \texttt{dbh0s6sdgr2s73csfnrg}\\
+noise wall (marrakesh, 29 Oct) & \texttt{noise\_wall\_1\_second\_device\_note} r2 (d963adb6) & \texttt{dbhhsncdgr2s73ctiung} (P1), \texttt{dbhhuc9t9uhs73ca9t70} (P2)\\
+noise wall (kingston, 29 Oct) & \texttt{noise\_wall\_1\_note} r3 (7415beca) & \texttt{dbhiji1t9uhs73cab78g} (P1), \texttt{dbhil0kdgr2s73ctkd20} (P2)\\
+test 2 (both, 30 Oct) & \texttt{echo\_hz\_note} (1308cf9b), addendum 1 (a206c81a) & \texttt{dbi7pmg1h92s7382ubkg}, \texttt{dbi7r45ep8hs73anb5q0}\\
+test 3 (both, 30 Oct) & \texttt{test3\_note} (8b13773f), addenda 1, 2 (1c484fa8, 78986cf3) & marrakesh \texttt{dbi7qg6ne4hc73be2nf0}, \texttt{dbi7qig1h92s7382ucn0}, \texttt{dbi7qkmne4hc73be2njg}; kingston \texttt{dbi7rtene4hc73be2p8g}, \texttt{dbi7rvune4hc73be2pcg}, \texttt{dbi7s1tep8hs73anb72g}\\
+rule-only rerun (kingston, 30 Oct) & \texttt{rerun\_rule\_only\_note} (1f883a77) & \texttt{dbi9fhene4hc73be4u50}\\
+options test (kingston, 30 Oct) & \texttt{options\_test\_note} (2ebd84e2) & \texttt{dbiah1ghoj4c73b5qkrg} (off), \texttt{dbiah38hoj4c73b5qku0} (DD), \texttt{dbiah581h92s73832mh0} (twirling)\\
+\bottomrule
+\end{tabular}
+\caption{Declarations, fixed before each test's calibration fetch, and the IBM job identifiers.}\label{tab:decl}
+\end{table}
 
 \section{Classifier test without the map (D6)}
 TOQB's ring classifier, $L=16$, $n=13$--$24$, 64 inputs $\times$ 250 shots, \texttt{ibm\_kingston}, 28 October 2026;
@@ -163,7 +187,26 @@ no arm read a quality number and no simulator was used. Rule against blind Qiski
 loss. Rule against the zipper on the same qubits (even $n$): 3 wins, 3 ties, no loss. Blind Qiskit kept no measurable
 signal at 8 of 12 sizes; its circuits ran 22--108\,\textmu s against the rule's 5.6--9.3\,\textmu s.
 For reference, with the map (D5 part A, $n=20$, a different hour): rule $0.943\pm0.044$, zipper $0.600\pm0.044$,
-map-aware Qiskit $0.765\pm0.099$ (rule $-$ Qiskit within 2 SE). \todo{table of D6 from TOQB results/device-d6}
+map-aware Qiskit $0.765\pm0.099$ (rule $-$ Qiskit within 2 SE). Table~\ref{tab:d6} gives the slopes.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lccc|lccc}
+\toprule
+$n$ & rule & zipper & blind Qiskit & $n$ & rule & zipper & blind Qiskit\\
+\midrule
+13 & $0.78\pm0.11$ & -- & $0.38\pm0.11$ & 19 & $0.78\pm0.11$ & -- & $0.37\pm0.14$\\
+14 & $0.75\pm0.08$ & $0.61\pm0.10$ & $-0.08\pm0.22$ & 20 & $0.83\pm0.07$ & $0.69\pm0.06$ & $0.49\pm0.11$\\
+15 & $0.90\pm0.08$ & -- & $0.00\pm0.07$ & 21 & $0.85\pm0.09$ & -- & $0.08\pm0.10$\\
+16 & $0.85\pm0.09$ & $0.48\pm0.09$ & $-0.02\pm0.11$ & 22 & $0.69\pm0.12$ & $0.32\pm0.13$ & $0.09\pm0.10$\\
+17 & $0.91\pm0.08$ & -- & $-0.07\pm0.10$ & 23 & $0.37\pm0.15$ & -- & $0.00\pm0.21$\\
+18 & $0.58\pm0.09$ & $0.50\pm0.09$ & $0.05\pm0.14$ & 24 & $1.00\pm0.13$ & $0.38\pm0.11$ & $0.41\pm0.14$\\
+\bottomrule
+\end{tabular}
+\caption{D6: the classifier's device slope $\lambda$ ($\pm$ SE; 64 inputs $\times$ 250 shots), \texttt{ibm\_kingston},
+28 October 2026. The zipper exists for even $n$ only.}\label{tab:d6}
+\end{table}
 
 \section{The noise wall on two devices}
 
@@ -184,7 +227,7 @@ rule wins on $\rho$ & 6/6 & 6/6 & 6/6 & 6/6\\
 \bottomrule
 \end{tabular}
 \caption{Probe P1 on two devices, 29 October 2026. $g$, $t$: the zipper's gate and duration ratios to the rule. 1000 shots per circuit; jobs of 92 and 90\,s.
-\todo{full $\rho$ tables in an appendix}}
+Full tables in TOQB's result folders.}
 \end{table}
 
 \begin{itemize}
@@ -369,19 +412,33 @@ bad site erases it. Declared (test 3, part P): the rule's volume $V^*$ in $\rho_
 \end{itemize}
 
 \section{Output probe P2}\label{sec:p2}
-\todo{P2 tables; the contrast between a ring-averaged weight-2 charge and a single-site output}
+P2 was the slope $\lambda$ of $\langle X_0\rangle$ after $L=24$ and 50 steps (64 inputs $\times$ 250 shots), declared as a
+second reading of the same placements. On both devices it sat at the noise floor: the rule's slopes were
+$0.00$--$0.24$ with SE 0.02--0.06, without order in depth or placement (marrakesh: 0.046, 0.073, 0.004, 0.127;
+kingston: 0.061, 0.027, 0.236, $-0.008$ for $n=20,L=24$; $n=20,L=50$; $n=36,L=24$; $n=36,L=50$). Of 16 comparisons
+with the other arms the rule won 3 and lost none. The contrast with P1 is the
+point of the acoustic picture: a single-site output spreads over a growing light cone and fades like a wide
+operator, while the conserved charge is not spread by the circuit. P3 (Section~\ref{sec:echo}) reads single sites
+too, but its mirror undoes the spreading, and it was readable to $D=24$--50.
 
 \section{Discussion}
 \begin{itemize}
+\item \textbf{Depth, not width, up to $n=36$.} Below that size the limit was how deep the circuit stayed readable,
+  not how many qubits it used: the rule's charge decay length was the same at $n=20$ and 36 on marrakesh (56.5,
+  56.6) and longer at $n=36$ on kingston, and its echo decay length did not shrink from 20 to 36 on either device.
+  Above that, on kingston, width came back in another form: a longer ring covers more of the chip and met a defect
+  that shortened the readable depth (Section~\ref{sec:defect}). The quantity to report is $L^*$ per placement and
+  size, read on the circuit itself.
 \item \textbf{Selection and prediction.} The rule's schedules are fixed by formula; nothing is chosen as the best of
   several candidates by a calibration- or simulation-based score. For a selection of the best of $K$ candidates by an
   estimate with error scale $\sigma$, the prediction is optimistic by up to $\sigma\sqrt{2\ln K}$
   \cite{smith2006}; the analogy with the Occam bound \cite{blumer1987} is structural. This concerns the reliability of
   a prediction, not which placement keeps more signal, which we measured separately.
 \item \textbf{Why the duration matters.} Blind Qiskit placed the bare ring at equal gate count, yet its charge decayed
-  2--5 times faster per step than the rule's, with 5--9 times the duration. \todo{idle decoherence, scheduling}
+  2--5 times faster per step than the rule's, with 5--9 times the duration. We did not separate idle decoherence
+  from gate error; the durations point to the former.
 \item \textbf{What a map buys.} D5 part A suggests about 0.3 in the classifier's slope at $n=20$; between jobs, not
-  declared. \todo{a declared non-inferiority test with a stale map}
+  declared; a declared test against a map-aware arm was not run.
 \item \textbf{What a map cannot see.} The defect of Section~\ref{sec:defect} sat on qubits and couplers with good
   calibration numbers and appeared only in one combination of them. A placement that reads the map would not have
   avoided it; only running the circuit showed it. For the comparison of placements this cuts both ways: at $n\ge40$ a
@@ -397,6 +454,11 @@ bad site erases it. Declared (test 3, part P): the rule's volume $V^*$ in $\rho_
 \item The charge is a weight-2 quantity; $L^*$ is not the depth at which an arbitrary output stays readable.
 \item The four-input ratio leaves a second-order relaxation bias.
 \item Every reference here is classically computable; no classical-hardness claim is made.
+\item The search-based comparison is Qiskit at optimization level 2 without error rates. Level 3, routers for
+  commuting two-qubit gates (the CZ ring commutes) and other compilers were not tested; a stronger search could
+  close part of the gap reported here.
+\item Standard errors are shot noise only; drift between runs (a few per cent within one day, Table~\ref{tab:echo})
+  is larger than that at our shot counts.
 \end{itemize}
 
 \section{Reproducibility}
@@ -418,15 +480,20 @@ What Their Signal Shows on Twins and Devices'', version 1.2 (2026).
 decision analysis'', Management Science 52(3), 311--322 (2006).
 \bibitem{blumer1987} A. Blumer, A. Ehrenfeucht, D. Haussler and M. K. Warmuth, ``Occam's razor'', Information Processing
 Letters 24, 377--380 (1987).
-\bibitem{maruyoshi2023} K. Maruyoshi et al., arXiv:2208.00576 (2023). \todo{full reference}
-\bibitem{oliva2026} Oliva del Moral et al., arXiv:2603.13060 (2026). \todo{full reference}
-\bibitem{mckay2023} D. C. McKay et al., ``Benchmarking quantum processor performance at scale'', arXiv:2311.05933
-(2023). \todo{check title}
-\bibitem{pocklington2026} A. Pocklington and A. A. Clerk, arXiv:2604.18996 (2026). \todo{full reference}
+\bibitem{maruyoshi2023} K. Maruyoshi, T. Okuda, J. W. Pedersen, R. Suzuki, M. Yamazaki and Y. Yoshida, ``Conserved
+charges in the quantum simulation of integrable spin chains'', J. Phys. A: Math. Theor. 56 (2023);
+arXiv:2208.00576.
+\bibitem{oliva2026} J. Oliva del Moral, O. Sanz Larrarte, J. Fraxanet, D. Mishagli and J. Etxezarreta Martinez,
+``Noise mitigation of quantum observables via learning from Hamiltonian symmetry decays'', arXiv:2603.13060 (2026).
+\bibitem{mckay2023} D. C. McKay, I. Hincks, E. J. Pritchett, M. Carroll, L. C. G. Govia et al., ``Benchmarking
+Quantum Processor Performance at Scale'', arXiv:2311.05933 (2023).
+\bibitem{pocklington2026} A. Pocklington and A. A. Clerk, ``Insights into decohered critical states using an exact
+solution to matchgate circuits with Pauli noise'', arXiv:2604.18996 (2026).
 \bibitem{francois1982} R. E. Francois and G. R. Garrison, ``Sound absorption based on ocean measurements. Part II:
 Boric acid contribution and equation for total absorption'', J. Acoust. Soc. Am. 72(6), 1879--1890 (1982).
 \bibitem{urick1983} R. J. Urick, \emph{Principles of Underwater Sound}, 3rd ed., McGraw-Hill (1983).
-\bibitem{fischer2024} L. E. Fischer et al., arXiv:2411.00765 (2024). \todo{full reference}
+\bibitem{fischer2024} L. E. Fischer et al., ``Dynamical simulations of many-body quantum chaos on a quantum
+computer'', arXiv:2411.00765 (2024).
 \bibitem{wallman2016} J. J. Wallman and J. Emerson, ``Noise tailoring for scalable quantum computation via randomized
 compiling'', Phys. Rev. A 94, 052325 (2016).
 \end{thebibliography}
