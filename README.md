@@ -193,9 +193,10 @@ CX-basis synthesis returns wrong circuits near a boundary ([Qiskit #17057](https
   the device layer of `compile_for_hardware()` (October 2026).
 - [**Paper 3 — When a Quantum Compiler Looks Like a Better Learner: Confounds in Quantum Machine Learning
   Comparisons**](docs/papers/qml_compiler_confounds.pdf) ([DOI: 10.5281/zenodo.23630904](https://doi.org/10.5281/zenodo.23630904),
-  version 1.2, 2026-10-25; all versions: [10.5281/zenodo.23600811](https://doi.org/10.5281/zenodo.23600811)).
+  version 1.2, 2026-10-25; all versions: [10.5281/zenodo.23600811](https://doi.org/10.5281/zenodo.23600811); the PDF
+  here is version 1.3, 2026-10-31, until its Zenodo record is published).
   PSF-Zero's formula-built ring against Qiskit's search through a trained noisy classifier, the four confounds that
-  decide such comparisons, and the zipper's first hardware job.
+  decide such comparisons, the zipper's first hardware job, and (1.3) a classifier without training on hardware.
 - [**Paper 4 — Folding a Ring onto Heavy-Hex: Formula-Built Schedules with Provable Gate Counts, and What Their
   Signal Shows on Twins and Devices**](docs/papers/folded_rings_heavy_hex.pdf)
   ([DOI: 10.5281/zenodo.23706881](https://doi.org/10.5281/zenodo.23706881), version 1.1, 2026-10-28; version 1:

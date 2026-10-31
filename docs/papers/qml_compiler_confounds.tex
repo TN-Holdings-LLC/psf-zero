@@ -20,7 +20,7 @@ Confounds in Quantum Machine Learning Comparisons}
 \texttt{love.os.architect@proton.me}\\
 \texttt{https://github.com/TN-Holdings-LLC/psf-zero}}
 
-\date{Version 1.2 --- 25 October 2026}
+\date{Version 1.3 --- 31 October 2026}
 
 \begin{document}
 \maketitle
@@ -43,7 +43,11 @@ apart: on stand-in accuracy the zipper won on one of three teachers at each budg
 three, and on the trained model itself neither arm won on any teacher. Formula placement could not be told apart from the search while using a third fewer entangling gates and a
 quarter of the duration; it did not beat it. In one preliminary hardware job on \texttt{ibm\_kingston}, the zipper's
 circuits followed a twin built from that day's calibration (scale $1.00$, correlation $0.98$), while Qiskit's lost most
-of their signal and came out inverted on the read-out qubit; the cause is not known. We give the vanity and the essential number side by side throughout, mark what was
+of their signal and came out inverted on the read-out qubit; the cause is not known. A classifier without training
+(fixed circuit, local features, one least-squares solve), run on \texttt{ibm\_kingston} on 30 October with every
+prediction declared before the run, removes two of the four confounds by construction and tests the other two: all
+three placements landed inside their predicted accuracy bands, and the placement that keeps more signal gave the
+more accurate classifier ($0.810$ against $0.715$, McNemar $p = 0.007$). We give the vanity and the essential number side by side throughout, mark what was
 declared before the data and what was found after, and close with a checklist for compiler comparisons through
 trained quantum models.
 \end{abstract}
@@ -490,7 +494,75 @@ not found.
 \item \textbf{Not claimed:} one job, one device, 90 points of one label per cell, no arm comparison tested. Qiskit's
 layout may have met a fault of that device and day; whether formula placement avoids such faults more often than a
 calibration-aware search is a question for many jobs, not this one.
+\item \textbf{Post hoc (added in version 1.3).} Six days later the same device showed a defect that its calibration
+  did not show: a run of near-random and inverted echo sites on qubits 3--7, 17, 27--29, 38, 49--55 and 59, the same in
+  three runs of one circuit, with the cause placed on the device by a twirling argument~\cite{paper5}. Here, Qiskit's
+  circuits lost their signal on 27 and 49 and were inverted on 29 (and on 43). This is a coincidence of location found
+  after the fact, not a test; it makes a device fault more likely than a compiler error as the cause.
 \end{itemize}
+\subsection{A classifier without training, on hardware (declared)}
+\label{sec:qelm}
+
+The confounds above live in training and readout. A classifier with no trainable angle removes most of them by
+construction, and asks the compiler question directly: does a placement that keeps more signal give a more accurate
+classifier? We ran such a classifier, a quantum extreme learning machine~\cite{innocenti2023}, on
+\texttt{ibm\_kingston} on 30 October 2026.
+
+\paragraph{Design (declared before any device or simulator data).} TOQB \path{prereg/drafts-2026-10-30/qelm_A_note.md}
+(SHA-256 \texttt{8c26afd7\ldots}) and its addendum 1 (\texttt{4cfff876\ldots}, one device). A fixed data circuit on
+$n = 20$ qubits: per layer $R_Y(\pi x_q/2)\,R_Z(\pi x_q/2)$ on every qubit, then CZ on every ring edge; $L = 19$
+layers, set by formula from the previous day's decay lengths~\cite{paper5}, not by simulation. Features: the 60 local
+expectations $\langle X_q\rangle,\langle Y_q\rangle,\langle Z_q\rangle$; classifier: one least-squares solve to $\pm1$ targets,
+which is invariant to any per-feature affine map, so a readout offset (confound 2) cannot move it and there is no
+starting point to sit at (confound 1). The teacher is a random direction in the centred noiseless feature space,
+with a margin; 128 training and 200 test points. With each feature damped to $\lambda f_0$, shots enter only as
+$\lambda^2S$ (confound 3, now modelled), and each arm's accuracy was predicted before the run from the previous day's
+$\lambda$ on that device (confound 4, now tested). Three placements, none reading a quality number: the rule, the
+zipper (both PSF-Zero, formula), and Qiskit level 2 given the coupling map without error rates (\emph{blind} Qiskit,
+unlike the calibration-aware Qiskit of the sections above). One job per arm, 984 circuits $\times$ 250 shots
+(69--71\,s billed each); smaller shot counts are subsamples of the same counts.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lccccccc}
+\toprule
+arm & $\lambda$ ($X$, $Y$, $Z$) & declared $\lambda$ & $S=16$ & $S=64$ & $S=250$ & declared at 250 & Q2\\
+\midrule
+rule & 0.70, 0.66, 0.88 & 0.79 & 0.695 & 0.740 & \textbf{0.810} & 0.830 [0.745, 0.900] & inside\\
+zipper & 0.35, 0.38, 0.68 & 0.43 & 0.595 & 0.650 & 0.715 & 0.770 [0.690, 0.845] & inside\\
+blind Qiskit & 0.57, 0.49, 0.81 & 0.42 & 0.695 & 0.695 & 0.750 & 0.770 [0.680, 0.855] & inside\\
+\bottomrule
+\end{tabular}
+\caption{Test accuracy on 200 points, \texttt{ibm\_kingston}, 30 October 2026. Noiseless ceiling 0.840; least squares on
+the raw inputs 0.555; majority class 0.510. Declared: mean [central 99\,\%] of the prediction made before the run.}
+\label{tab:qelm}
+\end{table}
+
+\paragraph{Verdicts.}
+\begin{itemize}
+\item \textbf{G} (each arm compiles natively, one measured-qubit map): pass for all three.
+\item \textbf{Q2} (each arm's accuracy at $S = 250$ inside its declared band): \textbf{inside for all three}. Confound 4
+  did not bite here: a prediction from the previous day's decay lengths held on hardware.
+\item \textbf{Q3a} (rule more accurate than the zipper; one-sided McNemar on the shared test points at $S = 64$ and 250,
+  Holm): \textbf{WIN} (47 against 29, $p = 0.025$; 37 against 18, $p = 0.007$). On hardware, the placement that keeps
+  more signal gave the more accurate classifier. The simulated stand-in had put this on the other side of the line
+  ($p = 0.080$).
+\item \textbf{Q3b} (rule against blind Qiskit; reported, not judged): $p = 0.18$ and $0.067$, not significant.
+\item \textbf{Q1} (each feature follows $a_j + \lambda_j f_{0,j}$ within shot noise, median $\chi^2/\mathrm{dof} \le 2$):
+  holds for the zipper (1.73), \textbf{fails} for the rule (2.87) and Qiskit (3.45). The damping is not one number per
+  feature for those arms; the $Z$ features keep more than $X$ and $Y$ on all three.
+\end{itemize}
+
+\paragraph{Vanity and essential.} Vanity: the rule's 0.810 against 0.750 and 0.715. Essential: at 250 shots per
+feature the rule reached 96\,\% of the noiseless ceiling, and on this test set it matched blind Qiskit's 250-shot
+accuracy with 32 shots (0.750) and passed the zipper's with 32. Blind Qiskit kept more signal than predicted ($\lambda_Z$
+0.81 against 0.42), so its gap to the rule was smaller than declared; it found a short cycle by itself here.
+
+\paragraph{Not claimed.} At $n = 20$ the features are classically computable; no advantage is claimed. One device,
+one task, one day. Blind Qiskit is not the calibration-aware Qiskit of the earlier sections, so this does not reopen
+Section~\ref{sec:farq}'s verdict.
+
 
 \section{Discussion}
 
@@ -508,6 +580,11 @@ out with a much smaller offset, and on the twin its noise acts as one uniform sh
 circuit about as well as item 31's, and better than Qiskit's. It
 did not, by the declared test, learn more. Its smaller $\lambda$ costs shots, increasingly with depth.
 
+\paragraph{Removing the confounds by construction.} The classifier of Section~\ref{sec:qelm} has no starting point
+and is blind to per-feature offsets, and its shot cost is $\lambda^2S$ by design. With those removed, the compiler
+question had a clean answer on hardware: more kept signal, higher accuracy, and both predicted before the run. When
+the question is the compiler and not the learner, a fixed-feature, closed-form readout is the better instrument.
+
 \paragraph{The confounds are general.} None of the four effects is specific to PSF-Zero or Qiskit. Any comparison of
 compilers, devices or noise levels through a trained classifier can be won by a readout offset, a near-start task, a
 shot count that favours one output scale, or a device model off by a constant factor. Each was present in this
@@ -523,13 +600,16 @@ project's earlier results, and each changed a conclusion.
 \item Measure the device model's scale against hardware (per-point regression) before trusting predicted absolute
 values.
 \item Separate declared from post hoc results, and give the vanity and the essential number together.
+\item When the question is the compiler, consider a classifier without training (fixed features, one closed-form
+solve): it removes items 1--3 by construction and leaves only the signal each compilation keeps.
 \end{enumerate}
 
 \section{Limitations}
 
 \begin{itemize}
 \item One training seed; three teachers per test; $n = 10$; $L = 16$ for the declared far-teacher tests.
-\item All learning results are on simulators. The stand-in shares the twin's calibration base. The zipper has run on
+\item All trained models are on simulators; the hardware classifier of Section~\ref{sec:qelm} has no training. The
+stand-in shares the twin's calibration base. The zipper has run on
 hardware in one job only (Section~\ref{sec:kingston}), with 90 points of one label per cell.
 \item The post hoc analyses were guided by earlier results; their $p$-values are descriptive.
 \item The twin's scale was off by up to $2.3\times$ on hardware for PSF-Zero; shot costs derived from the twin's
@@ -549,6 +629,12 @@ point in \path{points.csv}); the decaying step and the offset's source \path{res
 compilers are Qiskit 2.5.2 and PSF-Zero \texttt{9f0d44e} for the far-teacher tests (\texttt{6269c4f} for the device
 day, the depth sweep and the noise-source runs). The figures are computed from those records by
 \path{docs/papers/qml_confounds_figures.py}.
+
+\paragraph{Changes in version 1.3.} New: Section~\ref{sec:qelm} (a classifier without training on
+\texttt{ibm\_kingston}, declared; TOQB \path{results/device-2026-10-30/qelmA}, declarations in
+\path{prereg/drafts-2026-10-30/}); a post hoc note in Section~\ref{sec:kingston} on the defect found on the same
+device six days later; a paragraph in the discussion; checklist item 7; two sentences in the abstract; the limitation
+on hardware updated. No earlier number or verdict changes.
 
 \paragraph{Changes in version 1.2.} New: Section~\ref{sec:kingston} (the zipper's first hardware job, preliminary);
 the declared decaying-step test (Section~\ref{sec:nearstart}); the source of the stand-in's offset
@@ -599,6 +685,12 @@ near-term quantum computing'', arXiv:1905.05118 (2019). \url{https://arxiv.org/a
 
 \bibitem{parella2025} T. Parella-Dilm\'e, J. S. Kottmann, A. Ac\'in, ``Swap network augmented ans\"atze on arbitrary
 connectivity'', arXiv:2507.23679. \url{https://arxiv.org/abs/2507.23679}
+
+\bibitem{innocenti2023} L. Innocenti et al., ``Potential and limitations of quantum extreme learning machines'',
+Communications Physics 6 (2023); arXiv:2210.00780.
+
+\bibitem{paper5} TN Holdings, ``Readable Depth Without the Calibration Map: Formula Placement on Heavy-Hex Devices,
+and a Defect the Calibration Does Not Show'', Version 1.0 (2026), doi:10.5281/zenodo.23826351.
 
 \end{thebibliography}
 
