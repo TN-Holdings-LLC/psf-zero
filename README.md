@@ -9,6 +9,7 @@
 [![DOI (Paper 2)](https://zenodo.org/badge/DOI/10.5281/zenodo.22978090.svg)](https://doi.org/10.5281/zenodo.22978090)
 [![DOI (Paper 3)](https://zenodo.org/badge/DOI/10.5281/zenodo.23630904.svg)](https://doi.org/10.5281/zenodo.23630904)
 [![DOI (Paper 4)](https://zenodo.org/badge/DOI/10.5281/zenodo.23706881.svg)](https://doi.org/10.5281/zenodo.23706881)
+[![DOI (Paper 5)](https://zenodo.org/badge/DOI/10.5281/zenodo.23826351.svg)](https://doi.org/10.5281/zenodo.23826351)
 
 PSF-Zero is a Qiskit-compatible compiler for IBM devices that builds a circuit by formula: no layout search, no
 routing search, and no choice by the day's error values. What it cannot build by formula it refuses with a reason.
@@ -202,6 +203,13 @@ CX-basis synthesis returns wrong circuits near a boundary ([Qiskit #17057](https
   their gate counts and lower bounds, a26's count rule, declared matches on two twins (against the zipper and, in 1.1,
   against Qiskit), larger rings (n = 20-24) and a same-qubits comparison of schedules, and the folded ring's first two
   device jobs.
+- [**Paper 5 — Readable Depth Without the Calibration Map: Formula Placement on Heavy-Hex Devices, and a Defect the
+  Calibration Does Not Show**](docs/papers/readable_depth_map_free.pdf)
+  ([DOI: 10.5281/zenodo.23826351](https://doi.org/10.5281/zenodo.23826351), version 1.0, 2026-10-31). How deep a
+  circuit stays readable when no placement reads a quality number, measured on the circuit itself (a conserved
+  charge, a non-integrable mirror echo, the global parity) on ibm_marrakesh and ibm_kingston, sizes up to n = 72;
+  the declared predictions that failed; and an 18-site defect on ibm_kingston that the calibration does not show,
+  with two lemmas that place its cause on the device.
 - [**Technical overview slides**](docs/papers/psf_zero_technical_overview.pptx) (8 slides).
 
 ## How these numbers were produced
@@ -286,6 +294,16 @@ is implied on either side.
   doi    = {10.5281/zenodo.23706881},
   url    = {https://doi.org/10.5281/zenodo.23706881},
   note   = {Preprint, version 1.1, 28 October 2026; version 1: 10.5281/zenodo.23665575}
+}
+
+@misc{readable_depth_map_free_2026,
+  author = {{TN Holdings}},
+  title  = {Readable Depth Without the Calibration Map: Formula Placement
+            on Heavy-Hex Devices, and a Defect the Calibration Does Not Show},
+  year   = {2026},
+  doi    = {10.5281/zenodo.23826351},
+  url    = {https://doi.org/10.5281/zenodo.23826351},
+  note   = {Preprint, version 1.0, 31 October 2026}
 }
 ```
 
