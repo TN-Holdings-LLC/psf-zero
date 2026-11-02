@@ -10,6 +10,7 @@
 [![DOI (Paper 3)](https://zenodo.org/badge/DOI/10.5281/zenodo.23826596.svg)](https://doi.org/10.5281/zenodo.23826596)
 [![DOI (Paper 4)](https://zenodo.org/badge/DOI/10.5281/zenodo.23826764.svg)](https://doi.org/10.5281/zenodo.23826764)
 [![DOI (Paper 5)](https://zenodo.org/badge/DOI/10.5281/zenodo.23827536.svg)](https://doi.org/10.5281/zenodo.23827536)
+[![DOI (Paper 6)](https://zenodo.org/badge/DOI/10.5281/zenodo.23883938.svg)](https://doi.org/10.5281/zenodo.23883938)
 
 PSF-Zero is a Qiskit-compatible compiler for IBM devices that builds a circuit by formula: no layout search, no
 routing search, and no choice by the day's error values. What it cannot build by formula it refuses with a reason.
@@ -213,6 +214,13 @@ CX-basis synthesis returns wrong circuits near a boundary ([Qiskit #17057](https
   charge, a non-integrable mirror echo, the global parity) on ibm_marrakesh, ibm_kingston and (1.1) ibm_fez, sizes up to n = 72;
   the declared predictions that failed; and an 18-site defect on ibm_kingston that the calibration does not show,
   with two lemmas that place its cause on the device.
+- [**Paper 6 — What Sets the Readable Depth of a Placed Ring, and How Far a Self-Checking Layer Pushes It: Scan,
+  Register, Avoid and Repair on Three Heavy-Hex Devices Without the Calibration Map**](docs/papers/readable_depth_self_check.pdf)
+  ([DOI: 10.5281/zenodo.23883938](https://doi.org/10.5281/zenodo.23883938), version 1.0, 2026-11-02). A self-checking
+  layer (scan, registry, placement around listed paths, frame-flip repair, sentinel) on ibm_kingston, ibm_fez and
+  ibm_marrakesh, every test declared: the usable width it restores (kingston n = 40: 22 -> 40 on three days), the small
+  accuracy gain on fully usable rings, what a defect costs different computations, and a lower bound for
+  calibration-only placement in an appendix. Code: [psf-os](https://github.com/TN-Holdings-LLC/psf-os).
 - [**Technical overview slides**](docs/papers/psf_zero_technical_overview.pptx) (8 slides).
 
 ## How these numbers were produced
@@ -307,6 +315,17 @@ is implied on either side.
   doi    = {10.5281/zenodo.23827536},
   url    = {https://doi.org/10.5281/zenodo.23827536},
   note   = {Preprint, version 1.1, 31 October 2026; version 1.0: 10.5281/zenodo.23826351}
+}
+
+@misc{readable_depth_self_check_2026,
+  author = {{TN Holdings}},
+  title  = {What Sets the Readable Depth of a Placed Ring, and How Far a Self-Checking
+            Layer Pushes It: Scan, Register, Avoid and Repair on Three Heavy-Hex
+            Devices Without the Calibration Map},
+  year   = {2026},
+  doi    = {10.5281/zenodo.23883938},
+  url    = {https://doi.org/10.5281/zenodo.23883938},
+  note   = {Preprint, version 1.0, 2 November 2026}
 }
 ```
 

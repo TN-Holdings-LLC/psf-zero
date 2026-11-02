@@ -23,7 +23,7 @@ synthesis and layout search, Papers 1 and 2) is kept unchanged in [`v1_2026-09/`
 ## What was measured on devices
 
 All numbers come from declared tests (each fixed by SHA-256 and time before its run). Records:
-[Paper 5](https://doi.org/10.5281/zenodo.23827536) and the TOQB `results/` folders named below. Paper 6 (draft)
+[Paper 5](https://doi.org/10.5281/zenodo.23827536) and the TOQB `results/` folders named below. [Paper 6](https://doi.org/10.5281/zenodo.23883938)
 collects them.
 
 | device, day | ring of 40 qubits: usable sites, standard ring -> ring placed around the list | ring of 72 qubits |
@@ -115,6 +115,6 @@ Contact: love.os.architect@proton.me. The request form and report template of th
 - Paper 5: Readable Depth Without the Calibration Map (doi:10.5281/zenodo.23827536).
 - Paper 4: Folding a Ring onto Heavy-Hex (doi:10.5281/zenodo.23826764).
 - Paper 3: When a Quantum Compiler Looks Like a Better Learner (doi:10.5281/zenodo.23826596).
-- Paper 6 (draft): What Sets the Readable Depth of a Placed Ring, and How Far a Self-Checking Layer Pushes It.
+- Paper 6: What Sets the Readable Depth of a Placed Ring, and How Far a Self-Checking Layer Pushes It (doi:10.5281/zenodo.23883938).
 
 AGPL v3 (psf-os, psf-zero). See `LICENSE` in each repository.
