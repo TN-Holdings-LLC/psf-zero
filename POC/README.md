@@ -8,7 +8,7 @@ This page is for teams considering a proof-of-concept evaluation. Researchers wi
 papers and in TOQB, the test bench (links below).
 
 **Status.** This is a draft entry point; the software is pre-release.
-[psf-os](https://github.com/TN-Holdings-LLC/psf-os) (AGPL-3.0) is not yet public. The kit of September 2026 (gate
+[psf-os](https://github.com/TN-Holdings-LLC/psf-os) (AGPL-3.0) is public since 2 November 2026, version 0.1.0.dev0. The kit of September 2026 (gate
 synthesis and layout search, Papers 1 and 2) is kept unchanged in [`v1_2026-09/`](v1_2026-09/).
 
 ## Why
@@ -57,7 +57,7 @@ collects them.
 ## Try it in five minutes (a fake device, no IBM account)
 
 ```bash
-git clone https://github.com/TN-Holdings-LLC/psf-os      # pre-release: not yet public
+git clone https://github.com/TN-Holdings-LLC/psf-os      # pre-release (0.1.0.dev0)
 pip install -e "psf-os[sim]"
 git clone https://github.com/TN-Holdings-LLC/psf-zero
 python psf-zero/POC/quickstart_os.py                      # writes ./quickstart_out
