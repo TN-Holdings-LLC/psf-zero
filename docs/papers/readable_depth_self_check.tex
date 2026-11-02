@@ -444,6 +444,58 @@ coverage day 3 & \pending & & \\
 \label{tab:decl}
 \end{table}
 
+\appendix
+\section{Calibration-only placement: a lower bound and a construction}\label{app:separation}
+
+This appendix summarises a TOQB note~\cite{toqb} (\texttt{notes/separation\_2026-11-02/}, not declared). Its numbers
+are simulations on a fake device, not device results.
+
+\textbf{Lower bound.} Let $C(\theta)$ be the calibration numbers of a device state $\theta$: static per-element numbers
+and the outcomes of \emph{isolated} experiments, in which no two couplers at distance one carry a two-qubit gate in
+the same layer. A policy that reads only the coupling graph and $C$ gives the same placement law to all states with the
+same $C$. Hence, for states $\theta_1,\dots,\theta_M$ with equal $C$, its worst expected regret is at least
+$\frac1M\min_L\sum_k R_{\theta_k}(L)$ (the averaged two-point method of Le Cam~\cite{yu1997}). This is close to a
+tautology. If a coupler $e$ carries an error only when a coupler at distance one is driven in the same layer, and a
+ring through $e$ costs $\Delta$, the bound over all $e$ gives at least $n\Delta/|E_w|$ for a ring of $n$ qubits
+($|E_w|=164$ working couplers on FakeKingston: $0.12\Delta$, $0.24\Delta$, $0.44\Delta$ at $n=20,40,72$).
+The bound does not cover policies that read same-layer measurements (e.g.\ layer fidelity~\cite{mckay2023}), the
+results of the user's own circuits, or their own tests of the day.
+% src: TOQB notes/separation_2026-11-02/separation_note.tex, Lemma 1 and Corollary 1
+
+\textbf{Upper bound, with its assumptions.} psf-os's scan reads each site from $4\times1000$ outcomes in $\{-1,+1\}$;
+by Hoeffding's inequality~\cite{hoeffding1963} a site at distance $t$ from the line $0.12$ is misread with probability
+at most $2e^{-2Nt^2}$ ($3\times10^{-13}$ one-sided at $t=0.12$, $N=1000$). This bounds the regret only if (A1) a dead
+echo means a bad user circuit, (A2) the cost depends only on whether the ring holds a dead path, (A3) the comparator is
+the rule's own placement with every dead path masked, not the best placement, and (A4) nothing changes between scan and
+job. Near the line the bound says nothing: at $a_j=0.10$ it is $0.90$. The line $0.12$, the three sites and the two
+jobs are chosen values.
+% src: note Section 3, Proposition 1 and "What these numbers are not"
+
+\textbf{Construction (Aer, FakeKingston, one planted coupler, no other noise).}
+
+\begin{center}
+\small
+\begin{tabular}{lll}
+\toprule
+check & planted state & baseline \\
+\midrule
+the coupler alone ($m=2,8,32$) & counts identical to the baseline & 1.000 \\
+with a neighbour in the same layer & 0.746, 0.269, 0.250 (Pauli) & 1.000 \\
+Pauli $ZZ$ 0.15, scan at the Clifford point & usable 24 $\to$ 40 ($n=40$), 56 $\to$ 72 ($n=72$) & 40, 72 \\
+coherent $R_{ZZ}(\pi/8)$, $n=20$, $h=0.6$ & usable 20 $\to$ 20, ring mean 0.40 $\to$ 1.00 & 1.000 \\
+local frame flip (coherent) & every site 1.000 & 1.000 \\
+\bottomrule
+\end{tabular}
+\end{center}
+% src: TOQB notes/separation_2026-11-02/out/construction_result.json (rerun at home, identical except run time)
+
+The error is invisible to the isolated benchmark and visible at once to a same-layer one, so it separates the two
+kinds of policy. Two limits are part of the result. In the coherent model the planted stretch read $0.10$, just under
+the line; it was read as dead in three of four readings of the same circuit and missed in one, so detection there is close to
+chance. And the model's local flip repairs the stretch completely with no cost, while on \texttt{ibm\_kingston} the flip
+at 27, 29 repaired the block only in part (Section~\ref{sec:results}); the device defect is consistent with this
+construction but is not explained by a single static $ZZ$ term.
+
 \section*{Acknowledgments}
 We acknowledge the use of IBM Quantum services for this work. The views expressed are those of the authors, and do
 not reflect the official policy or position of IBM or the IBM Quantum team. The device runs used the IBM Quantum
@@ -467,6 +519,10 @@ Quantum Processor Performance at Scale'', arXiv:2311.05933 (2023).
 Phys. Rev. Lett. 121, 090502 (2018); arXiv:1809.01043.
 \bibitem{wallman2016} J. J. Wallman and J. Emerson, ``Noise tailoring for scalable quantum computation via randomized
 compiling'', Phys. Rev. A 94, 052325 (2016).
+\bibitem{yu1997} B. Yu, ``Assouad, Fano, and Le Cam'', in \emph{Festschrift for Lucien Le Cam}, Springer, New York (1997),
+doi:10.1007/978-1-4612-1880-7\_29.
+\bibitem{hoeffding1963} W. Hoeffding, ``Probability inequalities for sums of bounded random variables'',
+J. Amer. Statist. Assoc. \textbf{58}(301), 13--30 (1963).
 \end{thebibliography}
 
 \end{document}
