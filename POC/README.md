@@ -13,7 +13,7 @@ synthesis and layout search, Papers 1 and 2) is kept unchanged in [`v1_2026-09/`
 
 ## Why
 
-- **A device's quality varies along its paths.** On `ibm_kingston` (30 October to 1 November 2026), the same 18 qubits
+- **A device's quality varies along its paths.** On `ibm_kingston` (30 October to 2 November 2026), the same 18 qubits
   of a 40-qubit ring read near random or inverted in every run of the same circuit. Seventeen of those qubits were
   healthy on other rings, and the calibration data showed nothing unusual there (Paper 5).
 - **A layout chosen from calibration numbers cannot avoid what the calibration does not show.** psf-os measures the
@@ -30,15 +30,16 @@ collects them.
 |---|---|---|
 | ibm_kingston, 31 Oct | 22 -> 40 | 38 -> 72 |
 | ibm_kingston, 1 Nov | 22 -> 40 | 39 -> 72 |
+| ibm_kingston, 2 Nov | 22 -> 40 | 54 -> 72 |
 | ibm_fez, 1 Nov | 29 -> 40 | 36 -> 63 |
 | ibm_marrakesh, 1 Nov | 40 -> 40 (nothing to avoid) | 67 -> 72 |
 
 <!-- src: TOQB results/coverage-days-2026-10-31-day1/coverage.json, results/coverage-days-2026-11-01-day2/coverage.json,
-     results/two-devices-2026-11-01/{fez,marrakesh}/avoid/coverage.json -->
+     results/two-devices-2026-11-01/{fez,marrakesh}/avoid/coverage.json, results/coverage-days-2026-11-02-day3/coverage.json -->
 
 - **The headline number and the essential one.** The headline is "usable sites 22 -> 40". The essential number: on
   the sites that were already usable, the signal moved only from 0.41 to 0.44. The gain is in *width* (how much of the
-  device can carry a computation), not in a better signal everywhere. In three of the eight rows the mean signal on
+  device can carry a computation), not in a better signal everywhere. In three of the ten rows the mean signal on
   usable sites fell (kingston 31 Oct, 72 qubits: 0.38 -> 0.35; fez, 72 qubits: 0.27 -> 0.22; marrakesh, 40 qubits:
   0.27 -> 0.24). On fez the 72-qubit ring placed around the list still had 9 unusable sites.
   <!-- src: coverage day 1 n40 mean_usable 0.410 -> 0.441; n72 0.384 -> 0.346 (day 1);

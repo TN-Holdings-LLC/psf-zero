@@ -27,7 +27,7 @@
 psf-os places a ring circuit on an IBM heavy-hex device without reading any calibration quality number. It tests the
 rings it would use with a short mirror echo read per site, keeps a dated list of the paths it found dead, places the
 user's ring around them, and attaches a four-circuit sentinel whose verdict travels with the result. On three devices
-(30 October to 1 November 2026) the 40-qubit ring placed around the list kept all 40 sites usable where the standard
+(30 October to 2 November 2026) the 40-qubit ring placed around the list kept all 40 sites usable where the standard
 ring lost up to 18; the signal on sites that were already usable moved little, and fell in some rows. On a ring where nothing was dead, a forward computation gained $+0.040\pm0.002$ in mean site signal, all of it on the
 ten replaced qubits. This overview states the problem, the method, the device results with their limits, and how to
 try it. psf-os is pre-release.
@@ -36,9 +36,9 @@ try it. psf-os is pre-release.
 \section{The problem}
 
 On \texttt{ibm\_kingston}, the same 18 qubits of a 40-qubit ring read near random or inverted in every run of a
-byte-identical echo circuit on 30 October, 31 October and 1 November 2026 (Figure~\ref{fig:sites}, top). Seventeen of
+byte-identical echo circuit on 30 October, 31 October, 1 November and 2 November 2026 (Figure~\ref{fig:sites}, top). Seventeen of
 those 18 qubits were healthy on other rings the same day, and the calibration data showed nothing unusual there.
-% src: numbers.json fig1 (the same dead run of 18 qubits on the three days)
+% src: numbers.json fig1 (the same dead run of 18 qubits on the four days)
 % src: TOQB results/defect-list-replay-2026-10-31/README.md ("17 of the 18 qubits ... were healthy on other rings")
 % src: Paper 5 (doi:10.5281/zenodo.23827536), calibration showed nothing at the dead run
 So the defect belongs to a \emph{path}, not to a qubit, and a layout chosen from calibration numbers cannot avoid
@@ -105,13 +105,14 @@ device, day & usable sites & mean $a_j$ on usable sites & usable sites & mean $a
 \midrule
 kingston, 31 Oct  & 22 $\to$ 40 & 0.41 $\to$ 0.44 & 38 $\to$ 72 & 0.38 $\to$ 0.35\\
 kingston, 1 Nov   & 22 $\to$ 40 & 0.39 $\to$ 0.44 & 39 $\to$ 72 & 0.38 $\to$ 0.42\\
+kingston, 2 Nov   & 22 $\to$ 40 & 0.41 $\to$ 0.43 & 54 $\to$ 72 & 0.32 $\to$ 0.41\\
 fez, 1 Nov        & 29 $\to$ 40 & 0.16 $\to$ 0.20 & 36 $\to$ 63 & 0.27 $\to$ 0.22\\
 marrakesh, 1 Nov  & 40 $\to$ 40 & 0.27 $\to$ 0.24 & 67 $\to$ 72 & 0.23 $\to$ 0.26\\
 \bottomrule
 \end{tabular}
 % src: numbers.json width.<device day n>.standard/avoiding/mean_usable (each checked against the TOQB coverage.json)
 \caption{Standard ring $\to$ ring placed around the list. The headline is the width; the signal on sites that were
-already usable moved little, and fell in three of the eight rows.}
+already usable moved little, and fell in three of the ten rows.}
 \label{tab:width}
 \end{table}
 
