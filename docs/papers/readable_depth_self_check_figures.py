@@ -35,15 +35,17 @@ def profile(job, runs, n):
     return prof[n]
 
 
-# ---------------------------------------------------------------- Figure 1: kingston n = 40, per site, three days
+# ---------------------------------------------------------------- Figure 1: kingston n = 40, per site, four days
 days = [("30 Oct (test 3E)", "device-2026-10-30/test3E/kingston/job", "device-2026-10-30/test3E/kingston/runs"),
         ("31 Oct (coverage day 1, A)", "coverage-days-2026-10-31-day1/job_A", "coverage-days-2026-10-31-day1/runs_A"),
-        ("1 Nov (coverage day 2, A)", "coverage-days-2026-11-01-day2/job_A", "coverage-days-2026-11-01-day2/runs_A")]
+        ("1 Nov (coverage day 2, A)", "coverage-days-2026-11-01-day2/job_A", "coverage-days-2026-11-01-day2/runs_A"),
+        ("2 Nov (coverage day 3, A)", "coverage-days-2026-11-02-day3/job_A", "coverage-days-2026-11-02-day3/runs_A")]
 avoid = [("31 Oct (coverage day 1, B)", "coverage-days-2026-10-31-day1/job_B", "coverage-days-2026-10-31-day1/runs_B"),
-         ("1 Nov (coverage day 2, B)", "coverage-days-2026-11-01-day2/job_B", "coverage-days-2026-11-01-day2/runs_B")]
+         ("1 Nov (coverage day 2, B)", "coverage-days-2026-11-01-day2/job_B", "coverage-days-2026-11-01-day2/runs_B"),
+         ("2 Nov (coverage day 3, B)", "coverage-days-2026-11-02-day3/job_B", "coverage-days-2026-11-02-day3/runs_B")]
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 6.2), sharey=True)
 ring0 = None
-cols = [MUTED, BLUE, ORANGE]
+cols = [MUTED, BLUE, ORANGE, GREEN]
 NUM["fig1"] = {}
 for (lab, job, runs), c in zip(days, cols):
     ring, a = profile(job, runs, 40)
@@ -64,7 +66,7 @@ ax1.set_ylabel("site signal a_j")
 ax1.legend(frameon=False, fontsize=8, loc="lower right")
 ax1.grid(axis="y", color=GRID)
 ringb = None
-for (lab, job, runs), c in zip(avoid, [BLUE, ORANGE]):
+for (lab, job, runs), c in zip(avoid, [BLUE, ORANGE, GREEN]):
     ring, a = profile(job, runs, 40)
     ringb = ringb or ring
     assert ring == ringb
@@ -86,6 +88,7 @@ fig.savefig("figures/self_check_kingston_n40_sites.png", dpi=150)
 # ---------------------------------------------------------------- Figure 2: usable sites, standard against avoiding
 cov = [("kingston\n31 Oct", "coverage-days-2026-10-31-day1/coverage.json"),
        ("kingston\n1 Nov", "coverage-days-2026-11-01-day2/coverage.json"),
+       ("kingston\n2 Nov", "coverage-days-2026-11-02-day3/coverage.json"),
        ("fez\n1 Nov", "two-devices-2026-11-01/fez/avoid/coverage.json"),
        ("marrakesh\n1 Nov", "two-devices-2026-11-01/marrakesh/avoid/coverage.json")]
 NUM["width"] = {}
@@ -108,10 +111,10 @@ for ax, n in zip(axes, (40, 72)):
         ax.text(xi + 0.19, b_ + 0.5, str(b_), ha="center", fontsize=8, color=INK)
     ax.set_xticks(x)
     ax.set_xticklabels(labs, fontsize=8)
-    ax.set_ylim(0, n * 1.12)
+    ax.set_ylim(0, n * 1.35)
     ax.set_title(f"usable sites out of n = {n}", loc="left", fontsize=10, color=INK)
     ax.grid(axis="y", color=GRID)
-axes[0].legend(frameon=False, fontsize=8, loc="lower left")
+axes[0].legend(frameon=False, fontsize=8, loc="upper left", ncol=2)
 fig.tight_layout()
 fig.savefig("figures/self_check_width.png", dpi=150)
 

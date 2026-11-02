@@ -16,7 +16,6 @@
 \setlength{\tabcolsep}{4pt}
 % Open items of this draft are marked in red; none of them is a result.
 \newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
-\newcommand{\pending}{\textcolor{red}{\textbf{[DAY 3 PENDING]}}}
 \newcommand{\checkref}{\textcolor{red}{\textbf{[CHECK]}}}
 % Source convention: every number carries a comment "% src: results/..." (TOQB) or
 % "% src: numbers.json ..." (readable_depth_self_check_numbers.json, written by
@@ -29,7 +28,7 @@ Scan, Register, Avoid and Repair on Three Heavy-Hex Devices Without the Calibrat
 \texttt{love.os.architect@proton.me}\\
 \texttt{https://github.com/TN-Holdings-LLC/psf-zero}}
 
-\date{Draft --- 2 November 2026 (workplace draft; numbers of 2 November pending)}
+\date{Draft --- 2 November 2026}
 
 \begin{document}
 \maketitle
@@ -44,7 +43,7 @@ expired after seven days), places the next ring around them with the same formul
 circuits, applies a local frame flip that leaves the ideal circuit unchanged. All tests were declared before their
 fetch, and the placement is fold:rule against fold:rule throughout. Two effects are kept apart. \emph{Width}: where a
 dead run sat on the standard ring, avoiding it made every site usable again (kingston $n=40$: 22 of 40 to 40 of 40 on
-two days; $n=72$: 38--39 to 72), and on two more devices the same scan-then-avoid widened the ring
+three days; $n=72$: 38--54 to 72; WIDER in all six declared comparisons, and the same 18-qubit run on every day), and on two more devices the same scan-then-avoid widened the ring
 (\texttt{ibm\_fez} $n=40$: 29 to 40, $n=72$: 36 to 63; \texttt{ibm\_marrakesh} $n=72$: 67 to 72). \emph{Accuracy}: on a
 ring that was already fully usable, a forward Clifford computation with a known answer was slightly more right on the
 avoiding ring (marrakesh, $n=72$: mean site signal 0.776 to 0.816 at 12 layers, 0.643 to 0.694 at 24), and all of the
@@ -52,7 +51,7 @@ gain sat in the ten qubits that the avoiding ring replaced. The ring avoiding th
 $n=20$ control at $n=40$ but not at $n=72$, where a shortfall of about two layers remained with no weak run visible to
 the scan. A two-qubit frame flip lifted kingston's dead block by $+0.32$ and $+0.30$ on two days without cost
 elsewhere, but recovered it only to about a third of the healthy sites at 24 layers. Avoiding comes first; repair is for
-a ring that cannot avoid the path. A planned third day is pending.
+a ring that cannot avoid the path.
 \end{abstract}
 
 \section{Introduction}
@@ -141,10 +140,10 @@ echo comparisons, is Paper~5's result \cite{paper5}.
 \subsection{Defects on the ring}
 \begin{itemize}
 \item \textbf{Black.} The same 18 qubits (3--7, 17, 27--29, 38, 49--55, 59) formed a dead run on the standard $n=40$
-  ring of \texttt{ibm\_kingston} in every run of the byte-identical circuit: on 30 October, 31 October and 1 November
-  (Figure~\ref{fig:sites}). Seventeen of these 18 qubits were healthy on other rings the same day, so the defect
+  ring of \texttt{ibm\_kingston} in every run of the byte-identical circuit: on 30 October, 31 October, 1 November and
+  2 November (Figure~\ref{fig:sites}). Seventeen of these 18 qubits were healthy on other rings the same day, so the defect
   belongs to a path, not to the qubits.
-  % src: numbers.json fig1 (dead runs of the three days); results/defect-list-replay-2026-10-31/README.md (17 of 18 healthy elsewhere)
+  % src: numbers.json fig1 (dead runs of the four days); results/defect-list-replay-2026-10-31/README.md (17 of 18 healthy elsewhere)
 \item \textbf{Gray.} A weak stretch (35, 19, 15, 14) on an $n=72$ ring read 0.10--0.12 at 11:40 CET and 0.46--0.49 at
   13:14 CET on 31 October, with the same circuit on the same qubits.
   % src: results/gray-stage1-2026-10-31/README.md, gray_score.json
@@ -211,11 +210,12 @@ kingston, 31 Oct (coverage day 1) & 22 $\to$ 40 & 38 $\to$ 72 & WIDER, WIDER \\
 kingston, 1 Nov (coverage day 2) & 22 $\to$ 40 & 39 $\to$ 72 & WIDER, WIDER \\
 fez, 1 Nov & 29 $\to$ 40 & 36 $\to$ 63 & HELPS \\
 marrakesh, 1 Nov & 40 $\to$ 40 & 67 $\to$ 72 & HELPS \\
-kingston, 2 Nov (coverage day 3) & \pending & \pending & \pending \\
+kingston, 2 Nov (coverage day 3) & 22 $\to$ 40 & 54 $\to$ 72 & WIDER, WIDER \\
 \bottomrule
 \end{tabular}}
 % src: numbers.json width (from results/coverage-days-2026-10-31-day1/coverage.json, results/coverage-days-2026-11-01-day2/coverage.json,
-% src:   results/two-devices-2026-11-01/fez/avoid/coverage.json, results/two-devices-2026-11-01/marrakesh/avoid/coverage.json)
+% src:   results/two-devices-2026-11-01/fez/avoid/coverage.json, results/two-devices-2026-11-01/marrakesh/avoid/coverage.json,
+% src:   results/coverage-days-2026-11-02-day3/coverage.json)
 % src: verdicts: results/coverage-days-2026-11-01-day2/README.md, results/two-devices-2026-11-01/README.md
 \caption{Usable sites on the standard ring and on the ring placed around the registry, same device and day.}
 \label{tab:width}
@@ -232,25 +232,30 @@ files of each test.}
 \begin{figure}[h]
 \centering
 \includegraphics[width=\textwidth]{figures/self_check_kingston_n40_sites.png}
-\caption{Top: the per-site echo signal along kingston's standard $n=40$ ring on three days (byte-identical circuit).
+\caption{Top: the per-site echo signal along kingston's standard $n=40$ ring on four days (byte-identical circuit).
 The run 3--59 is below the dead line every time. Bottom: the ring placed around the registry, same days.}
 \label{fig:sites}
 \end{figure}
 
 \begin{itemize}
 \item \textbf{The show-off number and the essential one.} The show-off number is usable sites 22 $\to$ 40. The essential
-  one: on the sites that were already usable, the mean signal moved only 0.41 $\to$ 0.44 (day 1) and 0.39 $\to$ 0.44
-  (day 2). The gain is width. The whole-ring mean (0.17 $\to$ 0.44) mixes both effects and is not used as a headline.
-  % src: numbers.json width "kingston 31 Oct n40" mean_usable (0.410, 0.441), mean_all (0.175, 0.441); "kingston 1 Nov n40" (0.393, 0.438)
-\item \textbf{The defect stayed where it was.} On both days the listed path [28, 29, 38, 49] was dead on the standard
-  ring (PRESENT), and the avoiding rings had no dead run.
-  % src: results/coverage-days-2026-10-31-day1/README.md, results/coverage-days-2026-11-01-day2/README.md
+  one: on the sites that were already usable, the mean signal moved only 0.41 $\to$ 0.44 (day 1), 0.39 $\to$ 0.44
+  (day 2) and 0.41 $\to$ 0.43 (day 3). The gain is width. The whole-ring mean (0.17 $\to$ 0.44) mixes both effects and is not used as a headline.
+  % src: numbers.json width "kingston 31 Oct n40" mean_usable (0.410, 0.441), mean_all (0.175, 0.441); "kingston 1 Nov n40" (0.393, 0.438); "kingston 2 Nov n40" (0.405, 0.429)
+\item \textbf{The defect stayed where it was.} On all three days the listed path [28, 29, 38, 49] was dead on the
+  standard ring (PRESENT, 3 of 3: PERSISTENT by the declaration), and the avoiding rings had no dead run. Of the two
+  $n=72$ paths, [11, 10, 9] was present on all three days, while [87, 86, 85] was present on days 1 and 2 and absent
+  on day 3; it stayed listed (seven-day expiry) and was avoided with nothing to avoid.
+  % src: results/coverage-days-2026-10-31-day1/README.md, results/coverage-days-2026-11-01-day2/README.md, results/coverage-days-2026-11-02-day3/README.md
 \item \textbf{Not everything was masked.} On fez the avoiding $n=72$ ring still carried a nine-site dead run next to a
   listed path; it entered the registry for the next day.
   % src: results/two-devices-2026-11-01/README.md
 \item \textbf{When there is nothing to avoid.} On marrakesh at $n=40$ the standard ring had no dead run, and the avoiding
   ring changed nothing (SAME).
-\item \textbf{Day 3.} Whether the black entries persist over three days is \pending.
+\item \textbf{Three days, by the declaration.} C WIDER in 6 of 6 and NARROWER in none; P PERSISTENT. The sentences
+  fixed in advance: placing around a self-measured list widens the usable part of the device; the defect stays for
+  days without showing in the calibration, so a list with a multi-day expiry is sound.
+  % src: results/coverage-days-2026-11-02-day3/README.md (three-day verdict)
 \end{itemize}
 
 \subsection{Depth recovered (Y2, rings placed around the registry)}
@@ -436,7 +441,7 @@ fix repeat & \texttt{fix\_repeat\_note.md} & 935d3a5d & 1 Nov 03:04 \\
 two devices & \texttt{two\_devices\_note.md} & 91f2dbb8 & 1 Nov 11:30 \\
 M3 (kingston) & \texttt{qca\_m3\_note.md} & 8a5618ca & 1 Nov 12:35 \\
 M3, second form & \texttt{qca\_m3b\_note.md} & e3337f85 & 1 Nov 15:48 \\
-coverage day 3 & \pending & & \\
+coverage day 3 & (the coverage-days note) & 4941ddfa & 31 Oct 11:29 \\
 \bottomrule
 \end{tabular}
 % src: the "Declaration" line of each results/<test>/README.md
