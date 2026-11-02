@@ -77,3 +77,11 @@ the device file (by SHA-256 when given), then the family's formulas and psfz's o
 It refuses with one of the 19 codes, declines, or passes with the built counts. On the fixed N2 set it passes
 milestone M0: 23 of 23 refusal records, the fault injection R19 and the 6 controls
 (`data/2026-10-20/gate1_m0/`). `compile` is unchanged.
+
+## What psfz reads from the device file (owner's decision of 2 November 2026)
+
+psfz reads gate durations (each coupler's two-qubit gate, each qubit's sx) and uses them for scheduling: which
+qubit of a pair takes a form's basis changes, the choice among couplers of the most common duration, and on ECR
+devices the ECR form. This is kept. Error rates are read only to mark failed elements (0.5 or more); no quality
+number chooses a placement. The same input can therefore give a different circuit on a device whose durations
+changed; psf-os's own placement reads neither.
