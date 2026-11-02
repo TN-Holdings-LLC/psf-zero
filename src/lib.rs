@@ -874,6 +874,7 @@ fn try_decompose_with_tol(
                 }
             }
             if let Ok(result) = try_pair(&o1_alt, &o2_alt) {
+                mark(4);
                 su2_result = Ok(result);
                 break;
             }
@@ -930,6 +931,7 @@ fn try_decompose_with_tol(
             }
             fix_determinants(&mut o1_alt, &mut o2_alt);
             if let Ok(result) = try_pair(&o1_alt, &o2_alt) {
+                mark(8);
                 su2_result = Ok(result);
                 break;
             }
@@ -949,6 +951,16 @@ fn try_decompose_with_tol(
     ))
 }
 
+// Which route a decomposition took, recorded in test builds only (no effect on behaviour): 1 SVD route, 2 eigen
+// route; plus bit 4 when the sign-flip retry and bit 8 when the Givens retry supplied the SU(2) pair.
+#[cfg(test)]
+thread_local! { static ROUTE: std::cell::Cell<u8> = const { std::cell::Cell::new(0) }; }
+#[inline]
+fn mark(_bits: u8) {
+    #[cfg(test)]
+    ROUTE.with(|r| r.set(r.get() | _bits));
+}
+
 fn decompose_one(u: &Mat4) -> Result<((f64, f64, f64, f64), LocalTriples, f64), CartanError> {
     let phase = u.determinant().argument() / 4.0;
     let u_norm = normalize_su4(u, phase)?;
@@ -963,7 +975,10 @@ fn decompose_one(u: &Mat4) -> Result<((f64, f64, f64, f64), LocalTriples, f64), 
         Ok(basis) => {
             for &group_tol in &GROUP_TOL_CANDIDATES {
                 match try_decompose_with_tol(&u_m, &basis, group_tol) {
-                    Ok((angles, locals)) => return Ok((angles, locals, phase)),
+                    Ok((angles, locals)) => {
+                        mark(1);
+                        return Ok((angles, locals, phase));
+                    }
                     Err(e) => last_err = e,
                 }
             }
@@ -975,7 +990,10 @@ fn decompose_one(u: &Mat4) -> Result<((f64, f64, f64, f64), LocalTriples, f64), 
     // block the SVD route accepts is decomposed exactly as before.
     for basis in eigen_route_bases(&u_m) {
         match try_decompose_with_tol(&u_m, &basis, 0.0) {
-            Ok((angles, locals)) => return Ok((angles, locals, phase)),
+            Ok((angles, locals)) => {
+                mark(2);
+                return Ok((angles, locals, phase));
+            }
             Err(e) => last_err = e,
         }
     }
@@ -1327,6 +1345,61 @@ mod tests {
             "{}/{} near-degenerate CNOT perturbations were rejected",
             failures, total
         );
+    }
+
+    /// u = Q (O1 diag(exp(i theta)) O2) Q^dagger with real rotations O1, O2 (pseudo-random Givens products) and the
+    /// given magic-basis phases (sum 0).
+    pub(crate) fn from_magic(theta: [f64; 4], seed: u64) -> Mat4 {
+        let mut st = seed.wrapping_mul(6364136223846793005).wrapping_add(1);
+        let mut next = move || {
+            st = st.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
+            ((st >> 11) as f64 / (1u64 << 53) as f64) * std::f64::consts::TAU
+        };
+        let mut rot = || {
+            let mut o = RMat4::identity();
+            for (i, j) in [(0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)] {
+                let a = next();
+                let mut g = RMat4::identity();
+                g[(i, i)] = a.cos();
+                g[(j, j)] = a.cos();
+                g[(i, j)] = -a.sin();
+                g[(j, i)] = a.sin();
+                o = o * g;
+            }
+            o
+        };
+        let (o1, o2) = (rot(), rot());
+        let d = Mat4::from_diagonal(&Vector4::new(
+            Complex64::from_polar(1.0, theta[0]), Complex64::from_polar(1.0, theta[1]),
+            Complex64::from_polar(1.0, theta[2]), Complex64::from_polar(1.0, theta[3])));
+        &*MAGIC_Q * (to_complex(&o1) * d * to_complex(&o2)) * &*MAGIC_Q_DAG
+    }
+
+    fn route_of(u: &Mat4) -> (u8, f64) {
+        ROUTE.with(|r| r.set(0));
+        let infid = check(u, "route probe");
+        (ROUTE.with(|r| r.get()), infid)
+    }
+
+    /// Inputs with |cos theta_0| = |cos theta_1| (theta_1 = pi - theta_0 + dl), the case item 12 names. Recorded
+    /// result (2026-11-02, workplace): all 60 decompose exactly through the SVD route (route 1); none reaches the
+    /// eigen route, so this test does NOT yet cover item 12. A dedicated test needs an input that defeats the SVD
+    /// route (for example one of the 15 blocks of the home v4 run, Addendum 247 A, kept as a fixture).
+    #[test]
+    fn cos_ties_decompose_exactly() {
+        for &a in &[0.3, 0.9, 1.4] {
+            for &dl in &[0.0, 1e-9, 1e-7, 1e-5] {
+                for seed in 0..5u64 {
+                    let t0 = a;
+                    let t1 = PI - a + dl;
+                    let t2 = 0.4;
+                    let th = [t0, t1, t2, -(t0 + t1 + t2)];
+                    let (r, inf) = route_of(&from_magic(th, seed));
+                    assert!(inf < 1e-12);
+                    assert_eq!(r & 3, 1, "a {} dl {:e} seed {}: route {}", a, dl, seed, r);
+                }
+            }
+        }
     }
 
     #[test]
