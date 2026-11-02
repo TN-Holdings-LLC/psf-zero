@@ -563,8 +563,33 @@ fn lower_zz(a: usize, b: usize, theta: f64, out: &mut Vec<Nat>) {
     out.push(Nat::U(b, h()));
 }
 
-/// Step 5 for a merged block exp(-i/2 (x XX + y YY + z ZZ)) on physical qubits a, b.
+/// Step 5 for a merged block exp(-i/2 (x XX + y YY + z ZZ)) on physical qubits a, b. Each angle is first taken to
+/// its representative mod pi in [-pi/2, pi/2]: exp(-i (t + pi)/2 PP) = -i (P P) exp(-i t/2 PP), and P P commutes with
+/// the whole block, so the local P on each qubit goes in front (up to a global phase). An angle that is pi mod 2 pi
+/// then counts as zero, so Can(x, y, pi) takes 2 CZ, not 3.
 fn lower_can(a: usize, b: usize, ang: [f64; 3], out: &mut Vec<Nat>) {
+    let mut red = [0.0; 3];
+    for k in 0..3 {
+        let w = wrap(ang[k]);
+        let (r, odd) = if w > PI / 2.0 + TOL {
+            (w - PI, true)
+        } else if w < -PI / 2.0 - TOL {
+            (w + PI, true)
+        } else {
+            (w, false)
+        };
+        red[k] = r;
+        if odd {
+            let p = [x(), y(), z()][k];
+            out.push(Nat::U(a, p));
+            out.push(Nat::U(b, p));
+        }
+    }
+    lower_can_reduced(a, b, red, out);
+}
+
+/// `lower_can` after the reduction: every angle in [-pi/2, pi/2].
+fn lower_can_reduced(a: usize, b: usize, ang: [f64; 3], out: &mut Vec<Nat>) {
     let nz: Vec<usize> = (0..3).filter(|&k| wrap(ang[k]).abs() > TOL).collect();
     if nz.is_empty() {
         return;
@@ -1237,6 +1262,58 @@ mod tests {
             assert!(eq4(&mat(&v), &want), "{:?}", ang);
             let kinds = ang.iter().filter(|t| wrap(**t).abs() > TOL).count();
             assert!(v.iter().filter(|o| matches!(o, Nat::Two(..))).count() <= kinds.max(1).min(3).max(if kinds == 1 { 2 } else { kinds }));
+        }
+    }
+
+    fn n_cz(v: &[Nat]) -> usize {
+        v.iter().filter(|o| matches!(o, Nat::Two(..))).count()
+    }
+
+    /// T1-b: angles that are pi mod pi drop out of the count; the operator is unchanged (up to a global phase). One kind
+    /// left at a generic angle still takes 2 CZ (H CZ RX CZ H); at +-pi/2 it takes 1.
+    #[test]
+    fn angles_at_pi_take_fewer_cz() {
+        for (ang, want) in [([0.3, -0.7, PI], 2), ([0.4, PI, 0.0], 2), ([PI / 2.0, PI, 0.0], 1), ([PI, PI, PI], 0), ([-PI, 0.5, 0.0], 2),
+                            ([0.3 + PI, -0.7, 1.1], 3), ([PI, 0.0, PI / 2.0], 1), ([2.0, -2.5, 0.0], 2)] {
+            let mut v = Vec::new();
+            lower_can(0, 1, ang, &mut v);
+            let w = mul4(&pauli4(0, ang[0]), &mul4(&pauli4(1, ang[1]), &pauli4(2, ang[2])));
+            assert!(eq4(&mat(&v), &w), "{:?}", ang);
+            assert_eq!(n_cz(&v), want, "{:?}", ang);
+        }
+    }
+
+    /// T1-c: a block exp(-i/2 (x XX + y YY + z ZZ)) between fixed pseudo-random locals (seed 20261102), through
+    /// compile's Gen path (block_matrix, kak, lower_can): 1, 2 or 3 CZ as its interaction needs, operator equal.
+    #[test]
+    fn dressed_blocks_take_the_needed_cz() {
+        let mut st: u64 = 20261102;
+        let mut rnd = move || {
+            st = st.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
+            ((st >> 11) as f64 / (1u64 << 53) as f64) * 2.0 * PI
+        };
+        let cases: [([f64; 3], usize); 6] = [([PI / 2.0, 0.0, 0.0], 1), ([0.0, 0.0, -PI / 2.0], 1), ([0.9, -0.4, 0.0], 2),
+                                            ([0.0, 1.3, 0.6], 2), ([0.7, 0.3, -1.1], 3), ([0.5, 0.5, 0.5], 3)];
+        for (ang, want) in cases {
+            for _rep in 0..20 {
+                let l: Vec<M2> = (0..4).map(|_| u3(rnd(), rnd(), rnd())).collect();
+                let mut parts = vec![Ir::U(0, l[0]), Ir::U(1, l[1])];
+                for k in 0..3u8 {
+                    if ang[k as usize] != 0.0 {
+                        parts.push(Ir::Pr(0, 1, k, ang[k as usize]));
+                    }
+                }
+                parts.push(Ir::U(0, l[2]));
+                parts.push(Ir::U(1, l[3]));
+                let m = block_matrix(0, &parts);
+                let k = crate::kak::kak(&m).expect("kak");
+                let mut v = vec![Nat::U(0, k.b1), Nat::U(1, k.b2)];
+                lower_can(0, 1, k.ang, &mut v);
+                v.push(Nat::U(0, k.a1));
+                v.push(Nat::U(1, k.a2));
+                assert!(eq4(&mat(&v), &m), "{:?}", ang);
+                assert_eq!(n_cz(&v), want, "{:?} kak angles {:?}", ang, k.ang);
+            }
         }
     }
 
