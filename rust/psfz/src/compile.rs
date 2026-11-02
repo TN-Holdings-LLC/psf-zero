@@ -891,7 +891,7 @@ pub fn compile(c: &Circuit, d: &Device, l: &Lattice, template: bool) -> Result<O
     let mut nat = Vec::new();
     let mut track = Track { d, clock: BTreeMap::new(), pend: BTreeMap::new(), slot: BTreeSet::new(), facs: BTreeMap::new() };
     for op in &blocks {
-        let start = nat.len();
+        let mut start = nat.len();
         match op {
             Blk::U(q, m) => nat.push(Nat::U(layout[*q], *m)),
             Blk::S(q, m, f) => nat.push(Nat::S(layout[*q], *m, f.clone())),
@@ -907,6 +907,12 @@ pub fn compile(c: &Circuit, d: &Device, l: &Lattice, template: bool) -> Result<O
                     Some(k) => {
                         nat.push(Nat::U(pa, k.b1));
                         nat.push(Nat::U(pb, k.b2));
+                        // the rule below reads the pending runs as the final merge will run them, so b1 and b2
+                        // (which join those runs) are applied first; `start` moves past them (no double apply)
+                        for op in &nat[start..] {
+                            track.apply(op);
+                        }
+                        start = nat.len();
                         let (role, other) = track.pick(pa, pb);
                         // Can(x, y, z) is the same for either order of its qubits
                         if (role, other) == (pa, pb) {
