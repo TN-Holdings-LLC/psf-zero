@@ -51,7 +51,10 @@ gain sat in the ten qubits that the avoiding ring replaced. The ring avoiding th
 $n=20$ control at $n=40$ but not at $n=72$, where a shortfall of about two layers remained with no weak run visible to
 the scan. A two-qubit frame flip lifted kingston's dead block by $+0.32$ and $+0.30$ on two days without cost
 elsewhere, but recovered it only to about a third of the healthy sites at 24 layers. Avoiding comes first; repair is for
-a ring that cannot avoid the path.
+a ring that cannot avoid the path. A sentinel (the same echo, four circuits in the user's own job) read the known
+dead run as DEAD and the ring around the registry as CLEAN, at the job's time and again an hour after the scan. The
+cost of the defect depended on the computation: small for a 12-layer forward identity, total for a weight-40 parity
+read after one layer.
 \end{abstract}
 
 \section{Introduction}
@@ -175,10 +178,10 @@ L1 scan & mirror echo per site on the rule's standard rings ($n=20,40,72$; $D=24
 L2 registry & black paths (LISTED after 2 jobs, 7-day expiry); gray paths for the day only & \texttt{list\_after.json} files \\
 L3 allocate & the rule's placement with the middle coupler of each listed path marked failed & coverage B, clean depth, M3 \\
 L4 repair & local frame flip, mirror-type circuits only, entries verified on two days & black stages 2--3, fix, fix repeat \\
+L5 sentinel & the echo ($D=24$, four circuits) on the user's own ring, in the user's job & M6 parts 1 and 2 \\
 \bottomrule
 \end{tabular}}
-\caption{The layers used in the declared tests. A sentinel layer (echo circuits riding in the user's job) is planned
-and not yet tested.}
+\caption{The layers used in the declared tests.}
 \label{tab:layers}
 \end{table}
 
@@ -375,6 +378,43 @@ day & block, off $\to$ flip at 27, 29 ($D=24$) & difference & rest of the ring \
 \item \textbf{Conclusion.} Avoid first; repair only when the ring cannot avoid the path.
 \end{itemize}
 
+\subsection{Sentinels and computations with known answers (ibm\_kingston, 2 November)}\label{sec:sentinel}
+Three jobs were built by psf-os from one fetch and the day-3 registry: S on the standard $n=40$ ring, V on the ring
+placed around the registry, each with two user computations (the period-6 forward identity at $D=12$ and a cluster-state
+parity of weight 40) and a sentinel; P on the standard $n=20$ ring, a kicked-Ising forward evolution ($h=0.3$, $L=4$
+and 8) with its answer computed exactly. Thirty minutes later S and V were submitted again, unchanged, 64 minutes after
+the registry's scan (part 2, reported only).
+
+\begin{table}[h]
+\centering\small
+\resizebox{\textwidth}{!}{\begin{tabular}{llll}
+\toprule
+item & standard ring (S) & ring around the registry (V) & verdict \\
+\midrule
+sentinel, 12:03 CET & DEAD (the listed 18-qubit run) & CLEAN & as predicted, both \\
+sentinel, 12:35 CET & DEAD (the same 18 qubits) & CLEAN & (reported) \\
+period-6 identity, ring mean & $0.780\pm0.001$ & $0.825\pm0.001$ & HELPS, usable sites SAME (40, 40) \\
+parity of 40 bits, fraction right & $0.482\pm0.008$ & $0.602\pm0.008$ & HELPS \\
+\bottomrule
+\end{tabular}}
+% src: TOQB results/m6-practice-2026-11-02/README.md, scores.json, sh6_se.json; results/m6-part2-2026-11-02/README.md, part2_compare.json
+\caption{The sentinel and two computations on the same rings. The kicked-Ising evolution on the healthy $n=20$ ring
+recovered 0.91 ($L=4$) and 0.84 ($L=8$) of the exact answer; its error was 1\,\% and 4\,\% of a fully mixed output's.}
+\label{tab:sentinel}
+\end{table}
+
+\begin{itemize}
+\item \textbf{The sentinel sees what the scan saw, at the job's time.} On S it read the listed run in the same 18
+  qubits at 12:03 and 12:35 CET; on V it read no weak or dead stretch at either time. Between the two, four sites of V
+  next to the listed path fell by 0.13--0.17 and stayed above the weak line.
+\item \textbf{The cost of a defect depends on the computation.} The run that is dead for the 24-layer mirror echo was
+  not dead for the 12-layer forward identity (0.72 on its 18 sites against 0.83 on the rest), and the avoiding ring
+  gained $+0.045$ in accuracy, no width, as on marrakesh. The weight-40 parity, read after a single CZ layer, was
+  erased on the standard ring for every input ($-0.09$ to $+0.04$) and read 0.18--0.25 on the avoiding ring.
+\item \textbf{What this does not show.} The sentinel reports the echo's view of the ring; it does not measure the
+  damage to the user's computation, which was small for one computation and total for another on the same ring.
+\end{itemize}
+
 \subsection{Procedure failures, reported as results}\label{sec:failures}
 \begin{itemize}
 \item \textbf{Bisection stop rule.} The rule stopped on ``both halves HELP'', with $+0.019$ beside $+0.299$. Stop rules
@@ -388,8 +428,10 @@ day & block, off $\to$ flip at 27, 29 ($D=24$) & difference & rest of the ring \
 \section{Discussion}
 \begin{itemize}
 \item \textbf{Width against accuracy.} Avoiding pays in width when a dead run lies on the standard ring (kingston
-  $n=40$, 72; fez). It pays a little in accuracy when the path is only weak (marrakesh $n=72$). It changes nothing when
-  the standard ring is clean (marrakesh $n=40$).
+  $n=40$, 72; fez). It pays a little in accuracy when the path is only weak (marrakesh $n=72$), and also where the
+  echo's dead run is not dead for the computation (kingston $n=40$, the forward identity, $+0.045$). It can decide
+  whether a computation reads at all (the weight-40 parity on kingston). It changes nothing when the standard ring is
+  clean (marrakesh $n=40$).
 \item \textbf{What set the readable depth on these days.} With the placement held fixed: defects on the ring (on
   kingston $n=40$, Y2 $L^*$ 13--16 on the standard ring against 24 around the registry), the weight of what is read, a
   residual size effect of about two layers at $n\ge48$, and gray drift within hours. The order of the last three is not
@@ -397,14 +439,15 @@ day & block, off $\to$ flip at 27, 29 ($D=24$) & difference & rest of the ring \
 \item \textbf{Why map-free matters here.} The calibration showed nothing at kingston's dead run \cite{paper5}. A layout
   scored by calibration error rates would not have avoided it.
 \item \textbf{Psf-os.} The layers are being written as an open-source layer (AGPL-3.0) between a ring circuit and the
-  device. Its skeleton reproduces the registry of the records byte for byte, and places the same rings as the test
-  code. No performance of it is claimed here.
+  device (\url{https://github.com/TN-Holdings-LLC/psf-os}). It reproduces the registry of the records byte for byte,
+  places the same rings as the test code, and built the jobs of Section~\ref{sec:sentinel}. No other performance of it
+  is claimed here.
 \end{itemize}
 
 \section{Limitations}
 \begin{itemize}
-\item Three IBM heavy-hex devices, three days at most; one circuit family (the rule's ring); one forward computation,
-  on one device and one day.
+\item Three IBM heavy-hex devices, three days at most; one circuit family (the rule's ring); three forward
+  computations with known answers, each on one device and one day; the sentinel on one device, at two times.
 \item The registry's thresholds are fixed choices, not fitted; other choices would list other paths.
 \item No error correction, no pulse access, and no cause of a defect is claimed.
 \item At $n=72$ the avoiding ring did not reach the $n=20$ depth; we do not know why.
@@ -419,7 +462,8 @@ TOQB \cite{toqb}: \url{results/device-2026-10-30}, \url{results/device-2026-10-3
 \url{results/clean-depth-2026-10-31}, \url{results/safe-ladder-2026-10-31}, \url{results/gray-stage1-2026-10-31},
 \url{results/black-stage1-2026-10-31} to \url{results/black-fix-2026-10-31}, \url{results/fix-repeat-2026-11-01},
 \url{results/two-devices-2026-11-01}, \url{results/qca-m3-2026-11-01}, \url{results/qca-m3b-2026-11-01},
-\url{results/defect-list-replay-2026-10-31}; declarations in \url{prereg/}. The figures and every derived number
+\url{results/coverage-days-2026-11-02-day3}, \url{results/m6-practice-2026-11-02}, \url{results/m6-part2-2026-11-02},
+\url{results/defect-list-replay-2026-10-31}; declarations in \url{prereg/}; psf-os \url{https://github.com/TN-Holdings-LLC/psf-os} (eb20501). The figures and every derived number
 are made by \texttt{readable\_depth\_self\_check\_figures.py} from those records.\par}
 
 \begin{table}[h]
@@ -442,6 +486,8 @@ two devices & \texttt{two\_devices\_note.md} & 91f2dbb8 & 1 Nov 11:30 \\
 M3 (kingston) & \texttt{qca\_m3\_note.md} & 8a5618ca & 1 Nov 12:35 \\
 M3, second form & \texttt{qca\_m3b\_note.md} & e3337f85 & 1 Nov 15:48 \\
 coverage day 3 & (the coverage-days note) & 4941ddfa & 31 Oct 11:29 \\
+M6 part 1, P2, P3 & \texttt{m6\_practice\_note.md} & a247cea8 & 2 Nov 11:59 \\
+M6 part 2 & \texttt{m6\_part2\_note.md} & e030951b & 2 Nov 12:12 \\
 \bottomrule
 \end{tabular}
 % src: the "Declaration" line of each results/<test>/README.md
