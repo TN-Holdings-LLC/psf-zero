@@ -1385,6 +1385,27 @@ mod tests {
     /// result (2026-11-02, workplace): all 60 decompose exactly through the SVD route (route 1); none reaches the
     /// eigen route, so this test does NOT yet cover item 12. A dedicated test needs an input that defeats the SVD
     /// route (for example one of the 15 blocks of the home v4 run, Addendum 247 A, kept as a fixture).
+    /// Item 12's own inputs: the 15 blocks the core rejected before the eigen-route fallback (home v4 run, Addendum
+    /// 247 A), kept as test data. Each must decompose exactly, and at least one must take the eigen route, so that this
+    /// test covers item 12. Observed at home on 2026-11-02: all 15 take the eigen route (route 2).
+    #[test]
+    fn item12_blocks_decompose_exactly() {
+        let text = include_str!("test_data/eigen15.txt");
+        let mut routes = Vec::new();
+        for line in text.lines().filter(|l| !l.starts_with('#') && !l.trim().is_empty()) {
+            let v: Vec<f64> = line.split_whitespace().map(|x| x.parse().unwrap()).collect();
+            assert_eq!(v.len(), 32);
+            let u = Mat4::from_fn(|i, j| Complex64::new(v[2 * (4 * i + j)], v[2 * (4 * i + j) + 1]));
+            let (r, inf) = route_of(&u);
+            assert!(inf < 1e-12, "block {}: 1 - fidelity {:e}", routes.len(), inf);
+            routes.push(r);
+        }
+        assert_eq!(routes.len(), 15);
+        let eigen = routes.iter().filter(|&&r| r & 3 == 2).count();
+        assert!(eigen >= 1, "no block took the eigen route: {:?}", routes);
+        eprintln!("item 12 blocks: routes {:?} ({} of 15 by the eigen route)", routes, eigen);
+    }
+
     #[test]
     fn cos_ties_decompose_exactly() {
         for &a in &[0.3, 0.9, 1.4] {
