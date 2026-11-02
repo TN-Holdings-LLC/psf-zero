@@ -99,9 +99,15 @@ sentinel at 1,000 shots comes to about 6.7 s.
 
 ## A proof-of-concept evaluation
 
-The request form (`psf_zero_poc_request_form.docx`), the mutual NDA template (`psf_zero_nda_template.pdf`) and the
-report template (`psf_zero_poc_report_template.docx`) are here unchanged. They were written for the September kit
-(gate synthesis and layout search). A version for psf-os will follow. Contact: love.os.architect@proton.me.
+1. Fill in the request form (`psf_os_poc_request_form.docx`): the shape of your computation, the device, who runs the
+   jobs, and what you want measured.
+2. If your computation is sensitive, we send the mutual NDA (`psf_zero_nda_template.pdf`) first.
+3. We fix the test in writing before anything runs: what is run, what is measured, what would count as a result.
+4. The result comes back in the report template (`psf_os_poc_report_template.docx`): standard placement and
+   self-checked placement side by side, the headline number next to the essential one, and the limitations.
+
+Contact: love.os.architect@proton.me. The request form and report template of the September kit are kept in
+[`v1_2026-09/`](v1_2026-09/).
 
 ## Papers
 

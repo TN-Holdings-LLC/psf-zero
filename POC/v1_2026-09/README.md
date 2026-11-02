@@ -7,4 +7,5 @@ neither confirmed nor withdrawn here.
 
 The kit needs PSF-Zero's Rust core to be built (`maturin develop --release`). It was not run when it was moved.
 
-Its own instructions are in `poc_kit_README.md`. The current entry point is [`../README.md`](../README.md).
+Its own instructions are in `poc_kit_README.md`. The request form and report template of that time
+(`psf_zero_poc_request_form.docx`, `psf_zero_poc_report_template.docx`) were moved here too. The current entry point is [`../README.md`](../README.md).
