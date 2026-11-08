@@ -11,6 +11,7 @@
 [![DOI (Paper 4)](https://zenodo.org/badge/DOI/10.5281/zenodo.23826764.svg)](https://doi.org/10.5281/zenodo.23826764)
 [![DOI (Paper 5)](https://zenodo.org/badge/DOI/10.5281/zenodo.23827536.svg)](https://doi.org/10.5281/zenodo.23827536)
 [![DOI (Paper 6)](https://zenodo.org/badge/DOI/10.5281/zenodo.23883938.svg)](https://doi.org/10.5281/zenodo.23883938)
+[![DOI (Paper 7)](https://zenodo.org/badge/DOI/10.5281/zenodo.24046673.svg)](https://doi.org/10.5281/zenodo.24046673)
 
 PSF-Zero is a Qiskit-compatible compiler for IBM devices that builds a circuit by formula: no layout search, no
 routing search, and no choice by the day's error values. What it cannot build by formula it refuses with a reason.
@@ -221,6 +222,14 @@ CX-basis synthesis returns wrong circuits near a boundary ([Qiskit #17057](https
   ibm_marrakesh, every test declared: the usable width it restores (kingston n = 40: 22 -> 40 on three days), the small
   accuracy gain on fully usable rings, what a defect costs different computations, and a lower bound for
   calibration-only placement in an appendix. Code: [psf-os](https://github.com/TN-Holdings-LLC/psf-os).
+- [**Paper 7 — Exact Answers, No Map, No Mitigation: User-Written Circuits through a Placement-Only OS on IBM Heron r2
+  Devices**](docs/papers/exact_answers_no_map.pdf)
+  ([DOI: 10.5281/zenodo.24046673](https://doi.org/10.5281/zenodo.24046673), version 1, 2026-11-08). Circuits a user
+  writes in plain Qiskit, placed by psf-os without the calibration map and run without error mitigation, against
+  answers sealed before each run: 22 practice circuits on two devices, a daily record, and IBM's dual-unitary chain
+  at 51 and 71 sites (raw decay rates within 0.005 of cos 2h); the bias of an absolute criterion in both directions,
+  local failure regions, a correction that did not work across problems, and a script that re-scores all 13 device
+  results from their raw counts. Records: [TOQB](https://github.com/TN-Holdings-LLC/TOQB).
 - [**Technical overview slides**](docs/papers/psf_zero_technical_overview.pptx) (8 slides).
 
 ## How these numbers were produced
@@ -335,3 +344,4 @@ closed-source integration; see [Working with us](#working-with-us) before assumi
 final word.
 
 [Previous repository.](https://github.com/TN-Holdings-LLC/psf-zero/blob/main/Previous_repository.md)
+
