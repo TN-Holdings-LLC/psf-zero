@@ -1,0 +1,477 @@
+{"mode": "psfz", "device": "fez", "test": "tfim_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0677, "t_new": 0.0145}
+{"mode": "psfz", "device": "fez", "test": "tfim_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0107, "t_new": 0.0094}
+{"mode": "psfz", "device": "fez", "test": "tfim_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0094, "t_new": 0.0098}
+{"mode": "psfz", "device": "fez", "test": "tfim_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0113, "t_new": 0.0117}
+{"mode": "psfz", "device": "fez", "test": "tfim_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0127, "t_new": 0.0113}
+{"mode": "psfz", "device": "fez", "test": "tfim_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0132, "t_new": 0.0114}
+{"mode": "psfz", "device": "fez", "test": "tfimP_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0158, "t_new": 0.0131}
+{"mode": "psfz", "device": "fez", "test": "tfimP_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0103, "t_new": 0.0096}
+{"mode": "psfz", "device": "fez", "test": "tfimP_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0107, "t_new": 0.01}
+{"mode": "psfz", "device": "fez", "test": "tfimP_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0138, "t_new": 0.0132}
+{"mode": "psfz", "device": "fez", "test": "tfimP_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0134, "t_new": 0.0122}
+{"mode": "psfz", "device": "fez", "test": "tfimP_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0158, "t_new": 0.0154}
+{"mode": "psfz", "device": "fez", "test": "tfim_n20_r3", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0213, "t_new": 0.0221}
+{"mode": "psfz", "device": "fez", "test": "tfim_n20_r3", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0208, "t_new": 0.0255}
+{"mode": "psfz", "device": "fez", "test": "tfim_n20_r3", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0165, "t_new": 0.0166}
+{"mode": "psfz", "device": "fez", "test": "heis_n12_r2", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0176, "t_new": 0.0198}
+{"mode": "psfz", "device": "fez", "test": "heis_n12_r2", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0166, "t_new": 0.0166}
+{"mode": "psfz", "device": "fez", "test": "heis_n12_r2", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0165, "t_new": 0.0163}
+{"mode": "psfz", "device": "fez", "test": "tfim_n40_r2", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0277, "t_new": 0.0304}
+{"mode": "psfz", "device": "fez", "test": "tfim_n40_r2", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0249, "t_new": 0.0235}
+{"mode": "psfz", "device": "fez", "test": "tfim_n40_r2", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0218, "t_new": 0.0221}
+{"mode": "psfz", "device": "fez", "test": "hhI_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0381, "t_new": 0.0535}
+{"mode": "psfz", "device": "fez", "test": "hhI_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0499, "t_new": 0.0447}
+{"mode": "psfz", "device": "fez", "test": "hhI_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0324, "t_new": 0.0405}
+{"mode": "psfz", "device": "fez", "test": "hhI_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0392, "t_new": 0.036}
+{"mode": "psfz", "device": "fez", "test": "hhI_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0362, "t_new": 0.0395}
+{"mode": "psfz", "device": "fez", "test": "hhI_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0385, "t_new": 0.0426}
+{"mode": "psfz", "device": "fez", "test": "ring12_tfim", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0176, "t_new": 0.0169}
+{"mode": "psfz", "device": "fez", "test": "ring12_tfim", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0168, "t_new": 0.0147}
+{"mode": "psfz", "device": "fez", "test": "ring12_tfim", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0171, "t_new": 0.0173}
+{"mode": "psfz", "device": "fez", "test": "hhtree_heis_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0618, "t_new": 0.0511}
+{"mode": "psfz", "device": "fez", "test": "hhtree_heis_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0518, "t_new": 0.0475}
+{"mode": "psfz", "device": "fez", "test": "hhtree_heis_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0503, "t_new": 0.0466}
+{"mode": "psfz", "device": "fez", "test": "ghz_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0071, "t_new": 0.0046}
+{"mode": "psfz", "device": "fez", "test": "ghz_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.006, "t_new": 0.0042}
+{"mode": "psfz", "device": "fez", "test": "ghz_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0059, "t_new": 0.0039}
+{"mode": "psfz", "device": "fez", "test": "chain_cz_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0126, "t_new": 0.0107}
+{"mode": "psfz", "device": "fez", "test": "chain_cz_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0124, "t_new": 0.0096}
+{"mode": "psfz", "device": "fez", "test": "chain_cz_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0131, "t_new": 0.0099}
+{"mode": "psfz", "device": "fez", "test": "chain_cz_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0121, "t_new": 0.0111}
+{"mode": "psfz", "device": "fez", "test": "chain_cz_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0142, "t_new": 0.0124}
+{"mode": "psfz", "device": "fez", "test": "chain_cz_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0156, "t_new": 0.0126}
+{"mode": "psfz", "device": "fez", "test": "ring_cz_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0134, "t_new": 0.0127}
+{"mode": "psfz", "device": "fez", "test": "ring_cz_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0148, "t_new": 0.0117}
+{"mode": "psfz", "device": "fez", "test": "ring_cz_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0144, "t_new": 0.0107}
+{"mode": "psfz", "device": "fez", "test": "hh_cz_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0248, "t_new": 0.0202}
+{"mode": "psfz", "device": "fez", "test": "hh_cz_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0193, "t_new": 0.0169}
+{"mode": "psfz", "device": "fez", "test": "hh_cz_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.02, "t_new": 0.0158}
+{"mode": "psfz", "device": "fez", "test": "hh_cz_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0259, "t_new": 0.0233}
+{"mode": "psfz", "device": "fez", "test": "hh_cz_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0238, "t_new": 0.0193}
+{"mode": "psfz", "device": "fez", "test": "hh_cz_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0286, "t_new": 0.0238}
+{"mode": "psfz", "device": "fez", "test": "cx_chain_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0119, "t_new": 0.0085}
+{"mode": "psfz", "device": "fez", "test": "cx_chain_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0102, "t_new": 0.0096}
+{"mode": "psfz", "device": "fez", "test": "cx_chain_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.011, "t_new": 0.0097}
+{"mode": "psfz", "device": "fez", "test": "cx_chain_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0145, "t_new": 0.0119}
+{"mode": "psfz", "device": "fez", "test": "cx_chain_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0182, "t_new": 0.0153}
+{"mode": "psfz", "device": "fez", "test": "cx_chain_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0174, "t_new": 0.0148}
+{"mode": "psfz", "device": "fez", "test": "tfim_chain_n24", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0224, "t_new": 0.0203}
+{"mode": "psfz", "device": "fez", "test": "tfim_chain_n24", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0233, "t_new": 0.0197}
+{"mode": "psfz", "device": "fez", "test": "tfim_chain_n24", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0261, "t_new": 0.026}
+{"mode": "psfz", "device": "fez", "test": "tfim_ring_n28", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0316, "t_new": 0.0222}
+{"mode": "psfz", "device": "fez", "test": "tfim_ring_n28", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0239, "t_new": 0.0254}
+{"mode": "psfz", "device": "fez", "test": "tfim_ring_n28", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0248, "t_new": 0.0224}
+{"mode": "psfz", "device": "fez", "test": "heis_chain_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0288, "t_new": 0.0233}
+{"mode": "psfz", "device": "fez", "test": "heis_chain_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.024, "t_new": 0.0205}
+{"mode": "psfz", "device": "fez", "test": "heis_chain_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0241, "t_new": 0.024}
+{"mode": "psfz", "device": "fez", "test": "cz_ring_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0149, "t_new": 0.0127}
+{"mode": "psfz", "device": "fez", "test": "cz_ring_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0149, "t_new": 0.0119}
+{"mode": "psfz", "device": "fez", "test": "cz_ring_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0143, "t_new": 0.0131}
+{"mode": "psfz", "device": "fez", "test": "cx_chain_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.021, "t_new": 0.0171}
+{"mode": "psfz", "device": "fez", "test": "cx_chain_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0202, "t_new": 0.0149}
+{"mode": "psfz", "device": "fez", "test": "cx_chain_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0204, "t_new": 0.0175}
+{"mode": "psfz", "device": "fez", "test": "ghz_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0077, "t_new": 0.0056}
+{"mode": "psfz", "device": "fez", "test": "ghz_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0087, "t_new": 0.0058}
+{"mode": "psfz", "device": "fez", "test": "ghz_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0087, "t_new": 0.0059}
+{"mode": "psfz", "device": "marrakesh", "test": "tfim_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.011, "t_new": 0.0109}
+{"mode": "psfz", "device": "marrakesh", "test": "tfim_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0103, "t_new": 0.0099}
+{"mode": "psfz", "device": "marrakesh", "test": "tfim_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0095, "t_new": 0.0098}
+{"mode": "psfz", "device": "marrakesh", "test": "tfim_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0125, "t_new": 0.0157}
+{"mode": "psfz", "device": "marrakesh", "test": "tfim_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0131, "t_new": 0.0128}
+{"mode": "psfz", "device": "marrakesh", "test": "tfim_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0132, "t_new": 0.0162}
+{"mode": "psfz", "device": "marrakesh", "test": "tfimP_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0143, "t_new": 0.0144}
+{"mode": "psfz", "device": "marrakesh", "test": "tfimP_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0141, "t_new": 0.0133}
+{"mode": "psfz", "device": "marrakesh", "test": "tfimP_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0152, "t_new": 0.0142}
+{"mode": "psfz", "device": "marrakesh", "test": "tfimP_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.018, "t_new": 0.0182}
+{"mode": "psfz", "device": "marrakesh", "test": "tfimP_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0184, "t_new": 0.0185}
+{"mode": "psfz", "device": "marrakesh", "test": "tfimP_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.017, "t_new": 0.018}
+{"mode": "psfz", "device": "marrakesh", "test": "tfim_n20_r3", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0253, "t_new": 0.0239}
+{"mode": "psfz", "device": "marrakesh", "test": "tfim_n20_r3", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0263, "t_new": 0.0247}
+{"mode": "psfz", "device": "marrakesh", "test": "tfim_n20_r3", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.024, "t_new": 0.0239}
+{"mode": "psfz", "device": "marrakesh", "test": "heis_n12_r2", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0224, "t_new": 0.0213}
+{"mode": "psfz", "device": "marrakesh", "test": "heis_n12_r2", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0275, "t_new": 0.0213}
+{"mode": "psfz", "device": "marrakesh", "test": "heis_n12_r2", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0238, "t_new": 0.0214}
+{"mode": "psfz", "device": "marrakesh", "test": "tfim_n40_r2", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0341, "t_new": 0.0332}
+{"mode": "psfz", "device": "marrakesh", "test": "tfim_n40_r2", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0351, "t_new": 0.0352}
+{"mode": "psfz", "device": "marrakesh", "test": "tfim_n40_r2", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0317, "t_new": 0.0294}
+{"mode": "psfz", "device": "marrakesh", "test": "hhI_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0345, "t_new": 0.0333}
+{"mode": "psfz", "device": "marrakesh", "test": "hhI_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0346, "t_new": 0.0366}
+{"mode": "psfz", "device": "marrakesh", "test": "hhI_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.034, "t_new": 0.0319}
+{"mode": "psfz", "device": "marrakesh", "test": "hhI_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0398, "t_new": 0.0534}
+{"mode": "psfz", "device": "marrakesh", "test": "hhI_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0563, "t_new": 0.0543}
+{"mode": "psfz", "device": "marrakesh", "test": "hhI_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.062, "t_new": 0.0622}
+{"mode": "psfz", "device": "marrakesh", "test": "ring12_tfim", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0229, "t_new": 0.0223}
+{"mode": "psfz", "device": "marrakesh", "test": "ring12_tfim", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0229, "t_new": 0.0218}
+{"mode": "psfz", "device": "marrakesh", "test": "ring12_tfim", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.023, "t_new": 0.0222}
+{"mode": "psfz", "device": "marrakesh", "test": "hhtree_heis_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0834, "t_new": 0.0862}
+{"mode": "psfz", "device": "marrakesh", "test": "hhtree_heis_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0816, "t_new": 0.0643}
+{"mode": "psfz", "device": "marrakesh", "test": "hhtree_heis_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0691, "t_new": 0.0549}
+{"mode": "psfz", "device": "marrakesh", "test": "ghz_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0076, "t_new": 0.0051}
+{"mode": "psfz", "device": "marrakesh", "test": "ghz_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.007, "t_new": 0.0049}
+{"mode": "psfz", "device": "marrakesh", "test": "ghz_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0068, "t_new": 0.0049}
+{"mode": "psfz", "device": "marrakesh", "test": "chain_cz_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0113, "t_new": 0.0078}
+{"mode": "psfz", "device": "marrakesh", "test": "chain_cz_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0098, "t_new": 0.0073}
+{"mode": "psfz", "device": "marrakesh", "test": "chain_cz_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0099, "t_new": 0.0073}
+{"mode": "psfz", "device": "marrakesh", "test": "chain_cz_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0115, "t_new": 0.0091}
+{"mode": "psfz", "device": "marrakesh", "test": "chain_cz_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0115, "t_new": 0.0091}
+{"mode": "psfz", "device": "marrakesh", "test": "chain_cz_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0108, "t_new": 0.0089}
+{"mode": "psfz", "device": "marrakesh", "test": "ring_cz_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0107, "t_new": 0.0078}
+{"mode": "psfz", "device": "marrakesh", "test": "ring_cz_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0106, "t_new": 0.0076}
+{"mode": "psfz", "device": "marrakesh", "test": "ring_cz_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0103, "t_new": 0.0081}
+{"mode": "psfz", "device": "marrakesh", "test": "hh_cz_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0209, "t_new": 0.0178}
+{"mode": "psfz", "device": "marrakesh", "test": "hh_cz_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0188, "t_new": 0.0158}
+{"mode": "psfz", "device": "marrakesh", "test": "hh_cz_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0197, "t_new": 0.0164}
+{"mode": "psfz", "device": "marrakesh", "test": "hh_cz_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0272, "t_new": 0.0225}
+{"mode": "psfz", "device": "marrakesh", "test": "hh_cz_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0242, "t_new": 0.0203}
+{"mode": "psfz", "device": "marrakesh", "test": "hh_cz_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0259, "t_new": 0.0195}
+{"mode": "psfz", "device": "marrakesh", "test": "cx_chain_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0114, "t_new": 0.0095}
+{"mode": "psfz", "device": "marrakesh", "test": "cx_chain_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0107, "t_new": 0.0088}
+{"mode": "psfz", "device": "marrakesh", "test": "cx_chain_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0132, "t_new": 0.0101}
+{"mode": "psfz", "device": "marrakesh", "test": "cx_chain_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0184, "t_new": 0.0147}
+{"mode": "psfz", "device": "marrakesh", "test": "cx_chain_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0175, "t_new": 0.0116}
+{"mode": "psfz", "device": "marrakesh", "test": "cx_chain_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0122, "t_new": 0.0098}
+{"mode": "psfz", "device": "marrakesh", "test": "tfim_chain_n24", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0216, "t_new": 0.0247}
+{"mode": "psfz", "device": "marrakesh", "test": "tfim_chain_n24", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0197, "t_new": 0.0218}
+{"mode": "psfz", "device": "marrakesh", "test": "tfim_chain_n24", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0207, "t_new": 0.021}
+{"mode": "psfz", "device": "marrakesh", "test": "tfim_ring_n28", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0275, "t_new": 0.0284}
+{"mode": "psfz", "device": "marrakesh", "test": "tfim_ring_n28", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0287, "t_new": 0.0295}
+{"mode": "psfz", "device": "marrakesh", "test": "tfim_ring_n28", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0349, "t_new": 0.0301}
+{"mode": "psfz", "device": "marrakesh", "test": "heis_chain_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0218, "t_new": 0.0306}
+{"mode": "psfz", "device": "marrakesh", "test": "heis_chain_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0334, "t_new": 0.0378}
+{"mode": "psfz", "device": "marrakesh", "test": "heis_chain_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0356, "t_new": 0.0287}
+{"mode": "psfz", "device": "marrakesh", "test": "cz_ring_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0171, "t_new": 0.0164}
+{"mode": "psfz", "device": "marrakesh", "test": "cz_ring_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0176, "t_new": 0.0119}
+{"mode": "psfz", "device": "marrakesh", "test": "cz_ring_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0122, "t_new": 0.0105}
+{"mode": "psfz", "device": "marrakesh", "test": "cx_chain_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0141, "t_new": 0.0118}
+{"mode": "psfz", "device": "marrakesh", "test": "cx_chain_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0133, "t_new": 0.0115}
+{"mode": "psfz", "device": "marrakesh", "test": "cx_chain_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0139, "t_new": 0.0106}
+{"mode": "psfz", "device": "marrakesh", "test": "ghz_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0065, "t_new": 0.0047}
+{"mode": "psfz", "device": "marrakesh", "test": "ghz_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0069, "t_new": 0.0051}
+{"mode": "psfz", "device": "marrakesh", "test": "ghz_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0083, "t_new": 0.0061}
+{"mode": "psfz", "device": "sherbrooke", "test": "tfim_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0178, "t_new": 0.0175}
+{"mode": "psfz", "device": "sherbrooke", "test": "tfim_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0155, "t_new": 0.0165}
+{"mode": "psfz", "device": "sherbrooke", "test": "tfim_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0141, "t_new": 0.0143}
+{"mode": "psfz", "device": "sherbrooke", "test": "tfim_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0161, "t_new": 0.0168}
+{"mode": "psfz", "device": "sherbrooke", "test": "tfim_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0181, "t_new": 0.0173}
+{"mode": "psfz", "device": "sherbrooke", "test": "tfim_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0163, "t_new": 0.018}
+{"mode": "psfz", "device": "sherbrooke", "test": "tfimP_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0163, "t_new": 0.0156}
+{"mode": "psfz", "device": "sherbrooke", "test": "tfimP_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0148, "t_new": 0.0147}
+{"mode": "psfz", "device": "sherbrooke", "test": "tfimP_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0136, "t_new": 0.0161}
+{"mode": "psfz", "device": "sherbrooke", "test": "tfimP_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0176, "t_new": 0.0168}
+{"mode": "psfz", "device": "sherbrooke", "test": "tfimP_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0211, "t_new": 0.0215}
+{"mode": "psfz", "device": "sherbrooke", "test": "tfimP_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0174, "t_new": 0.0196}
+{"mode": "psfz", "device": "sherbrooke", "test": "tfim_n20_r3", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0426, "t_new": 0.0326}
+{"mode": "psfz", "device": "sherbrooke", "test": "tfim_n20_r3", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0356, "t_new": 0.0311}
+{"mode": "psfz", "device": "sherbrooke", "test": "tfim_n20_r3", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0318, "t_new": 0.0375}
+{"mode": "psfz", "device": "sherbrooke", "test": "heis_n12_r2", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0364, "t_new": 0.0401}
+{"mode": "psfz", "device": "sherbrooke", "test": "heis_n12_r2", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0336, "t_new": 0.0323}
+{"mode": "psfz", "device": "sherbrooke", "test": "heis_n12_r2", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0252, "t_new": 0.0276}
+{"mode": "psfz", "device": "sherbrooke", "test": "tfim_n40_r2", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.045, "t_new": 0.0457}
+{"mode": "psfz", "device": "sherbrooke", "test": "tfim_n40_r2", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0483, "t_new": 0.0457}
+{"mode": "psfz", "device": "sherbrooke", "test": "tfim_n40_r2", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0484, "t_new": 0.0467}
+{"mode": "psfz", "device": "sherbrooke", "test": "hhI_n16", "kind": "build", "same": false, "err_old": null, "err_new": null, "t_old": 0.0806, "t_new": 0.0686, "equivalent": null, "n_ops": [1086, 1188]}
+{"mode": "psfz", "device": "sherbrooke", "test": "hhI_n16", "kind": "same", "same": false, "err_old": null, "err_new": null, "t_old": 0.0689, "t_new": 0.0584, "equivalent": null, "n_ops": [1086, 1188]}
+{"mode": "psfz", "device": "sherbrooke", "test": "hhI_n16", "kind": "free", "same": false, "err_old": null, "err_new": null, "t_old": 0.0676, "t_new": 0.063, "equivalent": null, "n_ops": [1086, 1188]}
+{"mode": "psfz", "device": "sherbrooke", "test": "hhI_n20", "kind": "build", "same": false, "err_old": null, "err_new": null, "t_old": 0.0871, "t_new": 0.079, "equivalent": null, "n_ops": [1347, 1466]}
+{"mode": "psfz", "device": "sherbrooke", "test": "hhI_n20", "kind": "same", "same": false, "err_old": null, "err_new": null, "t_old": 0.0841, "t_new": 0.0493, "equivalent": null, "n_ops": [1347, 1466]}
+{"mode": "psfz", "device": "sherbrooke", "test": "hhI_n20", "kind": "free", "same": false, "err_old": null, "err_new": null, "t_old": 0.0543, "t_new": 0.0477, "equivalent": null, "n_ops": [1347, 1466]}
+{"mode": "psfz", "device": "sherbrooke", "test": "ring12_tfim", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0283, "t_new": 0.0279}
+{"mode": "psfz", "device": "sherbrooke", "test": "ring12_tfim", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0289, "t_new": 0.0294}
+{"mode": "psfz", "device": "sherbrooke", "test": "ring12_tfim", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0297, "t_new": 0.0318}
+{"mode": "psfz", "device": "sherbrooke", "test": "hhtree_heis_n16", "kind": "build", "same": false, "err_old": null, "err_new": null, "t_old": 0.0854, "t_new": 0.0807, "equivalent": null, "n_ops": [1404, 1480]}
+{"mode": "psfz", "device": "sherbrooke", "test": "hhtree_heis_n16", "kind": "same", "same": false, "err_old": null, "err_new": null, "t_old": 0.0673, "t_new": 0.0613, "equivalent": null, "n_ops": [1398, 1476]}
+{"mode": "psfz", "device": "sherbrooke", "test": "hhtree_heis_n16", "kind": "free", "same": false, "err_old": null, "err_new": null, "t_old": 0.0684, "t_new": 0.0606, "equivalent": null, "n_ops": [1400, 1469]}
+{"mode": "psfz", "device": "sherbrooke", "test": "ghz_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0101, "t_new": 0.0056}
+{"mode": "psfz", "device": "sherbrooke", "test": "ghz_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0078, "t_new": 0.0058}
+{"mode": "psfz", "device": "sherbrooke", "test": "ghz_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0099, "t_new": 0.0057}
+{"mode": "psfz", "device": "sherbrooke", "test": "chain_cz_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0156, "t_new": 0.0131}
+{"mode": "psfz", "device": "sherbrooke", "test": "chain_cz_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.014, "t_new": 0.0123}
+{"mode": "psfz", "device": "sherbrooke", "test": "chain_cz_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0136, "t_new": 0.0125}
+{"mode": "psfz", "device": "sherbrooke", "test": "chain_cz_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0197, "t_new": 0.0138}
+{"mode": "psfz", "device": "sherbrooke", "test": "chain_cz_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0156, "t_new": 0.0155}
+{"mode": "psfz", "device": "sherbrooke", "test": "chain_cz_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0174, "t_new": 0.0152}
+{"mode": "psfz", "device": "sherbrooke", "test": "ring_cz_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0144, "t_new": 0.0133}
+{"mode": "psfz", "device": "sherbrooke", "test": "ring_cz_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0205, "t_new": 0.0166}
+{"mode": "psfz", "device": "sherbrooke", "test": "ring_cz_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0148, "t_new": 0.0119}
+{"mode": "psfz", "device": "sherbrooke", "test": "hh_cz_n16", "kind": "build", "same": false, "err_old": null, "err_new": null, "t_old": 0.0358, "t_new": 0.0346, "equivalent": null, "n_ops": [564, 612]}
+{"mode": "psfz", "device": "sherbrooke", "test": "hh_cz_n16", "kind": "same", "same": false, "err_old": null, "err_new": null, "t_old": 0.0321, "t_new": 0.0268, "equivalent": null, "n_ops": [564, 612]}
+{"mode": "psfz", "device": "sherbrooke", "test": "hh_cz_n16", "kind": "free", "same": false, "err_old": null, "err_new": null, "t_old": 0.033, "t_new": 0.024, "equivalent": null, "n_ops": [564, 612]}
+{"mode": "psfz", "device": "sherbrooke", "test": "hh_cz_n20", "kind": "build", "same": false, "err_old": null, "err_new": null, "t_old": 0.0368, "t_new": 0.03, "equivalent": null, "n_ops": [709, 772]}
+{"mode": "psfz", "device": "sherbrooke", "test": "hh_cz_n20", "kind": "same", "same": false, "err_old": null, "err_new": null, "t_old": 0.0325, "t_new": 0.0263, "equivalent": null, "n_ops": [709, 772]}
+{"mode": "psfz", "device": "sherbrooke", "test": "hh_cz_n20", "kind": "free", "same": false, "err_old": null, "err_new": null, "t_old": 0.0367, "t_new": 0.0415, "equivalent": null, "n_ops": [709, 772]}
+{"mode": "psfz", "device": "sherbrooke", "test": "cx_chain_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0281, "t_new": 0.0163}
+{"mode": "psfz", "device": "sherbrooke", "test": "cx_chain_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0237, "t_new": 0.0185}
+{"mode": "psfz", "device": "sherbrooke", "test": "cx_chain_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0204, "t_new": 0.0167}
+{"mode": "psfz", "device": "sherbrooke", "test": "cx_chain_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0233, "t_new": 0.0214}
+{"mode": "psfz", "device": "sherbrooke", "test": "cx_chain_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0196, "t_new": 0.0172}
+{"mode": "psfz", "device": "sherbrooke", "test": "cx_chain_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0184, "t_new": 0.0162}
+{"mode": "psfz", "device": "sherbrooke", "test": "tfim_chain_n24", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0303, "t_new": 0.0301}
+{"mode": "psfz", "device": "sherbrooke", "test": "tfim_chain_n24", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0338, "t_new": 0.0348}
+{"mode": "psfz", "device": "sherbrooke", "test": "tfim_chain_n24", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0305, "t_new": 0.0302}
+{"mode": "psfz", "device": "sherbrooke", "test": "tfim_ring_n28", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0427, "t_new": 0.0476}
+{"mode": "psfz", "device": "sherbrooke", "test": "tfim_ring_n28", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0453, "t_new": 0.0496}
+{"mode": "psfz", "device": "sherbrooke", "test": "tfim_ring_n28", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0379, "t_new": 0.0361}
+{"mode": "psfz", "device": "sherbrooke", "test": "heis_chain_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0335, "t_new": 0.0337}
+{"mode": "psfz", "device": "sherbrooke", "test": "heis_chain_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0351, "t_new": 0.0396}
+{"mode": "psfz", "device": "sherbrooke", "test": "heis_chain_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0363, "t_new": 0.0345}
+{"mode": "psfz", "device": "sherbrooke", "test": "cz_ring_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0199, "t_new": 0.0165}
+{"mode": "psfz", "device": "sherbrooke", "test": "cz_ring_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0194, "t_new": 0.0167}
+{"mode": "psfz", "device": "sherbrooke", "test": "cz_ring_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0225, "t_new": 0.0189}
+{"mode": "psfz", "device": "sherbrooke", "test": "cx_chain_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.027, "t_new": 0.0259}
+{"mode": "psfz", "device": "sherbrooke", "test": "cx_chain_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0285, "t_new": 0.0232}
+{"mode": "psfz", "device": "sherbrooke", "test": "cx_chain_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0243, "t_new": 0.0213}
+{"mode": "psfz", "device": "sherbrooke", "test": "ghz_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.011, "t_new": 0.0081}
+{"mode": "psfz", "device": "sherbrooke", "test": "ghz_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0105, "t_new": 0.0088}
+{"mode": "psfz", "device": "sherbrooke", "test": "ghz_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0106, "t_new": 0.0084}
+{"mode": "psfz", "device": "brisbane", "test": "tfim_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0185, "t_new": 0.0175}
+{"mode": "psfz", "device": "brisbane", "test": "tfim_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.017, "t_new": 0.0185}
+{"mode": "psfz", "device": "brisbane", "test": "tfim_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0191, "t_new": 0.0202}
+{"mode": "psfz", "device": "brisbane", "test": "tfim_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0242, "t_new": 0.0243}
+{"mode": "psfz", "device": "brisbane", "test": "tfim_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0245, "t_new": 0.0265}
+{"mode": "psfz", "device": "brisbane", "test": "tfim_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0239, "t_new": 0.0241}
+{"mode": "psfz", "device": "brisbane", "test": "tfimP_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0177, "t_new": 0.0181}
+{"mode": "psfz", "device": "brisbane", "test": "tfimP_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0324, "t_new": 0.0241}
+{"mode": "psfz", "device": "brisbane", "test": "tfimP_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0227, "t_new": 0.0222}
+{"mode": "psfz", "device": "brisbane", "test": "tfimP_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0266, "t_new": 0.026}
+{"mode": "psfz", "device": "brisbane", "test": "tfimP_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0251, "t_new": 0.0224}
+{"mode": "psfz", "device": "brisbane", "test": "tfimP_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0229, "t_new": 0.0235}
+{"mode": "psfz", "device": "brisbane", "test": "tfim_n20_r3", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0385, "t_new": 0.0366}
+{"mode": "psfz", "device": "brisbane", "test": "tfim_n20_r3", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0342, "t_new": 0.0333}
+{"mode": "psfz", "device": "brisbane", "test": "tfim_n20_r3", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0279, "t_new": 0.0281}
+{"mode": "psfz", "device": "brisbane", "test": "heis_n12_r2", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0315, "t_new": 0.0387}
+{"mode": "psfz", "device": "brisbane", "test": "heis_n12_r2", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0413, "t_new": 0.0401}
+{"mode": "psfz", "device": "brisbane", "test": "heis_n12_r2", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0348, "t_new": 0.0333}
+{"mode": "psfz", "device": "brisbane", "test": "tfim_n40_r2", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0529, "t_new": 0.0435}
+{"mode": "psfz", "device": "brisbane", "test": "tfim_n40_r2", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.045, "t_new": 0.044}
+{"mode": "psfz", "device": "brisbane", "test": "tfim_n40_r2", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0439, "t_new": 0.0446}
+{"mode": "psfz", "device": "brisbane", "test": "hhI_n16", "kind": "build", "same": false, "err_old": null, "err_new": null, "t_old": 0.0546, "t_new": 0.0508, "equivalent": null, "n_ops": [1092, 1184]}
+{"mode": "psfz", "device": "brisbane", "test": "hhI_n16", "kind": "same", "same": false, "err_old": null, "err_new": null, "t_old": 0.0497, "t_new": 0.0428, "equivalent": null, "n_ops": [1092, 1184]}
+{"mode": "psfz", "device": "brisbane", "test": "hhI_n16", "kind": "free", "same": false, "err_old": null, "err_new": null, "t_old": 0.0546, "t_new": 0.0448, "equivalent": null, "n_ops": [1100, 1192]}
+{"mode": "psfz", "device": "brisbane", "test": "hhI_n20", "kind": "build", "same": false, "err_old": null, "err_new": null, "t_old": 0.0682, "t_new": 0.0485, "equivalent": null, "n_ops": [1322, 1464]}
+{"mode": "psfz", "device": "brisbane", "test": "hhI_n20", "kind": "same", "same": false, "err_old": null, "err_new": null, "t_old": 0.052, "t_new": 0.0483, "equivalent": null, "n_ops": [1322, 1464]}
+{"mode": "psfz", "device": "brisbane", "test": "hhI_n20", "kind": "free", "same": false, "err_old": null, "err_new": null, "t_old": 0.0542, "t_new": 0.0505, "equivalent": null, "n_ops": [1322, 1464]}
+{"mode": "psfz", "device": "brisbane", "test": "ring12_tfim", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0231, "t_new": 0.0269}
+{"mode": "psfz", "device": "brisbane", "test": "ring12_tfim", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0302, "t_new": 0.0266}
+{"mode": "psfz", "device": "brisbane", "test": "ring12_tfim", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0221, "t_new": 0.0218}
+{"mode": "psfz", "device": "brisbane", "test": "hhtree_heis_n16", "kind": "build", "same": false, "err_old": null, "err_new": null, "t_old": 0.0724, "t_new": 0.0647, "equivalent": null, "n_ops": [1404, 1500]}
+{"mode": "psfz", "device": "brisbane", "test": "hhtree_heis_n16", "kind": "same", "same": false, "err_old": null, "err_new": null, "t_old": 0.0709, "t_new": 0.0602, "equivalent": null, "n_ops": [1428, 1516]}
+{"mode": "psfz", "device": "brisbane", "test": "hhtree_heis_n16", "kind": "free", "same": false, "err_old": null, "err_new": null, "t_old": 0.0672, "t_new": 0.0568, "equivalent": null, "n_ops": [1416, 1512]}
+{"mode": "psfz", "device": "brisbane", "test": "ghz_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.009, "t_new": 0.0069}
+{"mode": "psfz", "device": "brisbane", "test": "ghz_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0085, "t_new": 0.0067}
+{"mode": "psfz", "device": "brisbane", "test": "ghz_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0078, "t_new": 0.0067}
+{"mode": "psfz", "device": "brisbane", "test": "chain_cz_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.017, "t_new": 0.0165}
+{"mode": "psfz", "device": "brisbane", "test": "chain_cz_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0192, "t_new": 0.0135}
+{"mode": "psfz", "device": "brisbane", "test": "chain_cz_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.015, "t_new": 0.0139}
+{"mode": "psfz", "device": "brisbane", "test": "chain_cz_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0205, "t_new": 0.0168}
+{"mode": "psfz", "device": "brisbane", "test": "chain_cz_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0187, "t_new": 0.0168}
+{"mode": "psfz", "device": "brisbane", "test": "chain_cz_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0183, "t_new": 0.018}
+{"mode": "psfz", "device": "brisbane", "test": "ring_cz_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0269, "t_new": 0.0188}
+{"mode": "psfz", "device": "brisbane", "test": "ring_cz_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.027, "t_new": 0.0202}
+{"mode": "psfz", "device": "brisbane", "test": "ring_cz_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0188, "t_new": 0.016}
+{"mode": "psfz", "device": "brisbane", "test": "hh_cz_n16", "kind": "build", "same": false, "err_old": null, "err_new": null, "t_old": 0.0319, "t_new": 0.0251, "equivalent": null, "n_ops": [566, 612]}
+{"mode": "psfz", "device": "brisbane", "test": "hh_cz_n16", "kind": "same", "same": false, "err_old": null, "err_new": null, "t_old": 0.0317, "t_new": 0.0261, "equivalent": null, "n_ops": [566, 612]}
+{"mode": "psfz", "device": "brisbane", "test": "hh_cz_n16", "kind": "free", "same": false, "err_old": null, "err_new": null, "t_old": 0.0279, "t_new": 0.0229, "equivalent": null, "n_ops": [566, 612]}
+{"mode": "psfz", "device": "brisbane", "test": "hh_cz_n20", "kind": "build", "same": false, "err_old": null, "err_new": null, "t_old": 0.0459, "t_new": 0.0407, "equivalent": null, "n_ops": [698, 772]}
+{"mode": "psfz", "device": "brisbane", "test": "hh_cz_n20", "kind": "same", "same": false, "err_old": null, "err_new": null, "t_old": 0.0378, "t_new": 0.026, "equivalent": null, "n_ops": [698, 772]}
+{"mode": "psfz", "device": "brisbane", "test": "hh_cz_n20", "kind": "free", "same": false, "err_old": null, "err_new": null, "t_old": 0.035, "t_new": 0.0265, "equivalent": null, "n_ops": [698, 772]}
+{"mode": "psfz", "device": "brisbane", "test": "cx_chain_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0193, "t_new": 0.0145}
+{"mode": "psfz", "device": "brisbane", "test": "cx_chain_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0156, "t_new": 0.013}
+{"mode": "psfz", "device": "brisbane", "test": "cx_chain_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0156, "t_new": 0.0129}
+{"mode": "psfz", "device": "brisbane", "test": "cx_chain_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0206, "t_new": 0.0176}
+{"mode": "psfz", "device": "brisbane", "test": "cx_chain_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0189, "t_new": 0.0155}
+{"mode": "psfz", "device": "brisbane", "test": "cx_chain_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0175, "t_new": 0.0154}
+{"mode": "psfz", "device": "brisbane", "test": "tfim_chain_n24", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0318, "t_new": 0.031}
+{"mode": "psfz", "device": "brisbane", "test": "tfim_chain_n24", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0324, "t_new": 0.0383}
+{"mode": "psfz", "device": "brisbane", "test": "tfim_chain_n24", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0436, "t_new": 0.0404}
+{"mode": "psfz", "device": "brisbane", "test": "tfim_ring_n28", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0377, "t_new": 0.0363}
+{"mode": "psfz", "device": "brisbane", "test": "tfim_ring_n28", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0355, "t_new": 0.0357}
+{"mode": "psfz", "device": "brisbane", "test": "tfim_ring_n28", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0498, "t_new": 0.0451}
+{"mode": "psfz", "device": "brisbane", "test": "heis_chain_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0445, "t_new": 0.0437}
+{"mode": "psfz", "device": "brisbane", "test": "heis_chain_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.045, "t_new": 0.0462}
+{"mode": "psfz", "device": "brisbane", "test": "heis_chain_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0465, "t_new": 0.0434}
+{"mode": "psfz", "device": "brisbane", "test": "cz_ring_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0233, "t_new": 0.0214}
+{"mode": "psfz", "device": "brisbane", "test": "cz_ring_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0219, "t_new": 0.0206}
+{"mode": "psfz", "device": "brisbane", "test": "cz_ring_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0249, "t_new": 0.0244}
+{"mode": "psfz", "device": "brisbane", "test": "cx_chain_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0232, "t_new": 0.0235}
+{"mode": "psfz", "device": "brisbane", "test": "cx_chain_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0277, "t_new": 0.019}
+{"mode": "psfz", "device": "brisbane", "test": "cx_chain_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0237, "t_new": 0.0231}
+{"mode": "psfz", "device": "brisbane", "test": "ghz_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0127, "t_new": 0.0082}
+{"mode": "psfz", "device": "brisbane", "test": "ghz_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0103, "t_new": 0.009}
+{"mode": "psfz", "device": "brisbane", "test": "ghz_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0117, "t_new": 0.0094}
+{"mode": "nopsfz", "device": "fez", "test": "tfim_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0156, "t_new": 0.0143}
+{"mode": "nopsfz", "device": "fez", "test": "tfim_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0163, "t_new": 0.0135}
+{"mode": "nopsfz", "device": "fez", "test": "tfim_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0113, "t_new": 0.0087}
+{"mode": "nopsfz", "device": "fez", "test": "tfim_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.011, "t_new": 0.0103}
+{"mode": "nopsfz", "device": "fez", "test": "tfim_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.011, "t_new": 0.0102}
+{"mode": "nopsfz", "device": "fez", "test": "tfim_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0113, "t_new": 0.01}
+{"mode": "nopsfz", "device": "fez", "test": "tfimP_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0096, "t_new": 0.0095}
+{"mode": "nopsfz", "device": "fez", "test": "tfimP_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0096, "t_new": 0.0093}
+{"mode": "nopsfz", "device": "fez", "test": "tfimP_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0096, "t_new": 0.0102}
+{"mode": "nopsfz", "device": "fez", "test": "tfimP_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0133, "t_new": 0.0112}
+{"mode": "nopsfz", "device": "fez", "test": "tfimP_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0117, "t_new": 0.0108}
+{"mode": "nopsfz", "device": "fez", "test": "tfimP_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0119, "t_new": 0.0112}
+{"mode": "nopsfz", "device": "fez", "test": "tfim_n20_r3", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0191, "t_new": 0.0183}
+{"mode": "nopsfz", "device": "fez", "test": "tfim_n20_r3", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0191, "t_new": 0.0185}
+{"mode": "nopsfz", "device": "fez", "test": "tfim_n20_r3", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0194, "t_new": 0.0187}
+{"mode": "nopsfz", "device": "fez", "test": "heis_n12_r2", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0258, "t_new": 0.0283}
+{"mode": "nopsfz", "device": "fez", "test": "heis_n12_r2", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0252, "t_new": 0.0239}
+{"mode": "nopsfz", "device": "fez", "test": "heis_n12_r2", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0263, "t_new": 0.0255}
+{"mode": "nopsfz", "device": "fez", "test": "tfim_n40_r2", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0567, "t_new": 0.0604}
+{"mode": "nopsfz", "device": "fez", "test": "tfim_n40_r2", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0603, "t_new": 0.0818}
+{"mode": "nopsfz", "device": "fez", "test": "tfim_n40_r2", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0792, "t_new": 0.0575}
+{"mode": "nopsfz", "device": "fez", "test": "hhI_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0205, "t_new": 0.0197}
+{"mode": "nopsfz", "device": "fez", "test": "hhI_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0203, "t_new": 0.0208}
+{"mode": "nopsfz", "device": "fez", "test": "hhI_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0213, "t_new": 0.021}
+{"mode": "nopsfz", "device": "fez", "test": "hhI_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0274, "t_new": 0.0304}
+{"mode": "nopsfz", "device": "fez", "test": "hhI_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.025, "t_new": 0.0237}
+{"mode": "nopsfz", "device": "fez", "test": "hhI_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0288, "t_new": 0.0331}
+{"mode": "nopsfz", "device": "fez", "test": "ring12_tfim", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0171, "t_new": 0.0153}
+{"mode": "nopsfz", "device": "fez", "test": "ring12_tfim", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0163, "t_new": 0.0161}
+{"mode": "nopsfz", "device": "fez", "test": "ring12_tfim", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0168, "t_new": 0.0169}
+{"mode": "nopsfz", "device": "fez", "test": "hhtree_heis_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0397, "t_new": 0.0537}
+{"mode": "nopsfz", "device": "fez", "test": "hhtree_heis_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0465, "t_new": 0.036}
+{"mode": "nopsfz", "device": "fez", "test": "hhtree_heis_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0381, "t_new": 0.0358}
+{"mode": "nopsfz", "device": "fez", "test": "ghz_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0055, "t_new": 0.0044}
+{"mode": "nopsfz", "device": "fez", "test": "ghz_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0043, "t_new": 0.0035}
+{"mode": "nopsfz", "device": "fez", "test": "ghz_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0043, "t_new": 0.0037}
+{"mode": "nopsfz", "device": "fez", "test": "chain_cz_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0104, "t_new": 0.0094}
+{"mode": "nopsfz", "device": "fez", "test": "chain_cz_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0123, "t_new": 0.0073}
+{"mode": "nopsfz", "device": "fez", "test": "chain_cz_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0086, "t_new": 0.0077}
+{"mode": "nopsfz", "device": "fez", "test": "chain_cz_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0126, "t_new": 0.0112}
+{"mode": "nopsfz", "device": "fez", "test": "chain_cz_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0109, "t_new": 0.0097}
+{"mode": "nopsfz", "device": "fez", "test": "chain_cz_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0107, "t_new": 0.0099}
+{"mode": "nopsfz", "device": "fez", "test": "ring_cz_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0106, "t_new": 0.0095}
+{"mode": "nopsfz", "device": "fez", "test": "ring_cz_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0093, "t_new": 0.0083}
+{"mode": "nopsfz", "device": "fez", "test": "ring_cz_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0089, "t_new": 0.008}
+{"mode": "nopsfz", "device": "fez", "test": "hh_cz_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0134, "t_new": 0.0119}
+{"mode": "nopsfz", "device": "fez", "test": "hh_cz_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0114, "t_new": 0.0102}
+{"mode": "nopsfz", "device": "fez", "test": "hh_cz_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0122, "t_new": 0.0103}
+{"mode": "nopsfz", "device": "fez", "test": "hh_cz_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0171, "t_new": 0.0143}
+{"mode": "nopsfz", "device": "fez", "test": "hh_cz_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0148, "t_new": 0.0128}
+{"mode": "nopsfz", "device": "fez", "test": "hh_cz_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0161, "t_new": 0.0134}
+{"mode": "nopsfz", "device": "fez", "test": "cx_chain_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0135, "t_new": 0.0119}
+{"mode": "nopsfz", "device": "fez", "test": "cx_chain_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.013, "t_new": 0.0116}
+{"mode": "nopsfz", "device": "fez", "test": "cx_chain_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0126, "t_new": 0.0106}
+{"mode": "nopsfz", "device": "fez", "test": "cx_chain_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0182, "t_new": 0.0165}
+{"mode": "nopsfz", "device": "fez", "test": "cx_chain_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0189, "t_new": 0.0151}
+{"mode": "nopsfz", "device": "fez", "test": "cx_chain_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0164, "t_new": 0.0152}
+{"mode": "nopsfz", "device": "fez", "test": "tfim_chain_n24", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0222, "t_new": 0.0212}
+{"mode": "nopsfz", "device": "fez", "test": "tfim_chain_n24", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0218, "t_new": 0.0207}
+{"mode": "nopsfz", "device": "fez", "test": "tfim_chain_n24", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0224, "t_new": 0.0209}
+{"mode": "nopsfz", "device": "fez", "test": "tfim_ring_n28", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0313, "t_new": 0.0301}
+{"mode": "nopsfz", "device": "fez", "test": "tfim_ring_n28", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0312, "t_new": 0.0304}
+{"mode": "nopsfz", "device": "fez", "test": "tfim_ring_n28", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0304, "t_new": 0.0302}
+{"mode": "nopsfz", "device": "fez", "test": "heis_chain_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0369, "t_new": 0.0374}
+{"mode": "nopsfz", "device": "fez", "test": "heis_chain_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0378, "t_new": 0.0357}
+{"mode": "nopsfz", "device": "fez", "test": "heis_chain_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0417, "t_new": 0.0367}
+{"mode": "nopsfz", "device": "fez", "test": "cz_ring_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0146, "t_new": 0.0129}
+{"mode": "nopsfz", "device": "fez", "test": "cz_ring_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0148, "t_new": 0.0123}
+{"mode": "nopsfz", "device": "fez", "test": "cz_ring_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0144, "t_new": 0.0117}
+{"mode": "nopsfz", "device": "fez", "test": "cx_chain_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0224, "t_new": 0.0263}
+{"mode": "nopsfz", "device": "fez", "test": "cx_chain_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0183, "t_new": 0.0197}
+{"mode": "nopsfz", "device": "fez", "test": "cx_chain_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0179, "t_new": 0.0169}
+{"mode": "nopsfz", "device": "fez", "test": "ghz_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0063, "t_new": 0.0058}
+{"mode": "nopsfz", "device": "fez", "test": "ghz_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0066, "t_new": 0.0056}
+{"mode": "nopsfz", "device": "fez", "test": "ghz_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0082, "t_new": 0.0065}
+{"mode": "nopsfz", "device": "marrakesh", "test": "tfim_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0118, "t_new": 0.0156}
+{"mode": "nopsfz", "device": "marrakesh", "test": "tfim_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0111, "t_new": 0.0089}
+{"mode": "nopsfz", "device": "marrakesh", "test": "tfim_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0189, "t_new": 0.0087}
+{"mode": "nopsfz", "device": "marrakesh", "test": "tfim_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0106, "t_new": 0.0109}
+{"mode": "nopsfz", "device": "marrakesh", "test": "tfim_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0113, "t_new": 0.0108}
+{"mode": "nopsfz", "device": "marrakesh", "test": "tfim_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0129, "t_new": 0.0103}
+{"mode": "nopsfz", "device": "marrakesh", "test": "tfimP_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0095, "t_new": 0.009}
+{"mode": "nopsfz", "device": "marrakesh", "test": "tfimP_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0112, "t_new": 0.0092}
+{"mode": "nopsfz", "device": "marrakesh", "test": "tfimP_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0097, "t_new": 0.0094}
+{"mode": "nopsfz", "device": "marrakesh", "test": "tfimP_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0114, "t_new": 0.0108}
+{"mode": "nopsfz", "device": "marrakesh", "test": "tfimP_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.011, "t_new": 0.0113}
+{"mode": "nopsfz", "device": "marrakesh", "test": "tfimP_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.012, "t_new": 0.0108}
+{"mode": "nopsfz", "device": "marrakesh", "test": "tfim_n20_r3", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0199, "t_new": 0.0188}
+{"mode": "nopsfz", "device": "marrakesh", "test": "tfim_n20_r3", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0197, "t_new": 0.0197}
+{"mode": "nopsfz", "device": "marrakesh", "test": "tfim_n20_r3", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0202, "t_new": 0.0191}
+{"mode": "nopsfz", "device": "marrakesh", "test": "heis_n12_r2", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.026, "t_new": 0.0252}
+{"mode": "nopsfz", "device": "marrakesh", "test": "heis_n12_r2", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0264, "t_new": 0.0264}
+{"mode": "nopsfz", "device": "marrakesh", "test": "heis_n12_r2", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0266, "t_new": 0.0284}
+{"mode": "nopsfz", "device": "marrakesh", "test": "tfim_n40_r2", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0686, "t_new": 0.0487}
+{"mode": "nopsfz", "device": "marrakesh", "test": "tfim_n40_r2", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0527, "t_new": 0.0494}
+{"mode": "nopsfz", "device": "marrakesh", "test": "tfim_n40_r2", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0496, "t_new": 0.0484}
+{"mode": "nopsfz", "device": "marrakesh", "test": "hhI_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0427, "t_new": 0.0347}
+{"mode": "nopsfz", "device": "marrakesh", "test": "hhI_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0342, "t_new": 0.0358}
+{"mode": "nopsfz", "device": "marrakesh", "test": "hhI_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0353, "t_new": 0.0313}
+{"mode": "nopsfz", "device": "marrakesh", "test": "hhI_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0251, "t_new": 0.0237}
+{"mode": "nopsfz", "device": "marrakesh", "test": "hhI_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0249, "t_new": 0.0233}
+{"mode": "nopsfz", "device": "marrakesh", "test": "hhI_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.024, "t_new": 0.0241}
+{"mode": "nopsfz", "device": "marrakesh", "test": "ring12_tfim", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0187, "t_new": 0.0262}
+{"mode": "nopsfz", "device": "marrakesh", "test": "ring12_tfim", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0271, "t_new": 0.0267}
+{"mode": "nopsfz", "device": "marrakesh", "test": "ring12_tfim", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0272, "t_new": 0.024}
+{"mode": "nopsfz", "device": "marrakesh", "test": "hhtree_heis_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0366, "t_new": 0.0376}
+{"mode": "nopsfz", "device": "marrakesh", "test": "hhtree_heis_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0383, "t_new": 0.0354}
+{"mode": "nopsfz", "device": "marrakesh", "test": "hhtree_heis_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0381, "t_new": 0.0379}
+{"mode": "nopsfz", "device": "marrakesh", "test": "ghz_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0061, "t_new": 0.0046}
+{"mode": "nopsfz", "device": "marrakesh", "test": "ghz_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0051, "t_new": 0.0046}
+{"mode": "nopsfz", "device": "marrakesh", "test": "ghz_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.006, "t_new": 0.0053}
+{"mode": "nopsfz", "device": "marrakesh", "test": "chain_cz_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0135, "t_new": 0.0131}
+{"mode": "nopsfz", "device": "marrakesh", "test": "chain_cz_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0094, "t_new": 0.0092}
+{"mode": "nopsfz", "device": "marrakesh", "test": "chain_cz_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0104, "t_new": 0.0083}
+{"mode": "nopsfz", "device": "marrakesh", "test": "chain_cz_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0146, "t_new": 0.0128}
+{"mode": "nopsfz", "device": "marrakesh", "test": "chain_cz_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0157, "t_new": 0.0134}
+{"mode": "nopsfz", "device": "marrakesh", "test": "chain_cz_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0139, "t_new": 0.0161}
+{"mode": "nopsfz", "device": "marrakesh", "test": "ring_cz_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0108, "t_new": 0.0093}
+{"mode": "nopsfz", "device": "marrakesh", "test": "ring_cz_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0098, "t_new": 0.0108}
+{"mode": "nopsfz", "device": "marrakesh", "test": "ring_cz_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0142, "t_new": 0.0117}
+{"mode": "nopsfz", "device": "marrakesh", "test": "hh_cz_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0151, "t_new": 0.013}
+{"mode": "nopsfz", "device": "marrakesh", "test": "hh_cz_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0124, "t_new": 0.0112}
+{"mode": "nopsfz", "device": "marrakesh", "test": "hh_cz_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0131, "t_new": 0.0116}
+{"mode": "nopsfz", "device": "marrakesh", "test": "hh_cz_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.026, "t_new": 0.0252}
+{"mode": "nopsfz", "device": "marrakesh", "test": "hh_cz_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0262, "t_new": 0.0218}
+{"mode": "nopsfz", "device": "marrakesh", "test": "hh_cz_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0252, "t_new": 0.0237}
+{"mode": "nopsfz", "device": "marrakesh", "test": "cx_chain_n12", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0245, "t_new": 0.0213}
+{"mode": "nopsfz", "device": "marrakesh", "test": "cx_chain_n12", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0226, "t_new": 0.0197}
+{"mode": "nopsfz", "device": "marrakesh", "test": "cx_chain_n12", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0199, "t_new": 0.0211}
+{"mode": "nopsfz", "device": "marrakesh", "test": "cx_chain_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0305, "t_new": 0.0277}
+{"mode": "nopsfz", "device": "marrakesh", "test": "cx_chain_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0273, "t_new": 0.0254}
+{"mode": "nopsfz", "device": "marrakesh", "test": "cx_chain_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.027, "t_new": 0.0244}
+{"mode": "nopsfz", "device": "marrakesh", "test": "tfim_chain_n24", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0359, "t_new": 0.0361}
+{"mode": "nopsfz", "device": "marrakesh", "test": "tfim_chain_n24", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0375, "t_new": 0.0361}
+{"mode": "nopsfz", "device": "marrakesh", "test": "tfim_chain_n24", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0372, "t_new": 0.0361}
+{"mode": "nopsfz", "device": "marrakesh", "test": "tfim_ring_n28", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0347, "t_new": 0.0445}
+{"mode": "nopsfz", "device": "marrakesh", "test": "tfim_ring_n28", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0358, "t_new": 0.0335}
+{"mode": "nopsfz", "device": "marrakesh", "test": "tfim_ring_n28", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0324, "t_new": 0.033}
+{"mode": "nopsfz", "device": "marrakesh", "test": "heis_chain_n16", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0349, "t_new": 0.036}
+{"mode": "nopsfz", "device": "marrakesh", "test": "heis_chain_n16", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0346, "t_new": 0.0354}
+{"mode": "nopsfz", "device": "marrakesh", "test": "heis_chain_n16", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0355, "t_new": 0.0351}
+{"mode": "nopsfz", "device": "marrakesh", "test": "cz_ring_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0156, "t_new": 0.0164}
+{"mode": "nopsfz", "device": "marrakesh", "test": "cz_ring_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0151, "t_new": 0.0124}
+{"mode": "nopsfz", "device": "marrakesh", "test": "cz_ring_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0139, "t_new": 0.0115}
+{"mode": "nopsfz", "device": "marrakesh", "test": "cx_chain_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0186, "t_new": 0.017}
+{"mode": "nopsfz", "device": "marrakesh", "test": "cx_chain_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0162, "t_new": 0.0152}
+{"mode": "nopsfz", "device": "marrakesh", "test": "cx_chain_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0179, "t_new": 0.0174}
+{"mode": "nopsfz", "device": "marrakesh", "test": "ghz_n20", "kind": "build", "same": true, "err_old": null, "err_new": null, "t_old": 0.0086, "t_new": 0.0055}
+{"mode": "nopsfz", "device": "marrakesh", "test": "ghz_n20", "kind": "same", "same": true, "err_old": null, "err_new": null, "t_old": 0.0063, "t_new": 0.0059}
+{"mode": "nopsfz", "device": "marrakesh", "test": "ghz_n20", "kind": "free", "same": true, "err_old": null, "err_new": null, "t_old": 0.0087, "t_new": 0.0068}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "tfim_n12", "kind": "build", "same": false, "err_old": null, "err_new": null, "t_old": 0.0154, "t_new": 0.0154, "equivalent": true, "n_ops": [429, 460]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "tfim_n12", "kind": "same", "same": false, "err_old": null, "err_new": null, "t_old": 0.0196, "t_new": 0.0123, "equivalent": true, "n_ops": [429, 460]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "tfim_n12", "kind": "free", "same": false, "err_old": null, "err_new": null, "t_old": 0.0193, "t_new": 0.018, "equivalent": true, "n_ops": [429, 460]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "tfim_n16", "kind": "build", "same": false, "err_old": null, "err_new": null, "t_old": 0.0274, "t_new": 0.0172, "equivalent": null, "n_ops": [581, 623]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "tfim_n16", "kind": "same", "same": false, "err_old": null, "err_new": null, "t_old": 0.018, "t_new": 0.0149, "equivalent": null, "n_ops": [581, 623]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "tfim_n16", "kind": "free", "same": false, "err_old": null, "err_new": null, "t_old": 0.0287, "t_new": 0.0174, "equivalent": null, "n_ops": [581, 623]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "tfimP_n12", "kind": "build", "same": false, "err_old": null, "err_new": null, "t_old": 0.0153, "t_new": 0.0241, "equivalent": true, "n_ops": [449, 488]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "tfimP_n12", "kind": "same", "same": false, "err_old": null, "err_new": null, "t_old": 0.0326, "t_new": 0.0216, "equivalent": true, "n_ops": [449, 488]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "tfimP_n12", "kind": "free", "same": false, "err_old": null, "err_new": null, "t_old": 0.0256, "t_new": 0.0204, "equivalent": true, "n_ops": [449, 488]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "tfimP_n16", "kind": "build", "same": false, "err_old": null, "err_new": null, "t_old": 0.0343, "t_new": 0.0268, "equivalent": null, "n_ops": [607, 660]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "tfimP_n16", "kind": "same", "same": false, "err_old": null, "err_new": null, "t_old": 0.0307, "t_new": 0.0266, "equivalent": null, "n_ops": [607, 660]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "tfimP_n16", "kind": "free", "same": false, "err_old": null, "err_new": null, "t_old": 0.0293, "t_new": 0.0258, "equivalent": null, "n_ops": [607, 660]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "tfim_n20_r3", "kind": "build", "same": false, "err_old": null, "err_new": null, "t_old": 0.0471, "t_new": 0.0457, "equivalent": null, "n_ops": [1115, 1205]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "tfim_n20_r3", "kind": "same", "same": false, "err_old": null, "err_new": null, "t_old": 0.048, "t_new": 0.1794, "equivalent": null, "n_ops": [1115, 1205]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "tfim_n20_r3", "kind": "free", "same": false, "err_old": null, "err_new": null, "t_old": 0.042, "t_new": 0.0411, "equivalent": null, "n_ops": [1115, 1205]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "heis_n12_r2", "kind": "build", "same": false, "err_old": null, "err_new": null, "t_old": 0.0544, "t_new": 0.0479, "equivalent": true, "n_ops": [1220, 1316]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "heis_n12_r2", "kind": "same", "same": false, "err_old": null, "err_new": null, "t_old": 0.0691, "t_new": 0.0615, "equivalent": true, "n_ops": [1238, 1338]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "heis_n12_r2", "kind": "free", "same": false, "err_old": null, "err_new": null, "t_old": 0.0802, "t_new": 0.0521, "equivalent": true, "n_ops": [1238, 1342]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "tfim_n40_r2", "kind": "build", "same": false, "err_old": null, "err_new": null, "t_old": 0.0559, "t_new": 0.0478, "equivalent": null, "n_ops": [1535, 1647]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "tfim_n40_r2", "kind": "same", "same": false, "err_old": null, "err_new": null, "t_old": 0.0605, "t_new": 0.0602, "equivalent": null, "n_ops": [1535, 1647]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "tfim_n40_r2", "kind": "free", "same": false, "err_old": null, "err_new": null, "t_old": 0.0523, "t_new": 0.0447, "equivalent": null, "n_ops": [1535, 1647]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "hhI_n16", "kind": "build", "same": false, "err_old": null, "err_new": null, "t_old": 0.0316, "t_new": 0.0276, "equivalent": null, "n_ops": [1086, 1188]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "hhI_n16", "kind": "same", "same": false, "err_old": null, "err_new": null, "t_old": 0.0321, "t_new": 0.0278, "equivalent": null, "n_ops": [1086, 1188]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "hhI_n16", "kind": "free", "same": false, "err_old": null, "err_new": null, "t_old": 0.0318, "t_new": 0.0306, "equivalent": null, "n_ops": [1086, 1188]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "hhI_n20", "kind": "build", "same": false, "err_old": null, "err_new": null, "t_old": 0.0485, "t_new": 0.042, "equivalent": null, "n_ops": [1347, 1466]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "hhI_n20", "kind": "same", "same": false, "err_old": null, "err_new": null, "t_old": 0.0516, "t_new": 0.0365, "equivalent": null, "n_ops": [1347, 1466]}
+{"mode": "nopsfz", "device": "sherbrooke", "test": "hhI_n20", "kind": "free", "same": false, "err_old": null, "err_new": null, "t_old": 0.0383, "t_new": 0.0411, "equivalent": null, "n_ops": [1347, 1466]}
