@@ -339,6 +339,10 @@ pub fn drop_final_diagonal(ir: Vec<Ir>, nq: usize) -> Vec<Ir> {
 
 /// The interaction graph as a chain or a ring: (kind, logical qubits in walk order).
 pub fn read_graph(ir: &[Ir], nq: usize) -> Result<(String, Vec<usize>), String> {
+    if nq == 0 {
+        // 2026-11-13: a circuit with no qubits was a panic (nq - 1 below)
+        return Err("a circuit with no qubits is not read".into());
+    }
     let mut adj = vec![BTreeSet::new(); nq];
     for op in ir {
         if let Ir::Pr(a, b, _, _) = op {

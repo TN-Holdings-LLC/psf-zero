@@ -14,6 +14,11 @@
 
 use crate::linalg::*;
 
+#[inline]
+fn is_zero(z: C) -> bool {
+    z.re == 0.0 && z.im == 0.0
+}
+
 /// The SVD used by the MPS: LAPACK's zgesdd with the `lapack` feature, else the pure-Rust Jacobi method. Same
 /// contract as `svd_jacobi`.
 pub fn svd(a: Vec<Vec<C>>) -> (Vec<Vec<C>>, Vec<f64>, Vec<Vec<C>>) {
@@ -38,9 +43,24 @@ pub fn svd_backend() -> &'static str {
 #[cfg(feature = "lapack")]
 extern "C" {
     #[allow(clippy::too_many_arguments)]
-    fn zgesdd_(jobz: *const u8, m: *const i32, n: *const i32, a: *mut f64, lda: *const i32, s: *mut f64,
-               u: *mut f64, ldu: *const i32, vt: *mut f64, ldvt: *const i32, work: *mut f64, lwork: *const i32,
-               rwork: *mut f64, iwork: *mut i32, info: *mut i32, jobz_len: usize);
+    fn zgesdd_(
+        jobz: *const u8,
+        m: *const i32,
+        n: *const i32,
+        a: *mut f64,
+        lda: *const i32,
+        s: *mut f64,
+        u: *mut f64,
+        ldu: *const i32,
+        vt: *mut f64,
+        ldvt: *const i32,
+        work: *mut f64,
+        lwork: *const i32,
+        rwork: *mut f64,
+        iwork: *mut i32,
+        info: *mut i32,
+        jobz_len: usize,
+    );
 }
 
 /// LAPACK's zgesdd (jobz 'S') on the m x k matrix with columns `a[j]`; same contract as `svd_jacobi` (min(m, k)
@@ -50,6 +70,9 @@ pub fn svd_lapack(a: &[Vec<C>]) -> (Vec<Vec<C>>, Vec<f64>, Vec<Vec<C>>) {
     let k = a.len();
     let m = if k > 0 { a[0].len() } else { 0 };
     let mn = m.min(k);
+    if mn == 0 {
+        return (Vec::new(), Vec::new(), Vec::new());
+    }
     // column-major, complex as interleaved (re, im)
     let mut buf = Vec::with_capacity(2 * m * k);
     for col in a {
@@ -70,82 +93,146 @@ pub fn svd_lapack(a: &[Vec<C>]) -> (Vec<Vec<C>>, Vec<f64>, Vec<Vec<C>>) {
     let mut wq = [0.0f64; 2];
     let query = -1i32;
     unsafe {
-        zgesdd_(b"S".as_ptr(), &mi, &ki, buf.as_mut_ptr(), &mi, s.as_mut_ptr(), u.as_mut_ptr(), &mi,
-                vt.as_mut_ptr(), &mni, wq.as_mut_ptr(), &query, rwork.as_mut_ptr(), iwork.as_mut_ptr(), &mut info, 1);
+        zgesdd_(
+            b"S".as_ptr(), &mi, &ki, buf.as_mut_ptr(), &mi, s.as_mut_ptr(),
+            u.as_mut_ptr(), &mi, vt.as_mut_ptr(), &mni, wq.as_mut_ptr(), &query,
+            rwork.as_mut_ptr(), iwork.as_mut_ptr(), &mut info, 1,
+        );
     }
     let lwork = (wq[0] as i32).max(1);
     let mut work = vec![0.0f64; 2 * lwork as usize];
     unsafe {
-        zgesdd_(b"S".as_ptr(), &mi, &ki, buf.as_mut_ptr(), &mi, s.as_mut_ptr(), u.as_mut_ptr(), &mi,
-                vt.as_mut_ptr(), &mni, work.as_mut_ptr(), &lwork, rwork.as_mut_ptr(), iwork.as_mut_ptr(), &mut info, 1);
+        zgesdd_(
+            b"S".as_ptr(), &mi, &ki, buf.as_mut_ptr(), &mi, s.as_mut_ptr(),
+            u.as_mut_ptr(), &mi, vt.as_mut_ptr(), &mni, work.as_mut_ptr(), &lwork,
+            rwork.as_mut_ptr(), iwork.as_mut_ptr(), &mut info, 1,
+        );
     }
     assert!(info == 0, "zgesdd failed: info {}", info);
-    let uc: Vec<Vec<C>> = (0..mn).map(|r| (0..m).map(|i| C::new(u[2 * (r * m + i)], u[2 * (r * m + i) + 1])).collect()).collect();
+    let uc: Vec<Vec<C>> = (0..mn)
+        .map(|r| (0..m).map(|i| C::new(u[2 * (r * m + i)], u[2 * (r * m + i) + 1])).collect())
+        .collect();
     // V[i][r] = conj(VT[r][i]); VT is mn x k, column-major
-    let vc: Vec<Vec<C>> = (0..mn).map(|r| (0..k).map(|i| C::new(vt[2 * (i * mn + r)], -vt[2 * (i * mn + r) + 1])).collect()).collect();
+    let vc: Vec<Vec<C>> = (0..mn)
+        .map(|r| (0..k).map(|i| C::new(vt[2 * (i * mn + r)], -vt[2 * (i * mn + r) + 1])).collect())
+        .collect();
     (uc, s, vc)
 }
 
-/// One-sided Jacobi SVD of an m x k complex matrix (column-major columns `a[j]`): returns (U columns, sigma, V
-/// columns) with A = U diag(sigma) V^H, sigma in decreasing order.
-#[cfg_attr(feature = "lapack", allow(dead_code))]
-pub fn svd_jacobi(mut a: Vec<Vec<C>>) -> (Vec<Vec<C>>, Vec<f64>, Vec<Vec<C>>) {
+/// Core one-sided Jacobi SVD for tall-or-square matrices (m >= k).
+fn svd_jacobi_tall(mut a: Vec<Vec<C>>) -> (Vec<Vec<C>>, Vec<f64>, Vec<Vec<C>>) {
     let k = a.len();
     let m = if k > 0 { a[0].len() } else { 0 };
-    let mut v: Vec<Vec<C>> = (0..k).map(|j| (0..k).map(|i| if i == j { ONE } else { ZERO }).collect()).collect();
+    if k == 0 || m == 0 {
+        return (Vec::new(), Vec::new(), Vec::new());
+    }
+    let mut v: Vec<Vec<C>> = (0..k)
+        .map(|j| {
+            let mut col = vec![ZERO; k];
+            col[j] = ONE;
+            col
+        })
+        .collect();
     let dot = |x: &[C], y: &[C]| -> C { x.iter().zip(y).fold(ZERO, |s, (p, q)| s + p.conj() * *q) };
     let norm2 = |x: &[C]| -> f64 { x.iter().map(|z| z.re * z.re + z.im * z.im).sum() };
+    let mut n2: Vec<f64> = a.iter().map(|col| norm2(col)).collect();
+
     for _sweep in 0..60 {
         let mut off = 0.0f64;
         for p in 0..k {
             for q in (p + 1)..k {
-                let al = norm2(&a[p]);
-                let be = norm2(&a[q]);
-                let g = dot(&a[p], &a[q]);
-                let ga = g.abs();
-                if ga <= 1e-15 * (al * be).sqrt() || ga == 0.0 {
+                let al = n2[p];
+                let be = n2[q];
+                let scale = (al * be).sqrt();
+                if scale == 0.0 {
                     continue;
                 }
-                off = off.max(ga / (al * be).sqrt());
-                // make the inner product real: column q times e^{-i phi}
+                let g = dot(&a[p], &a[q]);
+                let ga = g.re.hypot(g.im);
+                if ga <= 1e-15 * scale || ga == 0.0 {
+                    continue;
+                }
+                off = off.max(ga / scale);
                 let ph = C::new(g.re / ga, -g.im / ga);
-                for i in 0..m {
-                    a[q][i] = a[q][i] * ph;
-                }
-                for i in 0..k {
-                    v[q][i] = v[q][i] * ph;
-                }
+                let (left, right) = a.split_at_mut(q);
+                let ap = &mut left[p];
+                let aq = &mut right[0];
+                let (vleft, vright) = v.split_at_mut(q);
+                let vp = &mut vleft[p];
+                let vq = &mut vright[0];
+
                 let zeta = (be - al) / (2.0 * ga);
-                let t = zeta.signum() / (zeta.abs() + (1.0 + zeta * zeta).sqrt());
-                let t = if zeta == 0.0 { 1.0 } else { t };
-                let c = 1.0 / (1.0 + t * t).sqrt();
+                let t = if zeta == 0.0 {
+                    1.0
+                } else {
+                    zeta.signum() / (zeta.abs() + 1.0f64.hypot(zeta))
+                };
+                let c = 1.0 / 1.0f64.hypot(t);
                 let s = c * t;
+
                 for i in 0..m {
-                    let (x, y) = (a[p][i], a[q][i]);
-                    a[p][i] = x.scale(c) - y.scale(s);
-                    a[q][i] = x.scale(s) + y.scale(c);
+                    let x = ap[i];
+                    let y = aq[i] * ph;
+                    ap[i] = x.scale(c) - y.scale(s);
+                    aq[i] = x.scale(s) + y.scale(c);
                 }
                 for i in 0..k {
-                    let (x, y) = (v[p][i], v[q][i]);
-                    v[p][i] = x.scale(c) - y.scale(s);
-                    v[q][i] = x.scale(s) + y.scale(c);
+                    let x = vp[i];
+                    let y = vq[i] * ph;
+                    vp[i] = x.scale(c) - y.scale(s);
+                    vq[i] = x.scale(s) + y.scale(c);
                 }
+                n2[p] = norm2(ap);
+                n2[q] = norm2(aq);
             }
         }
         if off < 1e-14 {
             break;
         }
     }
-    let mut sig: Vec<f64> = a.iter().map(|c| norm2(c).sqrt()).collect();
+
+    let raw_sig: Vec<f64> = a.iter().map(|col| norm2(col).sqrt()).collect();
     let mut order: Vec<usize> = (0..k).collect();
-    order.sort_by(|&x, &y| sig[y].partial_cmp(&sig[x]).unwrap());
-    let u: Vec<Vec<C>> = order.iter().map(|&j| {
-        let s = sig[j];
-        a[j].iter().map(|z| if s > 0.0 { z.scale(1.0 / s) } else { ZERO }).collect()
-    }).collect();
-    let vv: Vec<Vec<C>> = order.iter().map(|&j| v[j].clone()).collect();
-    sig = order.iter().map(|&j| sig[j]).collect();
+    order.sort_by(|&x, &y| raw_sig[y].total_cmp(&raw_sig[x]));
+
+    let mn = m.min(k);
+    order.truncate(mn);
+
+    let mut u: Vec<Vec<C>> = Vec::with_capacity(mn);
+    let mut vv: Vec<Vec<C>> = Vec::with_capacity(mn);
+    let mut sig: Vec<f64> = Vec::with_capacity(mn);
+
+    for &j in &order {
+        let s = raw_sig[j];
+        sig.push(s);
+        vv.push(v[j].clone());
+        if s > 0.0 {
+            let inv = 1.0 / s;
+            u.push(a[j].iter().map(|z| z.scale(inv)).collect());
+        } else {
+            u.push(vec![ZERO; m]);
+        }
+    }
     (u, sig, vv)
+}
+
+/// One-sided Jacobi SVD of an m x k complex matrix (column-major columns `a[j]`): returns (U columns, sigma, V
+/// columns) with A = U diag(sigma) V^H, sigma in decreasing order, length min(m, k).
+/// When m < k, decomposes A^H (k x m) so all min(m, k) left singular vectors are strictly orthonormal and runtime is O(k m^2).
+#[cfg_attr(feature = "lapack", allow(dead_code))]
+pub fn svd_jacobi(a: Vec<Vec<C>>) -> (Vec<Vec<C>>, Vec<f64>, Vec<Vec<C>>) {
+    let k = a.len();
+    let m = if k > 0 { a[0].len() } else { 0 };
+    if m >= k {
+        return svd_jacobi_tall(a);
+    }
+    // Wide matrix (m < k): A^H has m columns of length k (k > m).
+    // A^H = U_ah * diag(sig) * V_ah^H  ==>  A = V_ah * diag(sig) * U_ah^H.
+    let ah: Vec<Vec<C>> = (0..m)
+        .map(|i| (0..k).map(|j| a[j][i].conj()).collect())
+        .collect();
+    let (u_ah, sig, v_ah) = svd_jacobi_tall(ah);
+    (v_ah, sig, u_ah)
 }
 
 /// MPS: site s holds a tensor of shape (l[s], 2, l[s+1]), stored as t[s][(a * 2 + p) * r + b].
@@ -159,18 +246,27 @@ pub struct Mps {
 
 impl Mps {
     pub fn zero(n: usize) -> Mps {
-        Mps { n, chi: vec![1; n + 1], t: (0..n).map(|_| vec![ONE, ZERO]).collect(), dropped: 0.0, max_chi: 1 }
+        Mps {
+            n,
+            chi: vec![1; n + 1],
+            t: (0..n).map(|_| vec![ONE, ZERO]).collect(),
+            dropped: 0.0,
+            max_chi: 1,
+        }
     }
 
     pub fn apply1(&mut self, s: usize, u: &M2) {
         let (l, r) = (self.chi[s], self.chi[s + 1]);
         let t = &mut self.t[s];
+        let (u0, u1, u2, u3) = (u[0], u[1], u[2], u[3]);
         for a in 0..l {
+            let row0 = (a * 2) * r;
+            let row1 = row0 + r;
             for b in 0..r {
-                let x0 = t[(a * 2) * r + b];
-                let x1 = t[(a * 2 + 1) * r + b];
-                t[(a * 2) * r + b] = u[0] * x0 + u[1] * x1;
-                t[(a * 2 + 1) * r + b] = u[2] * x0 + u[3] * x1;
+                let x0 = t[row0 + b];
+                let x1 = t[row1 + b];
+                t[row0 + b] = u0 * x0 + u1 * x1;
+                t[row1 + b] = u2 * x0 + u3 * x1;
             }
         }
     }
@@ -189,19 +285,23 @@ impl Mps {
     /// split.
     pub fn apply2(&mut self, s: usize, w: &[C; 16]) {
         let (l, m, r) = (self.chi[s], self.chi[s + 1], self.chi[s + 2]);
+        let ts = &self.t[s];
+        let ts1 = &self.t[s + 1];
         // theta[(a, p), (q, b)]
-        let mut th = vec![ZERO; l * 2 * 2 * r];
+        let mut th = vec![ZERO; l * 4 * r];
         for a in 0..l {
             for p in 0..2 {
+                let ap = a * 2 + p;
                 for c in 0..m {
-                    let x = self.t[s][(a * 2 + p) * m + c];
-                    if x.abs() == 0.0 {
+                    let x = ts[ap * m + c];
+                    if is_zero(x) {
                         continue;
                     }
                     for q in 0..2 {
+                        let dst_row = (ap * 2 + q) * r;
+                        let src_row = (c * 2 + q) * r;
                         for b in 0..r {
-                            let y = self.t[s + 1][(c * 2 + q) * r + b];
-                            th[((a * 2 + p) * 2 + q) * r + b] = th[((a * 2 + p) * 2 + q) * r + b] + x * y;
+                            th[dst_row + b] = th[dst_row + b] + x * ts1[src_row + b];
                         }
                     }
                 }
@@ -209,16 +309,18 @@ impl Mps {
         }
         let mut th2 = vec![ZERO; l * 4 * r];
         for a in 0..l {
-            for b in 0..r {
-                for i in 0..4 {
-                    let mut acc = ZERO;
-                    for j in 0..4 {
-                        let wij = w[i * 4 + j];
-                        if wij.abs() != 0.0 {
-                            acc = acc + wij * th[(a * 4 + j) * r + b];
-                        }
+            let base = a * 4 * r;
+            for i in 0..4 {
+                for j in 0..4 {
+                    let wij = w[i * 4 + j];
+                    if is_zero(wij) {
+                        continue;
                     }
-                    th2[(a * 4 + i) * r + b] = acc;
+                    let dst = base + i * r;
+                    let src = base + j * r;
+                    for b in 0..r {
+                        th2[dst + b] = th2[dst + b] + wij * th[src + b];
+                    }
                 }
             }
         }
@@ -226,26 +328,27 @@ impl Mps {
         // columns of the (l*2) x (2*r) matrix
         let rows = l * 2;
         let cols = 2 * r;
-        let colv: Vec<Vec<C>> = (0..cols).map(|j| (0..rows).map(|i| th[i * cols + j]).collect()).collect();
+        let colv: Vec<Vec<C>> = (0..cols)
+            .map(|j| (0..rows).map(|i| th[i * cols + j]).collect())
+            .collect();
         let (u, sig, v) = svd(colv);
         let smax = sig.first().copied().unwrap_or(0.0);
         let keep = sig.iter().take_while(|&&x| x > 1e-12 * smax).count().max(1);
         self.dropped += sig[keep..].iter().map(|x| x * x).sum::<f64>();
         // left tensor: U[:, :keep] (rows (a, p)); right: diag(sig) V^H (rows k, cols (q, b))
-        let mut tl = vec![ZERO; l * 2 * keep];
-        for a in 0..l {
-            for p in 0..2 {
-                for k in 0..keep {
-                    tl[(a * 2 + p) * keep + k] = u[k][a * 2 + p];
-                }
+        let mut tl = vec![ZERO; rows * keep];
+        for (k, uk) in u.iter().enumerate().take(keep) {
+            for ap in 0..rows {
+                tl[ap * keep + k] = uk[ap];
             }
         }
-        let mut tr = vec![ZERO; keep * 2 * r];
+        let mut tr = vec![ZERO; keep * cols];
         for k in 0..keep {
-            for q in 0..2 {
-                for b in 0..r {
-                    tr[(k * 2 + q) * r + b] = v[k][q * r + b].conj().scale(sig[k]);
-                }
+            let sk = sig[k];
+            let vk = &v[k];
+            let row_offset = k * cols;
+            for qb in 0..cols {
+                tr[row_offset + qb] = vk[qb].conj().scale(sk);
             }
         }
         self.t[s] = tl;
@@ -254,71 +357,105 @@ impl Mps {
         self.max_chi = self.max_chi.max(keep);
     }
 
-    /// <Z> of every site (environments from both ends; the state's norm divided out). Each environment step is two
-    /// contractions of order chi^3 (2026-10-20: was one of order chi^4).
+    /// <Z> of every site (environments from both ends; the state's norm divided out).
+    /// Exploits near-identity left environments (since `apply2` leaves `t[s]` left-isometric) to run in O(chi^2)
+    /// whenever `left[s]` is diagonal, falling back to two O(chi^3) contractions otherwise.
     pub fn z_all(&self) -> Vec<f64> {
         let n = self.n;
-        // left[s][a * l + a2]: environment of sites < s (bra index a, ket index a2)
-        let mut left: Vec<Vec<C>> = vec![vec![ONE]];
+        let is_diag = |mat: &[C], dim: usize| -> bool {
+            for i in 0..dim {
+                for j in 0..dim {
+                    if i != j && mat[i * dim + j].re.hypot(mat[i * dim + j].im) > 1e-14 {
+                        return false;
+                    }
+                }
+            }
+            true
+        };
+
+        let mut left: Vec<Vec<C>> = Vec::with_capacity(n + 1);
+        let mut left_diag: Vec<bool> = Vec::with_capacity(n + 1);
+        left.push(vec![ONE]);
+        left_diag.push(true);
+
         for s in 0..n {
             let (l, r) = (self.chi[s], self.chi[s + 1]);
             let e = &left[s];
             let t = &self.t[s];
-            // tmp[(a, p), b2] = sum_a2 e[a, a2] t[a2, p, b2]
             let mut tmp = vec![ZERO; l * 2 * r];
-            for a in 0..l {
-                for a2 in 0..l {
-                    let w = e[a * l + a2];
-                    if w.abs() == 0.0 {
+            if left_diag[s] {
+                for a in 0..l {
+                    let w = e[a * l + a];
+                    if is_zero(w) {
                         continue;
                     }
                     for p in 0..2 {
+                        let row = (a * 2 + p) * r;
                         for b2 in 0..r {
-                            tmp[(a * 2 + p) * r + b2] = tmp[(a * 2 + p) * r + b2] + w * t[(a2 * 2 + p) * r + b2];
+                            tmp[row + b2] = w * t[row + b2];
+                        }
+                    }
+                }
+            } else {
+                for a in 0..l {
+                    for a2 in 0..l {
+                        let w = e[a * l + a2];
+                        if is_zero(w) {
+                            continue;
+                        }
+                        for p in 0..2 {
+                            let dst = (a * 2 + p) * r;
+                            let src = (a2 * 2 + p) * r;
+                            for b2 in 0..r {
+                                tmp[dst + b2] = tmp[dst + b2] + w * t[src + b2];
+                            }
                         }
                     }
                 }
             }
-            // ne[b, b2] = sum_(a, p) conj(t[a, p, b]) tmp[(a, p), b2]
             let mut ne = vec![ZERO; r * r];
             for ap in 0..l * 2 {
+                let row = ap * r;
                 for b in 0..r {
-                    let x = t[ap * r + b].conj();
-                    if x.abs() == 0.0 {
+                    let x = t[row + b].conj();
+                    if is_zero(x) {
                         continue;
                     }
+                    let ne_row = b * r;
                     for b2 in 0..r {
-                        ne[b * r + b2] = ne[b * r + b2] + x * tmp[ap * r + b2];
+                        ne[ne_row + b2] = ne[ne_row + b2] + x * tmp[row + b2];
                     }
                 }
             }
+            left_diag.push(is_diag(&ne, r));
             left.push(ne);
         }
-        // right[s][b * r + b2]: environment of sites >= s
-        let mut right: Vec<Vec<C>> = vec![vec![ZERO]; n + 1];
+
+        let mut right: Vec<Vec<C>> = vec![Vec::new(); n + 1];
         right[n] = vec![ONE];
         for s in (0..n).rev() {
             let (l, r) = (self.chi[s], self.chi[s + 1]);
             let e = &right[s + 1];
             let t = &self.t[s];
-            // tmp[(a2, p), b] = sum_b2 t[a2, p, b2] e[b, b2]
             let mut tmp = vec![ZERO; l * 2 * r];
             for a2p in 0..l * 2 {
+                let row = a2p * r;
                 for b in 0..r {
+                    let e_row = b * r;
                     let mut acc = ZERO;
                     for b2 in 0..r {
-                        acc = acc + t[a2p * r + b2] * e[b * r + b2];
+                        acc = acc + t[row + b2] * e[e_row + b2];
                     }
-                    tmp[a2p * r + b] = acc;
+                    tmp[row + b] = acc;
                 }
             }
-            // ne[a, a2] = sum_(p, b) conj(t[a, p, b]) tmp[(a2, p), b]
             let mut ne = vec![ZERO; l * l];
             for a in 0..l {
                 for p in 0..2 {
+                    let row = (a * 2 + p) * r;
                     for b in 0..r {
-                        let x = t[(a * 2 + p) * r + b].conj();
-                        if x.abs() == 0.0 {
+                        let x = t[row + b].conj();
+                        if is_zero(x) {
                             continue;
                         }
                         for a2 in 0..l {
@@ -329,46 +466,67 @@ impl Mps {
             }
             right[s] = ne;
         }
+
         let norm = left[n][0].re;
-        (0..n).map(|s| {
-            let (l, r) = (self.chi[s], self.chi[s + 1]);
-            let t = &self.t[s];
-            let e = &left[s];
-            // tmp[(a, p), b2] = sum_a2 e[a, a2] t[a2, p, b2]; then sum conj(t[a, p, b]) sign(p) tmp right[b, b2]
-            let mut tmp = vec![ZERO; l * 2 * r];
-            for a in 0..l {
-                for a2 in 0..l {
-                    let w = e[a * l + a2];
-                    if w.abs() == 0.0 {
-                        continue;
-                    }
-                    for p in 0..2 {
-                        for b2 in 0..r {
-                            tmp[(a * 2 + p) * r + b2] = tmp[(a * 2 + p) * r + b2] + w * t[(a2 * 2 + p) * r + b2];
-                        }
-                    }
-                }
-            }
-            let rt = &right[s + 1];
-            let mut acc = ZERO;
-            for a in 0..l {
-                for p in 0..2 {
-                    let sgn = if p == 0 { 1.0 } else { -1.0 };
-                    for b in 0..r {
-                        let x = t[(a * 2 + p) * r + b].conj();
-                        if x.abs() == 0.0 {
+        (0..n)
+            .map(|s| {
+                let (l, r) = (self.chi[s], self.chi[s + 1]);
+                let t = &self.t[s];
+                let e = &left[s];
+                let mut tmp = vec![ZERO; l * 2 * r];
+                if left_diag[s] {
+                    for a in 0..l {
+                        let w = e[a * l + a];
+                        if is_zero(w) {
                             continue;
                         }
-                        let mut inner = ZERO;
-                        for b2 in 0..r {
-                            inner = inner + tmp[(a * 2 + p) * r + b2] * rt[b * r + b2];
+                        for p in 0..2 {
+                            let row = (a * 2 + p) * r;
+                            for b2 in 0..r {
+                                tmp[row + b2] = w * t[row + b2];
+                            }
                         }
-                        acc = acc + (x * inner).scale(sgn);
+                    }
+                } else {
+                    for a in 0..l {
+                        for a2 in 0..l {
+                            let w = e[a * l + a2];
+                            if is_zero(w) {
+                                continue;
+                            }
+                            for p in 0..2 {
+                                let dst = (a * 2 + p) * r;
+                                let src = (a2 * 2 + p) * r;
+                                for b2 in 0..r {
+                                    tmp[dst + b2] = tmp[dst + b2] + w * t[src + b2];
+                                }
+                            }
+                        }
                     }
                 }
-            }
-            acc.re / norm
-        }).collect()
+                let rt = &right[s + 1];
+                let mut acc = ZERO;
+                for a in 0..l {
+                    for p in 0..2 {
+                        let sgn = if p == 0 { 1.0 } else { -1.0 };
+                        let row = (a * 2 + p) * r;
+                        for b in 0..r {
+                            let x = t[row + b].conj();
+                            if is_zero(x) {
+                                continue;
+                            }
+                            let rt_row = b * r;
+                            let mut inner = ZERO;
+                            for b2 in 0..r {
+                                inner = inner + tmp[row + b2] * rt[rt_row + b2];
+                            }
+                            acc = acc + (x * inner).scale(sgn);
+                        }
+                    }
+                }
+                acc.re / norm
+            })
+            .collect()
     }
 }
 
@@ -377,7 +535,7 @@ pub fn chain_order(ops: &[(String, Vec<usize>, Vec<f64>)]) -> Result<Vec<usize>,
     use std::collections::{BTreeMap, BTreeSet};
     let mut adj: BTreeMap<usize, BTreeSet<usize>> = BTreeMap::new();
     for (g, q, _) in ops {
-        if g == "cz" {
+        if g == "cz" && q.len() == 2 {
             adj.entry(q[0]).or_default().insert(q[1]);
             adj.entry(q[1]).or_default().insert(q[0]);
         } else if q.len() == 2 {
@@ -385,7 +543,12 @@ pub fn chain_order(ops: &[(String, Vec<usize>, Vec<f64>)]) -> Result<Vec<usize>,
         }
     }
     for (_, q, _) in ops {
-        adj.entry(q[0]).or_default();
+        if let Some(&q0) = q.first() {
+            adj.entry(q0).or_default();
+        }
+    }
+    if adj.is_empty() {
+        return Err("mps: empty circuit".into());
     }
     if adj.values().any(|s| s.len() > 2) {
         return Err("mps: not a chain (a qubit has more than two neighbours)".into());
@@ -398,7 +561,10 @@ pub fn chain_order(ops: &[(String, Vec<usize>, Vec<f64>)]) -> Result<Vec<usize>,
     let mut prev = usize::MAX;
     while walk.len() < adj.len() {
         let cur = *walk.last().unwrap();
-        let next = *adj[&cur].iter().find(|&&x| x != prev).ok_or("mps: the chain is not connected")?;
+        let next = *adj[&cur]
+            .iter()
+            .find(|&&x| x != prev)
+            .ok_or("mps: the chain is not connected")?;
         prev = cur;
         walk.push(next);
     }
@@ -406,7 +572,11 @@ pub fn chain_order(ops: &[(String, Vec<usize>, Vec<f64>)]) -> Result<Vec<usize>,
 }
 
 /// The formula bound of every cut's bond dimension (log2): min(i + 1, n - i - 1, CZ crossing cut i).
-pub fn bound_log2(ops: &[(String, Vec<usize>, Vec<f64>)], site: &std::collections::BTreeMap<usize, usize>, n: usize) -> Vec<usize> {
+pub fn bound_log2(
+    ops: &[(String, Vec<usize>, Vec<f64>)],
+    site: &std::collections::BTreeMap<usize, usize>,
+    n: usize,
+) -> Vec<usize> {
     let mut c = vec![0usize; n.saturating_sub(1)];
     for (g, q, _) in ops {
         if g == "cz" {
@@ -414,7 +584,9 @@ pub fn bound_log2(ops: &[(String, Vec<usize>, Vec<f64>)], site: &std::collection
             c[a.min(b)] += 1;
         }
     }
-    (0..n.saturating_sub(1)).map(|i| c[i].min(i + 1).min(n - i - 1)).collect()
+    (0..n.saturating_sub(1))
+        .map(|i| c[i].min(i + 1).min(n - i - 1))
+        .collect()
 }
 
 /// One operation of the twin: a single-qubit matrix on a site, or a two-site gate on (s, s + 1) with its operator
@@ -427,19 +599,28 @@ pub enum TwinOp {
 /// The operator Schmidt rank of a 4 x 4 two-qubit gate (singular values of its realignment above 1e-12 of the largest).
 pub fn schmidt_rank(w: &[C; 16]) -> usize {
     // R[(p, p'), (q, q')] = W[(p, q), (p', q')]
-    let cols: Vec<Vec<C>> = (0..4).map(|qq| (0..4).map(|pp| {
-        let (p, p2, q, q2) = (pp >> 1, pp & 1, qq >> 1, qq & 1);
-        w[(2 * p + q) * 4 + (2 * p2 + q2)]
-    }).collect()).collect();
+    let cols: Vec<Vec<C>> = (0..4)
+        .map(|qq| {
+            (0..4)
+                .map(|pp| {
+                    let (p, p2, q, q2) = (pp >> 1, pp & 1, qq >> 1, qq & 1);
+                    w[(2 * p + q) * 4 + (2 * p2 + q2)]
+                })
+                .collect()
+        })
+        .collect();
     let (_, sig, _) = svd_jacobi(cols);
-    let smax = sig.iter().cloned().fold(0.0, f64::max);
+    let smax = sig.first().copied().unwrap_or(0.0);
     sig.iter().filter(|&&x| x > 1e-12 * smax).count()
 }
 
 /// The twin's operations from a compiled chain circuit (workplace proposal of 2026-10-20 §2): two CZ on the same
 /// edge with, between them, only single-qubit operations on one end and only rz on the other become one two-site gate
 /// W = CZ (D ⊗ U) CZ, applied with one split at its final bond dimension. Read from the gate list (structural).
-pub fn plan_ops(ops: &[(String, Vec<usize>, Vec<f64>)], site: &std::collections::BTreeMap<usize, usize>) -> Result<Vec<TwinOp>, String> {
+pub fn plan_ops(
+    ops: &[(String, Vec<usize>, Vec<f64>)],
+    site: &std::collections::BTreeMap<usize, usize>,
+) -> Result<Vec<TwinOp>, String> {
     let mut used = vec![false; ops.len()];
     let mut out = Vec::new();
     let czm = {
@@ -450,7 +631,7 @@ pub fn plan_ops(ops: &[(String, Vec<usize>, Vec<f64>)], site: &std::collections:
         w
     };
     let m1 = |k: usize| -> Result<M2, String> {
-        gate1(&ops[k].0, &ops[k].2).ok_or(format!("twin: gate {} is not read", ops[k].0))
+        gate1(&ops[k].0, &ops[k].2).ok_or_else(|| format!("twin: gate {} is not read", ops[k].0))
     };
     for i in 0..ops.len() {
         if used[i] {
@@ -463,8 +644,7 @@ pub fn plan_ops(ops: &[(String, Vec<usize>, Vec<f64>)], site: &std::collections:
             continue;
         }
         let (a, b) = (q[0], q[1]);
-        // look for CZ (ops on one end) CZ on the same edge; try both ends as the one with general operations
-        let mut found: Option<(usize, Vec<usize>, Vec<usize>, usize)> = None; // (j, on x, on y, x)
+        let mut found: Option<(usize, Vec<usize>, Vec<usize>, usize)> = None;
         for x_ in [b, a] {
             let (mut on_x, mut on_y) = (Vec::new(), Vec::new());
             let mut ok = false;
@@ -520,19 +700,19 @@ pub fn plan_ops(ops: &[(String, Vec<usize>, Vec<f64>)], site: &std::collections:
                     used[*k] = true;
                 }
                 used[j] = true;
-                // W on (a, b): CZ · (op on a ⊗ op on b) · CZ
                 let (ua, ub) = if x_ == a { (ux, dy) } else { (dy, ux) };
                 let mut mid = [ZERO; 16];
                 for pa in 0..2 {
                     for pb in 0..2 {
                         for qa in 0..2 {
                             for qb in 0..2 {
-                                mid[(2 * pa + pb) * 4 + (2 * qa + qb)] = ua[2 * pa + qa] * ub[2 * pb + qb];
+                                mid[(2 * pa + pb) * 4 + (2 * qa + qb)] =
+                                    ua[2 * pa + qa] * ub[2 * pb + qb];
                             }
                         }
                     }
                 }
-                let sgn = |i: usize| if i == 3 { -ONE } else { ONE };
+                let sgn = |idx: usize| if idx == 3 { -ONE } else { ONE };
                 let mut w = [ZERO; 16];
                 for r in 0..4 {
                     for c in 0..4 {
@@ -542,7 +722,6 @@ pub fn plan_ops(ops: &[(String, Vec<usize>, Vec<f64>)], site: &std::collections:
                 w
             }
         };
-        // to (left site, right site) order
         let w = if left_is_a {
             w
         } else {
@@ -573,12 +752,14 @@ pub fn bound_log2_blocks(plan: &[TwinOp], n: usize) -> Vec<usize> {
             c[*s] += (*r as f64).log2().ceil() as usize;
         }
     }
-    (0..n.saturating_sub(1)).map(|i| c[i].min(i + 1).min(n - i - 1)).collect()
+    (0..n.saturating_sub(1))
+        .map(|i| c[i].min(i + 1).min(n - i - 1))
+        .collect()
 }
 
 pub fn gate1(name: &str, p: &[f64]) -> Option<M2> {
     Some(match name {
-        "rz" => rz(p[0]),
+        "rz" => rz(*p.first()?),
         "sx" => sx(),
         "x" => x(),
         _ => return None,
@@ -590,15 +771,28 @@ mod tests {
     use super::*;
 
     #[test]
-    fn svd_reconstructs() {
+    fn svd_reconstructs_and_is_orthonormal() {
         let mut seed = 12345u64;
         let mut rnd = || {
             seed = seed.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
             ((seed >> 11) as f64 / (1u64 << 53) as f64) - 0.5
         };
-        for (m, k) in [(4, 4), (6, 3), (3, 7), (8, 8), (40, 24)] {
+        for (m, k) in [(4, 4), (6, 3), (3, 7), (2, 8), (8, 8), (40, 24)] {
             let a: Vec<Vec<C>> = (0..k).map(|_| (0..m).map(|_| C::new(rnd(), rnd())).collect()).collect();
             let (u, s, v) = svd(a.clone());
+            assert_eq!(s.len(), m.min(k), "contract: min(m, k) singular values");
+            assert_eq!(u.len(), s.len());
+            assert_eq!(v.len(), s.len());
+            // Check U^H U = I and V^H V = I
+            for p in 0..s.len() {
+                for q in 0..s.len() {
+                    let dot_u = (0..m).fold(ZERO, |acc, i| acc + u[p][i].conj() * u[q][i]);
+                    let dot_v = (0..k).fold(ZERO, |acc, i| acc + v[p][i].conj() * v[q][i]);
+                    let want = if p == q { ONE } else { ZERO };
+                    assert!((dot_u - want).abs() < 1e-10, "U not orthonormal at ({}, {})", m, k);
+                    assert!((dot_v - want).abs() < 1e-10, "V not orthonormal at ({}, {})", m, k);
+                }
+            }
             for j in 0..k {
                 for i in 0..m {
                     let mut x = ZERO;
@@ -619,11 +813,14 @@ mod tests {
             seed = seed.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
             ((seed >> 11) as f64 / (1u64 << 53) as f64) - 0.5
         };
-        let a: Vec<Vec<C>> = (0..16).map(|_| (0..32).map(|_| C::new(rnd(), rnd())).collect()).collect();
-        let (_, s1, _) = svd_lapack(&a);
-        let (_, s2, _) = svd_jacobi(a);
-        for (x, y) in s1.iter().zip(&s2) {
-            assert!((x - y).abs() < 1e-10);
+        for (m, k) in [(32, 16), (12, 24)] {
+            let a: Vec<Vec<C>> = (0..k).map(|_| (0..m).map(|_| C::new(rnd(), rnd())).collect()).collect();
+            let (_, s1, _) = svd_lapack(&a);
+            let (_, s2, _) = svd_jacobi(a);
+            assert_eq!(s1.len(), s2.len());
+            for (x, y) in s1.iter().zip(&s2) {
+                assert!((x - y).abs() < 1e-10);
+            }
         }
     }
 
@@ -644,3 +841,4 @@ mod tests {
         assert_eq!(s.max_chi, 2);
     }
 }
+
