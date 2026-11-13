@@ -3,6 +3,8 @@
 **Status.** Written at the workplace, 2026-10-20, about 03:50 CEST. This is a proposal. **The set is fixed (SHA-256
 and CEST time of the final file) before any model sees it** (memo §9). Nothing was run.
 
+**Built (checked at home, 2026-11-13).** Built and fixed: `data/2026-10-20/n2/n2.json` (SHA-256 458e53df..., 2026-10-20 06:35 CEST, commit 8f169ea2); gate 1 passes milestone M0 on it (`psfz` test `n2_milestone_m0`).
+
 **Basis:**
 
 - the IR v0 draft (`IR_v0_spec_draft_2026-10-20.md`);

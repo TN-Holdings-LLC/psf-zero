@@ -5,6 +5,8 @@ built or run here; the sources were read from `workplace_pack_2026-10-20.zip`: `
 `template.rs`, `mps.rs`, and the check notes of 2026-10-19. Every rule below reads the structure of the input or
 fixed numbers of the template. None reads a slot's value, scores alternatives or searches.
 
+**Built (checked at home, 2026-11-13).** Built, exploratory, in psfz M1 (commit 6a280e04, 2026-10-20): §1 class-Z runs in templates (`compile.rs`), §2 one split per CZ-rotation-CZ block in the twin (`mps.rs`, `plan_ops`), §3 the bond bound from the gates (`mps.rs`, `bound_log2_blocks`).
+
 ---
 
 ## 1. Templates: runs that are diagonal for every value, recognised from the structure

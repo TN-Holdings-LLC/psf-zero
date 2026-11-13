@@ -3,6 +3,8 @@
 **Status.** Written at the workplace, 2026-10-20 (about 03:40 CEST). This is a proposal for the owner, and nothing
 was run. It answers instruction 5, W2.
 
+**Built (checked at home, 2026-11-13).** Not built as specified (noise and rings). The twin that exists is `psfz twin`: noiseless, chains only (MPS prototype; version 2026-11-13). psf-os has a separate noiseless Clifford twin (`psf_os/twin.py`).
+
 **Basis:**
 
 - the MPS prototype (`psfz twin`; `mps.rs`);

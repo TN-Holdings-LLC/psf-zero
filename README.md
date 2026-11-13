@@ -18,6 +18,8 @@ routing search, and no choice by the day's error values. What it cannot build by
 Every result below is given twice, as the benchmark custom would quote it and as someone running it on a device would
 need it; predictions are locked in git before each scored run, and losses are published next to wins.
 
+Which version of each part is current, and where it is: [`CURRENT.md`](CURRENT.md).
+
 ## Headline: on the device, without the calibration map (2026-10-28)
 
 ![Kept signal per ring size on ibm_kingston, no arm reading the calibration map](docs/figures/d6_kingston_no_map.png)

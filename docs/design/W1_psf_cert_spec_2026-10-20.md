@@ -3,6 +3,8 @@
 **Status.** Written at the workplace on 2026-10-20 (03:30 CEST). This is a proposal for the owner, and nothing was
 run. It answers instruction 5, W1.
 
+**Built (checked at home, 2026-11-13).** Not built. No certificate code exists in this repository. Related later work: psf-os's entrance card and its Clifford twin (`psf_os/twin.py`, 2026-11-13), which are not this specification.
+
 **Basis:**
 
 - design memo §6;

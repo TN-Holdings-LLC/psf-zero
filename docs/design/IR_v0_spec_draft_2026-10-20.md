@@ -2,6 +2,8 @@
 
 **Status.** A draft for the owner, written at the workplace on 2026-10-20 at about 01:50 CEST. Nothing here is built.
 
+**Built (checked at home, 2026-11-13).** Superseded by `IR_v0_spec_r2_2026-10-20.md` (the owner's decisions applied), which is what was built.
+
 - **Basis:** the design memo `docs/design/llm-surface-rust-skeleton.md` §3-4, and the owner's decision of 2026-10-19
   (three families: `tfim_chain`, `ring_classifier`, `rzz_layer`).
 - **Facts taken from:** psfz's README and source (r4 placement, r5 templates) and the template check of 2026-10-19.
