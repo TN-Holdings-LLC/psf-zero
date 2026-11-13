@@ -124,6 +124,20 @@
 //      decomposed exactly as before (bit-identical). `CORE_VERSION`
 //      "2026-09-29.1".
 //
+//  13. (2026-11-13) Shape check of the Python input. `mat_from_lists`
+//      returns NotUnitary (raised as PsfNotUnitaryError) for lists that are
+//      not 4 x 4, and the batch functions refuse real / imaginary batches of
+//      different lengths, where an index panic used to surface as a
+//      PanicException. Nothing else changed: every well-formed input builds
+//      the same matrix and takes the same path, so every result is
+//      bit-identical to "2026-09-29.1" (checked on 2239 inputs, including the
+//      15 eigen-route blocks of item 12; notes in data/2026-11-13). NaN input
+//      was already rejected (NumericInstability) and still is. Proposed
+//      changes to the eigen route, total_cmp and static matrices were not
+//      taken: they changed 78 of those 2239 outputs (14 of the 15 production
+//      eigen-route blocks) with no failure to fix. `CORE_VERSION`
+//      "2026-11-13.1".
+//
 // Retained verbatim from the previous round (still true, still verified):
 // random SU(4) precision worst case (1-fidelity) ~1.3e-15; CNOT, SWAP,
 // iSWAP, identity all decompose exactly with no fallback.
@@ -1066,14 +1080,22 @@ fn triples_to_vecs(a: (f64, f64, f64), b: (f64, f64, f64)) -> Vec<Vec<f64>> {
     vec![vec![a.0, a.1, a.2], vec![b.0, b.1, b.2]]
 }
 
-fn mat_from_lists(u_r: &[Vec<f64>], u_i: &[Vec<f64>]) -> Mat4 {
+/// Build a `Mat4` from the nested lists Python passes. A wrong shape is
+/// reported as `NotUnitary` instead of panicking on an index (changelog item
+/// 13). Values are copied unchanged, so every well-formed input gives exactly
+/// the matrix the previous version built; non-finite entries are left to
+/// `normalize_su4`, which already rejects them, so error kinds are unchanged.
+fn mat_from_lists(u_r: &[Vec<f64>], u_i: &[Vec<f64>]) -> Result<Mat4, CartanError> {
+    if u_r.len() != 4 || u_i.len() != 4 || u_r.iter().chain(u_i.iter()).any(|row| row.len() != 4) {
+        return Err(CartanError::NotUnitary);
+    }
     let mut u = Mat4::zeros();
     for i in 0..4 {
         for j in 0..4 {
             u[(i, j)] = Complex64::new(u_r[i][j], u_i[i][j]);
         }
     }
-    u
+    Ok(u)
 }
 
 type DecomposeResult = ((f64, f64, f64, f64), Vec<Vec<f64>>, Vec<Vec<f64>>, f64);
@@ -1088,10 +1110,13 @@ fn batch_decompose(
     u_batch_r: Vec<Vec<Vec<f64>>>,
     u_batch_i: Vec<Vec<Vec<f64>>>,
 ) -> PyResult<Vec<DecomposeResult>> {
+    if u_batch_r.len() != u_batch_i.len() {
+        return Err(to_pyerr(CartanError::NotUnitary, "batch_decompose: real / imaginary batch lengths differ: "));
+    }
     let computed: Result<Vec<DecomposeResult>, (usize, CartanError)> = py.allow_threads(|| {
         let mut results = Vec::with_capacity(u_batch_r.len());
         for idx in 0..u_batch_r.len() {
-            let u = mat_from_lists(&u_batch_r[idx], &u_batch_i[idx]);
+            let u = mat_from_lists(&u_batch_r[idx], &u_batch_i[idx]).map_err(|e| (idx, e))?;
             match decompose_one(&u) {
                 Ok((angles, (e1l, e1r, e2l, e2r), phase)) => results.push((
                     angles,
@@ -1118,10 +1143,19 @@ fn batch_decompose_checked(
     u_batch_r: Vec<Vec<Vec<f64>>>,
     u_batch_i: Vec<Vec<Vec<f64>>>,
 ) -> PyResult<Vec<(Option<DecomposeResult>, Option<String>)>> {
+    if u_batch_r.len() != u_batch_i.len() {
+        return Err(to_pyerr(CartanError::NotUnitary, "batch_decompose_checked: real / imaginary batch lengths differ: "));
+    }
     Ok(py.allow_threads(|| {
         let mut results = Vec::with_capacity(u_batch_r.len());
         for idx in 0..u_batch_r.len() {
-            let u = mat_from_lists(&u_batch_r[idx], &u_batch_i[idx]);
+            let u = match mat_from_lists(&u_batch_r[idx], &u_batch_i[idx]) {
+                Ok(u) => u,
+                Err(e) => {
+                    results.push((None, Some(e.as_str().to_string())));
+                    continue;
+                }
+            };
             match decompose_one(&u) {
                 Ok((angles, (e1l, e1r, e2l, e2r), phase)) => results.push((
                     Some((
@@ -1156,7 +1190,7 @@ fn geometric_decompose(
     u_r: Vec<Vec<f64>>,
     u_i: Vec<Vec<f64>>,
 ) -> PyResult<GeoResult> {
-    let u = mat_from_lists(&u_r, &u_i);
+    let u = mat_from_lists(&u_r, &u_i).map_err(|e| to_pyerr(e, "Cartan decomposition failed: "))?;
     let out = py.allow_threads(|| decompose_one(&u));
     let (angles, (e1l, e1r, e2l, e2r), phase) =
         out.map_err(|e| to_pyerr(e, "Cartan decomposition failed: "))?;
@@ -1188,7 +1222,7 @@ fn geometric_decompose_checked(
     u_r: Vec<Vec<f64>>,
     u_i: Vec<Vec<f64>>,
 ) -> PyResult<((f64, f64, f64), Vec<Vec<f64>>, Vec<Vec<f64>>, f64, f64)> {
-    let u = mat_from_lists(&u_r, &u_i);
+    let u = mat_from_lists(&u_r, &u_i).map_err(|e| to_pyerr(e, "Cartan decomposition failed: "))?;
     let out = py.allow_threads(|| {
         decompose_one(&u).map(|(angles, locals, phase)| {
             let cartan = cartan_from_angles(angles);
@@ -1222,7 +1256,7 @@ fn psf_zero_core(py: Python, m: &PyModule) -> PyResult<()> {
     m.add("PsfDegenerateError", py.get_type::<PsfDegenerateError>())?;
     m.add("PsfNumericError", py.get_type::<PsfNumericError>())?;
     m.add("PsfSU2SingularError", py.get_type::<PsfSU2SingularError>())?;
-    m.add("CORE_VERSION", "2026-09-29.1")?;
+    m.add("CORE_VERSION", "2026-11-13.1")?;
     Ok(())
 }
 
@@ -1290,6 +1324,24 @@ mod tests {
             &su2_from_euler_zyz(next(), next(), next()),
         );
         k1 * canonical_core(next() * 0.25, next() * 0.25, next() * 0.25) * k2
+    }
+
+    #[test]
+    fn malformed_lists_are_refused_without_panic() {
+        let ok = vec![vec![0.0; 4]; 4];
+        assert_eq!(mat_from_lists(&vec![vec![1.0; 3]; 4], &ok), Err(CartanError::NotUnitary));
+        assert_eq!(mat_from_lists(&vec![vec![1.0; 4]; 3], &ok), Err(CartanError::NotUnitary));
+        assert_eq!(mat_from_lists(&ok, &vec![vec![0.0; 4]; 5]), Err(CartanError::NotUnitary));
+        let mut id = vec![vec![0.0; 4]; 4];
+        for k in 0..4 { id[k][k] = 1.0; }
+        assert_eq!(mat_from_lists(&id, &ok), Ok(Mat4::identity()));
+    }
+
+    #[test]
+    fn nan_input_is_still_rejected() {
+        let mut m = Mat4::identity();
+        m[(0, 0)] = c(f64::NAN, 0.0);
+        assert_eq!(decompose_one(&m).err(), Some(CartanError::NumericInstability));
     }
 
     #[test]
