@@ -12,6 +12,7 @@
 [![DOI (Paper 5)](https://zenodo.org/badge/DOI/10.5281/zenodo.23827536.svg)](https://doi.org/10.5281/zenodo.23827536)
 [![DOI (Paper 6)](https://zenodo.org/badge/DOI/10.5281/zenodo.23883938.svg)](https://doi.org/10.5281/zenodo.23883938)
 [![DOI (Paper 7)](https://zenodo.org/badge/DOI/10.5281/zenodo.24046673.svg)](https://doi.org/10.5281/zenodo.24046673)
+[![DOI (Paper 8)](https://zenodo.org/badge/DOI/10.5281/zenodo.24136512.svg)](https://doi.org/10.5281/zenodo.24136512)
 
 PSF-Zero is a Qiskit-compatible compiler for IBM devices that builds a circuit by formula: no layout search, no
 routing search, and no choice by the day's error values. What it cannot build by formula it refuses with a reason.
@@ -225,13 +226,20 @@ CX-basis synthesis returns wrong circuits near a boundary ([Qiskit #17057](https
   accuracy gain on fully usable rings, what a defect costs different computations, and a lower bound for
   calibration-only placement in an appendix. Code: [psf-os](https://github.com/TN-Holdings-LLC/psf-os).
 - [**Paper 7 — Exact Answers, No Map, No Mitigation: User-Written Circuits through a Placement-Only OS on IBM Heron r2
-  Devices**](docs/papers/exact_answers_no_map.pdf)
+  Devices**](https://github.com/TN-Holdings-LLC/psf-os-lab-notebook/blob/main/notes/paper7/paper7_v1.pdf)
   ([DOI: 10.5281/zenodo.24046673](https://doi.org/10.5281/zenodo.24046673), version 1, 2026-11-08). Circuits a user
   writes in plain Qiskit, placed by psf-os without the calibration map and run without error mitigation, against
   answers sealed before each run: 22 practice circuits on two devices, a daily record, and IBM's dual-unitary chain
   at 51 and 71 sites (raw decay rates within 0.005 of cos 2h); the bias of an absolute criterion in both directions,
   local failure regions, a correction that did not work across problems, and a script that re-scores all 13 device
-  results from their raw counts. Records: [TOQB](https://github.com/TN-Holdings-LLC/TOQB).
+  results from their raw counts. Records: [psf-os-lab-notebook](https://github.com/TN-Holdings-LLC/psf-os-lab-notebook) (formerly TOQB).
+- [**Paper 8 — Readable Quantum Dynamics Without Error Mitigation: Dual-Unitary Chains up to 91 Qubits and 3D Lattice
+  Tests on IBM Heron Devices**](https://github.com/TN-Holdings-LLC/psf-os-lab-notebook/blob/main/notes/paper8/paper8_v1.pdf)
+  ([DOI: 10.5281/zenodo.24136512](https://doi.org/10.5281/zenodo.24136512), version 1.0, 2026-11-11). The same
+  placement-only policy carried to a chain no fixed shape can hold and to 3D lattices the heavy-hex graph cannot
+  embed: IBM's dual-unitary kicked-Ising chain at N = 91 read raw on ibm_marrakesh (decay rates within 0.0037 of
+  cos 2h, every depth to t = 24, 2,205 CZ readable), a second run on ibm_fez, and kicked Ising on 4 x 4 x 3 and
+  Heisenberg XXX on 4 x 2 x 2 read in three dimensions. Records: [psf-os-lab-notebook](https://github.com/TN-Holdings-LLC/psf-os-lab-notebook).
 - [**Technical overview slides**](docs/papers/psf_zero_technical_overview.pptx) (8 slides).
 
 ## How these numbers were produced
