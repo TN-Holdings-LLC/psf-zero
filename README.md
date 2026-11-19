@@ -13,6 +13,8 @@
 [![DOI (Paper 6)](https://zenodo.org/badge/DOI/10.5281/zenodo.23883938.svg)](https://doi.org/10.5281/zenodo.23883938)
 [![DOI (Paper 7)](https://zenodo.org/badge/DOI/10.5281/zenodo.24046673.svg)](https://doi.org/10.5281/zenodo.24046673)
 [![DOI (Paper 8)](https://zenodo.org/badge/DOI/10.5281/zenodo.24136512.svg)](https://doi.org/10.5281/zenodo.24136512)
+[![DOI (Paper 9)](https://zenodo.org/badge/DOI/10.5281/zenodo.24278888.svg)](https://doi.org/10.5281/zenodo.24278888)
+[![DOI (Paper 10)](https://zenodo.org/badge/DOI/10.5281/zenodo.24367001.svg)](https://doi.org/10.5281/zenodo.24367001)
 
 PSF-Zero is a Qiskit-compatible compiler for IBM devices that builds a circuit by formula: no layout search, no
 routing search, and no choice by the day's error values. What it cannot build by formula it refuses with a reason.
@@ -240,6 +242,15 @@ CX-basis synthesis returns wrong circuits near a boundary ([Qiskit #17057](https
   embed: IBM's dual-unitary kicked-Ising chain at N = 91 read raw on ibm_marrakesh (decay rates within 0.0037 of
   cos 2h, every depth to t = 24, 2,205 CZ readable), a second run on ibm_fez, and kicked Ising on 4 x 4 x 3 and
   Heisenberg XXX on 4 x 2 x 2 read in three dimensions. Records: [psf-os-lab-notebook](https://github.com/TN-Holdings-LLC/psf-os-lab-notebook).
+- [**Paper 9 — What Makes Raw Quantum Dynamics Readable? The Share of Signal Kept, Across 179 Results on IBM Heron**](https://github.com/TN-Holdings-LLC/psf-os-lab-notebook/blob/main/notes/paper9/paper9_v1.pdf)
+  ([DOI: 10.5281/zenodo.24278888](https://doi.org/10.5281/zenodo.24278888), version 1, 2026-11-16). What decides whether
+  raw quantum dynamics read on a device: the share of the signal kept, across the 179 device results of the notebook.
+  Records: [psf-os-lab-notebook](https://github.com/TN-Holdings-LLC/psf-os-lab-notebook).
+- [**Paper 10 — Decisions No Correction of the Uncontrolled Circuit Can Reach: Real-Time Control on IBM Heron, Declared Before the Data**](https://github.com/TN-Holdings-LLC/psf-os-lab-notebook/blob/main/notes/paper10_ff/paper10_v1.pdf)
+  ([DOI: 10.5281/zenodo.24367001](https://doi.org/10.5281/zenodo.24367001), version 1, 2026-11-19). Circuits that
+  measure in the middle and act on the result at once, judged against a correction ceiling no later correction of the
+  uncontrolled circuit can pass, on four nights with 57 declared predictions (37 held, 20 failed); with psf-os 0.2.0
+  ([DOI: 10.5281/zenodo.24367846](https://doi.org/10.5281/zenodo.24367846)). Records: [psf-os-lab-notebook](https://github.com/TN-Holdings-LLC/psf-os-lab-notebook).
 - [**Technical overview slides**](docs/papers/psf_zero_technical_overview.pptx) (8 slides).
 
 ## How these numbers were produced
