@@ -275,7 +275,7 @@ CX-basis synthesis returns wrong circuits near a boundary ([Qiskit #17057](https
 | [`patches/`](patches/) | Every release and AI front end, with the checks each was released on |
 | [`docs/README_2026-10-25_before_restructure.md`](docs/README_2026-10-25_before_restructure.md) | This README as it was before 2026-10-25, with the open questions and older result tables |
 | [TOQB](https://github.com/TN-Holdings-LLC/TOQB) | The test bench: the training, twin and device results behind the ring work |
-| [psf-os](https://github.com/TN-Holdings-LLC/psf-os) | The self-checking layer on top: a user's circuit in, placement by formula, floor and mirror checks in the same job, an answer card back; first device results with practice problems (2026-11-04) |
+| [psf-os](https://github.com/TN-Holdings-LLC/psf-os) | The self-checking layer on top: a user's circuit in, placement by formula, floor and mirror checks in the same job, an answer card back; first device results with practice problems (2026-11-04); latest release 0.3.0 (2026-11-21, waiting qubits parked in \|0> by default; [DOI: 10.5281/zenodo.24416958](https://doi.org/10.5281/zenodo.24416958)) |
 
 ## Working with us
 
